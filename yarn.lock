@@ -5217,7 +5217,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-transport-webhid@npm:6.31.0, @ledgerhq/hw-transport-webhid@npm:^6.31.0":
+"@ledgerhq/hw-transport-webhid@npm:6.31.0, @ledgerhq/hw-transport-webhid@npm:^6.30.0":
   version: 6.31.0
   resolution: "@ledgerhq/hw-transport-webhid@npm:6.31.0"
   dependencies:

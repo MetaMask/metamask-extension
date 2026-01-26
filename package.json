@@ -268,7 +268,7 @@
     "which@npm:^1.3.1": "^4.0.0",
     "qs@npm:6.13.0": "^6.14.1",
     "@metamask/bridge-status-controller": "64.3.0",
-    "@ledgerhq/hw-transport-webhid@npm:^6.30.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch"
+    "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",

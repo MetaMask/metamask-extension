@@ -604,16 +604,16 @@
         "react": true
       }
     },
-    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/devices": {
+    "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": {
       "packages": {
         "@ledgerhq/errors": true,
         "browserify>buffer": true,
-        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/devices>semver": true
+        "@ledgerhq/hw-transport-webhid>@ledgerhq/devices>semver": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
+    "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
       "packages": {
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
         "axios": true
       }
     },
@@ -622,17 +622,17 @@
         "console.warn": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
       "packages": {
         "ethers>@ethersproject/constants": true,
         "ethers>@ethersproject/hash": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
         "axios": true,
         "@metamask/ppom-validator>crypto-js": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": {
+    "@ledgerhq/hw-app-eth": {
       "globals": {
         "console.warn": true
       },
@@ -640,30 +640,30 @@
         "@ethersproject/abi": true,
         "ethers>@ethersproject/rlp": true,
         "ethers>@ethersproject/transactions": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
         "@ledgerhq/errors": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
         "axios": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": true,
+        "@ledgerhq/hw-app-eth>bignumber.js": true,
         "browserify>buffer": true,
         "semver": true
       }
     },
-    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid": {
+    "@ledgerhq/hw-transport-webhid": {
       "globals": {
         "navigator": true
       },
       "packages": {
-        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/devices": true,
+        "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": true,
         "@ledgerhq/errors": true,
-        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/hw-transport": true,
-        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/logs": true,
+        "@ledgerhq/hw-transport-webhid>@ledgerhq/hw-transport": true,
+        "@ledgerhq/hw-transport-webhid>@ledgerhq/logs": true,
         "browserify>buffer": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
+    "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
       "globals": {
         "clearTimeout": true,
         "console.warn": true,
@@ -671,12 +671,12 @@
       },
       "packages": {
         "@ledgerhq/errors": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
         "browserify>buffer": true,
         "webpack>events": true
       }
     },
-    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/hw-transport": {
+    "@ledgerhq/hw-transport-webhid>@ledgerhq/hw-transport": {
       "globals": {
         "clearTimeout": true,
         "console.warn": true,
@@ -684,12 +684,12 @@
       },
       "packages": {
         "@ledgerhq/errors": true,
-        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/logs": true,
+        "@ledgerhq/hw-transport-webhid>@ledgerhq/logs": true,
         "browserify>buffer": true,
         "webpack>events": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
       "globals": {
         "console.warn": true
       },
@@ -697,13 +697,13 @@
         "wait-on>rxjs": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": {
+    "@ledgerhq/hw-app-eth>@ledgerhq/logs": {
       "globals": {
         "__ledgerLogsListen": "write",
         "console.error": true
       }
     },
-    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/logs": {
+    "@ledgerhq/hw-transport-webhid>@ledgerhq/logs": {
       "globals": {
         "__ledgerLogsListen": "write",
         "console.error": true
@@ -1261,8 +1261,8 @@
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
-        "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
+        "@ledgerhq/hw-app-eth": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
         "@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
@@ -3238,7 +3238,7 @@
         "define": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>bignumber.js": {
+    "@ledgerhq/hw-app-eth>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
@@ -5614,7 +5614,7 @@
         "process": true
       }
     },
-    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/devices>semver": {
+    "@ledgerhq/hw-transport-webhid>@ledgerhq/devices>semver": {
       "globals": {
         "console.error": true
       },
