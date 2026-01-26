@@ -25,13 +25,14 @@ Always prioritize `@metamask/design-system-react` components and Tailwind CSS pa
    - **Rule**: If it exists in the design system, you MUST use it
 
 2. **SECOND**: Use `ui/components/component-library` ONLY if design system lacks it
-   - **Use for**: Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, ModalFooter, ModalFocus
-   - **Use for**: BannerBase, BannerAlert, BannerTip
-   - **Use for**: Container, HeaderBase, HelpText, Input, Label, Popover, PopoverHeader
-   - **Use for**: PickerNetwork, SensitiveText, Tag, TagUrl, TextFieldSearch, Textarea, Skeleton
-   - **Use for**: SelectButton, SelectOption, SelectWrapper
+   - **Prefer Variant Components**: Modal, ModalHeader, BannerAlert, BannerTip, PopoverHeader
+   - **Base Components (use sparingly)**: BannerBase, HeaderBase, ModalBody (for custom patterns)
+   - **Other Components**: Container, HelpText, Input, Label, Popover, PickerNetwork
+   - **Form Components**: SensitiveText, Tag, TagUrl, TextFieldSearch, Textarea, SelectButton, SelectWrapper
+   - **Utility Components**: Skeleton, SelectOption
    - **Rule**: These are MetaMask-specific implementations not (yet) in the design system
    - **Important**: component-library components should themselves use design system primitives internally
+   - **Base/Variant Pattern**: Always prefer variant components over base components
 
 3. **THIRD**: Feature-specific components
    - **Use for**: Complex, domain-specific UI that combines multiple design system/component-library components
@@ -151,7 +152,19 @@ All other components (Button, Text, Icon, Checkbox, etc.) have their own compone
 - **Use component props FIRST**: `variant`, `size`, `color`, etc.
 - **Use `className` for additional utilities**: layout, spacing, positioning, etc.
 
-**Note on ButtonBase**: It's a low-level base component for highly custom buttons. Prefer the `Button` component with variants (Primary, Secondary, Tertiary) for standard use cases.
+**Note on Base Components**: MetaMask uses a Base/Variant pattern for component development:
+
+- **Variant components** (e.g., Button, BannerAlert, ModalHeader) - Use these FIRST
+- **Base components** (e.g., ButtonBase, BannerBase, HeaderBase) - Only for custom patterns outside existing variants
+
+**When to use Base components**:
+
+- Existing variant components don't fit your design needs
+- Building a new feature-specific variant pattern
+- ⚠️ **Warning**: If you need a Base component, it may indicate a design inconsistency. Consider:
+  1. Can an existing variant component work with minor adjustments?
+  2. Should this pattern become a new variant in the design system?
+  3. Is this a one-off pattern that suggests design debt?
 
 ## Styling Rules (ENFORCE STRICTLY)
 
@@ -306,11 +319,23 @@ For other components (Button, Text, Icon, Checkbox, etc.):
 1. **Use component props FIRST**: `variant`, `size`, `color`, `startIconName`, etc.
 2. **Use `className` for additional utilities**: layout spacing (`mb-2`), width (`w-full`), positioning, etc.
 
-**Button Component Hierarchy**:
+**Component Base/Variant Pattern**:
 
-- **Button**: Use for standard buttons (Primary, Secondary, Tertiary variants)
-- **ButtonIcon**: Use for icon-only buttons
-- **ButtonBase**: Only for highly custom button patterns that don't fit Button variants
+MetaMask follows a Base/Variant pattern across many component families:
+
+| Component Family | Variant Components (Use First)                  | Base Component (Use Sparingly) |
+| ---------------- | ----------------------------------------------- | ------------------------------ |
+| **Button**       | Button (Primary/Secondary/Tertiary), ButtonIcon | ButtonBase                     |
+| **Banner**       | BannerAlert, BannerTip                          | BannerBase                     |
+| **Modal**        | ModalHeader, ModalFooter, ModalFocus            | ModalBody, ModalContent        |
+| **Popover**      | PopoverHeader                                   | (none - use Popover directly)  |
+| **Header**       | (feature-specific headers)                      | HeaderBase                     |
+
+**Always prefer variant components.** Only use base components when:
+
+1. No existing variant fits your use case
+2. You're building a new reusable pattern
+3. ⚠️ You've confirmed this isn't a design inconsistency
 
 ### When to Use className on Box
 
@@ -509,6 +534,9 @@ import {
 
 - [ ] No SASS files (`.scss`) created or modified
 - [ ] Design system components used when appropriate (prefer over raw elements)
+- [ ] Variant components used before base components (Button > ButtonBase, BannerAlert > BannerBase)
+- [ ] If using base component: confirmed no variant component works
+- [ ] If using base component: considered if this indicates design inconsistency
 - [ ] No raw text elements without variants (use `Text` with `TextVariant`)
 - [ ] No custom CSS files (use design system + Tailwind)
 - [ ] No arbitrary color values (use design system tokens)
@@ -516,7 +544,7 @@ import {
 - [ ] Box props used for static layout and colors (not className)
 - [ ] Box static colors use `backgroundColor`/`borderColor` props with enums
 - [ ] Box interactive states (hover/active/focus) use className
-- [ ] Other components (ButtonBase, Text, Icon, etc.) use `className` for styling
+- [ ] Component-specific props used before className (variant, size, color)
 - [ ] All Box spacing uses numeric props when possible (0-12)
 
 ### When You See These Patterns, IMMEDIATELY Suggest Alternatives:
@@ -541,22 +569,31 @@ When suggesting code changes:
 
 1. ALWAYS read component type definitions first for accurate API usage
 2. ALWAYS check `ui/pages/design-system/design-system.stories.tsx` for real-world patterns
-3. ALWAYS search for existing feature-specific components before building new ones
-4. REJECT any suggestions that violate the hierarchy
-5. REJECT any SASS file creation or modification
-6. SUGGEST migrations when encountering legacy patterns
-7. EXPLAIN why design system approach is preferred
+3. ALWAYS prefer variant components over base components (Button > ButtonBase, BannerAlert > BannerBase)
+4. ALWAYS use component-specific props FIRST (variant, size, color, etc.)
+5. ALWAYS use Box utility props for layout before className
+6. ALWAYS search for existing feature-specific components before building new ones
+7. FLAG potential design inconsistencies when base components are needed
+8. REJECT any suggestions that violate the hierarchy
+9. REJECT any SASS file creation or modification
+10. SUGGEST migrations when encountering legacy patterns
+11. EXPLAIN why design system approach is preferred
+
+**Remember**: Variant Components > Base Components > Component props > Box utility props > className for extras
 
 ## Design System Priority
 
 Before suggesting any UI solution:
 
 1. Check if `@metamask/design-system-react` has the component
-2. Use component's built-in props (variant, color, size)
-3. Add layout/spacing with Box props or `className`
-4. Add colors with semantic Tailwind tokens
-5. Only suggest component-library or custom components if design system lacks it
-6. **NEVER** suggest SASS files
+2. Check if a variant component exists (Button, BannerAlert, ModalHeader)
+3. Use component's built-in props (variant, color, size)
+4. Add layout/spacing with Box props or `className`
+5. Add colors with semantic Tailwind tokens
+6. Only suggest base components (ButtonBase, BannerBase) if no variant fits
+7. FLAG if base component usage suggests design inconsistency
+8. Only suggest custom components if no design system option exists
+9. **NEVER** suggest SASS files
 
 ## Tailwind Configuration
 
