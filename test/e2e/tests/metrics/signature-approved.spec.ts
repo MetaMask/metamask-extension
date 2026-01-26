@@ -52,7 +52,7 @@ const expectedEventPropertiesBase = {
   account_type: 'MetaMask',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  address_alert_response: 'loading',
+  address_alert_response: 'Loading',
   category: 'inpage_provider',
   locale: 'en',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -66,7 +66,7 @@ const expectedEventPropertiesBase = {
   security_alert_reason: 'validation_in_progress',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  security_alert_response: 'loading',
+  security_alert_response: 'Loading',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   api_source: MetaMetricsRequestedThrough.EthereumProvider,

@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "अकाउंट या वॉलेट जोड़ें"
   },
-  "addAccountToMetaMask": {
-    "message": "MetaMask में अकाउंट जोड़ें"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask का इस्तेमाल करके, आपके द्वारा प्राप्त किए गए टोकन जोड़ें"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "वॉलेट जोड़ें"
-  },
-  "addingAccount": {
-    "message": "अकाउंट जोड़ा जा रहा है"
   },
   "additionalNetworks": {
     "message": "अतिरिक्त नेटवर्क"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "हम कोई ऐतिहासिक डेटा प्राप्त नहीं कर सके"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFTs"
-  },
   "assetOptions": {
     "message": "एसेट के विकल्प"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "परिसंपत्तियां"
@@ -1079,12 +1067,6 @@
   },
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
-  },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "यदि आपने यह टोकन मैन्युअल रूप से जोड़ा है, तो सुनिश्चित करें कि आप ब्रिजिंग से पहले अपने फंड के जोखिमों से अवगत हैं।"
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "हम इस टोकन को वेरीफ़ाई नहीं कर सकते।"
   },
   "bridgeTransactionProgress": {
     "message": "ट्रांसेक्शन 2 में से $1"
@@ -3159,9 +3141,6 @@
   "insufficientFunds": {
     "message": "अपर्याप्त फंड."
   },
-  "insufficientFundsForGas": {
-    "message": "गैस के लिए कम फंड"
-  },
   "insufficientFundsSend": {
     "message": "अपर्याप्त फंड"
   },
@@ -3888,9 +3867,6 @@
     "message": "इंपोर्ट करने के लिए आपको एक फाइल को चुनना होगा।",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "ETH के नेगेटिव अमाउंट नहीं भेज सकते।"
-  },
   "negativeOrZeroAmountToken": {
     "message": "नेगेटिव या ज़ीरो वैल्यू के एसेट नहीं भेज सकते।"
   },
@@ -3931,18 +3907,6 @@
   "networkName": {
     "message": "नेटवर्क का नाम"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "बेस"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3958,26 +3922,14 @@
   "networkNameGoerli": {
     "message": "गोएर्ली"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "बहुभुज"
   },
   "networkNameSolana": {
     "message": "सोलाना"
   },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "नेटवर्क के विकल्प"
@@ -4536,9 +4488,6 @@
   },
   "openWallet": {
     "message": "वॉलेट खोलें"
-  },
-  "optional": {
-    "message": "वैकल्पिक"
   },
   "options": {
     "message": "विकल्प"
@@ -5826,24 +5775,11 @@
   "sendBugReport": {
     "message": "हमें एक बग रिपोर्ट भेजें।"
   },
-  "sendNoContactsConversionText": {
-    "message": "यहां क्लिक करें"
-  },
-  "sendNoContactsDescription": {
-    "message": "कॉन्टेक्ट्स आपको कई बार ट्रांसेक्शन को दूसरे अकाउंट में सुरक्षित रूप से भेजने की अनुमति देते हैं। एक कॉन्टेक्ट बनाने के लिए, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "आपके पास अभी तक कोई कॉन्टेक्ट्स नहीं हैं"
-  },
   "sendSelectReceiveAsset": {
     "message": "प्राप्त करने के लिए एसेट को चुनें"
   },
   "sendSelectSendAsset": {
     "message": "भेजने के लिए एसेट को चुनें"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "इस बटन पर क्लिक करने से आपका स्वैप ट्रांसेक्शन तुरंत शुरू हो जाएगा। कृपया आगे बढ़ने से पहले अपने ट्रांसेक्शन विवरण की समीक्षा करें।"
   },
   "sendingAsset": {
     "message": "$1 भेजा जा रहा है"
@@ -5854,10 +5790,6 @@
   "sendingNativeAsset": {
     "message": "$1 भेजा जा रहा है",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "चेतावनी: आप एक टोकन कॉन्ट्रैक्ट को भेजने वाले हैं जिसके परिणामस्वरूप धन की हानि हो सकती है। $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "भेजा गया"
@@ -7260,9 +7192,6 @@
     "message": "$1 से $2 का स्वैप",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "गैस फीस का अनुमान लगाया जाता है और नेटवर्क ट्रैफिक और ट्रांसेक्शन की जटिलता के आधार पर इसमें उतार-चढ़ाव आएगा।"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask गैस फीस से पैसे नहीं कमाता है। ये शुल्क अनुमानित हैं और इस आधार पर बदल सकते हैं कि नेटवर्क कितना व्यस्त है और ट्रांसेक्शन कितना जटिल है। अधिक जानें $1।",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7274,9 +7203,6 @@
   "swapGasFeesIncluded": {
     "message": " शामिल किया गया"
   },
-  "swapGasFeesLearnMore": {
-    "message": "गैस फीस के बारे में और अधिक जानें"
-  },
   "swapGasFeesSplit": {
     "message": "पिछली स्क्रीन पर गैस फ़ीस इन दो ट्रांसेक्शन के बीच विभाजित हैं।"
   },
@@ -7285,10 +7211,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "यह नेटवर्क फीस MetaMask देता है, इसलिए आप अपने अकाउंट में $1 के बिना भी स्वैप कर सकते हैं।"
-  },
-  "swapGasFeesSummary": {
-    "message": "क्रिप्टो माइनरों को गैस फ़ीस का पेमेंट किया जाता है जो $1 नेटवर्क पर ट्रांसेक्शन की प्रक्रिया करते हैं। MetaMask को गैस फ़ीस से लाभ नहीं होता है।",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "यह कोटेशन भेजे गए या प्राप्त किए गए टोकन राशि को समायोजित करके गैस फीस को शामिल करता है। आप अपनी गतिविधि सूची में एक अलग ट्रांसेक्शन में ETH प्राप्त कर सकते हैं।"
@@ -7306,10 +7228,6 @@
   "swapIncludesMMFee": {
     "message": "$1% MetaMask फ़ीस शामिल है।",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "उद्धरण $1% MetaMask शुल्क दर्शाता है",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "$1% MetaMask फ़ीस शामिल है - $2",
@@ -7562,9 +7480,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "इस साइट को नेटवर्क स्विच करने की अनुमति दें?"
   },
-  "switchInputCurrency": {
-    "message": "इनपुट करेंसी को स्विच करें"
-  },
   "switchNetwork": {
     "message": "नेटवर्क बदलें"
   },
@@ -7720,9 +7635,6 @@
   },
   "tokensInCollection": {
     "message": "संग्रह में टोकन"
-  },
-  "tooltipApproveButton": {
-    "message": "मैं समझता हूं"
   },
   "tooltipSatusConnected": {
     "message": "जुड़े हुए"
@@ -8278,9 +8190,6 @@
     "message": "आपने भेजा",
     "description": "Label indicating the amount and asset the user sent."
   },
-  "yourAccounts": {
-    "message": "आपके अकाउंट"
-  },
   "yourActivity": {
     "message": "आपकी एक्टिविटी"
   },
@@ -8289,9 +8198,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"
-  },
-  "yourNetworks": {
-    "message": "आपके नेटवर्क"
   },
   "yourPrivateSeedPhrase": {
     "message": "आपका सीक्रेट रिकवरी फ्रेज"

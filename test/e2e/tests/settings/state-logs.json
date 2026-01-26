@@ -35,7 +35,6 @@
     },
     "importTokensModalOpen": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
-    "isAccountMenuOpen": "boolean",
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",
     "isMultiRpcOnboarding": "boolean",
@@ -81,6 +80,7 @@
     "showCopyAddressToast": "boolean",
     "showDataDeletionErrorModal": "boolean",
     "showDeleteMetaMetricsDataModal": "boolean",
+    "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
     "showNewSrpAddedToast": "boolean",
@@ -89,7 +89,6 @@
     "showPermittedNetworkToastOpen": "boolean",
     "showSupportDataConsentModal": "boolean",
     "showTermsOfUsePopup": "boolean",
-    "showWhatsNewPopup": "boolean",
     "singleExceptions": {
       "testKey": "null"
     },
@@ -108,7 +107,6 @@
     "selectedQuote": "null",
     "slippage": "number",
     "sortOrder": "string",
-    "toChainId": "null",
     "toToken": "null",
     "txAlert": "null",
     "txAlertStatus": "number",
@@ -282,7 +280,9 @@
       "unconnectedAccount": "boolean",
       "web3ShimUsage": "boolean"
     },
-    "allDeFiPositions": {},
+    "allDeFiPositions": {
+      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "null"
+    },
     "allDeFiPositionsCount": {},
     "allDetectedTokens": {},
     "allIgnoredAssets": {},
@@ -867,9 +867,6 @@
       "feature3": {
         "name": "string",
         "value": "string"
-      },
-      "sendRedesign": {
-        "enabled": "boolean"
       }
     },
     "rewardsAccounts": {},
@@ -1093,7 +1090,8 @@
     },
     "tracesBeforeMetricsOptIn": [],
     "traits": {
-      "install_date_ext": "string"
+      "install_date_ext": "string",
+      "storage_kind": "string"
     },
     "transactionBatches": [],
     "transactionData": {},
@@ -1169,28 +1167,6 @@
       "isOpen": "boolean",
       "title": "string"
     }
-  },
-  "send": {
-    "amountMode": "string",
-    "currentTransactionUUID": "null",
-    "disabledSwapAndSendNetworks": [],
-    "draftTransactions": {},
-    "eip1559support": "boolean",
-    "gasEstimateIsLoading": "boolean",
-    "gasEstimatePollToken": "null",
-    "gasIsSetInModal": "boolean",
-    "gasLimitMinimum": "string",
-    "gasPriceEstimate": "string",
-    "gasTotalForLayer1": "null",
-    "prevSwapAndSendInput": "null",
-    "recipientInput": "string",
-    "recipientMode": "string",
-    "selectedAccount": {
-      "address": "null",
-      "balance": "string"
-    },
-    "stage": "string",
-    "swapsBlockedTokens": []
   },
   "smartAccounts": {
     "toggleStates": {}

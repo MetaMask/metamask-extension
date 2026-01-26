@@ -415,6 +415,30 @@ describe('MetaMaskController', () => {
           },
         ]),
       );
+    nock('https://client-side-detection.api.cx.metamask.io')
+      .persist()
+      .get('/v1/request-blocklist')
+      .reply(
+        200,
+        JSON.stringify({
+          recentlyAdded: [],
+          recentlyRemoved: [],
+          lastFetchedAt: 0,
+        }),
+      );
+    nock('https://client-config.api.cx.metamask.io')
+      .persist()
+      .get('/v1/flags')
+      .query(true)
+      .reply(
+        200,
+        JSON.stringify([
+          {
+            // Required by validation in controller
+            smartTransactionsNetworks: {},
+          },
+        ]),
+      );
 
     globalThis.sentry = {
       withIsolationScope: jest.fn(),
@@ -1664,14 +1688,6 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.removeAllScopePermissions,
         ).toHaveBeenCalledWith('eip155:10');
-      });
-    });
-
-    describe('#getApi', () => {
-      it('getState', () => {
-        const getApi = metamaskController.getApi();
-        const state = getApi.getState();
-        expect(state).toStrictEqual(metamaskController.getState());
       });
     });
 
@@ -4516,7 +4532,9 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
             remoteFeatureFlags: {
-              extensionUxDefiReferral: true,
+              extensionUxDefiReferralPartners: {
+                [DefiReferralPartner.Hyperliquid]: true,
+              },
             },
           });
         jest.spyOn(metamaskController.approvalController, 'add');
@@ -4537,7 +4555,9 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValueOnce({
             remoteFeatureFlags: {
-              extensionUxDefiReferral: false,
+              extensionUxDefiReferralPartners: {
+                [DefiReferralPartner.Hyperliquid]: false,
+              },
             },
           });
         jest.spyOn(metamaskController, 'getPermittedAccounts');
@@ -4805,6 +4825,7 @@ describe('MetaMaskController', () => {
           category: 'Referrals',
           properties: {
             opt_in: true,
+            url: HYPERLIQUID_ORIGIN,
           },
         });
       });
@@ -4829,6 +4850,7 @@ describe('MetaMaskController', () => {
           category: 'Referrals',
           properties: {
             opt_in: false,
+            url: HYPERLIQUID_ORIGIN,
           },
         });
       });

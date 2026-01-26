@@ -7,7 +7,6 @@ import AdvancedSettings from '../../page-objects/pages/settings/advanced-setting
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ar from '../../../../app/_locales/ar/messages.json';
@@ -17,6 +16,7 @@ import en from '../../../../app/_locales/en/messages.json';
 import hu from '../../../../app/_locales/hu/messages.json';
 import es from '../../../../app/_locales/es/messages.json';
 import hi from '../../../../app/_locales/hi/messages.json';
+import SendPage from '../../page-objects/pages/send/send-page';
 
 const selectors = {
   currentLanguageDansk: { tag: 'p', text: da.currentLanguage.message },
@@ -32,7 +32,7 @@ const selectors = {
     css: '[data-testid="auto-lockout-button"]',
     text: da.save.message,
   },
-  dialogTextDeutsch: { text: de.invalidAddressRecipient.message, tag: 'p' },
+  dialogTextDeutsch: { text: de.invalidAddress.message, tag: 'p' },
   discoverTextवर्तमान: { text: hi.discover.message, tag: 'a' },
   headerTextAr: { text: ar.settings.message, tag: 'h3' },
 };
@@ -158,12 +158,10 @@ describe('Settings - general tab', function (this: Suite) {
         await homepage.checkExpectedBalanceIsDisplayed();
         await homepage.startSendFlow();
 
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.checkPageIsLoaded();
+        const sendPage = new SendPage(driver);
+        await sendPage.selectToken('0x539', 'ETH');
         // use wrong address for recipient to allow error message to show
-        await sendToPage.fillRecipient(
-          '0xAAAA6BF26964aF9D7eEd9e03E53415D37aA96045',
-        );
+        await sendPage.fillRecipient('0xAAA');
 
         // Validate the language change is reflected in the dialog message
         const isDialogMessageChanged = await driver.isElementPresent(

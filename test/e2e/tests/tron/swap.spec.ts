@@ -1,3 +1,4 @@
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
@@ -27,6 +28,12 @@ const bridgeConfig = {
       isActiveDest: true,
     },
   },
+  chainRanking: [
+    { chainId: 'eip155:1', name: 'Ethereum' },
+    { chainId: 'eip155:42161', name: 'Arbitrum' },
+    { chainId: 'eip155:59144', name: 'Linea' },
+    { chainId: formatChainIdToCaip(TRON_BRIDGE_CHAIN_ID), name: 'Tron' },
+  ],
 };
 
 describe('Swap on Tron', function () {
@@ -39,7 +46,6 @@ describe('Swap on Tron', function () {
         manifestFlags: {
           remoteFeatureFlags: {
             tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
             bridgeConfig,
           },
         },
@@ -83,7 +89,6 @@ describe('Swap on Tron', function () {
         manifestFlags: {
           remoteFeatureFlags: {
             tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
             bridgeConfig,
           },
         },
