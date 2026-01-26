@@ -10,6 +10,8 @@ import {
 } from '@metamask/utils';
 import { base58, isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { detectSIWE } from '@metamask/controller-utils';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
 import {
   EstimatedPointsDto,
@@ -21,6 +23,7 @@ import {
   OptInStatusInputDto,
   OptInStatusDto,
 } from '../../../../shared/types/rewards';
+import { DEVICE_KEYRING_MAP } from '../../../../shared/constants/hardware-wallets';
 import {
   type RewardsControllerState,
   type RewardsAccountState,
@@ -41,9 +44,6 @@ import {
 } from './rewards-data-service';
 import { signSolanaRewardsMessage } from './utils/solana-snap';
 import { sortAccounts } from './utils/sortAccounts';
-import { detectSIWE } from '@metamask/controller-utils';
-import { DEVICE_KEYRING_MAP } from '../../../../shared/constants/hardware-wallets';
-import { KeyringTypes } from '@metamask/keyring-controller';
 
 export const DEFAULT_BLOCKED_REGIONS = ['UK'];
 
@@ -451,7 +451,7 @@ export class RewardsController extends BaseController<
     if (account?.startsWith('eip155')) {
       accState =
         this.state.rewardsAccounts[
-        `eip155:0:${account.split(':')[2]?.toLowerCase()}`
+          `eip155:0:${account.split(':')[2]?.toLowerCase()}`
         ] || this.state.rewardsAccounts[`eip155:0:${account.split(':')[2]}`];
     }
     if (!accState) {
@@ -487,8 +487,7 @@ export class RewardsController extends BaseController<
   async #signRewardsMessage(
     account: InternalAccount,
     timestamp: number,
-  ): Promise<{ signature: string, challenge?: ChallengeDto }> {
-
+  ): Promise<{ signature: string; challenge?: ChallengeDto }> {
     const isEvm = isEvmAddress(account.address);
 
     if (isHardwareAccount(account) && isEvm) {
@@ -518,7 +517,7 @@ export class RewardsController extends BaseController<
       return {
         signature: `0x${Buffer.from(base58.decode(result.signature)).toString(
           'hex',
-        )}`
+        )}`,
       };
     } else if (isEvm) {
       const result = await this.#signEvmMessage(account, hotWalletMessage);
@@ -547,17 +546,17 @@ export class RewardsController extends BaseController<
   }
 
   /**
- * Sign a SIWE (Sign-In with Ethereum) message for rewards authentication
- *
- * @param account - The account to sign with
- * @param challenge - The challenge DTO containing the message string to sign
- * @returns The signature of the SIWE message
- */
+   * Sign a SIWE (Sign-In with Ethereum) message for rewards authentication
+   *
+   * @param account - The account to sign with
+   * @param challenge - The challenge DTO containing the message string to sign
+   * @returns The signature of the SIWE message
+   */
   async signSiweEvmMessage(
     account: InternalAccount,
     challenge: ChallengeDto,
   ): Promise<string> {
-    const messageHex = Buffer.from(challenge.message, 'utf8').toString('hex')
+    const messageHex = Buffer.from(challenge.message, 'utf8').toString('hex');
     const siwe = detectSIWE({ data: messageHex });
     const signature = await this.messenger.call(
       'KeyringController:signPersonalMessage',
@@ -742,7 +741,10 @@ export class RewardsController extends BaseController<
     internalAccount?: InternalAccount | null,
     shouldBecomeActiveAccount = true,
     respectSkipSilentAuth = true,
-    hardwareWalletSignResult?: { signature: string, challenge?: ChallengeDto } | null,
+    hardwareWalletSignResult?: {
+      signature: string;
+      challenge?: ChallengeDto;
+    } | null,
   ): Promise<string | null> {
     if (!internalAccount) {
       if (shouldBecomeActiveAccount) {
@@ -761,7 +763,11 @@ export class RewardsController extends BaseController<
     const hardwareAcc = isHardwareAccount(internalAccount);
 
     // Assume we can't silent auth for hardware accounts
-    if (hardwareAcc && (!hardwareWalletSignResult?.challenge || !hardwareWalletSignResult?.signature)) {
+    if (
+      hardwareAcc &&
+      (!hardwareWalletSignResult?.challenge ||
+        !hardwareWalletSignResult?.signature)
+    ) {
       respectSkipSilentAuth = true;
       shouldSkip = true;
     } else {
@@ -843,8 +849,12 @@ export class RewardsController extends BaseController<
     try {
       // Generate timestamp and sign the message
       let timestamp = Math.floor(Date.now() / 1000);
-      let signature: string = hardwareAcc ? hardwareWalletSignResult?.signature || '' : '';
-      let challenge = hardwareAcc ? hardwareWalletSignResult?.challenge : undefined;
+      let signature: string = hardwareAcc
+        ? hardwareWalletSignResult?.signature || ''
+        : '';
+      const challenge = hardwareAcc
+        ? hardwareWalletSignResult?.challenge
+        : undefined;
       let retryAttempt = 0;
       const MAX_RETRY_ATTEMPTS = 1;
 
@@ -889,21 +899,20 @@ export class RewardsController extends BaseController<
               challengeId: challengeDto.id,
               signature: sig as `0x${string}`,
             });
-          } else {
-            // Use regular login for non-hardware wallets
-            return await this.messenger.call('RewardsDataService:login', {
-              account: internalAccount.address,
-              timestamp,
-              signature: sig,
-            });
           }
+          // Use regular login for non-hardware wallets
+          return await this.messenger.call('RewardsDataService:login', {
+            account: internalAccount.address,
+            timestamp,
+            signature: sig,
+          });
         } catch (error) {
           // Check if it's an InvalidTimestampError and we haven't exceeded retry attempts
           // Only retry for regular login (not SIWE login)
           if (
             error instanceof InvalidTimestampError &&
             retryAttempt < MAX_RETRY_ATTEMPTS &&
-            !isHardwareAccount
+            !hardwareAcc
           ) {
             retryAttempt += 1;
             // Use the timestamp from the error for retry
@@ -985,7 +994,11 @@ export class RewardsController extends BaseController<
     if (!rewardsEnabled) {
       return false;
     }
-    return (this.#getAccountState(account)?.hasOptedIn && this.#getAccountState(account)?.subscriptionId !== null) ?? false;
+    return (
+      (this.#getAccountState(account)?.hasOptedIn &&
+        this.#getAccountState(account)?.subscriptionId !== null) ??
+      false
+    );
   }
 
   checkOptInStatusAgainstCache(
@@ -1020,7 +1033,7 @@ export class RewardsController extends BaseController<
             const shouldRecheckFreshIfNotOptedIn =
               !accountState.lastFreshOptInStatusCheck ||
               Date.now() - accountState.lastFreshOptInStatusCheck >
-              NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS;
+                NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS;
             if (
               accountState.hasOptedIn === false &&
               shouldRecheckFreshIfNotOptedIn
@@ -1102,7 +1115,7 @@ export class RewardsController extends BaseController<
           const hasOptedIn = freshOptInResults[i];
           const subscriptionId =
             Array.isArray(freshSubscriptionIds) &&
-              i < freshSubscriptionIds.length
+            i < freshSubscriptionIds.length
               ? freshSubscriptionIds[i]
               : null;
           const internalAccount = addressToAccountMap.get(
@@ -1350,7 +1363,7 @@ export class RewardsController extends BaseController<
 
               if (
                 this.state.rewardsActiveAccount?.subscriptionId ===
-                subscriptionId &&
+                  subscriptionId &&
                 !isHardwareAccount(account as InternalAccount)
               ) {
                 await this.performSilentAuth(account, false, false); // try and auth.
@@ -1531,7 +1544,10 @@ export class RewardsController extends BaseController<
     }
     // Generate timestamp and sign the message for mobile optin
     let timestamp = Math.floor(Date.now() / 1000);
-    let { signature, challenge } = await this.#signRewardsMessage(account, timestamp);
+    let { signature, challenge } = await this.#signRewardsMessage(
+      account,
+      timestamp,
+    );
     let retryAttempt = 0;
     const MAX_RETRY_ATTEMPTS = 1;
     const executeMobileOptin = async (
@@ -1546,14 +1562,13 @@ export class RewardsController extends BaseController<
             signature: sig as `0x${string}`,
             referralCode,
           });
-        } else {
-          return await this.messenger.call('RewardsDataService:mobileOptin', {
-            account: account.address,
-            timestamp: ts,
-            signature: sig as `0x${string}`,
-            referralCode,
-          });
         }
+        return await this.messenger.call('RewardsDataService:mobileOptin', {
+          account: account.address,
+          timestamp: ts,
+          signature: sig as `0x${string}`,
+          referralCode,
+        });
       } catch (error) {
         // Check if it's an InvalidTimestampError and we haven't exceeded retry attempts
         if (
@@ -1563,7 +1578,8 @@ export class RewardsController extends BaseController<
           retryAttempt += 1;
           // Use the timestamp from the error for retry
           timestamp = error.timestamp;
-          const { signature: newSignature, challenge: newChallenge } = await this.#signRewardsMessage(account, timestamp);
+          const { signature: newSignature, challenge: newChallenge } =
+            await this.#signRewardsMessage(account, timestamp);
           signature = newSignature;
           challenge = newChallenge;
           return await executeMobileOptin(timestamp, signature, newChallenge);
@@ -1599,7 +1615,11 @@ export class RewardsController extends BaseController<
       }
     };
 
-    const optinResponse = await executeMobileOptin(timestamp, signature, challenge);
+    const optinResponse = await executeMobileOptin(
+      timestamp,
+      signature,
+      challenge,
+    );
     // Store the subscription token for authenticated requests
     if (optinResponse.subscription?.id && optinResponse.sessionId) {
       this.#storeSubscriptionToken(
@@ -1731,7 +1751,10 @@ export class RewardsController extends BaseController<
   async getPrimaryWalletSubscriptionId(
     primaryWalletGroupAccounts?: InternalAccount[],
   ): Promise<string | null> {
-    if (!primaryWalletGroupAccounts || primaryWalletGroupAccounts.length === 0) {
+    if (
+      !primaryWalletGroupAccounts ||
+      primaryWalletGroupAccounts.length === 0
+    ) {
       return null;
     }
 
@@ -1857,7 +1880,7 @@ export class RewardsController extends BaseController<
         // Defensive: Ensure sids is an array and i is within bounds
         let subscriptionId =
           Array.isArray(optInStatusResponse?.sids) &&
-            i < optInStatusResponse.sids.length
+          i < optInStatusResponse.sids.length
             ? optInStatusResponse.sids[i]
             : null;
         const sessionToken = subscriptionId
@@ -1903,9 +1926,7 @@ export class RewardsController extends BaseController<
     if (optInStatusResponse?.ois) {
       const hasOptedInHotWallet = supportedAccounts.some(
         (account, i) =>
-          optInStatusResponse.ois[i] &&
-          account &&
-          !isHardwareAccount(account),
+          optInStatusResponse.ois[i] && account && !isHardwareAccount(account),
       );
 
       if (hasOptedInHotWallet) {
@@ -1969,7 +1990,10 @@ export class RewardsController extends BaseController<
     try {
       // Generate timestamp and sign the message for mobile join
       let timestamp = Math.floor(Date.now() / 1000);
-      let { signature, challenge } = await this.#signRewardsMessage(account, timestamp);
+      let { signature, challenge } = await this.#signRewardsMessage(
+        account,
+        timestamp,
+      );
       let retryAttempt = 0;
       const MAX_RETRY_ATTEMPTS = 1;
 
@@ -2016,7 +2040,8 @@ export class RewardsController extends BaseController<
             retryAttempt += 1;
             // Use the timestamp from the error for retry
             timestamp = error.timestamp;
-            const { signature: newSignature, challenge: newChallenge } = await this.#signRewardsMessage(account, timestamp);
+            const { signature: newSignature, challenge: newChallenge } =
+              await this.#signRewardsMessage(account, timestamp);
             signature = newSignature;
             challenge = newChallenge;
             return await executeMobileJoin(timestamp, signature, challenge);
