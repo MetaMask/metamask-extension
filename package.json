@@ -267,7 +267,8 @@
     "which@npm:^1.2.14": "^4.0.0",
     "which@npm:^1.3.1": "^4.0.0",
     "qs@npm:6.13.0": "^6.14.1",
-    "@metamask/bridge-status-controller": "64.3.0"
+    "@metamask/bridge-status-controller": "64.3.0",
+    "@ledgerhq/hw-transport-webhid@npm:^6.30.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -286,10 +287,7 @@
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.4",
     "@lavamoat/webpack": "1.5.6",
-    "@ledgerhq/devices": "^8.10.0",
     "@ledgerhq/errors": "^6.21.0",
-    "@ledgerhq/hw-app-eth": "^7.3.0",
-    "@ledgerhq/hw-transport-webhid": "^6.31.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/pickers": "^3.3.11",
     "@metamask/abi-utils": "^3.0.0",
