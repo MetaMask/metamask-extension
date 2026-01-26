@@ -17,14 +17,21 @@ let pendingMakeApp: Promise<boolean> | null = null;
 
 /**
  * Checks if WebHID API is available in this environment.
+ *
+ * @returns True if WebHID is supported.
  */
 function isWebHIDSupported(): boolean {
-  return typeof navigator !== 'undefined' && typeof navigator.hid !== 'undefined';
+  return (
+    typeof navigator !== 'undefined' && typeof navigator.hid !== 'undefined'
+  );
 }
 
 /**
  * Serializes an error for transmission across message boundaries.
  * Preserves statusCode for TransportStatusError.
+ *
+ * @param error - The error to serialize.
+ * @returns Serialized error object.
  */
 function serializeError(error: unknown): {
   message: string;
@@ -153,6 +160,9 @@ async function ensureApp(): Promise<LedgerEth> {
 
 /**
  * Gets the public key for a given HD path.
+ *
+ * @param hdPath - The HD derivation path.
+ * @returns Public key, address, and optional chain code.
  */
 async function getPublicKey(hdPath: string): Promise<{
   publicKey: string;
@@ -170,6 +180,10 @@ async function getPublicKey(hdPath: string): Promise<{
 
 /**
  * Signs a transaction.
+ *
+ * @param hdPath - The HD derivation path.
+ * @param tx - The raw transaction hex string.
+ * @returns Signature components v, r, s.
  */
 async function signTransaction(
   hdPath: string,
@@ -190,6 +204,10 @@ async function signTransaction(
 
 /**
  * Signs a personal message.
+ *
+ * @param hdPath - The HD derivation path.
+ * @param message - The message hex string to sign.
+ * @returns Signature components v, r, s.
  */
 async function signPersonalMessage(
   hdPath: string,
@@ -218,6 +236,15 @@ async function signPersonalMessage(
  * Note: This method is not compatible with Ledger Nano S, which only supports
  * signEIP712HashedMessage (blind signing). Ledger officially deprecated
  * Nano S software support in 2025, so no fallback is implemented.
+ *
+ * @param params - The signing parameters.
+ * @param params.hdPath - The HD derivation path.
+ * @param params.message - The EIP-712 typed data message.
+ * @param params.message.domain - The EIP-712 domain.
+ * @param params.message.types - The EIP-712 types.
+ * @param params.message.primaryType - The primary type name.
+ * @param params.message.message - The message data.
+ * @returns Signature components v, r, s.
  */
 async function signTypedData(params: {
   hdPath: string;
@@ -318,6 +345,10 @@ function setupMessageListener(): void {
 
 /**
  * Handles a Ledger action and returns the result.
+ *
+ * @param action - The Ledger action to perform.
+ * @param params - Optional parameters for the action.
+ * @returns The result of the action.
  */
 async function handleLedgerAction(
   action: LedgerAction,
