@@ -3,11 +3,11 @@ import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { WINDOW_TITLES } from '../../constants';
 import { veryLargeDelayMs } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import {
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 describe('Solana Wallet Standard - Wallet Popup on Request', function () {
   describe('When wallet is locked and dapp requests confirmation', function () {
