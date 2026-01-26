@@ -5995,12 +5995,12 @@
   "rewardsQRCodeTitle": {
     "message": "Get the mobile app"
   },
-  "rewardsSignUp": {
-    "message": "Sign up for Rewards"
-  },
   "rewardsSignInToViewPoints": {
     "message": "Sign in to view points",
     "description": "Text shown when user needs to sign in to view their rewards points"
+  },
+  "rewardsSignUp": {
+    "message": "Sign up for Rewards"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
