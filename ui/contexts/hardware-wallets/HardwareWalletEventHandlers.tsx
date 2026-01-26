@@ -84,10 +84,7 @@ export const useDeviceEventHandlers = ({
           newState.status === ConnectionStatus.ErrorState &&
           oldState.status === ConnectionStatus.ErrorState
         ) {
-          if (
-            oldState.reason !== newState.reason ||
-            oldState.error?.message !== newState.error?.message
-          ) {
+          if (oldState.error?.message !== newState.error?.message) {
             return newState;
           }
         }
@@ -96,10 +93,7 @@ export const useDeviceEventHandlers = ({
           newState.status === ConnectionStatus.AwaitingApp &&
           oldState.status === ConnectionStatus.AwaitingApp
         ) {
-          if (
-            oldState.reason !== newState.reason ||
-            oldState.appName !== newState.appName
-          ) {
+          if (oldState.appName !== newState.appName) {
             return newState;
           }
         }
@@ -126,13 +120,10 @@ export const useDeviceEventHandlers = ({
 
         case DeviceEvent.DeviceLocked:
           if (payload.error) {
-            updateConnectionState(
-              ConnectionState.error(DeviceEvent.DeviceLocked, payload.error),
-            );
+            updateConnectionState(ConnectionState.error(payload.error));
           } else {
             updateConnectionState(
               ConnectionState.error(
-                DeviceEvent.DeviceLocked,
                 new HardwareWalletError('Device is locked', {
                   code: ErrorCode.AuthenticationDeviceLocked,
                   severity: Severity.Err,
@@ -148,13 +139,9 @@ export const useDeviceEventHandlers = ({
           // When called during ensureDeviceReady, this is an error condition
           // that should show a modal to the user
           if (payload.error) {
-            updateConnectionState(
-              ConnectionState.error(DeviceEvent.AppNotOpen, payload.error),
-            );
+            updateConnectionState(ConnectionState.error(payload.error));
           } else {
-            updateConnectionState(
-              ConnectionState.awaitingApp(DeviceEvent.AppNotOpen),
-            );
+            updateConnectionState(ConnectionState.awaitingApp());
           }
           break;
 
@@ -170,24 +157,16 @@ export const useDeviceEventHandlers = ({
             break;
           }
           // If wrong app, set awaiting state with wrong_app reason
-          updateConnectionState(
-            ConnectionState.awaitingApp(DeviceEvent.AppNotOpen, currentAppName),
-          );
+          updateConnectionState(ConnectionState.awaitingApp(currentAppName));
           break;
         }
 
         case DeviceEvent.ConnectionFailed:
           if (payload.error) {
-            updateConnectionState(
-              ConnectionState.error(
-                DeviceEvent.ConnectionFailed,
-                payload.error,
-              ),
-            );
+            updateConnectionState(ConnectionState.error(payload.error));
           } else {
             updateConnectionState(
               ConnectionState.error(
-                DeviceEvent.ConnectionFailed,
                 new HardwareWalletError('Hardware wallet connection failed', {
                   code: ErrorCode.ConnectionTransportMissing,
                   severity: Severity.Err,
@@ -202,7 +181,6 @@ export const useDeviceEventHandlers = ({
         case DeviceEvent.OperationTimeout:
           updateConnectionState(
             ConnectionState.error(
-              DeviceEvent.OperationTimeout,
               payload.error ??
                 new HardwareWalletError('Operation timed out', {
                   code: ErrorCode.ConnectionTimeout,
@@ -244,7 +222,6 @@ export const useDeviceEventHandlers = ({
         // Handle structured hardware wallet errors
         updateConnectionState({
           status: ConnectionStatus.ErrorState,
-          reason: disconnectError.message,
           error: disconnectError,
         });
       } else {

@@ -89,7 +89,6 @@
     "showPermittedNetworkToastOpen": "boolean",
     "showSupportDataConsentModal": "boolean",
     "showTermsOfUsePopup": "boolean",
-    "showWhatsNewPopup": "boolean",
     "singleExceptions": {
       "testKey": "null"
     },
