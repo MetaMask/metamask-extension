@@ -148,7 +148,7 @@ function generateEncryptedSecretData(
     const cipherText = aes.encrypt(secretBytes);
 
     data.push(bytesToBase64(cipherText));
-    ids.push(secretData.itemId ?? crypto.randomUUID());
+    ids.push(secretData.itemId ?? '');
     versions.push(secretData.version ?? 'v2');
     dataTypes.push(secretData.dataType === undefined ? 1 : secretData.dataType); // Default to PrimarySrp if not specified
     createdAt.push(secretData.createdAt ?? null);
@@ -397,7 +397,6 @@ export class OAuthMockttpService {
     const seedPhraseBytes = new Uint8Array(new Uint16Array(indices).buffer);
 
     const now = Date.now();
-    const primarySrpItemId = crypto.randomUUID();
     // Generate a mock TIMEUUID-like string for createdAt
     const mockCreatedAtTimeuuid = crypto.randomUUID();
 
@@ -406,7 +405,7 @@ export class OAuthMockttpService {
         data: seedPhraseBytes,
         timestamp: now,
         type: SecretType.Mnemonic,
-        itemId: primarySrpItemId,
+        itemId: '',
         dataType: 1, // PrimarySrp
         createdAt: mockCreatedAtTimeuuid,
         version: 'v2',
