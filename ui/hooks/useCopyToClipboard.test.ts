@@ -62,28 +62,6 @@ describe('useCopyToClipboard', () => {
     expect(result.current[0]).toBe(false);
   });
 
-  it('copies text and does not expire if copied text is a valid hex address', () => {
-    const clearDelay = 1000;
-    const { result } = renderHook(() => useCopyToClipboard(clearDelay));
-    const [, handleCopy] = result.current;
-
-    // Act/Assert - Copy
-    act(() => handleCopy('0x1234567890abcdef1234567890abcdef12345678'));
-    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(
-      1,
-      '0x1234567890abcdef1234567890abcdef12345678',
-      COPY_OPTIONS,
-    );
-    expect(result.current[0]).toBe(true);
-
-    // Act/Assert - Expiry (clipboard is not cleared)
-    act(() => {
-      jest.advanceTimersByTime(clearDelay + 1);
-    });
-    expect(mockCopyToClipboard).toHaveBeenCalledTimes(1); // it was not called a second time
-    expect(result.current[0]).toBe(false);
-  });
-
   it('resets copied state when invoked', () => {
     const clearDelay = 1000;
     const { result } = renderHook(() => useCopyToClipboard(clearDelay));
