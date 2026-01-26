@@ -135,12 +135,14 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
 
   const typeLabel = accountTypeLabel[asset.accountType as KeyringAccountType];
 
-  const assetImage = getAvatarTokenSrc({
-    chainId: chainId as Hex,
-    isNative,
-    tokenImage: image ?? '',
-    assetId: assetId as Hex | undefined,
-  });
+  const assetImage = chainId
+    ? getAvatarTokenSrc({
+        chainId: chainId as Hex,
+        isNative,
+        tokenImage: image ?? '',
+        assetId: assetId as Hex | undefined,
+      })
+    : (image ?? '');
 
   return (
     <Box
