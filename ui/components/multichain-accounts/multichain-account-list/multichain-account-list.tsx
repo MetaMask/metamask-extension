@@ -476,7 +476,7 @@ export const MultichainAccountList = ({
                 }
                 backgroundColor={BackgroundColor.backgroundDefault}
                 width={BlockSize.Full}
-                className="hidde-accounts-list flex px-4 py-2 justify-between items-center"
+                className="hidden-accounts-list flex px-4 py-2 justify-between items-center"
                 data-testid="multichain-account-tree-hidden-header"
               >
                 <Text
