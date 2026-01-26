@@ -4869,15 +4869,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keystonehq/bc-ur-registry-eth@npm:^0.21.0":
-  version: 0.21.0
-  resolution: "@keystonehq/bc-ur-registry-eth@npm:0.21.0"
+"@keystonehq/bc-ur-registry-eth@npm:^0.22.1":
+  version: 0.22.1
+  resolution: "@keystonehq/bc-ur-registry-eth@npm:0.22.1"
   dependencies:
     "@ethereumjs/util": "npm:^9.0.3"
     "@keystonehq/bc-ur-registry": "npm:^0.7.0"
     hdkey: "npm:^2.0.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/2f694957c5e5d93db5523af59e5ed582dbbd9d08cc9c165ebe79b4f953ab2401b6212bb5c931e41ff9e5e6e8469f18c1aff90ff88b0ff85d093cd5794ddbdbbc
+  checksum: 10/0e11b9bc9082a46f2a53c7bb897991832eb97f1a2b9bc37622195ad6dc4f8272e4522788ddd943707ce4b47aa1d6f200e64ea14b7f1d8e190ab5a20902aa1489
   languageName: node
   linkType: hard
 
@@ -8774,10 +8774,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.19.1":
-  version: 1.19.1
-  resolution: "@metamask/tron-wallet-snap@npm:1.19.1"
-  checksum: 10/3a157e1f5e8b367025b445e4cc74249be199758541df7dfbc2bc01d8b2488a9fe1a2e9b8a96dddddeac767ceed30fe406e5ef58db95e12fe8be85159e670fea3
+"@metamask/tron-wallet-snap@npm:^1.19.2":
+  version: 1.19.2
+  resolution: "@metamask/tron-wallet-snap@npm:1.19.2"
+  checksum: 10/4782467263af36473ae41c145b198bdb0ce3f58f3d2eb96f90e32dcd939d4090b8bd9387c4496f322a51048bde262a913e9eec83f080a1825b8c11561895c105
   languageName: node
   linkType: hard
 
@@ -33452,7 +33452,7 @@ __metadata:
     "@ethersproject/providers": "npm:^5.7.2"
     "@fortawesome/fontawesome-free": "npm:^5.13.0"
     "@jest/globals": "npm:^29.7.0"
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.21.0"
+    "@keystonehq/bc-ur-registry-eth": "npm:^0.22.1"
     "@lavamoat/allow-scripts": "npm:^3.4.0"
     "@lavamoat/lavadome-core": "npm:0.0.20"
     "@lavamoat/lavadome-react": "npm:0.0.20"
@@ -33593,7 +33593,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.2.0"
     "@metamask/transaction-controller": "npm:^62.8.0"
     "@metamask/transaction-pay-controller": "npm:^11.0.1"
-    "@metamask/tron-wallet-snap": "npm:^1.19.1"
+    "@metamask/tron-wallet-snap": "npm:^1.19.2"
     "@metamask/user-operation-controller": "npm:^40.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
@@ -33837,7 +33837,7 @@ __metadata:
     prop-types: "npm:^15.6.1"
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
-    qrcode-generator: "npm:1.4.4"
+    qrcode-generator: "npm:^2.0.4"
     qrcode.react: "npm:^4.2.0"
     randomcolor: "npm:^0.5.4"
     react: "npm:^17.0.2"
@@ -37657,10 +37657,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qrcode-generator@npm:1.4.4":
-  version: 1.4.4
-  resolution: "qrcode-generator@npm:1.4.4"
-  checksum: 10/65b2bba237d1f230eba0d08ae4267d04f326859c2265775ade99191be1b522158b623fcc0b613bbfc9d4edbbafb928fc41c66d61053b333f2eb0bcedb2ebadca
+"qrcode-generator@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "qrcode-generator@npm:2.0.4"
+  checksum: 10/c488558bca2869d8837300da299a9653030dbb486ce6113153585b117fa0ab6822a03c8312cc794d41c2e3f8353dc64b950e8a3ffe90f89022593c4e7060cd53
   languageName: node
   linkType: hard
 
