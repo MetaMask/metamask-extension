@@ -41,12 +41,17 @@ import {
   useAddEthereumChain,
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
+import { SignatureRequestType } from '../../../types/confirm';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
   ConnectionStatus,
   useHardwareWalletActions,
   useHardwareWalletConfig,
   useHardwareWalletState,
+  useHardwareWalletError,
+  isUserRejectedHardwareWalletError,
+  isRetryableHardwareWalletError,
+  isHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
@@ -228,6 +233,7 @@ const Footer = () => {
   const { isHardwareWalletAccount, deviceId, walletType } =
     useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
+  const { showErrorModal } = useHardwareWalletError();
 
   const isHardwareWalletSigning = useSelector(getPendingHardwareSigning);
 
@@ -300,20 +306,84 @@ const Footer = () => {
       await onAddEthereumChain();
       navigate(DEFAULT_ROUTE);
       resetTransactionState();
-    } else if (isTransactionConfirmation) {
-      // Hook handles all post-confirmation logic internally:
-      // - Navigation to next confirmation or recreated transaction
-      // - Error modal display for hardware wallet rejections
-      // - State reset after successful confirmation
+    } else if (
+      isTransactionConfirmation ||
+      (!isSignature && isHardwareWalletAccount)
+    ) {
+      // Use the transaction confirm hook for:
+      // 1. Redesign transaction types (any account type)
+      // 2. Non-signature transactions on hardware wallet accounts
+      //
+      // Hardware wallet TRANSACTIONS must use this path to ensure proper
+      // signing and error handling via approveHardwareTransaction.
+      // Hardware wallet SIGNATURES use resolvePendingApproval since signature
+      // signing is handled at the keyring level.
+      console.log('[Footer onSubmit] Using onTransactionConfirm:', {
+        isTransactionConfirmation,
+        isSignature,
+        isHardwareWalletAccount,
+      });
       await onTransactionConfirm();
     } else {
-      await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-      navigateNext(currentConfirmation.id);
-      resetTransactionState();
+      // Signatures and other non-transaction approvals
+      // Get the from address for hardware wallet detection
+      const fromAddress =
+        (currentConfirmation as SignatureRequestType).msgParams?.from ??
+        (currentConfirmation as TransactionMeta).txParams?.from;
+
+      try {
+        await dispatch(
+          resolvePendingApproval(currentConfirmation.id, undefined, {
+            fromAddress,
+          }),
+        );
+        navigateNext(currentConfirmation.id);
+        resetTransactionState();
+      } catch (error) {
+        // Handle hardware wallet errors from resolveHardwareApproval
+        console.log(
+          '[Footer onSubmit] Error from resolvePendingApproval:',
+          error,
+        );
+
+        // Use isHardwareWalletError which handles duck typing for errors
+        // that lost their class type over the RPC boundary
+        if (!isHardwareWalletError(error)) {
+          // Non-hardware wallet error - rethrow
+          throw error;
+        }
+
+        // User rejection: Call showErrorModal which will handle user rejections by:
+        // 1. NOT showing a modal (user rejections don't need retry)
+        // 2. Clearing pendingHardwareSigning so navigation is unblocked
+        // 3. Closing the popup if there are no pending approvals
+        if (isUserRejectedHardwareWalletError(error)) {
+          console.log(
+            '[Footer onSubmit] User rejection - calling showErrorModal to handle dismissal and popup close',
+          );
+          showErrorModal(error);
+          return;
+        }
+
+        // Retryable errors (device locked, app closed): Show modal for retry
+        if (isRetryableHardwareWalletError(error)) {
+          console.log(
+            '[Footer onSubmit] Retryable error - showing modal for retry',
+          );
+          showErrorModal(error);
+          return;
+        }
+
+        // Other non-retryable hardware wallet errors: Show modal
+        console.log('[Footer onSubmit] Non-retryable error - showing modal');
+        showErrorModal(error);
+      }
     }
   }, [
     isAddEthereumChain,
     isTransactionConfirmation,
+    isSignature,
+    isHardwareWalletAccount,
     resetTransactionState,
     onAddEthereumChain,
     navigate,
@@ -321,6 +391,7 @@ const Footer = () => {
     navigateNext,
     currentConfirmation,
     dispatch,
+    showErrorModal,
   ]);
 
   const handleFooterCancel = useCallback(async () => {

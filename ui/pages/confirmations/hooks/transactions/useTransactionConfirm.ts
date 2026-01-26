@@ -8,6 +8,13 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../../../../shared/constants/app';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
@@ -15,11 +22,15 @@ import {
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
-import { updateAndApproveTx } from '../../../../store/actions';
+import {
+  updateAndApproveTx,
+  setPendingHardwareSigning,
+} from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import {
   isRetryableHardwareWalletError,
+  isUserRejectedHardwareWalletError,
   useHardwareWalletError,
 } from '../../../../contexts/hardware-wallets';
 import { useConfirmationNavigation } from '../useConfirmationNavigation';
@@ -132,24 +143,22 @@ export function useTransactionConfirm() {
       // navigateNext(transactionMeta.id);
       // resetTransactionState();
     } catch (error) {
+      console.log('[HW_DEBUG 11] useTransactionConfirm caught error');
       const isHardwareWalletError = error instanceof HardwareWalletError;
 
-      console.log('[useTransactionConfirm] Caught error:', {
+      console.log('[HW_DEBUG 12] Error details:', {
         error,
         isHardwareWalletError,
         errorCode: isHardwareWalletError ? error.code : undefined,
         errorMetadata: isHardwareWalletError ? error.metadata : undefined,
-        metadataKeys:
-          isHardwareWalletError && error.metadata
-            ? Object.keys(error.metadata)
-            : undefined,
+        recreatedTxId: isHardwareWalletError
+          ? error.metadata?.recreatedTxId
+          : undefined,
       });
 
       if (!isHardwareWalletError) {
         // Non-hardware wallet errors - just rethrow
-        console.log(
-          '[useTransactionConfirm] Not a HardwareWalletError, rethrowing',
-        );
+        console.log('[HW_DEBUG 13] Not a HardwareWalletError, rethrowing');
         throw error;
       }
 
@@ -158,32 +167,87 @@ export function useTransactionConfirm() {
         newTransactionMeta,
       );
 
+      // Check if we're in a popup/notification window
+      // In popup mode, we should NOT navigate away on error because:
+      // 1. Navigation would close the popup or navigate away from the confirmation
+      // 2. The error modal needs to stay on the confirmation page for retry to work
+      const environmentType = getEnvironmentType();
+      const isPopupEnvironment =
+        environmentType === ENVIRONMENT_TYPE_NOTIFICATION ||
+        environmentType === ENVIRONMENT_TYPE_POPUP;
+
+      console.log('[HW_DEBUG 14] Environment:', {
+        environmentType,
+        isPopupEnvironment,
+      });
+
+      // Check for user rejection first - user deliberately rejected on device
+      // Don't show modal for rejections, clear pendingHardwareSigning so user can navigate/cancel
+      if (isUserRejectedHardwareWalletError(error)) {
+        console.log(
+          '[HW_DEBUG 15] User rejection detected - not showing modal, clearing pendingHardwareSigning',
+        );
+        // Clear pendingHardwareSigning so the popup can close if user cancels
+        // or navigates away. Don't show modal for deliberate rejections.
+        dispatch(setPendingHardwareSigning(false));
+        return;
+      }
+
       if (isRetryableHardwareWalletError(error)) {
         const recreatedTxId = error.metadata?.recreatedTxId as
           | string
           | undefined;
 
-        console.log('[useTransactionConfirm] recreatedTxId:', recreatedTxId);
-        console.log('[useTransactionConfirm] Full metadata:', error.metadata);
+        console.log(
+          '[HW_DEBUG 15] Retryable error - recreatedTxId:',
+          recreatedTxId,
+        );
+
+        // IMPORTANT: Always show the modal FIRST, before any navigation.
+        // This ensures isHardwareWalletErrorModalVisible is true before React
+        // processes any re-renders from navigation, which prevents the popup
+        // from closing due to the navigation guards checking modal visibility.
+        console.log('[HW_DEBUG 16] Calling showErrorModal NOW');
+        showErrorModal(error);
+        console.log(
+          '[HW_DEBUG 17] showErrorModal called - modal should be visible',
+        );
 
         if (recreatedTxId) {
-          // Navigate to the recreated transaction and show informational modal
+          // Navigate to the recreated transaction after modal is shown
+          console.log(
+            '[HW_DEBUG 18] Navigating to recreated tx:',
+            recreatedTxId,
+          );
           navigate(`${CONFIRM_TRANSACTION_ROUTE}/${recreatedTxId}`, {
             replace: true,
           });
-          showErrorModal(error);
+          console.log('[HW_DEBUG 19] Navigation dispatched, returning');
           return;
         }
+
+        // Retryable error without recreatedTxId - modal already shown, stay on current page
+        // This allows the user to retry the signing from the same confirmation
+        console.log(
+          '[HW_DEBUG 20] No recreatedTxId, staying on page, returning',
+        );
+        return;
       }
 
       // For non-retryable hardware wallet errors (e.g., UNKNOWN_ERROR),
-      // show the error modal and navigate to home page since the transaction
-      // cannot be retried
+      // show the error modal. In popup mode, stay on the confirmation page
+      // so the user can dismiss the modal and cancel manually.
+      // In fullscreen mode, navigate to home page.
       console.log(
-        '[useTransactionConfirm] Non-retryable error, showing modal and navigating home',
+        '[useTransactionConfirm] Non-retryable error, showing modal',
+        { isPopupEnvironment },
       );
       showErrorModal(error);
-      navigate(DEFAULT_ROUTE, { replace: true });
+
+      if (!isPopupEnvironment) {
+        // Only navigate away in fullscreen/sidepanel mode
+        navigate(DEFAULT_ROUTE, { replace: true });
+      }
       return;
     }
 

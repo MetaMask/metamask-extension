@@ -811,6 +811,12 @@ export default function reduceApp(
       };
 
     case actionConstants.SET_PENDING_HARDWARE_SIGNING:
+      console.log(
+        '[HW_DEBUG REDUCER] pendingHardwareSigning changing:',
+        appState.pendingHardwareSigning,
+        '->',
+        action.payload,
+      );
       return {
         ...appState,
         pendingHardwareSigning: action.payload,

@@ -327,6 +327,42 @@ export function getDeviceEventForError(
 }
 
 /**
+ * Check if an error is a HardwareWalletError.
+ * Uses both instanceof check and duck typing as a fallback since errors
+ * may lose their class type when crossing the RPC boundary.
+ *
+ * @param error - The error to check
+ * @returns true if the error is a HardwareWalletError, false otherwise
+ */
+export function isHardwareWalletError(error: unknown): boolean {
+  if (error instanceof HardwareWalletError) {
+    return true;
+  }
+
+  // Duck typing fallback for errors that lost class type over RPC boundary
+  const errorObj = error as { name?: string; code?: number };
+  return (
+    errorObj?.name === 'HardwareWalletError' &&
+    typeof errorObj?.code === 'number'
+  );
+}
+
+/**
+ * Get the error code from a HardwareWalletError.
+ * Handles both proper instances and duck-typed errors.
+ *
+ * @param error - The hardware wallet error
+ * @returns The error code, or undefined if not available
+ */
+function getHardwareWalletErrorCode(error: unknown): ErrorCode | undefined {
+  if (error instanceof HardwareWalletError) {
+    return error.code;
+  }
+  const errorObj = error as { code?: number };
+  return errorObj?.code as ErrorCode | undefined;
+}
+
+/**
  * Determine if a hardware wallet error is retryable by the user.
  * Retryable errors are transient issues where the user can take action
  * to resolve the problem and retry the operation.
@@ -342,7 +378,12 @@ export function getDeviceEventForError(
  * @returns true if the error is retryable, false otherwise
  */
 export function isRetryableHardwareWalletError(error: unknown): boolean {
-  if (!(error instanceof HardwareWalletError)) {
+  if (!isHardwareWalletError(error)) {
+    return false;
+  }
+
+  const errorCode = getHardwareWalletErrorCode(error);
+  if (errorCode === undefined) {
     return false;
   }
 
@@ -354,5 +395,25 @@ export function isRetryableHardwareWalletError(error: unknown): boolean {
     ErrorCode.ConnectionClosed, // Can be connection closed or eth app closed.
   ];
 
-  return retryableCodes.includes(error.code);
+  return retryableCodes.includes(errorCode);
+}
+
+/**
+ * Check if a hardware wallet error is a user rejection.
+ * User rejections occur when the user deliberately rejects/cancels on the device.
+ * These are explicit user decisions and should NOT show an error modal.
+ *
+ * @param error - The error to check
+ * @returns true if the error is a user rejection, false otherwise
+ */
+export function isUserRejectedHardwareWalletError(error: unknown): boolean {
+  if (!isHardwareWalletError(error)) {
+    return false;
+  }
+
+  const errorCode = getHardwareWalletErrorCode(error);
+  return (
+    errorCode === ErrorCode.UserRejected ||
+    errorCode === ErrorCode.UserCancelled
+  );
 }

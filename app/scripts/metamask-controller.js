@@ -227,6 +227,10 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
+import {
+  isRetryableHardwareWalletError,
+  parseErrorByType,
+} from '../../ui/contexts/hardware-wallets';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -436,10 +440,6 @@ import {
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import {
-  isRetryableHardwareWalletError,
-  parseErrorByType,
-} from '../../ui/contexts/hardware-wallets';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -8778,10 +8778,9 @@ export default class MetamaskController extends EventEmitter {
           hwTxRetry: true,
         });
 
-        console.log(
-          '[approveHardwareTransaction] Created new transaction:',
-          { newTxMeta },
-        );
+        console.log('[approveHardwareTransaction] Created new transaction:', {
+          newTxMeta,
+        });
       } catch (recreateError) {
         log.error('Failed to recreate transaction:', recreateError);
         // Recreation failed - throw HW error without recreatedTxId

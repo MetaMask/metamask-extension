@@ -11,7 +11,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { getPendingHardwareSigning } from '../../../../selectors';
+import {
+  getPendingHardwareSigning,
+  getIsHardwareWalletErrorModalVisible,
+} from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -38,19 +41,38 @@ export const ConfirmContextProvider: React.FC<{
   const previousConfirmation = usePrevious(currentConfirmation);
   const dispatch = useDispatch();
   const isPendingHardwareSigning = useSelector(getPendingHardwareSigning);
+  const isHardwareWalletErrorModalVisible = useSelector(
+    getIsHardwareWalletErrorModalVisible,
+  );
 
   /**
    * The hook below takes care of navigating to the home page when the confirmation not acted on by user
    * but removed by us, this can happen in cases like when dapp changes network.
    * We skip navigation if a hardware wallet transaction is being signed to prevent premature navigation.
+   * We also skip navigation if the hardware wallet error modal is visible to allow for retry functionality.
    */
   useEffect(() => {
-    if (
-      previousConfirmation &&
-      !currentConfirmation &&
-      !isPendingHardwareSigning
-    ) {
+    const wouldNavigate = previousConfirmation && !currentConfirmation;
+    const isBlocked =
+      isPendingHardwareSigning || isHardwareWalletErrorModalVisible;
+
+    // Always log when this effect runs to trace timing
+    console.log('[HW_DEBUG NAV ConfirmContext] useEffect triggered:', {
+      hasPreviousConfirmation: Boolean(previousConfirmation),
+      hasCurrentConfirmation: Boolean(currentConfirmation),
+      previousConfirmationId: (previousConfirmation as any)?.id,
+      isPendingHardwareSigning,
+      isHardwareWalletErrorModalVisible,
+      wouldNavigate,
+      isBlocked,
+      willNavigate: wouldNavigate && !isBlocked,
+    });
+
+    if (wouldNavigate && !isBlocked) {
+      console.log('[HW_DEBUG NAV ConfirmContext] NAVIGATING TO HOME');
       navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
+    } else if (wouldNavigate && isBlocked) {
+      console.log('[HW_DEBUG NAV ConfirmContext] BLOCKED - not navigating');
     }
   }, [
     previousConfirmation,
@@ -58,6 +80,7 @@ export const ConfirmContextProvider: React.FC<{
     navigate,
     dispatch,
     isPendingHardwareSigning,
+    isHardwareWalletErrorModalVisible,
   ]);
 
   const value = useMemo(

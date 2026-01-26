@@ -9,8 +9,13 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useDispatch } from 'react-redux';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import { showModal, hideModal } from '../../store/actions';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import {
+  showModal,
+  hideModal,
+  setPendingHardwareSigning,
+  closeCurrentNotificationWindow,
+} from '../../store/actions';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
@@ -84,11 +89,12 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   const handleRetry = useCallback(async () => {
     console.log(LOG_TAG, 'Retry requested from modal');
 
-    // Close the modal
+    // Close the modal and clear the pending hardware signing flag
     isModalOpenRef.current = false;
     setDisplayedError(null);
     lastConnectionErrorRef.current = null;
     dispatch(hideModal());
+    dispatch(setPendingHardwareSigning(false));
 
     // Attempt retry
     await ensureDeviceReady();
@@ -103,7 +109,10 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     setDisplayedError(null);
     lastConnectionErrorRef.current = null;
     dispatch(hideModal());
+    dispatch(setPendingHardwareSigning(false));
     clearError();
+    // Close the popup if there are no more pending approvals
+    dispatch(closeCurrentNotificationWindow());
   }, [clearError, dispatch]);
 
   /**
@@ -116,35 +125,70 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       setDisplayedError(null);
       lastConnectionErrorRef.current = null;
       dispatch(hideModal());
+      dispatch(setPendingHardwareSigning(false));
+      // Close the popup if there are no more pending approvals
+      dispatch(closeCurrentNotificationWindow());
     }
   }, [dispatch]);
+
+  /**
+   * Check if an error is a user rejection (UserRejected or UserCancelled)
+   */
+  const isUserRejection = useCallback((error: unknown): boolean => {
+    if (error instanceof HardwareWalletError) {
+      return (
+        error.code === ErrorCode.UserRejected ||
+        error.code === ErrorCode.UserCancelled
+      );
+    }
+    // Also check by code directly for errors that lost their class type
+    const errorCode = (error as { code?: number })?.code;
+    return (
+      errorCode === ErrorCode.UserRejected ||
+      errorCode === ErrorCode.UserCancelled
+    );
+  }, []);
 
   /**
    * Show error modal (internal implementation)
    */
   const showErrorModalInternal = useCallback(
     (error: unknown, skipFilters = false) => {
-      console.log(LOG_TAG, 'showErrorModalInternal called with:', {
+      console.log('[HW_DEBUG MODAL] showErrorModalInternal called with:', {
         error,
         skipFilters,
-        errorCode: (error as any)?.code,
+        errorCode: (error as { code?: number })?.code,
       });
 
-      // Don't show modal for user cancellations (unless forced)
-      if (
-        (!skipFilters && (error as any)?.code === ErrorCode.UserRejected) ||
-        (error as any)?.code === ErrorCode.UserCancelled
-      ) {
-        console.log(LOG_TAG, 'Skipping modal for user cancellation');
+      // For user rejections/cancellations: dismiss any open modal and close the popup
+      // This applies regardless of skipFilters - user rejections should ALWAYS dismiss
+      if (isUserRejection(error)) {
+        console.log(
+          '[HW_DEBUG MODAL] User rejection/cancellation detected - dismissing modal and closing popup',
+        );
+        if (isModalOpenRef.current) {
+          isModalOpenRef.current = false;
+          setDisplayedError(null);
+          lastConnectionErrorRef.current = null;
+          dispatch(hideModal());
+        }
+        // Clear pendingHardwareSigning and close the popup
+        dispatch(setPendingHardwareSigning(false));
+        dispatch(closeCurrentNotificationWindow());
         return;
       }
 
       // Don't show if we're already displaying the exact same error instance (unless forced)
       if (!skipFilters && displayedError === error) {
-        console.log(LOG_TAG, 'Already displaying this exact error instance');
+        console.log(
+          '[HW_DEBUG MODAL] Already displaying this exact error instance',
+        );
         return;
       }
 
+      console.log(
+        '[HW_DEBUG MODAL] Setting displayedError and isModalOpenRef=true',
+      );
       setDisplayedError(error);
       isModalOpenRef.current = true;
       // Track this error so we know when it's resolved
@@ -160,9 +204,16 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
         onCancel: handleCancel,
         isOpen: true,
       };
+      console.log(
+        '[HW_DEBUG MODAL] Dispatching showModal with name:',
+        HARDWARE_WALLET_ERROR_MODAL_NAME,
+      );
       dispatch(showModal(modalPayload));
+      console.log(
+        '[HW_DEBUG MODAL] showModal dispatched - Redux should now have modal state',
+      );
     },
-    [dispatch, handleRetry, handleCancel, displayedError],
+    [dispatch, handleRetry, handleCancel, displayedError, isUserRejection],
   );
 
   /**
@@ -207,11 +258,14 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       // Check if this is actually a different error by comparing error codes
       // Object reference equality (error !== displayedError) doesn't work reliably
       // because new error objects are created each time connection state changes
-      const errorCode = (error as any)?.code;
-      const lastErrorCode = (lastConnectionErrorRef.current as any)?.code;
+      const errorCode = (error as { code?: number })?.code;
+      const lastErrorCode = (
+        lastConnectionErrorRef.current as { code?: number }
+      )?.code;
 
       // Only show modal if the error code has changed
       // OR if we haven't shown an error yet (displayedError is null)
+      // Note: showErrorModalInternal will handle user rejections by dismissing the modal
       if (errorCode !== lastErrorCode || !displayedError) {
         lastConnectionErrorRef.current = error;
         setDisplayedError(error);
@@ -223,6 +277,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     isHardwareWalletAccount,
     showErrorModalInternal,
     dispatch,
+    displayedError,
   ]);
 
   /**
