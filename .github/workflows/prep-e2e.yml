@@ -2,6 +2,19 @@ name: Prep E2E
 
 on:
   workflow_call:
+    outputs:
+      use-matrix:
+        description: The matrix for the E2E jobs
+        value:
+          ${{ jobs.prep-e2e.outputs.use-matrix }}
+          # '{
+          #    "test-e2e-chrome-browserify":{ "index": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] },
+          #    "test-e2e-chrome-webpack":{ "index": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] }
+          #    "test-e2e-chrome-flask":{ "index": [0, 1, 2, 3, 4] },
+          #    "test-e2e-firefox-browserify":{ "index": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] },
+          #    "test-e2e-firefox-webpack":{ "index": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] },
+          #    "test-e2e-firefox-flask":{ "index": [0, 1, 2, 3, 4] }
+          #  }'
 
 jobs:
   prep-e2e:
@@ -16,6 +29,8 @@ jobs:
       REPOSITORY: ${{ github.event.repository.name }}
       WORKFLOW_ID: main.yml
       DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    outputs:
+      use-matrix: ${{ steps.set-use-matrix.outputs.use-matrix }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -66,3 +81,9 @@ jobs:
         with:
           name: test-runs-for-splitting
           path: test/test-results/test-runs-*.json
+
+      - name: Set use matrix
+        id: set-use-matrix
+        run: |
+          MATRIX_JSON='{"test-e2e-chrome-browserify":{"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]},"test-e2e-chrome-webpack":{"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]},"test-e2e-chrome-flask":{"index":[0,1,2,3,4]},"test-e2e-firefox-browserify":{"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]},"test-e2e-firefox-webpack":{"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]},"test-e2e-firefox-flask":{"index":[0,1,2,3,4]}}'
+          echo "use-matrix=${MATRIX_JSON}" >> "$GITHUB_OUTPUT"

@@ -21,13 +21,22 @@ on:
         required: false
 
 jobs:
+  test-222:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test step
+        run: echo "This is a test step job ${{ github.job }} string ${{ inputs.use-matrix }} json ${{ fromJson(inputs.use-matrix) }}"
+
+      - name: Test step2
+        run: echo "bi ${{ toJson(fromJson(inputs.use-matrix)['test-e2e-chrome-browserify']) }}"
+
   test-e2e-chrome-browserify:
     uses: ./.github/workflows/run-e2e.yml
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)[0] }}
+      matrix: ${{ fromJson(inputs.use-matrix)[github.job] }}
     with:
       test-suite-name: test-e2e-chrome-browserify
       build-artifact: build-test-browserify
@@ -44,9 +53,7 @@ jobs:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix:
-        index:
-          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+      matrix: ${{ fromJson(inputs.use-matrix)[github.job] }}
     with:
       test-suite-name: test-e2e-chrome-webpack
       build-artifact: build-test-webpack
@@ -78,8 +85,7 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix:
-        index: [0, 1, 2, 3, 4]
+      matrix: ${{ fromJson(inputs.use-matrix)[github.job] }}
     with:
       test-suite-name: test-e2e-chrome-flask
       build-artifact: build-test-flask-browserify
