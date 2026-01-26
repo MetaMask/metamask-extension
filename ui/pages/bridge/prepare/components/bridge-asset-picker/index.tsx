@@ -112,7 +112,7 @@ export const BridgeAssetPicker = ({
         (a) => a.assetId?.toLowerCase(),
       ).map((token) => toBridgeToken(token)),
     // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
-    [chainIdsSet, selectedAsset],
+    [chainIdsSet, selectedAsset, accountGroup.id, accountAddress],
   );
 
   const { popularTokensList, isLoading: isPopularTokensLoading } =
