@@ -11,7 +11,6 @@ import {
 import { base58, isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { detectSIWE } from '@metamask/controller-utils';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
 import {
   EstimatedPointsDto,
@@ -23,7 +22,6 @@ import {
   OptInStatusInputDto,
   OptInStatusDto,
 } from '../../../../shared/types/rewards';
-import { DEVICE_KEYRING_MAP } from '../../../../shared/constants/hardware-wallets';
 import {
   type RewardsControllerState,
   type RewardsAccountState,
@@ -44,6 +42,7 @@ import {
 } from './rewards-data-service';
 import { signSolanaRewardsMessage } from './utils/solana-snap';
 import { sortAccounts } from './utils/sortAccounts';
+import { isHardwareAccount } from './utils/isHardwareAccount';
 
 export const DEFAULT_BLOCKED_REGIONS = ['UK'];
 
@@ -207,17 +206,6 @@ export async function wrapWithCache<T>({
   }
 
   return freshValue;
-}
-
-export function isHardwareAccount(account: InternalAccount): boolean {
-  try {
-    const keyringType = account?.metadata?.keyring?.type;
-    return Object.values(DEVICE_KEYRING_MAP).includes(
-      keyringType as KeyringTypes,
-    );
-  } catch {
-    return false;
-  }
 }
 
 /**

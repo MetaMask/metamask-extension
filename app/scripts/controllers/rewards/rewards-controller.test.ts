@@ -46,7 +46,6 @@ import {
   getRewardsControllerDefaultState,
   wrapWithCache,
   DEFAULT_BLOCKED_REGIONS,
-  isHardwareAccount,
 } from './rewards-controller';
 import type {
   RewardsControllerState,
@@ -3916,44 +3915,6 @@ const MOCK_CHALLENGE: ChallengeDto = {
   expirationTime: new Date(Date.now() + 3600000).toISOString(),
   message: `rewards.metamask.io wants you to sign in with your Ethereum account:\n${MOCK_ACCOUNT_ADDRESS}\n\nSign in to MetaMask Rewards\n\nURI: https://rewards.metamask.io\nVersion: 1\nChain ID: 1\nNonce: 123456789\nIssued At: ${new Date().toISOString()}`,
 };
-
-describe('isHardwareAccount', () => {
-  it('should return true for Ledger hardware wallet', () => {
-    const result = isHardwareAccount(MOCK_LEDGER_ACCOUNT);
-    expect(result).toBe(true);
-  });
-
-  it('should return true for QR hardware wallet', () => {
-    const result = isHardwareAccount(MOCK_QR_ACCOUNT);
-    expect(result).toBe(true);
-  });
-
-  it('should return false for software wallet', () => {
-    const result = isHardwareAccount(MOCK_INTERNAL_ACCOUNT);
-    expect(result).toBe(false);
-  });
-
-  it('should return false for account with missing keyring metadata', () => {
-    const accountWithoutKeyring: InternalAccount = {
-      ...MOCK_INTERNAL_ACCOUNT,
-      metadata: {
-        name: 'Test Account',
-        importTime: Date.now(),
-      } as InternalAccount['metadata'],
-    };
-    const result = isHardwareAccount(accountWithoutKeyring);
-    expect(result).toBe(false);
-  });
-
-  it('should return false for account with null metadata', () => {
-    const accountWithNullMetadata = {
-      ...MOCK_INTERNAL_ACCOUNT,
-      metadata: null,
-    } as unknown as InternalAccount;
-    const result = isHardwareAccount(accountWithNullMetadata);
-    expect(result).toBe(false);
-  });
-});
 
 describe('Hardware Wallet Support for Rewards', () => {
   describe('optIn with hardware wallets', () => {
