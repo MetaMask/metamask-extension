@@ -110,7 +110,7 @@ async function generateBlindedOutput(
  * @param secretDataArr - The array of secret data.
  * @returns Parallel arrays matching the real server response format.
  */
-async function generateEncryptedSecretData(
+function generateEncryptedSecretData(
   secretDataArr: {
     data: Uint8Array;
     timestamp?: number;
@@ -120,13 +120,13 @@ async function generateEncryptedSecretData(
     createdAt?: string | null;
     version?: string;
   }[],
-): Promise<{
+): {
   data: string[];
   ids: string[];
   versions: string[];
   dataTypes: (number | null)[];
   createdAt: (string | null)[];
-}> {
+} {
   const data: string[] = [];
   const ids: string[] = [];
   const versions: string[] = [];
@@ -413,7 +413,7 @@ export class OAuthMockttpService {
       },
     ];
 
-    const result = await generateEncryptedSecretData(secretData);
+    const result = generateEncryptedSecretData(secretData);
 
     // Include password change item if user has changed password on another device
     if (includePasswordChangeItem) {
