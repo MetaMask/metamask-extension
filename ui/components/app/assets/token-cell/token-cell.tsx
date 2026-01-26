@@ -85,7 +85,7 @@ export default function TokenCell({
           <AssetCellBadge
             chainId={token.chainId}
             isNative={token.isNative}
-            tokenImage={token.image}
+            tokenImage={displayToken.tokenImage}
             symbol={token.symbol}
             assetId={token.assetId}
           />
