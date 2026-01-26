@@ -349,7 +349,7 @@ class ConsoleBaselineReporter {
    * Called once after ALL tests complete.
    * Handles both capture and enforce modes.
    */
-  onRunComplete() {
+  async onRunComplete() {
     const { updateBaseline } = this.#options;
 
     // Update baseline (ratchet or strict)
@@ -357,7 +357,7 @@ class ConsoleBaselineReporter {
       updateBaseline === UpdateBaselineMode.RATCHET ||
       updateBaseline === UpdateBaselineMode.STRICT
     ) {
-      this.#writeBaseline();
+      await this.#writeBaseline();
     } else if (updateBaseline === undefined) {
       // Do not update baseline, just compare against baseline
       this.#enforceBaseline();
