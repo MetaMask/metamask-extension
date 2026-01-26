@@ -286,6 +286,7 @@
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.4",
     "@lavamoat/webpack": "1.5.6",
+    "@ledgerhq/devices": "^8.10.0",
     "@ledgerhq/errors": "^6.21.0",
     "@ledgerhq/hw-app-eth": "^7.3.0",
     "@ledgerhq/hw-transport-webhid": "^6.31.0",

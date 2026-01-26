@@ -5099,7 +5099,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/devices@npm:8.10.0":
+"@ledgerhq/devices@npm:8.10.0, @ledgerhq/devices@npm:^8.10.0":
   version: 8.10.0
   resolution: "@ledgerhq/devices@npm:8.10.0"
   dependencies:
@@ -33637,6 +33637,7 @@ __metadata:
     "@lavamoat/lavapack": "npm:^7.0.17"
     "@lavamoat/snow": "npm:^2.0.4"
     "@lavamoat/webpack": "npm:1.5.6"
+    "@ledgerhq/devices": "npm:^8.10.0"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@ledgerhq/hw-app-eth": "npm:^7.3.0"
     "@ledgerhq/hw-transport-webhid": "npm:^6.31.0"
