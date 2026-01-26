@@ -255,7 +255,9 @@ async function main(): Promise<void> {
     const fileName = path.basename(filePath, path.extname(filePath));
     try {
       const result = await runBenchmarkFile(filePath, options);
-      allResults[fileName] = result;
+      if (!filePath.includes('/playwright/')) {
+        allResults[fileName] = result;
+      }
     } catch (error) {
       console.error(`❌ Error running ${fileName}:`, error);
       allResults[fileName] = { error: String(error) };
