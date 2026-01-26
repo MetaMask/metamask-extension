@@ -4421,12 +4421,13 @@ describe('MetaMaskController', () => {
           .mockReturnValue({ completedOnboarding: true });
 
         // Mock runMigrations (migration runs before adding new secret data)
+        // Returns false to indicate no migration was performed
         jest
           .spyOn(
             metamaskController.seedlessOnboardingController,
             'runMigrations',
           )
-          .mockResolvedValue();
+          .mockResolvedValue(false);
 
         const addNewSecretDataSpy = jest
           .spyOn(
@@ -4465,12 +4466,13 @@ describe('MetaMaskController', () => {
           .mockReturnValue({ completedOnboarding: true });
 
         // Mock runMigrations (migration runs before adding new secret data)
+        // Returns false to indicate no migration was performed
         jest
           .spyOn(
             metamaskController.seedlessOnboardingController,
             'runMigrations',
           )
-          .mockResolvedValue();
+          .mockResolvedValue(false);
 
         const addNewSecretDataSpy = jest
           .spyOn(

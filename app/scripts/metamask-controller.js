@@ -8289,17 +8289,20 @@ export default class MetamaskController extends EventEmitter {
     }
 
     try {
-      await this.seedlessOnboardingController.runMigrations();
+      const migrationPerformed =
+        await this.seedlessOnboardingController.runMigrations();
 
-      this.metaMetricsController.trackEvent({
-        event: MetaMetricsEventName.SeedlessOnboardingMigrationCompleted,
-        category: MetaMetricsEventCategory.Background,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          migration_version:
-            this.seedlessOnboardingController.state?.migrationVersion,
-        },
-      });
+      if (migrationPerformed) {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.SeedlessOnboardingMigrationCompleted,
+          category: MetaMetricsEventCategory.Background,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            migration_version:
+              this.seedlessOnboardingController.state?.migrationVersion,
+          },
+        });
+      }
     } catch (error) {
       const isError = error instanceof Error;
       const errorMessage = isError ? error.message : 'Unknown error';
