@@ -76,9 +76,19 @@ function transformState(state: Record<string, unknown>) {
       );
     }
 
+    // Always normalize the chainId value inside the configuration
     networkConfiguration.chainId = chainIdAsHex;
 
     if (chainIdAsHex !== chainId) {
+      // Check for collision: if the normalized hex key already exists,
+      // preserve the existing hex-keyed entry and discard the decimal duplicate.
+      // This prevents a malicious decimal-keyed entry from overwriting a
+      // legitimate hex-keyed configuration (e.g., '1' overwriting '0x1').
+      if (hasProperty(networkConfigurationsByChainId, chainIdAsHex)) {
+        delete networkConfigurationsByChainId[chainId];
+        continue;
+      }
+
       delete networkConfigurationsByChainId[chainId];
       networkConfigurationsByChainId[chainIdAsHex] = networkConfiguration;
     }
