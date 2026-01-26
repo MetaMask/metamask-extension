@@ -8,11 +8,7 @@ import {
   selectBridgeQuotes,
 } from '@metamask/bridge-controller';
 import {
-  toCaipAccountId,
-  parseCaipChainId,
   type CaipAccountId,
-  isValidHexAddress,
-  Hex,
 } from '@metamask/utils';
 import log from 'loglevel';
 import { debounce } from 'lodash';
@@ -36,12 +32,15 @@ import {
   EstimatePointsDto,
   EstimatedPointsDto,
 } from '../../../shared/types/rewards';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+} from '../../selectors/multichain-accounts/account-tree';
 import {
   selectRewardsAccountLinkedTimestamp,
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
+import { usePrimaryWalletGroupAccounts } from '../rewards/usePrimaryWalletGroupAccounts';
 
 /**
  *
@@ -84,29 +83,6 @@ type UseRewardsResult = {
   hasError: boolean;
   accountOptedIn: boolean | null;
   rewardsAccountScope: InternalAccount | null;
-};
-
-/**
- * Formats an address to CAIP-10 account ID
- *
- * @param address
- * @param chainId
- */
-const formatAccountToCaipAccountId = (
-  address: string,
-  chainId: string,
-): CaipAccountId | null => {
-  try {
-    const caipChainId = formatChainIdToCaip(chainId);
-    const { namespace, reference } = parseCaipChainId(caipChainId);
-    const coercedAddress = isValidHexAddress(address as Hex)
-      ? toChecksumHexAddress(address)
-      : address;
-    return toCaipAccountId(namespace, reference, coercedAddress);
-  } catch (error) {
-    log.error('[useRewards] Error formatting account to CAIP-10:', error);
-    return null;
-  }
 };
 
 type UseRewardsParams = {
@@ -152,6 +128,8 @@ export const useRewardsWithQuote = ({
   const rewardsAccountLinkedTimestamp = useSelector(
     selectRewardsAccountLinkedTimestamp,
   );
+  const { accounts: primaryWalletGroupAccounts } =
+    usePrimaryWalletGroupAccounts();
   // Track linked timestamp per account address to prevent triggering for accounts that weren't linked
   const localRewardsAccountLinkedTimestamp = useRef<Map<string, number | null>>(
     new Map(),
@@ -273,7 +251,9 @@ export const useRewardsWithQuote = ({
       try {
         // Check if there's a subscription first
         const candidateSubscriptionId = (await dispatch(
-          getRewardsCandidateSubscriptionId(),
+          getRewardsCandidateSubscriptionId(
+            primaryWalletGroupAccounts,
+          ),
         )) as unknown as string | null;
 
         if (!candidateSubscriptionId) {

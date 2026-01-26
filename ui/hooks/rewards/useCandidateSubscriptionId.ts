@@ -9,6 +9,7 @@ import {
 } from '../../ducks/rewards/selectors';
 import { setCandidateSubscriptionId } from '../../ducks/rewards';
 import { useAppSelector } from '../../store/store';
+import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type UseCandidateSubscriptionIdReturn = {
   fetchCandidateSubscriptionId: () => Promise<void>;
@@ -27,6 +28,9 @@ export const useCandidateSubscriptionId =
     const rewardsActiveAccountSubscriptionId = useAppSelector(
       (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
     );
+
+    // Get accounts for the primary account group
+    const { accounts: primaryWalletGroupAccounts } = usePrimaryWalletGroupAccounts();
 
     const isLoading = useRef(false);
 
@@ -49,7 +53,9 @@ export const useCandidateSubscriptionId =
         isLoading.current = true;
 
         const candidateId = (await dispatch(
-          getRewardsCandidateSubscriptionId(),
+          getRewardsCandidateSubscriptionId(
+            primaryWalletGroupAccounts,
+          ),
         )) as unknown as string | null;
         dispatch(setCandidateSubscriptionId(candidateId));
       } catch (error) {
@@ -57,11 +63,25 @@ export const useCandidateSubscriptionId =
           '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
           error,
         );
-        dispatch(setCandidateSubscriptionId('error'));
+        // Check if it's the specific error for hardware wallet needing authentication
+        if (
+          error instanceof Error &&
+          error.message ===
+          'Primary wallet account group has opted in but is not authenticated yet'
+        ) {
+          dispatch(setCandidateSubscriptionId('error-existing-subscription-hardware-wallet-explicit-sign'));
+        } else {
+          dispatch(setCandidateSubscriptionId('error'));
+        }
       } finally {
         isLoading.current = false;
       }
-    }, [isRewardsEnabled, dispatch, rewardsActiveAccountSubscriptionId]);
+    }, [
+      isRewardsEnabled,
+      dispatch,
+      rewardsActiveAccountSubscriptionId,
+      primaryWalletGroupAccounts,
+    ]);
 
     useEffect(() => {
       if (candidateSubscriptionId === 'retry') {

@@ -31,7 +31,6 @@ import {
 import { useGeoRewardsMetadata } from '../../../../hooks/rewards/useGeoRewardsMetadata';
 import { useCandidateSubscriptionId } from '../../../../hooks/rewards/useCandidateSubscriptionId';
 import { useAppSelector } from '../../../../store/store';
-import { isHardwareWallet } from '../../../../../shared/modules/selectors';
 
 /**
  * OnboardingIntroStep Component
@@ -58,12 +57,10 @@ const OnboardingIntroStep: React.FC = () => {
   );
   const optinAllowedForGeoError = useSelector(selectOptinAllowedForGeoError);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
-  const candidateSubscriptionIdError = candidateSubscriptionId === 'error';
+  const candidateSubscriptionIdError = candidateSubscriptionId === 'error' || candidateSubscriptionId === 'error-existing-subscription-hardware-wallet-explicit-sign';
   const rewardsActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
   );
-
-  const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   // If we don't know of a subscription id, we need to fetch the geo metadata
   const { fetchGeoRewardsMetadata } = useGeoRewardsMetadata({
@@ -130,7 +127,6 @@ const OnboardingIntroStep: React.FC = () => {
     dispatch,
     fetchCandidateSubscriptionId,
     fetchGeoRewardsMetadata,
-    hardwareWalletUsed,
     optinAllowedForGeo,
     optinAllowedForGeoError,
     optinAllowedForGeoLoading,

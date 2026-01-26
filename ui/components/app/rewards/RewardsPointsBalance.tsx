@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import log from 'loglevel';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { Skeleton } from '../../component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -19,6 +20,7 @@ import {
 } from '../../../ducks/rewards/selectors';
 import { useCandidateSubscriptionId } from '../../../hooks/rewards/useCandidateSubscriptionId';
 import { useSeasonStatus } from '../../../hooks/rewards/useSeasonStatus';
+import { useOptIn } from '../../../hooks/rewards/useOptIn';
 import {
   getStorageItem,
   setStorageItem,
@@ -29,6 +31,7 @@ import {
   REWARDS_BADGE_HIDDEN,
   REWARDS_GTM_MODAL_SHOWN,
 } from './utils/constants';
+import { CandidateSubscriptionId } from '../../../ducks/rewards/types';
 
 /**
  * Component to display the rewards points balance
@@ -44,7 +47,7 @@ export const RewardsPointsBalance = () => {
   const rewardsBadgeHidden = useSelector(selectRewardsBadgeHidden);
   const seasonStatus = useSelector(selectSeasonStatus);
   const seasonStatusError = useSelector(selectSeasonStatusError);
-  const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
+  const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId) as CandidateSubscriptionId;
   const onboardingModalRendered = useSelector(selectOnboardingModalRendered);
   const rewardsActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
@@ -54,13 +57,25 @@ export const RewardsPointsBalance = () => {
     !rewardsActiveAccountSubscriptionId &&
     (candidateSubscriptionId === 'pending' ||
       candidateSubscriptionId === 'retry');
-  const candidateSubscriptionIdError = candidateSubscriptionId === 'error';
+  const candidateSubscriptionIdError = candidateSubscriptionId === 'error' || candidateSubscriptionId === 'error-existing-subscription-hardware-wallet-explicit-sign';
+  const candidateSubscriptionIdErrorNeedsSignIn =
+    candidateSubscriptionId === 'error-existing-subscription-hardware-wallet-explicit-sign';
+
+  const { optin } = useOptIn();
 
   const isTestEnv = Boolean(process.env.IN_TEST);
 
   const openRewardsOnboardingModal = useCallback(() => {
     dispatch(setOnboardingModalOpen(true));
   }, [dispatch]);
+
+  const handleSignIn = useCallback(async () => {
+    try {
+      await optin();
+    } catch (error) {
+      log.error('[RewardsPointsBalance] Error during opt-in:', error);
+    }
+  }, [optin]);
 
   // entry point hooks
   const { fetchCandidateSubscriptionId } = useCandidateSubscriptionId();
@@ -114,7 +129,6 @@ export const RewardsPointsBalance = () => {
     rewardsEnabled,
     isTestEnv,
     candidateSubscriptionId,
-    rewardsActiveAccountSubscriptionId,
     onboardingModalRendered,
     rewardsOnboardingEnabled,
   ]);
@@ -154,6 +168,18 @@ export const RewardsPointsBalance = () => {
         withPointsSuffix={false}
         onClick={openRewardsOnboardingModal}
         allowHideBadge
+      />
+    );
+  }
+
+  // Show sign-in button if hardware wallet needs authentication
+  if (candidateSubscriptionIdErrorNeedsSignIn) {
+    return (
+      <RewardsBadge
+        formattedPoints={t('rewardsSignInToViewPoints')}
+        withPointsSuffix={false}
+        boxClassName="gap-1 px-1.5 bg-background-muted rounded"
+        onClick={handleSignIn}
       />
     );
   }

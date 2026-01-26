@@ -5891,9 +5891,6 @@
   "rewardsOnboardingIntroHardwareWalletDescription": {
     "message": "Hardware wallet accounts are not eligible to receive rewards yet. Please switch to a different account to proceed."
   },
-  "rewardsOnboardingIntroHardwareWalletTitle": {
-    "message": "Account not supported"
-  },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Retry"
   },
@@ -6000,6 +5997,10 @@
   },
   "rewardsSignUp": {
     "message": "Sign up for Rewards"
+  },
+  "rewardsSignInToViewPoints": {
+    "message": "Sign in to view points",
+    "description": "Text shown when user needs to sign in to view their rewards points"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"

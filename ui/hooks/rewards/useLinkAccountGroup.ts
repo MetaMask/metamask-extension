@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { getInternalAccountsFromGroupById } from '../../selectors/multichain-accounts/account-tree';
+import {
+  getInternalAccountsFromGroupById,
+} from '../../selectors/multichain-accounts/account-tree';
 import {
   rewardsGetOptInStatus,
   rewardsIsOptInSupported,
@@ -16,6 +18,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../../pages/multichain-accounts/account-details/account-type-utils';
 import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
+import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type LinkStatusReport = {
   success: boolean;
@@ -41,6 +44,9 @@ export const useLinkAccountGroup = (
   );
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  // Get accounts for the primary account group
+  const { accounts: primaryWalletGroupAccounts } = usePrimaryWalletGroupAccounts();
 
   const triggerAccountLinkingEvent = useCallback(
     (event: MetaMetricsEventName, account: InternalAccount) => {
@@ -128,7 +134,10 @@ export const useLinkAccountGroup = (
 
       try {
         const results = (await dispatch(
-          rewardsLinkAccountsToSubscriptionCandidate(accountsToLink),
+          rewardsLinkAccountsToSubscriptionCandidate(
+            accountsToLink,
+            primaryWalletGroupAccounts,
+          ),
         )) as unknown as { account: InternalAccount; success: boolean }[];
 
         // Process results and emit completion/failure events
@@ -174,7 +183,12 @@ export const useLinkAccountGroup = (
     } finally {
       setIsLoading(false);
     }
-  }, [dispatch, internalAccountsForGroup, triggerAccountLinkingEvent]);
+  }, [
+    dispatch,
+    internalAccountsForGroup,
+    triggerAccountLinkingEvent,
+    primaryWalletGroupAccounts,
+  ]);
 
   return {
     linkAccountGroup,

@@ -406,6 +406,110 @@ export type DiscoverSeasonsDto = {
    * Next season information
    */
   next: SeasonInfoDto | null;
+
+  /**
+   * Previous season information
+   */
+  previous: SeasonInfoDto | null;
+};
+
+/**
+ * Challenge DTO for SIWE (Sign-In with Ethereum) authentication
+ */
+export type ChallengeDto = {
+  /**
+   * The unique identifier of the challenge
+   *
+   * @example '019717cb-7d10-771e-8052-10c9be058a86'
+   */
+  id: string;
+
+  /**
+   * The address of the challenge, either ethereum or solana
+   *
+   * @example '0xbd7d160C18b51527fEBd3D6B667143B5C519C32E'
+   */
+  address: string;
+
+  /**
+   * The domain of the challenge
+   *
+   * @example 'example.com'
+   */
+  domain: string;
+
+  /**
+   * The nonce of the challenge
+   *
+   * @example '1234567890'
+   */
+  nonce: bigint;
+
+  /**
+   * The issued at date of the challenge
+   *
+   * @example '2025-01-01T00:00:00.000Z'
+   */
+  issuedAt: string;
+
+  /**
+   * The expiration date of the challenge
+   *
+   * @example '2025-01-01T00:00:00.000Z'
+   */
+  expirationTime: string;
+
+  /**
+   * The SIWE (Sign-In with Ethereum) message to be signed
+   *
+   * @example 'example.com wants you to sign in with your Ethereum account: 0x...'
+   */
+  message: string;
+};
+
+/**
+ * Login DTO for SIWE (Sign-In with Ethereum) authentication
+ */
+export type SiweLoginDto = {
+  /**
+   * The unique identifier of the challenge
+   *
+   * @example '019717cb-7d10-771e-8052-10c9be058a86'
+   */
+  challengeId: string;
+
+  /**
+   * The signature of the SIWE message
+   *
+   * @example '0x...'
+   */
+  signature: `0x${string}`;
+
+  /**
+   * Code provided by referrer
+   *
+   * @example '12345'
+   */
+  referralCode?: string;
+};
+
+/**
+ * Join DTO for SIWE (Sign-In with Ethereum) authentication
+ */
+export type SiweJoinDto = {
+  /**
+   * The unique identifier of the challenge
+   *
+   * @example '019717cb-7d10-771e-8052-10c9be058a86'
+   */
+  challengeId: string;
+
+  /**
+   * The signature of the SIWE message
+   *
+   * @example '0x...'
+   */
+  signature: `0x${string}`;
 };
 
 export type SubscriptionReferralDetailsDto = {
@@ -600,7 +704,11 @@ export type RewardsControllerIsOptInSupportedAction = {
  */
 export type RewardsControllerLinkAccountToSubscriptionAction = {
   type: 'RewardsController:linkAccountToSubscriptionCandidate';
-  handler: (account: InternalAccount) => Promise<boolean>;
+  handler: (
+    account: InternalAccount,
+    invalidateRelatedData?: boolean,
+    primaryWalletGroupAccounts?: InternalAccount[],
+  ) => Promise<boolean>;
 };
 
 /**
@@ -610,6 +718,7 @@ export type RewardsControllerLinkAccountsToSubscriptionCandidateAction = {
   type: 'RewardsController:linkAccountsToSubscriptionCandidate';
   handler: (
     accounts: InternalAccount[],
+    primaryWalletGroupAccounts?: InternalAccount[],
   ) => Promise<{ account: InternalAccount; success: boolean }[]>;
 };
 
@@ -626,7 +735,9 @@ export type RewardsControllerGetGeoRewardsMetadataAction = {
  */
 export type RewardsControllerGetCandidateSubscriptionIdAction = {
   type: 'RewardsController:getCandidateSubscriptionId';
-  handler: () => Promise<string | null>;
+  handler: (
+    primaryWalletGroupAccounts?: InternalAccount[],
+  ) => Promise<string | null>;
 };
 
 /**

@@ -1,15 +1,12 @@
 import { useCallback, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import { AccountGroupId } from '@metamask/account-api';
 import log from 'loglevel';
 import {
-  getMultichainAccountsByWalletId,
-  getWalletIdAndNameByAccountAddress,
   getSelectedAccountGroup,
   getInternalAccountsFromGroupById,
 } from '../../selectors/multichain-accounts/account-tree';
 import { setCandidateSubscriptionId } from '../../ducks/rewards';
-import { getSelectedAccount } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -24,9 +21,9 @@ import {
 } from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { useI18nContext } from '../useI18nContext';
-import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 import { getHardwareWalletName } from '../../ducks/bridge/selectors';
 import { useRequestHardwareWalletAccess } from './useRequestHardwareWalletAccess';
+import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 export type UseOptinResult = {
   /**
@@ -61,37 +58,11 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
-  const selectedAccount = useSelector(getSelectedAccount);
-  const { id: walletId } = useSelector((state) =>
-    getWalletIdAndNameByAccountAddress(state, selectedAccount.address),
-  ) || { walletId: undefined };
 
   // Hardware wallet detection and access
   const { requestHardwareWalletAccess, isHardwareWalletAccount } =
     useRequestHardwareWalletAccess();
 
-  const accountGroupsByWallet = useSelector((state: MultichainAccountsState) =>
-    walletId
-      ? getMultichainAccountsByWalletId(state, walletId as AccountWalletId)
-      : {},
-  );
-
-  // Link the first account group in the wallet if it's not the selected account group.
-  const sideEffectAccountGroupIdToLink = useMemo(
-    () =>
-      accountGroupsByWallet ? Object.keys(accountGroupsByWallet)[0] : undefined,
-    [accountGroupsByWallet],
-  );
-
-  // Get accounts for side effect account group
-  const sideEffectAccounts = useSelector((state) =>
-    sideEffectAccountGroupIdToLink
-      ? getInternalAccountsFromGroupById(
-          state,
-          sideEffectAccountGroupIdToLink as AccountGroupId,
-        )
-      : [],
-  );
 
   // Get accounts for active (selected) account group
   const activeGroupAccounts = useSelector((state) =>
@@ -102,6 +73,9 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
         )
       : [],
   );
+
+  // Get accounts for the primary account group
+  const { accounts: primaryWalletGroupAccounts, accountGroupId: primaryWalletAccountGroupId } = usePrimaryWalletGroupAccounts();
 
   const handleOptIn = useCallback(
     async (referralCode?: string) => {
@@ -148,14 +122,14 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
 
         // First, opt in with side effect accounts
         const accountsToOptIn =
-          sideEffectAccountGroupIdToLink && sideEffectAccounts.length > 0
-            ? sideEffectAccounts
+          primaryWalletAccountGroupId && primaryWalletGroupAccounts.length > 0
+            ? primaryWalletGroupAccounts
             : activeGroupAccounts;
 
         const accountsToLinkAfterOptIn =
-          sideEffectAccountGroupIdToLink && sideEffectAccounts.length > 0
+          primaryWalletAccountGroupId && primaryWalletGroupAccounts.length > 0
             ? activeGroupAccounts
-            : sideEffectAccounts;
+            : primaryWalletGroupAccounts;
 
         subscriptionId = (await dispatch(
           rewardsOptIn({ accounts: accountsToOptIn, referralCode }),
@@ -169,6 +143,7 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
               await dispatch(
                 rewardsLinkAccountsToSubscriptionCandidate(
                   accountsToLinkAfterOptIn,
+                  primaryWalletGroupAccounts,
                 ),
               );
             } catch {
@@ -231,8 +206,8 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
     },
     [
       trackEvent,
-      sideEffectAccountGroupIdToLink,
-      sideEffectAccounts,
+      primaryWalletAccountGroupId,
+      primaryWalletGroupAccounts,
       activeGroupAccounts,
       dispatch,
       t,

@@ -61,6 +61,7 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
   BillingPortalResponse,
@@ -6905,7 +6906,9 @@ export function getRewardsHasAccountOptedIn(
   };
 }
 
-export function getRewardsCandidateSubscriptionId(): ThunkAction<
+export function getRewardsCandidateSubscriptionId(
+  primaryWalletGroupAccounts?: InternalAccount[],
+): ThunkAction<
   Promise<string | null>,
   MetaMaskReduxState,
   unknown,
@@ -6914,6 +6917,9 @@ export function getRewardsCandidateSubscriptionId(): ThunkAction<
   return async () => {
     return await submitRequestToBackground<string | null>(
       'getRewardsCandidateSubscriptionId',
+      primaryWalletGroupAccounts
+        ? [primaryWalletGroupAccounts]
+        : undefined,
     );
   };
 }
@@ -7041,6 +7047,7 @@ export function rewardsGetOptInStatus(
 
 export function rewardsLinkAccountsToSubscriptionCandidate(
   accounts: InternalAccount[],
+  primaryWalletGroupAccounts?: InternalAccount[],
 ): ThunkAction<
   Promise<{ account: InternalAccount; success: boolean }[]>,
   MetaMaskReduxState,
@@ -7050,7 +7057,12 @@ export function rewardsLinkAccountsToSubscriptionCandidate(
   return async () => {
     return await submitRequestToBackground<
       { account: InternalAccount; success: boolean }[]
-    >('rewardsLinkAccountsToSubscriptionCandidate', [accounts]);
+    >(
+      'rewardsLinkAccountsToSubscriptionCandidate',
+      primaryWalletGroupAccounts
+        ? [accounts, primaryWalletGroupAccounts]
+        : [accounts],
+    );
   };
 }
 

@@ -71,6 +71,7 @@ export default function OnboardingModal({
     () =>
       candidateSubscriptionId &&
       candidateSubscriptionId !== 'error' &&
+      candidateSubscriptionId !== 'error-existing-subscription-hardware-wallet-explicit-sign' &&
       candidateSubscriptionId !== 'pending' &&
       candidateSubscriptionId !== 'retry',
     [candidateSubscriptionId],
