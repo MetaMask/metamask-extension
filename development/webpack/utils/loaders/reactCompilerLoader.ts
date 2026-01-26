@@ -15,7 +15,7 @@ export type ReactCompilerStatus =
   | 'unsupported';
 
 // Keys for storing react compiler status in buildMeta
-// Must match the keys in reactCompilerLoaderWrapper.ts
+// Must match the keys in reactCompilerLoaderWrapper.cjs
 export const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
 export const REACT_COMPILER_ERROR_KEY = '__reactCompilerError__';
 
@@ -59,7 +59,8 @@ export const getReactCompilerLoader = (
 
   return {
     // Use our wrapper loader that handles buildMeta tracking
-    loader: require.resolve('./reactCompilerLoaderWrapper'),
+    // NOTE: Must use .cjs extension - thread-loader workers need CommonJS
+    loader: require.resolve('./reactCompilerLoaderWrapper.cjs'),
     options: {
       ...defineReactCompilerLoaderOption(reactCompilerOptions),
       // Pass verbose flag so wrapper knows to enable logging
