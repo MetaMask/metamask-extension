@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -20,8 +20,79 @@ export const NetworkListItemMenu = ({
   onDeleteClick,
   onDiscoverClick,
   isOpen,
+  finalFocusRef,
+  isClosing: isClosingProp,
 }) => {
   const t = useI18nContext();
+
+  const popoverDialogRef = useRef(null);
+
+  const getLastMenuItem = useCallback(() => {
+    if (!popoverDialogRef.current) {
+      return null;
+    }
+    const menuItems =
+      popoverDialogRef.current.querySelectorAll('button.menu-item');
+    return menuItems.length > 0 ? menuItems[menuItems.length - 1] : null;
+  }, []);
+
+  // Handle Tab key press for accessibility - close popover on last MenuItem
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Tab') {
+        const lastMenuItem = getLastMenuItem();
+        if (event.target === lastMenuItem) {
+          // If Tab is pressed at the last item, close popover and focus to next element in DOM
+          onClose();
+        }
+      }
+    },
+    [onClose, getLastMenuItem],
+  );
+
+  const menuContent = (
+    <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
+      <Box>
+        {onDiscoverClick ? (
+          <MenuItem
+            iconName={IconName.Eye}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDiscoverClick();
+            }}
+            data-testid="network-list-item-options-discover"
+          >
+            <Text>{t('discover')}</Text>
+          </MenuItem>
+        ) : null}
+        {onEditClick ? (
+          <MenuItem
+            iconName={IconName.Edit}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEditClick();
+            }}
+            data-testid="network-list-item-options-edit"
+          >
+            <Text> {t('edit')}</Text>
+          </MenuItem>
+        ) : null}
+        {onDeleteClick ? (
+          <MenuItem
+            iconName={IconName.Trash}
+            iconColor={IconColor.errorDefault}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteClick();
+            }}
+            data-testid="network-list-item-options-delete"
+          >
+            <Text color={TextColor.errorDefault}>{t('delete')}</Text>
+          </MenuItem>
+        ) : null}
+      </Box>
+    </div>
+  );
 
   return (
     <Popover
@@ -37,47 +108,18 @@ export const NetworkListItemMenu = ({
       preventOverflow
       flip
     >
-      <ModalFocus restoreFocus initialFocusRef={anchorElement}>
-        <Box>
-          {onDiscoverClick ? (
-            <MenuItem
-              iconName={IconName.Eye}
-              onClick={(e) => {
-                e.stopPropagation();
-                onDiscoverClick();
-              }}
-              data-testid="network-list-item-options-discover"
-            >
-              <Text>{t('discover')}</Text>
-            </MenuItem>
-          ) : null}
-          {onEditClick ? (
-            <MenuItem
-              iconName={IconName.Edit}
-              onClick={(e) => {
-                e.stopPropagation();
-                onEditClick();
-              }}
-              data-testid="network-list-item-options-edit"
-            >
-              <Text> {t('edit')}</Text>
-            </MenuItem>
-          ) : null}
-          {onDeleteClick ? (
-            <MenuItem
-              iconName={IconName.Trash}
-              iconColor={IconColor.errorDefault}
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteClick();
-              }}
-              data-testid="network-list-item-options-delete"
-            >
-              <Text color={TextColor.errorDefault}>{t('delete')}</Text>
-            </MenuItem>
-          ) : null}
-        </Box>
-      </ModalFocus>
+      {isClosingProp ? (
+        // When closing, render without ModalFocus to prevent focus management
+        menuContent
+      ) : (
+        <ModalFocus
+          restoreFocus={!finalFocusRef}
+          autoFocus={false}
+          finalFocusRef={finalFocusRef}
+        >
+          {menuContent}
+        </ModalFocus>
+      )}
     </Popover>
   );
 };
@@ -109,4 +151,14 @@ NetworkListItemMenu.propTypes = {
    * @type {boolean}
    */
   isOpen: PropTypes.bool.isRequired,
+  /**
+   * Ref of the element that should receive focus when the menu closes
+   */
+  finalFocusRef: PropTypes.shape({
+    current: PropTypes.instanceOf(window.Element),
+  }),
+  /**
+   * Indicates if the menu is currently closing (used to prevent focus management)
+   */
+  isClosing: PropTypes.bool,
 };
