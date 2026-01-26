@@ -1024,6 +1024,8 @@ function setupBundlerDefaults(
             './**/node_modules/@metamask/snaps-rpc-methods',
             './**/node_modules/@metamask/snaps-sdk',
             './**/node_modules/@metamask/snaps-utils',
+            // MessagePack (uses ES2022+ syntax that browserify cannot parse)
+            './**/node_modules/@msgpack',
           ],
           global: true,
         },
