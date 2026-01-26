@@ -53,7 +53,7 @@ export type NetworkReport = {
 };
 
 // Re-export TimerResult from the timers module
-export type { TimerResult } from '../../../../timers/utils';
+export type { TimerResult } from '../../../timers/utils';
 
 export type BenchmarkRunResult = {
   timers: TimerResult[];
