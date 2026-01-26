@@ -719,7 +719,6 @@ export const MSU_NATIVE_TOKEN_IMAGE_URL = './images/msu-native.svg';
 export const BOB_IMAGE_URL = './images/bob.svg';
 export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
-export const TEMPO_TESTNET_TOKEN_IMAGE_URL = './images/tempo-path-usd.svg';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo-testnet.svg';
 
 export const INFURA_PROVIDER_TYPES = [
@@ -1256,7 +1255,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.BOB]: BOB_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_IMAGE_URL,
-  [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
