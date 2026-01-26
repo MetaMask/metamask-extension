@@ -1,4 +1,3 @@
-import log from 'loglevel';
 import { Hex, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import {
   GenericQuoteRequest,
@@ -145,7 +144,6 @@ export function getQuotesForConfirmation({
                 error: `Error fetching bridge quotes: ${error.message}`,
                 commands,
               });
-              log.error('Error fetching dapp swap quotes', error);
               captureException(error);
             });
         }

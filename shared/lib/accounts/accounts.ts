@@ -230,10 +230,6 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
           });
           accounts.push(account);
         } catch (error) {
-          console.warn(
-            `Unable to create discovered account: ${derivationPath}:`,
-            error,
-          );
           // Still logging this one to sentry as this is a fairly new process for account discovery.
           captureException(error);
         }

@@ -26,9 +26,11 @@ async function withFixturesForSmartTransactions(
   {
     title,
     testSpecificMock,
+    ignoredConsoleErrors,
   }: {
     title?: string;
     testSpecificMock: (mockServer: MockttpServer) => Promise<void>;
+    ignoredConsoleErrors?: string[];
   },
   runTestWithFixtures: (args: { driver: Driver }) => Promise<void>,
 ) {
@@ -53,6 +55,7 @@ async function withFixturesForSmartTransactions(
         await mockSmartTransactionsRemoteFlags(mockServer);
         await testSpecificMock(mockServer);
       },
+      ignoredConsoleErrors,
     },
     async ({ driver }) => {
       await loginWithBalanceValidation(driver, undefined, undefined, '20 ETH');
@@ -77,6 +80,10 @@ describe('Smart Transactions', function () {
           await mockChooseGasFeeTokenRequests(mockServer);
           await mockSentinelNetworks(mockServer);
         },
+        ignoredConsoleErrors: [
+          // TODO: Remove after bug is fixed, tracked here: https://github.com/MetaMask/metamask-extension/issues/39370
+          'useTransactionDisplayData does not recognize transaction type. Type received is: gas_payment',
+        ],
       },
       async ({ driver }) => {
         const homePage = new HomePage(driver);

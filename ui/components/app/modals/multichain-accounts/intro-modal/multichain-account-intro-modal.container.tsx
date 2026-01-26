@@ -40,7 +40,6 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const alignmentPromise = useMemo(
     () =>
       alignMultichainWallets().catch((err) => {
-        console.error('Wallet alignment failed:', err);
         captureException(err);
         // Even if alignment fails, we continue
         return Promise.resolve();

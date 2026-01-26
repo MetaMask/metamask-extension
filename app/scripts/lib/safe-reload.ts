@@ -1,10 +1,8 @@
 import browser from 'webextension-polyfill';
-import log from 'loglevel';
+import { captureException } from '../../../shared/lib/sentry';
 import { OperationSafener } from './operation-safener';
 import { PersistenceManager } from './stores/persistence-manager';
 import { MetaMaskStateType } from './stores/base-store';
-
-const { sentry } = global;
 
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
@@ -29,8 +27,7 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
       } catch (error) {
         // unlikely to have an error here, as `persistenceManager.set` handles
         // nearly all error cases internally already.
-        log.error('MetaMask - Persistence failed', error);
-        sentry?.captureException(error);
+        captureException(error);
       }
     },
     wait: 1000,

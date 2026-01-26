@@ -454,7 +454,6 @@ describe('PersistenceManager', () => {
 
     it('Handles DOMException InvalidStateError: A mutation operation was attempted on a database that did not allow mutations.', async () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
       const domException = new DOMException(
         'A mutation operation was attempted on a database that did not allow mutations.',
@@ -478,7 +477,6 @@ describe('PersistenceManager', () => {
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Could not open backup database; automatic vault recovery will not be available.',
       );
-      expect(consoleErrorSpy).toHaveBeenCalledWith(domException);
     });
 
     it('Bubbles up IndexedDB error on initialization', async () => {

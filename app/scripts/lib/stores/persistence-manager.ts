@@ -254,7 +254,6 @@ export class PersistenceManager {
           console.warn(
             'Could not open backup database; automatic vault recovery will not be available.',
           );
-          console.error(error);
         } else {
           // rethrow since we couldn't handle it here.
           throw error;

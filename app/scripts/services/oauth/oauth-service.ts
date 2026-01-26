@@ -503,7 +503,6 @@ export default class OAuthService {
 
       return res.ok;
     } catch (error) {
-      log.error('Failed to post marketing opt in status', error);
       this.#messenger.captureException?.(
         createSentryError(
           'Failed to post marketing opt in status',
@@ -545,8 +544,6 @@ export default class OAuthService {
 
       return Boolean(data?.is_opt_in ?? false);
     } catch (error) {
-      log.error('Failed to get marketing opt in status', error);
-
       this.#messenger.captureException?.(
         createSentryError(
           'Failed to get marketing opt in status',
