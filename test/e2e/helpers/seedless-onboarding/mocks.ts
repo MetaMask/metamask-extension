@@ -150,7 +150,7 @@ function generateEncryptedSecretData(
     data.push(bytesToBase64(cipherText));
     ids.push(secretData.itemId ?? crypto.randomUUID());
     versions.push(secretData.version ?? 'v2');
-    dataTypes.push(secretData.dataType ?? 1); // PrimarySrp
+    dataTypes.push(secretData.dataType === undefined ? 1 : secretData.dataType); // Default to PrimarySrp if not specified
     createdAt.push(secretData.createdAt ?? null);
   }
 
