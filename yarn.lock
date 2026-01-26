@@ -5642,7 +5642,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^35.0.0, @metamask/accounts-controller@npm:^35.0.1, @metamask/accounts-controller@npm:^35.0.2":
+"@metamask/accounts-controller@npm:^35.0.0, @metamask/accounts-controller@npm:^35.0.2":
   version: 35.0.2
   resolution: "@metamask/accounts-controller@npm:35.0.2"
   dependencies:
@@ -5787,7 +5787,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^95.1.0, @metamask/assets-controllers@npm:^95.2.0, @metamask/assets-controllers@npm:^95.3.0":
+"@metamask/assets-controllers@npm:^95.1.0, @metamask/assets-controllers@npm:^95.3.0":
   version: 95.3.0
   resolution: "@metamask/assets-controllers@npm:95.3.0"
   dependencies:
@@ -6006,34 +6006,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^64.4.1":
-  version: 64.5.0
-  resolution: "@metamask/bridge-controller@npm:64.5.0"
+"@metamask/bridge-controller@npm:^64.4.0, @metamask/bridge-controller@npm:^64.4.1":
+  version: 64.7.0
+  resolution: "@metamask/bridge-controller@npm:64.7.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/constants": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/accounts-controller": "npm:^35.0.1"
-    "@metamask/assets-controllers": "npm:^95.2.0"
+    "@metamask/accounts-controller": "npm:^35.0.2"
+    "@metamask/assets-controllers": "npm:^95.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/gas-fee-controller": "npm:^26.0.1"
+    "@metamask/gas-fee-controller": "npm:^26.0.2"
     "@metamask/keyring-api": "npm:^21.0.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-network-controller": "npm:^3.0.1"
-    "@metamask/network-controller": "npm:^28.0.0"
-    "@metamask/polling-controller": "npm:^16.0.1"
+    "@metamask/multichain-network-controller": "npm:^3.0.2"
+    "@metamask/network-controller": "npm:^29.0.0"
+    "@metamask/polling-controller": "npm:^16.0.2"
     "@metamask/remote-feature-flag-controller": "npm:^4.0.0"
     "@metamask/snaps-controllers": "npm:^17.2.0"
-    "@metamask/transaction-controller": "npm:^62.9.1"
+    "@metamask/transaction-controller": "npm:^62.9.2"
     "@metamask/utils": "npm:^11.9.0"
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/4094c821d9cde3b6b3b99879f428a32695ab664c44464252b3fa8bbd01fa0e503e749b5d091b02856ad37d4c73a5586d82f684da9a9e57d24fae23248dfe5dc5
+  checksum: 10/ede8913026dcb21f0ac9147e3894cdf5ba3afc735e79535893d86d05b4283a422ddbc0685cb04129d09616fd61aef916e440f221355bb702f4f881f223854cfb
   languageName: node
   linkType: hard
 
@@ -6068,24 +6068,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:64.3.0":
-  version: 64.3.0
-  resolution: "@metamask/bridge-status-controller@npm:64.3.0"
+"@metamask/bridge-status-controller@npm:64.4.1":
+  version: 64.4.1
+  resolution: "@metamask/bridge-status-controller@npm:64.4.1"
   dependencies:
     "@metamask/accounts-controller": "npm:^35.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/bridge-controller": "npm:^64.3.0"
-    "@metamask/controller-utils": "npm:^11.17.0"
+    "@metamask/bridge-controller": "npm:^64.4.0"
+    "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/gas-fee-controller": "npm:^26.0.0"
-    "@metamask/network-controller": "npm:^27.1.0"
+    "@metamask/network-controller": "npm:^27.2.0"
     "@metamask/polling-controller": "npm:^16.0.0"
     "@metamask/snaps-controllers": "npm:^17.2.0"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^62.7.0"
+    "@metamask/transaction-controller": "npm:^62.8.0"
     "@metamask/utils": "npm:^11.9.0"
     bignumber.js: "npm:^9.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/992286dbda8b686b691125dd31832d7966ce1260255d1e9f95bbf1c72eab611c3c56f40abb964517611a70fa548c03c338dff28612bf8bff70677b33aefddefc
+  checksum: 10/e6474f5e68eda62b67ab4e623b818f910f39b93e190e82e87cb37035e4bae40144eb51b8d0d123afec28897f32b1d60fb1cc73120debd6ea1154fac847c6d85a
   languageName: node
   linkType: hard
 
@@ -7440,7 +7440,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^3.0.0, @metamask/multichain-network-controller@npm:^3.0.1":
+"@metamask/multichain-network-controller@npm:^3.0.0, @metamask/multichain-network-controller@npm:^3.0.2":
   version: 3.0.2
   resolution: "@metamask/multichain-network-controller@npm:3.0.2"
   dependencies:
@@ -7495,7 +7495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^27.0.0, @metamask/network-controller@npm:^27.1.0":
+"@metamask/network-controller@npm:^27.0.0, @metamask/network-controller@npm:^27.2.0":
   version: 27.2.0
   resolution: "@metamask/network-controller@npm:27.2.0"
   dependencies:
@@ -7837,7 +7837,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^16.0.0, @metamask/polling-controller@npm:^16.0.1, @metamask/polling-controller@npm:^16.0.2":
+"@metamask/polling-controller@npm:^16.0.0, @metamask/polling-controller@npm:^16.0.2":
   version: 16.0.2
   resolution: "@metamask/polling-controller@npm:16.0.2"
   dependencies:
