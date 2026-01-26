@@ -1,11 +1,8 @@
 /**
  * Unified Benchmark Runner
- *
  * Single entry point for running all benchmark types.
- * Directly imports and runs benchmark files.
  *
  */
-
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -99,7 +96,7 @@ const PRESETS: Record<string, string[]> = {
     `${BENCHMARK_DIR}/user-actions/bridge-user-actions.ts`,
   ],
 
-  // Playwright benchmarks
+  // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
     'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
   ],
@@ -119,8 +116,10 @@ async function runBenchmarkFile(
   const absolutePath = path.resolve(filePath);
   const fileName = path.basename(filePath, path.extname(filePath));
 
+  // Playwright benchmarks run via yarn playwright
   if (filePath.includes('/playwright/')) {
-    return runPlaywrightBenchmark(filePath);
+    await runPlaywrightBenchmark(filePath);
+    return undefined; // Playwright writes its own output file
   }
 
   const benchmark = await import(absolutePath);
@@ -158,9 +157,16 @@ async function runBenchmarkFile(
   return runFn(options);
 }
 
+/**
+ * Run Playwright benchmark by spawning yarn playwright
+ *
+ * @param filePath
+ */
 async function runPlaywrightBenchmark(filePath: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const args = ['playwright', 'test', filePath, '--project', 'benchmark'];
+
+    console.log(`Running Playwright benchmark: yarn ${args.join(' ')}`);
 
     const child = spawn('yarn', args, {
       stdio: 'inherit',
@@ -255,7 +261,15 @@ async function main(): Promise<void> {
     const fileName = path.basename(filePath, path.extname(filePath));
     try {
       const result = await runBenchmarkFile(filePath, options);
-      if (!filePath.includes('/playwright/')) {
+      // Playwright benchmarks write their own output file, skip storing
+      if (filePath.includes('/playwright/')) {
+        continue;
+      }
+      // Page-load benchmarks return { pageName: {...} }, spread directly
+      // Other benchmarks (performance, user-actions) use filename as key
+      if (filePath.includes('/page-load/') && typeof result === 'object') {
+        Object.assign(allResults, result);
+      } else {
         allResults[fileName] = result;
       }
     } catch (error) {

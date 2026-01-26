@@ -161,12 +161,6 @@ async function start(): Promise<void> {
   const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
 
-  const performanceOnboardingUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-performanceOnboarding.json`;
-  const performanceOnboardingLink = `<a href="${performanceOnboardingUrl}">Performance Onboarding</a>`;
-
-  const performanceAssetsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-performanceAssets.json`;
-  const performanceAssetsLink = `<a href="${performanceAssetsUrl}">Performance Assets</a>`;
-
   const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
 
   const contentRows = [];
@@ -184,7 +178,6 @@ async function start(): Promise<void> {
   contentRows.push(
     `bundle size: ${bundleSizeStatsLink}`,
     `user-actions-benchmark: ${userActionsStatsLink}`,
-    `performance-benchmark: ${performanceOnboardingLink}, ${performanceAssetsLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
@@ -215,9 +208,7 @@ async function start(): Promise<void> {
             );
           }
           const benchmark = await benchmarkResponse.json();
-          const benchmarkData =
-            benchmark[Object.keys(benchmark)[0]] || benchmark;
-          benchmarkResults[platform][buildType][page] = benchmarkData[page];
+          benchmarkResults[platform][buildType][page] = benchmark[page];
         } catch (error) {
           console.error(
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
@@ -267,20 +258,8 @@ async function start(): Promise<void> {
             const pageBenchmark = buildBenchmark[page];
             const measures = Object.keys(pageBenchmark);
             for (const measure of measures) {
-              // Skip known metadata properties that aren't statistical measures
-              if (measure === 'testTitle' || measure === 'persona') {
-                continue;
-              }
-              const measureBenchmark = pageBenchmark[measure];
-              // Skip non-object properties and arrays
-              if (
-                typeof measureBenchmark !== 'object' ||
-                measureBenchmark === null ||
-                Array.isArray(measureBenchmark)
-              ) {
-                continue;
-              }
               allMeasures.add(measure);
+              const measureBenchmark = pageBenchmark[measure];
               const metrics = Object.keys(measureBenchmark);
               for (const metric of metrics) {
                 allMetrics.add(metric);
@@ -307,26 +286,18 @@ async function start(): Promise<void> {
 
                 // if this platform-buildType-page exists in the data (the benchmark didn't crash)
                 if (benchmarkResults[platform][buildType][page]) {
-                  const measureData =
-                    benchmarkResults[platform][buildType][page][measure];
+                  const individualMetricString =
+                    benchmarkResults[platform][buildType][page][measure][
+                      metric
+                    ];
 
-                  // Only process if measure data is a plain object (not array, not null, not primitive)
-                  if (
-                    typeof measureData === 'object' &&
-                    measureData !== null &&
-                    !Array.isArray(measureData) &&
-                    metric in measureData
-                  ) {
-                    const individualMetricString = measureData[metric];
+                  const individualMetricNumber = Math.round(
+                    parseFloat(individualMetricString),
+                  );
 
-                    const individualMetricNumber = Math.round(
-                      parseFloat(individualMetricString),
-                    );
-
-                    // If it's a number, output it
-                    if (!isNaN(individualMetricNumber)) {
-                      output = individualMetricNumber.toString();
-                    }
+                  // If it's a number, output it
+                  if (!isNaN(individualMetricNumber)) {
+                    output = individualMetricNumber.toString();
                   }
                 }
                 metricData += `<td align="right">${output}</td>`;

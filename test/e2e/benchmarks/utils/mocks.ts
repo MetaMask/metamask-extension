@@ -1,7 +1,3 @@
-/**
- * Shared mock configurations for benchmarks
- */
-
 import { Mockttp } from 'mockttp';
 
 export function getCommonMocks(server: Mockttp) {

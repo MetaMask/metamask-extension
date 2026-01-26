@@ -1,7 +1,3 @@
-/**
- * Shared constants for benchmarks
- */
-
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
 

@@ -1,7 +1,3 @@
-/**
- * Benchmark runner utilities
- */
-
 import { retry } from '../../../../development/lib/retry';
 import {
   calculateTimerStatistics,
