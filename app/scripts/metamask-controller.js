@@ -8916,14 +8916,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} The new signature request ID
    */
   async #recreateSignatureRequest(originalRequest) {
-    console.log('[recreateSignatureRequest] Original request:', {
-      id: originalRequest.id,
-      type: originalRequest.type,
-      hasMessageParams: Boolean(originalRequest.messageParams),
-      networkClientId: originalRequest.networkClientId,
-      version: originalRequest.version,
-    });
-
     const { type, messageParams, version } = originalRequest;
 
     if (!messageParams) {
@@ -8938,11 +8930,6 @@ export default class MetamaskController extends EventEmitter {
       id: `${Date.now()}-${Math.random()}`,
     };
 
-    console.log('[recreateSignatureRequest] Built request:', {
-      request,
-      messageParams,
-    });
-
     // Determine if this is a typed message or personal message
     const isTypedSign = type === 'eth_signTypedData';
     const isPersonalSign = type === 'personal_sign';
@@ -8953,9 +8940,6 @@ export default class MetamaskController extends EventEmitter {
     // Instead, we start the new signature request and return immediately.
     // The new approval will be added to the ApprovalController, and the UI will navigate to it.
     if (isTypedSign) {
-      console.log(
-        '[recreateSignatureRequest] Creating typed message (fire-and-forget)',
-      );
       // For typed data, we need the version
       // Don't await - this would block waiting for approval
       this.signatureController
@@ -8967,15 +8951,9 @@ export default class MetamaskController extends EventEmitter {
         )
         .catch((err) => {
           // Log but don't throw - this runs asynchronously
-          console.log(
-            '[recreateSignatureRequest] Typed message creation completed or errored:',
-            err?.message || 'completed',
-          );
+          log.error(err.message);
         });
     } else if (isPersonalSign) {
-      console.log(
-        '[recreateSignatureRequest] Creating personal message (fire-and-forget)',
-      );
       // Personal sign - don't await
       this.signatureController
         .newUnsignedPersonalMessage(
@@ -8984,10 +8962,7 @@ export default class MetamaskController extends EventEmitter {
         )
         .catch((err) => {
           // Log but don't throw - this runs asynchronously
-          console.log(
-            '[recreateSignatureRequest] Personal message creation completed or errored:',
-            err?.message || 'completed',
-          );
+          log.error(err.message);
         });
     }
 

@@ -302,10 +302,10 @@ const Footer = () => {
       return;
     }
 
-    // const isReady = await onSubmitPreflightCheck();
-    // if (!isReady) {
-    //   return;
-    // }
+    const isReady = await onSubmitPreflightCheck();
+    if (!isReady) {
+      return;
+    }
 
     if (isAddEthereumChain) {
       await onAddEthereumChain();

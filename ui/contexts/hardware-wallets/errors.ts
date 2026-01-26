@@ -137,6 +137,7 @@ export function parseErrorByType(
   error: unknown,
   walletType: HardwareWalletType,
 ): HardwareWalletError {
+  debugger;
   try {
     // Log the raw error to understand its structure
     const errorAsAny = error as Record<string, unknown>;
@@ -277,7 +278,7 @@ export function parseErrorByType(
         cause: error instanceof Error ? error : undefined,
       });
     }
-  }
+  } catch (parseError) {}
 
   // Get error message
   const errorMessage = error instanceof Error ? error.message : String(error);
@@ -382,6 +383,7 @@ export function getDeviceEventForError(
  * @returns true if the error is a HardwareWalletError, false otherwise
  */
 export function isHardwareWalletError(error: unknown): boolean {
+  debugger;
   if (error instanceof HardwareWalletError) {
     return true;
   }
@@ -457,12 +459,22 @@ function getHardwareWalletErrorCode(error: unknown): ErrorCode | undefined {
  * @returns true if the error is retryable, false otherwise
  */
 export function isRetryableHardwareWalletError(error: unknown): boolean {
-  if (!isHardwareWalletError(error)) {
+  const isHwError = isHardwareWalletError(error);
+  if (!isHwError) {
+    console.log('[isRetryableHardwareWalletError] Not a HW error:', {
+      errorType: typeof error,
+      errorName: (error as { name?: string })?.name,
+      errorCode: (error as { code?: number })?.code,
+      isInstanceOf: error instanceof HardwareWalletError,
+    });
     return false;
   }
 
   const errorCode = getHardwareWalletErrorCode(error);
   if (errorCode === undefined) {
+    console.log(
+      '[isRetryableHardwareWalletError] Could not extract error code',
+    );
     return false;
   }
 
@@ -474,7 +486,15 @@ export function isRetryableHardwareWalletError(error: unknown): boolean {
     ErrorCode.ConnectionClosed, // Can be connection closed or eth app closed.
   ];
 
-  return retryableCodes.includes(errorCode);
+  const isRetryable = retryableCodes.includes(errorCode);
+  console.log('[isRetryableHardwareWalletError] Check result:', {
+    errorCode,
+    errorCodeName: ErrorCode[errorCode],
+    retryableCodes: retryableCodes.map((c) => ErrorCode[c]),
+    isRetryable,
+  });
+
+  return isRetryable;
 }
 
 /**

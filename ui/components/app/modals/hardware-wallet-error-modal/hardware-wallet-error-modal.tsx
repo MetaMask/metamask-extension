@@ -35,6 +35,7 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
+// HardwareWalletType is used as a default fallback when walletType cannot be extracted
 import { buildErrorContent } from './error-content-builder';
 
 type HardwareWalletErrorModalProps = {
@@ -64,6 +65,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
     // If no error, don't render anything
     if (!error) {
+      console.log('[HardwareWalletErrorModal] No error provided, closing modal');
       onClose?.();
       return null;
     }
@@ -77,12 +79,29 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       (error as { data?: { metadata?: { walletType?: HardwareWalletType } } })
         .data?.metadata;
     const errorWalletType = errorMetadata?.walletType;
-    const displayWalletType = errorWalletType || selectedAccountWalletType;
 
-    if (!displayWalletType) {
-      onClose?.();
-      return null;
-    }
+    // Debug logging to trace walletType extraction
+    console.log('[HardwareWalletErrorModal] Extracting walletType:', {
+      errorType: typeof error,
+      errorName: (error as { name?: string })?.name,
+      errorCode: (error as { code?: number })?.code,
+      hasMetadata: !!(error as { metadata?: unknown })?.metadata,
+      hasDataMetadata: !!(error as { data?: { metadata?: unknown } })?.data
+        ?.metadata,
+      errorWalletType,
+      selectedAccountWalletType,
+      errorMetadataKeys: errorMetadata ? Object.keys(errorMetadata) : null,
+    });
+
+    // Use errorWalletType, then selectedAccountWalletType, then default to Ledger
+    // as a fallback since most hardware wallet users are Ledger users.
+    // This ensures the modal always shows rather than silently closing.
+    const displayWalletType =
+      errorWalletType ||
+      selectedAccountWalletType ||
+      HardwareWalletType.Ledger;
+
+    console.log('[HardwareWalletErrorModal] Using displayWalletType:', displayWalletType);
 
     const { icon, title, recoveryInstructions } = buildErrorContent(
       error,
@@ -188,7 +207,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
               </Text>
 
               {/* Error Message */}
-              <Box width={BlockSize.Full} padding={3}>
+              {/* <Box width={BlockSize.Full} padding={3}>
                 <Text
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.Center}
@@ -196,7 +215,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                 >
                   {(error as any).userMessage || (error as any).message}
                 </Text>
-              </Box>
+              </Box> */}
 
               {/* Recovery Instructions */}
               {recoveryInstructions.length > 0 && (
@@ -240,6 +259,16 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
           </ModalBody>
 
           <ModalFooter>
+            {/* Debug: Log retry check result */}
+            {(() => {
+              const isRetryable = isRetryableHardwareWalletError(error);
+              console.log('[HardwareWalletErrorModal] isRetryable check:', {
+                isRetryable,
+                errorCode: (error as { code?: number })?.code,
+                errorName: (error as { name?: string })?.name,
+              });
+              return null;
+            })()}
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Row}

@@ -397,22 +397,6 @@ export function reconstructHardwareWalletError(
   walletType: HardwareWalletType,
 ): HardwareWalletError {
   // Log full error structure for debugging
-  const errorData = (error as { data?: unknown })?.data;
-  console.log(LOG_TAG, 'reconstructHardwareWalletError called with:', {
-    error,
-    errorType: typeof error,
-    isHardwareWalletError: error instanceof HardwareWalletError,
-    isJsonRpcErrorInstance: error instanceof JsonRpcError,
-    hasData: Boolean(errorData),
-    dataKeys:
-      errorData && typeof errorData === 'object'
-        ? Object.keys(errorData)
-        : null,
-    dataCode: (errorData as { code?: unknown })?.code,
-    dataCodeType: typeof (errorData as { code?: unknown })?.code,
-    dataMetadata: (errorData as { metadata?: unknown })?.metadata,
-  });
-
   // Already a HardwareWalletError instance
   if (error instanceof HardwareWalletError) {
     return error;
