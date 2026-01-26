@@ -272,11 +272,16 @@ async function start(): Promise<void> {
             const pageBenchmark = buildBenchmark[page];
             const measures = Object.keys(pageBenchmark);
             for (const measure of measures) {
+              // Skip known metadata properties that aren't statistical measures
+              if (measure === 'testTitle' || measure === 'persona') {
+                continue;
+              }
               const measureBenchmark = pageBenchmark[measure];
-              // Skip non-object properties (e.g., testTitle, persona are strings)
+              // Skip non-object properties and arrays
               if (
                 typeof measureBenchmark !== 'object' ||
-                measureBenchmark === null
+                measureBenchmark === null ||
+                Array.isArray(measureBenchmark)
               ) {
                 continue;
               }
@@ -310,10 +315,11 @@ async function start(): Promise<void> {
                   const measureData =
                     benchmarkResults[platform][buildType][page][measure];
 
-                  // Skip if measure data is not an object (e.g., testTitle, persona)
+                  // Only process if measure data is a plain object (not array, not null, not primitive)
                   if (
                     typeof measureData === 'object' &&
                     measureData !== null &&
+                    !Array.isArray(measureData) &&
                     metric in measureData
                   ) {
                     const individualMetricString = measureData[metric];
