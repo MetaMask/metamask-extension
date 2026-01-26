@@ -132,7 +132,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Connect Dapp Two
         await dappTwo.clickConnectAccountButton();
-        await dappTwo.confirmConnectAccountModal();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         await dappTwo.checkPageIsLoaded();
         await dappTwo.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
@@ -144,12 +149,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await dappOne.clickConnectAccountButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.goToPermissionsTab();
-        await connectAccountConfirmation.openEditNetworksModal();
+        const connectAccountConfirmationDappOne =
+          new ConnectAccountConfirmation(driver);
+        await connectAccountConfirmationDappOne.checkPageIsLoaded();
+        await connectAccountConfirmationDappOne.goToPermissionsTab();
+        await connectAccountConfirmationDappOne.openEditNetworksModal();
 
         // Disconnect Localhost 8545 and connect to Dapp One
         const networkPermissionSelectModal = new NetworkPermissionSelectModal(
@@ -161,8 +165,8 @@ describe('Switch Ethereum Chain for two dapps', function () {
           shouldBeSelected: false,
         });
         await networkPermissionSelectModal.clickConfirmEditButton();
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
+        await connectAccountConfirmationDappOne.checkPageIsLoaded();
+        await connectAccountConfirmationDappOne.confirmConnect();
 
         // Switch to Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -245,7 +249,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Connect Dapp One
         await dappOne.clickConnectAccountButton();
-        await dappOne.confirmConnectAccountModal();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation2 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation2.checkPageIsLoaded();
+        await connectAccountConfirmation2.confirmConnect();
 
         // Switch and connect Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
