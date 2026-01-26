@@ -1,5 +1,5 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 
 /**
  * With this list we can detect if a transaction is still in progress.
@@ -277,3 +277,6 @@ export const APPROVAL_METHOD_NAMES = [
 ];
 
 export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
+
+export const POLYGON_NATIVE_TOKEN_ADDRESS =
+  '0x0000000000000000000000000000000000001010' as Hex;

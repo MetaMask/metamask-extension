@@ -36,8 +36,8 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentAppVersion": "13.12.0",
-      "currentMigrationVersion": 184,
+      "currentAppVersion": "13.17.0",
+      "currentMigrationVersion": 189,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -79,13 +79,13 @@
       "surveyLinkLastClickedOrClosed": null,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null
+      "updateModalLastDismissedAt": null,
+      "pna25Acknowledged": false,
+      "recoveryPhraseReminderLastShown": 7952515200000
     },
-    "ApprovalController": {},
     "AuthenticationController": {
       "isSignedIn": false
     },
-    "BridgeController": {},
     "BridgeStatusController": {
       "txHistory": {}
     },
@@ -94,7 +94,8 @@
       "claimsConfigurations": {
         "supportedNetworks": ["0x1", "0xe708"],
         "validSubmissionWindowDays": 21
-      }
+      },
+      "drafts": []
     },
     "CurrencyController": {
       "currencyRates": {
@@ -106,12 +107,9 @@
       },
       "currentCurrency": "usd"
     },
-    "DeFiPositionsController": {},
-    "DecryptMessageController": {},
     "DelegationController": {
       "delegations": {}
     },
-    "EncryptionPublicKeyController": {},
     "EnsController": {
       "ensEntries": {
         "0x1": {
@@ -167,10 +165,9 @@
       "nonRPCGasFeeApisDisabled": false
     },
     "GatorPermissionsController": {
-      "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
-      "isGatorPermissionsEnabled": false
+      "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
+      "isGatorPermissionsEnabled": true
     },
-    "KeyringController": {},
     "LoggingController": {
       "logs": {}
     },
@@ -200,7 +197,8 @@
         }
       ],
       "traits": {
-        "install_date_ext": "2025-11-25"
+        "install_date_ext": "2026-01-22",
+        "storage_kind": "split"
       }
     },
     "MetaMetricsDataDeletionController": {
@@ -346,7 +344,7 @@
               "failoverUrls": [],
               "networkClientId": "megaeth-testnet-v2",
               "type": "custom",
-              "url": "https://timothy.megaeth.com/rpc"
+              "url": "https://carrot.megaeth.com/rpc"
             }
           ]
         },
@@ -2005,28 +2003,27 @@
         "npm:@metamask/institutional-wallet-snap": "mainnet",
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
-        "npm:@metamask/tron-wallet-snap": "mainnet"
+        "npm:@metamask/tron-wallet-snap": "mainnet",
+        "npm:@metamask/permissions-kernel-snap": "mainnet"
       }
     },
     "ShieldController": {
       "coverageResults": {},
       "orderedTransactionHistory": []
     },
-    "SignatureController": {},
-    "SmartTransactionsController": {},
     "SnapController": {
       "snapStates": {},
       "snaps": {},
       "unencryptedSnapStates": {}
     },
-    "SnapInsightsController": {},
     "SnapInterfaceController": {
       "interfaces": {}
     },
     "SnapsRegistry": {
       "database": null,
       "databaseUnavailable": false,
-      "lastUpdated": null
+      "lastUpdated": null,
+      "signature": null
     },
     "SubjectMetadataController": {
       "subjectMetadata": {
@@ -2104,7 +2101,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "SwapsController": {},
     "TokenBalancesController": {
       "tokenBalances": {}
     },
@@ -2136,12 +2132,10 @@
       "isContactSyncingEnabled": true
     },
     "config": {},
-    "firstTimeInfo": {
-      "date": 1764061389865,
-      "version": "13.12.0"
-    }
+    "KeyringController": {}
   },
   "meta": {
-    "version": 184
+    "version": 189,
+    "storageKind": "split"
   }
 }

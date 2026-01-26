@@ -2,7 +2,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
-import { SEND_STAGES } from '../../ducks/send';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
@@ -33,6 +32,20 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
+// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
+const mockIsMultichainAccountsFeatureEnabled = jest.fn();
+jest.mock(
+  '../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () =>
+      mockIsMultichainAccountsFeatureEnabled(),
+  }),
+);
+
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -61,12 +74,6 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('../../ducks/send', () => ({
-  ...jest.requireActual('../../ducks/send'),
-  resetSendState: () => ({ type: 'XXX' }),
-  getGasPrice: jest.fn(),
-}));
-
 jest.mock('../../ducks/domains', () => ({
   ...jest.requireActual('../../ducks/domains'),
   initializeDomainSlice: () => ({ type: 'XXX' }),
@@ -90,10 +97,6 @@ jest.mock(
 jest.mock('../../hooks/useMultiPolling', () => ({
   __esModule: true,
   default: jest.fn(),
-}));
-
-jest.mock('../confirmations/hooks/useRedesignedSendFlow', () => ({
-  useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
 }));
 
 jest.mock('../../contexts/shield/shield-subscription', () => ({
@@ -124,6 +127,8 @@ describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
 
   beforeEach(() => {
+    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
+
     // Clear previous mock implementations
     useMultiPolling.mockClear();
 
@@ -177,7 +182,12 @@ describe('Routes Component', () => {
             },
           },
           tokenBalances: {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+              '0x1': {
+                '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+                '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+              },
+            },
           },
           permissionHistory: {
             'https://metamask.github.io': {
@@ -188,10 +198,6 @@ describe('Routes Component', () => {
               },
             },
           },
-        },
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.INACTIVE,
         },
         localeMessages: {
           currentLocale: 'en',
@@ -298,7 +304,12 @@ describe('toast display', () => {
       },
       termsOfUseLastAgreed: new Date(0).getTime(),
       tokenBalances: {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          '0x1': {
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+          },
+        },
       },
       accountTree: {
         wallets: {
@@ -453,7 +464,10 @@ describe('toast display', () => {
     expect(toastContainer).toBeInTheDocument();
   });
 
+  // Probably not applicable anymore since BIP-44 account groups?
   it('does render toastContainer if the unconnected selected account is Solana', () => {
+    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
+
     const { getByTestId } = render(
       DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
