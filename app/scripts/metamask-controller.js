@@ -257,6 +257,7 @@ import createRpcBlockingMiddleware from './lib/rpcBlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
+import { createMultichainUnlockMiddleware } from './lib/createMultichainUnlockMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import Backup from './lib/backup';
@@ -7702,6 +7703,15 @@ export default class MetamaskController extends EventEmitter {
       }
       return next();
     });
+
+    engine.push(
+      createMultichainUnlockMiddleware({
+        getUnlockPromise: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'AppStateController:getUnlockPromise',
+        ),
+      }),
+    );
 
     const snapAndHardwareMessenger = new Messenger({
       namespace: 'SnapAndHardwareMessenger',
