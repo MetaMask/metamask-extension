@@ -14,6 +14,13 @@ let transport: Transport | null = null;
 let ethApp: LedgerEth | null = null;
 
 /**
+ * Checks if WebHID API is available in this environment.
+ */
+function isWebHIDSupported(): boolean {
+  return typeof navigator !== 'undefined' && typeof navigator.hid !== 'undefined';
+}
+
+/**
  * Serializes an error for transmission across message boundaries.
  * Preserves statusCode for TransportStatusError.
  */
@@ -45,6 +52,10 @@ function serializeError(error: unknown): {
  * that the user has previously granted permission to via requestDevice().
  */
 async function openTransport(): Promise<Transport> {
+  if (!isWebHIDSupported()) {
+    throw new Error('WebHID is not supported in this browser');
+  }
+
   // First try to open an already-connected device (no gesture needed)
   const existingTransport = await TransportWebHID.openConnected();
   if (existingTransport) {
@@ -216,6 +227,11 @@ async function signTypedData(params: {
  * Sets up HID device event listeners for connect/disconnect events.
  */
 function setupDeviceEventListeners(): void {
+  if (!isWebHIDSupported()) {
+    console.warn('WebHID not supported, skipping device event listeners');
+    return;
+  }
+
   navigator.hid.addEventListener('connect', ({ device }) => {
     if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
       chrome.runtime.sendMessage({
@@ -359,6 +375,11 @@ export default async function init(): Promise<void> {
   setupMessageListener();
 
   // Check if there's already a permitted device connected
+  if (!isWebHIDSupported()) {
+    console.warn('WebHID not supported, Ledger functionality will be limited');
+    return;
+  }
+
   try {
     const devices = await navigator.hid.getDevices();
     const hasLedger = devices.some(
