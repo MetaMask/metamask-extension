@@ -54,7 +54,7 @@ class TermsOfUseUpdateModal {
       console.log('The scroll button did not disappear, continuing...');
     }
 
-    await this.driver.waitForElementToStopMoving(this.termsOfUseExcerpt);
+    await this.driver.waitForElementToStopMoving(this.termsOfUseExcerpt, 10000);
     await this.driver.clickElement(this.termsOfUseCheckbox);
     await this.driver.clickElementAndWaitToDisappear(this.acceptButton, 5000);
   }
