@@ -176,4 +176,46 @@ describe('useMaxPriorityFeePerGasInput', () => {
     result.current.updateTransactionUsingEstimate(GasRecommendations.low);
     expect(mockUpdateTransaction).not.toHaveBeenCalled();
   });
+
+  it('updateTransactionToTenPercentIncreasedGasFee returns early when gasFeeEstimates is undefined and maxPriorityFeePerGas is zero', async () => {
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      gasFeeEstimates: undefined,
+      transaction: {
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
+        txParams: { maxFeePerGas: '0x5028', maxPriorityFeePerGas: '0x0' },
+      },
+    });
+    await result.current.updateTransactionToTenPercentIncreasedGasFee();
+    expect(mockUpdateGasFees).not.toHaveBeenCalled();
+  });
+
+  it('updateTransactionToTenPercentIncreasedGasFee still works when gasFeeEstimates is undefined but maxPriorityFeePerGas is non-zero', async () => {
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      gasFeeEstimates: undefined,
+      transaction: {
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
+        txParams: { maxFeePerGas: '0x5028', maxPriorityFeePerGas: '0x5028' },
+      },
+    });
+    await result.current.updateTransactionToTenPercentIncreasedGasFee();
+    expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
+    expect(mockUpdateGasFees).toHaveBeenCalledWith(undefined, {
+      estimateSuggested: 'tenPercentIncreased',
+      estimateUsed: 'tenPercentIncreased',
+      gas: '5208',
+      gasLimit: '5208',
+      maxFeePerGas: '0x582c',
+      maxPriorityFeePerGas: '0x582c',
+      userEditedGasLimit: undefined,
+      userFeeLevel: 'tenPercentIncreased',
+    });
+  });
 });
