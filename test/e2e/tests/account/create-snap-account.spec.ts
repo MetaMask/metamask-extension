@@ -29,8 +29,7 @@ describe('Create Snap Account', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver);
 
-        const newCustomAccountLabel = 'Custom name';
-        await createSnapAccount(driver, { accountName: newCustomAccountLabel });
+        await createSnapAccount(driver);
 
         // Check snap account is displayed after adding the snap account.
         await driver.switchToWindowWithTitle(
@@ -57,7 +56,6 @@ describe('Create Snap Account', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver);
 
-        const newNames = ['SSK Account', 'SSK Account 2', 'SSK Account 3'];
         const expectedNames = [
           'Snap Account 1',
           'Snap Account 2',
@@ -65,11 +63,8 @@ describe('Create Snap Account', function (this: Suite) {
         ];
 
         // Create multiple snap accounts using the flow
-        for (let i = 0; i < newNames.length; i++) {
-          await createSnapAccount(driver, {
-            accountName: newNames[i],
-            isFirstAccount: i === 0,
-          });
+        for (let i = 0; i < expectedNames.length; i++) {
+          await createSnapAccount(driver, { isFirstAccount: i === 0 });
         }
 
         // Check 3 created snap accounts are displayed in the account list.
