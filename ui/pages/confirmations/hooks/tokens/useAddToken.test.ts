@@ -56,7 +56,13 @@ describe('useAddToken', () => {
       asyncFn().catch(() => {
         // Errors are handled in the hook
       });
-      return { error: null };
+      return {
+        status: 'success' as const,
+        pending: false,
+        idle: false as const,
+        value: undefined,
+        error: undefined,
+      };
     });
 
     mockUseSelector.mockImplementation((selector: SelectorFunction) => {
@@ -334,11 +340,17 @@ describe('useAddToken', () => {
       const error = new Error('Network client not found');
       mockFindNetworkClientIdByChainId.mockRejectedValue(error);
 
-      mockUseAsyncResult.mockImplementation((asyncFn: () => Promise<void>) => {
+      mockUseAsyncResult.mockImplementation((asyncFn) => {
         asyncFn().catch(() => {
           // Error is caught
         });
-        return { error };
+        return {
+          status: 'error' as const,
+          pending: false,
+          idle: false as const,
+          value: undefined,
+          error,
+        };
       });
 
       renderHook(() => useAddToken(mockTokenParams));
@@ -370,11 +382,17 @@ describe('useAddToken', () => {
       const error = new Error('Failed to add token to state');
       mockDispatch.mockRejectedValue(error);
 
-      mockUseAsyncResult.mockImplementation((asyncFn: () => Promise<void>) => {
+      mockUseAsyncResult.mockImplementation((asyncFn) => {
         asyncFn().catch(() => {
           // Error is caught
         });
-        return { error };
+        return {
+          status: 'error' as const,
+          pending: false,
+          idle: false as const,
+          value: undefined,
+          error,
+        };
       });
 
       renderHook(() => useAddToken(mockTokenParams));

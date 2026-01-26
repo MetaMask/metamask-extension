@@ -52,7 +52,7 @@ export const MusdConversionButton = () => {
       );
 
       const transferData = generateERC20TransferData(
-        MAINNET_MUSD.address,
+        selectedAccount.address as Hex,
         '0',
         MAINNET_MUSD.decimals,
       );
