@@ -15,6 +15,11 @@ class TermsOfUseUpdateModal {
     testId: 'terms-of-use-checkbox',
   };
 
+  private readonly termsOfUseExcerpt = {
+    text: '“Term” means the term of this Agreement described in Section 6.1.',
+    tag: 'p',
+  };
+
   private readonly termsOfUseModalTitle = {
     text: 'Review our Terms of Use',
     tag: 'h3',
@@ -49,6 +54,7 @@ class TermsOfUseUpdateModal {
       console.log('The scroll button did not disappear, continuing...');
     }
 
+    await this.driver.waitForElementToStopMoving(this.termsOfUseExcerpt);
     await this.driver.clickElement(this.termsOfUseCheckbox);
     await this.driver.clickElementAndWaitToDisappear(this.acceptButton, 5000);
   }
