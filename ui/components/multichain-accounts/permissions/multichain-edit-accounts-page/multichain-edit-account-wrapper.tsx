@@ -11,14 +11,17 @@ import {
   PermissionsRequest,
 } from '../../../../pages/permissions-connect/connect-page/utils';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
-import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
+import {
+  MultichainEditAccountsPage,
+  SnapsPermissionsRequestType,
+} from './multichain-edit-accounts-page';
 
 type MultichainEditAccountsPageWrapperProps = {
   title: string;
   onSubmit: (accountGroups: AccountGroupId[]) => void;
   onClose: () => void;
   permissions: PermissionsRequest;
-  isSnapsPermissionsRequest?: boolean;
+  snapsPermissionsRequestType?: SnapsPermissionsRequestType;
 };
 
 export const MultichainEditAccountsPageWrapper = ({
@@ -26,7 +29,7 @@ export const MultichainEditAccountsPageWrapper = ({
   onSubmit,
   onClose,
   permissions,
-  isSnapsPermissionsRequest,
+  snapsPermissionsRequestType,
 }: MultichainEditAccountsPageWrapperProps) => {
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(() => {
     return getCaip25CaveatValueFromPermissions(permissions);
@@ -86,7 +89,7 @@ export const MultichainEditAccountsPageWrapper = ({
       supportedAccountGroups={supportedAccountGroups}
       onSubmit={onSubmit}
       onClose={onClose}
-      isSnapsPermissionsRequest={isSnapsPermissionsRequest}
+      snapsPermissionsRequestType={snapsPermissionsRequestType}
     />
   );
 };

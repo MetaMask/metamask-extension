@@ -3,11 +3,10 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { veryLargeDelayMs } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
-import HomePage from '../../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
 import { Driver } from '../../../webdriver/driver';
+import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';
 
@@ -69,13 +68,14 @@ async function createWalletInitiatedTransactionAndAssertDetails(
   await testDapp.openTestDappPage({ contractAddress: null, url: DAPP_URL });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  const homePage = new HomePage(driver);
-  await homePage.startSendFlow();
-  const sendToPage = new SendTokenPage(driver);
-  await sendToPage.checkPageIsLoaded();
-  await sendToPage.fillRecipient(TOKEN_RECIPIENT_ADDRESS);
-  await sendToPage.fillAmount('1');
-  await sendToPage.goToNextScreen();
+
+  await createInternalTransaction({
+    driver,
+    chainId: '0x539',
+    symbol: 'ETH',
+    recipientAddress: TOKEN_RECIPIENT_ADDRESS,
+    amount: '1',
+  });
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);

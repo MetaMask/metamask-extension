@@ -256,8 +256,7 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" },
-        "sendRedesign": { "enabled": false }
+        "feature3": { "name": "groupC", "value": "valueC" }
       }
     },
     "RewardsController": {
@@ -317,5 +316,5 @@
     "config": "object",
     "firstTimeInfo": "object"
   },
-  "meta": { "version": 187 }
+  "meta": { "version": 189 }
 }

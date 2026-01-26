@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 
 class HeaderNavbar {
@@ -109,11 +108,7 @@ class HeaderNavbar {
     await this.driver.waitForSelector(this.threeDotMenuButton, {
       state: 'enabled',
     });
-    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-      await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
-    } else {
-      await this.driver.clickElement(this.threeDotMenuButton);
-    }
+    await this.driver.clickElement(this.threeDotMenuButton);
   }
 
   async mouseClickOnThreeDotMenu(): Promise<void> {

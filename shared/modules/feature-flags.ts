@@ -1,3 +1,4 @@
+import { Json } from '@metamask/utils';
 import { CHAIN_IDS } from '../constants/network';
 
 enum NetworkName {
@@ -41,4 +42,14 @@ export const getNetworkNameByChainId = (chainId: string): string => {
     default:
       return '';
   }
+};
+
+export enum FeatureFlagNames {
+  AssetsDefiPositionsEnabled = 'assetsDefiPositionsEnabled',
+}
+
+export const DEFAULT_FEATURE_FLAG_VALUES: Partial<
+  Record<FeatureFlagNames, Json>
+> = {
+  [FeatureFlagNames.AssetsDefiPositionsEnabled]: true,
 };

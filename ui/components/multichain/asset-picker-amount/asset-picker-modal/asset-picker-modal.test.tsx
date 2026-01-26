@@ -29,7 +29,6 @@ import {
 } from '../../../../ducks/metamask/metamask';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import * as actions from '../../../../store/actions';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainCurrentChainId,
@@ -102,13 +101,6 @@ jest.mock('lodash', () => ({
     return debouncedFn;
   }),
 }));
-
-jest.mock(
-  '../../../../pages/confirmations/hooks/useRedesignedSendFlow',
-  () => ({
-    useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
-  }),
-);
 
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
@@ -192,10 +184,6 @@ describe('AssetPickerModal', () => {
       }
       if (selector === getTopAssets) {
         return [];
-      }
-
-      if (selector === getSwapsBlockedTokens) {
-        return new Set(['0xtoken1']);
       }
       return undefined;
     });
@@ -318,49 +306,6 @@ describe('AssetPickerModal', () => {
 
     expect(modalTitle).toBeInTheDocument();
     expect(searchPlaceholder).toBeInTheDocument();
-  });
-
-  it('should disable the token if it is in the blocked tokens list', () => {
-    renderWithProvider(
-      <AssetPickerModal
-        {...defaultProps}
-        sendingAsset={{ image: '', symbol: 'IRRELEVANT' }}
-      />,
-      store,
-    );
-
-    fireEvent.change(
-      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
-      {
-        target: { value: 'TO' },
-      },
-    );
-
-    expect(mockAssetList.mock.calls.slice(-1)[0][0].tokenList.length).toBe(2);
-
-    fireEvent.change(
-      screen.getByPlaceholderText('searchTokensByNameOrAddress'),
-      {
-        target: { value: 'TOKEN1' },
-      },
-    );
-
-    expect(mockAssetList.mock.calls[1][0]).not.toEqual(
-      expect.objectContaining({
-        asset: {
-          balance: '0x0',
-          details: { address: '0xAddress', decimals: 18, symbol: 'TOKEN' },
-          error: null,
-          type: 'NATIVE',
-        },
-      }),
-    );
-
-    expect(mockAssetList.mock.calls.slice(-1)[0][0].tokenList.length).toBe(1);
-
-    expect(
-      mockAssetList.mock.calls[2][0].isTokenDisabled({ address: '0xtoken1' }),
-    ).toBe(true);
   });
 
   it('should render network picker when onNetworkPickerClick prop is defined', () => {
@@ -513,8 +458,6 @@ describe('AssetPickerModal token filtering', () => {
           return '0xa';
         case getMultichainIsEvm:
           return true;
-        case getSwapsBlockedTokens:
-          return [];
         case getMultichainCurrentCurrency:
           return 'USD';
         default:

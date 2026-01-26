@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Thêm tài khoản hoặc ví"
   },
-  "addAccountToMetaMask": {
-    "message": "Thêm tài khoản vào MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Thêm ví"
-  },
-  "addingAccount": {
-    "message": "Thêm tài khoản"
   },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Chúng tôi không thể tìm nạp bất kỳ dữ liệu lịch sử nào"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFT"
-  },
   "assetOptions": {
     "message": "Tùy chọn tài sản"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Tài sản"
@@ -1082,12 +1070,6 @@
   },
   "bridgeTo": {
     "message": "Cầu nối đến"
-  },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Nếu bạn đã thêm token này theo cách thủ công, hãy đảm bảo rằng bạn nhận thức được các rủi ro đối với tiền của mình trước khi thực hiện cầu nối."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Chúng tôi không thể xác minh token này."
   },
   "bridgeTransactionProgress": {
     "message": "Giao dịch $1/2"
@@ -3165,9 +3147,6 @@
   "insufficientFunds": {
     "message": "Không đủ tiền."
   },
-  "insufficientFundsForGas": {
-    "message": "Không đủ tiền thanh toán phí gas"
-  },
   "insufficientFundsSend": {
     "message": "Không đủ tiền"
   },
@@ -3894,9 +3873,6 @@
     "message": "Bạn phải chọn tập tin để nhập.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Không thể gửi số lượng ETH âm."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Không thể gửi số lượng tài sản âm hoặc bằng 0."
   },
@@ -3937,18 +3913,6 @@
   "networkName": {
     "message": "Tên mạng"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Cơ bản"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3964,26 +3928,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Mạng thử nghiệm"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Tùy chọn mạng"
@@ -4545,9 +4497,6 @@
   },
   "openWallet": {
     "message": "Mở ví"
-  },
-  "optional": {
-    "message": "Không bắt buộc"
   },
   "options": {
     "message": "Tùy chọn"
@@ -5838,24 +5787,11 @@
   "sendBugReport": {
     "message": "Gửi báo cáo lỗi."
   },
-  "sendNoContactsConversionText": {
-    "message": "nhấn vào đây"
-  },
-  "sendNoContactsDescription": {
-    "message": "Địa chỉ liên hệ cho phép bạn gửi giao dịch an toàn đến tài khoản khác nhiều lần. Để tạo địa chỉ liên hệ, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "Bạn chưa có địa chỉ liên hệ nào"
-  },
   "sendSelectReceiveAsset": {
     "message": "Chọn tài sản để nhận"
   },
   "sendSelectSendAsset": {
     "message": "Chọn tài sản để gửi"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Bằng cách nhấp vào nút này, giao dịch hoán đổi của bạn sẽ ngay lập tức bắt đầu. Vui lòng xem lại chi tiết giao dịch của bạn trước khi tiếp tục."
   },
   "sendingAsset": {
     "message": "Gửi $1"
@@ -5866,10 +5802,6 @@
   "sendingNativeAsset": {
     "message": "Đang gửi $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Cảnh báo: bạn sắp gửi đến một hợp đồng token và điều này có thể dẫn đến nguy cơ mất tiền. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Đã gửi"
@@ -7275,9 +7207,6 @@
     "message": "Giao dịch hoán đổi $1 sang $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Phí gas được ước tính và sẽ dao động dựa trên lưu lượng mạng và độ phức tạp của giao dịch."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask không kiếm tiền từ phí gas. Các khoản phí này là ước tính và có thể thay đổi dựa trên lưu lượng của mạng và độ phức tạp của giao dịch. Tìm hiểu thêm $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7289,9 +7218,6 @@
   "swapGasFeesIncluded": {
     "message": " Đã bao gồm"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Tìm hiểu thêm về phí gas"
-  },
   "swapGasFeesSplit": {
     "message": "Phí gas trên màn hình trước được chia đôi giữa hai giao dịch này."
   },
@@ -7300,10 +7226,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "Phí mạng này do MetaMask chi trả, vì vậy bạn có thể hoán đổi mà không cần có $1 trong tài khoản."
-  },
-  "swapGasFeesSummary": {
-    "message": "Phí gas được trả cho thợ đào tiền điện tử, họ là những người xử lý các giao dịch trên mạng $1. MetaMask không thu lợi nhuận từ phí gas.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Báo giá này bao gồm phí gas bằng cách điều chỉnh số lượng token được gửi hoặc nhận. Bạn có thể nhận được ETH trong một giao dịch riêng trên danh sách hoạt động."
@@ -7321,10 +7243,6 @@
   "swapIncludesMMFee": {
     "message": "Bao gồm $1% phí của MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Báo giá thể hiện khoản phí $1% của MetaMask",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Bao gồm $1% phí của MetaMask – $2",
@@ -7577,9 +7495,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Cho phép trang web này chuyển mạng?"
   },
-  "switchInputCurrency": {
-    "message": "Chuyển đổi loại tiền tệ đầu vào"
-  },
   "switchNetwork": {
     "message": "Chuyển mạng"
   },
@@ -7735,9 +7650,6 @@
   },
   "tokensInCollection": {
     "message": "Token trong bộ sưu tập"
-  },
-  "tooltipApproveButton": {
-    "message": "Tôi hiểu"
   },
   "tooltipSatusConnected": {
     "message": "đã kết nối"
@@ -8293,9 +8205,6 @@
     "message": "Bạn đã gửi",
     "description": "Label indicating the amount and asset the user sent."
   },
-  "yourAccounts": {
-    "message": "Tài khoản của bạn"
-  },
   "yourActivity": {
     "message": "Hoạt động của bạn"
   },
@@ -8304,9 +8213,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"
-  },
-  "yourNetworks": {
-    "message": "Mạng của bạn"
   },
   "yourPrivateSeedPhrase": {
     "message": "Cụm từ khôi phục bí mật của bạn"

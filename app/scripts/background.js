@@ -28,7 +28,7 @@ import {
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
-import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/background-liveness-check';
+import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -43,6 +43,7 @@ import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
+import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
@@ -81,7 +82,7 @@ import {
   isWebOrigin,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { createOffscreen } from './offscreen';
+import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
@@ -510,11 +511,18 @@ const corruptionHandler = new CorruptionHandler();
  * @param {browser.Runtime.Port} port - The port provided by a new context.
  */
 const handleOnConnect = async (port) => {
-  if (
-    inTest &&
-    getManifestFlags().testing?.simulateUnresponsiveBackground === true
-  ) {
-    return;
+  if (inTest) {
+    const simulatedDelay =
+      getManifestFlags().testing?.simulateDelayedBackgroundResponse;
+    if (simulatedDelay === true) {
+      return;
+    } else if (typeof simulatedDelay === 'number') {
+      await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
+    } else if (simulatedDelay !== undefined) {
+      log.error(
+        `Unrecognized value for 'simulateDelayedBackgroundResponse': '${simulatedDelay}'`,
+      );
+    }
   }
 
   try {
@@ -630,7 +638,6 @@ function saveTimestamp() {
  * @typedef MetaMaskState
  * @property {boolean} isInitialized - Whether the first vault has been created.
  * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
- * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
  * @property {boolean} isNetworkMenuOpen - Represents whether the main network selection UI is currently displayed.
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
@@ -674,6 +681,24 @@ function saveTimestamp() {
  */
 async function initialize(backup) {
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+
+  // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
+  // This ensures we capture the initial connectivity status from the offscreen document
+  // which is sent right after isBooted. We queue the status until the controller is ready.
+  let pendingConnectivityStatus = null;
+  let connectivityReady = false;
+
+  if (isManifestV3) {
+    addOffscreenConnectivityListener((isOnline) => {
+      if (connectivityReady && controller.controllerApi.setConnectivityStatus) {
+        const status = isOnline ? 'online' : 'offline';
+        controller.controllerApi.setConnectivityStatus(status);
+      } else {
+        // Queue until controller is ready
+        pendingConnectivityStatus = isOnline;
+      }
+    });
+  }
 
   const initData = await loadStateFromPersistence(backup);
 
@@ -746,8 +771,31 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
+  controller.metaMetricsController.updateTraits({
+    [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
+  });
+
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
+
+  // Set up connectivity detection
+  if (isManifestV3) {
+    // MV3: Listener was set up earlier, now apply any pending status and mark ready
+    connectivityReady = true;
+    if (pendingConnectivityStatus !== null) {
+      const status = pendingConnectivityStatus ? 'online' : 'offline';
+      controller.controllerApi.setConnectivityStatus(status);
+    }
+  } else {
+    // MV2: Background page has access to window events
+    const updateConnectivity = (isOnline) => {
+      const status = isOnline ? 'online' : 'offline';
+      controller.controllerApi.setConnectivityStatus(status);
+    };
+    updateConnectivity(globalThis.navigator.onLine);
+    globalThis.addEventListener('online', () => updateConnectivity(true));
+    globalThis.addEventListener('offline', () => updateConnectivity(false));
+  }
 
   if (!isManifestV3) {
     await loadPhishingWarningPage();
@@ -1301,6 +1349,14 @@ export function setupController(
   for (const key of Object.keys(currentState)) {
     const initialControllerState = initState[key] || {};
     const newControllerState = currentState[key];
+    if (newControllerState === null || typeof newControllerState !== 'object') {
+      captureException(
+        new Error(
+          `Invalid controller state for '${key}' of type '${newControllerState === null ? 'null' : typeof newControllerState}'`,
+        ),
+      );
+      continue;
+    }
     const newControllerStateKeys = Object.keys(newControllerState);
 
     // if the number of keys has changed, we need to persist the new state
