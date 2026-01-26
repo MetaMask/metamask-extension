@@ -610,6 +610,51 @@ describe('LedgerAdapter', () => {
 
       expect(adapter.isConnected()).toBe(true);
     });
+
+    it('pendingConnection to null to prevent old finally block from corrupting new connection state', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+
+      // Simulate a slow connection that will be pending
+      let resolveFirstTransport: () => void = () => {
+        // no-op
+      };
+      const slowTransportPromise = new Promise<void>((resolve) => {
+        resolveFirstTransport = resolve;
+      });
+      mockAttemptLedgerTransportCreation.mockReturnValueOnce(
+        slowTransportPromise,
+      );
+
+      // Start first connection (will be pending)
+      const firstConnectPromise = adapter.connect('first-device-id');
+
+      // Destroy while first connection is still pending
+      // This should nullify pendingConnection to prevent the old Promise's
+      // finally block from corrupting state when it eventually settles
+      adapter.destroy();
+
+      // Set up second transport that resolves immediately
+      mockAttemptLedgerTransportCreation.mockResolvedValueOnce(undefined);
+
+      // Start a new connection before the first one settles
+      const secondConnectPromise = adapter.connect('second-device-id');
+
+      // Now resolve the first transport - its finally block should NOT
+      // corrupt the second connection's state because destroy() nullified pendingConnection
+      resolveFirstTransport();
+
+      // Wait for both connections to settle
+      await firstConnectPromise;
+      await secondConnectPromise;
+
+      // The second connection should be in a valid connected state
+      // If pendingConnection wasn't nullified in destroy(), the first Promise's
+      // finally block would have set isConnecting=false and pendingConnection=null,
+      // potentially corrupting the second connection's state
+      expect(adapter.isConnected()).toBe(true);
+    });
   });
 
   describe('ensureDeviceReady', () => {

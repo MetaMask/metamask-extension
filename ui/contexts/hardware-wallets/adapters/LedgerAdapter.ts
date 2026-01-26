@@ -201,6 +201,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     // https://github.com/MetaMask/ledger-iframe-bridge/blob/1e02823f47306ae27fe941f2829ad8d142454a67/ledger-bridge.js#L143-L161
     this.connected = false;
     this.isConnecting = false;
+    this.pendingConnection = null;
     this.currentDeviceId = null;
   }
 
