@@ -26,7 +26,8 @@ setBackgroundConnection({
   selectSrcNetwork: jest.fn(),
   resetState: () => mockResetBridgeState(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-
+  isRelaySupported: jest.fn().mockResolvedValue(true),
+  isSendBundleSupported: jest.fn().mockResolvedValue(true),
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
@@ -90,7 +91,7 @@ describe('Bridge', () => {
           chains: {
             '1': {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
           },
         },

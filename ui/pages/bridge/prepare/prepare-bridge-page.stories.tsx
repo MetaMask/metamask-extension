@@ -13,12 +13,13 @@ import {
 } from '../../../helpers/constants/routes';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import {
-  formatChainIdToCaip,
+  getNativeAssetForChainId,
   QuoteResponse,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
 
 const storybook = {
   title: 'Pages/Bridge/CrossChainSwapPage',
@@ -74,7 +75,7 @@ const mockFeatureFlags = {
   },
 };
 const mockBridgeSlice = {
-  toChainId: CHAIN_IDS.LINEA_MAINNET,
+  toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET)),
   fromTokenInputValue: '1',
 };
 export const DefaultStory = () => {
@@ -274,8 +275,8 @@ AlertsPresentStory.decorators = [
                 description: 'The transaction is going to fail',
                 descriptionId: 'bridgeSelectDifferentQuote',
               },
-              toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
               toToken: {
+                chainId: CHAIN_IDS.POLYGON,
                 address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
                 occurrences: 1,
               },
