@@ -18,7 +18,7 @@ import {
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;
-  isNative: boolean | undefined;
+  isNative?: boolean;
   tokenImage: string;
   symbol: string;
   assetId?: CaipAssetType | Hex;

@@ -56,7 +56,6 @@ export default function DefiProtocolCell({
         <AssetCellBadge
           chainId={position.chainId}
           data-testid="defi-list-protocol-badge"
-          isNative={false}
           tokenImage={position.tokenImage}
           symbol={position.protocolId}
         />
