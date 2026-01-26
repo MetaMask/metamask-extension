@@ -340,13 +340,22 @@ const config = {
         test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
         include: UI_DIR_RE,
         use: [
-          {
-            loader: 'thread-loader',
-            options: {
-              workers: Math.max(1, cpus().length - 1),
-              workerParallelJobs: 50,
-            },
-          },
+          // Disable thread-loader when:
+          // - generatePolicy: LavaMoat static analysis needs to trace all module dependencies
+          // - reactCompilerVerbose/Debug: ReactCompilerLogger singleton state isn't shared across workers
+          ...(args.generatePolicy ||
+          args.reactCompilerVerbose ||
+          args.reactCompilerDebug !== 'none'
+            ? []
+            : [
+                {
+                  loader: 'thread-loader',
+                  options: {
+                    workers: Math.max(1, cpus().length - 1),
+                    workerParallelJobs: 50,
+                  },
+                },
+              ]),
           reactCompilerLoader,
         ],
       },
