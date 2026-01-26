@@ -4833,4 +4833,230 @@ describe('Hardware Wallet Support for Rewards', () => {
       );
     });
   });
+
+  describe('getSeasonStatus with hardware wallets', () => {
+    it('should fetch season status and balance for authenticated hardware wallet', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              return Promise.resolve(MOCK_SEASON_STATE);
+            }
+            return undefined;
+          });
+
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(result?.balance.total).toBe(250);
+          expect(result?.balance.updatedAt).toBeDefined();
+          expect(result?.tier.currentTier.id).toBe('tier-2');
+          expect(result?.tier.nextTier?.id).toBe('tier-3');
+          expect(result?.tier.nextTierPointsNeeded).toBe(250);
+        },
+      );
+    });
+
+    it('should handle authorization failure and reauth for hardware wallet', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let getSeasonStatusCallCount = 0;
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              getSeasonStatusCallCount += 1;
+              if (getSeasonStatusCallCount === 1) {
+                throw new AuthorizationFailedError('Token expired');
+              }
+              return Promise.resolve(MOCK_SEASON_STATE);
+            }
+            if (actionType === 'AccountsController:getSelectedMultichainAccount') {
+              return MOCK_INTERNAL_ACCOUNT; // Return software wallet for reauth
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(result?.balance.total).toBe(250);
+          expect(getSeasonStatusCallCount).toBe(2);
+        },
+      );
+    });
+
+    it('should return cached balance for hardware wallet when cache is fresh', async () => {
+      const compositeKey = `${MOCK_SEASON_ID}:${MOCK_SUBSCRIPTION_ID}`;
+      const cachedBalance = 500;
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsSeasonStatuses: {
+          [compositeKey]: {
+            season: {
+              id: MOCK_SEASON_ID,
+              name: 'Season 1',
+              startDate: new Date('2024-01-01').getTime(),
+              endDate: new Date('2024-12-31').getTime(),
+              tiers: MOCK_SEASON_TIERS,
+            },
+            balance: { total: cachedBalance, updatedAt: Date.now() },
+            tier: {
+              currentTier: MOCK_SEASON_TIERS[2],
+              nextTier: null,
+              nextTierPointsNeeded: null,
+            },
+            lastFetched: Date.now(), // Fresh cache
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(result?.balance.total).toBe(cachedBalance);
+          // Should not call the API when cache is fresh
+          expect(mockMessengerCall).not.toHaveBeenCalledWith(
+            'RewardsDataService:getSeasonStatus',
+            expect.any(String),
+            expect.any(String),
+          );
+        },
+      );
+    });
+
+    it('should calculate tier status correctly for hardware wallet balance', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          // Test with balance of 50 (tier 0, needs 50 for tier 1)
+          const seasonStateWithLowBalance: SeasonStateDto = {
+            balance: 50,
+            currentTierId: 'tier-1',
+            updatedAt: new Date('2024-06-01T00:00:00.000Z'),
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              return Promise.resolve(seasonStateWithLowBalance);
+            }
+            return undefined;
+          });
+
+          const result = await controller.getSeasonStatus(
+            MOCK_SUBSCRIPTION_ID,
+            MOCK_SEASON_ID,
+          );
+
+          expect(result).toBeDefined();
+          expect(result?.balance.total).toBe(50);
+          expect(result?.tier.currentTier.id).toBe('tier-1');
+          expect(result?.tier.nextTier?.id).toBe('tier-2');
+          expect(result?.tier.nextTierPointsNeeded).toBe(50); // 100 - 50
+        },
+      );
+    });
+  });
 });

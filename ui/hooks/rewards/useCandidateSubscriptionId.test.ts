@@ -512,7 +512,7 @@ describe('useCandidateSubscriptionId', () => {
       expect(rewardsState?.candidateSubscriptionId).toBe('mixed-sub-id');
     });
 
-    it('sets special error sentinel when hardware wallet needs explicit authentication', async () => {
+    it('sets special error sentinel when Ledger hardware wallet needs explicit authentication', async () => {
       const ledgerAccount = createLedgerAccount('0xLedgerAddress');
       mockPrimaryWalletGroupAccounts.current = {
         accountGroupId: 'account-group-1',
@@ -555,6 +555,133 @@ describe('useCandidateSubscriptionId', () => {
       expect(mockLogError).toHaveBeenCalledWith(
         '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
         hardwareWalletError,
+      );
+    });
+
+    it('sets special error sentinel when Trezor hardware wallet needs explicit authentication', async () => {
+      const trezorAccount = createTrezorAccount('0xTrezorAddress');
+      mockPrimaryWalletGroupAccounts.current = {
+        accountGroupId: 'account-group-1',
+        accounts: [trezorAccount],
+      };
+
+      const hardwareWalletError = new Error(
+        'Primary wallet account group has opted in but is not authenticated yet',
+      );
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => {
+          throw hardwareWalletError;
+        },
+      );
+
+      const { result, store } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: false,
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: null,
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.fetchCandidateSubscriptionId();
+      });
+
+      expect(getRewardsCandidateSubscriptionId).toHaveBeenCalledWith([
+        trezorAccount,
+      ]);
+      const rewardsState = store?.getState().rewards;
+      expect(rewardsState?.candidateSubscriptionId).toBe(
+        'error-existing-subscription-hardware-wallet-explicit-sign',
+      );
+      expect(mockLogError).toHaveBeenCalledWith(
+        '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
+        hardwareWalletError,
+      );
+    });
+
+    it('sets special error sentinel when QR hardware wallet needs explicit authentication', async () => {
+      const qrAccount = createQrAccount('0xQrAddress');
+      mockPrimaryWalletGroupAccounts.current = {
+        accountGroupId: 'account-group-1',
+        accounts: [qrAccount],
+      };
+
+      const hardwareWalletError = new Error(
+        'Primary wallet account group has opted in but is not authenticated yet',
+      );
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => {
+          throw hardwareWalletError;
+        },
+      );
+
+      const { result, store } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: false,
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: null,
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.fetchCandidateSubscriptionId();
+      });
+
+      expect(getRewardsCandidateSubscriptionId).toHaveBeenCalledWith([
+        qrAccount,
+      ]);
+      const rewardsState = store?.getState().rewards;
+      expect(rewardsState?.candidateSubscriptionId).toBe(
+        'error-existing-subscription-hardware-wallet-explicit-sign',
+      );
+      expect(mockLogError).toHaveBeenCalledWith(
+        '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
+        hardwareWalletError,
+      );
+    });
+
+    it('does not trigger retry when candidateSubscriptionId is hardware wallet error value', async () => {
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => 'new-sub-id',
+      );
+
+      const { store } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: false, // ensure unlock effect doesn't trigger
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: null,
+            rewardsSubscriptions: {},
+          },
+          rewards: {
+            candidateSubscriptionId:
+              'error-existing-subscription-hardware-wallet-explicit-sign',
+          },
+        },
+      );
+
+      // Wait a bit to ensure useEffect doesn't trigger
+      await waitFor(
+        () => {
+          expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+          const rewardsState = store?.getState().rewards;
+          expect(rewardsState?.candidateSubscriptionId).toBe(
+            'error-existing-subscription-hardware-wallet-explicit-sign',
+          );
+        },
+        { timeout: 100 },
       );
     });
 
