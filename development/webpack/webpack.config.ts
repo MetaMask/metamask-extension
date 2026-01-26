@@ -224,7 +224,6 @@ if (args.reactCompilerVerbose) {
 
 // #endregion plugins
 
-const buildYmlDeclarations = new Set(buildEnvVarDeclarations);
 const swcConfig = { args, browsersListQuery, isDevelopment };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
@@ -238,7 +237,7 @@ const reactCompilerLoader = getReactCompilerLoader(
 const envValidationLoader = args.validateEnv
   ? {
       loader: require.resolve('./utils/loaders/envValidationLoader'),
-      options: { declarations: buildYmlDeclarations },
+      options: { declarations: buildEnvVarDeclarations },
     }
   : null;
 

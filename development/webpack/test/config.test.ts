@@ -134,18 +134,15 @@ describe('./utils/config.ts', () => {
       const { args } = parseArgv([], buildTypes);
       const { buildEnvVarDeclarations } = config.getVariables(args, buildTypes);
 
-      assert.ok(Array.isArray(buildEnvVarDeclarations));
-      assert.ok(buildEnvVarDeclarations.length > 0);
-
       // Verify it includes keys from the main build type's env (e.g., INFURA_PROD_PROJECT_ID)
       assert.ok(
-        buildEnvVarDeclarations.includes('INFURA_PROD_PROJECT_ID'),
+        buildEnvVarDeclarations.has('INFURA_PROD_PROJECT_ID'),
         'should include build type specific env vars',
       );
 
       // Verify it includes keys from the global buildConfig.env (e.g., SENTRY_DSN)
       assert.ok(
-        buildEnvVarDeclarations.includes('SENTRY_DSN'),
+        buildEnvVarDeclarations.has('SENTRY_DSN'),
         'should include global config env vars',
       );
     });

@@ -166,13 +166,9 @@ export function getVariables(
   buildConfig: BuildTypesConfig,
 ) {
   const activeBuild = buildConfig.buildTypes[type];
-  const variables = loadConfigVars(activeBuild, buildConfig);
+  const { required, variables } = loadConfigVars(activeBuild, buildConfig);
   const version = getExtensionVersion(type, activeBuild, args.releaseVersion);
   const isDevBuild = env === 'development';
-  const buildEnvVarDeclarations = [
-    ...Object.keys(activeBuild.env ?? {}),
-    ...Object.keys(buildConfig.env ?? {}),
-  ];
 
   // Resolve the MetaMask environment using proper detection logic
   const environment = resolveEnvironment({ ...args, env });
@@ -254,7 +250,7 @@ export function getVariables(
     safeVariables,
     version,
     environment,
-    buildEnvVarDeclarations,
+    buildEnvVarDeclarations: required,
   };
 }
 
@@ -279,19 +275,22 @@ function loadConfigVars(
   activeBuild: Pick<BuildType, 'env' | 'features'>,
   { env }: BuildTypesConfig,
 ) {
-  const definitions = loadEnv();
-  addRc(definitions, join(__dirname, '../../../.metamaskprodrc'));
-  addRc(definitions, join(__dirname, '../../../.metamaskrc'));
-  addVars(activeBuild.env);
-  addVars(env);
+  const variables = loadEnv();
+  const required = new Set<string>();
 
   function addVars(pairs: Record<string, unknown> = {}): void {
     Object.entries(pairs).forEach(([key, value]) => {
+      required.add(key);
       if (value === undefined) return;
-      if (definitions.has(key)) return;
-      definitions.set(key, value);
+      if (variables.has(key)) return;
+      variables.set(key, value);
     });
   }
 
-  return definitions;
+  addRc(variables, join(__dirname, '../../../.metamaskprodrc'));
+  addRc(variables, join(__dirname, '../../../.metamaskrc'));
+  addVars(activeBuild.env);
+  addVars(env);
+
+  return { required, variables };
 }
