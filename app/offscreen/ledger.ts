@@ -12,6 +12,8 @@ import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
 // Using base Transport type since TransportWebHID methods return Transport
 let transport: Transport | null = null;
 let ethApp: LedgerEth | null = null;
+// Prevents concurrent makeApp calls from creating multiple transports
+let pendingMakeApp: Promise<boolean> | null = null;
 
 /**
  * Checks if WebHID API is available in this environment.
@@ -84,26 +86,37 @@ async function openTransport(): Promise<Transport> {
  * Creates transport if needed and instantiates LedgerEth.
  */
 async function makeApp(): Promise<boolean> {
-  try {
-    // If we already have a working app, verify it's still connected
-    if (transport && ethApp) {
-      try {
-        // Quick test to see if device is still responsive
-        await ethApp.getAppConfiguration();
-        return true;
-      } catch {
-        // Device disconnected, clean up and reconnect
-        await closeTransport();
-      }
-    }
-
-    transport = await openTransport();
-    ethApp = new LedgerEth(transport);
-    return true;
-  } catch (error) {
-    console.error('Ledger makeApp error:', error);
-    throw error;
+  // If already initializing, wait for that to complete
+  if (pendingMakeApp) {
+    return pendingMakeApp;
   }
+
+  pendingMakeApp = (async () => {
+    try {
+      // If we already have a working app, verify it's still connected
+      if (transport && ethApp) {
+        try {
+          // Quick test to see if device is still responsive
+          await ethApp.getAppConfiguration();
+          return true;
+        } catch {
+          // Device disconnected, clean up and reconnect
+          await closeTransport();
+        }
+      }
+
+      transport = await openTransport();
+      ethApp = new LedgerEth(transport);
+      return true;
+    } catch (error) {
+      console.error('Ledger makeApp error:', error);
+      throw error;
+    } finally {
+      pendingMakeApp = null;
+    }
+  })();
+
+  return pendingMakeApp;
 }
 
 /**
