@@ -11,6 +11,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useDispatch } from 'react-redux';
 import {
   Content,
   Header,
@@ -18,9 +19,11 @@ import {
 } from '../../../components/multichain/pages/page';
 import { TextVariant as LegacyTextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ACCOUNT_LIST_PAGE_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
 import { createMpcWallet } from '../../../store/controller-actions/mpc-controller';
-import { useDispatch } from 'react-redux';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 
 export const AddMpcWalletPage = () => {
@@ -30,14 +33,14 @@ export const AddMpcWalletPage = () => {
 
   const handleContinue = useCallback(async () => {
     await dispatch(createMpcWallet());
-  }, [navigate]);
+  }, [dispatch]);
 
   const handleClose = useCallback(async () => {
     navigate(DEFAULT_ROUTE);
   }, [navigate]);
 
   const handleBack = useCallback(() => {
-     navigate(ACCOUNT_LIST_PAGE_ROUTE);
+    navigate(ACCOUNT_LIST_PAGE_ROUTE);
   }, [navigate]);
 
   return (
@@ -56,29 +59,27 @@ export const AddMpcWalletPage = () => {
           />
         }
         endAccessory={
-            <ButtonIcon
-              size={ButtonIconSize.Md}
-              ariaLabel={t('close')}
-              iconName={IconName.Close}
-              onClick={handleClose}
-              data-testid="add-mpc-wallet-page-close-button"
-            />
-          }
+          <ButtonIcon
+            size={ButtonIconSize.Md}
+            ariaLabel={t('close')}
+            iconName={IconName.Close}
+            onClick={handleClose}
+            data-testid="add-mpc-wallet-page-close-button"
+          />
+        }
       >
         {t('addMpcWallet')}
       </Header>
       <Content>
         <Box marginBottom={4}>
-          <Text variant={TextVariant.BodyLg}>
-            {t('mpcWalletDescription')}
-          </Text>
+          <Text variant={TextVariant.BodyLg}>{t('mpcWalletDescription')}</Text>
         </Box>
         <Button
-            variant={ButtonVariant.Primary}
-            onClick={handleContinue}
-            style={{ width: '100%' }}
+          variant={ButtonVariant.Primary}
+          onClick={handleContinue}
+          style={{ width: '100%' }}
         >
-            {t('continue')}
+          {t('continue')}
         </Button>
       </Content>
     </Page>
