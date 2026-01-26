@@ -18,34 +18,30 @@ env:
   APPLE_FLASK_CLIENT_ID: 00000000000
 
 jobs:
-  is-fork-pull-request:
-    name: Determine whether this issue comment was on a pull request from a fork
+  prepare:
+    name: Prepare dependencies
+    # Only run when the comment is on a pull request containing '@metamaskbot update-policies'
     if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-policies') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      REPO: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.issue.number }}
+      COMMENT_ID: ${{ github.event.comment.id }}
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Determine whether this PR is from a fork
         id: is-fork
         run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
-  react-to-comment:
-    name: React to the comment
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: is-fork-pull-request
-    # Early exit if this is a fork, since later steps are skipped for forks
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
       - name: React to the comment
+        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
         run: |
           gh api \
             --method POST \
@@ -53,56 +49,32 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
             -f content='+1'
-        env:
-          COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          REPO: ${{ github.repository }}
-
-  prepare:
-    name: Prepare dependencies
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: is-fork-pull-request
-    # Early exit if this is a fork, since later steps are skipped for forks
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
-    outputs:
-      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Checkout pull request
+        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
 
       - name: Get commit SHA
+        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
   update-lavamoat-build-policy:
     name: Update LavaMoat build policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
       - prepare
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -122,20 +94,21 @@ jobs:
 
   update-lavamoat-webapp-policy:
     name: Update LavaMoat webapp policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
       - prepare
       - update-lavamoat-build-policy
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -162,19 +135,20 @@ jobs:
 
   update-lavamoat-webpack-policy-build:
     name: Update LavaMoat webpack build policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
       - prepare
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -194,20 +168,21 @@ jobs:
 
   update-lavamoat-webpack-policy-mv2:
     name: Update LavaMoat webpack MV2 policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
       - prepare
       - update-lavamoat-webpack-policy-build
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -234,20 +209,21 @@ jobs:
 
   update-lavamoat-webpack-policy-mv3:
     name: Update LavaMoat webpack MV3 policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
       - prepare
       - update-lavamoat-webpack-policy-build
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -274,18 +250,20 @@ jobs:
 
   commit-updated-policies:
     name: Commit the updated LavaMoat policies
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
       - prepare
-      - is-fork-pull-request
       - update-lavamoat-build-policy
       - update-lavamoat-webapp-policy
       - update-lavamoat-webpack-policy-build
       - update-lavamoat-webpack-policy-mv2
       - update-lavamoat-webpack-policy-mv3
-    # Ensure forks don't get access to the LavaMoat update token
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
+      ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -295,13 +273,6 @@ jobs:
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Get commit SHA
-        id: commit-sha
-        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Restore browserify build policy
         uses: actions/cache/restore@v4
@@ -349,7 +320,7 @@ jobs:
           fi
 
       - name: Commit the updated policies
-        if: steps.policy-changes.outputs.HAS_CHANGES == 'true'
+        if: ${{ steps.policy-changes.outputs.HAS_CHANGES == 'true' }}
         run: |
           git config --global user.name 'MetaMask Bot'
           git config --global user.email 'metamaskbot@users.noreply.github.com'
@@ -389,42 +360,8 @@ jobs:
           fi
         env:
           HAS_CHANGES: ${{ steps.policy-changes.outputs.HAS_CHANGES }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-  check-status:
-    name: Check whether the policy update succeeded
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - commit-updated-policies
-    outputs:
-      PASSED: ${{ steps.set-output.outputs.PASSED }}
-    steps:
-      - name: Set PASSED output
-        id: set-output
-        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
-
-  failure-comment:
-    name: Comment about the policy update failure
-    if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - is-fork-pull-request
-      - check-status
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
       - name: Post comment if the update failed
+        if: ${{ failure() }}
         run: |
-          passed="${{ needs.check-status.outputs.PASSED }}"
-          if [[ $passed != "true" ]]; then
-            gh pr comment "${PR_NUMBER}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-          ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          gh pr comment "${PR_NUMBER}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
