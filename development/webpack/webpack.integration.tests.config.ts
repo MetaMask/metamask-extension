@@ -30,7 +30,7 @@ const plugins: WebpackPluginInstance[] = [
       // Copy rive.wasm for Rive animations
       {
         from: join(nodeModules, '@rive-app/canvas/rive.wasm'),
-        to: 'images/riv_animations/rive.wasm',
+        to: 'images/rive.wasm',
       },
     ],
   }),
