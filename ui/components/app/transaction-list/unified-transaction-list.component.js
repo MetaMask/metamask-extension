@@ -39,6 +39,7 @@ import {
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
 } from '../../../helpers/constants/transactions';
+import { filterTransactionByChain } from '../../../helpers/utils/activity';
 import {
   SmartTransactionStatus,
   TransactionGroupCategory,
@@ -594,21 +595,18 @@ export default function UnifiedTransactionList({
       return unfilteredCompletedTransactionsAllChains;
     }
 
-    // If no networks are enabled for this namespace, return empty array
     if (enabledNetworksForAllNamespaces.length === 0) {
       return [];
     }
 
     const transactionsToFilter = unfilteredCompletedTransactionsAllChains;
 
-    // Filter transactions to only include those from enabled networks
     const filteredTransactions = transactionsToFilter.filter(
-      (transactionGroup) => {
-        const transactionChainId = transactionGroup.initialTransaction?.chainId;
-        const isIncluded =
-          enabledNetworksForAllNamespaces.includes(transactionChainId);
-        return isIncluded;
-      },
+      (transactionGroup) =>
+        filterTransactionByChain(
+          transactionGroup,
+          enabledNetworksForAllNamespaces,
+        ),
     );
 
     return filteredTransactions;
