@@ -604,6 +604,13 @@
         "react": true
       }
     },
+    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/devices": {
+      "packages": {
+        "@ledgerhq/errors": true,
+        "browserify>buffer": true,
+        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/devices>semver": true
+      }
+    },
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
       "packages": {
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
@@ -644,6 +651,18 @@
         "semver": true
       }
     },
+    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid": {
+      "globals": {
+        "navigator": true
+      },
+      "packages": {
+        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/devices": true,
+        "@ledgerhq/errors": true,
+        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/hw-transport": true,
+        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/logs": true,
+        "browserify>buffer": true
+      }
+    },
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
       "globals": {
         "clearTimeout": true,
@@ -657,6 +676,19 @@
         "webpack>events": true
       }
     },
+    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/hw-transport": {
+      "globals": {
+        "clearTimeout": true,
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ledgerhq/errors": true,
+        "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/logs": true,
+        "browserify>buffer": true,
+        "webpack>events": true
+      }
+    },
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
       "globals": {
         "console.warn": true
@@ -666,6 +698,12 @@
       }
     },
     "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/logs": {
+      "globals": {
+        "__ledgerLogsListen": "write",
+        "console.error": true
+      }
+    },
+    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/logs": {
       "globals": {
         "__ledgerLogsListen": "write",
         "console.error": true
@@ -5569,6 +5607,14 @@
       }
     },
     "semver": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "process": true
+      }
+    },
+    "@metamask/test-dapp-solana>@solana/wallet-adapter-wallets>@solana/wallet-adapter-ledger>@ledgerhq/hw-transport-webhid>@ledgerhq/devices>semver": {
       "globals": {
         "console.error": true
       },
