@@ -2,6 +2,8 @@
  * Benchmark: Create new wallet onboarding flow
  * Measures timing for each step of the new wallet creation process
  */
+
+// Onboarding benchmarks require sidepanel mode
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
@@ -23,6 +25,8 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults, getCommonMocks } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
+
+process.env.IS_SIDEPANEL = 'true';
 
 export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunResult> {
   Timers.resetTimers();

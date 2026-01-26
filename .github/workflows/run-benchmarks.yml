@@ -15,7 +15,7 @@ env:
       "standardHome": "yarn test:e2e:benchmark --preset standardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2",
       "powerUserHome": "yarn test:e2e:benchmark --preset powerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2",
       "userActions": "yarn test:e2e:benchmark --preset userActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2",
-      "performanceOnboarding": "IS_SIDEPANEL=true yarn test:e2e:benchmark --preset performanceOnboarding --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboarding.json --retries 2",
+      "performanceOnboarding": "yarn test:e2e:benchmark --preset performanceOnboarding --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboarding.json --retries 2",
       "performanceAssets": "yarn test:e2e:benchmark --preset performanceAssets --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2"
     }
 

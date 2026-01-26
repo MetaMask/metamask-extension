@@ -119,11 +119,6 @@ async function runBenchmarkFile(
   const absolutePath = path.resolve(filePath);
   const fileName = path.basename(filePath, path.extname(filePath));
 
-  // Auto-set IS_SIDEPANEL for onboarding benchmarks
-  if (fileName.includes('onboarding') && !process.env.IS_SIDEPANEL) {
-    process.env.IS_SIDEPANEL = 'true';
-  }
-
   if (filePath.includes('/playwright/')) {
     return runPlaywrightBenchmark(filePath);
   }
