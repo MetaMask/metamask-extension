@@ -445,6 +445,111 @@
         "react": true
       }
     },
+    "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": {
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.concat": true
+      },
+      "packages": {
+        "@ledgerhq/errors": true,
+        "buffer": true,
+        "semver": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
+      "packages": {
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "axios": true
+      }
+    },
+    "@ledgerhq/errors": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@swc/helpers": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": {
+      "packages": {
+        "ethers>@ethersproject/constants": true,
+        "ethers>@ethersproject/hash": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
+        "axios": true,
+        "@metamask/ppom-validator>crypto-js": true
+      }
+    },
+    "@ledgerhq/hw-app-eth": {
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@ethersproject/abi": true,
+        "ethers>@ethersproject/rlp": true,
+        "ethers>@ethersproject/transactions": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": true,
+        "@ledgerhq/errors": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "axios": true,
+        "@ledgerhq/hw-app-eth>bignumber.js": true,
+        "buffer": true,
+        "semver": true
+      }
+    },
+    "@ledgerhq/hw-transport-webhid": {
+      "globals": {
+        "Buffer.from": true,
+        "navigator": true
+      },
+      "packages": {
+        "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": true,
+        "@ledgerhq/errors": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@swc/helpers": true,
+        "buffer": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ledgerhq/errors": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@swc/helpers": true,
+        "buffer": true,
+        "webpack>events": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "wait-on>rxjs": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>@ledgerhq/logs": {
+      "globals": {
+        "__ledgerLogsListen": "write",
+        "console.error": true
+      },
+      "packages": {
+        "@swc/helpers": true
+      }
+    },
     "@material-ui/core": {
       "globals": {
         "addEventListener": true,
@@ -1999,6 +2104,35 @@
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
       }
     },
+    "axios": {
+      "globals": {
+        "AbortController": true,
+        "Blob": true,
+        "Buffer.from": true,
+        "FormData": true,
+        "ReadableStream": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "WorkerGlobalScope": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "document": true,
+        "importScripts": true,
+        "location.href": true,
+        "navigator": true,
+        "process": true,
+        "queueMicrotask": true,
+        "setImmediate": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "buffer": true,
+        "core-js-pure": true,
+        "process": true
+      }
+    },
     "@ensdomains/content-hash>multihashes>multibase>base-x": {
       "packages": {
         "koa>content-disposition>safe-buffer": true
@@ -2008,6 +2142,11 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "@ledgerhq/hw-app-eth>bignumber.js": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/bridge-controller>bignumber.js": {
@@ -2375,6 +2514,13 @@
         "crypto-browserify>public-encrypt": true,
         "crypto-browserify>randombytes": true,
         "crypto-browserify>randomfill": true
+      }
+    },
+    "@metamask/ppom-validator>crypto-js": {
+      "globals": {
+        "crypto": true,
+        "define": true,
+        "msCrypto": true
       }
     },
     "react-beautiful-dnd>css-box-model": {
@@ -4088,6 +4234,15 @@
         "__DEV__": true,
         "__fbBatchedBridgeConfig": true,
         "console": true
+      }
+    },
+    "wait-on>rxjs": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout.apply": true
+      },
+      "packages": {
+        "tslib": true
       }
     },
     "koa>content-disposition>safe-buffer": {
