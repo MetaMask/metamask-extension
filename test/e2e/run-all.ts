@@ -226,7 +226,9 @@ async function main(): Promise<void> {
     const testDir = path.join(__dirname, 'dist');
     const allDistTests = await getTestPathsForTestDir(testDir);
     testPaths = allDistTests.filter((p) =>
-      DIST_EXCLUDED_TESTS.every((excludedTest) => !p.endsWith(excludedTest)),
+      DIST_EXCLUDED_TESTS.every(
+        (excludedTest) => path.basename(p) !== excludedTest,
+      ),
     );
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');

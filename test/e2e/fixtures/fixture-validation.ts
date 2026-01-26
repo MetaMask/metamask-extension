@@ -54,6 +54,8 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.MetaMetricsController.traits.install_date_ext',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
+  // Version that changes on every release
+  'data.AppStateController.currentAppVersion',
 ];
 
 /**

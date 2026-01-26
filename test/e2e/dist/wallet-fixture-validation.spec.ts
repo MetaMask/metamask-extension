@@ -17,9 +17,11 @@ const ONBOARDING_FIXTURE_PATH = path.resolve(
 
 describe('Wallet State', function () {
   it('matches the committed onboarding fixture schema', async function () {
+    // Skip on Firefox - this.skip() throws immediately and prevents withFixtures() from running
     if (process.env.SELENIUM_BROWSER === 'firefox') {
       this.skip();
     }
+
     await withFixtures(
       {
         disableServerMochaToBackground: true,
@@ -37,12 +39,24 @@ describe('Wallet State', function () {
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
         await driver.delay(10000);
 
-        const persistedState = (await driver.executeScript(
+        const persistedState = await driver.executeScript(
           'return window.stateHooks.getPersistedState()',
-        )) as Record<string, unknown>;
+        );
+
+        if (
+          persistedState === null ||
+          persistedState === undefined ||
+          typeof persistedState !== 'object'
+        ) {
+          throw new Error(
+            `Expected getPersistedState() to return an object, but got: ${typeof persistedState}`,
+          );
+        }
+
+        const validatedState = persistedState as Record<string, unknown>;
 
         const existingFixture = await readFixtureFile(ONBOARDING_FIXTURE_PATH);
-        const schemaDiff = computeSchemaDiff(existingFixture, persistedState);
+        const schemaDiff = computeSchemaDiff(existingFixture, validatedState);
 
         if (hasSchemaDifferences(schemaDiff)) {
           const message = formatSchemaDiff(schemaDiff);

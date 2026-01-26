@@ -31,9 +31,21 @@ describe('Wallet State', function () {
         // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
         await driver.delay(10000);
 
-        const persistedState = (await driver.executeScript(
+        const persistedState = await driver.executeScript(
           'return window.stateHooks.getPersistedState()',
-        )) as JsonLike;
+        );
+
+        if (
+          persistedState === null ||
+          persistedState === undefined ||
+          typeof persistedState !== 'object'
+        ) {
+          throw new Error(
+            `Expected getPersistedState() to return an object, but got: ${typeof persistedState}`,
+          );
+        }
+
+        const validatedState = persistedState as JsonLike;
 
         const outDir = path.resolve(process.cwd(), 'test', 'e2e', 'fixtures');
         await fs.ensureDir(outDir);
@@ -50,7 +62,7 @@ describe('Wallet State', function () {
         let finalState: JsonLike;
         try {
           const existingFixture = await readFixtureFile(outPath);
-          const schemaDiff = computeSchemaDiff(existingFixture, persistedState);
+          const schemaDiff = computeSchemaDiff(existingFixture, validatedState);
 
           if (hasSchemaDifferences(schemaDiff)) {
             console.log('📊 Schema differences detected:');
@@ -86,7 +98,7 @@ describe('Wallet State', function () {
             // Merge only the changes into the existing fixture
             finalState = mergeFixtureChanges(
               existingFixture,
-              persistedState,
+              validatedState,
               schemaDiff,
             );
             console.log(
