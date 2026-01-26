@@ -4414,6 +4414,20 @@ describe('MetaMaskController', () => {
     describe('#addNewSeedPhraseBackup', () => {
       it('should call addNewSecretData with ImportedSrp dataType', async () => {
         await metamaskController.createNewVaultAndKeychain('test-password');
+
+        // Mock completedOnboarding to allow migration to run
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
+        // Mock runMigrations (migration runs before adding new secret data)
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'runMigrations',
+          )
+          .mockResolvedValue();
+
         const addNewSecretDataSpy = jest
           .spyOn(
             metamaskController.seedlessOnboardingController,
@@ -4444,6 +4458,20 @@ describe('MetaMaskController', () => {
     describe('#addNewPrivateKeyBackup', () => {
       it('should call addNewSecretData with ImportedPrivateKey dataType', async () => {
         await metamaskController.createNewVaultAndKeychain('test-password');
+
+        // Mock completedOnboarding to allow migration to run
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
+        // Mock runMigrations (migration runs before adding new secret data)
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'runMigrations',
+          )
+          .mockResolvedValue();
+
         const addNewSecretDataSpy = jest
           .spyOn(
             metamaskController.seedlessOnboardingController,

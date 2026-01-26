@@ -4582,6 +4582,9 @@ export default class MetamaskController extends EventEmitter {
       const releaseLock = await this.seedlessOperationMutex.acquire();
       let addNewSeedPhraseBackupSuccess = false;
       try {
+        // Run data type migration before adding new SRP to ensure data consistency.
+        await this._runSeedlessOnboardingMigrations();
+
         this.metaMetricsController.bufferedTrace?.({
           name: TraceName.OnboardingAddSrp,
           op: TraceOperation.OnboardingSecurityOp,
@@ -5047,17 +5050,6 @@ export default class MetamaskController extends EventEmitter {
       if (remainingSecretData.length > 0) {
         await this.restoreSeedPhrasesToVault(remainingSecretData);
       }
-
-      // Run migration for existing users rehydrating their data.
-      // Skip onboarding check because completedOnboarding is not yet true during restore flow.
-      // Run non-blocking so migration failures don't block an otherwise successful restore.
-      this._runSeedlessOnboardingMigrations({
-        skipOnboardingCheck: true,
-      }).catch((err) => {
-        const message = 'Error during seedless onboarding migrations';
-        log.error(message, err);
-        captureException(err);
-      });
 
       return mnemonic;
     } catch (error) {
@@ -5603,15 +5595,6 @@ export default class MetamaskController extends EventEmitter {
       // NOTE: We run this asynchronously on purpose, see FIXME^.
       // eslint-disable-next-line no-void
       void resyncAndAlignAccounts();
-    }
-
-    // Run seedless onboarding migrations asynchronously after unlock for social login users
-    if (isSocialLoginFlow) {
-      this._runSeedlessOnboardingMigrations().catch((err) => {
-        const message = 'Error during seedless onboarding migrations';
-        log.error(message, err);
-        captureException(err);
-      });
     }
   }
 
@@ -6454,6 +6437,9 @@ export default class MetamaskController extends EventEmitter {
     if (syncWithSocial) {
       const releaseLock = await this.seedlessOperationMutex.acquire();
       try {
+        // Run data type migration before adding new private key to ensure data consistency.
+        await this._runSeedlessOnboardingMigrations();
+
         await this.seedlessOnboardingController.addNewSecretData(
           bufferedPrivateKey,
           EncAccountDataType.ImportedPrivateKey,
@@ -8289,18 +8275,16 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Run seedless onboarding migrations.
    *
-   * This method delegates to the SeedlessOnboardingController's runMigrations() method,
-   * which handles the migration version tracking and migration logic internally.
+   * Delegates to SeedlessOnboardingController.runMigrations() which handles
+   * version tracking and migration logic. Called before adding new secret data
+   * to ensure data type consistency and correct ordering.
    *
-   * @param {object} options - Options for migration.
-   * @param {boolean} options.skipOnboardingCheck - If true, skips the completedOnboarding check.
-   * Used during restoreSocialBackupAndGetSeedPhrase where onboarding is not yet complete.
    * @returns {Promise<void>}
    */
-  async _runSeedlessOnboardingMigrations({ skipOnboardingCheck = false } = {}) {
+  async _runSeedlessOnboardingMigrations() {
     const { completedOnboarding } = this.onboardingController.state;
 
-    if (!skipOnboardingCheck && !completedOnboarding) {
+    if (!completedOnboarding) {
       return;
     }
 
