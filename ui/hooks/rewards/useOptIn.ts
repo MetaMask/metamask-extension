@@ -63,7 +63,6 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const { requestHardwareWalletAccess, isHardwareWalletAccount } =
     useRequestHardwareWalletAccess();
 
-
   // Get accounts for active (selected) account group
   const activeGroupAccounts = useSelector((state) =>
     selectedAccountGroupId
@@ -75,7 +74,10 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   );
 
   // Get accounts for the primary account group
-  const { accounts: primaryWalletGroupAccounts, accountGroupId: primaryWalletAccountGroupId } = usePrimaryWalletGroupAccounts();
+  const {
+    accounts: primaryWalletGroupAccounts,
+    accountGroupId: primaryWalletAccountGroupId,
+  } = usePrimaryWalletGroupAccounts();
 
   const handleOptIn = useCallback(
     async (referralCode?: string) => {

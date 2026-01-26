@@ -18,4 +18,3 @@ export function isHardwareAccount(account: InternalAccount): boolean {
     return false;
   }
 }
-

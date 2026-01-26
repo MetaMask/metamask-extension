@@ -448,9 +448,10 @@ describe('useRequestHardwareWalletAccess', () => {
 
       expect(result.current).toHaveProperty('requestHardwareWalletAccess');
       expect(result.current).toHaveProperty('isHardwareWalletAccount');
-      expect(typeof result.current.requestHardwareWalletAccess).toBe('function');
+      expect(typeof result.current.requestHardwareWalletAccess).toBe(
+        'function',
+      );
       expect(typeof result.current.isHardwareWalletAccount).toBe('boolean');
     });
   });
 });
-

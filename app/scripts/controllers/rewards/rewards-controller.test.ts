@@ -4929,7 +4929,9 @@ describe('Hardware Wallet Support for Rewards', () => {
               }
               return Promise.resolve(MOCK_SEASON_STATE);
             }
-            if (actionType === 'AccountsController:getSelectedMultichainAccount') {
+            if (
+              actionType === 'AccountsController:getSelectedMultichainAccount'
+            ) {
               return MOCK_INTERNAL_ACCOUNT; // Return software wallet for reauth
             }
             if (actionType === 'KeyringController:signPersonalMessage') {

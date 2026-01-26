@@ -26,12 +26,12 @@ import {
   setStorageItem,
 } from '../../../../shared/lib/storage-helpers';
 import { useAppSelector } from '../../../store/store';
+import { CandidateSubscriptionId } from '../../../ducks/rewards/types';
 import { RewardsBadge } from './RewardsBadge';
 import {
   REWARDS_BADGE_HIDDEN,
   REWARDS_GTM_MODAL_SHOWN,
 } from './utils/constants';
-import { CandidateSubscriptionId } from '../../../ducks/rewards/types';
 
 /**
  * Component to display the rewards points balance
@@ -47,7 +47,9 @@ export const RewardsPointsBalance = () => {
   const rewardsBadgeHidden = useSelector(selectRewardsBadgeHidden);
   const seasonStatus = useSelector(selectSeasonStatus);
   const seasonStatusError = useSelector(selectSeasonStatusError);
-  const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId) as CandidateSubscriptionId;
+  const candidateSubscriptionId = useSelector(
+    selectCandidateSubscriptionId,
+  ) as CandidateSubscriptionId;
   const onboardingModalRendered = useSelector(selectOnboardingModalRendered);
   const rewardsActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
@@ -57,9 +59,13 @@ export const RewardsPointsBalance = () => {
     !rewardsActiveAccountSubscriptionId &&
     (candidateSubscriptionId === 'pending' ||
       candidateSubscriptionId === 'retry');
-  const candidateSubscriptionIdError = candidateSubscriptionId === 'error' || candidateSubscriptionId === 'error-existing-subscription-hardware-wallet-explicit-sign';
+  const candidateSubscriptionIdError =
+    candidateSubscriptionId === 'error' ||
+    candidateSubscriptionId ===
+      'error-existing-subscription-hardware-wallet-explicit-sign';
   const candidateSubscriptionIdErrorNeedsSignIn =
-    candidateSubscriptionId === 'error-existing-subscription-hardware-wallet-explicit-sign';
+    candidateSubscriptionId ===
+    'error-existing-subscription-hardware-wallet-explicit-sign';
 
   const { optin } = useOptIn();
 

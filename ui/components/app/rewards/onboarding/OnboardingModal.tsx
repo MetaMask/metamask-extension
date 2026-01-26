@@ -29,12 +29,12 @@ import { useTheme } from '../../../../hooks/useTheme';
 import RewardsErrorToast from '../RewardsErrorToast';
 import RewardsQRCode from '../RewardsQRCode';
 import { useAppSelector } from '../../../../store/store';
+import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
 import OnboardingIntroStep from './OnboardingIntroStep';
 import OnboardingStep1 from './OnboardingStep1';
 import OnboardingStep2 from './OnboardingStep2';
 import OnboardingStep3 from './OnboardingStep3';
 import OnboardingStep4 from './OnboardingStep4';
-import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
 
 type OnboardingModalProps = {
   onClose?: () => void;
@@ -71,7 +71,8 @@ export default function OnboardingModal({
     () =>
       candidateSubscriptionId &&
       candidateSubscriptionId !== 'error' &&
-      candidateSubscriptionId !== 'error-existing-subscription-hardware-wallet-explicit-sign' &&
+      candidateSubscriptionId !==
+        'error-existing-subscription-hardware-wallet-explicit-sign' &&
       candidateSubscriptionId !== 'pending' &&
       candidateSubscriptionId !== 'retry',
     [candidateSubscriptionId],

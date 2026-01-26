@@ -6908,18 +6908,11 @@ export function getRewardsHasAccountOptedIn(
 
 export function getRewardsCandidateSubscriptionId(
   primaryWalletGroupAccounts?: InternalAccount[],
-): ThunkAction<
-  Promise<string | null>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+): ThunkAction<Promise<string | null>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     return await submitRequestToBackground<string | null>(
       'getRewardsCandidateSubscriptionId',
-      primaryWalletGroupAccounts
-        ? [primaryWalletGroupAccounts]
-        : undefined,
+      primaryWalletGroupAccounts ? [primaryWalletGroupAccounts] : undefined,
     );
   };
 }

@@ -15,11 +15,11 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../../pages/multichain-accounts/account-details/account-type-utils';
 import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
-import { useRequestHardwareWalletAccess } from './useRequestHardwareWalletAccess';
 import { useMultichainSelector } from '../useMultichainSelector';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
-import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
+import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
+import { useRequestHardwareWalletAccess } from './useRequestHardwareWalletAccess';
 
 type UseLinkAccountAddressResult = {
   linkAccountAddress: (account: InternalAccount) => Promise<boolean>;
@@ -37,7 +37,8 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
   const { requestHardwareWalletAccess } = useRequestHardwareWalletAccess();
 
   // Get accounts for the primary account group
-  const { accounts: primaryWalletGroupAccounts } = usePrimaryWalletGroupAccounts();
+  const { accounts: primaryWalletGroupAccounts } =
+    usePrimaryWalletGroupAccounts();
 
   useEffect(() => {
     isMountedRef.current = true;

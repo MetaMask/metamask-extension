@@ -524,7 +524,8 @@ describe('RewardsPointsBalance', () => {
     } as ReturnType<typeof useOptIn>);
 
     setSelectorValues({
-      candidateSubscriptionId: 'error-existing-subscription-hardware-wallet-explicit-sign',
+      candidateSubscriptionId:
+        'error-existing-subscription-hardware-wallet-explicit-sign',
     });
 
     render(<RewardsPointsBalance />);
@@ -551,7 +552,8 @@ describe('RewardsPointsBalance', () => {
     } as ReturnType<typeof useOptIn>);
 
     setSelectorValues({
-      candidateSubscriptionId: 'error-existing-subscription-hardware-wallet-explicit-sign',
+      candidateSubscriptionId:
+        'error-existing-subscription-hardware-wallet-explicit-sign',
     });
 
     render(<RewardsPointsBalance />);
@@ -574,7 +576,8 @@ describe('RewardsPointsBalance', () => {
     } as ReturnType<typeof useOptIn>);
 
     setSelectorValues({
-      candidateSubscriptionId: 'error-existing-subscription-hardware-wallet-explicit-sign',
+      candidateSubscriptionId:
+        'error-existing-subscription-hardware-wallet-explicit-sign',
     });
 
     render(<RewardsPointsBalance />);

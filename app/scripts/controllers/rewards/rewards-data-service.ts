@@ -696,9 +696,7 @@ export class RewardsDataService {
    * @param body.address
    * @returns The challenge DTO.
    */
-  async generateChallenge(body: {
-    address: string;
-  }): Promise<ChallengeDto> {
+  async generateChallenge(body: { address: string }): Promise<ChallengeDto> {
     const response = await this.makeRequest('/auth/challenge/generate', {
       method: 'POST',
       body: JSON.stringify(body),

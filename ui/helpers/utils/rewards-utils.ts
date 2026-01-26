@@ -32,4 +32,3 @@ export const formatAccountToCaipAccountId = (
     return null;
   }
 };
-

@@ -57,7 +57,10 @@ const OnboardingIntroStep: React.FC = () => {
   );
   const optinAllowedForGeoError = useSelector(selectOptinAllowedForGeoError);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
-  const candidateSubscriptionIdError = candidateSubscriptionId === 'error' || candidateSubscriptionId === 'error-existing-subscription-hardware-wallet-explicit-sign';
+  const candidateSubscriptionIdError =
+    candidateSubscriptionId === 'error' ||
+    candidateSubscriptionId ===
+      'error-existing-subscription-hardware-wallet-explicit-sign';
   const rewardsActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
   );

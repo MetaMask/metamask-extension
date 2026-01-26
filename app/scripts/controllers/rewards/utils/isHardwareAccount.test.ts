@@ -94,4 +94,3 @@ describe('isHardwareAccount', () => {
     expect(result).toBe(false);
   });
 });
-

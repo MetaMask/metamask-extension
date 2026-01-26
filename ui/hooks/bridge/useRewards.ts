@@ -7,9 +7,7 @@ import {
   formatChainIdToCaip,
   selectBridgeQuotes,
 } from '@metamask/bridge-controller';
-import {
-  type CaipAccountId,
-} from '@metamask/utils';
+import { type CaipAccountId } from '@metamask/utils';
 import log from 'loglevel';
 import { debounce } from 'lodash';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -33,9 +31,7 @@ import {
   EstimatedPointsDto,
 } from '../../../shared/types/rewards';
 import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
-import {
-  getInternalAccountBySelectedAccountGroupAndCaip,
-} from '../../selectors/multichain-accounts/account-tree';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
   selectRewardsAccountLinkedTimestamp,
   selectRewardsEnabled,
@@ -251,9 +247,7 @@ export const useRewardsWithQuote = ({
       try {
         // Check if there's a subscription first
         const candidateSubscriptionId = (await dispatch(
-          getRewardsCandidateSubscriptionId(
-            primaryWalletGroupAccounts,
-          ),
+          getRewardsCandidateSubscriptionId(primaryWalletGroupAccounts),
         )) as unknown as string | null;
 
         if (!candidateSubscriptionId) {

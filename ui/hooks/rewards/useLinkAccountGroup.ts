@@ -3,9 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import {
-  getInternalAccountsFromGroupById,
-} from '../../selectors/multichain-accounts/account-tree';
+import { getInternalAccountsFromGroupById } from '../../selectors/multichain-accounts/account-tree';
 import {
   rewardsGetOptInStatus,
   rewardsIsOptInSupported,
@@ -46,7 +44,8 @@ export const useLinkAccountGroup = (
   const trackEvent = useContext(MetaMetricsContext);
 
   // Get accounts for the primary account group
-  const { accounts: primaryWalletGroupAccounts } = usePrimaryWalletGroupAccounts();
+  const { accounts: primaryWalletGroupAccounts } =
+    usePrimaryWalletGroupAccounts();
 
   const triggerAccountLinkingEvent = useCallback(
     (event: MetaMetricsEventName, account: InternalAccount) => {

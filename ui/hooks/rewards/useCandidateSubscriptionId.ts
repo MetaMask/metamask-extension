@@ -30,7 +30,8 @@ export const useCandidateSubscriptionId =
     );
 
     // Get accounts for the primary account group
-    const { accounts: primaryWalletGroupAccounts } = usePrimaryWalletGroupAccounts();
+    const { accounts: primaryWalletGroupAccounts } =
+      usePrimaryWalletGroupAccounts();
 
     const isLoading = useRef(false);
 
@@ -53,9 +54,7 @@ export const useCandidateSubscriptionId =
         isLoading.current = true;
 
         const candidateId = (await dispatch(
-          getRewardsCandidateSubscriptionId(
-            primaryWalletGroupAccounts,
-          ),
+          getRewardsCandidateSubscriptionId(primaryWalletGroupAccounts),
         )) as unknown as string | null;
         dispatch(setCandidateSubscriptionId(candidateId));
       } catch (error) {
@@ -67,9 +66,13 @@ export const useCandidateSubscriptionId =
         if (
           error instanceof Error &&
           error.message ===
-          'Primary wallet account group has opted in but is not authenticated yet'
+            'Primary wallet account group has opted in but is not authenticated yet'
         ) {
-          dispatch(setCandidateSubscriptionId('error-existing-subscription-hardware-wallet-explicit-sign'));
+          dispatch(
+            setCandidateSubscriptionId(
+              'error-existing-subscription-hardware-wallet-explicit-sign',
+            ),
+          );
         } else {
           dispatch(setCandidateSubscriptionId('error'));
         }
