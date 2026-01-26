@@ -389,7 +389,7 @@
     "@metamask/snaps-execution-environments": "^10.4.0",
     "@metamask/snaps-rpc-methods": "^14.2.0",
     "@metamask/snaps-sdk": "^10.4.0",
-    "@metamask/snaps-utils": "^12.0.0",
+    "@metamask/snaps-utils": "^12.0.1",
     "@metamask/solana-wallet-snap": "^2.6.1",
     "@metamask/solana-wallet-standard": "^0.6.0",
     "@metamask/storage-service": "^0.0.1",
