@@ -332,6 +332,30 @@ async function handleLedgerAction(
       // This is a no-op but we return true for compatibility
       return true;
 
+    case LedgerAction.getAppNameAndVersion: {
+      if (!transport) {
+        await makeApp();
+      }
+      if (!transport) {
+        throw new Error('No transport available');
+      }
+      // Use raw transport command (0xb0, 0x01) to get app name and version
+      const response = await transport.send(0xb0, 0x01, 0x00, 0x00);
+      let offset = 1; // Skip format byte
+      const nameLength = response[offset];
+      offset += 1;
+      const appName = response
+        .subarray(offset, offset + nameLength)
+        .toString('ascii');
+      offset += nameLength;
+      const versionLength = response[offset];
+      offset += 1;
+      const version = response
+        .subarray(offset, offset + versionLength)
+        .toString('ascii');
+      return { appName, version };
+    }
+
     case LedgerAction.getPublicKey:
       if (!params?.hdPath || typeof params.hdPath !== 'string') {
         throw new Error('Missing hdPath parameter');
