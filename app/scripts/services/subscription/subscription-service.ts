@@ -529,6 +529,7 @@ export class SubscriptionService {
         ...this.#messenger.call('PreferencesController:getState'),
         ...this.#messenger.call('SmartTransactionsController:getState'),
         ...this.#messenger.call('NetworkController:getState'),
+        ...this.#messenger.call('RemoteFeatureFlagController:getState'),
       },
     };
     // @ts-expect-error Smart transaction selector types does not match controller state
@@ -538,6 +539,8 @@ export class SubscriptionService {
     return isSendBundleSupportedChain && isSmartTransaction;
   }
 
+  // Deprecated: remove in follow-up clean up task
+  // Clean-up task https://consensyssoftware.atlassian.net/browse/STX-371
   async #getSwapsFeatureFlagsFromNetwork(): Promise<
     SwapsControllerState | undefined
   > {

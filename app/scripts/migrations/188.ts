@@ -1,57 +1,126 @@
-import browser from 'webextension-polyfill';
-import type { Hex } from '@metamask/utils';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
+import { escapeRegExp } from 'lodash';
+import { captureException } from '../../../shared/lib/sentry';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-type TokensChainsCache = Record<
-  Hex,
-  {
-    timestamp: number;
-    data: Record<string, unknown>;
-  }
->;
-
-type TokenListControllerState = {
-  tokensChainsCache?: TokensChainsCache;
-  preventPollingOnNetworkRestart?: boolean;
-};
-
 export const version = 188;
 
-// Storage key constants matching TokenListController and StorageService
-const STORAGE_KEY_PREFIX = 'storageService:';
-const CONTROLLER_NAME = 'TokenListController';
-const CACHE_KEY_PREFIX = 'tokensChainsCache';
+const MONAD_CHAIN_ID: Hex = CHAIN_IDS.MONAD;
 
 /**
- * Build the full storage key for a chain's token list cache.
+ * Type guard to validate if an object has a valid RPC endpoint structure with url property.
  *
- * @param chainId - The chain ID (hex string like '0x1')
- * @returns Full storage key: storageService:TokenListController:tokensChainsCache:{chainId}
+ * @param object - The object to validate.
+ * @returns True if the object has a valid RPC endpoint structure.
  */
-function makeStorageKey(chainId: string): string {
-  return `${STORAGE_KEY_PREFIX}${CONTROLLER_NAME}:${CACHE_KEY_PREFIX}:${chainId}`;
+function isValidRpcEndpoint(object: unknown): object is {
+  url: string;
+  type?: RpcEndpointType;
+  failoverUrls?: string[];
+  [key: string]: unknown;
+} {
+  return (
+    isObject(object) &&
+    hasProperty(object, 'url') &&
+    typeof object.url === 'string' &&
+    (!hasProperty(object, 'failoverUrls') ||
+      (hasProperty(object, 'failoverUrls') &&
+        Array.isArray(object.failoverUrls) &&
+        object.failoverUrls.every((url) => typeof url === 'string')))
+  );
 }
 
 /**
- * This migration moves TokenListController's tokensChainsCache from persisted
- * state to browser.storage.local via StorageService format.
+ * Checks if an RPC endpoint is an Infura endpoint.
  *
- * Background:
- * - Previously, tokensChainsCache was persisted as part of the controller state
- * - Now, TokenListController uses StorageService to persist per-chain cache files
- * - This migration ensures existing users don't lose their cached token lists
+ * @param rpcEndpoint - The RPC endpoint to check.
+ * @param rpcEndpoint.url - The URL of the RPC endpoint.
+ * @param rpcEndpoint.type - The type of the RPC endpoint (optional).
+ * @returns True if the endpoint is an Infura endpoint.
+ */
+function isInfuraEndpoint(rpcEndpoint: {
+  url: string;
+  type?: RpcEndpointType;
+  [key: string]: unknown;
+}): boolean {
+  // Check if type is explicitly Infura
+  if (rpcEndpoint.type === RpcEndpointType.Infura) {
+    return true;
+  }
+
+  // Check if URL matches Infura pattern
+  // All featured networks that use Infura get added as custom RPC
+  // endpoints, not Infura RPC endpoints, so we need to check the URL pattern
+  const infuraUrlPattern = /^https:\/\/(.+?)\.infura\.io\/v3\//u;
+  const match = rpcEndpoint.url.match(infuraUrlPattern);
+
+  if (!match) {
+    return false;
+  }
+
+  // If INFURA_PROJECT_ID is set, verify it matches for more precise detection
+  if (process.env.INFURA_PROJECT_ID) {
+    const expectedUrl = `https://${match[1]}.infura.io/v3/${escapeRegExp(
+      process.env.INFURA_PROJECT_ID,
+    )}`;
+    return rpcEndpoint.url.startsWith(expectedUrl);
+  }
+
+  // If INFURA_PROJECT_ID is not set, just check if it matches the Infura pattern
+  return true;
+}
+
+/**
+ * Type guard to validate if an object has a valid network configuration with rpcEndpoints.
  *
- * The migration:
- * 1. Reads tokensChainsCache from TokenListController state
- * 2. For each chain, saves the cache to browser.storage.local
- * 3. Clears tokensChainsCache from state (since persist: false now)
+ * @param object - The object to validate.
+ * @returns True if the object has a valid network configuration structure.
+ */
+function isValidNetworkConfiguration(object: unknown): object is {
+  rpcEndpoints: unknown[];
+  [key: string]: unknown;
+} {
+  return (
+    isObject(object) &&
+    hasProperty(object, 'rpcEndpoints') &&
+    Array.isArray(object.rpcEndpoints)
+  );
+}
+
+/**
+ * Type guard to validate if the state has a valid NetworkController with networkConfigurationsByChainId.
  *
- * @param versionedData - Versioned MetaMask extension state
- * @param changedControllers - Set of controller names that were modified
+ * @param state - The state object to validate.
+ * @returns True if the state has a valid NetworkController structure.
+ */
+function hasValidNetworkController(
+  state: Record<string, unknown>,
+): state is Record<string, unknown> & {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  NetworkController: {
+    networkConfigurationsByChainId: Record<string, unknown>;
+  };
+} {
+  return (
+    hasProperty(state, 'NetworkController') &&
+    isObject(state.NetworkController) &&
+    hasProperty(state.NetworkController, 'networkConfigurationsByChainId') &&
+    isObject(state.NetworkController.networkConfigurationsByChainId)
+  );
+}
+
+/**
+ * This migration adds QuickNode failover URL to Monad network RPC endpoints
+ * that use Infura and don't already have a failover URL configured.
+ *
+ * @param versionedData - The versioned MetaMask extension state to mutate in place.
+ * @param changedControllers - Set of controller keys that have been changed.
  */
 export async function migrate(
   versionedData: VersionedData,
@@ -59,66 +128,82 @@ export async function migrate(
 ): Promise<void> {
   versionedData.meta.version = version;
 
-  const tokenListControllerState = versionedData.data
-    .TokenListController as TokenListControllerState;
-
-  // Check if there's data to migrate
-  if (!tokenListControllerState?.tokensChainsCache) {
-    return;
-  }
-
-  const chainsCache = tokenListControllerState.tokensChainsCache;
-  const chainIds = Object.keys(chainsCache) as Hex[];
-
-  if (chainIds.length === 0) {
-    return;
-  }
-
   try {
-    // Check which chains already exist in storage (don't overwrite)
-    const existingKeys = await browser.storage.local.get(
-      chainIds.map(makeStorageKey),
+    if (hasValidNetworkController(versionedData.data)) {
+      transformState(versionedData.data);
+      changedControllers.add('NetworkController');
+    }
+  } catch (error) {
+    console.error(error);
+    const newError = new Error(
+      `Migration #${version}: ${getErrorMessage(error)}`,
     );
+    captureException(newError);
+    // Re-throw to let the migrator handle the error
+    throw newError;
+  }
+}
 
-    // Filter to chains that need migration (not already in storage)
-    const chainsToMigrate = chainIds.filter((chainId) => {
-      const storageKey = makeStorageKey(chainId);
-      return !(storageKey in existingKeys);
-    });
+function transformState(
+  state: Record<string, unknown> & {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    NetworkController: {
+      networkConfigurationsByChainId: Record<string, unknown>;
+    };
+  },
+): void {
+  const { networkConfigurationsByChainId } = state.NetworkController;
 
-    if (chainsToMigrate.length === 0) {
-      console.log(
-        `Migration #${version}: All ${chainIds.length} chain(s) already migrated to StorageService`,
-      );
-    } else {
-      // Build the storage object for all chains to migrate
-      const storageData: Record<string, unknown> = {};
-      for (const chainId of chainsToMigrate) {
-        const storageKey = makeStorageKey(chainId);
-        storageData[storageKey] = chainsCache[chainId];
+  // Get Monad network configuration
+  const monadNetworkConfiguration =
+    networkConfigurationsByChainId[MONAD_CHAIN_ID];
+
+  if (!monadNetworkConfiguration) {
+    // Monad network doesn't exist, nothing to migrate
+    return;
+  }
+
+  if (!isValidNetworkConfiguration(monadNetworkConfiguration)) {
+    // Invalid network configuration structure - log to Sentry as this is unexpected
+    captureException(
+      new Error(
+        `Migration ${version}: Monad network configuration has invalid rpcEndpoints structure.`,
+      ),
+    );
+    return;
+  }
+
+  // Update RPC endpoints to add failover URL if needed
+  monadNetworkConfiguration.rpcEndpoints =
+    monadNetworkConfiguration.rpcEndpoints.map((rpcEndpoint) => {
+      if (!isValidRpcEndpoint(rpcEndpoint)) {
+        // Skip invalid endpoints - this is expected for some edge cases
+        return rpcEndpoint;
       }
 
-      // Save all chains to browser.storage.local in a single call
-      await browser.storage.local.set(storageData);
+      // Skip if endpoint already has failover URLs
+      if (
+        rpcEndpoint.failoverUrls &&
+        Array.isArray(rpcEndpoint.failoverUrls) &&
+        rpcEndpoint.failoverUrls.length > 0
+      ) {
+        return rpcEndpoint;
+      }
 
-      console.log(
-        `Migration #${version}: Migrated ${chainsToMigrate.length} chain(s) from TokenListController state to StorageService`,
-      );
-    }
+      // Only add failover URL to Infura endpoints
+      if (!isInfuraEndpoint(rpcEndpoint)) {
+        return rpcEndpoint;
+      }
 
-    // Clear tokensChainsCache from state since it's now persisted separately
-    // The controller has persist: false for this field, so this just cleans up
-    // any leftover data in state
-    tokenListControllerState.tokensChainsCache = {};
-    changedControllers.add('TokenListController');
-  } catch (error) {
-    console.error(
-      `Migration #${version}: Failed to migrate tokensChainsCache to StorageService:`,
-      error,
-    );
-    // Don't fail the migration - the cache will self-heal when fetchTokenList runs
-    // Just clear the state to prevent double-storage
-    tokenListControllerState.tokensChainsCache = {};
-    changedControllers.add('TokenListController');
-  }
+      // Add QuickNode failover URL
+      const quickNodeUrl = process.env.QUICKNODE_MONAD_URL;
+      if (quickNodeUrl) {
+        return {
+          ...rpcEndpoint,
+          failoverUrls: [quickNodeUrl],
+        };
+      }
+
+      return rpcEndpoint;
+    });
 }

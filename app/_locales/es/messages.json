@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Añadir una cuenta o una billetera"
   },
-  "addAccountToMetaMask": {
-    "message": "Agregar cuenta a MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que adquirió con MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Agregar billetera"
-  },
-  "addingAccount": {
-    "message": "Añadiendo cuenta"
   },
   "additionalNetworks": {
     "message": "Redes adicionales"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "No pudimos obtener ningún dato histórico"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFT"
-  },
   "assetOptions": {
     "message": "Opciones de activos"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Activos"
@@ -1080,12 +1068,6 @@
   "bridgeTo": {
     "message": "Puentear a"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Si agregó este token manualmente, asegúrese de que conoce los riesgos para sus fondos antes de puentear."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "No podemos verificar este token."
-  },
   "bridgeTransactionProgress": {
     "message": "Transacción $1 de 2"
   },
@@ -1271,9 +1253,6 @@
   },
   "close": {
     "message": "Cerrar"
-  },
-  "closeExtension": {
-    "message": "Cerrar extensión"
   },
   "closeSlide": {
     "message": "Cerrar $1",
@@ -3162,9 +3141,6 @@
   "insufficientFunds": {
     "message": "Fondos insuficientes."
   },
-  "insufficientFundsForGas": {
-    "message": "Fondos insuficientes para el gas"
-  },
   "insufficientFundsSend": {
     "message": "Fondos insuficientes"
   },
@@ -3891,9 +3867,6 @@
     "message": "Debe seleccionar un archivo para la importación.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "No se pueden enviar cantidades negativas de ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "No se pueden enviar montos negativos o nulos de activos."
   },
@@ -3934,18 +3907,6 @@
   "networkName": {
     "message": "Nombre de la red"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3961,26 +3922,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Red de pruebas"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Opciones de red"
@@ -4542,9 +4491,6 @@
   },
   "openWallet": {
     "message": "Abrir billetera"
-  },
-  "optional": {
-    "message": "Opcional"
   },
   "options": {
     "message": "Opciones"
@@ -5835,24 +5781,11 @@
   "sendBugReport": {
     "message": "Envíenos un informe de error."
   },
-  "sendNoContactsConversionText": {
-    "message": "haga clic aquí"
-  },
-  "sendNoContactsDescription": {
-    "message": "Los contactos le permiten enviar transacciones de forma segura a otra cuenta múltiples veces. Para crear un contacto, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "Aún no tiene ningún contacto"
-  },
   "sendSelectReceiveAsset": {
     "message": "Seleccione el activo a recibir"
   },
   "sendSelectSendAsset": {
     "message": "Seleccione el activo a enviar"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Al hacer clic en este botón se iniciará inmediatamente su transacción de canje. Revise los detalles de la transacción antes de continuar."
   },
   "sendingAsset": {
     "message": "Enviando $1"
@@ -5863,10 +5796,6 @@
   "sendingNativeAsset": {
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Advertencia: está a punto de enviar un contrato de token que podría dar lugar a una pérdida de fondos. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Enviado"
@@ -7272,9 +7201,6 @@
     "message": "El intercambio de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Las tarifas de gas son estimadas y fluctuarán en función del tráfico de la red y la complejidad de las transacciones."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask no obtiene dinero de las tarifas de gas. Estas tarifas son estimaciones y pueden cambiar según el nivel de tráfico de la red y la complejidad de la transacción. Más información $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7286,9 +7212,6 @@
   "swapGasFeesIncluded": {
     "message": " Incluida"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Más información sobre las tarifas de gas"
-  },
   "swapGasFeesSplit": {
     "message": "Las tarifas de gas de la pantalla anterior se dividen entre estas dos transacciones."
   },
@@ -7297,10 +7220,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "MetaMask paga esta tarifa de red, por lo que puedes realizar canjes sin tener $1 en tu cuenta."
-  },
-  "swapGasFeesSummary": {
-    "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Esta cotización incorpora las tarifas de gas ajustando la cantidad de tokens enviados o recibidos. Puede recibir ETH en una transacción independiente en su lista de actividades."
@@ -7318,10 +7237,6 @@
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "La cotización refleja la tarifa de MetaMask del $1 %",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Incluye una tarifa MetaMask de $1% - $2",
@@ -7574,9 +7489,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "¿Le permite a este sitio cambiar la red?"
   },
-  "switchInputCurrency": {
-    "message": "Cambiar moneda de entrada"
-  },
   "switchNetwork": {
     "message": "Cambiar red"
   },
@@ -7732,9 +7644,6 @@
   },
   "tokensInCollection": {
     "message": "Tokens en la colección"
-  },
-  "tooltipApproveButton": {
-    "message": "Comprendo"
   },
   "tooltipSatusConnected": {
     "message": "conectado"
@@ -8290,9 +8199,6 @@
     "message": "Usted envió",
     "description": "Label indicating the amount and asset the user sent."
   },
-  "yourAccounts": {
-    "message": "Sus cuentas"
-  },
   "yourActivity": {
     "message": "Su actividad"
   },
@@ -8301,9 +8207,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Sus NFT podrían estar en riesgo"
-  },
-  "yourNetworks": {
-    "message": "Sus redes"
   },
   "yourPrivateSeedPhrase": {
     "message": "Su frase secreta de recuperación"
