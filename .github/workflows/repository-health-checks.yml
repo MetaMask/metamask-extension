@@ -44,6 +44,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: yarn audit
 
+      - name: Audit patched packages
+        if: ${{ !cancelled() }}
+        run: yarn audit:patched --verbose --severity=moderate
+
       - name: Detect yarn lock deduplications
         if: ${{ !cancelled() }}
         run: yarn dedupe --check

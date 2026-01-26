@@ -132,6 +132,7 @@
     "check-template-and-add-labels": "ts-node ./.github/scripts/check-template-and-add-labels.ts",
     "create-bug-report-issue": "ts-node ./.github/scripts/create-bug-report-issue.ts",
     "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'",
+    "audit:patched": "tsx development/audit-patched-packages.ts --severity=moderate",
     "download-builds": "tsx .devcontainer/download-builds.ts",
     "stable-sync-legacy": "node development/stable-sync-legacy.js",
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
