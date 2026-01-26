@@ -12,10 +12,13 @@ import {
   type HardwareWalletAdapterOptions,
 } from '../types';
 import {
+  checkWebHidPermission,
   getConnectedLedgerDevices,
   isWebHidAvailable,
+  requestWebHidPermission,
   subscribeToWebHidEvents,
 } from '../webConnectionUtils';
+import { HardwareConnectionPermissionState } from '../types';
 
 /**
  * Ledger adapter implementation
@@ -147,7 +150,10 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         this.connected = false;
         this.currentDeviceId = null;
 
-        const hwError = reconstructHardwareWalletError(error, HardwareWalletType.Ledger);
+        const hwError = reconstructHardwareWalletError(
+          error,
+          HardwareWalletType.Ledger,
+        );
 
         const deviceEvent = getDeviceEventForError(hwError.code);
 
@@ -187,6 +193,32 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    */
   isConnected(): boolean {
     return this.connected;
+  }
+
+  /**
+   * Check WebHID permission state
+   * This does NOT require a user gesture and can be called at any time.
+   *
+   * @returns The current permission state for WebHID access
+   */
+  async checkPermission(): Promise<HardwareConnectionPermissionState> {
+    return checkWebHidPermission(HardwareWalletType.Ledger);
+  }
+
+  /**
+   * Request WebHID permission from the user.
+   * IMPORTANT: This method MUST be called from within a user gesture handler
+   * (e.g., button click) to avoid the error:
+   * "Failed to execute 'requestDevice' on 'HID': Must be handling a user gesture to show a permission request."
+   *
+   * @returns true if permission was granted and a device was selected
+   */
+  async requestPermission(): Promise<boolean> {
+    if (!isWebHidAvailable()) {
+      return false;
+    }
+
+    return requestWebHidPermission(HardwareWalletType.Ledger);
   }
 
   /**

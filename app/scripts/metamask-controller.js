@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   createAsyncMiddleware,
   createScaffoldMiddleware,
@@ -19,7 +20,6 @@ import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
-import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
@@ -436,6 +436,10 @@ import {
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import {
+  isRetryableHardwareWalletError,
+  parseErrorByType,
+} from '../../ui/contexts/hardware-wallets';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -8720,9 +8724,15 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} opts.txId - The transaction ID to approve
    * @param {object} opts.txMeta - The transaction metadata
    * @param {string} opts.actionId - The action ID for tracking
+   * @param {string} opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
    * @throws {HardwareWalletError} When hardware wallet error occurs (with recreatedTxId if recreation succeeded)
    */
-  approveHardwareTransaction = async ({ txId, txMeta, actionId }) => {
+  approveHardwareTransaction = async ({
+    txId,
+    txMeta,
+    actionId,
+    walletType,
+  }) => {
     try {
       // Resolve the pending approval (this triggers the hardware wallet signing)
       await this.approvalController.accept(
@@ -8730,39 +8740,72 @@ export default class MetamaskController extends EventEmitter {
         { txMeta, actionId },
         { waitForResult: true },
       );
-      // Success - transaction approved and submitted
     } catch (error) {
-      if (!(error instanceof HardwareWalletError)) {
-        // Non-hardware wallet errors - just rethrow
+      // This error is not usable because it will lose its type when going to the UI
+      // This is only used to get the error code
+      const hwWalletError = parseErrorByType(error, walletType);
+
+      console.log('[approveHardwareTransaction] Parsed HardwareWalletError:', {
+        code: hwWalletError.code,
+        message: hwWalletError.message,
+        isRetryable: isRetryableHardwareWalletError(hwWalletError),
+      });
+
+      if (!isRetryableHardwareWalletError(hwWalletError)) {
+        console.log(
+          '[approveHardwareTransaction] Error is NOT retryable, throwing original error',
+        );
         throw error;
       }
 
+      console.log(
+        '[approveHardwareTransaction] Error IS retryable, attempting to recreate transaction',
+      );
+
       // Hardware wallet error - attempt to recreate transaction
+      let newTxMeta = null;
       let approvalFlowId = null;
+
       try {
         const { id } = this.approvalController.startFlow({
           loadingText: 'Recreating transaction...',
         });
         approvalFlowId = id;
+        console.log('[approveHardwareTransaction] Approval flow started:', id);
 
-        const newTxMeta = await this.#recreateTransaction(txMeta);
-        this.#endApprovalFlowSafely(approvalFlowId);
+        newTxMeta = await this.#recreateTransaction({
+          ...txMeta,
+          hwTxRetry: true,
+        });
 
-        // Add recreatedTxId to error metadata and rethrow
-        error.metadata = { ...error.metadata, recreatedTxId: newTxMeta?.id };
-        throw error;
+        console.log(
+          '[approveHardwareTransaction] Created new transaction:',
+          { newTxMeta },
+        );
       } catch (recreateError) {
-        this.#endApprovalFlowSafely(approvalFlowId);
-
-        // If recreation itself threw, rethrow it (it may be a HardwareWalletError with metadata)
-        if (recreateError instanceof HardwareWalletError) {
-          throw recreateError;
-        }
-
-        // Recreation failed - log and rethrow original HW error without recreatedTxId
         log.error('Failed to recreate transaction:', recreateError);
-        throw error;
+        // Recreation failed - throw HW error without recreatedTxId
+        newTxMeta = null;
+      } finally {
+        this.#endApprovalFlowSafely(approvalFlowId);
       }
+
+      // Throw a JsonRpcError with hardware wallet error data preserved
+      // This ensures the error properties survive serialization across the RPC boundary
+      throw rpcErrors.internal({
+        message: hwWalletError.message,
+        data: {
+          code: hwWalletError.code,
+          severity: hwWalletError.severity,
+          category: hwWalletError.category,
+          userMessage: hwWalletError.userMessage,
+          metadata: {
+            ...hwWalletError.metadata,
+            // Include recreatedTxId only if recreation succeeded
+            ...(newTxMeta && { recreatedTxId: newTxMeta.id }),
+          },
+        },
+      });
     }
   };
 

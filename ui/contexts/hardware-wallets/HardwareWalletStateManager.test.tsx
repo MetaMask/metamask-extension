@@ -312,7 +312,7 @@ describe('HardwareWalletStateManager', () => {
             });
           });
 
-          const connectionState = result.current.state.connectionState;
+          const { connectionState } = result.current.state;
           expect(connectionState.status).toBe(ConnectionStatus.ErrorState);
           if (connectionState.status === ConnectionStatus.ErrorState) {
             expect(connectionState.reason).toBe('Device disconnected');

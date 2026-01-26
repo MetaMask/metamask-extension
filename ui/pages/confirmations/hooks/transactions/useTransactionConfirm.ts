@@ -130,19 +130,38 @@ export function useTransactionConfirm() {
       navigateNext(transactionMeta.id);
       resetTransactionState();
     } catch (error) {
+      const isHardwareWalletError = error instanceof HardwareWalletError;
+
+      console.log('[useTransactionConfirm] Caught error:', {
+        error,
+        isHardwareWalletError,
+        errorCode: isHardwareWalletError ? error.code : undefined,
+        errorMetadata: isHardwareWalletError ? error.metadata : undefined,
+        metadataKeys:
+          isHardwareWalletError && error.metadata
+            ? Object.keys(error.metadata)
+            : undefined,
+      });
+
+      if (!isHardwareWalletError) {
+        // Non-hardware wallet errors - just rethrow
+        console.log(
+          '[useTransactionConfirm] Not a HardwareWalletError, rethrowing',
+        );
+        throw error;
+      }
+
       // Handle shield subscription navigation cleanup for any error
       handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
         newTransactionMeta,
       );
-
-      // Hardware wallet error with recreatedTxId means user rejected and transaction was recreated
-      if (
-        error instanceof HardwareWalletError &&
-        isRetryableHardwareWalletError(error)
-      ) {
+      if (isHardwareWalletError && isRetryableHardwareWalletError(error)) {
         const recreatedTxId = error.metadata?.recreatedTxId as
           | string
           | undefined;
+
+        console.log('[useTransactionConfirm] recreatedTxId:', recreatedTxId);
+        console.log('[useTransactionConfirm] Full metadata:', error.metadata);
 
         if (recreatedTxId) {
           // Navigate to the recreated transaction and show informational modal
@@ -154,6 +173,7 @@ export function useTransactionConfirm() {
         }
       }
 
+      console.log('[useTransactionConfirm] Not showing modal, rethrowing');
       throw error;
     }
   }, [

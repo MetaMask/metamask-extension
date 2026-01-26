@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react';
+import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   getConnectionStateFromError,
   createHardwareWalletError,
 } from './errors';
-import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { ConnectionState } from './connectionState';
 import { createAdapterForHardwareWalletType } from './adapters/factory';
 import {
@@ -12,7 +12,10 @@ import {
   type HardwareWalletAdapterOptions,
   type DeviceEventPayload,
 } from './types';
-import { getHardwareWalletDeviceId } from './webConnectionUtils';
+import {
+  getHardwareWalletDeviceId,
+  requestHardwareWalletPermission,
+} from './webConnectionUtils';
 import { type HardwareWalletRefs } from './HardwareWalletStateManager';
 
 type IsLatestAttempt = () => boolean;
@@ -331,6 +334,28 @@ export const useHardwareWalletConnection = ({
     async (targetDeviceId?: string): Promise<boolean> => {
       const effectiveDeviceId = targetDeviceId || refs.deviceIdRef.current;
       const abortSignal = refs.abortControllerRef.current?.signal;
+      const currentWalletType = refs.walletTypeRef.current;
+      const isAlreadyConnected = refs.adapterRef.current?.isConnected();
+
+      // CRITICAL: If not connected, request permission FIRST before any other
+      // async operations. This must be the first await to preserve the user
+      // gesture chain. WebHID/WebUSB requestDevice() requires an active user gesture.
+      if (!isAlreadyConnected && currentWalletType) {
+        // eslint-disable-next-line no-console
+        console.log(
+          '[HardwareWalletConnection] Requesting permission for',
+          currentWalletType,
+        );
+        const permissionGranted =
+          await requestHardwareWalletPermission(currentWalletType);
+        if (!permissionGranted) {
+          // eslint-disable-next-line no-console
+          console.log(
+            '[HardwareWalletConnection] Permission denied or user cancelled',
+          );
+          return false;
+        }
+      }
 
       if (abortSignal?.aborted) {
         // eslint-disable-next-line no-console
@@ -338,10 +363,9 @@ export const useHardwareWalletConnection = ({
         return false;
       }
 
-      if (!refs.adapterRef.current?.isConnected()) {
+      if (!isAlreadyConnected) {
         // eslint-disable-next-line no-console
         console.log('[HardwareWalletConnection] Not connected, connecting');
-        const currentWalletType = refs.walletTypeRef.current;
 
         if (!currentWalletType) {
           return false;

@@ -84,6 +84,10 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import {
+  reconstructHardwareWalletError,
+  HardwareWalletType,
+} from '../contexts/hardware-wallets';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -128,7 +132,6 @@ import {
   LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
-import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
@@ -2100,10 +2103,12 @@ export function updateAndApproveTx(
 
     if (isHardwareAccount(fromAccount)) {
       console.log('[Debug] Approving hardware transaction');
+      const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
       return approveHardwareTransaction(
         dispatch,
         txMeta,
         loadingIndicatorMessage,
+        keyringType,
       );
     }
 
@@ -2146,24 +2151,51 @@ async function approveTransaction(
 }
 
 /**
+ * Convert keyring type to hardware wallet type for error reconstruction
+ *
+ * @param keyringType - The keyring type from account metadata
+ * @returns The hardware wallet type or null if not a hardware wallet
+ */
+function keyringTypeToHardwareWalletType(
+  keyringType?: string | null,
+): HardwareWalletType | null {
+  if (!keyringType) {
+    return null;
+  }
+
+  switch (keyringType) {
+    case KeyringTypes.ledger:
+      return HardwareWalletType.Ledger;
+    case KeyringTypes.trezor:
+      return HardwareWalletType.Trezor;
+    default:
+      return null;
+  }
+}
+
+/**
  * Approve a hardware wallet transaction using the background API.
  * This uses an approval flow to keep the popup open during signing.
  * If the user rejects on the hardware device, throws HardwareWalletError
  * with the recreated transaction ID in metadata.
  *
  * @param dispatch - Redux dispatch function
- * @param _getState - Redux getState function
  * @param txMeta - The transaction metadata
  * @param loadingIndicatorMessage - Message to show during signing
+ * @param keyringType - The keyring type for the hardware wallet account
  * @throws HardwareWalletError - When hardware wallet error occurs
  */
 async function approveHardwareTransaction(
   dispatch: MetaMaskReduxDispatch,
   txMeta: TransactionMeta,
   loadingIndicatorMessage: string,
+  keyringType: string,
 ): Promise<void> {
   dispatch(setPendingHardwareSigning(true));
   dispatch(showLoadingIndication(loadingIndicatorMessage));
+
+  const walletType =
+    keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
 
   try {
     await submitRequestToBackground('approveHardwareTransaction', [
@@ -2171,6 +2203,7 @@ async function approveHardwareTransaction(
         txId: txMeta.id,
         txMeta,
         actionId: generateActionId(),
+        walletType,
       },
     ]);
 
@@ -2181,14 +2214,32 @@ async function approveHardwareTransaction(
   } catch (error) {
     await forceUpdateMetamaskState(dispatch);
 
-    if (error instanceof HardwareWalletError) {
-      // HardwareWalletError from background - rethrow for hook to handle
-      throw error;
-    }
+    // Log the raw error structure for debugging
+    console.log('[approveHardwareTransaction] Raw error from RPC:', {
+      error,
+      errorType: typeof error,
+      isError: error instanceof Error,
+      errorData: (error as { data?: unknown })?.data,
+    });
 
-    // Non-hardware wallet error - update tx params and rethrow
-    dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-    throw error;
+    // Determine the hardware wallet type from keyring
+
+    // Reconstruct the error to ensure it's a proper HardwareWalletError instance
+    // Errors lose their class type when crossing the RPC boundary from background
+    const hwError = reconstructHardwareWalletError(error, walletType);
+
+    console.log(
+      '[approveHardwareTransaction] Reconstructed HardwareWalletError:',
+      {
+        code: hwError.code,
+        message: hwError.message,
+        metadata: hwError.metadata,
+        walletType,
+      },
+    );
+
+    // Rethrow the properly typed error for hook to handle
+    throw hwError;
   } finally {
     dispatch(hideLoadingIndication());
     dispatch(setPendingHardwareSigning(false));

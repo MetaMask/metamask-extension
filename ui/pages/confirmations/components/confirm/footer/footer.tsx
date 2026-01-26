@@ -140,7 +140,7 @@ const ConfirmButton = ({
           onSubmit={onSubmit}
         />
       )}
-      {hasDangerAlerts ? (
+      {false ? (
         <Button
           block
           danger
@@ -287,13 +287,13 @@ const Footer = () => {
       return;
     }
 
-    const isReady = await onSubmitPreflightCheck();
-    if (!isReady) {
-      console.log(
-        '[Hardware debug Footer onSubmit] Preflight check failed, aborting submission',
-      );
-      return;
-    }
+    // const isReady = await onSubmitPreflightCheck();
+    // if (!isReady) {
+    //   console.log(
+    //     '[Hardware debug Footer onSubmit] Preflight check failed, aborting submission',
+    //   );
+    //   return;
+    // }
 
     if (isAddEthereumChain) {
       await onAddEthereumChain();
@@ -311,7 +311,6 @@ const Footer = () => {
       resetTransactionState();
     }
   }, [
-    onSubmitPreflightCheck,
     isAddEthereumChain,
     isTransactionConfirmation,
     resetTransactionState,

@@ -322,7 +322,7 @@
     "@metamask/error-reporting-service": "^3.0.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^23.0.0",
-    "@metamask/eth-ledger-bridge-keyring": "11.1.2",
+    "@metamask/eth-ledger-bridge-keyring": "npm:@metamask-previews/eth-ledger-bridge-keyring@11.1.2-412b185",
     "@metamask/eth-qr-keyring": "^1.1.0",
     "@metamask/eth-sig-util": "^8.2.0",
     "@metamask/eth-snap-keyring": "^18.0.2",

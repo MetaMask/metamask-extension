@@ -199,17 +199,28 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
 
     // Check if we have a NEW error state
     if (connectionState.status === ConnectionStatus.ErrorState) {
-      const error = connectionState.error;
-      lastConnectionErrorRef.current = error;
+      const { error } = connectionState;
+      if (!error) {
+        return;
+      }
 
-      if (error !== displayedError) {
+      // Check if this is actually a different error by comparing error codes
+      // Object reference equality (error !== displayedError) doesn't work reliably
+      // because new error objects are created each time connection state changes
+      const errorCode = (error as any)?.code;
+      const lastErrorCode = (lastConnectionErrorRef.current as any)?.code;
+
+      // Only show modal if the error code has changed
+      // OR if we haven't shown an error yet (displayedError is null)
+      if (errorCode !== lastErrorCode || !displayedError) {
+        lastConnectionErrorRef.current = error;
+        setDisplayedError(error);
         showErrorModalInternal(error, false);
       }
     }
   }, [
     connectionState,
     isHardwareWalletAccount,
-    displayedError,
     showErrorModalInternal,
     dispatch,
   ]);

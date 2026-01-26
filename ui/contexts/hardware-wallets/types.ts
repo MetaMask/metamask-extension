@@ -94,6 +94,22 @@ export type HardwareWalletAdapter = {
    * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
    */
   ensureDeviceReady?(deviceId: string): Promise<boolean>;
+
+  /**
+   * Check the current permission state for device access.
+   * Does NOT require a user gesture.
+   *
+   * @returns The current permission state
+   */
+  checkPermission?(): Promise<HardwareConnectionPermissionState>;
+
+  /**
+   * Request permission to access the hardware device.
+   * MUST be called from within a user gesture handler (e.g., button click).
+   *
+   * @returns true if permission was granted
+   */
+  requestPermission?(): Promise<boolean>;
 };
 
 /**
@@ -106,4 +122,3 @@ export type HardwareWalletAdapterOptions = {
   onAppNotOpen: () => void;
   onDeviceEvent: (payload: DeviceEventPayload) => void;
 };
-
