@@ -57,6 +57,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.checkPageIsLoaded();
 
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickFooterConfirmButton();
@@ -87,6 +88,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickFooterConfirmButton();
@@ -134,6 +136,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickFooterConfirmButton();
@@ -220,6 +223,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickFooterConfirmButton();
@@ -249,6 +253,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickAdvancedDetailsButton();
@@ -282,6 +287,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickAdvancedDetailsButton();
@@ -323,6 +329,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.checkPageIsLoaded();
 
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickAdvancedDetailsButton();

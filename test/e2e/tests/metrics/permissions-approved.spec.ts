@@ -4,10 +4,7 @@ import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
-import {
-  DEFAULT_FIXTURE_ACCOUNT,
-  MOCK_META_METRICS_ID,
-} from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, MOCK_META_METRICS_ID } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
