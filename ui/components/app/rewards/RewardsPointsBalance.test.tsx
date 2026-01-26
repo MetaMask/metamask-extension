@@ -30,6 +30,12 @@ jest.mock('../../../hooks/rewards/useSeasonStatus', () => ({
   useSeasonStatus: jest.fn(),
 }));
 
+jest.mock('../../../hooks/rewards/useOptIn', () => ({
+  useOptIn: jest.fn(() => ({
+    optin: jest.fn().mockResolvedValue(undefined),
+  })),
+}));
+
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(() => (key: string, values?: string[]) => {
     if (key === 'rewardsPointsBalance' && values) {
@@ -40,6 +46,9 @@ jest.mock('../../../hooks/useI18nContext', () => ({
     }
     if (key === 'rewardsPointsBalance_couldntLoad') {
       return "Couldn't load";
+    }
+    if (key === 'rewardsSignInToViewPoints') {
+      return 'Sign in to view points';
     }
     return key;
   }),
@@ -79,6 +88,9 @@ const mockGetStorageItem = getStorageItem as jest.MockedFunction<
 const mockSetStorageItem = setStorageItem as jest.MockedFunction<
   typeof setStorageItem
 >;
+
+const { useOptIn } = jest.requireMock('../../../hooks/rewards/useOptIn');
+const mockUseOptIn = useOptIn as jest.MockedFunction<typeof useOptIn>;
 
 describe('RewardsPointsBalance', () => {
   // Mock season status with complete structure
@@ -186,6 +198,9 @@ describe('RewardsPointsBalance', () => {
     setSelectorValues({});
     mockUseDispatch.mockReturnValue(jest.fn());
     mockSetStorageItem.mockResolvedValue(undefined);
+    mockUseOptIn.mockReturnValue({
+      optin: jest.fn().mockResolvedValue(undefined),
+    } as ReturnType<typeof useOptIn>);
     // Set IN_TEST to prevent onboarding modal from opening
     process.env.IN_TEST = 'true';
   });
@@ -500,6 +515,80 @@ describe('RewardsPointsBalance', () => {
     expect(container).toHaveClass('gap-1', 'bg-background-transparent');
     expect(textElement).toHaveClass('text-alternative');
     expect(textElement).toHaveTextContent("Couldn't load");
+  });
+
+  it('should render sign-in button when candidateSubscriptionId is error-existing-subscription-hardware-wallet-explicit-sign', () => {
+    const mockOptin = jest.fn().mockResolvedValue(undefined);
+    mockUseOptIn.mockReturnValue({
+      optin: mockOptin,
+    } as ReturnType<typeof useOptIn>);
+
+    setSelectorValues({
+      candidateSubscriptionId: 'error-existing-subscription-hardware-wallet-explicit-sign',
+    });
+
+    render(<RewardsPointsBalance />);
+
+    const container = screen.getByTestId('rewards-points-balance');
+    const textElement = screen.getByTestId('rewards-points-balance-value');
+
+    expect(container).toBeInTheDocument();
+    expect(container).toHaveClass(
+      'flex',
+      'items-center',
+      'gap-1',
+      'px-1.5',
+      'bg-background-muted',
+      'rounded',
+    );
+    expect(textElement).toHaveTextContent('Sign in to view points');
+  });
+
+  it('should call optin when sign-in button is clicked', async () => {
+    const mockOptin = jest.fn().mockResolvedValue(undefined);
+    mockUseOptIn.mockReturnValue({
+      optin: mockOptin,
+    } as ReturnType<typeof useOptIn>);
+
+    setSelectorValues({
+      candidateSubscriptionId: 'error-existing-subscription-hardware-wallet-explicit-sign',
+    });
+
+    render(<RewardsPointsBalance />);
+
+    const textElement = screen.getByTestId('rewards-points-balance-value');
+    expect(textElement).toBeInTheDocument();
+    expect(textElement).toHaveTextContent('Sign in to view points');
+
+    await act(async () => {
+      textElement.click();
+    });
+
+    expect(mockOptin).toHaveBeenCalledTimes(1);
+  });
+
+  it('should handle optin errors gracefully when sign-in button is clicked', async () => {
+    const mockOptin = jest.fn().mockRejectedValue(new Error('Opt-in failed'));
+    mockUseOptIn.mockReturnValue({
+      optin: mockOptin,
+    } as ReturnType<typeof useOptIn>);
+
+    setSelectorValues({
+      candidateSubscriptionId: 'error-existing-subscription-hardware-wallet-explicit-sign',
+    });
+
+    render(<RewardsPointsBalance />);
+
+    const textElement = screen.getByTestId('rewards-points-balance-value');
+
+    await act(async () => {
+      textElement.click();
+    });
+
+    expect(mockOptin).toHaveBeenCalledTimes(1);
+    // Component should still render despite optin error
+    expect(textElement).toBeInTheDocument();
+    expect(textElement).toHaveTextContent('Sign in to view points');
   });
 
   it('should not open onboarding modal when hasSeenOnboarding is true', () => {
