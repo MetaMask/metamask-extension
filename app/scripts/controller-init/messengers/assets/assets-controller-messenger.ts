@@ -12,6 +12,12 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import type { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
+import type {
+  BackendWebSocketServiceActions,
+  BackendWebSocketServiceEvents,
+} from '@metamask/core-backend';
+import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import { RootMessenger } from '../../../lib/messenger';
 
 // Re-export the messenger type from the package
@@ -34,11 +40,54 @@ type AppStateControllerAppClosedEvent = {
 };
 
 /**
+ * NetworkController:getState action
+ */
+type NetworkControllerGetStateAction = {
+  type: 'NetworkController:getState';
+  handler: () => unknown;
+};
+
+/**
+ * NetworkController:getNetworkClientById action
+ */
+type NetworkControllerGetNetworkClientByIdAction = {
+  type: 'NetworkController:getNetworkClientById';
+  handler: (networkClientId: string) => unknown;
+};
+
+/**
+ * TokenListController:getState action
+ */
+type TokenListControllerGetStateAction = {
+  type: 'TokenListController:getState';
+  handler: () => unknown;
+};
+
+/**
+ * SnapController:handleRequest action for SnapDataSource
+ */
+type SnapControllerHandleRequestAction = {
+  type: 'SnapController:handleRequest';
+  handler: (args: {
+    snapId: string;
+    origin: string;
+    handler: string;
+    request: unknown;
+  }) => Promise<unknown>;
+};
+
+/**
  * Actions that the AssetsController needs to call
  */
 type AllowedActions =
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-  | NetworkEnablementControllerGetStateAction;
+  | NetworkEnablementControllerGetStateAction
+  // Data source dependencies
+  | NetworkControllerGetStateAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | TokenListControllerGetStateAction
+  | BackendWebSocketServiceActions
+  | SnapControllerHandleRequestAction;
 
 /**
  * Events that the AssetsController subscribes to
@@ -49,7 +98,10 @@ type AllowedEvents =
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent
   | AppStateControllerAppOpenedEvent
-  | AppStateControllerAppClosedEvent;
+  | AppStateControllerAppClosedEvent
+  // Data source dependencies
+  | NetworkControllerStateChangeEvent
+  | BackendWebSocketServiceEvents;
 
 export type AssetsControllerInitMessenger = ReturnType<
   typeof getAssetsControllerInitMessenger
@@ -66,6 +118,8 @@ export type AssetsControllerInitMessenger = ReturnType<
 export function getAssetsControllerMessenger(
   messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ): AssetsControllerMessenger {
+  console.log('[AssetsController] Creating AssetsController messenger...');
+
   const controllerMessenger = new Messenger<
     'AssetsController',
     AllowedActions,
@@ -80,21 +134,45 @@ export function getAssetsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      // Core AssetsController dependencies
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       'NetworkEnablementController:getState',
+      // Data source dependencies - NetworkController
+      'NetworkController:getState',
+      'NetworkController:getNetworkClientById',
+      // Data source dependencies - TokenListController
+      'TokenListController:getState',
+      // Data source dependencies - BackendWebSocketService
+      'BackendWebSocketService:subscribe',
+      'BackendWebSocketService:getConnectionInfo',
+      'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+      // Data source dependencies - SnapController
+      'SnapController:handleRequest',
     ],
     events: [
+      // Core AssetsController events
       'AccountTreeController:selectedAccountGroupChange',
       'NetworkEnablementController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
       'AppStateController:appOpened',
       'AppStateController:appClosed',
+      // Data source events
+      'NetworkController:stateChange',
+      'BackendWebSocketService:connectionStateChanged',
     ],
   });
 
+  console.log('[AssetsController] AssetsController messenger created');
   return controllerMessenger as unknown as AssetsControllerMessenger;
 }
+
+/**
+ * Actions needed during AssetsController initialization
+ */
+type AllowedInitializationActions =
+  | AuthenticationControllerGetBearerToken
+  | SnapControllerHandleRequestAction;
 
 /**
  * Get a restricted messenger for AssetsController initialization.
@@ -104,16 +182,24 @@ export function getAssetsControllerMessenger(
  * @returns The restricted initialization messenger.
  */
 export function getAssetsControllerInitMessenger(
-  messenger: RootMessenger<never, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
   const initMessenger = new Messenger<
     'AssetsControllerInit',
-    never,
+    AllowedInitializationActions,
     never,
     typeof messenger
   >({
     namespace: 'AssetsControllerInit',
     parent: messenger,
+  });
+
+  messenger.delegate({
+    messenger: initMessenger,
+    actions: [
+      'AuthenticationController:getBearerToken',
+      'SnapController:handleRequest',
+    ],
   });
 
   return initMessenger;

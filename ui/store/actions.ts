@@ -6335,6 +6335,36 @@ export async function tokenRatesStopPollingByPollingToken(
 }
 
 /**
+ * Informs the AssetsController that the UI requires
+ * assets polling.
+ *
+ * @returns polling token that can be used to stop polling
+ */
+export async function assetsStartPolling(): Promise<string> {
+  const pollingToken = await submitRequestToBackground<string>(
+    'assetsStartPolling',
+    [],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the AssetsController that the UI no longer
+ * requires assets polling.
+ *
+ * @param pollingToken - The polling token to stop.
+ */
+export async function assetsStopPollingByPollingToken(
+  pollingToken: string,
+): Promise<void> {
+  await submitRequestToBackground('assetsStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
  * Stops polling on the account tracker controller.
  *
  * @param pollingToken - polling token to use to stop polling.

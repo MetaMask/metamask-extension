@@ -5734,8 +5734,8 @@ __metadata:
   linkType: hard
 
 "@metamask/assets-controller@file:.yalc/@metamask/assets-controller::locator=metamask-crx%40workspace%3A.":
-  version: 1.0.0
-  resolution: "@metamask/assets-controller@file:.yalc/@metamask/assets-controller#.yalc/@metamask/assets-controller::hash=62bac2&locator=metamask-crx%40workspace%3A."
+  version: 1.1.0
+  resolution: "@metamask/assets-controller@file:.yalc/@metamask/assets-controller#.yalc/@metamask/assets-controller::hash=4754ba&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/providers": "npm:^5.7.0"
@@ -5754,7 +5754,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     viem: "npm:^2.44.4"
-  checksum: 10/56ff37546783e09b200f4ba14ea45eb15be0b02bbb5d2f44f30a1bb4676d54c89ff41818e59110610e993bfe54c211e6891bbc3e609040f8e957e08598a70fb3
+  checksum: 10/51b39d03a1718750d7715e5ecd56dd9b287bcdae5f6e57fc22b033fd9a976aa0ca5a3ac0388ded07607b330159f6d7c763aec62ba93a2a40af244ede0815e1f1
   languageName: node
   linkType: hard
 
@@ -6195,6 +6195,22 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 10/0c96701e3639b887c51c02416158bfeef42bf80701a4ca0d1ad2c888a370ccd9a6f2cb4677ef075a17a341c0dc9135e91c4f3079a7d498d9368d2f5e6fdf5d1b
+  languageName: node
+  linkType: hard
+
+"@metamask/core-backend@file:.yalc/@metamask/core-backend::locator=metamask-crx%40workspace%3A.":
+  version: 6.0.0
+  resolution: "@metamask/core-backend@file:.yalc/@metamask/core-backend#.yalc/@metamask/core-backend::hash=c40860&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/accounts-controller": "npm:^35.0.2"
+    "@metamask/controller-utils": "npm:^11.18.0"
+    "@metamask/keyring-controller": "npm:^25.1.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/profile-sync-controller": "npm:^27.0.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+    uuid: "npm:^8.3.2"
+  checksum: 10/4cf4ecfdb1c5c2870c6d6768926e4074d9ad0f315faa2078fa3243db5362b2ec7dc712823e2094dae3164d5c7377f90820a79d14bd8772af5ba48aca379733fb
   languageName: node
   linkType: hard
 
@@ -14881,6 +14897,13 @@ __metadata:
   version: 3.2.0
   resolution: "@tabler/icons@npm:3.2.0"
   checksum: 10/4fe4de5ad3cdb54d7c711523dc6e1fc43605bca3fcfc777277da1713184ed5f9034010435c09a5bf928d6774cd643297483394a183aead42eb8f8a6626b70bcc
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:^5.62.16":
+  version: 5.90.20
+  resolution: "@tanstack/query-core@npm:5.90.20"
+  checksum: 10/25e38f4382442bc15e0f6cce8d787e9df8d8822c61d3f3e9427e89e01b1e2506f848292e086dae29aeb55f8ce71b097c34221f3c5eda37fb4a688b5ceca5d1b3
   languageName: node
   linkType: hard
 
@@ -33544,7 +33567,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/core-backend": "npm:^5.0.0"
+    "@metamask/core-backend": "file:.yalc/@metamask/core-backend"
     "@metamask/delegation-controller": "npm:^1.0.0"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
