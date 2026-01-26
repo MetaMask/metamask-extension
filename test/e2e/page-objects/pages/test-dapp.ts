@@ -903,28 +903,11 @@ class TestDapp {
 
   /**
    * Click connect account button in test dapp.
-   * Note: Dialog handling should be done separately in test files.
-   *
-   * @param options - Options for connecting account to test dapp.
-   * @param [options.publicAddress] - The public address to verify after connection.
-   * @param [options.chainId] - The chain id to verify, defaults to 0x539.
+   * Note: Dialog handling should be done separately in test files or use connectAccountToTestDapp flow helper.
    */
-  async connectAccount({
-    publicAddress,
-    chainId = '0x539',
-  }: {
-    publicAddress?: string;
-    chainId?: string;
-  } = {}) {
-    console.log('Connect account to test dapp');
+  async connectAccount() {
+    console.log('Click connect account button in test dapp');
     await this.clickConnectAccountButton();
-    if (publicAddress) {
-      await this.checkConnectedAccounts(publicAddress);
-      await this.driver.waitForSelector({
-        css: '#chainId',
-        text: chainId,
-      });
-    }
   }
 
   async createDepositTransaction() {
@@ -1038,6 +1021,27 @@ class TestDapp {
   async checkNetworkIsConnected(networkId: string) {
     console.log(`Check testdapp is connected to network ${networkId}`);
     await this.driver.waitForSelector(this.connectedNetwork(networkId));
+  }
+
+  /**
+   * Verify account connection and chain ID in test dapp.
+   * Should be called after switching back to TestDApp window.
+   *
+   * @param publicAddress - The public address to verify.
+   * @param chainId - The chain id to verify, defaults to 0x539.
+   */
+  async verifyAccountConnection(
+    publicAddress: string,
+    chainId: string = '0x539',
+  ): Promise<void> {
+    console.log(
+      `Verify account ${publicAddress} is connected to chain ${chainId}`,
+    );
+    await this.checkConnectedAccounts(publicAddress);
+    await this.driver.waitForSelector({
+      css: '#chainId',
+      text: chainId,
+    });
   }
 }
 

@@ -3,9 +3,9 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { Driver } from '../../webdriver/driver';
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
@@ -47,27 +47,13 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const testDappOne = new TestDapp(driver);
         await testDappOne.openTestDappPage({ url: DAPP_URL });
         await testDappOne.checkPageIsLoaded();
-        await testDappOne.connectAccount({});
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation1 = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation1.checkPageIsLoaded();
-        await connectAccountConfirmation1.confirmConnect();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await connectAccountToTestDapp(driver);
 
         // Open and connect to Dapp Two
         const testDappTwo = new TestDapp(driver);
         await testDappTwo.openTestDappPage({ url: DAPP_ONE_URL });
         await testDappTwo.checkPageIsLoaded();
-        await testDappTwo.connectAccount({});
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation2 = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation2.checkPageIsLoaded();
-        await connectAccountConfirmation2.confirmConnect();
+        await connectAccountToTestDapp(driver);
 
         // Switch Dapp Two to Localhost 8546
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);

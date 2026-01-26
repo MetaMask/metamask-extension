@@ -7,11 +7,10 @@ import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metame
 import {
   DEFAULT_FIXTURE_ACCOUNT,
   MOCK_META_METRICS_ID,
-  WINDOW_TITLES,
 } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -67,15 +66,9 @@ describe('Permissions Approved Event', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {

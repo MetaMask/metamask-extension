@@ -3,8 +3,8 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 describe('Request Queueing', function () {
@@ -39,14 +39,7 @@ describe('Request Queueing', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({});
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await connectAccountToTestDapp(driver);
 
         // Subscribe to newHeads event
         const subscribeRequest = JSON.stringify({

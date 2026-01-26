@@ -3,11 +3,11 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Permissions Page when Dapp Switch to an enabled and non permissioned network', function () {
   it('should switch to the chain when dapp tries to switch network to an enabled network after showing updated permissions page', async function () {
@@ -65,16 +65,10 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         assert.equal(chainIdBeforeConnectAfterManualSwitch, '0x1');
 
         // Connect to dapp and check the chainId is still the same as the wallet
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
           chainId: '0x1',
         });
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdAfterConnect: string = await driver.executeScript(
           `return window.ethereum.request(${chainIdRequest})`,

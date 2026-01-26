@@ -2,9 +2,9 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Request Queuing SwitchChain -> SendTx', function () {
   it('switching network should reject pending confirmations from same origin', async function () {
@@ -37,14 +37,7 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
-        await testDapp.connectAccount({});
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await connectAccountToTestDapp(driver);
         await testDapp.checkPageIsLoaded();
 
         // Switch Ethereum Chain
