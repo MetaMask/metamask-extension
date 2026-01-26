@@ -40,6 +40,7 @@ export type ControllersToInitialize =
   | 'AccountTrackerController'
   | 'AuthenticationController'
   | 'CronjobController'
+  | 'DataSource'
   | 'DeFiPositionsController'
   | 'ExecutionService'
   | 'MultichainAssetsController'

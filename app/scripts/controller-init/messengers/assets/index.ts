@@ -7,6 +7,9 @@ export type {
   TokenRatesControllerInitMessenger,
 } from './token-rates-controller-messenger';
 
+export { getAssetsControllerMessenger } from './assets-controller-messenger';
+export type { AssetsControllerMessenger } from './assets-controller-messenger';
+
 export {
   getNftControllerMessenger,
   getNftControllerInitMessenger,
@@ -39,3 +42,13 @@ export type {
   NetworkEnablementControllerMessenger,
   NetworkEnablementControllerInitMessenger,
 } from './network-enablement-controller-messenger';
+
+export {
+  getDataSourceMessenger,
+  getDataSourceInitMessenger,
+} from './data-source-messenger';
+export type {
+  DataSourceMessenger,
+  DataSourceInitMessenger,
+} from './data-source-messenger';
+
