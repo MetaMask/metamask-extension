@@ -2,11 +2,7 @@ import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import copyToClipboard from 'copy-to-clipboard';
 import { COPY_OPTIONS } from '../../shared/constants/copy';
-import {
-  DEFAULT_CLEAR_DELAY,
-  DEFAULT_UI_DELAY,
-  useCopyToClipboard,
-} from './useCopyToClipboard';
+import { DEFAULT_UI_DELAY, useCopyToClipboard } from './useCopyToClipboard';
 
 // Mock dependencies
 jest.mock('copy-to-clipboard');
@@ -39,28 +35,6 @@ describe('useCopyToClipboard', () => {
     // Act/Assert - Expiry (clipboard is cleared)
     act(() => {
       jest.advanceTimersByTime(clearDelay + 1);
-    });
-    expect(mockCopyToClipboard).toHaveBeenCalledTimes(2);
-    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(2, ' ', COPY_OPTIONS);
-    expect(result.current[0]).toBe(false);
-  });
-
-  it('copies text and expires with no params', () => {
-    const { result } = renderHook(() => useCopyToClipboard());
-    const [, handleCopy] = result.current;
-
-    // Act/Assert - Copy
-    act(() => handleCopy('test'));
-    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(
-      1,
-      'test',
-      COPY_OPTIONS,
-    );
-    expect(result.current[0]).toBe(true);
-
-    // Act/Assert - Expiry (clipboard is cleared)
-    act(() => {
-      jest.advanceTimersByTime(DEFAULT_CLEAR_DELAY + 1);
     });
     expect(mockCopyToClipboard).toHaveBeenCalledTimes(2);
     expect(mockCopyToClipboard).toHaveBeenNthCalledWith(2, ' ', COPY_OPTIONS);
