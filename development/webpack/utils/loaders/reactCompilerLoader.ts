@@ -1,7 +1,27 @@
+import path from 'path';
 import {
+  reactCompilerLoader,
   type ReactCompilerLoaderOption,
   defineReactCompilerLoaderOption,
 } from 'react-compiler-webpack';
+
+/**
+ * Lazily resolve the wrapper path to avoid resolution errors during LavaMoat policy generation.
+ * The wrapper is only needed when thread-loader is active (i.e., NOT during policy generation).
+ */
+const getWrapperPath = (() => {
+  let cachedPath: string | null = null;
+  return () => {
+    if (cachedPath === null) {
+      // Resolve to source location regardless of whether running from source or compiled (.webpack) code
+      cachedPath = path.join(
+        __dirname.replace('.webpack', 'webpack'),
+        'reactCompilerLoaderWrapper.cjs',
+      );
+    }
+    return cachedPath;
+  };
+})();
 
 /**
  * React Compiler result status stored in module.buildMeta.
@@ -43,29 +63,37 @@ export type ReactCompilerStats = {
  * - 'all': Fail build on all compilation errors.
  * - 'critical': Fail build on critical compilation errors only.
  * - 'none': Don't fail the build on errors.
+ * @param useWrapper - Whether to use the wrapper loader for buildMeta tracking.
+ * Set to false when generating LavaMoat policies (thread-loader is disabled anyway).
  * @returns The React Compiler loader object with the loader and configured options.
  */
 export const getReactCompilerLoader = (
   target: ReactCompilerLoaderOption['target'],
   verbose: boolean,
   debug: 'all' | 'critical' | 'none',
+  useWrapper = true,
 ) => {
   const reactCompilerOptions = {
     target,
-    // Don't pass logger here - the wrapper will inject it
-    // This prevents serialization issues with thread-loader
     panicThreshold: debug === 'none' ? undefined : `${debug}_errors`,
   } as const satisfies ReactCompilerLoaderOption;
 
+  // Use wrapper for buildMeta tracking (needed for thread-loader stats collection)
+  // Skip wrapper during policy generation (thread-loader disabled, wrapper not resolvable under LavaMoat)
+  if (useWrapper) {
+    return {
+      loader: getWrapperPath(),
+      options: {
+        ...defineReactCompilerLoaderOption(reactCompilerOptions),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        __verbose: verbose,
+      },
+    };
+  }
+
+  // Direct loader without wrapper (for policy generation)
   return {
-    // Use our wrapper loader that handles buildMeta tracking
-    // NOTE: Must use .cjs extension - thread-loader workers need CommonJS
-    loader: require.resolve('./reactCompilerLoaderWrapper.cjs'),
-    options: {
-      ...defineReactCompilerLoaderOption(reactCompilerOptions),
-      // Pass verbose flag so wrapper knows to enable logging
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      __verbose: verbose,
-    },
+    loader: reactCompilerLoader,
+    options: defineReactCompilerLoaderOption(reactCompilerOptions),
   };
 };

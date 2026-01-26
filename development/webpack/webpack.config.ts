@@ -233,6 +233,7 @@ const reactCompilerLoader = getReactCompilerLoader(
   '17',
   args.reactCompilerVerbose,
   args.reactCompilerDebug,
+  !args.generatePolicy, // Skip wrapper during policy generation (not resolvable under LavaMoat)
 );
 
 const config = {
