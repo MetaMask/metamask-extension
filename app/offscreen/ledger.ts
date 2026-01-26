@@ -435,7 +435,7 @@ async function handleLedgerAction(
       });
 
     default:
-      throw new Error(`Unknown Ledger action: ${action}`);
+      throw new Error(`Unknown Ledger action: ${action as string}`);
   }
 }
 
