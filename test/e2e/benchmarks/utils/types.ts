@@ -52,12 +52,8 @@ export type NetworkReport = {
   numNetworkReqs: number;
 };
 
-// ==================== Performance Benchmark Types ====================
-
-export type TimerResult = {
-  id: string;
-  duration: number;
-};
+// Re-export TimerResult from the timers module
+export type { TimerResult } from '../../../../timers/utils';
 
 export type BenchmarkRunResult = {
   timers: TimerResult[];
