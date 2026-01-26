@@ -79,28 +79,28 @@ const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
 const PRESETS: Record<string, string[]> = {
   // Performance benchmarks
-  'performance-onboarding': [
+  performanceOnboarding: [
     `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
     `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
   ],
-  'performance-assets': [
+  performanceAssets: [
     `${BENCHMARK_DIR}/performance/asset-details.ts`,
     `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
   ],
 
   // Page load benchmarks
-  'standard-home': [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
-  'power-user-home': [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
+  standardHome: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
+  powerUserHome: [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
 
   // User action benchmarks
-  'user-actions': [
+  userActions: [
     `${BENCHMARK_DIR}/user-actions/load-new-account.ts`,
     `${BENCHMARK_DIR}/user-actions/confirm-tx.ts`,
     `${BENCHMARK_DIR}/user-actions/bridge-user-actions.ts`,
   ],
 
   // Playwright benchmarks
-  'page-load-benchmark': [
+  pageLoadBenchmark: [
     'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
   ],
 };

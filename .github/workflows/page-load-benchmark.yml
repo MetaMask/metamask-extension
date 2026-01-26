@@ -57,7 +57,7 @@ jobs:
 
       - name: Run page load benchmarks
         if: ${{ env.IS_PR_OR_MAIN }}
-        run: yarn test:e2e:benchmark --preset page-load-benchmark
+        run: yarn test:e2e:benchmark --preset pageLoadBenchmark
 
       - name: Upload benchmark results (github artifacts)
         if: ${{ env.IS_PR_OR_MAIN }}

@@ -7,12 +7,6 @@ const benchmarkPlatforms = ['chrome', 'firefox'];
 const buildTypes = ['browserify', 'webpack'];
 const pageTypes = ['standardHome', 'powerUserHome'];
 
-// Map camelCase page names to dash-separated filenames used in CI
-const pageTypeToFileName: Record<string, string> = {
-  standardHome: 'standard-home',
-  powerUserHome: 'power-user-home',
-};
-
 /**
  * The threshold for whether to highlight a change in bundle size, in bytes.
  */
@@ -164,13 +158,13 @@ async function start(): Promise<void> {
   const bundleSizeStatsUrl = `${HOST_URL}/bundle-size/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
 
-  const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-user-actions.json`;
+  const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
 
-  const performanceOnboardingUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-performance-onboarding.json`;
+  const performanceOnboardingUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-performanceOnboarding.json`;
   const performanceOnboardingLink = `<a href="${performanceOnboardingUrl}">Performance Onboarding</a>`;
 
-  const performanceAssetsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-performance-assets.json`;
+  const performanceAssetsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-performanceAssets.json`;
   const performanceAssetsLink = `<a href="${performanceAssetsUrl}">Performance Assets</a>`;
 
   const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
@@ -212,8 +206,7 @@ async function start(): Promise<void> {
     for (const buildType of buildTypes) {
       benchmarkResults[platform][buildType] = {};
       for (const page of pageTypes) {
-        const pageFileName = pageTypeToFileName[page] || page;
-        const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-${pageFileName}.json`;
+        const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-${page}.json`;
         try {
           const benchmarkResponse = await fetch(benchmarkUrl);
           if (!benchmarkResponse.ok) {
@@ -222,7 +215,8 @@ async function start(): Promise<void> {
             );
           }
           const benchmark = await benchmarkResponse.json();
-          const benchmarkData = benchmark[pageFileName] || benchmark;
+          const benchmarkData =
+            benchmark[Object.keys(benchmark)[0]] || benchmark;
           benchmarkResults[platform][buildType][page] = benchmarkData[page];
         } catch (error) {
           console.error(
