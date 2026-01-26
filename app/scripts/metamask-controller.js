@@ -629,6 +629,10 @@ export default class MetamaskController extends EventEmitter {
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
       TokenRatesController: TokenRatesControllerInit,
+      // MultichainNetworkController and NetworkEnablementController must be initialized before AssetsController
+      // because AssetsController depends on NetworkEnablementController:getState during construction.
+      MultichainNetworkController: MultichainNetworkControllerInit,
+      NetworkEnablementController: NetworkEnablementControllerInit,
       AssetsController: AssetsControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,
@@ -645,7 +649,6 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       MultichainRouter: MultichainRouterInit,
       ///: END:ONLY_INCLUDE_IF
-      MultichainNetworkController: MultichainNetworkControllerInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
@@ -666,7 +669,6 @@ export default class MetamaskController extends EventEmitter {
       SnapsNameProvider: SnapsNameProviderInit,
       EnsController: EnsControllerInit,
       NameController: NameControllerInit,
-      NetworkEnablementController: NetworkEnablementControllerInit,
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,

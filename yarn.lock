@@ -5734,8 +5734,8 @@ __metadata:
   linkType: hard
 
 "@metamask/assets-controller@file:.yalc/@metamask/assets-controller::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "@metamask/assets-controller@file:.yalc/@metamask/assets-controller#.yalc/@metamask/assets-controller::hash=12d764&locator=metamask-crx%40workspace%3A."
+  version: 1.0.0
+  resolution: "@metamask/assets-controller@file:.yalc/@metamask/assets-controller#.yalc/@metamask/assets-controller::hash=62bac2&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/providers": "npm:^5.7.0"
@@ -5754,7 +5754,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     viem: "npm:^2.44.4"
-  checksum: 10/ae41ed40c84242f377887c3ace43bb7e464b9faeb0847de5ca798f4be29d75087b2286e2b620463efae350a44ffec28e8da66df79082184a6a5181a031f41939
+  checksum: 10/56ff37546783e09b200f4ba14ea45eb15be0b02bbb5d2f44f30a1bb4676d54c89ff41818e59110610e993bfe54c211e6891bbc3e609040f8e957e08598a70fb3
   languageName: node
   linkType: hard
 
@@ -7599,24 +7599,6 @@ __metadata:
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
   checksum: 10/873a68a3c5012f84c925a868aac2741bd1de7c047f3696874cabd911f5632acb162e07210c345447ed9765f94a2c33e034e589ff1f59ce92b09b6e29d68c5940
-  languageName: node
-  linkType: hard
-
-"@metamask/network-enablement-controller@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "@metamask/network-enablement-controller@npm:3.1.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
-    "@metamask/keyring-api": "npm:^21.0.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.8.1"
-    reselect: "npm:^5.1.1"
-  peerDependencies:
-    "@metamask/multichain-network-controller": ^2.0.0
-    "@metamask/network-controller": ^25.0.0
-    "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/3cb56dd859580e7fb613677c193cc4af377e59e9d76b86ae54c71b0e732dffbdd41b96825de2413bce7f1c57184c1bfed6dc1070641d7848d47ae559f2f915c5
   languageName: node
   linkType: hard
 
@@ -33624,7 +33606,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^6.0.0"
     "@metamask/name-controller": "npm:^9.0.0"
     "@metamask/network-controller": "npm:^29.0.0"
-    "@metamask/network-enablement-controller": "npm:^3.1.0"
+    "@metamask/network-enablement-controller": "npm:^4.1.0"
     "@metamask/notification-services-controller": "npm:^21.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
