@@ -28,7 +28,7 @@ import {
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
-import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/background-liveness-check';
+import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -43,6 +43,7 @@ import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
+import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
@@ -533,11 +534,18 @@ const corruptionHandler = new CorruptionHandler();
  * @param {browser.Runtime.Port} port - The port provided by a new context.
  */
 const handleOnConnect = async (port) => {
-  if (
-    inTest &&
-    getManifestFlags().testing?.simulateUnresponsiveBackground === true
-  ) {
-    return;
+  if (inTest) {
+    const simulatedDelay =
+      getManifestFlags().testing?.simulateDelayedBackgroundResponse;
+    if (simulatedDelay === true) {
+      return;
+    } else if (typeof simulatedDelay === 'number') {
+      await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
+    } else if (simulatedDelay !== undefined) {
+      log.error(
+        `Unrecognized value for 'simulateDelayedBackgroundResponse': '${simulatedDelay}'`,
+      );
+    }
   }
 
   try {
@@ -1370,6 +1378,14 @@ export function setupController(
   for (const key of Object.keys(currentState)) {
     const initialControllerState = initState[key] || {};
     const newControllerState = currentState[key];
+    if (newControllerState === null || typeof newControllerState !== 'object') {
+      captureException(
+        new Error(
+          `Invalid controller state for '${key}' of type '${newControllerState === null ? 'null' : typeof newControllerState}'`,
+        ),
+      );
+      continue;
+    }
     const newControllerStateKeys = Object.keys(newControllerState);
 
     // if the number of keys has changed, we need to persist the new state

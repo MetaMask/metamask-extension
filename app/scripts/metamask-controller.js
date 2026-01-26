@@ -183,6 +183,7 @@ import {
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
+import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
@@ -2457,7 +2458,6 @@ export default class MetamaskController extends EventEmitter {
 
     return {
       // etc
-      getState: this.getState.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
@@ -2891,8 +2891,6 @@ export default class MetamaskController extends EventEmitter {
         nftController.checkAndUpdateSingleNftOwnershipStatus.bind(
           nftController,
         ),
-
-      getNFTContractInfo: nftController.getNFTContractInfo.bind(nftController),
 
       isNftOwner: nftController.isNftOwner.bind(nftController),
 
@@ -5946,9 +5944,8 @@ export default class MetamaskController extends EventEmitter {
    */
   async handleDefiReferral(partner, tabId, triggerType) {
     const isReferralEnabled =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.[
-        partner.featureFlagKey
-      ];
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionUxDefiReferralPartners?.[partner.id];
 
     if (!isReferralEnabled) {
       return;
@@ -6833,7 +6830,7 @@ export default class MetamaskController extends EventEmitter {
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
-      startPatches: () => {
+      startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
       },
@@ -6853,10 +6850,16 @@ export default class MetamaskController extends EventEmitter {
       if (!isStreamWritable(outStream)) {
         return;
       }
+      // Start tracking patches immediately after retrieving initial state for this UI connection
+      // to ensure we don't miss any patches, or include extra patches.
+      const initialState = this.getState();
+      patchStore.init();
+
       // send notification to client-side
       outStream.write({
         jsonrpc: '2.0',
-        method: 'startUISync',
+        method: START_UI_SYNC,
+        params: [initialState],
       });
     };
 
