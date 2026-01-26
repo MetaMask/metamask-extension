@@ -166,11 +166,9 @@ export class Delegation7702PublishHook {
     }
 
     // Remove nonce from txParams for EIP-7702 transactions
-    // The delegation system handles nonce management externally, so we shouldn't include it in txParams
-    // Always create a new object without nonce (using destructuring) since the original may be frozen/sealed
-    // This ensures nonce is never present in txParams for EIP-7702 transactions, regardless of initial state
+    // The relay will be creating and signing the transaction, so it will choose its own nonce later
     const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
-    const transactionMetaToUse: TransactionMeta = {
+    const finalTransactionMeta: TransactionMeta = {
       ...transactionMeta,
       txParams: txParamsWithoutNonce,
     };
@@ -179,14 +177,14 @@ export class Delegation7702PublishHook {
     if (transactionMeta.txParams.nonce !== undefined) {
       await this.#messenger.call(
         'TransactionController:updateTransaction',
-        transactionMetaToUse,
+        finalTransactionMeta,
         'Remove nonce for EIP-7702 delegation transaction',
       );
     }
 
     const delegations = await this.#buildDelegation(
       delegationEnvironment,
-      transactionMetaToUse,
+      finalTransactionMeta,
       gasFeeToken,
       includeTransfer,
     );
@@ -195,7 +193,7 @@ export class Delegation7702PublishHook {
       includeTransfer ? BATCH_DEFAULT_MODE : SINGLE_DEFAULT_MODE,
     ];
     const executions = this.#buildExecutions(
-      transactionMetaToUse,
+      finalTransactionMeta,
       gasFeeToken,
       includeTransfer,
     );
@@ -217,7 +215,7 @@ export class Delegation7702PublishHook {
 
     if (!delegationAddress) {
       relayRequest.authorizationList = await this.#buildAuthorizationList(
-        transactionMetaToUse,
+        finalTransactionMeta,
         upgradeContractAddress ?? undefined,
       );
     }
