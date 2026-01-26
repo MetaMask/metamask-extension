@@ -3791,12 +3791,6 @@
         "readable-stream": true
       }
     },
-    "lightweight-charts>fancy-canvas": {
-      "globals": {
-        "ResizeObserver": true,
-        "document.body": true
-      }
-    },
     "fast-json-patch": {
       "globals": {
         "addEventListener": true,
@@ -4096,33 +4090,6 @@
         "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": true
       }
     },
-    "lightweight-charts": {
-      "globals": {
-        "Image": true,
-        "ResizeObserver": true,
-        "URL": true,
-        "cancelAnimationFrame": true,
-        "chrome": true,
-        "clearTimeout": true,
-        "devicePixelRatio": true,
-        "document.activeElement": true,
-        "document.body": true,
-        "document.createElement": true,
-        "document.documentElement": true,
-        "document.getElementById": true,
-        "document.getSelection": true,
-        "getComputedStyle": true,
-        "location.href": true,
-        "navigator": true,
-        "performance.now": true,
-        "queueMicrotask": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "lightweight-charts>fancy-canvas": true
-      }
-    },
     "currency-formatter>locale-currency": {
       "globals": {
         "countryCode": true
@@ -4382,15 +4349,6 @@
     "browserify>url>punycode": {
       "globals": {
         "define": true
-      }
-    },
-    "qrcode.react": {
-      "globals": {
-        "Path2D": true,
-        "devicePixelRatio": true
-      },
-      "packages": {
-        "react": true
       }
     },
     "mockttp>express>qs": {
