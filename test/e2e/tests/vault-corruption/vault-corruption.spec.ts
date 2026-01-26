@@ -13,7 +13,7 @@ import {
 import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
 import { getConfig } from './helpers';
 
-describe('Vault Corruption TEST', function () {
+describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
 
   /**
