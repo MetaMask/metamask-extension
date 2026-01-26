@@ -388,7 +388,7 @@ export class OAuthMockttpService {
     };
   }
 
-  async onPostMetadataGet(includePasswordChangeItem: boolean = false) {
+  async onPostMetadataGet() {
     const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
       .toString()
@@ -414,15 +414,13 @@ export class OAuthMockttpService {
 
     const result = generateEncryptedSecretData(secretData);
 
-    // Include password change item if user has changed password on another device
-    if (includePasswordChangeItem) {
-      const pwdChangeItem = generateEncryptedPasswordChangeItem();
-      result.data.push(pwdChangeItem.data);
-      result.ids.push(pwdChangeItem.id);
-      result.versions.push(pwdChangeItem.version);
-      result.dataTypes.push(pwdChangeItem.dataType);
-      result.createdAt.push(pwdChangeItem.createdAt);
-    }
+    // Always include password change item (like original implementation)
+    const pwdChangeItem = generateEncryptedPasswordChangeItem();
+    result.data.push(pwdChangeItem.data);
+    result.ids.push(pwdChangeItem.id);
+    result.versions.push(pwdChangeItem.version);
+    result.dataTypes.push(pwdChangeItem.dataType);
+    result.createdAt.push(pwdChangeItem.createdAt);
 
     return {
       statusCode: 200,
@@ -507,7 +505,7 @@ export class OAuthMockttpService {
       });
 
     // Intercept the Metadata requests and mock the responses
-    await this.#handleMetadataMockResponses(server, options);
+    await this.#handleMetadataMockResponses(server);
   }
 
   /**
@@ -593,12 +591,7 @@ export class OAuthMockttpService {
     return this.onPostToprfAuthenticate(nodeIndex, isNewUser);
   }
 
-  async #handleMetadataMockResponses(
-    server: Mockttp,
-    options?: {
-      passwordOutdated?: boolean;
-    },
-  ) {
+  async #handleMetadataMockResponses(server: Mockttp) {
     server.forPost(MetadataService.Set).always().thenJson(200, {
       success: true,
       message: 'Metadata set successfully',
@@ -608,7 +601,7 @@ export class OAuthMockttpService {
       .forPost(MetadataService.Get)
       .always()
       .thenCallback(async (_request) => {
-        return this.onPostMetadataGet(options?.passwordOutdated);
+        return this.onPostMetadataGet();
       });
 
     server
