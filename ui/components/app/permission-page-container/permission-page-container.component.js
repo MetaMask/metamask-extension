@@ -171,7 +171,10 @@ export default class PermissionPageContainer extends Component {
 
     // Use chain-agnostic approach when CAIP account IDs are provided
     // This supports non-EVM chains like Solana, Bitcoin, etc.
-    if (selectedCaipAccountIds && selectedCaipChainIds) {
+    if (
+      selectedCaipAccountIds?.length > 0 &&
+      selectedCaipChainIds?.length > 0
+    ) {
       permissionsResponse = generateCaip25Caveat(
         requestedCaip25CaveatValue,
         selectedCaipAccountIds,
