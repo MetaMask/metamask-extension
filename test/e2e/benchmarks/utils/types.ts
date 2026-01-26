@@ -1,3 +1,5 @@
+import type { TimerResult } from '../../../timers/utils';
+
 type NavigationMetric = {
   load: number;
   domContentLoaded: number;
@@ -51,9 +53,6 @@ export type BenchmarkArguments = {
 export type NetworkReport = {
   numNetworkReqs: number;
 };
-
-// Re-export TimerResult from the timers module
-export type { TimerResult } from '../../../timers/utils';
 
 export type BenchmarkRunResult = {
   timers: TimerResult[];

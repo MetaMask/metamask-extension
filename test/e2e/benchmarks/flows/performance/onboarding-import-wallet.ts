@@ -26,7 +26,8 @@ import {
   onboardingMetricsFlow,
 } from '../../../page-objects/flows/onboarding.flow';
 import { Driver } from '../../../webdriver/driver';
-import { collectTimerResults, getCommonMocks } from '../../utils';
+import { collectTimerResults } from '../../../../timers/utils';
+import { getCommonMocks } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 process.env.IS_SIDEPANEL = 'true';

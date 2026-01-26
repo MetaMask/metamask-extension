@@ -11,7 +11,8 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import LoginPage from '../../../page-objects/pages/login-page';
 import { Driver } from '../../../webdriver/driver';
-import { collectTimerResults, WITH_STATE_POWER_USER } from '../../utils';
+import { collectTimerResults } from '../../../../timers/utils';
+import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
