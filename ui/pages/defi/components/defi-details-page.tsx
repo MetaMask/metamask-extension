@@ -124,6 +124,7 @@ const DeFiPage = () => {
           tokenImage={protocolPosition.protocolDetails.iconUrl}
           symbol={protocolPosition.protocolDetails.name}
           data-testid="defi-details-page-protocol-badge"
+          isNative={false}
         />
       </Box>
       <Box paddingLeft={4} paddingBottom={4}>

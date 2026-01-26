@@ -1,5 +1,6 @@
 import React from 'react';
 import { KeyringAccountType } from '@metamask/keyring-api';
+import { Hex } from '@metamask/utils';
 import {
   AvatarToken,
   AvatarNetwork,
@@ -26,6 +27,7 @@ import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { AccountTypeLabel } from '../account-type-label';
+import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
 
 type AssetProps = {
   asset: AssetType;
@@ -118,11 +120,27 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
 
 const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
   const tokenData = asset;
-  const { chainId, image, name, balance, symbol = '', fiat } = tokenData;
+  const {
+    chainId,
+    image,
+    name,
+    balance,
+    symbol = '',
+    fiat,
+    assetId,
+    isNative,
+  } = tokenData;
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
   const typeLabel = accountTypeLabel[asset.accountType as KeyringAccountType];
+
+  const assetImage = getAvatarTokenSrc({
+    chainId: chainId as Hex,
+    isNative,
+    tokenImage: image ?? '',
+    assetId: assetId as Hex | undefined,
+  });
 
   return (
     <Box
@@ -155,7 +173,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
         >
           <AvatarToken
             size={AvatarTokenSize.Md}
-            src={image}
+            src={assetImage}
             name={symbol}
             showHalo={false}
           />

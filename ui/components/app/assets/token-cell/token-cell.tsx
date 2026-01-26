@@ -81,7 +81,15 @@ export default function TokenCell({
     <>
       <GenericAssetCellLayout
         onClick={showScamWarningModal ? undefined : onClick}
-        badge={<AssetCellBadge {...displayToken} />}
+        badge={
+          <AssetCellBadge
+            chainId={token.chainId}
+            isNative={token.isNative}
+            tokenImage={token.image}
+            symbol={token.symbol}
+            assetId={token.assetId}
+          />
+        }
         headerLeftDisplay={<TokenCellTitle token={displayToken} />}
         headerRightDisplay={
           <TokenCellSecondaryDisplay
