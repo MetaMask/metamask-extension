@@ -9272,8 +9272,6 @@ export default class MetamaskController extends EventEmitter {
       removeAllConnections: this.removeAllConnections.bind(this),
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
-      setupUntrustedCommunicationCaip:
-        this.setupUntrustedCommunicationCaip.bind(this),
       setLocked: this.setLocked.bind(this),
       showNotification: this.platform._showNotification,
       showUserConfirmation: this.opts.showUserConfirmation,
