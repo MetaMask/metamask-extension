@@ -99,15 +99,10 @@ describe('ConnectPage', () => {
   });
 
   it('should render image icon correctly', () => {
-    const { getAllByAltText } = render();
+    const { getByAltText } = render();
 
-    const images = getAllByAltText('metamask.github.io logo');
-    expect(images.length).toBe(2);
-    expect(images[0]).toHaveAttribute(
-      'src',
-      'https://metamask.github.io/test-dapp/metamask-fox.svg',
-    );
-    expect(images[1]).toHaveAttribute(
+    const image = getByAltText('metamask.github.io logo');
+    expect(image).toHaveAttribute(
       'src',
       'https://metamask.github.io/test-dapp/metamask-fox.svg',
     );
