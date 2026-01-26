@@ -201,7 +201,9 @@ const MyComponent = () => {
       padding={4}
       className="w-full"
     >
-      <Text variant={TextVariant.HeadingMd} color={TextColor.TextAlternative}>Title</Text>
+      <Text variant={TextVariant.HeadingMd} color={TextColor.TextAlternative}>
+        Title
+      </Text>
     </Box>
   );
 };
