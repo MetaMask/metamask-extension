@@ -6652,14 +6652,16 @@ __metadata:
 
 "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=913223&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=697f43&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/mfa-wallet-cl24-lib": "npm:^0.0.0"
     "@metamask/mfa-wallet-dkls19-lib": "npm:^0.0.0"
+    "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
+    "@metamask/mfa-wallet-network": "npm:^0.0.0"
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
-  checksum: 10/8fdd96690e22e77391ca2802a73f9acdb3e4593ba08fa9eb0be598a0adc7e0d40212c6ee60b2d6af046514c07552cb1b3261f9da7b52b14943b4d12c64463f87
+  checksum: 10/134c1b8b0988c7f5cc9fa83dac9d8d9988f0603bc48abe9b963ef11641bb3f6e6ca7a7da93e115a70bbdacc1a4d6fa29770bc43927e56939f9308da799e75b5a
   languageName: node
   linkType: hard
 
@@ -7411,12 +7413,12 @@ __metadata:
 
 "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz#./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::hash=8ee1d0&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz#./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::hash=4ec4ea&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@msgpack/msgpack": "npm:^3.1.2"
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
-  checksum: 10/ba0a676cdb75fa4aed3cefb12c28b36e29ee384f2664190cc9898af3e61b83b4c9cab815631fe18d06996c9b3fafefd35967d93dac98689f9fcb72c9f0b499a6
+  checksum: 10/cb58aed5eca46f0fb25fc66e83d5609818e2fb9c6a1b6766ba6d9e4bd49becc5eade784bf4d28a04c3967b70633be54f33764bf34dae81e1f7684dcf64fb4252
   languageName: node
   linkType: hard
 
@@ -7427,6 +7429,30 @@ __metadata:
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
     "@noble/curves": "npm:^1.9.2"
   checksum: 10/236c5bc3d8f231109d93eecce78de1cbcb6e95d3eae9c42cf43befd0b12584f5ce5b415b2c930d108c3b047d9f505768bb06bdd62900406a6404030d334ddfd1
+  languageName: node
+  linkType: hard
+
+"@metamask/mfa-wallet-e2ee@file:./metamask-mfa-wallet-e2ee-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/mfa-wallet-e2ee@file:./metamask-mfa-wallet-e2ee-0.0.0.tgz#./metamask-mfa-wallet-e2ee-0.0.0.tgz::hash=7e9304&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@msgpack/msgpack": "npm:^3.1.2"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/curves": "npm:^1.9.2"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10/13ccf57849813e2ae7622d7d8cd056836571dbaccd39a52c9d729170c3933689a348b330af5dfe28a125fb22407653e847c458ba5edec8c1d7e07659d91c6065
+  languageName: node
+  linkType: hard
+
+"@metamask/mfa-wallet-network@file:./metamask-mfa-wallet-network-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/mfa-wallet-network@file:./metamask-mfa-wallet-network-0.0.0.tgz#./metamask-mfa-wallet-network-0.0.0.tgz::hash=437af8&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
+    "@msgpack/msgpack": "npm:^3.1.2"
+    "@noble/hashes": "npm:^1.8.0"
+    centrifuge: "npm:^5.5.2"
+  checksum: 10/68f59188d011bdc719d9d5be0be179e153e08719c6241d862c19315cce4bc5ed865af56076fc14636f5a15e92085d55e7a803c22c8b798dd19d2f1fe82383332
   languageName: node
   linkType: hard
 
@@ -8861,8 +8887,8 @@ __metadata:
 
 "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz#./metamask-tss-dkls19-lib-0.0.0.tgz::hash=c28abe&locator=metamask-crx%40workspace%3A."
-  checksum: 10/782d65c544eafc04ea32d5c403f0e4afe69e4e828728cc92452f32db46b84ac2d3e989f7d555d00f6e70482d930acca64d83dc64739cfe3e79bba33e0b7a474b
+  resolution: "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz#./metamask-tss-dkls19-lib-0.0.0.tgz::hash=083b6a&locator=metamask-crx%40workspace%3A."
+  checksum: 10/647a9337ad540994f1c0d2dcdfb00b559075c668a2e0ed93433210e407a1dabf28ca0b9767ab44c90e07ad7eaa7a9c5633de85e68695abdfd2a2f26ff36ac65c
   languageName: node
   linkType: hard
 
@@ -21151,6 +21177,16 @@ __metadata:
   version: 1.0.4
   resolution: "ccount@npm:1.0.4"
   checksum: 10/14e143d557550b6694a4cb62e8d163498c550dc8afe56fda8b81990de629ae41ace6975262b8f9e3cded45a01f0f59d4f97f51f21499413cb4ed4fb7c3d23a48
+  languageName: node
+  linkType: hard
+
+"centrifuge@npm:^5.5.2":
+  version: 5.5.3
+  resolution: "centrifuge@npm:5.5.3"
+  dependencies:
+    events: "npm:^3.3.0"
+    protobufjs: "npm:^7.2.5"
+  checksum: 10/2074551adc0ea421d8d4880236b956d6fde0d652c3da2d82124b49c1d6659817069bb58f8f8525794382915d5bff3310592bb023a4afa35fc3ca2b69158ba412
   languageName: node
   linkType: hard
 
@@ -37580,6 +37616,26 @@ __metadata:
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.0.0"
   checksum: 10/408423506610f70858d7593632f4a6aa4f05796c90fd632be9b9252457c795acc71aa6d3b54bb7f48a890141728fee4ca3906723ccea6c202ad71f21b3879b8b
+  languageName: node
+  linkType: hard
+
+"protobufjs@npm:^7.2.5":
+  version: 7.5.4
+  resolution: "protobufjs@npm:7.5.4"
+  dependencies:
+    "@protobufjs/aspromise": "npm:^1.1.2"
+    "@protobufjs/base64": "npm:^1.1.2"
+    "@protobufjs/codegen": "npm:^2.0.4"
+    "@protobufjs/eventemitter": "npm:^1.1.0"
+    "@protobufjs/fetch": "npm:^1.1.0"
+    "@protobufjs/float": "npm:^1.0.2"
+    "@protobufjs/inquire": "npm:^1.1.0"
+    "@protobufjs/path": "npm:^1.1.2"
+    "@protobufjs/pool": "npm:^1.1.0"
+    "@protobufjs/utf8": "npm:^1.1.0"
+    "@types/node": "npm:>=13.7.0"
+    long: "npm:^5.0.0"
+  checksum: 10/88d677bb6f11a2ecec63fdd053dfe6d31120844d04e865efa9c8fbe0674cd077d6624ecfdf014018a20dcb114ae2a59c1b21966dd8073e920650c71370966439
   languageName: node
   linkType: hard
 

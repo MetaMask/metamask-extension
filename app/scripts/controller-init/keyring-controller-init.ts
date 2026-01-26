@@ -112,9 +112,8 @@ export const KeyringControllerInit: ControllerInitFunction<
       getRandomBytes: (length: number) =>
         crypto.getRandomValues(new Uint8Array(length)),
       dkls19Lib,
-      cloudURL: 'https://cloud.metamask.io',
-      networkManager: new NetworkManagerInstance(),
-      serializer: new MPCKeyringSerializerInstance(),
+      cloudURL: 'https://mpc-service.dev-api.cx.metamask.io/api/v1',
+      relayerURL: 'https://relayer.dev-api.cx.metamask.io',
       initRole: 'initiator',
     };
     additionalKeyrings.push(

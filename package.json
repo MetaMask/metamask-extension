@@ -264,7 +264,9 @@
     "@metamask/eth-mpc-keyring": "file:./metamask-eth-mpc-keyring-0.0.0.tgz",
     "@metamask/mfa-wallet-cl24-lib": "file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz",
     "@metamask/mfa-wallet-dkls19-lib": "file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz",
+    "@metamask/mfa-wallet-e2ee": "file:./metamask-mfa-wallet-e2ee-0.0.0.tgz",
     "@metamask/mfa-wallet-interface": "file:./metamask-mfa-wallet-interface-0.0.0.tgz",
+    "@metamask/mfa-wallet-network": "file:./metamask-mfa-wallet-network-0.0.0.tgz",
     "@metamask/mfa-wallet-util": "file:./metamask-mfa-wallet-util-0.0.0.tgz",
     "@metamask/tss-dkls19-lib": "file:./metamask-tss-dkls19-lib-0.0.0.tgz"
   },
@@ -848,7 +850,8 @@
       "@metamask/kernel-browser-runtime>@metamask/streams": false,
       "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
       "@metamask/logger>@metamask/streams": false,
-      "@metamask/streams": false
+      "@metamask/streams": false,
+      "@metamask/eth-mpc-keyring>@metamask/mfa-wallet-network>centrifuge>protobufjs": false
     }
   },
   "packageManager": "yarn@4.12.0",
