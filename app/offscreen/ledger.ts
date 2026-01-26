@@ -195,9 +195,13 @@ async function signPersonalMessage(
 }
 
 /**
- * Signs EIP-712 typed data.
- * Uses signEIP712Message which accepts the full typed data structure.
- * Falls back to signEIP712HashedMessage for Nano S compatibility if needed.
+ * Signs EIP-712 typed data using clear signing.
+ * Uses signEIP712Message which accepts the full typed data structure,
+ * allowing the Ledger device to display human-readable message contents.
+ *
+ * Note: This method is not compatible with Ledger Nano S, which only supports
+ * signEIP712HashedMessage (blind signing). Ledger officially deprecated
+ * Nano S software support in 2025, so no fallback is implemented.
  */
 async function signTypedData(params: {
   hdPath: string;
@@ -213,8 +217,6 @@ async function signTypedData(params: {
   s: string;
 }> {
   const app = await ensureApp();
-  // Use signEIP712Message which accepts the full EIP-712 message structure
-  // This provides better UX as the Ledger can display the message contents
   const result = await app.signEIP712Message(params.hdPath, params.message);
   return {
     v: result.v,
