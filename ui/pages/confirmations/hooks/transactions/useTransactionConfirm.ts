@@ -2,7 +2,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,10 +24,12 @@ import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useG
 import {
   updateAndApproveTx,
   setPendingHardwareSigning,
+  closeCurrentNotificationWindow,
 } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import {
+  isHardwareWalletError,
   isRetryableHardwareWalletError,
   isUserRejectedHardwareWalletError,
   useHardwareWalletError,
@@ -49,8 +50,10 @@ export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { showErrorModal } = useHardwareWalletError();
-  const { navigateNext } = useConfirmationNavigation();
-  const { resetTransactionState } = useConfirmActions();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { navigateNext: _navigateNext } = useConfirmationNavigation();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { resetTransactionState: _resetTransactionState } = useConfirmActions();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
@@ -143,20 +146,18 @@ export function useTransactionConfirm() {
       // navigateNext(transactionMeta.id);
       // resetTransactionState();
     } catch (error) {
-      console.log('[HW_DEBUG 11] useTransactionConfirm caught error');
-      const isHardwareWalletError = error instanceof HardwareWalletError;
+      const isHwError = isHardwareWalletError(error);
 
-      console.log('[HW_DEBUG 12] Error details:', {
-        error,
-        isHardwareWalletError,
-        errorCode: isHardwareWalletError ? error.code : undefined,
-        errorMetadata: isHardwareWalletError ? error.metadata : undefined,
-        recreatedTxId: isHardwareWalletError
-          ? error.metadata?.recreatedTxId
-          : undefined,
-      });
+      // Extract error details using duck typing for serialized errors
+      const errorObj = error as {
+        code?: number;
+        metadata?: Record<string, unknown>;
+        data?: { code?: number; metadata?: Record<string, unknown> };
+      };
+      const errorMetadata = errorObj?.metadata ?? errorObj?.data?.metadata;
+      const recreatedTxId = errorMetadata?.recreatedTxId as string | undefined;
 
-      if (!isHardwareWalletError) {
+      if (!isHwError) {
         // Non-hardware wallet errors - just rethrow
         console.log('[HW_DEBUG 13] Not a HardwareWalletError, rethrowing');
         throw error;
@@ -176,32 +177,23 @@ export function useTransactionConfirm() {
         environmentType === ENVIRONMENT_TYPE_NOTIFICATION ||
         environmentType === ENVIRONMENT_TYPE_POPUP;
 
-      console.log('[HW_DEBUG 14] Environment:', {
-        environmentType,
-        isPopupEnvironment,
-      });
-
-      // Check for user rejection first - user deliberately rejected on device
-      // Don't show modal for rejections, clear pendingHardwareSigning so user can navigate/cancel
+      // Check for user rejection first - user deliberately rejected on device.
+      // The transaction approval has already been processed by approveHardwareTransaction,
+      // so we just need to:
+      // 1. Clear pendingHardwareSigning so closeCurrentNotificationWindow isn't blocked
+      // 2. Close the popup directly
       if (isUserRejectedHardwareWalletError(error)) {
-        console.log(
-          '[HW_DEBUG 15] User rejection detected - not showing modal, clearing pendingHardwareSigning',
-        );
-        // Clear pendingHardwareSigning so the popup can close if user cancels
-        // or navigates away. Don't show modal for deliberate rejections.
+        // Clear pendingHardwareSigning and close the popup directly.
+        // The approval is already gone (processed by approveHardwareTransaction),
+        // so rejectPendingApproval would do nothing useful.
         dispatch(setPendingHardwareSigning(false));
+        dispatch(closeCurrentNotificationWindow());
         return;
       }
 
       if (isRetryableHardwareWalletError(error)) {
-        const recreatedTxId = error.metadata?.recreatedTxId as
-          | string
-          | undefined;
-
-        console.log(
-          '[HW_DEBUG 15] Retryable error - recreatedTxId:',
-          recreatedTxId,
-        );
+        // Clear pendingHardwareSigning so the confirm button is enabled for retry
+        dispatch(setPendingHardwareSigning(false));
 
         // IMPORTANT: Always show the modal FIRST, before any navigation.
         // This ensures isHardwareWalletErrorModalVisible is true before React
@@ -228,9 +220,6 @@ export function useTransactionConfirm() {
 
         // Retryable error without recreatedTxId - modal already shown, stay on current page
         // This allows the user to retry the signing from the same confirmation
-        console.log(
-          '[HW_DEBUG 20] No recreatedTxId, staying on page, returning',
-        );
         return;
       }
 
@@ -238,10 +227,6 @@ export function useTransactionConfirm() {
       // show the error modal. In popup mode, stay on the confirmation page
       // so the user can dismiss the modal and cancel manually.
       // In fullscreen mode, navigate to home page.
-      console.log(
-        '[useTransactionConfirm] Non-retryable error, showing modal',
-        { isPopupEnvironment },
-      );
       showErrorModal(error);
 
       if (!isPopupEnvironment) {

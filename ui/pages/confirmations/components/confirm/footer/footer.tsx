@@ -23,12 +23,20 @@ import {
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+  SIGNATURE_REQUEST_PATH,
+} from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getPendingHardwareSigning } from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
-import { resolvePendingApproval } from '../../../../../store/actions';
+import {
+  resolvePendingApproval,
+  setPendingHardwareSigning,
+  closeCurrentNotificationWindow,
+} from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
@@ -296,9 +304,6 @@ const Footer = () => {
 
     // const isReady = await onSubmitPreflightCheck();
     // if (!isReady) {
-    //   console.log(
-    //     '[Hardware debug Footer onSubmit] Preflight check failed, aborting submission',
-    //   );
     //   return;
     // }
 
@@ -353,24 +358,68 @@ const Footer = () => {
           throw error;
         }
 
-        // User rejection: Call showErrorModal which will handle user rejections by:
-        // 1. NOT showing a modal (user rejections don't need retry)
-        // 2. Clearing pendingHardwareSigning so navigation is unblocked
-        // 3. Closing the popup if there are no pending approvals
+        // User rejection: The user deliberately rejected on the hardware wallet device.
+        // The approval has already been processed (and removed) by the signature controller
+        // via `accept`, so we don't need to call rejectPendingApproval.
+        // We just need to:
+        // 1. Clear pendingHardwareSigning so closeCurrentNotificationWindow isn't blocked
+        // 2. Close the popup directly
         if (isUserRejectedHardwareWalletError(error)) {
           console.log(
-            '[Footer onSubmit] User rejection - calling showErrorModal to handle dismissal and popup close',
+            '[Footer onSubmit] User rejection - clearing flag and closing popup',
           );
-          showErrorModal(error);
+
+          // Clear pendingHardwareSigning and close the popup directly.
+          // The approval is already gone (processed by accept with an error result),
+          // so rejectPendingApproval would do nothing useful.
+          dispatch(setPendingHardwareSigning(false));
+          dispatch(closeCurrentNotificationWindow());
           return;
         }
 
         // Retryable errors (device locked, app closed): Show modal for retry
         if (isRetryableHardwareWalletError(error)) {
+          // Extract metadata using duck typing to handle different error structures:
+          // 1. HardwareWalletError instance: error.metadata.recreatedSignatureId
+          // 2. RPC error: error.data.metadata.recreatedSignatureId
+          const errorObj = error as {
+            metadata?: Record<string, unknown>;
+            data?: { metadata?: Record<string, unknown> };
+          };
+          const errorMetadata = errorObj?.metadata ?? errorObj?.data?.metadata;
+          const recreatedSignatureId = errorMetadata?.recreatedSignatureId as
+            | string
+            | undefined;
+
           console.log(
             '[Footer onSubmit] Retryable error - showing modal for retry',
+            {
+              error,
+              errorMetadata,
+              recreatedSignatureId,
+            },
           );
+
+          // Clear pendingHardwareSigning so the confirm button is enabled for retry
+          dispatch(setPendingHardwareSigning(false));
+
+          // Show the error modal first
           showErrorModal(error);
+
+          // If a new signature request was created, navigate to it
+          if (recreatedSignatureId) {
+            console.log(
+              '[Footer onSubmit] Navigating to recreated signature:',
+              recreatedSignatureId,
+            );
+            // Note: SIGNATURE_REQUEST_PATH already starts with '/', so no extra slash needed
+            navigate(
+              `${CONFIRM_TRANSACTION_ROUTE}/${recreatedSignatureId}${SIGNATURE_REQUEST_PATH}`,
+              {
+                replace: true,
+              },
+            );
+          }
           return;
         }
 

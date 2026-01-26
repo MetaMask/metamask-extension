@@ -140,22 +140,9 @@ export function parseErrorByType(
   try {
     // Log the raw error to understand its structure
     const errorAsAny = error as Record<string, unknown>;
-    console.log('[parseErrorByType] Raw error:', {
-      error,
-      errorType: typeof error,
-      errorName: errorAsAny?.name,
-      errorMessage: errorAsAny?.message,
-      errorCode: errorAsAny?.code,
-      errorKeys: error && typeof error === 'object' ? Object.keys(error) : null,
-      isError: error instanceof Error,
-      constructorName: error?.constructor?.name,
-    });
 
     // If already a HardwareWalletError, return it
     if (error instanceof HardwareWalletError) {
-      console.log(
-        '[parseErrorByType] Already a HardwareWalletError, returning as-is',
-      );
       return error;
     }
 
@@ -170,11 +157,6 @@ export function parseErrorByType(
         typeof errorAsAny?.message === 'string'
           ? errorAsAny.message
           : 'Hardware wallet error';
-      console.log('[parseErrorByType] Found HardwareWalletError by name:', {
-        code: errorAsAny.code,
-        mappedCode: errorCode,
-        message: errorMessage,
-      });
       return createHardwareWalletError(errorCode, walletType, errorMessage, {
         cause: error instanceof Error ? error : undefined,
       });
@@ -193,14 +175,6 @@ export function parseErrorByType(
       message?: string;
     };
 
-    console.log('[parseErrorByType] Checking data.cause structure:', {
-      hasData: Boolean(errorObj?.data),
-      hasCause: Boolean(errorObj?.data?.cause),
-      causeName: errorObj?.data?.cause?.name,
-      causeCode: errorObj?.data?.cause?.code,
-      causeMessage: errorObj?.data?.cause?.message,
-    });
-
     // Check for data.cause.name === 'HardwareWalletError'
     if (
       errorObj?.data?.cause?.name === 'HardwareWalletError' &&
@@ -211,21 +185,98 @@ export function parseErrorByType(
         errorObj.data.cause.message ?? 'Hardware wallet error';
       const mappedCode = mapNumericToErrorCode(causeCode);
 
-      console.log(
-        '[parseErrorByType] Found HardwareWalletError in data.cause:',
-        {
-          causeCode,
-          mappedCode,
-          causeMessage,
-        },
-      );
+      return createHardwareWalletError(mappedCode, walletType, causeMessage, {
+        cause: error instanceof Error ? error : undefined,
+      });
+    }
+
+    // Check for serialized TransportStatusError in data.cause
+    // This handles cases where the Ledger error has been serialized across the RPC boundary
+    const dataCause = errorObj?.data?.cause as
+      | {
+          name?: string;
+          statusCode?: number;
+          message?: string;
+        }
+      | undefined;
+    if (
+      (dataCause?.name === 'TransportStatusError' ||
+        dataCause?.name === 'LockedDeviceError') &&
+      typeof dataCause?.statusCode === 'number'
+    ) {
+      const { statusCode } = dataCause;
+      const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
+      const mapping =
+        LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
+      const mappedCode = mapping?.code ?? ErrorCode.Unknown;
+      const causeMessage = dataCause.message ?? 'Ledger device error';
 
       return createHardwareWalletError(mappedCode, walletType, causeMessage, {
         cause: error instanceof Error ? error : undefined,
       });
     }
-  } catch (parseError) {
-    console.error('[parseErrorByType] Error during parsing:', parseError);
+
+    // Check for TransportStatusError (Ledger errors) by name or statusCode property
+    // TransportStatusError has name: 'TransportStatusError' or 'LockedDeviceError'
+    // and a numeric statusCode property (e.g., 0x6985 for user rejection)
+    if (
+      (errorAsAny?.name === 'TransportStatusError' ||
+        errorAsAny?.name === 'LockedDeviceError') &&
+      typeof errorAsAny?.statusCode === 'number'
+    ) {
+      const statusCode = errorAsAny.statusCode as number;
+      const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
+      const mapping =
+        LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
+      const mappedCode = mapping?.code ?? ErrorCode.Unknown;
+      const errorMessage =
+        typeof errorAsAny?.message === 'string'
+          ? errorAsAny.message
+          : 'Ledger device error';
+
+      return createHardwareWalletError(mappedCode, walletType, errorMessage, {
+        cause: error instanceof Error ? error : undefined,
+      });
+    }
+
+    // Check for any error with a numeric statusCode property (Ledger-style errors)
+    // This handles cases where the error class check fails but statusCode is present
+    if (
+      typeof errorAsAny?.statusCode === 'number' &&
+      errorAsAny.statusCode > 0
+    ) {
+      const statusCode = errorAsAny.statusCode as number;
+      const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
+      const mapping =
+        LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
+      const mappedCode = mapping?.code ?? ErrorCode.Unknown;
+      const errorMessage =
+        typeof errorAsAny?.message === 'string'
+          ? errorAsAny.message
+          : 'Ledger device error';
+
+      return createHardwareWalletError(mappedCode, walletType, errorMessage, {
+        cause: error instanceof Error ? error : undefined,
+      });
+    }
+
+    // Check for statusCode in error.data (serialized Ledger error format)
+    const dataObj = errorObj?.data as { statusCode?: number } | undefined;
+    if (typeof dataObj?.statusCode === 'number' && dataObj.statusCode > 0) {
+      const { statusCode } = dataObj;
+      const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
+      const mapping =
+        LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
+      const mappedCode = mapping?.code ?? ErrorCode.Unknown;
+      const errorMessage =
+        typeof errorAsAny?.message === 'string'
+          ? errorAsAny.message
+          : 'Ledger device error';
+
+      return createHardwareWalletError(mappedCode, walletType, errorMessage, {
+        cause: error instanceof Error ? error : undefined,
+      });
+    }
   }
 
   // Get error message
@@ -253,10 +304,6 @@ export function parseErrorByType(
   // TODO: Add mappings for other hardware wallets
 
   // Default to unknown error
-  console.log('[parseErrorByType] Falling back to ErrorCode.Unknown:', {
-    errorMessage,
-    walletType,
-  });
   return createHardwareWalletError(
     ErrorCode.Unknown,
     walletType,
@@ -341,10 +388,30 @@ export function isHardwareWalletError(error: unknown): boolean {
 
   // Duck typing fallback for errors that lost class type over RPC boundary
   const errorObj = error as { name?: string; code?: number };
-  return (
+  if (
     errorObj?.name === 'HardwareWalletError' &&
     typeof errorObj?.code === 'number'
-  );
+  ) {
+    return true;
+  }
+
+  // Check for RPC error format with data.code (from rpcErrors.internal())
+  // This is the format used by metamask-controller when throwing hardware wallet errors
+  const rpcErrorObj = error as {
+    data?: {
+      code?: number;
+      category?: string;
+      severity?: string;
+    };
+  };
+  if (
+    typeof rpcErrorObj?.data?.code === 'number' &&
+    rpcErrorObj?.data?.category !== undefined
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -358,8 +425,20 @@ function getHardwareWalletErrorCode(error: unknown): ErrorCode | undefined {
   if (error instanceof HardwareWalletError) {
     return error.code;
   }
+
+  // Check for direct code property (duck typing)
   const errorObj = error as { code?: number };
-  return errorObj?.code as ErrorCode | undefined;
+  if (typeof errorObj?.code === 'number') {
+    return errorObj.code as ErrorCode;
+  }
+
+  // Check for RPC error format with data.code
+  const rpcErrorObj = error as { data?: { code?: number } };
+  if (typeof rpcErrorObj?.data?.code === 'number') {
+    return rpcErrorObj.data.code as ErrorCode;
+  }
+
+  return undefined;
 }
 
 /**

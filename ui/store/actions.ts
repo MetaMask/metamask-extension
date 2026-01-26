@@ -2170,6 +2170,12 @@ function keyringTypeToHardwareWalletType(
       return HardwareWalletType.Ledger;
     case KeyringTypes.trezor:
       return HardwareWalletType.Trezor;
+    case KeyringTypes.oneKey:
+      return HardwareWalletType.OneKey;
+    case KeyringTypes.lattice:
+      return HardwareWalletType.Lattice;
+    case KeyringTypes.qr:
+      return HardwareWalletType.Qr;
     default:
       return null;
   }
@@ -2193,19 +2199,13 @@ async function approveHardwareTransaction(
   loadingIndicatorMessage: string,
   keyringType: string,
 ): Promise<void> {
-  console.log(
-    '[HW_DEBUG 1] approveHardwareTransaction START - setting pendingHardwareSigning=true',
-  );
   dispatch(setPendingHardwareSigning(true));
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
   const walletType =
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
 
-  let hasError = false;
-
   try {
-    console.log('[HW_DEBUG 2] Calling background approveHardwareTransaction');
     await submitRequestToBackground('approveHardwareTransaction', [
       {
         txId: txMeta.id,
@@ -2215,58 +2215,24 @@ async function approveHardwareTransaction(
       },
     ]);
 
-    console.log('[HW_DEBUG 3] SUCCESS - updating state and closing');
     await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(txMeta.id));
     dispatch(updateCustomNonce(''));
     dispatch(closeCurrentNotificationWindow());
   } catch (error) {
-    hasError = true;
-    console.log(
-      '[HW_DEBUG 4] ERROR caught - hasError=true, calling forceUpdateMetamaskState',
-    );
     await forceUpdateMetamaskState(dispatch);
-    console.log('[HW_DEBUG 5] forceUpdateMetamaskState complete');
-
-    // Log the raw error structure for debugging
-    console.log('[HW_DEBUG 6] Raw error from RPC:', {
-      error,
-      errorType: typeof error,
-      isError: error instanceof Error,
-      errorData: (error as { data?: unknown })?.data,
-    });
-
     // Reconstruct the error to ensure it's a proper HardwareWalletError instance
     // Errors lose their class type when crossing the RPC boundary from background
     const hwError = reconstructHardwareWalletError(error, walletType);
 
-    console.log('[HW_DEBUG 7] Reconstructed HardwareWalletError:', {
-      code: hwError.code,
-      message: hwError.message,
-      metadata: hwError.metadata,
-      recreatedTxId: hwError.metadata?.recreatedTxId,
-      walletType,
-    });
-
-    console.log('[HW_DEBUG 8] About to throw hwError to useTransactionConfirm');
     // Rethrow the properly typed error for hook to handle
     throw hwError;
   } finally {
-    console.log('[HW_DEBUG 9] FINALLY block - hasError:', hasError);
     dispatch(hideLoadingIndication());
     // Only clear pendingHardwareSigning on success.
     // On error, keep it true to prevent auto-navigation/close of the popup.
     // The error modal will clear it when dismissed via useTransactionConfirm.
-    if (hasError) {
-      console.log(
-        '[HW_DEBUG 10] ERROR path - keeping pendingHardwareSigning=true',
-      );
-    } else {
-      console.log(
-        '[HW_DEBUG 10] SUCCESS path - clearing pendingHardwareSigning',
-      );
-      dispatch(setPendingHardwareSigning(false));
-    }
+    dispatch(setPendingHardwareSigning(false));
   }
 }
 
@@ -5834,21 +5800,12 @@ export function resolvePendingApproval(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
-    console.log(
-      '[HW_DEBUG resolvePendingApproval] Starting approval resolution for id:',
-      id,
-      new Error().stack,
-    );
-
     // Check if this is a hardware wallet account
     const fromAddress = options?.fromAddress;
     if (fromAddress) {
       const fromAccount = getInternalAccountByAddress(getState(), fromAddress);
 
       if (isHardwareAccount(fromAccount)) {
-        console.log(
-          '[HW_DEBUG resolvePendingApproval] Hardware wallet detected',
-        );
         const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
         return resolveHardwareApproval(
           dispatch,
@@ -5887,19 +5844,8 @@ async function resolveStandardApproval(
   ]);
   // Before closing the current window, check if any additional confirmations
   // are added as a result of this confirmation being accepted
-
-  console.log(
-    '[HW_DEBUG resolvePendingApproval] Background call complete, updating state',
-  );
   const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
-  console.log(
-    '[HW_DEBUG resolvePendingApproval] Checking pending approvals:',
-    Object.keys(pendingApprovals).length,
-  );
   if (Object.values(pendingApprovals).length === 0) {
-    console.log(
-      '[HW_DEBUG resolvePendingApproval] No pending approvals, calling closeCurrentNotificationWindow',
-    );
     dispatch(closeCurrentNotificationWindow());
   }
 }
@@ -5923,94 +5869,41 @@ async function resolveHardwareApproval(
   options: { waitForResult?: boolean } | undefined,
   keyringType: string,
 ): Promise<void> {
-  console.log(
-    '[HW_DEBUG resolveHardwareApproval] START - setting pendingHardwareSigning=true',
-  );
   dispatch(setPendingHardwareSigning(true));
   dispatch(showLoadingIndication());
 
   const walletType =
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
 
-  let hasError = false;
-
   try {
-    console.log(
-      '[HW_DEBUG resolveHardwareApproval] Calling background resolvePendingApproval',
-    );
     await submitRequestToBackground('resolvePendingApproval', [
       id,
       value,
-      options,
+      {
+        ...options,
+        waitForResult: true,
+        walletType,
+      },
     ]);
 
-    console.log('[HW_DEBUG resolveHardwareApproval] SUCCESS - updating state');
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
 
-    console.log(
-      '[HW_DEBUG resolveHardwareApproval] Checking pending approvals:',
-      Object.keys(pendingApprovals).length,
-    );
     if (Object.values(pendingApprovals).length === 0) {
-      console.log(
-        '[HW_DEBUG resolveHardwareApproval] No pending approvals, calling closeCurrentNotificationWindow',
-      );
       dispatch(closeCurrentNotificationWindow());
     }
   } catch (error) {
-    hasError = true;
-    console.log(
-      '[HW_DEBUG resolveHardwareApproval] ERROR caught - hasError=true, calling forceUpdateMetamaskState',
-    );
     await forceUpdateMetamaskState(dispatch);
-    console.log(
-      '[HW_DEBUG resolveHardwareApproval] forceUpdateMetamaskState complete',
-    );
-
-    // Log the raw error structure for debugging
-    console.log('[HW_DEBUG resolveHardwareApproval] Raw error from RPC:', {
-      error,
-      errorType: typeof error,
-      isError: error instanceof Error,
-      errorData: (error as { data?: unknown })?.data,
-    });
-
     // Reconstruct the error to ensure it's a proper HardwareWalletError instance
     // Errors lose their class type when crossing the RPC boundary from background
     const hwError = reconstructHardwareWalletError(error, walletType);
 
-    console.log(
-      '[HW_DEBUG resolveHardwareApproval] Reconstructed HardwareWalletError:',
-      {
-        code: hwError.code,
-        message: hwError.message,
-        metadata: hwError.metadata,
-        walletType,
-      },
-    );
-
-    console.log('[HW_DEBUG resolveHardwareApproval] About to throw hwError');
-    // Rethrow the properly typed error for the caller to handle
     throw hwError;
   } finally {
-    console.log(
-      '[HW_DEBUG resolveHardwareApproval] FINALLY block - hasError:',
-      hasError,
-    );
     dispatch(hideLoadingIndication());
     // Only clear pendingHardwareSigning on success.
     // On error, keep it true to prevent auto-navigation/close of the popup.
     // The error modal will clear it when dismissed.
-    if (hasError) {
-      console.log(
-        '[HW_DEBUG resolveHardwareApproval] ERROR path - keeping pendingHardwareSigning=true',
-      );
-    } else {
-      console.log(
-        '[HW_DEBUG resolveHardwareApproval] SUCCESS path - clearing pendingHardwareSigning',
-      );
-      dispatch(setPendingHardwareSigning(false));
-    }
+    dispatch(setPendingHardwareSigning(false));
   }
 }
 

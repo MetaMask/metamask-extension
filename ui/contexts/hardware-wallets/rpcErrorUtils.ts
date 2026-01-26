@@ -25,10 +25,6 @@ import {
 import { HardwareWalletType } from './types';
 import { createHardwareWalletError } from './errors';
 
-const LOG_TAG = '[RpcErrorUtils]';
-
-// #region Superstruct Definitions
-
 /**
  * Struct for a serialized HardwareWalletError cause object.
  * This represents the structure of a HardwareWalletError after it has been
@@ -95,10 +91,6 @@ const PlainObjectWithErrorCodeStruct = object({
   code: union([string(), number()]),
 });
 
-// #endregion
-
-// #region Types
-
 /**
  * Type for the serialized HardwareWalletError cause
  */
@@ -129,10 +121,6 @@ type DeserializedJsonRpcHardwareWalletError = Infer<
  * Type for a plain object with an ErrorCode
  */
 type PlainObjectWithErrorCode = Infer<typeof PlainObjectWithErrorCodeStruct>;
-
-// #endregion
-
-// #region Type Guards
 
 /**
  * Check if an error is a serialized RPC error containing a HardwareWalletError
@@ -191,11 +179,6 @@ function isJsonRpcHardwareWalletError(
   // Check for deserialized JsonRpcError (plain object with data property)
   return isDeserializedJsonRpcHardwareWalletError(error);
 }
-
-// #endregion
-
-// #region Conversion Functions
-
 /**
  * Convert a serialized HardwareWalletError cause to a HardwareWalletError instance
  *
@@ -237,12 +220,14 @@ function convertSerializedCauseToHardwareWalletError(
  *
  * @param data - The hardware wallet error data
  * @param message - The error message
+ * @param walletType - The hardware wallet type to include in metadata
  * @param stack - Optional stack trace
  * @returns A reconstructed HardwareWalletError instance
  */
 function convertDataToHardwareWalletError(
   data: HardwareWalletErrorData,
   message: string,
+  walletType: HardwareWalletType,
   stack?: string,
 ): HardwareWalletError {
   // Handle both string and numeric error codes
@@ -258,7 +243,10 @@ function convertDataToHardwareWalletError(
       severity: data.severity as Severity,
       category: data.category as Category,
       userMessage: data.userMessage ?? '',
-      metadata: data.metadata as Record<string, unknown>,
+      metadata: {
+        ...(data.metadata as Record<string, unknown>),
+        walletType,
+      },
     },
   );
 
@@ -268,10 +256,6 @@ function convertDataToHardwareWalletError(
 
   return hwError;
 }
-
-// #endregion
-
-// #region Utility Functions
 
 /**
  * Map a numeric error code from serialized error to an ErrorCode enum value
@@ -431,20 +415,12 @@ export function reconstructHardwareWalletError(
 
   // Already a HardwareWalletError instance
   if (error instanceof HardwareWalletError) {
-    console.log(LOG_TAG, 'Error is already a HardwareWalletError instance');
     return error;
   }
 
   // Check for serialized RPC error with HardwareWalletError in data.cause
   // Structure: { data: { cause: { name: 'HardwareWalletError', ... }, metadata?: {...} }, code: -32603 }
   if (isSerializedRpcHardwareWalletError(error)) {
-    console.log(
-      LOG_TAG,
-      'Reconstructing HardwareWalletError from serialized RPC error (data.cause path)',
-    );
-    console.log(LOG_TAG, 'Serialized cause:', error.data.cause);
-    console.log(LOG_TAG, 'Parent data metadata:', error.data.metadata);
-
     // Pass parent data which contains metadata like recreatedTxId
     // When the error is thrown via rpcErrors.internal({ data: { metadata: { recreatedTxId } } }),
     // the metadata is in error.data.metadata, not in error.data.cause
@@ -457,63 +433,51 @@ export function reconstructHardwareWalletError(
 
   // JsonRpcError with hardware wallet data (data.code is a string or numeric ErrorCode)
   if (isJsonRpcHardwareWalletError(error)) {
-    console.log(
-      LOG_TAG,
-      'Reconstructing HardwareWalletError from JsonRpcError',
-    );
-    console.log(LOG_TAG, 'Error code:', error.data.code);
-    console.log(LOG_TAG, 'Error data:', error.data);
-    console.log(LOG_TAG, 'Error metadata:', error.data.metadata);
-
     const hwError = convertDataToHardwareWalletError(
       error.data,
       error.message || '',
+      walletType,
       error.stack,
     );
 
-    console.log(
-      LOG_TAG,
-      'Reconstructed HardwareWalletError metadata:',
-      hwError.metadata,
-    );
     return hwError;
   }
+
+  // Helper to extract message from error (handles plain objects from RPC boundary)
+  const getErrorMessage = (err: unknown): string => {
+    if (err instanceof Error) {
+      return err.message;
+    }
+    // Handle plain objects with message property (from RPC boundary)
+    const errObj = err as { message?: string };
+    if (errObj?.message && typeof errObj.message === 'string') {
+      return errObj.message;
+    }
+    return String(err);
+  };
 
   // For Ledger errors, the status code might be in the error message
   // (e.g., "Device is locked (Ledger device: Locked device (0x5515))")
   if (walletType === HardwareWalletType.Ledger) {
-    console.log(LOG_TAG, 'Processing Ledger error, walletType is Ledger');
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorMessage = getErrorMessage(error);
     const hexStatusCode = extractHexStatusCodeFromMessage(errorMessage);
 
     if (hexStatusCode) {
-      console.log(
-        LOG_TAG,
-        `Extracted Ledger status code ${hexStatusCode} from error message`,
-      );
-
       const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
-
-      console.log(LOG_TAG, 'Mapped to ErrorCode:', {
-        statusCode: hexStatusCode,
-        errorCode,
-        errorCodeName: getErrorCodeName(errorCode),
-      });
 
       return createHardwareWalletError(errorCode, walletType, errorMessage, {
         cause: error instanceof Error ? error : undefined,
       });
     }
   } else {
-    console.log(LOG_TAG, `Not a Ledger error, walletType is: ${walletType}`);
   }
 
   // Fallback: use the error parser to create a HardwareWalletError
-  console.log(LOG_TAG, 'Parsing unknown error type');
+  const fallbackMessage = getErrorMessage(error);
   return createHardwareWalletError(
     ErrorCode.Unknown,
     walletType,
-    error instanceof Error ? error.message : String(error),
+    fallbackMessage,
   );
 }
 

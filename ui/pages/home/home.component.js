@@ -82,7 +82,6 @@ function shouldCloseNotificationPopup({
   isHardwareWalletErrorModalVisible,
   isPendingHardwareSigning,
 }) {
-  debugger;
   const baseCondition =
     isNotification &&
     totalUnapprovedCount === 0 &&
@@ -93,25 +92,6 @@ function shouldCloseNotificationPopup({
     isHardwareWalletErrorModalVisible || isPendingHardwareSigning;
 
   const shouldClose = baseCondition && !isBlocked;
-
-  // Always log when called to trace timing
-  console.log('[HW_DEBUG HOME] shouldCloseNotificationPopup called:', {
-    isNotification,
-    totalUnapprovedCount,
-    hasApprovalFlows,
-    isSigningQRHardwareTransaction,
-    isHardwareWalletErrorModalVisible,
-    isPendingHardwareSigning,
-    baseCondition,
-    isBlocked,
-    shouldClose,
-  });
-
-  if (shouldClose) {
-    console.log('[HW_DEBUG HOME] WILL CLOSE POPUP');
-  } else if (baseCondition && isBlocked) {
-    console.log('[HW_DEBUG HOME] BLOCKED - will NOT close popup');
-  }
 
   return shouldClose;
 }

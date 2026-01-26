@@ -30,6 +30,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import {
+  HardwareWalletType,
   isRetryableHardwareWalletError,
   useHardwareWalletActions,
   useHardwareWalletConfig,
@@ -57,16 +58,26 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const [recovered, setRecovered] = useState(false);
     const { error, onCancel, onClose } = { ...modalProps, ...props };
 
-    const { deviceId, walletType } = useHardwareWalletConfig();
+    const { deviceId, walletType: selectedAccountWalletType } =
+      useHardwareWalletConfig();
     const { ensureDeviceReady, clearError } = useHardwareWalletActions();
-
-    const displayWalletType = walletType;
 
     // If no error, don't render anything
     if (!error) {
       onClose?.();
       return null;
     }
+
+    // Get wallet type from error metadata first (for signature flows where
+    // the signing account may differ from the selected account), then fall
+    // back to the selected account's wallet type.
+    // Handle both direct metadata and RPC error format (data.metadata)
+    const errorMetadata =
+      (error as { metadata?: { walletType?: HardwareWalletType } }).metadata ??
+      (error as { data?: { metadata?: { walletType?: HardwareWalletType } } })
+        .data?.metadata;
+    const errorWalletType = errorMetadata?.walletType;
+    const displayWalletType = errorWalletType || selectedAccountWalletType;
 
     if (!displayWalletType) {
       onClose?.();
