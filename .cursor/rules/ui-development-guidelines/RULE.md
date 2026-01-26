@@ -25,14 +25,11 @@ Always prioritize `@metamask/design-system-react` components and Tailwind CSS pa
    - **Rule**: If it exists in the design system, you MUST use it
 
 2. **SECOND**: Use `ui/components/component-library` ONLY if design system lacks it
-   - **Prefer Variant Components**: Modal, ModalHeader, BannerAlert, BannerTip, PopoverHeader
-   - **Base Components (use sparingly)**: BannerBase, HeaderBase, ModalBody (for custom patterns)
-   - **Other Components**: Container, HelpText, Input, Label, Popover, PickerNetwork
-   - **Form Components**: SensitiveText, Tag, TagUrl, TextFieldSearch, Textarea, SelectButton, SelectWrapper
-   - **Utility Components**: Skeleton, SelectOption
+   - **Navigation Components** Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody ,ModalFooter, Popover, PopoverHeader
+   - **Form Components**: FormTextField, TextFieldSearch, TextField, TextArea, Label, HelpText, SelectButton, SelectWrapper, SelectOption
+   - **Utility Components**: Skeleton, SensitiveText, Tag, BannerAlert,
    - **Rule**: These are MetaMask-specific implementations not (yet) in the design system
-   - **Important**: component-library components should themselves use design system primitives internally
-   - **Base/Variant Pattern**: Always prefer variant components over base components
+   - **Avoid "Base" components**: Components with "Base" in the name generally should not be used unless for custom implementations. We use the base/variant pattern for component development.
 
 3. **THIRD**: Feature-specific components
    - **Use for**: Complex, domain-specific UI that combines multiple design system/component-library components
@@ -170,13 +167,13 @@ All other components (Button, Text, Icon, Checkbox, etc.) have their own compone
 
 ### ✅ ALWAYS DO:
 
-- Use `Box` component instead of `div` for layout
+- Use `Box` component instead of `div` for layout and utility props
 - Use `Text` component with `variant` prop instead of raw text elements
 - Use component-specific props FIRST: `variant`, `size`, `color`, etc.
 - Use `Box` color props (`backgroundColor`, `borderColor`) for Box component
-- Use `className` for additional utilities: layout, spacing, positioning
-- Use design system color tokens: `bg-default`, `text-default`, `border-default`
-- Use Tailwind classes from `@metamask/design-system-tailwind-preset`
+- Use `className` for additional utilities: layout, spacing, positioning only when not provided by a prop
+- Use design system color tokens: `bg-default`, `text-default`, `border-default` or provided color props
+- Use Tailwind classes in tailwind.config.js from `@metamask/design-system-tailwind-preset`
 
 **Priority Order**: Component Props → Box Utility Props → className for extras
 
@@ -187,9 +184,8 @@ All other components (Button, Text, Icon, Checkbox, etc.) have their own compone
 - Arbitrary color values like `bg-[#3B82F6]` or `text-[#000000]`
 - Inline style objects unless for truly dynamic values
 - Custom CSS files for new components
-- `backgroundColor` prop on components other than Box (use `className` instead)
-- `borderColor` prop on components other than Box (use `className` instead)
-- Replacing `div` with `className` when there's no appropriate design system component
+- `backgroundColor` prop on components other than Box (use `className` instead) check component API
+- `borderColor` prop on components other than Box (use `className` instead) check component API
 
 **Note**: Using `div` with Tailwind `className` is acceptable when no design system component fits the use case.
 
@@ -205,7 +201,7 @@ const MyComponent = () => {
       padding={4}
       className="w-full"
     >
-      <Text variant={TextVariant.HeadingMd}>Title</Text>
+      <Text variant={TextVariant.HeadingMd} color={TextColor.TextAlternative}>Title</Text>
     </Box>
   );
 };
@@ -229,8 +225,7 @@ const MyComponent = () => {
 
 ```tsx
 // ✅ PREFER: Use Button component with variants
-<Button
-  variant={ButtonVariant.Primary}
+<Button // Primary variant by default
   size={ButtonSize.Lg}
   onClick={handleClick}
 >
@@ -254,20 +249,6 @@ const MyComponent = () => {
   <Icon name={IconName.Bank} />
   <Text fontWeight={FontWeight.Medium}>Custom Button</Text>
 </ButtonBase>
-
-// ✅ For very custom interactive elements: Use Box with asChild
-<Box
-  backgroundColor={BoxBackgroundColor.BackgroundMuted}
-  paddingHorizontal={4}
-  paddingVertical={2}
-  className="h-auto rounded-lg hover:bg-muted-hover active:bg-muted-pressed cursor-pointer"
-  asChild
->
-  <button onClick={handleClick}>
-    <Icon name={IconName.Bank} />
-    <Text fontWeight={FontWeight.Medium}>Very Custom Element</Text>
-  </button>
-</Box>
 ```
 
 ### Using Avatars and Badges:
@@ -327,8 +308,6 @@ MetaMask follows a Base/Variant pattern across many component families:
 | ---------------- | ----------------------------------------------- | ------------------------------ |
 | **Button**       | Button (Primary/Secondary/Tertiary), ButtonIcon | ButtonBase                     |
 | **Banner**       | BannerAlert, BannerTip                          | BannerBase                     |
-| **Modal**        | ModalHeader, ModalFooter, ModalFocus            | ModalBody, ModalContent        |
-| **Popover**      | PopoverHeader                                   | (none - use Popover directly)  |
 | **Header**       | (feature-specific headers)                      | HeaderBase                     |
 
 **Always prefer variant components.** Only use base components when:
@@ -599,8 +578,7 @@ Before suggesting any UI solution:
 
 The extension uses:
 
-- `@metamask/design-system-tailwind-preset` for design tokens
-- `@metamask/design-tokens` for color and spacing values
+- `@metamask/design-system-tailwind-preset` for design token aligned tailwind classnames
 - Custom `tailwind.config.js` that extends the preset
 
 All Tailwind colors are mapped to design tokens. Use semantic class names:
