@@ -486,7 +486,7 @@ export const CURRENCY_SYMBOLS = {
   BOB: 'ETH',
   ROOTSTOCK: 'RBTC',
   ROOTSTOCK_TESTNET: 'tRBTC',
-  TEMPO_TESTNET: 'pathUSD',
+  TEMPO_TESTNET: 'USD',
 } as const;
 
 // Non-EVM currency symbols
