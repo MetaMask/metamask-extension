@@ -30789,7 +30789,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/gator-permissions-snap
-1.1.0 <https://github.com/MetaMask/snap-7715-permissions>
+1.1.1 <https://github.com/MetaMask/snap-7715-permissions>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
