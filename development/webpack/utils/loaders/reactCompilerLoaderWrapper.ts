@@ -14,11 +14,11 @@ import type { LoaderContext } from 'webpack';
 import { setCurrentModule, getOrCreateLogger } from './reactCompilerLoader';
 
 type WrapperOptions = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __verbose?: boolean;
   [key: string]: unknown;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const reactCompilerLoaderWrapper = function (
   this: LoaderContext<WrapperOptions>,
   source: string,
@@ -42,11 +42,13 @@ const reactCompilerLoaderWrapper = function (
   const actualLoader = require('react-compiler-webpack/dist/react-compiler-loader');
 
   // Remove our custom option before passing to the real loader
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const { __verbose, ...loaderOptions } = options;
 
   // Temporarily override getOptions to return cleaned options
   const originalGetOptions = this.getOptions.bind(this);
-  this.getOptions = () => loaderOptions as ReturnType<typeof originalGetOptions>;
+  this.getOptions = () =>
+    loaderOptions as ReturnType<typeof originalGetOptions>;
 
   try {
     return actualLoader.call(this, source, sourceMap);
