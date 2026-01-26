@@ -222,7 +222,8 @@ async function start(): Promise<void> {
             );
           }
           const benchmark = await benchmarkResponse.json();
-          benchmarkResults[platform][buildType][page] = benchmark[page];
+          const benchmarkData = benchmark[pageFileName] || benchmark;
+          benchmarkResults[platform][buildType][page] = benchmarkData[page];
         } catch (error) {
           console.error(
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
