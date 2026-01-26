@@ -87,6 +87,27 @@ describe('NetworkListItem', () => {
     expect(onDeleteClick).toHaveBeenCalledTimes(1);
     expect(onClick).toHaveBeenCalledTimes(0);
   });
+
+  it('toggles menu open and closed when clicking the menu button', () => {
+    const onDeleteClick = jest.fn();
+    const { getByTestId, queryByTestId } = render(
+      <NetworkListItem {...DEFAULT_PROPS} onDeleteClick={onDeleteClick} />,
+    );
+
+    const menuButton = getByTestId('network-list-item-options-button-0x1');
+
+    // First click should open the menu
+    fireEvent.click(menuButton);
+    expect(
+      queryByTestId('network-list-item-options-delete'),
+    ).toBeInTheDocument();
+
+    // Second click should close the menu
+    fireEvent.click(menuButton);
+    expect(
+      queryByTestId('network-list-item-options-delete'),
+    ).not.toBeInTheDocument();
+  });
 });
 
 describe('NetworkListItem - Gas fees sponsored', () => {
