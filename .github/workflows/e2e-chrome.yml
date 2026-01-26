@@ -36,7 +36,7 @@ jobs:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)[github.job] }}
+      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-browserify'] }}
     with:
       test-suite-name: test-e2e-chrome-browserify
       build-artifact: build-test-browserify
@@ -53,7 +53,7 @@ jobs:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)[github.job] }}
+      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-webpack'] }}
     with:
       test-suite-name: test-e2e-chrome-webpack
       build-artifact: build-test-webpack
@@ -85,7 +85,7 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix)[github.job] }}
+      matrix: ${{ fromJson(inputs.use-matrix)['test-e2e-chrome-flask'] }}
     with:
       test-suite-name: test-e2e-chrome-flask
       build-artifact: build-test-flask-browserify
