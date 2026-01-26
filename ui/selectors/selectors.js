@@ -155,6 +155,10 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { createParameterizedShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import {
+  FeatureFlagNames,
+  DEFAULT_FEATURE_FLAG_VALUES,
+} from '../../shared/modules/feature-flags';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
   getUnapprovedTransactions,
@@ -214,10 +218,6 @@ export function getCustomNonceValue(state) {
 
 export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
-}
-
-export function getShowWhatsNewPopup(state) {
-  return state.appState.showWhatsNewPopup;
 }
 
 export function getShowPermittedNetworkToastOpen(state) {
@@ -2430,46 +2430,6 @@ export const getSnapInsights = createDeepEqualSelector(
 );
 
 /**
- * Get an object of announcement IDs and if they are allowed or not.
- *
- * @returns {object}
- */
-function getAllowedAnnouncementIds() {
-  return {};
-}
-
-/**
- * @typedef {object} Announcement
- * @property {number} id - A unique identifier for the announcement
- * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
- */
-
-/**
- * Announcements are managed by the announcement controller and referenced by
- * `state.metamask.announcements`. This function returns a list of announcements
- * the can be shown to the user. This list includes all announcements that do not
- * have a truthy `isShown` property.
- *
- * The returned announcements are sorted by date.
- *
- * @param {object} state - the redux state object
- * @returns {Announcement[]} An array of announcements that can be shown to the user
- */
-
-export function getSortedAnnouncementsToShow(state) {
-  const announcements = Object.values(state.metamask.announcements);
-  const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
-  const announcementsToShow = announcements.filter(
-    (announcement) =>
-      !announcement.isShown && allowedAnnouncementIds[announcement.id],
-  );
-  const announcementsSortedByDate = announcementsToShow.sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
-  return announcementsSortedByDate;
-}
-
-/**
  * @param state
  * @returns {{networkId: string}[]}
  */
@@ -3219,16 +3179,23 @@ export function getIsNewSettingsEnabled(state) {
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
 }
+
 /**
  * Get the state of the `defiPositionsEnabled` remote feature flag.
  *
- * @param {*} state
+ * @param state - The MetaMask state object
  * @returns The state of the `defiPositionsEnabled` remote feature flag.
  */
-export function getIsDefiPositionsEnabled(state) {
-  const { assetsDefiPositionsEnabled } = getRemoteFeatureFlags(state);
-  return Boolean(assetsDefiPositionsEnabled);
-}
+export const getIsDefiPositionsEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    Boolean(
+      remoteFeatureFlags[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
+        DEFAULT_FEATURE_FLAG_VALUES[
+          FeatureFlagNames.AssetsDefiPositionsEnabled
+        ],
+    ),
+);
 
 /**
  * Returns true if any EVM networks are enabled in the network filter.

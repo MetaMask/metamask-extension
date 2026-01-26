@@ -26,6 +26,16 @@
       "error: Warning: A component is changing": 2,
       "Test errors: Uncaught TypeErrors": 1
     },
+    "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
+      "Reselect: Input stability warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/prepare/components/bridge-asset-picker/asset.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/ducks/bridge/asset-selectors.test.ts": {
+      "Reselect: Input stability warnings": 1
+    },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.test.tsx": {
       "Reselect: Input stability warnings": 3,
       "Reselect: Identity function warnings": 6,
@@ -88,9 +98,8 @@
       "error: TypeError: Cannot convert undefined or": 2,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
       "MetaMask: Chain processing errors": 2,
-      "Test errors: Fetch failures": 5,
       "ObjectMultiplex: Malformed chunk warnings": 1,
-      "error: { name: 'controller', data: {": 1,
+      "error: {": 1,
       "MetaMask: MetaMetrics invalid trait types": 2,
       "error: Error: invalid address (argument=\"address\", value=\"\",": 1,
       "MetaMask: Sentry initialization warnings": 1,
@@ -1031,14 +1040,24 @@
       "error: Warning: React does not recognize": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/multichain/create-named-snap-account/create-named-snap-account.test.tsx": {
-      "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/hooks/alerts/transactions/useSigningOrSubmittingAlerts.test.ts": {
       "Reselect: Input stability warnings": 2,
-      "Reselect: Identity function warnings": 5,
+      "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientPayTokenBalanceAlert.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/alerts/transactions/useNoPayTokenQuotesAlert.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/alerts/transactions/usePayHardwareAccountAlert.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
@@ -2037,12 +2056,6 @@
       "warn: ⚠️ React Router Future Flag": 2,
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/pages/confirmations/confirmation/templates/create-named-snap-account.test.js": {
-      "Reselect: Identity function warnings": 7,
-      "React: PropTypes validation failures": 2,
-      "Reselect: Input stability warnings": 4,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/hooks/alerts/transactions/usePendingTransactionAlerts.test.ts": {
       "Reselect: Input stability warnings": 2,
       "Reselect: Identity function warnings": 5,
@@ -2432,9 +2445,6 @@
     },
     "shared/modules/bridge-utils/security-alerts-api.util.test.ts": {
       "warn: Missing token alert translation for": 1
-    },
-    "ui/hooks/useNftCollectionsMetadata.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/selectors/metamask-notifications/metamask-notifications.test.ts": {
       "Reselect: Input stability warnings": 5
@@ -3451,6 +3461,21 @@
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/perps/market-list/components/market-row/market-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/perps/market-list/components/sort-dropdown/sort-dropdown.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/perps/market-list/components/dropdown/dropdown.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/perps/market-list/components/search-input/search-input.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/perps/market-list/index.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2
     },
@@ -3474,6 +3499,67 @@
       "Reselect: Input stability warnings": 2,
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/percentage-buttons/percentage-buttons.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/transactions/useUpdateTokenAmount.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmountAlerts.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info.test.tsx": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/block-explorer-link/block-explorer-link.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-account-row/transaction-details-account-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-date-row/transaction-details-date-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-status-row/transaction-details-status-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-hero/transaction-details-hero.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-network-fee-row/transaction-details-network-fee-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-bridge-fee-row/transaction-details-bridge-fee-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-paid-with-row/transaction-details-paid-with-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-total-row/transaction-details-total-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-summary/transaction-details-summary.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/activity/transaction-details/transaction-details.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2,
+      "warn: No tokens found for chainId:": 4
+    },
+    "ui/pages/confirmations/components/activity/transaction-details-modal/transaction-details-modal.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2,
+      "warn: No tokens found for chainId:": 1
     }
   },
   "generated": "2025-12-15T13:34:23.962Z",

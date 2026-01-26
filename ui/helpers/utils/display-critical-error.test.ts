@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import { act } from 'react-dom/test-utils';
 import * as errorUtils from '../../../shared/lib/error-utils';
 import {
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
   extractEnvelopeUrlFromDsn,
 } from './display-critical-error';
@@ -40,6 +40,7 @@ jest.mock('../../../shared/lib/manifestFlags', () => ({
 }));
 
 describe('displayCriticalError', () => {
+  let rootContainer: HTMLElement;
   let container: HTMLElement;
   const MOCK_ERROR_MESSAGE = 'test error';
   const EXPECTED_ENVELOPE_URL = extractEnvelopeUrlFromDsn(MOCK_SENTRY_DSN_DEV);
@@ -50,6 +51,13 @@ describe('displayCriticalError', () => {
 
   beforeEach(() => {
     container = document.createElement('div');
+    // When a critical error is displayed, the main application container is removed from the DOM.
+    // We use `container.parentElement` to determine whether the container has been removed yet or
+    // not. The mock container starts with a parent so that it looks like no error has occurred
+    // yet.
+    rootContainer = document.createElement('div');
+    rootContainer.appendChild(container);
+
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
     } as Response);
@@ -73,11 +81,11 @@ describe('displayCriticalError', () => {
     jest.clearAllMocks();
   });
 
-  it('renders critical error html into container', async () => {
+  it('renders critical error html into parent of container', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
     await expect(
-      displayCriticalError(
+      displayCriticalErrorMessage(
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
@@ -91,14 +99,16 @@ describe('displayCriticalError', () => {
       { preferredLocale: 'en', t: expect.any(Function) },
       expect.any(String),
     );
-    expect(container.innerHTML).toContain('critical-error-button');
+    expect(
+      rootContainer.querySelector('#critical-error-content')?.innerHTML,
+    ).toContain('critical-error-button');
   });
 
   it('clicking restart button calls fetch and reload if checkbox checked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
     await expect(
-      displayCriticalError(
+      displayCriticalErrorMessage(
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
@@ -106,10 +116,10 @@ describe('displayCriticalError', () => {
       ),
     ).rejects.toThrow(error);
 
-    const restartButton = container.querySelector<HTMLButtonElement>(
+    const restartButton = rootContainer.querySelector<HTMLButtonElement>(
       '#critical-error-button',
     );
-    const checkbox = container.querySelector<HTMLInputElement>(
+    const checkbox = rootContainer.querySelector<HTMLInputElement>(
       '#critical-error-checkbox',
     );
 
@@ -202,7 +212,7 @@ describe('displayCriticalError', () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
     await expect(
-      displayCriticalError(
+      displayCriticalErrorMessage(
         container,
         CriticalErrorTranslationKey.SomethingIsWrong,
         error,
@@ -210,10 +220,10 @@ describe('displayCriticalError', () => {
       ),
     ).rejects.toThrow(error);
 
-    const restartButton = container.querySelector<HTMLButtonElement>(
+    const restartButton = rootContainer.querySelector<HTMLButtonElement>(
       '#critical-error-button',
     );
-    const checkbox = container.querySelector<HTMLInputElement>(
+    const checkbox = rootContainer.querySelector<HTMLInputElement>(
       '#critical-error-checkbox',
     );
 
