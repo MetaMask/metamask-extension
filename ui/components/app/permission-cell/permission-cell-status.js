@@ -64,8 +64,8 @@ export const PermissionCellStatus = ({
             {networks?.map((network, index) => {
               // Get network icon: try EVM chain ID map first, then rpcPrefs.imageUrl for non-EVM
               const networkImageUrl =
-                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId] ||
-                network.rpcPrefs?.imageUrl ||
+                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId] ??
+                network.rpcPrefs?.imageUrl ??
                 network.nativeTokenIconUrl;
               return (
                 <Box

@@ -39,7 +39,10 @@ import {
 import { toRelativeRoutePath } from '../routes/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
+import {
+  isEthAddress,
+  normalizeSafeAddress,
+} from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import {
   DEFAULT_ROUTE,
@@ -114,7 +117,9 @@ function getDefaultSelectedAccounts(
     const addresses = requestedCaipAccountIds
       .map((caipAccountId) => {
         try {
-          return parseCaipAccountId(caipAccountId).address.toLowerCase();
+          return normalizeSafeAddress(
+            parseCaipAccountId(caipAccountId).address,
+          );
         } catch {
           return null;
         }
@@ -782,7 +787,7 @@ function PermissionsConnect() {
                 // Use selectedCaipChainIds if set (from account selection), otherwise use non-EVM CAIP chain IDs
                 // EVM chains are already displayed via requestedChainIds, so we only pass non-EVM chains here
                 selectedCaipChainIds={
-                  selectedCaipChainIds ||
+                  selectedCaipChainIds ??
                   getNonEvmRequestedCaipChainIds(
                     permissions as PermissionsRequest | undefined,
                   )
