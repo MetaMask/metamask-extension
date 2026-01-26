@@ -98,6 +98,7 @@ const generateDefaultNetworkEnablementControllerState = (
           [],
         ),
       },
+      nativeAssetIdentifiers: {},
     };
   } else if (
     process.env.METAMASK_DEBUG ||
@@ -113,6 +114,7 @@ const generateDefaultNetworkEnablementControllerState = (
           [],
         ),
       },
+      nativeAssetIdentifiers: {},
     };
   }
 
@@ -137,6 +139,7 @@ const generateDefaultNetworkEnablementControllerState = (
         enabledMultichainNetworks,
       ),
     },
+    nativeAssetIdentifiers: {},
   };
 };
 
@@ -161,6 +164,13 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
       ...persistedState.NetworkEnablementController,
     },
   });
+
+  // Initialize native asset identifiers from network configurations.
+  // This reads from NetworkController and MultichainNetworkController to populate
+  // the nativeAssetIdentifiers state with CAIP-19-like identifiers for each network.
+  // We intentionally don't await this - it will complete in the background.
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  controller.init();
 
   // TODO: Remove this after BIP-44 rollout.
   initMessenger.subscribe(
