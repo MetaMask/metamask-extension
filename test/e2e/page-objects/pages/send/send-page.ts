@@ -51,9 +51,6 @@ class SendPage {
   private readonly tokenAsset = (chainId: string, symbol: string) =>
     `[data-testid="token-asset-${chainId}-${symbol}"]`;
 
-  private readonly networkFilterToggle =
-    '[data-testid="send-network-filter-toggle"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -74,7 +71,7 @@ class SendPage {
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.networkFilterToggle);
+    await this.driver.waitForSelector(this.networkPicker);
   }
 
   async checkSendFormIsLoaded(): Promise<void> {

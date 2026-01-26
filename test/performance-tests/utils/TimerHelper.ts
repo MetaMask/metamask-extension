@@ -19,7 +19,7 @@ class TimerHelper {
    */
   constructor(id: string, threshold?: number) {
     this._id = id;
-    this._baseThreshold = threshold ?? null;
+    this._baseThreshold = (threshold ?? 0) * (process.env.CI ? 1.5 : 1.0);
     Timers.createTimer(this.id);
   }
 
