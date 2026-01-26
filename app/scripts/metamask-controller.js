@@ -8301,7 +8301,9 @@ export default class MetamaskController extends EventEmitter {
         },
       });
     } catch (error) {
-      // Track failure via Segment
+      const isError = error instanceof Error;
+      const errorMessage = isError ? error.message : 'Unknown error';
+
       this.metaMetricsController.trackEvent({
         event: MetaMetricsEventName.SeedlessOnboardingMigrationFailed,
         category: MetaMetricsEventCategory.Background,
@@ -8309,11 +8311,12 @@ export default class MetamaskController extends EventEmitter {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           migration_version:
             this.seedlessOnboardingController.state?.migrationVersion,
-          error: error.message,
+          error: errorMessage,
         },
       });
+      captureException(isError ? error : new Error(errorMessage));
 
-      throw error; // Re-throw so Sentry also catches it
+      throw error;
     }
   }
 
