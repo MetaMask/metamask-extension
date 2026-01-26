@@ -93,6 +93,7 @@ describe('createMultichainUnlockMiddleware', () => {
       expect(nextCalled).toBe(false);
 
       // Simulate user unlocking the wallet
+      // @ts-expect-error Variable 'unlockResolve' is being assigned above
       unlockResolve();
       await middlewarePromise;
 
