@@ -2,22 +2,20 @@ import copyToClipboard from 'copy-to-clipboard';
 import { useCallback, useState } from 'react';
 import { COPY_OPTIONS } from '../../shared/constants/copy';
 import { SECOND } from '../../shared/constants/time';
-import { isValidHexAddress } from '../../shared/modules/hexstring-utils';
 import { useTimeout } from './useTimeout';
 
-// These are exported for use by the unit tests
-export const DEFAULT_CLEAR_DELAY = 60 * SECOND;
+// This is exported for use by the unit tests
 export const DEFAULT_UI_DELAY = 2 * SECOND;
 
 // This is "static" across all instances of the hook
 let lastCopiedText = '';
 
 /**
- * @param clearDelay - delay before clearing the clipboard in ms, default is DEFAULT_CLEAR_DELAY, if set to -1, the clipboard will not be cleared automatically
+ * @param clearDelay - Delay before clearing the clipboard in ms. If set to -1, the clipboard will not be cleared automatically.
  * @returns [copied, handleCopy, resetState]
  */
 export function useCopyToClipboard(
-  clearDelay: number = DEFAULT_CLEAR_DELAY,
+  clearDelay: number,
 ): [boolean, (text: string) => void, () => void] {
   const [copied, setCopied] = useState<boolean>(false);
 
@@ -25,13 +23,11 @@ export function useCopyToClipboard(
     () => {
       if (copied === true) {
         // Clear the clipboard if there's a positive delay and it's not a hex address
-        if (
-          clearDelay !== -1 &&
-          !isValidHexAddress(lastCopiedText, { allowNonPrefixed: false })
-        ) {
+        if (clearDelay !== -1) {
           copyToClipboard(' ', COPY_OPTIONS);
         }
 
+        lastCopiedText = '';
         setCopied(false);
       }
     },
@@ -52,6 +48,7 @@ export function useCopyToClipboard(
   );
 
   const resetState = useCallback(() => {
+    lastCopiedText = '';
     setCopied(false);
   }, []);
 
