@@ -361,6 +361,14 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
 
 exports[`BridgeInputGroup should render destination networks 3`] = `
 [
+  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:13e399eb1413d5729cc62c28874825907e39763482e048d576af13925dcdc919",
+  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:60e101375162ddf35240f0f26a8e78a19bb8b2f3c7956846d26030b742175ca7",
+  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/search:6cc49665cc4cf12c0d79a1eb8b92b830474b8e3e15e097a66df0905e032892cd",
+]
+`;
+
+exports[`BridgeInputGroup should render destination networks 4`] = `
+[
   [
     "https://bridge.api.cx.metamask.io/getTokens/popular",
     {
@@ -637,6 +645,14 @@ exports[`BridgeInputGroup should render source networks 2`] = `
 `;
 
 exports[`BridgeInputGroup should render source networks 3`] = `
+[
+  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:13e399eb1413d5729cc62c28874825907e39763482e048d576af13925dcdc919",
+  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:20aea59db3b63ed24b45bf23b256afe45ae22a45c9f7eca2cb39924d4a6bd363",
+  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/search:6cc49665cc4cf12c0d79a1eb8b92b830474b8e3e15e097a66df0905e032892cd",
+]
+`;
+
+exports[`BridgeInputGroup should render source networks 4`] = `
 [
   [
     "https://bridge.api.cx.metamask.io/getTokens/popular",

@@ -2,6 +2,7 @@ import React from 'react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
+import localforage from 'localforage';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -146,7 +147,7 @@ const expectAssetListToMatch = (stringifiedSnapshot: string) => {
 };
 
 describe('BridgeInputGroup', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     mockUseVirtualizer.mockReturnValue({
       getVirtualItems: () =>
         tokens.map((token, index) => ({
@@ -157,6 +158,7 @@ describe('BridgeInputGroup', () => {
       getTotalSize: () => 78 * tokens.length,
       measureElement: () => 78,
     });
+    await localforage.clear();
     jest.clearAllMocks();
   });
 
@@ -433,6 +435,7 @@ describe('BridgeInputGroup', () => {
         expect(abortSpy).toHaveBeenCalledTimes(7);
       });
 
+      expect(await localforage.keys()).toMatchSnapshot();
       expect(mockHandleFetch.mock.calls).toMatchSnapshot();
       expect(mockHandleFetch).toHaveBeenCalledTimes(3);
 
