@@ -83,6 +83,9 @@ import {
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
 
+const HYPERLIQUID_ORIGIN =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
+
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
 const ganacheServer = new Ganache();
@@ -282,6 +285,22 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
   get isManifestV3() {
     return mockIsManifestV3();
   },
+}));
+
+jest.mock('@metamask/config-registry-controller', () => ({
+  ConfigRegistryController: jest.fn().mockImplementation(() => ({
+    startPolling: jest.fn(),
+    stopPolling: jest.fn(),
+    getState: jest.fn(() => ({
+      configs: {},
+      version: null,
+      lastFetched: null,
+      fetchError: null,
+      etag: null,
+    })),
+  })),
+  ConfigRegistryApiService: jest.fn(),
+  isConfigRegistryApiEnabled: jest.fn(() => false),
 }));
 
 jest.mock('./controllers/permissions', () => ({
@@ -536,12 +555,43 @@ describe('MetaMaskController', () => {
         metamaskController.seedlessOnboardingController,
         'authenticate',
       );
+
+      // Mock ConfigRegistryController if it exists
+      if (metamaskController.configRegistryController) {
+        jest
+          .spyOn(metamaskController.configRegistryController, 'stopPolling')
+          .mockReturnValue();
+      }
     });
 
     describe('should reset states on first time profile load', () => {
       it('in mv2, it should reset state without attempting to call browser storage', () => {
         expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
         expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('onClientClosed', () => {
+      it('stops polling for ConfigRegistryController', () => {
+        const stopPollingSpy = jest.spyOn(
+          metamaskController.configRegistryController,
+          'stopPolling',
+        );
+
+        metamaskController.onClientClosed();
+
+        expect(stopPollingSpy).toHaveBeenCalled();
+      });
+
+      it('handles missing ConfigRegistryController gracefully', () => {
+        const originalController = metamaskController.configRegistryController;
+        metamaskController.configRegistryController = null;
+
+        expect(() => {
+          metamaskController.onClientClosed();
+        }).not.toThrow();
+
+        metamaskController.configRegistryController = originalController;
       });
     });
 
@@ -4515,12 +4565,6 @@ describe('MetaMaskController', () => {
     });
 
     describe('handleDefiReferral', () => {
-      const HYPERLIQUID_LEARN_MORE_URL =
-        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].learnMoreUrl;
-      const HYPERLIQUID_ORIGIN =
-        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
-      const HYPERLIQUID_NAME =
-        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].name;
       const mockTabId = 140;
       const mockNewConnectionTriggerType = 'new_connection';
       const mockOnNavigateTriggerType = 'on_navigate_connected_tab';
@@ -4663,12 +4707,7 @@ describe('MetaMaskController', () => {
         expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
-          requestData: {
-            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
-            partnerId: DefiReferralPartner.Hyperliquid,
-            partnerName: HYPERLIQUID_NAME,
-            selectedAddress: mockPermittedAccount,
-          },
+          requestData: { selectedAddress: mockPermittedAccount },
           shouldShowRequest: true, // pop-up = true because triggerType is new connection
         });
       });
@@ -4689,12 +4728,7 @@ describe('MetaMaskController', () => {
         expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
-          requestData: {
-            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
-            partnerId: DefiReferralPartner.Hyperliquid,
-            partnerName: HYPERLIQUID_NAME,
-            selectedAddress: mockPermittedAccount,
-          },
+          requestData: { selectedAddress: mockPermittedAccount },
           shouldShowRequest: false, // false because triggerType is navigate to connected tab
         });
       });

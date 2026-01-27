@@ -380,6 +380,7 @@ import { TokenListControllerInit } from './controller-init/token-list-controller
 import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
 import { TokensControllerInit } from './controller-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
+import { ConfigRegistryControllerInit } from './controller-init/config-registry-controller-init';
 import { RatesControllerInit } from './controller-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
 import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
@@ -599,6 +600,7 @@ export default class MetamaskController extends EventEmitter {
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
+      ConfigRegistryController: ConfigRegistryControllerInit,
       CronjobController: CronjobControllerInit,
       SelectedNetworkController: SelectedNetworkControllerInit,
       SnapController: SnapControllerInit,
@@ -712,6 +714,7 @@ export default class MetamaskController extends EventEmitter {
     this.gasFeeController = controllersByName.GasFeeController;
     this.userOperationController = controllersByName.UserOperationController;
     this.cronjobController = controllersByName.CronjobController;
+    this.configRegistryController = controllersByName.ConfigRegistryController;
     this.rateLimitController = controllersByName.RateLimitController;
     this.selectedNetworkController =
       controllersByName.SelectedNetworkController;
@@ -2383,6 +2386,7 @@ export default class MetamaskController extends EventEmitter {
   getState() {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
+
     const flatState = this.memStore.getFlatState();
 
     return {
@@ -5996,12 +6000,7 @@ export default class MetamaskController extends EventEmitter {
         const approvalResponse = await this.approvalController.add({
           origin: partner.origin,
           type: partner.approvalType,
-          requestData: {
-            selectedAddress: activePermittedAccount,
-            partnerId: partner.id,
-            partnerName: partner.name,
-            learnMoreUrl: partner.learnMoreUrl,
-          },
+          requestData: { selectedAddress: activePermittedAccount },
           shouldShowRequest: triggerType === ReferralTriggerType.NewConnection,
         });
 
@@ -7428,7 +7427,6 @@ export default class MetamaskController extends EventEmitter {
             // return `null` if the permissions were not
             // successfully revoked or if the permissions
             // for the origin do not exist
-            console.log(e);
           }
         },
 
@@ -8471,6 +8469,7 @@ export default class MetamaskController extends EventEmitter {
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
       this.subscriptionController.stopAllPolling();
+      this.configRegistryController?.stopPolling();
     } catch (error) {
       console.error(error);
     }

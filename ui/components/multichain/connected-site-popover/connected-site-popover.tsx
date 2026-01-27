@@ -105,15 +105,11 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         <Box
-          style={
-            isConnected
-              ? undefined
-              : {
-                  borderBottomWidth: '1px',
-                  borderBottomStyle: 'solid',
-                  borderBottomColor: '#858B9A33',
-                }
-          }
+          style={{
+            borderBottomWidth: '1px',
+            borderBottomStyle: 'solid',
+            borderBottomColor: '#858B9A33',
+          }}
           paddingLeft={4}
           paddingRight={4}
           paddingBottom={2}
@@ -199,7 +195,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
           </Box>
         )}
         {isConnected && (
-          <Box padding={4} paddingBottom={0}>
+          <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
             <ButtonSecondary block onClick={onClick}>
               {t('managePermissions')}
             </ButtonSecondary>

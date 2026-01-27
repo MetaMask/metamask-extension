@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.14.2]
+
+### Fixed
+
+- Prevent crash during initialization when some controller has invalid state (#39465)
+
+## [13.14.1]
+
+### Changed
+
+- Set 10-minute delay on first profile metrics collection after acknowledgement, rather than delaying until 2nd unlock (#39270)
 ## [13.15.0]
 
 ### Added
@@ -191,6 +202,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix Tron resources calculation and default value (#39136)
+- Bump @metamask/tron-wallet-snap to 1.17.0
+- Bump @metamask/keyring-api to 21.3.0
 
 ## [13.13.1]
 
@@ -1604,6 +1617,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...HEAD
+[13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2
+[13.14.1]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.14.1
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...HEAD
+[13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.15.0
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...HEAD
 [13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...v13.15.0
 [13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2

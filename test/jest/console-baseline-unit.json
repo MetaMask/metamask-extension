@@ -3508,9 +3508,6 @@
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/core/defi-referral-consent/defi-referral-consent.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/components/activity/block-explorer-link/block-explorer-link.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },

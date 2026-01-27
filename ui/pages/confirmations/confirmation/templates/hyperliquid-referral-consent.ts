@@ -1,7 +1,7 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 
-type DefiReferralConsentActions = {
+type HyperliquidReferralConsentActions = {
   resolvePendingApproval: (
     id: string,
     value: {
@@ -11,14 +11,13 @@ type DefiReferralConsentActions = {
   ) => void;
 };
 
-type DefiReferralConsentResult = {
+type HyperliquidReferralConsentResult = {
   approved: boolean;
   selectedAddress: string;
 };
 
 /**
  * Returns the templated values to be consumed in the confirmation page.
- * This is a generic template for all DeFi referral partners.
  *
  * @param pendingApproval - The pending confirmation object.
  * @param _t - Translation function.
@@ -28,12 +27,12 @@ type DefiReferralConsentResult = {
 function getValues(
   pendingApproval: ApprovalRequest<Record<string, Json>>,
   _t: (key: string) => string,
-  actions: DefiReferralConsentActions,
+  actions: HyperliquidReferralConsentActions,
 ) {
   const { requestData } = pendingApproval;
-  const { selectedAddress, partnerId, partnerName, learnMoreUrl } = requestData;
+  const { selectedAddress } = requestData;
 
-  const onActionComplete = (result: DefiReferralConsentResult) => {
+  const onActionComplete = (result: HyperliquidReferralConsentResult) => {
     actions.resolvePendingApproval(pendingApproval.id, {
       approved: result.approved,
       selectedAddress: result.selectedAddress,
@@ -43,14 +42,11 @@ function getValues(
   return {
     content: [
       {
-        element: 'DefiReferralConsent',
-        key: 'defi-referral-consent',
+        element: 'HyperliquidReferralConsent',
+        key: 'hyperliquid-referral-consent',
         props: {
           onActionComplete,
           selectedAddress,
-          partnerId,
-          partnerName,
-          learnMoreUrl,
         },
       },
     ],
@@ -58,8 +54,8 @@ function getValues(
   };
 }
 
-const defiReferralConsent = {
+const hyperliquidReferralConsent = {
   getValues,
 };
 
-export default defiReferralConsent;
+export default hyperliquidReferralConsent;

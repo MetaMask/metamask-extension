@@ -9,7 +9,6 @@ import {
 } from '../../../../store/actions';
 import {
   HYPERLIQUID_APPROVAL_TYPE,
-  ASTERDEX_APPROVAL_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -28,7 +27,7 @@ import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
 import snapDefault from './snaps/snap-default/snap-default';
-import defiReferralConsent from './defi-referral-consent';
+import hyperliquidReferralConsent from './hyperliquid-referral-consent';
 
 const APPROVAL_TEMPLATES = {
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
@@ -49,8 +48,7 @@ const APPROVAL_TEMPLATES = {
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
     snapAccountRedirect,
   ///: END:ONLY_INCLUDE_IF
-  [HYPERLIQUID_APPROVAL_TYPE]: defiReferralConsent,
-  [ASTERDEX_APPROVAL_TYPE]: defiReferralConsent,
+  [HYPERLIQUID_APPROVAL_TYPE]: hyperliquidReferralConsent,
 };
 
 export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
