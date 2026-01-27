@@ -12,7 +12,6 @@ import { ModalBody } from './modal-body';
 const meta: Meta<typeof ModalBody> = {
   title: 'Components/ComponentLibrary/ModalBody',
   component: ModalBody,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

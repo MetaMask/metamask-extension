@@ -5,7 +5,6 @@ import { IconName } from '../icon';
 import { ButtonSize, ButtonVariant } from './button.types';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Button (deprecated)',
   component: Button,
   parameters: {

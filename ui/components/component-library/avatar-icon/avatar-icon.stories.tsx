@@ -10,7 +10,6 @@ import { IconName } from '../icon';
 import { AvatarIconSize } from './avatar-icon.types';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/AvatarIcon (deprecated)',
   component: AvatarIcon,
   parameters: {

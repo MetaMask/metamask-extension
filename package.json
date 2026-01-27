@@ -545,7 +545,6 @@
     "@slack/webhook": "^7.0.5",
     "@storybook/addon-a11y": "^7.6.21",
     "@storybook/addon-actions": "^7.6.21",
-    "@storybook/addon-docs": "^7.6.21",
     "@storybook/addon-essentials": "^7.6.21",
     "@storybook/addons": "^7.6.21",
     "@storybook/api": "^7.6.21",

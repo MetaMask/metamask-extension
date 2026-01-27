@@ -11,7 +11,6 @@ import { SelectWrapper } from './select-wrapper';
 import { useSelectContext } from './select-wrapper.context';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/SelectWrapper',
   component: SelectWrapper,
   parameters: {

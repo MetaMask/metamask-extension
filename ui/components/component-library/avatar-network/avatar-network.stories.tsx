@@ -8,7 +8,6 @@ import { AvatarNetworkSize } from './avatar-network.types';
 import { AvatarNetwork } from './avatar-network';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/AvatarNetwork (deprecated)',
   component: AvatarNetwork,
   parameters: {

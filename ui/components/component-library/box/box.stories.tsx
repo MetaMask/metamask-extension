@@ -30,7 +30,6 @@ const sizeControlOptions = [
 const marginSizeControlOptions = [...sizeControlOptions, 'auto'];
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Box (deprecated)',
   component: Box,
   parameters: {

@@ -13,7 +13,6 @@ import { Icon, IconName } from '../icon';
 import { ButtonPrimary } from '../button-primary';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/BannerTip',
   component: BannerTip,
   parameters: {

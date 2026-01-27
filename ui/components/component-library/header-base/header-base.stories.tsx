@@ -16,7 +16,6 @@ import { Box } from '../box';
 import { Button, ButtonSize } from '../button';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/HeaderBase',
   component: HeaderBase,
   parameters: {

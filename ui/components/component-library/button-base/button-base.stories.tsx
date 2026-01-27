@@ -22,7 +22,6 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/ButtonBase (deprecated)',
 
   component: ButtonBase,

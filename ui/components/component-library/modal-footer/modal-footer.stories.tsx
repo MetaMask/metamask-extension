@@ -16,7 +16,6 @@ import { Checkbox } from '../checkbox';
 const meta: Meta<typeof ModalFooter> = {
   title: 'Components/ComponentLibrary/ModalFooter',
   component: ModalFooter,
-  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

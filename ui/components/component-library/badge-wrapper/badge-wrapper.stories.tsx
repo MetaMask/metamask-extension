@@ -15,7 +15,6 @@ import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
 import { AvatarAccount } from '@metamask/design-system-react';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/BadgeWrapper (deprecated)',
   component: BadgeWrapper,
   parameters: {

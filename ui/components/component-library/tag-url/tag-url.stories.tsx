@@ -9,7 +9,6 @@ import README from './README.mdx';
 import { TagUrl } from './tag-url';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/TagUrl',
   component: TagUrl,
   parameters: {

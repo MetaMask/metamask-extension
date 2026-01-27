@@ -12,7 +12,6 @@ import { Checkbox } from './checkbox';
 import { Box } from '../box';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Checkbox (deprecated)',
   component: Checkbox,
   parameters: {

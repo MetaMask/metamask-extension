@@ -15,7 +15,6 @@ import { Box } from '../box';
 import { TextField } from '../text-field';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Label',
 
   component: Label,

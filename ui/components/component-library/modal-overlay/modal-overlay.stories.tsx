@@ -6,7 +6,6 @@ import { ModalOverlay } from './modal-overlay';
 import README from './README.mdx';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/ModalOverlay',
   component: ModalOverlay,
   parameters: {

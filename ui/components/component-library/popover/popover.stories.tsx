@@ -20,7 +20,6 @@ import { PopoverHeader } from '../popover-header';
 import { Icon, IconName, IconSize } from '../icon';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Popover',
   component: Popover,
   parameters: {

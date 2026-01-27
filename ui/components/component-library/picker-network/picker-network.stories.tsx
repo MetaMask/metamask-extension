@@ -17,7 +17,6 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/PickerNetwork',
   component: PickerNetwork,
   parameters: {

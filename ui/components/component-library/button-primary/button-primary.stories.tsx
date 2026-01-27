@@ -4,7 +4,6 @@ import { ButtonPrimary } from './button-primary';
 import { ButtonPrimarySize } from './button-primary.types';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/ButtonPrimary (deprecated)',
   component: ButtonPrimary,
   parameters: {

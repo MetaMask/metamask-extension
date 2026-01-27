@@ -17,7 +17,6 @@ import { ModalFooter } from '../modal-footer';
 import { Box } from '../box';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/ModalContent',
   component: ModalContent,
   parameters: {

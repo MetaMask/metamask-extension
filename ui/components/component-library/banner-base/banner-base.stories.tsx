@@ -8,7 +8,6 @@ import { ButtonLink, ButtonLinkSize } from '../button-link';
 import { ButtonPrimary } from '../button-primary';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/BannerBase',
   component: BannerBase,
   parameters: {

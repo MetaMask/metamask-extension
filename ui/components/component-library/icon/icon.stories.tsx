@@ -29,7 +29,6 @@ import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Icon (deprecated)',
   component: Icon,
   parameters: {

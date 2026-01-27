@@ -23,7 +23,6 @@ import { Text } from './text';
 import { TextDirection } from './text.types';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Text (deprecated)',
   component: Text,
   parameters: {

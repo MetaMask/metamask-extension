@@ -18,7 +18,6 @@ import { AvatarAccount } from '@metamask/design-system-react';
 import { Button, ButtonSize } from '../button';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/PopoverHeader',
   component: PopoverHeader,
   parameters: {

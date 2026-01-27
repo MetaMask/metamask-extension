@@ -19,7 +19,6 @@ import { ModalFooter } from '../modal-footer';
 import { TextFieldSearch } from '../text-field-search';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Modal',
   component: Modal,
   parameters: {

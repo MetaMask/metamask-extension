@@ -14,8 +14,6 @@ module.exports = {
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.tsx',
-    '../ui/**/*.stories.mdx',
-    './*.stories.mdx',
   ],
   addons: [
     '@storybook/addon-essentials',

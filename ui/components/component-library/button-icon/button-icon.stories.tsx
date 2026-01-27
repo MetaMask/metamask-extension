@@ -4,7 +4,6 @@ import { ButtonIcon } from './button-icon';
 import { IconName } from '../icon';
 
 export default {
-  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/ButtonIcon (deprecated)',
   component: ButtonIcon,
   parameters: {
