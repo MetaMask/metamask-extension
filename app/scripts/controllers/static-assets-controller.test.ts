@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import { Hex } from '@metamask/utils';
 import { AccountsControllerMessenger } from '@metamask/accounts-controller';
 import {
   MOCK_ANY_NAMESPACE,
@@ -47,7 +48,7 @@ const mockTopAssets = [
 const setupController = ({
   supportedChains,
 }: {
-  supportedChains: string[];
+  supportedChains: Hex[];
 }) => {
   const messenger = new Messenger<
     MockAnyNamespace,
@@ -95,7 +96,7 @@ const setupController = ({
 
   const controller = new StaticAssetsController({
     messenger: staticAssetsControllerMessenger,
-    supportedChains,
+    supportedChains: () => new Set(supportedChains),
     interval: 1000,
   });
 
@@ -131,7 +132,7 @@ describe('staticAssetscontroller', () => {
         supportedChains: [CHAIN_IDS.MAINNET],
       });
       networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
-        'mainnet',
+        'eip155:1',
       );
       tokensControllerGetStateSpy.mockResolvedValue({
         allIgnoredTokens: {},

@@ -63,7 +63,7 @@ export type StaticAssetsControllerOptions = {
   /** Default interval for chains not specified in chainPollingIntervals */
   interval?: number;
   /** The supported chains for the controller. */
-  supportedChains?: string[];
+  supportedChains: () => Set<Hex>;
 };
 
 /**
@@ -155,12 +155,12 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
   /**
    * The supported chains for the controller.
    */
-  readonly #supportedChains: Set<string>;
+  readonly #supportedChains: () => Set<Hex>;
 
   constructor({
     messenger,
     interval = DEFAULT_INTERVAL_MS,
-    supportedChains = [],
+    supportedChains,
   }: StaticAssetsControllerOptions) {
     super({
       name: CONTROLLER,
@@ -168,7 +168,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
       metadata: {},
       state: {},
     });
-    this.#supportedChains = new Set(supportedChains);
+    this.#supportedChains = supportedChains
     this.setIntervalLength(interval);
   }
 
@@ -376,7 +376,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     try {
       if (
         !isStrictHexString(chainId) ||
-        !this.#supportedChains.has(chainId) ||
+        !this.#supportedChains().has(chainId) ||
         // findNetworkClientIdByChainId will throw an error if the chainId is not supported.
         !(await this.messenger.call(
           'NetworkController:findNetworkClientIdByChainId',

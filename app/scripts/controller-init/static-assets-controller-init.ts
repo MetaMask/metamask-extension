@@ -1,5 +1,6 @@
+
+import { Hex } from '@metamask/utils';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { ControllerInitFunction } from './types';
 import {
   StaticAssetsControllerMessenger,
@@ -10,13 +11,20 @@ export const StaticAssetsControllerInit: ControllerInitFunction<
   StaticAssetsController,
   StaticAssetsControllerMessenger,
   StaticAssetsControllerInitMessenger
-> = ({ controllerMessenger }) => {
+> = ({ controllerMessenger, initMessenger }) => {
   const controller = new StaticAssetsController({
     messenger: controllerMessenger,
     interval: 3 * 60 * 60 * 1000, // 3 hour
-    supportedChains: [
-      CHAIN_IDS.HYPE, // hyperevm
-    ],
+    supportedChains: (): Set<Hex> => {
+      const state = initMessenger.call('RemoteFeatureFlagController:getState');
+
+      const supportedChains =
+        state?.remoteFeatureFlags?.staticAssetsSupportedChains;
+
+      return new Set(Array.isArray(supportedChains)
+      ? (supportedChains as Hex[])
+      : []);
+    },
   });
 
   return {
