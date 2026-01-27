@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+import log from 'loglevel';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
@@ -49,13 +50,35 @@ export default class ExtensionPlatform {
 
   /**
    * Returns the version of the extension by reading the manifest.
+   * Falls back to process.env.METAMASK_VERSION or 'unknown' if the manifest
+   * version is unavailable.
    */
   getVersion() {
     // return the "live" version of the extension, as the bundle of code running
     // might be from a different version of the application than the manifest.
     // This isn't supposed to happen, but we've seen it before in Sentry.
     // This should *not* be updated to the static `process.env.METAMASK_VERSION`
-    return browser.runtime.getManifest().version;
+    // unless the manifest version is unavailable.
+    try {
+      const manifest = browser.runtime.getManifest();
+      const version = manifest?.version;
+
+      if (!version) {
+        log.warn(
+          'ExtensionPlatform: manifest version is undefined, using fallback',
+          { manifest },
+        );
+        return process.env.METAMASK_VERSION || 'unknown';
+      }
+
+      return version;
+    } catch (error) {
+      log.error(
+        'ExtensionPlatform: Failed to get manifest version, using fallback',
+        error,
+      );
+      return process.env.METAMASK_VERSION || 'unknown';
+    }
   }
 
   /**

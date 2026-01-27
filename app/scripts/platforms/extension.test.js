@@ -66,6 +66,46 @@ describe('extension platform', () => {
 
       expect(version).toBe('1.2.3-beta.0');
     });
+
+    it('should return fallback version when manifest version is undefined', () => {
+      process.env.METAMASK_VERSION = '1.2.3-fallback';
+      browser.runtime.getManifest.mockReturnValue({
+        name: 'MetaMask',
+        // version is undefined
+      });
+      const extensionPlatform = new ExtensionPlatform();
+
+      const version = extensionPlatform.getVersion();
+
+      expect(version).toBe('1.2.3-fallback');
+    });
+
+    it('should return "unknown" when manifest version is undefined and no fallback is available', () => {
+      const originalVersion = process.env.METAMASK_VERSION;
+      delete process.env.METAMASK_VERSION;
+      browser.runtime.getManifest.mockReturnValue({
+        name: 'MetaMask',
+        // version is undefined
+      });
+      const extensionPlatform = new ExtensionPlatform();
+
+      const version = extensionPlatform.getVersion();
+
+      expect(version).toBe('unknown');
+      process.env.METAMASK_VERSION = originalVersion;
+    });
+
+    it('should return fallback version when getManifest throws an error', () => {
+      process.env.METAMASK_VERSION = '1.2.3-error-fallback';
+      browser.runtime.getManifest.mockImplementation(() => {
+        throw new Error('Failed to get manifest');
+      });
+      const extensionPlatform = new ExtensionPlatform();
+
+      const version = extensionPlatform.getVersion();
+
+      expect(version).toBe('1.2.3-error-fallback');
+    });
   });
 
   describe('getExtensionURL', () => {
