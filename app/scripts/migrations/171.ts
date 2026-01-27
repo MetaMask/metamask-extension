@@ -163,7 +163,11 @@ function transformState(
     state;
 
   if (!isObject(multichainNetworkControllerState)) {
-    global.sentry?.captureException?.(new Error());
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: MultichainNetworkController is type '${typeof multichainNetworkControllerState}', expected object in state.`,
+      ),
+    );
     return state;
   }
 

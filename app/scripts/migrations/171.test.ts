@@ -406,7 +406,11 @@ describe(`migration #${newVersion}`, () => {
 
       const newState = await migrate(oldState);
 
-      expect(sentrySpy).toHaveBeenCalledWith(new Error());
+      expect(sentrySpy).toHaveBeenCalledWith(
+        new Error(
+          `Migration ${newVersion}: MultichainNetworkController is type 'undefined', expected object in state.`,
+        ),
+      );
       expect(newState.data).toStrictEqual(oldState.data);
 
       sentrySpy.mockRestore();
@@ -438,7 +442,11 @@ describe(`migration #${newVersion}`, () => {
 
       const newState = await migrate(oldState);
 
-      expect(sentrySpy).toHaveBeenCalledWith(new Error());
+      expect(sentrySpy).toHaveBeenCalledWith(
+        new Error(
+          `Migration ${newVersion}: MultichainNetworkController is type 'string', expected object in state.`,
+        ),
+      );
       expect(newState.data).toStrictEqual(oldState.data);
 
       sentrySpy.mockRestore();
