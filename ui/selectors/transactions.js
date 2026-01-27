@@ -417,7 +417,14 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
     TransactionType.retry,
   ];
 
-  transactions.forEach((transaction) => {
+  // Filter out excluded transaction types (except incoming, which has special handling below)
+  const filteredTransactions = transactions.filter(
+    (tx) =>
+      !EXCLUDED_TRANSACTION_TYPES.has(tx.type) ||
+      tx.type === TransactionType.incoming,
+  );
+
+  filteredTransactions.forEach((transaction) => {
     const {
       networkClientId,
       txParams: { nonce } = {},

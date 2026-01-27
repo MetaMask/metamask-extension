@@ -32,6 +32,7 @@ import {
   selectedAddressTxListSelector,
   transactionSubSelectorAllChains,
   transactionsSelectorAllChains,
+  groupAndSortTransactionsByNonce,
 } from './transactions';
 
 describe('Transaction Selectors', () => {
@@ -2056,6 +2057,137 @@ describe('Transaction Selectors', () => {
 
       // Should return same reference (memoized)
       expect(result1).toBe(result2);
+    });
+  });
+
+  describe('groupAndSortTransactionsByNonce', () => {
+    it('filters out gasPayment transactions', () => {
+      const transactions = [
+        {
+          id: 1,
+          type: TransactionType.gasPayment,
+          txParams: { nonce: '0x1', from: '0xAddress' },
+          status: TransactionStatus.confirmed,
+          time: 100,
+          networkClientId: 'mainnet',
+        },
+        {
+          id: 2,
+          type: TransactionType.simpleSend,
+          txParams: { nonce: '0x1', from: '0xAddress' },
+          status: TransactionStatus.confirmed,
+          time: 200,
+          networkClientId: 'mainnet',
+        },
+      ];
+
+      const result = groupAndSortTransactionsByNonce(transactions);
+
+      // Should only have one transaction group with the simpleSend transaction
+      expect(result).toHaveLength(1);
+      expect(result[0].transactions).toHaveLength(1);
+      expect(result[0].transactions[0].type).toBe(TransactionType.simpleSend);
+    });
+
+    it('filters out relayDeposit transactions', () => {
+      const transactions = [
+        {
+          id: 1,
+          type: TransactionType.relayDeposit,
+          txParams: { nonce: '0x1', from: '0xAddress' },
+          status: TransactionStatus.confirmed,
+          time: 100,
+          networkClientId: 'mainnet',
+        },
+        {
+          id: 2,
+          type: TransactionType.simpleSend,
+          txParams: { nonce: '0x2', from: '0xAddress' },
+          status: TransactionStatus.confirmed,
+          time: 200,
+          networkClientId: 'mainnet',
+        },
+      ];
+
+      const result = groupAndSortTransactionsByNonce(transactions);
+
+      // Should only have one transaction group with the simpleSend transaction
+      expect(result).toHaveLength(1);
+      expect(result[0].transactions[0].type).toBe(TransactionType.simpleSend);
+    });
+
+    it('keeps incoming transactions as they have special handling', () => {
+      const transactions = [
+        {
+          id: 1,
+          type: TransactionType.incoming,
+          txParams: { to: '0xAddress' },
+          status: TransactionStatus.confirmed,
+          time: 100,
+        },
+        {
+          id: 2,
+          type: TransactionType.simpleSend,
+          txParams: { nonce: '0x1', from: '0xAddress' },
+          status: TransactionStatus.confirmed,
+          time: 200,
+          networkClientId: 'mainnet',
+        },
+      ];
+
+      const result = groupAndSortTransactionsByNonce(transactions);
+
+      // Should have two transaction groups (incoming is handled separately)
+      expect(result).toHaveLength(2);
+      // Find the incoming transaction
+      const incomingGroup = result.find(
+        (group) => group.initialTransaction.type === TransactionType.incoming,
+      );
+      expect(incomingGroup).toBeDefined();
+    });
+
+    it('filters out gasPayment even when it has the earliest nonce', () => {
+      const transactions = [
+        {
+          id: 1,
+          type: TransactionType.gasPayment,
+          txParams: { nonce: '0x1', from: '0xAddress' },
+          status: TransactionStatus.confirmed,
+          time: 100,
+          networkClientId: 'mainnet',
+        },
+        {
+          id: 2,
+          type: TransactionType.simpleSend,
+          txParams: { nonce: '0x1', from: '0xAddress' },
+          status: TransactionStatus.confirmed,
+          time: 200,
+          networkClientId: 'mainnet',
+        },
+        {
+          id: 3,
+          type: TransactionType.simpleSend,
+          txParams: { nonce: '0x2', from: '0xAddress' },
+          status: TransactionStatus.confirmed,
+          time: 300,
+          networkClientId: 'mainnet',
+        },
+      ];
+
+      const result = groupAndSortTransactionsByNonce(transactions);
+
+      // Should have two transaction groups (one for each nonce without gasPayment)
+      expect(result).toHaveLength(2);
+      // Verify the first group only has the simpleSend transaction
+      expect(result[0].initialTransaction.type).toBe(
+        TransactionType.simpleSend,
+      );
+      // Verify gasPayment is not in any group
+      result.forEach((group) => {
+        group.transactions.forEach((tx) => {
+          expect(tx.type).not.toBe(TransactionType.gasPayment);
+        });
+      });
     });
   });
 });
