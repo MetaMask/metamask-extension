@@ -54,12 +54,12 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
         // Create all timers upfront
-        const timer1 = Timers.createTimer('create_wallet_to_social');
-        const timer2 = Timers.createTimer('srp_button_to_password');
-        const timer3 = Timers.createTimer('password_to_secure');
-        const timer4 = Timers.createTimer('secure_to_metrics');
-        const timer5 = Timers.createTimer('metrics_to_complete');
-        const timer6 = Timers.createTimer('complete_to_home');
+        const timer1 = Timers.createTimer('createWalletToSocial');
+        const timer2 = Timers.createTimer('srpButtonToPassword');
+        const timer3 = Timers.createTimer('passwordToSecure');
+        const timer4 = Timers.createTimer('secureToMetrics');
+        const timer5 = Timers.createTimer('metricsToComplete');
+        const timer6 = Timers.createTimer('completeToHome');
 
         await driver.navigate();
 

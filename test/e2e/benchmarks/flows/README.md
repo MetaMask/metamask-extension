@@ -148,8 +148,8 @@ Benchmark results are output as JSON, either to stdout or to a file via `--out`:
 {
   "onboarding-import-wallet": {
     "timers": [
-      { "id": "import_wallet_to_social_screen", "duration": 209 },
-      { "id": "srp_button_to_form", "duration": 53 }
+      { "id": "importWalletToSocialScreen", "duration": 209 },
+      { "id": "srpButtonToForm", "duration": 53 }
     ],
     "success": true
   }

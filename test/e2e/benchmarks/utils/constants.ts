@@ -35,50 +35,43 @@ export const WITH_STATE_POWER_USER = {
 export const DEFAULT_CI_MULTIPLIER = 1.5;
 
 /**
- * Example threshold configuration for onboarding import wallet benchmark
- * Thresholds are in milliseconds, validated against P75 (typical) and P95 (worst-case)
+ * Example threshold configuration for onboarding import wallet benchmark.
+ * Thresholds are in milliseconds, validated against P75 (typical) and P95 (worst-case).
  *
- * Usage:
- *   runBenchmarkWithIterations(
- *     'onboarding-import-wallet',
- *     benchmarkFn,
- *     iterations,
- *     retries,
- *     ONBOARDING_IMPORT_THRESHOLDS
- *   )
+ * Pass this config to runBenchmarkWithIterations() as the thresholds parameter.
  */
 export const ONBOARDING_IMPORT_THRESHOLDS: ThresholdConfig = {
-  import_wallet_to_social_screen: {
+  importWalletToSocialScreen: {
     p75: { warn: 800, fail: 1500 },
     p95: { warn: 1500, fail: 2500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  srp_button_to_form: {
+  srpButtonToForm: {
     p75: { warn: 400, fail: 800 },
     p95: { warn: 800, fail: 1500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  srp_confirm_to_password: {
+  srpConfirmToPassword: {
     p75: { warn: 800, fail: 1500 },
     p95: { warn: 1500, fail: 2500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  password_to_metrics: {
+  passwordToMetrics: {
     p75: { warn: 800, fail: 1500 },
     p95: { warn: 1500, fail: 2500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  metrics_to_complete: {
+  metricsToComplete: {
     p75: { warn: 800, fail: 1500 },
     p95: { warn: 1500, fail: 2500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  complete_to_home_with_assets: {
+  completeToHomeWithAssets: {
     p75: { warn: 4000, fail: 8000 },
     p95: { warn: 8000, fail: 15000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  open_account_list: {
+  openAccountList: {
     p75: { warn: 400, fail: 800 },
     p95: { warn: 800, fail: 1500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
