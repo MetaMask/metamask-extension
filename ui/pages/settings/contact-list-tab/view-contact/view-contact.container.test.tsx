@@ -112,5 +112,51 @@ describe('View Contact Container', () => {
         getByTestId(TEST_IDS.ADDRESS).textContent?.toLowerCase(),
       ).toContain(MOCK_ADDRESS.toLowerCase());
     });
+
+    it('should handle undefined internalAccount with falsy contact name without crashing', () => {
+      // Create a mock address that doesn't match any internal account or contact
+      const unknownAddress = '0x0000000000000000000000000000000000000000';
+
+      // Create a modified state with a contact that has an empty name
+      const modifiedState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          addressBook: {
+            '0x1': {
+              [unknownAddress]: {
+                address: unknownAddress,
+                chainId: '0x1',
+                isEns: false,
+                memo: 'Test memo',
+                name: '', // Empty name (falsy)
+              },
+            },
+          },
+        },
+      };
+
+      const modifiedStore: Store = configureMockStore([thunk])(modifiedState);
+
+      mockUseLocation.mockReturnValue({
+        pathname: `${CONTACT_VIEW_ROUTE}/${unknownAddress}`,
+        search: '',
+        hash: '',
+        state: null,
+      });
+      mockUseParams.mockReturnValue({});
+
+      // This should not throw an error even though internalAccount is undefined
+      // and contact.name is falsy
+      const { getByTestId } = renderWithProvider(
+        <ViewContactContainer />,
+        modifiedStore,
+      );
+
+      // Should display the address
+      expect(
+        getByTestId(TEST_IDS.ADDRESS).textContent?.toLowerCase(),
+      ).toContain(unknownAddress.toLowerCase());
+    });
   });
 });
