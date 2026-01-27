@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertModal } from './alert-modal';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import configureStore from '../../../../store/store';
 import { Provider } from 'react-redux';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';

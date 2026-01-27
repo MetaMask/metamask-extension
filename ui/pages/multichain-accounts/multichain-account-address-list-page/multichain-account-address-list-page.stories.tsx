@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { StoryObj, Meta } from '@storybook/react';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -37,15 +37,20 @@ export const Default: Story = {
       );
     },
   ],
+
   parameters: {
     initialEntries: [`/multichain-account-address-list/${encodeURIComponent(
       MOCK_GROUP_ID,
     )}?source=receive`],
-    path: '/multichain-account-address-list/:accountGroupId',
-    backgrounds: {
-      default: 'light',
-    },
+
+    path: '/multichain-account-address-list/:accountGroupId'
   },
+
+  globals: {
+    backgrounds: {
+      value: "light"
+    }
+  }
 };
 
 export const ReceivingAddress: Story = {

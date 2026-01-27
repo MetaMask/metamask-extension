@@ -5,7 +5,7 @@ import { CHAIN_IDS } from '@metamask/transaction-controller';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import { Button } from '../../../component-library';
 
 const networks: NetworkConfiguration[] = [

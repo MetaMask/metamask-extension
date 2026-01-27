@@ -1,5 +1,5 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 

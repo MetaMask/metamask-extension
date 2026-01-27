@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 
 import { BlockSize, Display } from '../../../helpers/constants/design-system';
 

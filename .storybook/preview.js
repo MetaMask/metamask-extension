@@ -4,7 +4,7 @@
 Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
   * */
 import React, { useEffect } from 'react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
@@ -15,8 +15,8 @@ import testData from './test-data.js';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { setBackgroundConnection } from '../ui/store/background-connection';
 import { metamaskStorybookTheme } from './metamask-storybook-theme';
-import { DocsContainer } from '@storybook/addon-docs';
-import { themes } from '@storybook/theming';
+import { DocsContainer } from '@storybook/addon-docs/blocks';
+import { themes } from 'storybook/theming';
 import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
 import './index.css';
 
@@ -26,11 +26,10 @@ window.metamaskFeatureFlags = {};
 
 export const parameters = {
   backgrounds: {
-    default: 'default',
-    values: [
-      { name: 'default', value: 'var(--color-background-default)' },
-      { name: 'alternative', value: 'var(--color-background-alternative)' },
-    ],
+    options: {
+      default: { name: 'default', value: 'var(--color-background-default)' },
+      alternative: { name: 'alternative', value: 'var(--color-background-alternative)' }
+    }
   },
   docs: {
     container: (context) => {
@@ -228,3 +227,10 @@ const withColorScheme = (Story, context) => {
 };
 
 export const decorators = [metamaskDecorator, withColorScheme];
+
+export const initialGlobals = {
+  backgrounds: {
+    value: 'default'
+  }
+};
+export const tags = ['autodocs'];

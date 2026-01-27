@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import TokenInput from './token-input.component';
 
 const meta: Meta<typeof TokenInput> = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { ButtonIcon, ButtonIconSize } from '../../component-library';
 import { IconName } from '../../component-library/icon';
 import { IconColor } from '../../../helpers/constants/design-system';

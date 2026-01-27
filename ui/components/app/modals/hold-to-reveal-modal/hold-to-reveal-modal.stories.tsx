@@ -1,5 +1,5 @@
 import { useArgs } from '@storybook/client-api';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import React from 'react';
 import { Button } from '../../../component-library';
 import HoldToRevealModal from './hold-to-reveal-modal';

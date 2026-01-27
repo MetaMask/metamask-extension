@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { useArgs } from '@storybook/client-api';
 import React from 'react';
 

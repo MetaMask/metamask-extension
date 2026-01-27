@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConfirmAlertModal } from './confirm-alert-modal';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import configureStore from '../../../../store/store';
 import { Provider } from 'react-redux';
 import { Box, Button } from '../../../component-library';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import { useState } from '@storybook/addons';
 import { BannerBase } from './banner-base';
 import README from './README.mdx';
@@ -10,12 +10,13 @@ import { ButtonPrimary } from '../button-primary';
 export default {
   title: 'Components/ComponentLibrary/BannerBase',
   component: BannerBase,
+
   parameters: {
     docs: {
       page: README,
-    },
-    backgrounds: { default: 'alternative' },
+    }
   },
+
   argTypes: {
     className: {
       control: 'text',
@@ -54,6 +55,12 @@ export default {
       action: 'onClose',
     },
   },
+
+  globals: {
+    backgrounds: {
+      value: "alternative"
+    }
+  }
 } as Meta<typeof BannerBase>;
 
 const Template: StoryFn<typeof BannerBase> = (args) => <BannerBase {...args} />;

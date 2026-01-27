@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import PropTypes from 'prop-types';
 import { IconName, BannerAlert } from '../../component-library';
 import { Severity } from '../../../helpers/constants/design-system';

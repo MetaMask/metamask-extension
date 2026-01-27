@@ -1,6 +1,6 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
-import { actions } from '@storybook/addon-actions';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { actions } from 'storybook/actions';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
 import { Button } from '../button';

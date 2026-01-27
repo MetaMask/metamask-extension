@@ -1,6 +1,6 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
-import type { Meta } from '@storybook/react';
+import type { Meta } from '@storybook/react-webpack5';
 
 import {
   Size,

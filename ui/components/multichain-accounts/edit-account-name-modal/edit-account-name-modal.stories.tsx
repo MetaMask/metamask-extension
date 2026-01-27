@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { EditAccountNameModal } from './edit-account-name-modal';
