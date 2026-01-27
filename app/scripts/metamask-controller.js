@@ -440,13 +440,14 @@ import { SignatureControllerInit } from './controller-init/confirmations/signatu
 import { UserOperationControllerInit } from './controller-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './controller-init/rewards-data-service-init';
 import { RewardsControllerInit } from './controller-init/rewards-controller-init';
-import { getRootMessenger } from './lib/messenger';
+import { ROOT_MESSENGER_NAMESPACE, getRootMessenger } from './lib/messenger';
 import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { WalletServiceInit } from './controller-init/wallet-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -694,6 +695,11 @@ export default class MetamaskController extends EventEmitter {
       ...(shouldInitAssetsController
         ? { AssetsController: AssetsControllerInit }
         : {}),
+      //========
+      // We ensure that `WalletService` is initialized so we can proxy
+      // methods in the `api` object to it.
+      //========
+      WalletService: WalletServiceInit,
     };
 
     const {
@@ -2512,9 +2518,14 @@ export default class MetamaskController extends EventEmitter {
     } = this;
 
     return {
-      // etc
-      setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
-        currencyRateController,
+      //========
+      // We can slowly expose more controller and service methods through the
+      // messenger and at the same time slowly replace the methods added in
+      // `getApi` with calls to the root messenger. For example:
+      //========
+      setCurrentCurrency: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'CurrencyRateController:setCurrentCurrency',
       ),
       // @deprecated Use setAvatarType instead
       setUseBlockie: preferencesController.setUseBlockie.bind(
@@ -2622,10 +2633,22 @@ export default class MetamaskController extends EventEmitter {
       getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
       markNotificationPopupAsAutomaticallyClosed: () =>
         this.notificationManager.markAsAutomaticallyClosed(),
-      getCode: this.getCode.bind(this),
+      //========
+      // This has been moved to WalletService, so we call it there.
+      //========
+      getCode: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'WalletService:getCode',
+      ),
 
       // primary keyring management
-      addNewAccount: this.addNewAccount.bind(this),
+      //========
+      // This has been moved to WalletService too, so we call it there.
+      //========
+      addNewAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'WalletService:addNewAccount',
+      ),
       getSeedPhrase: this.getSeedPhrase.bind(this),
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
@@ -7030,13 +7053,42 @@ export default class MetamaskController extends EventEmitter {
    */
   setupControllerConnection(outStream) {
     //========
-    // The API exposed to the UI no longer includes methods to work with the
-    // patch store.
+    // As long as we have `submitRequestToBackground`, we still need an `api`
+    // object (otherwise we have to map method calls to action types — and
+    // that's what the `api` object essentially does, or could do). However,
+    // we can slowly replace the implementation of the methods in this `api`
+    // object with calls to the root messenger (e.g. see `getApi`).
     //========
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
+      //========
+      // We add a `call` method to this object so that it can be used to
+      // initialize the UI messenger.
+      //========
+      call: this.controllerMessenger.call.bind(this.controllerMessenger),
     };
+
+    //========
+    // We expose a `listen` method on the root messenger so that it can be used
+    // to initialize the UI messenger.
+    //
+    // Likely we would want to do this in a way that accounts for multiple
+    // controller connections (we can only register this action once). This is
+    // just a prototype though, we can figure that out :)
+    //========
+    this.controllerMessenger.registerActionHandler(
+      `${ROOT_MESSENGER_NAMESPACE}:listen`,
+      (eventName) => {
+        this.controllerMessenger.subscribe(eventName, (...payload) => {
+          outStream.write({
+            jsonrpc: '2.0',
+            method: 'callEventListener',
+            params: payload,
+          });
+        });
+      },
+    );
 
     // report new active controller connection
     this.activeControllerConnections += 1;
@@ -7051,6 +7103,16 @@ export default class MetamaskController extends EventEmitter {
         this.emit(
           'controllerConnectionChanged',
           this.activeControllerConnections,
+        );
+        //========
+        // We make sure to remove the action handler on the messenger that we
+        // registered above.
+        //
+        // Again we probably don't want to do this here in production code,
+        // this is just here for demonstration.
+        //========
+        this.controllerMessenger.unregisterActionHandler(
+          `${ROOT_MESSENGER_NAMESPACE}:listen`,
         );
         outStream.mmFinished = true;
       }

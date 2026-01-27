@@ -47,6 +47,7 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { getUIMessenger } from './messengers/ui-messenger';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -238,8 +239,16 @@ async function startApp(metamaskState, opts) {
     () => runInitialActions(store),
   );
 
+  //========
+  // Here we construct the UI messenger. This prototype doesn't include usage of
+  // the UI messenger past this point. But we could pass it to the Root
+  // component and then use it to construct other messengers, so we go ahead and
+  // demonstrate that here.
+  //========
+  const uiMessenger = getUIMessenger(opts.backgroundConnection);
+
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} />, opts.container),
+    render(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );
 
   return store;
