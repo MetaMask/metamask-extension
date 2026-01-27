@@ -1,12 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import { Interface } from '@ethersproject/abi';
 import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -18,6 +16,10 @@ import {
   ARBITRUM_USDC,
   HYPERLIQUID_BRIDGE_ADDRESS,
 } from '../../../constants/perps';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigation,
+} from '../../../hooks/useConfirmationNavigation';
 
 const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
 const erc20Interface = new Interface(ERC20_ABI);
@@ -37,7 +39,7 @@ const generateERC20TransferData = (
 };
 
 export const PerpsDepositButton = () => {
-  const navigate = useNavigate();
+  const { navigateToTransaction } = useConfirmationNavigation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const [hasTriggered, setHasTriggered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,13 +78,15 @@ export const PerpsDepositButton = () => {
 
       setHasTriggered(true);
 
-      navigate(`${CONFIRM_TRANSACTION_ROUTE}/${txMeta.id}`);
+      navigateToTransaction(txMeta.id, {
+        loader: ConfirmationLoader.CustomAmount,
+      });
     } catch (error) {
       console.error('Failed to create perps deposit transaction', error);
     } finally {
       setIsLoading(false);
     }
-  }, [navigate, selectedAccount?.address]);
+  }, [navigateToTransaction, selectedAccount?.address]);
 
   return (
     <DeveloperButton
