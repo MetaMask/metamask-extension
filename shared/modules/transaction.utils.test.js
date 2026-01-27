@@ -1,4 +1,7 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  GasFeeEstimateType,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 import BigNumber from 'bignumber.js';
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -8,7 +11,6 @@ import {
   buildPermit2ApproveTransactionData,
 } from '../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
-import { GasFeeEstimateType } from '@metamask/transaction-controller';
 import {
   determineTransactionType,
   getMarketFeeFromEstimates,
