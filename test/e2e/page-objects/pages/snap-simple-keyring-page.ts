@@ -220,6 +220,16 @@ class SnapSimpleKeyringPage {
     ).getText();
     return JSON.parse(newAccountJSONMessage).address;
   }
+
+  /**
+   * Waits for the new account message to be displayed.
+   * Use this when you need to confirm account creation/import completed
+   * but don't need to retrieve the address.
+   */
+  async waitForNewAccountMessage(): Promise<void> {
+    console.log('Waiting for new account message on Snap Simple Keyring page');
+    await this.driver.waitForSelector(this.newAccountMessage);
+  }
 }
 
 export default SnapSimpleKeyringPage;

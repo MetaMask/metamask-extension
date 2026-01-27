@@ -100,8 +100,9 @@ export async function importSnapAccount(
   // Confirm account created and close dialog
   await snapAccountDialog.confirmAccountCreatedAndClose();
 
-  // Switch back to dapp
+  // Switch back to dapp and wait for account message
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
+  await snapSimpleKeyringPage.waitForNewAccountMessage();
 }
 
 /**
