@@ -106,6 +106,13 @@ jobs:
             # Poll until the build-dist-browserify job completes
             while true; do
               JOB_INFO=$(gh api "/repos/${{ github.repository }}/actions/runs/${RUN_ID}/jobs" --jq '.jobs[] | select(.name == "build-dist-browserify") | {status: .status, conclusion: .conclusion}')
+
+              # Check if job exists
+              if [ -z "$JOB_INFO" ]; then
+                echo "::error::The 'build-dist-browserify' job was not found in run ${RUN_ID}. The job may have been skipped or the job name may have changed."
+                exit 1
+              fi
+
               JOB_STATUS=$(echo "$JOB_INFO" | jq -r '.status')
               JOB_CONCLUSION=$(echo "$JOB_INFO" | jq -r '.conclusion')
 
@@ -121,6 +128,13 @@ jobs:
           else
             # Run is completed, get the job conclusion
             JOB_INFO=$(gh api "/repos/${{ github.repository }}/actions/runs/${RUN_ID}/jobs" --jq '.jobs[] | select(.name == "build-dist-browserify") | {status: .status, conclusion: .conclusion}')
+
+            # Check if job exists
+            if [ -z "$JOB_INFO" ]; then
+              echo "::error::The 'build-dist-browserify' job was not found in run ${RUN_ID}. The job may have been skipped or the job name may have changed."
+              exit 1
+            fi
+
             JOB_CONCLUSION=$(echo "$JOB_INFO" | jq -r '.conclusion')
           fi
 
