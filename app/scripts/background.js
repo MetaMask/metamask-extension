@@ -1591,18 +1591,31 @@ export function setupController(
       }
 
       if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
-        const tabId = remotePort.sender.tab.id;
-        openMetamaskTabsIDs[tabId] = true;
+        // Only track tab IDs if the connection originates from a tab
+        if (remotePort.sender?.tab?.id) {
+          const tabId = remotePort.sender.tab.id;
+          openMetamaskTabsIDs[tabId] = true;
 
-        finished(portStream, () => {
-          delete openMetamaskTabsIDs[tabId];
-          const isClientOpen = isClientOpenStatus();
-          controller.isClientOpen = isClientOpen;
-          onCloseEnvironmentInstances(
-            isClientOpen,
-            ENVIRONMENT_TYPE_FULLSCREEN,
-          );
-        });
+          finished(portStream, () => {
+            delete openMetamaskTabsIDs[tabId];
+            const isClientOpen = isClientOpenStatus();
+            controller.isClientOpen = isClientOpen;
+            onCloseEnvironmentInstances(
+              isClientOpen,
+              ENVIRONMENT_TYPE_FULLSCREEN,
+            );
+          });
+        } else {
+          // For non-tab contexts (e.g., Snaps), still handle cleanup
+          finished(portStream, () => {
+            const isClientOpen = isClientOpenStatus();
+            controller.isClientOpen = isClientOpen;
+            onCloseEnvironmentInstances(
+              isClientOpen,
+              ENVIRONMENT_TYPE_FULLSCREEN,
+            );
+          });
+        }
       }
     } else if (
       senderUrl &&
