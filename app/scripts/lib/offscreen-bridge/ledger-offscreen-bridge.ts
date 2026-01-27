@@ -134,6 +134,54 @@ export class LedgerOffscreenBridge
     });
   }
 
+  /**
+   * Maps Ledger error messages to user-friendly error messages with error codes
+   *
+   * @param errorMessage - The original error message from Ledger
+   * @returns A user-friendly error message
+   */
+  #mapLedgerErrorMessage(errorMessage: string): string {
+    const lowerCaseMessage = errorMessage.toLowerCase();
+
+    // Check for device not opened/unlocked errors
+    if (
+      lowerCaseMessage.includes('device must be opened') ||
+      lowerCaseMessage.includes('cannot open device') ||
+      lowerCaseMessage.includes('device is not open')
+    ) {
+      return 'ledgerDeviceOpenFailureMessage';
+    }
+
+    // Check for device locked errors
+    if (
+      lowerCaseMessage.includes('locked') ||
+      lowerCaseMessage.includes('unlock')
+    ) {
+      return 'ledgerErrorDevicedLocked';
+    }
+
+    // Check for connection issues
+    if (
+      lowerCaseMessage.includes('not connected') ||
+      lowerCaseMessage.includes('disconnected') ||
+      lowerCaseMessage.includes('connection')
+    ) {
+      return 'ledgerErrorConnectionIssue';
+    }
+
+    // Check for app not open
+    if (
+      lowerCaseMessage.includes('app') &&
+      (lowerCaseMessage.includes('not open') ||
+        lowerCaseMessage.includes('closed'))
+    ) {
+      return 'ledgerErrorEthAppNotOpen';
+    }
+
+    // Return the original message if no mapping found
+    return errorMessage;
+  }
+
   async #sendMessage<TAction extends LedgerAction, ResponsePayload>(
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
@@ -173,8 +221,11 @@ export class LedgerOffscreenBridge
               );
               reject(transportStatusError);
             } else if (error?.message) {
+              // Map the error message to a user-friendly i18n key if possible
+              const mappedMessage = this.#mapLedgerErrorMessage(error.message);
+
               // Regenerate the error based on the SerializedLedgerError
-              const newError = new Error(error.message, {
+              const newError = new Error(mappedMessage, {
                 cause: error,
               });
               reject(newError);

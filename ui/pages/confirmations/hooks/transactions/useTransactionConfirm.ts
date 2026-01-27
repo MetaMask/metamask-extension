@@ -9,14 +9,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
-import { updateAndApproveTx } from '../../../../store/actions';
+import { updateAndApproveTx, displayWarning } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
+  const t = useI18nContext();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
@@ -103,6 +105,32 @@ export function useTransactionConfirm() {
       handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
         newTransactionMeta,
       );
+
+      // Handle Ledger device errors with user-friendly messages
+      if (error && typeof error === 'object' && 'message' in error) {
+        const errorMessage = String(error.message);
+
+        // Check if the error message is an i18n key from the LedgerOffscreenBridge
+        if (
+          errorMessage === 'ledgerDeviceOpenFailureMessage' ||
+          errorMessage === 'ledgerErrorDevicedLocked' ||
+          errorMessage === 'ledgerErrorConnectionIssue' ||
+          errorMessage === 'ledgerErrorEthAppNotOpen'
+        ) {
+          // Display the localized error message
+          dispatch(displayWarning(t(errorMessage)));
+          throw new Error(t(errorMessage));
+        } else if (
+          // Also handle the original error message patterns
+          errorMessage.toLowerCase().includes('device must be opened') ||
+          errorMessage.toLowerCase().includes('cannot open device') ||
+          errorMessage.toLowerCase().includes('device is not open')
+        ) {
+          dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
+          throw new Error(t('ledgerDeviceOpenFailureMessage'));
+        }
+      }
+
       throw error;
     }
 
@@ -112,6 +140,7 @@ export function useTransactionConfirm() {
     customNonceValue,
     isGaslessSupportedSTX,
     dispatch,
+    t,
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
