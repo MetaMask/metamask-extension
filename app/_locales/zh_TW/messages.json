@@ -2,6 +2,9 @@
   "about": {
     "message": "關於"
   },
+  "acceptAndClose": {
+    "message": "接受並關閉"
+  },
   "acceptTermsOfUse": {
     "message": "我已閱讀並同意$1",
     "description": "$1 is the `terms` message"
@@ -153,6 +156,9 @@
   "bytes": {
     "message": "位元組"
   },
+  "buy": {
+    "message": "購買"
+  },
   "canToggleInSettings": {
     "message": "您可以在「設定 -> 提醒」中重新啟用這個通知。"
   },
@@ -173,6 +179,10 @@
   },
   "close": {
     "message": "關閉"
+  },
+  "closeSlide": {
+    "message": "關閉 $1",
+    "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
   "confirm": {
     "message": "確認"
@@ -352,6 +362,9 @@
   },
   "dismiss": {
     "message": "忽略"
+  },
+  "discover": {
+    "message": "探索"
   },
   "dismissReminderDescriptionField": {
     "message": "把這個選項打開來忽略備份助憶詞的提醒。我們強烈建議您備份助憶詞，避免資金遺失"
@@ -780,6 +793,9 @@
     "message": "記住，只連線到您信任的網站。",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
+  "openSettings": {
+    "message": "開啟設定"
+  },
   "origin": {
     "message": "來源"
   },
@@ -1050,6 +1066,9 @@
   },
   "supportCenter": {
     "message": "造訪我們的協助中心"
+  },
+  "swap": {
+    "message": "兌換"
   },
   "switchEthereumChainConfirmationDescription": {
     "message": "這將在 MetaMask 中將目前選擇的網路切換到剛才新增的網路："
