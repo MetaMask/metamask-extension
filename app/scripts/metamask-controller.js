@@ -5792,9 +5792,21 @@ export default class MetamaskController extends EventEmitter {
           (account) => account.address.toLowerCase() === address.toLowerCase(),
         ),
     );
-    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
-      (address) => this.keyringController.getAccountKeyringType(address),
-    );
+    const keyringTypesWithMissingIdentities = accountsMissingIdentities
+      .map((address) => {
+        try {
+          return this.keyringController.getAccountKeyringType(address);
+        } catch (error) {
+          // If we can't get the keyring type, it means the account doesn't have a keyring yet
+          // This can happen during snap account creation when accounts are added to keyrings
+          // but identities haven't been created yet
+          log.warn(
+            `Unable to get keyring type for address ${address}: ${error.message}`,
+          );
+          return 'unknown';
+        }
+      })
+      .filter((type) => type !== 'unknown');
 
     const internalAccountCount = internalAccounts.length;
 
