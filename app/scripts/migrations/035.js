@@ -27,5 +27,11 @@ function transformState(state) {
   ) {
     delete state.PreferencesController.seedWords;
   }
+
+  // Also remove top-level seedWords if it exists (edge case from corrupted state)
+  if (state.seedWords !== undefined) {
+    delete state.seedWords;
+  }
+
   return state;
 }

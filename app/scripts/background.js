@@ -703,6 +703,17 @@ async function initialize(backup) {
   const initData = await loadStateFromPersistence(backup);
 
   const initState = initData.data;
+
+  // Clean up invalid top-level keys (e.g., 'seedWords') that might exist from corrupted state
+  // These should be removed by migrations, but this provides defensive cleanup
+  const invalidTopLevelKeys = ['seedWords'];
+  invalidTopLevelKeys.forEach((key) => {
+    if (key in initState) {
+      console.warn(`Removing invalid top-level state key: ${key}`);
+      delete initState[key];
+    }
+  });
+
   const initLangCode = await getFirstPreferredLangCode();
 
   let isFirstMetaMaskControllerSetup;

@@ -73,4 +73,40 @@ describe('migration #35', () => {
     const newStorage = await migration35.migrate(oldStorage);
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
+
+  it('should delete top-level seedWords', async () => {
+    const oldStorage = {
+      meta: {},
+      data: {
+        seedWords: 'seed words',
+        PreferencesController: {
+          currentLocale: 'en',
+        },
+      },
+    };
+
+    const newStorage = await migration35.migrate(oldStorage);
+    expect(newStorage.data.seedWords).toBeUndefined();
+    expect(newStorage.data.PreferencesController).toStrictEqual({
+      currentLocale: 'en',
+    });
+  });
+
+  it('should delete top-level null seedWords', async () => {
+    const oldStorage = {
+      meta: {},
+      data: {
+        seedWords: null,
+        PreferencesController: {
+          currentLocale: 'en',
+        },
+      },
+    };
+
+    const newStorage = await migration35.migrate(oldStorage);
+    expect(newStorage.data.seedWords).toBeUndefined();
+    expect(newStorage.data.PreferencesController).toStrictEqual({
+      currentLocale: 'en',
+    });
+  });
 });
