@@ -312,14 +312,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
-          <div
-            class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
           >
-            <div
-              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-              style="height: 24px; width: 200px;"
-            />
-          </div>
+            Spending cap request
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+          >
+            This site wants permission to spend your tokens.
+          </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation__simulation_section"
@@ -787,14 +789,16 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
-          <div
-            class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
           >
-            <div
-              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-              style="height: 24px; width: 200px;"
-            />
-          </div>
+            Spending cap request
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+          >
+            This site wants permission to spend your tokens.
+          </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation__simulation_section"
@@ -2152,7 +2156,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                         <div
                           aria-describedby="tippy-tooltip-2"
                           class=""
-                          data-original-title="30"
+                          data-original-title="3,000"
                           data-tooltipped=""
                           style="display: inline;"
                           tabindex="0"
@@ -2162,7 +2166,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                             data-testid="simulation-token-value"
                             style="padding-top: 1px; padding-bottom: 1px;"
                           >
-                            30
+                            3,000
                           </p>
                         </div>
                       </div>
@@ -3282,14 +3286,16 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
-          <div
-            class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-bottom-2 mm-box--color-text-default"
           >
-            <div
-              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-              style="height: 24px; width: 200px;"
-            />
-          </div>
+            Signature request
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
+          >
+            Review request details before you confirm.
+          </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_request-section"

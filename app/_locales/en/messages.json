@@ -1067,6 +1067,13 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeReceive": {
+    "message": "Receive $1 on $2",
+    "description": "Summary line showing token received on destination chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeReceiveLoading": {
+    "message": "Receiving on destination chain"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Select a destination account"
   },
@@ -1081,6 +1088,13 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
+  },
+  "bridgeSend": {
+    "message": "Send $1 from $2",
+    "description": "Summary line showing token sent from source chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeSendLoading": {
+    "message": "Sending from source chain"
   },
   "bridgeSolanaAccountCreated": {
     "message": "Solana account created"
@@ -1962,6 +1976,9 @@
   "dataUnavailable": {
     "message": "data unavailable"
   },
+  "date": {
+    "message": "Date"
+  },
   "dateCreated": {
     "message": "Date created"
   },
@@ -2090,6 +2107,14 @@
   },
   "defiEmptyDescription": {
     "message": "Lend, borrow, and trade, right in your wallet."
+  },
+  "defiReferralCheckboxLabel": {
+    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
   },
   "defiTabErrorContent": {
     "message": "Try visiting again later."
@@ -3131,17 +3156,9 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
@@ -3892,6 +3909,12 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdConversionActivityTitle": {
+    "message": "mUSD Conversion"
+  },
+  "musdConversionTitle": {
+    "message": "mUSD Conversion"
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -4712,6 +4735,9 @@
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
   },
+  "paidWith": {
+    "message": "Paid with"
+  },
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
   },
@@ -5102,6 +5128,12 @@
   },
   "perpsContactSupport": {
     "message": "Contact support"
+  },
+  "perpsDepositActivityTitle": {
+    "message": "Funded Perps"
+  },
+  "perpsDepositTitle": {
+    "message": "Funded perps account"
   },
   "perpsDetails": {
     "message": "Details"
@@ -7749,6 +7781,9 @@
   },
   "suggestedTokenName": {
     "message": "Suggested name:"
+  },
+  "summary": {
+    "message": "Summary"
   },
   "supplied": {
     "message": "Supplied"
