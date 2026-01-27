@@ -24,6 +24,19 @@ export const StackCard: React.FC<StackCardProps> = ({
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
+  // Helper function to get translated text or fallback to original
+  const getDisplayText = (text: string): string => {
+    if (isContentfulContent) {
+      return text;
+    }
+    // Try to translate, but fallback to original text if translation fails
+    const translated = t(text);
+    return translated || text;
+  };
+
+  const displayTitle = getDisplayText(slide.title);
+  const displayDescription = getDisplayText(slide.description);
+
   const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -63,7 +76,7 @@ export const StackCard: React.FC<StackCardProps> = ({
 
       {/* Image Container */}
       <div className="carousel-card__image">
-        <img src={slide.image} alt={slide.title} />
+        <img src={slide.image} alt={displayTitle} />
       </div>
 
       {/* Info container */}
@@ -75,7 +88,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
-            {isContentfulContent ? slide.title : t(slide.title)}
+            {displayTitle}
           </Text>
 
           {onTransitionToNextCard && (
@@ -83,9 +96,7 @@ export const StackCard: React.FC<StackCardProps> = ({
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
-              ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
-              ])}
+              ariaLabel={t('closeSlide', [displayTitle])}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}
             />
@@ -99,7 +110,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
-            {isContentfulContent ? slide.description : t(slide.description)}
+            {displayDescription}
           </Text>
         </div>
       </div>
