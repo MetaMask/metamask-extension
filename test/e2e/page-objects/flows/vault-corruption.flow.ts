@@ -82,7 +82,6 @@ export async function onboardThenTriggerCorruptionFlow(
     participateInMetaMetrics,
     skipSRPBackup: true,
   });
-  await driver.delay(5000);
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
