@@ -110,6 +110,11 @@ import EncryptionPublicKeyController from '../controllers/encryption-public-key'
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
+//========
+// We introduce WalletService in this branch. This is boilerplate for including
+// it to the union of all controllers (and service).
+//========
+import { WalletService } from '../services/wallet-service';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -211,7 +216,8 @@ export type Controller =
   | StaticAssetsController
   | ProfileMetricsController
   | ProfileMetricsService
-  | ConnectivityController;
+  | ConnectivityController
+  | WalletService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
