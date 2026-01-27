@@ -105,6 +105,11 @@ export default class ConfirmEncryptionPublicKey extends Component {
   renderRequestIcon = () => {
     const { requesterAddress } = this.props;
 
+    // Only render the avatar if we have a valid address
+    if (!requesterAddress) {
+      return null;
+    }
+
     return (
       <div className="request-encryption-public-key__request-icon">
         <PreferredAvatar

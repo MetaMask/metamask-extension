@@ -15,6 +15,7 @@ const baseProps = {
   requesterAddress: '0x123456789abcdef',
   txData: {
     origin: 'test',
+    msgParams: '0x123456789abcdef',
   },
   subjectMetadata: {
     'peepeth.com': {

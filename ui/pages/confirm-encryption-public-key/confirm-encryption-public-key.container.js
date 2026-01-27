@@ -39,7 +39,7 @@ function mapStateToProps(state, ownProps) {
     subjectMetadata,
     fromAccount,
     requester: null,
-    requesterAddress: null,
+    requesterAddress: txData?.msgParams || null,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     nativeCurrency: getNativeCurrency(state),
   };
