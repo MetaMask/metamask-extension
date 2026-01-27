@@ -36,8 +36,17 @@ export const SelectedNetworkControllerInit: ControllerInitFunction<
 
 /**
  * Clean up domains from SelectedNetworkController state that no longer have permissions.
- * This prevents errors when the controller tries to update network client IDs for domains
- * that don't have active permissions.
+ *
+ * This function prevents the error "NetworkClientId for domain cannot be called with a
+ * domain that has not yet been granted permissions" which occurs when:
+ * 1. Domains are stored in SelectedNetworkController.state.domains from a previous session
+ * 2. Those domains no longer have permissions (e.g., revoked by user or migration)
+ * 3. During initialization, NetworkController publishes a state change event
+ * 4. SelectedNetworkController tries to update network client IDs for all domains
+ * 5. The update fails because the domain no longer has permissions
+ *
+ * By cleaning up stale domains before controller initialization, we ensure that only
+ * domains with active permissions are present in the state, preventing the error.
  *
  * @param state - The persisted SelectedNetworkController state.
  * @param messenger - The controller messenger.
