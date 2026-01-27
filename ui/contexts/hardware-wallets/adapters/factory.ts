@@ -13,9 +13,7 @@ import {
  */
 export function createAdapterForHardwareWalletType(
   walletType: HardwareWalletType | null | undefined,
-  // TODO: remove comment when adapterOptions is used
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  adapterOptions: HardwareWalletAdapterOptions,
+  _adapterOptions: HardwareWalletAdapterOptions,
 ): HardwareWalletAdapter {
   switch (walletType) {
     default:

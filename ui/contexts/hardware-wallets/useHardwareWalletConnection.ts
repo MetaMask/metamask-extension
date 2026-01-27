@@ -121,11 +121,12 @@ export const useHardwareWalletConnection = ({
       deviceId: string;
     }) => {
       if (!abortSignal?.aborted) {
+        refs.deviceIdRef.current = targetDeviceId;
         setDeviceId(targetDeviceId);
         updateConnectionState(ConnectionState.connecting());
       }
     },
-    [setDeviceId, updateConnectionState],
+    [setDeviceId, updateConnectionState, refs],
   );
 
   const connectWithAdapter = useCallback(
