@@ -34,7 +34,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
       },
     },
   },
@@ -163,4 +164,3 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
   );
 };
 DefaultStory.storyName = 'Default';
-

@@ -11,16 +11,10 @@ import {
 import { TextFieldSize, TextFieldType } from '../text-field';
 
 import { TextFieldSearch } from './text-field-search';
-import README from './README.mdx';
 
 const meta: Meta<typeof TextFieldSearch> = {
   title: 'Components/ComponentLibrary/TextFieldSearch',
   component: TextFieldSearch,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     value: {
       control: 'text',

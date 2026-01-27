@@ -1,5 +1,4 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 import TransactionSettings from './transaction-settings';
 
 export default {
@@ -8,7 +7,7 @@ export default {
 
 export const DefaultStory = () => (
   <div style={{ height: '200px', marginTop: '160px' }}>
-    <TransactionSettings onSelect={action('slippage')} />
+    <TransactionSettings onSelect={() => {}} />
   </div>
 );
 

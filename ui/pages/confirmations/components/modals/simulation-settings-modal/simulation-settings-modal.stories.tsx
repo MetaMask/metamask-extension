@@ -10,11 +10,9 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 
 const store = configureStore(
   getMockConfirmStateForTransaction(
-    genUnapprovedContractInteractionConfirmation({
-    }),
+    genUnapprovedContractInteractionConfirmation({}),
     {
-      metamask: {
-      },
+      metamask: {},
     },
   ),
 );
@@ -33,6 +31,8 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => <SimulationSettingsModal onClose={() => {}} />;
+export const DefaultStory = () => (
+  <SimulationSettingsModal onClose={() => {}} />
+);
 
 DefaultStory.storyName = 'Default';

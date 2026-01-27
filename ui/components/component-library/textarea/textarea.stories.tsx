@@ -10,16 +10,9 @@ import { Box } from '../box';
 import { TextareaResize } from './textarea.types';
 import { Textarea } from './textarea';
 
-import README from './README.mdx';
-
 export default {
   title: 'Components/ComponentLibrary/Textarea',
   component: Textarea,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     autoFocus: {
       control: 'boolean',

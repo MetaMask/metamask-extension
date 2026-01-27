@@ -6,8 +6,6 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-import README from './README.mdx';
-
 import { BannerAlert } from './banner-alert';
 import { BannerAlertSeverity } from './banner-alert.types';
 import { Box } from '../box';
@@ -18,11 +16,6 @@ import { ButtonPrimary } from '../button-primary';
 export default {
   title: 'Components/ComponentLibrary/BannerAlert',
   component: BannerAlert,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     severity: {
       control: 'select',

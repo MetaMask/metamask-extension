@@ -13,18 +13,12 @@ import {
 import { Text } from '../text';
 
 import { PopoverHeader } from './popover-header';
-import README from './README.mdx';
 import { AvatarAccount } from '@metamask/design-system-react';
 import { Button, ButtonSize } from '../button';
 
 export default {
   title: 'Components/ComponentLibrary/PopoverHeader',
   component: PopoverHeader,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     children: { control: 'text' },
     className: { control: 'text' },

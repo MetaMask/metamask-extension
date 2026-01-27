@@ -3,16 +3,9 @@ import { StoryFn, Meta } from '@storybook/react';
 
 import { ModalOverlay } from './modal-overlay';
 
-import README from './README.mdx';
-
 export default {
   title: 'Components/ComponentLibrary/ModalOverlay',
   component: ModalOverlay,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     className: {
       control: 'text',

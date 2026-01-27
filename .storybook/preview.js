@@ -4,7 +4,6 @@
 Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
   * */
 import React, { useEffect } from 'react';
-import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
@@ -83,7 +82,7 @@ const proxiedBackground = new Proxy(
   {
     get(_, method) {
       return function () {
-        action(`Background call: ${method}`)();
+        // No-op function for background calls in Storybook
         return new Promise(() => {});
       };
     },

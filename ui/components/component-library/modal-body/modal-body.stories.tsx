@@ -6,17 +6,11 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../text';
-import README from './README.mdx';
 import { ModalBody } from './modal-body';
 
 const meta: Meta<typeof ModalBody> = {
   title: 'Components/ComponentLibrary/ModalBody',
   component: ModalBody,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     className: {
       control: 'text',

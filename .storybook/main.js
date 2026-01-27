@@ -17,7 +17,6 @@ module.exports = {
   ],
   addons: [
     '@storybook/addon-essentials',
-    '@storybook/addon-actions',
     '@storybook/addon-a11y',
     './i18n-party-addon/register.js',
   ],

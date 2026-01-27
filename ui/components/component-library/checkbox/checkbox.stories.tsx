@@ -17,7 +17,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
       },
     },
   },
@@ -51,4 +52,3 @@ const Template: StoryFn<typeof Checkbox> = (args) => {
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-

@@ -10,18 +10,12 @@ import {
 import { HelpText } from './help-text';
 import { HelpTextSeverity } from './help-text.types';
 
-import README from './README.mdx';
 import { Box } from '../box';
 import { Icon, IconName, IconSize } from '../icon';
 
 export default {
   title: 'Components/ComponentLibrary/HelpText',
   component: HelpText,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     children: {
       control: 'text',

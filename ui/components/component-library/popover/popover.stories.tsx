@@ -12,7 +12,6 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-import README from './README.mdx';
 import { Popover } from './popover';
 import { PopoverPosition, PopoverRole } from './popover.types';
 import { Box } from '../box';
@@ -22,11 +21,6 @@ import { Icon, IconName, IconSize } from '../icon';
 export default {
   title: 'Components/ComponentLibrary/Popover',
   component: Popover,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     children: {
       control: 'text',

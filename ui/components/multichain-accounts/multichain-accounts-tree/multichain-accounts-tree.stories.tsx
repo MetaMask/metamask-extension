@@ -3,10 +3,7 @@ import { StoryFn, Meta } from '@storybook/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { MultichainAccountsTree } from './index';
-import type {
-  AccountGroupId,
-  AccountWalletId,
-} from '@metamask/account-api';
+import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
 export default {

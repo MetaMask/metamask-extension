@@ -7,7 +7,8 @@ import {
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 
-const HYPERLIQUID_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
+const HYPERLIQUID_CONFIG =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
 // const ASTERDEX_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.AsterDex];
 
 const STATE_MOCK_DEFAULT = {

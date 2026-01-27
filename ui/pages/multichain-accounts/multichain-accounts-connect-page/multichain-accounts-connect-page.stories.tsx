@@ -1,7 +1,6 @@
 import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { action } from '@storybook/addon-actions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -125,7 +124,8 @@ const store = configureStore({
     ...mockMultichainState.metamask,
     // Preserve the network configuration from mockState
     selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
-    networkConfigurationsByChainId: mockState.metamask.networkConfigurationsByChainId,
+    networkConfigurationsByChainId:
+      mockState.metamask.networkConfigurationsByChainId,
     permissionHistory: {
       'https://test.dapp': {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -195,8 +195,8 @@ export const Default: Story = {
       },
     },
     permissionsRequestId: '1',
-    rejectPermissionsRequest: action('rejectPermissionsRequest'),
-    approveConnection: action('approveConnection'),
+    rejectPermissionsRequest: () => {},
+    approveConnection: () => {},
     targetSubjectMetadata: mockTargetSubjectMetadata,
   },
 };

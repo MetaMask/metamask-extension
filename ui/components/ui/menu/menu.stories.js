@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { action } from '@storybook/addon-actions';
 import PropTypes from 'prop-types';
 import { IconName, BannerAlert } from '../../component-library';
 import { Severity } from '../../../helpers/constants/design-system';
@@ -28,12 +27,12 @@ Deprecated.propTypes = {
 export const DefaultStory = () => {
   return (
     <Deprecated>
-      <Menu onHide={action('Hide')}>
-        <MenuItem iconName={IconName.Eye} onClick={action('Menu Item 1')}>
+      <Menu onHide={() => {}}>
+        <MenuItem iconName={IconName.Eye} onClick={() => {}}>
           Menu Item 1
         </MenuItem>
-        <MenuItem onClick={action('Menu Item 2')}>Menu Item 2</MenuItem>
-        <MenuItem iconName={IconName.EyeSlash} onClick={action('Menu Item 3')}>
+        <MenuItem onClick={() => {}}>Menu Item 2</MenuItem>
+        <MenuItem iconName={IconName.EyeSlash} onClick={() => {}}>
           Menu Item 3
         </MenuItem>
       </Menu>
@@ -48,18 +47,15 @@ export const Anchored = () => {
   return (
     <Deprecated>
       <button ref={setAnchorElement}>Menu</button>
-      <Menu anchorElement={anchorElement} onHide={action('Hide')}>
-        <MenuItem iconName={IconName.Export} onClick={action('Menu Item 1')}>
+      <Menu anchorElement={anchorElement} onHide={() => {}}>
+        <MenuItem iconName={IconName.Export} onClick={() => {}}>
           Menu Item 1
         </MenuItem>
-        <MenuItem onClick={action('Menu Item 2')}>Menu Item 2</MenuItem>
-        <MenuItem iconName={IconName.EyeSlash} onClick={action('Menu Item 3')}>
+        <MenuItem onClick={() => {}}>Menu Item 2</MenuItem>
+        <MenuItem iconName={IconName.EyeSlash} onClick={() => {}}>
           Menu Item 3
         </MenuItem>
-        <MenuItem
-          iconName={IconName.AddSquare}
-          onClick={action('Disabled Item')}
-        >
+        <MenuItem iconName={IconName.AddSquare} onClick={() => {}}>
           Disabled Item
         </MenuItem>
       </Menu>
