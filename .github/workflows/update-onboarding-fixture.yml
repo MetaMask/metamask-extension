@@ -85,32 +85,52 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
-      - name: Find and download dist artifact
+      - name: Download dist artifact
         run: |
           # Get the most recent run for the Main workflow on this branch
-          RUN_INFO=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status,conclusion --limit 1 --jq 'first')
+          RUN_INFO=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status --limit 1 --jq 'first')
 
           if [ -z "$RUN_INFO" ] || [ "$RUN_INFO" = "null" ]; then
-            echo "::error::No 'Main' workflow run found for branch ${BRANCH}"
+            echo "::error::No 'Main' workflow run found for branch ${BRANCH}. Please push your changes to trigger a build first."
             exit 1
           fi
 
           RUN_ID=$(echo "$RUN_INFO" | jq -r '.databaseId')
           RUN_STATUS=$(echo "$RUN_INFO" | jq -r '.status')
-          RUN_CONCLUSION=$(echo "$RUN_INFO" | jq -r '.conclusion')
 
-          echo "Found run ${RUN_ID} with status: ${RUN_STATUS}, conclusion: ${RUN_CONCLUSION}"
+          echo "Found run ${RUN_ID} with status: ${RUN_STATUS}"
 
-          # If the run is still in progress, wait for it to complete
+          # If the run is still in progress, wait up to 10 minutes
           if [ "$RUN_STATUS" != "completed" ]; then
-            echo "Run ${RUN_ID} is still in progress. Waiting for it to complete..."
-            gh run watch "${RUN_ID}"
-            # Re-fetch the conclusion after waiting
-            RUN_CONCLUSION=$(gh run view "${RUN_ID}" --json conclusion --jq '.conclusion')
-            echo "Run completed with conclusion: ${RUN_CONCLUSION}"
+            echo "Run ${RUN_ID} is still in progress. Waiting up to 10 minutes for it to complete..."
+            WAIT_COUNT=0
+            while [ "$RUN_STATUS" != "completed" ]; do
+              WAIT_COUNT=$((WAIT_COUNT + 1))
+              if [ $WAIT_COUNT -gt 20 ]; then
+                echo "::error::The Main workflow run (${RUN_ID}) is still in progress after 10 minutes. Please wait for it to complete and try again."
+                exit 1
+              fi
+              echo "Waiting 30 seconds... (attempt ${WAIT_COUNT}/20)"
+              sleep 30
+              RUN_STATUS=$(gh run view "${RUN_ID}" --json status --jq '.status')
+            done
+            echo "Run ${RUN_ID} completed."
           fi
 
-          echo "Downloading artifacts from run ${RUN_ID}..."
+          # Check if the build-dist-browserify job succeeded
+          JOB_CONCLUSION=$(gh api "/repos/${{ github.repository }}/actions/runs/${RUN_ID}/jobs" --jq '.jobs[] | select(.name == "build-dist-browserify") | .conclusion')
+
+          if [ -z "$JOB_CONCLUSION" ]; then
+            echo "::error::The 'build-dist-browserify' job was not found in run ${RUN_ID}. The job may have been skipped."
+            exit 1
+          fi
+
+          if [ "$JOB_CONCLUSION" != "success" ]; then
+            echo "::error::The 'build-dist-browserify' job failed (conclusion: ${JOB_CONCLUSION}). Please fix the build and try again."
+            exit 1
+          fi
+
+          echo "Downloading build-dist-browserify artifact from run ${RUN_ID}..."
           gh run download "${RUN_ID}" -n build-dist-browserify -D build-dist-browserify
         env:
           BRANCH: ${{ steps.branch.outputs.BRANCH }}
