@@ -72,4 +72,26 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('returns interaction category for perpsDeposit transaction type', () => {
+    const result = mapTransactionTypeToCategory(
+      TransactionType.perpsDeposit,
+    );
+
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
+
+  it('returns interaction category for musdConversion transaction type', () => {
+    const result = mapTransactionTypeToCategory(
+      TransactionType.musdConversion,
+    );
+
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
+
+  it('returns undefined for unknown transaction types', () => {
+    const result = mapTransactionTypeToCategory('unknown' as TransactionType);
+
+    expect(result).toBeUndefined();
+  });
 });
