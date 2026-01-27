@@ -220,12 +220,16 @@ function logError(error) {
  * @returns {string} wrapped js code
  */
 function wrapAgainstScuttling(content, bag = {}) {
+  // Safely serialize the bag config outside of template literal to avoid syntax errors
+  const bagJson = JSON.stringify(bag);
+
+  // Use string concatenation to avoid template literal syntax errors with JSON
   return `
 {
   function setupProxy(global) {
     // bag of properties to allow vetted shim to access,
     // mapped to their correct this value if needed
-    const bag = ${JSON.stringify(bag)};
+    const bag = ${bagJson};
     // setup vetted shim bag of properties
     for (const prop in bag) {
       const that = bag[prop];
