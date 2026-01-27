@@ -1202,6 +1202,14 @@
   "bridging": {
     "message": "Bridging"
   },
+  "slideBridgeTitle": {
+    "message": "Bridge your tokens",
+    "description": "Title for carousel slide promoting bridge feature"
+  },
+  "slideBridgeDescription": {
+    "message": "Move tokens seamlessly between networks with MetaMask Bridge",
+    "description": "Description for carousel slide promoting bridge feature"
+  },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
   },
