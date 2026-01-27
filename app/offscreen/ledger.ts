@@ -1,14 +1,14 @@
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import type Transport from '@ledgerhq/hw-transport';
 import LedgerEth from '@ledgerhq/hw-app-eth';
-
-type EIP712Message = Parameters<LedgerEth['signEIP712Message']>[1];
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
+
+type EIP712Message = Parameters<LedgerEth['signEIP712Message']>[1];
 
 // Transport and app state
 let transport: Transport | null = null;
