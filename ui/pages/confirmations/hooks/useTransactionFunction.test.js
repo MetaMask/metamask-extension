@@ -176,4 +176,28 @@ describe('useMaxPriorityFeePerGasInput', () => {
     result.current.updateTransactionUsingEstimate(GasRecommendations.low);
     expect(mockUpdateTransaction).not.toHaveBeenCalled();
   });
+
+  it('returns early when gasFeeEstimates is undefined for updateTransactionToTenPercentIncreasedGasFee', async () => {
+    const mockUpdateTransaction = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      gasFeeEstimates: undefined,
+    });
+    await result.current.updateTransactionToTenPercentIncreasedGasFee();
+    expect(mockUpdateTransaction).not.toHaveBeenCalled();
+  });
+
+  it('returns early when gasFeeEstimates does not contain defaultEstimateToUse for updateTransactionToTenPercentIncreasedGasFee', async () => {
+    const mockUpdateTransaction = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      gasFeeEstimates: { low: {} }, // Missing 'medium' estimate
+    });
+    await result.current.updateTransactionToTenPercentIncreasedGasFee();
+    expect(mockUpdateTransaction).not.toHaveBeenCalled();
+  });
 });

@@ -163,6 +163,11 @@ export const useTransactionFunctions = ({
 
   const updateTransactionToTenPercentIncreasedGasFee = useCallback(
     (initTransaction = false) => {
+      // Early validation: Check if gasFeeEstimates and the required estimate level exist
+      if (!gasFeeEstimates || !gasFeeEstimates[defaultEstimateToUse]) {
+        return;
+      }
+
       const {
         gas: gasLimit,
         maxFeePerGas,
@@ -183,9 +188,6 @@ export const useTransactionFunctions = ({
           ? CUSTOM_GAS_ESTIMATE
           : PriorityLevels.tenPercentIncreased;
 
-      if (!gasFeeEstimates) {
-        return;
-      }
       updateTransaction({
         estimateSuggested: initTransaction
           ? defaultEstimateToUse
