@@ -506,7 +506,16 @@ function getGenericValues(
     Object.values(swapCommandsDefinition).includes(commandByte),
   );
 
-  if (swapCommands.length !== 1) {
+  // For V4 actions (when nonSwapCommandsDefinition is undefined), allow multiple swap commands
+  // as V4 can batch multiple swap operations. For top-level commands, require exactly 1.
+  const isV4Actions = !nonSwapCommandsDefinition;
+  if (isV4Actions) {
+    if (swapCommands.length < 1) {
+      throw new DappSwapDecodingError(
+        `Found swap commands ${swapCommands.length} instead of at least 1`,
+      );
+    }
+  } else if (swapCommands.length !== 1) {
     throw new DappSwapDecodingError(
       `Found swap commands ${swapCommands.length} instead of 1`,
     );
