@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "브릿지 대상:"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "이 토큰을 직접 추가했다면, 브리지를 진행하기 전에 자금에 대한 위험을 충분히 인지하고 계셔야 합니다."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "이 토큰은 검증할 수 없습니다."
-  },
   "bridgeTransactionProgress": {
     "message": "트랜잭션 $1/2"
   },
@@ -8216,9 +8210,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"
-  },
-  "yourNetworks": {
-    "message": "내 네트워크"
   },
   "yourPrivateSeedPhrase": {
     "message": "비밀복구구문"

@@ -2,12 +2,12 @@ import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
 import {
   TransactionPayQuote,
   TransactionPayRequiredToken,
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
@@ -53,7 +53,7 @@ const QUOTE_MOCK = {
 
 const mockStore = configureStore([]);
 
-function createWrapper(type: TransactionType = TransactionType.perpsDeposit) {
+function createWrapper(type: string = TransactionType.perpsDeposit) {
   const state = {
     metamask: {
       TransactionPayController: {
@@ -162,7 +162,7 @@ describe('useTransactionPayMetrics', () => {
     expect(result.error).toBeUndefined();
   });
 
-  it('renders with perps deposit type', () => {
+  it('renders with custom amount type', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: PAY_TOKEN_MOCK,
       setPayToken: jest.fn(),
@@ -170,19 +170,6 @@ describe('useTransactionPayMetrics', () => {
 
     const { result } = renderHook(() => useTransactionPayMetrics(), {
       wrapper: createWrapper(TransactionType.perpsDeposit),
-    });
-
-    expect(result.error).toBeUndefined();
-  });
-
-  it('renders with predict deposit type', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: PAY_TOKEN_MOCK,
-      setPayToken: jest.fn(),
-    } as ReturnType<typeof useTransactionPayToken>);
-
-    const { result } = renderHook(() => useTransactionPayMetrics(), {
-      wrapper: createWrapper(TransactionType.predictDeposit),
     });
 
     expect(result.error).toBeUndefined();

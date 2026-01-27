@@ -1068,12 +1068,6 @@
   "bridgeTo": {
     "message": "ブリッジ先:"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "このトークンを手動で追加した場合は、ブリッジを行う前に、資金へのリスクを認識していることを確認してください。"
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "このトークンは検証できません。"
-  },
   "bridgeTransactionProgress": {
     "message": "トランザクション $1/2"
   },
@@ -8204,9 +8198,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"
-  },
-  "yourNetworks": {
-    "message": "あなたのネットワーク"
   },
   "yourPrivateSeedPhrase": {
     "message": "シークレットリカバリーフレーズ"

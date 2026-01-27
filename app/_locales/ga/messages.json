@@ -1009,12 +1009,6 @@
   "bridgeTo": {
     "message": "Droichead go"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Má chuir tú an comhartha seo leis de láimh, déan cinnte go bhfuil tú ar an eolas faoi na rioscaí a bhaineann le do chistí sula ndéanann tú droicheadú."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Ní féidir linn an comhartha seo a fhíorú."
-  },
   "bridgeTransactionProgress": {
     "message": "Idirbheart $1 de 2"
   },
@@ -7509,9 +7503,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "D’fhéadfadh do NFT a bheith i mbaol"
-  },
-  "yourNetworks": {
-    "message": "Do líonraí"
   },
   "yourPrivateSeedPhrase": {
     "message": "Do Rún Aisghabhála Frása"

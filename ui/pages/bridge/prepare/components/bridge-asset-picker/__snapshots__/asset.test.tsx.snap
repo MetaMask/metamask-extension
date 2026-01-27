@@ -1,0 +1,330 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BridgeAsset should render ERC20 asset 1`] = `
+<div
+  class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+  data-testid="bridge-asset"
+>
+  <div
+    class="relative inline-flex self-start"
+    style="align-self: center;"
+  >
+    <div
+      class="inline-flex"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+      >
+        <img
+          alt="mUSD"
+          class="size-full object-contain"
+          src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
+        />
+      </div>
+    </div>
+    <div
+      class="absolute"
+      color="background-default"
+      style="bottom: 0px; right: 0px;"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+      >
+        <img
+          alt="Ethereum"
+          class="size-full object-contain"
+          src="./images/eth_logo.svg"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+    style="overflow: hidden;"
+  >
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        >
+          mUSD
+        </p>
+      </div>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        style="white-space: nowrap;"
+      />
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-end"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
+        style="white-space: nowrap;"
+      >
+        MetaMask USD
+      </p>
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        style="white-space: nowrap;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BridgeAsset should render asset with accountType 1`] = `
+<div
+  class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+  data-testid="bridge-asset"
+>
+  <div
+    class="relative inline-flex self-start"
+    style="align-self: center;"
+  >
+    <div
+      class="inline-flex"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+      >
+        <img
+          alt="BTC"
+          class="size-full object-contain"
+          src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/bip122/000000000019d6689c085ae165831e93/slip44/0.png"
+        />
+      </div>
+    </div>
+    <div
+      class="absolute"
+      color="background-default"
+      style="bottom: 0px; right: 0px;"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+      >
+        <img
+          alt="Bitcoin"
+          class="size-full object-contain"
+          src="./images/bitcoin-logo.svg"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+    style="overflow: hidden;"
+  >
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        >
+          BTC
+        </p>
+        <div
+          class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-section mm-box--rounded-sm"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          >
+            Native SegWit
+          </p>
+        </div>
+      </div>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        style="white-space: nowrap;"
+      />
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-end"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
+        style="white-space: nowrap;"
+      >
+        Bitcoin
+      </p>
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        style="white-space: nowrap;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BridgeAsset should render asset with balance 1`] = `
+<div
+  class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+  data-testid="bridge-asset"
+>
+  <div
+    class="relative inline-flex self-start"
+    style="align-self: center;"
+  >
+    <div
+      class="inline-flex"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+      >
+        <img
+          alt="mUSD"
+          class="size-full object-contain"
+          src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
+        />
+      </div>
+    </div>
+    <div
+      class="absolute"
+      color="background-default"
+      style="bottom: 0px; right: 0px;"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+      >
+        <img
+          alt="Ethereum"
+          class="size-full object-contain"
+          src="./images/eth_logo.svg"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+    style="overflow: hidden;"
+  >
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        >
+          mUSD
+        </p>
+      </div>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        style="white-space: nowrap;"
+      >
+        $100.00
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-end"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
+        style="white-space: nowrap;"
+      >
+        MetaMask USD
+      </p>
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        style="white-space: nowrap;"
+      >
+        100 mUSD
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BridgeAsset should render native asset 1`] = `
+<div
+  class="mm-box mm-container mm-container--max-width-undefined bridge-asset--selected mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-primary-muted mm-box--rounded-none"
+  data-testid="bridge-asset"
+>
+  <div
+    class="bg-primary-default multichain-network-list-item__selected-indicator"
+    style="border-radius: pill; position: absolute;"
+  />
+  <div
+    class="relative inline-flex self-start"
+    style="align-self: center;"
+  >
+    <div
+      class="inline-flex"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+      >
+        <img
+          alt="ETH"
+          class="size-full object-contain"
+          src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
+        />
+      </div>
+    </div>
+    <div
+      class="absolute"
+      color="background-default"
+      style="bottom: 0px; right: 0px;"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+      >
+        <img
+          alt="Ethereum"
+          class="size-full object-contain"
+          src="./images/eth_logo.svg"
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+    style="overflow: hidden;"
+  >
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+        >
+          ETH
+        </p>
+      </div>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        style="white-space: nowrap;"
+      />
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-end"
+    >
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
+        style="white-space: nowrap;"
+      >
+        Ether
+      </p>
+      <p
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        style="white-space: nowrap;"
+      />
+    </div>
+  </div>
+</div>
+`;

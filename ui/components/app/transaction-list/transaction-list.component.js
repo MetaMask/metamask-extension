@@ -40,6 +40,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
+import { filterTransactionByChain } from '../../../helpers/utils/activity';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
@@ -378,13 +379,9 @@ export default function TransactionList({
       ? unfilteredCompletedTransactionsCurrentChain
       : unfilteredCompletedTransactionsAllChains;
 
-    // Filter transactions to only include those from enabled networks
     const filteredTransactions = transactionsToFilter.filter(
-      (transactionGroup) => {
-        const transactionChainId = transactionGroup.initialTransaction?.chainId;
-        const isIncluded = enabledChainIds.includes(transactionChainId);
-        return isIncluded;
-      },
+      (transactionGroup) =>
+        filterTransactionByChain(transactionGroup, enabledChainIds),
     );
 
     return filteredTransactions;
