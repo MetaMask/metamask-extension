@@ -389,6 +389,11 @@ export function useTransactionDisplayData(transactionGroup) {
       new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
     );
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
+  } else if (type === TransactionType.gasPayment) {
+    title = t('gasPayment');
+    prefix = '';
+    // Gas payment transactions are internal transactions for gasless flows
+    // They represent the payment of gas fees using an alternative token
   } else if (PAY_TRANSACTION_TYPES.includes(type)) {
     title =
       type === TransactionType.perpsDeposit

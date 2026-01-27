@@ -2861,6 +2861,9 @@
   "gasOption": {
     "message": "Gas option"
   },
+  "gasPayment": {
+    "message": "Gas payment"
+  },
   "gasPrice": {
     "message": "Gas price"
   },
