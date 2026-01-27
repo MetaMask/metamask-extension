@@ -25,6 +25,8 @@ The Socket Security bot flagged several packages. These are expected for a major
 
 Attempted to upgrade Storybook from v7.6.21 to v10.2.0. The upgrade is **partially complete** but **blocked by a critical dependency issue**.
 
+**CI Status**: Both `Build Storybook` and `Test Storybook` jobs fail with the React 18 requirement error, as expected.
+
 ## Critical Blocker: React 18 Required
 
 **Storybook v10 requires React 18+, but this project uses React 17.0.2.**
@@ -64,7 +66,12 @@ ERROR: export 'useInsertionEffect' (imported as 'React') was not found in 'react
 - Updated `.storybook/i18n-party-addon/register.js` to use new v10 APIs
 - Converted JSX to `React.createElement` calls (temporarily disabled due to React 18 requirement)
 
-### 5. Dependency Management ✅
+### 5. Story File Import Updates ✅
+- Fixed 25 story files importing `useArgs` from deprecated `@storybook/client-api` → now use `storybook/internal/preview-api`
+- Fixed 2 story files incorrectly importing `useState` from `@storybook/addons` → now use React's `useState`
+- Fixed 4 MDX files importing from `@storybook/blocks` → now use `@storybook/addon-docs/blocks`
+
+### 6. Dependency Management ✅
 - Updated `allow-scripts` configuration
 - Ran `yarn dedupe` to optimize lockfile
 - Updated `.yarnrc.yml` to allow Storybook packages
