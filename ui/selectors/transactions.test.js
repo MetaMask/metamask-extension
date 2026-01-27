@@ -536,6 +536,74 @@ describe('Transaction Selectors', () => {
         expectedResult,
       );
     });
+
+    it('excludes gasPayment transactions from transaction groups', () => {
+      const gasPaymentTx = {
+        id: 0,
+        time: 0,
+        chainId: CHAIN_IDS.MAINNET,
+        type: TransactionType.gasPayment,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x0',
+        },
+        status: TransactionStatus.submitted,
+      };
+
+      const bridgeTx = {
+        id: 1,
+        time: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        type: TransactionType.bridge,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x0',
+        },
+        status: TransactionStatus.submitted,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          featureFlags: {},
+          transactions: [gasPaymentTx, bridgeTx],
+        },
+      };
+
+      const result = nonceSortedTransactionsSelector(state);
+
+      // Should have one transaction group with the bridge transaction
+      // gasPayment transaction is excluded from the list
+      expect(result).toHaveLength(1);
+      expect(result[0].nonce).toBe('0x0');
+      expect(result[0].transactions).toHaveLength(1);
+      expect(result[0].transactions[0].type).toBe(TransactionType.bridge);
+
+      // The initialTransaction should be the bridge transaction
+      expect(result[0].initialTransaction.type).toBe(TransactionType.bridge);
+      expect(result[0].initialTransaction.id).toBe(1);
+    });
   });
 
   describe('Sorting Transactions Selectors', () => {
