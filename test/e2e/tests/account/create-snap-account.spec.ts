@@ -6,10 +6,10 @@ import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import SnapAccountConfirmationDialog from '../../page-objects/pages/dialog/snap-account-confirmation-dialog';
 import {
   installSnapSimpleKeyring,
   createSnapAccount,
-  cancelSnapAccountCreation,
 } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
@@ -104,7 +104,8 @@ describe('Create Snap Account', function (this: Suite) {
 
         // Switch to dialog and cancel
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await cancelSnapAccountCreation(driver);
+        const snapAccountDialog = new SnapAccountConfirmationDialog(driver);
+        await snapAccountDialog.clickCancelButton();
 
         // Switch back to dapp and check error
         await driver.switchToWindowWithTitle(

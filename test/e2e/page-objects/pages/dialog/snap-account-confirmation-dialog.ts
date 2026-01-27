@@ -52,6 +52,16 @@ class SnapAccountConfirmationDialog {
     await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 
+  async clickConfirmButtonAndWaitForWindowToClose(): Promise<void> {
+    console.log('Clicking confirm button and waiting for window to close');
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+  }
+
+  async clickConfirmButtonAndWaitToDisappear(): Promise<void> {
+    console.log('Clicking confirm button and waiting for it to disappear');
+    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
+  }
+
   async checkAccountCreatedMessageDisplayed(): Promise<void> {
     console.log('Checking account created message is displayed');
     await this.driver.waitForSelector(this.accountCreatedMessage);

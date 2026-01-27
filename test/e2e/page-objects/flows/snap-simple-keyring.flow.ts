@@ -125,11 +125,11 @@ export async function approveOrRejectSnapAccountTransaction(
   await driver.delay(regularDelayMs);
 
   // Click confirm/submit on the extension dialog
-  const confirmButton = '[data-testid="confirmation-submit-button"]';
+  const confirmationDialog = new SnapAccountConfirmationDialog(driver);
   if (isSignatureRequest) {
-    await driver.clickElementAndWaitForWindowToClose(confirmButton);
+    await confirmationDialog.clickConfirmButtonAndWaitForWindowToClose();
   } else {
-    await driver.clickElementAndWaitToDisappear(confirmButton);
+    await confirmationDialog.clickConfirmButtonAndWaitToDisappear();
   }
 
   // Switch to the snap keyring dapp
@@ -149,14 +149,4 @@ export async function approveOrRejectSnapAccountTransaction(
 
   // Switch back to extension
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-}
-
-/**
- * Cancels snap account creation on the confirmation screen.
- *
- * @param driver - The WebDriver instance.
- */
-export async function cancelSnapAccountCreation(driver: Driver): Promise<void> {
-  const snapAccountDialog = new SnapAccountConfirmationDialog(driver);
-  await snapAccountDialog.clickCancelButton();
 }
