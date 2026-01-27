@@ -555,6 +555,7 @@
     "@storybook/test-runner": "^0.14.1",
     "@storybook/theming": "^7.6.21",
     "@swc/helpers": "^0.5.17",
+    "@swc/types": "^0.1.23",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^12.1.5",

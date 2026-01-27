@@ -33635,6 +33635,7 @@ __metadata:
     "@storybook/theming": "npm:^7.6.21"
     "@swc/core": "npm:^1.13.2"
     "@swc/helpers": "npm:^0.5.17"
+    "@swc/types": "npm:^0.1.23"
     "@tanstack/react-virtual": "npm:^3.10.8"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
