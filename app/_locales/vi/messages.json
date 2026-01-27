@@ -4103,6 +4103,9 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
+  "noConnectionDescription": {
+    "message": "MetaMask chưa được kết nối với trang web này. Để bắt đầu, hãy chọn nút Kết nối của trang web."
+  },
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
   },
@@ -4863,6 +4866,9 @@
   },
   "permissions": {
     "message": "Quyền"
+  },
+  "permissionsPageEmptyDescription": {
+    "message": "Không phát hiện quyền nào. Sau khi bạn cấp quyền cho một trang web hoặc cài đặt Snap, các chi tiết sẽ xuất hiện ở đây."
   },
   "permitSimulationChange_approve": {
     "message": "Hạn mức chi tiêu"
