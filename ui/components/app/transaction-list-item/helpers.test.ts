@@ -72,4 +72,14 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('maps perpsDeposit to send category', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.perpsDeposit);
+    expect(result).toBe(TransactionGroupCategory.send);
+  });
+
+  it('maps musdConversion to swap category', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.musdConversion);
+    expect(result).toBe(TransactionGroupCategory.swap);
+  });
 });
