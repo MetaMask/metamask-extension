@@ -4,6 +4,8 @@ import type {
   RegistryNetworkConfig,
 } from '@metamask/config-registry-controller';
 
+import { getRemoteFeatureFlags } from './remote-feature-flags';
+
 export type ConfigRegistryState = {
   metamask: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -93,4 +95,15 @@ export const isConfigRegistryNetworksLoading = createSelector(
 export const getConfigRegistryError = createSelector(
   [getConfigRegistryState],
   (configState) => configState.fetchError,
+);
+
+/**
+ * Whether the config registry API is enabled via remote feature flag.
+ *
+ * @param state - The MetaMask state object
+ * @returns True if configRegistryApiEnabled is enabled, false otherwise
+ */
+export const getIsConfigRegistryApiEnabled = createSelector(
+  [getRemoteFeatureFlags],
+  (remoteFeatureFlags) => Boolean(remoteFeatureFlags?.configRegistryApiEnabled),
 );

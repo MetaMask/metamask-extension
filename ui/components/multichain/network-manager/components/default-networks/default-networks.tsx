@@ -16,6 +16,7 @@ import {
 import { getFeaturedNetworksToAdd } from '../../../../../../shared/modules/config-registry-utils';
 import {
   getConfigRegistryNetworks,
+  getIsConfigRegistryApiEnabled,
   isConfigRegistryNetworksLoading,
 } from '../../../../../selectors/config-registry';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
@@ -72,6 +73,7 @@ import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+
   const orderedNetworksList = useSelector(getOrderedNetworksList);
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -79,13 +81,8 @@ const DefaultNetworks = memo(() => {
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
-  // Use the shared callbacks hook
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
-
-  // Use the shared network change handlers hook
   const { handleNetworkChange } = useNetworkChangeHandlers();
-
-  // Use the additional network handlers hook
   const { handleAdditionalNetworkClick } = useAdditionalNetworkHandlers();
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
@@ -96,12 +93,10 @@ const DefaultNetworks = memo(() => {
 
   const useExternalServices = useSelector(getUseExternalServices);
 
-  // Get the currently selected network to allow it through when BFT is OFF
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const selectedNonEvmChainId =
     !isEvmNetworkSelected && currentNetwork ? currentNetwork.chainId : null;
 
-  // extract the evm account of the selected account group
   const evmAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
   );
@@ -110,7 +105,6 @@ const DefaultNetworks = memo(() => {
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
-  // extract the solana account of the selected account group
   const solAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, SolScope.Mainnet),
   );
@@ -131,18 +125,14 @@ const DefaultNetworks = memo(() => {
   );
   ///: END:ONLY_INCLUDE_IF
 
-  // Get blacklisted chain IDs from feature flag
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );
 
-  // This selector provides the indication if the "Gas sponsored" label
-  // is enabled based on the remote feature flag.
   const isGasFeesSponsoredNetworkEnabled = useSelector(
     getGasFeesSponsoredNetworkEnabled,
   );
 
-  // Check if a network has gas sponsorship enabled
   const isNetworkGasSponsored = useCallback(
     (chainId: string | undefined): boolean => {
       if (!chainId) {
@@ -158,21 +148,15 @@ const DefaultNetworks = memo(() => {
     [isGasFeesSponsoredNetworkEnabled],
   );
 
-  // Get Config Registry networks
   const configRegistryNetworks = useSelector(getConfigRegistryNetworks);
   const isConfigRegistryLoading = useSelector(isConfigRegistryNetworksLoading);
-
-  // Get existing networks for comparison
+  const isConfigRegistryApiEnabled = useSelector(getIsConfigRegistryApiEnabled);
   const existingNetworks = useSelector(getNetworkConfigurationsByChainId);
 
-  // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
     useNetworkManagerState({ showDefaultNetworks: true });
 
-  // Memoize sorted networks to avoid expensive sorting on every render
   const orderedNetworks = useMemo(() => {
-    // Filter nonTestNetworks object based on basic functionality toggle
-    // Exception: Keep the currently selected non-EVM chain visible
     const filteredNetworks = useExternalServices
       ? nonTestNetworks
       : Object.fromEntries(
@@ -190,41 +174,38 @@ const DefaultNetworks = memo(() => {
     selectedNonEvmChainId,
   ]);
 
-  // Memoize the featured networks calculation
   const featuredNetworksNotYetEnabled = useMemo(() => {
     let availableNetworks: typeof FEATURED_RPCS = [];
 
-    // Use Config Registry networks if available and loaded
-    if (configRegistryNetworks.length > 0 && !isConfigRegistryLoading) {
-      // Process featured networks from Config Registry
-      // This filters by isFeatured=true and excludes already-added networks
+    if (
+      isConfigRegistryApiEnabled &&
+      configRegistryNetworks.length > 0 &&
+      !isConfigRegistryLoading
+    ) {
       availableNetworks = getFeaturedNetworksToAdd(
         configRegistryNetworks,
         existingNetworks,
       );
     } else {
-      // Fallback to static FEATURED_RPCS during transition or if Config Registry is not available
       availableNetworks = FEATURED_RPCS.filter(
         ({ chainId }) => !evmNetworks[chainId],
       );
     }
 
-    // Apply basic functionality toggle filter to exclude non-EVM networks when BFT is OFF
     const bftFilteredNetworks = useExternalServices
       ? availableNetworks
       : availableNetworks.filter(({ chainId }) =>
           isEvmChainId(chainId as `0x${string}`),
         );
 
-    // Apply blacklist filter to exclude blacklisted networks
     const filteredNetworks = getFilteredFeaturedNetworks(
       blacklistedChainIds,
       bftFilteredNetworks,
     );
 
-    // Sort alphabetically
     return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
   }, [
+    isConfigRegistryApiEnabled,
     configRegistryNetworks,
     isConfigRegistryLoading,
     existingNetworks,
@@ -249,7 +230,6 @@ const DefaultNetworks = memo(() => {
     [isAllPopularNetworksSelected, allEnabledNetworksForAllNamespaces],
   );
 
-  // Use useCallback for stable function references
   const selectAllDefaultNetworks = useCallback(() => {
     const evmNetworksList = orderedNetworks.filter((network) => network.isEvm);
 
@@ -257,7 +237,6 @@ const DefaultNetworks = memo(() => {
       return;
     }
 
-    // Use the first EVM network's chain ID for getting RPC data
     const firstEvmChainId = evmNetworksList[0].chainId;
     const { defaultRpcEndpoint } = getRpcDataByChainId(
       firstEvmChainId,
@@ -267,13 +246,11 @@ const DefaultNetworks = memo(() => {
 
     dispatch(setEnabledAllPopularNetworks());
     dispatch(hideModal());
-    // deferring execution to keep select all unblocked
     setTimeout(() => {
       dispatch(setActiveNetwork(finalNetworkClientId));
     }, 0);
   }, [dispatch, evmNetworks, orderedNetworks]);
 
-  // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
     async (chainId: CaipChainId, isLastRemainingNetwork: boolean) => {
       if (isLastRemainingNetwork) {
@@ -285,18 +262,13 @@ const DefaultNetworks = memo(() => {
     [handleNetworkChange],
   );
 
-  // Memoize the network list items to avoid recreation on every render
   const networkListItems = useMemo(() => {
-    // Helper function to filter networks based on account type and selection
     const getFilteredNetworks = () => {
       if (isMultichainAccountsState2Enabled) {
         return orderedNetworks.filter((network) => {
-          // Show EVM networks if user has EVM accounts
           if (evmAccountGroup && network.isEvm) {
             return true;
           }
-          // When basic functionality toggle is OFF, only show EVM networks
-          // Exception: Keep the currently selected non-EVM chain visible
           if (!useExternalServices) {
             return network.chainId === selectedNonEvmChainId;
           }
@@ -316,8 +288,6 @@ const DefaultNetworks = memo(() => {
         if (isEvmNetworkSelected) {
           return network.isEvm;
         }
-        // When basic functionality toggle is OFF, only show EVM networks
-        // Exception: Keep the currently selected non-EVM chain visible
         if (!useExternalServices) {
           return network.chainId === selectedNonEvmChainId;
         }
@@ -337,8 +307,7 @@ const DefaultNetworks = memo(() => {
     const filteredNetworks = getFilteredNetworks();
 
     return filteredNetworks.map((network) => {
-      const networkChainId = network.chainId; // eip155:59144
-      // Convert CAIP format to hex format for comparison
+      const networkChainId = network.chainId;
       const hexChainId = network.isEvm
         ? convertCaipToHexChainId(networkChainId)
         : networkChainId;
@@ -406,7 +375,6 @@ const DefaultNetworks = memo(() => {
     selectedNonEvmChainId,
   ]);
 
-  // Memoize the additional network list items
   const additionalNetworkListItems = useMemo(() => {
     return featuredNetworksNotYetEnabled.map((network) => {
       const networkImageUrl =
