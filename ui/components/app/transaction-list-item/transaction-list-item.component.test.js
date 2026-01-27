@@ -105,6 +105,7 @@ jest.mock('react', () => {
 jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
   abortTransactionSigning: jest.fn(),
+  captureSingleException: jest.fn(),
 }));
 
 const mockStore = configureStore();
@@ -357,5 +358,23 @@ describe('TransactionListItem', () => {
       '?Swap USDC to UNIFailed-2 USDC',
     );
     expect(getByText('Failed')).toBeInTheDocument();
+  });
+
+  it('should return null for transactions with unsupported categories (gas_payment)', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter({}));
+    const { container } = renderWithProvider(
+      <TransactionListItem
+        transactionGroup={{
+          ...transactionGroup,
+          initialTransaction: {
+            ...transactionGroup.initialTransaction,
+            type: 'gas_payment',
+          },
+        }}
+      />,
+    );
+
+    // Should render nothing for unsupported transaction types
+    expect(container.firstChild).toBeNull();
   });
 });

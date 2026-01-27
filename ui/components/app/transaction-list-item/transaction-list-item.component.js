@@ -293,6 +293,12 @@ function TransactionListItemInner({
   const showCancelButton =
     !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
 
+  // Don't render transactions with unsupported categories (e.g., gas_payment, relay_deposit)
+  // These should already be filtered out, but this is a defensive check
+  if (category === undefined) {
+    return null;
+  }
+
   return (
     <>
       <ActivityListItem

@@ -72,4 +72,19 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('returns undefined for excluded transaction types', () => {
+    expect(mapTransactionTypeToCategory(TransactionType.gasPayment)).toBe(
+      undefined,
+    );
+    expect(mapTransactionTypeToCategory(TransactionType.relayDeposit)).toBe(
+      undefined,
+    );
+  });
+
+  it('returns undefined for unknown transaction types', () => {
+    expect(
+      mapTransactionTypeToCategory('unknown_type' as TransactionType),
+    ).toBe(undefined);
+  });
 });
