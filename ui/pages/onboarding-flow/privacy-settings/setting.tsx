@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Box,
   Text,
+  Box,
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
@@ -10,6 +10,11 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import {
+  TextVariant as TextVariantComponent,
+  TextColor as TextColorComponent,
+} from '../../../helpers/constants/design-system';
+import { Text as TextComponent } from '../../../components/component-library';
 import ToggleButton from '../../../components/ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -53,7 +58,11 @@ export const Setting = ({
         className="w-full"
         gap={4}
       >
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
+        >
           {title}
         </Text>
         {showToggle ? (
@@ -68,13 +77,14 @@ export const Setting = ({
           </Box>
         ) : null}
       </Box>
-      <Text
-        variant={TextVariant.BodySm}
-        color={TextColor.TextAlternative}
+      <TextComponent
+        variant={TextVariantComponent.bodySm}
+        color={TextColorComponent.textAlternative}
+        as="div"
         className="w-full"
       >
         {description}
-      </Text>
+      </TextComponent>
     </Box>
   );
 };

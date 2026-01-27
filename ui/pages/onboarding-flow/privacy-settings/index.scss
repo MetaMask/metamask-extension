@@ -32,18 +32,6 @@
     }
   }
 
-  &__setting {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    text-align: left;
-    max-width: 430px;
-
-    &__toggle {
-      margin-left: 42px;
-    }
-  }
-
   &__network {
     position: relative;
   }
