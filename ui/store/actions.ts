@@ -4168,6 +4168,15 @@ export function hideLoadingIndication(): Action {
   };
 }
 
+export function setPendingHardwareSigning(
+  isPending: boolean,
+): PayloadAction<boolean> {
+  return {
+    type: actionConstants.SET_PENDING_HARDWARE_SIGNING,
+    payload: isPending,
+  };
+}
+
 export function setSlides(slides): Action {
   return {
     type: actionConstants.SET_SLIDES,

@@ -185,7 +185,9 @@ export const useHardwareWalletConnection = ({
 
       if (abortSignal.aborted) {
         adapter.destroy();
-        refs.adapterRef.current = null;
+        if (refs.adapterRef.current === adapter) {
+          refs.adapterRef.current = null;
+        }
         return;
       }
 
@@ -219,8 +221,11 @@ export const useHardwareWalletConnection = ({
           updateConnectionState(ConnectionState.error(fallbackError));
         }
 
-        refs.adapterRef.current?.destroy();
-        refs.adapterRef.current = null;
+        const failedAdapter = refs.adapterRef.current;
+        failedAdapter?.destroy();
+        if (refs.adapterRef.current === failedAdapter) {
+          refs.adapterRef.current = null;
+        }
       }
     },
     [updateConnectionState, refs],
@@ -236,6 +241,10 @@ export const useHardwareWalletConnection = ({
     // Set flag to prevent auto-connect race conditions
     // This must happen synchronously before any async work
     refs.isConnectingRef.current = true;
+
+    // Increment connection ID to track this specific attempt
+    const connectionId = (refs.currentConnectionIdRef.current ?? 0) + 1;
+    refs.currentConnectionIdRef.current = connectionId;
 
     const connectionPromise = (async (): Promise<void> => {
       const effectiveType = refs.walletTypeRef.current;
@@ -370,10 +379,16 @@ export const useHardwareWalletConnection = ({
           refs.deviceIdRef.current = effectiveDeviceId;
           setDeviceId(effectiveDeviceId);
         }
+
         await connect();
         // Update effectiveDeviceId to use newly discovered device ID if connect() found one
         effectiveDeviceId = refs.deviceIdRef.current;
       }
+
+      // Capture the connection ID that's now active. We'll use this to detect if
+      // a different connection started during our subsequent async operations
+      // (e.g., disconnect + reconnect with a different device).
+      const ourConnectionId = refs.currentConnectionIdRef.current;
 
       // Get abort signal after connect() - it may have created a new one
       const abortSignal = refs.abortControllerRef.current?.signal;
@@ -386,6 +401,11 @@ export const useHardwareWalletConnection = ({
       if (adapter?.ensureDeviceReady && effectiveDeviceId) {
         try {
           const result = await adapter.ensureDeviceReady(effectiveDeviceId);
+
+          // Check if a new connection started during ensureDeviceReady
+          if (refs.currentConnectionIdRef.current !== ourConnectionId) {
+            return false;
+          }
           if (abortSignal?.aborted) {
             return false;
           }
@@ -394,6 +414,10 @@ export const useHardwareWalletConnection = ({
           }
           return result;
         } catch (error) {
+          // Check if a new connection started during ensureDeviceReady
+          if (refs.currentConnectionIdRef.current !== ourConnectionId) {
+            return false;
+          }
           if (abortSignal?.aborted) {
             return false;
           }

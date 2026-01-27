@@ -204,6 +204,21 @@ export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
 
+export function getPendingHardwareSigning(state) {
+  return state.appState.pendingHardwareSigning;
+}
+
+/**
+ * Check if the hardware wallet error modal is currently visible.
+ * Used to prevent auto-closing the notification popup when an error modal is shown.
+ *
+ * @param state - Redux state
+ * @returns true if the hardware wallet error modal is open
+ */
+export function getIsHardwareWalletErrorModalVisible(state) {
+  return state.appState.modal?.modalState?.name === 'HARDWARE_WALLET_ERROR';
+}
+
 export function getNftIsStillFetchingIndication(state) {
   return state.appState.isNftStillFetchingIndication;
 }
