@@ -12,6 +12,7 @@ import {
 const meta: Meta<typeof SensitiveText> = {
   title: 'Components/ComponentLibrary/SensitiveText',
   component: SensitiveText,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

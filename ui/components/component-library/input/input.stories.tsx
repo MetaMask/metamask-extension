@@ -34,6 +34,7 @@ const marginSizeControlOptions = [
 ];
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Input',
   component: Input,
   parameters: {

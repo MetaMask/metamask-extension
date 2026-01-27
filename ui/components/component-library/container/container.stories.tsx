@@ -12,6 +12,7 @@ import { ContainerMaxWidth } from './container.types';
 import { Container } from './container';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Container',
   component: Container,
   parameters: {

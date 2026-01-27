@@ -31,6 +31,7 @@ import {
 import { Button } from '../button';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/TextField',
   component: TextField,
   parameters: {

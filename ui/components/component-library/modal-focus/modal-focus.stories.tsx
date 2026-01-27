@@ -13,6 +13,7 @@ import { ModalFocus } from './modal-focus';
 import README from './README.mdx';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/ModalFocus',
   component: ModalFocus,
   parameters: {

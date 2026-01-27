@@ -25,6 +25,7 @@ import { HelpText } from '../help-text';
 import { TextFieldType } from '../text-field';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/FormTextField',
   component: FormTextField,
   parameters: {
