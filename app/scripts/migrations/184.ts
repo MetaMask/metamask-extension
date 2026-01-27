@@ -104,11 +104,22 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
+  const { networkConfigurationsByChainId } = networkState;
+
+  // Initialize NetworkEnablementController if it's missing (e.g., during backup restoration)
   if (!hasProperty(state, 'NetworkEnablementController')) {
-    captureException(
-      new Error(`Migration ${version}: NetworkEnablementController not found.`),
-    );
-    return state;
+    const eip155NetworkMap: Record<string, boolean> = {};
+
+    // Initialize enabledNetworkMap with entries for all existing networks
+    for (const chainId of Object.keys(networkConfigurationsByChainId)) {
+      eip155NetworkMap[chainId] = false;
+    }
+
+    state.NetworkEnablementController = {
+      enabledNetworkMap: {
+        [KnownCaipNamespace.Eip155]: eip155NetworkMap,
+      },
+    };
   }
 
   const networkEnablementState = state.NetworkEnablementController;
@@ -167,7 +178,6 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
-  const { networkConfigurationsByChainId } = networkState;
   const {
     enabledNetworkMap: { [KnownCaipNamespace.Eip155]: eip155NetworkMap },
   } = networkEnablementState;

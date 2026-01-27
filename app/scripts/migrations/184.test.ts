@@ -84,18 +84,6 @@ describe(`migration #${VERSION}`, () => {
             networkConfigurationsByChainId: {},
             selectedNetworkClientId: 'megaeth-testnet',
           },
-        },
-      },
-      scenario: 'missing NetworkEnablementController',
-    },
-    {
-      state: {
-        meta: { version: VERSION },
-        data: {
-          NetworkController: {
-            networkConfigurationsByChainId: {},
-            selectedNetworkClientId: 'megaeth-testnet',
-          },
           NetworkEnablementController: 'invalid',
         },
       },
@@ -163,6 +151,53 @@ describe(`migration #${VERSION}`, () => {
       expect(mockedCaptureException).toHaveBeenCalledWith(expect.any(Error));
     },
   );
+
+  it('initializes NetworkEnablementController when missing (e.g., during backup restoration)', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Ethereum Mainnet',
+            },
+            '0x5': {
+              chainId: '0x5',
+              name: 'Goerli',
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.meta).toStrictEqual({ version: VERSION });
+    expect(newStorage.data.NetworkEnablementController).toStrictEqual({
+      enabledNetworkMap: {
+        [KnownCaipNamespace.Eip155]: {
+          '0x1': false,
+          '0x5': false,
+          [MEGAETH_TESTNET_V2_CONFIG.chainId]: false,
+        },
+      },
+    });
+    expect(newStorage.data.NetworkController).toStrictEqual({
+      networkConfigurationsByChainId: {
+        '0x1': {
+          chainId: '0x1',
+          name: 'Ethereum Mainnet',
+        },
+        '0x5': {
+          chainId: '0x5',
+          name: 'Goerli',
+        },
+        [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
+      },
+    });
+    expect(mockedCaptureException).not.toHaveBeenCalled();
+  });
 
   it('removes the megaeth testnet v1 network configuration and adds the megaeth testnet v2 network configuration', async () => {
     const oldStorage = {
