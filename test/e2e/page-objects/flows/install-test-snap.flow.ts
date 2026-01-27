@@ -39,6 +39,42 @@ export type TestSnapConnectButton =
   | 'connectPreferencesButton';
 
 /**
+ * Constants for snap connect button options.
+ * Use these instead of passing string literals to openTestSnapClickButtonAndInstall.
+ */
+export const SnapConnectButton = {
+  backgroundEvents: 'connectBackgroundEventsButton',
+  bip32: 'connectBip32Button',
+  bip44: 'connectBip44Button',
+  clientStatus: 'connectClientStatusButton',
+  cronJobs: 'connectCronJobsButton',
+  cronjobDuration: 'connectCronjobDurationButton',
+  dialogs: 'connectDialogsButton',
+  errors: 'connectErrorsButton',
+  ethereumProvider: 'connectEthereumProviderButton',
+  getEntropy: 'connectGetEntropyButton',
+  getFile: 'connectGetFileButton',
+  homePage: 'connectHomePageButton',
+  images: 'connectImagesButton',
+  interactive: 'connectInteractiveButton',
+  jsonRpc: 'connectJsonRpcButton',
+  jsx: 'connectJsxButton',
+  lifeCycle: 'connectLifeCycleButton',
+  manageState: 'connectManageStateButton',
+  nameLookUp: 'connectNameLookUpButton',
+  networkAccess: 'connectNetworkAccessButton',
+  notification: 'connectNotificationButton',
+  preferences: 'connectPreferencesButton',
+  preinstalled: 'connectPreinstalledButton',
+  protocol: 'connectProtocolButton',
+  state: 'connectStateButton',
+  transactionInsight: 'connectTransactionInsightButton',
+  update: 'connectUpdateButton',
+  updateNew: 'connectUpdateNewButton',
+  wasm: 'connectWasmButton',
+} as const satisfies Record<string, TestSnapConnectButton>;
+
+/**
  * Open test snaps page in a new window tab, click on the connect button.
  * Grant permission to the snap installed with the optional warning dialog.
  * Finally switches back to the TestSnaps window.

@@ -3,7 +3,10 @@ import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { withFixtures } from '../helpers';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import { mockGetFileSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
 
@@ -28,7 +31,10 @@ describe('Test Snap Get File', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectGetFileButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.getFile,
+        );
         await testSnaps.checkConnectGetFileButtonText(
           'Reconnect to Get File Snap',
         );

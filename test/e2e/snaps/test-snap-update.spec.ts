@@ -6,7 +6,10 @@ import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import {
   mockWebpackPluginOldSnap,
   mockWebpackPluginSnap,
@@ -37,7 +40,10 @@ describe('Test Snap update', function () {
         const snapInstall = new SnapInstall(driver);
 
         // Navigate to test snaps page, connect update, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.update,
+        );
         await testSnaps.checkConnectUpdateButtonText(
           'Reconnect to Update Snap',
         );

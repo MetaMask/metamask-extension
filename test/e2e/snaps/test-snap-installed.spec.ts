@@ -5,7 +5,10 @@ import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import {
   mockDialogSnap,
   mockErrorSnap,
@@ -75,7 +78,10 @@ describe('Test Snap installed', function () {
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.dialogs,
+        );
 
         // Check installation success
         await testSnaps.checkConnectDialogsButtonText(

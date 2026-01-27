@@ -5,7 +5,10 @@ import FixtureBuilder from '../fixtures/fixture-builder';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import { mockBip32Snap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 const bip32PublicKey =
@@ -41,9 +44,13 @@ describe('Test Snap bip-32', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to `test-snaps` page, click bip32, connect and approve
-        await openTestSnapClickButtonAndInstall(driver, 'connectBip32Button', {
-          withWarning: true,
-        });
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.bip32,
+          {
+            withWarning: true,
+          },
+        );
 
         // check the installation status
         await testSnaps.checkConnectBip32ButtonText('Reconnect to BIP-32 Snap');

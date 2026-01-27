@@ -2,7 +2,10 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import { mockWasmSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';
 
@@ -22,7 +25,7 @@ describe('Test Snap WASM', function () {
 
         const testSnaps = new TestSnaps(driver);
         // Navigate to test snaps page and connect to wasm snap
-        await openTestSnapClickButtonAndInstall(driver, 'connectWasmButton');
+        await openTestSnapClickButtonAndInstall(driver, SnapConnectButton.wasm);
 
         // Check installation success
         await testSnaps.checkConnectWasmButtonText(

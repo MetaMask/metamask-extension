@@ -5,7 +5,10 @@ import FixtureBuilder from '../fixtures/fixture-builder';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import { mockBip44Snap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 const publicKeyBip44 =
@@ -35,9 +38,13 @@ describe('Test Snap bip-44', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to `test-snaps` page, and install the Snap.
-        await openTestSnapClickButtonAndInstall(driver, 'connectBip44Button', {
-          withWarning: true,
-        });
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.bip44,
+          {
+            withWarning: true,
+          },
+        );
 
         // check the installation status
         await testSnaps.checkConnectBip44ButtonText('Reconnect to BIP-44 Snap');

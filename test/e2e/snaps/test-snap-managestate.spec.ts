@@ -5,7 +5,10 @@ import { mockManageStateSnap } from '../mock-response-data/snaps/snap-binary-moc
 import { DAPP_PATH } from '../constants';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 
 describe('Test Snap manageState', function () {
   it('can use the new state API', async function () {
@@ -23,7 +26,10 @@ describe('Test Snap manageState', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
-        await openTestSnapClickButtonAndInstall(driver, 'connectStateButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.state,
+        );
         await testSnaps.checkConnectStateButtonText('Reconnect to State Snap');
 
         // Enter data and click set, then validate results
@@ -78,7 +84,7 @@ describe('Test Snap manageState', function () {
         // Navigate to test snaps page and connect manage state and validate installation
         await openTestSnapClickButtonAndInstall(
           driver,
-          'connectManageStateButton',
+          SnapConnectButton.manageState,
         );
         await testSnaps.checkConnectManageStateButtonText(
           'Reconnect to Legacy State Snap',

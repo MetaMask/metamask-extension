@@ -9,7 +9,10 @@ import {
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { Driver } from '../webdriver/driver';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 
 async function mockSnapBinaries(mockServer: Mockttp) {
@@ -32,10 +35,14 @@ describe('Test Snap RPC', function () {
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectBip32Button', {
-          withWarning: true,
-          withExtraScreen: true,
-        });
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.bip32,
+          {
+            withWarning: true,
+            withExtraScreen: true,
+          },
+        );
         await testSnaps.connectJsonRpcButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickConnectButton();
