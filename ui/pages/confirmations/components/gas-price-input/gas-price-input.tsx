@@ -29,7 +29,7 @@ export const GasPriceInput = ({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const initialGasPrice = hexWEIToDecGWEI(
-    currentConfirmation?.txParams?.gasPrice as string,
+    (currentConfirmation?.txParams?.gasPrice as string) || '0x0',
   ).toString();
   const [value, setValue] = useState(initialGasPrice);
   const [error, setError] = useState<string | undefined>(undefined);

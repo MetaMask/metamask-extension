@@ -40,9 +40,9 @@ export const useGasItemFeeDetails = (priorityLevel) => {
   const { dappSuggestedGasFees } = transaction;
 
   if (gasFeeEstimates?.[priorityLevel]) {
-    maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
+    maxFeePerGas = gasFeeEstimates[priorityLevel]?.suggestedMaxFeePerGas;
     maxPriorityFeePerGas =
-      gasFeeEstimates[priorityLevel].suggestedMaxPriorityFeePerGas;
+      gasFeeEstimates[priorityLevel]?.suggestedMaxPriorityFeePerGas;
   } else if (
     priorityLevel === PriorityLevels.dAppSuggested &&
     dappSuggestedGasFees
