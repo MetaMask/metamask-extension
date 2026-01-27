@@ -1563,6 +1563,91 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#captureKeyringTypesWithMissingIdentities', () => {
+      it('handles locked KeyringController gracefully', () => {
+        const internalAccounts = [
+          {
+            address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            id: '0bd7348e-bdfe-4f67-875c-de831a583857',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 2,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+        ];
+
+        const accounts = [
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+        ];
+
+        // Mock KeyringController as locked
+        jest
+          .spyOn(metamaskController.keyringController, 'state', 'get')
+          .mockReturnValue({ isUnlocked: false });
+
+        // Should not throw when KeyringController is locked
+        expect(() => {
+          metamaskController.captureKeyringTypesWithMissingIdentities(
+            internalAccounts,
+            accounts,
+          );
+        }).not.toThrow();
+      });
+
+      it('gets keyring types when KeyringController is unlocked', () => {
+        const internalAccounts = [
+          {
+            address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            id: '0bd7348e-bdfe-4f67-875c-de831a583857',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 2,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+        ];
+
+        const accounts = [
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+        ];
+
+        // Mock KeyringController as unlocked
+        jest
+          .spyOn(metamaskController.keyringController, 'state', 'get')
+          .mockReturnValue({ isUnlocked: true });
+
+        // Mock getAccountKeyringType
+        jest
+          .spyOn(metamaskController.keyringController, 'getAccountKeyringType')
+          .mockReturnValue('Simple Key Pair');
+
+        // Should not throw when KeyringController is unlocked
+        expect(() => {
+          metamaskController.captureKeyringTypesWithMissingIdentities(
+            internalAccounts,
+            accounts,
+          );
+        }).not.toThrow();
+
+        expect(
+          metamaskController.keyringController.getAccountKeyringType,
+        ).toHaveBeenCalledWith('0x7A2Bd22810088523516737b4Dc238A4bC37c23F2');
+      });
+    });
+
     describe('#sortMultichainAccountsByLastSelected', () => {
       const mockGetAccountContext = (lastSelectedMap) => {
         return jest

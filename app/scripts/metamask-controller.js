@@ -5792,9 +5792,20 @@ export default class MetamaskController extends EventEmitter {
           (account) => account.address.toLowerCase() === address.toLowerCase(),
         ),
     );
-    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
-      (address) => this.keyringController.getAccountKeyringType(address),
-    );
+
+    // Check if KeyringController is unlocked before attempting to get keyring types
+    // to avoid errors during app initialization when the controller may be locked
+    let keyringTypesWithMissingIdentities;
+    if (this.keyringController.state.isUnlocked) {
+      keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
+        (address) => this.keyringController.getAccountKeyringType(address),
+      );
+    } else {
+      // Use placeholder when controller is locked to avoid blocking initialization
+      keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
+        () => 'unknown (controller locked)',
+      );
+    }
 
     const internalAccountCount = internalAccounts.length;
 
