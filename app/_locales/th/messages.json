@@ -51,6 +51,13 @@
   "balance": {
     "message": "ยอดคงเหลือ:"
   },
+  "bridgeApproval": {
+    "message": "Approve $1 for bridge",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
+  "bridgedToChain": {
+    "message": "Bridged to $1"
+  },
   "cancel": {
     "message": "ยกเลิก"
   },
@@ -62,6 +69,9 @@
   },
   "confirmPassword": {
     "message": "ยืนยันรหัสผ่าน"
+  },
+  "confirmed": {
+    "message": "Confirmed"
   },
   "connectingTo": {
     "message": "เชื่อมต่อกับ $1"
@@ -249,6 +259,9 @@
   "readdToken": {
     "message": "คุณสามารถเพิ่มโทเค็นนี้ในอนาคตได้โดยไปที่ “เพิ่มโทเค็น” ในเมนูตัวเลือกบัญชีของคุณ"
   },
+  "received": {
+    "message": "Received"
+  },
   "reject": {
     "message": "ปฏิเสธ"
   },
@@ -286,6 +299,10 @@
   "send": {
     "message": "ส่ง"
   },
+  "sentSpecifiedTokens": {
+    "message": "Sent $1",
+    "description": "Symbol of the specified token"
+  },
   "settings": {
     "message": "การตั้งค่า"
   },
@@ -306,6 +323,14 @@
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
+  },
+  "swapApproval": {
+    "message": "Approve $1 for swaps",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
+  },
+  "swapTokenToToken": {
+    "message": "Swap $1 to $2",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "symbol": {
     "message": "เครื่องหมาย"
