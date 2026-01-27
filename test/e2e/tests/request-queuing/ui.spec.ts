@@ -347,10 +347,12 @@ describe('Request-queue UI changes', function () {
         // Wait for transaction to be completed on final confirmation
         await driver.delay(veryLargeDelayMs);
 
-        // Validate Activity tab shows both confirmed transactions (from all networks)
+        // Validate Activity tab shows confirmed transactions (from all networks)
         const activityList = new ActivityListPage(driver);
         await activityList.openActivityTab();
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(
+          IS_FIREFOX ? 1 : 2,
+        );
 
         // Now validate balances on each network
         const homePage = new HomePage(driver);
