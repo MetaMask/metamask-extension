@@ -11,28 +11,28 @@ const ETH_ASSET = {
   name: 'Ether',
   decimals: 18,
   chainId: 'eip155:1',
-};
+} as const;
 
 const ETH_OPT_ASSET = {
   ...ETH_ASSET,
   chainId: 'eip155:10',
   assetId: 'eip155:10/slip44:60',
-};
+} as const;
 
 const MUSD_ASSET = {
   symbol: 'mUSD',
   name: 'MetaMask USD',
   decimals: 18,
-  chainId: 'eip155:1',
+  chainId: 'eip155:1' as CaipChainId,
   assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
-};
+} as const;
 
 const INVALID_ASSET = {
   symbol: 'INVALIDTOKEN',
   name: 'INVALIDTOKEN Name',
   decimals: 18,
   chainId: 'eip155:1',
-};
+} as const;
 
 const USDC_ASSET = {
   symbol: 'USDC',
@@ -106,7 +106,7 @@ describe('Bridge token utils', () => {
         [
           "bridgeCache:https://test.com/getTokens/popular:193595681026ad525f06b51481959f806ca8f03ffb5b7ab577d96c0f7d38f47d",
           "bridgeCache:https://test.com/getTokens/popular:2de47831d790515dce90c36340a0d87254ec17499e0d8139c18c74335cc3c087",
-          "bridgeCache:https://test.com/getTokens/popular:6c2b7a5dbd3858f1ef52702a157b3ab7480d0505501180793ea880ce2e63a34e",
+          "bridgeCache:https://test.com/getTokens/popular:3d228d93a693873272a2765a67e1a8eb94d1d2273309bddfb2c728051ea97a43",
         ]
       `);
 

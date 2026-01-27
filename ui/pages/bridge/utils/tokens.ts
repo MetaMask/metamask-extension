@@ -71,6 +71,11 @@ export const validateMinimalAssetObject = (
   return is(data, MinimalAssetSchema);
 };
 
+const toMinimalAsset = (token: BridgeAssetV2): MinimalAsset => {
+  const { assetId, symbol, name, decimals } = token;
+  return { assetId, symbol, name, decimals };
+};
+
 const postWithCache = async (
   url: Parameters<typeof handleFetch>[0],
   requestParams: Parameters<typeof handleFetch>[1],
@@ -94,6 +99,7 @@ const getHeaders = (clientId: string, clientVersion?: string) => {
     'Content-Type': 'application/json',
   };
 };
+
 /**
  * Fetches a list of tokens sorted by balance, popularity and other criteria from the bridge-api
  *
@@ -119,12 +125,18 @@ export const fetchPopularTokens = async ({
   clientId: string;
   bridgeApiBaseUrl: string;
   clientVersion?: string;
-  assetsWithBalances?: MinimalAsset[];
+  assetsWithBalances?: BridgeAssetV2[];
 }): Promise<BridgeAssetV2[]> => {
   const url = `${bridgeApiBaseUrl}/getTokens/popular`;
+  // Only the minimum asset fields are passed to the bridge-api to avoid creating a new cache entry if
+  // token sorting has not changed
+  const includeAssets =
+    assetsWithBalances && assetsWithBalances.length > 0
+      ? assetsWithBalances.map(toMinimalAsset)
+      : undefined;
   const cacheKey = getCacheKey(url, {
     chainIds,
-    includeAssets: assetsWithBalances,
+    includeAssets,
   });
 
   const tokens = await postWithCache(
@@ -134,7 +146,7 @@ export const fetchPopularTokens = async ({
       method: 'POST',
       body: JSON.stringify({
         chainIds,
-        includeAssets: assetsWithBalances,
+        includeAssets,
       }),
       headers: getHeaders(clientId, clientVersion),
     },
@@ -176,7 +188,7 @@ export const fetchTokensBySearchQuery = async ({
   clientId: string;
   bridgeApiBaseUrl: string;
   clientVersion?: string;
-  assetsWithBalances?: MinimalAsset[];
+  assetsWithBalances?: BridgeAssetV2[];
   after?: string;
 }): Promise<{
   hasNextPage: boolean;
@@ -184,9 +196,16 @@ export const fetchTokensBySearchQuery = async ({
   tokens: BridgeAssetV2[];
 }> => {
   const url = `${bridgeApiBaseUrl}/getTokens/search`;
+  // Only the minimum asset fields are passed to the bridge-api to avoid creating a new cache entry if
+  // token sorting has not changed
+  const includeAssets =
+    assetsWithBalances && assetsWithBalances.length > 0
+      ? assetsWithBalances.map(toMinimalAsset)
+      : undefined;
+
   const cacheKey = getCacheKey(url, {
     chainIds,
-    includeAssets: assetsWithBalances,
+    includeAssets,
     searchQuery: query,
   });
 
@@ -196,7 +215,7 @@ export const fetchTokensBySearchQuery = async ({
       method: 'POST',
       body: JSON.stringify({
         chainIds,
-        includeAssets: assetsWithBalances,
+        includeAssets,
         after,
         query,
       }),
