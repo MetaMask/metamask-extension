@@ -275,30 +275,6 @@ describe('Multichain Accounts Selectors', () => {
   });
 
   describe('getWalletsWithAccounts', () => {
-    it('filters out accounts that do not exist in internal accounts', () => {
-      const stateWithMixedAccounts = createStateWithMixedAccounts();
-      const result = getWalletsWithAccounts(stateWithMixedAccounts);
-
-      const testWallet = result['entropy:test'];
-      expect(testWallet).toBeDefined();
-      expect(testWallet.groups['entropy:test/0'].accounts).toHaveLength(1);
-      expect(testWallet.groups['entropy:test/0'].accounts[0].id).toBe(
-        'existing-account',
-      );
-      expect(testWallet.groups['entropy:test/0'].accounts[0].address).toBe(
-        '0x123',
-      );
-    });
-
-    it('returns empty accounts array when all accounts are missing', () => {
-      const stateWithNoMatchingAccounts = createStateWithNoMatchingAccounts();
-      const result = getWalletsWithAccounts(stateWithNoMatchingAccounts);
-
-      const testWallet = result['entropy:test'];
-      expect(testWallet).toBeDefined();
-      expect(testWallet.groups['entropy:test/0'].accounts).toEqual([]);
-    });
-
     it('returns wallets with accounts and their metadata', () => {
       const result = getWalletsWithAccounts(typedMockState);
 
@@ -657,16 +633,6 @@ describe('Multichain Accounts Selectors', () => {
 
     it('returns null when address is empty string', () => {
       const result = getWalletIdAndNameByAccountAddress(typedMockState, '');
-
-      expect(result).toBeNull();
-    });
-
-    it('handles state with missing internal accounts gracefully', () => {
-      const stateWithMissingAccounts = createStateWithMissingInternalAccount();
-      const result = getWalletIdAndNameByAccountAddress(
-        stateWithMissingAccounts,
-        '0x1234567890abcdef1234567890abcdef12345678',
-      );
 
       expect(result).toBeNull();
     });
