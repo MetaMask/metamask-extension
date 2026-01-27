@@ -693,7 +693,7 @@ export default function TransactionList({
                       );
                     })
                 : null}
-              {completedTransactions.length > limit && (
+              {groupedCompletedTransactions.length > limit && (
                 <Button
                   className="transaction-list__view-more"
                   variant={ButtonVariant.Secondary}
