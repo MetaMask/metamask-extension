@@ -24,6 +24,22 @@ export const StackCard: React.FC<StackCardProps> = ({
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
+  // Helper function to get translated or raw text
+  // Attempts translation first, falls back to raw value if key doesn't exist
+  const getDisplayText = (text: string): string => {
+    if (isContentfulContent) {
+      // For Contentful content, assume it's pre-translated but try translation anyway
+      // in case it's actually a translation key (e.g., from old cached state)
+      const translated = t(text);
+      return translated || text;
+    }
+    // For non-Contentful content, always translate
+    return t(text);
+  };
+
+  const displayTitle = getDisplayText(slide.title);
+  const displayDescription = getDisplayText(slide.description);
+
   const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -63,7 +79,7 @@ export const StackCard: React.FC<StackCardProps> = ({
 
       {/* Image Container */}
       <div className="carousel-card__image">
-        <img src={slide.image} alt={slide.title} />
+        <img src={slide.image} alt={displayTitle} />
       </div>
 
       {/* Info container */}
@@ -75,7 +91,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
-            {isContentfulContent ? slide.title : t(slide.title)}
+            {displayTitle}
           </Text>
 
           {onTransitionToNextCard && (
@@ -83,9 +99,7 @@ export const StackCard: React.FC<StackCardProps> = ({
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
-              ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
-              ])}
+              ariaLabel={t('closeSlide', [displayTitle])}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}
             />
@@ -99,7 +113,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
-            {isContentfulContent ? slide.description : t(slide.description)}
+            {displayDescription}
           </Text>
         </div>
       </div>
