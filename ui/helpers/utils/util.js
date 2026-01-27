@@ -37,6 +37,12 @@ import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
+import {
+  isSolanaAddress,
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+  isTronAddress,
+} from '../../../shared/lib/multichain/accounts';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -186,6 +192,21 @@ export function isResolvableName(name) {
 
   // Reject if it looks like an Ethereum address (0x followed by 40 hex chars)
   if (/^0x[a-fA-F0-9]{40}$/u.test(trimmed)) {
+    return false;
+  }
+
+  // Reject if it looks like a Solana address
+  if (isSolanaAddress(trimmed)) {
+    return false;
+  }
+
+  // Reject if it looks like a Bitcoin address
+  if (isBtcMainnetAddress(trimmed) || isBtcTestnetAddress(trimmed)) {
+    return false;
+  }
+
+  // Reject if it looks like a Tron address
+  if (isTronAddress(trimmed)) {
     return false;
   }
 

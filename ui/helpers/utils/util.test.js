@@ -153,6 +153,42 @@ describe('util', () => {
       ).toStrictEqual(false);
     });
 
+    it('should return false for Solana addresses', () => {
+      expect(
+        util.isResolvableName('7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV'),
+      ).toStrictEqual(false);
+      expect(
+        util.isResolvableName('DpNXPNWvWoHaZ9P3WtfGCb2ZdLihW8VW1w1Ph4KDH9iG'),
+      ).toStrictEqual(false);
+      expect(
+        util.isResolvableName('2fXkHJxkdDvmmkMiyDh1xtdhhqjwHLJLgPjm9bLBSzhF'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for Bitcoin addresses', () => {
+      // Bitcoin mainnet P2WPKH
+      expect(
+        util.isResolvableName('bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k'),
+      ).toStrictEqual(false);
+      // Bitcoin mainnet P2PKH
+      expect(
+        util.isResolvableName('1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ'),
+      ).toStrictEqual(false);
+      // Bitcoin testnet P2WPKH
+      expect(
+        util.isResolvableName('tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for Tron addresses', () => {
+      expect(
+        util.isResolvableName('TJDENsfBJs4RFETt1X1W8wMDc8M5XnJhCe'),
+      ).toStrictEqual(false);
+      expect(
+        util.isResolvableName('TKjdnbJZJ9FJnW9WkLVXnGQmXfXzJHNLYH'),
+      ).toStrictEqual(false);
+    });
+
     it('should return false for pure numbers', () => {
       expect(util.isResolvableName('12345')).toStrictEqual(false);
       expect(util.isResolvableName('0')).toStrictEqual(false);
