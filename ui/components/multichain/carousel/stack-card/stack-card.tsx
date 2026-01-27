@@ -54,11 +54,15 @@ export const StackCard: React.FC<StackCardProps> = ({
       if (key === SHIELD_CAROUSEL_ID) {
         // in app navigation for shield carousel
         // TODO: clean this once we have better control of how deeplink are opened
-        const url = new URL(slide?.href);
-        const params = url.searchParams.toString();
-        navigate(
-          `${SETTINGS_ROUTE}?${SHIELD_QUERY_PARAMS.showShieldEntryModal}=true${params ? `&${params}` : ''}`,
-        );
+        try {
+          const url = new URL(slide.href);
+          const params = url.searchParams.toString();
+          navigate(
+            `${SETTINGS_ROUTE}?${SHIELD_QUERY_PARAMS.showShieldEntryModal}=true${params ? `&${params}` : ''}`,
+          );
+        } catch (error) {
+          console.error('[StackCard] error parsing slide.href', error);
+        }
       } else {
         global.platform.openTab({ url: slide.href });
       }
