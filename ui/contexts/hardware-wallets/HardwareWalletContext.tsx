@@ -259,17 +259,16 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   }, [isHardwareWalletAccount, updateConnectionState, refs, setDeviceId]);
 
   // Disconnect when switching wallet type
+  // Note: previousWalletTypeRef is managed by HardwareWalletStateManager (updated synchronously during render)
   useEffect(() => {
     if (!isHardwareWalletAccount) {
-      refs.previousWalletTypeRef.current = null;
       return;
     }
 
+    // Read previous wallet type from ref (managed by StateManager)
     const previousWalletType = refs.previousWalletTypeRef.current;
-    refs.previousWalletTypeRef.current = walletType;
 
     if (
-      isHardwareWalletAccount &&
       previousWalletType &&
       walletType &&
       previousWalletType !== walletType &&
