@@ -262,4 +262,101 @@ describe('useTransactionDisplayData', () => {
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
+
+  it('should use fallback "Token" when sourceTokenSymbol is undefined for swapApproval', () => {
+    const swapApprovalTransaction = {
+      initialTransaction: {
+        id: 'swap-approval-test',
+        type: 'swapApproval',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: ADDRESS_MOCK,
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+        },
+      },
+      primaryTransaction: {
+        id: 'swap-approval-test',
+        type: 'swapApproval',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: ADDRESS_MOCK,
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+        },
+        status: 'confirmed',
+        // sourceTokenSymbol is intentionally undefined
+      },
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(swapApprovalTransaction),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+    expect(result.current.title).toStrictEqual('Approve Token for swaps');
+  });
+
+  it('should use fallback "Token" when sourceTokenSymbol is undefined for swap', () => {
+    const swapTransaction = {
+      initialTransaction: {
+        id: 'swap-test',
+        type: 'swap',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: ADDRESS_MOCK,
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          value: '0x0',
+        },
+        // sourceTokenSymbol and destinationTokenSymbol are intentionally undefined
+      },
+      primaryTransaction: {
+        id: 'swap-test',
+        type: 'swap',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: ADDRESS_MOCK,
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          value: '0x0',
+        },
+        status: 'confirmed',
+      },
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(swapTransaction),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+    expect(result.current.title).toStrictEqual('Swap Token to Token');
+  });
+
+  it('should use fallback "Token" when sourceTokenSymbol is undefined for bridgeApproval', () => {
+    const bridgeApprovalTransaction = {
+      initialTransaction: {
+        id: 'bridge-approval-test',
+        type: 'bridgeApproval',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: ADDRESS_MOCK,
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+        },
+      },
+      primaryTransaction: {
+        id: 'bridge-approval-test',
+        type: 'bridgeApproval',
+        chainId: CHAIN_IDS.MAINNET,
+        txParams: {
+          from: ADDRESS_MOCK,
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+        },
+        status: 'confirmed',
+      },
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(bridgeApprovalTransaction),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+    expect(result.current.title).toStrictEqual('Approve Token for bridge');
+  });
 });
