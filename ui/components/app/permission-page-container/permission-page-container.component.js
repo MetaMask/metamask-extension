@@ -7,6 +7,8 @@ import {
 import {
   Caip25EndowmentPermissionName,
   generateCaip25Caveat,
+  getCaipAccountIdsFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -21,10 +23,7 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import {
-  getCaip25CaveatValueFromPermissions,
-  getCaip25PermissionsResponse,
-} from '../../../pages/permissions-connect/connect-page/utils';
+import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
 import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
@@ -157,8 +156,6 @@ export default class PermissionPageContainer extends Component {
       request: _request,
       approvePermissionsRequest,
       rejectPermissionsRequest,
-      selectedAccounts,
-      requestedChainIds,
       selectedCaipAccountIds,
       selectedCaipChainIds,
     } = this.props;
@@ -181,15 +178,20 @@ export default class PermissionPageContainer extends Component {
         selectedCaipChainIds,
       );
     } else {
-      // Fallback to EVM-only approach for backward compatibility
-      const approvedAccounts = selectedAccounts.map(
-        (selectedAccount) => selectedAccount.address,
+      // Preserve original accounts and chains from the request
+      // This prevents overwriting the requested scopes with potentially different/empty values
+      const originalCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+        requestedCaip25CaveatValue,
+      );
+      const originalCaipChainIds = getAllScopesFromCaip25CaveatValue(
+        requestedCaip25CaveatValue,
       );
 
-      permissionsResponse = getCaip25PermissionsResponse(
+      // Use chain-agnostic approach with original values to preserve the request's scopes
+      permissionsResponse = generateCaip25Caveat(
         requestedCaip25CaveatValue,
-        approvedAccounts,
-        requestedChainIds,
+        originalCaipAccountIds,
+        originalCaipChainIds,
       );
     }
 
