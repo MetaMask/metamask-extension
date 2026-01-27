@@ -43,6 +43,13 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     case TransactionType.incoming: {
       return GroupCategory.receive;
     }
+    // These transaction types are excluded from the activity list
+    // and should not be rendered. Returning undefined signals that
+    // these should be filtered out before rendering.
+    case TransactionType.gasPayment:
+    case TransactionType.relayDeposit: {
+      return undefined;
+    }
     default:
       return undefined;
   }

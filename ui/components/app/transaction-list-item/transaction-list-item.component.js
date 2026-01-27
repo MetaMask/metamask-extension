@@ -293,6 +293,11 @@ function TransactionListItemInner({
   const showCancelButton =
     !hasCancelled && isPending && !isUnapproved && !isSubmitting && !isBridgeTx;
 
+  // Skip rendering if category is undefined (e.g., excluded transaction types like gasPayment)
+  if (category === undefined) {
+    return null;
+  }
+
   return (
     <>
       <ActivityListItem
