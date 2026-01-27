@@ -796,5 +796,47 @@ describe('useHardwareWalletConnection', () => {
         }),
       );
     });
+
+    it('handles race condition when new connection starts during ensureDeviceReady', async () => {
+      mockRefs.adapterRef.current = null;
+      (
+        webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
+      ).mockResolvedValue('device-123');
+
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
+        mockAdapter,
+      );
+
+      const { result } = setupHook();
+
+      let ready: boolean | undefined;
+      await act(async () => {
+        // Simulate that a connection was already in progress (connection ID = 1)
+        mockRefs.currentConnectionIdRef.current = 1;
+
+        // Start ensureDeviceReady which will call connect()
+        const ensurePromise = result.current.ensureDeviceReady('device-123');
+
+        // Simulate a new connection attempt starting during the await connect()
+        // Set connection ID to 2 (simulating a second connection attempt)
+        setTimeout(() => {
+          mockRefs.currentConnectionIdRef.current = 2;
+        }, 10);
+
+        ready = await ensurePromise;
+      });
+
+      // ensureDeviceReady should return false because the connection ID changed
+      expect(ready).toBe(false);
+      // ensureDeviceReady should NOT call the adapter's ensureDeviceReady
+      expect(mockAdapter.ensureDeviceReadyMock).not.toHaveBeenCalled();
+    });
   });
 });

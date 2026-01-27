@@ -63,6 +63,10 @@ export const useHardwareWalletConnection = ({
     const abortController = new AbortController();
     refs.abortControllerRef.current = abortController;
 
+    // Increment connection ID to track this attempt
+    refs.currentConnectionIdRef.current =
+      (refs.currentConnectionIdRef.current ?? 0) + 1;
+
     return abortController.signal;
   }, [refs]);
 
@@ -365,6 +369,10 @@ export const useHardwareWalletConnection = ({
 
   const ensureDeviceReady = useCallback(
     async (targetDeviceId?: string): Promise<boolean> => {
+      // Capture the connection ID before calling connect()
+      // This ensures we can detect if a new connection attempt started during the await
+      const connectionId = refs.currentConnectionIdRef.current;
+
       let effectiveDeviceId = targetDeviceId || refs.deviceIdRef.current;
 
       if (!refs.adapterRef.current?.isConnected()) {
@@ -381,6 +389,18 @@ export const useHardwareWalletConnection = ({
         await connect();
         // Update effectiveDeviceId to use newly discovered device ID if connect() found one
         effectiveDeviceId = refs.deviceIdRef.current;
+      }
+
+      // Check if this is still the latest connection attempt
+      // If a new connection attempt started during await connect(), the connection ID will have changed
+      // We need to detect if a SECOND connection attempt started (connection ID changed)
+      // while allowing the FIRST connection to proceed (connection ID changed from null to 1)
+      if (connectionId !== null) {
+        const currentId = refs.currentConnectionIdRef.current ?? 0;
+        // If connection ID changed, a new connection attempt started
+        if (currentId > connectionId) {
+          return false;
+        }
       }
 
       // Get abort signal after connect() - it may have created a new one
