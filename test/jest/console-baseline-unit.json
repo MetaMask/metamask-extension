@@ -2756,6 +2756,9 @@
     "ui/contexts/metamask-notifications/metamask-notifications.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/contexts/hardware-wallets/HardwareWalletContext.test.tsx": {
+      "Test errors: Uncaught Errors": 4
+    },
     "ui/components/app/alert-system/multiple-alert-modal/multiple-alert-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
