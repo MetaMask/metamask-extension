@@ -7,6 +7,7 @@ import {
 } from '@metamask/hw-wallet-sdk';
 import { ConnectionState } from './connectionState';
 import {
+  DeviceEvent,
   HardwareWalletType,
   type HardwareWalletConnectionState,
 } from './types';
@@ -86,25 +87,6 @@ const ERROR_PROPERTIES_MAP = (() => {
   // Extract from Ledger
   extractFromMappings(LEDGER_ERROR_MAPPINGS);
 
-  // Add custom properties for specific error codes not in mappings
-  map.set(ErrorCode.AuthenticationSecurityCondition, {
-    severity: Severity.Err,
-    category: Category.Authentication,
-    userMessage: 'Permission to access the device was denied',
-  });
-
-  map.set(ErrorCode.UserRejected, {
-    severity: Severity.Warning,
-    category: Category.UserAction,
-    userMessage: 'Operation rejected by user',
-  });
-
-  map.set(ErrorCode.UserCancelled, {
-    severity: Severity.Warning,
-    category: Category.UserAction,
-    userMessage: 'Operation cancelled by user',
-  });
-
   return map;
 })();
 
@@ -150,13 +132,23 @@ export function parseErrorByType(
   const cause = error instanceof Error ? error : undefined;
 
   // Parse hardware wallet error codes using mappings from keyring-utils
-  for (const [errorCode, mapping] of Object.entries(LEDGER_ERROR_MAPPINGS)) {
-    if (errorMessageLower.includes(errorCode.toLowerCase())) {
-      return createHardwareWalletError(mapping.code, walletType, errorMessage, {
-        cause,
-      });
+  // Only check Ledger mappings for Ledger wallets
+  if (walletType === HardwareWalletType.Ledger) {
+    for (const [errorCode, mapping] of Object.entries(LEDGER_ERROR_MAPPINGS)) {
+      if (errorMessageLower.includes(errorCode.toLowerCase())) {
+        return createHardwareWalletError(
+          mapping.code,
+          walletType,
+          errorMessage,
+          {
+            cause,
+          },
+        );
+      }
     }
   }
+
+  // TODO: Add mappings for other hardware wallets
 
   // Default to unknown error
   return createHardwareWalletError(
@@ -196,5 +188,34 @@ export function getConnectionStateFromError(
       return ConnectionState.error(error);
     default:
       return ConnectionState.error(error);
+  }
+}
+
+/**
+ * Map an error code to the appropriate device event
+ *
+ * @param code - The error code to map
+ * @param defaultEvent - The default event to return if no specific mapping exists
+ * @returns The corresponding DeviceEvent
+ */
+export function getDeviceEventForError(
+  code: ErrorCode,
+  defaultEvent: DeviceEvent = DeviceEvent.ConnectionFailed,
+): DeviceEvent {
+  switch (code) {
+    case ErrorCode.AuthenticationDeviceLocked:
+    case ErrorCode.AuthenticationDeviceBlocked:
+      return DeviceEvent.DeviceLocked;
+    case ErrorCode.DeviceStateEthAppClosed:
+      return DeviceEvent.AppNotOpen;
+    case ErrorCode.DeviceDisconnected:
+    case ErrorCode.ConnectionClosed:
+      return DeviceEvent.Disconnected;
+    case ErrorCode.ConnectionTimeout:
+      return DeviceEvent.OperationTimeout;
+    case ErrorCode.ConnectionTransportMissing:
+      return DeviceEvent.ConnectionFailed;
+    default:
+      return defaultEvent;
   }
 }

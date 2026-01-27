@@ -55,6 +55,24 @@ describe('parseErrorByType', () => {
       const mapping = LEDGER_ERROR_MAPPINGS['0x6985'];
       expect(result.code).toBe(mapping.code);
     });
+
+    it('does not parse Ledger errors for non-Ledger wallets', () => {
+      const error = new Error('Error: 0x6982');
+      const result = parseErrorByType(error, HardwareWalletType.Trezor);
+
+      // Should default to Unknown since Ledger mappings are not checked for Trezor
+      expect(result.code).toBe(ErrorCode.Unknown);
+    });
+
+    it('parses Ledger errors only for Ledger wallets', () => {
+      const error = new Error('Error: 0x6982');
+      const ledgerResult = parseErrorByType(error, HardwareWalletType.Ledger);
+      const trezorResult = parseErrorByType(error, HardwareWalletType.Trezor);
+
+      const mapping = LEDGER_ERROR_MAPPINGS['0x6982'];
+      expect(ledgerResult.code).toBe(mapping.code);
+      expect(trezorResult.code).toBe(ErrorCode.Unknown);
+    });
   });
 
   describe('unknown errors', () => {
