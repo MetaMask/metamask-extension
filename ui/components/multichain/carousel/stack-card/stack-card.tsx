@@ -84,7 +84,9 @@ export const StackCard: React.FC<StackCardProps> = ({
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
               ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
+                isContentfulContent
+                  ? slide.title
+                  : t(slide.title) || slide.title,
               ])}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}

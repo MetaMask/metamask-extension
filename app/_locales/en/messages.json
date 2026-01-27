@@ -7113,6 +7113,60 @@
   "slippageExplanation": {
     "message": "The % change in price you're willing to allow before your transaction is canceled."
   },
+  "slideBridgeDescription": {
+    "message": "Move across 9 chains, all within your wallet"
+  },
+  "slideBridgeTitle": {
+    "message": "Ready to bridge?"
+  },
+  "slideCashOutDescription": {
+    "message": "Sell your crypto for cash"
+  },
+  "slideCashOutTitle": {
+    "message": "Cash out with MetaMask"
+  },
+  "slideDebitCardDescription": {
+    "message": "Available in select regions"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMask debit card"
+  },
+  "slideFundWalletDescription": {
+    "message": "Add or transfer tokens to get started"
+  },
+  "slideFundWalletTitle": {
+    "message": "Fund your wallet"
+  },
+  "slideMultiSrpDescription": {
+    "message": "Import and use multiple wallets in MetaMask"
+  },
+  "slideMultiSrpTitle": {
+    "message": "Add multiple Secret Recovery Phrases"
+  },
+  "slideRemoteModeDescription": {
+    "message": "Access your hardware wallet without plugging it in"
+  },
+  "slideRemoteModeTitle": {
+    "message": "Remote mode is here!"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Same address, smarter features"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Start using smart accounts"
+  },
+  "slideSolanaDescription": {
+    "message": "Create a Solana account to get started"
+  },
+  "slideSolanaTitle": {
+    "message": "Solana is now supported"
+  },
+  "slideSweepStakeDescription": {
+    "message": "Mint an NFT now for a chance to win"
+  },
+  "slideSweepStakeTitle": {
+    "message": "Enter the $5000 USDC Giveaway!"
+  },
   "smartAccount": {
     "message": "Smart account"
   },
