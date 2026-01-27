@@ -1,0 +1,104 @@
+import type { Page } from '@playwright/test';
+import type {
+  GetStateResult,
+  McpResponse,
+  HandlerOptions,
+  ObservationPolicyOverride,
+  StepRecordObservation,
+} from '../types';
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  ErrorCodes,
+} from '../types';
+import { sessionManager } from '../session-manager';
+import { knowledgeStore, createDefaultObservation } from '../knowledge-store';
+import { collectTestIds, collectTrimmedA11ySnapshot } from '../discovery';
+
+async function collectObservationWithPolicy(
+  page: Page,
+  policy: ObservationPolicyOverride | undefined,
+  isFailure: boolean,
+): Promise<StepRecordObservation> {
+  const effectivePolicy = policy ?? 'default';
+  const shouldCollectFull =
+    effectivePolicy === 'default' ||
+    (effectivePolicy === 'failures' && isFailure);
+
+  const state = await sessionManager.getExtensionState();
+
+  if (shouldCollectFull) {
+    const testIds = await collectTestIds(page, 50);
+    const { nodes, refMap } = await collectTrimmedA11ySnapshot(page);
+    sessionManager.setRefMap(refMap);
+    return createDefaultObservation(state, testIds, nodes);
+  }
+
+  return createDefaultObservation(state, [], []);
+}
+
+export async function handleGetState(
+  options?: HandlerOptions,
+): Promise<McpResponse<GetStateResult>> {
+  const startTime = Date.now();
+
+  try {
+    if (!sessionManager.hasActiveSession()) {
+      return createErrorResponse(
+        ErrorCodes.MM_NO_ACTIVE_SESSION,
+        'No active session. Call mm_launch first.',
+        undefined,
+        undefined,
+        startTime,
+      );
+    }
+
+    const state = await sessionManager.getExtensionState();
+    const sessionId = sessionManager.getSessionId() ?? '';
+    const page = sessionManager.getPage();
+
+    const observation = await collectObservationWithPolicy(
+      page,
+      options?.observationPolicy,
+      false,
+    );
+
+    const trackedPages = sessionManager.getTrackedPages();
+    const activePage = sessionManager.getPage();
+    const activeTabInfo = trackedPages.find((p) => p.page === activePage);
+
+    const tabs = {
+      active: {
+        role: activeTabInfo?.role ?? 'other',
+        url: activePage.url(),
+      },
+      tracked: trackedPages.map((p) => ({
+        role: p.role,
+        url: p.url,
+      })),
+    };
+
+    await knowledgeStore.recordStep({
+      sessionId,
+      toolName: 'mm_get_state',
+      outcome: { ok: true },
+      observation,
+      durationMs: Date.now() - startTime,
+    });
+
+    return createSuccessResponse<GetStateResult>(
+      { state, tabs },
+      sessionId,
+      startTime,
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return createErrorResponse(
+      ErrorCodes.MM_NO_ACTIVE_SESSION,
+      message,
+      undefined,
+      sessionManager.getSessionId(),
+      startTime,
+    );
+  }
+}

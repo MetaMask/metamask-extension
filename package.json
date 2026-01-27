@@ -71,6 +71,7 @@
     "test:e2e:global": "yarn playwright test --project=global",
     "test:e2e:benchmark": "yarn playwright test --project=benchmark",
     "test:e2e:pw:report": "yarn playwright show-report public/playwright/playwright-reports/html",
+    "llm:launch": "tsx test/e2e/playwright/llm-workflow/example-usage.ts",
     "test:e2e:chrome:rpc": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --rpc",
     "test:e2e:chrome:multi-provider": "MULTIPROVIDER=true SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --multi-provider",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox tsx test/e2e/run-all.ts",
@@ -530,6 +531,7 @@
     "@metamask/test-dapp-multichain": "^0.17.0",
     "@metamask/test-dapp-solana": "^0.3.1",
     "@metamask/test-snaps": "^3.2.0",
+    "@modelcontextprotocol/sdk": "^1.25.2",
     "@noble/ciphers": "^1.3.0",
     "@noble/curves": "^1.9.2",
     "@octokit/types": "^14.0.0",
@@ -763,7 +765,8 @@
     "ws": "^8.17.1",
     "yaml": "^2.4.1",
     "yargs": "^17.7.2",
-    "yargs-parser": "^21.1.1"
+    "yargs-parser": "^21.1.1",
+    "zod": "^4.3.5"
   },
   "engines": {
     "node": ">=24.13.0",
