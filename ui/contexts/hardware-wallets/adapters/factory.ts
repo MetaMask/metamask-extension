@@ -8,7 +8,7 @@ import {
  * Creates an adapter for the given hardware wallet type.
  *
  * @param walletType - The type of hardware wallet, or null/undefined for regular accounts
- * @param adapterOptions - Options for the adapter including event callbacks
+ * @param _adapterOptions - Options for the adapter including event callbacks
  * @throws Error if the wallet type is unsupported
  */
 export function createAdapterForHardwareWalletType(
