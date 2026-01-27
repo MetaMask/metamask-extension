@@ -123,5 +123,7 @@
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "api.trongrid.io",
+  "subscription.api.cx.metamask.io"
 ]
