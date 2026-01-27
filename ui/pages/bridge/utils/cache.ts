@@ -1,6 +1,6 @@
-import { MINUTE } from '@metamask/controller-utils';
 import { createHash } from 'crypto';
 import localforage from 'localforage';
+import { MINUTE } from '@metamask/controller-utils';
 import {
   getStorageItem,
   removeStorageItem,
