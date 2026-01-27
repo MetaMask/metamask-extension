@@ -1991,8 +1991,20 @@ export default class MetamaskController extends EventEmitter {
           const { chainId: currentChainIdForOrigin } = networkConfig;
 
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
-            const networkClientId =
-              this.networkController.findNetworkClientIdByChainId(chains[0]);
+            let networkClientId;
+            try {
+              networkClientId =
+                this.networkController.findNetworkClientIdByChainId(chains[0]);
+            } catch (error) {
+              // Guard clause: Handle race condition where PermissionController state updates
+              // before NetworkController has finished adding the new network configuration.
+              // This can occur during wallet_addEthereumChain when permissions are granted
+              // for a chain that is still being registered.
+              log.warn(
+                `Unable to find network client for chain ID ${chains[0]}: ${error.message}`,
+              );
+              continue;
+            }
 
             // setActiveNetwork should be called before setNetworkClientIdForDomain
             // to ensure that the isConnected value can be accurately inferred from
