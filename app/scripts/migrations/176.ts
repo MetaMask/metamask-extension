@@ -44,6 +44,43 @@ function isValidTransactionStateEntry(
 }
 
 /**
+ * Check if the account data is already in the new nested format.
+ * The new format has chainId keys (e.g., 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')
+ * containing TransactionStateEntry objects.
+ *
+ * @param entry - The entry to check.
+ * @returns True if already in the new format, false otherwise.
+ */
+function isAlreadyMigrated(entry: unknown): boolean {
+  if (typeof entry !== 'object' || entry === null) {
+    return false;
+  }
+
+  // Check if this looks like the new format by examining its properties
+  // In the new format, the keys should be chainId strings (containing ':')
+  // and values should be TransactionStateEntry objects
+  const keys = Object.keys(entry);
+
+  // If it has no keys, it's empty and can be considered already migrated
+  if (keys.length === 0) {
+    return true;
+  }
+
+  // Check if at least one key looks like a chainId (contains ':')
+  // and its value is a valid TransactionStateEntry
+  for (const key of keys) {
+    if (key.includes(':') && hasProperty(entry, key)) {
+      const value = (entry as Record<string, unknown>)[key];
+      if (isValidTransactionStateEntry(value)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
  * This migration transforms the MultichainTransactionsController state structure
  * to support per-chain transaction storage. It moves transactions from directly
  * under the account to be nested under the chainId (Solana in this case).
@@ -95,6 +132,15 @@ function transformState(
   for (const [accountId, accountTransactions] of Object.entries(
     nonEvmTransactions,
   )) {
+    // Check if this account is already in the new format
+    if (isAlreadyMigrated(accountTransactions)) {
+      // Already migrated, keep the existing structure
+      newNonEvmTransactions[accountId] = accountTransactions as {
+        [chainId: string]: TransactionStateEntry;
+      };
+      continue;
+    }
+
     if (!isValidTransactionStateEntry(accountTransactions)) {
       throw new Error(
         `Invalid transaction state entry for account ${accountId}: expected TransactionStateEntry, got ${typeof accountTransactions}`,
