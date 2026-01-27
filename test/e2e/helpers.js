@@ -747,21 +747,69 @@ async function isSidePanelEnabled() {
   }
 }
 
+/**
+ * Check if a key should be ignored based on various rules
+ *
+ * @param {string} key - The key to check
+ * @param {string[]} ignoredKeys - Array of keys/prefixes to ignore
+ * @returns {boolean} True if the key should be ignored
+ */
+const shouldIgnoreKey = (key, ignoredKeys) => {
+  const hasNonZeroArrayIndex = key.split('.').some((part) => {
+    const matches = part.match(/\[(\d+)\]/gu);
+    return (
+      matches?.some((match) => {
+        const index = Number(match.slice(1, -1));
+        return Number.isNaN(index) === false && index !== 0;
+      }) ?? false
+    );
+  });
+  if (hasNonZeroArrayIndex) {
+    return true;
+  }
+
+  // Ignore entropy keys in account tree (dynamic entropy IDs)
+  if (key.match(/entropy:[A-Z0-9]+/u)) {
+    return true;
+  }
+
+  // Check if any part of the key path should be ignored
+  const keyParts = key.split('.');
+  const shouldIgnore = ignoredKeys.some((ignoredKey) => {
+    const ignoredParts = ignoredKey.split('.');
+
+    // Ignore if the ignored key is an exact prefix of the current key
+    // OR if the current key exactly matches the ignored key
+    // OR if the current key starts with the ignored key (for nested properties)
+    const isExactPrefix = ignoredParts.every(
+      (part, index) => keyParts[index] === part,
+    );
+    const isExactMatch = key === ignoredKey;
+    const startsWithIgnoredKey =
+      key.startsWith(`${ignoredKey}.`) || key.startsWith(`${ignoredKey}[`);
+
+    return isExactPrefix || isExactMatch || startsWithIgnoredKey;
+  });
+
+  return shouldIgnore;
+};
+
 module.exports = {
+  assertInAnyOrder,
+  convertETHToHexGwei,
   convertToHexValue,
-  tinyDelayMs,
-  regularDelayMs,
+  createDownloadFolder,
+  createWebSocketConnection,
+  generateRandNumBetween,
+  getCleanAppState,
+  getEventPayloads,
+  isSidePanelEnabled,
   largeDelayMs,
+  regularDelayMs,
+  roundToXDecimalPlaces,
+  sentryRegEx,
+  shouldIgnoreKey,
+  tinyDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  createDownloadFolder,
-  convertETHToHexGwei,
-  roundToXDecimalPlaces,
-  generateRandNumBetween,
-  getEventPayloads,
-  assertInAnyOrder,
-  getCleanAppState,
-  sentryRegEx,
-  createWebSocketConnection,
-  isSidePanelEnabled,
 };

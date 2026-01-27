@@ -9,7 +9,6 @@ export const ALL_METRICS = {
   firstPaint: 'paint["first-paint"]',
   backgroundConnect: 'Background Connect',
   firstReactRender: 'First Render',
-  getState: 'Get State',
   initialActions: 'Initial Actions',
   loadScripts: 'Load Scripts',
   setupStore: 'Setup Store',

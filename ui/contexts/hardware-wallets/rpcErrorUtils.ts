@@ -159,6 +159,28 @@ function isPlainObjectWithErrorCode(
 }
 
 /**
+ * Known valid ErrorCode values from @metamask/hw-wallet-sdk
+ * This whitelist ensures we only accept valid error codes
+ */
+const VALID_ERROR_CODES = new Set<number>([
+  ErrorCode.AuthenticationSecurityCondition,
+  ErrorCode.UserRejected,
+  ErrorCode.UserCancelled,
+  ErrorCode.Unknown,
+  ErrorCode.AuthenticationDeviceLocked,
+  ErrorCode.AuthenticationDeviceBlocked,
+  ErrorCode.DeviceStateEthAppClosed,
+  ErrorCode.ConnectionTransportMissing,
+  ErrorCode.ConnectionClosed,
+  ErrorCode.DeviceDisconnected,
+  ErrorCode.ConnectionTimeout,
+]);
+
+function isValidErrorCode(code: unknown): code is ErrorCode {
+  return typeof code === 'number' && VALID_ERROR_CODES.has(code);
+}
+
+/**
  * Type guard to check if error is a JsonRpcError with HardwareWalletError data
  * Handles both actual JsonRpcError instances AND plain objects that were
  * deserialized from JsonRpcError (which lose their class type across RPC boundary)
@@ -166,7 +188,7 @@ function isPlainObjectWithErrorCode(
  * @param error - The error to check
  * @returns True if the error is a JsonRpcError with HardwareWalletError data
  */
-function isJsonRpcHardwareWalletError(
+export function isJsonRpcHardwareWalletError(
   error: unknown,
 ): error is JsonRpcError<HardwareWalletErrorData> & {
   data: HardwareWalletErrorData;
@@ -392,11 +414,10 @@ export function extractHardwareWalletErrorCode(
  * @param walletType - The hardware wallet type
  * @returns A reconstructed HardwareWalletError
  */
-export function reconstructHardwareWalletError(
+export function toHardwareWalletError(
   error: unknown,
   walletType: HardwareWalletType,
 ): HardwareWalletError {
-  // Log full error structure for debugging
   // Already a HardwareWalletError instance
   if (error instanceof HardwareWalletError) {
     return error;

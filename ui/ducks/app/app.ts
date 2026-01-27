@@ -90,7 +90,6 @@ type AppState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-  showWhatsNewPopup: boolean;
   showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
@@ -211,7 +210,6 @@ const initialState: AppState = {
   requestAccountTabs: {},
   openMetaMaskTabs: {},
   currentWindowTab: {},
-  showWhatsNewPopup: true,
   showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
@@ -655,12 +653,6 @@ export default function reduceApp(
         openMetaMaskTabs: action.payload,
       };
 
-    case actionConstants.HIDE_WHATS_NEW_POPUP:
-      return {
-        ...appState,
-        showWhatsNewPopup: false,
-      };
-
     case actionConstants.CAPTURE_SINGLE_EXCEPTION:
       return {
         ...appState,
@@ -828,12 +820,6 @@ export default function reduceApp(
 }
 
 // Action Creators
-export function hideWhatsNewPopup(): Action {
-  return {
-    type: actionConstants.HIDE_WHATS_NEW_POPUP,
-  };
-}
-
 export function openBasicFunctionalityModal(): Action {
   return {
     type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,

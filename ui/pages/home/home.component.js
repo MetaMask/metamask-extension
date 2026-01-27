@@ -12,7 +12,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import WhatsNewModal from '../../components/app/whats-new-modal';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -113,9 +112,6 @@ export default class Home extends PureComponent {
     showTermsOfUsePopup: PropTypes.bool.isRequired,
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     showMultiRpcModal: PropTypes.bool.isRequired,
     showUpdateModal: PropTypes.bool.isRequired,
@@ -785,11 +781,8 @@ export default class Home extends PureComponent {
       isPopup,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      showWhatsNewPopup,
-      hideWhatsNewPopup,
       completedOnboarding,
       onboardedInThisUISession,
-      announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
@@ -816,23 +809,11 @@ export default class Home extends PureComponent {
         firstTimeFlowType === FirstTimeFlowType.import) &&
       !newNetworkAddedConfigurationId;
 
-    const showWhatsNew =
-      canSeeModals &&
-      announcementsToShow &&
-      showWhatsNewPopup &&
-      !process.env.IN_TEST;
-
     const showMultiRpcEditModal =
-      canSeeModals &&
-      showMultiRpcModal &&
-      !showWhatsNew &&
-      !process.env.IN_TEST;
+      canSeeModals && showMultiRpcModal && !process.env.IN_TEST;
 
     const displayUpdateModal =
-      canSeeModals &&
-      showUpdateModal &&
-      !showWhatsNew &&
-      !showMultiRpcEditModal;
+      canSeeModals && showUpdateModal && !showMultiRpcEditModal;
 
     const showTermsOfUse =
       completedOnboarding &&
@@ -841,16 +822,13 @@ export default class Home extends PureComponent {
       !isSocialLoginFlow;
 
     const showRecoveryPhrase =
-      !showWhatsNew &&
-      showRecoveryPhraseReminder &&
-      !isPrimarySeedPhraseBackedUp;
+      showRecoveryPhraseReminder && !isPrimarySeedPhraseBackedUp;
 
     const showRewardsModal =
       rewardsEnabled &&
       rewardsOnboardingEnabled &&
       canSeeModals &&
       !showTermsOfUse &&
-      !showWhatsNew &&
       !showMultiRpcEditModal &&
       !displayUpdateModal &&
       !isSeedlessPasswordOutdated &&
@@ -861,7 +839,6 @@ export default class Home extends PureComponent {
       showPna25Modal &&
       canSeeModals &&
       !showTermsOfUse &&
-      !showWhatsNew &&
       !showMultiRpcEditModal &&
       !displayUpdateModal &&
       !isSeedlessPasswordOutdated &&
@@ -899,7 +876,6 @@ export default class Home extends PureComponent {
           {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
-          {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
           {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}

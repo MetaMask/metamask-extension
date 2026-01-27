@@ -4,10 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 
-import {
-  EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
-  TokenStandard,
-} from '../../../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -38,10 +35,10 @@ import { getPermissionDescription } from '../info/typed-sign/typed-sign-permissi
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 const TRANSACTION_TYPES_HIDE_BANNER: string[] = [
+  TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.predictDeposit,
   TransactionType.predictWithdraw,
-  EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
 ];
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

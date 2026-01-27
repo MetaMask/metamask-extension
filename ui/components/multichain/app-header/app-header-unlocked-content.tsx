@@ -287,7 +287,7 @@ export const AppHeaderUnlockedContent = ({
               />
               <Icon
                 name={IconName.Copy}
-                size={IconSize.Xs}
+                size={IconSize.Sm}
                 color={IconColor.IconAlternative}
               />
             </MultichainHoveredAddressRowsList>

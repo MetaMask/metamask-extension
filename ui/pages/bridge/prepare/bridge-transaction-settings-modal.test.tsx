@@ -11,6 +11,22 @@ import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import { waitForElementById } from '../../../../test/integration/helpers';
 import { setSlippage } from '../../../ducks/bridge/actions';
 import { sanitizeAmountInput } from '../utils/quote';
+import { setBackgroundConnection } from '../../../store/background-connection';
+
+setBackgroundConnection({
+  // @ts-expect-error - setSlippage is valid
+  setSlippage,
+  setSwapsLiveness: jest.fn(),
+  getStatePatches: jest.fn(),
+  isSendBundleSupported: jest.fn(),
+  isRelaySupported: jest.fn(),
+  resetState: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest.fn(),
+  gasFeeStartPolling: jest.fn(),
+  addPollingTokenToAppState: jest.fn(),
+  trackUnifiedSwapBridgeEvent: jest.fn(),
+  updateBridgeQuoteRequestParams: jest.fn(),
+});
 
 const TX_MODAL = {
   refElement: 'bridge__header-settings-button',
@@ -35,8 +51,8 @@ const renderModal = (initialSlippage?: number) => {
 const openModal = async (getByTestId: (id: string) => HTMLElement) => {
   await act(async () => {
     fireEvent.click(getByTestId(TX_MODAL.refElement));
-    await waitForElementById(TX_MODAL.submitButton);
   });
+  await waitForElementById(TX_MODAL.submitButton);
 };
 
 const interactWithCustomInput = async (
@@ -45,8 +61,10 @@ const interactWithCustomInput = async (
 ) => {
   await act(async () => {
     userEvent.click(screen.getByTestId(TX_MODAL.customButton));
-    await waitForElementById(TX_MODAL.customInput);
-    const input = getByTestId(TX_MODAL.customInput);
+  });
+  await waitForElementById(TX_MODAL.customInput);
+  const input = getByTestId(TX_MODAL.customInput);
+  await act(async () => {
     if (action) {
       await action(input);
     }
@@ -57,8 +75,8 @@ const interactWithCustomInput = async (
 const submitUpdate = async (getByTestId: (id: string) => HTMLElement) => {
   await act(async () => {
     fireEvent.click(getByTestId(TX_MODAL.submitButton));
-    await waitForElementById(TX_MODAL.refElement);
   });
+  await waitForElementById(TX_MODAL.refElement);
 };
 
 const expectButtonStates = (
@@ -203,7 +221,7 @@ describe('BridgeTransactionSettingsModal', () => {
     expect(store.getState().bridge.slippage).toBe(Number(finalSlippage));
 
     // Reopen and expect 2% Custom button
-    act(() => {
+    await act(async () => {
       fireEvent.click(getByTestId(TX_MODAL.refElement));
     });
     expectButtonStates(MUTED_CLASS, MUTED_CLASS, DEFAULT_CLASS, MUTED_CLASS);
@@ -263,20 +281,20 @@ describe('BridgeTransactionSettingsModal', () => {
           await openModal(getByTestId);
           expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
-          await act(async () => {
-            await interactWithCustomInput(getByTestId, async (input) => {
-              await setValue(input, value);
-              expect(getByTestId(TX_MODAL.customInput)).toHaveDisplayValue(
-                expectedDisplayValue,
-              );
-            });
-
-            userEvent.click(getByTestId(TX_MODAL.submitButton));
-            await submitUpdate(getByTestId);
-            expect(store.getState().bridge.slippage).toBe(
-              Number(expectedDisplayValue),
+          await interactWithCustomInput(getByTestId, async (input) => {
+            await setValue(input, value);
+            expect(getByTestId(TX_MODAL.customInput)).toHaveDisplayValue(
+              expectedDisplayValue,
             );
           });
+          await act(async () => {
+            userEvent.click(getByTestId(TX_MODAL.submitButton));
+          });
+
+          await submitUpdate(getByTestId);
+          expect(store.getState().bridge.slippage).toBe(
+            Number(expectedDisplayValue),
+          );
         },
       );
     },
@@ -299,14 +317,15 @@ describe('BridgeTransactionSettingsModal', () => {
           await openModal(getByTestId);
           expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
 
+          await interactWithCustomInput(getByTestId, async (input) => {
+            await setValue(input, value);
+            expect(getByTestId(TX_MODAL.customInput)).toHaveDisplayValue(
+              sanitizeAmountInput(value),
+            );
+          });
+          expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
+
           await act(async () => {
-            await interactWithCustomInput(getByTestId, async (input) => {
-              await setValue(input, value);
-              expect(getByTestId(TX_MODAL.customInput)).toHaveDisplayValue(
-                sanitizeAmountInput(value),
-              );
-            });
-            expect(getByTestId(TX_MODAL.submitButton)).toBeDisabled();
             fireEvent.click(getByTestId(TX_MODAL.closeButton));
           });
           expect(store.getState().bridge.slippage).toBe(initialSlippage);

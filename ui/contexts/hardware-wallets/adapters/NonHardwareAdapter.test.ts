@@ -1,5 +1,5 @@
-import { NonHardwareAdapter } from './NonHardwareAdapter';
 import type { HardwareWalletAdapterOptions } from '../types';
+import { NonHardwareAdapter } from './NonHardwareAdapter';
 
 describe('NonHardwareAdapter', () => {
   const mockOptions: HardwareWalletAdapterOptions = {
@@ -55,9 +55,9 @@ describe('NonHardwareAdapter', () => {
 
   describe('ensureDeviceReady', () => {
     it('resolves to true', async () => {
-      await expect(
-        adapter.ensureDeviceReady('test-device-id'),
-      ).resolves.toBe(true);
+      await expect(adapter.ensureDeviceReady('test-device-id')).resolves.toBe(
+        true,
+      );
     });
 
     it('does not call any callbacks', async () => {
@@ -71,4 +71,3 @@ describe('NonHardwareAdapter', () => {
     });
   });
 });
-

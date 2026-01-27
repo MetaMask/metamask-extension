@@ -672,14 +672,7 @@ export const createBridgeMockStore = ({
               isActiveDest: true,
               isSingleSwapBridgeButtonEnabled: true,
             },
-            // ...Object.fromEntries(
-            //   Object.entries(
-            //     featureFlagOverrides?.bridgeConfig?.chains ?? {},
-            //   ).map(([chainId, config]) => [
-            //     formatChainIdToCaip(chainId),
-            //     config,
-            //   ]),
-            // ),
+            ...featureFlagOverrides?.bridgeConfig?.chains,
           },
           chainRanking: featureFlagOverrides?.bridgeConfig?.chainRanking?.map(
             (c) => ({

@@ -7,3 +7,19 @@ import '../../helpers/setup-after-helper';
 jestPreviewConfigure({
   publicFolder: 'test/integration/config/assets', // No need to configure if `publicFolder` is `public`
 });
+
+// Mock Pay-related components to avoid importing large dependency trees
+// These components are not used by existing integration tests
+jest.mock(
+  '../../../ui/pages/confirmations/components/confirm/info/perps-deposit-info',
+  () => ({
+    PerpsDepositInfo: () => null,
+  }),
+);
+
+jest.mock(
+  '../../../ui/pages/confirmations/components/confirm/info/musd-conversion-info',
+  () => ({
+    MusdConversionInfo: () => null,
+  }),
+);

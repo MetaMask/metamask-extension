@@ -10,8 +10,6 @@ import {
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
   getWeb3ShimUsageStateForOrigin,
-  getShowWhatsNewPopup,
-  getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
   getShowTermsOfUse,
   getShowOutdatedBrowserWarning,
@@ -53,10 +51,7 @@ import {
   lookupSelectedNetworks,
   setPendingShieldCohort,
 } from '../../store/actions';
-import {
-  hideWhatsNewPopup,
-  openBasicFunctionalityModal,
-} from '../../ducks/app/app';
+import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
   getIsPrimarySeedPhraseBackedUp,
   getIsSeedlessPasswordOutdated,
@@ -130,12 +125,6 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  const TEMPORARY_DISABLE_WHATS_NEW = true;
-
-  const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
-    ? false
-    : getShowWhatsNewPopup(state);
-
   const shouldShowSeedPhraseReminder =
     selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
 
@@ -159,8 +148,6 @@ const mapStateToProps = (state) => {
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
     infuraBlocked: getInfuraBlocked(state),
-    announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    showWhatsNewPopup,
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
     showOutdatedBrowserWarning:
@@ -206,7 +193,6 @@ const mapDispatchToProps = (dispatch) => {
       setWeb3ShimUsageAlertDismissed(origin),
     disableWeb3ShimUsageAlert: () =>
       setAlertEnabledness(AlertTypes.web3ShimUsage, false),
-    hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
     setRecoveryPhraseReminderHasBeenShown: () =>
       dispatch(setRecoveryPhraseReminderHasBeenShown()),
     setRecoveryPhraseReminderLastShown: (lastShown) =>

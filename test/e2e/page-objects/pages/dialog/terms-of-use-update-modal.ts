@@ -50,7 +50,9 @@ class TermsOfUseUpdateModal {
     }
 
     await this.driver.clickElement(this.termsOfUseCheckbox);
-    await this.driver.clickElementAndWaitToDisappear(this.acceptButton, 5000);
+    // complete recovery flow takes time as multiple background requests are triggered
+    // and can temporarily block the UI
+    await this.driver.clickElementAndWaitToDisappear(this.acceptButton, 10000);
   }
 }
 
