@@ -2260,7 +2260,9 @@ export default class MetamaskController extends EventEmitter {
       const networkStatus =
         memState.networksMetadata[memState.selectedNetworkClientId]?.status;
       if (networkStatus === NetworkStatus.Available) {
-        publicConfigStore.putState(await selectPublicState(memState));
+        publicConfigStore.putState(
+          await selectPublicState({ isUnlocked: memState.isUnlocked }),
+        );
       }
     };
 
