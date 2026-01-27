@@ -74,16 +74,20 @@ describe('accounts', () => {
         },
       }) as InternalAccount;
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['Ledger', HardwareKeyringType.ledger],
       ['Trezor', HardwareKeyringType.trezor],
       ['OneKey', HardwareKeyringType.oneKey],
       ['Lattice', HardwareKeyringType.lattice],
       ['QR', HardwareKeyringType.qr],
-    ])('returns true for %s hardware wallet', (_name, keyringType) => {
-      const account = createMockAccount(keyringType);
-      expect(isHardwareAccount(account)).toBe(true);
-    });
+    ])(
+      'returns true for %s hardware wallet',
+      (_name: string, keyringType: HardwareKeyringType) => {
+        const account = createMockAccount(keyringType);
+        expect(isHardwareAccount(account)).toBe(true);
+      },
+    );
 
     it('returns false for non-hardware keyring type', () => {
       const account = createMockAccount('HD Key Tree');
