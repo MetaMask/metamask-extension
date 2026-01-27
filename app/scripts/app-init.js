@@ -82,8 +82,6 @@ function importAllScripts() {
     throw new Error('Missing APPLY_LAVAMOAT environment variable');
   }
 
-  loadFile('../scripts/sentry-install.js');
-
   if (useSnow) {
     // eslint-disable-next-line no-undef
     const isWorker = !self.document;
@@ -106,6 +104,11 @@ function importAllScripts() {
     loadFile('../scripts/lockdown-more.js');
     loadFile('../scripts/runtime-cjs.js');
   }
+
+  // Load Sentry after lockdown/runtime initialization to ensure
+  // global functions are stable before Sentry wraps them.
+  // This prevents "Invalid or unexpected token" errors in MV3 service workers.
+  loadFile('../scripts/sentry-install.js');
 
   // This environment variable is set to a string of comma-separated relative file paths.
   const rawFileList = process.env.FILE_NAMES;
