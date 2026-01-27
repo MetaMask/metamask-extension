@@ -544,7 +544,19 @@
           "tron:728126428": true
         }
       },
-      "nativeAssetIdentifiers": {}
+      "nativeAssetIdentifiers": {
+        "eip155:1": "eip155:1/slip44:60",
+        "eip155:10": "eip155:10/slip44:60",
+        "eip155:10143": "eip155:10143/slip44:60",
+        "eip155:11155111": "eip155:11155111/slip44:60",
+        "eip155:137": "eip155:137/slip44:60",
+        "eip155:42161": "eip155:42161/slip44:60",
+        "eip155:56": "eip155:56/slip44:60",
+        "eip155:59141": "eip155:59141/slip44:60",
+        "eip155:59144": "eip155:59144/slip44:60",
+        "eip155:6343": "eip155:6343/slip44:60",
+        "eip155:8453": "eip155:8453/slip44:60"
+      }
     },
     "NetworkOrderController": {
       "orderedNetworkList": []
