@@ -752,19 +752,34 @@ export default class MetaMetricsController extends BaseController<
     const fragment = fragments[id];
 
     /**
-     * HACK: "transaction-submitted-<id>" fragment hack
-     * Creates a "transaction-submitted-<id>" fragment if it does not exist to persist
-     * accumulated event metrics. In the case it is unused, the abandoned fragment will
+     * HACK: "transaction-submitted-<id>" and "transaction-added-<id>" fragment hack
+     * Creates a fragment if it does not exist to persist accumulated event metrics.
+     * This handles race conditions where concurrent transaction events try to create/update
+     * the same fragment. In the case it is unused, the abandoned fragment will
      * eventually be deleted with canDeleteIfAbandoned set to true.
      */
-    const createIfNotFound = !fragment && id.includes('transaction-submitted-');
+    const createIfNotFound =
+      !fragment &&
+      (id.includes('transaction-submitted-') ||
+        id.includes('transaction-added-'));
 
     if (createIfNotFound) {
+      // Determine the appropriate success/failure events based on fragment type
+      const isAddedFragment = id.includes('transaction-added-');
+      const fragmentConfig = isAddedFragment
+        ? {
+            successEvent: TransactionMetaMetricsEvent.approved,
+            failureEvent: TransactionMetaMetricsEvent.rejected,
+          }
+        : {
+            successEvent: TransactionMetaMetricsEvent.finalized,
+          };
+
       this.update((state) => {
         state.fragments[id] = {
           canDeleteIfAbandoned: true,
           category: MetaMetricsEventCategory.Transactions,
-          successEvent: TransactionMetaMetricsEvent.finalized,
+          ...fragmentConfig,
           id,
           ...payload,
           lastUpdated: Date.now(),
