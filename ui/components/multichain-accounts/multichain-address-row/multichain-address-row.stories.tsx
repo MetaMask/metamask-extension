@@ -29,7 +29,7 @@ const meta: Meta<typeof MultichainAddressRow> = {
     copyActionParams: {
       control: 'object',
       description:
-        'Copy parameters for the address, including message and callback function',
+        'Copy parameters for the address, including callback function',
     },
     qrActionParams: {
       control: 'object',
@@ -52,7 +52,6 @@ export const Default: Story = {
     networkName: 'Ethereum Mainnet',
     address: '0x1234567890123456789012345678901234567890',
     copyActionParams: {
-      message: 'Copied!',
       callback: () => {},
     },
     className: '',
@@ -65,7 +64,6 @@ export const WithLongNetworkName: Story = {
     networkName: 'Polygon Mumbai Testnet',
     address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
     copyActionParams: {
-      message: 'Copied!',
       callback: () => {},
     },
     className: '',
@@ -78,7 +76,6 @@ export const ArbitrumNetwork: Story = {
     networkName: 'Arbitrum One',
     address: '0x0123456789abcdef0123456789abcdef01234567',
     copyActionParams: {
-      message: 'Copied!',
       callback: () => {},
     },
     className: '',
@@ -91,7 +88,6 @@ export const OptimismNetwork: Story = {
     networkName: 'Optimism',
     address: '0x9876543210987654321098765432109876543210',
     copyActionParams: {
-      message: 'Copied!',
       callback: () => {},
     },
     className: '',
@@ -104,7 +100,6 @@ export const PolygonNetwork: Story = {
     networkName: 'Polygon Mainnet',
     address: '0xfedcba0987654321fedcba0987654321fedcba09',
     copyActionParams: {
-      message: 'Copied!',
       callback: () => {},
     },
     className: '',
@@ -117,7 +112,6 @@ export const CustomNetwork: Story = {
     networkName: 'Custom Network',
     address: '0x1111222233334444555566667777888899990000',
     copyActionParams: {
-      message: 'Copied!',
       callback: () => {},
     },
     className: '',

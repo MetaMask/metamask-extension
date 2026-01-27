@@ -13,6 +13,11 @@ jest.mock('@metamask/bridge-controller', () => ({
   formatChainIdToCaip: jest.fn(),
 }));
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: () => jest.fn(),
+}));
+
 const mockCopyCallback = jest.fn();
 const mockQrCallback = jest.fn();
 
@@ -23,7 +28,6 @@ const defaultProps = {
   networkName: 'Ethereum',
   address: '0x1234567890123456789012345678901234567890',
   copyActionParams: {
-    message: 'Copied!',
     callback: mockCopyCallback,
   },
 };
@@ -33,7 +37,6 @@ const propsWithQrCode = {
   networkName: 'Ethereum',
   address: '0x1234567890123456789012345678901234567890',
   copyActionParams: {
-    message: 'Copied!',
     callback: mockCopyCallback,
   },
   qrActionParams: {

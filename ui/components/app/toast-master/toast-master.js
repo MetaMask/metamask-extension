@@ -159,17 +159,19 @@ export function ToastMaster() {
         {storageErrorToast}
         <PasswordChangeToast />
         <ClaimSubmitToast />
+        <CopyAddressToast />
       </ToastContainer>
     );
   }
 
-  // On other screens, only render ToastContainer if storage error toast should show
+  // On other screens, render storage error toast and copy address toast
   // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
-  if (shouldShowStorageErrorToast) {
-    return <ToastContainer>{storageErrorToast}</ToastContainer>;
-  }
-
-  return null;
+  return (
+    <ToastContainer>
+      {shouldShowStorageErrorToast && storageErrorToast}
+      <CopyAddressToast />
+    </ToastContainer>
+  );
 }
 
 function ConnectAccountToast() {
@@ -588,11 +590,16 @@ function CopyAddressToast() {
   const showCopyAddressToast = useSelector(selectShowCopyAddressToast);
   const autoHideToastDelay = 2 * SECOND;
 
+  const toastText =
+    showCopyAddressToast === 'privateKey'
+      ? t('multichainAccountPrivateKeyCopied')
+      : t('addressCopied');
+
   return (
     showCopyAddressToast && (
       <Toast
         key="copy-address-toast"
-        text={t('addressCopied')}
+        text={toastText}
         startAdornment={
           <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
         }

@@ -199,12 +199,12 @@ export function selectPasswordChangeToast(
  * Retrieves user preference to see the "Copy Address" toast
  *
  * @param state - Redux state object.
- * @returns Boolean preference value
+ * @returns The toast type ('address' | 'privateKey') or false
  */
 export function selectShowCopyAddressToast(
   state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showCopyAddressToast);
+): 'address' | 'privateKey' | false {
+  return state.appState.showCopyAddressToast || false;
 }
 
 /**

@@ -142,7 +142,7 @@ export const AppHeaderUnlockedContent = ({
 
   useEffect(() => {
     if (copied) {
-      dispatch(setShowCopyAddressToast(true));
+      dispatch(setShowCopyAddressToast('address'));
     } else {
       dispatch(setShowCopyAddressToast(false));
     }
