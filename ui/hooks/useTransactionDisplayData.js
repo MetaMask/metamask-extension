@@ -413,6 +413,13 @@ export function useTransactionDisplayData(transactionGroup) {
       primaryDisplayValue = metamaskPay.targetFiat;
       secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
     }
+  } else if (
+    type === TransactionType.gasPayment ||
+    type === TransactionType.relayDeposit
+  ) {
+    // These transaction types should be filtered out in selectors,
+    // but handle them gracefully if they slip through
+    title = t('contractInteraction');
   } else {
     dispatch(
       captureSingleException(

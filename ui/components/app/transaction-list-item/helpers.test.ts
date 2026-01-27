@@ -72,4 +72,18 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('returns undefined for gasPayment transaction type', () => {
+    const result = mapTransactionTypeToCategory(
+      TransactionType.gasPayment as TransactionType,
+    );
+    expect(result).toBeUndefined();
+  });
+
+  it('returns undefined for relayDeposit transaction type', () => {
+    const result = mapTransactionTypeToCategory(
+      TransactionType.relayDeposit as TransactionType,
+    );
+    expect(result).toBeUndefined();
+  });
 });
