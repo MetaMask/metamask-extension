@@ -11,10 +11,7 @@ module.exports = {
   features: {
     buildStoriesJson: true,
   },
-  stories: [
-    '../ui/**/*.stories.js',
-    '../ui/**/*.stories.tsx',
-  ],
+  stories: ['../ui/**/*.stories.js', '../ui/**/*.stories.tsx'],
   addons: [
     '@storybook/addon-essentials',
     '@storybook/addon-a11y',
