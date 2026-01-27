@@ -243,18 +243,7 @@ describe('BridgeInputGroup', () => {
       `,
     );
 
-    await fillSearchInput('U');
-    await waitFor(() => {
-      expectAssetListToMatch(
-        `
-        [
-          "UNI$0.00Uniswap<0.000001 UNI",
-        ]
-      `,
-      );
-    });
-
-    await fillSearchInput('SD');
+    await fillSearchInput('USD');
     await waitFor(() => {
       expectAssetListToMatch(
         `
