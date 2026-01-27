@@ -15,6 +15,7 @@ import {
   type CaipChainId,
   CaipChainIdStruct,
 } from '@metamask/utils';
+import { getCacheKey, updateCache, retrieveCachedResponse } from './cache';
 
 const MinimalAssetSchema = type({
   /**
@@ -70,6 +71,29 @@ export const validateMinimalAssetObject = (
   return is(data, MinimalAssetSchema);
 };
 
+const postWithCache = async (
+  url: Parameters<typeof handleFetch>[0],
+  requestParams: Parameters<typeof handleFetch>[1],
+  ...cacheParams: Parameters<typeof retrieveCachedResponse>
+) => {
+  const cachedResponse = await retrieveCachedResponse(...cacheParams);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  // If this fetch returns a non-200 response, the cache will not be updated
+  const response = await handleFetch(url, requestParams);
+
+  await updateCache(response, ...cacheParams);
+  return response;
+};
+
+const getHeaders = (clientId: string, clientVersion?: string) => {
+  return {
+    'X-Client-Id': clientId,
+    ...(clientVersion ? { 'Client-Version': clientVersion } : {}),
+    'Content-Type': 'application/json',
+  };
+};
 /**
  * Fetches a list of tokens sorted by balance, popularity and other criteria from the bridge-api
  *
@@ -82,7 +106,7 @@ export const validateMinimalAssetObject = (
  * @param params.signal - The abort signal
  * @returns A list of sorted tokens
  */
-export async function fetchPopularTokens({
+export const fetchPopularTokens = async ({
   signal,
   chainIds,
   clientId,
@@ -96,27 +120,31 @@ export async function fetchPopularTokens({
   bridgeApiBaseUrl: string;
   clientVersion?: string;
   assetsWithBalances?: MinimalAsset[];
-}): Promise<BridgeAssetV2[]> {
+}): Promise<BridgeAssetV2[]> => {
   const url = `${bridgeApiBaseUrl}/getTokens/popular`;
-
-  const tokens = await handleFetch(url, {
-    signal,
-    method: 'POST',
-    body: JSON.stringify({
-      chainIds,
-      includeAssets: assetsWithBalances,
-    }),
-    headers: {
-      'X-Client-Id': clientId,
-      ...(clientVersion ? { 'Client-Version': clientVersion } : {}),
-      'Content-Type': 'application/json',
-    },
+  const cacheKey = getCacheKey(url, {
+    chainIds,
+    includeAssets: assetsWithBalances,
   });
+
+  const tokens = await postWithCache(
+    url,
+    {
+      signal,
+      method: 'POST',
+      body: JSON.stringify({
+        chainIds,
+        includeAssets: assetsWithBalances,
+      }),
+      headers: getHeaders(clientId, clientVersion),
+    },
+    cacheKey,
+  );
 
   return tokens
     .map((token: unknown) => (validateSwapsAssetV2Object(token) ? token : null))
     .filter(Boolean);
-}
+};
 
 /**
  * Fetches a list of matching tokens sorted by balance, popularity and other criteria from the bridge-api
@@ -132,7 +160,7 @@ export async function fetchPopularTokens({
  * @param params.signal - The abort signal
  * @returns A list of sorted tokens
  */
-export async function fetchTokensBySearchQuery({
+export const fetchTokensBySearchQuery = async ({
   signal,
   chainIds,
   query,
@@ -154,23 +182,30 @@ export async function fetchTokensBySearchQuery({
   hasNextPage: boolean;
   endCursor?: string;
   tokens: BridgeAssetV2[];
-}> {
+}> => {
   const url = `${bridgeApiBaseUrl}/getTokens/search`;
-  const { data: tokens, pageInfo } = await handleFetch(url, {
-    method: 'POST',
-    body: JSON.stringify({
-      chainIds,
-      includeAssets: assetsWithBalances,
-      after,
-      query,
-    }),
-    signal,
-    headers: {
-      'X-Client-Id': clientId,
-      ...(clientVersion ? { 'Client-Version': clientVersion } : {}),
-      'Content-Type': 'application/json',
-    },
+  const cacheKey = getCacheKey(url, {
+    chainIds,
+    includeAssets: assetsWithBalances,
+    searchQuery: query,
   });
+
+  const { data: tokens, pageInfo } = await postWithCache(
+    url,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        chainIds,
+        includeAssets: assetsWithBalances,
+        after,
+        query,
+      }),
+      signal,
+      headers: getHeaders(clientId, clientVersion),
+    },
+    cacheKey,
+    after,
+  );
   const { hasNextPage, endCursor } = pageInfo;
 
   return {
@@ -182,4 +217,4 @@ export async function fetchTokensBySearchQuery({
       )
       .filter(Boolean),
   };
-}
+};
