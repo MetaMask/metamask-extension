@@ -42,12 +42,15 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     // READ THIS CAREFULLY:
     // We are using 1 to prevent any concurrent `keyring_createAccount` requests. This ensures
     // we prevent any desync between Snap's accounts and Metamask's accounts.
+    // This also helps prevent N+1 API calls during initialization by serializing operations.
     maxConcurrency: 1,
     // Re-use the default config for the rest:
     discovery: {
-      timeoutMs: 2000,
+      // Increased timeout to account for potential network congestion during initialization
+      timeoutMs: 5000,
       maxAttempts: 3,
-      backOffMs: 1000,
+      // Increased backoff to space out retries and reduce network load
+      backOffMs: 2000,
     },
     createAccounts: {
       timeoutMs: 3000,
