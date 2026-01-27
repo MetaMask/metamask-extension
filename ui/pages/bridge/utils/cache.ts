@@ -20,9 +20,9 @@ export const getCacheKey = (url: string, body: object) => {
   return `${BRIDGE_CACHE_PREFIX}:${url}:${bodyHash}`;
 };
 
-const isStale = (cachedItem: { lastUpdated: number }) =>
-  cachedItem.lastUpdated &&
-  Date.now() - cachedItem.lastUpdated >= MAX_CACHE_AGE;
+const isStale = (cachedItem: { firstUpdated: number }) =>
+  cachedItem.firstUpdated &&
+  Date.now() - cachedItem.firstUpdated >= MAX_CACHE_AGE;
 
 export const retrieveCachedResponse = async (
   cacheKey: string,
@@ -58,11 +58,12 @@ export const updateCache = async (
       hash: hashData(response),
     };
 
-    const storageItem = (await getStorageItem(cacheKey)) ?? {};
+    const storageItem = (await getStorageItem(cacheKey)) ?? {
+      timestamp: Date.now(),
+    };
     await setStorageItem(cacheKey, {
       ...storageItem,
       [after]: newCachedPage,
-      lastUpdated: Date.now(),
     });
   } catch (error) {
     // Invalidate cache if update fails

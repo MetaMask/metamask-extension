@@ -112,8 +112,8 @@ describe('Bridge token utils', () => {
 
       expect(
         JSON.parse((await localforage.getItem(storageKeys[0])) ?? '{}')
-          .lastUpdated,
-      ).toStrictEqual(JSON.parse(initialStorageItem)?.lastUpdated);
+          .timestamp,
+      ).toStrictEqual(JSON.parse(initialStorageItem)?.timestamp);
       expect(
         JSON.parse((await localforage.getItem(storageKeys[0])) ?? '{}').default,
       ).toMatchInlineSnapshot(`
@@ -257,7 +257,7 @@ describe('Bridge token utils', () => {
       const storageItem = JSON.parse(
         (await localforage.getItem(storageKeys[0])) ?? '{}',
       ) as {
-        lastUpdated: number;
+        timestamp: number;
         default: { cachedResponse: unknown; hash: string };
       };
       expect(storageItem.default).toMatchInlineSnapshot(`
@@ -275,8 +275,8 @@ describe('Bridge token utils', () => {
         }
       `);
 
-      expect(storageItem?.lastUpdated).toBeGreaterThan(
-        initialStorageItem?.lastUpdated,
+      expect(storageItem?.timestamp).toBeGreaterThan(
+        initialStorageItem?.timestamp,
       );
     });
   });
@@ -363,11 +363,11 @@ describe('Bridge token utils', () => {
         ]
       `);
 
-      const { lastUpdated, ...storageItem } = JSON.parse(
+      const { timestamp, ...storageItem } = JSON.parse(
         (await localforage.getItem(storageKeys[0])) ?? '{}',
       );
-      expect(lastUpdated).toBeGreaterThan(
-        JSON.parse(initialStorageItem)?.lastUpdated,
+      expect(timestamp).toStrictEqual(
+        JSON.parse(initialStorageItem)?.timestamp,
       );
       expect(storageItem).toMatchInlineSnapshot(`
         {
