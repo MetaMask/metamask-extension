@@ -1,8 +1,9 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Modal } from './modal';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 describe('Modal', () => {
   const onClose = jest.fn();
@@ -78,5 +79,39 @@ describe('Modal', () => {
     fireEvent.click(closeButton);
 
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('should preserve MetaMetrics context through the portal', () => {
+    const mockTrackEvent = jest.fn();
+
+    // Component that uses MetaMetrics context
+    const TestComponent = () => {
+      const trackEvent = useContext(MetaMetricsContext);
+      return (
+        <button
+          onClick={() =>
+            trackEvent({ event: 'test_event', category: 'test_category' })
+          }
+        >
+          Track Event
+        </button>
+      );
+    };
+
+    const { getByText } = render(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <Modal isOpen={true} onClose={onClose}>
+          <TestComponent />
+        </Modal>
+      </MetaMetricsContext.Provider>,
+    );
+
+    const trackButton = getByText('Track Event');
+    fireEvent.click(trackButton);
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: 'test_event',
+      category: 'test_category',
+    });
   });
 });
