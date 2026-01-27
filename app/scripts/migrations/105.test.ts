@@ -263,7 +263,6 @@ describe('migration #105', () => {
       const oldData = createMockState({
         identities: {
           [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
-          // @ts-expect-error - Intentionally testing invalid state
           invalid: { name: 'Invalid Account', address: '' },
         },
         selectedAddress: MOCK_ADDRESS,
