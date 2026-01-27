@@ -132,7 +132,7 @@ describe('staticAssetscontroller', () => {
         supportedChains: [CHAIN_IDS.MAINNET],
       });
       networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
-        'eip155:1',
+        'mainnet',
       );
       tokensControllerGetStateSpy.mockResolvedValue({
         allIgnoredTokens: {},
