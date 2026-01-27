@@ -163,7 +163,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
       metadata: {},
       state: {},
     });
-    this.#supportedChains = supportedChains
+    this.#supportedChains = supportedChains;
     this.setIntervalLength(interval);
   }
 

@@ -1,4 +1,3 @@
-
 import { Hex } from '@metamask/utils';
 import { StaticAssetsController } from '../controllers/static-assets-controller';
 import { ControllerInitFunction } from './types';
@@ -21,9 +20,9 @@ export const StaticAssetsControllerInit: ControllerInitFunction<
       const supportedChains =
         state?.remoteFeatureFlags?.staticAssetsPollingSupportedChains;
 
-      return new Set(Array.isArray(supportedChains)
-      ? (supportedChains as Hex[])
-      : []);
+      return new Set(
+        Array.isArray(supportedChains) ? (supportedChains as Hex[]) : [],
+      );
     },
   });
 

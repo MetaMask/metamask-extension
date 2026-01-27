@@ -35,11 +35,7 @@ const mockTopAssets = [
   },
 ];
 
-const setupController = ({
-  supportedChains,
-}: {
-  supportedChains: Hex[];
-}) => {
+const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
   const messenger = new Messenger<
     MockAnyNamespace,
     | MessengerActions<StaticAssetsControllerMessenger>
