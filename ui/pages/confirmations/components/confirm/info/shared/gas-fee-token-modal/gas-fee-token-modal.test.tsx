@@ -182,6 +182,33 @@ describe('GasFeeTokenModal', () => {
     );
   });
 
+  it('calls onClose with delay after token selection', async () => {
+    jest.useFakeTimers();
+    const onCloseMock = jest.fn();
+
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal onClose={onCloseMock} />,
+      configureStore(getState()),
+    );
+
+    await act(async () => {
+      result.getByTestId('gas-fee-token-list-item-WETH').click();
+    });
+
+    // onClose should not be called immediately
+    expect(onCloseMock).not.toHaveBeenCalled();
+
+    // Fast-forward time by 100ms
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    // onClose should now be called
+    expect(onCloseMock).toHaveBeenCalledTimes(1);
+
+    jest.useRealTimers();
+  });
+
   it('displays native toggle if future native token and insufficient balance', async () => {
     const result = renderWithConfirmContextProvider(
       <GasFeeTokenModal />,

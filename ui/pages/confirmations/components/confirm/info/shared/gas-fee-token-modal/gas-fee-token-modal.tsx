@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import classnames from 'classnames';
 
@@ -72,6 +72,18 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
 
   const hasGasFeeTokens = gasFeeTokenAddresses.length > 0;
 
+  // Track timeout for cleanup on unmount
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleTokenClick = useCallback(
     async (token: GasFeeToken) => {
       const selectedAddress =
@@ -81,7 +93,12 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
 
       await updateSelectedGasFeeToken(transactionId, selectedAddress);
 
-      onClose?.();
+      // Add a small delay before closing to allow tooltips to complete their lifecycle
+      // This prevents a race condition where react-tippy tries to access undefined data
+      // after the component has unmounted
+      closeTimeoutRef.current = setTimeout(() => {
+        onClose?.();
+      }, 100);
     },
     [futureNativeSelected, onClose, transactionId],
   );
