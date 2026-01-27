@@ -58,9 +58,9 @@ export const updateCache = async (
       hash: hashData(response),
     };
 
-    const storageItem = await getStorageItem(cacheKey);
+    const storageItem = (await getStorageItem(cacheKey)) ?? {};
     await setStorageItem(cacheKey, {
-      ...(storageItem ? storageItem : {}),
+      ...storageItem,
       [after]: newCachedPage,
       lastUpdated: Date.now(),
     });

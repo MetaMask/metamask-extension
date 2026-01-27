@@ -258,7 +258,7 @@ describe('Bridge token utils', () => {
         (await localforage.getItem(storageKeys[0])) ?? '{}',
       ) as {
         lastUpdated: number;
-        default: { cachedResponse: any; hash: string };
+        default: { cachedResponse: unknown; hash: string };
       };
       expect(storageItem.default).toMatchInlineSnapshot(`
         {
