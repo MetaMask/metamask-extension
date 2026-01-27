@@ -72,4 +72,36 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('returns interaction category for gasPayment transaction type', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.gasPayment);
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
+
+  it('returns interaction category for contractInteraction transaction type', () => {
+    const result = mapTransactionTypeToCategory(
+      TransactionType.contractInteraction,
+    );
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
+
+  it('returns interaction category for batch transaction type', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.batch);
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
+
+  it('returns interaction category for deployContract transaction type', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.deployContract);
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
+
+  it('returns bridge category for bridge transaction type', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.bridge);
+    expect(result).toBe(TransactionGroupCategory.bridge);
+  });
+
+  it('returns undefined for unknown transaction type', () => {
+    const result = mapTransactionTypeToCategory('unknown' as TransactionType);
+    expect(result).toBeUndefined();
+  });
 });
