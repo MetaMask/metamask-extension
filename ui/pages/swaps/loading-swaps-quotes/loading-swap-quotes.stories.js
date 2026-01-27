@@ -11,7 +11,9 @@ export const DefaultStory = () => (
     <div className="swaps__container">
       <LoadingSwapsQuotes
         loadingComplete={false}
-        onDone={() => {}}
+        onDone={() => {
+          /* no-op */
+        }}
         aggregatorMetadata={storiesMetadata.totle}
       />
     </div>

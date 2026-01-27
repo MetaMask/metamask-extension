@@ -108,10 +108,16 @@ export const DefaultStory = () => {
     <ConnectedAccounts
       activeTabOrigin="https://metamask.github.io"
       accountToConnect={internalAccount}
-      connectAccount={() => {}}
+      connectAccount={() => {
+        /* no-op */
+      }}
       connectedAccounts={accounts}
-      removePermittedAccount={() => {}}
-      setSelectedAddress={() => {}}
+      removePermittedAccount={() => {
+        /* no-op */
+      }}
+      setSelectedAddress={() => {
+        /* no-op */
+      }}
       originOfActiveTab="https://snaps.metamask.io/"
       subjectMetadata={subjectMetadata}
       permissionSubjects={permissionSubjects}

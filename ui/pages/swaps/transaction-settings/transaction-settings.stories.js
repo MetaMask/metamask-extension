@@ -7,7 +7,11 @@ export default {
 
 export const DefaultStory = () => (
   <div style={{ height: '200px', marginTop: '160px' }}>
-    <TransactionSettings onSelect={() => {}} />
+    <TransactionSettings
+      onSelect={() => {
+        /* no-op */
+      }}
+    />
   </div>
 );
 

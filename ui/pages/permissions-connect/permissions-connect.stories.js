@@ -44,7 +44,9 @@ export default {
 export const ChooseAccountComponent = () => {
   return (
     <ChooseAccount
-      selectAccounts={() => {}}
+      selectAccounts={() => {
+        /* no-op */
+      }}
       selectedAccountAddresses={
         new Set([
           '0xcb47e5e29f925e7482d1712297fb6b268f412344',
@@ -83,7 +85,9 @@ export const PermissionPageContainerComponent = () => {
         <PermissionsConnectFooter />
         <PageContainerFooter
           cancelButtonType="default"
-          onSubmit={() => {}}
+          onSubmit={() => {
+            /* no-op */
+          }}
           submitText="connect"
         />
       </Box>
