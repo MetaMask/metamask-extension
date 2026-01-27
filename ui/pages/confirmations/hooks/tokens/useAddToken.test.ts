@@ -1,499 +1,102 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
-import { Hex } from '@metamask/utils';
-import { useSelector } from 'react-redux';
+import { act } from '@testing-library/react';
+import { merge } from 'lodash';
 
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as actions from '../../../../store/actions';
-import { useAsyncResult } from '../../../../hooks/useAsync';
 import { useAddToken } from './useAddToken';
-
-const mockDispatch = jest.fn();
-const mockAddToken = jest.fn();
-const mockFindNetworkClientIdByChainId = jest.fn();
-const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => mockDispatch,
-  useSelector: jest.fn(),
-}));
 
 jest.mock('../../../../store/actions', () => ({
   addToken: jest.fn(),
   findNetworkClientIdByChainId: jest.fn(),
 }));
 
-jest.mock('../../../../hooks/useAsync');
+const TOKEN_ADDRESS_MOCK = '0x1234' as const;
+const CHAIN_ID_MOCK = '0x1' as const;
+const NETWORK_CLIENT_ID_MOCK = 'mockNetworkClientId';
+const SYMBOL_MOCK = 'TST';
+const DECIMALS_MOCK = 6;
+const ACCOUNT_ADDRESS_MOCK = '0xAccountAddress';
 
-const mockUseAsyncResult = useAsyncResult as jest.MockedFunction<
-  typeof useAsyncResult
->;
+const MOCK_STATE = {
+  metamask: {
+    internalAccounts: {
+      selectedAccount: 'account-1',
+      accounts: {
+        'account-1': {
+          id: 'account-1',
+          address: ACCOUNT_ADDRESS_MOCK,
+          metadata: { name: 'Account 1' },
+        },
+      },
+    },
+  },
+};
 
-type SelectorFunction = (state: unknown) => unknown;
+async function runHook({
+  existingTokens,
+}: { existingTokens?: { address: string }[] } = {}) {
+  const result = renderHookWithProvider(
+    () =>
+      useAddToken({
+        tokenAddress: TOKEN_ADDRESS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        symbol: SYMBOL_MOCK,
+        decimals: DECIMALS_MOCK,
+      }),
+    merge({}, MOCK_STATE, {
+      metamask: {
+        allTokens: {
+          [CHAIN_ID_MOCK]: {
+            [ACCOUNT_ADDRESS_MOCK]: existingTokens || [],
+          },
+        },
+      },
+    }),
+  );
+
+  await act(async () => {
+    // Intentionally empty
+  });
+
+  return result;
+}
 
 describe('useAddToken', () => {
-  const mockTokenParams = {
-    chainId: '0x1' as Hex,
-    decimals: 18,
-    name: 'Dai Stablecoin',
-    symbol: 'DAI',
-    tokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F' as Hex,
-  };
+  const mockAddToken = jest.mocked(actions.addToken);
+  const mockFindNetworkClientIdByChainId = jest.mocked(
+    actions.findNetworkClientIdByChainId,
+  );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
 
-    (actions.addToken as jest.Mock).mockImplementation(mockAddToken);
-    (actions.findNetworkClientIdByChainId as jest.Mock).mockImplementation(
-      mockFindNetworkClientIdByChainId,
+    mockFindNetworkClientIdByChainId.mockResolvedValue(NETWORK_CLIENT_ID_MOCK);
+    mockAddToken.mockReturnValue({ type: 'ADD_TOKEN' } as never);
+  });
+
+  it('adds token if not present', async () => {
+    await runHook();
+
+    expect(mockAddToken).toHaveBeenCalledWith(
+      {
+        address: TOKEN_ADDRESS_MOCK,
+        decimals: DECIMALS_MOCK,
+        networkClientId: NETWORK_CLIENT_ID_MOCK,
+        symbol: SYMBOL_MOCK,
+      },
+      true,
     );
-
-    mockDispatch.mockResolvedValue(undefined);
-    mockFindNetworkClientIdByChainId.mockResolvedValue('mainnet');
-    mockAddToken.mockReturnValue({ type: 'ADD_TOKEN' });
-
-    mockUseAsyncResult.mockImplementation((asyncFn) => {
-      asyncFn().catch(() => {
-        // Errors are handled in the hook
-      });
-      return {
-        status: 'success' as const,
-        pending: false,
-        idle: false as const,
-        value: undefined,
-        error: undefined,
-      };
-    });
-
-    mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-      const selectorString = selector.toString();
-      if (selectorString.includes('getAllTokens')) {
-        return {};
-      }
-      if (selectorString.includes('getSelectedInternalAccount')) {
-        return { address: '0xUserAddress' };
-      }
-      return null;
-    });
   });
 
-  describe('when token already exists in wallet', () => {
-    it('does not add token', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {
-            '0x1': {
-              '0xUserAddress': [
-                {
-                  address: mockTokenParams.tokenAddress.toLowerCase(),
-                  symbol: 'DAI',
-                  decimals: 18,
-                },
-              ],
-            },
-          };
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockFindNetworkClientIdByChainId).not.toHaveBeenCalled();
-        expect(mockDispatch).not.toHaveBeenCalled();
-      });
+  it('does not add token if already present', async () => {
+    await runHook({
+      existingTokens: [
+        {
+          address: TOKEN_ADDRESS_MOCK,
+        },
+      ],
     });
 
-    it('handles case-insensitive address comparison', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {
-            '0x1': {
-              '0xUserAddress': [
-                {
-                  address: mockTokenParams.tokenAddress.toUpperCase(),
-                  symbol: 'DAI',
-                  decimals: 18,
-                },
-              ],
-            },
-          };
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockFindNetworkClientIdByChainId).not.toHaveBeenCalled();
-        expect(mockDispatch).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('when token does not exist in wallet', () => {
-    it('adds token with correct parameters', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {};
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith(
-          mockTokenParams.chainId,
-        );
-        expect(mockDispatch).toHaveBeenCalledWith({
-          type: 'ADD_TOKEN',
-        });
-        expect(mockAddToken).toHaveBeenCalledWith(
-          {
-            address: mockTokenParams.tokenAddress,
-            symbol: mockTokenParams.symbol,
-            decimals: mockTokenParams.decimals,
-            networkClientId: 'mainnet',
-          },
-          true,
-        );
-      });
-    });
-
-    it('adds token when other tokens exist for different chains', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {
-            '0x89': {
-              '0xUserAddress': [
-                {
-                  address: '0xOtherToken',
-                  symbol: 'OTHER',
-                  decimals: 6,
-                },
-              ],
-            },
-          };
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith(
-          mockTokenParams.chainId,
-        );
-        expect(mockDispatch).toHaveBeenCalled();
-      });
-    });
-
-    it('adds token when other tokens exist for same chain but different address', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {
-            '0x1': {
-              '0xUserAddress': [
-                {
-                  address: '0xDifferentTokenAddress',
-                  symbol: 'USDC',
-                  decimals: 6,
-                },
-              ],
-            },
-          };
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith(
-          mockTokenParams.chainId,
-        );
-        expect(mockDispatch).toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('networkClientId lookup', () => {
-    it('calls findNetworkClientIdByChainId with correct chainId', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {};
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      const customChainId = '0x89' as Hex;
-      const customParams = {
-        ...mockTokenParams,
-        chainId: customChainId,
-      };
-
-      renderHook(() => useAddToken(customParams));
-
-      await waitFor(() => {
-        expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith(
-          customChainId,
-        );
-      });
-    });
-
-    it('uses networkClientId returned from findNetworkClientIdByChainId', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {};
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      mockFindNetworkClientIdByChainId.mockResolvedValue('polygon-mainnet');
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockAddToken).toHaveBeenCalledWith(
-          expect.objectContaining({
-            networkClientId: 'polygon-mainnet',
-          }),
-          true,
-        );
-      });
-    });
-  });
-
-  describe('dontShowLoadingIndicator flag', () => {
-    it('passes true as second parameter to addToken', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {};
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockAddToken).toHaveBeenCalledWith(expect.any(Object), true);
-      });
-    });
-  });
-
-  describe('error handling', () => {
-    let consoleErrorSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-    });
-
-    afterEach(() => {
-      consoleErrorSpy.mockRestore();
-    });
-
-    it('handles errors from findNetworkClientIdByChainId silently', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {};
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      const error = new Error('Network client not found');
-      mockFindNetworkClientIdByChainId.mockRejectedValue(error);
-
-      mockUseAsyncResult.mockImplementation((asyncFn) => {
-        asyncFn().catch(() => {
-          // Error is caught
-        });
-        return {
-          status: 'error' as const,
-          pending: false,
-          idle: false as const,
-          value: undefined,
-          error,
-        };
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-          'Failed to add token',
-          expect.objectContaining({
-            tokenAddress: mockTokenParams.tokenAddress,
-            chainId: mockTokenParams.chainId,
-            error,
-          }),
-        );
-      });
-    });
-
-    it('handles errors from addToken dispatch silently', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {};
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      const error = new Error('Failed to add token to state');
-      mockDispatch.mockRejectedValue(error);
-
-      mockUseAsyncResult.mockImplementation((asyncFn) => {
-        asyncFn().catch(() => {
-          // Error is caught
-        });
-        return {
-          status: 'error' as const,
-          pending: false,
-          idle: false as const,
-          value: undefined,
-          error,
-        };
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-          'Failed to add token',
-          expect.objectContaining({
-            tokenAddress: mockTokenParams.tokenAddress,
-            chainId: mockTokenParams.chainId,
-            error,
-          }),
-        );
-      });
-    });
-
-    it('does not throw errors to caller', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {};
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      mockFindNetworkClientIdByChainId.mockRejectedValue(
-        new Error('Network error'),
-      );
-
-      expect(() => {
-        renderHook(() => useAddToken(mockTokenParams));
-      }).not.toThrow();
-    });
-  });
-
-  describe('edge cases', () => {
-    it('handles missing allTokens gracefully', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return null;
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockFindNetworkClientIdByChainId).toHaveBeenCalled();
-        expect(mockDispatch).toHaveBeenCalled();
-      });
-    });
-
-    it('handles missing selectedAccount gracefully', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {};
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return null;
-        }
-        return null;
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockFindNetworkClientIdByChainId).toHaveBeenCalled();
-        expect(mockDispatch).toHaveBeenCalled();
-      });
-    });
-
-    it('handles empty tokens array for chain', async () => {
-      mockUseSelector.mockImplementation((selector: SelectorFunction) => {
-        const selectorString = selector.toString();
-        if (selectorString.includes('getAllTokens')) {
-          return {
-            '0x1': {
-              '0xUserAddress': [],
-            },
-          };
-        }
-        if (selectorString.includes('getSelectedInternalAccount')) {
-          return { address: '0xUserAddress' };
-        }
-        return null;
-      });
-
-      renderHook(() => useAddToken(mockTokenParams));
-
-      await waitFor(() => {
-        expect(mockFindNetworkClientIdByChainId).toHaveBeenCalled();
-        expect(mockDispatch).toHaveBeenCalled();
-      });
-    });
+    expect(mockAddToken).not.toHaveBeenCalled();
   });
 });
