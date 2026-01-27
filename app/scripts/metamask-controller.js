@@ -8439,7 +8439,12 @@ export default class MetamaskController extends EventEmitter {
     if (isUnlocked) {
       // Notify Snaps that the client is open or closed when the client is
       // unlocked.
-      this.controllerMessenger.call('SnapController:setClientActive', open);
+      try {
+        this.controllerMessenger.call('SnapController:setClientActive', open);
+      } catch (error) {
+        // Log error but allow extension to continue
+        console.error('Failed to set snap client status:', error);
+      }
     }
 
     if (open) {

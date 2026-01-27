@@ -139,11 +139,20 @@ export class InstitutionalSnapController extends BaseController<
   }
 
   async #handleSnapRequest(args: SnapRPCRequest) {
-    const response = await this.messenger.call(
-      'SnapController:handleRequest',
-      args,
-    );
-    return response as InstitutionalSnapResponse;
+    try {
+      const response = await this.messenger.call(
+        'SnapController:handleRequest',
+        args,
+      );
+      return response as InstitutionalSnapResponse;
+    } catch (error) {
+      // Log the error but allow the extension to continue functioning
+      console.error(
+        `Failed to handle snap request for ${args.snapId}:`,
+        error,
+      );
+      throw error; // Re-throw so callers can handle appropriately
+    }
   }
 
   async #getUpdatedTransactionParameters(transactionMeta: TransactionMeta) {

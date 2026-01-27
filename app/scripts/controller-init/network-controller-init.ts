@@ -212,8 +212,55 @@ export const NetworkControllerInit: ControllerInitFunction<
         connectivityState.connectivityStatus === CONNECTIVITY_STATUSES.Offline
       );
     };
+
+    // Create a wrapper around fetch that handles JSON parse errors more gracefully
+    const fetchWithErrorHandling: typeof fetch = async (...args) => {
+      const response = await globalThis.fetch(...args);
+
+      // Clone the response so we can inspect the body without consuming it
+      const clonedResponse = response.clone();
+
+      try {
+        // Try to peek at the response to see if it's JSON
+        const contentType = response.headers.get('content-type');
+        if (contentType && !contentType.includes('application/json')) {
+          // Log non-JSON responses with OK status for debugging
+          if (response.ok) {
+            const text = await clonedResponse.text();
+            console.warn(
+              `RPC endpoint ${rpcEndpointUrl} returned non-JSON response with status ${response.status}:`,
+              {
+                contentType,
+                statusText: response.statusText,
+                bodyPreview: text.substring(0, 200),
+              },
+            );
+            captureException(
+              new Error(
+                `RPC endpoint returned non-JSON content-type: ${contentType}`,
+              ),
+              {
+                extra: {
+                  url: rpcEndpointUrl,
+                  status: response.status,
+                  contentType,
+                  bodyPreview: text.substring(0, 200),
+                },
+              },
+            );
+          }
+        }
+      } catch (error) {
+        // If we can't inspect the response, log the error but continue
+        console.warn('Error inspecting RPC response:', error);
+      }
+
+      // Return the original response for the RPC service to process
+      return response;
+    };
+
     const commonOptions = {
-      fetch: globalThis.fetch.bind(globalThis),
+      fetch: fetchWithErrorHandling,
       btoa: globalThis.btoa.bind(globalThis),
       isOffline,
     };

@@ -172,11 +172,21 @@ export const SnapControllerInit: ControllerInitFunction<
   });
 
   initMessenger.subscribe('KeyringController:lock', () => {
-    initMessenger.call('SnapController:setClientActive', false);
+    try {
+      initMessenger.call('SnapController:setClientActive', false);
+    } catch (error) {
+      // Log error but allow extension to continue
+      console.error('Failed to set snap client status on lock:', error);
+    }
   });
 
   initMessenger.subscribe('KeyringController:unlock', () => {
-    initMessenger.call('SnapController:setClientActive', true);
+    try {
+      initMessenger.call('SnapController:setClientActive', true);
+    } catch (error) {
+      // Log error but allow extension to continue
+      console.error('Failed to set snap client status on unlock:', error);
+    }
   });
 
   return {
