@@ -82,7 +82,7 @@ export const clearAllBridgeCacheItems = async () => {
       .filter((key) => key.startsWith(BRIDGE_CACHE_PREFIX))
       .map(async (key) => {
         const cachedItem = await getStorageItem(key);
-        if (isStale(cachedItem) || key.includes('search')) {
+        if (cachedItem && (isStale(cachedItem) || key.includes('search'))) {
           await removeStorageItem(key);
         }
       }),
