@@ -1,6 +1,5 @@
 import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { removeSlide, setSelectedAccount } from '../../../store/actions';
 import { CarouselWithEmptyState } from '../carousel';
 import {
@@ -18,9 +17,6 @@ import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
-import { SETTINGS_ROUTE } from '../../../helpers/constants/routes';
-import { SHIELD_CAROUSEL_ID } from '../../../../shared/modules/shield';
-import { SHIELD_QUERY_PARAMS } from '../../../../shared/lib/deep-links/routes/shield';
 
 export const Carousel = () => {
   const dispatch = useDispatch();
@@ -52,8 +48,6 @@ export const Carousel = () => {
     return m;
   }, [slides]);
 
-  const navigate = useNavigate();
-
   const handleCarouselClick = (id: string) => {
     const slide = slideById.get(id);
     const key = slide?.variableName ?? id;
@@ -68,13 +62,6 @@ export const Carousel = () => {
 
     if (key === 'downloadMobileApp') {
       setShowDownloadMobileAppModal(true);
-    }
-
-    if (key === SHIELD_CAROUSEL_ID) {
-      // use fixed utm params here for now because of matching contentful carousel id
-      navigate(
-        `${SETTINGS_ROUTE}?${SHIELD_QUERY_PARAMS.showShieldEntryModal}=true&utm_source=carousel&utm_medium=in-product&utm_campaign=cmp-741242243-afbf08`,
-      );
     }
 
     trackEvent({
