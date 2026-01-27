@@ -7113,6 +7113,18 @@
   "slippageExplanation": {
     "message": "The % change in price you're willing to allow before your transaction is canceled."
   },
+  "slideFundWalletTitle": {
+    "message": "Fund your wallet",
+    "description": "Title for the fund wallet carousel slide"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Unlock faster transactions and lower network fees with a smart account.",
+    "description": "Description for the smart account upgrade carousel slide"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Upgrade to smart account",
+    "description": "Title for the smart account upgrade carousel slide"
+  },
   "smartAccount": {
     "message": "Smart account"
   },
