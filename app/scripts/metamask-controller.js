@@ -5861,7 +5861,24 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string[]} The sorted accounts addresses.
    */
   sortAddressesWithInternalAccounts(addresses, internalAccounts) {
-    return addresses.sort((firstAddress, secondAddress) => {
+    // Filter out addresses without matching internal accounts to prevent race condition crashes
+    const addressesWithIdentities = addresses.filter((address) =>
+      internalAccounts.some(
+        (internalAccount) =>
+          internalAccount.address.toLowerCase() === address.toLowerCase(),
+      ),
+    );
+
+    // Capture telemetry if any addresses were filtered out due to missing identities
+    if (addressesWithIdentities.length < addresses.length) {
+      this.captureKeyringTypesWithMissingIdentities(
+        internalAccounts,
+        addresses,
+      );
+    }
+
+    // Sort the filtered addresses by lastSelected timestamp
+    return addressesWithIdentities.sort((firstAddress, secondAddress) => {
       const firstAccount = internalAccounts.find(
         (internalAccount) =>
           internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
@@ -5872,19 +5889,8 @@ export default class MetamaskController extends EventEmitter {
           internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
       );
 
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
+      // Both accounts are guaranteed to exist due to pre-filtering above
+      if (
         firstAccount.metadata.lastSelected ===
         secondAccount.metadata.lastSelected
       ) {
