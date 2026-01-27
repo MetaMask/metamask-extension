@@ -1,6 +1,7 @@
 import {
   ConfigRegistryController,
   ConfigRegistryApiService,
+  type ConfigRegistryState,
   isConfigRegistryApiEnabled,
 } from '@metamask/config-registry-controller';
 import { getRootMessenger } from '../lib/messenger';
@@ -104,7 +105,7 @@ describe('ConfigRegistryControllerInit', () => {
       expect(mockConfigRegistryController).toHaveBeenCalled();
     });
 
-    it('initializes with correct messenger and state', () => {
+    it('initializes with correct messenger, state, and isConfigRegistryApiEnabled', () => {
       mockIsConfigRegistryApiEnabled.mockReturnValue(false);
       const requestMock = buildInitRequestMock();
       const mockPersistedState = {
@@ -113,7 +114,7 @@ describe('ConfigRegistryControllerInit', () => {
         lastFetched: Date.now(),
         fetchError: null,
         etag: null,
-      };
+      } as unknown as ConfigRegistryState;
       requestMock.persistedState.ConfigRegistryController = mockPersistedState;
 
       ConfigRegistryControllerInit(requestMock);
@@ -121,7 +122,7 @@ describe('ConfigRegistryControllerInit', () => {
       expect(mockConfigRegistryController).toHaveBeenCalledWith({
         messenger: requestMock.controllerMessenger,
         state: mockPersistedState,
-        apiService: expect.any(Object),
+        isConfigRegistryApiEnabled: expect.any(Function),
       });
     });
 
@@ -134,7 +135,7 @@ describe('ConfigRegistryControllerInit', () => {
       expect(mockConfigRegistryController).toHaveBeenCalledWith({
         messenger: requestMock.controllerMessenger,
         state: undefined,
-        apiService: expect.any(Object),
+        isConfigRegistryApiEnabled: expect.any(Function),
       });
     });
 
@@ -155,7 +156,7 @@ describe('ConfigRegistryControllerInit', () => {
 
       ConfigRegistryControllerInit(requestMock);
 
-      expect(mockControllerInstance.startPolling).toHaveBeenCalledWith({});
+      expect(mockControllerInstance.startPolling).toHaveBeenCalledWith(null);
     });
 
     it('stops polling when feature flag is disabled', () => {

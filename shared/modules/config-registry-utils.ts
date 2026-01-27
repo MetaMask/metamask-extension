@@ -1,10 +1,5 @@
-import type {
-  NetworkConfig,
-  NetworkFilterOptions,
-  NetworkComparisonOptions,
-  TransformedNetworkResult,
-} from '@metamask/config-registry-controller';
-import { processNetworkConfigs } from '@metamask/config-registry-controller';
+import type { RegistryNetworkConfig } from '@metamask/config-registry-controller';
+import { filterNetworks } from '@metamask/config-registry-controller';
 import type {
   NetworkConfiguration,
   AddNetworkFields,
@@ -57,60 +52,66 @@ export function transformNetworkConfigurationToAddNetworkFields(
 }
 
 /**
- * Processes networks from Config Registry API:
- * - Filters by isFeatured=true and isTestnet=false
- * - Transforms to NetworkConfiguration format
- * - Compares with existing networks to avoid duplicates
+ * Transforms a RegistryNetworkConfig from the config registry API to AddNetworkFields for UI.
  *
- * @param networks - Networks from Config Registry API
- * @param existingNetworks - Existing network configurations from NetworkController
- * @returns Result containing networks to add and existing chain IDs
+ * @param network - Network from config registry API
+ * @returns Network in AddNetworkFields format
  */
-export function processFeaturedNetworksFromConfigRegistry(
-  networks: NetworkConfig[],
-  existingNetworks: Record<string, NetworkConfiguration>,
-): TransformedNetworkResult {
-  // Filter for featured networks only
-  const filterOptions: NetworkFilterOptions = {
-    isFeatured: true,
-    isActive: true,
-    isDeprecated: false,
-    isTestnet: false,
+function transformRegistryNetworkConfigToAddNetworkFields(
+  network: RegistryNetworkConfig,
+): AddNetworkFields {
+  const transformRpcUrl = (url: string | undefined): string => {
+    if (!url) {
+      return '';
+    }
+    return infuraProjectId
+      ? url.replace('{infuraProjectId}', infuraProjectId)
+      : url;
   };
 
-  // Compare with existing networks
-  const comparisonOptions: NetworkComparisonOptions = {
-    existingNetworks: existingNetworks as Record<string, NetworkConfiguration>,
+  return {
+    chainId: network.chainId as `0x${string}`,
+    name: network.name || network.chainId,
+    nativeCurrency: network.nativeCurrency || 'ETH',
+    rpcEndpoints:
+      network.rpcEndpoints?.map((endpoint) => ({
+        url: transformRpcUrl(endpoint.url),
+        type: RpcEndpointType.Custom as const,
+        networkClientId: endpoint.networkClientId,
+        failoverUrls: endpoint.failoverUrls?.map(transformRpcUrl) || [],
+      })) || [],
+    defaultRpcEndpointIndex: network.defaultRpcEndpointIndex ?? 0,
+    blockExplorerUrls: network.blockExplorerUrls || [],
+    defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex ?? 0,
   };
-
-  // Use the controller's processNetworkConfigs function
-  return processNetworkConfigs(networks, filterOptions, comparisonOptions);
 }
 
 /**
  * Gets featured networks from Config Registry that aren't already added.
- * Transforms them to AddNetworkFields format for UI display.
+ * Filters by isFeatured, isActive, non-testnet, non-deprecated; excludes existing chain IDs;
+ * transforms to AddNetworkFields for UI display.
  *
- * @param networks - Networks from Config Registry
- * @param existingNetworks - Existing network configurations
+ * @param networks - Networks from Config Registry (RegistryNetworkConfig[])
+ * @param existingNetworks - Existing network configurations keyed by chain ID
  * @returns Array of networks ready to be displayed in UI
  */
 export function getFeaturedNetworksToAdd(
-  networks: NetworkConfig[],
+  networks: RegistryNetworkConfig[],
   existingNetworks: Record<string, NetworkConfiguration>,
 ): AddNetworkFields[] {
   if (!Array.isArray(networks) || networks.length === 0) {
     return [];
   }
 
-  // Process networks: filter, transform, and compare
-  const result = processFeaturedNetworksFromConfigRegistry(
-    networks,
-    existingNetworks,
-  );
+  const filtered = filterNetworks(networks, {
+    isFeatured: true,
+    isActive: true,
+    isDeprecated: false,
+    isTestnet: false,
+  });
 
-  // Transform NetworkConfiguration to AddNetworkFields for UI
-  return result.networksToAdd.map(
-    transformNetworkConfigurationToAddNetworkFields,
-  );
+  const existingChainIds = new Set(Object.keys(existingNetworks));
+  const toAdd = filtered.filter((n) => !existingChainIds.has(n.chainId));
+
+  return toAdd.map(transformRegistryNetworkConfigToAddNetworkFields);
 }

@@ -1,6 +1,5 @@
 import {
   ConfigRegistryController,
-  ConfigRegistryApiService,
   isConfigRegistryApiEnabled,
 } from '@metamask/config-registry-controller';
 import { previousValueComparator } from '../lib/util';
@@ -28,20 +27,13 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
     throw new Error('ConfigRegistryController requires a controllerMessenger');
   }
 
-  const fetchFn = globalThis.fetch.bind(globalThis);
-  const apiService = new ConfigRegistryApiService({
-    apiBaseUrl: 'https://client-config.uat-api.cx.metamask.io/v1/config',
-    endpointPath: '/networks',
-    fetch: fetchFn,
-  });
-
   const persistedControllerState = persistedState.ConfigRegistryController;
 
   const controller = new ConfigRegistryController({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     messenger: controllerMessenger as any,
     state: persistedControllerState,
-    apiService,
+    isConfigRegistryApiEnabled,
   });
 
   const togglePolling = () => {
@@ -53,7 +45,7 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
 
       if (isEnabled) {
         try {
-          controller.startPolling({});
+          controller.startPolling(null);
 
           const hasPersistedConfigs =
             controller.state.configs?.networks &&
@@ -62,7 +54,7 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
           if (!hasPersistedConfigs) {
             try {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (controller as any)._executePoll({});
+              (controller as any)._executePoll(null);
             } catch (pollError) {
               // Ignore poll errors during initialization
             }
@@ -73,7 +65,7 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
       } else {
         try {
           controller.stopPolling();
-          controller.clearConfigs();
+          // New controller uses fallback config when API is disabled; no clearConfigs()
         } catch (error) {
           // Polling might not be started, which is fine
         }

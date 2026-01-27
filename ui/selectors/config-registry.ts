@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import type {
   ConfigRegistryState as ConfigRegistryControllerState,
-  NetworkConfig,
+  RegistryNetworkConfig,
 } from '@metamask/config-registry-controller';
 
 export type ConfigRegistryState = {
@@ -38,11 +38,11 @@ export const getConfigRegistryState = (
  * Networks are stored in configs.networks with chainId as key.
  *
  * @param state - The MetaMask state object
- * @returns Array of NetworkConfig from the config registry
+ * @returns Array of RegistryNetworkConfig from the config registry
  */
 export const getConfigRegistryNetworks = createSelector(
   [getConfigRegistryState],
-  (configState): NetworkConfig[] => {
+  (configState): RegistryNetworkConfig[] => {
     const { configs } = configState;
     const networks = configs?.networks || {};
     if (!networks || Object.keys(networks).length === 0) {
@@ -53,11 +53,11 @@ export const getConfigRegistryNetworks = createSelector(
       .map((entry) => {
         const network = entry.value;
         if (network && typeof network === 'object' && 'chainId' in network) {
-          return network as NetworkConfig;
+          return network as RegistryNetworkConfig;
         }
         return null;
       })
-      .filter((network): network is NetworkConfig => network !== null);
+      .filter((network): network is RegistryNetworkConfig => network !== null);
 
     return result;
   },
