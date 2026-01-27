@@ -8,7 +8,13 @@
  * - Sanity checks for metric validation
  */
 
-import type { StatisticalResult, TimerStatistics } from './types';
+import type {
+  PercentileThreshold,
+  StatisticalResult,
+  ThresholdConfig,
+  ThresholdViolation,
+  TimerStatistics,
+} from './types';
 
 /**
  * CV (Coefficient of Variation) thresholds for data quality assessment
@@ -307,14 +313,9 @@ export const calculateTimerStatistics = (
   timerId: string,
   durations: number[],
 ): TimerStatistics => {
-  // Step 1: Apply sanity checks
   const sanityResult = filterBySanityChecks(durations);
-
-  // Step 2: Remove outliers from sanitized data
   const { filtered, outlierCount } = detectOutliers(sanityResult.filtered);
   const sorted = [...filtered].sort((a, b) => a - b);
-
-  // Step 3: Calculate statistics on clean data
   const mean = calculateMean(filtered);
   const stdDev = calculateStdDev(filtered);
   const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
@@ -355,4 +356,168 @@ export const checkExclusionRate = (
     passed: rate <= maxRate,
     rate,
   };
+};
+
+// ==================== Threshold Validation ====================
+
+/**
+ * Check if running in CI environment
+ */
+export const isCI = (): boolean => {
+  return Boolean(process.env.CI);
+};
+
+/**
+ * Get the effective threshold value, applying CI multiplier if in CI environment
+ *
+ * @param baseThreshold - The base threshold value in milliseconds
+ * @param ciMultiplier - Optional multiplier for CI environments (default: 1.0)
+ */
+export const getEffectiveThreshold = (
+  baseThreshold: number,
+  ciMultiplier?: number,
+): number => {
+  if (isCI() && ciMultiplier && ciMultiplier > 0) {
+    return baseThreshold * ciMultiplier;
+  }
+  return baseThreshold;
+};
+
+/**
+ * Validate a single percentile value against thresholds
+ *
+ * @param metricId - The metric identifier
+ * @param percentile - Which percentile ('p75' or 'p95')
+ * @param value - The actual percentile value
+ * @param thresholds - The threshold configuration for this percentile
+ * @param ciMultiplier - Optional CI multiplier
+ */
+const validatePercentile = (
+  metricId: string,
+  percentile: 'p75' | 'p95',
+  value: number,
+  thresholds: PercentileThreshold,
+  ciMultiplier?: number,
+): ThresholdViolation | null => {
+  const warnThreshold = getEffectiveThreshold(thresholds.warn, ciMultiplier);
+  const failThreshold = getEffectiveThreshold(thresholds.fail, ciMultiplier);
+
+  // Check fail threshold first (more severe)
+  if (value > failThreshold) {
+    return {
+      metricId,
+      percentile,
+      value,
+      threshold: failThreshold,
+      severity: 'fail',
+    };
+  }
+
+  // Check warn threshold
+  if (value > warnThreshold) {
+    return {
+      metricId,
+      percentile,
+      value,
+      threshold: warnThreshold,
+      severity: 'warn',
+    };
+  }
+
+  return null;
+};
+
+/**
+ * Validate a single timer's statistics against configured thresholds
+ * Checks both P75 and P95 if configured
+ *
+ * @param stats - The timer statistics to validate
+ * @param thresholds - Threshold configuration for this metric
+ */
+export const validateTimerThreshold = (
+  stats: TimerStatistics,
+  thresholds: ThresholdConfig[string],
+): ThresholdViolation[] => {
+  const violations: ThresholdViolation[] = [];
+
+  // Check P75 thresholds if configured
+  if (thresholds.p75) {
+    const violation = validatePercentile(
+      stats.id,
+      'p75',
+      stats.p75,
+      thresholds.p75,
+      thresholds.ciMultiplier,
+    );
+    if (violation) {
+      violations.push(violation);
+    }
+  }
+
+  // Check P95 thresholds if configured
+  if (thresholds.p95) {
+    const violation = validatePercentile(
+      stats.id,
+      'p95',
+      stats.p95,
+      thresholds.p95,
+      thresholds.ciMultiplier,
+    );
+    if (violation) {
+      violations.push(violation);
+    }
+  }
+
+  return violations;
+};
+
+/**
+ * Validate all timer statistics against configured thresholds
+ *
+ * @param timerStats - Array of timer statistics
+ * @param thresholdConfig - Threshold configuration for metrics
+ * @returns Object containing violations array and whether all thresholds passed
+ */
+export const validateThresholds = (
+  timerStats: TimerStatistics[],
+  thresholdConfig: ThresholdConfig,
+): { violations: ThresholdViolation[]; passed: boolean } => {
+  const violations: ThresholdViolation[] = [];
+
+  for (const stats of timerStats) {
+    const thresholds = thresholdConfig[stats.id];
+
+    // Skip metrics without configured thresholds
+    if (!thresholds) {
+      continue;
+    }
+
+    // Skip unreliable data - don't validate against thresholds
+    if (stats.dataQuality === 'unreliable') {
+      continue;
+    }
+
+    const timerViolations = validateTimerThreshold(stats, thresholds);
+    violations.push(...timerViolations);
+  }
+
+  // Passed if no 'fail' severity violations
+  const passed = !violations.some((v) => v.severity === 'fail');
+
+  return { violations, passed };
+};
+
+/**
+ * Format threshold violations into human-readable messages
+ *
+ * @param violations - Array of threshold violations
+ */
+export const formatThresholdViolations = (
+  violations: ThresholdViolation[],
+): string[] => {
+  return violations.map((v) => {
+    const severityPrefix = v.severity === 'fail' ? '❌ FAIL' : '⚠️ WARN';
+    const percentileLabel = v.percentile.toUpperCase();
+    return `${severityPrefix}: ${v.metricId} ${percentileLabel} (${v.value.toFixed(2)}ms) exceeds threshold (${v.threshold.toFixed(2)}ms)`;
+  });
 };

@@ -3,11 +3,13 @@ import {
   calculateTimerStatistics,
   checkExclusionRate,
   MAX_EXCLUSION_RATE,
+  validateThresholds,
 } from './statistics';
 import type {
   BenchmarkFunction,
   BenchmarkRunResult,
   BenchmarkSummary,
+  ThresholdConfig,
   TimerStatistics,
 } from './types';
 
@@ -44,11 +46,20 @@ async function runWithRetries(
   }
 }
 
+export type RunBenchmarkOptions = {
+  name: string;
+  benchmarkFn: BenchmarkFunction;
+  iterations: number;
+  retries: number;
+  thresholdConfig?: ThresholdConfig;
+};
+
 export async function runBenchmarkWithIterations(
   name: string,
   benchmarkFn: BenchmarkFunction,
   iterations: number,
   retries: number,
+  thresholdConfig?: ThresholdConfig,
 ): Promise<BenchmarkSummary> {
   const allResults: BenchmarkRunResult[] = [];
   let successfulRuns = 0;
@@ -114,6 +125,11 @@ export async function runBenchmarkWithIterations(
     MAX_EXCLUSION_RATE,
   );
 
+  // Validate thresholds if configured
+  const thresholdResult = thresholdConfig
+    ? validateThresholds(timerStats, thresholdConfig)
+    : undefined;
+
   return {
     name,
     iterations,
@@ -124,5 +140,9 @@ export async function runBenchmarkWithIterations(
     excludedDueToQuality,
     exclusionRatePassed: overallExclusionCheck.passed,
     exclusionRate: overallExclusionCheck.rate,
+    ...(thresholdResult && {
+      thresholdViolations: thresholdResult.violations,
+      thresholdsPassed: thresholdResult.passed,
+    }),
   };
 }
