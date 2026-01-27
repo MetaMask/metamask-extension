@@ -136,7 +136,8 @@ describe('Accounts Selectors', () => {
     ])(
       'returns $isEth if the account is: $type',
       ({ id, isEth }: { id: string; isEth: boolean }) => {
-        const state = MOCK_STATE;
+        // Ensure selector memoization works correctly by creating fresh state with new object references.
+        const state = structuredClone(MOCK_STATE);
 
         state.metamask.internalAccounts.selectedAccount = id;
         expect(isSelectedInternalAccountEth(state)).toBe(isEth);
@@ -144,10 +145,10 @@ describe('Accounts Selectors', () => {
     );
 
     it('returns false if no account is selected', () => {
-      const state = MOCK_STATE;
+      const state = structuredClone(MOCK_STATE);
 
       state.metamask.internalAccounts.selectedAccount = '';
-      expect(isSelectedInternalAccountEth(MOCK_STATE)).toBe(false);
+      expect(isSelectedInternalAccountEth(state)).toBe(false);
     });
   });
 

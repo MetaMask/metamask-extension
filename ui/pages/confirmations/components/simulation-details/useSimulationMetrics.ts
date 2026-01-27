@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
   SimulationData,
   SimulationErrorCode,
@@ -104,11 +106,7 @@ export function useSimulationMetrics({
   const simulationLatency = loadingTime;
 
   const properties = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     simulation_response: simulationResponse,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     simulation_latency: simulationLatency,
     ...getProperties(
       receivingAssets,
@@ -176,20 +174,10 @@ function useIncompleteAssetEvent(
       event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
       category: MetaMetricsEventCategory.Transactions,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         asset_address: change.asset.address,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         asset_petname: getPetnameType(change, displayName),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         asset_symbol: displayName?.contractDisplayName,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         asset_type: getAssetType(change.asset.standard),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         fiat_conversion_available: change.fiatAmount
           ? FiatType.Available
           : FiatType.NotAvailable,
@@ -229,8 +217,6 @@ function getProperties(
   const totalValue = totalFiat ? Math.abs(totalFiat) : undefined;
 
   return getPrefixProperties(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     { petname, quantity, type, value, total_value: totalValue },
     prefix,
   );
@@ -310,8 +296,6 @@ function getSimulationResponseType(
   return SimulationResponseType.Changes;
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function unique<T>(list: T[]): T[] {
   return Array.from(new Set(list));
 }

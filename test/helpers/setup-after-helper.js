@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 jest.mock('webextension-polyfill', () => {
   return {
     runtime: {
-      getManifest: () => ({ manifest_version: 2 }),
+      getManifest: () => ({ manifest_version: 3 }),
       onMessage: {
         removeListener: jest.fn(),
         addListener: jest.fn(),

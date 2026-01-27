@@ -22,7 +22,6 @@ export { ImportNftsModal } from './import-nfts-modal';
 export { AccountDetailsMenuItem, ViewExplorerMenuItem } from './menu-items';
 export { ImportTokensModal } from './import-tokens-modal';
 export { AvatarGroup } from './avatar-group';
-export { AssetPickerAmount } from './asset-picker-amount';
 export { AddressListItem } from './address-list-item';
 export { ConnectedStatus } from './connected-status';
 export { NotificationListItem } from './notification-list-item';

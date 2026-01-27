@@ -107,7 +107,10 @@ describe('Onboarding Metametrics Component', () => {
     fireEvent.click(continueButton);
 
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        { replace: true },
+      );
     });
   });
 
@@ -147,7 +150,10 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        { replace: true },
+      );
     });
   });
 
@@ -181,7 +187,10 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_COMPLETION_ROUTE,
+        { replace: true },
+      );
     });
   });
 

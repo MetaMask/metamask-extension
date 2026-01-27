@@ -16,7 +16,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ConnectedStatusIndicator from './connected-status-indicator';
 
 // Mock ConnectedSiteMenu to test props passed to it
-jest.mock('../../multichain', () => ({
+jest.mock('../../multichain/connected-site-menu', () => ({
   ConnectedSiteMenu: jest.fn(({ status, globalMenuColor, text, disabled }) => (
     <div
       data-testid="connection-menu"
@@ -29,6 +29,7 @@ jest.mock('../../multichain', () => ({
 }));
 
 jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
   isInternalAccountInPermittedAccountIds: jest.fn(),
   getCaip25PermissionFromSubject: jest.fn(),
   getCaip25CaveatFromPermission: jest.fn(),

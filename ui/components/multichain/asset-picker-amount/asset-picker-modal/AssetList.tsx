@@ -16,7 +16,7 @@ import {
   Display,
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
-import { TokenListItem } from '../..';
+import { TokenListItem } from '../../token-list-item';
 import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {

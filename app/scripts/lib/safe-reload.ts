@@ -60,5 +60,15 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
       await operationSafener.evacuate();
       browser.runtime.reload();
     },
+
+    /**
+     * Evacuates the current operation queue, executing the latest pending
+     * operation and preventing any future operations from being queued.
+     *
+     * DANGER: You can't come back from this without forcing a runtime reload!
+     *
+     * @returns A Promise that resolves when the evacuation is complete.
+     */
+    evacuate: () => operationSafener.evacuate(),
   };
 }

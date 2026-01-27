@@ -3,7 +3,6 @@ import { Suite } from 'mocha';
 import {
   assertInAnyOrder,
   getEventPayloads,
-  unlockWallet,
   withFixtures,
 } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -15,6 +14,7 @@ import {
   EXPECTED_EVENT_TYPES,
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const quote = {
   amount: '25',
@@ -35,7 +35,7 @@ describe('Bridge tests', function (this: Suite) {
         true,
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '0');
 
         const homePage = new HomePage(driver);
 
@@ -71,12 +71,6 @@ describe('Bridge tests', function (this: Suite) {
             `Missing expected event types: ${missingEventTypes.join(', ')}`,
           );
         }
-
-        const bridgeLinkClicked = findEventsByName(
-          EventTypes.BridgeLinkClicked,
-        );
-        // The flow above navigates twice to the bridge page, so we expect 2 events
-        assert.ok(bridgeLinkClicked.length === 2);
 
         const swapBridgeButtonClicked = findEventsByName(
           EventTypes.SwapBridgeButtonClicked,

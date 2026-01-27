@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
-import { withFixtures, WALLET_PASSWORD } from '../../helpers';
+import { WALLET_PASSWORD } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

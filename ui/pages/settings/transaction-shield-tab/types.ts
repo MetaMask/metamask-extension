@@ -122,3 +122,12 @@ export const CLAIMS_TAB_KEYS = {
 
 export type ClaimsTabKey =
   (typeof CLAIMS_TAB_KEYS)[keyof typeof CLAIMS_TAB_KEYS];
+
+export const CLAIMS_FORM_MODES = {
+  NEW: 'new',
+  EDIT_DRAFT: 'edit-draft',
+  VIEW: 'view',
+} as const;
+
+export type ClaimsFormMode =
+  (typeof CLAIMS_FORM_MODES)[keyof typeof CLAIMS_FORM_MODES];

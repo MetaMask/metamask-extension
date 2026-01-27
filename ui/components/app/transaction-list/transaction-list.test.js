@@ -35,7 +35,9 @@ const defaultState = {
   metamask: {
     ...mockState.metamask,
     enabledNetworkMap: {
-      [CHAIN_IDS.GOERLI]: true,
+      eip155: {
+        [CHAIN_IDS.GOERLI]: true,
+      },
     },
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
     internalAccounts: {

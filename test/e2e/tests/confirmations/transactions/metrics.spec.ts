@@ -8,9 +8,9 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../../constants';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/redesign/deploy-confirmation';
+import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/deploy-confirmation';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { assertAdvancedGasDetails } from './shared';

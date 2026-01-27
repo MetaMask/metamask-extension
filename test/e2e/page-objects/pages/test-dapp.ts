@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
-import { DAPP_URL } from '../../constants';
-import { WINDOW_TITLES } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 
 class TestDapp {
@@ -1127,42 +1126,6 @@ class TestDapp {
     console.log('Sign message with signTypedData');
     await this.clickSignTypedData();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
-  }
-
-  async signTypedDataV3Redesign() {
-    await this.clickSignTypedDatav3();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessageRedesign,
-    );
-    await this.driver.clickElementSafe(
-      this.confirmScrollToBottomButtonRedesign,
-      200,
-    );
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
-  }
-
-  /**
-   * Sign a message with the signTypedDataV4 method.
-   *
-   */
-  async signTypedDataV4() {
-    console.log('Sign message with signTypedDataV4');
-    await this.clickSignTypedDatav4();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessageRedesign,
-    );
-    await this.driver.clickElementSafe(
-      this.confirmScrollToBottomButtonRedesign,
-      200,
-    );
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );

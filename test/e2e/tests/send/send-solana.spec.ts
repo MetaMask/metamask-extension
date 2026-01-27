@@ -1,9 +1,8 @@
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
-import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wallet-standard/testHelpers';
 import { withSolanaAccountSnap } from '../solana/common-solana';
-import { mockSendRedesignFeatureFlag } from './common';
 
 describe('Send Solana', function () {
   it('it should be possible to send SOL', async function () {
@@ -12,7 +11,6 @@ describe('Send Solana', function () {
         ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
         title: this.test?.fullTitle(),
         mockGetTransactionSuccess: true,
-        withCustomMocks: mockSendRedesignFeatureFlag,
       },
       async (driver) => {
         const sendPage = new SendPage(driver);

@@ -46,6 +46,9 @@ describe('Incremental Security', function (this: Suite) {
             },
           })
           .build(),
+        localNodeOptions: {
+          chainId: 1,
+        },
         testSpecificMock: mockSpotPrices,
 
         title: this.test?.fullTitle(),
@@ -111,8 +114,6 @@ describe('Incremental Security', function (this: Suite) {
         // copy the wallet address
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        // TODO: This is a temporary fix to unblock CI. Remove this once the issue is fixed.
-        await homePage.clickBackupRemindMeLaterButtonSafe();
         await homePage.headerNavbar.clickAddressCopyButton();
 
         // switched to Dapp and send eth to the current account

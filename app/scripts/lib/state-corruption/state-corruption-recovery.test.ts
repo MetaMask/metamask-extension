@@ -43,6 +43,10 @@ const mockBrokenPersistence = (error: Error): PersistenceManager =>
     getBackup: jest.fn().mockRejectedValue(error),
   }) as unknown as PersistenceManager;
 
+// The cause error message that is always included in PersistenceError
+// to test that causeMessage is properly extracted and passed to the UI
+const CAUSE_ERROR_MESSAGE = 'Error: An unexpected error occurred';
+
 describe('CorruptionHandler.handleStateCorruptionError', () => {
   let corruptionHandler: CorruptionHandler;
   beforeEach(() => {
@@ -107,10 +111,14 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
 
         // some cases of Corruption detection will have a `backup` already
         // present in the `error` object, this sets that case up.
+        // We always include a cause to test that causeMessage is properly
+        // extracted and passed to the UI across all scenarios.
+        const cause = new Error(CAUSE_ERROR_MESSAGE);
         const error = new PersistenceError(
           'Corrupted',
           // `backup` is not always a `Backup`, but in reality that is also true
           backupHasErr ? (backup as Backup) : null,
+          cause,
         );
 
         // handle the case where `getBackup` function returns an error. We can't
@@ -172,12 +180,13 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
         );
 
         // make sure the `corruptionFn` was called with the expected error
-        // message
+        // message, including the causeMessage extracted from the cause
         expect(corruptionFn).toHaveBeenCalledWith({
           error: {
             message: error.message,
             name: error.name,
             stack: error.stack,
+            causeMessage: CAUSE_ERROR_MESSAGE,
           },
           ...result,
         });

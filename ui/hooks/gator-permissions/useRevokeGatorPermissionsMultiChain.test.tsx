@@ -13,15 +13,21 @@ import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import {
   PermissionTypesWithCustom,
-  Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import {
+  encodeDisableDelegation,
+  getDelegationHashOffchain,
+} from '../../../shared/lib/delegation/delegation';
+import { getInternalAccountByAddress } from '../../selectors';
+import {
+  checkDelegationDisabled,
+  submitDirectRevocation,
+} from '../../store/controller-actions/gator-permissions-controller';
 import {
   useRevokeGatorPermissionsMultiChain,
   RevokeGatorPermissionsMultiChainResults,
@@ -40,6 +46,7 @@ jest.mock('@metamask/delegation-core', () => ({
 
 jest.mock('../../../shared/lib/delegation/delegation', () => ({
   encodeDisableDelegation: jest.fn(),
+  getDelegationHashOffchain: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/delegation', () => ({
@@ -51,8 +58,17 @@ jest.mock('../../../shared/lib/delegation', () => ({
 // Mock the selectors
 jest.mock('../../selectors/accounts', () => ({
   ...jest.requireActual('../../selectors/accounts'),
-  getMemoizedInternalAccountByAddress: jest.fn(),
+  getInternalAccountByAddress: jest.fn(),
 }));
+
+jest.mock(
+  '../../store/controller-actions/gator-permissions-controller',
+  () => ({
+    addPendingRevocation: jest.fn(),
+    submitDirectRevocation: jest.fn(),
+    checkDelegationDisabled: jest.fn(),
+  }),
+);
 
 // Mock useConfirmationNavigation hook
 const mockNavigateToId = jest.fn();
@@ -79,10 +95,20 @@ const mockEncodeDisableDelegation =
   encodeDisableDelegation as jest.MockedFunction<
     typeof encodeDisableDelegation
   >;
-const mockGetMemoizedInternalAccountByAddress =
-  getMemoizedInternalAccountByAddress as jest.MockedFunction<
-    typeof getMemoizedInternalAccountByAddress
+const mockGetDelegationHashOffchain =
+  getDelegationHashOffchain as jest.MockedFunction<
+    typeof getDelegationHashOffchain
   >;
+const mockGetMemoizedInternalAccountByAddress =
+  getInternalAccountByAddress as jest.MockedFunction<
+    typeof getInternalAccountByAddress
+  >;
+const mockCheckDelegationDisabled =
+  checkDelegationDisabled as jest.MockedFunction<
+    typeof checkDelegationDisabled
+  >;
+const mockSubmitDirectRevocation =
+  submitDirectRevocation as jest.MockedFunction<typeof submitDirectRevocation>;
 
 const mockStore = configureStore();
 
@@ -99,45 +125,37 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
   const mockNetworkClientId1 = 'mock-network-client-id-1';
   const mockNetworkClientId2 = 'mock-network-client-id-2';
 
-  const mockPermission1: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  > = {
-    permissionResponse: {
-      permission: {
-        type: 'custom' as const,
-        data: {},
-        isAdjustmentAllowed: false,
-      },
-      chainId: mockChainId1,
-      address: mockSelectedAccountAddress as Hex,
-      context: mockPermissionContext1,
-      signerMeta: {
+  const mockPermission1: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
+    {
+      permissionResponse: {
+        permission: {
+          type: 'custom' as const,
+          data: {},
+          isAdjustmentAllowed: false,
+        },
+        chainId: mockChainId1,
+        from: mockSelectedAccountAddress as Hex,
+        context: mockPermissionContext1,
         delegationManager: mockDelegationManagerAddress,
       },
-    },
-    siteOrigin: 'example.com',
-  };
+      siteOrigin: 'example.com',
+    };
 
-  const mockPermission2: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  > = {
-    permissionResponse: {
-      permission: {
-        type: 'custom' as const,
-        data: {},
-        isAdjustmentAllowed: false,
-      },
-      chainId: mockChainId2,
-      address: mockSelectedAccountAddress as Hex,
-      context: mockPermissionContext2,
-      signerMeta: {
+  const mockPermission2: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
+    {
+      permissionResponse: {
+        permission: {
+          type: 'custom' as const,
+          data: {},
+          isAdjustmentAllowed: false,
+        },
+        chainId: mockChainId2,
+        from: mockSelectedAccountAddress as Hex,
+        context: mockPermissionContext2,
         delegationManager: mockDelegationManagerAddress,
       },
-    },
-    siteOrigin: 'example.com',
-  };
+      siteOrigin: 'example.com',
+    };
 
   const mockTransactionMeta1: TransactionMeta = {
     id: 'tx-id-1',
@@ -208,9 +226,12 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
 
     mockDecodeDelegations.mockReturnValue([mockDelegation]);
     mockEncodeDisableDelegation.mockReturnValue('0xencodedCallData' as Hex);
+    mockGetDelegationHashOffchain.mockReturnValue('0xdelegationhash' as Hex);
     mockFindNetworkClientIdByChainId.mockResolvedValue(
       mockNetworkClientId1 as never,
     );
+    // Default to false so transactions are created (delegation is not disabled)
+    mockCheckDelegationDisabled.mockResolvedValue(false);
   });
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -356,6 +377,37 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
       }
       expect(results[mockChainId1].skipped).toHaveLength(1);
       expect(results[mockChainId1].revoked).toHaveLength(0);
+    });
+
+    it('should call submitDirectRevocation without creating transaction when delegation is already disabled', async () => {
+      mockCheckDelegationDisabled.mockResolvedValue(true);
+
+      const { result } = renderHook(
+        () => useRevokeGatorPermissionsMultiChain(),
+        { wrapper },
+      );
+
+      const permissionsByChain = {
+        [mockChainId1]: [mockPermission1],
+      };
+
+      let results: RevokeGatorPermissionsMultiChainResults | undefined;
+      await act(async () => {
+        results =
+          await result.current.revokeGatorPermissionsBatchMultiChain(
+            permissionsByChain,
+          );
+      });
+
+      if (!results) {
+        throw new Error('Results should be defined');
+      }
+      expect(mockSubmitDirectRevocation).toHaveBeenCalledWith({
+        permissionContext: mockPermissionContext1,
+      });
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+      expect(results[mockChainId1].revoked).toHaveLength(0);
+      expect(results[mockChainId1].errors).toHaveLength(0);
     });
 
     it('should handle empty permissionsByChain object', async () => {

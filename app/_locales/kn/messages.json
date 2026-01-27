@@ -385,9 +385,6 @@
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "ನಕಾರಾತ್ಮಕ ಪ್ರಮಾಣದ ಇಟಿಹೆಚ್ ಅನ್ನು ಕಳುಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
-  },
   "networkName": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಹೆಸರು"
   },

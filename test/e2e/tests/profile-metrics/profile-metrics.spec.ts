@@ -34,11 +34,6 @@ const mockSendFeatureFlag = (enabled: boolean) => (mockServer: Mockttp) =>
         json: [
           {
             extensionUxPna25: enabled,
-            enableMultichainAccountsState2: {
-              enabled: true,
-              featureVersion: '2',
-              minimumVersion: '12.19.0',
-            },
           },
         ],
       };
@@ -82,10 +77,9 @@ async function waitForEndpointToBeCalled(
 
 describe('Profile Metrics', function () {
   describe('when MetaMetrics is enabled, the feature flag is on, and the user acknowledged the privacy change', function () {
-    it('sends exising accounts to the API on wallet unlock after activating MetaMetrics', async function () {
+    it('sends exising accounts to the API on wallet unlock after activating MetaMetrics and an initial delay', async function () {
       await withFixtures(
         {
-          forceBip44Version: false,
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
@@ -126,7 +120,6 @@ describe('Profile Metrics', function () {
     it('sends new accounts to the API when they are created after wallet unlock', async function () {
       await withFixtures(
         {
-          forceBip44Version: false,
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
               participateInMetaMetrics: true,

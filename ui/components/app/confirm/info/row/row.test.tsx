@@ -2,7 +2,11 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { Text } from '../../../../component-library';
-import { ConfirmInfoRow } from './row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowSize,
+  ConfirmInfoRowSkeleton,
+} from './row';
 
 describe('ConfirmInfoRow', () => {
   it('should match snapshot', () => {
@@ -37,5 +41,31 @@ describe('ConfirmInfoRow', () => {
     expect(screen.queryByText('Some text')).not.toBeInTheDocument();
     fireEvent.click(screen.getByTestId('sectionCollapseButton'));
     expect(screen.queryByText('Some text')).toBeInTheDocument();
+  });
+
+  it('should match snapshot for Small rowVariant', () => {
+    const { container } = render(
+      <ConfirmInfoRow
+        label="Transaction Fee"
+        rowVariant={ConfirmInfoRowSize.Small}
+      >
+        <Text>$0.50</Text>
+      </ConfirmInfoRow>,
+    );
+    expect(container).toMatchSnapshot();
+  });
+});
+
+describe('ConfirmInfoRowSkeleton', () => {
+  it('should match snapshot', () => {
+    const { container } = render(
+      <ConfirmInfoRowSkeleton data-testid="test-skeleton" />,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render with data-testid', () => {
+    render(<ConfirmInfoRowSkeleton data-testid="my-skeleton" />);
+    expect(screen.getByTestId('my-skeleton')).toBeInTheDocument();
   });
 });

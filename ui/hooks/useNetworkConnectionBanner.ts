@@ -2,8 +2,11 @@ import { useEffect, useCallback, useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { selectFirstUnavailableEvmNetwork } from '../selectors/multichain/networks';
-import { getNetworkConnectionBanner } from '../selectors/selectors';
-import { updateNetworkConnectionBanner } from '../store/actions';
+import {
+  getNetworkConnectionBanner,
+  getIsDeviceOffline,
+} from '../selectors/selectors';
+import { updateNetworkConnectionBanner, updateNetwork } from '../store/actions';
 import { MetaMetricsContext } from '../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -14,6 +17,7 @@ import { getNetworkConfigurationsByChainId } from '../../shared/modules/selector
 import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { isPublicEndpointUrl } from '../../shared/lib/network-utils';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
+import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 
 type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
   trackNetworkBannerEvent: (event: {
@@ -21,6 +25,12 @@ type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
     eventName: string;
     networkClientId: string;
   }) => void;
+  /**
+   * Switch the default RPC endpoint to Infura for the current unavailable network.
+   * Only available when the network has an Infura endpoint to switch to.
+   * Returns a promise that resolves when the switch is complete (or rejects on error).
+   */
+  switchToInfura: () => Promise<void>;
 };
 
 const DEGRADED_BANNER_TIMEOUT = 5 * 1000;
@@ -30,6 +40,7 @@ export const useNetworkConnectionBanner =
   (): UseNetworkConnectionBannerResult => {
     const dispatch = useDispatch();
     const trackEvent = useContext(MetaMetricsContext);
+    const isOffline = useSelector(getIsDeviceOffline);
     const firstUnavailableEvmNetwork = useSelector(
       selectFirstUnavailableEvmNetwork,
     );
@@ -143,6 +154,8 @@ export const useNetworkConnectionBanner =
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
               isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
+              infuraEndpointIndex:
+                firstUnavailableEvmNetwork.infuraEndpointIndex,
             }),
           );
         }
@@ -171,6 +184,8 @@ export const useNetworkConnectionBanner =
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
               isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
+              infuraEndpointIndex:
+                firstUnavailableEvmNetwork.infuraEndpointIndex,
             }),
           );
 
@@ -187,8 +202,19 @@ export const useNetworkConnectionBanner =
 
     // If the first unavailable network does not change but the status changes, start the degraded or unavailable timer
     // If the first unavailable network changes, reset all timers and change the status
-
+    // If the device is offline, don't show network banners - the issue is device connectivity, not the network
     useEffect(() => {
+      // When device is offline, clear timers and reset banner state
+      // We don't want to show network degraded/unavailable banners when the real issue
+      // is the device's internet connectivity
+      if (isOffline) {
+        clearTimers();
+        if (networkConnectionBannerState.status !== 'available') {
+          dispatch(updateNetworkConnectionBanner({ status: 'available' }));
+        }
+        return;
+      }
+
       if (firstUnavailableEvmNetwork) {
         if (networkConnectionBannerState.status === 'degraded') {
           startUnavailableTimer();
@@ -206,6 +232,7 @@ export const useNetworkConnectionBanner =
         clearTimers();
       };
     }, [
+      isOffline,
       firstUnavailableEvmNetwork,
       clearTimers,
       dispatch,
@@ -214,8 +241,76 @@ export const useNetworkConnectionBanner =
       startUnavailableTimer,
     ]);
 
+    const switchToInfura = useCallback(async () => {
+      if (
+        networkConnectionBannerState.status !== 'degraded' &&
+        networkConnectionBannerState.status !== 'unavailable'
+      ) {
+        return;
+      }
+
+      const { chainId, infuraEndpointIndex } = networkConnectionBannerState;
+      if (infuraEndpointIndex === undefined) {
+        return;
+      }
+
+      const networkConfiguration = networkConfigurationsByChainId[chainId];
+      if (!networkConfiguration) {
+        return;
+      }
+
+      // Update the network configuration to use the Infura endpoint as default
+      // Only show success toast if the update completes without error
+      try {
+        await dispatch(
+          updateNetwork(
+            {
+              chainId,
+              name: networkConfiguration.name,
+              nativeCurrency: networkConfiguration.nativeCurrency,
+              rpcEndpoints: networkConfiguration.rpcEndpoints,
+              blockExplorerUrls: networkConfiguration.blockExplorerUrls,
+              defaultBlockExplorerUrlIndex:
+                networkConfiguration.defaultBlockExplorerUrlIndex,
+              defaultRpcEndpointIndex: infuraEndpointIndex,
+            },
+            { replacementSelectedRpcEndpointIndex: infuraEndpointIndex },
+          ),
+        );
+        dispatch(setShowInfuraSwitchToast(true));
+      } catch {
+        // Error is already handled by updateNetwork which shows a warning
+        // Do not show success toast on failure
+      }
+    }, [
+      networkConnectionBannerState,
+      networkConfigurationsByChainId,
+      dispatch,
+    ]);
+
+    // When in degraded/unavailable status, use fresh selector data for network details
+    // to prevent stale "Switch to MetaMask default RPC" button after switching endpoints
+    if (
+      (networkConnectionBannerState.status === 'degraded' ||
+        networkConnectionBannerState.status === 'unavailable') &&
+      firstUnavailableEvmNetwork
+    ) {
+      return {
+        ...networkConnectionBannerState,
+        // Override with fresh data from selector
+        networkClientId: firstUnavailableEvmNetwork.networkClientId,
+        networkName: firstUnavailableEvmNetwork.networkName,
+        chainId: firstUnavailableEvmNetwork.chainId,
+        isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
+        infuraEndpointIndex: firstUnavailableEvmNetwork.infuraEndpointIndex,
+        trackNetworkBannerEvent,
+        switchToInfura,
+      };
+    }
+
     return {
       ...networkConnectionBannerState,
       trackNetworkBannerEvent,
+      switchToInfura,
     };
   };

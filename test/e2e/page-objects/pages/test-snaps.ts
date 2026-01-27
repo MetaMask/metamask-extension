@@ -77,6 +77,7 @@ export const buttonLocator = {
   sendGetFileBase64Button: '#sendGetFileBase64Button',
   sendGetFileHexButton: '#sendGetFileHexButton',
   sendGetFileTextButton: '#sendGetFileTextButton',
+  sendGenesisBlockEthProvider: '#sendGenesisBlockEthProvider',
   sendInsightButton: '#sendInsights',
   sendGetStateButton: '#sendGetState',
   sendNetworkAccessTestButton: '#sendNetworkAccessTest',
@@ -285,11 +286,16 @@ export class TestSnaps {
     spanSelectorId: keyof typeof spanLocator,
     partialMessage: string,
   ) {
-    const element = await this.driver.findElement(spanLocator[spanSelectorId]);
-    const spanText = await element.getAttribute('textContent');
-    if (!spanText.includes(partialMessage)) {
-      throw new Error(`Expected partial message "${partialMessage}" not found`);
-    }
+    await this.driver.waitUntil(
+      async () => {
+        const element = await this.driver.findElement(
+          spanLocator[spanSelectorId],
+        );
+        const spanText = await element.getAttribute('textContent');
+        return spanText.includes(partialMessage);
+      },
+      { timeout: veryLargeDelayMs * 2, interval: 200 },
+    );
   }
 
   async checkCount(expectedCount: string) {

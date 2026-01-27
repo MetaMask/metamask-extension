@@ -76,6 +76,7 @@ describe('Submit Claim Form', () => {
           validSubmissionWindowDays: 10,
           supportedNetworks: ['0x1', '0x5'],
         },
+        drafts: [],
       },
     });
   });

@@ -56,12 +56,10 @@ describe('DisconnectPermissionsModal', () => {
               isAdjustmentAllowed: false,
             },
             chainId: '0x1' as Hex,
-            address: '0x1234567890123456789012345678901234567890' as Hex,
+            from: '0x1234567890123456789012345678901234567890' as Hex,
             context: '0x1234567890123456789012345678901234567890' as Hex,
-            signerMeta: {
-              delegationManager:
-                '0x1234567890123456789012345678901234567890' as Hex,
-            },
+            delegationManager:
+              '0x1234567890123456789012345678901234567890' as Hex,
           },
           siteOrigin: 'portfolio.metamask.io',
         },
@@ -139,7 +137,7 @@ describe('DisconnectPermissionsModal', () => {
       <DisconnectPermissionsModal {...args} />,
       mockStore,
     );
-    expect(getByText('Token Stream')).toBeInTheDocument();
+    expect(getByText('Token stream')).toBeInTheDocument();
     expect(getByText('1 ETH per second • 0x12345...67890')).toBeInTheDocument();
   });
 });

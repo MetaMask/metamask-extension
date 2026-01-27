@@ -20,12 +20,13 @@ import {
 } from './api-specs/helpers';
 
 import FixtureBuilder from './fixtures/fixture-builder';
-import { withFixtures, unlockWallet } from './helpers';
+import { withFixtures } from './helpers';
 import { ACCOUNT_1, DAPP_URL } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
 import HomePage from './page-objects/pages/home/homepage';
+import { loginWithoutBalanceValidation } from './page-objects/flows/login.flow';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -111,7 +112,7 @@ async function main() {
       driver: Driver;
       extensionId: string;
     }) => {
-      await unlockWallet(driver);
+      await loginWithoutBalanceValidation(driver);
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
       // We don't have balance so we expect to see Fund Your Wallet
@@ -190,7 +191,7 @@ async function main() {
       driver: Driver;
       extensionId: string;
     }) => {
-      await unlockWallet(driver);
+      await loginWithoutBalanceValidation(driver);
 
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();

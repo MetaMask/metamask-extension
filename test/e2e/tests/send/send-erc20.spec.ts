@@ -1,5 +1,5 @@
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -7,17 +7,14 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withFixtures } from '../../helpers';
-import { mockSendRedesignFeatureFlag } from './common';
 
 describe('Send ERC20', function () {
   const smartContract = SMART_CONTRACTS.HST;
   it('it should be possible to send ERC20 token', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSendRedesignFeatureFlag,
         smartContract,
       },
       async ({ driver, localNodes, contractRegistry }) => {
@@ -58,10 +55,8 @@ describe('Send ERC20', function () {
   it('it should be possible to send Max token value', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSendRedesignFeatureFlag,
         smartContract,
       },
       async ({ driver, localNodes, contractRegistry }) => {

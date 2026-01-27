@@ -44,7 +44,13 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 }) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const siteName = getURLHost(activeTabOrigin);
+
+  // Only show the host for valid web URLs (http/https), otherwise show "URL unknown"
+  const isWebOrigin =
+    activeTabOrigin?.startsWith('http://') ||
+    activeTabOrigin?.startsWith('https://');
+  const siteHost = isWebOrigin ? getURLHost(activeTabOrigin) : '';
+  const siteName = siteHost || t('urlUnknown');
 
   const allDomains = useSelector(getAllDomains);
   const networkConfigurationsByChainId = useSelector(

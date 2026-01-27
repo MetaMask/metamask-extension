@@ -1,13 +1,19 @@
 import { createSelector } from 'reselect';
-import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type {
+  BridgeHistoryItem,
+  BridgeStatusControllerState,
+} from '@metamask/bridge-status-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
-import { type BridgeStatusAppState } from '../../../shared/types/bridge-status';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   getInternalAccountsFromGroupById,
   getSelectedAccountGroup,
 } from '../../selectors/multichain-accounts/account-tree';
+
+type BridgeStatusAppState = {
+  metamask: BridgeStatusControllerState;
+};
 
 const selectBridgeHistory = (state: BridgeStatusAppState) =>
   state.metamask.txHistory;

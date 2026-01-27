@@ -58,10 +58,12 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex: 1; flex-direction: column;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+          style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
+            style="flex-shrink: 0;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -81,18 +83,63 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
               class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
             >
               <div
-                class="name name__clickable name__missing"
+                class="name name__recognized_unsaved"
               >
-                <span
-                  class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
-                <p
-                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
-                  0x2e0D7...5d09B
+                  <div
+                    class="flex [&>div]:!rounded-none"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
+                    >
+                      <svg
+                        height="16"
+                        width="16"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#18CDF2"
+                          height="16"
+                          transform="translate(-0.52419675189697 -1.65214203473025) rotate(328.9 8.00000000000000 8.00000000000000)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#035E56"
+                          height="16"
+                          transform="translate(-9.14923085441602 5.29623093587430) rotate(176.2 8.00000000000000 8.00000000000000)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#F26602"
+                          height="16"
+                          transform="translate(8.33392100911196 -7.10256986149854) rotate(468.9 8.00000000000000 8.00000000000000)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <p
+                  class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+                >
+                  Account 1
                 </p>
               </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                style="text-align: right;"
+              >
+                Wallet 1
+              </p>
             </div>
           </div>
         </div>
@@ -106,10 +153,12 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex: 1; flex-direction: column; overflow: hidden;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+          style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
+            style="flex-shrink: 0;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -165,10 +214,12 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; padding-left: 0px; padding-right: 0px;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+              style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
+                style="flex-shrink: 0;"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -211,10 +262,12 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -246,10 +299,12 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -296,10 +351,12 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -359,10 +416,12 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+          style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
+            style="flex-shrink: 0;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -454,10 +513,12 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"

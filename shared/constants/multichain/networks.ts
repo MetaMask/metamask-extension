@@ -6,7 +6,9 @@ import {
   SolScope,
   TrxScope,
   TrxAccountType,
+  KeyringAccountType,
 } from '@metamask/keyring-api';
+import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
@@ -419,4 +421,42 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
 export const SOLANA_TEST_CHAINS: CaipChainId[] = [
   SolScope.Testnet,
   SolScope.Devnet,
+];
+
+export const SOLANA_CHAINS: CaipChainId[] = [
+  MultichainNetworks.SOLANA,
+  MultichainNetworks.SOLANA_TESTNET,
+  MultichainNetworks.SOLANA_DEVNET,
+];
+
+export const TRON_CHAINS: CaipChainId[] = [
+  MultichainNetworks.TRON,
+  MultichainNetworks.TRON_NILE,
+  MultichainNetworks.TRON_SHASTA,
+];
+
+type NonEvmAccountChangedConfig = {
+  network: MultichainNetworks;
+  chains: CaipChainId[];
+  notificationProperty: KnownSessionProperties;
+  accountType: KeyringAccountType;
+};
+
+export const NON_EVM_ACCOUNT_CHANGED_CONFIGS: NonEvmAccountChangedConfig[] = [
+  {
+    network: MultichainNetworks.SOLANA,
+    chains: SOLANA_CHAINS,
+    notificationProperty:
+      KnownSessionProperties.SolanaAccountChangedNotifications,
+    accountType: SolAccountType.DataAccount,
+  },
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  {
+    network: MultichainNetworks.TRON,
+    chains: TRON_CHAINS,
+    notificationProperty:
+      KnownSessionProperties.TronAccountChangedNotifications,
+    accountType: TrxAccountType.Eoa,
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];

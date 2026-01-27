@@ -10,6 +10,10 @@ import {
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
+import {
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
+} from '../../helpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -69,13 +73,8 @@ describe('PersonalSign Confirmation', () => {
   });
 
   it('displays the header account modal with correct data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPersonalSign(
       account.address,
     );
@@ -95,7 +94,7 @@ describe('PersonalSign Confirmation', () => {
       accountName,
     );
     expect(
-      await screen.findByTestId('header-network-display-name'),
+      await screen.findByTestId('confirmation__details-network-name'),
     ).toHaveTextContent('Sepolia');
 
     fireEvent.click(

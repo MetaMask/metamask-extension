@@ -1,4 +1,4 @@
-import { ClaimsControllerState } from '@metamask/claims-controller';
+import { ClaimDraft, ClaimsControllerState } from '@metamask/claims-controller';
 
 export type ClaimsState = {
   metamask: ClaimsControllerState;
@@ -24,4 +24,8 @@ export function getSupportedNetworksForClaim(
  */
 export function getValidSubmissionWindowDays(state: ClaimsState): number {
   return state.metamask.claimsConfigurations.validSubmissionWindowDays;
+}
+
+export function getClaimDrafts(state: ClaimsState): ClaimDraft[] {
+  return state.metamask.drafts;
 }

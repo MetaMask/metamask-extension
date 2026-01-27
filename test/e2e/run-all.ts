@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
+import { extractTestResults } from '../../.github/scripts/extract-test-results';
 import {
   formatTime,
   normalizeTestPath,
@@ -17,6 +18,9 @@ import {
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS: string[] = [];
+
+// This test should only be run manually or via specific workflow update-onboarding-fixture.yml
+const DIST_EXCLUDED_TESTS: string[] = ['wallet-fixture-export.spec.ts'];
 
 const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
   const testFilenames = await fs.promises.readdir(testDir, {
@@ -39,7 +43,7 @@ const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
 };
 
 // For running E2Es in parallel in GitHub Actions
-function runningOnGitHubActions(fullTestList: string[]) {
+async function runningOnGitHubActions(fullTestList: string[]) {
   let changedOrNewTests: string[] = [];
 
   if (!shouldE2eQualityGateBeSkipped()) {
@@ -53,9 +57,11 @@ function runningOnGitHubActions(fullTestList: string[]) {
   // GitHub Actions uses matrix.index (0-based) and matrix.total values for test splitting
   const matrixIndex = parseInt(process.env.MATRIX_INDEX || '0', 10);
   const matrixTotal = parseInt(process.env.MATRIX_TOTAL || '1', 10);
+  const runAttempt = parseInt(process.env.RUN_ATTEMPT || '1', 10);
+  const previousResultsPath = process.env.PREVIOUS_RESULTS_PATH;
 
   console.log(
-    `GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs`,
+    `GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs (attempt ${runAttempt})`,
   );
 
   const chunks = splitTestsByTimings(
@@ -68,9 +74,58 @@ function runningOnGitHubActions(fullTestList: string[]) {
     `Expected chunk run time: ${formatTime(chunks[matrixIndex].time)}`,
   );
 
-  const myTestList = chunks[matrixIndex].paths || [];
+  const myOriginalTestList = chunks[matrixIndex].paths || [];
 
-  return { myTestList, changedOrNewTests };
+  // Check if this is a re-run with previous results available
+  if (runAttempt > 1 && previousResultsPath) {
+    console.log(
+      'Re-run detected (attempt %d), checking for failed tests to re-run...',
+      runAttempt,
+    );
+
+    const { passed, failed, executed } =
+      await extractTestResults(previousResultsPath);
+
+    // If no tests were executed in previous run, something is wrong - run all tests
+    if (executed.length === 0) {
+      console.log(
+        'No test results found from previous run, running all tests in chunk.',
+      );
+      return { myTestList: myOriginalTestList, changedOrNewTests };
+    }
+
+    // Re-run tests that failed OR were never executed in previous run
+    // Only skip tests that explicitly passed - this ensures:
+    // 1. Failed tests get re-run
+    // 2. Tests that never executed (due to crash/cancel) also get run
+    // 3. Only confirmed passing tests are skipped
+    const testsToRerun = myOriginalTestList.filter(
+      (testPath) => !passed.includes(testPath),
+    );
+
+    const failedInChunk = testsToRerun.filter((t) => failed.includes(t)).length;
+    const notExecutedInChunk = testsToRerun.length - failedInChunk;
+    console.log(
+      `Previous run results: ${passed.length} passed, ${failed.length} failed`,
+    );
+    console.log(
+      `This chunk: ${failedInChunk} failed, ${notExecutedInChunk} not executed`,
+    );
+
+    if (testsToRerun.length > 0) {
+      console.log(
+        `Re-running ${testsToRerun.length} tests (${failedInChunk} failed, ${notExecutedInChunk} not executed):`,
+        testsToRerun,
+      );
+      return { myTestList: testsToRerun, changedOrNewTests };
+    }
+
+    // No tests to re-run - all tests in this chunk passed
+    console.log('All tests in this chunk passed, skipping.');
+    return { myTestList: [], changedOrNewTests };
+  }
+
+  return { myTestList: myOriginalTestList, changedOrNewTests };
 }
 
 async function main(): Promise<void> {
@@ -169,7 +224,12 @@ async function main(): Promise<void> {
     ];
   } else if (dist) {
     const testDir = path.join(__dirname, 'dist');
-    testPaths = await getTestPathsForTestDir(testDir);
+    const allDistTests = await getTestPathsForTestDir(testDir);
+    testPaths = allDistTests.filter((p) =>
+      DIST_EXCLUDED_TESTS.every(
+        (excludedTest) => path.basename(p) !== excludedTest,
+      ),
+    );
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
@@ -225,6 +285,12 @@ async function main(): Promise<void> {
   if (process.env.GITHUB_ACTION) {
     ({ myTestList, changedOrNewTests } =
       await runningOnGitHubActions(testPaths));
+
+    // If no tests to run (e.g., all passed in previous attempt), exit early
+    if (myTestList.length === 0) {
+      console.log('No tests to run, exiting successfully.');
+      return;
+    }
   } else {
     myTestList = testPaths;
   }

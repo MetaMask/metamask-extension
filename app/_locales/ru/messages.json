@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Добавить счет или кошелек"
   },
-  "addAccountToMetaMask": {
-    "message": "Добавить счет в MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Добавить кошелек"
-  },
-  "addingAccount": {
-    "message": "Добавление счет..."
   },
   "additionalNetworks": {
     "message": "Дополнительные сети"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Мы не смогли получить никаких исторических данных"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFT"
-  },
   "assetOptions": {
     "message": "Параметры актива"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Активы"
@@ -1083,12 +1071,6 @@
   "bridgeTo": {
     "message": "Мост к"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Если вы добавили этот токен вручную. Убедитесь, что вы осознаете риски для своих средств, прежде чем использовать мост."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Мы не можем проверить этот токен."
-  },
   "bridgeTransactionProgress": {
     "message": "Транзакция $1 из 2"
   },
@@ -1277,9 +1259,6 @@
   },
   "close": {
     "message": "Закрыть"
-  },
-  "closeExtension": {
-    "message": "Закрыть расширение"
   },
   "closeSlide": {
     "message": "Закрыть $1",
@@ -3168,9 +3147,6 @@
   "insufficientFunds": {
     "message": "Недостаточно средств."
   },
-  "insufficientFundsForGas": {
-    "message": "Недостаточно средств для оплаты газа"
-  },
   "insufficientFundsSend": {
     "message": "Недостаточно средств"
   },
@@ -3897,9 +3873,6 @@
     "message": "Нужно выбрать файл для импорта.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Невозможно отправить отрицательную сумму ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Невозможно отправить отрицательную или нулевую сумму актива."
   },
@@ -3940,18 +3913,6 @@
   "networkName": {
     "message": "Имя сети"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Основа"
-  },
   "networkNameBitcoin": {
     "message": "Биткойн"
   },
@@ -3967,26 +3928,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Тестнет"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Параметры сети"
@@ -4548,9 +4497,6 @@
   },
   "openWallet": {
     "message": "Открыть кошелек"
-  },
-  "optional": {
-    "message": "Необязательно"
   },
   "options": {
     "message": "Параметры"
@@ -5841,24 +5787,11 @@
   "sendBugReport": {
     "message": "Отправьте нам отчет об ошибке."
   },
-  "sendNoContactsConversionText": {
-    "message": "нажмите здесь"
-  },
-  "sendNoContactsDescription": {
-    "message": "Контакты позволяют безопасно отправлять транзакции в другой счет несколько раз. Чтобы создать контакт, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "У вас пока нет контактов"
-  },
   "sendSelectReceiveAsset": {
     "message": "Выберите актив для получения"
   },
   "sendSelectSendAsset": {
     "message": "Выберите актив для отправки"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Нажатие этой кнопки немедленно инициирует транзакцию обмена. Прежде чем продолжить, проверьте детали транзакции."
   },
   "sendingAsset": {
     "message": "Отправка $1..."
@@ -5869,10 +5802,6 @@
   "sendingNativeAsset": {
     "message": "Идет отправка $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Предупреждение: вы собираетесь отправить контракт на токены, что может привести к потере средств. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Отправлено"
@@ -6233,41 +6162,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Ваш план неактивен, пока он приостановлен. Если вы отмените его, его действие будет прекращено немедленно."
   },
-  "shieldTxDetails1Description": {
-    "message": "Обеспечивает безопасность активов по покрываемым транзакциям"
-  },
   "shieldTxDetails1Title": {
     "message": "Защита транзакций до $10 000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Получайте более быструю и специализированную поддержку в любое время"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Приоритетная поддержка"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Ссылка"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Зарегистрироваться"
-  },
   "shieldTxMembershipActive": {
     "message": "Активный план"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Сведения для биллинга"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Биллинговый счет"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Сборы"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Следующее выставление счетов"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Способ оплаты"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Управление выставлением счетов"
@@ -6282,9 +6181,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Срок действия вашего плана истекает за $1. Продлите сейчас, чтобы продолжить пользоваться преимуществами.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Повторить платеж"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Ваш план был приостановлен из-за неудачного платежа по карте."
@@ -6311,9 +6207,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Связаться с поддержкой"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Обновить реквизиты карты"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Бесплатная пробная версия"
   },
@@ -6334,9 +6227,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Отправить претензию"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Просмотреть все преимущества"
   },
   "show": {
     "message": "Показать"
@@ -7317,9 +7207,6 @@
     "message": "Своп $1 на $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Плата за газ является примерной и будет меняться в зависимости от сетевого трафика и сложности транзакции."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask не получает плату за газ. Сумма этой платы являются приблизительной и может меняться в зависимости от загруженности сети и сложности транзакции. Узнайте подробнее $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7331,9 +7218,6 @@
   "swapGasFeesIncluded": {
     "message": " Включен"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Подробнее о плате за газ"
-  },
   "swapGasFeesSplit": {
     "message": "Плата за газ, указанная на предыдущем экране, распределяется между этими двумя транзакциями."
   },
@@ -7342,10 +7226,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "Эту комиссию сети оплачивает MetaMask, поэтому вы можете выполнять свопы, не имея на счету $1."
-  },
-  "swapGasFeesSummary": {
-    "message": "Плата за газ переводится криптомайнерам, которые обрабатывают транзакции в сети $1. MetaMask не получает прибыли от платы за газ.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Эта котировка включает в себя плату за газ путем корректировки суммы отправленных или полученных токенов. Вы можете получить ETH в отдельной транзакции в вашем списке активности."
@@ -7363,10 +7243,6 @@
   "swapIncludesMMFee": {
     "message": "Включает комиссию MetaMask в размере $1%.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Котировка с учетом комиссии MetaMask в размере $1 %",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Включает комиссию MetaMask в размере $1% — $2.",
@@ -7619,9 +7495,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Разрешить этому сайту сменить сеть?"
   },
-  "switchInputCurrency": {
-    "message": "Изменить входную валюту"
-  },
   "switchNetwork": {
     "message": "Сменить сеть"
   },
@@ -7777,9 +7650,6 @@
   },
   "tokensInCollection": {
     "message": "Токены в коллекции"
-  },
-  "tooltipApproveButton": {
-    "message": "Я понимаю"
   },
   "tooltipSatusConnected": {
     "message": "подключен"
@@ -8335,9 +8205,6 @@
     "message": "Вы отправили",
     "description": "Label indicating the amount and asset the user sent."
   },
-  "yourAccounts": {
-    "message": "Ваши счета"
-  },
   "yourActivity": {
     "message": "Ваша деятельность"
   },
@@ -8346,9 +8213,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"
-  },
-  "yourNetworks": {
-    "message": "Ваши сети"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретная фраза для восстановления"

@@ -1,4 +1,4 @@
-import TransactionConfirmation from '../../confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../confirmations/transaction-confirmation';
 import { RawLocator } from '../../../common';
 
 class ShieldSubscriptionApprovePage extends TransactionConfirmation {

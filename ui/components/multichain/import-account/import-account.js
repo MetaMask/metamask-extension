@@ -38,6 +38,7 @@ export const ImportAccount = ({ onActionComplete }) => {
   const menuItems = [t('privateKey'), t('jsonFile')];
 
   const [type, setType] = useState(menuItems[0]);
+  const [importErrorMessage, setImportErrorMessage] = useState();
 
   async function importAccount(strategy, importArgs) {
     const loadingMessage = getLoadingMessage(strategy);
@@ -57,15 +58,20 @@ export const ImportAccount = ({ onActionComplete }) => {
       );
       if (selectedAddress) {
         trackImportEvent(strategy, true);
-        dispatch(actions.hideWarning());
+        setImportErrorMessage();
         onActionComplete(true);
       } else {
-        dispatch(actions.displayWarning(t('importAccountError')));
+        setImportErrorMessage(t('importAccountError'));
         return false;
       }
     } catch (error) {
       const message = getErrorMessage(error);
       trackImportEvent(strategy, message);
+
+      if (handleKeyringControllerError(error)) {
+        return false;
+      }
+
       translateWarning(message);
       return false;
     }
@@ -123,13 +129,29 @@ export const ImportAccount = ({ onActionComplete }) => {
   function translateWarning(message) {
     if (message && !message.startsWith('t(')) {
       // This is just a normal error message
-      dispatch(actions.displayWarning(message));
+      setImportErrorMessage(message);
     } else {
       // This is an error message in a form like
       // `t('importAccountErrorNotHexadecimal')`
       // so slice off the first 3 chars and last 2 chars, and feed to i18n
-      dispatch(actions.displayWarning(t(message.slice(3, -2))));
+      setImportErrorMessage(t(message.slice(3, -2)));
     }
+  }
+
+  function handleKeyringControllerError(error) {
+    // This is not the best way to handle error messages coming from the KeyringController.
+    // We should have a mapping that allows us to map error codes to i18n messages.
+    // However, for now, we will just check if the error message starts with
+    // 'KeyringController -' and if so, we will trim that part and translate
+    // the rest of the message.
+    const errorPrefix = 'KeyringController -';
+    if (error.message.startsWith(errorPrefix)) {
+      const trimmedMessage = error.message.slice(errorPrefix.length).trim();
+      translateWarning(trimmedMessage);
+      return true;
+    }
+
+    return false;
   }
 
   return (
@@ -177,7 +199,7 @@ export const ImportAccount = ({ onActionComplete }) => {
             options={menuItems.map((text) => ({ value: text }))}
             selectedOption={type}
             onChange={(value) => {
-              dispatch(actions.hideWarning());
+              setImportErrorMessage();
               setType(value);
             }}
           />
@@ -185,12 +207,20 @@ export const ImportAccount = ({ onActionComplete }) => {
         {type === menuItems[0] ? (
           <PrivateKeyImportView
             importAccountFunc={importAccount}
-            onActionComplete={onActionComplete}
+            onActionComplete={(confirmed) => {
+              setImportErrorMessage();
+              onActionComplete(confirmed);
+            }}
+            importErrorMessage={importErrorMessage}
           />
         ) : (
           <JsonImportView
             importAccountFunc={importAccount}
-            onActionComplete={onActionComplete}
+            onActionComplete={(confirmed) => {
+              setImportErrorMessage();
+              onActionComplete(confirmed);
+            }}
+            importErrorMessage={importErrorMessage}
           />
         )}
       </Box>

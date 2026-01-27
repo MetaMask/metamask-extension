@@ -11,6 +11,7 @@ import { ControllerInitFunction } from '../types';
 import { ShieldControllerInitMessenger } from '../messengers/shield/shield-controller-messenger';
 import { normalizeSignatureRequest as ppomNormalizeSignatureRequest } from '../../lib/ppom/ppom-util';
 import { loadShieldConfig } from '../../../../shared/modules/shield';
+import { captureException as captureExceptionWithSentry } from '../../../../shared/lib/sentry';
 
 /**
  * Normalizes the signature request before getting the signature coverage results in the Shield controller.
@@ -74,6 +75,7 @@ export const ShieldControllerInit: ControllerInitFunction<
         return fetch(input, init);
       },
       baseUrl,
+      captureException: captureExceptionWithSentry,
     }),
   });
 

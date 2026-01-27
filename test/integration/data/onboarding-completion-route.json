@@ -176,7 +176,6 @@
     "selectedAccount": "51737ecb-beb4-4a2b-bcab-c99d0f587a33"
   },
   "ipfsGateway": "dweb.link",
-  "isAccountMenuOpen": false,
   "isEvmSelected": true,
   "isInitialized": true,
   "isIpfsGatewayEnabled": true,
@@ -330,6 +329,7 @@
   "showBetaHeader": false,
   "showNetworkBanner": true,
   "showPermissionsTour": true,
+  "showStorageErrorToast": false,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
   "slides": [],

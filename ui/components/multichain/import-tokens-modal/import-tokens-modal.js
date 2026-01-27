@@ -32,7 +32,6 @@ import {
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
   getPendingTokens,
-  getTokenNetworkFilter,
   getAllTokens,
   getEnabledNetworksByNamespace,
 } from '../../../selectors';
@@ -116,7 +115,6 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
-import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
@@ -165,14 +163,11 @@ export const ImportTokensModal = ({ onClose }) => {
   // Tracks which page the user is on
   const [actionMode, setActionMode] = useState(ACTION_MODES.IMPORT_TOKEN);
 
-  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   const [networkFilter, setNetworkFilter] = useState(
-    isGlobalNetworkSelectorRemoved
-      ? enabledNetworksByNamespace
-      : tokenNetworkFilter,
+    enabledNetworksByNamespace,
   );
 
   // Initialize selected network with current multichain network, handling both EVM and non-EVM

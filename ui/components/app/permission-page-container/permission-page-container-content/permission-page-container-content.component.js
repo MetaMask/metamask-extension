@@ -111,6 +111,7 @@ export default class PermissionPageContainerContent extends PureComponent {
                 as="span"
                 key={`description_key_${displayOrigin}`}
                 fontWeight={FontWeight.Medium}
+                className="break-all"
               >
                 {displayOrigin}
               </Text>,

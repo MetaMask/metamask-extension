@@ -34,7 +34,7 @@ describe('useConfirmationRecipientInfo', () => {
       );
 
       expect(result.current.senderAddress).toBe(SenderAddress);
-      expect(result.current.senderName).toBe(expectedAccount.metadata.name);
+      expect(result.current.senderName).toBe(expectedAccount?.metadata.name);
       expect(result.current.walletName).toBe('Wallet 1');
     });
   });

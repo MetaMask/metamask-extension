@@ -157,6 +157,12 @@ function setCITags() {
     Sentry.setTag('ci.job', ci.job);
     Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
     Sentry.setTag('ci.prNumber', ci.prNumber);
+    if (ci.persona) {
+      Sentry.setTag('ci.persona', ci.persona);
+    }
+    if (ci.testTitle) {
+      Sentry.setTag('ci.testTitle', ci.testTitle);
+    }
   }
 }
 
@@ -197,6 +203,16 @@ function getMetaMetricsEnabledFromPersistedState(persistedState) {
   return Boolean(
     persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
   );
+}
+
+/**
+ * Returns whether MetaMetrics is enabled, given the backup state.
+ *
+ * @param {unknown} backupState - Backup state from IndexedDB
+ * @returns `true` if MetaMetrics is enabled in the backup, `false` otherwise.
+ */
+function getMetaMetricsEnabledFromBackupState(backupState) {
+  return Boolean(backupState?.MetaMetricsController?.participateInMetaMetrics);
 }
 
 function getSentryEnvironment() {
@@ -259,8 +275,15 @@ async function getMetaMetricsEnabled() {
     const persistedState = await globalThis.stateHooks.getPersistedState();
     return getMetaMetricsEnabledFromPersistedState(persistedState);
   } catch (error) {
-    log('Error retrieving persisted state', error);
-    return false;
+    log('Error retrieving persisted state, falling back to backup', error);
+    // Primary storage failed (e.g., database corruption) - check the backup
+    try {
+      const backupState = await globalThis.stateHooks.getBackupState();
+      return getMetaMetricsEnabledFromBackupState(backupState);
+    } catch (backupError) {
+      log('Error retrieving backup state', backupError);
+      return false;
+    }
   }
 }
 

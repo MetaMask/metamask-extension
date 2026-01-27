@@ -9,7 +9,6 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  Hex,
   isStrictHexString,
   KnownCaipNamespace,
   parseCaipChainId,
@@ -20,10 +19,10 @@ import {
   getIsLineaMainnet,
   getIsMainnet,
   getIsMultichainAccountsState2Enabled,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
+import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
@@ -61,7 +60,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_NETWORK_CHAIN_IDS,
   TEST_CHAINS,
 } from '../../../../../../shared/constants/network';
 import {
@@ -80,6 +78,7 @@ import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   detectTokens,
+  setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
   showImportTokensModal,
@@ -93,7 +92,6 @@ import {
 } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
-import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -117,13 +115,13 @@ const AssetListControlBar = ({
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
-  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
   const isEvm = useSelector(getMultichainIsEvm);
+  const accountSupportsEnabledNetworks = useSelector(
+    selectAccountSupportsEnabledNetworks,
+  );
 
   const { collections } = useNftsCollections();
 
@@ -159,12 +157,10 @@ const AssetListControlBar = ({
       return endpoint?.networkClientId ? [endpoint.networkClientId] : [];
     });
   }, [tokenNetworkFilter, allNetworks]);
-
-  const networksToDisplay = useMemo(() => {
-    return isGlobalNetworkSelectorRemoved
-      ? enabledNetworksByNamespace
-      : tokenNetworkFilter;
-  }, [tokenNetworkFilter, enabledNetworksByNamespace]);
+  const currentNamespaceNetworkCount = Object.keys(
+    enabledNetworksByNamespace,
+  ).length;
+  const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -205,7 +201,7 @@ const AssetListControlBar = ({
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    if (Object.keys(networksToDisplay).length === 0) {
+    if (currentNamespaceNetworkCount === 0) {
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
       dispatch(
@@ -218,8 +214,14 @@ const AssetListControlBar = ({
     allOpts,
     currentMultichainNetwork.network.chainId,
     dispatch,
-    networksToDisplay,
+    currentNamespaceNetworkCount,
   ]);
+
+  useEffect(() => {
+    if (!accountSupportsEnabledNetworks && totalEnabledNetworkCount > 0) {
+      dispatch(setEnabledAllPopularNetworks());
+    }
+  }, [accountSupportsEnabledNetworks, totalEnabledNetworkCount, dispatch]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
@@ -231,13 +233,6 @@ const AssetListControlBar = ({
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
     setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
-  };
-
-  const toggleNetworkFilterPopover = () => {
-    setIsTokenSortPopoverOpen(false);
-    setIsImportTokensPopoverOpen(false);
-    setIsImportNftPopoverOpen(false);
-    setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
   };
 
   const toggleImportTokensPopover = () => {
@@ -303,23 +298,8 @@ const AssetListControlBar = ({
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
   };
-  const isDisabled = useMemo(() => {
-    const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(
-      currentMultichainNetwork.network.chainId as Hex,
-    );
-
-    return (
-      !currentMultichainNetwork.isEvmNetwork ||
-      isTestNetwork ||
-      !isPopularNetwork
-    );
-  }, [currentMultichainNetwork, isTestNetwork]);
-
   const networkButtonText = useMemo(() => {
-    if (
-      isGlobalNetworkSelectorRemoved &&
-      Object.keys(enabledNetworksByNamespace).length === 1
-    ) {
+    if (currentNamespaceNetworkCount === 1) {
       const chainId = Object.keys(enabledNetworksByNamespace)[0];
       return isStrictHexString(chainId)
         ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
@@ -327,53 +307,33 @@ const AssetListControlBar = ({
     }
 
     if (
-      isGlobalNetworkSelectorRemoved &&
       namespace !== KnownCaipNamespace.Eip155 &&
-      Object.keys(enabledNetworksByNamespace).length > 1
+      currentNamespaceNetworkCount > 1
     ) {
       return currentMultichainNetwork.network.nickname ?? t('currentNetwork');
     }
 
     // > 1 network selected, show "all networks"
-    if (
-      isGlobalNetworkSelectorRemoved &&
-      Object.keys(enabledNetworksByNamespace).length > 1
-    ) {
+    if (currentNamespaceNetworkCount > 1) {
       return t('allNetworks');
     }
 
-    if (
-      isGlobalNetworkSelectorRemoved &&
-      Object.keys(enabledNetworksByNamespace).length === 0
-    ) {
+    if (currentNamespaceNetworkCount === 0) {
       return t('noNetworksSelected');
-    }
-    if (
-      (!isGlobalNetworkSelectorRemoved &&
-        isTokenNetworkFilterEqualCurrentNetwork) ||
-      (!isGlobalNetworkSelectorRemoved &&
-        !currentMultichainNetwork.isEvmNetwork)
-    ) {
-      return currentMultichainNetwork?.nickname ?? t('currentNetwork');
     }
 
     return t('popularNetworks');
   }, [
     enabledNetworksByNamespace,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    currentMultichainNetwork.isEvmNetwork,
+    currentNamespaceNetworkCount,
     currentMultichainNetwork.network.nickname,
-    currentMultichainNetwork?.nickname,
     t,
     allNetworks,
     namespace,
   ]);
 
   const networkButtonTextEnabledAccountState2 = useMemo(() => {
-    if (
-      isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworksForAllNamespaces).length === 1
-    ) {
+    if (totalEnabledNetworkCount === 1) {
       const chainId = allEnabledNetworksForAllNamespaces[0];
       const caipChainId = isStrictHexString(chainId)
         ? toEvmCaipChainId(chainId)
@@ -382,51 +342,32 @@ const AssetListControlBar = ({
     }
 
     // > 1 network selected, show "all networks"
-    if (
-      isGlobalNetworkSelectorRemoved &&
-      allEnabledNetworksForAllNamespaces.length > 1
-    ) {
+    if (totalEnabledNetworkCount > 1) {
       return t('allPopularNetworks');
     }
-    if (
-      isGlobalNetworkSelectorRemoved &&
-      allEnabledNetworksForAllNamespaces.length === 0
-    ) {
+
+    if (totalEnabledNetworkCount === 0) {
       return t('noNetworksSelected');
-    }
-    if (
-      (!isGlobalNetworkSelectorRemoved &&
-        isTokenNetworkFilterEqualCurrentNetwork) ||
-      (!isGlobalNetworkSelectorRemoved &&
-        !currentMultichainNetwork.isEvmNetwork)
-    ) {
-      return currentMultichainNetwork?.nickname ?? t('currentNetwork');
     }
 
     return t('popularNetworks');
   }, [
     allEnabledNetworksForAllNamespaces,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    currentMultichainNetwork.isEvmNetwork,
-    currentMultichainNetwork?.nickname,
+    totalEnabledNetworkCount,
     t,
     allCaipNetworks,
   ]);
 
   const singleNetworkIconUrl = useMemo(() => {
-    if (!isGlobalNetworkSelectorRemoved) {
-      return undefined;
-    }
-
     const chainIds = allEnabledNetworksForAllNamespaces;
 
-    if (chainIds.length !== 1) {
+    if (totalEnabledNetworkCount !== 1) {
       return undefined;
     }
 
     const singleEnabledChainId = chainIds[0];
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
-  }, [allEnabledNetworksForAllNamespaces]);
+  }, [allEnabledNetworksForAllNamespaces, totalEnabledNetworkCount]);
 
   return (
     <Box
@@ -440,12 +381,7 @@ const AssetListControlBar = ({
           data-testid="sort-by-networks"
           variant={TextVariant.bodySmMedium}
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
-          onClick={
-            isGlobalNetworkSelectorRemoved
-              ? handleNetworkManager
-              : toggleNetworkFilterPopover
-          }
-          disabled={isGlobalNetworkSelectorRemoved ? false : isDisabled}
+          onClick={handleNetworkManager}
           size={ButtonBaseSize.Sm}
           endIconName={IconName.ArrowDown}
           backgroundColor={
@@ -481,7 +417,12 @@ const AssetListControlBar = ({
           justifyContent={JustifyContent.flexEnd}
         >
           {showSortControl && (
-            <Tooltip title={t('sortBy')} position="bottom" distance={20}>
+            <Tooltip
+              title={t('sortBy')}
+              position="bottom"
+              distance={20}
+              disabled={isTokenSortPopoverOpen}
+            >
               <ButtonBase
                 data-testid="sort-by-popover-toggle"
                 className="asset-list-control-bar__button"

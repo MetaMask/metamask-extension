@@ -1,10 +1,8 @@
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
-import copyToClipboard from 'copy-to-clipboard';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import { AvatarAccountSize, TextVariant } from '@metamask/design-system-react';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -12,7 +10,6 @@ import Name from '../../app/name/name';
 import { Icon, IconName } from '../../component-library';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { PreferredAvatar } from '../../app/preferred-avatar';
-import Tooltip from '../tooltip';
 import {
   CARDS_VARIANT,
   DEFAULT_VARIANT,
@@ -29,56 +26,24 @@ function SenderAddress({
   addressOnly,
   checksummedSenderAddress,
   senderName,
-  onSenderClick,
   senderAddress,
   warnUserOnAccountMismatch,
 }) {
-  const t = useI18nContext();
-  const [addressCopied, setAddressCopied] = useState(false);
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
-  if (!addressCopied) {
-    tooltipHtml = addressOnly ? (
-      <p>{t('copyAddress')}</p>
-    ) : (
-      <p>
-        {shortenAddress(checksummedSenderAddress)}
-        <br />
-        {t('copyAddress')}
-      </p>
-    );
-  }
   return (
-    <div
-      className="sender-to-recipient__party sender-to-recipient__party--sender gap-1"
-      onClick={() => {
-        setAddressCopied(true);
-        copyToClipboard(checksummedSenderAddress, COPY_OPTIONS);
-        if (onSenderClick) {
-          onSenderClick();
-        }
-      }}
-    >
+    <div className="sender-to-recipient__party sender-to-recipient__party--sender gap-1">
       <PreferredAvatar
         address={toChecksumHexAddress(senderAddress)}
         size={AvatarAccountSize.Sm}
       />
-      <Tooltip
-        position="bottom"
-        html={tooltipHtml}
-        wrapperClassName="sender-to-recipient__tooltip-wrapper"
-        containerClassName="sender-to-recipient__tooltip-container"
-        onHidden={() => setAddressCopied(false)}
-      >
-        <div className="sender-to-recipient__name text-s-body-xs">
-          {addressOnly ? (
-            <span>
-              {`${senderName || shortenAddress(checksummedSenderAddress)}`}
-            </span>
-          ) : (
-            senderName
-          )}
-        </div>
-      </Tooltip>
+      <div className="sender-to-recipient__name text-s-body-xs">
+        {addressOnly ? (
+          <span>
+            {`${senderName || shortenAddress(checksummedSenderAddress)}`}
+          </span>
+        ) : (
+          senderName
+        )}
+      </div>
       {warnUserOnAccountMismatch && (
         <AccountMismatchWarning address={senderAddress} />
       )}
@@ -91,35 +56,14 @@ SenderAddress.propTypes = {
   checksummedSenderAddress: PropTypes.string,
   addressOnly: PropTypes.bool,
   senderAddress: PropTypes.string,
-  onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
 };
 
 export function RecipientWithAddress({
   checksummedRecipientAddress,
-  onRecipientClick,
-  addressOnly,
-  recipientName,
-  recipientIsOwnedAccount,
   chainId,
   className = '',
 }) {
-  const t = useI18nContext();
-  const [addressCopied, setAddressCopied] = useState(false);
-
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
-  if (!addressCopied) {
-    tooltipHtml = addressOnly ? (
-      <p>{t('copyAddress')}</p>
-    ) : (
-      <p>
-        {shortenAddress(checksummedRecipientAddress)}
-        <br />
-        {t('copyAddress')}
-      </p>
-    );
-  }
-
   return (
     <>
       <div
@@ -127,30 +71,13 @@ export function RecipientWithAddress({
           'sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address',
           className,
         )}
-        onClick={() => {
-          if (recipientIsOwnedAccount) {
-            setAddressCopied(true);
-            copyToClipboard(checksummedRecipientAddress, COPY_OPTIONS);
-          } else if (onRecipientClick) {
-            onRecipientClick();
-          }
-        }}
       >
-        <Tooltip
-          position="bottom"
-          disabled={!recipientName}
-          html={tooltipHtml}
-          wrapperClassName="sender-to-recipient__tooltip-wrapper"
-          containerClassName="sender-to-recipient__tooltip-container"
-          onHidden={() => setAddressCopied(false)}
-        >
-          <Name
-            value={checksummedRecipientAddress}
-            type={NameType.ETHEREUM_ADDRESS}
-            variation={chainId}
-            variant={TextVariant.BodyXs}
-          />
-        </Tooltip>
+        <Name
+          value={checksummedRecipientAddress}
+          type={NameType.ETHEREUM_ADDRESS}
+          variation={chainId}
+          variant={TextVariant.BodyXs}
+        />
       </div>
     </>
   );
@@ -158,10 +85,6 @@ export function RecipientWithAddress({
 
 RecipientWithAddress.propTypes = {
   checksummedRecipientAddress: PropTypes.string,
-  recipientName: PropTypes.string,
-  addressOnly: PropTypes.bool,
-  onRecipientClick: PropTypes.func,
-  recipientIsOwnedAccount: PropTypes.bool,
   chainId: PropTypes.string,
   className: PropTypes.string,
 };
@@ -188,13 +111,9 @@ export default function SenderToRecipient({
   senderAddress,
   addressOnly,
   senderName,
-  recipientName,
-  onRecipientClick,
-  onSenderClick,
   recipientAddress,
   variant,
   warnUserOnAccountMismatch,
-  recipientIsOwnedAccount,
   chainId,
 }) {
   const t = useI18nContext();
@@ -210,7 +129,6 @@ export default function SenderToRecipient({
         checksummedSenderAddress={checksummedSenderAddress}
         addressOnly={addressOnly}
         senderName={senderName}
-        onSenderClick={onSenderClick}
         senderAddress={senderAddress}
         warnUserOnAccountMismatch={warnUserOnAccountMismatch}
       />
@@ -219,10 +137,6 @@ export default function SenderToRecipient({
         <RecipientWithAddress
           className="justify-end"
           checksummedRecipientAddress={checksummedRecipientAddress}
-          onRecipientClick={onRecipientClick}
-          addressOnly={addressOnly}
-          recipientName={recipientName}
-          recipientIsOwnedAccount={recipientIsOwnedAccount}
           chainId={chainId}
         />
       ) : (
@@ -243,13 +157,9 @@ SenderToRecipient.defaultProps = {
 SenderToRecipient.propTypes = {
   senderName: PropTypes.string,
   senderAddress: PropTypes.string,
-  recipientName: PropTypes.string,
   recipientAddress: PropTypes.string,
   variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
   addressOnly: PropTypes.bool,
-  onRecipientClick: PropTypes.func,
-  onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
-  recipientIsOwnedAccount: PropTypes.bool,
   chainId: PropTypes.string,
 };

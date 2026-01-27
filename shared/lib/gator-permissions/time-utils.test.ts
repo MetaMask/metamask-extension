@@ -168,7 +168,6 @@ describe('time-utils', () => {
       const rules: GatorPermissionRule[] = [
         {
           type: 'expiry',
-          isAdjustmentAllowed: false,
           data: {
             timestamp: 1744588800, // April 14, 2025
           },
@@ -183,7 +182,6 @@ describe('time-utils', () => {
       const rules: GatorPermissionRule[] = [
         {
           type: 'other-rule',
-          isAdjustmentAllowed: false,
           data: {
             someData: 'value',
           },
@@ -204,7 +202,6 @@ describe('time-utils', () => {
       const rules: GatorPermissionRule[] = [
         {
           type: 'expiry',
-          isAdjustmentAllowed: false,
           data: {
             timestamp: 0,
           },

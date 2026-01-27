@@ -27,6 +27,16 @@ globalThis.stateHooks.getPersistedState = async function () {
   return await sentryLocalStore.get({ validateVault: false });
 };
 
+/**
+ * Get the backup state from IndexedDB.
+ * This is used as a fallback when primary storage is unavailable.
+ *
+ * @returns The backup state, or null if unavailable.
+ */
+globalThis.stateHooks.getBackupState = async function () {
+  return await sentryLocalStore.getBackup();
+};
+
 const persistedStateMask = {
   data: SENTRY_BACKGROUND_STATE,
   meta: {

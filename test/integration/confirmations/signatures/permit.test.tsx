@@ -9,7 +9,11 @@ import {
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
-import { createMockImplementation } from '../../helpers';
+import {
+  createMockImplementation,
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
+} from '../../helpers';
 import { tEn } from '../../../lib/i18n-helpers';
 import {
   getMetamaskStateWithMaliciousPermit,
@@ -32,6 +36,7 @@ describe('Permit Confirmation', () => {
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
         getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
+        getTokenStandardAndDetailsByChain: { decimals: '2', standard: 'ERC20' },
       }),
     );
   });
@@ -41,13 +46,9 @@ describe('Permit Confirmation', () => {
   });
 
   it('displays the header account modal with correct data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
-    const accountName = account.metadata.name;
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
       'Permit',
@@ -68,7 +69,7 @@ describe('Permit Confirmation', () => {
       accountName,
     );
     expect(
-      await screen.findByTestId('header-network-display-name'),
+      await screen.findByTestId('confirmation__details-network-name'),
     ).toHaveTextContent('Sepolia');
 
     fireEvent.click(
@@ -139,11 +140,7 @@ describe('Permit Confirmation', () => {
   });
 
   it('displays the expected title data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
@@ -198,11 +195,7 @@ describe('Permit Confirmation', () => {
         },
       });
 
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
@@ -262,11 +255,7 @@ describe('Permit Confirmation', () => {
   });
 
   it('displays the malicious banner', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
       account.address,
@@ -286,11 +275,7 @@ describe('Permit Confirmation', () => {
   });
 
   it('tracks external link clicked property in signature rejected event', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
       account.address,

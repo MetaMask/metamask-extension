@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { WALLET_PASSWORD } from '../../helpers';
+import { WALLET_PASSWORD } from '../../constants';
 
 class VaultDecryptorPage {
   private driver: Driver;

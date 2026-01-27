@@ -12,12 +12,6 @@ import {
 import { MockedEndpoint } from '../../mock-e2e';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
-import {
-  mockMultichainAccountsFeatureFlagDisabled,
-  mockMultichainAccountsFeatureFlag,
-  mockMultichainAccountsFeatureFlagStateTwo,
-} from './feature-flag-mocks';
-
 export enum AccountType {
   MultiSRP = 'multi-srp',
   SSK = 'ssk',
@@ -118,9 +112,3 @@ export async function withImportedAccount(
     await test(driver);
   });
 }
-
-export {
-  mockMultichainAccountsFeatureFlagDisabled,
-  mockMultichainAccountsFeatureFlag,
-  mockMultichainAccountsFeatureFlagStateTwo,
-};

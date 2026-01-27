@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "アカウントまたはウォレットを追加"
   },
-  "addAccountToMetaMask": {
-    "message": "アカウントをMetaMaskに追加"
-  },
   "addAcquiredTokens": {
     "message": "MetaMaskを使用して取得したトークンを追加します"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "ウォレットを追加"
-  },
-  "addingAccount": {
-    "message": "アカウントの追加"
   },
   "additionalNetworks": {
     "message": "他のネットワーク"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "過去のデータを取得できませんでした"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1個のNFT"
-  },
   "assetOptions": {
     "message": "アセットのオプション"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1個のNFT"
   },
   "assets": {
     "message": "アセット"
@@ -1080,12 +1068,6 @@
   "bridgeTo": {
     "message": "ブリッジ先:"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "このトークンを手動で追加した場合は、ブリッジを行う前に、資金へのリスクを認識していることを確認してください。"
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "このトークンは検証できません。"
-  },
   "bridgeTransactionProgress": {
     "message": "トランザクション $1/2"
   },
@@ -1271,9 +1253,6 @@
   },
   "close": {
     "message": "閉じる"
-  },
-  "closeExtension": {
-    "message": "拡張機能を閉じる"
   },
   "closeSlide": {
     "message": "$1を閉じる",
@@ -3162,9 +3141,6 @@
   "insufficientFunds": {
     "message": "資金不足."
   },
-  "insufficientFundsForGas": {
-    "message": "ガス代が足りません"
-  },
   "insufficientFundsSend": {
     "message": "資金不足"
   },
@@ -3891,9 +3867,6 @@
     "message": "インポートするファイルの選択が必要です。",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "負の額のETHを送金することはできません。"
-  },
   "negativeOrZeroAmountToken": {
     "message": "資産をマイナスまたはゼロの金額で送ることはできません。"
   },
@@ -3934,18 +3907,6 @@
   "networkName": {
     "message": "ネットワーク名"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "ビットコイン"
   },
@@ -3961,26 +3922,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "テストネット"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "ネットワークオプション"
@@ -4539,9 +4488,6 @@
   },
   "openWallet": {
     "message": "ウォレットを開く"
-  },
-  "optional": {
-    "message": "オプション"
   },
   "options": {
     "message": "オプション"
@@ -5829,24 +5775,11 @@
   "sendBugReport": {
     "message": "バグの報告をお送りください."
   },
-  "sendNoContactsConversionText": {
-    "message": "こちらをクリックしてください"
-  },
-  "sendNoContactsDescription": {
-    "message": "連絡先を使用すると、別のアカウントに安全に何度もトランザクションを送信できます。連絡先を作成するには、$1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "まだ連絡先がありません"
-  },
   "sendSelectReceiveAsset": {
     "message": "受け取るアラートを選択してください"
   },
   "sendSelectSendAsset": {
     "message": "送る資産を選択してください"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "このボタンをクリックすると、直ちにスワップトランザクションが開始します。続ける前に、トランザクションの詳細を確認してください。"
   },
   "sendingAsset": {
     "message": "$1を送信中"
@@ -5857,10 +5790,6 @@
   "sendingNativeAsset": {
     "message": "$1を送信中",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "警告: 資金の喪失に繋がる可能性のあるトークンコントラクトに送信しようとしています。$1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "送りました"
@@ -6218,41 +6147,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "一時停止中、プランはご利用いただけません。キャンセルすると、プランは直ちに終了します。"
   },
-  "shieldTxDetails1Description": {
-    "message": "対象となるトランザクションの資産を保護します"
-  },
   "shieldTxDetails1Title": {
     "message": "最大$10,000のトランザクション保護"
   },
-  "shieldTxDetails2Description": {
-    "message": "いつでもすぐに専任のサポートを受けられます"
-  },
-  "shieldTxDetails2Title": {
-    "message": "優先サポート"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "リンク"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "サインアップ"
-  },
   "shieldTxMembershipActive": {
     "message": "有効なプラン"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "請求の詳細"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "請求アカウント\n\nCharges"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "請求額"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "次回の請求"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "支払方法"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "請求を管理"
@@ -6267,9 +6166,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "プランは$1に終了します。特典を継続するには、今すぐ更新してください。",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "支払いを再試行"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "カード決済が失敗したため、プランが一時停止されています。"
@@ -6296,9 +6192,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "サポートへのお問い合わせ"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "カード情報を更新"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "無料トライアル"
   },
@@ -6319,9 +6212,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "請求を送信"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "特典をすべて見る"
   },
   "show": {
     "message": "表示"
@@ -7302,9 +7192,6 @@
     "message": "$1から$2へのスワップ",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "ガス代は、ネットワークトラフィックとトランザクションの複雑さに基づき見積もられ、変動します。"
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMaskはガス代から収益を得ません。これらの手数料は見積もりであり、ネットワークの混雑状況やトランザクションの複雑さによって変わる可能性があります。詳細は$1をご覧ください。",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7316,9 +7203,6 @@
   "swapGasFeesIncluded": {
     "message": " 込み"
   },
-  "swapGasFeesLearnMore": {
-    "message": "ガス代に関する詳細"
-  },
   "swapGasFeesSplit": {
     "message": "前の画面のガス代は、この2つのトランザクションに分けられています。"
   },
@@ -7327,10 +7211,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "このネットワーク手数料はMetaMaskが負担するため、アカウントに$1がなくてもスワップできます。"
-  },
-  "swapGasFeesSummary": {
-    "message": "ガス代は、$1ネットワークでトランザクションを処理するクリプトマイナーに支払われます。MetaMaskはガス代から利益を得ません。",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "このクォートにはガス代が含まれており、それに応じてトークンの送金または受取額が調整されています。アクティビティリストの別のトランザクションでETHを受け取る可能性があります。"
@@ -7348,10 +7228,6 @@
   "swapIncludesMMFee": {
     "message": "$1%のMetaMask手数料が含まれています.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "クォートには$1%のMetaMask手数料が含まれています",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "$1%のMetaMask手数料が含まれています – $2",
@@ -7604,9 +7480,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "このサイトによるネットワークの切り替えを許可しますか？"
   },
-  "switchInputCurrency": {
-    "message": "通貨の変更"
-  },
   "switchNetwork": {
     "message": "ネットワークを切り替える"
   },
@@ -7762,9 +7635,6 @@
   },
   "tokensInCollection": {
     "message": "コレクションのトークン"
-  },
-  "tooltipApproveButton": {
-    "message": "理解しています"
   },
   "tooltipSatusConnected": {
     "message": "接続済み"
@@ -8320,9 +8190,6 @@
     "message": "送金額:",
     "description": "Label indicating the amount and asset the user sent."
   },
-  "yourAccounts": {
-    "message": "アカウント"
-  },
   "yourActivity": {
     "message": "アクティビティ"
   },
@@ -8331,9 +8198,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"
-  },
-  "yourNetworks": {
-    "message": "あなたのネットワーク"
   },
   "yourPrivateSeedPhrase": {
     "message": "シークレットリカバリーフレーズ"

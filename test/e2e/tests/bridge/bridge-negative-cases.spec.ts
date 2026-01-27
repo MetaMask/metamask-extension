@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
@@ -22,14 +23,13 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         ...getInsufficientFundsFixtures(
           DEFAULT_BRIDGE_FEATURE_FLAGS,
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -54,7 +54,6 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns error 500', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         ...getQuoteNegativeCasesFixtures(
           {
             statusCode: 500,
@@ -64,8 +63,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -82,7 +81,6 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns empty array', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         ...getQuoteNegativeCasesFixtures(
           {
             statusCode: 200,
@@ -92,8 +90,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -110,7 +108,6 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns invalid response', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         ...getQuoteNegativeCasesFixtures(
           {
             statusCode: 200,
@@ -120,8 +117,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -139,7 +136,6 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         ...getBridgeNegativeCasesFixtures(
           {
             statusCode: 500,
@@ -149,8 +145,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
@@ -172,7 +168,6 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show failed bridge activity if getTxStatus returns failed source transaction', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         ...getBridgeNegativeCasesFixtures(
           {
             statusCode: 200,
@@ -182,8 +177,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
@@ -206,7 +201,6 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         ...getBridgeNegativeCasesFixtures(
           {
             statusCode: 200,
@@ -216,8 +210,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(

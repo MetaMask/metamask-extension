@@ -44,15 +44,3 @@ export const toHumanEstimatedTimeRange = (min: number, max: number) => {
 
   return `${withoutUnitHumanizer(adjustedMin, options)}- ${shortEnglishHumanizer(max, options)}`;
 };
-
-export const toHumanSeconds = (milliseconds: number): string => {
-  const options = {
-    units: ['s'],
-    round: false,
-    spacer: ' ',
-    decimal: '.',
-    maxDecimalPoints: 0,
-  } as Options;
-
-  return shortEnglishHumanizer(milliseconds, options);
-};
