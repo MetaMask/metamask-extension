@@ -199,6 +199,54 @@ describe('MetaMetricsController', function () {
       });
     });
 
+    it('should preserve signature fragments with persist:true during re-instantiation', async function () {
+      // This test simulates a service worker restart scenario where signature
+      // fragments with persist:true should survive and not be processed as abandoned.
+      const signatureFragment = {
+        id: 'signature-2754899331',
+        persist: true,
+        category: 'inpage_provider',
+        initialEvent: 'Signature Requested',
+        successEvent: 'Signature Approved',
+        failureEvent: 'Signature Rejected',
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          signature_type: 'personal_sign',
+        },
+      };
+
+      const spy = jest.spyOn(segmentMock, 'track');
+
+      await withController(
+        {
+          options: {
+            state: {
+              fragments: {
+                'signature-2754899331': signatureFragment,
+              },
+            },
+          },
+        },
+        ({ controller }) => {
+          // Verify the signature fragment is still in state after controller initialization
+          expect(
+            controller.state.fragments['signature-2754899331'],
+          ).toBeDefined();
+          expect(
+            controller.state.fragments['signature-2754899331'].persist,
+          ).toBe(true);
+
+          // Verify no failure event was tracked for the persisted signature fragment
+          // (only abandoned fragments without persist:true should trigger failure events)
+          const failureEventCalls = spy.mock.calls.filter(
+            (call) => call[0].event === 'Signature Rejected',
+          );
+          expect(failureEventCalls).toHaveLength(0);
+        },
+      );
+    });
+
     it('should update when network changes', async function () {
       const selectedNetworkClientId = 'selectedNetworkClientId2';
       const selectedChainId = '0x222';

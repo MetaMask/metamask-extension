@@ -1,13 +1,4 @@
-import {
-  isEqual,
-  memoize,
-  merge,
-  omit,
-  omitBy,
-  pickBy,
-  size,
-  sum,
-} from 'lodash';
+import { isEqual, memoize, merge, omit, pickBy, size, sum } from 'lodash';
 import { keccak256 } from 'ethereum-cryptography/keccak';
 import { v4 as uuidv4 } from 'uuid';
 import { NameType } from '@metamask/name-controller';
@@ -518,7 +509,13 @@ export default class MetaMetricsController extends BaseController<
       this.finalizeEventFragment.bind(this),
     );
 
-    const abandonedFragments = omitBy(state.fragments, 'persist');
+    // Identify fragments that should be processed as abandoned.
+    // Abandoned fragments are those without persist:true that survived a restart.
+    // We use pickBy with an explicit predicate to make the logic crystal clear.
+    const abandonedFragments = pickBy(
+      state.fragments || {},
+      (fragment) => fragment && !fragment.persist,
+    );
 
     this.messenger.subscribe(
       'PreferencesController:stateChange',
