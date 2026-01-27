@@ -26,7 +26,7 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import {
   RewardsControllerActions,
   RewardsControllerEvents,
@@ -536,7 +536,7 @@ describe('RewardsController', () => {
           metadata: {
             ...MOCK_INTERNAL_ACCOUNT.metadata,
             keyring: {
-              type: HardwareDeviceNames.ledger,
+              type: HardwareKeyringType.ledger,
             },
           },
         };
@@ -2363,7 +2363,7 @@ describe('RewardsController', () => {
           metadata: {
             ...MOCK_INTERNAL_ACCOUNT.metadata,
             keyring: {
-              type: HardwareDeviceNames.ledger,
+              type: HardwareKeyringType.ledger,
             },
           },
         };
