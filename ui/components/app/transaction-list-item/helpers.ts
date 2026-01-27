@@ -22,7 +22,8 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     case TransactionType.contractInteraction:
     case TransactionType.batch:
     case TransactionType.revokeDelegation:
-    case TransactionType.deployContract: {
+    case TransactionType.deployContract:
+    case TransactionType.gasPayment: {
       return GroupCategory.interaction;
     }
     case TransactionType.tokenMethodTransferFrom:
