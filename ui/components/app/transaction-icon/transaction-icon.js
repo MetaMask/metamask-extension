@@ -100,5 +100,6 @@ TransactionIcon.propTypes = {
     TransactionGroupCategory.swap,
     TransactionGroupCategory.swapAndSend,
     TransactionGroupCategory.bridge,
+    TransactionGroupCategory.redeposit,
   ]).isRequired,
 };
