@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { type CaipChainId } from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
+import { toMultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -120,13 +121,38 @@ export const useNetworkChangeHandlers = () => {
     (chainId: CaipChainId) => {
       const network = multichainNetworks[chainId];
       if (!network) {
+        // Try to find the network in EVM networks as a fallback
+        let hexChainId: Hex;
+        try {
+          hexChainId = chainId.startsWith('eip155:')
+            ? convertCaipToHexChainId(chainId)
+            : (chainId as Hex);
+        } catch (error) {
+          throw new Error(
+            `Invalid chain ID "${chainId}": network configuration not found`,
+          );
+        }
+
+        const evmNetwork = evmNetworks[hexChainId];
+        if (evmNetwork) {
+          // Convert and return the EVM network configuration
+          const multichainNetwork =
+            toMultichainNetworkConfiguration(evmNetwork);
+          return {
+            ...multichainNetwork,
+            name:
+              evmNetwork.name ||
+              evmNetwork.rpcEndpoints[evmNetwork.defaultRpcEndpointIndex].url,
+          };
+        }
+
         throw new Error(
-          `Network configuration not found for chainId: ${chainId}`,
+          `Invalid chain ID "${chainId}": network configuration not found`,
         );
       }
       return network;
     },
-    [multichainNetworks],
+    [multichainNetworks, evmNetworks],
   );
 
   const handleNetworkChange = useCallback(

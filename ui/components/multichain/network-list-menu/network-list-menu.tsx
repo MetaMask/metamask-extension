@@ -22,6 +22,7 @@ import {
 import {
   NON_EVM_TESTNET_IDS,
   toEvmCaipChainId,
+  toMultichainNetworkConfiguration,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
@@ -342,15 +343,43 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     ]);
   }, [searchedTestNetworks]);
 
-  const getMultichainNetworkConfigurationOrThrow = (chainId: CaipChainId) => {
-    const network = multichainNetworks[chainId];
-    if (!network) {
-      throw new Error(
-        `Network configuration not found for chainId: ${chainId}`,
-      );
-    }
-    return network;
-  };
+  const getMultichainNetworkConfigurationOrThrow = useCallback(
+    (chainId: CaipChainId) => {
+      const network = multichainNetworks[chainId];
+      if (!network) {
+        // Try to find the network in EVM networks as a fallback
+        let hexChainId: Hex;
+        try {
+          hexChainId = chainId.startsWith('eip155:')
+            ? convertCaipToHexChainId(chainId)
+            : (chainId as Hex);
+        } catch (error) {
+          throw new Error(
+            `Invalid chain ID "${chainId}": network configuration not found`,
+          );
+        }
+
+        const evmNetwork = evmNetworks[hexChainId];
+        if (evmNetwork) {
+          // Convert and return the EVM network configuration
+          const multichainNetwork =
+            toMultichainNetworkConfiguration(evmNetwork);
+          return {
+            ...multichainNetwork,
+            name:
+              evmNetwork.name ||
+              evmNetwork.rpcEndpoints[evmNetwork.defaultRpcEndpointIndex].url,
+          };
+        }
+
+        throw new Error(
+          `Invalid chain ID "${chainId}": network configuration not found`,
+        );
+      }
+      return network;
+    },
+    [multichainNetworks, evmNetworks],
+  );
 
   const handleEvmNetworkChange = async (
     chainId: CaipChainId,
