@@ -1,26 +1,23 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import {
-  AlignItems,
   BackgroundColor,
-  IconColor,
   Color,
-  Display,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '../box';
-
-import README from './README.mdx';
 import { AvatarIcon } from './avatar-icon';
 import { IconName } from '../icon';
 import { AvatarIconSize } from './avatar-icon.types';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/AvatarIcon (deprecated)',
   component: AvatarIcon,
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component: '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+      },
     },
   },
   argTypes: {
@@ -56,92 +53,3 @@ const Template: StoryFn<typeof AvatarIcon> = (args) => {
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const SizeStory: StoryFn<typeof AvatarIcon> = (args) => (
-  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
-    <AvatarIcon {...args} size={AvatarIconSize.Xs} />
-    <AvatarIcon {...args} size={AvatarIconSize.Sm} />
-    <AvatarIcon {...args} size={AvatarIconSize.Md} />
-    <AvatarIcon {...args} size={AvatarIconSize.Lg} />
-    <AvatarIcon {...args} size={AvatarIconSize.Xl} />
-  </Box>
-);
-SizeStory.storyName = 'Size';
-
-export const IconNameStory: StoryFn<typeof AvatarIcon> = (args) => (
-  <Box display={Display.Flex} gap={1}>
-    <AvatarIcon
-      color={IconColor.primaryDefault}
-      backgroundColor={BackgroundColor.primaryMuted}
-      {...args}
-      iconName={IconName.SwapHorizontal}
-    />
-    <AvatarIcon
-      color={IconColor.successDefault}
-      backgroundColor={BackgroundColor.successMuted}
-      {...args}
-      iconName={IconName.Confirmation}
-    />
-    <AvatarIcon
-      color={IconColor.infoDefault}
-      backgroundColor={BackgroundColor.infoMuted}
-      {...args}
-      iconName={IconName.Info}
-    />
-    <AvatarIcon
-      color={IconColor.warningDefault}
-      backgroundColor={BackgroundColor.warningMuted}
-      {...args}
-      iconName={IconName.Warning}
-    />
-    <AvatarIcon
-      color={IconColor.errorDefault}
-      backgroundColor={BackgroundColor.errorMuted}
-      {...args}
-      iconName={IconName.Danger}
-    />
-  </Box>
-);
-
-IconNameStory.storyName = 'Icon Name';
-
-export const ColorAndBackgroundColor: StoryFn<typeof AvatarIcon> = (args) => (
-  <Box display={Display.Flex} gap={1}>
-    <AvatarIcon
-      color={IconColor.primaryDefault}
-      backgroundColor={BackgroundColor.primaryMuted}
-      {...args}
-      iconName={IconName.SwapHorizontal}
-    />
-    <AvatarIcon
-      color={IconColor.primaryInverse}
-      backgroundColor={BackgroundColor.primaryDefault}
-      {...args}
-      iconName={IconName.SwapHorizontal}
-    />
-    <AvatarIcon
-      color={IconColor.successDefault}
-      backgroundColor={BackgroundColor.successMuted}
-      {...args}
-      iconName={IconName.Confirmation}
-    />
-    <AvatarIcon
-      color={IconColor.infoDefault}
-      backgroundColor={BackgroundColor.infoMuted}
-      {...args}
-      iconName={IconName.Info}
-    />
-    <AvatarIcon
-      color={IconColor.warningDefault}
-      backgroundColor={BackgroundColor.warningMuted}
-      {...args}
-      iconName={IconName.Warning}
-    />
-    <AvatarIcon
-      color={IconColor.errorDefault}
-      backgroundColor={BackgroundColor.errorMuted}
-      {...args}
-      iconName={IconName.Danger}
-    />
-  </Box>
-);
