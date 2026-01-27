@@ -1,8 +1,8 @@
 import { createHash } from 'crypto';
-import localforage from 'localforage';
 import { MINUTE } from '@metamask/controller-utils';
 import {
   getStorageItem,
+  getStorageKeysWithPrefix,
   removeStorageItem,
   setStorageItem,
 } from '../../../../shared/lib/storage-helpers';
@@ -76,16 +76,13 @@ export const updateCache = async (
  * It removes all bridge cache items that are either stale or are search results.
  */
 export const clearAllBridgeCacheItems = async () => {
-  const cacheKeys = await localforage.keys();
+  const cacheKeys = await getStorageKeysWithPrefix(BRIDGE_CACHE_PREFIX);
   await Promise.allSettled(
-    cacheKeys
-      .filter(Boolean)
-      .filter((key) => key.startsWith(BRIDGE_CACHE_PREFIX))
-      .map(async (key) => {
-        const cachedItem = await getStorageItem(key);
-        if (cachedItem && (isStale(cachedItem) || key.includes('search'))) {
-          await removeStorageItem(key);
-        }
-      }),
+    cacheKeys.map(async (key) => {
+      const cachedItem = await getStorageItem(key);
+      if (cachedItem && (isStale(cachedItem) || key.includes('search'))) {
+        await removeStorageItem(key);
+      }
+    }),
   );
 };

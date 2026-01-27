@@ -29,3 +29,8 @@ export async function removeStorageItem(key) {
     console.warn(err);
   }
 }
+
+export async function getStorageKeysWithPrefix(prefix) {
+  const cacheKeys = await localforage.keys();
+  return cacheKeys.filter(Boolean).filter((key) => key.startsWith(prefix));
+}
