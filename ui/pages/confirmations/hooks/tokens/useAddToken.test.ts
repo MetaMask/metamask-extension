@@ -62,16 +62,15 @@ async function runHook({
 }
 
 describe('useAddToken', () => {
-  const mockAddToken = jest.mocked(actions.addToken);
-  const mockFindNetworkClientIdByChainId = jest.mocked(
-    actions.findNetworkClientIdByChainId,
-  );
+  const mockAddToken = actions.addToken as jest.Mock;
+  const mockFindNetworkClientIdByChainId =
+    actions.findNetworkClientIdByChainId as jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     mockFindNetworkClientIdByChainId.mockResolvedValue(NETWORK_CLIENT_ID_MOCK);
-    mockAddToken.mockReturnValue({ type: 'ADD_TOKEN' } as never);
+    mockAddToken.mockReturnValue({ type: 'ADD_TOKEN' });
   });
 
   it('adds token if not present', async () => {
