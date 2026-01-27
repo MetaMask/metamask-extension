@@ -278,12 +278,15 @@ export function useTransactionDisplayData(transactionGroup) {
   if (signatureTypes.includes(type)) {
     title = t('signatureRequest');
   } else if (type === TransactionType.swap) {
-    title = t('swapTokenToToken', [
+    const sourceSymbol =
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol,
+      initialTransaction.sourceTokenSymbol ??
+      t('token');
+    const destSymbol =
       bridgeTokenDisplayData.destinationTokenSymbol ??
-        initialTransaction.destinationTokenSymbol,
-    ]);
+      initialTransaction.destinationTokenSymbol ??
+      t('token');
+    title = t('swapTokenToToken', [sourceSymbol, destSymbol]);
     const symbolFromTx =
       bridgeTokenDisplayData.sourceTokenSymbol ??
       initialTransaction.sourceTokenSymbol;
@@ -329,10 +332,11 @@ export function useTransactionDisplayData(transactionGroup) {
       prefix = '-';
     }
   } else if (type === TransactionType.swapApproval) {
-    title = t('swapApproval', [
+    const sourceSymbol =
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        primaryTransaction.sourceTokenSymbol,
-    ]);
+      primaryTransaction.sourceTokenSymbol ??
+      t('token');
+    title = t('swapApproval', [sourceSymbol]);
     primarySuffix =
       bridgeTokenDisplayData.sourceTokenSymbol ??
       primaryTransaction.sourceTokenSymbol;
@@ -379,7 +383,8 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.simpleSend) {
     title = t('sent');
   } else if (type === TransactionType.bridgeApproval) {
-    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
+    const sourceSymbol = bridgeTokenDisplayData.sourceTokenSymbol ?? t('token');
+    title = t('bridgeApproval', [sourceSymbol]);
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
     title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
