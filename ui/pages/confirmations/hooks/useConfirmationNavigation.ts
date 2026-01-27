@@ -193,7 +193,10 @@ export function getConfirmationRoute(
 
 export function useConfirmationNavigationOptions(): ConfirmationNavigationOptions {
   const [searchParams] = useSearchParams();
-  const loader = searchParams.get('loader') as ConfirmationLoader;
+
+  const loader =
+    (searchParams.get('loader') as ConfirmationLoader) ??
+    ConfirmationLoader.Default;
 
   return {
     loader,
