@@ -191,7 +191,12 @@ export const useHardwareWalletConnection = ({
 
       if (abortSignal.aborted) {
         adapter.destroy();
-        refs.adapterRef.current = null;
+        // Only null out the adapter if it's still the one we created.
+        // Between setting refs.adapterRef.current = adapter (line 189) and this check,
+        // there's an await (line 190) during which a new connection could replace it.
+        if (refs.adapterRef.current === adapter) {
+          refs.adapterRef.current = null;
+        }
         return;
       }
 
