@@ -1349,10 +1349,24 @@ export function setupController(
   for (const key of Object.keys(currentState)) {
     const initialControllerState = initState[key] || {};
     const newControllerState = currentState[key];
-    if (newControllerState === null || typeof newControllerState !== 'object') {
+    // Guard against null, undefined, arrays, and non-object types
+    if (
+      newControllerState === null ||
+      newControllerState === undefined ||
+      typeof newControllerState !== 'object' ||
+      Array.isArray(newControllerState)
+    ) {
+      let stateType;
+      if (newControllerState === null) {
+        stateType = 'null';
+      } else if (newControllerState === undefined) {
+        stateType = 'undefined';
+      } else {
+        stateType = typeof newControllerState;
+      }
       captureException(
         new Error(
-          `Invalid controller state for '${key}' of type '${newControllerState === null ? 'null' : typeof newControllerState}'`,
+          `Invalid controller state for '${key}' of type '${stateType}'`,
         ),
       );
       continue;
