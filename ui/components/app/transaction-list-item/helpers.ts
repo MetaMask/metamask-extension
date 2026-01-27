@@ -28,7 +28,8 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     case TransactionType.tokenMethodTransferFrom:
     case TransactionType.tokenMethodTransfer:
     case TransactionType.tokenMethodSafeTransferFrom:
-    case TransactionType.simpleSend: {
+    case TransactionType.simpleSend:
+    case TransactionType.gasPayment: {
       return GroupCategory.send;
     }
     case TransactionType.swap: {
@@ -42,6 +43,9 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     }
     case TransactionType.incoming: {
       return GroupCategory.receive;
+    }
+    case TransactionType.relayDeposit: {
+      return GroupCategory.redeposit;
     }
     default:
       return undefined;
