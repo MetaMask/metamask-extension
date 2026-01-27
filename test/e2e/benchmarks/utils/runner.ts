@@ -46,14 +46,6 @@ async function runWithRetries(
   }
 }
 
-export type RunBenchmarkOptions = {
-  name: string;
-  benchmarkFn: BenchmarkFunction;
-  iterations: number;
-  retries: number;
-  thresholdConfig?: ThresholdConfig;
-};
-
 export async function runBenchmarkWithIterations(
   name: string,
   benchmarkFn: BenchmarkFunction,
