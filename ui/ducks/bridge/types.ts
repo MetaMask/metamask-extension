@@ -20,7 +20,9 @@ type BridgeTokenBalanceData = {
 };
 export type BridgeToken = BridgeAssetV2 &
   BridgeTokenBalanceData &
-  Pick<TokenListToken, 'rwaData'>;
+  Pick<TokenListToken, 'rwaData'> & {
+    chainId: CaipChainId;
+  };
 
 /**
  * This is the minimal network configuration used by the Swap UI
@@ -50,6 +52,9 @@ export type TokenPayload = MinimalAsset & // Require minimal asset fields
   Partial<
     Pick<
       BridgeToken,
-      Exclude<keyof BridgeToken, keyof MinimalAsset | 'chainId'>
+      Exclude<keyof BridgeToken, keyof MinimalAsset | 'chainId' | 'iconUrl'>
     >
-  >;
+  > & {
+    // getNativeAssetForChainId's iconUrl has string | undefined | null type
+    iconUrl?: string | null;
+  };

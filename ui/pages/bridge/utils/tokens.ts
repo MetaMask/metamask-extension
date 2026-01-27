@@ -10,11 +10,7 @@ import {
   optional,
   intersection,
 } from '@metamask/superstruct';
-import {
-  CaipAssetTypeStruct,
-  type CaipChainId,
-  CaipChainIdStruct,
-} from '@metamask/utils';
+import { CaipAssetTypeStruct, type CaipChainId } from '@metamask/utils';
 
 const MinimalAssetSchema = type({
   /**
@@ -36,13 +32,11 @@ const BridgeAssetV2Schema = intersection([
   MinimalAssetSchema,
   type({
     /**
-     * The chainId of the token
-     */
-    chainId: CaipChainIdStruct,
-    /**
      * URL for token icon
+     * @deprecated Use iconUrl instead
      */
     image: optional(string()),
+    iconUrl: optional(string()),
     noFee: optional(
       type({
         isDestination: nullable(optional(boolean())),

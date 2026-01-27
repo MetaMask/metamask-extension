@@ -210,6 +210,8 @@ export const toBridgeToken = (
     tokenFiatAmount,
     accountType,
     rwaData,
+    image,
+    iconUrl,
   } = payload;
   const { chainId } = parseCaipAssetType(assetId);
   return {
@@ -217,7 +219,7 @@ export const toBridgeToken = (
     symbol,
     name: name ?? symbol,
     chainId,
-    image: getAssetImageUrl(assetId, chainId),
+    iconUrl: iconUrl || image || getAssetImageUrl(assetId, chainId),
     assetId,
     balance: tokenMetadata?.balance ?? balance ?? '0',
     tokenFiatAmount: tokenMetadata?.tokenFiatAmount ?? tokenFiatAmount,
