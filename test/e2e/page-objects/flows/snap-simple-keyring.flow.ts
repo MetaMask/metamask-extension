@@ -95,6 +95,7 @@ export async function importSnapAccount(
 
   // Switch to dialog and confirm
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await snapAccountDialog.checkConfirmationDialogIsLoaded();
   await snapAccountDialog.clickConfirmButton();
 
   // Confirm account created and close dialog
