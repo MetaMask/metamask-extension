@@ -122,7 +122,7 @@ export const EditSpendingCapModal = ({
 
     const customTxParamsData = updateApprovalAmount(
       transactionData,
-      (customSpendingCapInputValue || '0').replace('#', ''),
+      customSpendingCapInputValue || '0',
       Number(decimals || 0),
     );
 
