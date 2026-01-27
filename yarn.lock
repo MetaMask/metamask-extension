@@ -7334,9 +7334,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@5.1.0-preview-903db2da":
-  version: 5.1.0-preview-903db2da
-  resolution: "@metamask-previews/multichain-account-service@npm:5.1.0-preview-903db2da"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@5.1.0-preview-766f7065":
+  version: 5.1.0-preview-766f7065
+  resolution: "@metamask-previews/multichain-account-service@npm:5.1.0-preview-766f7065"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/accounts-controller": "npm:^35.0.2"
@@ -7360,7 +7360,7 @@ __metadata:
     "@metamask/account-api": ^0.12.0
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/19e1447086e95175dece60bfec72ba6fb2cb33ca328bf86803d5364199c5cf011f57c6f95342ad5fa6d226736d6b33360e9800b8cd458584f4181a640f9e5a92
+  checksum: 10/54b27b96fa3f5ea954d259d63d3b22314efdaf41aed083f43e6c4d69b7e66bf3aee7e86bfafe4d1daa72bef42e28cec4a25e0bbaf052e836a10da9c046579406
   languageName: node
   linkType: hard
 
@@ -33554,7 +33554,7 @@ __metadata:
     "@metamask/message-signing-snap": "npm:1.1.4"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@5.1.0-preview-903db2da"
+    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@5.1.0-preview-766f7065"
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^1.2.5"
     "@metamask/multichain-network-controller": "npm:^2.0.0"
