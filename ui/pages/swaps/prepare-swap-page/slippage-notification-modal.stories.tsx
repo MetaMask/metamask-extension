@@ -1,6 +1,6 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react-webpack5';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from 'storybook/internal/preview-api';
 
 import { BUTTON_VARIANT, Button } from '../../../components/component-library';
 import { SLIPPAGE_HIGH_ERROR } from '../../../../shared/constants/swaps';

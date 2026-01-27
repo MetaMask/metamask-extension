@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Meta, StoryFn } from '@storybook/react-webpack5';
-import { useState } from '@storybook/addons';
 import { BannerBase } from './banner-base';
 import README from './README.mdx';
 import { Icon, IconName, IconSize } from '../icon';

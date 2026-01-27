@@ -1,5 +1,5 @@
 import { StoryFn, Meta } from '@storybook/react-webpack5';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from 'storybook/internal/preview-api';
 import React from 'react';
 
 import {

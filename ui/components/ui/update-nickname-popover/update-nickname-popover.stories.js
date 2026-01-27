@@ -1,4 +1,4 @@
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from 'storybook/internal/preview-api';
 import React from 'react';
 import Button from '../button';
 import README from './README.mdx';

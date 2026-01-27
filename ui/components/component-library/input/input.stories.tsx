@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Meta } from '@storybook/react-webpack5';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from 'storybook/internal/preview-api';
 
 import {
   Display,
