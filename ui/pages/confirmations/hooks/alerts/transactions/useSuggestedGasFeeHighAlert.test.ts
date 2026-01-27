@@ -1,4 +1,5 @@
 import {
+  GasFeeEstimateType,
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
@@ -16,29 +17,35 @@ import {
 } from '../../../../../components/app/confirm/info/row/constants';
 import { useSuggestedGasFeeHighAlert } from './useSuggestedGasFeeHighAlert';
 
-// Market medium estimation: suggestedMaxFeePerGas = '70' GWEI
-// 20% threshold = 70 * 1.2 = 84 GWEI
+// Market medium estimation: maxFeePerGas = 70 GWEI = 0x1043561a80 WEI
+// 20% threshold = 70 * 1.2 = 84 GWEI = 0x138eca4800 WEI
 // So anything at or above 84 GWEI should trigger the alert
-const FEE_MARKET_ESTIMATES = {
+const FEE_MARKET_GAS_FEE_ESTIMATES = {
+  type: GasFeeEstimateType.FeeMarket,
   low: {
-    minWaitTimeEstimate: 180000,
-    maxWaitTimeEstimate: 300000,
-    suggestedMaxPriorityFeePerGas: '3',
-    suggestedMaxFeePerGas: '53',
+    maxFeePerGas: '0xc51f4e900' as const, // 53 GWEI
+    maxPriorityFeePerGas: '0xb2d05e00' as const, // 3 GWEI
   },
   medium: {
-    minWaitTimeEstimate: 15000,
-    maxWaitTimeEstimate: 60000,
-    suggestedMaxPriorityFeePerGas: '7',
-    suggestedMaxFeePerGas: '70',
+    maxFeePerGas: '0x1043561a80' as const, // 70 GWEI
+    maxPriorityFeePerGas: '0x1a13b8600' as const, // 7 GWEI
   },
   high: {
-    minWaitTimeEstimate: 0,
-    maxWaitTimeEstimate: 15000,
-    suggestedMaxPriorityFeePerGas: '10',
-    suggestedMaxFeePerGas: '100',
+    maxFeePerGas: '0x174876e800' as const, // 100 GWEI
+    maxPriorityFeePerGas: '0x2540be400' as const, // 10 GWEI
   },
-  estimatedBaseFee: '50',
+};
+
+const LEGACY_GAS_FEE_ESTIMATES = {
+  type: GasFeeEstimateType.Legacy,
+  low: '0xc51f4e900' as const, // 53 GWEI
+  medium: '0x1043561a80' as const, // 70 GWEI
+  high: '0x174876e800' as const, // 100 GWEI
+};
+
+const GAS_PRICE_ESTIMATES = {
+  type: GasFeeEstimateType.GasPrice,
+  gasPrice: '0x1043561a80' as const, // 70 GWEI
 };
 
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
@@ -66,22 +73,11 @@ describe('useSuggestedGasFeeHighAlert', () => {
   it('returns no alerts if no dapp suggested gas fees', () => {
     expect(
       runHook(
-        getMockConfirmStateForTransaction(
-          {
-            ...CONFIRMATION_MOCK,
-            dappSuggestedGasFees: undefined,
-          },
-          {
-            metamask: {
-              gasFeeEstimatesByChainId: {
-                '0x5': {
-                  gasFeeEstimates: FEE_MARKET_ESTIMATES,
-                  gasEstimateType: 'fee-market',
-                },
-              },
-            },
-          },
-        ),
+        getMockConfirmStateForTransaction({
+          ...CONFIRMATION_MOCK,
+          dappSuggestedGasFees: undefined,
+          gasFeeEstimates: FEE_MARKET_GAS_FEE_ESTIMATES,
+        }),
       ),
     ).toEqual([]);
   });
@@ -89,30 +85,19 @@ describe('useSuggestedGasFeeHighAlert', () => {
   it('returns no alerts if no market estimation available', () => {
     expect(
       runHook(
-        getMockConfirmStateForTransaction(
-          {
-            ...CONFIRMATION_MOCK,
-            dappSuggestedGasFees: {
-              maxFeePerGas: '0x174876e800',
-              maxPriorityFeePerGas: '0x174876e800',
-            },
-            txParams: {
-              ...CONFIRMATION_MOCK.txParams,
-              maxFeePerGas: '0x174876e800',
-              maxPriorityFeePerGas: '0x174876e800',
-            } as TransactionParams,
+        getMockConfirmStateForTransaction({
+          ...CONFIRMATION_MOCK,
+          dappSuggestedGasFees: {
+            maxFeePerGas: '0x174876e800',
+            maxPriorityFeePerGas: '0x174876e800',
           },
-          {
-            metamask: {
-              gasFeeEstimatesByChainId: {
-                '0x5': {
-                  gasFeeEstimates: {},
-                  gasEstimateType: 'none',
-                },
-              },
-            },
-          },
-        ),
+          txParams: {
+            ...CONFIRMATION_MOCK.txParams,
+            maxFeePerGas: '0x174876e800',
+            maxPriorityFeePerGas: '0x174876e800',
+          } as TransactionParams,
+          gasFeeEstimates: undefined,
+        }),
       ),
     ).toEqual([]);
   });
@@ -122,30 +107,19 @@ describe('useSuggestedGasFeeHighAlert', () => {
     // 80 GWEI = 0x12A05F2000 in WEI (should not trigger alert)
     expect(
       runHook(
-        getMockConfirmStateForTransaction(
-          {
-            ...CONFIRMATION_MOCK,
-            dappSuggestedGasFees: {
-              maxFeePerGas: '0x12a05f2000',
-              maxPriorityFeePerGas: '0x12a05f2000',
-            },
-            txParams: {
-              ...CONFIRMATION_MOCK.txParams,
-              maxFeePerGas: '0x12a05f2000',
-              maxPriorityFeePerGas: '0x12a05f2000',
-            } as TransactionParams,
+        getMockConfirmStateForTransaction({
+          ...CONFIRMATION_MOCK,
+          dappSuggestedGasFees: {
+            maxFeePerGas: '0x12a05f2000',
+            maxPriorityFeePerGas: '0x12a05f2000',
           },
-          {
-            metamask: {
-              gasFeeEstimatesByChainId: {
-                '0x5': {
-                  gasFeeEstimates: FEE_MARKET_ESTIMATES,
-                  gasEstimateType: 'fee-market',
-                },
-              },
-            },
-          },
-        ),
+          txParams: {
+            ...CONFIRMATION_MOCK.txParams,
+            maxFeePerGas: '0x12a05f2000',
+            maxPriorityFeePerGas: '0x12a05f2000',
+          } as TransactionParams,
+          gasFeeEstimates: FEE_MARKET_GAS_FEE_ESTIMATES,
+        }),
       ),
     ).toEqual([]);
   });
@@ -154,30 +128,19 @@ describe('useSuggestedGasFeeHighAlert', () => {
     // Market medium is 70 GWEI, 20% higher is exactly 84 GWEI
     // 84 GWEI = 0x138eca4800 in WEI (should trigger alert at boundary)
     const alerts = runHook(
-      getMockConfirmStateForTransaction(
-        {
-          ...CONFIRMATION_MOCK,
-          dappSuggestedGasFees: {
-            maxFeePerGas: '0x138eca4800',
-            maxPriorityFeePerGas: '0x138eca4800',
-          },
-          txParams: {
-            ...CONFIRMATION_MOCK.txParams,
-            maxFeePerGas: '0x138eca4800',
-            maxPriorityFeePerGas: '0x138eca4800',
-          } as TransactionParams,
+      getMockConfirmStateForTransaction({
+        ...CONFIRMATION_MOCK,
+        dappSuggestedGasFees: {
+          maxFeePerGas: '0x138eca4800',
+          maxPriorityFeePerGas: '0x138eca4800',
         },
-        {
-          metamask: {
-            gasFeeEstimatesByChainId: {
-              '0x5': {
-                gasFeeEstimates: FEE_MARKET_ESTIMATES,
-                gasEstimateType: 'fee-market',
-              },
-            },
-          },
-        },
-      ),
+        txParams: {
+          ...CONFIRMATION_MOCK.txParams,
+          maxFeePerGas: '0x138eca4800',
+          maxPriorityFeePerGas: '0x138eca4800',
+        } as TransactionParams,
+        gasFeeEstimates: FEE_MARKET_GAS_FEE_ESTIMATES,
+      }),
     );
 
     expect(alerts).toEqual([
@@ -202,30 +165,19 @@ describe('useSuggestedGasFeeHighAlert', () => {
     // Market medium is 70 GWEI, 20% higher is 84 GWEI
     // 100 GWEI = 0x174876E800 in WEI (should trigger alert)
     const alerts = runHook(
-      getMockConfirmStateForTransaction(
-        {
-          ...CONFIRMATION_MOCK,
-          dappSuggestedGasFees: {
-            maxFeePerGas: '0x174876e800',
-            maxPriorityFeePerGas: '0x174876e800',
-          },
-          txParams: {
-            ...CONFIRMATION_MOCK.txParams,
-            maxFeePerGas: '0x174876e800',
-            maxPriorityFeePerGas: '0x174876e800',
-          } as TransactionParams,
+      getMockConfirmStateForTransaction({
+        ...CONFIRMATION_MOCK,
+        dappSuggestedGasFees: {
+          maxFeePerGas: '0x174876e800',
+          maxPriorityFeePerGas: '0x174876e800',
         },
-        {
-          metamask: {
-            gasFeeEstimatesByChainId: {
-              '0x5': {
-                gasFeeEstimates: FEE_MARKET_ESTIMATES,
-                gasEstimateType: 'fee-market',
-              },
-            },
-          },
-        },
-      ),
+        txParams: {
+          ...CONFIRMATION_MOCK.txParams,
+          maxFeePerGas: '0x174876e800',
+          maxPriorityFeePerGas: '0x174876e800',
+        } as TransactionParams,
+        gasFeeEstimates: FEE_MARKET_GAS_FEE_ESTIMATES,
+      }),
     );
 
     expect(alerts).toEqual([
@@ -250,30 +202,55 @@ describe('useSuggestedGasFeeHighAlert', () => {
     // Market medium is 70 GWEI, 20% higher is 84 GWEI
     // 100 GWEI = 0x174876E800 in WEI (should trigger alert)
     const alerts = runHook(
-      getMockConfirmStateForTransaction(
-        {
-          ...CONFIRMATION_MOCK,
-          dappSuggestedGasFees: {
-            gasPrice: '0x174876e800',
-          },
-          txParams: {
-            ...CONFIRMATION_MOCK.txParams,
-            gasPrice: '0x174876e800',
-            maxFeePerGas: undefined,
-            maxPriorityFeePerGas: undefined,
-          } as TransactionParams,
+      getMockConfirmStateForTransaction({
+        ...CONFIRMATION_MOCK,
+        dappSuggestedGasFees: {
+          gasPrice: '0x174876e800',
         },
-        {
-          metamask: {
-            gasFeeEstimatesByChainId: {
-              '0x5': {
-                gasFeeEstimates: FEE_MARKET_ESTIMATES,
-                gasEstimateType: 'fee-market',
-              },
-            },
+        txParams: {
+          ...CONFIRMATION_MOCK.txParams,
+          gasPrice: '0x174876e800',
+          maxFeePerGas: undefined,
+          maxPriorityFeePerGas: undefined,
+        } as TransactionParams,
+        gasFeeEstimates: LEGACY_GAS_FEE_ESTIMATES,
+      }),
+    );
+
+    expect(alerts).toEqual([
+      {
+        actions: [
+          {
+            key: AlertActionKey.ShowGasFeeModal,
+            label: 'Edit network fee',
           },
+        ],
+        field: RowAlertKey.EstimatedFee,
+        key: 'suggestedGasFeeHigh',
+        message:
+          'This site is suggesting a higher network fee than necessary. Edit the network fee to pay less.',
+        reason: 'High site fee',
+        severity: Severity.Warning,
+      },
+    ]);
+  });
+
+  it('returns alert with eth_gasPrice estimates', () => {
+    // 100 GWEI = 0x174876E800 in WEI (should trigger alert)
+    const alerts = runHook(
+      getMockConfirmStateForTransaction({
+        ...CONFIRMATION_MOCK,
+        dappSuggestedGasFees: {
+          gasPrice: '0x174876e800',
         },
-      ),
+        txParams: {
+          ...CONFIRMATION_MOCK.txParams,
+          gasPrice: '0x174876e800',
+          maxFeePerGas: undefined,
+          maxPriorityFeePerGas: undefined,
+        } as TransactionParams,
+        gasFeeEstimates: GAS_PRICE_ESTIMATES,
+      }),
     );
 
     expect(alerts).toEqual([
@@ -298,30 +275,19 @@ describe('useSuggestedGasFeeHighAlert', () => {
     // Create a confirmation where txParams differs from dappSuggestedGasFees
     expect(
       runHook(
-        getMockConfirmStateForTransaction(
-          {
-            ...CONFIRMATION_MOCK,
-            dappSuggestedGasFees: {
-              maxFeePerGas: '0x174876e800', // 100 GWEI
-              maxPriorityFeePerGas: '0x174876e800',
-            },
-            txParams: {
-              ...CONFIRMATION_MOCK.txParams,
-              maxFeePerGas: '0x1043561a80', // Different value (70 GWEI)
-              maxPriorityFeePerGas: '0x1a13b8600', // Different value
-            } as TransactionParams,
+        getMockConfirmStateForTransaction({
+          ...CONFIRMATION_MOCK,
+          dappSuggestedGasFees: {
+            maxFeePerGas: '0x174876e800', // 100 GWEI
+            maxPriorityFeePerGas: '0x174876e800',
           },
-          {
-            metamask: {
-              gasFeeEstimatesByChainId: {
-                '0x5': {
-                  gasFeeEstimates: FEE_MARKET_ESTIMATES,
-                  gasEstimateType: 'fee-market',
-                },
-              },
-            },
-          },
-        ),
+          txParams: {
+            ...CONFIRMATION_MOCK.txParams,
+            maxFeePerGas: '0x1043561a80', // Different value (70 GWEI)
+            maxPriorityFeePerGas: '0x1a13b8600', // Different value
+          } as TransactionParams,
+          gasFeeEstimates: FEE_MARKET_GAS_FEE_ESTIMATES,
+        }),
       ),
     ).toEqual([]);
   });
@@ -330,33 +296,22 @@ describe('useSuggestedGasFeeHighAlert', () => {
     // Even with high dapp suggested fee, alert should not show for non-native gas token
     expect(
       runHook(
-        getMockConfirmStateForTransaction(
-          {
-            ...CONFIRMATION_MOCK,
-            // USDC token address - non-native gas token
-            selectedGasFeeToken:
-              '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as const,
-            dappSuggestedGasFees: {
-              maxFeePerGas: '0x174876e800', // 100 GWEI (would trigger alert)
-              maxPriorityFeePerGas: '0x174876e800',
-            },
-            txParams: {
-              ...CONFIRMATION_MOCK.txParams,
-              maxFeePerGas: '0x174876e800',
-              maxPriorityFeePerGas: '0x174876e800',
-            } as TransactionParams,
+        getMockConfirmStateForTransaction({
+          ...CONFIRMATION_MOCK,
+          // USDC token address - non-native gas token
+          selectedGasFeeToken:
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as const,
+          dappSuggestedGasFees: {
+            maxFeePerGas: '0x174876e800', // 100 GWEI (would trigger alert)
+            maxPriorityFeePerGas: '0x174876e800',
           },
-          {
-            metamask: {
-              gasFeeEstimatesByChainId: {
-                '0x5': {
-                  gasFeeEstimates: FEE_MARKET_ESTIMATES,
-                  gasEstimateType: 'fee-market',
-                },
-              },
-            },
-          },
-        ),
+          txParams: {
+            ...CONFIRMATION_MOCK.txParams,
+            maxFeePerGas: '0x174876e800',
+            maxPriorityFeePerGas: '0x174876e800',
+          } as TransactionParams,
+          gasFeeEstimates: FEE_MARKET_GAS_FEE_ESTIMATES,
+        }),
       ),
     ).toEqual([]);
   });

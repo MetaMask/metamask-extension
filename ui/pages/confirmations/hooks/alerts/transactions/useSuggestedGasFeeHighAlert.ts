@@ -1,10 +1,7 @@
 'use no memo';
 
 import { useMemo } from 'react';
-import { DefaultRootState, useSelector } from 'react-redux';
-import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
@@ -13,9 +10,8 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
-import { getGasFeeEstimatesByChainId } from '../../../../../ducks/metamask/metamask';
-import { hexWEIToDecGWEI } from '../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
+import { getMarketFeeFromEstimates } from '../../../../../../shared/modules/transaction.utils';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../../../helpers/utils/confirm-tx.util';
 import { isNativeAddress } from '../../../../../helpers/utils/token-insights';
 
@@ -25,19 +21,10 @@ export function useSuggestedGasFeeHighAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const chainId = currentConfirmation?.chainId;
   const selectedGasFeeToken = currentConfirmation?.selectedGasFeeToken;
-
-  const gasFeeEstimates = useSelector((state) =>
-    chainId
-      ? (
-          getGasFeeEstimatesByChainId as (
-            state: DefaultRootState,
-            chainId: Hex,
-          ) => GasFeeEstimates
-        )(state, chainId as Hex)
-      : undefined,
-  );
+  // Use gasFeeEstimates from transactionMeta as it has more accurate
+  // current values computed by the TransactionController gas logic
+  const gasFeeEstimates = currentConfirmation?.gasFeeEstimates;
 
   return useMemo(() => {
     if (!currentConfirmation) {
@@ -64,29 +51,24 @@ export function useSuggestedGasFeeHighAlert(): Alert[] {
       return [];
     }
 
-    // Get market estimation (medium level) from gas fee estimates
-    const marketMaxFeePerGas = gasFeeEstimates?.medium?.suggestedMaxFeePerGas;
+    // Get market estimation (medium level) from transaction's gas fee estimates
+    const marketMaxFeePerGas = getMarketFeeFromEstimates(gasFeeEstimates);
 
     if (!marketMaxFeePerGas) {
       return [];
     }
 
-    // Convert dapp suggested fee from hex WEI to decimal GWEI for comparison
-    const dappFeeInGwei = new Numeric(
-      hexWEIToDecGWEI(dappMaxFeePerGas as string),
-      10,
-    );
-
-    // Market estimation is already in GWEI
-    const marketFeeInGwei = new Numeric(marketMaxFeePerGas, 10);
+    // Both values are hex WEI strings, convert to Numeric for comparison
+    const dappFeeNumeric = new Numeric(dappMaxFeePerGas as string, 16);
+    const marketFeeNumeric = new Numeric(marketMaxFeePerGas, 16);
 
     // Calculate threshold: market fee + 20%
-    const threshold = marketFeeInGwei.times(
+    const threshold = marketFeeNumeric.times(
       new Numeric(1 + DAPP_GAS_FEE_HIGH_THRESHOLD, 10),
     );
 
     // Check if dapp suggested fee is at least 20% higher than market estimation
-    const isDappFeeHigh = dappFeeInGwei.greaterThanOrEqualTo(threshold);
+    const isDappFeeHigh = dappFeeNumeric.greaterThanOrEqualTo(threshold);
 
     if (!isDappFeeHigh) {
       return [];
