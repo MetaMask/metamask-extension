@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { MockedEndpoint, Mockttp } from 'mockttp';
+import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { WALLET_PASSWORD } from '../../constants';
 import { sentryRegEx, withFixtures } from '../../helpers';
@@ -83,7 +83,7 @@ describe('Vault Corruption', function () {
   `;
 
   async function mockSentryMissingVaultError(
-    mockServer: Mockttp,
+    mockServer: MockttpServer,
   ): Promise<MockedEndpoint> {
     return await mockServer
       .forPost(sentryRegEx)
@@ -161,8 +161,7 @@ describe('Vault Corruption', function () {
       {
         ...config,
         manifestFlags: {
-          ...config.manifestFlags,
-          sentry: { forceEnable: true },
+          ...config.manifestFlags
         },
         testSpecificMock: mockSentryMissingVaultError,
       },
