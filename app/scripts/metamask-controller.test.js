@@ -1443,7 +1443,7 @@ describe('MetaMaskController', () => {
         ]);
       });
 
-      it('throws if a keyring account is missing an address (case 1)', () => {
+      it('handles missing keyring account gracefully by placing it at the end (case 1)', () => {
         const internalAccounts = [
           {
             address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
@@ -1483,15 +1483,18 @@ describe('MetaMaskController', () => {
             // noop
           });
 
-        expect(() =>
-          metamaskController.sortEvmAccountsByLastSelected([
-            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
-            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
-            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
-          ]),
-        ).toThrow(
-          'Missing identity for address: "0x7A2Bd22810088523516737b4Dc238A4bC37c23F2".',
-        );
+        const result = metamaskController.sortEvmAccountsByLastSelected([
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+        ]);
+
+        // Missing account should be placed at the end
+        expect(result).toStrictEqual([
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+        ]);
         expect(
           metamaskController.captureKeyringTypesWithMissingIdentities,
         ).toHaveBeenCalledWith(internalAccounts, [
@@ -1501,7 +1504,7 @@ describe('MetaMaskController', () => {
         ]);
       });
 
-      it('throws if a keyring account is missing an address (case 2)', () => {
+      it('handles missing keyring account gracefully by placing it at the end (case 2)', () => {
         const internalAccounts = [
           {
             address: '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
@@ -1541,15 +1544,65 @@ describe('MetaMaskController', () => {
             // noop
           });
 
-        expect(() =>
-          metamaskController.sortEvmAccountsByLastSelected([
-            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
-            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
-            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
-          ]),
-        ).toThrow(
-          'Missing identity for address: "0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3".',
-        );
+        const result = metamaskController.sortEvmAccountsByLastSelected([
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+        ]);
+
+        // Missing account should be placed at the end
+        expect(result).toStrictEqual([
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+        ]);
+        expect(
+          metamaskController.captureKeyringTypesWithMissingIdentities,
+        ).toHaveBeenCalledWith(internalAccounts, [
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+        ]);
+      });
+
+      it('handles multiple missing keyring accounts gracefully', () => {
+        const internalAccounts = [
+          {
+            address: '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 1,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+        ];
+        jest
+          .spyOn(metamaskController.accountsController, 'listAccounts')
+          .mockReturnValueOnce(internalAccounts);
+        jest
+          .spyOn(metamaskController, 'captureKeyringTypesWithMissingIdentities')
+          .mockImplementation(() => {
+            // noop
+          });
+
+        const result = metamaskController.sortEvmAccountsByLastSelected([
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+        ]);
+
+        // Known account first, missing accounts maintain their relative order
+        expect(result).toStrictEqual([
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+        ]);
         expect(
           metamaskController.captureKeyringTypesWithMissingIdentities,
         ).toHaveBeenCalledWith(internalAccounts, [

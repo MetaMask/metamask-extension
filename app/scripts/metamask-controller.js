@@ -5862,6 +5862,23 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string[]} The sorted accounts addresses.
    */
   sortAddressesWithInternalAccounts(addresses, internalAccounts) {
+    // Check if any addresses are missing internal accounts before sorting
+    const missingAccounts = addresses.filter(
+      (address) =>
+        !internalAccounts.some(
+          (internalAccount) =>
+            internalAccount.address.toLowerCase() === address.toLowerCase(),
+        ),
+    );
+
+    // Capture missing identities once if any are found
+    // Pass a copy of the addresses array since sort() will modify it in place
+    if (missingAccounts.length > 0) {
+      this.captureKeyringTypesWithMissingIdentities(internalAccounts, [
+        ...addresses,
+      ]);
+    }
+
     return addresses.sort((firstAddress, secondAddress) => {
       const firstAccount = internalAccounts.find(
         (internalAccount) =>
@@ -5873,19 +5890,21 @@ export default class MetamaskController extends EventEmitter {
           internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
       );
 
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
+      // Handle missing accounts gracefully by placing them at the end
+      if (!firstAccount || !secondAccount) {
+        // If both accounts are missing, maintain relative order
+        if (!firstAccount && !secondAccount) {
+          return 0;
+        }
+        // If only firstAccount is missing, place it after secondAccount
+        if (!firstAccount) {
+          return 1;
+        }
+        // If only secondAccount is missing, place it after firstAccount
+        return -1;
+      }
+
+      if (
         firstAccount.metadata.lastSelected ===
         secondAccount.metadata.lastSelected
       ) {
