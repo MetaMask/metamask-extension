@@ -112,10 +112,13 @@ export const KeyringControllerInit: ControllerInitFunction<
       getRandomBytes: (length: number) =>
         crypto.getRandomValues(new Uint8Array(length)),
       dkls19Lib,
-      cloudURL: 'https://mpc-service.dev-api.cx.metamask.io/api/v1',
-      relayerURL:
-        'wss://mfa-relayer.dev-api.cx.metamask.io/connection/websocket',
+      // cloudURL: 'https://mpc-service.dev-api.cx.metamask.io/api/v1',
+      // relayerURL:
+      //   'wss://mfa-relayer.dev-api.cx.metamask.io/connection/websocket',
+      cloudURL: 'http://localhost:3000/v1/mpc',
+      relayerURL: 'ws://localhost:8000/connection/websocket',
       initRole: 'initiator',
+      webSocket: WebSocket,
     };
     additionalKeyrings.push(
       Object.assign(() => new MPCKeyring(opts), { type: KeyringTypes.mpc }),

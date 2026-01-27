@@ -33,7 +33,8 @@ export const AddMpcWalletPage = () => {
 
   const handleContinue = useCallback(async () => {
     await dispatch(createMpcWallet());
-  }, [dispatch]);
+    navigate(DEFAULT_ROUTE);
+  }, [dispatch, navigate]);
 
   const handleClose = useCallback(async () => {
     navigate(DEFAULT_ROUTE);
