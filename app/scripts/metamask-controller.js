@@ -7265,9 +7265,13 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.getNetworkConfigurationByNetworkClientId.bind(
             this.networkController,
           ),
-        dappSwapMetricsFlag:
-          this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-            ?.dappSwapMetrics,
+        dappSwapMetricsFlag: this.remoteFeatureFlagController?.state
+          ?.remoteFeatureFlags?.dappSwapMetrics ?? {
+          enabled: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          bridge_quote_fees: 0,
+          origins: [],
+        },
       }),
     );
 

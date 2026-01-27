@@ -88,6 +88,11 @@ export function getQuotesForConfirmation({
   let commands = '';
   const requestId = String(req.id);
   try {
+    // Guard against undefined dappSwapMetricsFlag
+    if (!dappSwapMetricsFlag) {
+      return;
+    }
+
     const {
       enabled: dappSwapEnabled,
       // eslint-disable-next-line @typescript-eslint/naming-convention
