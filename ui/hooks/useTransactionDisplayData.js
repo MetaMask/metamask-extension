@@ -37,6 +37,7 @@ import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils'
 import { selectBridgeHistoryItemForTxMetaId } from '../ducks/bridge-status/selectors';
 
 import { PAY_TRANSACTION_TYPES } from '../pages/confirmations/constants/pay';
+import { mapTransactionTypeToCategory } from '../components/app/transaction-list-item/helpers';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -74,9 +75,10 @@ const signatureTypes = [
 
 /**
  * @typedef {object} TransactionDisplayData
+ * @property {string} title - the primary title of the tx that will be displayed in the activity list
+ * @property {string} category - the transaction category for icon display
  * @property {string} primaryCurrency - the currency string to display in the primary position
  * @property {string} recipientAddress - the Ethereum address of the recipient
- * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
  * @property {boolean} isPending - indicates if the transaction is pending
  */
@@ -456,8 +458,12 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress = to;
   }
 
+  // Calculate the category for the transaction icon
+  const category = mapTransactionTypeToCategory(type);
+
   return {
     title,
+    category,
     primaryCurrency:
       type === TransactionType.swap && isPending ? '' : primaryCurrency,
     recipientAddress,
