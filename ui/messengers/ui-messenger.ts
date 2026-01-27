@@ -16,7 +16,8 @@ import * as notificationServicesController from '../../shared/messenger-config/n
 import * as rewardsController from '../../shared/messenger-config/rewards-controller';
 import * as shieldController from '../../shared/messenger-config/shield-controller';
 import * as walletService from '../../shared/messenger-config/wallet-service';
-import { BackgroundRpcClient } from '../store/background-connection';
+import { RootMessengerActionRegistry } from '../../shared/types/root-messenger-action-registry';
+import type { MetaRPCClient } from '../../app/scripts/lib/metaRPCClientFactory';
 
 /**
  * All actions we call through the UI messenger will go through the background
@@ -84,7 +85,13 @@ function isKnownEvent(eventName: string): eventName is (typeof EVENTS)[number] {
 }
 
 export async function getUIMessenger(
-  backgroundConnection: BackgroundRpcClient,
+  //========
+  // The type of this argument is now a direct instance of `MetaRPCClient`
+  // rather than a proxy around it.
+  //========
+  // @ts-expect-error The type of `NetworkController:getNetworkClientById` is
+  // not JSON-compatible. We will have to fix this.
+  backgroundConnection: MetaRPCClient<RootMessengerActionRegistry>,
 ): Promise<UIMessenger> {
   const uiMessenger: UIMessenger = new Messenger({
     namespace: 'UI',
@@ -92,7 +99,7 @@ export async function getUIMessenger(
 
   for (const action of ACTIONS) {
     const handler = async (...args: Parameters<Actions['handler']>) => {
-      return await backgroundConnection.call({
+      return await backgroundConnection.send({
         method: action,
         params: args,
       });
@@ -130,8 +137,9 @@ export async function getUIMessenger(
   });
 
   for (const event of EVENTS) {
-    await backgroundConnection.call({
+    await backgroundConnection.send({
       method: `Root:listen`,
+      // @ts-expect-error Not sure why TypeScript thinks this a string.
       params: event,
     });
   }
