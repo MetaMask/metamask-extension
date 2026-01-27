@@ -1,4 +1,6 @@
 import { SnapController } from '@metamask/snaps-controllers';
+import { HandlerType } from '@metamask/snaps-utils';
+import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import { createDeferredPromise, hasProperty, Json } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import {
@@ -170,6 +172,67 @@ export const SnapControllerInit: ControllerInitFunction<
       'MetaMetricsController:trackEvent',
     ) as unknown as TrackEventHook,
   });
+
+  // Patch setClientActive to parallelize lifecycle hooks and avoid N+1 API calls
+  // This addresses the N+1 API call issue where lifecycle hooks were being
+  // called sequentially, causing performance issues during app initialization.
+  // eslint-disable-next-line func-names
+  controller.setClientActive = function (active: boolean): void {
+    const handlerType = active ? HandlerType.OnActive : HandlerType.OnInactive;
+    const snaps = controller.getRunnableSnaps();
+
+    // Create an array of promises for lifecycle hooks to execute in parallel
+    const lifecyclePromises = snaps
+      .map((snap) => {
+        try {
+          // Check if snap has lifecycle hooks endowment
+          const hasLifecycleHooksEndowment = controllerMessenger.call(
+            'PermissionController:hasPermission',
+            snap.id,
+            SnapEndowments.LifecycleHooks,
+          );
+
+          if (!hasLifecycleHooksEndowment) {
+            return null;
+          }
+
+          // Call the lifecycle hook for this snap
+          return controller
+            .handleRequest({
+              snapId: snap.id,
+              origin: 'metamask',
+              handler: handlerType,
+              request: {
+                jsonrpc: '2.0' as const,
+                method: '',
+                params: [],
+              },
+            })
+            .catch((error: Error) => {
+              console.error(
+                `Error calling lifecycle hook "${handlerType}" for Snap "${snap.id}":`,
+                error.message,
+              );
+              return null;
+            });
+        } catch (error) {
+          console.error(
+            `Error preparing lifecycle hook for Snap "${snap.id}":`,
+            error instanceof Error ? error.message : String(error),
+          );
+          return null;
+        }
+      })
+      .filter((promise): promise is Promise<unknown> => promise !== null);
+
+    // Execute all lifecycle hooks in parallel using Promise.allSettled
+    // This ensures all hooks are called even if some fail
+    if (lifecyclePromises.length > 0) {
+      Promise.allSettled(lifecyclePromises).catch((error: Error) => {
+        console.error('Error executing parallel lifecycle hooks:', error);
+      });
+    }
+  };
 
   initMessenger.subscribe('KeyringController:lock', () => {
     initMessenger.call('SnapController:setClientActive', false);
