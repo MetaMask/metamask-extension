@@ -19,7 +19,7 @@ export const StaticAssetsControllerInit: ControllerInitFunction<
       const state = initMessenger.call('RemoteFeatureFlagController:getState');
 
       const supportedChains =
-        state?.remoteFeatureFlags?.staticAssetsSupportedChains;
+        state?.remoteFeatureFlags?.staticAssetsPollingSupportedChains;
 
       return new Set(Array.isArray(supportedChains)
       ? (supportedChains as Hex[])

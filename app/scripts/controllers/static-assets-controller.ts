@@ -81,8 +81,6 @@ type TopAsset = {
   decimals: number;
   name: string;
   aggregators: string[];
-  occurrences: number;
-  metadata: Record<string, unknown>;
 };
 
 /**
@@ -115,10 +113,7 @@ async function fetchTopAssets({
     url.searchParams.set('first', topX.toString());
     url.searchParams.set('occurrenceFloor', occurrenceFloor.toString());
     url.searchParams.set('includeAggregators', 'true');
-    url.searchParams.set('includeCoingeckoId', 'true');
     url.searchParams.set('includeIconUrl', 'true');
-    url.searchParams.set('includeMetadata', 'true');
-    url.searchParams.set('includeOccurrences', 'true');
 
     const response = await fetchWithCache({
       url: url.toString(),
@@ -355,6 +350,10 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
 
     topAssets.forEach((topAsset) => {
       try {
+        // skip slip44 tokens.
+        if (parseCaipAssetType(topAsset.assetId).assetNamespace === 'slip44') {
+          return;
+        }
         const formattedToken = this.#transformTopAsset(topAsset);
         // in case of error, the token is not added to the tokens array.
         tokens.push(formattedToken);

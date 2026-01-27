@@ -21,27 +21,17 @@ const mockTopAssets = [
     symbol: '1INCH',
     decimals: 18,
     name: '1INCH Token',
-    coingeckoId: '1inch',
     aggregators: [],
-    occurrences: 10,
     iconUrl:
       'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/icons/eip155:1/erc20:0x111111111117dC0aa78b770fA6A738034120C302.svg',
-    metadata: {
-      createdAt: '2023-10-31T22:41:58.553Z',
-    },
   },
   {
     assetId: 'eip155:1/erc20:0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
     symbol: 'AAVE',
     decimals: 18,
     name: 'Aave',
-    coingeckoId: 'aave',
     aggregators: [],
-    occurrences: 10,
     iconUrl: '',
-    metadata: {
-      createdAt: '2023-10-31T22:41:58.553Z',
-    },
   },
 ];
 
@@ -298,7 +288,7 @@ describe('staticAssetscontroller', () => {
         expect(tokensControllerAddTokensSpy).not.toHaveBeenCalled();
       });
 
-      it('ignores the token that fails to transform', async () => {
+      it('ignores the slip44 token and the token that fails to transform', async () => {
         const {
           controller,
           spies: {
@@ -321,17 +311,22 @@ describe('staticAssetscontroller', () => {
           data: [
             ...mockTopAssets,
             {
+              assetId: 'slip44:60',
+              symbol: 'ETH',
+              decimals: 18,
+              name: 'ETH',
+              aggregators: [],
+              iconUrl:
+                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x111111111117dc0aa78b770fa6a738034120c302.svg',
+            },
+            {
               // omit the assetId to let the transformTopAsset function fail
               symbol: 'AMP',
               decimals: 18,
               name: 'Amp',
               aggregators: [],
-              occurrences: 10,
               iconUrl:
                 'https://tokens.1inch.io/0xff20817765cb7f73d4bde2e66e067e58d11095c2.png',
-              metadata: {
-                createdAt: '2023-10-31T22:41:58.553Z',
-              },
             },
           ],
         });
@@ -389,12 +384,8 @@ describe('staticAssetscontroller', () => {
           decimals: 18,
           name: 'Amp',
           aggregators: [],
-          occurrences: 10,
           iconUrl:
             'https://tokens.1inch.io/0xff20817765cb7f73d4bde2e66e067e58d11095c2.png',
-          metadata: {
-            createdAt: '2023-10-31T22:41:58.553Z',
-          },
         };
         networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
           'mainnet',
