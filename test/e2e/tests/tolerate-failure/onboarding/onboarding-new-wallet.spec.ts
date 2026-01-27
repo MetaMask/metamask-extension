@@ -12,7 +12,7 @@ import SecureWalletPage from '../../../page-objects/pages/onboarding/secure-wall
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
 
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
-import { getCommonMocks } from '../utils/commonMocks';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
 import { setupTimerReporting } from '../utils/testSetup';
 import Timers from '../../../../timers/Timers';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
@@ -35,14 +35,13 @@ describe('MetaMask onboarding', function () {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
         fixtures: new FixtureBuilder({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         testSpecificMock: async (server: Mockttp) => {
-          return [...getCommonMocks(server)];
+          return mockPowerUserPrices(server);
         },
       },
       async ({ driver }: { driver: Driver }) => {
@@ -61,11 +60,11 @@ describe('MetaMask onboarding', function () {
         const timer5 = Timers.createTimer(
           'Time since the user clicks on "I agree" button until "Onboarding Success" screen is visible',
         );
-        const timer7 = Timers.createTimer(
-          'Time since the user clicks on "Skip backup" button until "Home" screen is visible',
-        );
         const timer6 = Timers.createTimer(
-          'Time since the user clicks on "Done" button until "Skip backup" screen and assets list are visible',
+          'Time since the user clicks on "Done" button until assets list and conversion rate are visible',
+        );
+        const timer7 = Timers.createTimer(
+          'Time until all network tokens (including Solana) are displayed',
         );
 
         await driver.navigate();
@@ -114,15 +113,12 @@ describe('MetaMask onboarding', function () {
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
         timer6.stopTimer();
-        await homePage.clickBackupRemindMeLaterButton();
         timer7.startTimer();
         await homePage.checkPageIsLoaded();
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
         await assetListPage.waitForTokenToBeDisplayed('Ethereum');
         await assetListPage.waitForTokenToBeDisplayed('Solana', 60000); // Non EVM network can take longer to load
-        // await assetListPage.waitForTokenToBeDisplayed('Bitcoin');
-        // await assetListPage.checkTokenExistsInList('Tron'); // https://consensyssoftware.atlassian.net/browse/MMQA-1191
         timer7.stopTimer();
       },
     );

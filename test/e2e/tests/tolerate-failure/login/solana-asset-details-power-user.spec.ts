@@ -1,16 +1,19 @@
+import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { WITH_STATE_POWER_USER } from '../../../benchmarks/constants';
 import { withFixtures } from '../../../helpers';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
-
 import { setupTimerReporting } from '../utils/testSetup';
 import Timers from '../../../../timers/Timers';
 import LoginPage from '../../../page-objects/pages/login-page';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+
 describe('Power user persona', function () {
   // Setup timer reporting for all tests in this describe block
   setupTimerReporting();
@@ -33,9 +36,11 @@ describe('Power user persona', function () {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (server: Mockttp) => {
+          return mockPowerUserPrices(server);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
@@ -46,16 +51,18 @@ describe('Power user persona', function () {
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
+        await assetListPage.openNetworksFilter();
+        const networkManager = new NetworkManager(driver);
+        await networkManager.selectNetworkByNameWithWait('Solana');
+        await homePage.checkPageIsLoaded();
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
         await assetListPage.clickOnAsset('Solana');
         const timer1 = Timers.createTimer(
           'Time since the user clicks on the asset until the price chart is shown',
         );
         timer1.startTimer();
         await assetListPage.checkPriceChartIsShown();
-        await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS); // SOL address
+        await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS);
         timer1.stopTimer();
       },
     );

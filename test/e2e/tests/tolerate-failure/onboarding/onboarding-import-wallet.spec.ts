@@ -15,7 +15,7 @@ import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-n
 
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import { getCommonMocks } from '../utils/commonMocks';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
 import { setupTimerReporting } from '../utils/testSetup';
 import Timers from '../../../../timers/Timers';
 
@@ -42,14 +42,13 @@ describe('MetaMask onboarding', function () {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
         fixtures: new FixtureBuilder({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         testSpecificMock: async (server: Mockttp) => {
-          return [...getCommonMocks(server)];
+          return mockPowerUserPrices(server);
         },
       },
       async ({ driver }: { driver: Driver }) => {
@@ -123,8 +122,6 @@ describe('MetaMask onboarding', function () {
         await assetListPage.checkConversionRateDisplayed();
         await assetListPage.checkTokenExistsInList('Ethereum');
         await assetListPage.waitForTokenToBeDisplayed('Solana', 60000); // Non EVM network can take longer to load
-        // await assetListPage.waitForTokenToBeDisplayed('Bitcoin');
-        // await assetListPage.checkTokenExistsInList('Tron'); // https://consensyssoftware.atlassian.net/browse/MMQA-1191
         timer6.stopTimer();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();

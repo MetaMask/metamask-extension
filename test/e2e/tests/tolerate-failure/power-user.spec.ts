@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../app/scripts/fixtures/generate-wallet-state';
 import { WITH_STATE_POWER_USER } from '../../benchmarks/constants';
 import { withFixtures } from '../../helpers';
@@ -6,6 +7,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import { Driver } from '../../webdriver/driver';
+import { mockPowerUserPrices } from './utils/performanceMocks';
 
 describe('Power user persona', function () {
   it('loads the requested number of accounts', async function () {
@@ -27,9 +29,11 @@ describe('Power user persona', function () {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (server: Mockttp) => {
+          return mockPowerUserPrices(server);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
