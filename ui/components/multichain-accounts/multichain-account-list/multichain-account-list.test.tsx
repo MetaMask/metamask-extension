@@ -1195,6 +1195,127 @@ describe('MultichainAccountList', () => {
     });
   });
 
+  describe('Wallet collapse functionality', () => {
+    it('renders wallet headers as clickable buttons by default', () => {
+      renderComponent();
+
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      expect(walletHeaders).toHaveLength(2);
+
+      // Both wallet headers should be buttons (clickable)
+      expect(walletHeaders[0].tagName).toBe('BUTTON');
+      expect(walletHeaders[1].tagName).toBe('BUTTON');
+
+      // Wallet headers should contain wallet names
+      expect(walletHeaders[0]).toHaveTextContent('Wallet 1');
+      expect(walletHeaders[1]).toHaveTextContent('Wallet 2');
+    });
+
+    it('collapses wallet when wallet header is clicked', async () => {
+      renderComponent();
+
+      // Initially both accounts should be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Click the first wallet header to collapse it
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1's account should no longer be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Wallet 2's account should still be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+
+    it('expands wallet when collapsed wallet header is clicked', async () => {
+      renderComponent();
+
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+
+      // Collapse wallet 1
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Verify it's collapsed
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Click again to expand
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1's account should be visible again
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+    });
+
+    it('allows collapsing multiple wallets independently', async () => {
+      renderComponent();
+
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+
+      // Collapse both wallets
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+      await act(async () => {
+        fireEvent.click(walletHeaders[1]);
+      });
+
+      // Both wallet accounts should be hidden
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Expand only wallet 1
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Only wallet 1's account should be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show collapse functionality when displayWalletHeader is false', () => {
+      renderComponent({ displayWalletHeader: false });
+
+      // No wallet headers should be shown
+      expect(screen.queryAllByTestId(walletHeaderTestId)).toHaveLength(0);
+
+      // All accounts should still be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe('Trace events', () => {
     it('ends AccountList and ShowAccountList traces on mount', () => {
       renderComponent();

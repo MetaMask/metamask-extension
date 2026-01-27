@@ -81,6 +81,13 @@ type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
 type ListItem =
   | { type: 'header'; key: string; text: string; testId?: string }
   | {
+      type: 'wallet-header';
+      key: string;
+      text: string;
+      walletId: string;
+      testId?: string;
+    }
+  | {
       type: 'account';
       key: string;
       groupId: string;
@@ -151,6 +158,10 @@ export const MultichainAccountList = ({
   const connectedAccountGroups = useSelector(selectConnectedAccountGroups);
   const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
     useState(false);
+  // Track which wallets are expanded (by default all are expanded)
+  const [expandedWallets, setExpandedWallets] = useState<
+    Record<AccountWalletId, boolean>
+  >({});
 
   const handleAccountRenameActionModalClose = useCallback(() => {
     setIsAccountRenameModalOpen(false);
@@ -171,6 +182,14 @@ export const MultichainAccountList = ({
     setOpenMenuAccountId((current) =>
       current === accountGroupId ? null : accountGroupId,
     );
+  }, []);
+
+  const handleWalletToggle = useCallback((walletId: AccountWalletId) => {
+    setExpandedWallets((current) => ({
+      ...current,
+      // Toggle: if currently false, set to true; otherwise set to false (default expanded)
+      [walletId]: current[walletId] === false ? true : false,
+    }));
   }, []);
 
   // Convert selectedAccountGroups array to Set for O(1) lookup
@@ -400,13 +419,19 @@ export const MultichainAccountList = ({
       if (accounts.length > 0) {
         if (shouldShowWalletHeaders) {
           result.push({
-            type: 'header',
+            type: 'wallet-header',
             key: `wallet-${walletId}`,
             text: walletData.metadata?.name || '',
+            walletId,
             testId: 'multichain-account-tree-wallet-header',
           });
         }
-        result.push(...accounts);
+        // Only add accounts if wallet is expanded (default is expanded)
+        const isWalletExpanded =
+          expandedWallets[walletId as AccountWalletId] !== false;
+        if (!shouldShowWalletHeaders || isWalletExpanded) {
+          result.push(...accounts);
+        }
       }
     });
 
@@ -440,6 +465,7 @@ export const MultichainAccountList = ({
     isInSearchMode,
     displayWalletHeader,
     isHiddenAccountsExpanded,
+    expandedWallets,
     t,
   ]);
 
@@ -463,6 +489,35 @@ export const MultichainAccountList = ({
                 >
                   {item.text}
                 </Text>
+              </Box>
+            );
+          }
+
+          if (item.type === 'wallet-header') {
+            const isWalletExpanded =
+              expandedWallets[item.walletId as AccountWalletId] !== false;
+            return (
+              <Box
+                as="button"
+                onClick={() =>
+                  handleWalletToggle(item.walletId as AccountWalletId)
+                }
+                backgroundColor={BackgroundColor.backgroundDefault}
+                data-testid={item.testId}
+                width={BlockSize.Full}
+                className="wallet-header flex px-4 pr-6 py-2 justify-between items-center"
+              >
+                <Text
+                  variant={TextVariant.bodyMdMedium}
+                  color={TextColor.textAlternative}
+                >
+                  {item.text}
+                </Text>
+                <Icon
+                  name={isWalletExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+                  size={IconSize.Md}
+                  color={IconColor.iconAlternative}
+                />
               </Box>
             );
           }
