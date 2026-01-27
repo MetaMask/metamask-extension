@@ -23,30 +23,30 @@ import { useSuggestedGasFeeHighAlert } from './useSuggestedGasFeeHighAlert';
 const FEE_MARKET_GAS_FEE_ESTIMATES = {
   type: GasFeeEstimateType.FeeMarket,
   low: {
-    maxFeePerGas: '0xc51f4e900' as const, // 53 GWEI
-    maxPriorityFeePerGas: '0xb2d05e00' as const, // 3 GWEI
+    maxFeePerGas: '0xc51f4e900', // 53 GWEI
+    maxPriorityFeePerGas: '0xb2d05e00', // 3 GWEI
   },
   medium: {
-    maxFeePerGas: '0x1043561a80' as const, // 70 GWEI
-    maxPriorityFeePerGas: '0x1a13b8600' as const, // 7 GWEI
+    maxFeePerGas: '0x1043561a80', // 70 GWEI
+    maxPriorityFeePerGas: '0x1a13b8600', // 7 GWEI
   },
   high: {
-    maxFeePerGas: '0x174876e800' as const, // 100 GWEI
-    maxPriorityFeePerGas: '0x2540be400' as const, // 10 GWEI
+    maxFeePerGas: '0x174876e800', // 100 GWEI
+    maxPriorityFeePerGas: '0x2540be400', // 10 GWEI
   },
-};
+} as const;
 
 const LEGACY_GAS_FEE_ESTIMATES = {
   type: GasFeeEstimateType.Legacy,
-  low: '0xc51f4e900' as const, // 53 GWEI
-  medium: '0x1043561a80' as const, // 70 GWEI
-  high: '0x174876e800' as const, // 100 GWEI
-};
+  low: '0xc51f4e900', // 53 GWEI
+  medium: '0x1043561a80', // 70 GWEI
+  high: '0x174876e800', // 100 GWEI
+} as const;
 
 const GAS_PRICE_ESTIMATES = {
   type: GasFeeEstimateType.GasPrice,
-  gasPrice: '0x1043561a80' as const, // 70 GWEI
-};
+  gasPrice: '0x1043561a80', // 70 GWEI
+} as const;
 
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
   chainId: '0x5',
