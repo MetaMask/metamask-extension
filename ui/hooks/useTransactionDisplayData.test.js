@@ -262,4 +262,36 @@ describe('useTransactionDisplayData', () => {
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
+
+  it('should handle swapApproval with missing sourceTokenSymbol', () => {
+    const swapApprovalTransaction = {
+      initialTransaction: {
+        id: 1234567890,
+        time: 1589314601567,
+        status: 'confirmed',
+        type: 'swapApproval',
+      },
+      primaryTransaction: {
+        id: 1234567890,
+        time: 1589314601567,
+        status: 'confirmed',
+        type: 'swapApproval',
+        txParams: {
+          from: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xefg5bc4e8f1f969934d773fa67da095d2e491a97',
+        },
+        // Missing sourceTokenSymbol
+      },
+      transactions: [],
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(swapApprovalTransaction),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+
+    // Should not throw an error and should use 'Token' as fallback
+    expect(result.current.title).toBe('Approve Token for swaps');
+  });
 });
