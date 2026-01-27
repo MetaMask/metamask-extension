@@ -72,7 +72,7 @@ describe(`Migration ${version}`, () => {
     expect(result.data).toEqual(originalState.data);
   });
 
-  it('returns original state if selectedAccount is missing or empty', async () => {
+  it('clears tokens when selectedAccount is missing', async () => {
     const originalState = {
       meta: { version: 0 },
       data: {
@@ -80,12 +80,93 @@ describe(`Migration ${version}`, () => {
           internalAccounts: {},
         },
         NetworkController: {},
-        TokensController: {},
+        TokensController: {
+          tokens: [{ address: '0xOLD' }],
+          allTokens: {},
+        },
+      },
+    };
+
+    const result = await migrate(originalState);
+
+    const tokensControllerState = result.data.TokensController as Record<
+      string,
+      unknown
+    >;
+    expect(tokensControllerState.tokens).toEqual([]);
+    expect(result.meta.version).toBe(134.1);
+  });
+
+  it('clears tokens when selectedAccount is empty string', async () => {
+    const originalState = {
+      meta: { version: 0 },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            selectedAccount: '',
+          },
+        },
+        NetworkController: {},
+        TokensController: {
+          tokens: [{ address: '0xOLD' }],
+          allTokens: {},
+        },
+      },
+    };
+
+    const result = await migrate(originalState);
+
+    const tokensControllerState = result.data.TokensController as Record<
+      string,
+      unknown
+    >;
+    expect(tokensControllerState.tokens).toEqual([]);
+    expect(result.meta.version).toBe(134.1);
+  });
+
+  it('clears tokens when selectedAccount is not a string', async () => {
+    const originalState = {
+      meta: { version: 0 },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            selectedAccount: 123,
+          },
+        },
+        NetworkController: {},
+        TokensController: {
+          tokens: [{ address: '0xOLD' }],
+          allTokens: {},
+        },
+      },
+    };
+
+    const result = await migrate(originalState);
+
+    const tokensControllerState = result.data.TokensController as Record<
+      string,
+      unknown
+    >;
+    expect(tokensControllerState.tokens).toEqual([]);
+    expect(result.meta.version).toBe(134.1);
+  });
+
+  it('handles missing TokensController gracefully when selectedAccount is invalid', async () => {
+    const originalState = {
+      meta: { version: 0 },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            selectedAccount: '',
+          },
+        },
+        NetworkController: {},
       },
     };
 
     const result = await migrate(originalState);
     expect(result.data).toEqual(originalState.data);
+    expect(result.meta.version).toBe(134.1);
   });
 
   it('returns original state if NetworkController is missing', async () => {

@@ -73,6 +73,17 @@ function transformState(
     typeof internalAccounts.selectedAccount !== 'string' ||
     internalAccounts.selectedAccount === ''
   ) {
+    // If there's no valid selected account, clear the tokens array
+    // to ensure consistency between account and token state
+    if (
+      hasProperty(state, 'TokensController') &&
+      isObject(state.TokensController)
+    ) {
+      const tokensControllerState = state.TokensController;
+      if (hasProperty(tokensControllerState, 'tokens')) {
+        tokensControllerState.tokens = [];
+      }
+    }
     return state;
   }
 
