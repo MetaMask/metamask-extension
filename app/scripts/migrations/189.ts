@@ -76,6 +76,8 @@ export async function migrate(
     captureException(newError);
     // Even though we encountered an error, we need the migration to pass for
     // the migrator tests to work
+    // Ensure versionedData.data is assigned even on error to prevent undefined data
+    versionedData.data = changedVersionedData.data;
   }
 }
 
