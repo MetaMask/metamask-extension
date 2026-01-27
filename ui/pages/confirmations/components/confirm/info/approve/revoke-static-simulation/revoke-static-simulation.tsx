@@ -18,7 +18,7 @@ export const RevokeStaticSimulation = () => {
 
   const parsedTransactionData = useTokenTransactionData();
 
-  const { chainId } = transactionMeta;
+  const { chainId, txParams } = transactionMeta ?? {};
 
   const spender =
     parsedTransactionData?.args?._spender ??
@@ -30,7 +30,7 @@ export const RevokeStaticSimulation = () => {
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         <Box display={Display.Flex}>
           <Name
-            value={transactionMeta.txParams.to as string}
+            value={txParams?.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}

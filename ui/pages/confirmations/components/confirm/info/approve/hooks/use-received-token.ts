@@ -32,7 +32,7 @@ export const useReceivedToken = () => {
 
   const receivedToken = tokensWithBalances.find(
     (token) =>
-      normalizeSafeAddress(transactionMeta.txParams.to as string) ===
+      normalizeSafeAddress(transactionMeta?.txParams?.to as string) ===
       normalizeSafeAddress(token.address),
   );
 

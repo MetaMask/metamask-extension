@@ -25,8 +25,8 @@ export function TransactionAccountDetails() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { isUpgrade, isUpgradeOnly } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
-  const { chainId, nestedTransactions, txParams, id } = currentConfirmation;
-  const { from } = txParams;
+  const { chainId, nestedTransactions, txParams, id } = currentConfirmation ?? {};
+  const { from } = txParams ?? {};
   const isBatch = isBatchTransaction(nestedTransactions);
 
   if (!isUpgrade && !isDowngrade) {

@@ -38,10 +38,10 @@ const NativeSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { chainId } = transactionMeta;
+  const { chainId, txParams } = transactionMeta ?? {};
 
   const nativeAssetTransferValue = calcTokenAmount(
-    transactionMeta.txParams.value as string,
+    txParams?.value as string,
     18,
   );
 

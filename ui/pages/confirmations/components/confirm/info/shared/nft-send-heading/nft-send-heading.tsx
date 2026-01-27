@@ -39,10 +39,10 @@ const NFTSendHeading = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const tokenAddress = transactionMeta.txParams.to;
-  const userAddress = transactionMeta.txParams.from;
-  const { data } = transactionMeta.txParams;
-  const { chainId } = transactionMeta;
+  const { txParams, chainId } = transactionMeta ?? {};
+  const tokenAddress = txParams?.to;
+  const userAddress = txParams?.from;
+  const { data } = txParams ?? {};
   const {
     assetName,
     tokenImage,

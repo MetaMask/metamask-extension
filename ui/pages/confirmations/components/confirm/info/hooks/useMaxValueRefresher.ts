@@ -58,11 +58,11 @@ export const useMaxValueRefresher = () => {
   ) as { [chainId: string]: { [from: string]: string } };
   const balance = crossChainNativeBalances?.[chainId]?.[from] ?? HEX_ZERO;
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
-  const gas = (transactionMeta.txParams.gas as Hex) || HEX_ZERO;
-  const gasPrice = (transactionMeta.txParams.gasPrice as Hex) || HEX_ZERO;
+  const gas = (transactionMeta?.txParams?.gas as Hex) || HEX_ZERO;
+  const gasPrice = (transactionMeta?.txParams?.gasPrice as Hex) || HEX_ZERO;
   const maxFeePerGas =
-    (transactionMeta.txParams.maxFeePerGas as Hex) || HEX_ZERO;
-  const layer1GasFee = transactionMeta.layer1GasFee as Hex;
+    (transactionMeta?.txParams?.maxFeePerGas as Hex) || HEX_ZERO;
+  const layer1GasFee = transactionMeta?.layer1GasFee as Hex;
 
   useEffect(() => {
     updateTransactionEventFragment(

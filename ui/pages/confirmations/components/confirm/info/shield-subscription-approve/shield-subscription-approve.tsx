@@ -57,10 +57,10 @@ const ShieldSubscriptionApproveInfo = () => {
   const { decodeResponse, value: decodedApprovalAmount } =
     useDecodedTransactionDataValue(transactionMeta);
   const { decimals } = useAssetDetails(
-    transactionMeta.txParams.to,
-    transactionMeta.txParams.from,
-    transactionMeta.txParams.data,
-    transactionMeta.chainId,
+    transactionMeta?.txParams?.to,
+    transactionMeta?.txParams?.from,
+    transactionMeta?.txParams?.data,
+    transactionMeta?.chainId,
   );
   const approvalAmount = useMemo(() => {
     const approvalAmountInWeiBn = new BigNumber(decodedApprovalAmount ?? 0);

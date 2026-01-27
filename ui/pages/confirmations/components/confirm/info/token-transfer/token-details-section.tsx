@@ -22,7 +22,7 @@ export const TokenDetailsSection = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { chainId } = transactionMeta;
+  const { chainId, txParams } = transactionMeta ?? {};
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
@@ -39,7 +39,7 @@ export const TokenDetailsSection = () => {
       tooltip={t('interactingWithTransactionDescription')}
     >
       <ConfirmInfoRowAddress
-        address={transactionMeta.txParams.to as string}
+        address={txParams?.to as string}
         chainId={chainId}
       />
     </ConfirmInfoRow>

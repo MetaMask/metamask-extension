@@ -35,11 +35,12 @@ const NonceDetails = () => {
   useEffect(() => {
     if (
       currentConfirmation &&
-      !isSignatureTransactionType(currentConfirmation)
+      !isSignatureTransactionType(currentConfirmation) &&
+      (currentConfirmation as TransactionMeta).txParams
     ) {
       dispatch(
         getNextNonce(
-          currentConfirmation.txParams.from,
+          (currentConfirmation as TransactionMeta).txParams.from,
           currentConfirmation.networkClientId,
         ),
       );

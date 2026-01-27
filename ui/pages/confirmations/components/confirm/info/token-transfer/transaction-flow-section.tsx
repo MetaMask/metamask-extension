@@ -28,7 +28,7 @@ export const TransactionFlowSection = () => {
     useConfirmContext<TransactionMeta>();
 
   const recipientAddress = useTransferRecipient();
-  const { chainId } = transactionMeta;
+  const { chainId, txParams } = transactionMeta ?? {};
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
@@ -50,7 +50,7 @@ export const TransactionFlowSection = () => {
         >
           <Box marginTop={2} data-testid="sender-address">
             <ConfirmInfoRowAddress
-              address={transactionMeta.txParams.from}
+              address={txParams?.from as string}
               chainId={chainId}
             />
           </Box>

@@ -22,14 +22,14 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { chainId } = transactionMeta;
+  const { chainId, txParams } = transactionMeta ?? {};
 
   const nftsRow = (
     <ConfirmInfoRow label={t('nfts')}>
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         <Box display={Display.Flex} alignItems={AlignItems.center}>
           <Name
-            value={transactionMeta.txParams.to as string}
+            value={txParams?.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}

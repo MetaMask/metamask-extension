@@ -20,10 +20,10 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
   const fiatFormatter = useFiatFormatter();
 
   const { decimals } = useAssetDetails(
-    transactionMeta.txParams.to,
-    transactionMeta.txParams.from,
-    transactionMeta.txParams.data,
-    transactionMeta.chainId,
+    transactionMeta?.txParams?.to,
+    transactionMeta?.txParams?.from,
+    transactionMeta?.txParams?.data,
+    transactionMeta?.chainId,
   );
 
   const value = parsedTransactionData?.args?._value as BigNumber | undefined;

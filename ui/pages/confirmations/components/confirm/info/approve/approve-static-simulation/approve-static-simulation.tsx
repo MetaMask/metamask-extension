@@ -63,7 +63,7 @@ export const ApproveStaticSimulation = ({
     return null;
   }
 
-  const { chainId } = transactionMeta;
+  const { chainId, txParams } = transactionMeta ?? {};
 
   const formattedTokenText = (
     <Text
@@ -107,7 +107,7 @@ export const ApproveStaticSimulation = ({
             )}
           </Box>
           <Name
-            value={transactionMeta.txParams.to as string}
+            value={txParams?.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}

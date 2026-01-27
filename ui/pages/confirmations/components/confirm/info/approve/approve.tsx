@@ -25,6 +25,10 @@ const ApproveInfo = () => {
   const [isOpenEditSpendingCapModal, setIsOpenEditSpendingCapModal] =
     useState(false);
 
+  if (!transactionMeta?.txParams) {
+    return null;
+  }
+
   const { decimals } = useAssetDetails(
     transactionMeta.txParams.to,
     transactionMeta.txParams.from,
@@ -40,10 +44,6 @@ const ApproveInfo = () => {
   const showRevokeVariant =
     spendingCap === '0' &&
     transactionMeta.type === TransactionType.tokenMethodApprove;
-
-  if (!transactionMeta?.txParams) {
-    return null;
-  }
 
   if (pending || (!isNFT && !decimals)) {
     return <ConfirmLoader />;

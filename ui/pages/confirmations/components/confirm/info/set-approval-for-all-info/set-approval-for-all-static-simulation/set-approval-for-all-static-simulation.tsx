@@ -24,7 +24,7 @@ export const SetApprovalForAllStaticSimulation = () => {
       currentConfirmation: TransactionMeta;
     };
 
-  const { chainId } = transactionMeta;
+  const { chainId, txParams } = transactionMeta ?? {};
 
   const SetApprovalForAllRow = (
     <ConfirmInfoRow label={t('withdrawing')}>
@@ -47,7 +47,7 @@ export const SetApprovalForAllStaticSimulation = () => {
             </Text>
           </Box>
           <Name
-            value={transactionMeta.txParams.to as string}
+            value={txParams?.to as string}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}
