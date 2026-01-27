@@ -2,14 +2,6 @@ import { cloneDeep } from 'lodash';
 import { Token, TokensControllerState } from '@metamask/assets-controllers';
 import { migrate, version } from './133.1';
 
-const sentryCaptureExceptionMock = jest.fn();
-const sentryCaptureMessageMock = jest.fn();
-
-global.sentry = {
-  captureException: sentryCaptureExceptionMock,
-  captureMessage: sentryCaptureMessageMock,
-};
-
 const oldVersion = 133;
 
 const mockStateWithNullDecimals = {
@@ -123,22 +115,25 @@ describe(`migration #${version}`, () => {
 
   it('logs tokens with null decimals before removing them', async () => {
     const oldStorage = cloneDeep(mockStateWithNullDecimals);
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
 
     await migrate(oldStorage);
 
-    expect(sentryCaptureMessageMock).toHaveBeenCalledTimes(4);
-    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+    expect(consoleLogSpy).toHaveBeenCalledTimes(4);
+    expect(consoleLogSpy).toHaveBeenCalledWith(
       `Migration ${version}: Removed token with decimals === null in allTokens. Address: 0x1`,
     );
-    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+    expect(consoleLogSpy).toHaveBeenCalledWith(
       `Migration ${version}: Removed token with decimals === null in allDetectedTokens. Address: 0x5`,
     );
-    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+    expect(consoleLogSpy).toHaveBeenCalledWith(
       `Migration ${version}: Removed token with decimals === null in tokens. Address: 0x7`,
     );
-    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+    expect(consoleLogSpy).toHaveBeenCalledWith(
       `Migration ${version}: Removed token with decimals === null in detectedTokens. Address: 0x9`,
     );
+
+    consoleLogSpy.mockRestore();
   });
 
   it('does nothing if all tokens have valid decimals', async () => {
@@ -163,10 +158,13 @@ describe(`migration #${version}`, () => {
     };
 
     const oldStorage = cloneDeep(validState);
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
     const newStorage = await migrate(oldStorage);
 
     expect(newStorage.data).toStrictEqual(oldStorage.data);
-    expect(sentryCaptureMessageMock).not.toHaveBeenCalled();
+    expect(consoleLogSpy).not.toHaveBeenCalled();
+
+    consoleLogSpy.mockRestore();
   });
 
   it('does nothing if TokensController is missing', async () => {
@@ -175,10 +173,13 @@ describe(`migration #${version}`, () => {
       data: {},
     };
 
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
     const newStorage = await migrate(cloneDeep(oldStorage));
 
     expect(newStorage.data).toStrictEqual(oldStorage.data);
-    expect(sentryCaptureMessageMock).not.toHaveBeenCalled();
+    expect(consoleLogSpy).not.toHaveBeenCalled();
+
+    consoleLogSpy.mockRestore();
   });
 
   const invalidState = [
@@ -206,7 +207,7 @@ describe(`migration #${version}`, () => {
 
   // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(invalidState)(
-    'captures error when state is invalid due to: $label',
+    'logs warning when state is invalid due to: $label',
     async ({
       errorMessage,
       state,
@@ -219,12 +220,13 @@ describe(`migration #${version}`, () => {
         data: state,
       };
 
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
       const newStorage = await migrate(cloneDeep(oldStorage));
 
-      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-        new Error(errorMessage),
-      );
+      expect(consoleWarnSpy).toHaveBeenCalledWith(errorMessage);
       expect(newStorage.data).toStrictEqual(oldStorage.data);
+
+      consoleWarnSpy.mockRestore();
     },
   );
 });

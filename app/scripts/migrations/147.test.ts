@@ -40,5 +40,22 @@ describe(`migration #${version}`, () => {
 
       expect(newStorage.data).toStrictEqual(expectedData);
     });
+
+    it('logs warning and returns state unchanged when AuthenticationController is invalid', async () => {
+      const oldStorage: VersionedData = {
+        meta: { version: oldVersion },
+        data: {},
+      };
+
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const newStorage = await migrate(oldStorage);
+
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        `Migration ${version}: Invalid AuthenticationController state: undefined`,
+      );
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
+
+      consoleWarnSpy.mockRestore();
+    });
   });
 });
