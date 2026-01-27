@@ -75,6 +75,8 @@ const mockUpdateNetworkConnectionBanner = jest.mocked(
 const mockGetNetworkConfigurationsByChainId = jest.mocked(
   getNetworkConfigurationsByChainId,
 );
+const mockUpdateNetwork = jest.mocked(updateNetwork);
+const mockSetShowInfuraSwitchToast = jest.mocked(setShowInfuraSwitchToast);
 
 describe('useNetworkConnectionBanner', () => {
   beforeEach(() => {

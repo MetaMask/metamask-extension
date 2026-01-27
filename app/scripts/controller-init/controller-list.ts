@@ -260,6 +260,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
   ConfigRegistryController['state'] &
+  ConnectivityController['state'] &
   RewardsController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &

@@ -69,6 +69,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed misleading "Network Degraded" banners and false-positive RPC endpoint metrics when the device has no internet connection (#39016)
 - Prevent poisoning of backups, re-enable split state storage migration (#39301)
 
+## [13.14.2]
+
+### Fixed
+
+- Prevent crash during initialization when some controller has invalid state (#39465)
+
+## [13.14.1]
+
+### Changed
+
+- Set 10-minute delay on first profile metrics collection after acknowledgement, rather than delaying until 2nd unlock (#39270)
+
 ## [13.14.0]
 
 ### Added
@@ -1611,6 +1623,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...HEAD
 [13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.15.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...HEAD
+[13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...v13.15.0
+[13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2
+[13.14.1]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.14.1
 [13.14.0]: https://github.com/MetaMask/metamask-extension/compare/v13.13.2...v13.14.0
 [13.13.2]: https://github.com/MetaMask/metamask-extension/compare/v13.13.1...v13.13.2
 [13.13.1]: https://github.com/MetaMask/metamask-extension/compare/v13.13.0...v13.13.1
