@@ -7,9 +7,6 @@ import { useTimeout } from './useTimeout';
 // This is exported for use by the unit tests
 export const DEFAULT_UI_DELAY = 2 * SECOND;
 
-// This is "static" across all instances of the hook
-let lastCopiedText = '';
-
 /**
  * @param clearDelay - Delay before clearing the clipboard in ms. If set to -1, the clipboard will not be cleared automatically.
  * @returns [copied, handleCopy, resetState]
@@ -27,7 +24,6 @@ export function useCopyToClipboard(
           copyToClipboard(' ', COPY_OPTIONS);
         }
 
-        lastCopiedText = '';
         setCopied(false);
       }
     },
@@ -37,9 +33,6 @@ export function useCopyToClipboard(
 
   const handleCopy = useCallback(
     (text: string) => {
-      // eslint-disable-next-line react-compiler/react-compiler -- deliberate use of static variable
-      lastCopiedText = text; // update the "static" lastCopiedText
-
       setCopied(true);
       startTimeout?.();
       copyToClipboard(text, COPY_OPTIONS);
@@ -48,7 +41,6 @@ export function useCopyToClipboard(
   );
 
   const resetState = useCallback(() => {
-    lastCopiedText = '';
     setCopied(false);
   }, []);
 
