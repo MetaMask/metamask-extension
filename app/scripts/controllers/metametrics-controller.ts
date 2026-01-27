@@ -772,7 +772,12 @@ export default class MetaMetricsController extends BaseController<
       });
       return;
     } else if (!fragment) {
-      throw new Error(`Event fragment with id ${id} does not exist.`);
+      // Fragment may have been finalized/abandoned during service worker restart
+      // or cleanup. This is expected in MV3 environments, so log and return early.
+      console.warn(
+        `MetaMetricsController#updateEventFragment: Fragment with id ${id} does not exist. It may have been finalized or abandoned.`,
+      );
+      return;
     }
 
     this.update((state) => {

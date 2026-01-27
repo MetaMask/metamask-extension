@@ -381,20 +381,22 @@ describe('MetaMetricsController', function () {
       });
     });
 
-    it('throws error when no existing fragment exists', async function () {
+    it('logs warning and returns early when fragment does not exist', async function () {
       await withController(async ({ controller }) => {
         jest.useFakeTimers().setSystemTime(1730798303333);
 
         const MOCK_NONEXISTING_ID = 'test-nonexistingid';
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
-        await expect(() => {
-          controller.updateEventFragment(MOCK_NONEXISTING_ID, {
-            properties: { test: 1 },
-          });
-        }).toThrow(
-          /Event fragment with id test-nonexistingid does not exist\./u,
+        controller.updateEventFragment(MOCK_NONEXISTING_ID, {
+          properties: { test: 1 },
+        });
+
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          `MetaMetricsController#updateEventFragment: Fragment with id ${MOCK_NONEXISTING_ID} does not exist. It may have been finalized or abandoned.`,
         );
 
+        consoleWarnSpy.mockRestore();
         jest.useRealTimers();
       });
     });
