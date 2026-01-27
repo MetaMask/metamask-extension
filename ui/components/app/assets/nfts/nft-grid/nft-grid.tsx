@@ -145,7 +145,7 @@ export default function NftGrid({
         estimatedItemSize={200}
         listFooterComponent={loadingFooter}
         renderItem={({ item, index: rowIndex }) => (
-          <Box className={`grid gap-4 ${gridClassName}`}>
+          <Box className={`grid gap-4 pb-4 ${gridClassName}`}>
             {item.map((nft, index) => (
               <NFTGridItemErrorBoundary
                 key={`${rowIndex}-${index}`}
