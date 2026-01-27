@@ -367,6 +367,37 @@ Or provide fixture object directly:
 }
 ```
 
+### Prod-like Mode
+
+Test against real networks or perform manual setup.
+
+```json
+{
+  "includeBuild": true,
+  "remoteChain": {
+    "rpcUrl": "https://mainnet.infura.io/v3/YOUR_KEY",
+    "chainId": 1
+  },
+  "stateMode": "onboarding"
+}
+```
+
+**Key Options:**
+
+- `remoteChain`: Remote chain config with `rpcUrl` (required) and `chainId` (optional, defaults to 1). Disables local Anvil.
+- `includeBuild`: Auto-build extension before launch (requires BuildCapability).
+
+**Limitations:**
+
+- No state injection or fixture presets (fixtures are rejected in prod).
+- No contract seeding.
+- Manual onboarding/unlock required.
+
+**Prerequisites:**
+
+- `INFURA_PROJECT_ID` must be configured in `.metamaskrc`.
+- In prod mode, `mm_launch` returns a `prerequisites` array describing manual setup steps.
+
 ## Knowledge Store
 
 Step records are saved to `test-artifacts/llm-knowledge/<sessionId>/steps/`.

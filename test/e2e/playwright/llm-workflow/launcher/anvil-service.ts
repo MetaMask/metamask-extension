@@ -1,8 +1,8 @@
-import type { NetworkConfig } from '../types';
+import { retryUntil } from '@metamask/metamask-extension-mcp';
+import type { NetworkConfig } from '../launcher-types';
 import type { SmartContractName } from '../anvil-seeder-wrapper';
 import { Anvil } from '../../../seeder/anvil';
 import { AnvilSeederWrapper } from '../anvil-seeder-wrapper';
-import { retryUntil } from './retry';
 
 type AnvilServiceOptions = {
   network?: NetworkConfig;

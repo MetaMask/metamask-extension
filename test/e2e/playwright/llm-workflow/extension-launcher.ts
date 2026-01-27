@@ -1,38 +1,32 @@
 import path from 'path';
 import { promises as fs, existsSync } from 'fs';
-import { execSync } from 'child_process';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
+import {
+  ConsoleErrorBuffer,
+  delay,
+  fetchWithTimeout,
+  resolveExtensionId,
+  waitForExtensionUiReady,
+} from '@metamask/metamask-extension-mcp';
 import type {
-  LaunchOptions,
+  LauncherLaunchOptions,
   ScreenshotOptions,
   ScreenshotResult,
   ExtensionState,
   LauncherContext,
-  FixtureData,
   MockServerConfig,
   NetworkConfig,
-} from './types';
-
-import { OnboardingFlow } from './page-objects/onboarding/onboarding-flow';
+} from './launcher-types';
 import { MockServer } from './mock-server';
 import type {
   AnvilSeederWrapper,
   SmartContractName,
 } from './anvil-seeder-wrapper';
-import { ConsoleErrorBuffer } from './launcher/console-error-buffer';
-import { delay } from './launcher/retry';
-import { resolveExtensionId } from './launcher/extension-id-resolver';
-import { waitForExtensionUiReady } from './launcher/extension-readiness';
-import {
-  getExtensionState,
-  detectCurrentScreen,
-} from './launcher/state-inspector';
+import { getExtensionState } from './launcher/state-inspector';
 import { AnvilService } from './launcher/anvil-service';
-import { FixtureServerService } from './launcher/fixture-server-service';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_ANVIL_PORT = 8545;
-const FIXTURE_SERVER_PORT = 12345;
 const DEFAULT_CHAIN_ID = 1337;
 
 type ResolvedOptions = {
@@ -41,14 +35,11 @@ type ResolvedOptions = {
   viewportWidth: number;
   viewportHeight: number;
   slowMo: number;
-  autoBuild: boolean;
   screenshotDir: string;
   stateMode: 'default' | 'onboarding' | 'custom';
-  fixture: FixtureData | null;
   mockServer: MockServerConfig | null;
   network: NetworkConfig;
   anvilPort: number;
-  fixtureServerPort: number;
   seedContracts?: SmartContractName[];
 };
 
@@ -61,8 +52,6 @@ export class MetaMaskExtensionLauncher {
 
   private anvilService: AnvilService | undefined;
 
-  private fixtureServerService: FixtureServerService | undefined;
-
   private mockServer: MockServer | undefined;
 
   private seeder: AnvilSeederWrapper | undefined;
@@ -73,7 +62,7 @@ export class MetaMaskExtensionLauncher {
 
   private consoleErrorBuffer = new ConsoleErrorBuffer(100);
 
-  constructor(options: LaunchOptions = {}) {
+  constructor(options: LauncherLaunchOptions = {}) {
     this.options = {
       extensionPath:
         options.extensionPath ?? path.join(process.cwd(), 'dist', 'chrome'),
@@ -81,19 +70,16 @@ export class MetaMaskExtensionLauncher {
       viewportWidth: options.viewportWidth ?? 1280,
       viewportHeight: options.viewportHeight ?? 800,
       slowMo: options.slowMo ?? 0,
-      autoBuild: options.autoBuild ?? true,
       screenshotDir:
         options.screenshotDir ??
         path.join(process.cwd(), 'test-artifacts', 'screenshots'),
       stateMode: options.stateMode ?? 'default',
-      fixture: options.fixture ?? null,
       mockServer: options.mockServer ?? null,
       network: options.network ?? {
         mode: 'localhost',
         chainId: DEFAULT_CHAIN_ID,
       },
       anvilPort: options.ports?.anvil ?? DEFAULT_ANVIL_PORT,
-      fixtureServerPort: options.ports?.fixtureServer ?? FIXTURE_SERVER_PORT,
       seedContracts: (options as { seedContracts?: SmartContractName[] })
         .seedContracts,
     };
@@ -104,7 +90,6 @@ export class MetaMaskExtensionLauncher {
 
   private validateConfig(): void {
     this.ensureDependenciesInstalled();
-    this.validateCustomStateModeRequiresFixture();
     this.validateNetworkModeRequiresRpcUrl();
   }
 
@@ -117,15 +102,6 @@ export class MetaMaskExtensionLauncher {
           '  1. yarn install    # Install dependencies\n' +
           '  2. yarn build:test # Build the extension\n\n' +
           'Then try running this workflow again.',
-      );
-    }
-  }
-
-  private validateCustomStateModeRequiresFixture(): void {
-    if (this.options.stateMode === 'custom' && !this.options.fixture) {
-      throw new Error(
-        "Configuration error: stateMode 'custom' requires a 'fixture' to be provided. " +
-          'Use createFixtureBuilder() or FixturePresets to create a fixture.',
       );
     }
   }
@@ -166,24 +142,17 @@ export class MetaMaskExtensionLauncher {
     return this.options.anvilPort;
   }
 
-  private getFixtureServerPort(): number {
-    return this.options.fixtureServerPort;
-  }
-
   private getChainId(): number {
     return this.options.network?.chainId ?? DEFAULT_CHAIN_ID;
   }
 
   async launch(): Promise<LauncherContext> {
-    if (this.options.autoBuild) {
-      await this.ensureExtensionBuilt();
-    }
+    await this.validateExtensionExists();
 
     await this.ensureDirectories();
 
     try {
       await this.startAnvil();
-      await this.startFixtureServer();
       await this.startMockServer();
 
       this.userDataDir =
@@ -234,48 +203,16 @@ export class MetaMaskExtensionLauncher {
       anvilPort: this.options.anvilPort,
       defaultChainId: DEFAULT_CHAIN_ID,
       seedContracts: this.options.seedContracts,
-      fetchWithTimeout: this.fetchWithTimeout.bind(this),
+      fetchWithTimeout,
       log: {
-        info: (message) => console.log(message),
-        error: (message, error) => console.error(message, error),
+        info: (message: string) => console.log(message),
+        error: (message: string, error?: unknown) =>
+          console.error(message, error),
       },
     });
 
     await this.anvilService.start();
     this.seeder = this.anvilService.getSeeder();
-  }
-
-  private async fetchWithTimeout(
-    url: string,
-    options: RequestInit = {},
-    timeoutMs = 5000,
-  ): Promise<Response> {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-    try {
-      const response = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-      });
-      return response;
-    } finally {
-      clearTimeout(timeoutId);
-    }
-  }
-
-  private async startFixtureServer(): Promise<void> {
-    this.fixtureServerService = new FixtureServerService({
-      port: this.options.fixtureServerPort,
-      stateMode: this.options.stateMode,
-      fixture: this.options.fixture,
-      fetchWithTimeout: this.fetchWithTimeout.bind(this),
-      log: {
-        info: (message) => console.log(message),
-      },
-    });
-
-    await this.fixtureServerService.start();
   }
 
   private async startMockServer(): Promise<void> {
@@ -308,7 +245,7 @@ export class MetaMaskExtensionLauncher {
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       try {
-        const result = await this.fetchWithTimeout(
+        const result = await fetchWithTimeout(
           `https://localhost:${port}/`,
           { method: 'GET' },
           3000,
@@ -348,23 +285,30 @@ export class MetaMaskExtensionLauncher {
     );
   }
 
-  private async ensureExtensionBuilt(): Promise<void> {
+  /**
+   * Validates that the extension is built and ready to load.
+   * This method only validates - it does NOT build the extension.
+   * Build logic is handled by BuildCapability in the MCP workflow.
+   *
+   * @throws Error if extension is not found at the configured path
+   */
+  private async validateExtensionExists(): Promise<void> {
+    const manifestPath = path.join(this.options.extensionPath, 'manifest.json');
+
     try {
       await fs.access(this.options.extensionPath);
-      const manifestPath = path.join(
-        this.options.extensionPath,
-        'manifest.json',
-      );
       await fs.access(manifestPath);
       console.log('Extension build found at:', this.options.extensionPath);
     } catch {
-      console.log('Extension not found, building...');
-      console.log('Running: yarn build:test');
-      execSync('yarn build:test', {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      });
-      console.log('Extension build complete');
+      throw new Error(
+        `Extension not found at: ${this.options.extensionPath}\n\n` +
+          'The extension must be built before launching.\n\n' +
+          'Options:\n' +
+          '  1. Use mm_build tool to build the extension\n' +
+          '  2. Run "yarn build:test" manually\n' +
+          '  3. Use MCP workflow with autoBuild: true (handled by BuildCapability)\n\n' +
+          `Expected manifest at: ${manifestPath}`,
+      );
     }
   }
 
@@ -386,8 +330,9 @@ export class MetaMaskExtensionLauncher {
     this.extensionId = await resolveExtensionId({
       context: this.context,
       log: {
-        info: (message) => console.log(message),
-        warn: (message, error) => console.warn(message, error),
+        info: (message: string) => console.log(message),
+        warn: (message: string, error?: unknown) =>
+          console.warn(message, error),
       },
     });
 
@@ -404,8 +349,8 @@ export class MetaMaskExtensionLauncher {
       page,
       screenshotDir: this.options.screenshotDir,
       log: {
-        info: (message) => console.log(message),
-        error: (message) => console.error(message),
+        info: (message: string) => console.log(message),
+        error: (message: string) => console.error(message),
       },
     });
 
@@ -430,41 +375,6 @@ export class MetaMaskExtensionLauncher {
       message,
       source,
     });
-  }
-
-  async unlock(password: string = DEFAULT_PASSWORD): Promise<void> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-
-    const passwordInput = this.extensionPage.locator(
-      '[data-testid="unlock-password"]',
-    );
-    const unlockButton = this.extensionPage.locator(
-      '[data-testid="unlock-submit"]',
-    );
-
-    await passwordInput.fill(password);
-    await unlockButton.click();
-
-    await this.extensionPage.waitForSelector(
-      '[data-testid="account-menu-icon"]',
-      {
-        timeout: 10000,
-      },
-    );
-  }
-
-  async completeOnboarding(options?: {
-    seedPhrase?: string;
-    password?: string;
-  }): Promise<void> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-
-    const onboardingFlow = new OnboardingFlow(this.extensionPage);
-    await onboardingFlow.importWallet(options);
   }
 
   async screenshot(options: ScreenshotOptions): Promise<ScreenshotResult> {
@@ -500,53 +410,6 @@ export class MetaMaskExtensionLauncher {
     };
   }
 
-  async debugDump(name: string): Promise<{
-    screenshot: ScreenshotResult;
-    state: ExtensionState;
-    consoleErrors: {
-      timestamp: number;
-      message: string;
-      source: string;
-    }[];
-  }> {
-    const screenshot = await this.screenshot({ name, timestamp: false });
-    const state = await this.getState();
-
-    const stateFilePath = path.join(
-      this.options.screenshotDir,
-      `${name}-state.json`,
-    );
-
-    const consoleErrors = this.consoleErrorBuffer.getAll();
-    const dumpData = {
-      state,
-      consoleErrors,
-      timestamp: Date.now(),
-    };
-
-    await fs.writeFile(stateFilePath, JSON.stringify(dumpData, null, 2));
-
-    console.log(`[debugDump] Screenshot: ${screenshot.path}`);
-    console.log(`[debugDump] State JSON: ${stateFilePath}`);
-    console.log(`[debugDump] Current screen: ${state.currentScreen}`);
-    console.log(`[debugDump] Current URL: ${state.currentUrl}`);
-    console.log(
-      `[debugDump] Console errors captured: ${this.consoleErrorBuffer.size}`,
-    );
-
-    if (this.consoleErrorBuffer.size > 0) {
-      console.log(`[debugDump] Recent errors:`);
-      const recentErrors = this.consoleErrorBuffer.getRecent(5);
-      for (const error of recentErrors) {
-        console.log(
-          `  - ${error.message.substring(0, 100)}${error.message.length > 100 ? '...' : ''}`,
-        );
-      }
-    }
-
-    return { screenshot, state, consoleErrors };
-  }
-
   async getState(): Promise<ExtensionState> {
     if (!this.extensionPage || !this.extensionId) {
       throw new Error('Extension not initialized');
@@ -556,12 +419,6 @@ export class MetaMaskExtensionLauncher {
       extensionId: this.extensionId,
       chainId: this.getChainId(),
     });
-  }
-
-  private async detectCurrentScreen(): Promise<
-    ExtensionState['currentScreen']
-  > {
-    return detectCurrentScreen(this.extensionPage);
   }
 
   async navigateToHome(): Promise<void> {
@@ -698,18 +555,6 @@ export class MetaMaskExtensionLauncher {
       this.mockServer = undefined;
     }
 
-    const fixtureServerPort = this.getFixtureServerPort();
-    if (this.fixtureServerService) {
-      try {
-        await this.fixtureServerService.stop();
-      } catch (e) {
-        const msg = `Failed to stop FixtureServer on port ${fixtureServerPort}. Kill manually: lsof -ti:${fixtureServerPort} | xargs kill -9`;
-        console.error(msg);
-        errors.push(msg);
-      }
-      this.fixtureServerService = undefined;
-    }
-
     if (this.seeder) {
       this.seeder.clearRegistry();
       this.seeder = undefined;
@@ -729,7 +574,7 @@ export class MetaMaskExtensionLauncher {
 
     if (errors.length > 0) {
       const mockServerPort = this.options.mockServer?.port ?? 8000;
-      const allPorts = [anvilPort, fixtureServerPort, mockServerPort].join(',');
+      const allPorts = [anvilPort, mockServerPort].join(',');
       console.error(
         '\n=== CLEANUP ERRORS ===\n' +
           'Some services failed to stop. This may cause port conflicts on next run.\n' +
@@ -753,7 +598,7 @@ export class MetaMaskExtensionLauncher {
 }
 
 export async function launchMetaMask(
-  options?: LaunchOptions,
+  options?: LauncherLaunchOptions,
 ): Promise<MetaMaskExtensionLauncher> {
   const launcher = new MetaMaskExtensionLauncher(options);
   await launcher.launch();

@@ -7,21 +7,7 @@ export class HomePage {
 
   private readonly accountOptionsButton: Locator;
 
-  private readonly activityTab: Locator;
-
-  private readonly bridgeButton: Locator;
-
-  private readonly buyButton: Locator;
-
-  private readonly receiveButton: Locator;
-
   private readonly sendButton: Locator;
-
-  private readonly settingsButton: Locator;
-
-  private readonly swapButton: Locator;
-
-  private readonly tokensTab: Locator;
 
   private readonly networkPicker: Locator;
 
@@ -50,18 +36,7 @@ export class HomePage {
     this.accountOptionsButton = page.locator(
       '[data-testid="account-options-menu-button"]',
     );
-    this.activityTab = page.locator(
-      '[data-testid="account-overview__activity-tab"]',
-    );
-    this.bridgeButton = page.locator('[data-testid="coin-overview-bridge"]');
-    this.buyButton = page.locator('[data-testid="coin-overview-buy"]');
-    this.receiveButton = page.locator('[data-testid="coin-overview-receive"]');
     this.sendButton = page.locator('[data-testid="coin-overview-send"]');
-    this.settingsButton = page.locator('[data-testid="global-menu-settings"]');
-    this.swapButton = page.locator('[data-testid="coin-overview-swap"]');
-    this.tokensTab = page.locator(
-      '[data-testid="account-overview__asset-tab"]',
-    );
 
     this.networkPicker = page.locator('.mm-picker-network');
     this.networkPickerLabel = page.locator(
@@ -263,38 +238,5 @@ export class HomePage {
 
   async clickSend(): Promise<void> {
     await this.sendButton.click();
-  }
-
-  async clickReceive(): Promise<void> {
-    await this.receiveButton.click();
-  }
-
-  async clickSwap(): Promise<void> {
-    await this.swapButton.click();
-  }
-
-  async clickBuy(): Promise<void> {
-    await this.buyButton.click();
-  }
-
-  async clickBridge(): Promise<void> {
-    await this.bridgeButton.click();
-  }
-
-  async switchToActivityTab(): Promise<void> {
-    await this.activityTab.click();
-  }
-
-  async switchToTokensTab(): Promise<void> {
-    await this.tokensTab.click();
-  }
-
-  async openSettings(): Promise<void> {
-    await this.accountOptionsButton.click();
-    await this.settingsButton.click();
-  }
-
-  async clickNetworkSelector(): Promise<void> {
-    await this.networkPicker.click();
   }
 }

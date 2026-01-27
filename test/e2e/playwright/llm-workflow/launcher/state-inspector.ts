@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import type { ExtensionState } from '../types';
+import type { ExtensionState } from '../launcher-types';
 import { HomePage } from '../page-objects/home-page';
 
 export async function detectCurrentScreen(

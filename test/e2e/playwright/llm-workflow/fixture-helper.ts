@@ -1,4 +1,4 @@
-import type { FixtureData } from './types';
+import type { FixtureData } from './launcher-types';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const FixtureBuilderClass = require('../../fixtures/fixture-builder');

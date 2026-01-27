@@ -5,15 +5,6 @@ export {
 } from './extension-launcher';
 
 export { HomePage } from './page-objects/home-page';
-export { LoginPage } from './page-objects/login-page';
-export { NotificationPage } from './page-objects/notification-page';
-export { OnboardingFlow } from './page-objects/onboarding/onboarding-flow';
-export { StartOnboardingPage } from './page-objects/onboarding/start-onboarding-page';
-export { SrpPage } from './page-objects/onboarding/srp-page';
-export { PasswordPage } from './page-objects/onboarding/password-page';
-export { CompletePage } from './page-objects/onboarding/complete-page';
-
-export type { NotificationType } from './page-objects/notification-page';
 
 export { MockServer, DEFAULT_MOCK_PORT } from './mock-server';
 
@@ -29,6 +20,7 @@ export type { FixtureBuilderOptions } from './fixture-helper';
 
 export type {
   LaunchOptions,
+  LauncherLaunchOptions,
   ScreenshotOptions,
   ScreenshotResult,
   ExtensionState,
@@ -40,4 +32,4 @@ export type {
   FixtureData,
   ScreenName,
   PortsConfig,
-} from './types';
+} from './launcher-types';

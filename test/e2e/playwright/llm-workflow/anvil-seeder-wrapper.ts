@@ -1,5 +1,8 @@
+import type {
+  SmartContractName,
+  Hardfork,
+} from '@metamask/metamask-extension-mcp';
 import type { Anvil } from '../../seeder/anvil';
-import type { SmartContractName, Hardfork } from './mcp-server/types';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const AnvilSeeder = require('../../seeder/anvil-seeder');
