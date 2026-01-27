@@ -659,12 +659,17 @@ export class PersistenceManager {
               // Ignore getBackup errors - we're already in an error state
             }
 
-            // This check verifies if we have any keys saved in our backup.
-            // We use this as a sigil to determine if we've ever saved a vault before.
-            if (
+            // Check if the backup contains actual vault data (not just metadata).
+            // We only want to trigger recovery if there's meaningful state to restore.
+            // Checking backedUpStateKeys ensures we ignore the 'meta' field which is
+            // always present but doesn't contain user data.
+            const hasBackupData =
               backup &&
-              Object.values(backup).some((value) => value !== undefined)
-            ) {
+              backedUpStateKeys.some(
+                (key) => backup[key] !== undefined && backup[key] !== null,
+              );
+
+            if (hasBackupData) {
               log.info('Backup vault found in IndexedDB, triggering recovery');
               // We've got some data (we haven't checked for a vault, as the
               // background+UI are responsible for determining what happens now).
