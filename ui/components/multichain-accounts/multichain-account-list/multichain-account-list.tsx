@@ -12,7 +12,7 @@ import {
   AccountWalletType,
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
@@ -59,7 +59,6 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
-import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import {
   STATUS_CONNECTED,
@@ -105,10 +104,7 @@ export const MultichainAccountList = ({
     endTrace({ name: TraceName.AccountList });
   }, []);
 
-  const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
-    useState(false);
-
-  const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
+  const [, setSearchParams] = useSearchParams();
 
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
@@ -139,18 +135,15 @@ export const MultichainAccountList = ({
   const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
     useState(false);
 
-  const handleAccountRenameActionModalClose = useCallback(() => {
-    setIsAccountRenameModalOpen(false);
-    setRenameAccountGroupId(undefined);
-  }, [setIsAccountRenameModalOpen, setRenameAccountGroupId]);
-
   const handleAccountRenameAction = useCallback(
     (accountGroupId) => {
-      setRenameAccountGroupId(accountGroupId);
-      setIsAccountRenameModalOpen(true);
+      setSearchParams(
+        { show: 'rename-account', 'account-id': accountGroupId },
+        { replace: true },
+      );
       setOpenMenuAccountId(null);
     },
-    [setIsAccountRenameModalOpen, setRenameAccountGroupId],
+    [setSearchParams],
   );
 
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
@@ -469,6 +462,7 @@ export const MultichainAccountList = ({
     selectedAccountGroupsSet,
     privacyMode,
     showAccountCheckbox,
+    showAccountMenu,
     handleAccountRenameAction,
     handleMenuToggle,
     openMenuAccountId,
@@ -482,17 +476,5 @@ export const MultichainAccountList = ({
     endTrace({ name: TraceName.ShowAccountList });
   }, []);
 
-  return (
-    <>
-      {walletTree}
-      {isAccountRenameModalOpen && (
-        <MultichainAccountEditModal
-          key={renameAccountGroupId}
-          isOpen={isAccountRenameModalOpen}
-          onClose={handleAccountRenameActionModalClose}
-          accountGroupId={renameAccountGroupId as unknown as AccountGroupId}
-        />
-      )}
-    </>
-  );
+  return <>{walletTree}</>;
 };

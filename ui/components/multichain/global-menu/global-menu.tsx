@@ -20,9 +20,9 @@ import {
   lockMetamask,
   setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
-  toggleNetworkMenu,
   setUseSidePanelAsDefault,
 } from '../../../store/actions';
+import { useModalState } from '../../../hooks/useModalState';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
@@ -117,6 +117,7 @@ export const GlobalMenu = ({
   const trackEvent = useContext(MetaMetricsContext);
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
+  const networkModal = useModalState('network');
   const basicFunctionality = useSelector(getUseExternalServices);
   const rewardsEnabled = useSelector(selectRewardsEnabled);
 
@@ -504,7 +505,7 @@ export const GlobalMenu = ({
         data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}
         onClick={() => {
-          dispatch(toggleNetworkMenu());
+          networkModal.open();
           closeMenu();
         }}
       >
