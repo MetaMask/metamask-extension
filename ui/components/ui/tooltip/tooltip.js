@@ -74,6 +74,15 @@ export default class Tooltip extends PureComponent {
       return <div className={wrapperClassName}>{children}</div>;
     }
 
+    // When disabled, render children without ReactTippy to avoid internal state issues
+    if (disabled) {
+      return React.createElement(
+        tag,
+        { className: wrapperClassName, style: wrapperStyle },
+        children,
+      );
+    }
+
     return React.createElement(
       tag,
       { className: wrapperClassName, style: wrapperStyle },
@@ -90,7 +99,7 @@ export default class Tooltip extends PureComponent {
         size={size}
         offset={offset}
         style={style}
-        title={disabled ? '' : title}
+        title={title}
         trigger={trigger}
         open={open}
         theme={`tippy-tooltip--mm-custom ${theme}`} // Required for correct theming
