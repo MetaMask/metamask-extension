@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
-import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import { Text, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -363,7 +363,10 @@ export default class Home extends PureComponent {
           key="new-nft-added"
           text={t('newNftAddedMessage')}
           startAdornment={
-            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
+            <Icon
+              name={IconName.CheckCircle}
+              color={IconColor.successDefault}
+            />
           }
           onClose={onAutoHide}
           autoHideTime={autoHideDelay}
@@ -376,7 +379,10 @@ export default class Home extends PureComponent {
           key="remove-nft"
           text={t('removeNftMessage')}
           startAdornment={
-            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
+            <Icon
+              name={IconName.CheckCircle}
+              color={IconColor.successDefault}
+            />
           }
           onClose={onAutoHide}
           autoHideTime={autoHideDelay}
@@ -402,7 +408,10 @@ export default class Home extends PureComponent {
           key="new-network-added"
           text={t('newNetworkAdded', [newNetworkAddedName])}
           startAdornment={
-            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
+            <Icon
+              name={IconName.CheckCircle}
+              color={IconColor.successDefault}
+            />
           }
           onClose={() => clearNewNetworkAdded()}
           dataTestId="new-network-added"
@@ -417,7 +426,10 @@ export default class Home extends PureComponent {
               : t('newNetworkEdited', [editedNetwork.nickname])
           }
           startAdornment={
-            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
+            <Icon
+              name={IconName.CheckCircle}
+              color={IconColor.successDefault}
+            />
           }
           onClose={() => clearEditedNetwork()}
           autoHideTime={autoHideDelay}
@@ -431,7 +443,10 @@ export default class Home extends PureComponent {
           text={t('newTokensImportedTitle')}
           description={t('newTokensImportedMessage', [newTokensImported])}
           startAdornment={
-            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
+            <Icon
+              name={IconName.CheckCircle}
+              color={IconColor.successDefault}
+            />
           }
           onClose={() => setNewTokensImported('')}
           autoHideTime={autoHideDelay}
