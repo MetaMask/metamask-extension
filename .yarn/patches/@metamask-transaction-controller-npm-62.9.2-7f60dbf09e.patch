@@ -1,0 +1,60 @@
+diff --git a/dist/TransactionController.cjs b/dist/TransactionController.cjs
+index 35d8663cbcfc1f7f184c93ff7b37b16d3a8c6bb7..fca4d2df959af9e6015d828755c865812d867362 100644
+--- a/dist/TransactionController.cjs
++++ b/dist/TransactionController.cjs
+@@ -2164,11 +2164,14 @@ async function _TransactionController_approveTransaction(transactionId, traceCon
+     return [new OptimismLayer1GasFeeFlow_1.OptimismLayer1GasFeeFlow(), new ScrollLayer1GasFeeFlow_1.ScrollLayer1GasFeeFlow()];
+ }, _TransactionController_updateTransactionInternal = function _TransactionController_updateTransactionInternal({ transactionId, skipValidation, skipResimulateCheck, }, callback) {
+     let resimulateResponse;
++    let transactionFound = false;
+     this.update((state) => {
+         const index = state.transactions.findIndex(({ id }) => id === transactionId);
+         if (index === -1) {
+-            throw new Error(`Cannot update transaction as ID not found - ${transactionId}`);
++            (0, logger_1.projectLogger)(`Transaction update skipped - transaction already removed from state - ${transactionId}`);
++            return;
+         }
++        transactionFound = true;
+         let transactionMeta = state.transactions[index];
+         const originalTransactionMeta = (0, lodash_1.cloneDeep)(transactionMeta);
+         transactionMeta = callback(transactionMeta) ?? transactionMeta;
+@@ -2181,6 +2184,9 @@ async function _TransactionController_approveTransaction(transactionId, traceCon
+         }
+         state.transactions[index] = transactionMeta;
+     });
++    if (!transactionFound) {
++        return undefined;
++    }
+     const transactionMeta = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getTransaction).call(this, transactionId);
+     if (resimulateResponse?.resimulate) {
+         __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_updateSimulationData).call(this, transactionMeta, {
+diff --git a/dist/TransactionController.mjs b/dist/TransactionController.mjs
+index 51dbaa53c4e1fc7e302792ce483b69392a9ada82..39dbdf8405c8140f30d95cd2137f7cb5e86dfdf0 100644
+--- a/dist/TransactionController.mjs
++++ b/dist/TransactionController.mjs
+@@ -2165,11 +2165,14 @@ async function _TransactionController_approveTransaction(transactionId, traceCon
+     return [new OptimismLayer1GasFeeFlow(), new ScrollLayer1GasFeeFlow()];
+ }, _TransactionController_updateTransactionInternal = function _TransactionController_updateTransactionInternal({ transactionId, skipValidation, skipResimulateCheck, }, callback) {
+     let resimulateResponse;
++    let transactionFound = false;
+     this.update((state) => {
+         const index = state.transactions.findIndex(({ id }) => id === transactionId);
+         if (index === -1) {
+-            throw new Error(`Cannot update transaction as ID not found - ${transactionId}`);
++            log(`Transaction update skipped - transaction already removed from state - ${transactionId}`);
++            return;
+         }
++        transactionFound = true;
+         let transactionMeta = state.transactions[index];
+         const originalTransactionMeta = cloneDeep(transactionMeta);
+         transactionMeta = callback(transactionMeta) ?? transactionMeta;
+@@ -2182,6 +2185,9 @@ async function _TransactionController_approveTransaction(transactionId, traceCon
+         }
+         state.transactions[index] = transactionMeta;
+     });
++    if (!transactionFound) {
++        return undefined;
++    }
+     const transactionMeta = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getTransaction).call(this, transactionId);
+     if (resimulateResponse?.resimulate) {
+         __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_updateSimulationData).call(this, transactionMeta, {
