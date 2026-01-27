@@ -267,7 +267,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         },
       },
-      SubjectMetadataController: {},
+      SubjectMetadataController: {
         subjectMetadata: {
           'https://metamask.github.io': {
             extensionId: null,
