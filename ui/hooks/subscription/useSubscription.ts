@@ -69,7 +69,6 @@ import {
   determineSubscriptionMetricsSourceFromMarketingUtmParams,
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
-  SHIELD_ERROR,
 } from '../../../shared/modules/shield';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
