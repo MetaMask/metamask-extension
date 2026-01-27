@@ -7113,6 +7113,18 @@
   "slippageExplanation": {
     "message": "The % change in price you're willing to allow before your transaction is canceled."
   },
+  "slideBridgeDescription": {
+    "message": "Move your assets between networks seamlessly and securely with MetaMask Bridge."
+  },
+  "slideBridgeTitle": {
+    "message": "Bridge your assets"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Upgrade to a smart account for faster transactions, lower fees, and more flexibility in payments."
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Switch to smart account"
+  },
   "smartAccount": {
     "message": "Smart account"
   },

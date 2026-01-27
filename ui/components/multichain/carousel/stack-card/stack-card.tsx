@@ -24,6 +24,18 @@ export const StackCard: React.FC<StackCardProps> = ({
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
+  // Helper function to translate content if it's an i18n key, otherwise use as-is
+  const translateOrUseAsIs = (content: string): string => {
+    // For Contentful content, try to translate in case it's an i18n key
+    // If translation returns null (key doesn't exist), use the original content
+    if (isContentfulContent) {
+      const translated = t(content);
+      return translated ?? content;
+    }
+    // For non-Contentful content, always translate
+    return t(content) as string;
+  };
+
   const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -75,7 +87,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
-            {isContentfulContent ? slide.title : t(slide.title)}
+            {translateOrUseAsIs(slide.title)}
           </Text>
 
           {onTransitionToNextCard && (
@@ -83,9 +95,7 @@ export const StackCard: React.FC<StackCardProps> = ({
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
-              ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
-              ])}
+              ariaLabel={t('closeSlide', [translateOrUseAsIs(slide.title)])}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}
             />
@@ -99,7 +109,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
-            {isContentfulContent ? slide.description : t(slide.description)}
+            {translateOrUseAsIs(slide.description)}
           </Text>
         </div>
       </div>
