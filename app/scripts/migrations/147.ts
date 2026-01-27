@@ -29,15 +29,12 @@ export type VersionedData = {
 export const version = 147;
 
 function transformState(state: VersionedData['data']) {
+  // Skip transformation if AuthenticationController doesn't exist or is not an object
+  // This is valid for new users or users upgrading from older versions
   if (
     !hasProperty(state, 'AuthenticationController') ||
     !isObject(state.AuthenticationController)
   ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Invalid AuthenticationController state: ${typeof state.AuthenticationController}`,
-      ),
-    );
     return state;
   }
 

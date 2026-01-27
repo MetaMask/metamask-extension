@@ -12,6 +12,28 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
+  it('does nothing if AuthenticationController is missing', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: oldVersion },
+      data: {},
+    };
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual({});
+  });
+
+  it('does nothing if AuthenticationController is undefined', async () => {
+    const oldStorage: VersionedData = {
+      meta: { version: oldVersion },
+      data: {
+        AuthenticationController: undefined,
+      },
+    };
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual({
+      AuthenticationController: undefined,
+    });
+  });
+
   describe(`migration #${version}`, () => {
     it('resets sessionData if using the old state shape', async () => {
       const oldStorage: VersionedData = {
