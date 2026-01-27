@@ -5148,6 +5148,10 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.controllerMessenger, 'call')
         .mockReturnValue(wallet);
 
+      jest
+        .spyOn(metamaskController.accountsController, 'updateAccounts')
+        .mockResolvedValue();
+
       const result = await metamaskController.discoverAndCreateAccounts();
 
       expect(metamaskController.controllerMessenger.call).toHaveBeenCalledWith(
@@ -5156,6 +5160,7 @@ describe('MetaMaskController', () => {
       );
 
       expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
+      expect(metamaskController.accountsController.updateAccounts).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
 
@@ -5175,6 +5180,10 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.controllerMessenger, 'call')
         .mockReturnValue(wallet);
 
+      jest
+        .spyOn(metamaskController.accountsController, 'updateAccounts')
+        .mockResolvedValue();
+
       const result =
         await metamaskController.discoverAndCreateAccounts(providedId);
 
@@ -5183,6 +5192,7 @@ describe('MetaMaskController', () => {
         { entropySource: providedId },
       );
 
+      expect(metamaskController.accountsController.updateAccounts).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
 
@@ -5217,6 +5227,10 @@ describe('MetaMaskController', () => {
         .spyOn(metamaskController.controllerMessenger, 'call')
         .mockReturnValue(wallet);
 
+      jest
+        .spyOn(metamaskController.accountsController, 'updateAccounts')
+        .mockResolvedValue();
+
       const warnSpy = jest.spyOn(log, 'warn');
 
       const result = await metamaskController.discoverAndCreateAccounts();
@@ -5224,6 +5238,9 @@ describe('MetaMaskController', () => {
       expect(warnSpy).toHaveBeenCalledWith(
         'Failed to add accounts with balance. Error: boom',
       );
+
+      // updateAccounts should not be called when discovery fails
+      expect(metamaskController.accountsController.updateAccounts).not.toHaveBeenCalled();
 
       warnSpy.mockRestore();
     });

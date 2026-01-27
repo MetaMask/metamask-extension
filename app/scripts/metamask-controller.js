@@ -4570,6 +4570,10 @@ export default class MetamaskController extends EventEmitter {
 
       const result = await wallet.discoverAccounts();
 
+      // Synchronize accounts with AccountsController to prevent race conditions
+      // where snap RPC calls try to access accounts before they're fully registered
+      await this.accountsController.updateAccounts();
+
       const counts = this.getDiscoveryCountByProvider(result);
 
       return counts;
