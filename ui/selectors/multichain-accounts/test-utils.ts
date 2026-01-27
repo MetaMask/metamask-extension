@@ -18,6 +18,13 @@ export const createMockMultichainAccountsState = (
       string,
       MultichainNetworkConfiguration
     >;
+    selectedNetworkClientId?: string;
+    networksMetadata?: Record<string, unknown>;
+    keyrings?: unknown[];
+    activeTab?: unknown;
+    connectedAccounts?: unknown[];
+    pinnedAccountsList?: string[];
+    hiddenAccountsList?: string[];
   },
 ): MultichainAccountsState & MultichainNetworkConfigurationsByChainIdState => ({
   metamask: {
@@ -27,6 +34,22 @@ export const createMockMultichainAccountsState = (
       networkConfigurations?.networkConfigurationsByChainId || {},
     multichainNetworkConfigurationsByChainId:
       networkConfigurations?.multichainNetworkConfigurationsByChainId || {},
+    selectedNetworkClientId:
+      networkConfigurations?.selectedNetworkClientId || 'mainnet',
+    networksMetadata: networkConfigurations?.networksMetadata || {
+      mainnet: {
+        EIPS: { 1559: true },
+        status: 'available',
+      },
+    },
+    keyrings: networkConfigurations?.keyrings || [],
+    connectedAccounts: networkConfigurations?.connectedAccounts || [],
+    pinnedAccountsList: networkConfigurations?.pinnedAccountsList || [],
+    hiddenAccountsList: networkConfigurations?.hiddenAccountsList || [],
+  } as MultichainAccountsState['metamask'] &
+    MultichainNetworkConfigurationsByChainIdState['metamask'],
+  activeTab: networkConfigurations?.activeTab || {
+    origin: 'https://example.com',
   },
 });
 

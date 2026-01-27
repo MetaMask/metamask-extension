@@ -112,22 +112,33 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
         };
 
         Object.values(wallet.groups).forEach((group: AccountGroupObject) => {
-          const accountsFromGroup = group.accounts.map((accountId) => {
-            const accountWithMetadata = { ...accountsById[accountId] };
+          const accountsFromGroup = group.accounts
+            .map((accountId) => {
+              const account = accountsById[accountId];
 
-            // Set flags for pinned, hidden, and active accounts
-            accountWithMetadata.pinned = pinnedAccountsSet.has(
-              accountWithMetadata.address,
-            );
-            accountWithMetadata.hidden = hiddenAccountsSet.has(
-              accountWithMetadata.address,
-            );
-            accountWithMetadata.active =
-              selectedAccount.id === accountWithMetadata.id &&
-              connectedAccountIdsSet.has(accountWithMetadata.id);
+              // Skip accounts that don't exist in the internal accounts
+              if (!account) {
+                return null;
+              }
 
-            return accountWithMetadata;
-          });
+              const accountWithMetadata = { ...account };
+
+              // Set flags for pinned, hidden, and active accounts
+              accountWithMetadata.pinned = pinnedAccountsSet.has(
+                accountWithMetadata.address,
+              );
+              accountWithMetadata.hidden = hiddenAccountsSet.has(
+                accountWithMetadata.address,
+              );
+              accountWithMetadata.active =
+                selectedAccount.id === accountWithMetadata.id &&
+                connectedAccountIdsSet.has(accountWithMetadata.id);
+
+              return accountWithMetadata;
+            })
+            .filter(
+              (account): account is MergedInternalAccount => account !== null,
+            );
 
           consolidatedWallets[wallet.id].groups[group.id] = {
             id: group.id,
@@ -187,11 +198,19 @@ export const getWalletIdAndNameByAccountAddress = createDeepEqualSelector(
   getWalletsWithAccounts,
   (_, address: string) => address,
   (walletsWithAccounts: ConsolidatedWallets, address: string) => {
+    // Validate input address
+    if (!address) {
+      return null;
+    }
+
+    const normalizedAddress = address.toLowerCase();
+
     // Find the wallet that contains the account with the given address
     for (const [walletId, wallet] of Object.entries(walletsWithAccounts)) {
       for (const group of Object.values(wallet.groups)) {
         const account = group.accounts.find(
-          (acc) => acc.address.toLowerCase() === address.toLowerCase(),
+          (acc) =>
+            acc.address && acc.address.toLowerCase() === normalizedAddress,
         );
         if (account) {
           return {
