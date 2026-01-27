@@ -1,13 +1,12 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 import {
-  ErrorCode,
-  RetryStrategy,
-  HardwareWalletError,
-} from '../../../../contexts/hardware-wallets/errors';
-import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
-import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext.split';
+  createHardwareWalletError,
+  HardwareWalletType,
+  HardwareWalletProvider,
+} from '../../../../contexts/hardware-wallets';
 
 const meta: Meta<typeof HardwareWalletErrorModal> = {
   title: 'Components/App/Modals/HardwareWalletErrorModal',
@@ -33,17 +32,12 @@ const createTestError = (
   code: ErrorCode,
   message: string,
   userMessage: string,
-  retryStrategy: RetryStrategy = RetryStrategy.RETRY,
-  userActionable: boolean = true,
 ): HardwareWalletError => {
-  return new HardwareWalletError(message, {
+  return createHardwareWalletError(
     code,
-    severity: 'error' as any,
-    category: 'unknown' as any,
-    retryStrategy,
-    userActionable,
-    userMessage,
-  });
+    HardwareWalletType.Ledger,
+    userMessage || message,
+  );
 };
 
 /**
@@ -53,29 +47,10 @@ export const DeviceLocked: Story = {
   args: {
     isOpen: true,
     error: createTestError(
-      ErrorCode.AUTH_LOCK_001,
+      ErrorCode.AuthenticationDeviceLocked,
       'Device is locked',
       'Your Ledger device is locked. Please unlock it to continue.',
     ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
-  },
-};
-
-/**
- * Device Locked Error (AUTH_LOCK_002) - Alternative lock code
- */
-export const DeviceLockedAlt: Story = {
-  args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.AUTH_LOCK_002,
-      'Device is locked',
-      'Your Ledger device is locked. Please unlock it to continue.',
-    ),
-    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -89,11 +64,10 @@ export const WrongAppOpen: Story = {
   args: {
     isOpen: true,
     error: createTestError(
-      ErrorCode.DEVICE_STATE_001,
+      ErrorCode.DeviceStateEthAppClosed,
       'Wrong app open',
       'Please open the Ethereum app on your Ledger device.',
     ),
-    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -101,17 +75,16 @@ export const WrongAppOpen: Story = {
 };
 
 /**
- * Device State Error (DEVICE_STATE_002) - Device not ready
+ * Device Disconnected - Device not connected
  */
-export const DeviceNotReady: Story = {
+export const DeviceDisconnected: Story = {
   args: {
     isOpen: true,
     error: createTestError(
-      ErrorCode.DEVICE_STATE_002,
-      'Device not ready',
-      'Your device is not ready. Please check the connection.',
+      ErrorCode.DeviceDisconnected,
+      'Device disconnected',
+      'Your device is not connected. Please check the connection.',
     ),
-    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -125,11 +98,10 @@ export const WebHIDPermissionError: Story = {
   args: {
     isOpen: true,
     error: createTestError(
-      ErrorCode.CONN_TRANSPORT_001,
+      ErrorCode.ConnectionTransportMissing,
       'WebHID permission denied',
       'Browser permission is required to connect to your hardware wallet.',
     ),
-    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -137,17 +109,16 @@ export const WebHIDPermissionError: Story = {
 };
 
 /**
- * Device Permission Error - Device permissions not granted
+ * Connection Closed - Connection was closed unexpectedly
  */
-export const DevicePermissionError: Story = {
+export const ConnectionClosed: Story = {
   args: {
     isOpen: true,
     error: createTestError(
-      ErrorCode.CONFIG_PERM_001,
-      'Device permission denied',
-      'Please grant permission to access your Ledger device.',
+      ErrorCode.ConnectionClosed,
+      'Connection closed',
+      'The connection to your device was closed. Please reconnect.',
     ),
-    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -161,11 +132,44 @@ export const ConnectionTimeout: Story = {
   args: {
     isOpen: true,
     error: createTestError(
-      ErrorCode.CONN_TIMEOUT_001,
+      ErrorCode.ConnectionTimeout,
       'Connection timeout',
       'The operation timed out. Please try again.',
     ),
-    walletType: HardwareWalletType.Ledger,
+    onRetry: () => console.log('Retry clicked'),
+    onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
+  },
+};
+
+/**
+ * User Rejected - User rejected the operation on device
+ */
+export const UserRejected: Story = {
+  args: {
+    isOpen: true,
+    error: createTestError(
+      ErrorCode.UserRejected,
+      'User rejected',
+      'You rejected the operation on your device.',
+    ),
+    onRetry: () => console.log('Retry clicked'),
+    onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
+  },
+};
+
+/**
+ * User Cancelled - User cancelled the operation
+ */
+export const UserCancelled: Story = {
+  args: {
+    isOpen: true,
+    error: createTestError(
+      ErrorCode.UserCancelled,
+      'User cancelled',
+      'You cancelled the operation.',
+    ),
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -179,32 +183,12 @@ export const UnknownError: Story = {
   args: {
     isOpen: true,
     error: createTestError(
-      'UNKNOWN_ERROR' as ErrorCode,
+      ErrorCode.Unknown,
       'Unknown error occurred',
       'An unexpected error occurred. Please try again.',
     ),
-    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
-  },
-};
-
-/**
- * Non-Retryable Error - Shows only Close button
- */
-export const NonRetryableError: Story = {
-  args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.AUTH_LOCK_001,
-      'Device is locked',
-      'Your Ledger device is locked. Please unlock it to continue.',
-      RetryStrategy.NO_RETRY,
-      false,
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onCancel: () => console.log('Close clicked'),
     onClose: () => console.log('Close clicked'),
   },
 };
@@ -216,11 +200,10 @@ export const LongErrorMessage: Story = {
   args: {
     isOpen: true,
     error: createTestError(
-      ErrorCode.UNKNOWN_001,
+      ErrorCode.Unknown,
       'A very long error message that should wrap properly',
       'This is a very long error message that should wrap to multiple lines and still display correctly in the modal. It contains important information that the user needs to read carefully before proceeding.',
     ),
-    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
