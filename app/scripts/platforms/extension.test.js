@@ -15,6 +15,9 @@ jest.mock('webextension-polyfill', () => {
     notifications: {
       create: jest.fn(),
     },
+    windows: {
+      update: jest.fn(),
+    },
   };
 });
 
@@ -158,6 +161,86 @@ describe('extension platform', () => {
         'Failed transaction',
         `Transaction 1 failed! ${expectedErrorMessage}`,
       );
+    });
+  });
+
+  describe('focusWindow', () => {
+    it('should focus window successfully', async () => {
+      const windowId = 123;
+      browser.windows.update.mockResolvedValue({ id: windowId });
+      const extensionPlatform = new ExtensionPlatform();
+
+      await extensionPlatform.focusWindow(windowId);
+
+      expect(browser.windows.update).toHaveBeenCalledWith(windowId, {
+        focused: true,
+      });
+    });
+
+    it('should handle error gracefully when window does not exist', async () => {
+      const windowId = 123;
+      const error = new Error('No window with id: 123.');
+      browser.windows.update.mockRejectedValue(error);
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const extensionPlatform = new ExtensionPlatform();
+
+      // Should not throw an error
+      await expect(
+        extensionPlatform.focusWindow(windowId),
+      ).resolves.toBeUndefined();
+
+      expect(browser.windows.update).toHaveBeenCalledWith(windowId, {
+        focused: true,
+      });
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        `Failed to focus window ${windowId}:`,
+        error.message,
+      );
+
+      consoleWarnSpy.mockRestore();
+    });
+  });
+
+  describe('updateWindowPosition', () => {
+    it('should update window position successfully', async () => {
+      const windowId = 123;
+      const left = 100;
+      const top = 200;
+      browser.windows.update.mockResolvedValue({ id: windowId });
+      const extensionPlatform = new ExtensionPlatform();
+
+      await extensionPlatform.updateWindowPosition(windowId, left, top);
+
+      expect(browser.windows.update).toHaveBeenCalledWith(windowId, {
+        left,
+        top,
+      });
+    });
+
+    it('should handle error gracefully when window does not exist', async () => {
+      const windowId = 123;
+      const left = 100;
+      const top = 200;
+      const error = new Error('No window with id: 123.');
+      browser.windows.update.mockRejectedValue(error);
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const extensionPlatform = new ExtensionPlatform();
+
+      // Should not throw an error
+      await expect(
+        extensionPlatform.updateWindowPosition(windowId, left, top),
+      ).resolves.toBeUndefined();
+
+      expect(browser.windows.update).toHaveBeenCalledWith(windowId, {
+        left,
+        top,
+      });
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        `Failed to update window ${windowId} position:`,
+        error.message,
+      );
+
+      consoleWarnSpy.mockRestore();
     });
   });
 });

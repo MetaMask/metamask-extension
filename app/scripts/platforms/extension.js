@@ -30,11 +30,26 @@ export default class ExtensionPlatform {
   }
 
   async focusWindow(windowId) {
-    await browser.windows.update(windowId, { focused: true });
+    try {
+      await browser.windows.update(windowId, { focused: true });
+    } catch (error) {
+      // Window may have been closed by user before focus attempt
+      // This is not an error condition - the window simply no longer exists
+      console.warn(`Failed to focus window ${windowId}:`, error.message);
+    }
   }
 
   async updateWindowPosition(windowId, left, top) {
-    await browser.windows.update(windowId, { left, top });
+    try {
+      await browser.windows.update(windowId, { left, top });
+    } catch (error) {
+      // Window may have been closed by user before position update
+      // This is not an error condition - the window simply no longer exists
+      console.warn(
+        `Failed to update window ${windowId} position:`,
+        error.message,
+      );
+    }
   }
 
   async getLastFocusedWindow() {
