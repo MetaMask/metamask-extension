@@ -1,5 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useSearchParams } from 'react-router-dom';
 import { merge } from 'lodash';
 
@@ -65,6 +68,7 @@ describe('useMaxValueRefresher', () => {
   const baseTransactionMeta = {
     id: 'test-transaction-id',
     type: TransactionType.simpleSend,
+    status: TransactionStatus.unapproved,
     chainId: '0x1',
     txParams: {
       from: '0x12345',
@@ -191,6 +195,48 @@ describe('useMaxValueRefresher', () => {
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: tokenTransferMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    renderHook(() => useMaxValueRefresher());
+
+    expect(updateEditableParamsMock).not.toHaveBeenCalled();
+  });
+
+  it('does not update transaction value when transaction status is submitted', () => {
+    const submittedTransactionMeta = merge({}, baseTransactionMeta, {
+      status: TransactionStatus.submitted,
+    });
+
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: submittedTransactionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    renderHook(() => useMaxValueRefresher());
+
+    expect(updateEditableParamsMock).not.toHaveBeenCalled();
+  });
+
+  it('does not update transaction value when transaction status is approved', () => {
+    const approvedTransactionMeta = merge({}, baseTransactionMeta, {
+      status: TransactionStatus.approved,
+    });
+
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: approvedTransactionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    renderHook(() => useMaxValueRefresher());
+
+    expect(updateEditableParamsMock).not.toHaveBeenCalled();
+  });
+
+  it('does not update transaction value when transaction status is confirmed', () => {
+    const confirmedTransactionMeta = merge({}, baseTransactionMeta, {
+      status: TransactionStatus.confirmed,
+    });
+
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: confirmedTransactionMeta,
     } as unknown as ReturnType<typeof useConfirmContext>);
 
     renderHook(() => useMaxValueRefresher());

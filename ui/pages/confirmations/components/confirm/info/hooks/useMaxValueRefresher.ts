@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
@@ -80,7 +81,8 @@ export const useMaxValueRefresher = () => {
   useEffect(() => {
     if (
       !isMaxValueMode ||
-      transactionMeta.type !== TransactionType.simpleSend
+      transactionMeta.type !== TransactionType.simpleSend ||
+      transactionMeta.status !== TransactionStatus.unapproved
     ) {
       return;
     }
