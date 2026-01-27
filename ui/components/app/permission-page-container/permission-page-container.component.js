@@ -23,7 +23,10 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
+import {
+  getCaip25CaveatValueFromPermissions,
+  getCaip25PermissionsResponse,
+} from '../../../pages/permissions-connect/connect-page/utils';
 import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
@@ -156,6 +159,8 @@ export default class PermissionPageContainer extends Component {
       request: _request,
       approvePermissionsRequest,
       rejectPermissionsRequest,
+      selectedAccounts,
+      requestedChainIds,
       selectedCaipAccountIds,
       selectedCaipChainIds,
     } = this.props;
@@ -166,20 +171,33 @@ export default class PermissionPageContainer extends Component {
 
     let permissionsResponse;
 
-    // Use chain-agnostic approach when CAIP account IDs are provided
-    // This supports non-EVM chains like Solana, Bitcoin, etc.
     if (
       selectedCaipAccountIds?.length > 0 &&
       selectedCaipChainIds?.length > 0
     ) {
+      // Use chain-agnostic approach when CAIP account IDs are provided
+      // This supports non-EVM chains like Solana, Bitcoin, etc.
       permissionsResponse = generateCaip25Caveat(
         requestedCaip25CaveatValue,
         selectedCaipAccountIds,
         selectedCaipChainIds,
       );
+    } else if (selectedAccounts?.length > 0) {
+      // Fallback to EVM-only approach when accounts are selected (e.g., snaps flow)
+      permissionsResponse = getCaip25PermissionsResponse(
+        requestedCaip25CaveatValue,
+        selectedAccounts.map((account) => account.address),
+        requestedChainIds,
+      );
     } else {
-      // Preserve original accounts and chains from the request
-      // This prevents overwriting the requested scopes with potentially different/empty values
+      // No user selection occurred (no selectedCaipAccountIds and no selectedAccounts).
+      // This happens in scenarios like:
+      // - Network-only permission changes (adding a new chain without changing accounts)
+      // - Incremental permission requests that don't involve account selection UI
+      //
+      // Extract the account/chain IDs already embedded in the request's CAIP-25 caveat.
+      // We must preserve these values rather than passing empty arrays, which would
+      // effectively deny the permission or create an invalid state.
       const originalCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
         requestedCaip25CaveatValue,
       );
@@ -187,7 +205,6 @@ export default class PermissionPageContainer extends Component {
         requestedCaip25CaveatValue,
       );
 
-      // Use chain-agnostic approach with original values to preserve the request's scopes
       permissionsResponse = generateCaip25Caveat(
         requestedCaip25CaveatValue,
         originalCaipAccountIds,
