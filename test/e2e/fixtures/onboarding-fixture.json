@@ -38,7 +38,6 @@
     "AppMetadataController": {
       "currentAppVersion": "13.17.0",
       "currentMigrationVersion": 189,
-      "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
     "AppStateController": {
@@ -49,7 +48,7 @@
       "canTrackWalletFundsObtained": true,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
-      "enableEnforcedSimulations": true,
+      "enableEnforcedSimulations": false,
       "enforcedSimulationsSlippage": 10,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
