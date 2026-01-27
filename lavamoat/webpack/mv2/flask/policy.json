@@ -669,7 +669,7 @@
         "semver": true
       }
     },
-    "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
+    "@ledgerhq/hw-transport": {
       "globals": {
         "Buffer.alloc": true,
         "Buffer.concat": true,
@@ -1248,7 +1248,7 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ledgerhq/hw-app-eth": true,
-        "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
+        "@ledgerhq/hw-transport": true,
         "@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "buffer": true,

@@ -604,7 +604,7 @@
         "react": true
       }
     },
-    "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": {
+    "@ledgerhq/hw-transport>@ledgerhq/devices": {
       "packages": {
         "@ledgerhq/errors": true,
         "browserify>buffer": true,
@@ -651,19 +651,7 @@
         "semver": true
       }
     },
-    "@ledgerhq/hw-transport-webhid": {
-      "globals": {
-        "navigator": true
-      },
-      "packages": {
-        "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": true,
-        "@ledgerhq/errors": true,
-        "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
-        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "browserify>buffer": true
-      }
-    },
-    "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
+    "@ledgerhq/hw-transport": {
       "globals": {
         "clearTimeout": true,
         "console.warn": true,
@@ -674,6 +662,18 @@
         "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
         "browserify>buffer": true,
         "webpack>events": true
+      }
+    },
+    "@ledgerhq/hw-transport-webhid": {
+      "globals": {
+        "navigator": true
+      },
+      "packages": {
+        "@ledgerhq/hw-transport>@ledgerhq/devices": true,
+        "@ledgerhq/errors": true,
+        "@ledgerhq/hw-transport": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "browserify>buffer": true
       }
     },
     "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
@@ -1243,7 +1243,7 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ledgerhq/hw-app-eth": true,
-        "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
+        "@ledgerhq/hw-transport": true,
         "@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "browserify>buffer": true,

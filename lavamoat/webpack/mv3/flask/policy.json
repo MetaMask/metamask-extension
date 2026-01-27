@@ -445,7 +445,7 @@
         "react": true
       }
     },
-    "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": {
+    "@ledgerhq/hw-transport>@ledgerhq/devices": {
       "globals": {
         "Buffer.alloc": true,
         "Buffer.concat": true
@@ -502,21 +502,7 @@
         "semver": true
       }
     },
-    "@ledgerhq/hw-transport-webhid": {
-      "globals": {
-        "Buffer.from": true,
-        "navigator": true
-      },
-      "packages": {
-        "@ledgerhq/hw-transport-webhid>@ledgerhq/devices": true,
-        "@ledgerhq/errors": true,
-        "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
-        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "@swc/helpers": true,
-        "buffer": true
-      }
-    },
-    "@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": {
+    "@ledgerhq/hw-transport": {
       "globals": {
         "Buffer.alloc": true,
         "Buffer.concat": true,
@@ -531,6 +517,20 @@
         "@swc/helpers": true,
         "buffer": true,
         "webpack>events": true
+      }
+    },
+    "@ledgerhq/hw-transport-webhid": {
+      "globals": {
+        "Buffer.from": true,
+        "navigator": true
+      },
+      "packages": {
+        "@ledgerhq/hw-transport>@ledgerhq/devices": true,
+        "@ledgerhq/errors": true,
+        "@ledgerhq/hw-transport": true,
+        "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
+        "@swc/helpers": true,
+        "buffer": true
       }
     },
     "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": {
