@@ -279,13 +279,16 @@ const Footer = () => {
       return;
     }
 
+    // Capture confirmation ID before onCancel removes it from state
+    const confirmationId = currentConfirmation?.id;
+
     await onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
     onDappSwapCompleted();
     if (isAddEthereumChain) {
       navigate(DEFAULT_ROUTE);
-    } else {
-      navigateNext(currentConfirmation.id);
+    } else if (confirmationId) {
+      navigateNext(confirmationId);
     }
   }, [
     navigateNext,
