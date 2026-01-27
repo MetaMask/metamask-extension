@@ -1700,21 +1700,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.25.9":
-  version: 7.25.9
-  resolution: "@babel/runtime@npm:7.25.9"
+"@babel/runtime@npm:7.26.10":
+  version: 7.26.10
+  resolution: "@babel/runtime@npm:7.26.10"
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
-  checksum: 10/8d904cfcb433374b3bb90369452751c94ae69547cdd3679950de4527ac5d04195b9c4a1840482a6f3a84694cb22a6403a7f98b826d60cd945918223a4a6b479c
+  checksum: 10/9d7ff8e96abe3791047c1138789c742411e3ef19c4d7ca18ce916f83cec92c06ec5dc64401759f6dd1e377cf8a01bbd2c62e033eb7550f435cf6579768d0d4a5
   languageName: node
   linkType: hard
 
-"@babel/runtime@patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch":
-  version: 7.25.9
-  resolution: "@babel/runtime@patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch::version=7.25.9&hash=1f0739"
+"@babel/runtime@patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch":
+  version: 7.26.10
+  resolution: "@babel/runtime@patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch::version=7.26.10&hash=1f0739"
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
-  checksum: 10/10b33c61b2e97285a220a4e621daced63d96cebbe155d4c5b322867f4d6eb269a9ab658e9eee6bb3e6bfe1a6bbe84e53347112716e79b57850c8f44edb74773e
+  checksum: 10/253ae7163da2208b5ba49ee0d26d4ad49cd1aff71b3dbfb46767f7a6cfb5dcc29131f5d24cc6cfe85a68395756777fa682b0249daf9b5b2c521bba5829a58ef8
   languageName: node
   linkType: hard
 
@@ -32838,17 +32838,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.21":
-  version: 4.17.21
-  resolution: "lodash@npm:4.17.21"
-  checksum: 10/c08619c038846ea6ac754abd6dd29d2568aa705feb69339e836dfa8d8b09abbb2f859371e86863eda41848221f9af43714491467b5b0299122431e202bb0c532
+"lodash@npm:4.17.23":
+  version: 4.17.23
+  resolution: "lodash@npm:4.17.23"
+  checksum: 10/82504c88250f58da7a5a4289f57a4f759c44946c005dd232821c7688b5fcfbf4a6268f6a6cdde4b792c91edd2f3b5398c1d2a0998274432cff76def48735e233
   languageName: node
   linkType: hard
 
-"lodash@patch:lodash@npm%3A4.17.21#~/.yarn/patches/lodash-npm-4.17.21-6382451519.patch":
-  version: 4.17.21
-  resolution: "lodash@patch:lodash@npm%3A4.17.21#~/.yarn/patches/lodash-npm-4.17.21-6382451519.patch::version=4.17.21&hash=a39172"
-  checksum: 10/c9fdcf4cf6440e980aaa687aa7a787afb4563502c28e88eb230c3adfac0aa6b2ccb96aaf4a17c0148c3daa2d8cc83edad8ecedd8ed64a615b47f07b0f484cd9c
+"lodash@patch:lodash@npm%3A4.17.23#~/.yarn/patches/lodash-npm-4.17.23-50bdb1c01a.patch":
+  version: 4.17.23
+  resolution: "lodash@patch:lodash@npm%3A4.17.23#~/.yarn/patches/lodash-npm-4.17.23-50bdb1c01a.patch::version=4.17.23&hash=a4d321"
+  checksum: 10/ad28307e4f9f861b41cf44698060db233716d62b046f15351e67a7650a0cdba997b79cbf63ebc1dc917c6b369dfae68208604cc70a2dc2318a0ac38a904b78af
   languageName: node
   linkType: hard
 
@@ -33493,7 +33493,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.25.9"
     "@babel/preset-typescript": "npm:^7.25.9"
     "@babel/register": "npm:^7.25.9"
-    "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch"
+    "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch"
     "@blockaid/ppom_release": "npm:^1.5.3"
     "@date-io/luxon": "npm:^1.3.13"
     "@ensdomains/content-hash": "npm:^2.5.7"
@@ -33860,7 +33860,7 @@ __metadata:
     lightweight-charts: "npm:^5.1.0"
     localforage: "npm:^1.9.0"
     lockfile-lint: "npm:^4.10.6"
-    lodash: "npm:^4.17.21"
+    lodash: "npm:^4.17.23"
     loglevel: "npm:^1.8.1"
     loose-envify: "npm:^1.4.0"
     lottie-web: "npm:^5.12.2"
