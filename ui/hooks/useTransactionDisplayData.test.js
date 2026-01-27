@@ -262,4 +262,39 @@ describe('useTransactionDisplayData', () => {
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
+
+  it('should handle gasPayment transaction type', () => {
+    const gasPaymentTransaction = {
+      primaryTransaction: {
+        id: 'gas-payment-test',
+        type: 'gas_payment',
+        time: Date.now(),
+        status: 'confirmed',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
+          value: '0x0',
+        },
+      },
+      initialTransaction: {
+        id: 'gas-payment-test',
+        type: 'gas_payment',
+        time: Date.now(),
+        status: 'confirmed',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
+          value: '0x0',
+        },
+      },
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(gasPaymentTransaction),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+    expect(result.current.title).toStrictEqual('Gas payment');
+    expect(result.current.isPending).toStrictEqual(false);
+  });
 });
