@@ -8455,9 +8455,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-execution-environments@npm:^10.4.0":
-  version: 10.4.0
-  resolution: "@metamask/snaps-execution-environments@npm:10.4.0"
+"@metamask/snaps-execution-environments@npm:^10.4.1":
+  version: 10.4.1
+  resolution: "@metamask/snaps-execution-environments@npm:10.4.1"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.2.1"
     "@metamask/object-multiplex": "npm:^2.1.0"
@@ -8465,11 +8465,11 @@ __metadata:
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-sdk": "npm:^10.4.0"
-    "@metamask/snaps-utils": "npm:^12.0.0"
+    "@metamask/snaps-utils": "npm:^12.0.1"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.9.0"
     readable-stream: "npm:^3.6.2"
-  checksum: 10/fae467046239a158921cc95b77c0396a61b614e8421311baacd3159be889c36414a758613e24716600bfbdb3a5dd575e0f04e82acaf11b23123a5e7659785a45
+  checksum: 10/485bf89abfcf0c8f66f682ef0990a180f935c6a25915305243635c481b04755862791fdd4b64ed9100ba8d1dde29bdd745721f6f707092a64167bf4f2246e566
   languageName: node
   linkType: hard
 
@@ -33661,7 +33661,7 @@ __metadata:
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
     "@metamask/snaps-controllers": "npm:^17.2.1"
-    "@metamask/snaps-execution-environments": "npm:^10.4.0"
+    "@metamask/snaps-execution-environments": "npm:^10.4.1"
     "@metamask/snaps-rpc-methods": "npm:^14.2.0"
     "@metamask/snaps-sdk": "npm:^10.4.0"
     "@metamask/snaps-utils": "npm:^12.0.1"
