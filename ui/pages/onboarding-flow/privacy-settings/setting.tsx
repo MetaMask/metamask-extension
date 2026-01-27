@@ -8,6 +8,7 @@ import {
   BoxAlignItems,
   TextVariant,
   TextColor,
+  FontWeight,
 } from '@metamask/design-system-react';
 import ToggleButton from '../../../components/ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -52,7 +53,9 @@ export const Setting = ({
         className="w-full"
         gap={4}
       >
-        <Text variant={TextVariant.BodyMd}>{title}</Text>
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {title}
+        </Text>
         {showToggle ? (
           <Box>
             <ToggleButton
