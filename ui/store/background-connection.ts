@@ -1,82 +1,9 @@
-// eslint-disable-next-line import/no-restricted-paths
-import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Api = Record<string, (...params: any[]) => any>;
 //========
-// We export this type so that we can use it in `ui-messenger.ts`.
+// We no longer need functions to interact with the background; all interactions
+// will now take place through the UI messenger.
+//
+// The only thing remaining in this file is a `generateActionId` function, which
+// doesn't really belong here (as it's for Redux actions). We could conceivably
+// move it elsewhere, but I've left it here to make the diff cleaner.
 //========
-export type BackgroundRpcClient = MetaRpcClientFactory<Api>;
-
-const NO_BACKGROUND_CONNECTION_MESSAGE =
-  'Background connection is not set. Please initialize the background connection before making requests.';
-
-let background: BackgroundRpcClient;
-
 export const generateActionId = () => Date.now() + Math.random();
-
-/**
- * Promise-style call to background method invokes promisifiedBackground method directly.
- *
- * @param method - name of the background method
- * @param [args] - arguments to that method, if any
- * @returns
- */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function submitRequestToBackground<R>(
-  method: keyof Api,
-  args?: Parameters<Api[typeof method]>,
-): Promise<R> {
-  if (process.env.IN_TEST) {
-    // tests don't always set the `background` property for convenience, as
-    // the return values for various RPC calls aren't always used. In production
-    // builds, this will not happen, and even if it did MM wouldn't work.
-    if (!background) {
-      console.warn(NO_BACKGROUND_CONNECTION_MESSAGE);
-      return Promise.resolve() as Promise<R>;
-    }
-  }
-  return background[method](...(args ?? [])) as unknown as Promise<R>;
-}
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
-
-/**
- * [Deprecated] Callback-style call to background method
- * invokes promisifiedBackground method directly.
- *
- * @deprecated Use async `submitRequestToBackground` function instead.
- * @param method - name of the background method
- * @param [args] - arguments to that method, if any
- * @param callback - Node style (error, result) callback for finishing the operation
- */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const callBackgroundMethod = <R>(
-  method: keyof Api,
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  args: Parameters<Api[typeof method]>,
-  callback: CallbackMethod<R>,
-) => {
-  submitRequestToBackground<R>(method, args).then(
-    (result) => callback(null, result),
-    callback,
-  );
-};
-
-/**
- * Sets/replaces the background connection reference
- *
- * @param backgroundConnection
- */
-export async function setBackgroundConnection(
-  backgroundConnection: BackgroundRpcClient,
-) {
-  background = backgroundConnection;
-}

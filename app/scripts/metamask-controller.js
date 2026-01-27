@@ -6854,9 +6854,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     //========
-    // In anticipation of removing the `api` object below, we take the methods
-    // in `api` that are not tied directly to any controller, and we add them to
-    // the root messenger.
+    // The root messenger now represents the "background API".
     //========
     this.controllerMessenger.registerActionHandler(
       `${ROOT_MESSENGER_NAMESPACE}:getState`,
@@ -6890,28 +6888,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    //========
-    // As long as we have `submitRequestToBackground`, we still need an `api`
-    // object (otherwise we have to map method calls to action types — and
-    // that's what the `api` object essentially does, or could do). However,
-    // we can slowly replace the implementation of the methods in this `api`
-    // object with calls to the root messenger (e.g. see `getApi`).
-    //========
-    const api = {
-      ...this.getApi(),
-      ...this.controllerApi,
-      startSendingPatches: () => {
-        uiReady = true;
-        handleUpdate();
-      },
-      getStatePatches: () => patchStore.flushPendingPatches(),
-      //========
-      // We add a `call` method to this object so that we can use it when
-      // initializing the UI messenger.
-      //========
-      call: this.controllerMessenger.call.bind(this.controllerMessenger),
-    };
-
     this.on('update', handleUpdate);
 
     // report new active controller connection
@@ -6919,7 +6895,10 @@ export default class MetamaskController extends EventEmitter {
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
 
     // set up postStream transport
-    outStream.on('data', createMetaRPCHandler(api, outStream));
+    outStream.on(
+      'data',
+      createMetaRPCHandler(this.controllerMessenger, outStream),
+    );
 
     const startUISync = () => {
       if (!isStreamWritable(outStream)) {

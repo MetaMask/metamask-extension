@@ -19,12 +19,17 @@ import {
   // We are not using any functionality.
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../app/scripts/services/wallet-service';
-import type { BackgroundRpcClient } from '../store/background-connection';
 import { AppStateControllerSetDefaultHomeActiveTabAction } from '../../app/scripts/controller-init/app-state-controller';
 import { MetaMetricsControllerSetParticipateInMetricsAction } from '../../app/scripts/controller-init/metametrics-controller';
+import {
+  ROOT_MESSENGER_NAMESPACE,
+  RootMessengerActionRegistry,
+  // We are not using any functionality.
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../app/scripts/lib/messenger';
 // We are not using any functionality.
 // eslint-disable-next-line import/no-restricted-paths
-import { ROOT_MESSENGER_NAMESPACE } from '../../app/scripts/lib/messenger';
+import type { MetaRPCClient } from '../../app/scripts/lib/metaRPCClientFactory';
 
 /**
  * All actions we call through the UI messenger will go through the background
@@ -83,7 +88,11 @@ const EVENTS = [
 ] as const;
 
 export async function getUIMessenger(
-  backgroundConnection: BackgroundRpcClient,
+  //========
+  // The type of this argument is now a direct instance of `MetaRPCClient`
+  // rather than a proxy around it.
+  //========
+  backgroundConnection: MetaRPCClient<RootMessengerActionRegistry>,
 ): Promise<UIMessenger> {
   const uiMessenger: UIMessenger = new Messenger({
     namespace: 'UI',
@@ -91,7 +100,10 @@ export async function getUIMessenger(
 
   for (const action of ACTIONS) {
     uiMessenger.registerActionHandler(action, async (...args: unknown[]) => {
-      return await backgroundConnection.call({ method: action, params: args });
+      return await backgroundConnection.send({
+        method: action,
+        params: args,
+      });
     });
   }
 
@@ -104,14 +116,16 @@ export async function getUIMessenger(
       'eventPayload' in params &&
       Array.isArray(params.eventPayload)
     ) {
+      // @ts-expect-error The UI messenger will check that the event is valid at
+      // runtime.
       uiMessenger.publish(params.eventName, ...params.eventPayload);
     }
   });
 
   for (const event of EVENTS) {
-    await backgroundConnection.call({
+    await backgroundConnection.send({
       method: `${ROOT_MESSENGER_NAMESPACE}:listen`,
-      event,
+      params: event,
     });
   }
 

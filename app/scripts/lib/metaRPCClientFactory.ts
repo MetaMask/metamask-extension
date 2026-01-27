@@ -1,3 +1,8 @@
+//========
+// We don't need to create a proxy around the background connection, so we can
+// simplify this file quite a bit.
+//========
+
 import type { Duplex } from 'stream';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import {
@@ -10,9 +15,6 @@ import {
 } from '@metamask/utils';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import getNextId from '../../../shared/modules/random-id';
-// It *is* used: in TypeDoc comment, you silly goose.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type MetamaskController from '../metamask-controller';
 
 const JSON_RPC_VERSION = '2.0' as const;
 
@@ -20,8 +22,8 @@ const JSON_RPC_VERSION = '2.0' as const;
  * A JSON-RPC 2.0 request object, types with our request types.
  */
 type JsonRpcApiRequest<Api extends FunctionRegistry<Api>> = {
-  jsonrpc: typeof JSON_RPC_VERSION;
-  id: number;
+  jsonrpc?: typeof JSON_RPC_VERSION;
+  id?: number;
   method: Extract<keyof Api, string>;
   params: Parameters<Api[keyof Api]>;
 };
@@ -52,16 +54,6 @@ type FunctionRegistry<T> = {
 };
 
 /**
- * Api methods, promisified. All RPC methods are remote and have to be handled
- * asynchronously, so we wrap the return types in a Promise.
- */
-type PromisifiedApi<Api extends FunctionRegistry<Api>> = {
-  [K in keyof Api]: (
-    ...args: Parameters<Api[K]>
-  ) => Promise<ReturnType<Api[K]>>;
-};
-
-/**
  * Checks if the given data is a JsonRpcFailure.
  *
  * @param data - The data to check.
@@ -73,35 +65,12 @@ function isError<Api extends FunctionRegistry<Api>>(
   return hasProperty(data, 'error');
 }
 
-/**
- * Type guard for checking if a property is in an object. Differs from
- * {@link hasProperty} in that it checks the prototype chain and the type guard
- * checks the property, not the object.
- *
- * @param property - The property to check.
- * @param obj - The object to check.
- * @returns True if the property is in the object, false otherwise.
- */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function propertyIn<T extends object>(
-  property: PropertyKey,
-  obj: T,
-): property is keyof T {
-  return Reflect.has(obj, property);
-}
-
 export class DisconnectError extends Error {}
 
 /**
  * A JSON-RPC 2.0 client that communicates over a stream.
  */
 export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
-  #rpcCache = new Map<
-    Extract<keyof Api, string>,
-    PromisifiedApi<Api>[Extract<keyof Api, string>]
-  >();
-
   /**
    * The stream used to communicate with the server.
    */
@@ -133,39 +102,10 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
       .on('end', this.close);
   }
 
-  /**
-   * Gets a resolver function for the specified method.
-   *
-   * @returns A function that resolves the method on the client.
-   */
-  getRpcResolver = () => {
-    type MethodName = Extract<keyof Api, string>;
-    return (
-      client: typeof this,
-      method: keyof typeof this | MethodName,
-      receiver: unknown,
-    ) => {
-      if (propertyIn(method, client)) {
-        // Return any properties present on `MetaRPCClient`
-        return Reflect.get(client, method, receiver);
-      }
-
-      const cachedRpc = this.#rpcCache.get(method);
-      if (cachedRpc) {
-        return cachedRpc;
-      }
-      const rpc = async (...params: Parameters<Api[MethodName]>) =>
-        await client.send({
-          id: getNextId(),
-          jsonrpc: JSON_RPC_VERSION,
-          method,
-          params,
-        });
-      // Cache the method to avoid creating it again
-      this.#rpcCache.set(method, rpc);
-      return rpc;
-    };
-  };
+  //========
+  // We don't need to create a proxy around the background connection, we can
+  // use the MetaRPCClient directly.
+  //========
 
   /**
    * Sends a JSON-RPC request over the connection stream and returns a promise
@@ -177,8 +117,16 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
   async send(payload: JsonRpcApiRequest<Api>) {
     return new Promise<Awaited<ReturnType<Api[typeof payload.method]>>>(
       (resolve, reject) => {
-        this.requests.set(payload.id, { resolve, reject });
-        this.#connectionStream.write(payload);
+        //========
+        // We don't need to care that `id` and `jsonrpc` are specified.
+        //========
+        const completePayload = {
+          id: getNextId(),
+          jsonrpc: JSON_RPC_VERSION,
+          ...payload,
+        };
+        this.requests.set(completePayload.id, { resolve, reject });
+        this.#connectionStream.write(completePayload);
       },
     );
   }
@@ -275,31 +223,7 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
   };
 }
 
-export type MetaRpcClientFactory<Api extends FunctionRegistry<Api>> =
-  MetaRPCClient<Api> & PromisifiedApi<Api>;
-
-/**
- * Creates a `MetaRPCClient` instance that also proxies requests/responses to
- * the background process over the provided `connectionStream`. It listens to
- * the stream bi-directionally, allowing it to send requests and receive
- * both responses and unsolicited notifications.
- *
- * It can parse JSON-RPC 2.0 requests and responses.
- *
- * In practice, this is used to send messages to from the UI to the background's
- * API methods configured within {@link MetamaskController}.
- *
- * @template Api - The type of the methods available on the MetaRPCClient.
- * @param connectionStream - The connection stream to use for the RPC client.
- * @returns An API that blends methods of our `MetaRPCClient` and an RPC service
- * that communicates over the provided `connectionStream` in order to remote
- * invoke methods available over the provided `Api` template type.
- */
-export default function metaRPCClientFactory<Api extends FunctionRegistry<Api>>(
-  connectionStream: Duplex,
-) {
-  const metaRPCClient = new MetaRPCClient<Api>(connectionStream);
-  return new Proxy(metaRPCClient, {
-    get: metaRPCClient.getRpcResolver(),
-  }) as MetaRpcClientFactory<Api>;
-}
+//========
+// We don't need to create a proxy around the background connection, we can use
+// the MetaRPCClient directly.
+//========

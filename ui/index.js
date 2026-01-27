@@ -26,6 +26,9 @@ import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+// We are not using any functionality.
+// eslint-disable-next-line import/no-restricted-paths
+import { ROOT_MESSENGER_NAMESPACE } from '../app/scripts/lib/messenger';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -44,7 +47,6 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { getUIMessenger } from './messengers/ui-messenger';
@@ -72,7 +74,9 @@ export const connectToBackground = (
   backgroundConnection,
   handleStartUISync,
 ) => {
-  setBackgroundConnection(backgroundConnection);
+  //========
+  // We don't need to store the background connection in a global anymore.
+  //========
   backgroundConnection.onNotification(async (data) => {
     const { method } = data;
     if (method === 'sendUpdate') {
@@ -95,7 +99,9 @@ export default async function launchMetamaskUi(opts) {
 
   const store = await startApp(initialState, opts);
 
-  await backgroundConnection.startSendingPatches();
+  await backgroundConnection.send({
+    method: `${ROOT_MESSENGER_NAMESPACE}:startSendingPatches`,
+  });
 
   setupStateHooks(store);
 

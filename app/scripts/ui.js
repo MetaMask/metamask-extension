@@ -49,7 +49,7 @@ import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
-import metaRPCClientFactory from './lib/metaRPCClientFactory';
+import { MetaRPCClient } from './lib/metaRPCClientFactory';
 
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
@@ -112,7 +112,11 @@ async function start() {
 
   const connectionStream = new ExtensionPortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
-  const backgroundConnection = metaRPCClientFactory(subStreams.controller);
+  //========
+  // The background connection is now an instance of MetaRPCClient; we no longer
+  // need it to be a proxy.
+  //========
+  const backgroundConnection = new MetaRPCClient(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
 
   async function handleStartUISync(initialState) {
