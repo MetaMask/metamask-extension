@@ -37,6 +37,9 @@ import {
   getFromTokenBalance,
   getFromAccount,
   getIsGasIncluded,
+  getPriceImpactThresholds,
+  getBip44DefaultPairsConfig,
+  getQuoteRefreshRate,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -2153,6 +2156,124 @@ describe('Bridge selectors', () => {
 
       const result = getIsGasIncluded(state as never, false);
       expect(result).toBe(false);
+    });
+  });
+
+  describe('getPriceImpactThresholds', () => {
+    it('should return undefined when bridgeConfig is not set', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: undefined,
+        },
+      });
+
+      const result = getPriceImpactThresholds(state as never);
+      expect(result).toBeUndefined();
+    });
+
+    it('should return priceImpactThreshold when bridgeConfig is set', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            priceImpactThreshold: {
+              normal: 0.05,
+              gasless: 0.1,
+            },
+          },
+        },
+      });
+
+      const result = getPriceImpactThresholds(state as never);
+      expect(result).toEqual({
+        normal: 0.05,
+        gasless: 0.1,
+      });
+    });
+  });
+
+  describe('getBip44DefaultPairsConfig', () => {
+    it('should return undefined when bridgeConfig is not set', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: undefined,
+        },
+      });
+
+      const result = getBip44DefaultPairsConfig(state as never);
+      expect(result).toBeUndefined();
+    });
+
+    it('should return bip44DefaultPairs when bridgeConfig is set', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            bip44DefaultPairs: {
+              bip122: {
+                standard: {
+                  'bip122:000000000019d6689c085ae165831e93/slip44:0':
+                    'eip155:1/slip44:60',
+                },
+                other: {},
+              },
+            },
+          },
+        },
+      });
+
+      const result = getBip44DefaultPairsConfig(state as never);
+      expect(result).toEqual({
+        bip122: {
+          standard: {
+            'bip122:000000000019d6689c085ae165831e93/slip44:0':
+              'eip155:1/slip44:60',
+          },
+          other: {},
+        },
+      });
+    });
+  });
+
+  describe('getQuoteRefreshRate', () => {
+    it('should return undefined when bridgeConfig is not set', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: undefined,
+        },
+      });
+
+      const result = getQuoteRefreshRate(state as never);
+      expect(result).toBeUndefined();
+    });
+
+    it('should return refreshRate when bridgeConfig is set', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+          },
+        },
+      });
+
+      const result = getQuoteRefreshRate(state as never);
+      expect(result).toBe(30000);
+    });
+
+    it('should return chain-specific refreshRate when available', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+            chains: {
+              'eip155:1': {
+                refreshRate: 15000,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getQuoteRefreshRate(state as never);
+      expect(result).toBe(15000);
     });
   });
 });

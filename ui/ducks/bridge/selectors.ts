@@ -164,7 +164,7 @@ const getChainRanking = (state: BridgeAppState) =>
 export const getPriceImpactThresholds = createDeepEqualSelector(
   [
     (state: BridgeAppState) =>
-      getBridgeFeatureFlags(state).priceImpactThreshold,
+      getBridgeFeatureFlags(state)?.priceImpactThreshold,
   ],
   (priceImpactThreshold) => priceImpactThreshold,
 );
@@ -328,7 +328,7 @@ export const getTopAssetsFromFeatureFlags = (
 };
 
 export const getBip44DefaultPairsConfig = (state: BridgeAppState) =>
-  getBridgeFeatureFlags(state).bip44DefaultPairs;
+  getBridgeFeatureFlags(state)?.bip44DefaultPairs;
 
 export const getToToken = createSelector(
   [getFromToken, (state: BridgeAppState) => state.bridge.toToken],
@@ -480,8 +480,8 @@ export const getQuoteRequest = (state: BridgeAppState) => {
 export const getQuoteRefreshRate = createSelector(
   [getBridgeFeatureFlags, getFromChain],
   (extensionConfig, fromChain) =>
-    (fromChain && extensionConfig.chains[fromChain.chainId]?.refreshRate) ??
-    extensionConfig.refreshRate,
+    (fromChain && extensionConfig?.chains[fromChain.chainId]?.refreshRate) ??
+    extensionConfig?.refreshRate,
 );
 export const getBridgeSortOrder = (state: BridgeAppState) =>
   state.bridge.sortOrder;
