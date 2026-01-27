@@ -3,8 +3,10 @@
 .toasts-container {
   position: fixed;
   bottom: 16px;
-  margin-inline-start: 16px;
-  margin-inline-end: 16px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   z-index: design-system.$toast-z-index;
   display: flex;
   gap: 10px;

@@ -10,7 +10,10 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useTransactionPayToken } from '../../hooks/pay/useTransactionPayToken';
-import { useIsTransactionPayLoading } from '../../hooks/pay/useTransactionPayData';
+import {
+  useIsTransactionPayLoading,
+  useTransactionPayIsMaxAmount,
+} from '../../hooks/pay/useTransactionPayData';
 import { useConfirmContext } from '../../context/confirm';
 import { formatAmount } from '../simulation-details/formatAmount';
 import { getTokenAddress } from '../../utils/transaction-pay';
@@ -30,6 +33,7 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const { payToken } = useTransactionPayToken();
   const targetTokenAddress = getTokenAddress(currentConfirmation);
   const isQuotesLoading = useIsTransactionPayLoading();
+  const isMaxAmount = useTransactionPayIsMaxAmount();
 
   const fiatRequests = useMemo(
     () =>
@@ -58,8 +62,8 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
       return undefined;
     }
 
-    const assetToPayTokenRate = new BigNumber(assetFiatRate).dividedBy(
-      payTokenFiatRate,
+    const assetToPayTokenRate = new BigNumber(String(assetFiatRate)).dividedBy(
+      String(payTokenFiatRate),
     );
 
     const payTokenAmount = new BigNumber(amountHuman || '0').times(
@@ -77,7 +81,7 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
     );
   }
 
-  if (!formattedAmount || isQuotesLoading) {
+  if (!formattedAmount || (isQuotesLoading && isMaxAmount)) {
     return <PayTokenAmountSkeleton />;
   }
 

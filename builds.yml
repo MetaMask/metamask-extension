@@ -32,7 +32,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.4.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
@@ -66,7 +66,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.4.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
@@ -100,7 +100,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.4.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
@@ -130,7 +130,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.3.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.4.1/index.html
       - SUPPORT_LINK: https://support.metamask.io/
       - SUPPORT_REQUEST_LINK: https://support.metamask.io/
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -383,10 +383,10 @@ env:
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   # EIP-7715 Readable Permissions
-  - GATOR_ENABLED_PERMISSION_TYPES: ''
+  - GATOR_ENABLED_PERMISSION_TYPES: 'erc20-token-revocation'
   - PERMISSIONS_KERNEL_SNAP_ID: 'npm:@metamask/permissions-kernel-snap'
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
-  - GATOR_PERMISSIONS_REVOCATION_ENABLED: false
+  - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
   ###
   # Meta variables

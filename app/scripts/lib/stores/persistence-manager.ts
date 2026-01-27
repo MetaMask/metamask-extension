@@ -7,6 +7,9 @@ import {
 } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
+import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -48,16 +51,29 @@ export class PersistenceError extends Error {
   backup: object | null;
 
   /**
+   * The type of vault corruption that occurred.
+   * - InaccessibleDatabase: The storage system threw an error (e.g., Firefox's "An unexpected error occurred")
+   * - MissingVaultInDatabase: The database was accessible but the vault was missing
+   */
+  corruptionType: VaultCorruptionType;
+
+  /**
    * The original error that caused the persistence failure, if any.
    * This is useful for debugging as it preserves the original error message
    * (e.g., Firefox's "Error: An unexpected error occurred").
    */
   override cause?: Error;
 
-  constructor(message: string, backup: object | null, cause?: Error) {
+  constructor(
+    message: string,
+    backup: object | null,
+    corruptionType: VaultCorruptionType,
+    cause?: Error,
+  ) {
     super(message);
     this.name = 'PersistenceError';
     this.backup = backup;
+    this.corruptionType = corruptionType;
     this.cause = cause;
   }
 }
@@ -295,6 +311,70 @@ export class PersistenceManager {
   storageKind: StorageKind = PersistenceManager.defaultStorageKind;
 
   /**
+   * Retrieves state from the local store, with optional test simulation.
+   * In test mode with simulateStorageGetFailure flag, simulates a storage
+   * failure after onboarding (when backup exists) to test vault recovery.
+   *
+   * @returns The current state from the local store
+   * @throws Error if simulating storage failure for testing
+   */
+  async #getFromLocalStore(): Promise<MetaMaskStorageStructure | null> {
+    if (
+      process.env.IN_TEST &&
+      getManifestFlags().testing?.simulateStorageGetFailure
+    ) {
+      const backup = await this.getBackup().catch(() => null);
+      if (backup?.KeyringController) {
+        throw new Error('Simulated storage.local.get failure for testing');
+      }
+    }
+    return this.#localStore.get();
+  }
+
+  /**
+   * Checks if storage set operations should be simulated as failing.
+   * When enabled, all set operations will fail immediately.
+   *
+   * @throws Error if simulating storage failure for testing
+   */
+  #maybeSimulateSetFailure(): void {
+    if (
+      process.env.IN_TEST &&
+      getManifestFlags().testing?.simulateStorageSetFailure
+    ) {
+      throw new Error('Simulated storage.local.set failure for testing');
+    }
+  }
+
+  /**
+   * Sets state in the local store, with optional test simulation.
+   * In test mode with simulateStorageSetFailure flag, all set operations
+   * will fail immediately.
+   *
+   * @param data - The data to set in the local store
+   * @throws Error if simulating storage failure for testing
+   */
+  async #setInLocalStore(
+    data: Required<MetaMaskStorageStructure>,
+  ): Promise<void> {
+    this.#maybeSimulateSetFailure();
+    await this.#localStore.set(data);
+  }
+
+  /**
+   * Sets key-value pairs in the local store, with optional test simulation.
+   * In test mode with simulateStorageSetFailure flag, all set operations
+   * will fail immediately.
+   *
+   * @param pairs - The key-value pairs to set in the local store
+   * @throws Error if simulating storage failure for testing
+   */
+  async #setKeyValuesInLocalStore(pairs: Map<string, unknown>): Promise<void> {
+    this.#maybeSimulateSetFailure();
+    await this.#localStore.setKeyValues(pairs);
+  }
+
+  /**
    * Sets the state in the local store.
    *
    * @param state - The state to set in the local store. This should be an object
@@ -342,8 +422,8 @@ export class PersistenceManager {
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
         try {
-          // atomically set all the keys
-          await this.#localStore.set({
+          // atomically set all the keys (includes test simulation check)
+          await this.#setInLocalStore({
             data: state,
             meta,
           });
@@ -460,8 +540,8 @@ export class PersistenceManager {
           // reset the pendingPairs
           this.#pendingPairs.clear();
           try {
-            // save the pairs
-            await this.#localStore.setKeyValues(clone);
+            // save the pairs (includes test simulation check)
+            await this.#setKeyValuesInLocalStore(clone);
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -554,8 +634,7 @@ export class PersistenceManager {
       async () => {
         // Capture both error and result to handle them in a unified way
         // This allows us to respect the validateVault flag consistently
-        const [localStoreError, result] = await this.#localStore
-          .get()
+        const [localStoreError, result] = await this.#getFromLocalStore()
           .then((res): [undefined, MetaMaskStorageStructure | null] => [
             undefined,
             res,
@@ -603,12 +682,26 @@ export class PersistenceManager {
               Object.values(backup).some((value) => value !== undefined)
             ) {
               log.info('Backup vault found in IndexedDB, triggering recovery');
+
+              // Track vault corruption detected event directly to Segment.
+              // We do this here (before throwing) because MetaMetricsController
+              // is not initialized yet, so we use the backup state for consent/ID.
+              const corruptionType = localStoreError
+                ? VaultCorruptionType.InaccessibleDatabase
+                : VaultCorruptionType.MissingVaultInDatabase;
+              trackVaultCorruptionEvent(
+                backup,
+                MetaMetricsEventName.VaultCorruptionDetected,
+                corruptionType,
+              );
+
               // We've got some data (we haven't checked for a vault, as the
               // background+UI are responsible for determining what happens now).
               // Include the original error as cause for debugging purposes.
               throw new PersistenceError(
                 MISSING_VAULT_ERROR,
                 backup,
+                corruptionType,
                 localStoreError,
               );
             } else if (localStoreError) {
