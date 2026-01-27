@@ -208,6 +208,7 @@ import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
+import { getWalletServiceMessenger } from './wallet-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -414,6 +415,7 @@ export {
 } from './user-operation-controller-messenger';
 export { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 export { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
+export { getWalletServiceMessenger } from './wallet-service-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AccountOrderController: {
@@ -784,6 +786,15 @@ export const CONTROLLER_MESSENGERS = {
   },
   ProfileMetricsService: {
     getMessenger: getProfileMetricsServiceMessenger,
+    getInitMessenger: noop,
+  },
+  //========
+  // More boilerplate, this time to add WalletServiceMessenger to the list of
+  // messengers. (We use this to get a set of actions and events for
+  // RootMessenger in a later commit.)
+  //========
+  WalletService: {
+    getMessenger: getWalletServiceMessenger,
     getInitMessenger: noop,
   },
 } as const;
