@@ -72,4 +72,27 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('returns interaction category for unknown transaction types', () => {
+    // Test with an unknown/unsupported transaction type
+    const unknownType = 'unknownTransactionType' as TransactionType;
+
+    const result = mapTransactionTypeToCategory(unknownType);
+
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
+
+  it('returns signatureRequest category for null transaction type', () => {
+    // Null should return signatureRequest based on the switch case
+    const result = mapTransactionTypeToCategory(null as TransactionType);
+
+    expect(result).toBe(TransactionGroupCategory.signatureRequest);
+  });
+
+  it('returns signatureRequest category for undefined transaction type', () => {
+    // Undefined should return signatureRequest based on the switch case
+    const result = mapTransactionTypeToCategory(undefined as TransactionType);
+
+    expect(result).toBe(TransactionGroupCategory.signatureRequest);
+  });
 });

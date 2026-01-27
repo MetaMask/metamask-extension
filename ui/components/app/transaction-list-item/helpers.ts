@@ -44,6 +44,8 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
       return GroupCategory.receive;
     }
     default:
-      return undefined;
+      // For unknown transaction types, default to 'interaction' category
+      // This prevents TransactionIcon from receiving undefined and throwing errors
+      return GroupCategory.interaction;
   }
 }
