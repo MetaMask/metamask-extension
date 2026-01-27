@@ -222,31 +222,41 @@ function transformState(
         }
 
         const jobs = cronjobCaveat.value.jobs as CronjobCaveatValue[];
-        return jobs.map(({ expression, request }, index): BackgroundEvent => {
-          const legacyId = `${subject.origin}-${index}`;
-          const { lastRun } = cronjobControllerState.jobs?.[legacyId] ?? {
-            lastRun: 0,
-          };
+        return jobs
+          .map(({ expression, request }, index): BackgroundEvent | null => {
+            const legacyId = `${subject.origin}-${index}`;
+            const { lastRun } = cronjobControllerState.jobs?.[legacyId] ?? {
+              lastRun: 0,
+            };
 
-          // If the cronjob is scheduled to run in the past, we use the
-          // last run time to determine the next execution date. This will ensure
-          // that the cronjob controller runs the job immediately.
-          const parsed = parseExpression(expression);
-          const date =
-            parsed.hasPrev() && parsed.prev().getTime() > lastRun
-              ? parsed.prev().toISOString()
-              : getExecutionDate(expression);
+            try {
+              // If the cronjob is scheduled to run in the past, we use the
+              // last run time to determine the next execution date. This will ensure
+              // that the cronjob controller runs the job immediately.
+              const parsed = parseExpression(expression);
+              const date =
+                parsed.hasPrev() && parsed.prev().getTime() > lastRun
+                  ? parsed.prev().toISOString()
+                  : getExecutionDate(expression);
 
-          return {
-            id: `cronjob-${subject.origin}-${index}`,
-            recurring: true,
-            schedule: expression,
-            scheduledAt: new Date().toISOString(),
-            snapId: subject.origin as SnapId,
-            date,
-            request,
-          };
-        });
+              return {
+                id: `cronjob-${subject.origin}-${index}`,
+                recurring: true,
+                schedule: expression,
+                scheduledAt: new Date().toISOString(),
+                snapId: subject.origin as SnapId,
+                date,
+                request,
+              };
+            } catch (error) {
+              console.warn(
+                `Migration ${version}: Skipping invalid cronjob expression "${expression}" for snap "${subject.origin}" at index ${index}:`,
+                error,
+              );
+              return null;
+            }
+          })
+          .filter((event): event is BackgroundEvent => event !== null);
       })
       .map((event) => [event.id, event]),
   );
