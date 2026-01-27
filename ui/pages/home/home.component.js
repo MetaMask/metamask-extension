@@ -14,13 +14,12 @@ import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
-import MultipleNotifications from '../../components/app/multiple-notifications';
 import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
-import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import { Toast, ToastContainer } from '../../components/multichain/toast';
 import { ScrollContainer } from '../../contexts/scroll-container';
 
 import {
@@ -30,11 +29,10 @@ import {
   BlockSize,
   AlignItems,
   JustifyContent,
+  IconColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
-  ButtonIcon,
-  ButtonIconSize,
   IconName,
   Box,
   Icon,
@@ -361,183 +359,97 @@ export default class Home extends PureComponent {
 
     const items = [
       newNftAddedMessage === 'success' ? (
-        <ActionableMessage
+        <Toast
           key="new-nft-added"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('newNftAddedMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
+          text={t('newNftAddedMessage')}
+          startAdornment={
+            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
           }
+          onClose={onAutoHide}
+          autoHideTime={autoHideDelay}
+          onAutoHideToast={onAutoHide}
+          dataTestId="new-nft-added"
         />
       ) : null,
       removeNftMessage === 'success' ? (
-        <ActionableMessage
+        <Toast
           key="remove-nft"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
+          text={t('removeNftMessage')}
+          startAdornment={
+            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
           }
+          onClose={onAutoHide}
+          autoHideTime={autoHideDelay}
+          onAutoHideToast={onAutoHide}
+          dataTestId="remove-nft"
         />
       ) : null,
       removeNftMessage === 'error' ? (
-        <ActionableMessage
+        <Toast
           key="remove-nft-error"
-          type="danger"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftErrorMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
+          text={t('removeNftErrorMessage')}
+          startAdornment={
+            <Icon name={IconName.Danger} color={IconColor.errorDefault} />
           }
+          onClose={onAutoHide}
+          autoHideTime={autoHideDelay}
+          onAutoHideToast={onAutoHide}
+          dataTestId="remove-nft-error"
         />
       ) : null,
       newNetworkAddedName ? (
-        <ActionableMessage
+        <Toast
           key="new-network-added"
-          type="success"
-          className="home__new-network-notification"
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-network-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('newNetworkAdded', [newNetworkAddedName])}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={() => clearNewNetworkAdded()}
-                className="home__new-network-notification-close"
-              />
-            </Box>
+          text={t('newNetworkAdded', [newNetworkAddedName])}
+          startAdornment={
+            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
           }
+          onClose={() => clearNewNetworkAdded()}
+          dataTestId="new-network-added"
         />
       ) : null,
       editedNetwork?.editCompleted ? (
-        <ActionableMessage
+        <Toast
           key="edited-network"
-          type="success"
-          className="home__new-tokens-imported-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-network-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>
-                  {editedNetwork.newNetwork
-                    ? t('newNetworkAdded', [editedNetwork.nickname])
-                    : t('newNetworkEdited', [editedNetwork.nickname])}
-                </h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={() => clearEditedNetwork()}
-                className="home__new-network-notification-close"
-              />
-            </Box>
+          text={
+            editedNetwork.newNetwork
+              ? t('newNetworkAdded', [editedNetwork.nickname])
+              : t('newNetworkEdited', [editedNetwork.nickname])
           }
+          startAdornment={
+            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
+          }
+          onClose={() => clearEditedNetwork()}
+          autoHideTime={autoHideDelay}
+          onAutoHideToast={onAutoHide}
+          dataTestId="edited-network"
         />
       ) : null,
       newTokensImported ? (
-        <ActionableMessage
+        <Toast
           key="new-tokens-imported"
-          type="success"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          className="home__new-tokens-imported-notification"
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
-              <Box>
-                <Text
-                  className="home__new-tokens-imported-notification-title"
-                  variant={TextVariant.BodySm}
-                  asChild
-                >
-                  <h6>{t('newTokensImportedTitle')}</h6>
-                </Text>
-                <Text
-                  className="home__new-tokens-imported-notification-message"
-                  variant={TextVariant.BodySm}
-                  asChild
-                >
-                  <h6>{t('newTokensImportedMessage', [newTokensImported])}</h6>
-                </Text>
-              </Box>
-
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={() => setNewTokensImported('')}
-                className="home__new-tokens-imported-notification-close"
-              />
-            </Box>
+          text={t('newTokensImportedTitle')}
+          description={t('newTokensImportedMessage', [newTokensImported])}
+          startAdornment={
+            <Icon name={IconName.CheckCircle} color={IconColor.successDefault} />
           }
+          onClose={() => setNewTokensImported('')}
+          autoHideTime={autoHideDelay}
+          onAutoHideToast={onAutoHide}
+          dataTestId="new-tokens-imported"
         />
       ) : null,
       newTokensImportedError ? (
-        <ActionableMessage
+        <Toast
           key="new-tokens-imported-error"
-          type="danger"
-          className="home__new-tokens-imported-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <Icon name={IconName.Danger} marginRight={1} />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('importTokensError')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
+          text={t('importTokensError')}
+          startAdornment={
+            <Icon name={IconName.Danger} color={IconColor.errorDefault} />
           }
+          onClose={onAutoHide}
+          autoHideTime={autoHideDelay}
+          onAutoHideToast={onAutoHide}
+          dataTestId="new-tokens-imported-error"
         />
       ) : null,
       shouldShowWeb3ShimUsageNotification ? (
@@ -613,9 +525,7 @@ export default class Home extends PureComponent {
       ) : null,
     ].filter(Boolean);
 
-    return items.length ? (
-      <MultipleNotifications>{items}</MultipleNotifications>
-    ) : null;
+    return items.length ? <ToastContainer>{items}</ToastContainer> : null;
   }
 
   renderOnboardingPopover = () => {
