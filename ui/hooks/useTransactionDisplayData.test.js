@@ -1,5 +1,6 @@
 import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
+import { TransactionType } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import transactions from '../../test/data/transaction-data.json';
 // TODO: Remove restricted import
@@ -261,5 +262,51 @@ describe('useTransactionDisplayData', () => {
       DEFAULT_ROUTE,
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
+  });
+
+  it('should handle gasPayment transaction type without errors', () => {
+    const gasPaymentTransaction = {
+      nonce: '0x1',
+      initialTransaction: {
+        id: 1234567890,
+        time: 1589314601567,
+        status: 'confirmed',
+        chainId: '0x1',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          nonce: '0x1',
+          value: '0x0',
+          gas: '0x5208',
+          gasPrice: '0x2540be400',
+        },
+        type: TransactionType.gasPayment,
+      },
+      primaryTransaction: {
+        id: 1234567890,
+        time: 1589314601567,
+        status: 'confirmed',
+        chainId: '0x1',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          nonce: '0x1',
+          value: '0x0',
+          gas: '0x5208',
+          gasPrice: '0x2540be400',
+        },
+        type: TransactionType.gasPayment,
+      },
+      transactions: [],
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(gasPaymentTransaction),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+
+    expect(result.current.title).toBe('Gas payment');
+    expect(result.current.isPending).toBe(false);
   });
 });
