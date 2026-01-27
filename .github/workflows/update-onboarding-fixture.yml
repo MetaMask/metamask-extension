@@ -88,7 +88,7 @@ jobs:
       - name: Find and download dist artifact
         run: |
           # Get the most recent run for the Main workflow on this branch
-          RUN_INFO=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status,conclusion --limit 1 --jq 'first')
+          RUN_INFO=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status --limit 1 --jq 'first')
 
           if [ -z "$RUN_INFO" ] || [ "$RUN_INFO" = "null" ]; then
             echo "::error::No 'Main' workflow run found for branch ${BRANCH}"
@@ -97,22 +97,38 @@ jobs:
 
           RUN_ID=$(echo "$RUN_INFO" | jq -r '.databaseId')
           RUN_STATUS=$(echo "$RUN_INFO" | jq -r '.status')
-          RUN_CONCLUSION=$(echo "$RUN_INFO" | jq -r '.conclusion')
 
-          echo "Found run ${RUN_ID} with status: ${RUN_STATUS}, conclusion: ${RUN_CONCLUSION}"
+          echo "Found run ${RUN_ID} with status: ${RUN_STATUS}"
 
-          # If the run is still in progress, wait for it to complete
+          # If the run is still in progress, wait for the build-dist-browserify job to complete
           if [ "$RUN_STATUS" != "completed" ]; then
-            echo "Run ${RUN_ID} is still in progress. Waiting for it to complete..."
-            gh run watch "${RUN_ID}"
-            # Re-fetch the conclusion after waiting
-            RUN_CONCLUSION=$(gh run view "${RUN_ID}" --json conclusion --jq '.conclusion')
-            echo "Run completed with conclusion: ${RUN_CONCLUSION}"
+            echo "Run ${RUN_ID} is still in progress. Checking build-dist-browserify job status..."
+            # Poll until the build-dist-browserify job completes
+            while true; do
+              JOB_INFO=$(gh api "/repos/${{ github.repository }}/actions/runs/${RUN_ID}/jobs" --jq '.jobs[] | select(.name == "build-dist-browserify") | {status: .status, conclusion: .conclusion}')
+              JOB_STATUS=$(echo "$JOB_INFO" | jq -r '.status')
+              JOB_CONCLUSION=$(echo "$JOB_INFO" | jq -r '.conclusion')
+
+              echo "build-dist-browserify job status: ${JOB_STATUS}, conclusion: ${JOB_CONCLUSION}"
+
+              if [ "$JOB_STATUS" == "completed" ]; then
+                break
+              fi
+
+              echo "Job still in progress, waiting 30 seconds..."
+              sleep 30
+            done
+          else
+            # Run is completed, get the job conclusion
+            JOB_INFO=$(gh api "/repos/${{ github.repository }}/actions/runs/${RUN_ID}/jobs" --jq '.jobs[] | select(.name == "build-dist-browserify") | {status: .status, conclusion: .conclusion}')
+            JOB_CONCLUSION=$(echo "$JOB_INFO" | jq -r '.conclusion')
           fi
 
-          # Check if the run was successful
-          if [ "$RUN_CONCLUSION" != "success" ]; then
-            echo "::error::The most recent 'Main' workflow run (${RUN_ID}) did not succeed (conclusion: ${RUN_CONCLUSION}). Please fix the build and try again."
+          echo "build-dist-browserify job conclusion: ${JOB_CONCLUSION}"
+
+          # Check if the build-dist-browserify job was successful
+          if [ "$JOB_CONCLUSION" != "success" ]; then
+            echo "::error::The 'build-dist-browserify' job in run ${RUN_ID} did not succeed (conclusion: ${JOB_CONCLUSION}). Please fix the build and try again."
             exit 1
           fi
 
