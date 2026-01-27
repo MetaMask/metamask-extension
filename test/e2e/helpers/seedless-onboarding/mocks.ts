@@ -418,7 +418,7 @@ export class OAuthMockttpService {
         type: SecretType.Mnemonic,
         itemId: crypto.randomUUID(),
         dataType: 1,
-        createdAt: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
         version: 'v2',
       },
     ]);

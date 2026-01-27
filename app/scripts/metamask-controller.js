@@ -4354,13 +4354,14 @@ export default class MetamaskController extends EventEmitter {
       const releaseLock = await this.seedlessOperationMutex.acquire();
       let addNewSeedPhraseBackupSuccess = false;
       try {
-        // Run data type migration before adding new SRP to ensure data consistency.
-        await this._runSeedlessOnboardingMigrations();
-
         this.metaMetricsController.bufferedTrace?.({
           name: TraceName.OnboardingAddSrp,
           op: TraceOperation.OnboardingSecurityOp,
         });
+
+        // Run data type migration before adding new SRP to ensure data consistency.
+        await this._runSeedlessOnboardingMigrations();
+
         await this.seedlessOnboardingController.addNewSecretData(
           seedPhraseAsUint8Array,
           EncAccountDataType.ImportedSrp,
