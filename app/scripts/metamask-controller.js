@@ -965,9 +965,18 @@ export default class MetamaskController extends EventEmitter {
 
     const getAccounts = ({ origin: innerOrigin }) => {
       if (innerOrigin === ORIGIN_METAMASK) {
-        const selectedAddress =
-          this.accountsController.getSelectedAccount().address;
-        return selectedAddress ? [selectedAddress] : [];
+        try {
+          const selectedAddress =
+            this.accountsController.getSelectedAccount().address;
+          return selectedAddress ? [selectedAddress] : [];
+        } catch (error) {
+          // Account may not exist during sync - return empty array
+          log.debug(
+            'Cannot get selected account for internal origin:',
+            error.message,
+          );
+          return [];
+        }
       }
       return this.getPermittedAccounts(innerOrigin);
     };
@@ -1622,9 +1631,17 @@ export default class MetamaskController extends EventEmitter {
         // making it fail, we ONLY scope this call to "multichain account groups" which are
         // backed by non-EVM Snaps.
         const hasNonEvmAccounts = group.accounts.some((id) => {
-          const account = this.accountsController.getAccount(id);
-
-          return Boolean(account) && !isEvmAccountType(account.type);
+          try {
+            const account = this.accountsController.getAccount(id);
+            return Boolean(account) && !isEvmAccountType(account.type);
+          } catch (error) {
+            // Account may not exist yet during sync - this is expected during account alignment
+            log.debug(
+              `Account ${id} not found during snap keyring forwarding:`,
+              error.message,
+            );
+            return false;
+          }
         });
 
         if (hasNonEvmAccounts) {
@@ -2760,11 +2777,20 @@ export default class MetamaskController extends EventEmitter {
         ),
       // PreferencesController
       setSelectedAddress: (address) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account) {
-          this.accountsController.setSelectedAccount(account.id);
-        } else {
-          throw new Error(`No account found for address: ${address}`);
+        try {
+          const account = this.accountsController.getAccountByAddress(address);
+          if (account) {
+            this.accountsController.setSelectedAccount(account.id);
+          } else {
+            throw new Error(`No account found for address: ${address}`);
+          }
+        } catch (error) {
+          // Account may not exist during sync - log the error
+          log.debug(`Cannot set selected address ${address}:`, error.message);
+          // Re-throw for critical failures, but handle gracefully during sync
+          if (!error.message.includes('not found')) {
+            throw error;
+          }
         }
       },
       toggleExternalServices: this.toggleExternalServices.bind(this),
@@ -2806,9 +2832,17 @@ export default class MetamaskController extends EventEmitter {
 
       // AccountsController
       setSelectedInternalAccount: (id) => {
-        const account = this.accountsController.getAccount(id);
-        if (account) {
-          this.accountsController.setSelectedAccount(id);
+        try {
+          const account = this.accountsController.getAccount(id);
+          if (account) {
+            this.accountsController.setSelectedAccount(id);
+          }
+        } catch (error) {
+          // Account may not exist during sync - log and continue
+          log.debug(
+            `Cannot set selected account ${id} as it was not found:`,
+            error.message,
+          );
         }
       },
 
@@ -2816,11 +2850,20 @@ export default class MetamaskController extends EventEmitter {
         accountsController.setAccountName.bind(accountsController),
 
       setAccountLabel: (address, label) => {
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account === undefined) {
-          throw new Error(`No account found for address: ${address}`);
+        try {
+          const account = this.accountsController.getAccountByAddress(address);
+          if (account === undefined) {
+            throw new Error(`No account found for address: ${address}`);
+          }
+          this.accountsController.setAccountName(account.id, label);
+        } catch (error) {
+          // Account may not exist during sync - log the error
+          log.debug(`Cannot set account label for ${address}:`, error.message);
+          // Re-throw for critical failures, but handle gracefully during sync
+          if (!error.message.includes('not found')) {
+            throw error;
+          }
         }
-        this.accountsController.setAccountName(account.id, label);
       },
 
       // AccountTreeController
@@ -4660,9 +4703,19 @@ export default class MetamaskController extends EventEmitter {
       }
 
       if (shouldSelectAccount) {
-        const account =
-          this.accountsController.getAccountByAddress(newAccountAddress);
-        this.accountsController.setSelectedAccount(account.id);
+        try {
+          const account =
+            this.accountsController.getAccountByAddress(newAccountAddress);
+          if (account) {
+            this.accountsController.setSelectedAccount(account.id);
+          }
+        } catch (error) {
+          // Account might not be available yet - log and continue
+          log.warn(
+            `Cannot select account ${newAccountAddress} after import:`,
+            error.message,
+          );
+        }
       }
 
       const syncAndDiscoverAccounts = async () => {
@@ -4847,8 +4900,18 @@ export default class MetamaskController extends EventEmitter {
         { id },
         async ({ keyring }) => keyring.getAccounts(),
       );
-      const account = this.accountsController.getAccountByAddress(newAccount);
-      this.accountsController.setSelectedAccount(account.id);
+      try {
+        const account = this.accountsController.getAccountByAddress(newAccount);
+        if (account) {
+          this.accountsController.setSelectedAccount(account.id);
+        }
+      } catch (error) {
+        // Account might not be available yet - log and continue
+        log.warn(
+          `Cannot select account ${newAccount} after creation:`,
+          error.message,
+        );
+      }
 
       // NOTE: No need to update balances here since we're generating a fresh seed.
 
@@ -6424,14 +6487,26 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getNetworkConfigurationByNetworkClientId(
         networkClientId,
       );
+
+    let selectedAccount;
+    try {
+      selectedAccount = this.accountsController.getAccountByAddress(
+        transactionParams.from,
+      );
+    } catch (error) {
+      log.warn(
+        `Cannot get account for transaction from ${transactionParams.from}:`,
+        error.message,
+      );
+      selectedAccount = undefined;
+    }
+
     return {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
       requestContext,
       networkClientId,
-      selectedAccount: this.accountsController.getAccountByAddress(
-        transactionParams.from,
-      ),
+      selectedAccount,
       transactionController: this.txController,
       transactionOptions,
       transactionParams,
