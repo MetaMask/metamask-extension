@@ -150,6 +150,7 @@ describe('migrations', () => {
       expect(migrate).toHaveBeenCalledTimes(1);
       expect(migrate.mock.calls[0]).toHaveLength(2);
       expect(migratedData.state).not.toBe(initialState);
+      // eslint-disable-next-line jest/prefer-strict-equal toStrictEqual won't work
       expect(migratedData.state.data).toEqual({
         hello: 'world',
         foo: 'bar',
@@ -176,6 +177,7 @@ describe('migrations', () => {
         // `bad` is a function, and cannot be serialized by `structuredClone`
         // this will throw a DOMException, which doesn't allow its `message`
         // property to be mutated
+        // eslint-disable-next-line no-empty-function
         data: { bad: () => {} },
       };
       const migratedData = await migrator.migrateData(initialState);
