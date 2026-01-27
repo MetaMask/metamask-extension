@@ -25,7 +25,6 @@
  */
 
 const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
-const REACT_COMPILER_ERROR_KEY = '__reactCompilerError__';
 
 /**
  * @this {import('webpack').LoaderContext<LoaderOptions>}
@@ -58,9 +57,8 @@ module.exports = function reactCompilerLoaderWrapper(source, sourceMap) {
           break;
         case 'CompileError':
           status = detail?.category === 'Todo' ? 'unsupported' : 'error';
-          if (status === 'error') {
-            buildMeta[REACT_COMPILER_ERROR_KEY] = JSON.stringify(detail);
-            if (verbose) console.error(`❌ Error: ${filename}`);
+          if (verbose && status === 'error') {
+            console.error(`❌ Error: ${filename}`);
           }
           break;
       }

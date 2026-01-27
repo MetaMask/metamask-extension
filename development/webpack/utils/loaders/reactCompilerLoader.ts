@@ -39,10 +39,9 @@ export type ReactCompilerStatus =
   | 'error'
   | 'unsupported';
 
-// Keys for storing react compiler status in buildMeta
-// Must match the keys in reactCompilerLoaderWrapper.cjs
+// Key for storing react compiler status in buildMeta
+// Must match the key in reactCompilerLoaderWrapper.cjs
 export const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
-export const REACT_COMPILER_ERROR_KEY = '__reactCompilerError__';
 
 /**
  * Statistics collected from module buildMeta after compilation.
