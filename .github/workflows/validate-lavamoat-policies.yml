@@ -43,9 +43,6 @@ jobs:
     name: Validate LavaMoat webapp policy
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    strategy:
-      matrix:
-        build-type: [main, beta, experimental, flask]
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -54,184 +51,8 @@ jobs:
           skip-allow-scripts: true
           use-yarn-hydrate: true
 
-      - name: Validate LavaMoat ${{ matrix.build-type }} policy
-        run: yarn lavamoat:webapp:auto:ci --build-types=${{ matrix.build-type }}
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-lavamoat-policy-webpack-mv2:
-    name: Validate LavaMoat webpack MV2 policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Validate LavaMoat webpack MV2 policy
-        run: yarn webpack:lavamoat:build --generatePolicy -v 2
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-lavamoat-policy-webpack-mv2-flask:
-    name: Validate LavaMoat webpack MV2 flask policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Validate LavaMoat webpack MV2 flask policy
-        run: yarn webpack:lavamoat:build --generatePolicy -v 2 --type flask
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-lavamoat-policy-webpack-mv2-beta:
-    name: Validate LavaMoat webpack MV2 beta policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Validate LavaMoat webpack MV2 beta policy
-        run: yarn webpack:lavamoat:build --generatePolicy -v 2 --type beta
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-lavamoat-policy-webpack-mv2-experimental:
-    name: Validate LavaMoat webpack MV2 experimental policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Validate LavaMoat webpack MV2 experimental policy
-        run: yarn webpack:lavamoat:build --generatePolicy -v 2 --type experimental
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-lavamoat-policy-webpack:
-    name: Validate LavaMoat webpack policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Validate LavaMoat webpack policy
-        run: yarn webpack:lavamoat:build --generatePolicy
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-lavamoat-policy-webpack-flask:
-    name: Validate LavaMoat webpack flask policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Validate LavaMoat webpack flask policy
-        run: yarn webpack:lavamoat:build --generatePolicy --type flask
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-lavamoat-policy-webpack-beta:
-    name: Validate LavaMoat webpack beta policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Validate LavaMoat webpack beta policy
-        run: yarn webpack:lavamoat:build --generatePolicy --type beta
-
-      - name: Check working tree
-        run: |
-          if ! git diff --exit-code; then
-              echo "::error::Working tree dirty."
-              exit 1
-          fi
-
-  validate-lavamoat-policy-webpack-experimental:
-    name: Validate LavaMoat webpack experimental policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Validate LavaMoat webpack experimental policy
-        run: yarn webpack:lavamoat:build --generatePolicy --type experimental
+      - name: Validate LavaMoat webapp policy
+        run: yarn lavamoat:webapp:auto
 
       - name: Check working tree
         run: |
@@ -253,7 +74,51 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Validate LavaMoat webpack build policy
-        run: yarn webpack:lavamoat:generate
+        run: yarn webpack:tsc && yarn webpack:lavamoat:policy:build
+
+      - name: Check working tree
+        run: |
+          if ! git diff --exit-code; then
+              echo "::error::Working tree dirty."
+              exit 1
+          fi
+
+  validate-lavamoat-policy-webpack-mv2:
+    name: Validate LavaMoat webpack MV2 policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
+
+      - name: Validate LavaMoat webpack MV2 policy
+        run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv2
+
+      - name: Check working tree
+        run: |
+          if ! git diff --exit-code; then
+              echo "::error::Working tree dirty."
+              exit 1
+          fi
+
+  validate-lavamoat-policy-webpack-mv3:
+    name: Validate LavaMoat webpack MV3 policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
+
+      - name: Validate LavaMoat webpack MV3 policy
+        run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv3
 
       - name: Check working tree
         run: |
