@@ -70,7 +70,7 @@ describe('useDeviceEventHandlers', () => {
     it('updates state when status changes', () => {
       const { result } = setupHook();
 
-      const newState = ConnectionState.error('test_error', new Error('Test'));
+      const newState = ConnectionState.error(new Error('Test'));
       result.current.updateConnectionState(newState);
 
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
@@ -102,27 +102,27 @@ describe('useDeviceEventHandlers', () => {
       expect(resultState).toBe(prevState);
     });
 
-    it('updates when ErrorState reason changes', () => {
+    it('updates when ErrorState changes', () => {
       const { result } = setupHook();
 
-      const newState = ConnectionState.error('new_reason', new Error('New'));
+      const newState = ConnectionState.error(new Error('New'));
       result.current.updateConnectionState(newState);
 
       const updater = mockSetters.setConnectionState.mock.calls[0][0];
-      const prevState = ConnectionState.error('old_reason', new Error('Old'));
+      const prevState = ConnectionState.error(new Error('Old'));
       const resultState = updater(prevState);
 
       expect(resultState).toEqual(newState);
     });
 
-    it('updates when AwaitingApp reason or appName changes', () => {
+    it('updates when AwaitingApp appName changes', () => {
       const { result } = setupHook();
 
-      const newState = ConnectionState.awaitingApp('new_reason', 'NewApp');
+      const newState = ConnectionState.awaitingApp('NewApp');
       result.current.updateConnectionState(newState);
 
       const updater = mockSetters.setConnectionState.mock.calls[0][0];
-      const prevState = ConnectionState.awaitingApp('old_reason', 'OldApp');
+      const prevState = ConnectionState.awaitingApp('OldApp');
       const resultState = updater(prevState);
 
       expect(resultState).toEqual(newState);
@@ -152,9 +152,7 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(
-        ConnectionState.error(DeviceEvent.DeviceLocked, error),
-      );
+      expect(resultState).toEqual(ConnectionState.error(error));
     });
 
     it('handles DeviceLocked event without error payload', () => {
@@ -174,7 +172,6 @@ describe('useDeviceEventHandlers', () => {
 
       expect(resultState).toEqual(
         ConnectionState.error(
-          DeviceEvent.DeviceLocked,
           new HardwareWalletError('Device is locked', {
             code: ErrorCode.AuthenticationDeviceLocked,
             severity: Severity.Err,
@@ -207,9 +204,7 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(
-        ConnectionState.error(DeviceEvent.AppNotOpen, error),
-      );
+      expect(resultState).toEqual(ConnectionState.error(error));
     });
 
     it('handles AppNotOpen event without error', () => {
@@ -227,9 +222,7 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(
-        ConnectionState.awaitingApp(DeviceEvent.AppNotOpen),
-      );
+      expect(resultState).toEqual(ConnectionState.awaitingApp());
     });
 
     it('handles Disconnected event when not connecting', () => {
@@ -268,9 +261,7 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(
-        ConnectionState.awaitingApp(DeviceEvent.AppNotOpen, 'Bitcoin'),
-      );
+      expect(resultState).toEqual(ConnectionState.awaitingApp('Bitcoin'));
     });
 
     it('handles AppChanged event with correct app', () => {
@@ -313,9 +304,7 @@ describe('useDeviceEventHandlers', () => {
       const resultState = updater(prevState);
 
       // BOLOS is not the correct app for Ledger, so it should await app
-      expect(resultState).toEqual(
-        ConnectionState.awaitingApp(DeviceEvent.AppNotOpen, 'BOLOS'),
-      );
+      expect(resultState).toEqual(ConnectionState.awaitingApp('BOLOS'));
     });
 
     it('handles ConnectionFailed event', () => {
@@ -340,9 +329,7 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(
-        ConnectionState.error(DeviceEvent.ConnectionFailed, error),
-      );
+      expect(resultState).toEqual(ConnectionState.error(error));
     });
 
     it('handles ConnectionFailed event without error using default HardwareWalletError', () => {
@@ -362,7 +349,6 @@ describe('useDeviceEventHandlers', () => {
 
       expect(resultState).toEqual(
         ConnectionState.error(
-          DeviceEvent.ConnectionFailed,
           new HardwareWalletError('Hardware wallet connection failed', {
             code: ErrorCode.ConnectionTransportMissing,
             severity: Severity.Err,
@@ -395,9 +381,7 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(
-        ConnectionState.error(DeviceEvent.OperationTimeout, error),
-      );
+      expect(resultState).toEqual(ConnectionState.error(error));
     });
 
     it('handles OperationTimeout event without error', () => {
@@ -417,7 +401,6 @@ describe('useDeviceEventHandlers', () => {
 
       expect(resultState).toStrictEqual(
         ConnectionState.error(
-          DeviceEvent.OperationTimeout,
           new HardwareWalletError('Operation timed out', {
             code: ErrorCode.ConnectionTimeout,
             severity: Severity.Err,
@@ -555,7 +538,6 @@ describe('useDeviceEventHandlers', () => {
       const resultState = updater(prevState);
 
       expect(resultState.status).toBe('error');
-      expect(resultState.reason).toBe('Device locked');
       expect(resultState.error).toBe(error);
     });
 
