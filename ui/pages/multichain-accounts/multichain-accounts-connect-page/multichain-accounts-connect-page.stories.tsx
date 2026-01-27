@@ -195,8 +195,12 @@ export const Default: Story = {
       },
     },
     permissionsRequestId: '1',
-    rejectPermissionsRequest: () => {},
-    approveConnection: () => {},
+    rejectPermissionsRequest: () => {
+      /* no-op */
+    },
+    approveConnection: () => {
+      /* no-op */
+    },
     targetSubjectMetadata: mockTargetSubjectMetadata,
   },
 };

@@ -27,12 +27,32 @@ Deprecated.propTypes = {
 export const DefaultStory = () => {
   return (
     <Deprecated>
-      <Menu onHide={() => {}}>
-        <MenuItem iconName={IconName.Eye} onClick={() => {}}>
+      <Menu
+        onHide={() => {
+          /* no-op */
+        }}
+      >
+        <MenuItem
+          iconName={IconName.Eye}
+          onClick={() => {
+            /* no-op */
+          }}
+        >
           Menu Item 1
         </MenuItem>
-        <MenuItem onClick={() => {}}>Menu Item 2</MenuItem>
-        <MenuItem iconName={IconName.EyeSlash} onClick={() => {}}>
+        <MenuItem
+          onClick={() => {
+            /* no-op */
+          }}
+        >
+          Menu Item 2
+        </MenuItem>
+        <MenuItem
+          iconName={IconName.EyeSlash}
+          onClick={() => {
+            /* no-op */
+          }}
+        >
           Menu Item 3
         </MenuItem>
       </Menu>
@@ -47,15 +67,41 @@ export const Anchored = () => {
   return (
     <Deprecated>
       <button ref={setAnchorElement}>Menu</button>
-      <Menu anchorElement={anchorElement} onHide={() => {}}>
-        <MenuItem iconName={IconName.Export} onClick={() => {}}>
+      <Menu
+        anchorElement={anchorElement}
+        onHide={() => {
+          /* no-op */
+        }}
+      >
+        <MenuItem
+          iconName={IconName.Export}
+          onClick={() => {
+            /* no-op */
+          }}
+        >
           Menu Item 1
         </MenuItem>
-        <MenuItem onClick={() => {}}>Menu Item 2</MenuItem>
-        <MenuItem iconName={IconName.EyeSlash} onClick={() => {}}>
+        <MenuItem
+          onClick={() => {
+            /* no-op */
+          }}
+        >
+          Menu Item 2
+        </MenuItem>
+        <MenuItem
+          iconName={IconName.EyeSlash}
+          onClick={() => {
+            /* no-op */
+          }}
+        >
           Menu Item 3
         </MenuItem>
-        <MenuItem iconName={IconName.AddSquare} onClick={() => {}}>
+        <MenuItem
+          iconName={IconName.AddSquare}
+          onClick={() => {
+            /* no-op */
+          }}
+        >
           Disabled Item
         </MenuItem>
       </Menu>
