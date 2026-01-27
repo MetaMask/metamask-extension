@@ -1972,6 +1972,20 @@ export default class MetamaskController extends EventEmitter {
         // This operates under the assumption that there will be at maximum
         // one origin permittedChains value change per event handler call
         for (const [origin, chains] of changedChains.entries()) {
+          // Guard clause: skip if the origin doesn't have the CAIP-25 permission
+          // This can happen during permission state transitions (e.g., when a snap is being updated/removed)
+          if (
+            !this.permissionController.hasPermission(
+              origin,
+              Caip25EndowmentPermissionName,
+            )
+          ) {
+            log.debug(
+              `Skipping network client ID update for origin ${origin} - no CAIP-25 permission`,
+            );
+            continue;
+          }
+
           const currentNetworkClientIdForOrigin =
             this.selectedNetworkController.getNetworkClientIdForDomain(origin);
 
