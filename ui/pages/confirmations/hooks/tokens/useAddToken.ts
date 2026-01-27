@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { Hex, createProjectLogger } from '@metamask/utils';
 
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import {
@@ -8,6 +8,8 @@ import {
 } from '../../../../store/actions';
 import { getAllTokens } from '../../../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+
+const log = createProjectLogger('add-token');
 
 export function useAddToken({
   chainId,
@@ -32,6 +34,7 @@ export function useAddToken({
 
   const { error } = useAsyncResult(async () => {
     if (hasToken) {
+      log('Token already exists', { tokenAddress, chainId });
       return;
     }
 
@@ -48,9 +51,11 @@ export function useAddToken({
         true,
       ),
     );
+
+    log('Added token', { tokenAddress, chainId });
   }, [hasToken, chainId, tokenAddress, symbol, decimals, dispatch]);
 
   if (error) {
-    console.error('Failed to add token', { tokenAddress, chainId, error });
+    log('Failed', { tokenAddress, chainId, error });
   }
 }
