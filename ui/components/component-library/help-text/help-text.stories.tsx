@@ -15,6 +15,7 @@ import { Box } from '../box';
 import { Icon, IconName, IconSize } from '../icon';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/HelpText',
   component: HelpText,
   parameters: {

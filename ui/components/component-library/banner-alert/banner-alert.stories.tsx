@@ -16,6 +16,7 @@ import { IconName } from '../icon';
 import { ButtonPrimary } from '../button-primary';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/BannerAlert',
   component: BannerAlert,
   parameters: {

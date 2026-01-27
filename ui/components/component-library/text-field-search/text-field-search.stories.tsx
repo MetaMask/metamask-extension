@@ -16,6 +16,7 @@ import README from './README.mdx';
 const meta: Meta<typeof TextFieldSearch> = {
   title: 'Components/ComponentLibrary/TextFieldSearch',
   component: TextFieldSearch,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,
