@@ -24,7 +24,17 @@ export function captureException(
     console.error(exception, ...(hint ? [hint] : []));
     return undefined;
   }
-  return globalThis.sentry.captureException(exception, ...(hint ? [hint] : []));
+
+  // Convert string exceptions to Error objects so Sentry can capture stack traces
+  let exceptionToCapture = exception;
+  if (typeof exception === 'string') {
+    exceptionToCapture = new Error(exception);
+  }
+
+  return globalThis.sentry.captureException(
+    exceptionToCapture,
+    ...(hint ? [hint] : []),
+  );
 }
 
 /**

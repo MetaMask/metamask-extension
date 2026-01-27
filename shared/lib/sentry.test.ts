@@ -49,6 +49,49 @@ describe('Sentry', () => {
         extra: { foo: 'bar' },
       });
     });
+
+    it('converts string exceptions to Error objects', () => {
+      const captureExceptionSpy = jest.spyOn(
+        globalThis.sentry,
+        'captureException',
+      );
+
+      captureException('Test error string');
+
+      expect(captureExceptionSpy).toHaveBeenCalledTimes(1);
+      const capturedError = captureExceptionSpy.mock.calls[0][0];
+      expect(capturedError).toBeInstanceOf(Error);
+      expect(capturedError.message).toBe('Test error string');
+    });
+
+    it('converts string exceptions to Error objects with hint', () => {
+      const captureExceptionSpy = jest.spyOn(
+        globalThis.sentry,
+        'captureException',
+      );
+
+      captureException('Test error string', { extra: { foo: 'bar' } });
+
+      expect(captureExceptionSpy).toHaveBeenCalledTimes(1);
+      const capturedError = captureExceptionSpy.mock.calls[0][0];
+      expect(capturedError).toBeInstanceOf(Error);
+      expect(capturedError.message).toBe('Test error string');
+      expect(captureExceptionSpy.mock.calls[0][1]).toStrictEqual({
+        extra: { foo: 'bar' },
+      });
+    });
+
+    it('preserves non-string exceptions as-is', () => {
+      const captureExceptionSpy = jest.spyOn(
+        globalThis.sentry,
+        'captureException',
+      );
+      const testError = new Error('Test error');
+
+      captureException(testError);
+
+      expect(captureExceptionSpy).toHaveBeenCalledWith(testError);
+    });
   });
 
   describe('captureMessage', () => {
