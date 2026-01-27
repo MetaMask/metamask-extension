@@ -5970,4 +5970,231 @@ describe('MetaMaskController', () => {
       ).not.toHaveBeenCalled();
     });
   });
+
+  describe('PermissionController:stateChange subscription for chain validation', () => {
+    let metamaskController;
+    const mockOrigin = 'https://test-dapp.com';
+    const configuredChainId = '0x89'; // Polygon
+
+    beforeEach(async () => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: false,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
+      });
+    });
+
+    it('does not throw error when chain ID is not configured in NetworkController', async () => {
+      const unconfiguredChainId = '0x18c6';
+
+      // Mock getNetworkConfigurationByChainId to return undefined for unconfigured chain
+      const getNetworkConfigMock = jest
+        .spyOn(
+          metamaskController.networkController,
+          'getNetworkConfigurationByChainId',
+        )
+        .mockReturnValue(undefined);
+
+      // Mock getNetworkConfigurationByNetworkClientId to return a valid current network
+      jest
+        .spyOn(
+          metamaskController.networkController,
+          'getNetworkConfigurationByNetworkClientId',
+        )
+        .mockReturnValue({
+          chainId: '0x1',
+        });
+
+      jest
+        .spyOn(
+          metamaskController.selectedNetworkController,
+          'getNetworkClientIdForDomain',
+        )
+        .mockReturnValue('mainnet');
+
+      // Spy on findNetworkClientIdByChainId to ensure it's not called
+      const findNetworkClientSpy = jest.spyOn(
+        metamaskController.networkController,
+        'findNetworkClientIdByChainId',
+      );
+
+      // Mock _notifyAccountsChange to prevent errors
+      jest
+        .spyOn(metamaskController, '_notifyAccountsChange')
+        .mockImplementation(() => undefined);
+
+      // Create a permission state with an unconfigured chain
+      const mockAccount = '0x1234567890123456789012345678901234567890';
+      const permissionState = {
+        subjects: {
+          [mockOrigin]: {
+            origin: mockOrigin,
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                id: 'test-id',
+                parentCapability: Caip25EndowmentPermissionName,
+                invoker: mockOrigin,
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        [`eip155:${parseInt(unconfiguredChainId, 16)}`]: {
+                          methods: ['eth_sendTransaction'],
+                          notifications: [],
+                          accounts: [
+                            `eip155:${parseInt(unconfiguredChainId, 16)}:${mockAccount}`,
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                date: Date.now(),
+              },
+            },
+          },
+        },
+      };
+
+      // This should not throw an error
+      expect(() => {
+        metamaskController.controllerMessenger.publish(
+          'PermissionController:stateChange',
+          permissionState,
+          [],
+        );
+      }).not.toThrow();
+
+      await flushPromises();
+
+      // Verify getNetworkConfigurationByChainId was called with the unconfigured chain
+      expect(getNetworkConfigMock).toHaveBeenCalledWith(unconfiguredChainId);
+
+      // Verify that findNetworkClientIdByChainId was NOT called (because chain doesn't exist)
+      expect(findNetworkClientSpy).not.toHaveBeenCalled();
+    });
+
+    it('successfully switches network when chain is configured', async () => {
+      // Mock all necessary network controller methods
+      jest
+        .spyOn(
+          metamaskController.networkController,
+          'getNetworkConfigurationByChainId',
+        )
+        .mockReturnValue({
+          chainId: configuredChainId,
+          rpcEndpoints: [
+            { type: 'infura', networkClientId: 'polygon-mainnet' },
+          ],
+          defaultRpcEndpointIndex: 0,
+        });
+
+      jest
+        .spyOn(
+          metamaskController.networkController,
+          'getNetworkConfigurationByNetworkClientId',
+        )
+        .mockReturnValue({
+          chainId: '0x1', // Current chain is Ethereum
+        });
+
+      jest
+        .spyOn(
+          metamaskController.networkController,
+          'findNetworkClientIdByChainId',
+        )
+        .mockReturnValue('polygon-mainnet');
+
+      const setActiveNetworkSpy = jest
+        .spyOn(metamaskController.networkController, 'setActiveNetwork')
+        .mockImplementation(() => undefined);
+
+      const setNetworkClientSpy = jest
+        .spyOn(
+          metamaskController.selectedNetworkController,
+          'setNetworkClientIdForDomain',
+        )
+        .mockImplementation(() => undefined);
+
+      jest
+        .spyOn(
+          metamaskController.selectedNetworkController,
+          'getNetworkClientIdForDomain',
+        )
+        .mockReturnValue('mainnet');
+
+      // Mock _notifyAccountsChange to prevent errors
+      jest
+        .spyOn(metamaskController, '_notifyAccountsChange')
+        .mockImplementation(() => undefined);
+
+      // Create a permission state with a configured chain
+      const mockAccount = '0x1234567890123456789012345678901234567890';
+      const permissionState = {
+        subjects: {
+          [mockOrigin]: {
+            origin: mockOrigin,
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                id: 'test-id',
+                parentCapability: Caip25EndowmentPermissionName,
+                invoker: mockOrigin,
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        [`eip155:${parseInt(configuredChainId, 16)}`]: {
+                          methods: ['eth_sendTransaction'],
+                          notifications: [],
+                          accounts: [
+                            `eip155:${parseInt(configuredChainId, 16)}:${mockAccount}`,
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
+                date: Date.now(),
+              },
+            },
+          },
+        },
+      };
+
+      metamaskController.controllerMessenger.publish(
+        'PermissionController:stateChange',
+        permissionState,
+        [],
+      );
+
+      await flushPromises();
+
+      // Verify that network was switched
+      expect(setActiveNetworkSpy).toHaveBeenCalledWith('polygon-mainnet');
+      expect(setNetworkClientSpy).toHaveBeenCalledWith(
+        mockOrigin,
+        'polygon-mainnet',
+      );
+    });
+  });
 });
