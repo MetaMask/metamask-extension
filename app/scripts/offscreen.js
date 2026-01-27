@@ -27,6 +27,16 @@ async function hasOffscreenDocument() {
 }
 
 /**
+ * Session storage key for tracking offscreen document creation.
+ */
+const OFFSCREEN_CREATION_KEY = 'offscreenCreationInProgress';
+
+/**
+ * Maximum time to wait for an in-progress offscreen creation (10 seconds).
+ */
+const MAX_CREATION_WAIT_TIME = 10000;
+
+/**
  * Creates an offscreen document that can be used to load additional scripts
  * and iframes that can communicate with the extension through the chrome
  * runtime API. Only one offscreen document may exist, so any iframes required
@@ -38,6 +48,52 @@ export async function createOffscreen() {
   if (!chrome.offscreen) {
     return;
   }
+
+  // Check if another instance is already creating the offscreen document
+  const sessionData = await chrome.storage.session.get([
+    OFFSCREEN_CREATION_KEY,
+  ]);
+  const creationInProgress = sessionData?.[OFFSCREEN_CREATION_KEY];
+
+  if (creationInProgress) {
+    const creationTimestamp = creationInProgress.timestamp;
+    const elapsedTime = Date.now() - creationTimestamp;
+
+    // If creation was started recently, wait for it to complete
+    if (elapsedTime < MAX_CREATION_WAIT_TIME) {
+      console.debug(
+        'Offscreen document creation already in progress, waiting...',
+      );
+
+      // Wait for the existing document to be ready by checking periodically
+      const checkInterval = 500;
+      const maxAttempts = Math.ceil(
+        (MAX_CREATION_WAIT_TIME - elapsedTime) / checkInterval,
+      );
+
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        await new Promise((resolve) => setTimeout(resolve, checkInterval));
+
+        const exists = await hasOffscreenDocument();
+        if (exists) {
+          console.debug('Existing offscreen document creation completed');
+          return;
+        }
+      }
+
+      // If we got here, the previous creation attempt may have failed
+      // Clear the flag and continue with creation
+      await chrome.storage.session.remove(OFFSCREEN_CREATION_KEY);
+    } else {
+      // Creation started too long ago, likely stale - clear and continue
+      await chrome.storage.session.remove(OFFSCREEN_CREATION_KEY);
+    }
+  }
+
+  // Set flag indicating creation is in progress
+  await chrome.storage.session.set({
+    [OFFSCREEN_CREATION_KEY]: { timestamp: Date.now() },
+  });
 
   let offscreenDocumentLoadedListener;
   const loadPromise = new Promise((resolve) => {
@@ -72,6 +128,9 @@ export async function createOffscreen() {
     if (offscreenExists) {
       console.debug('Found existing offscreen document, closing.');
       await chrome.offscreen.closeDocument();
+
+      // Wait a bit for the close operation to complete
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     await chrome.offscreen.createDocument({
@@ -84,7 +143,39 @@ export async function createOffscreen() {
     if (offscreenDocumentLoadedListener) {
       chrome.runtime.onMessage.removeListener(offscreenDocumentLoadedListener);
     }
-    // Report unrecongized errors without halting wallet initialization
+
+    // Clear the creation flag on error
+    await chrome.storage.session.remove(OFFSCREEN_CREATION_KEY);
+
+    // Handle the specific "Only a single offscreen document may be created" error
+    // This is expected when service worker restarts during creation, not a real error
+    if (
+      error.message?.includes('Only a single offscreen document may be created')
+    ) {
+      console.debug(
+        'Offscreen document already exists (race condition during creation), waiting for it to load...',
+      );
+
+      // Wait for the existing document to be ready
+      const checkInterval = 500;
+      const maxAttempts = Math.ceil(MAX_CREATION_WAIT_TIME / checkInterval);
+
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        await new Promise((resolve) => setTimeout(resolve, checkInterval));
+
+        const exists = await hasOffscreenDocument();
+        if (exists) {
+          console.debug('Existing offscreen document is ready');
+          // Re-add the load listener to catch the boot message
+          chrome.runtime.onMessage.addListener(offscreenDocumentLoadedListener);
+          break;
+        }
+      }
+
+      return;
+    }
+
+    // Report unrecognized errors without halting wallet initialization
     // Failures to create the offscreen document does not compromise wallet data integrity or
     // core functionality, it's just needed for specific features.
     captureException(error);
@@ -97,6 +188,9 @@ export async function createOffscreen() {
   });
 
   await Promise.race([loadPromise, timeoutPromise]);
+
+  // Clear the creation flag once loading is complete
+  await chrome.storage.session.remove(OFFSCREEN_CREATION_KEY);
 
   console.debug('Offscreen iframe loaded');
 }
