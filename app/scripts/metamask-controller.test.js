@@ -1564,7 +1564,7 @@ describe('MetaMaskController', () => {
     });
 
     describe('#captureKeyringTypesWithMissingIdentities', () => {
-      it('handles locked KeyringController gracefully', () => {
+      it('handles locked KeyringController gracefully during app initialization', () => {
         const internalAccounts = [
           {
             address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
@@ -1587,12 +1587,13 @@ describe('MetaMaskController', () => {
           '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
         ];
 
-        // Mock KeyringController as locked
+        // Mock KeyringController as locked (simulating app initialization state)
         jest
           .spyOn(metamaskController.keyringController, 'state', 'get')
           .mockReturnValue({ isUnlocked: false });
 
         // Should not throw when KeyringController is locked
+        // This prevents "KeyringController - The operation cannot be completed while the controller is locked" error
         expect(() => {
           metamaskController.captureKeyringTypesWithMissingIdentities(
             internalAccounts,
@@ -1634,7 +1635,7 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.keyringController, 'getAccountKeyringType')
           .mockReturnValue('Simple Key Pair');
 
-        // Should not throw when KeyringController is unlocked
+        // Should not throw when KeyringController is unlocked and should retrieve keyring types
         expect(() => {
           metamaskController.captureKeyringTypesWithMissingIdentities(
             internalAccounts,
