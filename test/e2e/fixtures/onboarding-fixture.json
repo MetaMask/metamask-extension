@@ -543,7 +543,8 @@
           "tron:3448148188": false,
           "tron:728126428": true
         }
-      }
+      },
+      "nativeAssetIdentifiers": {}
     },
     "NetworkOrderController": {
       "orderedNetworkList": []
