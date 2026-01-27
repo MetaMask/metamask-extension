@@ -1067,6 +1067,13 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeReceive": {
+    "message": "Receive $1 on $2",
+    "description": "Summary line showing token received on destination chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeReceiveLoading": {
+    "message": "Receiving on destination chain"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Select a destination account"
   },
@@ -1081,6 +1088,13 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
+  },
+  "bridgeSend": {
+    "message": "Send $1 from $2",
+    "description": "Summary line showing token sent from source chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeSendLoading": {
+    "message": "Sending from source chain"
   },
   "bridgeSolanaAccountCreated": {
     "message": "Solana account created"
@@ -1961,6 +1975,9 @@
   },
   "dataUnavailable": {
     "message": "data unavailable"
+  },
+  "date": {
+    "message": "Date"
   },
   "dateCreated": {
     "message": "Date created"
@@ -3893,6 +3910,12 @@
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdConversionActivityTitle": {
+    "message": "mUSD Conversion"
+  },
+  "musdConversionTitle": {
+    "message": "mUSD Conversion"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -4712,6 +4735,9 @@
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
   },
+  "paidWith": {
+    "message": "Paid with"
+  },
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
   },
@@ -5102,6 +5128,12 @@
   },
   "perpsContactSupport": {
     "message": "Contact support"
+  },
+  "perpsDepositActivityTitle": {
+    "message": "Funded Perps"
+  },
+  "perpsDepositTitle": {
+    "message": "Funded perps account"
   },
   "perpsDetails": {
     "message": "Details"
@@ -7749,6 +7781,9 @@
   },
   "suggestedTokenName": {
     "message": "Suggested name:"
+  },
+  "summary": {
+    "message": "Summary"
   },
   "supplied": {
     "message": "Supplied"
