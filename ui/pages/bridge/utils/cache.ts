@@ -20,9 +20,8 @@ export const getCacheKey = (url: string, body: object) => {
   return `${BRIDGE_CACHE_PREFIX}:${url}:${bodyHash}`;
 };
 
-const isStale = (cachedItem: { firstUpdated: number }) =>
-  cachedItem.firstUpdated &&
-  Date.now() - cachedItem.firstUpdated >= MAX_CACHE_AGE;
+const isStale = (cachedItem: { timestamp: number }) =>
+  cachedItem.timestamp && Date.now() - cachedItem.timestamp >= MAX_CACHE_AGE;
 
 export const retrieveCachedResponse = async (
   cacheKey: string,
