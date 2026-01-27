@@ -356,6 +356,37 @@ describe('ConfirmFooter', () => {
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
   });
 
+  it('prevents duplicate submissions when submit button is clicked multiple times', async () => {
+    const { getAllByRole } = render();
+    const submitButton = getAllByRole('button')[1];
+    let resolveCount = 0;
+    const resolveSpy = jest
+      .spyOn(Actions, 'resolvePendingApproval')
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .mockImplementation(() => {
+        resolveCount += 1;
+        // Simulate async delay
+        return new Promise((resolve) => setTimeout(resolve, 100)) as any;
+      });
+
+    // Click the submit button twice rapidly
+    fireEvent.click(submitButton);
+    fireEvent.click(submitButton);
+
+    // Wait for the first submission to complete
+    await waitFor(() => {
+      expect(resolveSpy).toHaveBeenCalled();
+    });
+
+    // Give some extra time for any potential second call
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    // Verify that resolvePendingApproval was only called once
+    expect(resolveCount).toBe(1);
+    expect(resolveSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('displays a danger "Confirm" button there are danger alerts', async () => {
     const mockSecurityAlertId = '8';
     const { getAllByRole } = await render(

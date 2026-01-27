@@ -5640,10 +5640,21 @@ export function resolvePendingApproval(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('resolvePendingApproval', [id, value]);
+    try {
+      await submitRequestToBackground('resolvePendingApproval', [id, value]);
+    } catch (error) {
+      // Gracefully handle "already known" errors that can occur from duplicate submissions
+      if (error?.message && typeof error.message === 'string' && error.message.includes('already known')) {
+        log.warn('Approval already resolved, ignoring duplicate submission:', id);
+        // Continue to check for other pending approvals and close window if needed
+      } else {
+        // Re-throw other errors
+        throw error;
+      }
+    }
+    
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
-
     const { pendingApprovals } = await forceUpdateMetamaskState(_dispatch);
     if (Object.values(pendingApprovals).length === 0) {
       _dispatch(closeCurrentNotificationWindow());

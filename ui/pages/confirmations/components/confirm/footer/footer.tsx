@@ -218,6 +218,7 @@ const Footer = () => {
   const { from } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
@@ -238,13 +239,15 @@ const Footer = () => {
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection ||
-    isGaslessLoading;
+    isGaslessLoading ||
+    isSubmitting;
 
   const onSubmit = useCallback(async () => {
-    if (!currentConfirmation) {
+    if (!currentConfirmation || isSubmitting) {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       if (isAddEthereumChain) {
         await onAddEthereumChain();
@@ -258,8 +261,19 @@ const Footer = () => {
         );
         navigateNext(currentConfirmation.id);
       }
+    } catch (error) {
+      // If the error is due to the approval already being resolved, silently ignore it
+      // This can happen if the button is clicked multiple times rapidly
+      if (error?.message && error.message.includes('already known')) {
+        console.warn('Approval already resolved, ignoring duplicate submission');
+        navigateNext(currentConfirmation.id);
+      } else {
+        // Re-throw other errors to be handled by the caller
+        throw error;
+      }
     } finally {
       resetTransactionState();
+      setIsSubmitting(false);
     }
   }, [
     currentConfirmation,
@@ -271,6 +285,7 @@ const Footer = () => {
     onTransactionConfirm,
     resetTransactionState,
     onAddEthereumChain,
+    isSubmitting,
   ]);
 
   const handleFooterCancel = useCallback(async () => {
