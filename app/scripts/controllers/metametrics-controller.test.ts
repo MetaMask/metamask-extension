@@ -401,6 +401,49 @@ describe('MetaMetricsController', function () {
       });
     });
 
+    it('handles race condition when fragment is finalized before update', async function () {
+      await withController(async ({ controller }) => {
+        jest.useFakeTimers().setSystemTime(1730798303333);
+
+        const SIGNATURE_ID = 'signature-12345';
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+        // Create a signature fragment
+        controller.createEventFragment({
+          category: 'inpage_provider',
+          initialEvent: 'Signature Requested',
+          successEvent: 'Signature Approved',
+          failureEvent: 'Signature Rejected',
+          uniqueIdentifier: SIGNATURE_ID,
+          persist: true,
+          properties: { accountType: 'metamask' },
+        });
+
+        // Verify fragment exists
+        expect(controller.state.fragments[SIGNATURE_ID]).toBeDefined();
+
+        // Simulate finalization (e.g., by abandoned fragment cleanup)
+        controller.finalizeEventFragment(SIGNATURE_ID, { abandoned: true });
+
+        // Verify fragment was deleted after finalization
+        expect(controller.state.fragments[SIGNATURE_ID]).toBeUndefined();
+
+        // Attempt to update the finalized fragment (simulating RPC response)
+        // This should not throw an error
+        controller.updateEventFragment(SIGNATURE_ID, {
+          properties: { signatureType: 'eth_signTypedData_v4' },
+        });
+
+        // Verify warning was logged and no error was thrown
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          `MetaMetricsController#updateEventFragment: Fragment with id ${SIGNATURE_ID} does not exist. It may have been finalized or abandoned.`,
+        );
+
+        consoleWarnSpy.mockRestore();
+        jest.useRealTimers();
+      });
+    });
+
     describe('when id includes "transaction-submitted"', function () {
       it('creates and stores new fragment props with canDeleteIfAbandoned set to true', async function () {
         await withController(({ controller }) => {
