@@ -43,6 +43,12 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     case TransactionType.incoming: {
       return GroupCategory.receive;
     }
+    case TransactionType.gasPayment:
+    case TransactionType.relayDeposit: {
+      // These transaction types are internal and should be filtered out by EXCLUDED_TRANSACTION_TYPES
+      // Returning undefined here as a defensive measure
+      return undefined;
+    }
     default:
       return undefined;
   }
