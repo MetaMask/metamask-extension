@@ -45,6 +45,12 @@ export async function onPushNotificationClicked(
   // Get Data
   const data: INotification = notification ?? event?.notification?.data;
 
+  // Validate data exists before accessing properties
+  if (!data?.id) {
+    console.error('Push notification data is missing or invalid');
+    return;
+  }
+
   // Navigate
   const destination = `${extensionPlatform.getExtensionURL(
     null,
