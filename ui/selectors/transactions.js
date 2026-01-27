@@ -427,6 +427,11 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
       txReceipt,
     } = transaction;
 
+    // Skip transactions that should be excluded from display
+    if (EXCLUDED_TRANSACTION_TYPES.has(type)) {
+      return;
+    }
+
     const nonceNetworkKey = `${nonce}-${networkClientId}`;
     // Don't group transactions by nonce if:
     // 1. Tx nonce is undefined

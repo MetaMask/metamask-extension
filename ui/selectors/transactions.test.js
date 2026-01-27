@@ -536,6 +536,78 @@ describe('Transaction Selectors', () => {
         expectedResult,
       );
     });
+
+    it('filters out gasPayment transactions from grouped transactions', () => {
+      const tx1 = {
+        id: 0,
+        time: 0,
+        chainId: CHAIN_IDS.MAINNET,
+        type: TransactionType.simpleSend,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x0',
+        },
+      };
+
+      const gasPaymentTx = {
+        id: 1,
+        time: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        type: TransactionType.gasPayment,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x1',
+        },
+      };
+
+      const tx2 = {
+        id: 2,
+        time: 2,
+        chainId: CHAIN_IDS.MAINNET,
+        type: TransactionType.simpleSend,
+        txParams: {
+          from: '0xAddress',
+          to: '0xRecipient',
+          nonce: '0x2',
+        },
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: ETH_EOA_METHODS,
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
+          featureFlags: {},
+          transactions: [tx1, gasPaymentTx, tx2],
+        },
+      };
+
+      const result = nonceSortedTransactionsSelector(state);
+
+      // gasPaymentTx should be excluded from the result
+      expect(result).toHaveLength(2);
+      expect(result[0].initialTransaction).toStrictEqual(tx1);
+      expect(result[1].initialTransaction).toStrictEqual(tx2);
+    });
   });
 
   describe('Sorting Transactions Selectors', () => {
