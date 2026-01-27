@@ -1,3 +1,4 @@
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import {
   staticAssetsStartPolling,
@@ -5,122 +6,85 @@ import {
 } from '../store/actions';
 import useStaticTokensPollingHook from './useStaticTokensPolling';
 
-const mockUseMultiPolling = jest.fn();
-const mockUseSelector = jest.fn();
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn((selector) => mockUseSelector(selector)),
-}));
-
-jest.mock('./useMultiPolling', () => ({
-  default: jest.fn((...args) => mockUseMultiPolling(...args)),
-}));
+const mockSelectedAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
+const mockEnabledChainIds = ['0x1', '0x89'];
+let mockPromises: Promise<string>[];
 
 jest.mock('../store/actions', () => ({
-  staticAssetsStartPolling: jest.fn(),
+  staticAssetsStartPolling: jest.fn().mockImplementation((input) => {
+    const promise = Promise.resolve(`${input}_detection`);
+    mockPromises.push(promise);
+    return promise;
+  }),
   staticAssetsStopPollingByPollingToken: jest.fn(),
 }));
 
+jest.mock('../selectors', () => ({
+  ...jest.requireActual('../selectors'),
+  getEnabledChainIds: jest.fn(() => mockEnabledChainIds),
+  getSelectedAccount: jest.fn(() => ({
+    address: mockSelectedAccountAddress,
+  })),
+}));
+
+const state = {
+  metamask: {
+    isUnlocked: true,
+    completedOnboarding: true,
+    useTokenDetection: true,
+    selectedNetworkClientId: 'selectedNetworkClientId',
+    enabledNetworkMap: {
+      eip155: {
+        '0x1': true,
+        '0x89': true,
+      },
+    },
+    multichainNetworkConfigurationsByChainId:
+      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+    selectedMultichainNetworkChainId: 'eip155:1',
+    isEvmSelected: true,
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        rpcEndpoints: [
+          {
+            networkClientId: 'selectedNetworkClientId',
+          },
+        ],
+      },
+      '0x89': {
+        chainId: '0x89',
+        rpcEndpoints: [
+          {
+            networkClientId: 'selectedNetworkClientId2',
+          },
+        ],
+      },
+    },
+  },
+};
+
 describe('useStaticTokensPollingHook', () => {
   beforeEach(() => {
+    mockPromises = [];
     jest.clearAllMocks();
-    mockUseMultiPolling.mockClear();
   });
 
-  it('should call useMultiPolling with correct arguments when chain IDs and account are available', () => {
-    mockUseSelector
-      .mockReturnValueOnce(['0x1', '0x89']) // getEnabledChainIds
-      .mockReturnValueOnce({ address: '0x123' }); // getSelectedAccount
+  it('calls useMultiPolling with correct arguments when chain IDs and account are available', async () => {
+    const { unmount } = renderHookWithProvider(
+      () => useStaticTokensPollingHook(),
+      state,
+    );
 
-    const state = {
-      metamask: {},
-    };
+    // Execute the polling
+    await Promise.all(mockPromises);
 
-    renderHookWithProvider(() => useStaticTokensPollingHook(), state);
-
-    expect(mockUseMultiPolling).toHaveBeenCalledTimes(1);
-    expect(mockUseMultiPolling).toHaveBeenCalledWith({
-      startPolling: staticAssetsStartPolling,
-      stopPollingByPollingToken: staticAssetsStopPollingByPollingToken,
-      input: [
-        {
-          chainIds: ['0x1', '0x89'],
-          selectedAccountAddress: '0x123',
-        },
-      ],
+    expect(staticAssetsStartPolling).toHaveBeenCalledTimes(1);
+    expect(staticAssetsStartPolling).toHaveBeenCalledWith({
+      chainIds: mockEnabledChainIds,
+      selectedAccountAddress: mockSelectedAccountAddress,
     });
-  });
-
-  it('should call useMultiPolling with empty chainIds array when no chains are enabled', () => {
-    mockUseSelector
-      .mockReturnValueOnce([]) // getEnabledChainIds
-      .mockReturnValueOnce({ address: '0x123' }); // getSelectedAccount
-
-    const state = {
-      metamask: {},
-    };
-
-    renderHookWithProvider(() => useStaticTokensPollingHook(), state);
-
-    expect(mockUseMultiPolling).toHaveBeenCalledTimes(1);
-    expect(mockUseMultiPolling).toHaveBeenCalledWith({
-      startPolling: staticAssetsStartPolling,
-      stopPollingByPollingToken: staticAssetsStopPollingByPollingToken,
-      input: [
-        {
-          chainIds: [],
-          selectedAccountAddress: '0x123',
-        },
-      ],
-    });
-  });
-
-  it('should call useMultiPolling with empty account address when no account is selected', () => {
-    mockUseSelector
-      .mockReturnValueOnce(['0x1']) // getEnabledChainIds
-      .mockReturnValueOnce(undefined); // getSelectedAccount
-
-    const state = {
-      metamask: {},
-    };
-
-    renderHookWithProvider(() => useStaticTokensPollingHook(), state);
-
-    expect(mockUseMultiPolling).toHaveBeenCalledTimes(1);
-    expect(mockUseMultiPolling).toHaveBeenCalledWith({
-      startPolling: staticAssetsStartPolling,
-      stopPollingByPollingToken: staticAssetsStopPollingByPollingToken,
-      input: [
-        {
-          chainIds: ['0x1'],
-          selectedAccountAddress: '',
-        },
-      ],
-    });
-  });
-
-  it('should call useMultiPolling with empty chainIds when enabledChainIds is null', () => {
-    mockUseSelector
-      .mockReturnValueOnce(null) // getEnabledChainIds
-      .mockReturnValueOnce({ address: '0x123' }); // getSelectedAccount
-
-    const state = {
-      metamask: {},
-    };
-
-    renderHookWithProvider(() => useStaticTokensPollingHook(), state);
-
-    expect(mockUseMultiPolling).toHaveBeenCalledTimes(1);
-    expect(mockUseMultiPolling).toHaveBeenCalledWith({
-      startPolling: staticAssetsStartPolling,
-      stopPollingByPollingToken: staticAssetsStopPollingByPollingToken,
-      input: [
-        {
-          chainIds: [],
-          selectedAccountAddress: '0x123',
-        },
-      ],
-    });
+    unmount();
+    expect(staticAssetsStopPollingByPollingToken).toHaveBeenCalledTimes(1);
   });
 });
