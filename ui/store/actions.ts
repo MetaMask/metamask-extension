@@ -6797,11 +6797,14 @@ export function updateNetworkConnectionBanner(
 export function setNetworkClientIdForDomain(
   selectedTabOrigin: string,
   networkClientId: string,
-): Promise<void> {
-  return submitRequestToBackground('setNetworkClientIdForDomain', [
-    selectedTabOrigin,
-    networkClientId,
-  ]);
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setNetworkClientIdForDomain', [
+      selectedTabOrigin,
+      networkClientId,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
 export function setSecurityAlertsEnabled(val: boolean): void {
