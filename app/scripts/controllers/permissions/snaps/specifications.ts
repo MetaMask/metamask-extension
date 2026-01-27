@@ -136,7 +136,7 @@ export function getSnapPermissionSpecifications(
               KeyringType.hdKeyTree,
             ) as { mnemonic?: string }[];
 
-            if (!keyring.mnemonic) {
+            if (!keyring?.mnemonic) {
               throw new Error('Primary keyring mnemonic unavailable.');
             }
 
@@ -184,7 +184,7 @@ export function getSnapPermissionSpecifications(
               KeyringType.hdKeyTree,
             ) as { seed?: Uint8Array }[];
 
-            if (!keyring.seed) {
+            if (!keyring?.seed) {
               throw new Error('Primary keyring mnemonic unavailable.');
             }
 
