@@ -1,6 +1,8 @@
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import type Transport from '@ledgerhq/hw-transport';
-import LedgerEth, { type EIP712Message } from '@ledgerhq/hw-app-eth';
+import LedgerEth from '@ledgerhq/hw-app-eth';
+
+type EIP712Message = Parameters<LedgerEth['signEIP712Message']>[1];
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
