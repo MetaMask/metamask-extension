@@ -10,13 +10,6 @@ import NftGrid from './nft-grid';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockVar = any;
 
-// Mock ResizeObserver for tests
-global.ResizeObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn(),
-}));
-
 jest.mock('../../../../../selectors', () => ({
   getCurrentNetwork: jest
     .fn()
