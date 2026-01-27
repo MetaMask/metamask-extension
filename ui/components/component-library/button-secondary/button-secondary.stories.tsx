@@ -1,11 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { AlignItems, Display } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import { ButtonSecondary } from './button-secondary';
-import { IconName } from '../icon';
 import { ButtonSecondarySize } from './button-secondary.types';
-import { Box } from '../box';
 
 const marginSizeControlOptions = [
   undefined,
@@ -26,12 +22,15 @@ const marginSizeControlOptions = [
 ];
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/ButtonSecondary (deprecated)',
 
   component: ButtonSecondary,
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component: '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+      },
     },
   },
   argTypes: {
@@ -55,16 +54,6 @@ export default {
     },
     disabled: {
       control: 'boolean',
-      table: { category: 'button base props' },
-    },
-    startIconName: {
-      control: 'select',
-      options: Object.values(IconName),
-      table: { category: 'button base props' },
-    },
-    endIconName: {
-      control: 'select',
-      options: Object.values(IconName),
       table: { category: 'button base props' },
     },
     startIconProps: {
@@ -112,28 +101,3 @@ export default {
 export const DefaultStory = (args) => <ButtonSecondary {...args} />;
 
 DefaultStory.storyName = 'Default';
-
-export const SizeStory: StoryFn<typeof ButtonSecondary> = (args) => (
-  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
-    <ButtonSecondary {...args} size={ButtonSecondarySize.Sm}>
-      Small Button
-    </ButtonSecondary>
-    <ButtonSecondary {...args} size={ButtonSecondarySize.Md}>
-      Medium (Default) Button
-    </ButtonSecondary>
-    <ButtonSecondary {...args} size={ButtonSecondarySize.Lg}>
-      Large Button
-    </ButtonSecondary>
-  </Box>
-);
-SizeStory.storyName = 'Size';
-
-export const Danger: StoryFn<typeof ButtonSecondary> = (args) => (
-  <Box display={Display.Flex} gap={1}>
-    <ButtonSecondary {...args}>Normal</ButtonSecondary>
-    {/* Test Anchor tag to match exactly as button */}
-    <ButtonSecondary as="a" {...args} href="#" danger>
-      Danger
-    </ButtonSecondary>
-  </Box>
-);

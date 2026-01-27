@@ -1,19 +1,14 @@
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
 import {
-  AlignItems,
-  Display,
   TextColor,
   BackgroundColor,
   BorderColor,
-  IconColor,
+  Display,
 } from '../../../helpers/constants/design-system';
 
 import { AvatarBaseSize } from './avatar-base.types';
-import README from './README.mdx';
 import { AvatarBase } from './avatar-base';
-import { Box } from '../box';
-import { Icon, IconName } from '../icon';
 
 const marginSizeKnobOptions = [
   0,
@@ -33,11 +28,14 @@ const marginSizeKnobOptions = [
 ];
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/AvatarBase (deprecated)',
   component: AvatarBase,
   parameters: {
     docs: {
-      page: README,
+      description: {
+        component: '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+      },
     },
   },
   argTypes: {
@@ -100,59 +98,3 @@ export const DefaultStory: StoryFn<typeof AvatarBase> = (args) => (
 );
 
 DefaultStory.storyName = 'Default';
-
-export const Size: StoryFn<typeof AvatarBase> = (args) => (
-  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
-    <AvatarBase {...args} size={AvatarBaseSize.Xs} />
-    <AvatarBase {...args} size={AvatarBaseSize.Sm} />
-    <AvatarBase {...args} size={AvatarBaseSize.Md} />
-    <AvatarBase {...args} size={AvatarBaseSize.Lg} />
-    <AvatarBase {...args} size={AvatarBaseSize.Xl} />
-  </Box>
-);
-
-export const Children: StoryFn<typeof AvatarBase> = (args) => (
-  <Box display={Display.Flex} gap={1}>
-    <AvatarBase {...args}>
-      <img src="./images/eth_logo.svg" />
-    </AvatarBase>
-    <AvatarBase {...args}>
-      <img width="100%" src="./images/arbitrum.svg" />
-    </AvatarBase>
-    <AvatarBase {...args}>
-      <img width="100%" src="./images/avax-token.svg" />
-    </AvatarBase>
-    <AvatarBase {...args}>A</AvatarBase>
-    <AvatarBase
-      {...args}
-      backgroundColor={BackgroundColor.infoMuted}
-      borderColor={BorderColor.infoMuted}
-    >
-      <Icon name={IconName.User} color={IconColor.infoDefault} />
-    </AvatarBase>
-  </Box>
-);
-
-export const ColorBackgroundColorAndBorderColor: StoryFn<typeof AvatarBase> = (
-  args,
-) => (
-  <Box display={Display.Flex} gap={1}>
-    <AvatarBase {...args}>B</AvatarBase>
-    <AvatarBase
-      {...args}
-      backgroundColor={BackgroundColor.goerli}
-      borderColor={BorderColor.goerli}
-      color={TextColor.primaryInverse}
-    >
-      G
-    </AvatarBase>
-    <AvatarBase
-      {...args}
-      backgroundColor={BackgroundColor.sepolia}
-      borderColor={BorderColor.sepolia}
-      color={TextColor.primaryInverse}
-    >
-      S
-    </AvatarBase>
-  </Box>
-);
