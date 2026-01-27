@@ -161,7 +161,7 @@ describe('Vault Corruption', function () {
       {
         ...config,
         manifestFlags: {
-          ...config.manifestFlags
+          ...config.manifestFlags,
         },
         testSpecificMock: mockSentryMissingVaultError,
       },
@@ -197,11 +197,27 @@ describe('Vault Corruption', function () {
         const mockPayload = JSON.stringify(mockJsonBody);
         const escapedBackupVault = JSON.stringify(backupVault).slice(1, -1);
 
+        // check both escaped and unescaped versions of the vault
         assert.equal(
           mockPayload.includes(backupVault) ||
             mockPayload.includes(escapedBackupVault),
           false,
           'Expected Sentry payload to exclude backup vault data',
+        );
+
+        // in case the formatting double sure, check one of the vault property
+        // keys
+        assert.equal(
+          mockPayload.includes('keyMetadata'),
+          false,
+          'Expected Sentry payload to exclude vault property',
+        );
+        // make sure `keyMetadata` is a real property and we aren't using it in
+        // our test for no reason
+        assert.equal(
+          backupVault.includes('keyMetadata'),
+          true,
+          'Expected backup vault to include vault property',
         );
       },
     );
