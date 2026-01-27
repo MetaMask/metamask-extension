@@ -53,6 +53,7 @@ export class PatchStore {
   }
 
   private _onStateChange({
+    controllerKey,
     newState,
     oldState,
     patches: eventPatches,
@@ -70,7 +71,21 @@ export class PatchStore {
         oldState,
       );
 
-      patches = sanitizePatches(normalizedPatches ?? []);
+      let patchesToSanitize = normalizedPatches;
+      if (controllerKey === 'ConfigRegistryController') {
+        patchesToSanitize = normalizedPatches?.map((patch) => {
+          if (patch.path.length > 0 && patch.path[0] === controllerKey) {
+            return patch;
+          }
+          return {
+            op: patch.op,
+            path: [controllerKey, ...patch.path],
+            value: patch.value,
+          };
+        });
+      }
+
+      patches = sanitizePatches(patchesToSanitize ?? []);
     } else {
       const sanitizedNewState = sanitizeUIState(newState);
 

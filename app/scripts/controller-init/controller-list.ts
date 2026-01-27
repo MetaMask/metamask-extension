@@ -84,6 +84,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import { ConfigRegistryController } from '@metamask/config-registry-controller';
 import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
@@ -126,6 +127,7 @@ export type Controller =
   | BridgeController
   | BridgeStatusController
   | ClaimsController
+  | ConfigRegistryController
   | CronjobController
   | CurrencyRateController
   | DecryptMessageController
@@ -257,6 +259,8 @@ export type ControllerFlatState = AccountOrderController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
+  ConfigRegistryController['state'] &
+  ConnectivityController['state'] &
   RewardsController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &

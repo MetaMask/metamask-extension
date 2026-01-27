@@ -394,6 +394,7 @@ import { ConnectivityControllerInit } from './controller-init/connectivity';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
+import { ConfigRegistryControllerInit } from './controller-init/config-registry-controller-init';
 import { SwapsControllerInit } from './controller-init/swaps-controller-init';
 import { BridgeControllerInit } from './controller-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
@@ -590,6 +591,7 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
+      ConfigRegistryController: ConfigRegistryControllerInit,
       NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
@@ -709,6 +711,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.MetaMetricsDataDeletionController;
     this.remoteFeatureFlagController =
       controllersByName.RemoteFeatureFlagController;
+    this.configRegistryController = controllersByName.ConfigRegistryController;
     this.gasFeeController = controllersByName.GasFeeController;
     this.userOperationController = controllersByName.UserOperationController;
     this.cronjobController = controllersByName.CronjobController;
