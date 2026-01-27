@@ -1,3 +1,51 @@
+diff --git a/dist/MultichainAssetsController/MultichainAssetsController.cjs b/dist/MultichainAssetsController/MultichainAssetsController.cjs
+index aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 100644
+--- a/dist/MultichainAssetsController/MultichainAssetsController.cjs
++++ b/dist/MultichainAssetsController/MultichainAssetsController.cjs
+@@ -406,7 +406,18 @@ async function _MultichainAssetsController_getAssetsList(accountId, snapId) {
+  * @param snapId - Snap ID for the account
+  * @returns list of assets
+  */
+ async function _MultichainAssetsController_getAssetsList(accountId, snapId) {
+-    return await __classPrivateFieldGet(this, _MultichainAssetsController_instances, "m", _MultichainAssetsController_getClient).call(this, snapId).listAccountAssets(accountId);
++    try {
++        return await __classPrivateFieldGet(this, _MultichainAssetsController_instances, "m", _MultichainAssetsController_getClient).call(this, snapId).listAccountAssets(accountId);
++    } catch (error) {
++        // If the snap doesn't support the onKeyringRequest handler, return empty assets list
++        if (error?.message?.includes('No onKeyringRequest handler exported for snap')) {
++            console.warn(`Snap ${snapId} does not support onKeyringRequest handler. Skipping asset list retrieval.`);
++            return [];
++        }
++        // Re-throw other errors
++        throw error;
++    }
+ }, _MultichainAssetsController_getClient = function _MultichainAssetsController_getClient(snapId) {
+     return new keyring_snap_client_1.KeyringClient({
+         send: async (request) => (await this.messenger.call('SnapController:handleRequest', {
+diff --git a/dist/MultichainAssetsController/MultichainAssetsController.mjs b/dist/MultichainAssetsController/MultichainAssetsController.mjs
+index cccccccccccccccccccccccccccccccccccccccc..dddddddddddddddddddddddddddddddddddddddd 100644
+--- a/dist/MultichainAssetsController/MultichainAssetsController.mjs
++++ b/dist/MultichainAssetsController/MultichainAssetsController.mjs
+@@ -406,7 +406,18 @@ async function _MultichainAssetsController_getAssetsList(accountId, snapId) {
+  * @param snapId - Snap ID for the account
+  * @returns list of assets
+  */
+ async function _MultichainAssetsController_getAssetsList(accountId, snapId) {
+-    return await __classPrivateFieldGet(this, _MultichainAssetsController_instances, "m", _MultichainAssetsController_getClient).call(this, snapId).listAccountAssets(accountId);
++    try {
++        return await __classPrivateFieldGet(this, _MultichainAssetsController_instances, "m", _MultichainAssetsController_getClient).call(this, snapId).listAccountAssets(accountId);
++    } catch (error) {
++        // If the snap doesn't support the onKeyringRequest handler, return empty assets list
++        if (error?.message?.includes('No onKeyringRequest handler exported for snap')) {
++            console.warn(`Snap ${snapId} does not support onKeyringRequest handler. Skipping asset list retrieval.`);
++            return [];
++        }
++        // Re-throw other errors
++        throw error;
++    }
+ }, _MultichainAssetsController_getClient = function _MultichainAssetsController_getClient(snapId) {
+     return new KeyringClient({
+         send: async (request) => (await this.messenger.call('SnapController:handleRequest', {
 diff --git a/dist/CurrencyRateController.cjs b/dist/CurrencyRateController.cjs
 index 9329fa3772bad655112451929bd107d99d95b34e..57683eb3b5501085f8d12fabdf0720ced0479ba8 100644
 --- a/dist/CurrencyRateController.cjs
