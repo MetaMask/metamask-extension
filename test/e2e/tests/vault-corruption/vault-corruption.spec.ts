@@ -205,8 +205,7 @@ describe('Vault Corruption', function () {
           'Expected Sentry payload to exclude backup vault data',
         );
 
-        // in case the formatting double sure, check one of the vault property
-        // keys
+        // a smell test for bits of the vault structure:
         assert.equal(
           mockPayload.includes('keyMetadata'),
           false,
