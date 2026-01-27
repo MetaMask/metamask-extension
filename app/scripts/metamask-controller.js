@@ -2259,7 +2259,11 @@ export default class MetamaskController extends EventEmitter {
     const updatePublicConfigStore = async (memState) => {
       const networkStatus =
         memState.networksMetadata[memState.selectedNetworkClientId]?.status;
-      if (networkStatus === NetworkStatus.Available) {
+      // Only update if network is available and isUnlocked state is defined
+      if (
+        networkStatus === NetworkStatus.Available &&
+        memState.isUnlocked !== undefined
+      ) {
         publicConfigStore.putState(
           await selectPublicState({ isUnlocked: memState.isUnlocked }),
         );
