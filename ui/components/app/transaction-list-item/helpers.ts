@@ -43,6 +43,11 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     case TransactionType.incoming: {
       return GroupCategory.receive;
     }
+    case TransactionType.gasPayment: {
+      // Gas payment transactions are internal transactions used for paying gas fees with tokens
+      // They should normally be filtered out, but if they appear, treat them as contract interactions
+      return GroupCategory.interaction;
+    }
     default:
       return undefined;
   }

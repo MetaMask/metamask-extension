@@ -413,6 +413,11 @@ export function useTransactionDisplayData(transactionGroup) {
       primaryDisplayValue = metamaskPay.targetFiat;
       secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
     }
+  } else if (type === TransactionType.gasPayment) {
+    // Gas payment transactions are internal transactions used for paying gas fees with tokens
+    // They should normally be filtered out, but if they appear, treat them as contract interactions
+    title = t('contractInteraction');
+    prefix = '';
   } else {
     dispatch(
       captureSingleException(

@@ -262,4 +262,58 @@ describe('useTransactionDisplayData', () => {
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
+
+  it('should handle gasPayment transaction type', () => {
+    const gasPaymentTransaction = {
+      initialTransaction: {
+        id: 'gas-payment-1',
+        type: 'gas_payment',
+        chainId: '0x1',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          value: '0x0',
+        },
+        time: 1543012666693,
+        status: 'confirmed',
+      },
+      primaryTransaction: {
+        id: 'gas-payment-1',
+        type: 'gas_payment',
+        chainId: '0x1',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          value: '0x0',
+        },
+        time: 1543012666693,
+        status: 'confirmed',
+      },
+      transactions: [
+        {
+          id: 'gas-payment-1',
+          type: 'gas_payment',
+          chainId: '0x1',
+          txParams: {
+            from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+            to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            value: '0x0',
+          },
+          time: 1543012666693,
+          status: 'confirmed',
+        },
+      ],
+      hasRetried: false,
+      hasCancelled: false,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(gasPaymentTransaction),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+
+    expect(result.current.title).toBe('Contract interaction');
+    expect(result.current.isPending).toBe(false);
+  });
 });

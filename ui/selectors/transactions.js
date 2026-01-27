@@ -415,6 +415,7 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
   const INVALID_INITIAL_TRANSACTION_TYPES = [
     TransactionType.cancel,
     TransactionType.retry,
+    TransactionType.gasPayment,
   ];
 
   transactions.forEach((transaction) => {
