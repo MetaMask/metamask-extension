@@ -1,6 +1,6 @@
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import type Transport from '@ledgerhq/hw-transport';
-import LedgerEth from '@ledgerhq/hw-app-eth';
+import LedgerEth, { type EIP712Message } from '@ledgerhq/hw-app-eth';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -259,7 +259,10 @@ async function signTypedData(params: {
   s: string;
 }> {
   const app = await ensureApp();
-  const result = await app.signEIP712Message(params.hdPath, params.message);
+  const result = await app.signEIP712Message(
+    params.hdPath,
+    params.message as EIP712Message,
+  );
   return {
     v: result.v,
     r: result.r,
