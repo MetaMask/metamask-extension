@@ -19,6 +19,7 @@ describe('useMultichainBalances', () => {
       [
         {
           "address": "",
+          "assetId": undefined,
           "balance": "1.00001",
           "chainId": "0xe708",
           "decimals": 18,
@@ -34,6 +35,7 @@ describe('useMultichainBalances', () => {
         },
         {
           "address": "",
+          "assetId": undefined,
           "balance": "1.00001",
           "chainId": "0xa",
           "decimals": 18,
@@ -77,6 +79,7 @@ describe('useMultichainBalances', () => {
         },
         {
           "address": "",
+          "assetId": undefined,
           "balance": "0.01",
           "chainId": "0x1",
           "decimals": 18,
@@ -120,6 +123,7 @@ describe('useMultichainBalances', () => {
       [
         {
           "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+          "assetId": undefined,
           "balance": "1",
           "chainId": "0x1",
           "isNative": false,
@@ -131,6 +135,7 @@ describe('useMultichainBalances', () => {
         },
         {
           "address": "",
+          "assetId": undefined,
           "balance": "1.00001",
           "chainId": "0xe708",
           "decimals": 18,
@@ -146,6 +151,7 @@ describe('useMultichainBalances', () => {
         },
         {
           "address": "",
+          "assetId": undefined,
           "balance": "1.00001",
           "chainId": "0xa",
           "decimals": 18,
@@ -189,6 +195,7 @@ describe('useMultichainBalances', () => {
         },
         {
           "address": "",
+          "assetId": undefined,
           "balance": "0.01",
           "chainId": "0x1",
           "decimals": 18,
@@ -204,6 +211,7 @@ describe('useMultichainBalances', () => {
         },
         {
           "address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+          "assetId": undefined,
           "balance": "0.00184",
           "chainId": "0x1",
           "decimals": 6,
@@ -230,6 +238,7 @@ describe('useMultichainBalances', () => {
         },
         {
           "address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+          "assetId": undefined,
           "balance": "0",
           "chainId": "0xe708",
           "isNative": false,

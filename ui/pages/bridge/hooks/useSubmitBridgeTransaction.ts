@@ -20,6 +20,7 @@ import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
   getFromAccount,
+  getFromTokenBalanceInUsd,
   getIsStxEnabled,
   getWarningLabels,
 } from '../../../ducks/bridge/selectors';
@@ -68,6 +69,7 @@ export default function useSubmitBridgeTransaction() {
   const fromAccount = useSelector(getFromAccount);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(getWarningLabels);
+  const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
   const enableMissingNetwork = useEnableMissingNetwork();
 
   const submitBridgeTransaction = async (
@@ -112,6 +114,7 @@ export default function useSubmitBridgeTransaction() {
               warnings,
               true,
               recommendedQuote,
+              fromTokenBalanceInUsd,
             ),
           ),
         );
@@ -131,6 +134,7 @@ export default function useSubmitBridgeTransaction() {
             warnings,
             true,
             recommendedQuote,
+            fromTokenBalanceInUsd,
           ),
         ),
       );
