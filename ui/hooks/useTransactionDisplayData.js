@@ -280,13 +280,16 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.swap) {
     title = t('swapTokenToToken', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol,
+        initialTransaction.sourceTokenSymbol ??
+        t('token'),
       bridgeTokenDisplayData.destinationTokenSymbol ??
-        initialTransaction.destinationTokenSymbol,
+        initialTransaction.destinationTokenSymbol ??
+        t('token'),
     ]);
     const symbolFromTx =
       bridgeTokenDisplayData.sourceTokenSymbol ??
-      initialTransaction.sourceTokenSymbol;
+      initialTransaction.sourceTokenSymbol ??
+      t('token');
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
       : symbolFromTx;
@@ -331,11 +334,13 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.swapApproval) {
     title = t('swapApproval', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        primaryTransaction.sourceTokenSymbol,
+        primaryTransaction.sourceTokenSymbol ??
+        t('token'),
     ]);
     primarySuffix =
       bridgeTokenDisplayData.sourceTokenSymbol ??
-      primaryTransaction.sourceTokenSymbol;
+      primaryTransaction.sourceTokenSymbol ??
+      t('token');
   } else if (type === TransactionType.tokenMethodApprove) {
     prefix = '';
     title = t('approveSpendingCap', [
@@ -379,11 +384,13 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.simpleSend) {
     title = t('sent');
   } else if (type === TransactionType.bridgeApproval) {
-    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
-    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    title = t('bridgeApproval', [
+      bridgeTokenDisplayData.sourceTokenSymbol ?? t('token'),
+    ]);
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol ?? t('token');
   } else if (type === TransactionType.bridge) {
     title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
-    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol ?? t('token');
     primaryDisplayValue = formatAmount(
       locale,
       new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
