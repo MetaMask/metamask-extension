@@ -8445,7 +8445,9 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} open
    */
   set isClientOpen(open) {
-    this._isClientOpen = open;
+    // Ensure open is explicitly converted to a boolean to prevent serialization issues
+    const isOpen = Boolean(open);
+    this._isClientOpen = isOpen;
 
     const { isUnlocked } = this.controllerMessenger.call(
       'KeyringController:getState',
@@ -8454,10 +8456,10 @@ export default class MetamaskController extends EventEmitter {
     if (isUnlocked) {
       // Notify Snaps that the client is open or closed when the client is
       // unlocked.
-      this.controllerMessenger.call('SnapController:setClientActive', open);
+      this.controllerMessenger.call('SnapController:setClientActive', isOpen);
     }
 
-    if (open) {
+    if (isOpen) {
       this.controllerMessenger.call('BackendWebSocketService:connect');
     } else {
       this.controllerMessenger.call('BackendWebSocketService:disconnect');
