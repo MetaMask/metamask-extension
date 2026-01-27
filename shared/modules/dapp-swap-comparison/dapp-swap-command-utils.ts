@@ -515,10 +515,12 @@ function getGenericValues(
         `Found swap commands ${swapCommands.length} instead of at least 1`,
       );
     }
-  } else if (swapCommands.length !== 1) {
-    throw new DappSwapDecodingError(
-      `Found swap commands ${swapCommands.length} instead of 1`,
-    );
+  } else {
+    if (swapCommands.length !== 1) {
+      throw new DappSwapDecodingError(
+        `Found swap commands ${swapCommands.length} instead of 1`,
+      );
+    }
   }
 
   let nonSwapCommands: string[] = [];
