@@ -1563,6 +1563,114 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#captureKeyringTypesWithMissingIdentities', () => {
+      it('handles missing keyrings gracefully when accounts do not have identities', () => {
+        const internalAccounts = [
+          {
+            address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            id: '0bd7348e-bdfe-4f67-875c-de831a583857',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: 2,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+        ];
+
+        const accounts = [
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3', // has identity
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2', // missing identity
+        ];
+
+        // Mock getAccountKeyringType to throw error for the account without identity
+        jest
+          .spyOn(metamaskController.keyringController, 'getAccountKeyringType')
+          .mockImplementation((address) => {
+            if (
+              address.toLowerCase() ===
+              '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2'.toLowerCase()
+            ) {
+              throw new Error(
+                'KeyringController - No keyring found. Error info: There are keyrings, but none match the address',
+              );
+            }
+            return 'HD Key Tree';
+          });
+
+        // Should not throw an error
+        expect(() => {
+          metamaskController.captureKeyringTypesWithMissingIdentities(
+            internalAccounts,
+            accounts,
+          );
+        }).not.toThrow();
+      });
+
+      it('successfully gets keyring types for accounts with identities', () => {
+        const internalAccounts = [
+          {
+            address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+            id: '0bd7348e-bdfe-4f67-875c-de831a583857',
+            metadata: {
+              name: 'Test Account 1',
+              lastSelected: 2,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+          {
+            address: '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account 2',
+              lastSelected: 1,
+              keyring: {
+                type: 'Snap Keyring',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+        ];
+
+        const accounts = [
+          '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+          '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+        ];
+
+        // Mock getAccountKeyringType to return valid keyring types
+        jest
+          .spyOn(metamaskController.keyringController, 'getAccountKeyringType')
+          .mockImplementation((address) => {
+            if (
+              address.toLowerCase() ===
+              '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3'.toLowerCase()
+            ) {
+              return 'HD Key Tree';
+            }
+            return 'Snap Keyring';
+          });
+
+        // Should not throw an error when all accounts have identities
+        expect(() => {
+          metamaskController.captureKeyringTypesWithMissingIdentities(
+            internalAccounts,
+            accounts,
+          );
+        }).not.toThrow();
+      });
+    });
+
     describe('#sortMultichainAccountsByLastSelected', () => {
       const mockGetAccountContext = (lastSelectedMap) => {
         return jest
