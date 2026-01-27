@@ -502,9 +502,28 @@ function getGenericValues(
   const { swapCommandsDefinition, nonSwapCommandsDefinition } =
     commandsDefinition;
 
-  const swapCommands = commandBytes.filter((commandByte) =>
-    Object.values(swapCommandsDefinition).includes(commandByte),
-  );
+  // When filtering for top-level swap commands, we need to handle the overlap
+  // between SwapCommands and V4Actions (e.g., V2_SWAP_EXACT_IN='08' overlaps
+  // with V4Actions.SWAP_EXACT_OUT_SINGLE='08').
+  // If V4_SWAP ('10') is present, overlapping bytes should be treated as V4 actions,
+  // not as separate top-level V2 swap commands.
+  const hasV4Swap = commandBytes.includes(SwapCommands.V4_SWAP);
+  const v4ActionValues = Object.values(V4Actions);
+  const swapCommands = commandBytes.filter((commandByte) => {
+    const isSwapCommand = Object.values(swapCommandsDefinition).includes(
+      commandByte,
+    );
+    // If this is a top-level command check (not V4 nested actions),
+    // and V4_SWAP is present, exclude bytes that are V4 action values to avoid overlap
+    if (
+      swapCommandsDefinition === SwapCommands &&
+      hasV4Swap &&
+      v4ActionValues.includes(commandByte as V4Actions)
+    ) {
+      return false;
+    }
+    return isSwapCommand;
+  });
 
   if (swapCommands.length !== 1) {
     throw new DappSwapDecodingError(
