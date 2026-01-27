@@ -14,6 +14,7 @@ import {
 } from './types';
 import { getHardwareWalletDeviceId } from './webConnectionUtils';
 import { type HardwareWalletRefs } from './HardwareWalletStateManager';
+import { toHardwareWalletError } from './rpcErrorUtils';
 
 type UseHardwareWalletConnectionParams = {
   refs: HardwareWalletRefs;
@@ -242,7 +243,13 @@ export const useHardwareWalletConnection = ({
       const effectiveType = refs.walletTypeRef.current;
       if (!effectiveType) {
         updateConnectionState(
-          ConnectionState.error(new Error('Hardware wallet type is unknown')),
+          ConnectionState.error(
+            createHardwareWalletError(
+              ErrorCode.Unknown,
+              HardwareWalletType.Unknown,
+              'Hardware wallet type is unknown',
+            ),
+          ),
         );
         return;
       }
@@ -401,10 +408,10 @@ export const useHardwareWalletConnection = ({
           if (isHardwareWalletError(error)) {
             updateConnectionState(getConnectionStateFromError(error));
           } else {
-            const fallbackError =
-              error instanceof Error
-                ? error
-                : new Error('Device verification failed');
+            const fallbackError = toHardwareWalletError(
+              error,
+              refs.walletTypeRef.current ?? HardwareWalletType.Unknown,
+            );
             updateConnectionState(ConnectionState.error(fallbackError));
           }
           return false;
