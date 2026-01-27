@@ -289,6 +289,22 @@ describe('AppStateController', () => {
         expect(controller.state[pollingTokenType]).toContain('token1');
       });
     });
+
+    it('does not throw error when pollingTokenType is null', async () => {
+      await withController(({ controller }) => {
+        // @ts-expect-error - Testing null handling
+        expect(() => controller.addPollingToken('token1', null)).not.toThrow();
+      });
+    });
+
+    it('does not throw error when pollingTokenType is undefined', async () => {
+      await withController(({ controller }) => {
+        // @ts-expect-error - Testing undefined handling
+        expect(() =>
+          controller.addPollingToken('token1', undefined),
+        ).not.toThrow();
+      });
+    });
   });
 
   describe('removePollingToken', () => {
@@ -301,6 +317,24 @@ describe('AppStateController', () => {
         controller.removePollingToken('token1', pollingTokenType);
 
         expect(controller.state[pollingTokenType]).not.toContain('token1');
+      });
+    });
+
+    it('does not throw error when pollingTokenType is null', async () => {
+      await withController(({ controller }) => {
+        // @ts-expect-error - Testing null handling
+        expect(() =>
+          controller.removePollingToken('token1', null),
+        ).not.toThrow();
+      });
+    });
+
+    it('does not throw error when pollingTokenType is undefined', async () => {
+      await withController(({ controller }) => {
+        // @ts-expect-error - Testing undefined handling
+        expect(() =>
+          controller.removePollingToken('token1', undefined),
+        ).not.toThrow();
       });
     });
   });

@@ -1195,6 +1195,13 @@ export class AppStateController extends BaseController<
     pollingToken: string,
     pollingTokenType: PollingTokenType,
   ): void {
+    if (!pollingTokenType) {
+      log.error(
+        'addPollingToken: pollingTokenType is required but was not provided',
+      );
+      return;
+    }
+
     if (
       pollingTokenType.toString() !==
         POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND] &&
@@ -1229,6 +1236,13 @@ export class AppStateController extends BaseController<
     pollingToken: string,
     pollingTokenType: PollingTokenType,
   ): void {
+    if (!pollingTokenType) {
+      log.error(
+        'removePollingToken: pollingTokenType is required but was not provided',
+      );
+      return;
+    }
+
     if (
       pollingTokenType.toString() !==
       POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND]

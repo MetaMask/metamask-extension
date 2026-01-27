@@ -6164,16 +6164,36 @@ export async function updateTokenType(
 }
 
 export async function addPollingTokenToAppState(pollingToken: string) {
+  const environmentType = getEnvironmentType();
+  const pollingTokenType = POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
+
+  if (!pollingTokenType) {
+    log.error(
+      `addPollingTokenToAppState: Unable to determine polling token type for environment: ${environmentType}`,
+    );
+    return undefined;
+  }
+
   return submitRequestToBackground('addPollingTokenToAppState', [
     pollingToken,
-    POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
+    pollingTokenType,
   ]);
 }
 
 export async function removePollingTokenFromAppState(pollingToken: string) {
+  const environmentType = getEnvironmentType();
+  const pollingTokenType = POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
+
+  if (!pollingTokenType) {
+    log.error(
+      `removePollingTokenFromAppState: Unable to determine polling token type for environment: ${environmentType}`,
+    );
+    return undefined;
+  }
+
   return submitRequestToBackground('removePollingTokenFromAppState', [
     pollingToken,
-    POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
+    pollingTokenType,
   ]);
 }
 
