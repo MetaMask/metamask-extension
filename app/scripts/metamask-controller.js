@@ -793,10 +793,51 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
+    try {
+      this.provider =
+        this.networkController.getProviderAndBlockTracker().provider;
+      const originalBlockTracker =
+        this.networkController.getProviderAndBlockTracker().blockTracker;
+
+      // Wrap the block tracker to handle errors gracefully during initialization
+      // This prevents RPC errors (like missing API keys) from halting app initialization
+      this.blockTracker = new Proxy(originalBlockTracker, {
+        get(target, prop) {
+          if (prop === 'getLatestBlock') {
+            return async function (...args) {
+              try {
+                return await target[prop](...args);
+              } catch (error) {
+                log.error('Block tracker getLatestBlock error:', error);
+                // Return null instead of throwing to prevent crashes
+                // The caller should handle null gracefully
+                return null;
+              }
+            };
+          }
+          if (prop === 'checkForLatestBlock') {
+            return async function (...args) {
+              try {
+                return await target[prop](...args);
+              } catch (error) {
+                log.error('Block tracker checkForLatestBlock error:', error);
+                // Don't throw - just log to prevent initialization failures
+                return null;
+              }
+            };
+          }
+          return target[prop];
+        },
+      });
+
+      // Add error handler to catch any other block tracker errors
+      originalBlockTracker.on('error', (error) => {
+        log.error('Block tracker error event:', error);
+      });
+    } catch (error) {
+      log.error('Error initializing provider and block tracker:', error);
+      // Continue initialization even if provider setup fails
+    }
 
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
@@ -5318,10 +5359,13 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    try {
-      await this.blockTracker.checkForLatestBlock();
-    } catch (error) {
-      log.error('Error while unlocking extension.', error);
+    // Only check for latest block if blockTracker was successfully initialized
+    if (this.blockTracker) {
+      try {
+        await this.blockTracker.checkForLatestBlock();
+      } catch (error) {
+        log.error('Error while unlocking extension.', error);
+      }
     }
 
     await this.accountsController.updateAccounts();
