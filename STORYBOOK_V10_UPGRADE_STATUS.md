@@ -1,5 +1,26 @@
 # Storybook v7 to v10 Upgrade Status
 
+## CI Fixes Required
+
+### 1. PR Title
+The PR title needs a conventional commit prefix. Suggested title:
+```
+build: Upgrade Storybook from v7 to v10 (WIP - blocked by React 18 requirement)
+```
+
+### 2. CHANGELOG Entry
+Add to PR description:
+```
+CHANGELOG entry: null
+```
+(This is not end-user facing since it's blocked and won't be merged as-is)
+
+### 3. Socket Security Alerts
+The Socket Security bot flagged several packages. These are expected for a major Storybook upgrade:
+- `storybook@10.2.1` - Obfuscated code (standard for bundled tools)
+- Network access alerts for test-runner dependencies (needed for test execution)
+- These should be reviewed by the security team before merge
+
 ## Summary
 
 Attempted to upgrade Storybook from v7.6.21 to v10.2.0. The upgrade is **partially complete** but **blocked by a critical dependency issue**.
