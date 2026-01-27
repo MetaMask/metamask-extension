@@ -220,6 +220,120 @@ describe('migration #105', () => {
         PreferencesController: expect.any(Object),
       });
     });
+
+    it('should skip identities with undefined address', async () => {
+      const oldData = createMockState({
+        identities: {
+          [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
+          // @ts-expect-error - Intentionally testing invalid state
+          invalid: { name: 'Invalid Account', address: undefined },
+        },
+        selectedAddress: MOCK_ADDRESS,
+      });
+
+      const oldStorage = {
+        meta: { version: 104 },
+        data: oldData,
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              [expectedUUID]: expectedInternalAccount(
+                MOCK_ADDRESS,
+                'Account 1',
+              ),
+              // Invalid account should not be present
+            },
+            selectedAccount: expectedUUID,
+          },
+        },
+        PreferencesController: expect.any(Object),
+      });
+
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error('Invalid identity address during migration: undefined'),
+      );
+    });
+
+    it('should skip identities with empty string address', async () => {
+      const oldData = createMockState({
+        identities: {
+          [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
+          // @ts-expect-error - Intentionally testing invalid state
+          invalid: { name: 'Invalid Account', address: '' },
+        },
+        selectedAddress: MOCK_ADDRESS,
+      });
+
+      const oldStorage = {
+        meta: { version: 104 },
+        data: oldData,
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              [expectedUUID]: expectedInternalAccount(
+                MOCK_ADDRESS,
+                'Account 1',
+              ),
+              // Invalid account should not be present
+            },
+            selectedAccount: expectedUUID,
+          },
+        },
+        PreferencesController: expect.any(Object),
+      });
+
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error('Invalid identity address during migration: '),
+      );
+    });
+
+    it('should skip identities with non-string address', async () => {
+      const oldData = createMockState({
+        identities: {
+          [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
+          // @ts-expect-error - Intentionally testing invalid state
+          invalid: { name: 'Invalid Account', address: 123 },
+        },
+        selectedAddress: MOCK_ADDRESS,
+      });
+
+      const oldStorage = {
+        meta: { version: 104 },
+        data: oldData,
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              [expectedUUID]: expectedInternalAccount(
+                MOCK_ADDRESS,
+                'Account 1',
+              ),
+              // Invalid account should not be present
+            },
+            selectedAccount: expectedUUID,
+          },
+        },
+        PreferencesController: expect.any(Object),
+      });
+
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error('Invalid identity address during migration: 123'),
+      );
+    });
   });
 
   describe('createSelectedAccountForAccountsController', () => {

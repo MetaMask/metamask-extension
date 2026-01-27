@@ -92,6 +92,17 @@ function createInternalAccountsForAccountsController(
   const accounts: Record<string, InternalAccountV1> = {};
 
   Object.values(identities).forEach((identity) => {
+    // Validate that identity.address is a valid string
+    if (typeof identity.address !== 'string' || !identity.address) {
+      global.sentry?.captureException?.(
+        new Error(
+          `Invalid identity address during migration: ${identity.address}`,
+        ),
+      );
+      // Skip this identity and continue with the next one
+      return;
+    }
+
     const expectedId = uuid({
       random: sha256(hexToBytes(identity.address)).slice(0, 16),
     });
