@@ -72,4 +72,13 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('maps PAY_TRANSACTION_TYPES to redeposit category', () => {
+    expect(mapTransactionTypeToCategory(TransactionType.musdConversion)).toBe(
+      TransactionGroupCategory.redeposit,
+    );
+    expect(mapTransactionTypeToCategory(TransactionType.perpsDeposit)).toBe(
+      TransactionGroupCategory.redeposit,
+    );
+  });
 });

@@ -43,6 +43,10 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     case TransactionType.incoming: {
       return GroupCategory.receive;
     }
+    case TransactionType.musdConversion:
+    case TransactionType.perpsDeposit: {
+      return GroupCategory.redeposit;
+    }
     default:
       return undefined;
   }
