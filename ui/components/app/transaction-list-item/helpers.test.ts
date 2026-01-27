@@ -72,4 +72,9 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('returns send category for gas payment transactions', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.gasPayment);
+    expect(result).toBe(TransactionGroupCategory.send);
+  });
 });
