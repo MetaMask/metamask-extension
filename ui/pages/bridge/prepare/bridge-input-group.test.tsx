@@ -158,7 +158,10 @@ describe('BridgeInputGroup', () => {
       getTotalSize: () => 78 * tokens.length,
       measureElement: () => 78,
     });
-    await localforage.clear();
+    await act(async () => {
+      await localforage.clear();
+    });
+
     jest.clearAllMocks();
   });
 
