@@ -21,3 +21,11 @@ export async function setStorageItem(key, value) {
     console.warn(err);
   }
 }
+
+export async function removeStorageItem(key) {
+  try {
+    await localforage.removeItem(key);
+  } catch (err) {
+    console.warn(err);
+  }
+}
