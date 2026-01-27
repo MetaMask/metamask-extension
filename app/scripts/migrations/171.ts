@@ -1,5 +1,10 @@
 import { cloneDeep } from 'lodash';
-import { hasProperty, isObject, parseCaipChainId } from '@metamask/utils';
+import {
+  hasProperty,
+  isObject,
+  parseCaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
 type VersionedData = {
@@ -97,11 +102,19 @@ function createNonEvmEnabledNetworkMap(
   selectedMultichainNetworkChainId: string,
 ): Record<string, Record<string, boolean>> {
   const caipChainId = formatChainIdToCaip(selectedMultichainNetworkChainId);
-  const { namespace: chainNamespace } = parseCaipChainId(caipChainId);
+  const { namespace: chainNamespace, reference } =
+    parseCaipChainId(caipChainId);
+
+  // For EVM chains, use hex format as key (e.g., "0x1")
+  // For non-EVM chains, use full CAIP format as key (e.g., "solana:5eykt4UsFv...")
+  const chainKey =
+    chainNamespace === KnownCaipNamespace.Eip155
+      ? `0x${reference}`
+      : caipChainId;
 
   const enabledNetworkMap = {
     [chainNamespace]: {
-      [selectedMultichainNetworkChainId]: true,
+      [chainKey]: true,
     },
   };
 

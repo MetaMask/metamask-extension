@@ -728,11 +728,75 @@ const selectCurrencyRateStateForBalances = createSelector(
 );
 
 /**
- * Returns the enabled network map as-is for filtering and eligibility checks.
+ * Validates if a chain ID is properly formatted for its namespace.
+ * This prevents errors when malformed chain IDs are passed to balance calculation functions.
+ *
+ * @param chainId - The chain ID to validate
+ * @param namespace - The CAIP namespace
+ * @returns True if the chain ID is valid for the namespace
+ */
+function isValidChainIdForNamespace(
+  chainId: string,
+  namespace: string,
+): boolean {
+  // For EVM chains, must be a hex string
+  if (namespace === KnownCaipNamespace.Eip155) {
+    try {
+      return typeof chainId === 'string' && toHex(chainId) !== undefined;
+    } catch {
+      return false;
+    }
+  }
+
+  // For non-EVM chains, must be in CAIP format (namespace:reference)
+  try {
+    const parsed = parseCaipChainId(chainId as CaipChainId);
+    // Verify the namespace matches
+    return parsed.namespace === namespace;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Returns the enabled network map with validation to filter out malformed chain IDs.
+ * This ensures the balance calculation functions receive properly formatted data.
  */
 const selectEnabledNetworkMapForBalances = createSelector(
   [getEnabledNetworks],
-  (map) => map,
+  (map) => {
+    if (!map || !isObject(map)) {
+      return {};
+    }
+
+    // Validate and clean the map to prevent errors from malformed chain IDs
+    const cleanedMap: Record<string, Record<string, boolean>> = {};
+
+    for (const [namespace, chainMap] of Object.entries(map)) {
+      if (!isObject(chainMap)) {
+        continue;
+      }
+
+      const validChains: Record<string, boolean> = {};
+
+      for (const [chainId, isEnabled] of Object.entries(chainMap)) {
+        // Only include properly formatted chain IDs
+        if (
+          typeof chainId === 'string' &&
+          isValidChainIdForNamespace(chainId, namespace)
+        ) {
+          validChains[chainId] = Boolean(isEnabled);
+        }
+      }
+
+      // Only include namespace if it has valid chains
+      if (Object.keys(validChains).length > 0) {
+        cleanedMap[namespace] = validChains;
+      }
+    }
+
+    return cleanedMap;
+  },
 );
 
 /**
