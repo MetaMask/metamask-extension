@@ -331,11 +331,13 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.swapApproval) {
     title = t('swapApproval', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        primaryTransaction.sourceTokenSymbol,
+        primaryTransaction.sourceTokenSymbol ??
+        t('token'),
     ]);
     primarySuffix =
       bridgeTokenDisplayData.sourceTokenSymbol ??
-      primaryTransaction.sourceTokenSymbol;
+      primaryTransaction.sourceTokenSymbol ??
+      t('token');
   } else if (type === TransactionType.tokenMethodApprove) {
     prefix = '';
     title = t('approveSpendingCap', [
