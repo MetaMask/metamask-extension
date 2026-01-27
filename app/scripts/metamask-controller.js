@@ -224,6 +224,8 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
+import { createRpcCachingMiddleware } from './lib/rpc-caching-middleware';
+import { globalRpcRequestCache } from './lib/rpc-request-cache';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -7221,6 +7223,15 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
 
+    // Add RPC caching middleware to deduplicate identical requests during initialization
+    engine.push(
+      createRpcCachingMiddleware({
+        cache: globalRpcRequestCache,
+        getNetworkClientId: () =>
+          this.selectedNetworkController.getNetworkClientIdForDomain(origin),
+      }),
+    );
+
     engine.push(createTracingMiddleware());
 
     engine.push(
@@ -7685,6 +7696,15 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(createLoggerMiddleware({ origin }));
+
+    // Add RPC caching middleware to deduplicate identical requests during initialization
+    engine.push(
+      createRpcCachingMiddleware({
+        cache: globalRpcRequestCache,
+        getNetworkClientId: () =>
+          this.selectedNetworkController.getNetworkClientIdForDomain(origin),
+      }),
+    );
 
     engine.push((req, _res, next, end) => {
       if (

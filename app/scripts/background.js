@@ -102,6 +102,7 @@ import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+import { globalRpcRequestCache } from './lib/rpc-request-cache';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -756,6 +757,10 @@ async function initialize(backup) {
       }
     : {};
 
+  // Enable RPC request cache during initialization to prevent N+1 API calls
+  // when multiple snaps independently query the same RPC endpoints
+  globalRpcRequestCache.enable();
+
   const preinstalledSnaps = await loadPreinstalledSnaps();
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
@@ -801,6 +806,10 @@ async function initialize(backup) {
     await loadPhishingWarningPage();
   }
   await sendReadyMessageToTabs();
+
+  // Disable RPC request cache after initialization is complete
+  // This prevents excessive memory usage and ensures fresh data after startup
+  globalRpcRequestCache.disable();
 
   new DeepLinkRouter({
     getExtensionURL: platform.getExtensionURL,
