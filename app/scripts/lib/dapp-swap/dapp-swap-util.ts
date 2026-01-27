@@ -77,7 +77,7 @@ export function getQuotesForConfirmation({
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
   ) => NetworkConfiguration | undefined;
-  dappSwapMetricsFlag: {
+  dappSwapMetricsFlag?: {
     enabled: boolean;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     bridge_quote_fees: number;
@@ -88,6 +88,11 @@ export function getQuotesForConfirmation({
   let commands = '';
   const requestId = String(req.id);
   try {
+    // If dappSwapMetricsFlag is undefined or not enabled, return early
+    if (!dappSwapMetricsFlag) {
+      return;
+    }
+
     const {
       enabled: dappSwapEnabled,
       // eslint-disable-next-line @typescript-eslint/naming-convention
