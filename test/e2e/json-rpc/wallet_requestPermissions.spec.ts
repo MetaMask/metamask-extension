@@ -42,6 +42,9 @@ describe('wallet_requestPermissions', function () {
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
 
+        // Switch back to TestDApp window before executing scripts
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
         const getPermissionsRequest = JSON.stringify({
           method: 'wallet_getPermissions',
         });
