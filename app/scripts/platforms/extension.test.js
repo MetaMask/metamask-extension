@@ -133,6 +133,44 @@ describe('extension platform', () => {
         `Transaction 1 failed! ${errorMessage}`,
       );
     });
+
+    it('should show failed transaction with default message when error.message is missing', async () => {
+      const txMeta = {
+        txParams: { nonce: '0x2' },
+        error: {}, // error object exists but message is missing
+      };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform._showFailedTransaction(txMeta);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        'Transaction 2 failed! Transaction failed unexpectedly',
+      );
+    });
+
+    it('should show failed transaction with default message when error is null', async () => {
+      const txMeta = {
+        txParams: { nonce: '0x3' },
+        error: null, // error is null
+      };
+      const extensionPlatform = new ExtensionPlatform();
+      const showNotificationSpy = jest.spyOn(
+        extensionPlatform,
+        '_showNotification',
+      );
+
+      await extensionPlatform._showFailedTransaction(txMeta);
+
+      expect(showNotificationSpy).toHaveBeenCalledWith(
+        'Failed transaction',
+        'Transaction 3 failed! Transaction failed unexpectedly',
+      );
+    });
   });
 
   describe('showTransactionNotification', () => {

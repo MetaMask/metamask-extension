@@ -213,10 +213,15 @@ export default class ExtensionPlatform {
   async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
+    // Ensure we always have a valid error message
+    const finalErrorMessage =
+      errorMessage ||
+      txMeta.error?.message ||
+      'Transaction failed unexpectedly';
     const message = t(
       'notificationTransactionFailedMessage',
       nonce,
-      errorMessage || txMeta.error.message,
+      finalErrorMessage,
     );
     await this._showNotification(title, message);
   }
