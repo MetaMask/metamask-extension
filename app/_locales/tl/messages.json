@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "I-bridge sa"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Kapag idinagdag mo ang token na ito nang mano-mano, tiyaking alam mo ang mga panganib nito sa mga pondo mo bago ka mag-bridge."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Hindi namin maberipika ang token na ito."
-  },
   "bridgeTransactionProgress": {
     "message": "Transaksyon $1 sa 2"
   },
@@ -8213,9 +8207,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"
-  },
-  "yourNetworks": {
-    "message": "Mga network mo"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang Iyong Lihim na Parirala sa Pagbawi"

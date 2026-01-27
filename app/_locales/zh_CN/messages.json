@@ -1068,12 +1068,6 @@
   "bridgeTo": {
     "message": "桥接至"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "如果您手动添加了此代币，请务必在桥接之前了解资金面临的风险。"
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "我们无法验证此代币。"
-  },
   "bridgeTransactionProgress": {
     "message": "交易 $1（共 2 笔）"
   },
@@ -8204,9 +8198,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
-  },
-  "yourNetworks": {
-    "message": "您的网络"
   },
   "yourPrivateSeedPhrase": {
     "message": "您的私钥助记词"

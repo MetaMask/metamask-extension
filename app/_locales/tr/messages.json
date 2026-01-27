@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Köprü yapılan:"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Bu token'ı manuel olarak eklediyseniz köprü yapmadan önce paranıza gelebilecek risklerin farkında olduğunuzdan emin olun."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Bu token'ı doğrulayamıyoruz."
-  },
   "bridgeTransactionProgress": {
     "message": "İşlem $1 / 2"
   },
@@ -8219,9 +8213,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"
-  },
-  "yourNetworks": {
-    "message": "Ağlarınız"
   },
   "yourPrivateSeedPhrase": {
     "message": "Gizli Kurtarma İfadeniz"

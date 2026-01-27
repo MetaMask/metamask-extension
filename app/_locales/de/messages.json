@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Bridge zu"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Wenn Sie dieses Token manuell hinzugefügt haben, stellen Sie sicher, dass Sie sich der Risiken für Ihre Gelder bewusst sind, bevor Sie bridgen."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Wir können diesen Token nicht verifizieren."
-  },
   "bridgeTransactionProgress": {
     "message": "Transaktion $1 von 2"
   },
@@ -8216,9 +8210,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ihr NFT könnte gefährdet sein"
-  },
-  "yourNetworks": {
-    "message": "Ihre Netzwerke"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ihre geheime Wiederherstellungsphrase"

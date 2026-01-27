@@ -4,22 +4,6 @@ import { Driver } from '../../../webdriver/driver';
 class StartOnboardingPage {
   private driver: Driver;
 
-  private readonly welcomeMessage = {
-    text: 'Welcome to MetaMask',
-    tag: 'h2',
-  };
-
-  private readonly getStartedButton =
-    '[data-testid="onboarding-get-started-button"]';
-
-  private readonly termsOfUseCheckbox = '[data-testid="terms-of-use-checkbox"]';
-
-  private readonly termsOfUseScrollButton =
-    '[data-testid="terms-of-use-scroll-button"]';
-
-  private readonly termsOfUseAgreeButton =
-    '[data-testid="terms-of-use-agree-button"]';
-
   private readonly createWalletButton =
     '[data-testid="onboarding-create-wallet"]';
 
@@ -46,37 +30,6 @@ class StartOnboardingPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkBannerPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.welcomeMessage,
-        this.getStartedButton,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for welcome page banner to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Welcome page banner is loaded');
-  }
-
-  async agreeToTermsOfUse(): Promise<void> {
-    await this.driver.clickElement(this.getStartedButton);
-    await this.driver.waitForSelector(this.termsOfUseCheckbox);
-    await this.driver.waitForSelector(this.termsOfUseScrollButton);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.termsOfUseScrollButton,
-      5000,
-    );
-    await this.driver.clickElement(this.termsOfUseCheckbox);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.termsOfUseAgreeButton,
-      15000,
-    );
   }
 
   async checkLoginPageIsLoaded(): Promise<void> {

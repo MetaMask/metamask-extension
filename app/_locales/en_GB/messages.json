@@ -472,6 +472,16 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertInsufficientPayTokenBalance": {
+    "message": "Insufficient funds"
+  },
+  "alertInsufficientPayTokenBalanceFeesNoTarget": {
+    "message": "Add less or use a different token."
+  },
+  "alertInsufficientPayTokenNative": {
+    "message": "Not enough $1 to cover fees. Use a token on another network or add more $1 to continue.",
+    "description": "$1 is the native currency symbol (e.g. ETH)"
+  },
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
@@ -531,6 +541,18 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
+  },
+  "alertNoPayTokenQuotesMessage": {
+    "message": "This payment route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
+  },
+  "alertNoPayTokenQuotesTitle": {
+    "message": "No quotes"
+  },
+  "alertPayHardwareAccountMessage": {
+    "message": "Hardware wallets aren't supported.\nSwitch wallets to continue."
+  },
+  "alertPayHardwareAccountTitle": {
+    "message": "Wallet not supported"
   },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
@@ -1045,6 +1067,13 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeReceive": {
+    "message": "Receive $1 on $2",
+    "description": "Summary line showing token received on destination chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeReceiveLoading": {
+    "message": "Receiving on destination chain"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Select a destination account"
   },
@@ -1059,6 +1088,13 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
+  },
+  "bridgeSend": {
+    "message": "Send $1 from $2",
+    "description": "Summary line showing token sent from source chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeSendLoading": {
+    "message": "Sending from source chain"
   },
   "bridgeSolanaAccountCreated": {
     "message": "Solana account created"
@@ -1098,11 +1134,8 @@
   "bridgeTo": {
     "message": "Bridge to"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "We can't verify this token."
+  "bridgeTokenNotFound": {
+    "message": "No tokens match \"$1\""
   },
   "bridgeTransactionProgress": {
     "message": "Transaction $1 of 2"
@@ -1942,6 +1975,9 @@
   },
   "dataUnavailable": {
     "message": "data unavailable"
+  },
+  "date": {
+    "message": "Date"
   },
   "dateCreated": {
     "message": "Date created"
@@ -3369,6 +3405,9 @@
   "isSigningOrSubmitting": {
     "message": "A previous transaction is still being signed or submitted"
   },
+  "isSigningOrSubmittingPayToken": {
+    "message": "You have a pending transaction on this network. Wait for it to complete or select a token on another network."
+  },
   "jazzicons": {
     "message": "Jazzicons"
   },
@@ -3871,6 +3910,12 @@
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdConversionActivityTitle": {
+    "message": "mUSD Conversion"
+  },
+  "musdConversionTitle": {
+    "message": "mUSD Conversion"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -3958,6 +4003,9 @@
   },
   "nameResolutionFailedError": {
     "message": "No address resolution found for this name."
+  },
+  "nameResolutionZeroAddressError": {
+    "message": "Name resolver returned a zero address. This is likely an error."
   },
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
@@ -4687,6 +4735,9 @@
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
   },
+  "paidWith": {
+    "message": "Paid with"
+  },
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
   },
@@ -5077,6 +5128,12 @@
   },
   "perpsContactSupport": {
     "message": "Contact support"
+  },
+  "perpsDepositActivityTitle": {
+    "message": "Funded Perps"
+  },
+  "perpsDepositTitle": {
+    "message": "Funded perps account"
   },
   "perpsDetails": {
     "message": "Details"
@@ -7725,6 +7782,9 @@
   "suggestedTokenName": {
     "message": "Suggested name:"
   },
+  "summary": {
+    "message": "Summary"
+  },
   "supplied": {
     "message": "Supplied"
   },
@@ -8892,9 +8952,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourNetworks": {
-    "message": "Your networks"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"

@@ -19,10 +19,17 @@
  *
  * @example Update baseline using dedicated scripts
  * ```bash
- * yarn test:unit:update-baseline
+ * yarn test:unit:update-baseline                             # Ratchet mode (only increases baseline counts)
  * yarn test:unit:update-baseline path/to/file
- * yarn test:integration:update-baseline
+ *
+ * yarn test:unit:update-baseline:strict                      # Strict mode (increases and decreases baseline counts)
+ * yarn test:unit:update-baseline:strict path/to/file
+ *
+ * yarn test:integration:update-baseline                      # Ratchet mode (only increases baseline counts)
  * yarn test:integration:update-baseline path/to/file
+ *
+ * yarn test:integration:update-baseline:strict               # Strict mode (increases and decreases baseline counts)
+ * yarn test:integration:update-baseline:strict path/to/file
  * ```
  * @example jest.config.js
  * {
@@ -42,6 +49,18 @@ const {
   categorizeIntegrationTestMessage,
   createFallbackCategory,
 } = require('./console-categorizer');
+
+/**
+ * UPDATE_BASELINE environment variable values.
+ *
+ * @enum {string}
+ */
+const UpdateBaselineMode = {
+  /** Only increase counts, never decrease (default) */
+  RATCHET: 'ratchet',
+  /** Strictly match current test run, allows decreases */
+  STRICT: 'strict',
+};
 
 class ConsoleBaselineReporter {
   // Private fields
@@ -64,13 +83,14 @@ class ConsoleBaselineReporter {
     this.#globalConfig = globalConfig;
 
     // Mode is determined by UPDATE_BASELINE environment variable
-    // - UPDATE_BASELINE=true → 'capture' (write baseline)
-    // - Otherwise → 'enforce' (compare against baseline)
-    const mode = process.env.UPDATE_BASELINE === 'true' ? 'capture' : 'enforce';
+    // - UPDATE_BASELINE='ratchet' → Update baseline, but never decrease counts (default)
+    // - UPDATE_BASELINE='strict' → Update baseline, increase or decrease counts to strictly match current test run
+    // - Otherwise → Do not update baseline, just compare against baseline
+    const updateBaseline = process.env.UPDATE_BASELINE;
 
     this.#options = {
       testType: options.testType || 'unit',
-      mode,
+      updateBaseline,
       failOnViolation: options.failOnViolation !== false,
       showImprovements: options.showImprovements !== false,
     };
@@ -119,7 +139,8 @@ class ConsoleBaselineReporter {
 
     try {
       if (!fs.existsSync(baselinePath)) {
-        if (this.#options.mode === 'enforce') {
+        // Only warn if we're not updating baseline
+        if (!this.#options.updateBaseline) {
           const updateCmd = `yarn test:${this.#options.testType}:update-baseline`;
           console.warn(
             `\n⚠️  Baseline file not found: ${baselinePath}\n` +
@@ -152,22 +173,50 @@ class ConsoleBaselineReporter {
   /**
    * Write the baseline JSON file (capture mode).
    * Merges new results with existing baseline - only updates files that ran.
+   *
+   * In ratchet mode (default): only increases counts, never decreases.
+   * In strict mode: strictly matches current test run, allows decreases.
    */
   #writeBaseline() {
     const baselinePath = this.#resolveBaselinePath();
 
-    // Start with existing baseline files (to preserve files that didn't run)
-    const existingFiles = this.baseline.files || {};
+    // Start with baseline files (to preserve files that didn't run)
+    const baselineFiles = this.baseline.files || {};
 
     // Merge: update files that ran, keep files that didn't run
-    const mergedFiles = { ...existingFiles };
-    for (const [filePath, warnings] of Object.entries(this.warningsByFile)) {
-      if (Object.keys(warnings).length > 0) {
-        // File has warnings - update it
-        mergedFiles[filePath] = warnings;
-      } else if (mergedFiles[filePath]) {
-        // File ran but has no warnings - remove from baseline
-        delete mergedFiles[filePath];
+    const mergedFiles = { ...baselineFiles };
+    for (const [filePath, currentTestRunWarnings] of Object.entries(
+      this.warningsByFile,
+    )) {
+      const baselineWarnings = baselineFiles[filePath] || {};
+
+      if (this.#options.updateBaseline === UpdateBaselineMode.STRICT) {
+        // Strict mode: sync exactly to current run
+        if (Object.keys(currentTestRunWarnings).length > 0) {
+          // File has warnings - update it
+          mergedFiles[filePath] = currentTestRunWarnings;
+        } else if (mergedFiles[filePath]) {
+          // File ran but has no warnings - remove from baseline
+          delete mergedFiles[filePath];
+        }
+      } else if (this.#options.updateBaseline === UpdateBaselineMode.RATCHET) {
+        // Ratchet mode: only increase, never decrease or remove
+        // Merge: take max of baseline and current for each category
+        const mergedWarnings = { ...baselineWarnings };
+        for (const [category, currentTestRunCount] of Object.entries(
+          currentTestRunWarnings,
+        )) {
+          const baselineCount = baselineWarnings[category] || 0;
+          // Only update if current is higher (ratchet up)
+          mergedWarnings[category] = Math.max(
+            baselineCount,
+            currentTestRunCount,
+          );
+        }
+        // Only keep file entry if it has warnings (either baseline or current test run)
+        if (Object.keys(mergedWarnings).length > 0) {
+          mergedFiles[filePath] = mergedWarnings;
+        }
       }
       // Files that didn't run are preserved as-is
     }
@@ -292,13 +341,20 @@ class ConsoleBaselineReporter {
    * Handles both capture and enforce modes.
    */
   onRunComplete() {
-    if (this.#options.mode === 'capture') {
+    const { updateBaseline } = this.#options;
+
+    // Update baseline (ratchet or strict)
+    if (
+      updateBaseline === UpdateBaselineMode.RATCHET ||
+      updateBaseline === UpdateBaselineMode.STRICT
+    ) {
       this.#writeBaseline();
-    } else if (this.#options.mode === 'enforce') {
+    } else if (updateBaseline === undefined) {
+      // Do not update baseline, just compare against baseline
       this.#enforceBaseline();
     } else {
       throw new Error(
-        `Invalid mode (${this.#options.mode}): must be 'capture' or 'enforce'`,
+        `Invalid UPDATE_BASELINE value (${updateBaseline}): must be '${UpdateBaselineMode.RATCHET}', '${UpdateBaselineMode.STRICT}', or unset`,
       );
     }
   }
@@ -362,48 +418,50 @@ class ConsoleBaselineReporter {
     const baselineFiles = this.baseline.files || {};
 
     // Check each file that was run
-    for (const [filePath, currentWarnings] of Object.entries(
+    for (const [filePath, currentTestRunWarnings] of Object.entries(
       this.warningsByFile,
     )) {
       const baselineForFile = baselineFiles[filePath] || {};
       const isNewFile = !baselineFiles[filePath];
 
       // Track if this is a new file (not in baseline)
-      if (isNewFile && Object.keys(currentWarnings).length > 0) {
+      if (isNewFile && Object.keys(currentTestRunWarnings).length > 0) {
         newFiles.push({
           filePath,
-          warnings: currentWarnings,
+          warnings: currentTestRunWarnings,
         });
       }
 
       // Check for violations (increased counts or new categories)
       // Skip violations for new files - they're already tracked in newFiles
-      for (const [category, currentCount] of Object.entries(currentWarnings)) {
+      for (const [category, currentTestRunCount] of Object.entries(
+        currentTestRunWarnings,
+      )) {
         const baselineCount = baselineForFile[category] || 0;
 
-        if (currentCount > baselineCount && !isNewFile) {
+        if (currentTestRunCount > baselineCount && !isNewFile) {
           violations.push({
             filePath,
             category,
             baseline: baselineCount,
-            current: currentCount,
-            increase: currentCount - baselineCount,
+            current: currentTestRunCount,
+            increase: currentTestRunCount - baselineCount,
             isNew: baselineCount === 0,
           });
-        } else if (currentCount < baselineCount) {
+        } else if (currentTestRunCount < baselineCount) {
           improvements.push({
             filePath,
             category,
             baseline: baselineCount,
-            current: currentCount,
-            decrease: baselineCount - currentCount,
+            current: currentTestRunCount,
+            decrease: baselineCount - currentTestRunCount,
           });
         }
       }
 
       // Check for categories that disappeared from this file
       for (const [category, baselineCount] of Object.entries(baselineForFile)) {
-        if (!currentWarnings[category]) {
+        if (!currentTestRunWarnings[category]) {
           improvements.push({
             filePath,
             category,
@@ -553,9 +611,12 @@ class ConsoleBaselineReporter {
       console.log('');
     }
 
-    const updateCmd = `yarn test:${this.#options.testType}:update-baseline`;
-    console.log('  💡 Lock in improvements:');
-    console.log(`     ${updateCmd}\n`);
+    const strictCmd = `yarn test:${this.#options.testType}:update-baseline:strict`;
+    console.log('  💡 To lock in improvements:');
+    console.log('     - Edit baseline manually, OR');
+    console.log(
+      `     - Run ${strictCmd} (allows decreases - use with caution)\n`,
+    );
   }
 
   /**
