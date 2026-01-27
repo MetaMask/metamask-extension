@@ -608,6 +608,10 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol musi mieć maksymalnie 11 znaków."
   },
+  "swapTokenToToken": {
+    "message": "Zamień $1 na $2",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
   "terms": {
     "message": "Regulamin"
   },
