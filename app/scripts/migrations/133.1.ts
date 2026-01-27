@@ -174,11 +174,8 @@ function transformTokenCollection(
               );
               return false; // Exclude token
             }
-            return (
-              isObject(token) &&
-              hasProperty(token, 'decimals') &&
-              token.decimals !== null
-            );
+            // Keep all other tokens, including those without decimals property
+            return true;
           });
 
           updatedTokensAccounts[account] = filteredTokens;

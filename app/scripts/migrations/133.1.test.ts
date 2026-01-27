@@ -181,6 +181,130 @@ describe(`migration #${version}`, () => {
     expect(sentryCaptureMessageMock).not.toHaveBeenCalled();
   });
 
+  it('preserves tokens without decimals property in allTokens', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              '0x123': [
+                { address: '0x1', symbol: 'TOKEN1' }, // No decimals property
+                { address: '0x2', symbol: 'TOKEN2', decimals: 18 },
+                { address: '0x3', symbol: 'TOKEN3', decimals: null }, // Should be removed
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(cloneDeep(oldStorage));
+
+    const tokensControllerState = newStorage.data
+      .TokensController as TokensControllerState;
+    const { allTokens } = tokensControllerState;
+
+    expect(allTokens).toEqual({
+      '0x1': {
+        '0x123': [
+          { address: '0x1', symbol: 'TOKEN1' }, // Preserved
+          { address: '0x2', symbol: 'TOKEN2', decimals: 18 },
+        ],
+      },
+    });
+
+    // Only the token with decimals === null should be logged
+    expect(sentryCaptureMessageMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+      `Migration ${version}: Removed token with decimals === null in allTokens. Address: 0x3`,
+    );
+  });
+
+  it('preserves tokens without decimals property in tokens array', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        TokensController: {
+          tokens: [
+            { address: '0x1', symbol: 'TOKEN1' }, // No decimals property
+            { address: '0x2', symbol: 'TOKEN2', decimals: 18 },
+            { address: '0x3', symbol: 'TOKEN3', decimals: null }, // Should be removed
+          ],
+        },
+      },
+    };
+
+    const newStorage = await migrate(cloneDeep(oldStorage));
+
+    const tokensControllerState = newStorage.data
+      .TokensController as TokensControllerState & {
+      tokens: Token[];
+    };
+    const { tokens } = tokensControllerState;
+
+    expect(tokens).toEqual([
+      { address: '0x1', symbol: 'TOKEN1' }, // Preserved
+      { address: '0x2', symbol: 'TOKEN2', decimals: 18 },
+    ]);
+
+    expect(sentryCaptureMessageMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+      `Migration ${version}: Removed token with decimals === null in tokens. Address: 0x3`,
+    );
+  });
+
+  it('preserves malformed token objects', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              '0x123': [
+                'not-an-object', // Malformed token
+                { address: '0x2', symbol: 'TOKEN2', decimals: 18 },
+                { address: '0x3', symbol: 'TOKEN3', decimals: null }, // Should be removed
+              ],
+            },
+          },
+          tokens: [
+            null, // Malformed token
+            { address: '0x4', symbol: 'TOKEN4', decimals: 6 },
+          ],
+        },
+      },
+    };
+
+    const newStorage = await migrate(cloneDeep(oldStorage));
+
+    const tokensControllerState = newStorage.data
+      .TokensController as TokensControllerState & {
+      tokens: Token[];
+    };
+
+    // Malformed tokens should be preserved
+    expect(tokensControllerState.allTokens).toEqual({
+      '0x1': {
+        '0x123': [
+          'not-an-object', // Preserved
+          { address: '0x2', symbol: 'TOKEN2', decimals: 18 },
+        ],
+      },
+    });
+
+    expect(tokensControllerState.tokens).toEqual([
+      null, // Preserved
+      { address: '0x4', symbol: 'TOKEN4', decimals: 6 },
+    ]);
+
+    // Only the token with decimals === null should be logged
+    expect(sentryCaptureMessageMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureMessageMock).toHaveBeenCalledWith(
+      `Migration ${version}: Removed token with decimals === null in allTokens. Address: 0x3`,
+    );
+  });
+
   const invalidState = [
     {
       errorMessage: `Migration ${version}: Invalid allTokens state of type 'string'`,
