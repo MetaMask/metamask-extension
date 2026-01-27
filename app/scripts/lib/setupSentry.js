@@ -305,6 +305,25 @@ function setSentryClient() {
    */
   globalThis.history ??= {};
 
+  /**
+   * In service worker context (MV3), there is no location object.
+   * Sentry's browser SDK expects this object to exist and throws "No current window" error when it doesn't.
+   * We create a minimal stub with the properties Sentry needs to prevent this error.
+   */
+  if (!globalThis.location && isManifestV3) {
+    globalThis.location = {
+      origin: browser.runtime?.getURL('') ?? '',
+      href: browser.runtime?.getURL('') ?? '',
+      protocol: 'chrome-extension:',
+      host: '',
+      hostname: '',
+      port: '',
+      pathname: '/',
+      search: '',
+      hash: '',
+    };
+  }
+
   log('Updating client', {
     environment,
     dsn,
