@@ -187,7 +187,7 @@ describe('migrations', () => {
       expect(error.message).toBe('MetaMask Migration Error #186');
       expect(error.errors[0]?.constructor?.name).toBe('DOMException');
       expect(error.errors[0].name).toBe('DataCloneError');
-      expect(error.errors[0].message).toMatch(/could not be cloned/i);
+      expect(error.errors[0].message).toMatch(/could not be cloned/iu);
       expect(migratedData.state).toBe(initialState);
     });
   });
