@@ -87,6 +87,27 @@ describe(`migration #${VERSION}`, () => {
     expect(oldStorage.meta).toStrictEqual({ version: VERSION });
   });
 
+  it('ensures data is not undefined when transformState throws an error', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          // Invalid structure that will cause transformState to throw
+          networkConfigurationsByChainId: 'invalid',
+          selectedNetworkClientId: 'mainnet',
+        },
+      },
+    };
+
+    const localChangedControllers = new Set<string>();
+    await migrate(oldStorage, localChangedControllers);
+
+    // Ensure data is not undefined even though transformState threw
+    expect(oldStorage.data).toBeDefined();
+    expect(typeof oldStorage.data).toBe('object');
+    expect(oldStorage.meta).toStrictEqual({ version: VERSION });
+  });
+
   const invalidStates = [
     {
       state: {
