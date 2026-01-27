@@ -1991,6 +1991,19 @@ export default class MetamaskController extends EventEmitter {
           const { chainId: currentChainIdForOrigin } = networkConfig;
 
           if (chains.length > 0 && !chains.includes(currentChainIdForOrigin)) {
+            // Check if the chain ID exists in the NetworkController before attempting to switch
+            const targetChainConfig =
+              this.networkController.getNetworkConfigurationByChainId(
+                chains[0],
+              );
+
+            if (!targetChainConfig) {
+              log.warn(
+                `Cannot switch to chain ID "${chains[0]}" for origin "${origin}": chain is not configured in MetaMask. Please add the network first.`,
+              );
+              continue;
+            }
+
             const networkClientId =
               this.networkController.findNetworkClientIdByChainId(chains[0]);
 
