@@ -3552,6 +3552,9 @@
     },
     "ui/selectors/transactions.test.js": {
       "Reselect: Identity function warnings": 4
+    },
+    "ui/pages/confirmations/hooks/tokens/useAddToken.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
     }
   },
   "generated": "2025-12-15T13:34:23.962Z",
