@@ -339,6 +339,45 @@ describe('Transaction Selectors', () => {
       const expected = [];
       expect(result).toStrictEqual(expected);
     });
+
+    it('filters out gas_payment smart transactions even when pending', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.PENDING,
+        type: TransactionType.gasPayment,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('filters out incoming smart transactions even when pending', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.PENDING,
+        type: TransactionType.incoming,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('filters out relay_deposit smart transactions even when pending', () => {
+      const smartTransaction = createSmartTransaction({
+        status: SmartTransactionStatuses.PENDING,
+        type: TransactionType.relayDeposit,
+      });
+      const state = createState(smartTransaction);
+
+      const result = smartTransactionsListSelector(state);
+
+      const expected = [];
+      expect(result).toStrictEqual(expected);
+    });
   });
 
   describe('transactionsSelector', () => {

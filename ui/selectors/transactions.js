@@ -183,6 +183,10 @@ export const smartTransactionsListSelector = createSelector(
         ) {
           return false;
         }
+        // Filter out excluded transaction types (gas_payment, incoming, relay_deposit)
+        if (EXCLUDED_TRANSACTION_TYPES.has(smartTransaction.type)) {
+          return false;
+        }
         // If a swap or non-swap smart transaction is pending, we want to show it in the Activity list.
         if (smartTransaction.status === SmartTransactionStatuses.PENDING) {
           return true;
