@@ -36,8 +36,9 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentAppVersion": "13.17.0",
-      "currentMigrationVersion": 189,
+      "currentAppVersion": "13.12.0",
+      "currentMigrationVersion": 184,
+      "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
     "AppStateController": {
@@ -48,7 +49,7 @@
       "canTrackWalletFundsObtained": true,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
-      "enableEnforcedSimulations": false,
+      "enableEnforcedSimulations": true,
       "enforcedSimulationsSlippage": 10,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
@@ -73,18 +74,19 @@
       "showNetworkBanner": true,
       "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
+      "showStorageErrorToast": false,
       "showTestnetMessageInDropdown": true,
       "slides": [],
       "surveyLinkLastClickedOrClosed": null,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null,
-      "pna25Acknowledged": false,
-      "recoveryPhraseReminderLastShown": 7952515200000
+      "updateModalLastDismissedAt": null
     },
+    "ApprovalController": {},
     "AuthenticationController": {
       "isSignedIn": false
     },
+    "BridgeController": {},
     "BridgeStatusController": {
       "txHistory": {}
     },
@@ -93,8 +95,7 @@
       "claimsConfigurations": {
         "supportedNetworks": ["0x1", "0xe708"],
         "validSubmissionWindowDays": 21
-      },
-      "drafts": []
+      }
     },
     "CurrencyController": {
       "currencyRates": {
@@ -106,9 +107,12 @@
       },
       "currentCurrency": "usd"
     },
+    "DeFiPositionsController": {},
+    "DecryptMessageController": {},
     "DelegationController": {
       "delegations": {}
     },
+    "EncryptionPublicKeyController": {},
     "EnsController": {
       "ensEntries": {
         "0x1": {
@@ -164,9 +168,10 @@
       "nonRPCGasFeeApisDisabled": false
     },
     "GatorPermissionsController": {
-      "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
-      "isGatorPermissionsEnabled": true
+      "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
+      "isGatorPermissionsEnabled": false
     },
+    "KeyringController": {},
     "LoggingController": {
       "logs": {}
     },
@@ -196,8 +201,7 @@
         }
       ],
       "traits": {
-        "install_date_ext": "2026-01-22",
-        "storage_kind": "split"
+        "install_date_ext": "2025-11-25"
       }
     },
     "MetaMetricsDataDeletionController": {
@@ -2002,27 +2006,28 @@
         "npm:@metamask/institutional-wallet-snap": "mainnet",
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
-        "npm:@metamask/tron-wallet-snap": "mainnet",
-        "npm:@metamask/permissions-kernel-snap": "mainnet"
+        "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
     "ShieldController": {
       "coverageResults": {},
       "orderedTransactionHistory": []
     },
+    "SignatureController": {},
+    "SmartTransactionsController": {},
     "SnapController": {
       "snapStates": {},
       "snaps": {},
       "unencryptedSnapStates": {}
     },
+    "SnapInsightsController": {},
     "SnapInterfaceController": {
       "interfaces": {}
     },
     "SnapsRegistry": {
       "database": null,
       "databaseUnavailable": false,
-      "lastUpdated": null,
-      "signature": null
+      "lastUpdated": null
     },
     "SubjectMetadataController": {
       "subjectMetadata": {
@@ -2100,6 +2105,7 @@
       "subscriptions": [],
       "trialedProducts": []
     },
+    "SwapsController": {},
     "TokenBalancesController": {
       "tokenBalances": {}
     },
@@ -2131,10 +2137,12 @@
       "isContactSyncingEnabled": true
     },
     "config": {},
-    "KeyringController": {}
+    "firstTimeInfo": {
+      "date": 1764061389865,
+      "version": "13.12.0"
+    }
   },
   "meta": {
-    "version": 189,
-    "storageKind": "split"
+    "version": 185
   }
 }
