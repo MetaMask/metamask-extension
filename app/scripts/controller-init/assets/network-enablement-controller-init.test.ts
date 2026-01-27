@@ -265,6 +265,7 @@ describe('NetworkEnablementControllerInit', () => {
             [BtcScope.Mainnet]: true,
           },
         },
+        nativeAssetIdentifiers: {},
       },
     });
   });
@@ -292,6 +293,7 @@ describe('NetworkEnablementControllerInit', () => {
             [BtcScope.Mainnet]: false,
           },
         },
+        nativeAssetIdentifiers: {},
       },
     });
   });
@@ -321,6 +323,7 @@ describe('NetworkEnablementControllerInit', () => {
             [BtcScope.Mainnet]: false,
           },
         },
+        nativeAssetIdentifiers: {},
       },
     });
   });
@@ -350,6 +353,7 @@ describe('NetworkEnablementControllerInit', () => {
             [BtcScope.Mainnet]: false,
           },
         },
+        nativeAssetIdentifiers: {},
       },
     });
   });
