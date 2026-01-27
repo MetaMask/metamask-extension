@@ -31,6 +31,7 @@ import { useSupportsEIP1559 } from './useSupportsEIP1559';
  * when max amount mode is enabled.
  *
  * - Only affects transactions of type `TransactionType.simpleSend`
+ * - Only updates transactions in `unapproved` status (prevents race conditions with submitted transactions)
  * - Supports both legacy gas pricing and EIP-1559 fee structures
  * - Handles Layer 1 gas fees for Layer 2 network transactions
  * - Does not update the value if the remaining balance would be negative or zero
