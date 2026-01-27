@@ -152,15 +152,23 @@ export const PermissionCellStatus = ({
     </>
   );
 
+  // Check if we have content to display (either accounts or networks).
+  // This is important for switch ethereum chain requests where we only have networks
+  // to display (no accounts), but still need to call renderAccountsGroup() to show
+  // the network cells. The renderAccountsGroup function internally decides whether
+  // to render networks (when networks.length > 0) or accounts.
+  const hasAccountsOrNetworks =
+    (accounts && accounts.length > 0) || (networks && networks.length > 0);
+
   const getStatusMessage = () => {
     if (revoked) {
-      return accounts && accounts.length
+      return hasAccountsOrNetworks
         ? t('permissionRevokedForAccounts', [renderAccountsGroup()])
         : t('permissionRevoked');
     }
 
     if (dateApproved) {
-      return accounts && accounts.length
+      return hasAccountsOrNetworks
         ? t('approvedOnForAccounts', [
             formatDate(dateApproved, 'yyyy-MM-dd'),
             renderAccountsGroup(),
@@ -172,7 +180,7 @@ export const PermissionCellStatus = ({
       return t('approved');
     }
 
-    return accounts && accounts.length
+    return hasAccountsOrNetworks
       ? t('permissionRequestedForAccounts', [renderAccountsGroup()])
       : t('permissionRequested');
   };
