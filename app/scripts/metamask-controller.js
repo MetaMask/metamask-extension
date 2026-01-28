@@ -8499,21 +8499,27 @@ export default class MetamaskController extends EventEmitter {
       POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
     const pollingTokensToDisconnect =
       this.appStateController.state[appStatePollingTokenType];
-    pollingTokensToDisconnect.forEach((pollingToken) => {
-      // We don't know which controller the token is associated with, so try them all.
-      // Consider storing the tokens per controller in state instead.
-      this.gasFeeController.stopPollingByPollingToken(pollingToken);
-      this.currencyRateController.stopPollingByPollingToken(pollingToken);
-      this.tokenRatesController.stopPollingByPollingToken(pollingToken);
-      this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
-      this.tokenListController.stopPollingByPollingToken(pollingToken);
-      this.tokenBalancesController.stopPollingByPollingToken(pollingToken);
-      this.accountTrackerController.stopPollingByPollingToken(pollingToken);
-      this.appStateController.removePollingToken(
-        pollingToken,
-        appStatePollingTokenType,
-      );
-    });
+
+    // Defensive check: ensure pollingTokensToDisconnect exists and is an array
+    // This can be undefined if the state property wasn't initialized properly
+    // (e.g., after service worker restart with persist: false properties)
+    if (pollingTokensToDisconnect && Array.isArray(pollingTokensToDisconnect)) {
+      pollingTokensToDisconnect.forEach((pollingToken) => {
+        // We don't know which controller the token is associated with, so try them all.
+        // Consider storing the tokens per controller in state instead.
+        this.gasFeeController.stopPollingByPollingToken(pollingToken);
+        this.currencyRateController.stopPollingByPollingToken(pollingToken);
+        this.tokenRatesController.stopPollingByPollingToken(pollingToken);
+        this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
+        this.tokenListController.stopPollingByPollingToken(pollingToken);
+        this.tokenBalancesController.stopPollingByPollingToken(pollingToken);
+        this.accountTrackerController.stopPollingByPollingToken(pollingToken);
+        this.appStateController.removePollingToken(
+          pollingToken,
+          appStatePollingTokenType,
+        );
+      });
+    }
     // stop polling for the subscriptions
     this.subscriptionController.stopAllPolling();
   }
