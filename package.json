@@ -260,6 +260,8 @@
     "addons-linter/glob": "^10.5.0",
     "@metamask/account-tree-controller@^4.0.0": "npm:@metamask-previews/account-tree-controller@4.0.0-preview-cd0d0950",
     "@metamask/multichain-account-service@^5.1.0": "npm:@metamask-previews/multichain-account-service@5.1.0-preview-cd0d0950",
+    "@metamask/multichain-account-service@^5.0.0": "npm:@metamask-previews/multichain-account-service@5.1.0-preview-cd0d0950",
+    "@metamask/multichain-account-service@^4.0.0": "npm:@metamask-previews/multichain-account-service@5.1.0-preview-cd0d0950",
     "tailwindcss@npm:^3.0.0": "patch:tailwindcss@npm%3A3.4.17#~/.yarn/patches/tailwindcss-npm-3.4.17-403059edc1.patch",
     "@metamask/bridge-controller@npm:^64.0.0": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",
     "@metamask/bridge-controller@npm:^63.2.0": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",
