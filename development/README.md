@@ -175,7 +175,7 @@ To enable Sentry error reporting for local development:
 3. List your organizations and copy the id for the organization you want to see `yarn sentry-cli organizations list`
 4. List your organization projects and copy the id for the you created `yarn sentry-cli projects list --org YOUR_ORG_ID`
 
-[<img src="https://github.com/MetaMask/metamask-extension/blob/f49d82308cb9a5c31ed0d0ec333a90b4bb774bc9/docs/assets/sentry-cli-release-process.gif">](sentry-cli.png)
+[<img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/blob/f49d82308cb9a5c31ed0d0ec333a90b4bb774bc9/docs/assets/sentry-cli-release-process.gif">](sentry-cli.png)
 
 #### Publish a Release to Sentry
 
