@@ -36,7 +36,7 @@ describe(`migration #${expectedVersion}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('does nothing if state.NetworkController has no networkConfigurationsByChainId property', async () => {
+  it('initializes networkConfigurationsByChainId to empty object if missing', async () => {
     const oldVersionedData = {
       meta: { version: previousVersion },
       data: {
@@ -45,7 +45,11 @@ describe(`migration #${expectedVersion}`, () => {
     };
     const expectedVersionedData = {
       meta: { version: expectedVersion },
-      data: oldVersionedData.data,
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {},
+        },
+      },
     };
 
     const newVersionedData = await migrate(oldVersionedData);
@@ -53,7 +57,7 @@ describe(`migration #${expectedVersion}`, () => {
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('does nothing if state.NetworkController.networkConfigurationsByChainId is not an object', async () => {
+  it('initializes networkConfigurationsByChainId to empty object if not an object', async () => {
     const oldVersionedData = {
       meta: { version: previousVersion },
       data: {
@@ -64,7 +68,11 @@ describe(`migration #${expectedVersion}`, () => {
     };
     const expectedVersionedData = {
       meta: { version: expectedVersion },
-      data: oldVersionedData.data,
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {},
+        },
+      },
     };
 
     const newVersionedData = await migrate(oldVersionedData);

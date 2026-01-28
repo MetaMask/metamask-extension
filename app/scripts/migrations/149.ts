@@ -26,6 +26,21 @@ export async function migrate(originalVersionedData: {
     global.sentry?.captureException?.(
       new Error(`Migration #${version}: ${getErrorMessage(error)}`),
     );
+
+    // Initialize networkConfigurationsByChainId to empty object if missing or invalid
+    // to prevent subsequent migrations from failing
+    if (
+      hasProperty(versionedData.data, 'NetworkController') &&
+      isObject(versionedData.data.NetworkController)
+    ) {
+      const networkController = versionedData.data.NetworkController;
+      if (
+        !hasProperty(networkController, 'networkConfigurationsByChainId') ||
+        !isObject(networkController.networkConfigurationsByChainId)
+      ) {
+        networkController.networkConfigurationsByChainId = {};
+      }
+    }
   }
   return versionedData;
 }
