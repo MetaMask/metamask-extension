@@ -59,7 +59,7 @@ describe(`migration #${VERSION}`, () => {
     );
   });
 
-  it('logs an error and returns a new version of the data unchanged if NetworkController is missing', async () => {
+  it('initializes NetworkController with default state if missing', async () => {
     process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -67,17 +67,19 @@ describe(`migration #${VERSION}`, () => {
     };
     const expectedVersionData = {
       meta: { version: VERSION },
-      data: oldVersionedData.data,
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {},
+          networksMetadata: {},
+        },
+      },
     };
 
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
-    expect(captureExceptionMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: 'Migration #157: Missing NetworkController state',
-      }),
-    );
+    expect(captureExceptionMock).not.toHaveBeenCalled();
   });
 
   it('logs an error and returns a new version of the data unchanged if NetworkController is not an object', async () => {
@@ -104,7 +106,7 @@ describe(`migration #${VERSION}`, () => {
     );
   });
 
-  it('logs an error and returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is missing', async () => {
+  it('initializes NetworkController.networkConfigurationsByChainId if missing', async () => {
     process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -114,18 +116,17 @@ describe(`migration #${VERSION}`, () => {
     };
     const expectedVersionData = {
       meta: { version: VERSION },
-      data: oldVersionedData.data,
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {},
+        },
+      },
     };
 
     const newVersionedData = await migrate(oldVersionedData);
 
     expect(newVersionedData).toStrictEqual(expectedVersionData);
-    expect(captureExceptionMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message:
-          'Migration #157: Missing state.NetworkController.networkConfigurationsByChainId',
-      }),
-    );
+    expect(captureExceptionMock).not.toHaveBeenCalled();
   });
 
   it('logs an error and returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is not an object', async () => {

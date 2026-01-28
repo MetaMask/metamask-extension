@@ -104,8 +104,16 @@ function transformState(state: Record<string, unknown>) {
     throw new Error('No INFURA_PROJECT_ID set!');
   }
 
+  // Initialize NetworkController with minimal default state if missing
   if (!hasProperty(state, 'NetworkController')) {
-    throw new Error('Missing NetworkController state');
+    console.warn(
+      'Migration 157: NetworkController state is missing, initializing with default state',
+    );
+    state.NetworkController = {
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {},
+      networksMetadata: {},
+    };
   }
 
   if (!isObject(state.NetworkController)) {
@@ -114,10 +122,12 @@ function transformState(state: Record<string, unknown>) {
     );
   }
 
+  // Initialize networkConfigurationsByChainId if missing
   if (!hasProperty(state.NetworkController, 'networkConfigurationsByChainId')) {
-    throw new Error(
-      'Missing state.NetworkController.networkConfigurationsByChainId',
+    console.warn(
+      'Migration 157: NetworkController.networkConfigurationsByChainId is missing, initializing with empty object',
     );
+    state.NetworkController.networkConfigurationsByChainId = {};
   }
 
   if (!isObject(state.NetworkController.networkConfigurationsByChainId)) {

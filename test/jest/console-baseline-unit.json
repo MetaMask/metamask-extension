@@ -2454,7 +2454,9 @@
       "error: Error: Missing NetworkController state": 1,
       "error: Error: Expected state.NetworkController to be": 1,
       "error: Error: Missing state.NetworkController.networkConfigurations...": 1,
-      "error: Error: Expected state.NetworkController.networkConfiguration...": 1
+      "error: Error: Expected state.NetworkController.networkConfiguration...": 1,
+      "warn: Migration 157: NetworkController state is": 1,
+      "warn: Migration 157: NetworkController.networkConfigurationsByChai...": 1
     },
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
       "Test errors: Fetch failures": 2
@@ -3550,6 +3552,6 @@
       "warn: No tokens found for chainId:": 1
     }
   },
-  "generated": "2025-12-15T13:34:23.962Z",
-  "nodeVersion": "v24.11.1"
+  "generated": "2026-01-28T03:24:01.785Z",
+  "nodeVersion": "v24.13.0"
 }
