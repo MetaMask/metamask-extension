@@ -16,7 +16,6 @@ import {
   type QuoteWarning,
   isCrossChain,
   RequestStatus,
-  type FeatureFlagsPlatformConfig,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
@@ -155,33 +154,12 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
     const validatedFlags = selectBridgeFeatureFlags({
       remoteFeatureFlags: { bridgeConfig },
     });
-    return validatedFlags as FeatureFlagsPlatformConfig & {
-      chainRanking: { chainId: CaipChainId; name: string }[];
-    };
+    return validatedFlags;
   },
 );
 
-const getChainRanking = (state: BridgeAppState) => {
-  return (
-    getBridgeFeatureFlags(state)?.chainRanking ??
-    ([
-      { chainId: 'eip155:1', name: 'Ethereum' },
-      { chainId: 'eip155:56', name: 'BNB' },
-      { chainId: 'bip122:000000000019d6689c085ae165831e93', name: 'BTC' },
-      { chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', name: 'Solana' },
-      { chainId: 'tron:728126428', name: 'Tron' },
-      { chainId: 'eip155:8453', name: 'Base' },
-      { chainId: 'eip155:42161', name: 'Arbitrum' },
-      { chainId: 'eip155:59144', name: 'Linea' },
-      { chainId: 'eip155:137', name: 'Polygon' },
-      { chainId: 'eip155:43114', name: 'Avalanche' },
-      { chainId: 'eip155:10', name: 'Optimism' },
-      { chainId: 'eip155:143', name: 'Monad' },
-      { chainId: 'eip155:1329', name: 'Sei' },
-      { chainId: 'eip155:324', name: 'zkSync' },
-    ] as const)
-  );
-};
+const getChainRanking = (state: BridgeAppState) =>
+  getBridgeFeatureFlags(state)?.chainRanking;
 
 export const getPriceImpactThresholds = createDeepEqualSelector(
   [
@@ -578,6 +556,19 @@ export const getFromTokenConversionRate = createSelector(
           ? tokenToNativeAssetRate * nativeToUsdRate
           : null,
     };
+  },
+);
+
+export const getFromTokenBalanceInUsd = createSelector(
+  [
+    (state) => Number(getFromTokenBalance(state)),
+    (state) => Number(getFromTokenConversionRate(state)?.usd),
+  ],
+  (fromTokenBalance, fromTokenConversionRate) => {
+    if (isNaN(fromTokenBalance) || isNaN(fromTokenConversionRate)) {
+      return undefined;
+    }
+    return fromTokenBalance * fromTokenConversionRate;
   },
 );
 

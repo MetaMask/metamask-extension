@@ -1,58 +1,34 @@
-import { Mockttp } from 'mockttp';
-import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
-import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
-import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
-import { withFixtures } from '../../e2e/helpers';
-import HomePage from '../../e2e/page-objects/pages/home/homepage';
-import { Driver } from '../../e2e/webdriver/driver';
 import {
   setupPerformanceReporting,
   performanceTracker,
   TimerHelper,
 } from '../utils/testSetup';
-import LoginPage from '../../e2e/page-objects/pages/login-page';
-import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
 import SendPage from '../../e2e/page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../e2e/page-objects/pages/confirmations/snap-transaction-confirmation';
-import { mockPowerUserPrices } from '../utils/performanceMocks';
+import NonEvmHomepage from '../../e2e/page-objects/pages/home/non-evm-homepage';
+import { withSolanaAccountSnap } from '../../e2e/tests/solana/common-solana';
 
-const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
+const RECIPIENT_ADDRESS = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 
 describe('Send Transactions Performance', function () {
   setupPerformanceReporting();
 
-  it('measures send flow performance for native token', async function () {
-    if (!process.env.INFURA_PROJECT_ID) {
-      throw new Error(
-        'Running this E2E test requires a valid process.env.INFURA_PROJECT_ID',
-      );
-    }
+  it('measures send flow performance for native SOL', async function () {
+    this.timeout(120000);
 
-    await withFixtures(
+    await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
-          .withEnabledNetworks(ALL_POPULAR_NETWORKS)
-          .build(),
-        manifestFlags: {
-          testing: {
-            disableSync: true,
-            infuraProjectId: process.env.INFURA_PROJECT_ID,
-          },
-        },
-        disableServerMochaToBackground: true,
-        extendedTimeoutMultiplier: 3,
-        testSpecificMock: async (server: Mockttp) => {
-          return mockPowerUserPrices(server);
-        },
+        showNativeTokenAsMainBalance: true,
+        mockGetTransactionSuccess: true,
       },
-      async ({ driver }: { driver: Driver }) => {
+      async (driver) => {
         const timerOpenSendPage = new TimerHelper(
           'Time to open send page from home',
           3000,
         );
         const timerAssetPicker = new TimerHelper(
-          'Time to select the token until the send form is loaded',
+          'Time to select SOL until the send form is loaded',
           2000,
         );
         const timerReviewTransaction = new TimerHelper(
@@ -60,21 +36,15 @@ describe('Send Transactions Performance', function () {
           5000,
         );
 
-        // Login flow
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenListIsDisplayed();
+        // Home page is already loaded by withSolanaAccountSnap
+        const homePage = new NonEvmHomepage(driver);
+        await homePage.checkPageIsLoaded({ amount: '50' });
 
         // Measure: Open send page
-        await homePage.startSendFlow();
         await timerOpenSendPage.measure(async () => {
+          await homePage.clickOnSendButton();
           const sendPage = new SendPage(driver);
-          await sendPage.checkNetworkFilterToggleIsDisplayed();
+          await sendPage.checkSolanaNetworkIsPresent();
         });
         performanceTracker.addTimer(timerOpenSendPage);
 
@@ -91,7 +61,7 @@ describe('Send Transactions Performance', function () {
 
         // Measure: Review transaction
         await sendPage.fillRecipient(RECIPIENT_ADDRESS);
-        await sendPage.fillAmount('0.00001');
+        await sendPage.fillAmount('0.1');
         await sendPage.pressContinueButton();
         await timerReviewTransaction.measure(async () => {
           const confirmation = new SnapTransactionConfirmation(driver);

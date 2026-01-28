@@ -16,7 +16,8 @@ import AccountListPage from '../../e2e/page-objects/pages/account-list-page';
 import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
 import { mockPowerUserPrices } from '../utils/performanceMocks';
 
-const SECOND_SRP = process.env.TEST_SRP_2 || '';
+// SRP for import testing - must be set via environment variable
+const SECOND_SRP = process.env.TEST_SRP_2;
 
 describe('Import SRP Home', function () {
   setupPerformanceReporting();
@@ -25,6 +26,12 @@ describe('Import SRP Home', function () {
     if (!process.env.INFURA_PROJECT_ID) {
       throw new Error(
         'Running this E2E test requires a valid process.env.INFURA_PROJECT_ID',
+      );
+    }
+
+    if (!SECOND_SRP) {
+      throw new Error(
+        'Running this E2E test requires a valid process.env.TEST_SRP_2',
       );
     }
 
