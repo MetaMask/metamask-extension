@@ -2,6 +2,7 @@ import React, { useMemo, useCallback, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
+  twMerge,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
@@ -16,10 +17,15 @@ import {
   IconColor,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
+import { Button, ButtonVariant, ButtonSize } from '../../components/component-library';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { mockPositions, mockOrders } from '../../components/app/perps/mocks';
+import {
+  mockPositions,
+  mockOrders,
+  mockAccountState,
+} from '../../components/app/perps/mocks';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -38,6 +44,18 @@ import {
   getChangeColor,
 } from '../../components/app/perps/utils';
 import { useFormatters } from '../../hooks/useFormatters';
+import {
+  OrderEntry,
+  type OrderDirection,
+  type OrderFormState,
+} from '../../components/app/perps/order-entry';
+
+/**
+ * View state for the market detail page
+ * - 'detail': Shows market info, position, stats
+ * - 'order': Shows the order entry form
+ */
+type MarketDetailView = 'detail' | 'order';
 
 /**
  * PerpsMarketDetailPage component
@@ -94,6 +112,29 @@ const PerpsMarketDetailPage: React.FC = () => {
   );
   const chartRef = useRef<PerpsCandlestickChartRef>(null);
 
+  // View state: 'detail' or 'order'
+  const [currentView, setCurrentView] = useState<MarketDetailView>('detail');
+  const [orderDirection, setOrderDirection] = useState<OrderDirection>('long');
+
+  // Get available balance from mock account state
+  const availableBalance = parseFloat(mockAccountState.availableBalance);
+
+  // Parse current price from market data (remove $ and commas)
+  const currentPrice = useMemo(() => {
+    if (!market) {
+      return 0;
+    }
+    return parseFloat(market.price.replace(/[$,]/g, ''));
+  }, [market]);
+
+  // Parse max leverage from market data (remove 'x')
+  const maxLeverage = useMemo(() => {
+    if (!market) {
+      return 50;
+    }
+    return parseInt(market.maxLeverage.replace('x', ''), 10);
+  }, [market]);
+
   // Handle candle period change
   //
   // TODO: When integrating live data, this handler must trigger a NEW API call
@@ -145,8 +186,27 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Navigation handlers - use history back to return to wherever user came from
   // (perps home page or perps tab)
   const handleBackClick = useCallback(() => {
+    // If in order view, go back to detail view
+    if (currentView === 'order') {
+      setCurrentView('detail');
+      return;
+    }
     navigate(-1);
-  }, [navigate]);
+  }, [navigate, currentView]);
+
+  // Handle opening order entry with a specific direction
+  const handleOpenOrder = useCallback((direction: OrderDirection) => {
+    setOrderDirection(direction);
+    setCurrentView('order');
+  }, []);
+
+  // Handle order submission
+  const handleOrderSubmit = useCallback((formState: OrderFormState) => {
+    // TODO: Integrate with PerpsController to submit order
+    // For now, just log the order and return to detail view
+    console.log('Order submitted:', formState);
+    setCurrentView('detail');
+  }, []);
 
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere
@@ -205,6 +265,66 @@ const PerpsMarketDetailPage: React.FC = () => {
   }
 
   const displayName = getDisplayName(market.symbol);
+
+  // Render Order Entry View
+  if (currentView === 'order') {
+    return (
+      <Box
+        className="main-container asset__container"
+        data-testid="perps-market-detail-page-order"
+      >
+        {/* Header */}
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={4}
+          paddingBottom={4}
+          gap={2}
+        >
+          {/* Back Button */}
+          <Box
+            data-testid="perps-order-entry-back-button"
+            onClick={handleBackClick}
+            aria-label={t('back')}
+            className="p-2 -ml-2 cursor-pointer"
+          >
+            <Icon
+              name={IconName.ArrowLeft}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+
+          {/* Token Logo */}
+          <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
+
+          {/* Symbol and Title */}
+          <Box flexDirection={BoxFlexDirection.Column}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+              {orderDirection === 'long' ? t('perpsOpenLong', [displayName]) : t('perpsOpenShort', [displayName])}
+            </Text>
+            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+              {market.price}
+            </Text>
+          </Box>
+        </Box>
+
+        {/* Order Entry Form */}
+        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          <OrderEntry
+            asset={decodedSymbol}
+            currentPrice={currentPrice}
+            maxLeverage={maxLeverage}
+            availableBalance={availableBalance}
+            initialDirection={orderDirection}
+            onSubmit={handleOrderSubmit}
+          />
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -790,10 +910,53 @@ const PerpsMarketDetailPage: React.FC = () => {
         </Box>
 
         {/* Disclaimer */}
-        <Box paddingTop={4}>
+        <Box paddingTop={4} paddingBottom={4}>
           <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
             {t('perpsDisclaimer')}
           </Text>
+        </Box>
+      </Box>
+
+      {/* Trade CTA Buttons - Sticky Footer */}
+      <Box
+        className="sticky bottom-0 left-0 right-0 bg-default border-t border-muted"
+        paddingLeft={4}
+        paddingRight={4}
+        paddingTop={3}
+        paddingBottom={4}
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          gap={3}
+          data-testid="perps-trade-cta-buttons"
+        >
+          {/* Long Button */}
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            onClick={() => handleOpenOrder('long')}
+            className={twMerge(
+              'flex-1',
+              'bg-success-default hover:bg-success-hover active:bg-success-pressed',
+            )}
+            data-testid="perps-long-cta-button"
+          >
+            {t('perpsLong')}
+          </Button>
+
+          {/* Short Button */}
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            onClick={() => handleOpenOrder('short')}
+            className={twMerge(
+              'flex-1',
+              'bg-error-default hover:bg-error-hover active:bg-error-pressed',
+            )}
+            data-testid="perps-short-cta-button"
+          >
+            {t('perpsShort')}
+          </Button>
         </Box>
       </Box>
     </Box>
