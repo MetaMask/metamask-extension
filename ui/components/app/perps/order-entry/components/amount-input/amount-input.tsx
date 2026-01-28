@@ -137,15 +137,9 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           {/* USD Amount Input - Large and prominent */}
           <Box
             flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
+            alignItems={BoxAlignItems.Baseline}
           >
-            <Text
-              variant={TextVariant.HeadingLg}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextAlternative}
-            >
-              $
-            </Text>
+            <span className="text-2xl font-medium text-default">$</span>
             <input
               type="text"
               inputMode="decimal"
@@ -154,7 +148,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
               placeholder="0.00"
               className={twMerge(
                 'flex-1 bg-transparent border-none outline-none',
-                'text-3xl font-medium text-default',
+                'text-2xl font-medium text-default',
                 'placeholder:text-muted',
               )}
               data-testid="amount-input-field"
