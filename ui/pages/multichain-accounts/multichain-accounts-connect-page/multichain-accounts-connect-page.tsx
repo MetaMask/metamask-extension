@@ -134,6 +134,7 @@ export const MultichainAccountsConnectPage: React.FC<
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
+  const [activeTab, setActiveTab] = useState('accounts');
   const { isEip1193Request } = request.metadata ?? {};
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
@@ -556,28 +557,12 @@ export const MultichainAccountsConnectPage: React.FC<
           marginBottom={8}
         >
           {targetSubjectMetadata.iconUrl ? (
-            <>
-              <Box
-                style={{
-                  filter: 'blur(16px) brightness(1.1)',
-                  position: 'absolute',
-                }}
-              >
-                <AvatarFavicon
-                  backgroundColor={BackgroundColor.backgroundMuted}
-                  size={AvatarFaviconSize.Xl}
-                  src={targetSubjectMetadata.iconUrl}
-                  name={title}
-                />
-              </Box>
-              <AvatarFavicon
-                backgroundColor={BackgroundColor.backgroundMuted}
-                size={AvatarFaviconSize.Lg}
-                src={targetSubjectMetadata.iconUrl}
-                name={title}
-                style={{ zIndex: 1, background: 'transparent' }}
-              />
-            </>
+            <AvatarFavicon
+              backgroundColor={BackgroundColor.backgroundMuted}
+              size={AvatarFaviconSize.Lg}
+              src={targetSubjectMetadata.iconUrl}
+              name={title}
+            />
           ) : (
             <AvatarBase
               size={AvatarBaseSize.Lg}
@@ -633,7 +618,7 @@ export const MultichainAccountsConnectPage: React.FC<
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs onTabClick={() => null} defaultActiveTabKey="accounts">
+        <Tabs activeTab={activeTab} onTabClick={setActiveTab}>
           <Tab
             className="multichain-connect-page__tab flex-1"
             name={t('accounts')}

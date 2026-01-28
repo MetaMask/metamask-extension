@@ -1,9 +1,6 @@
 import { SolScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import {
-  sendMultichainTransaction,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
+import { sendMultichainTransaction } from '../../../../store/actions';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/solana-wallet-snap';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';
 import { mockMultichainNetworkState } from '../../../../../test/stub/networks';
@@ -11,7 +8,6 @@ import { useHandleSendNonEvm } from './useHandleSendNonEvm';
 
 jest.mock('../../../../store/actions', () => ({
   sendMultichainTransaction: jest.fn(),
-  setDefaultHomeActiveTabName: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -148,7 +144,7 @@ describe('useHandleSendNonEvm', () => {
 
     await handleSendNonEvm();
 
-    expect(setDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
+    expect(sendMultichainTransaction).toHaveBeenCalled();
   });
 
   describe('when a caipAssetType is provided', () => {

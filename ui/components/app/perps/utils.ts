@@ -1,6 +1,7 @@
 import { TextColor } from '@metamask/design-system-react';
-import type { Order } from './types';
+import type { Order, PerpsMarketData } from './types';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import { mockCryptoMarkets, mockHip3Markets } from './mocks';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -92,6 +93,26 @@ export const getStatusColor = (status: Order['status']): TextColor => {
 };
 
 /**
+ * Get the appropriate text color for a percentage change value
+ * Non-negative values (≥ 0) → green, negative → red
+ *
+ * @param percentString - The percentage string (e.g., "+2.84%", "-1.23%", "0.00%", "2.84%")
+ * @returns The appropriate text color
+ * @example
+ * getChangeColor('+2.84%') => TextColor.SuccessDefault
+ * getChangeColor('2.84%') => TextColor.SuccessDefault
+ * getChangeColor('0.00%') => TextColor.SuccessDefault
+ * getChangeColor('-1.23%') => TextColor.ErrorDefault
+ */
+export const getChangeColor = (percentString: string): TextColor => {
+  const value = parseFloat(percentString.replace('%', ''));
+  if (value < 0) {
+    return TextColor.ErrorDefault;
+  }
+  return TextColor.SuccessDefault;
+};
+
+/**
  * Extract the display symbol from a full symbol string
  * Strips DEX prefix for HIP-3 markets (e.g., "xyz:TSLA" -> "TSLA")
  * Includes null/type safety checks
@@ -136,4 +157,71 @@ export const getAssetIconUrl = (symbol: string): string => {
 
   // Regular asset - uppercase the symbol
   return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${symbol.toUpperCase()}.svg`;
+};
+
+/**
+ * Finds market data by symbol from mock data
+ * Searches both crypto and HIP-3 markets
+ *
+ * @param symbol - The market symbol to search for
+ * @returns The market data if found, undefined otherwise
+ * @example
+ * findMarketBySymbol('BTC') => { symbol: 'BTC', name: 'Bitcoin', ... }
+ * findMarketBySymbol('xyz:TSLA') => { symbol: 'xyz:TSLA', name: 'Tesla', ... }
+ */
+export const findMarketBySymbol = (
+  symbol: string,
+): PerpsMarketData | undefined => {
+  const allMarkets = [...mockCryptoMarkets, ...mockHip3Markets];
+  return allMarkets.find(
+    (market) => market.symbol.toLowerCase() === symbol.toLowerCase(),
+  );
+};
+
+/**
+ * Safely decode a URI component, returning undefined if decoding fails
+ * Handles malformed percent-encoding sequences that would throw URIError
+ *
+ * @param value - The URI-encoded string to decode
+ * @returns The decoded string, or undefined if decoding fails
+ * @example
+ * safeDecodeURIComponent('hello%20world') => 'hello world'
+ * safeDecodeURIComponent('%E0%A4%A') => undefined (malformed)
+ */
+export const safeDecodeURIComponent = (value: string): string | undefined => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return undefined;
+  }
+};
+
+/**
+ * Filter markets by search query
+ * Searches through both symbol and name fields (case-insensitive)
+ *
+ * @param markets - Array of markets to filter
+ * @param searchQuery - Search query string
+ * @returns Filtered array of markets matching the query
+ * @example
+ * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], 'btc') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
+ * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], 'coin') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
+ * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], '') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
+ */
+export const filterMarketsByQuery = (
+  markets: PerpsMarketData[],
+  searchQuery: string,
+): PerpsMarketData[] => {
+  // Return all markets if query is empty
+  if (!searchQuery?.trim()) {
+    return markets;
+  }
+
+  const lowerQuery = searchQuery.toLowerCase().trim();
+
+  return markets.filter(
+    (market) =>
+      market.symbol?.toLowerCase().includes(lowerQuery) ||
+      market.name?.toLowerCase().includes(lowerQuery),
+  );
 };

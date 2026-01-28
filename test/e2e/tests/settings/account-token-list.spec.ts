@@ -7,7 +7,7 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import {
   loginWithBalanceValidation,
@@ -150,7 +150,7 @@ describe('Settings', function () {
         // it will show the total that the test is expecting.
 
         // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
-        await switchToNetworkFromSendFlow(driver, 'Sepolia');
+        await switchToNetworkFromNetworkSelect(driver, 'Custom', 'Sepolia');
 
         await homePage.headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);

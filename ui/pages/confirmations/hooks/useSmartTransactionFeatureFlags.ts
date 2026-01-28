@@ -3,7 +3,10 @@ import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
-import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
+import {
+  getSmartTransactionsFeatureFlagsForChain,
+  getSmartTransactionsPreferenceEnabled,
+} from '../../../../shared/modules/selectors';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
 import {
   fetchSmartTransactionsLiveness,
@@ -31,6 +34,12 @@ export function useSmartTransactionFeatureFlags() {
     transactionChainId &&
     getAllowedSmartTransactionsChainIds().includes(transactionChainId);
 
+  const featureFlags = useSelector((state) =>
+    transactionChainId
+      ? getSmartTransactionsFeatureFlagsForChain(state, transactionChainId)
+      : undefined,
+  );
+
   useEffect(() => {
     if (
       !isTransaction ||
@@ -42,6 +51,7 @@ export function useSmartTransactionFeatureFlags() {
     }
 
     Promise.all([
+      // TODO: remove this when swaps feature flags are removed.
       fetchSwapsFeatureFlags(),
       fetchSmartTransactionsLiveness({ chainId: transactionChainId })(),
     ])
@@ -49,7 +59,7 @@ export function useSmartTransactionFeatureFlags() {
         dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
         dispatch(
           setSmartTransactionsRefreshInterval(
-            swapsFeatureFlags.smartTransactions?.batchStatusPollingInterval,
+            featureFlags?.batchStatusPollingInterval ?? 1000,
           ),
         );
       })
@@ -62,5 +72,7 @@ export function useSmartTransactionFeatureFlags() {
     smartTransactionsPreferenceEnabled,
     chainSupportsSTX,
     transactionChainId,
+    featureFlags,
+    dispatch,
   ]);
 }

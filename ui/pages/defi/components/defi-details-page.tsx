@@ -96,7 +96,7 @@ const DeFiPage = () => {
       >
         <ButtonIcon
           data-testid="defi-details-page-back-button"
-          color={IconColor.iconAlternative}
+          color={IconColor.iconDefault}
           marginRight={1}
           size={ButtonIconSize.Sm}
           ariaLabel={t('back')}

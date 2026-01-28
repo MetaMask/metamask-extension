@@ -15,11 +15,7 @@ const { PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const {
-  DAPP_PATHS,
-  ERC_4337_ACCOUNT,
-  WALLET_PASSWORD,
-} = require('./constants');
+const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');
@@ -553,40 +549,6 @@ async function withFixtures(options, testSuite) {
   }
 }
 
-const clickNestedButton = async (driver, tabName) => {
-  try {
-    await driver.clickElement({ text: tabName, tag: 'button' });
-  } catch (error) {
-    await driver.clickElement({
-      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
-    });
-  }
-};
-
-/**
- * Unlocks the wallet using the provided password.
- * This method is intended to replace driver.navigate and should not be called after driver.navigate.
- *
- * @deprecated Use {@link loginWithBalanceValidation} or {@link loginWithoutBalanceValidation} instead.
- * @param {WebDriver} driver - The webdriver instance
- * @param {object} [options] - Options for unlocking the wallet
- * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
- * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
- */
-async function unlockWallet(
-  driver,
-  { navigate = true, password = WALLET_PASSWORD } = {},
-) {
-  if (navigate) {
-    await driver.navigate();
-  }
-
-  await driver.waitForSelector('#password', { state: 'enabled' });
-  await driver.fill('#password', password);
-  await driver.press('#password', driver.Key.ENTER);
-  await driver.assertElementNotPresent('[data-testid="unlock-page"]');
-}
-
 /**
  * Simulates a WebSocket connection by executing a script in the browser context.
  *
@@ -771,9 +733,8 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  */
 async function isSidePanelEnabled() {
   try {
-    const hasSidepanel =
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.IS_SIDEPANEL === 'true';
+    // Check if browser is Chrome (sidepanel is only supported in Chrome)
+    const hasSidepanel = process.env.SELENIUM_BROWSER === 'chrome';
 
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
@@ -786,23 +747,69 @@ async function isSidePanelEnabled() {
   }
 }
 
+/**
+ * Check if a key should be ignored based on various rules
+ *
+ * @param {string} key - The key to check
+ * @param {string[]} ignoredKeys - Array of keys/prefixes to ignore
+ * @returns {boolean} True if the key should be ignored
+ */
+const shouldIgnoreKey = (key, ignoredKeys) => {
+  const hasNonZeroArrayIndex = key.split('.').some((part) => {
+    const matches = part.match(/\[(\d+)\]/gu);
+    return (
+      matches?.some((match) => {
+        const index = Number(match.slice(1, -1));
+        return Number.isNaN(index) === false && index !== 0;
+      }) ?? false
+    );
+  });
+  if (hasNonZeroArrayIndex) {
+    return true;
+  }
+
+  // Ignore entropy keys in account tree (dynamic entropy IDs)
+  if (key.match(/entropy:[A-Z0-9]+/u)) {
+    return true;
+  }
+
+  // Check if any part of the key path should be ignored
+  const keyParts = key.split('.');
+  const shouldIgnore = ignoredKeys.some((ignoredKey) => {
+    const ignoredParts = ignoredKey.split('.');
+
+    // Ignore if the ignored key is an exact prefix of the current key
+    // OR if the current key exactly matches the ignored key
+    // OR if the current key starts with the ignored key (for nested properties)
+    const isExactPrefix = ignoredParts.every(
+      (part, index) => keyParts[index] === part,
+    );
+    const isExactMatch = key === ignoredKey;
+    const startsWithIgnoredKey =
+      key.startsWith(`${ignoredKey}.`) || key.startsWith(`${ignoredKey}[`);
+
+    return isExactPrefix || isExactMatch || startsWithIgnoredKey;
+  });
+
+  return shouldIgnore;
+};
+
 module.exports = {
+  assertInAnyOrder,
+  convertETHToHexGwei,
   convertToHexValue,
-  tinyDelayMs,
-  regularDelayMs,
+  createDownloadFolder,
+  createWebSocketConnection,
+  generateRandNumBetween,
+  getCleanAppState,
+  getEventPayloads,
+  isSidePanelEnabled,
   largeDelayMs,
+  regularDelayMs,
+  roundToXDecimalPlaces,
+  sentryRegEx,
+  shouldIgnoreKey,
+  tinyDelayMs,
   veryLargeDelayMs,
   withFixtures,
-  createDownloadFolder,
-  unlockWallet,
-  convertETHToHexGwei,
-  roundToXDecimalPlaces,
-  generateRandNumBetween,
-  getEventPayloads,
-  assertInAnyOrder,
-  getCleanAppState,
-  clickNestedButton,
-  sentryRegEx,
-  createWebSocketConnection,
-  isSidePanelEnabled,
 };

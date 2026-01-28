@@ -309,6 +309,7 @@ const AssetPage = ({
           balance,
           secondary: balance ? Number(balance) : 0,
           accountType: bip44Asset?.accountType,
+          assetId: bip44Asset?.assetId ?? assetId,
         }
       : {
           ...mutichainTokenWithFiatAmount,
@@ -339,7 +340,7 @@ const AssetPage = ({
       >
         <Box display={Display.Flex}>
           <ButtonIcon
-            color={IconColor.iconAlternative}
+            color={IconColor.iconDefault}
             marginRight={1}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
@@ -382,11 +383,7 @@ const AssetPage = ({
             }}
           />
         ) : (
-          <TokenButtons
-            token={updatedAsset}
-            account={selectedAccount}
-            disableSendForNonEvm
-          />
+          <TokenButtons token={updatedAsset} disableSendForNonEvm />
         )}
       </Box>
       <Box

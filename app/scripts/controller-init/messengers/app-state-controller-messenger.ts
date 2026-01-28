@@ -33,6 +33,7 @@ export function getAppStateControllerMessenger(messenger: RootMessenger) {
       'ApprovalController:acceptRequest',
       'KeyringController:getState',
       'PreferencesController:getState',
+      'ProfileMetricsController:skipInitialDelay',
     ],
     events: ['KeyringController:unlock', 'PreferencesController:stateChange'],
   });

@@ -7,6 +7,11 @@ const benchmarkPlatforms = ['chrome', 'firefox'];
 const buildTypes = ['browserify', 'webpack'];
 const pageTypes = ['standardHome', 'powerUserHome'];
 
+/**
+ * The threshold for whether to highlight a change in bundle size, in bytes.
+ */
+const BUNDLE_SIZE_THRESOLD = 1_000;
+
 type BenchmarkResults = Record<
   (typeof benchmarkPlatforms)[number],
   Record<
@@ -397,17 +402,25 @@ async function start(): Promise<void> {
       .map((row) => `<li>${row}</li>`)
       .join('\n')}</ul>`;
 
-    const sizeDiff = diffs.background + diffs.common;
+    const sizeDiffBackground = diffs.background + diffs.common;
+    const sizeDiffUi = diffs.ui + diffs.common;
 
-    const sizeDiffWarning =
-      sizeDiff > 0
-        ? `🚨 Warning! Bundle size has increased!`
-        : `🚀 Bundle size reduced!`;
+    let sizeDiffWarning;
+    if (
+      sizeDiffBackground > BUNDLE_SIZE_THRESOLD ||
+      sizeDiffUi > BUNDLE_SIZE_THRESOLD
+    ) {
+      sizeDiffWarning = `🚨 Warning! Bundle size has increased!`;
+    } else if (
+      sizeDiffBackground < -BUNDLE_SIZE_THRESOLD ||
+      sizeDiffUi < -BUNDLE_SIZE_THRESOLD
+    ) {
+      sizeDiffWarning = `🚀 Bundle size reduced!`;
+    }
 
-    const sizeDiffExposedContent =
-      sizeDiff === 0
-        ? `Bundle size diffs`
-        : `Bundle size diffs [${sizeDiffWarning}]`;
+    const sizeDiffExposedContent = sizeDiffWarning
+      ? `Bundle size diffs [${sizeDiffWarning}]`
+      : `Bundle size diffs`;
 
     const sizeDiffBody = `<details><summary>${sizeDiffExposedContent}</summary>${sizeDiffHiddenContent}</details>\n\n`;
 

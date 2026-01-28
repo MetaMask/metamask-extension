@@ -135,9 +135,21 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
+      accountTree: {},
       remoteFeatureFlags: {
         bridgeConfig: {
           support: false,
+        },
+        smartTransactionsNetworks: {
+          default: {
+            extensionActive: false,
+          },
+          [CHAIN_IDS.MAINNET]: {
+            extensionActive: true,
+          },
+          [CHAIN_IDS.BSC]: {
+            extensionActive: true,
+          },
         },
       },
       preferences: {

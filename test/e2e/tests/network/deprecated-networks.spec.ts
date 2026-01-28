@@ -1,8 +1,9 @@
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Deprecated networks', function (this: Suite) {
   it('User should not find goerli network when clicking on the network selector', async function () {
@@ -14,7 +15,7 @@ describe('Deprecated networks', function (this: Suite) {
       },
       async ({ driver }) => {
         // Navigate to extension home screen
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         // Open the first dapp which starts on chain '0x539
         await driver.openNewPage(DAPP_URL);
         await driver.clickElement({

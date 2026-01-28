@@ -225,9 +225,6 @@
     "message": "இறக்குமதி செய்ய ஒரு கோப்பை நீங்கள் தேர்ந்தெடுக்க வேண்டும்.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "ETH எதிர்மறை அளவுகளை அனுப்ப முடியாது."
-  },
   "networks": {
     "message": "நெட்வொர்க்ஸ்"
   },

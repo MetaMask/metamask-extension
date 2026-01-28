@@ -46,8 +46,6 @@ import {
   hasCreatedSolanaAccount,
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   NETWORK_TO_NAME_MAP,
@@ -190,11 +188,6 @@ export function AssetPickerModal({
     debouncedSetSearchQuery(searchQuery);
   }, [searchQuery, debouncedSetSearchQuery]);
 
-  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
-  const memoizedSwapsBlockedTokens = useMemo(() => {
-    return new Set<string>(swapsBlockedTokens);
-  }, [swapsBlockedTokens]);
-
   const handleAssetChange = useCallback(
     (newAsset) => {
       onAssetChange(newAsset);
@@ -280,26 +273,6 @@ export function AssetPickerModal({
     return undefined;
   }, [selectedNetwork?.chainId, allowExternalServices]);
 
-  const getIsDisabled = useCallback(
-    ({
-      address,
-      symbol,
-    }:
-      | TokenListToken
-      | AssetWithDisplayData<ERC20Asset>
-      | AssetWithDisplayData<NativeAsset>) => {
-      const isDisabled = sendingAsset?.symbol
-        ? !isEqualCaseInsensitive(sendingAsset.symbol, symbol) &&
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          memoizedSwapsBlockedTokens.has(address || '')
-        : false;
-
-      return isDisabled;
-    },
-    [sendingAsset?.symbol, memoizedSwapsBlockedTokens],
-  );
-
   /**
    * Generates a list of tokens sorted in this order
    * - native tokens with balance
@@ -310,7 +283,6 @@ export function AssetPickerModal({
    * - detected tokens (without balance)
    * - popularity
    * - all other tokens
-   * - blocked tokens
    */
   const tokenListGenerator = useCallback(
     function* (
@@ -327,8 +299,6 @@ export function AssetPickerModal({
           string?: string;
         })
     > {
-      const blockedTokens = [];
-
       // Yield multichain tokens with balances
       for (const token of multichainTokensWithBalance) {
         // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
@@ -407,12 +377,7 @@ export function AssetPickerModal({
           token &&
           shouldAddToken(token.symbol, token.address, currentChainId)
         ) {
-          if (getIsDisabled(token)) {
-            blockedTokens.push(token);
-            continue;
-          } else {
-            yield { ...token, chainId: currentChainId };
-          }
+          yield { ...token, chainId: currentChainId };
         }
       }
 
@@ -420,10 +385,6 @@ export function AssetPickerModal({
         if (shouldAddToken(token.symbol, token.address, currentChainId)) {
           yield { ...token, chainId: currentChainId };
         }
-      }
-
-      for (const token of blockedTokens) {
-        yield { ...token, chainId: currentChainId };
       }
     },
     [
@@ -437,7 +398,6 @@ export function AssetPickerModal({
       allDetectedTokens,
       topTokens,
       evmTokenMetadataByAddress,
-      getIsDisabled,
     ],
   );
 
@@ -713,7 +673,6 @@ export function AssetPickerModal({
                   handleAssetChange={handleAssetChange}
                   asset={asset?.type === AssetType.NFT ? undefined : asset}
                   tokenList={displayedTokens}
-                  isTokenDisabled={getIsDisabled}
                   isTokenListLoading={isTokenListLoading}
                   assetItemProps={{
                     isTitleNetworkName: false,

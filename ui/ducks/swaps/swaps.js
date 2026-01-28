@@ -58,7 +58,6 @@ import {
   getCurrentChainId,
   getSelectedNetworkClientId,
 } from '../../../shared/modules/selectors/networks';
-import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
@@ -73,6 +72,7 @@ import {
 } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
+  getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../shared/modules/selectors';
@@ -952,11 +952,15 @@ export const signAndSendSwapsSmartTransaction = ({
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
     const selectedNetwork = getSelectedNetwork(state);
-    const swapsFeatureFlags = getFeatureFlagsByChainId(state);
+    const chainId = getCurrentChainId(state);
+    const featureFlags = getSmartTransactionsFeatureFlagsForChain(
+      state,
+      chainId,
+    );
 
     dispatch(
       setSmartTransactionsRefreshInterval(
-        swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
+        featureFlags?.batchStatusPollingInterval,
       ),
     );
 

@@ -98,7 +98,7 @@ export enum ResultType {
   Benign = 'Benign',
   Trusted = 'Trusted',
   ErrorResult = 'Error',
-  Loading = 'loading',
+  Loading = 'Loading',
 }
 
 export type ScanAddressRequest = {

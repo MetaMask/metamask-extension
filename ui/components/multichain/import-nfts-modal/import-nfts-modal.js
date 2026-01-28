@@ -186,7 +186,6 @@ export const ImportNftsModal = ({ onClose }) => {
       },
     });
 
-    navigate(DEFAULT_ROUTE);
     onClose();
   };
 

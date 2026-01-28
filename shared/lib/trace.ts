@@ -22,7 +22,6 @@ export enum TraceName {
   DeveloperTest = 'Developer Test',
   DisconnectAllModal = 'Disconnect All Modal',
   FirstRender = 'First Render',
-  GetState = 'Get State',
   ImportNfts = 'Import Nfts',
   ImportTokens = 'Import Tokens',
   InitialActions = 'Initial Actions',

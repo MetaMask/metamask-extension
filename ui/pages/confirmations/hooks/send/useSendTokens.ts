@@ -10,18 +10,26 @@ import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
 
-export const useSendTokens = (): Asset[] => {
+type UseSendTokensOptions = {
+  includeNoBalance?: boolean;
+};
+
+export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
+  const { includeNoBalance = false } = options;
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
   const assets = useSelector(getAssetsBySelectedAccountGroup);
 
   const flatAssets = useMemo(() => Object.values(assets).flat(), [assets]);
 
   const assetsWithBalance = useMemo(() => {
+    if (includeNoBalance) {
+      return flatAssets;
+    }
     return flatAssets.filter((asset) => {
       const haveBalance = asset.rawBalance !== '0x0';
       return asset.isNative || haveBalance;
     });
-  }, [flatAssets]);
+  }, [flatAssets, includeNoBalance]);
 
   const processedAssets = useMemo(() => {
     return assetsWithBalance.map((asset) => {
