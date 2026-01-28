@@ -18,8 +18,7 @@ const tryConnectWithRetry = async (
 ) => {
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
-      const header = await testDapp.getHeader();
-      await header.connect();
+      await testDapp.connect();
 
       const modal = await testDapp.getWalletModal();
       await modal.connectToMetaMaskWallet();

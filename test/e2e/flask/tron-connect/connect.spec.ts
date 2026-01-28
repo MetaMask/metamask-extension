@@ -18,9 +18,8 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
 
         await connectTronTestDapp(driver, testDappTron);
 
-        const header = await testDappTron.getHeader();
-        await header.findHeaderConnectedState();
-        await header.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
+        await testDappTron.findHeaderConnectedState();
+        await testDappTron.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
       },
     );
   });
@@ -39,21 +38,20 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
         // 1. Connect
         await connectTronTestDapp(driver, testDappTron);
 
-        const header = await testDappTron.getHeader();
-        await header.findHeaderConnectedState();
-        await header.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
+        await testDappTron.findHeaderConnectedState();
+        await testDappTron.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
 
         // 2. Disconnect
-        await header.disconnect();
-        await header.findHeaderNotConnectedState();
+        await testDappTron.disconnect();
+        await testDappTron.findHeaderNotConnectedState();
 
         // // 3. Connect again
         await connectTronTestDapp(driver, testDappTron);
 
         await testDappTron.switchTo();
 
-        await header.findHeaderConnectedState();
-        await header.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
+        await testDappTron.findHeaderConnectedState();
+        await testDappTron.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
       },
     );
   });
@@ -71,16 +69,15 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
 
         await connectTronTestDapp(driver, testDappTron);
 
-        const header = await testDappTron.getHeader();
-        await header.findHeaderConnectedState();
-        await header.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
+        await testDappTron.findHeaderConnectedState();
+        await testDappTron.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
 
         await driver.refresh();
 
         await testDappTron.checkPageIsLoaded();
 
-        await header.findHeaderConnectedState();
-        await header.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
+        await testDappTron.findHeaderConnectedState();
+        await testDappTron.findConnectedAccount(DEFAULT_TRON_ADDRESS_SHORT);
       },
     );
   });

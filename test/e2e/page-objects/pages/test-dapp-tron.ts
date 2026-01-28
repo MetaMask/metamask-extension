@@ -71,7 +71,6 @@ export class TestDappTron {
   } = {}): Promise<void> {
     await this.driver.openNewPage(url);
     await this.checkPageIsLoaded();
-    await this.switchTo();
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -110,39 +109,32 @@ export class TestDappTron {
     };
   }
 
-  /**
-   * Get Header.
-   *
-   * @returns The Header component helper methods.
-   */
-  async getHeader() {
-    await this.waitSelectorTestId(dataTestIds.testPage.header.id);
+  async findHeaderConnectedState () {
+    await this.driver.findElement(this.headerConnectionStateSelector);
+  }
+  async findHeaderNotConnectedState() {
+    await this.driver.findElement(
+      this.headerConnectionNotConnectedStateSelector,
+    );
+  }
 
-    return {
-      findHeaderConnectedState: async () => {
-        await this.driver.findElement(this.headerConnectionStateSelector);
-      },
-      findHeaderNotConnectedState: async () => {
-        await this.driver.findElement(
-          this.headerConnectionNotConnectedStateSelector,
-        );
-      },
-      connect: async () =>
-        await this.driver.clickElement(this.connectButtonSelector),
-      disconnect: async () => {
-        await this.driver.clickElement(this.disconnectButtonSelector);
+  async connect() {
+    await this.driver.clickElement(this.connectButtonSelector)
+  }
+  
+  async disconnect() {
+    await this.driver.clickElement(this.disconnectButtonSelector);
 
-        await this.driver.clickElement(
-          this.disconnectButtonDropdownItemSelector,
-        );
-      },
-      findConnectedAccount: async (account: string) => {
-        await this.driver.findElement({
-          css: this.connectedAccountSelectorTestId,
-          text: account,
-        });
-      },
-    };
+    await this.driver.clickElement(
+      this.disconnectButtonDropdownItemSelector,
+    );
+  }
+
+  async findConnectedAccount(account: string){
+    await this.driver.findElement({
+      css: this.connectedAccountSelectorTestId,
+      text: account,
+    });
   }
 
   /**
@@ -151,11 +143,11 @@ export class TestDappTron {
    * @returns The Sign Message component helper methods.
    */
   async getSignMessageTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.signMessage.id);
+    await this.driver.waitForSelector({testId: dataTestIds.testPage.signMessage.id});
 
     return {
       setMessage: (message: string) =>
-        this.setInputValue(dataTestIds.testPage.signMessage.message, message),
+        this.driver.fill({testId: dataTestIds.testPage.signMessage.message}, message),
       signMessage: async () =>
         await this.driver.clickElement({
           testId: dataTestIds.testPage.signMessage.signMessage,
@@ -174,13 +166,13 @@ export class TestDappTron {
    * @returns The Sign and Send TRX component helper methods.
    */
   async getSignAndSendTrxTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.sendTRX.id);
+    await this.driver.waitForSelector({testId: dataTestIds.testPage.sendTRX.id});
 
     return {
       setRecipientAddress: (address: string) =>
-        this.setInputValue(dataTestIds.testPage.sendTRX.address, address),
+        this.driver.fill({testId: dataTestIds.testPage.sendTRX.address}, address),
       setAmount: (amount: string) =>
-        this.setInputValue(dataTestIds.testPage.sendTRX.amount, amount),
+        this.driver.fill({testId: dataTestIds.testPage.sendTRX.amount}, amount),
       signTransaction: async () =>
         await this.driver.clickElement({
           testId: dataTestIds.testPage.sendTRX.signTransaction,
@@ -207,13 +199,13 @@ export class TestDappTron {
    * @returns The Sign USDT component helper methods.
    */
   async getSignAndSendUsdtTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.sendUSDT.id);
+    await this.driver.waitForSelector({testId: dataTestIds.testPage.sendUSDT.id});
 
     return {
       setRecipientAddress: (address: string) =>
-        this.setInputValue(dataTestIds.testPage.sendUSDT.address, address),
+        this.driver.fill({testId: dataTestIds.testPage.sendUSDT.address}, address),
       setAmount: (amount: string) =>
-        this.setInputValue(dataTestIds.testPage.sendUSDT.amount, amount),
+        this.driver.fill({testId: dataTestIds.testPage.sendUSDT.amount}, amount),
       signTransaction: async () =>
         await this.driver.clickElement({
           testId: dataTestIds.testPage.sendUSDT.signTransaction,
@@ -232,25 +224,5 @@ export class TestDappTron {
           testId: dataTestIds.testPage.sendUSDT.signedTransaction,
         }),
     };
-  }
-
-  /**
-   * Wait for an element to be present in the DOM by its data-testid.
-   *
-   * @param id - The data-testid of the element to wait for.
-   * @returns
-   */
-  private async waitSelectorTestId(id: string) {
-    await this.driver.findElement({ testId: id });
-  }
-
-  /**
-   * Set the value of an input element by its data-testid.
-   *
-   * @param id - The data-testid of the input element.
-   * @param value - The value to set in the input element.
-   */
-  private async setInputValue(id: string, value: string) {
-    await this.driver.fill({ testId: id }, value);
   }
 }
