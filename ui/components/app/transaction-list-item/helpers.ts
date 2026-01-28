@@ -43,6 +43,12 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     case TransactionType.incoming: {
       return GroupCategory.receive;
     }
+    case TransactionType.gasPayment: {
+      return GroupCategory.send;
+    }
+    case TransactionType.relayDeposit: {
+      return GroupCategory.redeposit;
+    }
     default:
       return undefined;
   }

@@ -72,4 +72,14 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('maps gasPayment to send category', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.gasPayment);
+    expect(result).toBe(TransactionGroupCategory.send);
+  });
+
+  it('maps relayDeposit to redeposit category', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.relayDeposit);
+    expect(result).toBe(TransactionGroupCategory.redeposit);
+  });
 });
