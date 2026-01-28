@@ -262,4 +262,29 @@ describe('useTransactionDisplayData', () => {
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
+
+  it('should handle bridgeApproval transaction with undefined sourceTokenSymbol', () => {
+    const bridgeApprovalTransaction = {
+      primaryTransaction: {
+        id: 'bridge-approval-test',
+        type: 'bridgeApproval',
+        time: 1234567890,
+        status: 'confirmed',
+      },
+      initialTransaction: {
+        id: 'bridge-approval-test',
+        type: 'bridgeApproval',
+        sourceTokenSymbol: undefined,
+      },
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(bridgeApprovalTransaction),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+
+    // Should use 'Token' as fallback when sourceTokenSymbol is undefined
+    expect(result.current.title).toBe('Approve Token for bridge');
+  });
 });

@@ -379,7 +379,9 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.simpleSend) {
     title = t('sent');
   } else if (type === TransactionType.bridgeApproval) {
-    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
+    title = t('bridgeApproval', [
+      bridgeTokenDisplayData.sourceTokenSymbol || t('token'),
+    ]);
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
     title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
