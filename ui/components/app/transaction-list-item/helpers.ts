@@ -22,7 +22,9 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
     case TransactionType.contractInteraction:
     case TransactionType.batch:
     case TransactionType.revokeDelegation:
-    case TransactionType.deployContract: {
+    case TransactionType.deployContract:
+    case TransactionType.perpsDeposit:
+    case TransactionType.musdConversion: {
       return GroupCategory.interaction;
     }
     case TransactionType.tokenMethodTransferFrom:
@@ -44,6 +46,8 @@ export function mapTransactionTypeToCategory(transactionType: TransactionType) {
       return GroupCategory.receive;
     }
     default:
-      return undefined;
+      // Fallback to interaction for any unrecognized transaction types
+      // to avoid undefined category
+      return GroupCategory.interaction;
   }
 }

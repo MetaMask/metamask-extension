@@ -72,4 +72,21 @@ describe('mapTransactionTypeToCategory', () => {
       expect(result).toBe(expectedResults[index].category);
     });
   });
+
+  it('maps perpsDeposit to interaction category', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.perpsDeposit);
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
+
+  it('maps musdConversion to interaction category', () => {
+    const result = mapTransactionTypeToCategory(TransactionType.musdConversion);
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
+
+  it('returns interaction category for unknown transaction types', () => {
+    // Test with a value that doesn't match any known TransactionType
+    const unknownType = 'unknown_type' as TransactionType;
+    const result = mapTransactionTypeToCategory(unknownType);
+    expect(result).toBe(TransactionGroupCategory.interaction);
+  });
 });
