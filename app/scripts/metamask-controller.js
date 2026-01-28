@@ -4974,8 +4974,17 @@ export default class MetamaskController extends EventEmitter {
           this.onboardingController.getIsSocialLoginFlow();
         if (isSocialLoginFlow) {
           // if it's social login flow, update the local backup metadata state of SeedlessOnboarding Controller
-          const primaryKeyringId =
-            this.keyringController.state.keyrings[0].metadata.id;
+          const { keyrings } = this.keyringController.state;
+          if (!keyrings || keyrings.length === 0 || !keyrings[0]) {
+            log.error(
+              'KeyringController - No primary keyring found for social login backup',
+            );
+            throw new Error(
+              'KeyringController - No keyring found for social login backup',
+            );
+          }
+          
+          const primaryKeyringId = keyrings[0].metadata.id;
           this.seedlessOnboardingController.updateBackupMetadataState({
             keyringId: primaryKeyringId,
             data: seedPhraseAsUint8Array,
