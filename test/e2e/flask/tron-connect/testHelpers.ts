@@ -1,7 +1,4 @@
-import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH } from '../../constants';
-
-export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
 /**
  * Default options for setting up Tron E2E test environment
