@@ -150,7 +150,8 @@ describe('migrations', () => {
       expect(migrate).toHaveBeenCalledTimes(1);
       expect(migrate.mock.calls[0]).toHaveLength(2);
       expect(migratedData.state).not.toBe(initialState);
-      // eslint-disable-next-line jest/prefer-strict-equal toStrictEqual won't work
+      // toStrictEqual won't work
+      // eslint-disable-next-line jest/prefer-strict-equal
       expect(migratedData.state.data).toEqual({
         hello: 'world',
         foo: 'bar',
