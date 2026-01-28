@@ -39,7 +39,16 @@ const generateToken = (userId: string): string => {
   }
 
   try {
-    return generateCentrifugoToken(userId);
+    return sign(
+      {
+        sub: userId,
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 3600,
+        channels: ['*'],
+      },
+      jwtSecretKey,
+      { algorithm: 'ES256' },
+    );
   } catch (error) {
     console.error('Failed to generate JWT token', error);
     throw new Error('Failed to generate JWT token', { cause: error });
