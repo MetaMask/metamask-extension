@@ -11,6 +11,10 @@
   "amount": {
     "message": "Quantia"
   },
+  "approveSpendingCap": {
+    "message": "Aprovar limite de gastos de $1",
+    "description": "The token symbol that is being approved"
+  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
@@ -38,8 +42,14 @@
   "confirm": {
     "message": "Confirmar"
   },
+  "confirmed": {
+    "message": "Confirmado"
+  },
   "connect": {
     "message": "Ligar"
+  },
+  "contractInteraction": {
+    "message": "Interação com o contrato"
   },
   "copiedExclamation": {
     "message": "Copiado!"
@@ -116,6 +126,9 @@
   "reject": {
     "message": "Rejeitar"
   },
+  "received": {
+    "message": "Recebido"
+  },
   "remove": {
     "message": "Remover"
   },
@@ -140,6 +153,14 @@
   "settings": {
     "message": "Definições"
   },
+  "swapApproval": {
+    "message": "Aprovar $1 para trocas",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
+  },
+  "swapTokenToToken": {
+    "message": "Trocar $1 por $2",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
+  },
   "tryAgain": {
     "message": "Tentar novamente"
   },
@@ -148,6 +169,9 @@
   },
   "unlock": {
     "message": "Desbloquear"
+  },
+  "unapproved": {
+    "message": "Não aprovado"
   },
   "userName": {
     "message": "Nome de utilizador"
