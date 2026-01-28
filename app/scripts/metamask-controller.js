@@ -4481,7 +4481,28 @@ export default class MetamaskController extends EventEmitter {
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
 
-      const primaryKeyring = this.keyringController.state.keyrings[0];
+      // Validate that a keyring was created
+      const { keyrings } = this.keyringController.state;
+      if (!keyrings || keyrings.length === 0) {
+        log.error(
+          'KeyringController - No keyring found after vault creation. KeyringController state:',
+          JSON.stringify(this.keyringController.state, null, 2),
+        );
+        throw new Error(
+          'KeyringController - No keyring found. Error info: There are no keyrings',
+        );
+      }
+
+      const primaryKeyring = keyrings[0];
+      
+      if (!primaryKeyring) {
+        log.error(
+          'KeyringController - Primary keyring is undefined despite keyrings array not being empty',
+        );
+        throw new Error(
+          'KeyringController - Primary keyring is undefined',
+        );
+      }
 
       // Once we have our first HD keyring available, we re-create the internal list of
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
