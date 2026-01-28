@@ -1,6 +1,5 @@
 const { promises: fs } = require('fs');
 const path = require('path');
-const { spawn } = require('child_process');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
@@ -76,113 +75,6 @@ async function main() {
 
   let { stopAfterOneFailure } = argv;
 
-  /**
-   * Filters XML content from output streams.
-   * Handles both stdout and stderr, filtering out XML lines while preserving
-   * enhanced reporter output. This allows XML files to be generated for CI
-   * workflows while keeping console logs clean and readable.
-   *
-   * @param {string[]} args - Array of arguments to pass to yarn mocha
-   */
-  async function runMochaWithXmlFilter(args) {
-    return new Promise((resolve, reject) => {
-      const childProcess = spawn('yarn', args, {
-        shell: true,
-        stdio: ['inherit', 'pipe', 'pipe'],
-      });
-
-      /**
-       * Filters XML lines from data chunks.
-       * Only filters actual JUnit XML structure, not arbitrary lines with "<".
-       *
-       * @param {Buffer} data - Data chunk to filter
-       * @returns {string} Filtered data without XML lines
-       */
-      function filterXml(data) {
-        const text = data.toString();
-        const lines = text.split('\n');
-        const filtered = [];
-        let inXmlBlock = false;
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-
-          // Detect start of JUnit XML block (very specific pattern)
-          if (
-            trimmed.startsWith('<?xml') ||
-            (trimmed.startsWith('<testsuites') && trimmed.includes('name='))
-          ) {
-            inXmlBlock = true;
-            continue;
-          }
-
-          // Detect end of XML block
-          if (inXmlBlock && trimmed === '</testsuites>') {
-            inXmlBlock = false;
-            continue;
-          }
-
-          // Skip lines inside XML block
-          if (inXmlBlock) {
-            continue;
-          }
-
-          // Check for JUnit XML-specific patterns (even outside blocks)
-          // These are very specific to mocha-junit-reporter output
-          if (
-            trimmed.startsWith('<?xml') ||
-            (trimmed.startsWith('<testsuites') && trimmed.includes('name=')) ||
-            (trimmed.startsWith('<testsuite') && trimmed.includes('name=')) ||
-            (trimmed.startsWith('<testcase') && trimmed.includes('name=')) ||
-            trimmed.startsWith('<failure') ||
-            trimmed.startsWith('<properties') ||
-            trimmed.startsWith('<system-out') ||
-            trimmed.startsWith('<system-err') ||
-            trimmed.startsWith('</testsuites>') ||
-            trimmed.startsWith('</testsuite>') ||
-            trimmed.startsWith('</testcase>')
-          ) {
-            continue;
-          }
-
-          // Keep all non-XML lines (including enhanced reporter output)
-          filtered.push(line);
-        }
-
-        return filtered.join('\n');
-      }
-
-      // Filter XML from stdout (enhanced reporter uses console.log -> stdout)
-      childProcess.stdout.on('data', (data) => {
-        const filtered = filterXml(data);
-        if (filtered) {
-          process.stdout.write(filtered);
-        }
-      });
-
-      // Filter XML from stderr
-      childProcess.stderr.on('data', (data) => {
-        const filtered = filterXml(data);
-        if (filtered) {
-          process.stderr.write(filtered);
-        }
-      });
-
-      childProcess.on('exit', (code, signal) => {
-        if (code === 0) {
-          resolve();
-        } else {
-          const error = new Error(`Process exited with code ${code}`);
-          error.code = code;
-          error.signal = signal;
-          reject(error);
-        }
-      });
-
-      childProcess.on('error', reject);
-    });
-  }
-
   const runTestsOnSingleBrowser = async (selectedBrowserForRun) => {
     if (!selectedBrowserForRun) {
       exitWithError(
@@ -247,8 +139,10 @@ async function main() {
 
     // Use enhanced spec reporter for readable console output with colors and summary
     // Only add junit reporter in CI environments
-    const isCI =
-      process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+    // const isCI =
+    //   process.env.CI === 'true' ||
+    //   process.env.GITHUB_ACTIONS === 'true' ||
+    //   false;
     // Use enhanced reporter by default, allow override via E2E_REPORTER env var
     const consoleReporter =
       process.env.E2E_REPORTER ||
@@ -256,21 +150,21 @@ async function main() {
     const reporters = [`--reporter=${consoleReporter}`];
     const reporterOptions = [];
 
-    if (isCI) {
-      // Use absolute path and ensure toConsole is false to suppress XML output
-      const junitOutputPath = path.resolve(
-        process.cwd(),
-        'test/test-results/e2e/[hash].xml',
-      );
-      reporters.push('--reporter=mocha-junit-reporter');
-      reporterOptions.push(
-        '--reporter-options',
-        JSON.stringify({
-          mochaFile: junitOutputPath,
-          toConsole: false,
-        }),
-      );
-    }
+    // if (isCI) {
+    //   // Use absolute path and ensure toConsole is false to suppress XML output
+    //   const junitOutputPath = path.resolve(
+    //     process.cwd(),
+    //     'test/test-results/e2e/[hash].xml',
+    //   );
+    //   reporters.push('--reporter=mocha-junit-reporter');
+    //   reporterOptions.push(
+    //     '--reporter-options',
+    //     JSON.stringify({
+    //       mochaFile: junitOutputPath,
+    //       toConsole: false,
+    //     }),
+    //   );
+    // }
 
     try {
       await retry({ retries, stopAfterOneFailure }, async () => {
@@ -286,12 +180,7 @@ async function main() {
           exit,
         ];
 
-        // In CI, use XML filter to suppress XML console output while keeping files
-        if (isCI) {
-          await runMochaWithXmlFilter(mochaArgs);
-        } else {
-          await runInShell('yarn', mochaArgs);
-        }
+        await runInShell('yarn', mochaArgs);
       });
     } catch (error) {
       // If the file path includes 'tolerate-failure', we log and tolerate the failure

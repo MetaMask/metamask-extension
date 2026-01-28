@@ -244,7 +244,7 @@ function printSummary(stats, failures, allTests) {
           ? `${failure.file}:${failure.lineNumber}`
           : failure.file;
         console.log(
-          `${colorize('   📄 Test File:', 'cyan')} ${colorize(fileDisplay, 'bold')}`,
+          `${colorize('   📄 Test File:', 'green')} ${colorize(fileDisplay, 'bold')}`,
         );
       } else {
         // Show warning when file path cannot be extracted
@@ -263,21 +263,6 @@ function printSummary(stats, failures, allTests) {
             `${colorize('   🔍 Failing Step:', 'yellow')} ${colorize(stepDisplay, 'bold')}`,
           );
         }
-        if (failure.parsedError.selector) {
-          // Truncate very long selectors for readability
-          const displaySelector =
-            failure.parsedError.selector.length > 150
-              ? `${failure.parsedError.selector.substring(0, 150)}... (truncated)`
-              : failure.parsedError.selector;
-          console.log(
-            `${colorize('   🎯 Element Selector:', 'cyan')} ${displaySelector}`,
-          );
-        }
-        if (failure.parsedError.timeout) {
-          console.log(
-            `${colorize('   ⏱️  Timeout:', 'yellow')} ${failure.parsedError.timeout}`,
-          );
-        }
         if (failure.parsedError.expectedValue) {
           console.log(
             `${colorize('   📊 Expected Value:', 'cyan')} ${failure.parsedError.expectedValue}`,
@@ -286,10 +271,10 @@ function printSummary(stats, failures, allTests) {
       }
 
       console.log(
-        `${colorize('   ⚠️  Error Type:', 'yellow')} ${failure.error.name}`,
+        `${colorize('   ⚠️  Error Type:', 'red')} ${failure.error.name}`,
       );
       console.log(
-        `${colorize('   💬 Error Message:', 'yellow')} ${failure.error.message}`,
+        `${colorize('   💬 Error Message:', 'red')} ${failure.error.message}`,
       );
 
       // Show actual/expected for assertion errors
