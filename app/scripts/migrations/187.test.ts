@@ -23,6 +23,27 @@ describe(`migration #${VERSION} - remove transaction history`, () => {
     expect(oldState.meta.version).toBe(VERSION);
   });
 
+  it('skips migration if TransactionController is missing', async () => {
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {},
+    };
+    const originalData = structuredClone(oldState.data);
+
+    const log = jest
+      .spyOn(console, 'log')
+      .mockImplementation(() => undefined);
+    await migrate(oldState, new Set());
+
+    expect(log).toHaveBeenCalledWith(
+      `Migration ${VERSION}: state.TransactionController not found, skipping.`,
+    );
+    expect(oldState.data).toEqual(originalData);
+    // Should not log to Sentry
+    expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
+    log.mockRestore();
+  });
+
   it('skips migration if TransactionController.transactions is missing', async () => {
     const oldState = {
       meta: { version: oldVersion },
@@ -41,6 +62,7 @@ describe(`migration #${VERSION} - remove transaction history`, () => {
       `Migration ${VERSION}: state.TransactionController.transactions not found, skipping.`,
     );
     expect(oldState.data).toEqual(originalData);
+    warn.mockRestore();
   });
 
   it('removes history and sendFlowHistory from transactions', async () => {
@@ -100,16 +122,27 @@ describe(`migration #${VERSION} - remove transaction history`, () => {
     );
   });
 
-  it('captures exception when TransactionController is not an object', async () => {
+  it('skips migration when TransactionController is not an object', async () => {
     const oldState = {
       meta: { version: oldVersion },
       data: {
         TransactionController: 99,
       },
     };
+    const originalData = structuredClone(oldState.data);
 
+    const warn = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => undefined);
     await migrate(oldState, new Set());
-    expect(sentryCaptureExceptionMock).toHaveBeenCalled();
+
+    expect(warn).toHaveBeenCalledWith(
+      `Migration ${VERSION}: state.TransactionController is not an object: number, skipping.`,
+    );
+    expect(oldState.data).toEqual(originalData);
+    // Should not log to Sentry
+    expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 
   it('captures exception when transactions is not an array', async () => {

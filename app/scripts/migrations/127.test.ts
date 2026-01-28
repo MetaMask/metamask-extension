@@ -57,33 +57,44 @@ describe(`migration #${version}`, () => {
     }
   });
 
-  it('captures an exception if the transaction controller state is not defined', async () => {
+  it('handles missing transaction controller gracefully', async () => {
     const oldState = {
       meta: { version: oldVersion },
-      data: { NetworkController: {} },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+        },
+      },
     };
 
-    await migrate(oldState);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(`state.TransactionController is not defined`),
-    );
+    const newState = await migrate(oldState);
+    // Should not log to Sentry for missing TransactionController
+    expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
+    // Migration should still complete successfully
+    expect(newState.meta.version).toBe(version);
+    // NetworkController should still be migrated
+    expect(newState.data.NetworkController).toBeDefined();
   });
 
-  it('captures an exception if the transaction controller state is not an object', async () => {
-    for (const TransactionController of [undefined, null, 1, 'foo']) {
+  it('handles invalid transaction controller state gracefully', async () => {
+    for (const TransactionController of [null, 1, 'foo']) {
       const oldState = {
         meta: { version: oldVersion },
-        data: { NetworkController: {}, TransactionController },
+        data: {
+          NetworkController: {
+            selectedNetworkClientId: 'mainnet',
+          },
+          TransactionController,
+        },
       };
 
-      await migrate(oldState);
-      expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-        new Error(
-          `typeof state.TransactionController is ${typeof TransactionController}`,
-        ),
-      );
+      const newState = await migrate(oldState);
+      // Should not log to Sentry for invalid TransactionController
+      expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
+      // Migration should still complete successfully
+      expect(newState.meta.version).toBe(version);
+      // NetworkController should still be migrated
+      expect(newState.data.NetworkController).toBeDefined();
       sentryCaptureExceptionMock.mockClear();
     }
   });

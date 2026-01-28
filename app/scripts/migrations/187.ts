@@ -30,12 +30,11 @@ export async function migrate(
 function transformState(state: Record<string, unknown>): boolean {
   //
   // -- Step 1: Validate TransactionController exists
+  // TransactionController may not exist for new installs or certain state configurations
   //
   if (!hasProperty(state, 'TransactionController')) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: state.TransactionController is not defined`,
-      ),
+    console.log(
+      `Migration ${version}: state.TransactionController not found, skipping.`,
     );
     return false;
   }
@@ -43,10 +42,8 @@ function transformState(state: Record<string, unknown>): boolean {
   const txController = state.TransactionController;
 
   if (!isObject(txController)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: typeof state.TransactionController is ${typeof txController}`,
-      ),
+    console.warn(
+      `Migration ${version}: state.TransactionController is not an object: ${typeof txController}, skipping.`,
     );
     return false;
   }
