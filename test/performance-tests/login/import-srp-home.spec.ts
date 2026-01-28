@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
 import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
@@ -13,6 +14,7 @@ import LoginPage from '../../e2e/page-objects/pages/login-page';
 import HeaderNavbar from '../../e2e/page-objects/pages/header-navbar';
 import AccountListPage from '../../e2e/page-objects/pages/account-list-page';
 import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
 
 const SECOND_SRP = process.env.TEST_SRP_2 || '';
 
@@ -38,9 +40,11 @@ describe('Import SRP Home', function () {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (server: Mockttp) => {
+          return mockPowerUserPrices(server);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const timerLogin = new TimerHelper(

@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
 import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
@@ -13,6 +14,7 @@ import LoginPage from '../../e2e/page-objects/pages/login-page';
 import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
 import SendPage from '../../e2e/page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../e2e/page-objects/pages/confirmations/snap-transaction-confirmation';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 
@@ -38,9 +40,11 @@ describe('Send Transactions Performance', function () {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (server: Mockttp) => {
+          return mockPowerUserPrices(server);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSendPage = new TimerHelper(

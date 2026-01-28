@@ -1,16 +1,18 @@
-import { generateWalletState } from '../../app/scripts/fixtures/generate-wallet-state';
-import { WITH_STATE_POWER_USER } from '../e2e/benchmarks/constants';
-import { withFixtures } from '../e2e/helpers';
-import AccountListPage from '../e2e/page-objects/pages/account-list-page';
-import HeaderNavbar from '../e2e/page-objects/pages/header-navbar';
-import HomePage from '../e2e/page-objects/pages/home/homepage';
-import LoginPage from '../e2e/page-objects/pages/login-page';
-import { Driver } from '../e2e/webdriver/driver';
+import { Mockttp } from 'mockttp';
+import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
+import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
+import { withFixtures } from '../../e2e/helpers';
+import AccountListPage from '../../e2e/page-objects/pages/account-list-page';
+import HeaderNavbar from '../../e2e/page-objects/pages/header-navbar';
+import HomePage from '../../e2e/page-objects/pages/home/homepage';
+import LoginPage from '../../e2e/page-objects/pages/login-page';
+import { Driver } from '../../e2e/webdriver/driver';
 import {
   setupPerformanceReporting,
   performanceTracker,
   TimerHelper,
-} from './utils/testSetup';
+} from '../utils/testSetup';
+import { mockPowerUserPrices } from './utils/performanceMocks';
 
 describe('Power user persona', function () {
   setupPerformanceReporting();
@@ -34,9 +36,11 @@ describe('Power user persona', function () {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (server: Mockttp) => {
+          return mockPowerUserPrices(server);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const timerLogin = new TimerHelper(

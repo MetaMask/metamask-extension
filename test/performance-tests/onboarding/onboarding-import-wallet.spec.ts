@@ -12,7 +12,7 @@ import OnboardingSrpPage from '../../e2e/page-objects/pages/onboarding/onboardin
 import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
 import HeaderNavbar from '../../e2e/page-objects/pages/header-navbar';
 import AccountListPage from '../../e2e/page-objects/pages/account-list-page';
-import { getCommonMocks } from '../utils/commonMocks';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
 import {
   setupPerformanceReporting,
   performanceTracker,
@@ -47,7 +47,7 @@ describe('MetaMask onboarding', function () {
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         testSpecificMock: async (server: Mockttp) => {
-          return [...getCommonMocks(server)];
+          return mockPowerUserPrices(server);
         },
       },
       async ({ driver }: { driver: Driver }) => {

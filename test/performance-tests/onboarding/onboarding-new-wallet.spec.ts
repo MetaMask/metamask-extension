@@ -10,7 +10,7 @@ import OnboardingPasswordPage from '../../e2e/page-objects/pages/onboarding/onbo
 import SecureWalletPage from '../../e2e/page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../e2e/page-objects/pages/onboarding/start-onboarding-page';
 import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
-import { getCommonMocks } from '../utils/commonMocks';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
 import {
   setupPerformanceReporting,
   performanceTracker,
@@ -43,7 +43,7 @@ describe('MetaMask onboarding', function () {
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         testSpecificMock: async (server: Mockttp) => {
-          return [...getCommonMocks(server)];
+          return mockPowerUserPrices(server);
         },
       },
       async ({ driver }: { driver: Driver }) => {
