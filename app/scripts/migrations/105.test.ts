@@ -322,5 +322,25 @@ describe('migration #105', () => {
         },
       });
     });
+
+    it('does not capture exception when recovering from missing selectedAddress with available identities', async () => {
+      const oldData = {
+        PreferencesController: {
+          identities: {
+            [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
+          },
+          selectedAddress: undefined,
+        },
+      };
+      const oldStorage = {
+        meta: { version: 104 },
+        data: oldData,
+      };
+
+      await migrate(oldStorage);
+
+      // Should NOT call Sentry when recovery is possible (expected for old states)
+      expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
+    });
   });
 });
