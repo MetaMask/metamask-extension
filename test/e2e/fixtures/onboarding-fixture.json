@@ -26,7 +26,6 @@
     "AlertController": {
       "alertEnabledness": {
         "smartTransactionsMigration": true,
-        "unconnectedAccount": true,
         "web3ShimUsage": true
       },
       "unconnectedAccountAlertShownOrigins": {},
