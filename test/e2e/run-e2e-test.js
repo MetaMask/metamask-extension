@@ -77,10 +77,10 @@ async function main() {
   let { stopAfterOneFailure } = argv;
 
   /**
-   * Runs mocha with XML filtering from stderr.
-   * Filters out XML lines while preserving all other output.
-   * This allows XML files to be generated for CI workflows while
-   * keeping console logs clean and readable.
+   * Filters XML content from output streams.
+   * Handles both stdout and stderr, filtering out XML lines while preserving
+   * enhanced reporter output. This allows XML files to be generated for CI
+   * workflows while keeping console logs clean and readable.
    *
    * @param {string[]} args - Array of arguments to pass to yarn mocha
    */
@@ -91,21 +91,80 @@ async function main() {
         stdio: ['inherit', 'pipe', 'pipe'],
       });
 
-      // Pipe stdout directly (enhanced reporter output)
-      childProcess.stdout.pipe(process.stdout);
+      /**
+       * Filters XML lines from data chunks.
+       * Only filters actual JUnit XML structure, not arbitrary lines with "<".
+       *
+       * @param {Buffer} data - Data chunk to filter
+       * @returns {string} Filtered data without XML lines
+       */
+      function filterXml(data) {
+        const text = data.toString();
+        const lines = text.split('\n');
+        const filtered = [];
+        let inXmlBlock = false;
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+
+          // Detect start of JUnit XML block (very specific pattern)
+          if (
+            trimmed.startsWith('<?xml') ||
+            (trimmed.startsWith('<testsuites') && trimmed.includes('name='))
+          ) {
+            inXmlBlock = true;
+            continue;
+          }
+
+          // Detect end of XML block
+          if (inXmlBlock && trimmed === '</testsuites>') {
+            inXmlBlock = false;
+            continue;
+          }
+
+          // Skip lines inside XML block
+          if (inXmlBlock) {
+            continue;
+          }
+
+          // Check for JUnit XML-specific patterns (even outside blocks)
+          // These are very specific to mocha-junit-reporter output
+          if (
+            trimmed.startsWith('<?xml') ||
+            (trimmed.startsWith('<testsuites') && trimmed.includes('name=')) ||
+            (trimmed.startsWith('<testsuite') && trimmed.includes('name=')) ||
+            (trimmed.startsWith('<testcase') && trimmed.includes('name=')) ||
+            trimmed.startsWith('<failure') ||
+            trimmed.startsWith('<properties') ||
+            trimmed.startsWith('<system-out') ||
+            trimmed.startsWith('<system-err') ||
+            trimmed.startsWith('</testsuites>') ||
+            trimmed.startsWith('</testsuite>') ||
+            trimmed.startsWith('</testcase>')
+          ) {
+            continue;
+          }
+
+          // Keep all non-XML lines (including enhanced reporter output)
+          filtered.push(line);
+        }
+
+        return filtered.join('\n');
+      }
+
+      // Filter XML from stdout (enhanced reporter uses console.log -> stdout)
+      childProcess.stdout.on('data', (data) => {
+        const filtered = filterXml(data);
+        if (filtered) {
+          process.stdout.write(filtered);
+        }
+      });
 
       // Filter XML from stderr
       childProcess.stderr.on('data', (data) => {
-        const lines = data.toString().split('\n');
-        for (const line of lines) {
-          // Skip XML lines (they start with <?xml or <testsuites)
-          if (
-            !line.trim().startsWith('<?xml') &&
-            !line.trim().startsWith('<testsuites')
-          ) {
-            process.stderr.write(line);
-            process.stderr.write('\n');
-          }
+        const filtered = filterXml(data);
+        if (filtered) {
+          process.stderr.write(filtered);
         }
       });
 
