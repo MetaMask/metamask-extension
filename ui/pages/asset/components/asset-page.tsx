@@ -529,13 +529,11 @@ const AssetPage = ({
             {showUnifiedTransactionList ? (
               <UnifiedTransactionList
                 tokenAddress={address}
-                hideNetworkFilter
                 tokenChainIdOverride={chainId}
               />
             ) : (
               <TransactionList
                 tokenAddress={address}
-                hideNetworkFilter
                 overrideFilterForCurrentChain={type === AssetType.native}
               />
             )}
