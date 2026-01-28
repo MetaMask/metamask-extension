@@ -236,6 +236,64 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
     });
   });
 
+  describe('when the wallet is unlocked but has no keyrings', () => {
+    it('gracefully handles missing keyrings and returns only snap info', async () => {
+      getAccountType.mockRejectedValue(
+        new Error(
+          'KeyringController - No keyring found. Error info: There are no keyrings',
+        ),
+      );
+      messenger.call
+        .mockReturnValueOnce({
+          address: '0x123',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Account 1',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [
+            'personal_sign',
+            'eth_signTransaction',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        })
+        .mockReturnValueOnce({ isUnlocked: true });
+
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+      const result = await getSnapAndHardwareInfoForMetrics(
+        getAccountType,
+        getDeviceModel,
+        getHardwareTypeForMetric,
+        messenger,
+      );
+
+      expect(getAccountType).toHaveBeenCalledWith('0x123');
+      expect(getDeviceModel).not.toHaveBeenCalled();
+      expect(getHardwareTypeForMetric).not.toHaveBeenCalled();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Unable to get keyring info for metrics, KeyringController may not be fully initialized:',
+        expect.any(Error),
+      );
+      expect(result).toEqual({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_snap_type: undefined,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_snap_version: undefined,
+      });
+
+      consoleWarnSpy.mockRestore();
+    });
+  });
+
   describe('when the wallet is locked', () => {
     it('does not resolve keyring and device info for a HD account', async () => {
       messenger.call

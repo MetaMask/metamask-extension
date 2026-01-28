@@ -46,24 +46,33 @@ export async function getSnapAndHardwareInfoForMetrics(
   let keyringAccountInfo = {};
   const { isUnlocked } = messenger.call('KeyringController:getState');
   if (isUnlocked) {
-    keyringAccountInfo = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      account_type: await getAccountType(selectedAddress),
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      device_model: await getDeviceModel(selectedAddress),
-    };
-
-    const hardwareType = await getHardwareTypeForMetric(selectedAddress);
-
-    if (hardwareType) {
+    try {
       keyringAccountInfo = {
-        ...keyringAccountInfo,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_hardware_type: hardwareType,
+        account_type: await getAccountType(selectedAddress),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        device_model: await getDeviceModel(selectedAddress),
       };
+
+      const hardwareType = await getHardwareTypeForMetric(selectedAddress);
+
+      if (hardwareType) {
+        keyringAccountInfo = {
+          ...keyringAccountInfo,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_hardware_type: hardwareType,
+        };
+      }
+    } catch (error) {
+      // If KeyringController is unlocked but has no keyrings yet (e.g., during initialization),
+      // gracefully skip adding keyring info to metrics instead of crashing
+      console.warn(
+        'Unable to get keyring info for metrics, KeyringController may not be fully initialized:',
+        error,
+      );
     }
   }
 
