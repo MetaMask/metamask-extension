@@ -332,6 +332,11 @@ export type ControllerStatePropertiesEnumerated = {
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
+  configs: ConfigRegistryState['configs'];
+  etag: ConfigRegistryState['etag'];
+  fetchError: ConfigRegistryState['fetchError'];
+  lastFetched: ConfigRegistryState['lastFetched'];
+  version: ConfigRegistryState['version'];
   connectivityStatus: ConnectivityControllerState['connectivityStatus'];
 };
 
