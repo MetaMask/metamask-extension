@@ -187,6 +187,7 @@ async function assertNavSwapButtonClickedEvent(reqs) {
     category: MetaMetricsEventCategory.Swaps,
     chain_id: toHex(1337),
     environment_type: 'fullscreen',
+    platform: 'Chrome',
     locale: 'en',
     location: 'Main View',
     text: 'Swap',
