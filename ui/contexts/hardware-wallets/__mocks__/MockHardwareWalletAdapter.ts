@@ -22,8 +22,6 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
 
   public ensureDeviceReadyMock = jest.fn();
 
-  public setPendingOperationMock = jest.fn();
-
   constructor(options: HardwareWalletAdapterOptions) {
     this.options = options;
 
@@ -49,10 +47,6 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
 
   ensureDeviceReady(deviceId: string): Promise<boolean> {
     return this.ensureDeviceReadyMock(deviceId);
-  }
-
-  setPendingOperation(pending: boolean): void {
-    return this.setPendingOperationMock(pending);
   }
 
   // Test helpers
@@ -83,7 +77,6 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     this.isConnectedMock.mockClear();
     this.destroyMock.mockClear();
     this.ensureDeviceReadyMock.mockClear();
-    this.setPendingOperationMock.mockClear();
   }
 
   reset(): void {

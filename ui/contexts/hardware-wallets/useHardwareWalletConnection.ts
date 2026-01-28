@@ -42,12 +42,16 @@ export const useHardwareWalletConnection = ({
 }: UseHardwareWalletConnectionParams) => {
   const { setDeviceId } = setters;
 
-  const resetAdapterForFreshConnection = useCallback(() => {
-    if (refs.adapterRef.current) {
-      refs.adapterRef.current.destroy();
-      refs.adapterRef.current = null;
-    }
-  }, [refs]);
+  const resetAdapterForFreshConnection = useCallback(
+    () => {
+      if (refs.adapterRef.current) {
+        refs.adapterRef.current.destroy();
+        refs.adapterRef.current = null;
+      }
+    },
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [],
+  );
 
   /**
    * Begins a new connection attempt by aborting any previous attempt
@@ -55,20 +59,24 @@ export const useHardwareWalletConnection = ({
    *
    * @returns The AbortSignal for this attempt - use to check if aborted
    */
-  const beginConnectionAttempt = useCallback(() => {
-    // Abort any previous connection attempt
-    refs.abortControllerRef.current?.abort();
+  const beginConnectionAttempt = useCallback(
+    () => {
+      // Abort any previous connection attempt
+      refs.abortControllerRef.current?.abort();
 
-    // Create a new AbortController for this attempt
-    const abortController = new AbortController();
-    refs.abortControllerRef.current = abortController;
+      // Create a new AbortController for this attempt
+      const abortController = new AbortController();
+      refs.abortControllerRef.current = abortController;
 
-    // Increment connection ID to track this attempt
-    refs.currentConnectionIdRef.current =
-      (refs.currentConnectionIdRef.current ?? 0) + 1;
+      // Increment connection ID to track this attempt
+      refs.currentConnectionIdRef.current =
+        (refs.currentConnectionIdRef.current ?? 0) + 1;
 
-    return abortController.signal;
-  }, [refs]);
+      return abortController.signal;
+    },
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [],
+  );
 
   const resolveOrDiscoverDeviceId = useCallback(
     async ({
@@ -114,7 +122,8 @@ export const useHardwareWalletConnection = ({
         return null;
       }
     },
-    [updateConnectionState, refs],
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [updateConnectionState],
   );
 
   const setConnectingStateForDevice = useCallback(
@@ -131,7 +140,8 @@ export const useHardwareWalletConnection = ({
         updateConnectionState(ConnectionState.connecting());
       }
     },
-    [setDeviceId, updateConnectionState, refs],
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [setDeviceId, updateConnectionState],
   );
 
   const connectWithAdapter = useCallback(
@@ -202,7 +212,8 @@ export const useHardwareWalletConnection = ({
 
       updateConnectionState(ConnectionState.connected());
     },
-    [handleDeviceEvent, handleDisconnect, updateConnectionState, refs],
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [handleDeviceEvent, handleDisconnect, updateConnectionState],
   );
 
   const handleConnectError = useCallback(
@@ -234,143 +245,159 @@ export const useHardwareWalletConnection = ({
         refs.adapterRef.current = null;
       }
     },
-    [updateConnectionState, refs],
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [updateConnectionState],
   );
 
-  const connect = useCallback((): Promise<void> => {
-    // If there's already a connection in progress, return the pending promise
-    // so all callers wait for the same connection to complete
-    if (refs.connectingPromiseRef.current) {
-      return refs.connectingPromiseRef.current;
-    }
+  const connect = useCallback(
+    (): Promise<void> => {
+      // If there's already a connection in progress, return the pending promise
+      // so all callers wait for the same connection to complete
+      if (refs.connectingPromiseRef.current) {
+        return refs.connectingPromiseRef.current;
+      }
 
-    // Set flag to prevent auto-connect race conditions
-    // This must happen synchronously before any async work
-    refs.isConnectingRef.current = true;
+      // Set flag to prevent auto-connect race conditions
+      // This must happen synchronously before any async work
+      refs.isConnectingRef.current = true;
 
-    const connectionPromise = (async (): Promise<void> => {
-      const effectiveType = refs.walletTypeRef.current;
-      if (!effectiveType) {
-        updateConnectionState(
-          ConnectionState.error(
-            createHardwareWalletError(
-              ErrorCode.Unknown,
-              HardwareWalletType.Unknown,
-              'Hardware wallet type is unknown',
+      const connectionPromise = (async (): Promise<void> => {
+        const effectiveType = refs.walletTypeRef.current;
+        if (!effectiveType) {
+          updateConnectionState(
+            ConnectionState.error(
+              createHardwareWalletError(
+                ErrorCode.Unknown,
+                HardwareWalletType.Unknown,
+                'Hardware wallet type is unknown',
+              ),
             ),
-          ),
-        );
-        return;
-      }
+          );
+          return;
+        }
 
-      resetAdapterForFreshConnection();
-      const abortSignal = beginConnectionAttempt();
+        resetAdapterForFreshConnection();
+        const abortSignal = beginConnectionAttempt();
 
-      const discoveredDeviceId = await resolveOrDiscoverDeviceId({
-        walletType: effectiveType,
-        abortSignal,
+        const discoveredDeviceId = await resolveOrDiscoverDeviceId({
+          walletType: effectiveType,
+          abortSignal,
+        });
+        if (!discoveredDeviceId || abortSignal.aborted) {
+          return;
+        }
+
+        setConnectingStateForDevice({
+          abortSignal,
+          deviceId: discoveredDeviceId,
+        });
+
+        try {
+          await connectWithAdapter({
+            walletType: effectiveType,
+            deviceId: discoveredDeviceId,
+            abortSignal,
+          });
+        } catch (error) {
+          handleConnectError({
+            error,
+            abortSignal,
+            walletType: effectiveType,
+          });
+        }
+      })();
+
+      // Store the promise so concurrent callers can await it
+      refs.connectingPromiseRef.current = connectionPromise;
+
+      // Clear when the connection completes (success or failure)
+      // Only clear if still holding this promise (not a newer one from a disconnect + reconnect)
+      connectionPromise.finally(() => {
+        if (refs.connectingPromiseRef.current === connectionPromise) {
+          refs.connectingPromiseRef.current = null;
+        }
+        // Reset flag to allow new connection attempts
+        refs.isConnectingRef.current = false;
       });
-      if (!discoveredDeviceId || abortSignal.aborted) {
-        return;
-      }
 
-      setConnectingStateForDevice({
-        abortSignal,
-        deviceId: discoveredDeviceId,
-      });
+      return connectionPromise;
+    },
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [
+      beginConnectionAttempt,
+      connectWithAdapter,
+      handleConnectError,
+      resetAdapterForFreshConnection,
+      resolveOrDiscoverDeviceId,
+      setConnectingStateForDevice,
+      updateConnectionState,
+    ],
+  );
+
+  useEffect(
+    () => {
+      refs.connectRef.current = connect;
+    },
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [connect],
+  );
+
+  const disconnect = useCallback(
+    async (): Promise<void> => {
+      // Abort any in-progress connection attempt first.
+      // This ensures that if connect() is awaiting and fails due to adapter destruction,
+      // the error handlers will see abortSignal.aborted=true and skip state updates.
+      refs.abortControllerRef.current?.abort();
+
+      // Capture references at the start to prevent race conditions
+      // where connect() creates new ones while disconnect() is awaiting
+      const adapterToDisconnect = refs.adapterRef.current;
+      const promiseToCancel = refs.connectingPromiseRef.current;
+      // Capture the abort controller to detect if a new connect() started during our await.
+      // A new connect() will create a new abort controller.
+      const controllerAtStart = refs.abortControllerRef.current;
 
       try {
-        await connectWithAdapter({
-          walletType: effectiveType,
-          deviceId: discoveredDeviceId,
-          abortSignal,
-        });
-      } catch (error) {
-        handleConnectError({
-          error,
-          abortSignal,
-          walletType: effectiveType,
-        });
+        await adapterToDisconnect?.disconnect();
+      } finally {
+        // Only destroy the adapter we captured at the start, not any new adapter
+        // that may have been created by a concurrent connect() call
+        adapterToDisconnect?.destroy();
+        // Only null out references if they still hold the same values
+        // (i.e., no concurrent connect() replaced them)
+        if (refs.adapterRef.current === adapterToDisconnect) {
+          refs.adapterRef.current = null;
+        }
+        if (refs.connectingPromiseRef.current === promiseToCancel) {
+          refs.connectingPromiseRef.current = null;
+        }
+        // Only update state if no new connection started during our await.
+        // A new connection would have created a new abort controller.
+        if (refs.abortControllerRef.current === controllerAtStart) {
+          updateConnectionState(ConnectionState.disconnected());
+          setDeviceId(null);
+        }
       }
-    })();
+    },
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [updateConnectionState, setDeviceId],
+  );
 
-    // Store the promise so concurrent callers can await it
-    refs.connectingPromiseRef.current = connectionPromise;
-
-    // Clear when the connection completes (success or failure)
-    // Only clear if still holding this promise (not a newer one from a disconnect + reconnect)
-    connectionPromise.finally(() => {
-      if (refs.connectingPromiseRef.current === connectionPromise) {
-        refs.connectingPromiseRef.current = null;
+  const clearError = useCallback(
+    () => {
+      if (refs.abortControllerRef.current?.signal.aborted) {
+        return;
       }
-      // Reset flag to allow new connection attempts
-      refs.isConnectingRef.current = false;
-    });
 
-    return connectionPromise;
-  }, [
-    beginConnectionAttempt,
-    connectWithAdapter,
-    handleConnectError,
-    resetAdapterForFreshConnection,
-    resolveOrDiscoverDeviceId,
-    setConnectingStateForDevice,
-    updateConnectionState,
-    refs,
-  ]);
-
-  useEffect(() => {
-    refs.connectRef.current = connect;
-  }, [connect, refs]);
-
-  const disconnect = useCallback(async (): Promise<void> => {
-    // Abort any in-progress connection attempt first.
-    // This ensures that if connect() is awaiting and fails due to adapter destruction,
-    // the error handlers will see abortSignal.aborted=true and skip state updates.
-    refs.abortControllerRef.current?.abort();
-
-    // Capture references at the start to prevent race conditions
-    // where connect() creates new ones while disconnect() is awaiting
-    const adapterToDisconnect = refs.adapterRef.current;
-    const promiseToCancel = refs.connectingPromiseRef.current;
-    // Capture the abort controller to detect if a new connect() started during our await.
-    // A new connect() will create a new abort controller.
-    const controllerAtStart = refs.abortControllerRef.current;
-
-    try {
-      await adapterToDisconnect?.disconnect();
-    } finally {
-      // Only destroy the adapter we captured at the start, not any new adapter
-      // that may have been created by a concurrent connect() call
-      adapterToDisconnect?.destroy();
-      // Only null out references if they still hold the same values
-      // (i.e., no concurrent connect() replaced them)
-      if (refs.adapterRef.current === adapterToDisconnect) {
-        refs.adapterRef.current = null;
-      }
-      if (refs.connectingPromiseRef.current === promiseToCancel) {
-        refs.connectingPromiseRef.current = null;
-      }
-      // Only update state if no new connection started during our await.
-      // A new connection would have created a new abort controller.
-      if (refs.abortControllerRef.current === controllerAtStart) {
+      if (refs.adapterRef.current?.isConnected()) {
+        updateConnectionState(ConnectionState.connected());
+      } else {
         updateConnectionState(ConnectionState.disconnected());
-        setDeviceId(null);
       }
-    }
-  }, [updateConnectionState, refs, setDeviceId]);
-
-  const clearError = useCallback(() => {
-    if (refs.abortControllerRef.current?.signal.aborted) {
-      return;
-    }
-
-    if (refs.adapterRef.current?.isConnected()) {
-      updateConnectionState(ConnectionState.connected());
-    } else {
-      updateConnectionState(ConnectionState.disconnected());
-    }
-  }, [updateConnectionState, refs]);
+    },
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [updateConnectionState],
+  );
 
   const ensureDeviceReady = useCallback(
     async (targetDeviceId?: string): Promise<boolean> => {
@@ -378,7 +405,7 @@ export const useHardwareWalletConnection = ({
       // This ensures we can detect if a new connection attempt started during the await
       const connectionId = refs.currentConnectionIdRef.current;
 
-      let effectiveDeviceId = targetDeviceId || refs.deviceIdRef.current;
+      let effectiveDeviceId = targetDeviceId ?? refs.deviceIdRef.current;
 
       if (!refs.adapterRef.current?.isConnected()) {
         const currentWalletType = refs.walletTypeRef.current;
@@ -445,7 +472,8 @@ export const useHardwareWalletConnection = ({
 
       return false;
     },
-    [connect, updateConnectionState, refs, setDeviceId],
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    [connect, updateConnectionState, setDeviceId],
   );
 
   return {
