@@ -56,6 +56,19 @@ export const Tabs = <TKey extends string = string>({
     }
   }, [activeTab, findChildByKey, activeTabIndex]);
 
+  // Separate effect to handle out-of-bounds activeTabIndex when tabs are removed
+  useEffect(() => {
+    const validChildren = getValidChildren;
+    if (validChildren.length > 0 && activeTabIndex >= validChildren.length) {
+      // Active tab index is out of bounds, fall back to first tab
+      setActiveTabIndex(0);
+      const firstChild = validChildren[0];
+      if (firstChild?.props.tabKey) {
+        onTabClick?.(firstChild.props.tabKey);
+      }
+    }
+  }, [getValidChildren, activeTabIndex, onTabClick]);
+
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== activeTabIndex) {
       setActiveTabIndex(tabIndex);
@@ -87,11 +100,13 @@ export const Tabs = <TKey extends string = string>({
       return null;
     }
 
-    if (activeTabIndex >= validChildren.length || activeTabIndex < 0) {
-      throw new Error(`Tab at index '${activeTabIndex}' does not exist`);
-    }
+    // If activeTabIndex is out of bounds, fall back to the first tab
+    const safeIndex =
+      activeTabIndex >= validChildren.length || activeTabIndex < 0
+        ? 0
+        : activeTabIndex;
 
-    const activeChild = validChildren[activeTabIndex];
+    const activeChild = validChildren[safeIndex];
     return activeChild?.props.children || null;
   };
 

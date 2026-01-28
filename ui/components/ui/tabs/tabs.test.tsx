@@ -163,4 +163,59 @@ describe('Tabs', () => {
 
     expect(onTabClick).not.toHaveBeenCalled();
   });
+
+  it('falls back to first tab when active tab is removed', () => {
+    const onTabClick = jest.fn();
+    const { getByText, rerender, queryByText } = render(
+      <Tabs activeTab="tab3" onTabClick={onTabClick}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          Tab 2 Content
+        </Tab>
+        <Tab tabKey="tab3" name="Tab 3">
+          Tab 3 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    // Initially showing Tab 3
+    expect(getByText('Tab 3 Content')).toBeInTheDocument();
+
+    // Remove Tab 3
+    rerender(
+      <Tabs activeTab="tab3" onTabClick={onTabClick}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          Tab 2 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    // Should fall back to Tab 1
+    expect(getByText('Tab 1 Content')).toBeInTheDocument();
+    expect(queryByText('Tab 3 Content')).not.toBeInTheDocument();
+    expect(onTabClick).toHaveBeenCalledWith('tab1');
+  });
+
+  it('handles out of bounds activeTabIndex gracefully', () => {
+    const onTabClick = jest.fn();
+    // Start with 2 tabs but activeTab doesn't exist
+    const { getByText } = render(
+      <Tabs activeTab="nonexistent" onTabClick={onTabClick}>
+        <Tab tabKey="tab1" name="Tab 1">
+          Tab 1 Content
+        </Tab>
+        <Tab tabKey="tab2" name="Tab 2">
+          Tab 2 Content
+        </Tab>
+      </Tabs>,
+    );
+
+    // Should default to first tab
+    expect(getByText('Tab 1 Content')).toBeInTheDocument();
+  });
 });
