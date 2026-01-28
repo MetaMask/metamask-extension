@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
+  selectTransactionPayIsMaxAmountByTransactionId,
   selectTransactionPayQuotesByTransactionId,
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayTokensByTransactionId,
@@ -30,6 +31,10 @@ export function useIsTransactionPayLoading() {
 
 export function useTransactionPayTotals() {
   return useTransactionPayData(selectTransactionPayTotalsByTransactionId);
+}
+
+export function useTransactionPayIsMaxAmount() {
+  return useTransactionPayData(selectTransactionPayIsMaxAmountByTransactionId);
 }
 
 function useTransactionPayData<ReturnType>(

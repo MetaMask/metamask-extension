@@ -14,6 +14,19 @@ export const SUN_PER_TRX = 1_000_000;
 export const FEATURE_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags';
 
+// Tron Infura API base URL pattern (matches any project ID)
+const TRON_INFURA_BASE_URL = 'https://tron-mainnet\\.infura\\.io/v3/[^/]+';
+
+/**
+ * Creates a regex pattern for Tron Infura API endpoints
+ *
+ * @param path - The endpoint path to append to the base URL
+ * @returns A RegExp that matches the full URL with any project ID
+ */
+function tronInfuraUrl(path: string): RegExp {
+  return new RegExp(`^${TRON_INFURA_BASE_URL}${path}$`, 'u');
+}
+
 // BIP44 Stage 2 feature flags - enables automatic multichain account creation
 export const BIP44_STAGE_TWO = {
   enableMultichainAccountsState2: {
@@ -53,14 +66,27 @@ export async function mockTronFeatureFlags(
     }));
 }
 
+export async function mockBroadTransaction(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/broadcasttransaction'))
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        code: 'TRANSACTION_EXPIRATION_ERROR',
+        txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
+        message: '5472616e73616374696f6e2065787069726564',
+      },
+    }));
+}
+
 export async function mockTronGetAccount(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forGet(
-      `https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/v1/accounts/${TRON_ACCOUNT_ADDRESS}`,
-    )
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}`))
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -162,9 +188,7 @@ export async function mockTronGetAccountResource(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forPost(
-      'https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/wallet/getaccountresource',
-    )
+    .forPost(tronInfuraUrl('/wallet/getaccountresource'))
     .withJsonBody({
       address: TRON_ACCOUNT_ADDRESS,
       visible: true,
@@ -200,7 +224,7 @@ export async function mockTronGetTrc20Transactions(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet(
-      `https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions/trc20`,
+      tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions/trc20`),
     )
     .thenCallback(() => ({
       statusCode: 200,
@@ -370,9 +394,7 @@ export async function mockTronGetTransactions(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forGet(
-      `https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions`,
-    )
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions`))
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -726,9 +748,7 @@ export async function mockTronGetBlock(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forPost(
-      'https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/wallet/getblock',
-    )
+    .forPost(tronInfuraUrl('/wallet/getblock'))
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -752,82 +772,92 @@ export async function mockTronGetBlock(
     }));
 }
 
+const MOCK_TRON_TOKENS = [
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/slip44:195',
+    symbol: 'TRX',
+    decimals: 6,
+    name: 'Tron',
+    aggregators: [],
+    occurrences: 100,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
+    metadata: {},
+  },
+  {
+    address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    symbol: 'USDT',
+    decimals: 6,
+    name: 'Tether',
+    aggregators: ['coinGecko'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png',
+    metadata: {},
+  },
+  {
+    address: 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/trc20:TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USDC',
+    aggregators: ['coinGecko'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8.png',
+    metadata: {},
+  },
+  {
+    address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    symbol: 'USDD',
+    decimals: 18,
+    name: 'USDD',
+    aggregators: ['coinGecko'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz.png',
+    metadata: {},
+  },
+  {
+    address: 'TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/trc20:TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S',
+    symbol: 'SUN',
+    decimals: 18,
+    name: 'Sun Token',
+    aggregators: ['coinGecko'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S.png',
+    metadata: {},
+  },
+];
+
 export async function mockBridgeGetTronTokens(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getTokens/u)
-    .withQuery({ chainId: '728126428' })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: [
-        {
-          address: '0x0000000000000000000000000000000000000000',
-          chainId: 728126428,
-          assetId: 'tron:728126428/slip44:195',
-          symbol: 'TRX',
-          decimals: 6,
-          name: 'Tron',
-          aggregators: [],
-          occurrences: 100,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
-          metadata: {},
-        },
-        {
-          address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-          chainId: 728126428,
-          assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-          symbol: 'USDT',
-          decimals: 6,
-          name: 'Tether',
-          aggregators: ['coinGecko'],
-          occurrences: 1,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png',
-          metadata: {},
-        },
-        {
-          address: 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8',
-          chainId: 728126428,
-          assetId: 'tron:728126428/trc20:TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8',
-          symbol: 'USDC',
-          decimals: 6,
-          name: 'USDC',
-          aggregators: ['coinGecko'],
-          occurrences: 1,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8.png',
-          metadata: {},
-        },
-        {
-          address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-          chainId: 728126428,
-          assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-          symbol: 'USDD',
-          decimals: 18,
-          name: 'USDD',
-          aggregators: ['coinGecko'],
-          occurrences: 1,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz.png',
-          metadata: {},
-        },
-        {
-          address: 'TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S',
-          chainId: 728126428,
-          assetId: 'tron:728126428/trc20:TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S',
-          symbol: 'SUN',
-          decimals: 18,
-          name: 'Sun Token',
-          aggregators: ['coinGecko'],
-          occurrences: 1,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S.png',
-          metadata: {},
-        },
-      ],
-    }));
+  mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      pageInfo: {
+        hasNextPage: false,
+        endCursor: null,
+      },
+      data: MOCK_TRON_TOKENS,
+    },
+  }));
+
+  return mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+    statusCode: 200,
+    json: MOCK_TRON_TOKENS,
+  }));
 }
 
 export async function mockBridgeGetTronQuote(
@@ -1023,6 +1053,7 @@ export async function mockTronApis(
     await mockTronSpotPrices(mockServer),
     await mockTrxNativeSpotPrices(mockServer),
     await mockTronAssets(mockServer),
+    await mockBroadTransaction(mockServer),
   ];
 }
 

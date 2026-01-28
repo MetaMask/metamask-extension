@@ -42,7 +42,6 @@ export const DisconnectAllModal = ({
             onClick={onClick}
             startIconName={IconName.Logout}
             block
-            danger
             data-testid="disconnect-all"
           >
             {t('disconnect')}

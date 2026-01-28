@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '../../../component-library';
 import Spinner from '../../../ui/spinner';
@@ -16,13 +16,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../../shared/constants/transaction';
-import {
-  getSendAnalyticProperties,
-  updateSendAsset,
-} from '../../../../ducks/send';
-import { getNftImage } from '../../../../helpers/utils/nfts';
-import { useRedesignedSendFlow } from '../../../../pages/confirmations/hooks/useRedesignedSendFlow';
 import { navigateToSendRoute } from '../../../../pages/confirmations/utils/send';
 import { NftEmptyState } from '../../../app/assets/nfts/nft-empty-state';
 import { NFT } from './types';
@@ -45,21 +38,18 @@ export function AssetPickerModalNftTab({
   onClose,
   renderSearch,
 }: AssetPickerModalNftTabProps) {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const { currentlyOwnedNfts } = useNfts({
     overridePopularNetworkFilter: true,
   });
 
   const trackEvent = useContext(MetaMetricsContext);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const filteredNfts = currentlyOwnedNfts.reduce((acc: NFT[], nft: NFT) => {
     // Assuming `nft` has a `name` property
@@ -76,7 +66,7 @@ export function AssetPickerModalNftTab({
 
   const hasAnyNfts = filteredNfts.length > 0;
 
-  const handleNftClick = async (nft: NFT) => {
+  const handleNftClick = (nft: NFT) => {
     trackEvent(
       {
         event: MetaMetricsEventName.SendAssetSelected,
@@ -90,7 +80,6 @@ export function AssetPickerModalNftTab({
           is_nft: true,
         },
         sensitiveProperties: {
-          ...sendAnalytics,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           new_asset_symbol: nft.name,
@@ -102,21 +91,10 @@ export function AssetPickerModalNftTab({
       { excludeMetaMetricsId: false },
     );
 
-    const nftWithSimplifiedImage = {
-      ...nft,
-      image: getNftImage(nft.image),
-    };
-
-    await dispatch(
-      updateSendAsset({
-        type: AssetType.NFT,
-        details: nftWithSimplifiedImage,
-        skipComputeEstimatedGasLimit: false,
-      }),
-    );
-    navigateToSendRoute(navigate, isSendRedesignEnabled, {
+    navigateToSendRoute(navigate, {
       address: nft.address,
       chainId: nft.chainId,
+      tokenId: nft.tokenId.toString(),
     });
     onClose && onClose();
   };

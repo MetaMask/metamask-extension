@@ -34,14 +34,26 @@ import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { getPermissionDescription } from '../info/typed-sign/typed-sign-permission/typed-sign-permission-util';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
+const TRANSACTION_TYPES_HIDE_BANNER: string[] = [
+  TransactionType.musdConversion,
+  TransactionType.perpsDeposit,
+  TransactionType.predictDeposit,
+  TransactionType.predictWithdraw,
+];
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { generalAlerts } = useAlerts(ownerId);
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  if (generalAlerts.length === 0) {
+  const transactionType = currentConfirmation?.type;
+  const shouldHideBanner =
+    transactionType && TRANSACTION_TYPES_HIDE_BANNER.includes(transactionType);
+
+  if (generalAlerts.length === 0 || shouldHideBanner) {
     return null;
   }
 

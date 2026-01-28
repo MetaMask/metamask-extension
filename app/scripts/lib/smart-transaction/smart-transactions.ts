@@ -13,6 +13,7 @@ import {
   type Fees,
   type SmartTransaction,
   type SmartTransactionsNetworkConfig,
+  type SignedTransactionWithMetadata,
 } from '@metamask/smart-transactions-controller';
 import {
   TransactionController,
@@ -38,6 +39,7 @@ import {
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import { ControllerFlatState } from '../../controller-init/controller-list';
+import { getTransactionById } from '../transaction/util';
 
 const namespace = 'SmartTransactions';
 
@@ -457,6 +459,7 @@ class SmartTransactionHook {
   }: {
     getFeesResponse?: Fees;
   } = {}) {
+    let signedTransactionsWithMetadata: SignedTransactionWithMetadata[] = [];
     let signedTransactions: string[] = [];
 
     if (
@@ -465,22 +468,43 @@ class SmartTransactionHook {
       this.#transactions.length > 0
     ) {
       // Batch transaction mode - extract signed transactions from this.#transactions[].signedTx
-      signedTransactions = this.#transactions
+      signedTransactionsWithMetadata = this.#transactions
         .filter((tx) => tx?.signedTx)
-        .map((tx) => tx.signedTx);
+        .map((tx) => {
+          const transactionMeta = getTransactionById(
+            tx.id ?? '',
+            this.#transactionController,
+          );
+          const signedTx: SignedTransactionWithMetadata = { tx: tx.signedTx };
+          if (transactionMeta) {
+            signedTx.metadata = { txType: transactionMeta.type };
+          }
+          return signedTx;
+        });
     } else if (this.#signedTransactionInHex) {
       // Single transaction mode with pre-signed transaction
-      signedTransactions = [this.#signedTransactionInHex];
+      signedTransactionsWithMetadata = [
+        {
+          tx: this.#signedTransactionInHex,
+          metadata: { txType: this.#transactionMeta.type },
+        },
+      ];
     } else if (getFeesResponse) {
       // Single transaction mode requiring signing
-      signedTransactions = await this.#createSignedTransactions(
+      const signed = await this.#createSignedTransactions(
         getFeesResponse.tradeTxFees?.fees ?? [],
         false,
       );
+      signedTransactionsWithMetadata = signed.map((signedTx) => ({
+        tx: signedTx,
+        metadata: { txType: this.#transactionMeta.type },
+      }));
     }
+    signedTransactions = signedTransactionsWithMetadata.map((tx) => tx.tx);
 
     return await this.#smartTransactionsController.submitSignedTransactions({
       signedTransactions,
+      signedTransactionsWithMetadata,
       signedCanceledTransactions: [],
       txParams: this.#txParams,
       transactionMeta: this.#transactionMeta,
