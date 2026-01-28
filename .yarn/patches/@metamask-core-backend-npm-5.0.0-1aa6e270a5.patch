@@ -1,0 +1,32 @@
+diff --git a/dist/AccountActivityService.cjs b/dist/AccountActivityService.cjs
+index dc87f6e08f0f833032a008aadd22806c0f1583c3..5832710122a86cbd5f3b772a2474eada1717c082 100644
+--- a/dist/AccountActivityService.cjs
++++ b/dist/AccountActivityService.cjs
+@@ -335,6 +335,11 @@ async function _AccountActivityService_unsubscribeFromAllAccountActivity() {
+         await subscription.unsubscribe();
+     }
+ }, _AccountActivityService_convertToCaip10Address = function _AccountActivityService_convertToCaip10Address(account) {
++    // Guard against undefined or null scopes
++    if (!account.scopes || !Array.isArray(account.scopes)) {
++        // If scopes are not available, return raw address
++        return account.address;
++    }
+     // Check if account has EVM scopes
+     if (account.scopes.some((scope) => scope.startsWith('eip155:'))) {
+         // CAIP-10 format: eip155:0:address (subscribe to all EVM chains)
+diff --git a/dist/AccountActivityService.mjs b/dist/AccountActivityService.mjs
+index 1fcffc95e31ffc54f108efe797118985a017ccc9..c4a59e19f4db8ed851d24f0f3fc4422b187ad7ee 100644
+--- a/dist/AccountActivityService.mjs
++++ b/dist/AccountActivityService.mjs
+@@ -331,6 +331,11 @@ async function _AccountActivityService_unsubscribeFromAllAccountActivity() {
+         await subscription.unsubscribe();
+     }
+ }, _AccountActivityService_convertToCaip10Address = function _AccountActivityService_convertToCaip10Address(account) {
++    // Guard against undefined or null scopes
++    if (!account.scopes || !Array.isArray(account.scopes)) {
++        // If scopes are not available, return raw address
++        return account.address;
++    }
+     // Check if account has EVM scopes
+     if (account.scopes.some((scope) => scope.startsWith('eip155:'))) {
+         // CAIP-10 format: eip155:0:address (subscribe to all EVM chains)
