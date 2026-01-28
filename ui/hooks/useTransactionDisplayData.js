@@ -354,7 +354,8 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (
     type === TransactionType.contractInteraction ||
     type === TransactionType.batch ||
-    type === TransactionType.revokeDelegation
+    type === TransactionType.revokeDelegation ||
+    type === TransactionType.gasPayment
   ) {
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
