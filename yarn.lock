@@ -8683,19 +8683,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "@metamask/subscription-controller@npm:5.3.1"
+"@metamask/subscription-controller@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "@metamask/subscription-controller@npm:5.4.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/polling-controller": "npm:^16.0.0"
+    "@metamask/polling-controller": "npm:^16.0.2"
     "@metamask/profile-sync-controller": "npm:^27.0.0"
-    "@metamask/transaction-controller": "npm:^62.4.0"
-    "@metamask/utils": "npm:^11.8.1"
+    "@metamask/transaction-controller": "npm:^62.9.2"
+    "@metamask/utils": "npm:^11.9.0"
     bignumber.js: "npm:^9.1.2"
-  checksum: 10/fdf9188838f9f988a964f9239d8298ac536d7ea2dc46da8b9c31fa4ed3e4e33121fb71e2297002adca4715b9ee115e3e9f275cc980f6ef95752981af57319964
+  checksum: 10/a44b012489ac01f5ae2f2b3a6ad492374f0a45b1b27e6ff64607005b1511162fd841e0b3e97dd088781ab42921c5bbabba828c714e71d54321e6f0f61eaeda74
   languageName: node
   linkType: hard
 
@@ -33669,7 +33669,7 @@ __metadata:
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/storage-service": "npm:^0.0.1"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^5.3.1"
+    "@metamask/subscription-controller": "npm:^5.4.1"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
