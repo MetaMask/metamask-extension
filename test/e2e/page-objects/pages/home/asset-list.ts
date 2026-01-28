@@ -91,7 +91,7 @@ class AssetListPage {
 
   private readonly tokenImportedSuccessMessage = {
     text: 'Token imported',
-    tag: 'h6',
+    tag: 'p',
   };
 
   private readonly tokenAddressInDetails =
@@ -109,7 +109,7 @@ class AssetListPage {
     '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenImportedMessageCloseButton =
-    '.actionable-message__message button[aria-label="Close"]';
+    '[data-testid="new-tokens-imported"] .mm-banner-base__close-button';
 
   private readonly tokenSearchResults = '.token-list__token_component';
 
