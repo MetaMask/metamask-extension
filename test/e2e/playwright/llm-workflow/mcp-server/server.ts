@@ -12,7 +12,7 @@ import type { WorkflowContext } from '@metamask/metamask-extension-mcp';
 import { createMetaMaskE2EContext } from '../capabilities/factory';
 import { metaMaskSessionManager } from './metamask-provider';
 
-function initializeWorkflowContext(): Omit<WorkflowContext, 'browser'> {
+function initializeWorkflowContext(): WorkflowContext {
   return createMetaMaskE2EContext();
 }
 

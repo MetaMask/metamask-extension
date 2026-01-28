@@ -43,7 +43,7 @@ const DEFAULT_PROD_CONFIG: ProdEnvironmentConfig = {
 
 export function createMetaMaskE2EContext(
   options: CreateMetaMaskContextOptions = {},
-): Omit<WorkflowContext, 'browser'> & { initializeSeeding: () => void } {
+): WorkflowContext & { initializeSeeding: () => void } {
   const config: E2EEnvironmentConfig = {
     ...DEFAULT_E2E_CONFIG,
     ...options.config,
@@ -100,7 +100,7 @@ export type CreateMetaMaskProdContextOptions = Omit<
 
 export function createMetaMaskProdContext(
   options: CreateMetaMaskProdContextOptions = {},
-): Omit<WorkflowContext, 'browser'> {
+): WorkflowContext {
   const config: ProdEnvironmentConfig = {
     ...DEFAULT_PROD_CONFIG,
     ...options.config,
