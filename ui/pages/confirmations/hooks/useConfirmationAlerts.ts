@@ -7,6 +7,7 @@ import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTime
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
+import { useSuggestedGasFeeHighAlert } from './alerts/transactions/useSuggestedGasFeeHighAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
@@ -58,6 +59,7 @@ function useTransactionAlerts(): Alert[] {
   const resimulationAlert = useResimulationAlert();
   const shieldCoverageAlert = useShieldCoverageAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
+  const suggestedGasFeeHighAlert = useSuggestedGasFeeHighAlert();
   const tokenTrustSignalAlerts = useTokenTrustSignalAlerts();
 
   return useMemo(
@@ -79,6 +81,7 @@ function useTransactionAlerts(): Alert[] {
       ...resimulationAlert,
       ...shieldCoverageAlert,
       ...signingOrSubmittingAlerts,
+      ...suggestedGasFeeHighAlert,
       ...tokenTrustSignalAlerts,
     ],
     [
@@ -99,6 +102,7 @@ function useTransactionAlerts(): Alert[] {
       resimulationAlert,
       shieldCoverageAlert,
       signingOrSubmittingAlerts,
+      suggestedGasFeeHighAlert,
       tokenTrustSignalAlerts,
     ],
   );

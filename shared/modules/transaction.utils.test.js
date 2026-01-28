@@ -1,4 +1,7 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  GasFeeEstimateType,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 import BigNumber from 'bignumber.js';
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -10,6 +13,7 @@ import {
 import { buildSetApproveForAllTransactionData } from '../../test/data/confirmations/set-approval-for-all';
 import {
   determineTransactionType,
+  getMarketFeeFromEstimates,
   getTransactionDataRecipient,
   hasTransactionData,
   isEIP1559Transaction,
@@ -682,6 +686,61 @@ describe('Transaction.utils', function () {
       const result = getTransactionDataRecipient(data);
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getMarketFeeFromEstimates', () => {
+    it('returns undefined when gasFeeEstimates is undefined', () => {
+      expect(getMarketFeeFromEstimates(undefined)).toBeUndefined();
+    });
+
+    it('returns medium.maxFeePerGas for FeeMarket type estimates', () => {
+      const estimates = {
+        type: GasFeeEstimateType.FeeMarket,
+        low: { maxFeePerGas: '0x1', maxPriorityFeePerGas: '0x1' },
+        medium: { maxFeePerGas: '0x2', maxPriorityFeePerGas: '0x2' },
+        high: { maxFeePerGas: '0x3', maxPriorityFeePerGas: '0x3' },
+      };
+
+      expect(getMarketFeeFromEstimates(estimates)).toBe('0x2');
+    });
+
+    it('returns medium for Legacy type estimates', () => {
+      const estimates = {
+        type: GasFeeEstimateType.Legacy,
+        low: '0x1',
+        medium: '0x2',
+        high: '0x3',
+      };
+
+      expect(getMarketFeeFromEstimates(estimates)).toBe('0x2');
+    });
+
+    it('returns gasPrice for GasPrice type estimates', () => {
+      const estimates = {
+        type: GasFeeEstimateType.GasPrice,
+        gasPrice: '0x5',
+      };
+
+      expect(getMarketFeeFromEstimates(estimates)).toBe('0x5');
+    });
+
+    it('returns undefined for unknown estimate type', () => {
+      const estimates = {
+        type: 'unknown-type',
+      };
+
+      expect(getMarketFeeFromEstimates(estimates)).toBeUndefined();
+    });
+
+    it('returns undefined when FeeMarket medium is missing', () => {
+      const estimates = {
+        type: GasFeeEstimateType.FeeMarket,
+        low: { maxFeePerGas: '0x1', maxPriorityFeePerGas: '0x1' },
+        high: { maxFeePerGas: '0x3', maxPriorityFeePerGas: '0x3' },
+      };
+
+      expect(getMarketFeeFromEstimates(estimates)).toBeUndefined();
     });
   });
 });
