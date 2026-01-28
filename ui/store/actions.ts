@@ -6302,6 +6302,39 @@ export function updateBalancesFoAccounts(
 }
 
 /**
+ * Informs the StaticAssetsController that the UI requires static assets polling
+ * for the given chain ids and selected account address.
+ *
+ * @param params - The parameters for the polling.
+ * @param params.chainIds - The chain ids to poll.
+ * @param params.selectedAccountAddress - The selected account address to poll.
+ * @returns The polling token that can be used to stop polling.
+ */
+export async function staticAssetsStartPolling({
+  chainIds,
+  selectedAccountAddress,
+}: {
+  chainIds: string[];
+  selectedAccountAddress: string;
+}): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'staticAssetsStartPolling',
+    [{ chainIds, selectedAccountAddress }],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+export async function staticAssetsStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('staticAssetsStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
  *

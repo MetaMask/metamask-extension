@@ -278,6 +278,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         },
       },
+      StaticAssetsController: {},
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},
