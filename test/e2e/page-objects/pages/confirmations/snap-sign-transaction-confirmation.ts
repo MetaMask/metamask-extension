@@ -49,11 +49,11 @@ class SnapTransactionConfirmation {
   }
 
   async clickFooterCancelButton() {
-    await this.driver.clickElement(this.cancelButton);
+    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 
   async clickFooterConfirmButton() {
-    await this.driver.clickElement(this.confirmButton);
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
   }
 }
 export default SnapTransactionConfirmation;
