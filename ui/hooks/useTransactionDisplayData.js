@@ -280,9 +280,11 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.swap) {
     title = t('swapTokenToToken', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol,
+        initialTransaction.sourceTokenSymbol ??
+        '',
       bridgeTokenDisplayData.destinationTokenSymbol ??
-        initialTransaction.destinationTokenSymbol,
+        initialTransaction.destinationTokenSymbol ??
+        '',
     ]);
     const symbolFromTx =
       bridgeTokenDisplayData.sourceTokenSymbol ??

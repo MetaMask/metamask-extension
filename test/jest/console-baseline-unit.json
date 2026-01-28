@@ -1228,7 +1228,7 @@
     "ui/hooks/useTransactionDisplayData.test.js": {
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2,
-      "MetaMask: XChain Swaps warnings": 4
+      "MetaMask: XChain Swaps warnings": 5
     },
     "ui/pages/confirmations/components/edit-gas-fee-button/edit-gas-fee-button.test.js": {
       "Reselect: Identity function warnings": 1,
@@ -3554,6 +3554,6 @@
       "warn: No tokens found for chainId:": 1
     }
   },
-  "generated": "2025-12-15T13:34:23.962Z",
-  "nodeVersion": "v24.11.1"
+  "generated": "2026-01-28T22:26:17.587Z",
+  "nodeVersion": "v24.13.0"
 }

@@ -262,4 +262,56 @@ describe('useTransactionDisplayData', () => {
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
+
+  it('should handle swap transaction with undefined token symbols', () => {
+    const swapWithUndefinedTokens = {
+      nonce: '0x1',
+      initialTransaction: {
+        id: 9999999999999999,
+        time: 1589314601567,
+        status: 'confirmed',
+        chainId: '0x4',
+        type: 'swap',
+        hash: '0xtest123',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          nonce: '0x1',
+          value: '0xde0b6b3a7640000',
+          gas: '0x5208',
+          gasPrice: '0x2540be400',
+        },
+        // sourceTokenSymbol and destinationTokenSymbol are undefined
+      },
+      transactions: [],
+      primaryTransaction: {
+        id: 9999999999999999,
+        time: 1589314601567,
+        status: 'confirmed',
+        chainId: '0x4',
+        type: 'swap',
+        hash: '0xtest123',
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+          nonce: '0x1',
+          value: '0xde0b6b3a7640000',
+          gas: '0x5208',
+          gasPrice: '0x2540be400',
+        },
+        // sourceTokenSymbol and destinationTokenSymbol are undefined
+      },
+      hasRetried: false,
+      hasCancelled: false,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(swapWithUndefinedTokens),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+
+    // Should not throw error and should return a title with empty strings
+    expect(result.current.title).toStrictEqual('Swap  to ');
+  });
 });
