@@ -207,11 +207,15 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     try {
       console.log(LOG_TAG, 'Verifying device is ready');
 
-      // Check if the device session has been created.
-      const {
-        _state: { sessionId },
-      } = await getTrezorDeviceStatus();
-      if (!sessionId) {
+      // Check if the Trezor Connect session has been established.
+      // This doesn't open a popup - it just checks internal session state.
+      // The actual PIN/passphrase prompts happen during signing operations.
+      const deviceStatus = await getTrezorDeviceStatus();
+
+      console.log(LOG_TAG, 'Trezor device status:', deviceStatus);
+
+      // Check if session exists (indicates Trezor Connect is initialized)
+      if (!deviceStatus?._state?.sessionId) {
         throw createHardwareWalletError(
           ErrorCode.ConnectionClosed,
           HardwareWalletType.Trezor,

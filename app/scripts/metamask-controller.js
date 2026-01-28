@@ -2708,6 +2708,7 @@ export default class MetamaskController extends EventEmitter {
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
+      getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5483,6 +5484,26 @@ export default class MetamaskController extends EventEmitter {
     return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
       async (keyring) => await keyring.getAppNameAndVersion(),
+    );
+  }
+
+  /**
+   * Get Trezor device features to verify the device is ready.
+   * This is the Trezor equivalent of Ledger's getAppNameAndVersion.
+   * Returns device info including whether it's unlocked and initialized.
+   *
+   * @returns {Promise<object>} The Trezor device features
+   */
+  async getTrezorFeatures() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.trezor },
+      async (keyring) => {
+        // Access the bridge's getFeatures method
+        if (keyring.bridge?.getFeatures) {
+          return await keyring.bridge.getFeatures();
+        }
+        throw new Error('Trezor bridge does not support getFeatures');
+      },
     );
   }
 

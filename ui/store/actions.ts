@@ -8413,6 +8413,35 @@ export async function getTrezorDeviceStatus(): Promise<DeviceState> {
   );
 }
 
+/**
+ * Trezor device features response type
+ */
+export type TrezorFeaturesResponse = {
+  success: boolean;
+  payload: {
+    device_id?: string;
+    model?: string;
+    label?: string;
+    initialized?: boolean;
+    unlocked?: boolean;
+    pin_protection?: boolean;
+    passphrase_protection?: boolean;
+    error?: string;
+  };
+};
+
+/**
+ * Get Trezor device features to verify the device is ready.
+ * This is the Trezor equivalent of Ledger's getAppNameAndVersion.
+ * Returns device info including whether it's unlocked and initialized.
+ */
+export async function getTrezorFeatures(): Promise<TrezorFeaturesResponse> {
+  return await submitRequestToBackground<TrezorFeaturesResponse>(
+    'getTrezorFeatures',
+    [],
+  );
+}
+
 export async function clearLedgerCallbacks() {
   return await submitRequestToBackground<void>('clearLedgerCallbacks', []);
 }
