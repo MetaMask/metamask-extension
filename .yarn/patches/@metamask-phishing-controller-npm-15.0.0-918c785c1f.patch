@@ -1,0 +1,38 @@
+diff --git a/dist/PhishingController.cjs b/dist/PhishingController.cjs
+index 4e5199e58d41f080c303fd8f009fcb85ffff65ad..d80945f832a97582677a75b9bf144bb239a689e2 100644
+--- a/dist/PhishingController.cjs
++++ b/dist/PhishingController.cjs
+@@ -915,7 +915,13 @@ async function _PhishingController_updateC2DomainBlocklist() {
+     const response = await (0, controller_utils_1.safelyExecute)(() => fetch(input, { cache: 'no-cache' }), true);
+     switch (response?.status) {
+         case 200: {
+-            return await response.json();
++            try {
++                return await response.json();
++            } catch (error) {
++                // Handle case where response has 200 status but empty/invalid JSON body
++                console.warn(`Failed to parse JSON response from ${input}:`, error);
++                return null;
++            }
+         }
+         default: {
+             return null;
+diff --git a/dist/PhishingController.mjs b/dist/PhishingController.mjs
+index 49a9b67302fe5ed1964941a450beefa5fbaebf28..f3e8a004cb1251e9142b4d266606743c52d9c188 100644
+--- a/dist/PhishingController.mjs
++++ b/dist/PhishingController.mjs
+@@ -912,7 +912,13 @@ async function _PhishingController_updateC2DomainBlocklist() {
+     const response = await safelyExecute(() => fetch(input, { cache: 'no-cache' }), true);
+     switch (response?.status) {
+         case 200: {
+-            return await response.json();
++            try {
++                return await response.json();
++            } catch (error) {
++                // Handle case where response has 200 status but empty/invalid JSON body
++                console.warn(`Failed to parse JSON response from ${input}:`, error);
++                return null;
++            }
+         }
+         default: {
+             return null;
