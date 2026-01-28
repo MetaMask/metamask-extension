@@ -1610,6 +1610,8 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
           [MetaMetricsUserTrait.PrivacyModeEnabled]: true,
           [MetaMetricsUserTrait.NetworkFilterPreference]: [],
+          [MetaMetricsUserTrait.Platform]: 'Chrome',
+          [MetaMetricsUserTrait.InstallType]: 'unknown',
         });
       });
     });

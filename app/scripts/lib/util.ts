@@ -2,6 +2,7 @@ import urlLib from 'url';
 import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
+import browser from 'webextension-polyfill';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
@@ -82,6 +83,47 @@ const getPlatform = () => {
 };
 
 /**
+ * Cached install type value.
+ * Possible values: 'admin', 'development', 'normal', 'sideload', 'other', 'unknown'
+ * - 'normal' means installed from official store (Chrome Web Store, Firefox Add-ons, etc.)
+ * - 'development' means loaded unpacked in developer mode
+ * - 'sideload' means installed by other software
+ * - 'admin' means installed by admin policy (enterprise)
+ * - 'unknown' means the value hasn't been fetched yet or fetch failed
+ */
+let cachedInstallType = 'unknown';
+
+/**
+ * Initializes the install type by fetching it from the browser API.
+ * This should be called early in the extension lifecycle.
+ * The result is cached and can be retrieved synchronously via getInstallType().
+ *
+ * @returns A promise that resolves to the install type string
+ */
+const initInstallType = async (): Promise<string> => {
+  try {
+    const extensionInfo = await browser.management.getSelf();
+    if (extensionInfo.installType) {
+      cachedInstallType = extensionInfo.installType;
+    }
+  } catch (error) {
+    // Silently fail - install type will remain 'unknown'
+    console.error('Error getting extension installType', error);
+  }
+  return cachedInstallType;
+};
+
+/**
+ * Returns the cached install type.
+ * Call initInstallType() first to populate the cache.
+ *
+ * @returns The install type string ('normal', 'development', 'sideload', 'admin', 'other', or 'unknown')
+ */
+const getInstallType = (): string => {
+  return cachedInstallType;
+};
+
+/**
  * Converts a hex string to a BN object
  *
  * @param inputHex - A number represented as a hex string
@@ -159,8 +201,10 @@ export {
   checkAlarmExists,
   getChainType,
   getEnvironmentType,
+  getInstallType,
   getPlatform,
   hexToBn,
+  initInstallType,
 };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
