@@ -1,0 +1,199 @@
+
+[90m┌[39m  Building storybook v10.2.1
+[90m│[39m
+[32m◇[39m  Cleaning outputDir: [36mstorybook-build[39m
+[90m│[39m
+[32m◇[39m  Loading presets
+[90m│[39m
+[32m◇[39m  Building manager..
+[90m│[39m
+[34m●[39m  Building preview..
+[90m│[39m
+[34m●[39m  Addon-docs: using MDX3
+[90m│[39m
+[34m●[39m  Using implicit CSS loaders
+[90m│[39m
+[34m●[39m  Using default Webpack5 setup
+<s> [webpack.Progress] 0% 
+
+<s> [webpack.Progress] 1% setup before run
+<s> [webpack.Progress] 1% setup before run NodeEnvironmentPlugin
+<s> [webpack.Progress] 1% setup before run storybook-mock-plugin
+<i> [storybook-mock-plugin] Mock map updated with 0 mocks.
+<s> [webpack.Progress] 1% setup before run
+<s> [webpack.Progress] 2% setup run
+<s> [webpack.Progress] 2% setup run
+<s> [webpack.Progress] 4% setup normal module factory
+<s> [webpack.Progress] 4% setup normal module factory CaseSensitivePathsPlugin
+<s> [webpack.Progress] 4% setup normal module factory NormalModuleReplacementPlugin
+<s> [webpack.Progress] 4% setup normal module factory
+<s> [webpack.Progress] 5% setup context module factory
+<s> [webpack.Progress] 5% setup context module factory
+<s> [webpack.Progress] 6% setup before compile
+<s> [webpack.Progress] 6% setup before compile ProgressPlugin
+<s> [webpack.Progress] 6% setup before compile
+<s> [webpack.Progress] 7% setup compile
+<s> [webpack.Progress] 7% setup compile ExternalsPlugin
+<s> [webpack.Progress] 7% setup compile ExternalsPlugin
+<s> [webpack.Progress] 7% setup compile
+<s> [webpack.Progress] 8% setup compilation
+<s> [webpack.Progress] 8% setup compilation CopyPlugin
+<s> [webpack.Progress] 8% setup compilation ArrayPushCallbackChunkFormatPlugin
+<s> [webpack.Progress] 8% setup compilation JsonpChunkLoadingPlugin
+<s> [webpack.Progress] 8% setup compilation StartupChunkDependenciesPlugin
+<s> [webpack.Progress] 8% setup compilation ImportScriptsChunkLoadingPlugin
+<s> [webpack.Progress] 8% setup compilation WorkerPlugin
+<s> [webpack.Progress] 8% setup compilation SplitChunksPlugin
+<s> [webpack.Progress] 8% setup compilation RuntimeChunkPlugin
+<s> [webpack.Progress] 8% setup compilation ResolverCachePlugin
+<s> [webpack.Progress] 8% setup compilation HtmlWebpackPlugin
+<s> [webpack.Progress] 8% setup compilation
+<s> [webpack.Progress] 9% setup compilation
+<s> [webpack.Progress] 9% setup compilation DefinePlugin
+<s> [webpack.Progress] 9% setup compilation ProgressPlugin
+<s> [webpack.Progress] 9% setup compilation ProvidePlugin
+<s> [webpack.Progress] 9% setup compilation WebpackInjectMockerRuntimePlugin
+<s> [webpack.Progress] 9% setup compilation ExternalsPlugin
+<s> [webpack.Progress] 9% setup compilation ExternalsPlugin
+<s> [webpack.Progress] 9% setup compilation ChunkPrefetchPreloadPlugin
+<s> [webpack.Progress] 9% setup compilation SourceMapDevToolPlugin
+<s> [webpack.Progress] 9% setup compilation JavascriptModulesPlugin
+<s> [webpack.Progress] 9% setup compilation JsonModulesPlugin
+<s> [webpack.Progress] 9% setup compilation AssetModulesPlugin
+<s> [webpack.Progress] 9% setup compilation EntryPlugin
+<s> [webpack.Progress] 9% setup compilation RuntimePlugin
+<s> [webpack.Progress] 9% setup compilation InferAsyncModulesPlugin
+<s> [webpack.Progress] 9% setup compilation DataUriPlugin
+<s> [webpack.Progress] 9% setup compilation FileUriPlugin
+<s> [webpack.Progress] 9% setup compilation CompatibilityPlugin
+<s> [webpack.Progress] 9% setup compilation HarmonyModulesPlugin
+<s> [webpack.Progress] 9% setup compilation AMDPlugin
+<s> [webpack.Progress] 9% setup compilation RequireJsStuffPlugin
+<s> [webpack.Progress] 9% setup compilation CommonJsPlugin
+<s> [webpack.Progress] 9% setup compilation LoaderPlugin
+<s> [webpack.Progress] 9% setup compilation LoaderPlugin
+<s> [webpack.Progress] 9% setup compilation NodeStuffPlugin
+<s> [webpack.Progress] 9% setup compilation APIPlugin
+<s> [webpack.Progress] 9% setup compilation ExportsInfoApiPlugin
+<s> [webpack.Progress] 9% setup compilation WebpackIsIncludedPlugin
+<s> [webpack.Progress] 9% setup compilation ConstPlugin
+<s> [webpack.Progress] 9% setup compilation UseStrictPlugin
+<s> [webpack.Progress] 9% setup compilation RequireIncludePlugin
+<s> [webpack.Progress] 9% setup compilation RequireEnsurePlugin
+<s> [webpack.Progress] 9% setup compilation RequireContextPlugin
+<s> [webpack.Progress] 9% setup compilation ImportPlugin
+<s> [webpack.Progress] 9% setup compilation ImportMetaContextPlugin
+<s> [webpack.Progress] 9% setup compilation SystemPlugin
+<s> [webpack.Progress] 9% setup compilation ImportMetaPlugin
+<s> [webpack.Progress] 9% setup compilation URLPlugin
+<s> [webpack.Progress] 9% setup compilation DefaultStatsFactoryPlugin
+<s> [webpack.Progress] 9% setup compilation DefaultStatsPresetPlugin
+<s> [webpack.Progress] 9% setup compilation DefaultStatsPrinterPlugin
+<s> [webpack.Progress] 9% setup compilation JavascriptMetaInfoPlugin
+<s> [webpack.Progress] 9% setup compilation EnsureChunkConditionsPlugin
+<s> [webpack.Progress] 9% setup compilation RemoveEmptyChunksPlugin
+<s> [webpack.Progress] 9% setup compilation MergeDuplicateChunksPlugin
+<s> [webpack.Progress] 9% setup compilation FlagIncludedChunksPlugin
+<s> [webpack.Progress] 9% setup compilation SideEffectsFlagPlugin
+<s> [webpack.Progress] 9% setup compilation FlagDependencyExportsPlugin
+<s> [webpack.Progress] 9% setup compilation FlagDependencyUsagePlugin
+<s> [webpack.Progress] 9% setup compilation InnerGraphPlugin
+<s> [webpack.Progress] 9% setup compilation MangleExportsPlugin
+<s> [webpack.Progress] 9% setup compilation ModuleConcatenationPlugin
+<s> [webpack.Progress] 9% setup compilation NoEmitOnErrorsPlugin
+<s> [webpack.Progress] 9% setup compilation RealContentHashPlugin
+<s> [webpack.Progress] 9% setup compilation WasmFinalizeExportsPlugin
+<s> [webpack.Progress] 9% setup compilation NamedModuleIdsPlugin
+<s> [webpack.Progress] 9% setup compilation DeterministicChunkIdsPlugin
+<s> [webpack.Progress] 9% setup compilation DefinePlugin
+<s> [webpack.Progress] 9% setup compilation TerserPlugin
+<s> [webpack.Progress] 9% setup compilation TemplatedPathPlugin
+<s> [webpack.Progress] 9% setup compilation RecordIdsPlugin
+<s> [webpack.Progress] 9% setup compilation WarnCaseSensitiveModulesPlugin
+<s> [webpack.Progress] 9% setup compilation IgnoreWarningsPlugin
+<s> [webpack.Progress] 9% setup compilation
+<s> [webpack.Progress] 10% building
+<s> [webpack.Progress] 10% building 0/1 entries 0/0 dependencies 0/0 modules
+<s> [webpack.Progress] 10% building 0/1 entries 6/14 dependencies 0/5 modules
+[90m│[39m
+[34m●[39m  Copying static files: [36mapp[39m at [36mstorybook-build[39m
+<s> [webpack.Progress] 10% building 0/1 entries 43/80 dependencies 8/31 modules
+<s> [webpack.Progress] 11% building 0/1 entries 137/146 dependencies 35/65 modules
+<s> [webpack.Progress] 12% building 0/1 entries 183/195 dependencies 38/79 modules
+<s> [webpack.Progress] 12% building 0/1 entries 200/210 dependencies 38/82 modules
+<s> [webpack.Progress] 13% building 0/1 entries 300/312 dependencies 59/108 modules
+<s> [webpack.Progress] 18% building 0/1 entries 500/1529 dependencies 155/163 modules
+<s> [webpack.Progress] 18% building 0/1 entries 700/1529 dependencies 155/263 modules
+<s> [webpack.Progress] 18% building 0/1 entries 900/1529 dependencies 155/367 modules
+<s> [webpack.Progress] 18% building 0/1 entries 1100/1529 dependencies 155/475 modules
+<s> [webpack.Progress] 18% building 0/1 entries 1300/1529 dependencies 155/582 modules
+<s> [webpack.Progress] 18% building 0/1 entries 1489/1529 dependencies 155/700 modules
+<s> [webpack.Progress] 26% building 0/1 entries 1529/1529 dependencies 300/716 modules
+<s> [webpack.Progress] 31% building 0/1 entries 1529/1529 dependencies 400/716 modules
+<s> [webpack.Progress] 37% building 0/1 entries 1537/1546 dependencies 500/718 modules
+<s> [webpack.Progress] 42% building 0/1 entries 1554/1600 dependencies 597/724 modules
+<s> [webpack.Progress] 43% building 0/1 entries 1576/1661 dependencies 600/725 modules
+<s> [webpack.Progress] 44% building 0/1 entries 1700/1867 dependencies 619/738 modules
+<s> [webpack.Progress] 44% building 0/1 entries 1900/1953 dependencies 620/766 modules
+<s> [webpack.Progress] 48% building 0/1 entries 1951/1968 dependencies 700/806 modules
+<s> [webpack.Progress] 64% building 1/1 entries 1982/1986 dependencies 757/833 modules
+<s> [webpack.Progress] 99% cache begin idle
+<s> [webpack.Progress] 99% cache begin idle
+<s> [webpack.Progress] 100% 
+
+<s> [webpack.Progress] 99% cache shutdown
+<s> [webpack.Progress] 99% cache shutdown
+<s> [webpack.Progress] 100% 
+
+[90m│[39m
+[31m■[39m  Failed to build the preview
+[90m│[39m
+[31m■[39m  [38;2;241;97;97mSB_BUILDER-WEBPACK5_0002 (WebpackInvocationError): Module not found:
+[90m│[39m  Error: Can't resolve '@storybook/blocks' in
+[90m│[39m  '.\ui\components\component-library\skeleton'[39m
+[90m│[39m  at
+[90m│[39m  file:///C:/Depot/MetaMask/metamask-extension/node_modules/@storybook/builder-webpack5/dist/index.js:833:35
+[90m│[39m  at
+[90m│[39m  .\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\HookWebpackError.js:66:2
+[90m│[39m  at Hook.eval [as callAsync] (eval at create
+[90m│[39m  (.\node_modules\tapable\lib\HookCodeFactory.js:31:10),
+[90m│[39m  <anonymous>:11:1)
+[90m│[39m  at Hook.CALL_ASYNC_DELEGATE [as _callAsync]
+[90m│[39m  (.\node_modules\tapable\lib\Hook.js:21:14)
+[90m│[39m  at Cache.shutdown
+[90m│[39m  (.\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\Cache.js:157:23)
+[90m│[39m  at
+[90m│[39m  .\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\Compiler.js:1407:15
+[90m│[39m  at Hook.eval [as callAsync] (eval at create
+[90m│[39m  (.\node_modules\tapable\lib\HookCodeFactory.js:31:10),
+[90m│[39m  <anonymous>:6:1)
+[90m│[39m  at Hook.CALL_ASYNC_DELEGATE [as _callAsync]
+[90m│[39m  (.\node_modules\tapable\lib\Hook.js:21:14)
+[90m│[39m  at Compiler.close
+[90m│[39m  (.\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\Compiler.js:1400:23)
+[90m│[39m  at
+[90m│[39m  file:///C:/Depot/MetaMask/metamask-extension/node_modules/@storybook/builder-webpack5/dist/index.js:833:18
+[90m│[39m  at finalCallback
+[90m│[39m  (.\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\Compiler.js:519:32)
+[90m│[39m  at onCompiled
+[90m│[39m  (.\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\Compiler.js:533:20)
+[90m│[39m  at
+[90m│[39m  .\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\Compiler.js:1355:21
+[90m│[39m  at eval (eval at create
+[90m│[39m  (.\node_modules\tapable\lib\HookCodeFactory.js:31:10),
+[90m│[39m  <anonymous>:20:1)
+[90m│[39m  at
+[90m│[39m  .\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\EntryPlugin.js:49:5
+[90m│[39m  at
+[90m│[39m  .\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\Compilation.js:2486:13
+[90m│[39m  at
+[90m│[39m  .\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\Compilation.js:2371:6
+[90m│[39m  at
+[90m│[39m  .\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\Compilation.js:2314:13
+[90m│[39m  at
+[90m│[39m  .\node_modules\@storybook\builder-webpack5\node_modules\webpack\lib\util\AsyncQueue.js:382:6
+[90m│[39m  at process.processTicksAndRejections
+[90m│[39m  (node:internal/process/task_queues:84:11)
+[90m│[39m
+[90m└[39m  Storybook exited with an error
+

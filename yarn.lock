@@ -13550,6 +13550,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@storybook/csf@npm:0.1.13":
+  version: 0.1.13
+  resolution: "@storybook/csf@npm:0.1.13"
+  dependencies:
+    type-fest: "npm:^2.19.0"
+  checksum: 10/8a590703c44180798869fd12c1f314cb96de18349415a33bcfe30ef6af11fdc1cdb755ea620dedfd5eb7666cf05af5647b77fe28b63000aa52b53b0dc3c77bb5
+  languageName: node
+  linkType: hard
+
+"@storybook/docs-tools@npm:8.6.14":
+  version: 8.6.14
+  resolution: "@storybook/docs-tools@npm:8.6.14"
+  peerDependencies:
+    storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
+  checksum: 10/371001ab5c0ef6028bfd3df2d19a2ac8ecc6ae2bcb408c16923bd6592c545dfd0515eb8023ebcb68dd0c8ea3483f0c5132705dc4667dbcc58fad3257b00148dc
+  languageName: node
+  linkType: hard
+
 "@storybook/global@npm:^5.0.0":
   version: 5.0.0
   resolution: "@storybook/global@npm:5.0.0"
@@ -33231,6 +33249,8 @@ __metadata:
     "@storybook/addon-actions": "npm:^9.0.8"
     "@storybook/addon-docs": "npm:^10.2.1"
     "@storybook/components": "npm:^8.6.14"
+    "@storybook/csf": "npm:0.1.13"
+    "@storybook/docs-tools": "npm:8.6.14"
     "@storybook/icons": "npm:^2.0.1"
     "@storybook/manager-api": "npm:^8.6.14"
     "@storybook/mdx2-csf": "npm:1.1.0"
@@ -42804,6 +42824,13 @@ __metadata:
   version: 0.8.1
   resolution: "type-fest@npm:0.8.1"
   checksum: 10/fd4a91bfb706aeeb0d326ebd2e9a8ea5263979e5dec8d16c3e469a5bd3a946e014a062ef76c02e3086d3d1c7209a56a20a4caafd0e9f9a5c2ab975084ea3d388
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^2.19.0":
+  version: 2.19.0
+  resolution: "type-fest@npm:2.19.0"
+  checksum: 10/7bf9e8fdf34f92c8bb364c0af14ca875fac7e0183f2985498b77be129dc1b3b1ad0a6b3281580f19e48c6105c037fb966ad9934520c69c6434d17fd0af4eed78
   languageName: node
   linkType: hard
 

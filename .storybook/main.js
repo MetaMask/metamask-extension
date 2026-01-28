@@ -1,5 +1,5 @@
 const path = require('path');
-const { ProvidePlugin } = require('webpack');
+const { ProvidePlugin, NormalModuleReplacementPlugin } = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '../.metamaskrc') });
@@ -16,9 +16,14 @@ module.exports = {
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.tsx',
-    '../ui/**/*.stories.mdx',
-    './*.stories.mdx',
+    '../ui/**/*.mdx',
+    './*.mdx',
   ],
+
+  typescript: {
+    // Disable react-docgen to avoid TS/JSX parse errors from legacy stories
+    reactDocgen: false,
+  },
 
   addons: [
     '@storybook/addon-a11y',
@@ -37,6 +42,8 @@ module.exports = {
 
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({
+    // Preserve Storybook defaults (presets/plugins) while allowing project overrides.
+    ...options,
     overrides: options.overrides,
   }),
 
@@ -45,6 +52,33 @@ module.exports = {
     config.node = {
       __filename: true,
     };
+    config.resolve.alias['react$'] = path.resolve(
+      __dirname,
+      './react-compat.js',
+    );
+    config.resolve.alias['@storybook/addon-docs'] = path.resolve(
+      __dirname,
+      './addon-docs-compat.js',
+    );
+    config.resolve.alias['@storybook/addon-docs/blocks'] = path.resolve(
+      __dirname,
+      './addon-docs-compat.js',
+    );
+    config.resolve.alias['@storybook/addon-docs/blocks$'] = path.resolve(
+      __dirname,
+      './addon-docs-compat.js',
+    );
+    config.resolve.alias['@storybook/blocks'] = path.resolve(
+      __dirname,
+      './addon-docs-compat.js',
+    );
+    config.resolve.alias['storybook/internal/theming'] =
+      require.resolve('@storybook/theming');
+    config.resolve.alias['react/jsx-runtime'] =
+      require.resolve('react/jsx-runtime');
+    config.resolve.alias['react/jsx-dev-runtime'] = require.resolve(
+      'react/jsx-dev-runtime',
+    );
     config.resolve.alias['webextension-polyfill'] = require.resolve(
       '../ui/__mocks__/webextension-polyfill.js',
     );
@@ -72,6 +106,17 @@ module.exports = {
         'readable-stream/lib/_stream_transform.js',
       ),
     };
+    config.module.rules.unshift({
+      // Pre-transpile JS/TS with Babel using project config before CSF/export-order loaders run.
+      test: /\.(mjs|tsx?|jsx?)$/,
+      exclude: /node_modules/,
+      enforce: 'pre',
+      use: [
+        {
+          loader: path.resolve(__dirname, './babel-inline-loader.js'),
+        },
+      ],
+    });
     config.module.strictExportPresence = true;
     config.module.rules.push({
       test: /\.scss$/,
@@ -128,6 +173,12 @@ module.exports = {
       new ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
       }),
+    );
+    config.plugins.push(
+      new NormalModuleReplacementPlugin(
+        /@storybook\/addon-docs\/blocks/,
+        path.resolve(__dirname, './addon-docs-compat.js'),
+      ),
     );
     return config;
   },
