@@ -1,5 +1,6 @@
 const { promises: fs } = require('fs');
 const path = require('path');
+const { spawn } = require('child_process');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
@@ -74,6 +75,54 @@ async function main() {
   } = argv;
 
   let { stopAfterOneFailure } = argv;
+
+  /**
+   * Runs mocha with XML filtering from stderr.
+   * Filters out XML lines while preserving all other output.
+   * This allows XML files to be generated for CI workflows while
+   * keeping console logs clean and readable.
+   *
+   * @param {string[]} args - Array of arguments to pass to yarn mocha
+   */
+  async function runMochaWithXmlFilter(args) {
+    return new Promise((resolve, reject) => {
+      const childProcess = spawn('yarn', args, {
+        shell: true,
+        stdio: ['inherit', 'pipe', 'pipe'],
+      });
+
+      // Pipe stdout directly (enhanced reporter output)
+      childProcess.stdout.pipe(process.stdout);
+
+      // Filter XML from stderr
+      childProcess.stderr.on('data', (data) => {
+        const lines = data.toString().split('\n');
+        for (const line of lines) {
+          // Skip XML lines (they start with <?xml or <testsuites)
+          if (
+            !line.trim().startsWith('<?xml') &&
+            !line.trim().startsWith('<testsuites')
+          ) {
+            process.stderr.write(line);
+            process.stderr.write('\n');
+          }
+        }
+      });
+
+      childProcess.on('exit', (code, signal) => {
+        if (code === 0) {
+          resolve();
+        } else {
+          const error = new Error(`Process exited with code ${code}`);
+          error.code = code;
+          error.signal = signal;
+          reject(error);
+        }
+      });
+
+      childProcess.on('error', reject);
+    });
+  }
 
   const runTestsOnSingleBrowser = async (selectedBrowserForRun) => {
     if (!selectedBrowserForRun) {
@@ -157,13 +206,16 @@ async function main() {
       reporters.push('--reporter=mocha-junit-reporter');
       reporterOptions.push(
         '--reporter-options',
-        `mochaFile=${junitOutputPath},toConsole=false`,
+        JSON.stringify({
+          mochaFile: junitOutputPath,
+          toConsole: false,
+        }),
       );
     }
 
     try {
       await retry({ retries, stopAfterOneFailure }, async () => {
-        await runInShell('yarn', [
+        const mochaArgs = [
           'mocha',
           `--config=${configFile}`,
           `--timeout=${testTimeoutInMilliseconds}`,
@@ -173,7 +225,14 @@ async function main() {
           ...extraArgs,
           e2eTestPath,
           exit,
-        ]);
+        ];
+
+        // In CI, use XML filter to suppress XML console output while keeping files
+        if (isCI) {
+          await runMochaWithXmlFilter(mochaArgs);
+        } else {
+          await runInShell('yarn', mochaArgs);
+        }
       });
     } catch (error) {
       // If the file path includes 'tolerate-failure', we log and tolerate the failure
