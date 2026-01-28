@@ -168,11 +168,20 @@ export function getAssetsControllerMessenger(
 }
 
 /**
+ * PreferencesController:getState action
+ */
+type PreferencesControllerGetStateAction = {
+  type: 'PreferencesController:getState';
+  handler: () => { useTokenDetection: boolean; [key: string]: unknown };
+};
+
+/**
  * Actions needed during AssetsController initialization
  */
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerToken
-  | SnapControllerHandleRequestAction;
+  | SnapControllerHandleRequestAction
+  | PreferencesControllerGetStateAction;
 
 /**
  * Get a restricted messenger for AssetsController initialization.
@@ -199,6 +208,7 @@ export function getAssetsControllerInitMessenger(
     actions: [
       'AuthenticationController:getBearerToken',
       'SnapController:handleRequest',
+      'PreferencesController:getState',
     ],
   });
 

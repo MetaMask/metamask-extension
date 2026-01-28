@@ -5734,8 +5734,8 @@ __metadata:
   linkType: hard
 
 "@metamask/assets-controller@file:.yalc/@metamask/assets-controller::locator=metamask-crx%40workspace%3A.":
-  version: 1.1.0
-  resolution: "@metamask/assets-controller@file:.yalc/@metamask/assets-controller#.yalc/@metamask/assets-controller::hash=4754ba&locator=metamask-crx%40workspace%3A."
+  version: 1.3.0
+  resolution: "@metamask/assets-controller@file:.yalc/@metamask/assets-controller#.yalc/@metamask/assets-controller::hash=0fd5ff&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/providers": "npm:^5.7.0"
@@ -5754,7 +5754,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     viem: "npm:^2.44.4"
-  checksum: 10/51b39d03a1718750d7715e5ecd56dd9b287bcdae5f6e57fc22b033fd9a976aa0ca5a3ac0388ded07607b330159f6d7c763aec62ba93a2a40af244ede0815e1f1
+  checksum: 10/ed1a9fdeb414f93cd91730d4d64bd08684142ef7fd12702382958227ba016eb6e49928ae76b02fa1a6f9b9c7b1939c0f4837ab15531a4f0ee28faf76b2c7f5be
   languageName: node
   linkType: hard
 
