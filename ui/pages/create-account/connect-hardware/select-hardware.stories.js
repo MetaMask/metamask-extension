@@ -16,7 +16,7 @@ export const DefaultStory = () => {
     <SelectHardware
       onCancel={() => null}
       browserSupported
-      connectToHardwareWallet={(_selectedDevice) => {
+      connectToHardwareWallet={() => {
         /* no-op */
       }}
       ledgerTransportType={LedgerTransportTypes.live}
