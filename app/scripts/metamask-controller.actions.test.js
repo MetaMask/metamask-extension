@@ -38,8 +38,8 @@ const browserPolyfillMock = {
   },
   storage: {
     local: {
-      get: jest.fn().mockReturnValue({}),
-      set: jest.fn(),
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
     },
   },
 };

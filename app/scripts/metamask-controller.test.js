@@ -99,6 +99,10 @@ const browserPolyfillMock = {
     getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
   },
   storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
+    },
     session: {
       set: jest.fn(),
     },
