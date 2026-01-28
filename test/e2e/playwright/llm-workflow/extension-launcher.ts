@@ -3,9 +3,9 @@ import { promises as fs, existsSync } from 'fs';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
 import {
   ConsoleErrorBuffer,
-  delay,
   fetchWithTimeout,
   resolveExtensionId,
+  retryUntil,
   waitForExtensionUiReady,
 } from '@metamask/metamask-extension-mcp';
 import type {
@@ -128,6 +128,22 @@ export class MetaMaskExtensionLauncher {
     }
   }
 
+  private ensureExtensionInitialized(): void {
+    if (!this.extensionPage || !this.extensionId) {
+      throw new Error(
+        'Extension not initialized. Call launch() before using this method.',
+      );
+    }
+  }
+
+  private ensureBrowserContext(): void {
+    if (!this.context || !this.extensionId) {
+      throw new Error(
+        'Browser context not initialized. Call launch() before using this method.',
+      );
+    }
+  }
+
   private getAnvilPort(): number {
     if (
       this.options.network?.mode === 'custom' &&
@@ -181,14 +197,12 @@ export class MetaMaskExtensionLauncher {
 
       await this.waitForExtensionReady();
 
-      if (!this.extensionPage || !this.extensionId) {
-        throw new Error('Failed to initialize extension');
-      }
+      this.ensureExtensionInitialized();
 
       return {
-        context: this.context,
-        extensionPage: this.extensionPage,
-        extensionId: this.extensionId,
+        context: this.context as BrowserContext,
+        extensionPage: this.extensionPage as Page,
+        extensionId: this.extensionId as string,
       };
     } catch (error) {
       console.error('Launch failed, cleaning up services...');
@@ -241,40 +255,37 @@ export class MetaMaskExtensionLauncher {
     }
 
     const port = this.mockServer.getPort();
-    let ready = false;
 
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      try {
-        const result = await fetchWithTimeout(
-          `https://localhost:${port}/`,
-          { method: 'GET' },
-          3000,
-        );
-        if (result.status === 503 || result.ok) {
-          ready = true;
-          break;
+    // MockServer uses self-signed certificates. We retry until the server responds,
+    // treating cert errors as "server is ready" since they indicate the server is listening.
+    const response = await retryUntil(
+      async () => {
+        try {
+          const result = await fetchWithTimeout(
+            `https://localhost:${port}/`,
+            { method: 'GET' },
+            3000,
+          );
+          // Success: got a response (503 is expected during startup)
+          return result;
+        } catch (e) {
+          const error = e as Error;
+          // Connection refused or timeout - server not ready yet, keep retrying
+          if (
+            (error.cause && String(error.cause).includes('ECONNREFUSED')) ||
+            error.name === 'AbortError'
+          ) {
+            return null;
+          }
+          // Other errors (e.g., self-signed cert rejection) mean server is responding
+          return { ok: true } as Response;
         }
-      } catch (e) {
-        const error = e as Error;
-        if (error.cause && String(error.cause).includes('ECONNREFUSED')) {
-          await delay(200);
-          continue;
-        }
-        if (error.name === 'AbortError') {
-          await delay(200);
-          continue;
-        }
-        console.log('MockServer is ready (self-signed cert accepted)');
-        ready = true;
-        break;
-      }
+      },
+      (result) => result !== null,
+      { attempts: maxAttempts, delayMs: 200 },
+    );
 
-      if (attempt < maxAttempts - 1) {
-        await delay(200);
-      }
-    }
-
-    if (ready) {
+    if (response) {
       console.log('MockServer is ready');
       return;
     }
@@ -317,11 +328,15 @@ export class MetaMaskExtensionLauncher {
   }
 
   private async waitForExtensionReady(): Promise<void> {
+    // Extension initialization flow:
+    // 1. Get an existing page or create a new one (browser may have blank tab)
+    // 2. Resolve the extension ID from Chrome's extension management API
+    // 3. Navigate to home.html and wait for the UI to fully render
     if (!this.context) {
       throw new Error('Browser context not initialized');
     }
 
-    const pages = this.context.pages();
+    const pages = (this.context as BrowserContext).pages();
     let page = pages[0];
     if (!page) {
       page = await this.context.newPage();
@@ -411,9 +426,7 @@ export class MetaMaskExtensionLauncher {
   }
 
   async getState(): Promise<ExtensionState> {
-    if (!this.extensionPage || !this.extensionId) {
-      throw new Error('Extension not initialized');
-    }
+    this.ensureExtensionInitialized();
 
     return getExtensionState(this.extensionPage, {
       extensionId: this.extensionId,
@@ -421,24 +434,20 @@ export class MetaMaskExtensionLauncher {
     });
   }
 
-  async navigateToHome(): Promise<void> {
-    if (!this.extensionPage || !this.extensionId) {
-      throw new Error('Extension not initialized');
-    }
-    await this.extensionPage.goto(
-      `chrome-extension://${this.extensionId}/home.html`,
+  private async navigateToExtensionPath(navigationPath: string): Promise<void> {
+    this.ensureExtensionInitialized();
+    await (this.extensionPage as Page).goto(
+      `chrome-extension://${this.extensionId as string}/${navigationPath}`,
     );
-    await this.extensionPage.waitForLoadState('domcontentloaded');
+    await (this.extensionPage as Page).waitForLoadState('domcontentloaded');
+  }
+
+  async navigateToHome(): Promise<void> {
+    await this.navigateToExtensionPath('home.html');
   }
 
   async navigateToSettings(): Promise<void> {
-    if (!this.extensionPage || !this.extensionId) {
-      throw new Error('Extension not initialized');
-    }
-    await this.extensionPage.goto(
-      `chrome-extension://${this.extensionId}/home.html#settings`,
-    );
-    await this.extensionPage.waitForLoadState('domcontentloaded');
+    await this.navigateToExtensionPath('home.html#settings');
   }
 
   getPage(): Page {
@@ -463,24 +472,23 @@ export class MetaMaskExtensionLauncher {
   }
 
   async getAllExtensionPages(): Promise<Page[]> {
-    if (!this.context || !this.extensionId) {
-      throw new Error('Browser context not initialized');
-    }
+    this.ensureBrowserContext();
 
-    const extensionPrefix = `chrome-extension://${this.extensionId}`;
-    return this.context
+    const extensionPrefix = `chrome-extension://${this.extensionId as string}`;
+    return (this.context as BrowserContext)
       .pages()
       .filter((page) => page.url().startsWith(extensionPrefix));
   }
 
   async waitForNotificationPage(timeoutMs: number = 10000): Promise<Page> {
-    if (!this.context || !this.extensionId) {
-      throw new Error('Browser context not initialized');
-    }
+    // Notification pages may initially open as about:blank before the extension
+    // redirects them. We wait for either an existing notification page or a new
+    // page event, handling the about:blank → notification.html transition.
+    this.ensureBrowserContext();
 
-    const notificationUrl = `chrome-extension://${this.extensionId}/notification.html`;
+    const notificationUrl = `chrome-extension://${this.extensionId as string}/notification.html`;
 
-    const existingPage = this.context
+    const existingPage = (this.context as BrowserContext)
       .pages()
       .find((page) => page.url().startsWith(notificationUrl));
     if (existingPage) {
@@ -490,13 +498,16 @@ export class MetaMaskExtensionLauncher {
     }
 
     try {
-      const newPage = await this.context.waitForEvent('page', {
-        timeout: timeoutMs,
-        predicate: (page: Page) => {
-          const url = page.url();
-          return url.startsWith(notificationUrl) || url === 'about:blank';
+      const newPage = await (this.context as BrowserContext).waitForEvent(
+        'page',
+        {
+          timeout: timeoutMs,
+          predicate: (page: Page) => {
+            const url = page.url();
+            return url.startsWith(notificationUrl) || url === 'about:blank';
+          },
         },
-      });
+      );
 
       if (newPage.url() === 'about:blank') {
         await newPage.waitForURL(
@@ -511,7 +522,7 @@ export class MetaMaskExtensionLauncher {
       this.attachConsoleListeners(newPage);
       return newPage;
     } catch (error) {
-      const finalCheck = this.context
+      const finalCheck = (this.context as BrowserContext)
         .pages()
         .find((page) => page.url().startsWith(notificationUrl));
       if (finalCheck) {

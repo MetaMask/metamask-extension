@@ -31,22 +31,26 @@ export class MockServer {
   }
 
   getServer(): Mockttp {
-    if (!this.server) {
-      throw new Error('MockServer not started');
-    }
-    return this.server;
+    return this.ensureStarted();
   }
 
   getPort(): number {
     return this.port;
   }
 
-  async setupDefaultMocks(): Promise<void> {
+  private ensureStarted(): Mockttp {
     if (!this.server) {
-      throw new Error('MockServer not started');
+      throw new Error(
+        'MockServer not started. Call start() before using this method.',
+      );
     }
+    return this.server;
+  }
 
-    await this.server.forAnyRequest().thenPassThrough({
+  async setupDefaultMocks(): Promise<void> {
+    const server = this.ensureStarted();
+
+    await server.forAnyRequest().thenPassThrough({
       beforeRequest: ({ headers: { host }, url: _url }) => {
         const blocklist = [
           'phishing-detection.api.cx.metamask.io',
@@ -127,25 +131,23 @@ export class MockServer {
     urlPattern: string | RegExp,
     response: { status?: number; body?: unknown },
   ): Promise<void> {
-    if (!this.server) {
-      throw new Error('MockServer not started');
-    }
+    const server = this.ensureStarted();
 
     const status = response.status ?? 200;
     const body = response.body ?? {};
 
     switch (method) {
       case 'GET':
-        await this.server.forGet(urlPattern).thenJson(status, body);
+        await server.forGet(urlPattern).thenJson(status, body);
         break;
       case 'POST':
-        await this.server.forPost(urlPattern).thenJson(status, body);
+        await server.forPost(urlPattern).thenJson(status, body);
         break;
       case 'PUT':
-        await this.server.forPut(urlPattern).thenJson(status, body);
+        await server.forPut(urlPattern).thenJson(status, body);
         break;
       case 'DELETE':
-        await this.server.forDelete(urlPattern).thenJson(status, body);
+        await server.forDelete(urlPattern).thenJson(status, body);
         break;
       default:
         throw new Error(`Unsupported HTTP method: ${String(method)}`);
