@@ -83,39 +83,46 @@ import {
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
 
+function mockMakeBrowserPolyfill() {
+  return {
+    runtime: {
+      id: 'fake-extension-id',
+      onInstalled: {
+        addListener: jest.fn(),
+      },
+      onMessageExternal: {
+        addListener: jest.fn(),
+      },
+      getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
+    },
+    storage: {
+      local: {
+        get: jest.fn().mockResolvedValue({}),
+        set: jest.fn().mockResolvedValue(undefined),
+        remove: jest.fn().mockResolvedValue(undefined),
+      },
+      session: {
+        set: jest.fn(),
+      },
+    },
+    alarms: {
+      getAll: jest.fn(() => Promise.resolve([])),
+      create: jest.fn(),
+      clear: jest.fn(),
+      onAlarm: {
+        addListener: jest.fn(),
+      },
+    },
+  };
+}
+
+const browserPolyfillMock = mockMakeBrowserPolyfill();
+
+jest.mock('webextension-polyfill', () => mockMakeBrowserPolyfill());
+
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
 const ganacheServer = new Ganache();
-
-const browserPolyfillMock = {
-  runtime: {
-    id: 'fake-extension-id',
-    onInstalled: {
-      addListener: jest.fn(),
-    },
-    onMessageExternal: {
-      addListener: jest.fn(),
-    },
-    getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
-  },
-  storage: {
-    local: {
-      get: jest.fn().mockResolvedValue({}),
-      set: jest.fn().mockResolvedValue(undefined),
-    },
-    session: {
-      set: jest.fn(),
-    },
-  },
-  alarms: {
-    getAll: jest.fn(() => Promise.resolve([])),
-    create: jest.fn(),
-    clear: jest.fn(),
-    onAlarm: {
-      addListener: jest.fn(),
-    },
-  },
-};
 
 const mockULIDs = [
   '01JKAF3DSGM3AB87EM9N0K41AJ',

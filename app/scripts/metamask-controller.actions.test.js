@@ -21,28 +21,35 @@ import mockEncryptor from '../../test/lib/mock-encryptor';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import MetaMaskController from './metamask-controller';
 
+function mockMakeBrowserPolyfill() {
+  return {
+    runtime: {
+      id: 'fake-extension-id',
+      onInstalled: {
+        addListener: () => undefined,
+      },
+      onMessageExternal: {
+        addListener: () => undefined,
+      },
+      getPlatformInfo: async () => 'mac',
+    },
+    storage: {
+      local: {
+        get: jest.fn().mockResolvedValue({}),
+        set: jest.fn().mockResolvedValue(undefined),
+        remove: jest.fn().mockResolvedValue(undefined),
+      },
+    },
+  };
+}
+
+const browserPolyfillMock = mockMakeBrowserPolyfill();
+
+jest.mock('webextension-polyfill', () => mockMakeBrowserPolyfill());
+
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
 const ganacheServer = new Ganache();
-
-const browserPolyfillMock = {
-  runtime: {
-    id: 'fake-extension-id',
-    onInstalled: {
-      addListener: () => undefined,
-    },
-    onMessageExternal: {
-      addListener: () => undefined,
-    },
-    getPlatformInfo: async () => 'mac',
-  },
-  storage: {
-    local: {
-      get: jest.fn().mockResolvedValue({}),
-      set: jest.fn().mockResolvedValue(undefined),
-    },
-  },
-};
 
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
