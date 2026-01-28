@@ -4,7 +4,10 @@ MCP-based tooling for LLM agents to build, launch, and interact with the MetaMas
 
 ## Architecture
 
-The system is built on a decoupled architecture consisting of a generic core package and a MetaMask-specific implementation.
+The system uses a **decoupled, capability-based architecture**:
+
+- **Generic Core**: `@metamask/metamask-extension-mcp` package provides MCP server infrastructure, tool definitions, knowledge store, and capability interfaces
+- **MetaMask Implementation**: This directory implements MetaMask-specific capabilities that plug into the core
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -18,8 +21,22 @@ The system is built on a decoupled architecture consisting of a generic core pac
 │                         MCP Server                                      │
 │              test/e2e/playwright/llm-workflow/mcp-server/               │
 │                                                                         │
-│  (Uses @metamask/metamask-extension-mcp generic core)                   │
-│  Tools: mm_build, mm_launch, mm_click, mm_type, mm_screenshot, ...     │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  @metamask/metamask-extension-mcp (generic core)                │   │
+│  │  - MCP server infrastructure                                    │   │
+│  │  - Tool definitions (mm_click, mm_type, mm_screenshot, etc.)    │   │
+│  │  - Knowledge store                                              │   │
+│  │  - Capability interfaces                                        │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                  │                                      │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  MetaMask Capabilities (this directory)                         │   │
+│  │  - BuildCapability: yarn build:test                             │   │
+│  │  - FixtureCapability: wallet state management                   │   │
+│  │  - ChainCapability: Anvil blockchain                            │   │
+│  │  - ContractSeedingCapability: deploy test contracts             │   │
+│  │  - StateSnapshotCapability: extension state detection           │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────┘
                                   │
                                   │ Playwright
@@ -27,11 +44,19 @@ The system is built on a decoupled architecture consisting of a generic core pac
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                    Headed Chrome Browser                                │
 │                    + MetaMask Extension                                 │
-│                    + Anvil (local chain)                                │
+│                    + Anvil (local blockchain)                           │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-The MCP server exposes tools that LLM agents call to interact with a real MetaMask Extension running in a headed Chrome browser.
+### Key Components
+
+| Component           | Location                          | Description                                                     |
+| ------------------- | --------------------------------- | --------------------------------------------------------------- |
+| **MCP Server**      | `mcp-server/server.ts`            | Entry point, wires capabilities to core                         |
+| **Session Manager** | `mcp-server/metamask-provider.ts` | Manages browser session, page tracking, capability coordination |
+| **Capabilities**    | `capabilities/`                   | MetaMask-specific implementations                               |
+| **Launcher**        | `extension-launcher.ts`           | Core browser/extension launcher                                 |
+| **Anvil Service**   | `launcher/anvil-service.ts`       | Local blockchain management                                     |
 
 ---
 
@@ -99,10 +124,10 @@ When implementing UI changes, follow this cycle:
 
 | Tool                        | Description                                                           |
 | --------------------------- | --------------------------------------------------------------------- |
-| `mm_get_state`              | Get current extension state (screen, URL)                             |
+| `mm_get_state`              | Get current extension state (screen, URL, balance, network)           |
 | `mm_list_testids`           | List all visible `data-testid` attributes                             |
 | `mm_accessibility_snapshot` | Get accessibility tree with refs (e1, e2…)                            |
-| `mm_describe_screen`        | Combined: state + testIds + a11y + priorKnowledge from prior sessions |
+| `mm_describe_screen`        | Combined: state + testIds + a11y + prior knowledge from past sessions |
 
 ### Interaction
 
@@ -121,6 +146,15 @@ When implementing UI changes, follow this cycle:
 | Tool            | Description                         |
 | --------------- | ----------------------------------- |
 | `mm_screenshot` | Take screenshot, save to artifacts/ |
+
+### Smart Contract Seeding
+
+| Tool                      | Description                                |
+| ------------------------- | ------------------------------------------ |
+| `mm_seed_contract`        | Deploy a single smart contract to Anvil    |
+| `mm_seed_contracts`       | Deploy multiple contracts in sequence      |
+| `mm_get_contract_address` | Get the deployed address of a contract     |
+| `mm_list_contracts`       | List all deployed contracts in the session |
 
 ### Knowledge Store
 
@@ -143,19 +177,68 @@ When implementing UI changes, follow this cycle:
 
 ### Default: Pre-Onboarded Wallet
 
-Wallet is pre-configured with 25 ETH. Just unlock and use.
+Wallet is pre-configured with 25 ETH on local Anvil. Just unlock and use.
+
 **Default password:** `correct horse battery staple`
 
-### Fresh Wallet: Onboarding Flow
+```json
+mm_launch { "stateMode": "default" }
+```
+
+### Onboarding: Fresh Wallet
 
 Start with a brand new wallet that requires onboarding.
 
-### Prod-like Mode: Real Network & Manual Setup
+```json
+mm_launch { "stateMode": "onboarding" }
+```
 
-Use this mode to test against real networks or when you need to perform manual setup.
+### Custom Fixture
 
-- **remoteChain**: Remote chain config with `rpcUrl` and `chainId`.
-- **includeBuild**: Ensure the extension is built before launching.
+Use a preset fixture or provide custom wallet state.
+
+```json
+mm_launch {
+  "stateMode": "custom",
+  "fixturePreset": "withMultipleAccounts"
+}
+```
+
+### Pre-deployed Contracts
+
+Deploy contracts before the extension loads:
+
+```json
+mm_launch {
+  "stateMode": "default",
+  "seedContracts": ["hst", "nfts"]
+}
+```
+
+---
+
+## Capabilities
+
+The system is built on pluggable capabilities that implement interfaces from the core package:
+
+| Capability           | Class                               | Description                            |
+| -------------------- | ----------------------------------- | -------------------------------------- |
+| **Build**            | `MetaMaskBuildCapability`           | Builds extension via `yarn build:test` |
+| **Fixture**          | `MetaMaskFixtureCapability`         | Manages wallet state fixtures, presets |
+| **Chain**            | `MetaMaskChainCapability`           | Anvil blockchain management            |
+| **Contract Seeding** | `MetaMaskContractSeedingCapability` | Deploy ERC-20, NFT, ERC-4337 contracts |
+| **State Snapshot**   | `MetaMaskStateSnapshotCapability`   | Extension state detection              |
+
+### Factory Pattern
+
+The `createMetaMaskE2EContext()` function in `capabilities/factory.ts` wires all capabilities together:
+
+```typescript
+const context = createMetaMaskE2EContext({
+  ports: { anvil: 8545, fixtureServer: 12345 },
+  forkUrl: 'https://mainnet.infura.io/v3/...', // optional
+});
+```
 
 ---
 
@@ -163,12 +246,42 @@ Use this mode to test against real networks or when you need to perform manual s
 
 ```
 test/e2e/playwright/llm-workflow/
-├── mcp-server/              # MCP server wrapper
-│   ├── server.ts            # Main server entrypoint
-│   └── metamask-provider.ts # MetaMask session manager + capability wiring
-├── capabilities/            # MetaMask-specific capability implementations
-├── launcher/                # Launcher utilities (MM-specific)
-├── page-objects/            # Page object models
-├── docs/                    # Detailed specifications and archive
-└── README.md                # This file
+├── mcp-server/                   # MCP server implementation
+│   ├── server.ts                 # Entry point - wires capabilities to core
+│   └── metamask-provider.ts      # Session manager implementation
+│
+├── capabilities/                 # MetaMask-specific capability implementations
+│   ├── factory.ts                # Creates workflow context with all capabilities
+│   ├── build.ts                  # BuildCapability - yarn build:test
+│   ├── fixture.ts                # FixtureCapability - wallet state management
+│   ├── chain.ts                  # ChainCapability - Anvil blockchain
+│   ├── seeding.ts                # ContractSeedingCapability - deploy contracts
+│   ├── state-snapshot.ts         # StateSnapshotCapability - extension state
+│   └── index.ts                  # Public exports
+│
+├── launcher/                     # Browser/extension launcher components
+│   ├── anvil-service.ts          # Anvil blockchain service
+│   └── state-inspector.ts        # Screen detection, state extraction
+│
+├── extension-launcher.ts         # Core MetaMaskExtensionLauncher class
+├── anvil-seeder-wrapper.ts       # Smart contract deployment wrapper
+├── fixture-helper.ts             # Fixture preset definitions
+├── mock-server.ts                # Mock server for API responses (experimental)
+├── launcher-types.ts             # TypeScript types
+│
+├── page-objects/                 # Page object models
+│   └── home-page.ts
+│
+├── docs/                         # Documentation and archive
+│   └── archive/                  # Historical specifications
+│
+└── README.md                     # This file
 ```
+
+---
+
+## See Also
+
+- **MCP Server Details**: [`mcp-server/README.md`](./mcp-server/README.md) - Tool reference, launch modes, examples
+- **Core Package**: `@metamask/metamask-extension-mcp` - Generic MCP infrastructure
+- **Agent Skill**: `.claude/skills/metamask-visual-testing/SKILL.md` - Agent usage instructions

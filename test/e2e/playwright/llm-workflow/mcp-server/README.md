@@ -2,6 +2,35 @@
 
 MCP (Model Context Protocol) server for LLM agents to build, launch, interact with, and visually validate the MetaMask Extension in a real headed Chrome browser.
 
+## Architecture Overview
+
+This server is a thin wrapper that connects the generic MCP core package to MetaMask-specific implementations:
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  server.ts (entry point)                                         │
+│  - Creates MetaMask workflow context (capabilities)              │
+│  - Wires session manager to core package                         │
+│  - Starts MCP server                                             │
+└──────────────────────────────────────────────────────────────────┘
+                              │
+┌──────────────────────────────────────────────────────────────────┐
+│  metamask-provider.ts (MetaMaskSessionManager)                   │
+│  - Implements ISessionManager from core package                  │
+│  - Manages browser session lifecycle                             │
+│  - Coordinates capabilities (build, fixture, chain, etc.)        │
+│  - Tracks pages (extension, notification, dapp tabs)             │
+└──────────────────────────────────────────────────────────────────┘
+                              │
+┌──────────────────────────────────────────────────────────────────┐
+│  @metamask/metamask-extension-mcp (core package)                 │
+│  - MCP server infrastructure                                     │
+│  - Tool definitions (mm_click, mm_type, mm_screenshot, etc.)     │
+│  - Knowledge store for session history                           │
+│  - Capability interfaces                                         │
+└──────────────────────────────────────────────────────────────────┘
+```
+
 ## Quick Start
 
 ### Run the Server
@@ -43,32 +72,71 @@ Set the working directory to the MetaMask extension repository root.
 
 ## Available Tools
 
-| Tool                        | Description                                           |
-| --------------------------- | ----------------------------------------------------- |
-| `mm_build`                  | Build extension using `yarn build:test`               |
-| `mm_launch`                 | Launch MetaMask in headed Chrome                      |
-| `mm_cleanup`                | Stop browser and all services                         |
-| `mm_get_state`              | Get current extension state (includes tab info)       |
-| `mm_navigate`               | Navigate to home, settings, notification, or URL      |
-| `mm_wait_for_notification`  | Wait for notification popup and set it as active page |
-| `mm_switch_to_tab`          | Switch active page to a different tab                 |
-| `mm_close_tab`              | Close a tab (notification, dapp, or other)            |
-| `mm_list_testids`           | List visible data-testid attributes                   |
-| `mm_accessibility_snapshot` | Get a11y tree with refs (e1, e2...)                   |
-| `mm_describe_screen`        | Combined state + testIds + a11y snapshot              |
-| `mm_screenshot`             | Take and save screenshot                              |
-| `mm_click`                  | Click element by a11yRef, testId, or selector         |
-| `mm_type`                   | Type text into element                                |
-| `mm_wait_for`               | Wait for element to be visible                        |
-| `mm_knowledge_last`         | Get last N step records                               |
-| `mm_knowledge_search`       | Search step records (cross-session by default)        |
-| `mm_knowledge_summarize`    | Generate session recipe                               |
-| `mm_knowledge_sessions`     | List recent sessions with metadata                    |
-| `mm_seed_contract`          | Deploy a single smart contract to Anvil               |
-| `mm_seed_contracts`         | Deploy multiple smart contracts                       |
-| `mm_get_contract_address`   | Get deployed address of a contract                    |
-| `mm_list_contracts`         | List all deployed contracts in session                |
-| `mm_run_steps`              | Execute multiple tools in sequence                    |
+### Build & Session Management
+
+| Tool         | Description                             |
+| ------------ | --------------------------------------- |
+| `mm_build`   | Build extension using `yarn build:test` |
+| `mm_launch`  | Launch MetaMask in headed Chrome        |
+| `mm_cleanup` | Stop browser and all services           |
+
+### State & Discovery
+
+| Tool                        | Description                                     |
+| --------------------------- | ----------------------------------------------- |
+| `mm_get_state`              | Get current extension state (includes tab info) |
+| `mm_list_testids`           | List visible data-testid attributes             |
+| `mm_accessibility_snapshot` | Get a11y tree with refs (e1, e2...)             |
+| `mm_describe_screen`        | Combined state + testIds + a11y snapshot        |
+
+### Navigation & Tab Management
+
+| Tool                       | Description                                           |
+| -------------------------- | ----------------------------------------------------- |
+| `mm_navigate`              | Navigate to home, settings, notification, or URL      |
+| `mm_wait_for_notification` | Wait for notification popup and set it as active page |
+| `mm_switch_to_tab`         | Switch active page to a different tab                 |
+| `mm_close_tab`             | Close a tab (notification, dapp, or other)            |
+
+### Interaction
+
+| Tool          | Description                                   |
+| ------------- | --------------------------------------------- |
+| `mm_click`    | Click element by a11yRef, testId, or selector |
+| `mm_type`     | Type text into element                        |
+| `mm_wait_for` | Wait for element to be visible                |
+
+### Screenshots
+
+| Tool            | Description              |
+| --------------- | ------------------------ |
+| `mm_screenshot` | Take and save screenshot |
+
+### Smart Contract Seeding
+
+| Tool                      | Description                             |
+| ------------------------- | --------------------------------------- |
+| `mm_seed_contract`        | Deploy a single smart contract to Anvil |
+| `mm_seed_contracts`       | Deploy multiple smart contracts         |
+| `mm_get_contract_address` | Get deployed address of a contract      |
+| `mm_list_contracts`       | List all deployed contracts in session  |
+
+### Knowledge Store
+
+| Tool                     | Description                                    |
+| ------------------------ | ---------------------------------------------- |
+| `mm_knowledge_last`      | Get last N step records                        |
+| `mm_knowledge_search`    | Search step records (cross-session by default) |
+| `mm_knowledge_summarize` | Generate session recipe                        |
+| `mm_knowledge_sessions`  | List recent sessions with metadata             |
+
+### Batching
+
+| Tool           | Description                        |
+| -------------- | ---------------------------------- |
+| `mm_run_steps` | Execute multiple tools in sequence |
+
+---
 
 ## Smart Contract Seeding
 
@@ -87,15 +155,6 @@ Deploy predetermined smart contracts to the local Anvil node for testing token o
 | Entrypoint           | `entrypoint`           | ERC-4337 entry point for account abstraction                             |
 | SimpleAccountFactory | `simpleAccountFactory` | ERC-4337 smart account factory                                           |
 | VerifyingPaymaster   | `verifyingPaymaster`   | ERC-4337 paymaster for gas sponsorship                                   |
-
-### Seeding Tools
-
-| Tool                      | Description                                |
-| ------------------------- | ------------------------------------------ |
-| `mm_seed_contract`        | Deploy a single smart contract             |
-| `mm_seed_contracts`       | Deploy multiple contracts in sequence      |
-| `mm_get_contract_address` | Get the deployed address of a contract     |
-| `mm_list_contracts`       | List all deployed contracts in the session |
 
 ### Hardfork Configuration
 
@@ -144,6 +203,8 @@ mm_list_contracts
     ]
   }
 ```
+
+---
 
 ## Batching Multiple Steps
 
@@ -234,6 +295,8 @@ Returns a summary with individual step results:
 }
 ```
 
+---
+
 ## Typical Workflow
 
 ```
@@ -245,6 +308,8 @@ Returns a summary with individual step results:
 6. ... repeat 4-5 ...
 7. mm_cleanup         → End session
 ```
+
+---
 
 ## Multi-Tab Management
 
@@ -311,13 +376,15 @@ Cannot close extension home. If closing active tab, automatically switches to ex
 1. mm_launch
 2. mm_navigate({ screen: 'url', url: 'https://test-dapp.io' })  → Opens dapp in new tab
 3. mm_click({ testId: 'connectButton' })                        → Triggers notification
-4. mm_wait_for_notification                                     → Active = notification ✅
+4. mm_wait_for_notification                                     → Active = notification
 5. mm_describe_screen                                           → Shows notification elements
 6. mm_click({ testId: 'confirm-btn' })                          → Clicks on notification
 7. mm_switch_to_tab({ role: 'dapp' })                           → Active = dapp
 8. mm_describe_screen                                           → Shows connected dapp
 9. mm_cleanup
 ```
+
+---
 
 ## Target Selection
 
@@ -326,6 +393,8 @@ For `mm_click`, `mm_type`, and `mm_wait_for`, specify exactly ONE of:
 - `a11yRef`: Reference from `mm_accessibility_snapshot` (e.g., "e5")
 - `testId`: data-testid attribute value
 - `selector`: CSS selector
+
+---
 
 ## Launch Modes
 
@@ -337,7 +406,9 @@ For `mm_click`, `mm_type`, and `mm_wait_for`, specify exactly ONE of:
 }
 ```
 
-Wallet is pre-configured with 25 ETH. Just unlock and use.
+Wallet is pre-configured with 25 ETH on local Anvil. Just unlock and use.
+
+**Default password:** `correct horse battery staple`
 
 ### Onboarding (fresh wallet)
 
@@ -367,40 +438,11 @@ Or provide fixture object directly:
 }
 ```
 
-### Prod-like Mode
-
-Test against real networks or perform manual setup.
-
-```json
-{
-  "includeBuild": true,
-  "remoteChain": {
-    "rpcUrl": "https://mainnet.infura.io/v3/YOUR_KEY",
-    "chainId": 1
-  },
-  "stateMode": "onboarding"
-}
-```
-
-**Key Options:**
-
-- `remoteChain`: Remote chain config with `rpcUrl` (required) and `chainId` (optional, defaults to 1). Disables local Anvil.
-- `includeBuild`: Auto-build extension before launch (requires BuildCapability).
-
-**Limitations:**
-
-- No state injection or fixture presets (fixtures are rejected in prod).
-- No contract seeding.
-- Manual onboarding/unlock required.
-
-**Prerequisites:**
-
-- `INFURA_PROJECT_ID` must be configured in `.metamaskrc`.
-- In prod mode, `mm_launch` returns a `prerequisites` array describing manual setup steps.
+---
 
 ## Knowledge Store
 
-Step records are saved to `test-artifacts/llm-knowledge/<sessionId>/steps/`.
+Step records are saved to `test-artifacts/llm-knowledge/<sessionId>/`.
 
 Each session has:
 
@@ -461,6 +503,8 @@ mm_knowledge_summarize({ "scope": { "sessionId": "mm-..." } })
 - `sinceHours` - Only sessions created in last N hours
 - `gitBranch` - Filter by git branch
 
+---
+
 ## Error Codes
 
 | Code                         | Meaning                               |
@@ -478,6 +522,8 @@ mm_knowledge_summarize({ "scope": { "sessionId": "mm-..." } })
 | `MM_SEED_FAILED`             | Contract deployment failed            |
 | `MM_CONTRACT_NOT_FOUND`      | Contract not deployed in session      |
 | `MM_TAB_NOT_FOUND`           | Tab not found (for switch/close)      |
+
+---
 
 ## Response Format
 
@@ -509,6 +555,8 @@ Error responses:
 }
 ```
 
+---
+
 ## Artifacts Directory
 
 ```
@@ -516,12 +564,24 @@ test-artifacts/
 ├── screenshots/           # mm_screenshot output
 └── llm-knowledge/
     └── <sessionId>/
+        ├── session.json   # Session metadata
         └── steps/
             └── <timestamp>-<tool>.json
 ```
 
+---
+
+## Server Files
+
+| File                   | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| `server.ts`            | Entry point - creates context and starts MCP server |
+| `metamask-provider.ts` | Session manager - browser lifecycle, page tracking  |
+
+---
+
 ## Requirements
 
 - Node.js 20+
-- Built extension (`yarn build:test`)
+- Built extension (`yarn build:test` or use `mm_build`)
 - Chrome browser
