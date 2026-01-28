@@ -21,11 +21,10 @@ describe('Tron Connect - Sign Message - e2e tests', function () {
         // 1. Connect
         await connectTronTestDapp(driver, testDappTron);
 
-        const signMessageTest = await testDappTron.getSignMessageTest();
-        await signMessageTest.setMessage(messageToSign);
+        await testDappTron.setMessage(messageToSign);
 
         // 2. Sign message
-        await signMessageTest.signMessage();
+        await testDappTron.signMessage();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -34,7 +33,7 @@ describe('Tron Connect - Sign Message - e2e tests', function () {
         await signMessageConfiramtion.clickFooterConfirmButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
 
-        await signMessageTest.findSignedMessage(DEFAULT_MESSAGE_SIGNATURE);
+        await testDappTron.findSignedMessage(DEFAULT_MESSAGE_SIGNATURE);
       },
     );
   });

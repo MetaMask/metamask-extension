@@ -21,12 +21,11 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
         await connectTronTestDapp(driver, testDappTron);
 
         // 2. Set recipient and amount
-        const signTrxTest = await testDappTron.getSignAndSendTrxTest();
-        await signTrxTest.setRecipientAddress(DEFAULT_TRON_ADDRESS_2);
-        await signTrxTest.setAmount('123');
+        await testDappTron.setTRXRecipientAddress(DEFAULT_TRON_ADDRESS_2);
+        await testDappTron.setTRXAmount('123');
 
         // 3. Sign transaction
-        await signTrxTest.signTransaction();
+        await testDappTron.signTRXTransaction();
 
         // 4. Confirm signature
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -38,7 +37,7 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
 
-        await signTrxTest.findSignedTransaction();
+        await testDappTron.findSignedTRXTransaction();
       },
     );
   });
@@ -58,12 +57,11 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
         await connectTronTestDapp(driver, testDappTron);
 
         // 2. Set recipient and amount
-        const sendTrxTest = await testDappTron.getSignAndSendTrxTest();
-        await sendTrxTest.setRecipientAddress(DEFAULT_TRON_ADDRESS_2);
-        await sendTrxTest.setAmount('123');
+        await testDappTron.setTRXRecipientAddress(DEFAULT_TRON_ADDRESS_2);
+        await testDappTron.setTRXAmount('123');
 
         // 3. Sign transaction
-        await sendTrxTest.sendTransaction();
+        await testDappTron.sendTRXTransaction();
 
         // 4. Confirm signature
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -75,7 +73,7 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
 
-        await sendTrxTest.findTransactionHash(TRANSACTION_HASH_MOCK);
+        await testDappTron.findTRXTransactionHash(TRANSACTION_HASH_MOCK);
       },
     );
   });

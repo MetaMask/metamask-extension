@@ -137,92 +137,86 @@ export class TestDappTron {
     });
   }
 
-  /**
-   * Get Sign Message tests.
-   *
-   * @returns The Sign Message component helper methods.
-   */
-  async getSignMessageTest() {
-    await this.driver.waitForSelector({testId: dataTestIds.testPage.signMessage.id});
-
-    return {
-      setMessage: (message: string) =>
-        this.driver.fill({testId: dataTestIds.testPage.signMessage.message}, message),
-      signMessage: async () =>
-        await this.driver.clickElement({
-          testId: dataTestIds.testPage.signMessage.signMessage,
-        }),
-      findSignedMessage: async (signedMessage: string) =>
-        await this.driver.findElement({
-          css: this.signedMessageSelectorTestId,
-          text: signedMessage,
-        }),
-    };
+  async setMessage(message: string) {
+    await this.driver.fill({ testId: dataTestIds.testPage.signMessage.message }, message)
   }
 
-  /**
-   * Get Sign and Send TRX tests.
-   *
-   * @returns The Sign and Send TRX component helper methods.
-   */
-  async getSignAndSendTrxTest() {
-    await this.driver.waitForSelector({testId: dataTestIds.testPage.sendTRX.id});
-
-    return {
-      setRecipientAddress: (address: string) =>
-        this.driver.fill({testId: dataTestIds.testPage.sendTRX.address}, address),
-      setAmount: (amount: string) =>
-        this.driver.fill({testId: dataTestIds.testPage.sendTRX.amount}, amount),
-      signTransaction: async () =>
-        await this.driver.clickElement({
-          testId: dataTestIds.testPage.sendTRX.signTransaction,
-        }),
-      sendTransaction: async () =>
-        await this.driver.clickElement({
-          testId: dataTestIds.testPage.sendTRX.sendTransaction,
-        }),
-      findTransactionHash: async (transactionHash: string) =>
-        await this.driver.findElement({
-          css: this.trxTransactionHashSelectorTestId,
-          text: transactionHash,
-        }),
-      findSignedTransaction: async () =>
-        await this.driver.findElement({
-          testId: dataTestIds.testPage.sendTRX.signedTransaction,
-        }),
-    };
+  async signMessage() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.signMessage.signMessage,
+    })
+  }
+  async findSignedMessage(signedMessage: string) {
+    await this.driver.findElement({
+      css: this.signedMessageSelectorTestId,
+      text: signedMessage,
+    })
   }
 
-  /**
-   * Get Sign USDT tests.
-   *
-   * @returns The Sign USDT component helper methods.
-   */
-  async getSignAndSendUsdtTest() {
-    await this.driver.waitForSelector({testId: dataTestIds.testPage.sendUSDT.id});
 
-    return {
-      setRecipientAddress: (address: string) =>
-        this.driver.fill({testId: dataTestIds.testPage.sendUSDT.address}, address),
-      setAmount: (amount: string) =>
-        this.driver.fill({testId: dataTestIds.testPage.sendUSDT.amount}, amount),
-      signTransaction: async () =>
-        await this.driver.clickElement({
-          testId: dataTestIds.testPage.sendUSDT.signTransaction,
-        }),
-      sendTransaction: async () =>
-        await this.driver.clickElement({
-          testId: dataTestIds.testPage.sendUSDT.sendTransaction,
-        }),
-      findTransactionHash: async (transactionHash: string) =>
-        await this.driver.findElement({
-          css: this.usdtTransactionHashSelectorTestId,
-          text: transactionHash,
-        }),
-      findSignedTransaction: async () =>
-        await this.driver.findElement({
-          testId: dataTestIds.testPage.sendUSDT.signedTransaction,
-        }),
-    };
+  async setTRXRecipientAddress(address: string) {
+    await this.driver.fill({testId: dataTestIds.testPage.sendTRX.address}, address)
+  }
+
+  async setTRXAmount(amount: string) {
+    await this.driver.fill({testId: dataTestIds.testPage.sendTRX.amount}, amount)
+  }
+
+  async signTRXTransaction() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.sendTRX.signTransaction,
+    })
+  }
+
+  async sendTRXTransaction() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.sendTRX.sendTransaction,
+    })
+  }
+
+  async findTRXTransactionHash(transactionHash: string) {
+    await this.driver.findElement({
+      css: this.trxTransactionHashSelectorTestId,
+      text: transactionHash,
+    })
+  }
+
+  async findSignedTRXTransaction() {
+    await this.driver.findElement({
+      testId: dataTestIds.testPage.sendTRX.signedTransaction,
+    })
+  }
+
+  async setUSDTRecipientAddress(address: string) {
+    await this.driver.fill({testId: dataTestIds.testPage.sendUSDT.address}, address)
+  }
+
+  async setUSDTAmount(amount: string) {
+    await this.driver.fill({testId: dataTestIds.testPage.sendUSDT.amount}, amount)
+  }
+
+  async signUSDTTransaction() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.sendUSDT.signTransaction,
+    })
+  }
+
+  async findUSDTTransactionHash(transactionHash: string) {
+    await this.driver.findElement({
+      css: this.usdtTransactionHashSelectorTestId,
+      text: transactionHash,
+    })
+  }
+
+  async sendUSDTTransaction() {
+    await this.driver.clickElement({
+      testId: dataTestIds.testPage.sendUSDT.sendTransaction,
+    })
+  }
+
+  async findSignedUSDTTransaction() {
+    await this.driver.findElement({
+      testId: dataTestIds.testPage.sendUSDT.signedTransaction,
+    })
   }
 }

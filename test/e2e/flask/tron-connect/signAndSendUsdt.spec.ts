@@ -21,12 +21,11 @@ describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
         await connectTronTestDapp(driver, testDappTron);
 
         // 2. Set recipient and amount
-        const signUsdtTest = await testDappTron.getSignAndSendUsdtTest();
-        await signUsdtTest.setRecipientAddress(DEFAULT_TRON_ADDRESS_2);
-        await signUsdtTest.setAmount('123');
+        await testDappTron.setUSDTRecipientAddress(DEFAULT_TRON_ADDRESS_2);
+        await testDappTron.setUSDTAmount('123');
 
         // 3. Sign transaction
-        await signUsdtTest.signTransaction();
+        await testDappTron.signUSDTTransaction();
 
         // 4. Confirm signature
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -38,7 +37,7 @@ describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
 
-        await signUsdtTest.findSignedTransaction();
+        await testDappTron.findSignedUSDTTransaction();
       },
     );
   });
@@ -58,12 +57,11 @@ describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
         await connectTronTestDapp(driver, testDappTron);
 
         // 2. Set recipient and amount
-        const signAndSendUsdtTest = await testDappTron.getSignAndSendUsdtTest();
-        await signAndSendUsdtTest.setRecipientAddress(DEFAULT_TRON_ADDRESS_2);
-        await signAndSendUsdtTest.setAmount('123');
+        await testDappTron.setUSDTRecipientAddress(DEFAULT_TRON_ADDRESS_2);
+        await testDappTron.setUSDTAmount('123');
 
         // 3. Sign transaction
-        await signAndSendUsdtTest.sendTransaction();
+        await testDappTron.sendUSDTTransaction();
 
         // 4. Confirm signature
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -75,7 +73,7 @@ describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TronTestDApp);
 
-        await signAndSendUsdtTest.findTransactionHash(TRANSACTION_HASH_MOCK);
+        await testDappTron.findUSDTTransactionHash(TRANSACTION_HASH_MOCK);
       },
     );
   });
