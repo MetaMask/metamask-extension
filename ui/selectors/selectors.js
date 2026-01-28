@@ -2964,6 +2964,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.MOONRIVER,
     CHAIN_IDS.SEI,
     CHAIN_IDS.MONAD,
+    CHAIN_IDS.HYPE,
   ].includes(chainId);
 }
 
