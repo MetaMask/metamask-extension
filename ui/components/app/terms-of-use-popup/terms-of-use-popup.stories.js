@@ -1,5 +1,5 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from '@storybook/preview-api';
 import { Button } from '../../component-library';
 import TermsOfUsePopup from '.';
 
@@ -37,3 +37,4 @@ export const DefaultStory = () => {
 };
 
 DefaultStory.storyName = 'Default';
+

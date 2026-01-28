@@ -1,6 +1,6 @@
 import React from 'react';
-import { Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { Meta } from '@storybook/react-webpack5';
+import { useArgs } from '@storybook/preview-api';
 import {
   NotificationsSettingsAccount,
   NotificationsSettingsAccountProps,
@@ -21,3 +21,4 @@ Default.args = {
   address: '0x7830c87C02e56AFf27FA8Ab1241711331FA86F43',
   name: 'Account Name',
 };
+

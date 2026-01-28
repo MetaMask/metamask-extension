@@ -8,30 +8,38 @@ module.exports = {
   core: {
     disableTelemetry: true,
   },
+
   features: {
     buildStoriesJson: true,
   },
+
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.tsx',
     '../ui/**/*.stories.mdx',
     './*.stories.mdx',
   ],
+
   addons: [
-    '@storybook/addon-essentials',
-    '@storybook/addon-actions',
     '@storybook/addon-a11y',
-    './i18n-party-addon/register.js',
+    '@storybook/addon-actions',
+    '@storybook/addon-docs',
   ],
+
+  managerEntries: [path.resolve(__dirname, './i18n-party-addon/register.js')],
+
   staticDirs: ['../app', './images'],
+
   env: (config) => ({
     ...config,
     INFURA_PROJECT_ID: process.env.INFURA_STORYBOOK_PROJECT_ID || '',
   }),
+
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({
     overrides: options.overrides,
   }),
+
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {
@@ -123,9 +131,7 @@ module.exports = {
     );
     return config;
   },
-  docs: {
-    autodocs: true,
-  },
+
   framework: {
     name: '@storybook/react-webpack5',
     options: {

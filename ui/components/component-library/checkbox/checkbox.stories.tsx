@@ -1,5 +1,5 @@
-import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { useArgs } from '@storybook/preview-api';
 import React from 'react';
 
 import {
@@ -175,3 +175,4 @@ InputProps.args = {
   inputProps: { borderColor: BorderColor.errorDefault },
   label: 'inputProps demo',
 };
+

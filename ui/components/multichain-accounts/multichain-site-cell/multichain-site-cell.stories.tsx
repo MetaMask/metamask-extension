@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { AccountGroupType } from '@metamask/account-api';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { MultichainSiteCell } from './multichain-site-cell';

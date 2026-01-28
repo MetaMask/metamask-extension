@@ -1,10 +1,10 @@
 import React from 'react';
 import { ConfirmAlertModal } from './confirm-alert-modal';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import configureStore from '../../../../store/store';
 import { Provider } from 'react-redux';
 import { Box, Button } from '../../../component-library';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from '@storybook/preview-api';
 import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 
 const OWNER_ID_MOCK = '123';
@@ -95,3 +95,4 @@ export const TemplateStory: StoryFn<typeof ConfirmAlertModal> = (args) => {
   );
 };
 TemplateStory.storyName = 'Confirm Critical Alert Modal';
+

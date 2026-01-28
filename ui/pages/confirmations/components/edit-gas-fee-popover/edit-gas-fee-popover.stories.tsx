@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react';
 import { Provider } from 'react-redux';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import mockState from '../../../../../test/data/mock-state.json';

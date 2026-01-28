@@ -1,5 +1,5 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from '@storybook/preview-api';
 import README from './README.mdx';
 import ToggleButton from './toggle-button.component';
 
@@ -36,3 +36,4 @@ DefaultStory.args = {
   onLabel: 'on',
   disabled: false,
 };
+

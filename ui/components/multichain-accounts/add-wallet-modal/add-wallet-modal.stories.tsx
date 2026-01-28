@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Box, Button } from '@metamask/design-system-react';
 
 import { AddWalletModal } from './add-wallet-modal';

@@ -1,7 +1,7 @@
 import React from 'react';
-import { StoryObj, Meta } from '@storybook/react';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,

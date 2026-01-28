@@ -1,4 +1,4 @@
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from '@storybook/preview-api';
 import React from 'react';
 import Button from '../button';
 import README from './README.mdx';
@@ -72,3 +72,4 @@ export const AddNickname = (args) => {
     </div>
   );
 };
+

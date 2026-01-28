@@ -1,5 +1,5 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import LoadingSwapsQuotes from './loading-swaps-quotes';
 import { storiesMetadata } from './loading-swaps-quotes-stories-metadata';
 

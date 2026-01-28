@@ -1,6 +1,6 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { useArgs } from '@storybook/preview-api';
 
 import {
   FlexDirection,
@@ -156,3 +156,4 @@ export const Resize: StoryFn<typeof Textarea> = (args) => (
     />
   </Box>
 );
+

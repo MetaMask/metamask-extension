@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import { Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { Meta } from '@storybook/react-webpack5';
+import { useArgs } from '@storybook/preview-api';
 
 import {
   Display,
@@ -290,3 +290,4 @@ export const TextVariantStory = (args) => {
 };
 
 TextVariantStory.storyName = 'Text Variant';
+

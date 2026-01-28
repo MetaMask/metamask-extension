@@ -1,6 +1,6 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import React, { useState, useEffect } from 'react';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from '@storybook/preview-api';
 
 import {
   Display,
@@ -300,3 +300,4 @@ export const CustomLabelOrHelpText: StoryFn<typeof FormTextField> = () => (
     </Box>
   </>
 );
+

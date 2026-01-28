@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import React from 'react';
 import { SensitiveText } from './sensitive-text';
 import { SensitiveTextLength } from './sensitive-text.types';

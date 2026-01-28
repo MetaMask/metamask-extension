@@ -1,6 +1,6 @@
 import React from 'react';
-import { Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { Meta } from '@storybook/react-webpack5';
+import { useArgs } from '@storybook/preview-api';
 import { IconName } from '../../component-library';
 import {
   NotificationsSettingsBox,
@@ -100,3 +100,4 @@ ToggleDisabled.args = {
   disabled: true,
   onToggle: () => console.log('Toggled'),
 };
+

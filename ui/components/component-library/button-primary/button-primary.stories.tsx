@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { AlignItems, Display } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import { ButtonPrimary } from './button-primary';

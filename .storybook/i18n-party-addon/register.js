@@ -1,8 +1,7 @@
-// import { useGlobals } from '@storybook/api';
-const { useGlobals } = require('@storybook/api');
+const { addons, types, useGlobals } = require('@storybook/manager-api');
 const React = require('react');
-const { addons, types } = require('@storybook/addons');
-const { Icons, IconButton } = require('@storybook/components');
+const { IconButton } = require('@storybook/components');
+const { Icons } = require('@storybook/icons');
 const localeList = require('../../app/_locales/index.json');
 const { useEffect } = React;
 

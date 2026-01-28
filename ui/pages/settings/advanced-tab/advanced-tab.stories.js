@@ -1,5 +1,5 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from '@storybook/preview-api';
 import AdvancedTab from './advanced-tab.component';
 
 export default {
@@ -98,3 +98,4 @@ DefaultStory.args = {
   dismissSeedBackUpReminder: false,
   overrideContentSecurityPolicyHeader: true,
 };
+

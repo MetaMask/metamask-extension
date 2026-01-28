@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { useArgs } from '@storybook/preview-api';
 
 import {
   Display,
@@ -374,3 +374,4 @@ ReadOnly.args = { readOnly: true, value: 'Read only' };
 export const RequiredStory = Template.bind({});
 RequiredStory.args = { required: true, placeholder: 'Required', value: '' };
 RequiredStory.storyName = 'Required';
+
