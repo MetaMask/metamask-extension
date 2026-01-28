@@ -37,7 +37,7 @@ export type StaticAssetsControllerMessenger = ReturnType<
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
- * token balances controller.
+ * static assets controller.
  *
  * @param messenger - The base messenger used to create the restricted
  * messenger.
@@ -75,7 +75,7 @@ export type StaticAssetsControllerInitMessenger = ReturnType<
 
 /**
  * Create a messenger restricted to the allowed actions and events needed during
- * initialization of the token balances controller.
+ * initialization of the static assets controller.
  *
  * @param messenger
  */
