@@ -1,9 +1,9 @@
 import { ApprovalController } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { ControllerInitFunction } from '../types';
 import { ApprovalControllerMessenger } from '../messengers';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 
 /**
  * Initialize the approval controller.
@@ -32,7 +32,8 @@ export const ApprovalControllerInit: ControllerInitFunction<
       // transactions.
       SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
 
-      ...Object.values(DIALOG_APPROVAL_TYPES),
+      // Allow one flavor of snap_dialog to be queued.
+      DIALOG_APPROVAL_TYPES.default,
     ],
   });
 
