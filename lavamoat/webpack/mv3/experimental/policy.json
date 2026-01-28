@@ -3205,7 +3205,7 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
+    "@storybook/addon-docs>remark-external-links>mdast-util-definitions": {
       "packages": {
         "react-markdown>unist-util-visit": true
       }
@@ -3223,7 +3223,7 @@
         "console.warn": true
       },
       "packages": {
-        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": true,
+        "@storybook/addon-docs>remark-external-links>mdast-util-definitions": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>mdurl": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-builder": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-generated": true,
