@@ -119,11 +119,11 @@ describe('useGasSponsorshipWarningAlerts', () => {
       {
         field: RowAlertKey.EstimatedFee,
         inlineAlertText:
-          "Gas sponsorship isn’t available for this transaction. You’ll need to keep at least 10 MON in your account.",
+          'Gas sponsorship isn’t available for this transaction. You’ll need to keep at least 10 MON in your account.',
         isOpenModalOnClick: false,
         key: 'gasSponsorshipReserveBalanceWarning',
         message:
-          "Gas sponsorship isn’t available for this transaction. You’ll need to keep at least 10 MON in your account.",
+          'Gas sponsorship isn’t available for this transaction. You’ll need to keep at least 10 MON in your account.',
         severity: Severity.Warning,
         showArrow: false,
       },
