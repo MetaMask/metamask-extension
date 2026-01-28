@@ -135,6 +135,7 @@ async function selectDappClickPersonalSign(
 
   const testDapp = new TestDapp(driver);
   await testDapp.clickPersonalSign();
+  await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 }
 
 async function switchToDialogPopoverValidateDetailsRedesign(
