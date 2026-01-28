@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
@@ -28,16 +35,19 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
-import DeFiTab from '../../app/assets/defi-list/defi-tab';
-import NftsTab from '../../app/assets/nfts/nfts-tab';
-import TransactionList from '../../app/transaction-list';
-import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
 import { PerpsTabView } from '../../app/perps';
 import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
+
+const NftsTab = lazy(() => import('../../app/assets/nfts/nfts-tab'));
+const DeFiTab = lazy(() => import('../../app/assets/defi-list/defi-tab'));
+const TransactionList = lazy(() => import('../../app/transaction-list'));
+const UnifiedTransactionList = lazy(
+  () => import('../../app/transaction-list/unified-transaction-list.component'),
+);
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
@@ -192,13 +202,13 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.DeFi}
             data-testid="account-overview__defi-tab"
           >
-            <Box>
+            <Suspense fallback={null}>
               <DeFiTab
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
               />
-            </Box>
+            </Suspense>
           </Tab>
         )}
 
@@ -208,7 +218,9 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Nfts}
             data-testid="account-overview__nfts-tab"
           >
-            <NftsTab />
+            <Suspense fallback={null}>
+              <NftsTab />
+            </Suspense>
           </Tab>
         )}
 
@@ -218,11 +230,13 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Activity}
             data-testid="account-overview__activity-tab"
           >
-            {showUnifiedTransactionList ? (
-              <UnifiedTransactionList />
-            ) : (
-              <TransactionList />
-            )}
+            <Suspense fallback={null}>
+              {showUnifiedTransactionList ? (
+                <UnifiedTransactionList />
+              ) : (
+                <TransactionList />
+              )}
+            </Suspense>
           </Tab>
         )}
       </Tabs>
