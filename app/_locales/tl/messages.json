@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "I-bridge sa"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Kapag idinagdag mo ang token na ito nang mano-mano, tiyaking alam mo ang mga panganib nito sa mga pondo mo bago ka mag-bridge."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Hindi namin maberipika ang token na ito."
-  },
   "bridgeTransactionProgress": {
     "message": "Transaksyon $1 sa 2"
   },
@@ -2012,6 +2006,10 @@
   },
   "defiEmptyDescription": {
     "message": "Magpahiram, humiram at mag-trade, sa mismong wallet mo."
+  },
+  "defiReferralCheckboxLabel": {
+    "message": "Pahintulutan ang MetaMask na maglagay ng referral code. Permanente ito. Mag-aalok ng diskwento ang site batay sa kanilang mga tuntunin. May bayad ang MetaMask.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
   "defiTabErrorContent": {
     "message": "Subukang bisitahin muli mamaya."
@@ -3001,17 +2999,9 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "Pahintulutan ang MetaMask na maglagay ng referral code. Permanente ito. Mag-aalok ng diskwento ang site batay sa kanilang mga tuntunin. May bayad ang MetaMask.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Makatipid ng hanggang 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
@@ -8213,9 +8203,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"
-  },
-  "yourNetworks": {
-    "message": "Mga network mo"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang Iyong Lihim na Parirala sa Pagbawi"

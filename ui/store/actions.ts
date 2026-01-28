@@ -21,7 +21,6 @@ import {
 import {
   AssetsContractController,
   BalanceMap,
-  Collection,
   Nft,
   Token,
 } from '@metamask/assets-controllers';
@@ -3495,18 +3494,6 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
     nft,
     false,
     networkClientId,
-  ]);
-}
-
-export async function getNFTContractInfo(
-  contractAddresses: string[],
-  chainId: string,
-): Promise<{
-  collections: Collection[];
-}> {
-  return await submitRequestToBackground('getNFTContractInfo', [
-    contractAddresses,
-    chainId,
   ]);
 }
 
@@ -8141,6 +8128,18 @@ export async function saveClaimDraft(
  */
 export async function deleteClaimDraft(draftId: string): Promise<void> {
   return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
+}
+
+/**
+ * Gets the app name and version from the connected Ledger device.
+ *
+ * @returns A promise that resolves to an object containing the app name and version.
+ */
+export async function getAppNameAndVersion(): Promise<{
+  appName: string;
+  version: string;
+}> {
+  return await submitRequestToBackground('getAppNameAndVersion');
 }
 
 /**

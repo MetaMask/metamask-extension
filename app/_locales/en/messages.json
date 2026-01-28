@@ -457,6 +457,9 @@
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
+  "alertActionEditNetworkFee": {
+    "message": "Edit network fee"
+  },
   "alertActionUpdateGas": {
     "message": "Update gas limit"
   },
@@ -471,6 +474,16 @@
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
+  },
+  "alertInsufficientPayTokenBalance": {
+    "message": "Insufficient funds"
+  },
+  "alertInsufficientPayTokenBalanceFeesNoTarget": {
+    "message": "Add less or use a different token."
+  },
+  "alertInsufficientPayTokenNative": {
+    "message": "Not enough $1 to cover fees. Use a token on another network or add more $1 to continue.",
+    "description": "$1 is the native currency symbol (e.g. ETH)"
   },
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
@@ -517,6 +530,9 @@
   "alertMessageSignInWrongAccount": {
     "message": "This site is asking you to sign in using the wrong account."
   },
+  "alertMessageSuggestedGasFeeHigh": {
+    "message": "This site is suggesting a higher network fee than necessary. Edit the network fee to pay less."
+  },
   "alertMessageTokenTrustSignalMalicious": {
     "message": "This token has been identified as malicious. Interacting with this token may result in a loss of funds."
   },
@@ -531,6 +547,18 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
+  },
+  "alertNoPayTokenQuotesMessage": {
+    "message": "This payment route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
+  },
+  "alertNoPayTokenQuotesTitle": {
+    "message": "No quotes"
+  },
+  "alertPayHardwareAccountMessage": {
+    "message": "Hardware wallets aren't supported.\nSwitch wallets to continue."
+  },
+  "alertPayHardwareAccountTitle": {
+    "message": "Wallet not supported"
   },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
@@ -570,6 +598,9 @@
   },
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
+  },
+  "alertReasonSuggestedGasFeeHigh": {
+    "message": "High site fee"
   },
   "alertReasonTokenTrustSignalMalicious": {
     "message": "Malicious token"
@@ -1045,6 +1076,13 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeReceive": {
+    "message": "Receive $1 on $2",
+    "description": "Summary line showing token received on destination chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeReceiveLoading": {
+    "message": "Receiving on destination chain"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Select a destination account"
   },
@@ -1059,6 +1097,13 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
+  },
+  "bridgeSend": {
+    "message": "Send $1 from $2",
+    "description": "Summary line showing token sent from source chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeSendLoading": {
+    "message": "Sending from source chain"
   },
   "bridgeSolanaAccountCreated": {
     "message": "Solana account created"
@@ -1098,11 +1143,8 @@
   "bridgeTo": {
     "message": "Bridge to"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "We can't verify this token."
+  "bridgeTokenNotFound": {
+    "message": "No tokens match \"$1\""
   },
   "bridgeTransactionProgress": {
     "message": "Transaction $1 of 2"
@@ -1943,6 +1985,9 @@
   "dataUnavailable": {
     "message": "data unavailable"
   },
+  "date": {
+    "message": "Date"
+  },
   "dateCreated": {
     "message": "Date created"
   },
@@ -2071,6 +2116,14 @@
   },
   "defiEmptyDescription": {
     "message": "Lend, borrow, and trade, right in your wallet."
+  },
+  "defiReferralCheckboxLabel": {
+    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
   },
   "defiTabErrorContent": {
     "message": "Try visiting again later."
@@ -3112,17 +3165,9 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
@@ -3368,6 +3413,9 @@
   },
   "isSigningOrSubmitting": {
     "message": "A previous transaction is still being signed or submitted"
+  },
+  "isSigningOrSubmittingPayToken": {
+    "message": "You have a pending transaction on this network. Wait for it to complete or select a token on another network."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3861,6 +3909,10 @@
   "multichainAddressViewAll": {
     "message": "View all"
   },
+  "multichainProviderAccess": {
+    "message": "Grant Multichain provider access to $1",
+    "description": "The parameter is the name of the requesting origin"
+  },
   "multichainQuoteCardRateExplanation": {
     "message": "The best rate we found from providers, including provider fees and a $1% MetaMask fee."
   },
@@ -3870,6 +3922,12 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdConversionActivityTitle": {
+    "message": "mUSD Conversion"
+  },
+  "musdConversionTitle": {
+    "message": "mUSD Conversion"
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -3958,6 +4016,9 @@
   },
   "nameResolutionFailedError": {
     "message": "No address resolution found for this name."
+  },
+  "nameResolutionZeroAddressError": {
+    "message": "Name resolver returned a zero address. This is likely an error."
   },
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
@@ -4687,6 +4748,9 @@
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
   },
+  "paidWith": {
+    "message": "Paid with"
+  },
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
   },
@@ -4912,6 +4976,14 @@
     "message": "Allow $1 to store, update, and retrieve data securely with encryption. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
   },
+  "permission_multichainProvider": {
+    "message": "Access the Multichain provider.",
+    "description": "The description for the `endowment:multichain-provider` permission"
+  },
+  "permission_multichainProviderDescription": {
+    "message": "Allow $1 to communicate with MetaMask directly, in order for it to read data from the blockchain and suggest messages and transactions.",
+    "description": "An extended description for the `endowment:multichain-provider` permission. $1 is the snap name."
+  },
   "permission_nameLookup": {
     "message": "Provide domain and address lookups.",
     "description": "The description for the `endowment:name-lookup` permission."
@@ -5047,8 +5119,24 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
+  "perpsActivity": {
+    "message": "Activity"
+  },
+  "perpsAddFunds": {
+    "message": "Add funds"
+  },
+  "perpsAddFundsDescription": {
+    "message": "Add funds to start trading perpetual contracts with leverage"
+  },
+  "perpsAddToFavorites": {
+    "message": "Add to favorites"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
+  },
+  "perpsAvailable": {
+    "message": "$1 available",
+    "description": "$1 is the available balance amount"
   },
   "perpsBuy": {
     "message": "buy"
@@ -5058,6 +5146,15 @@
   },
   "perpsClosedShort": {
     "message": "Closed short"
+  },
+  "perpsContactSupport": {
+    "message": "Contact support"
+  },
+  "perpsDepositActivityTitle": {
+    "message": "Funded Perps"
+  },
+  "perpsDepositTitle": {
+    "message": "Funded perps account"
   },
   "perpsDetails": {
     "message": "Details"
@@ -5073,6 +5170,12 @@
   },
   "perpsEntryPrice": {
     "message": "Entry price"
+  },
+  "perpsExploreCrypto": {
+    "message": "Explore crypto"
+  },
+  "perpsExploreStocksAndCommodities": {
+    "message": "Explore stocks and commodities"
   },
   "perpsFilterAll": {
     "message": "All"
@@ -5101,6 +5204,12 @@
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
   },
+  "perpsLearnMore": {
+    "message": "Learn more"
+  },
+  "perpsLimit": {
+    "message": "Limit"
+  },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
@@ -5122,6 +5231,9 @@
   },
   "perpsMarkets": {
     "message": "Markets"
+  },
+  "perpsMore": {
+    "message": "More"
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"
@@ -5192,8 +5304,20 @@
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
+  "perpsTradePerps": {
+    "message": "Trade perps"
+  },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
+  },
+  "perpsWithdraw": {
+    "message": "Withdraw"
+  },
+  "perpsYourOrders": {
+    "message": "Your orders"
+  },
+  "perpsYourPositions": {
+    "message": "Your positions"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -7679,6 +7803,9 @@
   "suggestedTokenName": {
     "message": "Suggested name:"
   },
+  "summary": {
+    "message": "Summary"
+  },
   "supplied": {
     "message": "Supplied"
   },
@@ -8846,9 +8973,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourNetworks": {
-    "message": "Your networks"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"

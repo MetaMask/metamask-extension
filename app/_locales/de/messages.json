@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Bridge zu"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Wenn Sie dieses Token manuell hinzugefügt haben, stellen Sie sicher, dass Sie sich der Risiken für Ihre Gelder bewusst sind, bevor Sie bridgen."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Wir können diesen Token nicht verifizieren."
-  },
   "bridgeTransactionProgress": {
     "message": "Transaktion $1 von 2"
   },
@@ -2012,6 +2006,10 @@
   },
   "defiEmptyDescription": {
     "message": "Leihen, borgen und handeln Sie direkt in Ihrer Wallet."
+  },
+  "defiReferralCheckboxLabel": {
+    "message": "Erlauben Sie MetaMask, einen Empfehlungscode hinzuzufügen. Dieser ist dauerhaft. Die Website gewährt Rabatte gemäß ihren Bedingungen. MetaMask erhält eine Gebühr.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
   "defiTabErrorContent": {
     "message": "Versuchen Sie es später erneut."
@@ -3001,17 +2999,9 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "Erlauben Sie MetaMask, einen Empfehlungscode hinzuzufügen. Dieser ist dauerhaft. Die Website gewährt Rabatte gemäß ihren Bedingungen. MetaMask erhält eine Gebühr.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Sparen Sie bis zu 4 % auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
@@ -8216,9 +8206,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ihr NFT könnte gefährdet sein"
-  },
-  "yourNetworks": {
-    "message": "Ihre Netzwerke"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ihre geheime Wiederherstellungsphrase"

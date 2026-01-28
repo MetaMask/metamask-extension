@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Bridge ke"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Jika menambahkan token ini secara manual, pastikan Anda mengetahui risiko terhadap dana Anda sebelum menggunakan bridge."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Kami tidak dapat memverifikasi token ini."
-  },
   "bridgeTransactionProgress": {
     "message": "Transaksi $1 dari 2"
   },
@@ -2012,6 +2006,10 @@
   },
   "defiEmptyDescription": {
     "message": "Pinjamkan, pinjam, dan berdagang, langsung di dompet Anda."
+  },
+  "defiReferralCheckboxLabel": {
+    "message": "Izinkan MetaMask menambahkan kode rujukan. Kode ini bersifat permanen. Situs ini menawarkan diskon sesuai ketentuan mereka. MetaMask mendapatkan komisi.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
   "defiTabErrorContent": {
     "message": "Coba kunjungi lagi nanti."
@@ -3001,17 +2999,9 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "Izinkan MetaMask menambahkan kode rujukan. Kode ini bersifat permanen. Situs ini menawarkan diskon sesuai ketentuan mereka. MetaMask mendapatkan komisi.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Hemat hingga 4% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
@@ -8219,9 +8209,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"
-  },
-  "yourNetworks": {
-    "message": "Jaringan Anda"
   },
   "yourPrivateSeedPhrase": {
     "message": "Frasa Pemulihan Rahasia Anda"

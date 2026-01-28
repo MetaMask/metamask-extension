@@ -7,6 +7,14 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(() => ({ address: '0x123' })), // Mock selected account
 }));
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 // Mock the hooks and components that might cause issues
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
