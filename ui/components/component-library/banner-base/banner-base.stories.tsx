@@ -1,4 +1,5 @@
 import React from 'react';
+import README from "./README.mdx";
 import { Meta, StoryFn } from '@storybook/react';
 import { useState } from '@storybook/addons';
 import { BannerBase } from './banner-base';
@@ -10,8 +11,10 @@ export default {
   title: 'Components/ComponentLibrary/BannerBase',
   component: BannerBase,
   parameters: {
-    backgrounds: { default: 'alternative' },
-  },
+    docs: {
+      page: README,
+    },
+    backgrounds: { default: 'alternative' },},
   argTypes: {
     className: {
       control: 'text',

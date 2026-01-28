@@ -1,0 +1,148 @@
+import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
+
+import { Textarea } from './textarea';
+
+# Textarea
+
+`Textarea` lets user enter multiple lines of text data into a boxed field
+
+<Canvas>
+  <Story id="components-componentlibrary-textarea--default-story" />
+</Canvas>
+
+## Props
+
+<ArgTypes of={Textarea} />
+
+### Auto Focus
+
+Use the `autoFocus` prop to focus the `Textarea` during the first mount
+
+To view story see [Canvas tab](/story/components-componentlibrary-textarea--auto-complete). Removing it from docs because created annoying reading experience 😁
+
+```jsx
+import { Textarea } from '../../component-library';
+
+<Textarea autoFocus />;
+```
+
+### Cols Rows
+
+Use the `cols` and `rows` props to set the number of columns and rows of the `Textarea`
+
+- The `cols` prop specifies the visible width of a `Textarea`
+- The `rows` prop specifies the visible height of a `Textarea`, in lines.
+
+<Canvas>
+  <Story id="components-componentlibrary-textarea--cols-rows" />
+</Canvas>
+
+```jsx
+import { Textarea } from '../../component-library';
+
+<Textarea cols={50} rows={4} />;
+```
+
+### Default Value
+
+Use the `defaultValue` prop to set the default value of the `Textarea`
+
+<Canvas>
+  <Story id="components-componentlibrary-textarea--default-value" />
+</Canvas>
+
+```jsx
+import { Textarea } from '../../component-library';
+
+<Textarea defaultValue="default value" />;
+```
+
+### IsDisabled
+
+Use the `isDisabled` prop to set the disabled state of the `Textarea`
+
+<Canvas>
+  <Story id="components-componentlibrary-textarea--is-disabled" />
+</Canvas>
+
+```jsx
+import { Textarea } from '../../component-library';
+
+<Textarea isDisabled />;
+```
+
+### Error
+
+Use the `error` prop to set the error state of the `Textarea`
+
+<Canvas>
+  <Story id="components-componentlibrary-textarea--error-story" />
+</Canvas>
+
+```jsx
+import { Textarea } from '../../component-library';
+
+<Textarea error />;
+```
+
+### Max Length
+
+Use the `maxLength` prop to set the maximum allowed input characters for the `Textarea`
+
+<Canvas>
+  <Story id="components-componentlibrary-textarea--max-length" />
+</Canvas>
+
+```jsx
+import { Textarea } from '../../component-library';
+
+<Textarea maxLength={13} />;
+```
+
+### Read Only
+
+Use the `readOnly` prop to set the `Textarea` to read only.
+
+<Canvas>
+  <Story id="components-componentlibrary-textarea--read-only" />
+</Canvas>
+
+```jsx
+import { Textarea } from '../../component-library';
+
+<Textarea readOnly />;
+```
+
+### Required
+
+Use the `required` prop to set the `Textarea` to required. Currently there is no visual difference to the `Textarea` when required.
+
+<Canvas>
+  <Story id="components-componentlibrary-textarea--required" />
+</Canvas>
+
+```jsx
+import { Textarea } from '../../component-library';
+
+// Currently no visual difference
+<Textarea required />;
+```
+
+### Resize
+
+Use the `resize` prop to set the resize state of the `Textarea`. Defaults to `TextareaResize.Vertical`.
+
+<Canvas>
+  <Story id="components-componentlibrary-textarea--resize" />
+</Canvas>
+
+```jsx
+import { Textarea, TextareaResize } from '../../component-library';
+
+<Textarea resize={TextareaResize.Vertical} />
+<Textarea resize={TextareaResize.Horizontal} />
+<Textarea resize={TextareaResize.None} />
+<Textarea resize={TextareaResize.Both} />
+<Textarea resize={TextareaResize.Inherit} />
+<Textarea resize={TextareaResize.Initial} />
+```

@@ -1,6 +1,7 @@
 import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 import React from 'react';
+import README from "./README.mdx";
 
 import {
   BorderColor,
@@ -16,12 +17,13 @@ export default {
   component: Checkbox,
   parameters: {
     docs: {
+      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
       },
     },
-  },
+    },
   argTypes: {
     label: {
       control: 'text',

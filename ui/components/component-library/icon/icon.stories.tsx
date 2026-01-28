@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import README from "./README.mdx";
 import { StoryFn, Meta } from '@storybook/react';
-
 import {
   AlignItems,
   Display,
@@ -33,6 +33,7 @@ export default {
   component: Icon,
   parameters: {
     docs: {
+      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',

@@ -1,0 +1,120 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { ModalContent } from './modal-content';
+
+# ModalContent
+
+`ModalContent` is the container for the modal dialog's content. It uses context supplied by the `Modal` component and cannot be used without it.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-modalcontent--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={ModalContent} />
+
+### Children
+
+Use the `children` prop to render the content of `ModalContent`. The `ModalContent` should generally be used with the `ModalHeader` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalcontent--children" />
+</Canvas>
+
+```jsx
+import React, { useState } from 'react';
+import { Modal, ModalContent, ModalHeader, ModalBody, Text, Button, ButtonVariant } from '../../component-library';
+
+const [show, setShow] = useState(false);
+const handleOnClick = () => {
+  setShow(!show);
+};
+
+<Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
+  Open
+</Button>
+<Modal isOpen={show} onClose={handleOnClick}>
+  <ModalContent {...args}>
+    <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
+    <ModalBody>
+      <Text marginBottom={4}>Modal Content</Text>
+      <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
+        Close
+      </Button>
+      <LoremIpsum />
+      <LoremIpsum />
+      <LoremIpsum />
+      <LoremIpsum />
+      <LoremIpsum />
+    </ModalBody>
+  </ModalContent>
+</Modal>
+```
+
+### Size
+
+Use the `size` prop to set the size of the `ModalContent`
+
+- `ModalContentSize.Sm` (360px)
+- `ModalContentSize.Md` (480px)
+- `ModalContentSize.Lg` (720px)
+
+To set a custom size, use the `modalDialogProps` prop and pass in a `className` with a max width.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalcontent--size" />
+</Canvas>
+
+```jsx
+import {
+  ModalContent,
+  ModalContentSize,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '../../component-library';
+
+<ModalContent size={ModalContentSize.Sm}>
+  <ModalHeader marginBottom={4}>
+    This ModalContent is using size: sm
+  </ModalHeader>
+  <ModalBody>
+    <Text marginBottom={4}>This ModalContent is using size: sm</Text>
+  </ModalBody>
+  <ModalFooter onSubmit={handleOnClose}>
+</ModalContent>;
+
+<ModalContent size={ModalContentSize.Md}>
+  <ModalHeader marginBottom={4}>
+    This ModalContent is using size: md
+  </ModalHeader>
+  <Text marginBottom={4}>This ModalContent is using size: md</Text>
+</ModalContent>;
+
+<ModalContent size={ModalContentSize.Lg}>
+  <ModalHeader marginBottom={4}>
+    This ModalContent is using size: lg
+  </ModalHeader>
+  <Text marginBottom={4}>This ModalContent is using size: lg</Text>
+  <ModalFooter onSubmit={handleOnClose}>
+</ModalContent>;
+
+/* Using a className
+  .max-width-800 {
+    max-width: 800px;
+  }
+*/
+<ModalContent modalDialogProps={{ className: 'max-width-800' }}>
+  <ModalHeader marginBottom={4}>
+    This ModalContent is using size: className
+  </ModalHeader>
+  <Text marginBottom={4}>
+    This ModalContent has size set using modalDialogProps and adding a className
+    setting a max width (max-width: 800px)
+  </Text>
+  <ModalFooter onSubmit={handleOnClose}>
+</ModalContent>;
+```

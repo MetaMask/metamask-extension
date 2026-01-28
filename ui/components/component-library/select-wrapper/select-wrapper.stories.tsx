@@ -1,6 +1,6 @@
 import React from 'react';
+import README from "./README.mdx";
 import { StoryFn, Meta } from '@storybook/react';
-
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
 import { Button } from '../button';
@@ -14,11 +14,9 @@ export default {
   component: SelectWrapper,
   parameters: {
     docs: {
-      story: {
-        inline: false,
-      },
+      page: README,
     },
-  },
+    },
   argTypes: {
     placeholder: {
       control: {

@@ -1,0 +1,338 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { TextField } from '../';
+import { FormTextField } from './form-text-field';
+
+# FormTextField
+
+The `FormTextField` is an input component to create forms. It bundles the [TextField](/docs/components-componentlibrary-textfield--default-story), [Label](/docs/components-componentlibrary-label--default-story) and [HelpText](/docs/components-componentlibrary-helptext--default-story) components together.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-formtextfield--default-story" />
+</Canvas>
+
+## Props
+
+The `FormTextField` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
+
+<ArgsTable of={FormTextField} />
+
+`FormTextField` accepts all [TextField](/docs/components-componentlibrary-textfield--default-story#props)
+component props
+
+<ArgsTable of={TextField} />
+
+`FormTextField` accepts all [TextField](/docs/components-componentlibrary-textfield--default-story#props)
+component props
+
+<ArgsTable of={TextField} />
+
+### Id
+
+Use the `id` prop to set the `id` of the `FormTextField` component. This is required for accessibility when the `label` prop is set. It is also used internally to link the `label` and `input` elements using `htmlFor`, so clicking on the `label` will focus the `input`.
+
+<Canvas>
+  <Story id="components-componentlibrary-formtextfield--id" />
+</Canvas>
+
+```jsx
+import { FormTextField } from '../../component-library';
+
+<FormTextField
+  id="accessible-input-id"
+  label="If label prop exists id prop is required for accessibility"
+/>;
+```
+
+### Label
+
+Use the `label` prop to add a label to the `FormTextField` component. Uses the [Label](/docs/components-componentlibrary-label--default-story) component. Use the `labelProps` prop to pass props to the `Label` component. To use a custom label component see the [Custom Label or HelpText](#custom-label-or-helptext) story example.
+
+<Canvas>
+  <Story id="components-componentlibrary-formtextfield--label-story" />
+</Canvas>
+
+```jsx
+import { FormTextField } from '../../component-library';
+
+<FormTextField id="input-with-label" label="Label content appears here" />;
+```
+
+### HelpText
+
+Use the `helpText` prop to add help text to the `FormTextField` component. Uses the [HelpText](/docs/components-componentlibrary-helptext--default-story) component. Use the `helpTextProps` prop to pass props to the `HelpText` component. To use a custom help text component see the [Custom Label or HelpText](#custom-helpText-or-helptext) story example. When `error` is true the `helpText` will be rendered as an error message.
+
+<Canvas>
+  <Story id="components-componentlibrary-formtextfield--help-text-story" />
+</Canvas>
+
+```jsx
+import { FormTextField } from '../../component-library';
+
+<FormTextField helpText="HelpText content appears here" />;
+<FormTextField
+  error
+  helpText="When error is true the help text will be rendered as an error message"
+/>;
+```
+
+### Form Example
+
+An example of a form using the `FormTextField` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-formtextfield--form-example" />
+</Canvas>
+
+```jsx
+import React, { useState, useEffect } from 'react';
+import {
+  Display,
+  TextColor,
+  AlignItems,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box/box';
+
+import {
+  ButtonPrimary,
+  ButtonSecondary,
+  FormTextField,
+  IconName,
+  Text,
+} from '../../component-library';
+
+const FORM_STATE = {
+  DEFAULT: 'default',
+  SUCCESS: 'success',
+  ERROR: 'error',
+};
+
+const VALIDATED_VALUES = {
+  NETWORK_NAME: 'network name',
+  NEW_RPC_URL: 'new rpc url',
+  CHAIN_ID: 'chain id',
+};
+
+const ERROR_MESSAGES = {
+  NETWORK_NAME: `Please enter "${VALIDATED_VALUES.NETWORK_NAME}"`,
+  NEW_RPC_URL: `Please enter "${VALIDATED_VALUES.NEW_RPC_URL}"`,
+  CHAIN_ID: `Please enter "${VALIDATED_VALUES.CHAIN_ID}"`,
+};
+
+const [submitted, setSubmitted] = useState(FORM_STATE.DEFAULT);
+
+const [values, setValues] = useState({
+  networkName: '',
+  newRpcUrl: '',
+  chainId: '',
+});
+
+const [errors, setErrors] = useState({
+  networkName: '',
+  newRpcUrl: '',
+  chainId: '',
+});
+
+useEffect(() => {
+  setErrors({
+    networkName:
+      values.networkName &&
+      values.networkName.toLowerCase() !== VALIDATED_VALUES.NETWORK_NAME
+        ? ERROR_MESSAGES.NETWORK_NAME
+        : '',
+    newRpcUrl:
+      values.newRpcUrl &&
+      values.newRpcUrl.toLowerCase() !== VALIDATED_VALUES.NEW_RPC_URL
+        ? ERROR_MESSAGES.NEW_RPC_URL
+        : '',
+    chainId:
+      values.chainId &&
+      values.chainId.toLowerCase() !== VALIDATED_VALUES.CHAIN_ID
+        ? ERROR_MESSAGES.CHAIN_ID
+        : '',
+  });
+}, [values]);
+
+const handleClearForm = () => {
+  setValues({ networkName: '', newRpcUrl: '', chainId: '' });
+  setErrors({ networkName: '', newRpcUrl: '', chainId: '' });
+  setSubmitted(FORM_STATE.DEFAULT);
+};
+
+const handleOnChange = (e) => {
+  if (submitted === FORM_STATE.ERROR) {
+    setErrors({ networkName: '', newRpcUrl: '', chainId: '' });
+    setSubmitted(FORM_STATE.DEFAULT);
+  }
+  setValues({
+    ...values,
+    [e.target.name]: e.target.value,
+  });
+};
+
+const handleOnSubmit = (e) => {
+  e.preventDefault();
+  if (errors.networkName || errors.newRpcUrl || errors.chainId) {
+    setSubmitted(FORM_STATE.ERROR);
+  } else {
+    setSubmitted(FORM_STATE.SUCCESS);
+  }
+};
+
+return (
+  <>
+    <Box
+      as="form"
+      onSubmit={handleOnSubmit}
+      marginBottom={4}
+      style={{ width: '100%', maxWidth: '420px' }}
+    >
+      <FormTextField
+        marginBottom={4}
+        label="Network name"
+        placeholder="Enter 'network name'"
+        required
+        name="networkName"
+        id="networkName"
+        onChange={handleOnChange}
+        value={values.networkName}
+        error={Boolean(submitted === FORM_STATE.ERROR && errors.networkName)}
+        helpText={submitted === FORM_STATE.ERROR ? errors.networkName : null}
+      />
+      <FormTextField
+        marginBottom={4}
+        label="New RPC URL"
+        placeholder="Enter 'new RPC URL'"
+        required
+        name="newRpcUrl"
+        id="newRpcUrl"
+        onChange={handleOnChange}
+        value={values.newRpcUrl}
+        error={Boolean(submitted === FORM_STATE.ERROR && errors.newRpcUrl)}
+        helpText={submitted === FORM_STATE.ERROR ? errors.newRpcUrl : null}
+      />
+      <FormTextField
+        label="Chain ID"
+        marginBottom={4}
+        placeholder="Enter 'chain ID'"
+        required
+        name="chainId"
+        id="chainId"
+        onChange={handleOnChange}
+        value={values.chainId}
+        error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
+        helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
+      />
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+        <ButtonPrimary type="submit">Submit</ButtonPrimary>
+      </Box>
+    </Box>
+    <ButtonSecondary icon={IconName.Close} onClick={handleClearForm} danger>
+      Clear form
+    </ButtonSecondary>
+    {submitted === FORM_STATE.SUCCESS && (
+      <Text
+        variant={TextVariant.bodyMd}
+        color={TextColor.successDefault}
+        marginTop={4}
+      >
+        Form successfully submitted!
+      </Text>
+    )}
+  </>
+);
+```
+
+### Custom Label or HelpText
+
+There will be times when you will want to use a custom `Label` or `HelpText`. This can be done by simply not providing `label` or `helpText` props to the `FormTextField` component. You can then use the `Label` and `HelpText` components to create your own custom label or help text.
+
+<Canvas>
+  <Story id="components-componentlibrary-formtextfield--custom-label-or-help-text" />
+</Canvas>
+
+```jsx
+import {
+  Size,
+  Display,
+  IconColor,
+  AlignItems,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box/box';
+
+import { Icon, IconName } from '..'
+import {
+  ButtonLink,
+  FormTextField,
+  HelpText,
+  Label,
+  TextFieldType,
+  Text,
+} from '../../component-library';
+
+<Text marginBottom={4}>
+  Examples of how one might customize the Label or HelpText within the
+  FormTextField component
+</Text>
+<Box
+  display={Display.Flex}
+  justifyContent={JustifyContent.spaceBetween}
+  alignItems={AlignItems.flexEnd}
+>
+  <Box display={Display.Flex} alignItems={AlignItems.center}>
+    {/**
+      * If you need a custom label
+      * or require adding some form of customization
+      * import the Label component separately
+      */}
+    <Label htmlFor="custom-spending-cap">
+      Custom spending cap
+    </Label>
+    <Icon
+      name={IconName.Info}
+      size={IconSize.Sm}
+      marginLeft={1}
+      color={IconColor.iconAlternative}
+    />
+  </Box>
+  <ButtonLink>Use default</ButtonLink>
+</Box>
+<FormTextField
+  id="custom-spending-cap"
+  placeholder="Enter a number"
+  endAccessory={<ButtonLink>Max</ButtonLink>}
+  marginBottom={4}
+  type={TextFieldType.Number}
+/>
+<FormTextField
+  label="Swap from"
+  placeholder="0"
+  type={TextFieldType.Number}
+/>
+<Box
+  display={Display.Flex}
+  alignItems={AlignItems.flexStart}
+  justifyContent={JustifyContent.spaceBetween}
+  marginTop={1}
+>
+  {/**
+    * If you need a custom help text
+    * or require adding some form of customization
+    * import the HelpText component separately and handle the error
+    * logic yourself
+    */}
+  <HelpText htmlFor="chainId" marginRight={2}>
+    Only enter a number that you're comfortable with the contract accessing
+    now or in the future. You can always increase the token limit later.
+  </HelpText>
+  <ButtonLink marginLeft="auto">
+    Max
+  </ButtonLink>
+</Box>
+```

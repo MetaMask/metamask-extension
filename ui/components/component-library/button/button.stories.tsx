@@ -1,4 +1,5 @@
 import React from 'react';
+import README from "./README.mdx";
 import { StoryFn, Meta } from '@storybook/react';
 import { Button } from './button';
 import { IconName } from '../icon';
@@ -8,14 +9,14 @@ export default {
   title: 'Components/ComponentLibrary/Button (deprecated)',
   component: Button,
   parameters: {
-    controls: { sort: 'alpha' },
     docs: {
+      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
       },
     },
-  },
+    controls: { sort: 'alpha' },},
   argTypes: {
     as: {
       control: 'select',

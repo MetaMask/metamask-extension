@@ -15,8 +15,10 @@ export default {
   title: 'Components/ComponentLibrary/BannerTip',
   component: BannerTip,
   parameters: {
-    backgrounds: { default: 'alternative' },
-  },
+    docs: {
+      page: README,
+    },
+    backgrounds: { default: 'alternative' },},
   argTypes: {
     logoType: {
       options: Object.values(BannerTipLogoType),

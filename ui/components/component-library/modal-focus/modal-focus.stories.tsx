@@ -1,6 +1,6 @@
 import React from 'react';
+import README from "./README.mdx";
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-
 import Box from '../../ui/box';
 
 import {

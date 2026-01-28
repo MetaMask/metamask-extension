@@ -1,4 +1,5 @@
 import React from 'react';
+import README from "./README.mdx";
 import { StoryFn, Meta } from '@storybook/react';
 import { ButtonBaseSize } from './button-base.types';
 import { ButtonBase } from './button-base';
@@ -26,17 +27,17 @@ export default {
 
   component: ButtonBase,
   parameters: {
-    design: {
-      type: 'figma',
-      url: 'https://www.figma.com/file/HKpPKij9V3TpsyMV1TpV7C/DS-Components?type=design&node-id=9970-48395&mode=design&t=K6JSdtG11z2wzcXG-4',
-    },
     docs: {
+      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
       },
     },
-  },
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/file/HKpPKij9V3TpsyMV1TpV7C/DS-Components?type=design&node-id=9970-48395&mode=design&t=K6JSdtG11z2wzcXG-4',
+    },},
   argTypes: {
     as: {
       control: 'select',

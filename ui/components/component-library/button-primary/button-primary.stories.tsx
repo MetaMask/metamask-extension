@@ -1,4 +1,5 @@
 import React from 'react';
+import README from "./README.mdx";
 import { StoryFn, Meta } from '@storybook/react';
 import { ButtonPrimary } from './button-primary';
 import { ButtonPrimarySize } from './button-primary.types';
@@ -8,12 +9,13 @@ export default {
   component: ButtonPrimary,
   parameters: {
     docs: {
+      page: README,
       description: {
         component:
           '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
       },
     },
-  },
+    },
   argTypes: {
     as: {
       control: 'select',

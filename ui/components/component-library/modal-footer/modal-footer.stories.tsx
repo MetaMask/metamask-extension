@@ -1,6 +1,6 @@
 import React from 'react';
+import README from "./README.mdx";
 import type { Meta, StoryObj } from '@storybook/react';
-
 import {
   BackgroundColor,
   Display,

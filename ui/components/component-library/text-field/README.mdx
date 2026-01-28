@@ -1,0 +1,332 @@
+import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
+
+import { TextField } from './text-field';
+
+# TextField
+
+`TextField` lets user enter a text data into a boxed field. It can sometimes contain related information or controls.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--default-story" />
+</Canvas>
+
+## Props
+
+<ArgTypes of={TextField} />
+
+### Size
+
+Use the `size` prop to set the height of the `TextField`.
+
+Possible sizes include:
+
+- `Sm` 32px
+- `Md` 40px
+- `Lg` 48px
+
+Defaults to `md`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--size-story" />
+</Canvas>
+
+```jsx
+import { TextField, TextFieldSize } from '../../component-library';
+
+<TextField size={TextFieldSize.Sm} />
+<TextField size={TextFieldSize.Md} />
+<TextField size={TextFieldSize.Lg} />
+```
+
+### Type
+
+Use the `type` prop to change the type of input.
+
+Possible types include:
+
+- `text`
+- `number`
+- `password`
+
+Defaults to `text`.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--type" />
+</Canvas>
+
+```jsx
+import { TextField, TextFieldType } from '../../component-library';
+
+<TextField  placeholder="Default" />
+<TextField  type={TextFieldType.Password} placeholder="Password" />
+<TextField  type={TextFieldType.Number} placeholder="Number" />
+```
+
+### Truncate
+
+Use the `truncate` prop to truncate the text of the `TextField`. Defaults to `true`.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--truncate" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField truncate />; // truncate is set to `true` by default
+<TextField truncate={false} />;
+```
+
+### Start accessory End Accessory
+
+Use the `startAccessory` and `endAccessory` props to add components such as icons or buttons to either side of the `TextField`.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--start-accessory-end-accessory" />
+</Canvas>
+
+```jsx
+import { Color, IconColor, SIZES, DISPLAY } from '../../../helpers/constants/design-system';
+import { TextField, Icon, IconName, ButtonIcon } from '../../component-library';
+
+<TextField
+  placeholder="Search"
+  startAccessory={
+    <Icon
+      color={IconColor.iconAlternative}
+      name={IconName.Search}
+    />
+  }
+/>
+
+<TextField
+  placeholder="Public address (0x), or ENS"
+  endAccessory={
+    <ButtonIcon
+      iconName={IconName.ScanBarcode}
+      ariaLabel="Scan QR code"
+      iconProps={{ color: IconColor.primaryDefault }}
+    />
+  }
+/>
+
+<TextField
+  placeholder="Enter amount"
+  type="number"
+  truncate
+  startAccessory={<SelectTokenComponent />}
+  endAccessory={<TokenValueInUSDComponent />}
+/>
+
+<TextField
+  placeholder="Public address (0x), or ENS"
+  truncate
+  startAccessory={<AvatarAccount />}
+  endAccessory={
+    isAddressValid && (
+      <Icon
+        name={IconName.Check}
+        color={IconColor.successDefault}
+      />
+    )
+  }
+/>
+```
+
+### Input Ref
+
+Use the `inputRef` prop to access the ref of the `<input />` html element of `TextField`. This is useful for focusing the input from a button or other component.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--input-ref" />
+</Canvas>
+
+```jsx
+import { Button, TextField } from '../../component-library';
+
+const inputRef = useRef(null);
+const [value, setValue] = useState('');
+const handleOnClick = () => {
+  inputRef.current.focus();
+};
+const handleOnChange = (e) => {
+  setValue(e.target.value);
+};
+
+<TextField
+  inputRef={inputRef}
+  value={value}
+  onChange={handleOnChange}
+/>
+<Button marginLeft={1} onClick={handleOnClick}>
+  Edit
+</Button>
+```
+
+### Input Component
+
+Use the `InputComponent` prop change the component used for the input element. This is useful for replacing the base input with a custom input while retaining the functionality of the `TextField`.
+
+Defaults to the [Text](/docs/components-componentlibrary-text--default-story) component
+
+To function fully the custom component should accept the following props:
+
+- `aria-invalid`
+- `as`
+- `autoComplete`
+- `autoFocus`
+- `backgroundColor`
+- `defaultValue`
+- `disabled`
+- `focused`
+- `id`
+- `margin`
+- `maxLength`
+- `name`
+- `onBlur`
+- `onChange`
+- `onFocus`
+- `padding`
+- `paddingLeft`
+- `paddingRight`
+- `placeholder`
+- `readOnly`
+- `ref`
+- `required`
+- `value`
+- `variant`
+- `type`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--input-component-story" />
+</Canvas>
+
+```jsx
+import { TextField, Icon, IconName } from '../../component-library';
+
+// should map the props to the custom input component
+const CustomInputComponent = () => <div>{/* Custom input component */}</div>;
+
+const TextFieldCustomInput = (args) => (
+  <TextField
+    size={SIZES.LG}
+    InputComponent={CustomInputComponent}
+    startAccessory={
+      <Icon color={IconColor.iconAlternative} name={IconName.Wallet} />
+    }
+  />
+);
+```
+
+### Auto Complete
+
+Use the `autoComplete` prop to set the autocomplete html attribute. It allows the browser to predict the value based on earlier typed values.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--auto-complete" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField type="password" autoComplete />;
+```
+
+### Auto Focus
+
+Use the `autoFocus` prop to focus the `TextField` during the first mount
+
+To view story see [Canvas tab](/story/components-componentlibrary-textfield--auto-complete). Removing it from docs because created annoying reading experience 😁
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField autoFocus />;
+```
+
+### Default Value
+
+Use the `defaultValue` prop to set the default value of the `TextField`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--default-value" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField defaultValue="default value" />;
+```
+
+### Disabled
+
+Use the `disabled` prop to set the disabled state of the `TextField`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--disabled" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField disabled />;
+```
+
+### Error
+
+Use the `error` prop to set the error state of the `TextField`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--error-story" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField error />;
+```
+
+### Max Length
+
+Use the `maxLength` prop to set the maximum allowed input characters for the `TextField`
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--max-length" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField maxLength={10} />;
+```
+
+### Read Only
+
+Use the `readOnly` prop to set the `TextField` to read only. When `readOnly` is true `TextField` will not have a focus state.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--read-only" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+<TextField readOnly />;
+```
+
+### Required
+
+Use the `required` prop to set the `TextField` to required. Currently there is no visual difference to the `TextField` when required.
+
+<Canvas>
+  <Story id="components-componentlibrary-textfield--required-story" />
+</Canvas>
+
+```jsx
+import { TextField } from '../../component-library';
+
+// Currently no visual difference
+<TextField required />;
+```

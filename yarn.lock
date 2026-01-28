@@ -13748,7 +13748,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-docs@npm:7.6.21":
+"@storybook/addon-docs@npm:7.6.21, @storybook/addon-docs@npm:^7.6.21":
   version: 7.6.21
   resolution: "@storybook/addon-docs@npm:7.6.21"
   dependencies:
@@ -33706,6 +33706,7 @@ __metadata:
     "@slack/webhook": "npm:^7.0.5"
     "@solana/addresses": "npm:2.0.0-rc.4"
     "@storybook/addon-a11y": "npm:^7.6.21"
+    "@storybook/addon-docs": "npm:^7.6.21"
     "@storybook/addon-essentials": "npm:^7.6.21"
     "@storybook/addons": "npm:^7.6.21"
     "@storybook/api": "npm:^7.6.21"

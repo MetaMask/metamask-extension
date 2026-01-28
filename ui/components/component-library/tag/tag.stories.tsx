@@ -1,4 +1,5 @@
 import React from 'react';
+import README from "./README.mdx";
 import { Meta, StoryFn } from '@storybook/react';
 import { IconName } from '../icon';
 import { IconColor } from '../../../helpers/constants/design-system';

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-
 import { Display, FlexWrap } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';

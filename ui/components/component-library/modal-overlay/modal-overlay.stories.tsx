@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-
 import { ModalOverlay } from './modal-overlay';
 
 export default {
