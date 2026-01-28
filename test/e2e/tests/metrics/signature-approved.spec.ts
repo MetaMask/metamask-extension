@@ -2,10 +2,15 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { DEFAULT_FIXTURE_ACCOUNT, MOCK_META_METRICS_ID } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  MOCK_META_METRICS_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import {
   signTypedDataV3,
   signTypedDataV4,
@@ -260,6 +265,9 @@ describe('Signature Approved Event', function () {
 
         // creates a sign typed data signature request
         await testDapp.personalSign();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const confirmation = new Confirmation(driver);
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {

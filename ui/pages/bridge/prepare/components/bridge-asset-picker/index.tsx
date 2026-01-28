@@ -1,0 +1,293 @@
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useSelector } from 'react-redux';
+import {
+  ButtonIconSize,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import { type CaipChainId } from '@metamask/utils';
+import { uniqBy } from 'lodash';
+import {
+  BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+} from '../../../../../../shared/constants/bridge';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalHeader,
+  PickerNetwork,
+  TextField,
+  ModalContentSize,
+} from '../../../../../components/component-library';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  BackgroundColor,
+  BlockSize,
+  BorderColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
+import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
+import { getBridgeSortedAssets } from '../../../../../ducks/bridge/asset-selectors';
+import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
+import { type BridgeToken } from '../../../../../ducks/bridge/types';
+import { toBridgeToken } from '../../../../../ducks/bridge/utils';
+import { NetworkPicker } from './network-picker';
+import { BridgeAssetList } from './lazy-asset-list';
+
+export const BridgeAssetPicker = ({
+  chains,
+  isOpen,
+  onClose,
+  onAssetChange,
+  header,
+  selectedAsset,
+  accountAddress,
+  disabledChainId,
+  ...assetListProps
+}: {
+  isOpen: boolean;
+  accountAddress: string;
+  onClose: () => void;
+  header: string;
+  selectedAsset: BridgeToken;
+} & Pick<
+  React.ComponentProps<typeof NetworkPicker>,
+  'chains' | 'disabledChainId'
+> &
+  Pick<
+    React.ComponentProps<typeof BridgeAssetList>,
+    'onAssetChange' | 'isDestination'
+  >) => {
+  const [accountGroup] = useSelector((state: BridgeAppState) =>
+    getAccountGroupsByAddress(state, [accountAddress]),
+  );
+  const assetsWithBalance = useSelector((state: BridgeAppState) =>
+    getBridgeSortedAssets(state, accountGroup.id),
+  );
+
+  const t = useI18nContext();
+
+  const networkPickerButtonRef = useRef<HTMLButtonElement>(null);
+  const [isNetworkPickerOpen, setIsNetworkPickerOpen] = useState(false);
+  // This is the network that the user has selected from the dropdown
+  const [selectedChainId, setSelectedChainId] = useState<CaipChainId | null>(
+    null,
+  );
+
+  const chainIds = useMemo(
+    () => chains.map(({ chainId }) => chainId),
+    [chains],
+  );
+
+  const chainIdsList = useMemo(() => {
+    return selectedChainId ? [selectedChainId] : chainIds;
+  }, [selectedChainId, chainIds]);
+
+  const chainIdsSet = useMemo(() => {
+    return new Set(chainIdsList);
+  }, [chainIdsList]);
+
+  const assetsToInclude = useMemo(
+    () =>
+      uniqBy(
+        assetsWithBalance.concat(selectedAsset).filter((token) => {
+          const matchesChainIdFilter = chainIdsSet.has(token.chainId);
+
+          return matchesChainIdFilter;
+        }),
+        (a) => a.assetId?.toLowerCase(),
+      ).map((token) => toBridgeToken(token)),
+    // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
+    [chainIdsSet, selectedAsset],
+  );
+
+  const { popularTokensList, isLoading: isPopularTokensLoading } =
+    usePopularTokens({
+      assetsToInclude,
+      accountAddress,
+      chainIds: chainIdsSet,
+    });
+
+  const selectedNetworkName = selectedChainId
+    ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]
+    : t('allNetworks');
+
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Persist selected chain id to restore the selected chain id if the modal is closed before a new token is selected
+  const [persistedChainId, setPersistedChainId] = useState<CaipChainId | null>(
+    selectedChainId,
+  );
+  useEffect(() => {
+    if (
+      isOpen &&
+      selectedChainId &&
+      selectedAsset.chainId !== selectedChainId
+    ) {
+      // Restore previously selected chainId
+      setSelectedChainId(
+        persistedChainId && selectedAsset.chainId !== persistedChainId
+          ? selectedAsset.chainId
+          : persistedChainId,
+      );
+    }
+  }, [isOpen]);
+
+  const handleClose = useCallback(() => {
+    setSearchQuery('');
+    setIsNetworkPickerOpen(false);
+    onClose();
+  }, [onClose]);
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      data-testid="bridge-asset-picker-modal"
+      onClose={handleClose}
+    >
+      <ModalOverlay onClick={handleClose} />
+      <ModalContent
+        paddingTop={4}
+        paddingBottom={4}
+        gap={3}
+        size={ModalContentSize.Md}
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+        modalDialogProps={{
+          height: BlockSize.Full,
+          minWidth: 400,
+        }}
+      >
+        <ModalHeader
+          closeButtonProps={{ size: ButtonIconSize.Sm }}
+          onClose={handleClose}
+        >
+          {header}
+        </ModalHeader>
+        <ModalBody
+          height={BlockSize.Full}
+          paddingLeft={0}
+          paddingRight={0}
+          data-testid="bridge-asset-picker-modal__body"
+          gap={4}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+        >
+          <PickerNetwork
+            label={selectedNetworkName}
+            labelProps={{
+              variant: TextVariant.bodyMd,
+            }}
+            avatarNetworkProps={{
+              src: selectedChainId
+                ? BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[selectedChainId]
+                : undefined,
+              name: selectedNetworkName,
+              style: {
+                display: selectedChainId ? undefined : Display.None,
+                width: 16,
+                height: 16,
+                borderWidth: 0,
+              },
+              borderRadius: BorderRadius.SM,
+            }}
+            ref={networkPickerButtonRef}
+            onClick={() =>
+              isNetworkPickerOpen
+                ? setIsNetworkPickerOpen(false)
+                : setIsNetworkPickerOpen(true)
+            }
+            data-testid="multichain-asset-picker__network"
+            marginInline={4}
+            paddingLeft={4}
+            paddingRight={4}
+            backgroundColor={BackgroundColor.backgroundMuted}
+            borderRadius={BorderRadius.XL}
+            width={BlockSize.Max}
+            style={{ minHeight: 32 }}
+          />
+          <NetworkPicker
+            buttonElement={networkPickerButtonRef.current}
+            isOpen={isNetworkPickerOpen}
+            chains={chains}
+            selectedChainId={selectedChainId}
+            disabledChainId={disabledChainId}
+            onNetworkChange={(chainId) => {
+              setSelectedChainId(chainId);
+              setIsNetworkPickerOpen(false);
+            }}
+            onClose={() => setIsNetworkPickerOpen(false)}
+            testId="bridge-network-picker-popover"
+          />
+          <TextField
+            autoFocus
+            testId={'bridge-asset-picker-search-input'}
+            placeholder={t('enterTokenNameOrAddress')}
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+            }}
+            borderRadius={BorderRadius.XL}
+            borderWidth={1}
+            borderColor={BorderColor.borderMuted}
+            inputProps={{
+              disableStateStyles: true,
+              textVariant: TextVariant.bodyMd,
+              paddingRight: 2,
+              borderColor: BorderColor.borderMuted,
+            }}
+            style={{
+              minHeight: 48,
+              paddingRight: 8,
+              outline: 'none',
+              borderColor: BorderColor.borderMuted,
+            }}
+            marginInline={4}
+            startAccessory={
+              <Icon
+                color={IconColor.IconAlternative}
+                name={IconName.Search}
+                size={IconSize.Md}
+              />
+            }
+          />
+
+          {!isNetworkPickerOpen && (
+            <BridgeAssetList
+              assetsToInclude={assetsToInclude}
+              chainIds={chainIdsSet}
+              accountAddress={accountAddress}
+              searchQuery={searchQuery.trim()}
+              selectedAssetId={selectedAsset.assetId}
+              popularTokensList={popularTokensList}
+              isPopularTokensLoading={isPopularTokensLoading}
+              onAssetChange={(asset: BridgeToken) => {
+                handleClose();
+                onAssetChange(asset);
+                // If asset selection follows a chain selection, persist the selected chain id
+                if (selectedChainId === asset.chainId) {
+                  setPersistedChainId(selectedChainId);
+                }
+              }}
+              {...assetListProps}
+            />
+          )}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+};
