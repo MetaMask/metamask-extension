@@ -70,5 +70,77 @@ describe('migration #122', () => {
         expect(transformedState.data).toEqual(expectedState);
       },
     );
+
+    it('preserves existing PreferencesController properties when preferences is missing', async () => {
+      const oldStorage = {
+        PreferencesController: {
+          selectedAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          identities: {
+            '0x1234567890abcdef1234567890abcdef12345678': {
+              name: 'Account 1',
+              address: '0x1234567890abcdef1234567890abcdef12345678',
+            },
+          },
+          tokens: [],
+          useTokenDetection: true,
+        },
+      };
+
+      const expectedState = {
+        PreferencesController: {
+          selectedAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          identities: {
+            '0x1234567890abcdef1234567890abcdef12345678': {
+              name: 'Account 1',
+              address: '0x1234567890abcdef1234567890abcdef12345678',
+            },
+          },
+          tokens: [],
+          useTokenDetection: true,
+          preferences: {
+            redesignedConfirmationsEnabled: true,
+          },
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: oldStorage,
+      });
+
+      expect(transformedState.data).toEqual(expectedState);
+    });
+
+    it('preserves selectedAddress and identities when preferences is undefined', async () => {
+      const oldStorage = {
+        PreferencesController: {
+          selectedAddress: '0xabcdef1234567890abcdef1234567890abcdef12',
+          identities: {
+            '0xabcdef1234567890abcdef1234567890abcdef12': {
+              name: 'Test Account',
+              address: '0xabcdef1234567890abcdef1234567890abcdef12',
+            },
+          },
+          preferences: undefined,
+        },
+      };
+
+      const transformedState = await migrate({
+        meta: { version: oldVersion },
+        data: oldStorage,
+      });
+
+      expect(transformedState.data.PreferencesController).toHaveProperty(
+        'selectedAddress',
+        '0xabcdef1234567890abcdef1234567890abcdef12',
+      );
+      expect(transformedState.data.PreferencesController).toHaveProperty(
+        'identities',
+      );
+      expect(
+        transformedState.data.PreferencesController.preferences
+          .redesignedConfirmationsEnabled,
+      ).toBe(true);
+    });
   });
 });

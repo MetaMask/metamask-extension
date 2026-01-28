@@ -42,6 +42,7 @@ function transformState(state: Record<string, any>) {
 
   if (!isObject(state.PreferencesController?.preferences)) {
     state.PreferencesController = {
+      ...state.PreferencesController,
       preferences: {},
     };
   }
