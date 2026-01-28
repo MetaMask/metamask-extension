@@ -360,6 +360,17 @@ export default function ConfirmationPage({
     }
   }, [templatedValues]);
 
+  const [lastConfirmationType, setLastConfirmationType] = useState(null);
+
+  useEffect(() => {
+    if (pendingConfirmation?.type) {
+      setLastConfirmationType(pendingConfirmation.type);
+    }
+  }, [pendingConfirmation?.type]);
+
+  // send-tron.spec expects Activity tab
+  const shouldShowActivity = SNAP_DIALOG_TYPE.includes(lastConfirmationType);
+
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
@@ -370,7 +381,11 @@ export default function ConfirmationPage({
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations
     ) {
-      navigate(DEFAULT_ROUTE);
+      const to = shouldShowActivity
+        ? `${DEFAULT_ROUTE}?tab=activity`
+        : DEFAULT_ROUTE;
+
+      navigate(to);
     }
   }, [
     pendingConfirmations,
@@ -378,6 +393,7 @@ export default function ConfirmationPage({
     totalUnapprovedCount,
     navigate,
     redirectToHomeOnZeroConfirmations,
+    shouldShowActivity,
   ]);
 
   useEffect(() => {

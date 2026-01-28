@@ -185,7 +185,7 @@ const CloseExtensionButton = ({
       width={BlockSize.Full}
       marginTop={3}
     >
-      {t('closeExtension')}
+      {t('backToHome')}
     </ButtonSecondary>
   );
 };

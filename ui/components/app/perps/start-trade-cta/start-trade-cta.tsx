@@ -35,7 +35,7 @@ export const StartTradeCta: React.FC<StartTradeCtaProps> = ({ onPress }) => {
 
   return (
     <ButtonBase
-      className="w-full bg-transparent hover:bg-hover active:bg-pressed"
+      className="w-full px-0 h-auto rounded-none bg-transparent hover:bg-hover active:bg-pressed"
       onClick={handleClick}
       data-testid="start-new-trade-cta"
     >

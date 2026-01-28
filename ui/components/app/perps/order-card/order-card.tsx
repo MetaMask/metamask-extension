@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
+  twMerge,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  ButtonBase,
   Text,
   TextVariant,
   TextColor,
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import {
@@ -18,9 +21,12 @@ import {
   getStatusColor,
 } from '../utils';
 import type { Order } from '../types';
+import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
 export type OrderCardProps = {
   order: Order;
+  onClick?: (order: Order) => void;
+  variant?: 'default' | 'muted';
 };
 
 /**
@@ -29,18 +35,48 @@ export type OrderCardProps = {
  *
  * @param options0 - Component props
  * @param options0.order - The order data to display
+ * @param options0.onClick - Optional click handler override. If not provided, navigates to market detail page.
+ * @param options0.variant - Visual variant - 'default' for perps tab, 'muted' for detail page
  */
-export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
+export const OrderCard: React.FC<OrderCardProps> = ({
+  order,
+  onClick,
+  variant = 'default',
+}) => {
+  const navigate = useNavigate();
   const t = useI18nContext();
   const isBuy = order.side === 'buy';
   const displayName = getDisplayName(order.symbol);
 
+  const handleClick = useCallback(() => {
+    if (onClick) {
+      onClick(order);
+    } else {
+      // TODO: Add Metrics tracking
+      navigate(
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(order.symbol)}`,
+      );
+    }
+  }, [navigate, order, onClick]);
+
+  const baseStyles = 'cursor-pointer px-4 py-3';
+  const variantStyles =
+    variant === 'muted'
+      ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
+      : 'bg-default hover:bg-hover active:bg-pressed';
+
   return (
-    <Box
-      className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={3}
+    <ButtonBase
+      className={twMerge(
+        // Reset ButtonBase defaults for card layout
+        'justify-start rounded-none min-w-0 h-auto',
+        // Card styles
+        'gap-3 text-left',
+        baseStyles,
+        variantStyles,
+      )}
+      isFullWidth
+      onClick={handleClick}
       data-testid={`order-card-${order.orderId}`}
     >
       {/* Token Logo */}
@@ -89,7 +125,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
           {formatStatus(order.status)}
         </Text>
       </Box>
-    </Box>
+    </ButtonBase>
   );
 };
 

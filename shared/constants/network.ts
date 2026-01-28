@@ -1491,6 +1491,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'base-mainnet': () => process.env.QUICKNODE_BASE_URL,
   'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
   'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
+  'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1631,6 +1632,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://monad-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('monad-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1673,12 +1675,13 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     rpcEndpoints: [
       {
-        url: `https://mainnet.megaeth.com/rpc`,
+        url: `https://megaeth-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://explorer.megaeth.com/'],
+    blockExplorerUrls: ['https://megaeth.blockscout.com/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];

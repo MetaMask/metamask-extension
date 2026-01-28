@@ -32,7 +32,7 @@ describe('useGatorPermissions', () => {
         {
           permissionResponse: {
             chainId: '0x1',
-            address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+            from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
             permission: {
               isAdjustmentAllowed: false,
               type: 'native-token-stream',
@@ -46,9 +46,7 @@ describe('useGatorPermissions', () => {
               },
             },
             context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
+            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
           siteOrigin: 'http://localhost:8000',
         },
@@ -59,7 +57,7 @@ describe('useGatorPermissions', () => {
         {
           permissionResponse: {
             chainId: '0x1',
-            address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+            from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
             permission: {
               type: 'erc20-token-stream',
               isAdjustmentAllowed: false,
@@ -74,9 +72,7 @@ describe('useGatorPermissions', () => {
               },
             },
             context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
+            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
           siteOrigin: 'http://localhost:8000',
         },

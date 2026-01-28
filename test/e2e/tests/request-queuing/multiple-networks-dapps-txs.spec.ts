@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -57,7 +57,11 @@ describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.
         );
 
         // Network Selector
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8546',
+        );
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two

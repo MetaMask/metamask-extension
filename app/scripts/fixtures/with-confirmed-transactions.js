@@ -10,7 +10,7 @@ import { ALL_POPULAR_NETWORKS } from './with-networks';
  */
 export const withConfirmedTransactions = (from, numEntries) => {
   const networks = Object.keys(ALL_POPULAR_NETWORKS.eip155);
-  const transactions = {};
+  const transactions = [];
 
   networks.forEach((network) => {
     for (let i = 0; i < numEntries; i++) {
@@ -46,7 +46,7 @@ export const withConfirmedTransactions = (from, numEntries) => {
         type: 'simpleSend',
       };
 
-      transactions[id] = transaction;
+      transactions.push(transaction);
     }
   });
 

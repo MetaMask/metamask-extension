@@ -41,3 +41,11 @@ export const selectTransactionPaySourceAmountsByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.sourceAmounts,
 );
+
+export const selectTransactionPayIsMaxAmountByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  // TODO: Remove type assertion once isMaxAmount is added to @metamask/transaction-pay-controller
+  (transactionData) =>
+    (transactionData as { isMaxAmount?: boolean } | undefined)?.isMaxAmount ??
+    false,
+);

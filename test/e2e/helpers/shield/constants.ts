@@ -1,11 +1,12 @@
 export const BASE_SUBSCRIPTION_API_URL =
-  'https://subscription.dev-api.cx.metamask.io/v1';
+  'https://subscription.api.cx.metamask.io/v1';
 
 export const BASE_RULESET_ENGINE_API_URL =
-  'https://ruleset-engine.dev-api.cx.metamask.io/v1';
+  'https://ruleset-engine.api.cx.metamask.io/v1';
 
-export const BASE_CLAIMS_API_URL = 'https://claims.dev-api.cx.metamask.io';
+export const BASE_CLAIMS_API_URL = 'https://claims.api.cx.metamask.io';
 
+// Rewards uses UAT API in test & dev environments
 export const BASE_REWARDS_API_URL = 'https://rewards.uat-api.cx.metamask.io';
 
 export const SUBSCRIPTION_API = {
@@ -133,9 +134,6 @@ export const BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY = {
   interval: 'month',
   currentPeriodEnd: '2025-11-20T02:43:29.000Z',
 };
-
-export const MOCK_CHECKOUT_SESSION_URL =
-  'https://subscription.dev-api.cx.metamask.io/pay/cs_test_123456789';
 
 export const SHIELD_PRICING_DATA = {
   products: [

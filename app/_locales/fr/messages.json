@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Ajouter un compte ou un portefeuille"
   },
-  "addAccountToMetaMask": {
-    "message": "Ajouter un compte à MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Ajouter les jetons que vous avez acquis par l’intermédiaire de MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Ajouter un portefeuille"
-  },
-  "addingAccount": {
-    "message": "Ajouter un compte"
   },
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Nous n’avons pas pu récupérer de données historiques"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFT"
-  },
   "assetOptions": {
     "message": "Options d’actifs"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Actifs"
@@ -1271,9 +1259,6 @@
   },
   "close": {
     "message": "Fermer"
-  },
-  "closeExtension": {
-    "message": "Fermer l’extension"
   },
   "closeSlide": {
     "message": "Fermer $1",
@@ -3162,9 +3147,6 @@
   "insufficientFunds": {
     "message": "Fonds insuffisants."
   },
-  "insufficientFundsForGas": {
-    "message": "Fonds insuffisants pour le carburant"
-  },
   "insufficientFundsSend": {
     "message": "Fonds insuffisants"
   },
@@ -3891,9 +3873,6 @@
     "message": "Vous devez sélectionner un fichier à importer.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Vous ne pouvez envoyer des montants négatifs d’ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Impossible d’envoyer des montants négatifs ou nuls."
   },
@@ -3934,18 +3913,6 @@
   "networkName": {
     "message": "Nom du réseau"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3961,26 +3928,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Options du réseau"
@@ -4542,9 +4497,6 @@
   },
   "openWallet": {
     "message": "Ouvrir le portefeuille"
-  },
-  "optional": {
-    "message": "Facultatif"
   },
   "options": {
     "message": "Options"
@@ -5832,24 +5784,11 @@
   "sendBugReport": {
     "message": "Envoyez-nous un rapport de bogue."
   },
-  "sendNoContactsConversionText": {
-    "message": "cliquez ici"
-  },
-  "sendNoContactsDescription": {
-    "message": "Les contacts vous permettent d’envoyer en toute sécurité plusieurs transactions vers un autre compte. Pour créer un contact, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "Vous n’avez aucun contact"
-  },
   "sendSelectReceiveAsset": {
     "message": "Sélectionnez l’actif que vous recevrez"
   },
   "sendSelectSendAsset": {
     "message": "Sélectionnez l’actif que vous voulez envoyer"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "En cliquant sur ce bouton, vous entamez immédiatement l’opération d’échange. Veuillez vérifier les détails de votre transaction avant de continuer."
   },
   "sendingAsset": {
     "message": "Envoi de $1"
@@ -5860,10 +5799,6 @@
   "sendingNativeAsset": {
     "message": "Envoi de $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Attention : vous êtes sur le point d’envoyer des jetons à l’adresse d’un contrat de jetons qui pourrait entraîner une perte de fonds. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Envoyé"
@@ -7269,9 +7204,6 @@
     "message": "Le swap de $1 vers $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Les frais de gaz sont estimés et fluctueront selon le flux du trafic réseau et la complexité de la transaction."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask ne tire aucun profit des frais de gaz. Ces frais sont des estimations et peuvent changer en fonction de l’activité du réseau et de la complexité de la transaction. En savoir plus $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7283,9 +7215,6 @@
   "swapGasFeesIncluded": {
     "message": " Inclus"
   },
-  "swapGasFeesLearnMore": {
-    "message": "En savoir plus sur les frais de gaz"
-  },
   "swapGasFeesSplit": {
     "message": "Les frais de carburant indiqués dans l’écran précédent sont répartis entre ces deux transactions."
   },
@@ -7294,10 +7223,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "Ces frais de réseau sont pris en charge par MetaMask, vous pouvez donc effectuer des échanges sans avoir de $1 sur votre compte."
-  },
-  "swapGasFeesSummary": {
-    "message": "Les frais de carburant sont payés aux mineurs de cryptomonnaies qui traitent les transactions sur le réseau $1. MetaMask ne tire aucun profit des frais de carburant.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Cette cotation incorpore les frais de gaz en ajustant le montant du jeton envoyé ou reçu. Vous pouvez recevoir des ETH dans une transaction séparée sur la liste de vos activités."
@@ -7315,10 +7240,6 @@
   "swapIncludesMMFee": {
     "message": "Comprend des frais MetaMask à hauteur de $1 %.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "La cotation inclut les frais de change de MetaMask qui s’élèvent à $1 %",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Comprend des frais MetaMask à hauteur de $1 % – $2",
@@ -7571,9 +7492,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Autoriser ce site à changer de réseau ?"
   },
-  "switchInputCurrency": {
-    "message": "Changer la devise"
-  },
   "switchNetwork": {
     "message": "Changer de réseau"
   },
@@ -7729,9 +7647,6 @@
   },
   "tokensInCollection": {
     "message": "Jetons dans la collection"
-  },
-  "tooltipApproveButton": {
-    "message": "Je comprends"
   },
   "tooltipSatusConnected": {
     "message": "connecté"
@@ -8286,9 +8201,6 @@
   "youSent": {
     "message": "Vous avez envoyé",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Vos comptes"
   },
   "yourActivity": {
     "message": "Votre activité"

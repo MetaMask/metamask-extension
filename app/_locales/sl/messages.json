@@ -373,9 +373,6 @@
     "message": "Za uvoz morate izbrati datoteko.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Negativnih zneskov ETH ni mogoče poslati."
-  },
   "networkName": {
     "message": "Ime omrežja"
   },

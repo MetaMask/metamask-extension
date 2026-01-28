@@ -1,4 +1,4 @@
-import { ChainId, formatChainIdToCaip } from '@metamask/bridge-controller';
+import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { act } from '@testing-library/react';
 import { Store } from 'redux';
 import {
@@ -16,6 +16,7 @@ import {
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { useDestinationAccount } from './useDestinationAccount';
 
 const renderUseDestinationAccount = (mockStoreOverrides = {}) => {
@@ -36,7 +37,7 @@ describe('useDestinationAccount', () => {
 
   it('returns source account when there is no selected toChain', () => {
     const { result, store } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: null },
+      bridgeSliceOverrides: { toToken: null },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...getFromAccount(store?.getState()),
@@ -63,7 +64,11 @@ describe('useDestinationAccount', () => {
           },
         },
       },
-      bridgeSliceOverrides: { toChainId: MultichainNetworks.SOLANA },
+      bridgeSliceOverrides: {
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(MultichainNetworks.SOLANA),
+        ),
+      },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_EVM_ACCOUNT.id,
@@ -100,7 +105,7 @@ describe('useDestinationAccount', () => {
         },
       },
       bridgeSliceOverrides: {
-        toChainId: formatChainIdToCaip(ChainId.ETH),
+        toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
       },
       metamaskStateOverrides: {
         internalAccounts: {
@@ -136,7 +141,9 @@ describe('useDestinationAccount', () => {
           },
         },
       },
-      bridgeSliceOverrides: { toChainId: formatChainIdToCaip(ChainId.LINEA) },
+      bridgeSliceOverrides: {
+        toToken: toBridgeToken(getNativeAssetForChainId(ChainId.LINEA)),
+      },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_EVM_ACCOUNT.id,
@@ -159,7 +166,7 @@ describe('useDestinationAccount', () => {
 
   it('updates the destination account when an internal account is selected by the user', () => {
     const { result, store } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: null },
+      bridgeSliceOverrides: { toToken: null },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...getFromAccount(store?.getState()),
@@ -185,7 +192,7 @@ describe('useDestinationAccount', () => {
 
   it('updates the destination account when an external account is selected by the user', () => {
     const { result, store } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: null },
+      bridgeSliceOverrides: { toToken: null },
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...getFromAccount(store?.getState()),
@@ -212,7 +219,7 @@ describe('useDestinationAccount', () => {
 
   it('returns the source account when a HW wallet is selected by the user', () => {
     const { result, store } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: null },
+      bridgeSliceOverrides: { toToken: null },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_LEDGER_ACCOUNT.id,
@@ -234,7 +241,25 @@ describe('useDestinationAccount', () => {
 
   it('opens the modal when a HW wallet is selected by the user and the dest chain is solana', () => {
     const { result } = renderUseDestinationAccount({
-      bridgeSliceOverrides: { toChainId: MultichainNetworks.SOLANA },
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chains: {
+            [ChainId.ETH]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+            [MultichainNetworks.SOLANA]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
+      bridgeSliceOverrides: {
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(MultichainNetworks.SOLANA),
+        ),
+      },
       metamaskStateOverrides: {
         internalAccounts: {
           selectedAccount: MOCK_LEDGER_ACCOUNT.id,
@@ -278,7 +303,7 @@ describe('useDestinationAccount', () => {
         },
       },
       bridgeSliceOverrides: {
-        toChainId: formatChainIdToCaip(ChainId.ETH),
+        toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
       },
       metamaskStateOverrides: {
         internalAccounts: {

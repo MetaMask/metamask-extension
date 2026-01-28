@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Hesap veya cüzdan ekle"
   },
-  "addAccountToMetaMask": {
-    "message": "MetaMask'e hesap ekleyin"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask kullanarak elde ettiğiniz tokenleri ekleyin"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Cüzdan ekle"
-  },
-  "addingAccount": {
-    "message": "Hesap ekleniyor"
   },
   "additionalNetworks": {
     "message": "İlave ağlar"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Herhangi bir geçmiş veri getiremedik"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFT"
-  },
   "assetOptions": {
     "message": "Varlık seçenekleri"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Varlıklar"
@@ -1277,9 +1265,6 @@
   },
   "close": {
     "message": "Kapat"
-  },
-  "closeExtension": {
-    "message": "Uzantıyı kapat"
   },
   "closeSlide": {
     "message": "Kapat: $1",
@@ -3168,9 +3153,6 @@
   "insufficientFunds": {
     "message": "Yetersiz bakiye."
   },
-  "insufficientFundsForGas": {
-    "message": "Gaz için para yetersiz"
-  },
   "insufficientFundsSend": {
     "message": "Yetersiz bakiye"
   },
@@ -3897,9 +3879,6 @@
     "message": "İçe aktarılacak dosyayı seçmelisiniz.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Negatif tutarlarda ETH gönderilemez."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Eksi veya sıfır tutarlarda varlık gönderilemez."
   },
@@ -3940,18 +3919,6 @@
   "networkName": {
     "message": "Ağ adı"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Baz"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3967,26 +3934,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Test Ağı"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Ağ seçenekleri"
@@ -4548,9 +4503,6 @@
   },
   "openWallet": {
     "message": "Cüzdanı aç"
-  },
-  "optional": {
-    "message": "İsteğe bağlı"
   },
   "options": {
     "message": "Seçenekler"
@@ -5841,24 +5793,11 @@
   "sendBugReport": {
     "message": "Bize bir hata raporu gönderin."
   },
-  "sendNoContactsConversionText": {
-    "message": "buraya tıklayın"
-  },
-  "sendNoContactsDescription": {
-    "message": "Kişiler, diğer hesaba güvenli bir şekilde birden fazla kez işlem gönderebilmenize olanak sağlar. Bir kişi oluşturmak için $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "Henüz kişiniz yok"
-  },
   "sendSelectReceiveAsset": {
     "message": "Alınacak varlıkları seçin"
   },
   "sendSelectSendAsset": {
     "message": "Gönderilecek varlıkları seçin"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Bu düğmeye tıklandığında swap işleminiz anında başlatılır. İlerlemeden önce lütfen işlem ayrıntılarınızı inceleyin."
   },
   "sendingAsset": {
     "message": "$1 Gönderiliyor"
@@ -5869,10 +5808,6 @@
   "sendingNativeAsset": {
     "message": "$1 gönderiliyor",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Uyarı: Para kaybı ile sonuçlanabilecek bir token sözleşmesi göndermek üzeresiniz. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Alıcı"
@@ -7278,9 +7213,6 @@
     "message": "$1 ile $2 swap işlemi",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Gaz ücretleri tahmini olup ağ trafiği ve işlem karmaşıklığına göre dalgalanır."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask, gaz ücretlerinden para kazanmaz. Bu ücretler tahminlerdir ve ağın yoğunluğuna ve işlemin karmaşıklığına göre değişebilir. $1 daha fazla bilgi edinin.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7292,9 +7224,6 @@
   "swapGasFeesIncluded": {
     "message": " Dahil"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Gaz ücretleri hakkında daha fazla bilgi edinin"
-  },
   "swapGasFeesSplit": {
     "message": "Önceki ekrandaki gaz ücretleri bu iki işlem arasında bölünmüştür."
   },
@@ -7303,10 +7232,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "Ağ ücreti MetaMask tarafından ödenir, bu nedenle hesabınızda $1 olmadan takas işlemi yapabilirsiniz."
-  },
-  "swapGasFeesSummary": {
-    "message": "Gaz ücretleri, $1 ağında işlemleri gerçekleştiren kripto madencilerine ödenir. MetaMask gaz ücretlerinden herhangi bir kazanç elde etmemektedir.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Bu teklif, gönderilen veya alınan token miktarı düzenlenerek gaz ücretlerini içerir. Aktivite listenizde ayrı bir işlemde ETH alabilirsiniz."
@@ -7324,10 +7249,6 @@
   "swapIncludesMMFee": {
     "message": "%$1 MetaMask ücreti dahildir.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Teklif $1% MetaMask ücretini yansıtır",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "%$1 MetaMask ücreti - $2 dahildir",
@@ -7580,9 +7501,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Bu sitenin ağı değiştirmesine izin ver?"
   },
-  "switchInputCurrency": {
-    "message": "Giriş para birimini değiştir"
-  },
   "switchNetwork": {
     "message": "Ağ değiştir"
   },
@@ -7738,9 +7656,6 @@
   },
   "tokensInCollection": {
     "message": "Koleksiyondaki token'ler"
-  },
-  "tooltipApproveButton": {
-    "message": "Anlıyorum"
   },
   "tooltipSatusConnected": {
     "message": "bağlandı"
@@ -8295,9 +8210,6 @@
   "youSent": {
     "message": "Gönderdiğiniz",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Hesaplarınız"
   },
   "yourActivity": {
     "message": "Aktiviteniz"

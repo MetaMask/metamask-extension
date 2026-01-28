@@ -11,6 +11,7 @@ import {
   validateERC1155Balance,
   validateTokenBalance,
   validatePositiveNumericString,
+  mapSnapErrorCodeIntoTranslation,
 } from './useAmountValidation';
 
 const MOCK_ADDRESS_1 = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -193,6 +194,38 @@ describe('validateTokenBalance', () => {
         (str: string) => str,
       ),
     ).toEqual(undefined);
+  });
+});
+
+describe('mapSnapErrorCodeIntoTranslation', () => {
+  it('returns insufficientFundsSend for InsufficientBalance', () => {
+    expect(
+      mapSnapErrorCodeIntoTranslation(
+        'InsufficientBalance',
+        (str: string) => str,
+      ),
+    ).toEqual('insufficientFundsSend');
+  });
+
+  it('returns insufficientBalanceToCoverFees for InsufficientBalanceToCoverFee', () => {
+    expect(
+      mapSnapErrorCodeIntoTranslation(
+        'InsufficientBalanceToCoverFee',
+        (str: string) => str,
+      ),
+    ).toEqual('insufficientBalanceToCoverFees');
+  });
+
+  it('returns invalidValue for Invalid', () => {
+    expect(
+      mapSnapErrorCodeIntoTranslation('Invalid', (str: string) => str),
+    ).toEqual('invalidValue');
+  });
+
+  it('returns invalidValue for unknown error codes', () => {
+    expect(
+      mapSnapErrorCodeIntoTranslation('UnknownErrorCode', (str: string) => str),
+    ).toEqual('invalidValue');
   });
 });
 

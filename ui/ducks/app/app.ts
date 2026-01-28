@@ -17,7 +17,6 @@ import {
 
 type AppState = {
   customNonceValue: string;
-  isAccountMenuOpen: boolean;
   isNetworkMenuOpen: boolean;
   nextNonce: string | null;
   pendingTokens: {
@@ -135,6 +134,7 @@ type AppState = {
   showPasswordChangeToast: PasswordChangeToastType | null;
   showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
+  showInfuraSwitchToast: boolean;
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
@@ -154,7 +154,6 @@ export type AppSliceState = {
 // default state
 const initialState: AppState = {
   customNonceValue: '',
-  isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   nextNonce: null,
   pendingTokens: {},
@@ -246,6 +245,7 @@ const initialState: AppState = {
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
   showClaimSubmitToast: null,
+  showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
 };
 
@@ -263,12 +263,6 @@ export default function reduceApp(
       return {
         ...appState,
         customNonceValue: action.value,
-      };
-
-    case actionConstants.TOGGLE_ACCOUNT_MENU:
-      return {
-        ...appState,
-        isAccountMenuOpen: !appState.isAccountMenuOpen,
       };
 
     case actionConstants.SET_NEXT_NONCE: {
@@ -792,6 +786,12 @@ export default function reduceApp(
       return {
         ...appState,
         showClaimSubmitToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_INFURA_SWITCH_TOAST:
+      return {
+        ...appState,
+        showInfuraSwitchToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:

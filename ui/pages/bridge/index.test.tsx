@@ -90,7 +90,7 @@ describe('Bridge', () => {
           chains: {
             '1': {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
           },
         },

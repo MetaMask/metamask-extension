@@ -30,7 +30,6 @@ import { type BridgeAppState } from './selectors';
 import { isNonEvmChain } from './utils';
 
 const {
-  setToChainId,
   setFromToken,
   setToToken,
   setFromTokenInputValue,
@@ -43,7 +42,6 @@ const {
 } = bridgeSlice.actions;
 
 export {
-  setToChainId,
   resetInputFields,
   setToToken,
   setFromToken,

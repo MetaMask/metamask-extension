@@ -19,7 +19,7 @@ export type UseTrustSignalRequest = {
 };
 
 export enum TrustSignalDisplayState {
-  Loading = 'loading',
+  Loading = 'Loading',
   Malicious = 'malicious',
   Petname = 'petname',
   Verified = 'verified',

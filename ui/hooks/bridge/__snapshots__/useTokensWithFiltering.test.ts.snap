@@ -4,6 +4,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are 
 [
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+    "assetId": undefined,
     "balance": "0.00184",
     "chainId": "0x1",
     "decimals": 6,
@@ -42,6 +43,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are 
   },
   {
     "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+    "assetId": undefined,
     "balance": "1",
     "chainId": "0x1",
     "decimals": undefined,
@@ -56,6 +58,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are 
   },
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+    "assetId": undefined,
     "balance": "0",
     "chainId": "0xe708",
     "decimals": undefined,
@@ -149,6 +152,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
 [
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+    "assetId": undefined,
     "balance": "0.00184",
     "chainId": "0x1",
     "decimals": 6,
@@ -187,6 +191,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
   },
   {
     "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+    "assetId": undefined,
     "balance": "1",
     "chainId": "0x1",
     "decimals": undefined,
@@ -201,6 +206,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
   },
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+    "assetId": undefined,
     "balance": "0",
     "chainId": "0xe708",
     "decimals": undefined,
@@ -294,6 +300,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
 [
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+    "assetId": undefined,
     "balance": "0.00184",
     "chainId": "0x1",
     "decimals": 6,
@@ -332,6 +339,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   },
   {
     "address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+    "assetId": undefined,
     "balance": "1",
     "chainId": "0x1",
     "decimals": undefined,
@@ -346,6 +354,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
   },
   {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+    "assetId": undefined,
     "balance": "0",
     "chainId": "0xe708",
     "decimals": undefined,

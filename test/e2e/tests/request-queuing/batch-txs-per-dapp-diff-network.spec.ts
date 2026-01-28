@@ -3,7 +3,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, largeDelayMs } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
@@ -47,7 +47,11 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         );
 
         // Network Selector
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8546',
+        );
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two

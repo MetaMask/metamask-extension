@@ -27,9 +27,7 @@ export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
   // Only run when sidepanel is actually enabled on Chrome
-  const isSidepanelEnabled =
-    process.env.SELENIUM_BROWSER === 'chrome' &&
-    process.env.IS_SIDEPANEL === 'true';
+  const isSidepanelEnabled = process.env.SELENIUM_BROWSER === 'chrome';
 
   if (!isSidepanelEnabled) {
     return;

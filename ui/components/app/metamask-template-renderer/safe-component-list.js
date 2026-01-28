@@ -61,7 +61,6 @@ import {
   SnapAccountCard,
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
-import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-account';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
 ///: END:ONLY_INCLUDE_IF
@@ -127,7 +126,6 @@ export const safeComponentList = {
   SmartTransactionStatusPage,
   UrlIcon,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  CreateNamedSnapAccount,
   CreateSnapAccount,
   RemoveSnapAccount,
   SnapAccountCard,

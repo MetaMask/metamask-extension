@@ -12,6 +12,10 @@ import {
   SmartTransactionsController,
   SmartTransactionStatuses,
 } from '@metamask/smart-transactions-controller';
+import {
+  TransactionPayControllerMessenger,
+  TransactionPayPublishHook,
+} from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { toHex } from '@metamask/controller-utils';
@@ -386,13 +390,26 @@ export async function publishHook({
   transactionController: TransactionController;
   transactionMeta: TransactionMeta;
 }) {
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+  const { isSmartTransaction, featureFlags } = getSmartTransactionCommonParams(
+    flatState,
+    transactionMeta.chainId,
+  );
   const sendBundleSupport = await isSendBundleSupported(
     transactionMeta.chainId,
   );
 
-  if (!isSmartTransaction || !sendBundleSupport) {
+  const payResult = await new TransactionPayPublishHook({
+    isSmartTransaction: () => isSmartTransaction,
+    messenger: initMessenger as unknown as TransactionPayControllerMessenger,
+  }).getHook()(transactionMeta, signedTx as Hex);
+
+  if (payResult?.transactionHash) {
+    return payResult;
+  }
+
+  const { isExternalSign } = transactionMeta;
+
+  if (!isSmartTransaction || !sendBundleSupport || isExternalSign) {
     const hook = new Delegation7702PublishHook({
       isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
         transactionController,
@@ -420,8 +437,6 @@ export async function publishHook({
       smartTransactionsController,
       controllerMessenger: initMessenger,
       isSmartTransaction,
-      isHardwareWallet: isHardwareWalletAccount,
-      // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
       featureFlags,
     });
 
@@ -462,8 +477,10 @@ export function publishBatchHook({
     );
   }
 
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+  const { isSmartTransaction, featureFlags } = getSmartTransactionCommonParams(
+    flatState,
+    transactionMeta.chainId,
+  );
 
   if (!isSmartTransaction) {
     return undefined;
@@ -475,8 +492,6 @@ export function publishBatchHook({
     smartTransactionsController,
     controllerMessenger: hookControllerMessenger,
     isSmartTransaction,
-    isHardwareWallet: isHardwareWalletAccount,
-    // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
     featureFlags,
     transactionMeta,
   });

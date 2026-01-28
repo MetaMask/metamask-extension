@@ -38,7 +38,7 @@ const ClaimsList = () => {
     useClaims();
   const { drafts } = useClaimDraft();
 
-  const [defaultTab] = useState(() => {
+  const [activeTab, setActiveTab] = useState(() => {
     const tabParam = searchParams.get('tab');
     if (
       tabParam === CLAIMS_TAB_KEYS.PENDING ||
@@ -46,7 +46,7 @@ const ClaimsList = () => {
     ) {
       return tabParam;
     }
-    return undefined;
+    return CLAIMS_TAB_KEYS.PENDING;
   });
 
   // Clear the tab param from the URL after reading it
@@ -77,6 +77,10 @@ const ClaimsList = () => {
       const id = isDraft
         ? (claimData as ClaimDraft).draftId
         : (claimData as Claim).id;
+
+      const displayId = isDraft
+        ? (claimData as ClaimDraft).draftId
+        : (claimData as Claim).shortId;
       return (
         <Box
           asChild
@@ -105,7 +109,7 @@ const ClaimsList = () => {
                 fontWeight={FontWeight.Medium}
                 textAlign={TextAlign.Left}
               >
-                {t('shieldClaimsNumber', [id])}
+                {t('shieldClaimsNumber', [displayId])}
               </Text>
               <Text
                 variant={TextVariant.BodySm}
@@ -141,10 +145,18 @@ const ClaimsList = () => {
             variant={TextVariant.HeadingSm}
             fontWeight={FontWeight.Medium}
             className="mb-3"
+            data-testid={
+              groupDetails.isDraft ? 'claims-group-drafts-heading' : undefined
+            }
           >
             {groupDetails.title}
           </Text>
-          <Box className="flex flex-col gap-2">
+          <Box
+            className="flex flex-col gap-2"
+            data-testid={
+              groupDetails.isDraft ? 'claims-group-drafts-list' : undefined
+            }
+          >
             {groupDetails.claims.map((claim) =>
               claimItem(
                 claim,
@@ -220,7 +232,8 @@ const ClaimsList = () => {
   return (
     <Tabs
       data-testid="claims-list-page"
-      defaultActiveTabKey={defaultTab}
+      activeTab={activeTab}
+      onTabClick={setActiveTab}
       className="h-full flex flex-col overflow-y-hidden"
       tabListProps={{
         className: 'px-4',

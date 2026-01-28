@@ -11,6 +11,7 @@ import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
+  BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
@@ -290,6 +291,9 @@ export const MultichainHoveredAddressRowsList = ({
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
       >
         {children}
       </Box>
