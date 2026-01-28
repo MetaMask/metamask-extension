@@ -376,7 +376,6 @@ export class SubscriptionService {
         changeInfo: { url: string },
       ) => {
         // We only care about updates to our specific checkout tab
-        // console.log('params.successUrl', params);
         if (tabId === openedTab.id) {
           if (changeInfo.url?.startsWith(params.cancelUrl)) {
             // Payment was cancelled!
