@@ -116,13 +116,13 @@ class AccountDetailsModal {
   }
 
   /**
-   * Check that private key has been copied.
+   * Check that private key has been copied by verifying the toast notification appears.
    *
    */
   async checkAddressIsCopied(): Promise<void> {
     console.log(`Check that private key has been copied`);
     await this.driver.waitForSelector({
-      css: this.accountPrivateKeyText,
+      css: '[data-testid="copy-address-toast"]',
       text: 'Private key copied',
     });
   }
