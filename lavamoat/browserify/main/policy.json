@@ -1023,6 +1023,20 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/config-registry-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/profile-sync-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
