@@ -241,9 +241,9 @@ describe(`migration #${version}`, () => {
   });
 
   it('handles storage errors gracefully and clears state', async () => {
-    mockBrowser.storage.local.set.mockRejectedValue(
-      new Error('Storage quota exceeded'),
-    );
+    const errorSpy = jest.spyOn(console, 'error').mockReturnValue();
+    const storageError = new Error('Storage quota exceeded');
+    mockBrowser.storage.local.set.mockRejectedValue(storageError);
 
     const oldStorage = {
       meta: { version: oldVersion },
@@ -270,12 +270,20 @@ describe(`migration #${version}`, () => {
 
     // Should mark TokenListController as changed even on error
     expect(changedControllers.has('TokenListController')).toBe(true);
+
+    // Should log the error
+    expect(errorSpy).toHaveBeenCalledWith(
+      `Migration #${version}: Failed to migrate tokensChainsCache to StorageService:`,
+      storageError,
+    );
+
+    errorSpy.mockRestore();
   });
 
   it('handles storage.get errors gracefully', async () => {
-    mockBrowser.storage.local.get.mockRejectedValue(
-      new Error('Storage not available'),
-    );
+    const errorSpy = jest.spyOn(console, 'error').mockReturnValue();
+    const storageError = new Error('Storage not available');
+    mockBrowser.storage.local.get.mockRejectedValue(storageError);
 
     const oldStorage = {
       meta: { version: oldVersion },
@@ -302,5 +310,13 @@ describe(`migration #${version}`, () => {
 
     // Should mark TokenListController as changed even on error
     expect(changedControllers.has('TokenListController')).toBe(true);
+
+    // Should log the error
+    expect(errorSpy).toHaveBeenCalledWith(
+      `Migration #${version}: Failed to migrate tokensChainsCache to StorageService:`,
+      storageError,
+    );
+
+    errorSpy.mockRestore();
   });
 });
