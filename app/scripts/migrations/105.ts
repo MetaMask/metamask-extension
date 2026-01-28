@@ -138,14 +138,18 @@ function createSelectedAccountForAccountsController(
   let selectedAddress = state.PreferencesController?.selectedAddress;
 
   if (typeof selectedAddress !== 'string') {
-    global.sentry?.captureException?.(
-      new Error(
-        `state.PreferencesController?.selectedAddress is ${selectedAddress}`,
-      ),
-    );
-
     // Get the first account if selectedAddress is not a string
     selectedAddress = getFirstAddress(state);
+
+    // Only capture to Sentry if we have no accounts to recover from
+    // (missing selectedAddress with available identities is expected for old states)
+    if (!selectedAddress) {
+      global.sentry?.captureException?.(
+        new Error(
+          `state.PreferencesController?.selectedAddress is ${state.PreferencesController?.selectedAddress}`,
+        ),
+      );
+    }
   }
 
   const selectedAccount = findInternalAccountByAddress(state, selectedAddress);
