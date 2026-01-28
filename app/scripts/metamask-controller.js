@@ -5841,9 +5841,7 @@ export default class MetamaskController extends EventEmitter {
       if (!account) {
         return undefined;
       }
-      const context = this.multichainAccountService.getAccountContext(
-        account.id,
-      );
+      const context = this.accountTreeController.getAccountContext(account.id);
       // Get EOA account as it's the only account having lastSelected set
       return context?.group?.get({ scopes: [EthScope.Eoa] })?.metadata
         .lastSelected;

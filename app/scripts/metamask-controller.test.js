@@ -1582,10 +1582,7 @@ describe('MetaMaskController', () => {
     describe('#sortMultichainAccountsByLastSelected', () => {
       const mockGetAccountContext = (lastSelectedMap) => {
         return jest
-          .spyOn(
-            metamaskController.multichainAccountService,
-            'getAccountContext',
-          )
+          .spyOn(metamaskController.accountTreeController, 'getAccountContext')
           .mockImplementation((accountId) => {
             const lastSelected = lastSelectedMap[accountId];
             return {
@@ -1662,10 +1659,7 @@ describe('MetaMaskController', () => {
           });
 
         jest
-          .spyOn(
-            metamaskController.multichainAccountService,
-            'getAccountContext',
-          )
+          .spyOn(metamaskController.accountTreeController, 'getAccountContext')
           .mockImplementation((accountId) => {
             if (accountId === 'id-1') {
               return {
