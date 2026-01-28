@@ -144,15 +144,20 @@ async function main() {
     // Use enhanced reporter by default, allow override via E2E_REPORTER env var
     const consoleReporter =
       process.env.E2E_REPORTER ||
-      path.join(__dirname, 'reporters/enhanced-spec-reporter');
+      path.join(__dirname, 'reporters/enhanced-spec-reporter.js');
     const reporters = [`--reporter=${consoleReporter}`];
     const reporterOptions = [];
 
     if (isCI) {
+      // Use absolute path and ensure toConsole is false to suppress XML output
+      const junitOutputPath = path.resolve(
+        process.cwd(),
+        'test/test-results/e2e/[hash].xml',
+      );
       reporters.push('--reporter=mocha-junit-reporter');
       reporterOptions.push(
         '--reporter-options',
-        `mochaFile=test/test-results/e2e/[hash].xml,toConsole=false`,
+        `mochaFile=${junitOutputPath},toConsole=false`,
       );
     }
 

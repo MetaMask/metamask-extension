@@ -133,7 +133,14 @@ function EnhancedSpecReporter(runner, options) {
   });
 
   runner.on('end', () => {
-    printSummary(stats, failures, allTests);
+    try {
+      printSummary(stats, failures, allTests);
+    } catch (error) {
+      // Fallback to stderr if stdout fails, but don't let errors break the reporter
+      process.stderr.write(
+        `\n[Enhanced Reporter Error] ${error.message}\n${error.stack}\n`,
+      );
+    }
   });
 }
 
