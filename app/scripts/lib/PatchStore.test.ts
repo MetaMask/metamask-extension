@@ -348,6 +348,78 @@ describe('PatchStore', () => {
         },
       ]);
     });
+
+    it('skips root-level patches with null value', () => {
+      const composableStoreMock = createComposableStoreMock();
+      const patchStore = new PatchStore(composableStoreMock);
+      patchStore.init();
+
+      triggerStateChange(
+        composableStoreMock,
+        { test1: 'value1' },
+        { test1: 'value2' },
+        [
+          {
+            op: 'replace',
+            path: [],
+            value: null,
+          },
+        ],
+      );
+
+      const patches = patchStore.flushPendingPatches();
+
+      // Malformed patch should be skipped, no patches should be returned
+      expect(patches).toEqual([]);
+    });
+
+    it('skips root-level patches with undefined value', () => {
+      const composableStoreMock = createComposableStoreMock();
+      const patchStore = new PatchStore(composableStoreMock);
+      patchStore.init();
+
+      triggerStateChange(
+        composableStoreMock,
+        { test1: 'value1' },
+        { test1: 'value2' },
+        [
+          {
+            op: 'replace',
+            path: [],
+            value: undefined,
+          },
+        ],
+      );
+
+      const patches = patchStore.flushPendingPatches();
+
+      // Malformed patch should be skipped, no patches should be returned
+      expect(patches).toEqual([]);
+    });
+
+    it('skips root-level patches with primitive value', () => {
+      const composableStoreMock = createComposableStoreMock();
+      const patchStore = new PatchStore(composableStoreMock);
+      patchStore.init();
+
+      triggerStateChange(
+        composableStoreMock,
+        { test1: 'value1' },
+        { test1: 'value2' },
+        [
+          {
+            op: 'replace',
+            path: [],
+            value: 'string-value',
+          },
+        ],
+      );
+
+      const patches = patchStore.flushPendingPatches();
+
+      // Malformed patch should be skipped, no patches should be returned
+      expect(patches).toEqual([]);
+    });
   });
 
   describe('destroy', () => {

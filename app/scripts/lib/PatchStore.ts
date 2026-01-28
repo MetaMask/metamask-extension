@@ -140,6 +140,14 @@ export class PatchStore {
         return [patch];
       }
 
+      // Root-level patches must have an object value to be normalized.
+      // If patch.value is not an object (null, undefined, primitive),
+      // skip this patch to prevent errors.
+      if (!patch.value || typeof patch.value !== 'object') {
+        log('Skipping root-level patch with non-object value', this.id, patch);
+        return [];
+      }
+
       const stateProperties = uniq([
         ...Object.keys(oldState),
         ...Object.keys(patch.value),
