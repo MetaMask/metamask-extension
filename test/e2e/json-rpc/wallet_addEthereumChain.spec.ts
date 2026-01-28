@@ -609,6 +609,7 @@ describe('Add Ethereum Chain', function () {
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await testDapp.clickPersonalSign();
+          await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
           const beforePermittedChains = await getPermittedChains(driver);
           assert.deepEqual(beforePermittedChains, ['0x539']);
