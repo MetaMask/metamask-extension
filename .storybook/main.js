@@ -14,10 +14,15 @@ module.exports = {
   },
 
   stories: [
-    '../ui/**/*.stories.js',
-    '../ui/**/*.stories.tsx',
-    '../ui/**/*.mdx',
-    './*.mdx',
+    {
+      directory: path.resolve(__dirname, '../ui'),
+      files: '**/*.stories.@(js|jsx|ts|tsx)',
+    },
+    {
+      directory: path.resolve(__dirname, '../ui'),
+      files: '**/*.mdx',
+    },
+    path.resolve(__dirname, './*.mdx'),
   ],
 
   typescript: {
