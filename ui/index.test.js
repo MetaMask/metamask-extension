@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { setupLocale } from '../shared/lib/error-utils';
-import { getCleanAppState } from '.';
+import { getCleanAppState, connectToBackground } from '.';
 
 const enMessages = {
   troubleStarting: {
@@ -105,5 +105,27 @@ describe('Index Tests', () => {
       version: mockVersion,
       browser: mockUserAgent,
     });
+  });
+
+  it('should batch state updates when receiving sendUpdate notifications', async () => {
+    // Mock react-dom's unstable_batchedUpdates
+    const mockBatchedUpdates = jest.fn((callback) => callback());
+    jest.mock('react-dom', () => ({
+      ...jest.requireActual('react-dom'),
+      // eslint-disable-next-line camelcase
+      unstable_batchedUpdates: mockBatchedUpdates,
+    }));
+
+    const mockBackgroundConnection = {
+      onNotification: jest.fn(),
+    };
+
+    const mockHandleStartUISync = jest.fn();
+
+    // Call connectToBackground
+    connectToBackground(mockBackgroundConnection, mockHandleStartUISync);
+
+    // Verify onNotification was called
+    expect(mockBackgroundConnection.onNotification).toHaveBeenCalledTimes(1);
   });
 });

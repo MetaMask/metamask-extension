@@ -1,7 +1,8 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
-import { render } from 'react-dom';
+// eslint-disable-next-line camelcase
+import { render, unstable_batchedUpdates } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
@@ -76,7 +77,10 @@ export const connectToBackground = (
     const { method } = data;
     if (method === 'sendUpdate') {
       const store = await reduxStore.promise;
-      store.dispatch(actions.updateMetamaskState(data.params[0]));
+      // Batch all state updates to prevent DOM desynchronization during React reconciliation
+      unstable_batchedUpdates(() => {
+        store.dispatch(actions.updateMetamaskState(data.params[0]));
+      });
     } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
     } else {
