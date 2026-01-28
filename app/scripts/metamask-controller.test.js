@@ -837,6 +837,48 @@ describe('MetaMaskController', () => {
 
         expect(vault1).toStrictEqual(vault2);
       });
+
+      it('should throw error when no keyrings are created', async () => {
+        const password = 'a-fake-password';
+        
+        // Mock the keyringController to return empty keyrings array
+        jest
+          .spyOn(metamaskController.keyringController, 'createNewVaultAndKeychain')
+          .mockResolvedValueOnce(undefined);
+        
+        // Mock the state to have empty keyrings
+        Object.defineProperty(metamaskController.keyringController, 'state', {
+          get: () => ({ keyrings: [] }),
+          configurable: true,
+        });
+
+        await expect(
+          metamaskController.createNewVaultAndKeychain(password),
+        ).rejects.toThrow(
+          'KeyringController - No keyring found. Error info: There are no keyrings',
+        );
+      });
+
+      it('should throw error when primary keyring is undefined', async () => {
+        const password = 'a-fake-password';
+        
+        // Mock the keyringController to return undefined
+        jest
+          .spyOn(metamaskController.keyringController, 'createNewVaultAndKeychain')
+          .mockResolvedValueOnce(undefined);
+        
+        // Mock the state to have keyrings array with undefined first element
+        Object.defineProperty(metamaskController.keyringController, 'state', {
+          get: () => ({ keyrings: [undefined] }),
+          configurable: true,
+        });
+
+        await expect(
+          metamaskController.createNewVaultAndKeychain(password),
+        ).rejects.toThrow(
+          'KeyringController - Primary keyring is undefined',
+        );
+      });
     });
 
     describe('#createSeedPhraseBackup', () => {
