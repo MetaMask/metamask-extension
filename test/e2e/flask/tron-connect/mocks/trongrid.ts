@@ -123,7 +123,7 @@ const transactionsResponse = {
   },
 };
 
-const thisransactionsTRC20Response = {
+const transactionsTRC20Response = {
   data: [
     {
       transaction_id: 'xxxxxxxxx',
@@ -239,7 +239,7 @@ export const mockTransactionsTRC20Request = (mockServer: Mockttp) =>
     .forGet(
       `${TRONGRID_API_URL}/v1/accounts/TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3/transactions/trc20`,
     )
-    .thenJson(200, thisransactionsTRC20Response);
+    .thenJson(200, transactionsTRC20Response);
 
 export const mockAccountResourcesRequest = (mockServer: Mockttp) =>
   mockServer
