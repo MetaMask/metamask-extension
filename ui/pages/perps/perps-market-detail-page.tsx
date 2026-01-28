@@ -925,39 +925,84 @@ const PerpsMarketDetailPage: React.FC = () => {
         paddingTop={3}
         paddingBottom={4}
       >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          gap={3}
-          data-testid="perps-trade-cta-buttons"
-        >
-          {/* Long Button */}
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={() => handleOpenOrder('long')}
-            className={twMerge(
-              'flex-1',
-              'bg-success-default hover:bg-success-hover active:bg-success-pressed',
-            )}
-            data-testid="perps-long-cta-button"
+        {position ? (
+          /* Has Position: Show Modify and Close buttons */
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            gap={3}
+            data-testid="perps-position-cta-buttons"
           >
-            {t('perpsLong')}
-          </Button>
+            {/* Modify Button */}
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              onClick={() => {
+                // TODO: Handle modify position
+                console.log('Modify position:', position.coin);
+              }}
+              className="flex-1"
+              data-testid="perps-modify-cta-button"
+            >
+              {t('perpsModify')}
+            </Button>
 
-          {/* Short Button */}
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={() => handleOpenOrder('short')}
-            className={twMerge(
-              'flex-1',
-              'bg-error-default hover:bg-error-hover active:bg-error-pressed',
-            )}
-            data-testid="perps-short-cta-button"
+            {/* Close Button */}
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              onClick={() => {
+                // TODO: Handle close position
+                console.log('Close position:', position.coin);
+              }}
+              className={twMerge(
+                'flex-1',
+                parseFloat(position.size) >= 0
+                  ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
+                  : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
+              )}
+              data-testid="perps-close-cta-button"
+            >
+              {parseFloat(position.size) >= 0
+                ? t('perpsCloseLong')
+                : t('perpsCloseShort')}
+            </Button>
+          </Box>
+        ) : (
+          /* No Position: Show Long and Short buttons */
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            gap={3}
+            data-testid="perps-trade-cta-buttons"
           >
-            {t('perpsShort')}
-          </Button>
-        </Box>
+            {/* Long Button */}
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              onClick={() => handleOpenOrder('long')}
+              className={twMerge(
+                'flex-1',
+                'bg-success-default hover:bg-success-hover active:bg-success-pressed',
+              )}
+              data-testid="perps-long-cta-button"
+            >
+              {t('perpsLong')}
+            </Button>
+
+            {/* Short Button */}
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              onClick={() => handleOpenOrder('short')}
+              className={twMerge(
+                'flex-1',
+                'bg-error-default hover:bg-error-hover active:bg-error-pressed',
+              )}
+              data-testid="perps-short-cta-button"
+            >
+              {t('perpsShort')}
+            </Button>
+          </Box>
+        )}
       </Box>
     </Box>
   );

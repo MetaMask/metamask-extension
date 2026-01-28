@@ -5129,11 +5129,20 @@
     "message": "$1 available",
     "description": "$1 is the available balance amount"
   },
+  "perpsAvailableToTrade": {
+    "message": "Available to Trade"
+  },
   "perpsBuy": {
     "message": "buy"
   },
   "perpsCloseAll": {
     "message": "Close all"
+  },
+  "perpsCloseLong": {
+    "message": "Close Long"
+  },
+  "perpsCloseShort": {
+    "message": "Close Short"
   },
   "perpsClosedShort": {
     "message": "Closed short"
@@ -5189,6 +5198,9 @@
   "perpsFundingRate": {
     "message": "Funding Rate"
   },
+  "perpsGain": {
+    "message": "Gain"
+  },
   "perpsIncreasedPosition": {
     "message": "Increased position"
   },
@@ -5198,14 +5210,26 @@
   "perpsLearnMore": {
     "message": "Learn more"
   },
+  "perpsLeverage": {
+    "message": "Leverage"
+  },
   "perpsLimit": {
     "message": "Limit"
+  },
+  "perpsLimitPrice": {
+    "message": "Limit Price"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
+  "perpsLiquidationPriceEst": {
+    "message": "Liquidation Price Est."
+  },
   "perpsLong": {
     "message": "Long"
+  },
+  "perpsLoss": {
+    "message": "Loss"
   },
   "perpsMargin": {
     "message": "Margin"
@@ -5226,20 +5250,37 @@
   "perpsMore": {
     "message": "More"
   },
+  "perpsModify": {
+    "message": "Modify"
+  },
   "perpsNoMarketsFound": {
     "message": "No markets found"
   },
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
+  "perpsOpenLong": {
+    "message": "Open Long $1",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
+  },
   "perpsOpenOrders": {
     "message": "Open Orders"
+  },
+  "perpsOpenShort": {
+    "message": "Open Short $1",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenedLong": {
     "message": "Opened long"
   },
   "perpsOrders": {
     "message": "Orders"
+  },
+  "perpsOrderType": {
+    "message": "Order Type"
+  },
+  "perpsOrderValue": {
+    "message": "Order Value"
   },
   "perpsPnl": {
     "message": "P&L"
@@ -5261,6 +5302,9 @@
   },
   "perpsSell": {
     "message": "sell"
+  },
+  "perpsSlPrice": {
+    "message": "SL Price"
   },
   "perpsShort": {
     "message": "Short"
@@ -5294,6 +5338,9 @@
   },
   "perpsTotalBalance": {
     "message": "Total Balance"
+  },
+  "perpsTpPrice": {
+    "message": "TP Price"
   },
   "perpsTradePerps": {
     "message": "Trade perps"
