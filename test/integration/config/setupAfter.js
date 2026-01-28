@@ -23,3 +23,11 @@ jest.mock(
     MusdConversionInfo: () => null,
   }),
 );
+
+jest.mock(
+  '../../../ui/pages/confirmations/components/info/custom-amount-info',
+  () => ({
+    CustomAmountInfo: () => null,
+    CustomAmountInfoSkeleton: () => null,
+  }),
+);
