@@ -3,8 +3,7 @@
     "accounts.google.com",
     "firefox.settings.services.mozilla.com",
     "metamask.github.io",
-    "sentry.io",
-    "api.segment.io"
+    "sentry.io"
   ],
   "toBeRemoved": {
     "accounts.google.com": "Should be removed - web3auth team - will only call during social login",
@@ -23,7 +22,6 @@
     "optimism-mainnet.infura.io",
     "polygon-mainnet.infura.io",
     "sei-mainnet.infura.io",
-    "sentry.io",
-    "api.segment.io"
+    "sentry.io"
   ]
 }

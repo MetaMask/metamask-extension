@@ -25,7 +25,10 @@ import {
   getPaths,
   DEFAULT_ROUTE,
 } from '../helpers/constants/routes';
-import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventName,
+} from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import { getParticipateInMetaMetrics } from '../selectors';
 import {
@@ -123,7 +126,10 @@ export function MetaMetricsProvider({ children }) {
         ...context,
       };
 
-      if (isMetricsEnabled) {
+      if (
+        isMetricsEnabled ||
+        payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
+      ) {
         // If metrics are enabled, track immediately
         trackMetaMetricsEvent(fullPayload, options);
       } else {

@@ -915,10 +915,7 @@ export default class MetaMetricsController extends BaseController<
   async setParticipateInMetaMetrics(
     participateInMetaMetrics: boolean | null,
   ): Promise<string | null> {
-    const {
-      metaMetricsId: existingMetaMetricsId,
-      participateInMetaMetrics: existingMetricsOptInOutStatus,
-    } = this.state;
+    const { metaMetricsId: existingMetaMetricsId } = this.state;
 
     // regardless of the Opt In/Out status, we want to generate metaMetricsId if it doesn't exist
     // this is to assign the id to the `Metrics Opt Out` event (in which participateInMetaMetrics is null/false)
@@ -928,25 +925,6 @@ export default class MetaMetricsController extends BaseController<
       state.participateInMetaMetrics = participateInMetaMetrics;
       state.metaMetricsId = metaMetricsId;
     });
-
-    // Only track the MetricsOptIn/Out event if the status has changed
-    const metricsOptInOutStatusChanged =
-      participateInMetaMetrics !== existingMetricsOptInOutStatus;
-    if (participateInMetaMetrics !== null && metricsOptInOutStatusChanged) {
-      const event = participateInMetaMetrics
-        ? MetaMetricsEventName.MetricsOptIn
-        : MetaMetricsEventName.MetricsOptOut;
-      // Regardless of the Opt In/Out status, we want to track the event to the user's id
-      // The intention is to track the number of users in the analytics
-      this.#track(
-        this.#buildEventPayload({
-          event,
-          category: MetaMetricsEventCategory.App,
-        }),
-      ).catch((err) => {
-        this.#captureException(err);
-      });
-    }
 
     if (participateInMetaMetrics) {
       this.trackEventsAfterMetricsOptIn();
@@ -1070,6 +1048,15 @@ export default class MetaMetricsController extends BaseController<
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): Promise<void> {
+    const { useExternalServices } = this.messenger.call(
+      'PreferencesController:getState',
+    );
+    const isBasicFunctionalityDisabled = !useExternalServices;
+    if (isBasicFunctionalityDisabled) {
+      // If basic functionality is disabled, we block all events
+      return;
+    }
+
     if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
       return;
     }
@@ -1732,6 +1719,15 @@ export default class MetaMetricsController extends BaseController<
     payload: Partial<SegmentEventPayload>,
     callback?: (result: unknown) => unknown,
   ): void {
+    const { useExternalServices } = this.messenger.call(
+      'PreferencesController:getState',
+    );
+    const isBasicFunctionalityDisabled = !useExternalServices;
+    if (isBasicFunctionalityDisabled) {
+      // If basic functionality is disabled, we block all events
+      return;
+    }
+
     const {
       metaMetricsId,
       latestNonAnonymousEventTimestamp,
@@ -1742,7 +1738,7 @@ export default class MetaMetricsController extends BaseController<
     const isMetricsOptOutEvent =
       payload.event === MetaMetricsEventName.MetricsOptOut;
 
-    // Block all events if user opted out, except MetricsOptOut which is always sent
+    // Block all events if user opted out, except MetricsOptOut which is always sent when basic functionality is not disabled
     if (userOptedOut && !isMetricsOptOutEvent) {
       return;
     }
