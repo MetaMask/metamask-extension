@@ -711,11 +711,27 @@ export const mockTransactions: PerpsTransaction[] = [
     },
   },
   {
+    id: 'tx-002b',
+    type: 'trade',
+    symbol: 'SOL',
+    title: 'Closed long',
+    subtitle: '15 SOL @ $92.50',
+    timestamp: Date.now() - 9000000, // 2.5 hours ago
+    status: 'confirmed',
+    fill: {
+      size: '15',
+      price: '92.50',
+      fee: '1.39',
+      side: 'sell',
+      realizedPnl: '-45.50',
+    },
+  },
+  {
     id: 'tx-003',
     type: 'funding',
     symbol: 'ETH',
-    title: 'Funding received',
-    subtitle: '+$8.30',
+    title: 'Received funding fee',
+    subtitle: 'ETH',
     timestamp: Date.now() - 10800000, // 3 hours ago
     status: 'confirmed',
     funding: {
@@ -727,7 +743,7 @@ export const mockTransactions: PerpsTransaction[] = [
     id: 'tx-004',
     type: 'order',
     symbol: 'SOL',
-    title: 'Limit order placed',
+    title: 'Limit long',
     subtitle: '25 SOL @ $95.00',
     timestamp: Date.now() - 14400000, // 4 hours ago
     status: 'pending',
@@ -738,11 +754,53 @@ export const mockTransactions: PerpsTransaction[] = [
     },
   },
   {
+    id: 'tx-004b',
+    type: 'order',
+    symbol: 'BTC',
+    title: 'Market close short',
+    subtitle: '0.1 BTC @ $45,000.00',
+    timestamp: Date.now() - 16200000, // 4.5 hours ago
+    status: 'confirmed',
+    order: {
+      orderId: 'order-004b',
+      orderType: 'market',
+      status: 'filled',
+    },
+  },
+  {
+    id: 'tx-004c',
+    type: 'order',
+    symbol: 'ARB',
+    title: 'Stop market close long',
+    subtitle: '500 ARB @ $1.10',
+    timestamp: Date.now() - 18000000, // 5 hours ago
+    status: 'pending',
+    order: {
+      orderId: 'order-004c',
+      orderType: 'market',
+      status: 'canceled',
+    },
+  },
+  {
+    id: 'tx-004d',
+    type: 'order',
+    symbol: 'ETH',
+    title: 'Market long',
+    subtitle: '1.5 ETH @ $2,900.00',
+    timestamp: Date.now() - 19800000, // 5.5 hours ago
+    status: 'pending',
+    order: {
+      orderId: 'order-004d',
+      orderType: 'market',
+      status: 'queued',
+    },
+  },
+  {
     id: 'tx-005',
     type: 'deposit',
     symbol: 'USDC',
-    title: 'Deposited',
-    subtitle: '$5,000.00 USDC',
+    title: 'Deposited 5000 USDC',
+    subtitle: 'Completed',
     timestamp: Date.now() - 86400000, // 1 day ago
     status: 'confirmed',
     depositWithdrawal: {
@@ -769,8 +827,8 @@ export const mockTransactions: PerpsTransaction[] = [
     id: 'tx-007',
     type: 'funding',
     symbol: 'BTC',
-    title: 'Funding paid',
-    subtitle: '-$3.10',
+    title: 'Paid funding fee',
+    subtitle: 'BTC',
     timestamp: Date.now() - 97200000, // ~1 day ago
     status: 'confirmed',
     funding: {
@@ -797,8 +855,8 @@ export const mockTransactions: PerpsTransaction[] = [
     id: 'tx-009',
     type: 'withdrawal',
     symbol: 'USDC',
-    title: 'Withdrew',
-    subtitle: '$2,000.00 USDC',
+    title: 'Withdrew 2000 USDC',
+    subtitle: 'Completed',
     timestamp: Date.now() - 259200000, // 3 days ago
     status: 'confirmed',
     depositWithdrawal: {
@@ -810,7 +868,7 @@ export const mockTransactions: PerpsTransaction[] = [
     id: 'tx-010',
     type: 'order',
     symbol: 'ETH',
-    title: 'Limit order filled',
+    title: 'Limit close long',
     subtitle: '1.0 ETH @ $3,000.00',
     timestamp: Date.now() - 345600000, // 4 days ago
     status: 'confirmed',
@@ -840,8 +898,8 @@ export const mockTransactions: PerpsTransaction[] = [
     id: 'tx-012',
     type: 'funding',
     symbol: 'xyz:GOLD',
-    title: 'Funding received',
-    subtitle: '+$0.80',
+    title: 'Received funding fee',
+    subtitle: 'Gold',
     timestamp: Date.now() - 518400000, // 6 days ago
     status: 'confirmed',
     funding: {
