@@ -247,6 +247,9 @@ export class TestSnaps {
 
   private readonly connectPreferencesButtonSelector = '#connectpreferences';
 
+  private readonly connectMultichainProviderButtonSelector =
+    '#connectmultichain-provider';
+
   // Action buttons
   private readonly confirmationButton = '#sendConfirmationButton';
 
@@ -663,6 +666,11 @@ export class TestSnaps {
   async connectPreferencesButton(): Promise<void> {
     console.log('Clicking Connect Preferences button');
     await this.driver.clickElement(this.connectPreferencesButtonSelector);
+  }
+
+  async connectMultichainProviderButton(): Promise<void> {
+    console.log('Clicking Connect Multichain Provider button');
+    await this.driver.clickElement(this.connectMultichainProviderButtonSelector);
   }
 
   // =====================
@@ -1523,6 +1531,67 @@ export class TestSnaps {
     await this.driver.clickElement({
       text: name,
       css: `${locator} option`,
+    });
+  }
+
+  /**
+   * Scrolls to and clicks a button by its locator name.
+   *
+   * @param buttonName - The key of the button in buttonLocator.
+   */
+  async scrollAndClickButton(buttonName: keyof typeof buttonLocator) {
+    const locator = buttonLocator[buttonName];
+    console.log(`Clicking button: ${buttonName}`);
+    const selector = await this.driver.findElement(locator);
+    await this.driver.scrollToElement(selector);
+    await this.driver.clickElement(locator);
+  }
+
+  /**
+   * Checks that a snap installation is complete by verifying the button text.
+   *
+   * @param buttonName - The key of the button in buttonLocator.
+   * @param expectedText - The expected text on the button.
+   */
+  async checkInstallationComplete(
+    buttonName: keyof typeof buttonLocator,
+    expectedText: string,
+  ) {
+    const locator = buttonLocator[buttonName];
+    console.log(`Checking button ${buttonName} has text: ${expectedText}`);
+    await this.driver.waitForSelector({
+      css: locator,
+      text: expectedText,
+    });
+  }
+
+  /**
+   * Fills an input field by its locator name.
+   *
+   * @param inputName - The key of the input in inputLocator.
+   * @param value - The value to fill.
+   */
+  async fillMessage(inputName: keyof typeof inputLocator, value: string) {
+    const locator = inputLocator[inputName];
+    console.log(`Filling input ${inputName} with: ${value}`);
+    await this.driver.fill(locator, value);
+  }
+
+  /**
+   * Checks a result span by its locator name.
+   *
+   * @param spanName - The key of the span in spanLocator.
+   * @param expectedText - The expected text in the span.
+   */
+  async checkMessageResultSpan(
+    spanName: keyof typeof spanLocator,
+    expectedText: string,
+  ) {
+    const locator = spanLocator[spanName];
+    console.log(`Checking span ${spanName} has text: ${expectedText}`);
+    await this.driver.waitForSelector({
+      css: locator,
+      text: expectedText,
     });
   }
 

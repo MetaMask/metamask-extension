@@ -36,7 +36,8 @@ export type TestSnapConnectButton =
   | 'connectEthereumProviderButton'
   | 'connectNetworkAccessButton'
   | 'connectBackgroundEventsButton'
-  | 'connectPreferencesButton';
+  | 'connectPreferencesButton'
+  | 'connectMultichainProviderButton';
 
 /**
  * Constants for snap connect button options.
@@ -72,6 +73,7 @@ export const SnapConnectButton = {
   update: 'connectUpdateButton',
   updateNew: 'connectUpdateNewButton',
   wasm: 'connectWasmButton',
+  multichainProvider: 'connectMultichainProviderButton',
 } as const satisfies Record<string, TestSnapConnectButton>;
 
 /**
