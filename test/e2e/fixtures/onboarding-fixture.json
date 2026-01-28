@@ -10,9 +10,8 @@
       }
     },
     "AccountTreeController": {
-      "accountGroupsMetadata": {},
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": false
+      "hasAccountTreeSyncingSyncedAtLeastOnce": true
     },
     "AccountsController": {
       "internalAccounts": {
