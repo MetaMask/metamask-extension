@@ -11,7 +11,6 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
-import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
@@ -1138,10 +1137,9 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
-          const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
 
-          await driver.delay(3000);
+          // Wait for state to settle
+          await driver.delay(5_000);
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
@@ -1320,10 +1318,9 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
-          const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
 
-          await driver.delay(3000);
+          // Wait for state to settle
+          await driver.delay(5_000);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
