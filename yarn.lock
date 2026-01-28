@@ -6693,7 +6693,7 @@ __metadata:
 
 "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=c1db60&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=496edb&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
@@ -6702,7 +6702,7 @@ __metadata:
     "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
     "@metamask/mfa-wallet-network": "npm:^0.0.0"
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
-  checksum: 10/2915bd5e16551c8a8797e58a99cae9f68b7e04ffc8fe07d455fcd9c9a00d3fb68b5ce4b3a8241a4703806c2c747749ef1d3af1934ece6bf220afdf8a7282d7e5
+  checksum: 10/e28f9a0e12dfa4c63d1d0eaefecd587d7f7685fc17355e2c152102a0f64ed1ea9b1913f3daed24b7cd3ad97ac63c8ddef4784e5dd55dc3318a24e7129a8ac87f
   languageName: node
   linkType: hard
 
@@ -8933,8 +8933,8 @@ __metadata:
 
 "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz#./metamask-tss-dkls19-lib-0.0.0.tgz::hash=72645d&locator=metamask-crx%40workspace%3A."
-  checksum: 10/d143ec05db9f028a10db4e5b66266585562ab21da04bb157b83d572224e9a57e27b39730e9258721eda8e31410a77f60d2705e0e2e08bcbca21505ca26f6e046
+  resolution: "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz#./metamask-tss-dkls19-lib-0.0.0.tgz::hash=96ff64&locator=metamask-crx%40workspace%3A."
+  checksum: 10/4af48363cc19ec6a8f1055a86b79d853ebdb7e57c71f5505562679ac6193c7bf7ae16c9de26d13adf2c87953db79d2d0c10664321046fbfb18a6cb5ad60e61c2
   languageName: node
   linkType: hard
 
