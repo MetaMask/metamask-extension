@@ -219,3 +219,18 @@ export function getDeviceEventForError(
       return defaultEvent;
   }
 }
+
+export function isRetryableHardwareWalletError(error: HardwareWalletError) {
+  switch (error.code) {
+    case ErrorCode.AuthenticationDeviceLocked:
+    case ErrorCode.DeviceStateEthAppClosed:
+    case ErrorCode.ConnectionTransportMissing:
+    case ErrorCode.AuthenticationSecurityCondition:
+    case ErrorCode.ConnectionTimeout:
+    case ErrorCode.ConnectionClosed:
+    case ErrorCode.DeviceDisconnected:
+      return true;
+    default:
+      return false;
+  }
+}
