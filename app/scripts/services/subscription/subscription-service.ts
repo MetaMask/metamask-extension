@@ -884,6 +884,12 @@ export class SubscriptionService {
     return getShieldSubscription(subscriptions);
   }
 
+  /**
+   * Get the cancel URL for stripe checkout session (when user press back/cancel button) not to confuse with cancel subscription request.
+   *
+   * @param redirectUrl - The redirect URL.
+   * @returns The cancel URL.
+   */
   #getCancelUrl(redirectUrl: string): string {
     return `${redirectUrl}?cancel=true`;
   }
