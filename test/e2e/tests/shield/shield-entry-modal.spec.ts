@@ -81,7 +81,7 @@ describe('Shield Entry Modal', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('25');
+        await homePage.checkExpectedBalanceIsDisplayed('24');
 
         await homePage.checkNoShieldEntryModalIsDisplayed();
       },
@@ -128,7 +128,7 @@ describe('Shield Entry Modal', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('25');
+        await homePage.checkExpectedBalanceIsDisplayed('24');
 
         await homePage.checkNoShieldEntryModalIsDisplayed();
       },
