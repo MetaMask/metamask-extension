@@ -1057,8 +1057,16 @@ export default class MetaMetricsController extends BaseController<
       return;
     }
 
-    if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
+    const { participateInMetaMetrics, metaMetricsId } = this.state;
+    if (!participateInMetaMetrics && !options?.isOptIn) {
       return;
+    }
+
+    const isMetricsOptOutEvent =
+      payload.event === MetaMetricsEventName.MetricsOptOut;
+    if (isMetricsOptOutEvent && options?.isOptIn) {
+      // For the `Metrics Opt Out` event, we want to track it with the user's `metaMetricsId`
+      options.metaMetricsId = metaMetricsId ?? undefined;
     }
 
     // We might track multiple events if sensitiveProperties is included, this array will hold

@@ -89,7 +89,7 @@ export default function CreationSuccessful() {
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
-  const isNotFireFox = getBrowserName() !== PLATFORM_FIREFOX;
+  const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -222,6 +222,11 @@ export default function CreationSuccessful() {
     // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
+
+      // We want to track the MetricsOptIn/Out event even if participateInMetaMetrics is false in non-Firefox browsers
+      const shouldForceEventTracking = isFireFox
+        ? false
+        : !participateInMetaMetrics;
       trackEvent(
         {
           category: MetaMetricsEventCategory.Onboarding,
@@ -231,7 +236,7 @@ export default function CreationSuccessful() {
           properties: {},
         },
         {
-          isOptIn: isNotFireFox, // We want to track the MetricsOptIn/Out event even if participateInMetaMetrics is false in non-Firefox browsers
+          isOptIn: shouldForceEventTracking,
         },
       );
     }
@@ -286,7 +291,7 @@ export default function CreationSuccessful() {
     isSidePanelEnabled,
     isSidePanelSetAsDefault,
     participateInMetaMetrics,
-    isNotFireFox,
+    isFireFox,
   ]);
 
   const renderDoneButton = () => {
