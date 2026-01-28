@@ -5862,7 +5862,32 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string[]} The sorted accounts addresses.
    */
   sortAddressesWithInternalAccounts(addresses, internalAccounts) {
-    return addresses.sort((firstAddress, secondAddress) => {
+    // Filter out addresses that don't have corresponding internal accounts
+    // to prevent errors during sorting
+    const addressesWithMissingIdentities = addresses.filter(
+      (address) =>
+        !internalAccounts.some(
+          (account) => account.address.toLowerCase() === address.toLowerCase(),
+        ),
+    );
+
+    // If there are addresses with missing identities, capture them for monitoring
+    if (addressesWithMissingIdentities.length > 0) {
+      this.captureKeyringTypesWithMissingIdentities(
+        internalAccounts,
+        addresses,
+      );
+    }
+
+    // Only include addresses that have corresponding internal accounts
+    const validAddresses = addresses.filter((address) =>
+      internalAccounts.some(
+        (account) => account.address.toLowerCase() === address.toLowerCase(),
+      ),
+    );
+
+    // Sort the valid addresses by lastSelected
+    return validAddresses.sort((firstAddress, secondAddress) => {
       const firstAccount = internalAccounts.find(
         (internalAccount) =>
           internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
@@ -5873,19 +5898,12 @@ export default class MetamaskController extends EventEmitter {
           internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
       );
 
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
+      // These conditions should never be true after filtering, but keep for safety
+      if (!firstAccount || !secondAccount) {
+        return 0;
+      }
+
+      if (
         firstAccount.metadata.lastSelected ===
         secondAccount.metadata.lastSelected
       ) {
