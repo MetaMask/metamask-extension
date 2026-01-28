@@ -36,6 +36,7 @@ import { PerpsTabView } from '../../app/perps';
 import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { ActivityList } from '../activity-v2/activity-list';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
@@ -223,6 +224,12 @@ export const AccountOverviewTabs = ({
             ) : (
               <TransactionList />
             )}
+          </Tab>
+        )}
+
+        {showActivity && (
+          <Tab name="Activity V2" tabKey="activity-v2">
+            <ActivityList />
           </Tab>
         )}
       </Tabs>

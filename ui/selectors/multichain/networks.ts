@@ -15,6 +15,7 @@ import {
   type Hex,
   KnownCaipNamespace,
   parseCaipChainId,
+  isStrictHexString,
 } from '@metamask/utils';
 
 import { createSelector } from 'reselect';
@@ -337,6 +338,14 @@ export const getAllEnabledNetworksForAllNamespaces = createSelector(
       Object.entries(namespaceNetworks)
         .filter(([, enabled]) => enabled)
         .map(([chainId]) => chainId),
+    ),
+);
+
+export const getAllEnabledNetworksInCaipFormat = createSelector(
+  getAllEnabledNetworksForAllNamespaces,
+  (enabledNetworks) =>
+    enabledNetworks.map((chainId) =>
+      isStrictHexString(chainId) ? toEvmCaipChainId(chainId) : chainId,
     ),
 );
 

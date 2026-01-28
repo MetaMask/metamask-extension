@@ -64,6 +64,11 @@ export function getSelectedInternalAccount(state: AccountsState) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
+export const getSelectedAccountIds = createSelector(
+  getSelectedInternalAccount,
+  (account) => (account?.address ? [account.address] : []),
+);
+
 export const isSelectedInternalAccountEth = createSelector(
   getSelectedInternalAccount,
   (account) => {
