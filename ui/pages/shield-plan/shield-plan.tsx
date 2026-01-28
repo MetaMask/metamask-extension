@@ -81,7 +81,6 @@ import {
   isDevOrTestEnvironment,
   isDevOrUatBuild,
   getIsTrialedSubscription,
-  SHIELD_ERROR,
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
@@ -319,22 +318,11 @@ const ShieldPlan = () => {
     subscriptionResult.pending ||
     pendingShieldRewards;
 
-  const subscriptionError =
-    subscriptionResult.error &&
-    (subscriptionResult.error.message
-      .toLowerCase()
-      .includes(SHIELD_ERROR.tabActionFailed.toLowerCase()) ||
-      subscriptionResult.error.message
-        .toLowerCase()
-        .includes(SHIELD_ERROR.stripePaymentCancelled.toLowerCase()))
-      ? undefined // tab action failed or stripe payment cancelled is not api error
-      : subscriptionResult.error;
-
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
     availableTokenBalancesError ||
-    subscriptionError;
+    subscriptionResult.error;
 
   const plans: Plan[] = useMemo(
     () =>

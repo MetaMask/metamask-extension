@@ -69,6 +69,7 @@ import {
   determineSubscriptionMetricsSourceFromMarketingUtmParams,
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
+  isNonUISubscriptionError,
 } from '../../../shared/modules/shield';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
@@ -292,29 +293,41 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
     useSubscriptionMetrics();
 
   return useAsyncCallback(async () => {
-    if (!subscription || !newRecurringInterval) {
-      throw new Error('Subscription ID and recurring interval are required');
+    try {
+      if (!subscription || !newRecurringInterval) {
+        throw new Error('Subscription ID and recurring interval are required');
+      }
+
+      const subscriptionId = subscription.id;
+
+      await dispatch(
+        updateSubscriptionCardPaymentMethod({
+          subscriptionId,
+          paymentType: PAYMENT_TYPES.byCard,
+          recurringInterval: newRecurringInterval,
+        }),
+      );
+
+      // capture the event when the payment method is updated
+      captureCommonExistingShieldSubscriptionEvents(
+        {
+          subscriptionStatus: subscription.status,
+          paymentType: subscription.paymentMethod.type,
+          billingInterval: newRecurringInterval,
+        },
+        MetaMetricsEventName.ShieldPaymentMethodUpdated,
+      );
+    } catch (error) {
+      // Filter out non-UI errors (tab action failed, stripe payment cancelled) and log them
+      if (error instanceof Error && isNonUISubscriptionError(error)) {
+        log.warn(
+          '[Shield - useUpdateSubscriptionCardPaymentMethod] Non-UI error filtered:',
+          error.message,
+        );
+        return;
+      }
+      throw error as Error;
     }
-
-    const subscriptionId = subscription.id;
-
-    await dispatch(
-      updateSubscriptionCardPaymentMethod({
-        subscriptionId,
-        paymentType: PAYMENT_TYPES.byCard,
-        recurringInterval: newRecurringInterval,
-      }),
-    );
-
-    // capture the event when the payment method is updated
-    captureCommonExistingShieldSubscriptionEvents(
-      {
-        subscriptionStatus: subscription.status,
-        paymentType: subscription.paymentMethod.type,
-        billingInterval: newRecurringInterval,
-      },
-      MetaMetricsEventName.ShieldPaymentMethodUpdated,
-    );
   }, [
     dispatch,
     subscription,
@@ -542,66 +555,79 @@ export const useHandleSubscription = ({
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
-      // save the last used subscription payment method and plan to Redux store
-      await dispatch(
-        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
-          type: selectedPaymentMethod,
-          paymentTokenAddress: selectedToken?.address as Hex,
-          paymentTokenSymbol: selectedToken?.symbol,
-          plan: selectedPlan,
-          useTestClock,
-        }),
-      );
-
-      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-
-      // We need to pass the default payment options & some metrics properties to the background app state controller
-      // as these properties are not accessible in the background directly.
-      // Shield subscription metrics requests can use them for the metrics capture
-      // and also the background app state controller can use them for the metrics capture
-      await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
-      await setShieldSubscriptionMetricsPropsToBackground({
-        source: determineSubscriptionRequestSource(),
-        marketingUtmParams,
-        rewardPoints,
-      });
-
-      const source = determineSubscriptionRequestSource();
-      const subscriptionRequestTrackingParams: Omit<
-        CaptureShieldSubscriptionRequestParams,
-        'requestStatus'
-      > = {
-        subscriptionState: latestSubscriptionStatus,
-        defaultPaymentType: defaultOptions.defaultPaymentType,
-        defaultPaymentCurrency: defaultOptions.defaultPaymentCurrency,
-        defaultBillingInterval: defaultOptions.defaultBillingInterval,
-        defaultPaymentChain: defaultOptions.defaultPaymentChain,
-        paymentType: selectedPaymentMethod,
-        paymentCurrency: 'USD',
-        isTrialSubscription: !isTrialed,
-        billingInterval: selectedPlan,
-        source,
-        type: modalType,
-        marketingUtmParams,
-      };
-
-      if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
-        // capture the event when the Shield subscription request is started
-        captureShieldSubscriptionRequestEvent({
-          ...subscriptionRequestTrackingParams,
-          paymentCurrency: 'USD',
-          requestStatus: 'started',
-        });
+      try {
+        // save the last used subscription payment method and plan to Redux store
         await dispatch(
-          startSubscriptionWithCard({
-            products: [PRODUCT_TYPES.SHIELD],
-            isTrialRequested: !isTrialed,
-            recurringInterval: selectedPlan,
+          setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+            type: selectedPaymentMethod,
+            paymentTokenAddress: selectedToken?.address as Hex,
+            paymentTokenSymbol: selectedToken?.symbol,
+            plan: selectedPlan,
             useTestClock,
           }),
         );
-      } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-        await executeSubscriptionCryptoApprovalTransaction();
+
+        const marketingUtmParams =
+          getShieldMarketingUtmParamsForMetrics(search);
+
+        // We need to pass the default payment options & some metrics properties to the background app state controller
+        // as these properties are not accessible in the background directly.
+        // Shield subscription metrics requests can use them for the metrics capture
+        // and also the background app state controller can use them for the metrics capture
+        await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
+        await setShieldSubscriptionMetricsPropsToBackground({
+          source: determineSubscriptionRequestSource(),
+          marketingUtmParams,
+          rewardPoints,
+        });
+
+        const source = determineSubscriptionRequestSource();
+        const subscriptionRequestTrackingParams: Omit<
+          CaptureShieldSubscriptionRequestParams,
+          'requestStatus'
+        > = {
+          subscriptionState: latestSubscriptionStatus,
+          defaultPaymentType: defaultOptions.defaultPaymentType,
+          defaultPaymentCurrency: defaultOptions.defaultPaymentCurrency,
+          defaultBillingInterval: defaultOptions.defaultBillingInterval,
+          defaultPaymentChain: defaultOptions.defaultPaymentChain,
+          paymentType: selectedPaymentMethod,
+          paymentCurrency: 'USD',
+          isTrialSubscription: !isTrialed,
+          billingInterval: selectedPlan,
+          source,
+          type: modalType,
+          marketingUtmParams,
+        };
+
+        if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
+          // capture the event when the Shield subscription request is started
+          captureShieldSubscriptionRequestEvent({
+            ...subscriptionRequestTrackingParams,
+            paymentCurrency: 'USD',
+            requestStatus: 'started',
+          });
+          await dispatch(
+            startSubscriptionWithCard({
+              products: [PRODUCT_TYPES.SHIELD],
+              isTrialRequested: !isTrialed,
+              recurringInterval: selectedPlan,
+              useTestClock,
+            }),
+          );
+        } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
+          await executeSubscriptionCryptoApprovalTransaction();
+        }
+      } catch (error) {
+        // Filter out non-UI errors (tab action failed, stripe payment cancelled) and log them
+        if (error instanceof Error && isNonUISubscriptionError(error)) {
+          log.warn(
+            '[Shield - useHandleSubscription] Non-UI error filtered:',
+            error.message,
+          );
+          return;
+        }
+        throw error;
       }
     }, [
       dispatch,
