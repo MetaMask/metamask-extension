@@ -22,7 +22,7 @@ class SnapAccountConfirmationDialog {
 
   private readonly okButton = {
     tag: 'button',
-    text: 'OK',
+    text: 'Ok',
   };
 
   constructor(driver: Driver) {
