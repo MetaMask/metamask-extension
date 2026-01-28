@@ -670,7 +670,9 @@ export class TestSnaps {
 
   async connectMultichainProviderButton(): Promise<void> {
     console.log('Clicking Connect Multichain Provider button');
-    await this.driver.clickElement(this.connectMultichainProviderButtonSelector);
+    await this.driver.clickElement(
+      this.connectMultichainProviderButtonSelector,
+    );
   }
 
   // =====================
