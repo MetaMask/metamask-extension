@@ -105,6 +105,7 @@ describe('Create Snap Account', function (this: Suite) {
         // Switch to dialog and cancel
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const snapAccountDialog = new SnapAccountConfirmationDialog(driver);
+        await snapAccountDialog.checkConfirmationDialogIsLoaded();
         await snapAccountDialog.clickCancelButton();
 
         // Switch back to dapp and check error
