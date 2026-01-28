@@ -171,21 +171,16 @@ export function getConnectionStateFromError(
   switch (error.code) {
     case ErrorCode.AuthenticationDeviceLocked:
     case ErrorCode.AuthenticationDeviceBlocked:
+    case ErrorCode.ConnectionTransportMissing:
+    case ErrorCode.AuthenticationSecurityCondition:
+    case ErrorCode.ConnectionClosed:
+    case ErrorCode.DeviceDisconnected:
+    case ErrorCode.UserRejected:
+    case ErrorCode.UserCancelled:
+    case ErrorCode.ConnectionTimeout:
       return ConnectionState.error(error);
     case ErrorCode.DeviceStateEthAppClosed:
       return ConnectionState.awaitingApp();
-    case ErrorCode.ConnectionTransportMissing:
-      return ConnectionState.error(error);
-    case ErrorCode.AuthenticationSecurityCondition:
-      return ConnectionState.error(error);
-    case ErrorCode.ConnectionClosed:
-    case ErrorCode.DeviceDisconnected:
-      return ConnectionState.error(error);
-    case ErrorCode.UserRejected:
-    case ErrorCode.UserCancelled:
-      return ConnectionState.error(error);
-    case ErrorCode.ConnectionTimeout:
-      return ConnectionState.error(error);
     default:
       return ConnectionState.error(error);
   }

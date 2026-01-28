@@ -22,27 +22,11 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
 
   public ensureDeviceReadyMock = jest.fn();
 
-  public setPendingOperationMock = jest.fn();
-
   constructor(options: HardwareWalletAdapterOptions) {
     this.options = options;
 
     // Setup default implementations
-    this.connectMock.mockImplementation(async (_deviceId: string) => {
-      this.connected = true;
-    });
-
-    this.disconnectMock.mockImplementation(async () => {
-      this.connected = false;
-    });
-
-    this.isConnectedMock.mockImplementation(() => this.connected);
-
-    this.destroyMock.mockImplementation(() => {
-      this.connected = false;
-    });
-
-    this.ensureDeviceReadyMock.mockResolvedValue(true);
+    this.setupDefaultMocks();
   }
 
   async connect(deviceId: string): Promise<void> {
@@ -63,10 +47,6 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
 
   ensureDeviceReady(deviceId: string): Promise<boolean> {
     return this.ensureDeviceReadyMock(deviceId);
-  }
-
-  setPendingOperation(pending: boolean): void {
-    return this.setPendingOperationMock(pending);
   }
 
   // Test helpers
@@ -97,7 +77,6 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     this.isConnectedMock.mockClear();
     this.destroyMock.mockClear();
     this.ensureDeviceReadyMock.mockClear();
-    this.setPendingOperationMock.mockClear();
   }
 
   reset(): void {
@@ -106,6 +85,10 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     // Reset mocks
     this.resetMocks();
     // Reset mock implementations to defaults
+    this.setupDefaultMocks();
+  }
+
+  private setupDefaultMocks(): void {
     this.connectMock.mockImplementation(async (_deviceId: string) => {
       this.connected = true;
     });
