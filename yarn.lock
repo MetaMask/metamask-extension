@@ -33961,7 +33961,7 @@ __metadata:
     selenium-webdriver: "npm:^4.31.0"
     semver: "npm:^7.5.4"
     serve-handler: "npm:^6.1.2"
-    ses: "npm:^1.1.0"
+    ses: "npm:^1.14.0"
     sharp: "npm:^0.34.2"
     sinon: "npm:^9.0.0"
     source-map: "npm:^0.7.4"
