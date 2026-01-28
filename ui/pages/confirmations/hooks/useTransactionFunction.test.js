@@ -176,4 +176,49 @@ describe('useMaxPriorityFeePerGasInput', () => {
     result.current.updateTransactionUsingEstimate(GasRecommendations.low);
     expect(mockUpdateTransaction).not.toHaveBeenCalled();
   });
+
+  it('returns early when maxPriorityFeePerGas is undefined in updateTransactionToTenPercentIncreasedGasFee', async () => {
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      transaction: {
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
+        txParams: { maxFeePerGas: '0x5028' },
+      },
+    });
+    await result.current.updateTransactionToTenPercentIncreasedGasFee();
+    expect(mockUpdateGasFees).not.toHaveBeenCalled();
+  });
+
+  it('returns early when maxFeePerGas is undefined in updateTransactionToTenPercentIncreasedGasFee', async () => {
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      transaction: {
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
+        txParams: { maxPriorityFeePerGas: '0x5028' },
+      },
+    });
+    await result.current.updateTransactionToTenPercentIncreasedGasFee();
+    expect(mockUpdateGasFees).not.toHaveBeenCalled();
+  });
+
+  it('returns early when both gas parameters are undefined in updateTransactionToTenPercentIncreasedGasFee', async () => {
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      transaction: {
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
+        txParams: {},
+      },
+    });
+    await result.current.updateTransactionToTenPercentIncreasedGasFee();
+    expect(mockUpdateGasFees).not.toHaveBeenCalled();
+  });
 });

@@ -169,6 +169,15 @@ export const useTransactionFunctions = ({
         maxPriorityFeePerGas,
       } = transaction.previousGas || transaction.txParams;
 
+      // Validate that gas parameters are defined before processing
+      if (
+        maxFeePerGas === undefined ||
+        maxPriorityFeePerGas === undefined ||
+        !gasFeeEstimates
+      ) {
+        return;
+      }
+
       const newMaxPriorityFeePerGas = new BigNumber(
         maxPriorityFeePerGas,
         16,
@@ -183,9 +192,6 @@ export const useTransactionFunctions = ({
           ? CUSTOM_GAS_ESTIMATE
           : PriorityLevels.tenPercentIncreased;
 
-      if (!gasFeeEstimates) {
-        return;
-      }
       updateTransaction({
         estimateSuggested: initTransaction
           ? defaultEstimateToUse
