@@ -28,21 +28,7 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     this.options = options;
 
     // Setup default implementations
-    this.connectMock.mockImplementation(async (_deviceId: string) => {
-      this.connected = true;
-    });
-
-    this.disconnectMock.mockImplementation(async () => {
-      this.connected = false;
-    });
-
-    this.isConnectedMock.mockImplementation(() => this.connected);
-
-    this.destroyMock.mockImplementation(() => {
-      this.connected = false;
-    });
-
-    this.ensureDeviceReadyMock.mockResolvedValue(true);
+    this.setupDefaultMocks();
   }
 
   async connect(deviceId: string): Promise<void> {
@@ -106,6 +92,10 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     // Reset mocks
     this.resetMocks();
     // Reset mock implementations to defaults
+    this.setupDefaultMocks();
+  }
+
+  private setupDefaultMocks(): void {
     this.connectMock.mockImplementation(async (_deviceId: string) => {
       this.connected = true;
     });
