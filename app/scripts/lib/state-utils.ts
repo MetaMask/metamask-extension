@@ -37,6 +37,7 @@ const REMOVE_KEYS = [
   'revokeToken',
   'vaultEncryptionKey',
   'vaultEncryptionSalt',
+  'pendingToBeRevokedTokens',
 
   // SnapController
   'snapStates',
