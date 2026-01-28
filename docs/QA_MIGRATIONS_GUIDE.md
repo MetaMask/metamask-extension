@@ -6,7 +6,7 @@ Steps
 
 1. Create a new MetaMask directory\* folder locally with the source files before the migration, and load it as an unpacked extension in Chrome\*. If the migration is in a pull request, then build the `main` branch to load. If the migration is already in `main`, get a commit before the migration was added to build.
 
-   ![Load unpacked extension to chrome](https://raw.githubusercontent.com/MetaMask/metamask-extension/blob/f49d82308cb9a5c31ed0d0ec333a90b4bb774bc9/docs/assets/load-build-chrome.gif)
+   ![Load unpacked extension to chrome](https://raw.githubusercontent.com/MetaMask/metamask-extension/f49d82308cb9a5c31ed0d0ec333a90b4bb774bc9/docs/assets/load-build-chrome.gif)
 
    ##### \* For migrations targeting specific features behind a feature flag add them appropriately to the `.metamaskrc` file before building.
 
@@ -18,6 +18,6 @@ Steps
 
 3. To trigger the migration a build with the migration will need to replace the files in the directory where the extension is loaded from, and refresh the extension.
 
-   ![gif of replacing files and reloading the extension](https://raw.githubusercontent.com/MetaMask/metamask-extension/blob/f49d82308cb9a5c31ed0d0ec333a90b4bb774bc9/docs/assets/folder-file-replacement-build.gif)
+   ![gif of replacing files and reloading the extension](https://raw.githubusercontent.com/MetaMask/metamask-extension/f49d82308cb9a5c31ed0d0ec333a90b4bb774bc9/docs/assets/folder-file-replacement-build.gif)
 
 4. Ensure that the data has been changed/deleted/etc.
