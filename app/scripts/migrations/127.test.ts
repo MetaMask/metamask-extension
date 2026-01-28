@@ -57,32 +57,30 @@ describe(`migration #${version}`, () => {
     }
   });
 
-  it('captures an exception if the transaction controller state is not defined', async () => {
+  it('successfully migrates when transaction controller state is not defined', async () => {
     const oldState = {
       meta: { version: oldVersion },
       data: { NetworkController: {} },
     };
 
-    await migrate(oldState);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(`state.TransactionController is not defined`),
+    const newState = await migrate(oldState);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(0);
+    expect(newState.data.NetworkController).toStrictEqual(
+      defaultPostMigrationState(),
     );
   });
 
-  it('captures an exception if the transaction controller state is not an object', async () => {
+  it('successfully migrates when transaction controller state is not an object', async () => {
     for (const TransactionController of [undefined, null, 1, 'foo']) {
       const oldState = {
         meta: { version: oldVersion },
         data: { NetworkController: {}, TransactionController },
       };
 
-      await migrate(oldState);
-      expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-        new Error(
-          `typeof state.TransactionController is ${typeof TransactionController}`,
-        ),
+      const newState = await migrate(oldState);
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(0);
+      expect(newState.data.NetworkController).toStrictEqual(
+        defaultPostMigrationState(),
       );
       sentryCaptureExceptionMock.mockClear();
     }
