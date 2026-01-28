@@ -13454,13 +13454,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-actions@npm:^9.0.8":
-  version: 9.0.8
-  resolution: "@storybook/addon-actions@npm:9.0.8"
-  checksum: 10/3c5ad1ea7cfe80064aa55ff332c6f2849269520a84ce28b0ca36263ac45710ed9a0983d6f244d562425bc8d8d33400715f61f10303b5fd5e6a6b8183066deb0d
-  languageName: node
-  linkType: hard
-
 "@storybook/addon-docs@npm:^10.2.1":
   version: 10.2.1
   resolution: "@storybook/addon-docs@npm:10.2.1"
@@ -33246,7 +33239,6 @@ __metadata:
     "@slack/webhook": "npm:^7.0.5"
     "@solana/addresses": "npm:2.0.0-rc.4"
     "@storybook/addon-a11y": "npm:^10.2.1"
-    "@storybook/addon-actions": "npm:^9.0.8"
     "@storybook/addon-docs": "npm:^10.2.1"
     "@storybook/components": "npm:^8.6.14"
     "@storybook/csf": "npm:0.1.13"

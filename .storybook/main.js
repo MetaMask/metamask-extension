@@ -25,11 +25,7 @@ module.exports = {
     reactDocgen: false,
   },
 
-  addons: [
-    '@storybook/addon-a11y',
-    '@storybook/addon-actions',
-    '@storybook/addon-docs',
-  ],
+  addons: ['@storybook/addon-docs', '@storybook/addon-a11y'],
 
   managerEntries: [path.resolve(__dirname, './i18n-party-addon/register.js')],
 
