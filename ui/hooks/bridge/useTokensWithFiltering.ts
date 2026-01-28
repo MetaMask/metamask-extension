@@ -307,7 +307,7 @@ export const useTokensWithFiltering = (
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
                 image:
-                  (token.image ||
+                  (token.iconUrl ||
                     (token.address &&
                       tokenList?.[token.address.toLowerCase()]?.iconUrl)) ??
                   (assetId
