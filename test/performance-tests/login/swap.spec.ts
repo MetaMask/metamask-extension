@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../e2e/helpers';
 import { loginWithBalanceValidation } from '../../e2e/page-objects/flows/login.flow';
 import HomePage from '../../e2e/page-objects/pages/home/homepage';
@@ -16,7 +17,6 @@ import {
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
   SSE_RESPONSE_HEADER,
 } from '../../e2e/tests/bridge/constants';
-import { Mockttp } from 'mockttp';
 
 // Mock swap quote for ETH to DAI (based on working swap-quotes-eth-musd.json)
 const MOCK_SWAP_QUOTE_ETH_DAI = [
