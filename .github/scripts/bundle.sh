@@ -2,7 +2,8 @@
 
 # Keep this list synchronized with:
 # * The environment variables used by the `run-build` step in `.github/workflows/run-build.yml`.
-# * The environment variables used by the `publish-release` step in `.github/workflows/publish-release.yml`.
+# * The environment variables used by the publish workflow in
+#   `.github/workflows/publish-release-from-release-head.yml`.
 export APPLE_BETA_CLIENT_ID=""
 export APPLE_EXPERIMENTAL_CLIENT_ID=""
 export APPLE_FLASK_CLIENT_ID=""

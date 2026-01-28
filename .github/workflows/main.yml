@@ -153,7 +153,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      # Production builds are now created exclusively by publish-release-from-release-head.yml
+      build-command: yarn build dist
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
@@ -163,7 +164,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      # Production builds are now created exclusively by publish-release-from-release-head.yml
+      build-command: yarn build dist
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
@@ -197,7 +199,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      # Production builds are now created exclusively by publish-release-from-release-head.yml
+      build-command: yarn build --build-type flask dist
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
@@ -207,7 +210,8 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      # Production builds are now created exclusively by publish-release-from-release-head.yml
+      build-command: yarn build --build-type flask dist
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
@@ -549,20 +553,6 @@ jobs:
       post-new-builds: ${{ needs.identify-builds.outputs.builds-from-run == github.run_id }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-
-  publish-release:
-    name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' }}
-    needs:
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
-      - run-tests
-      - e2e-chrome
-      - e2e-firefox
-    uses: ./.github/workflows/publish-release.yml
-    secrets: inherit
 
   trigger-regression-validation:
     name: Trigger Regression Validation
