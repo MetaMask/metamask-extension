@@ -32,6 +32,7 @@ function getApi(
   controller: TransactionPayController,
 ): ControllerInitResult<TransactionPayController>['api'] {
   return {
+    setTransactionPayIsMaxAmount: controller.setIsMaxAmount.bind(controller),
     updateTransactionPaymentToken:
       controller.updatePaymentToken.bind(controller),
   };

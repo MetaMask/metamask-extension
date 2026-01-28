@@ -32,7 +32,7 @@ import { ExtensionPortStream } from 'extension-port-stream';
 import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
   connectToBackground,
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -115,8 +115,9 @@ async function start() {
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
 
-  async function handleStartUISync() {
+  async function handleStartUISync(initialState) {
     endTrace({ name: TraceName.BackgroundConnect });
+    criticalErrorHandler.startUiSyncReceived();
 
     // this means we've received a message from the background, and so
     // background startup has succeed, so we don't need to listen for error
@@ -135,6 +136,7 @@ async function start() {
       backgroundConnection,
       windowType,
       traceContext,
+      initialState,
     );
 
     if (isManifestV3) {
@@ -237,9 +239,15 @@ async function initializeUiWithTab(
   connectionStream,
   windowType,
   traceContext,
+  initialState,
 ) {
   try {
-    const store = await initializeUi(tab, connectionStream, traceContext);
+    const store = await initializeUi(
+      tab,
+      connectionStream,
+      traceContext,
+      initialState,
+    );
 
     endTrace({ name: TraceName.UIStartup });
 
@@ -254,7 +262,7 @@ async function initializeUiWithTab(
       global.platform.openExtensionInBrowser();
     }
   } catch (error) {
-    await displayCriticalError(
+    await displayCriticalErrorMessage(
       container,
       CriticalErrorTranslationKey.TroubleStarting,
       error,
@@ -307,12 +315,18 @@ async function queryCurrentActiveTab(windowType) {
   return { id, title, origin, protocol, url };
 }
 
-async function initializeUi(activeTab, backgroundConnection, traceContext) {
+async function initializeUi(
+  activeTab,
+  backgroundConnection,
+  traceContext,
+  initialState,
+) {
   return await launchMetaMaskUi({
     activeTab,
     container,
     backgroundConnection,
     traceContext,
+    initialState,
   });
 }
 

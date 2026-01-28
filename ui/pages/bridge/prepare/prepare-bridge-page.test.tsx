@@ -1,14 +1,16 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import { act } from '@testing-library/react';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import PrepareBridgePage from './prepare-bridge-page';
 
 // Mock the bridge hooks
@@ -19,6 +21,12 @@ jest.mock('../hooks/useGasIncluded7702', () => ({
 jest.mock('../hooks/useIsSendBundleSupported', () => ({
   useIsSendBundleSupported: jest.fn().mockReturnValue(false),
 }));
+
+setBackgroundConnection({
+  resetState: async () => jest.fn(),
+  getStatePatches: async () => jest.fn(),
+  updateBridgeQuoteRequestParams: async () => jest.fn(),
+} as never);
 
 describe('PrepareBridgePage', () => {
   beforeAll(() => {
@@ -44,7 +52,7 @@ describe('PrepareBridgePage', () => {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
             [CHAIN_IDS.OPTIMISM]: {
               isActiveSrc: true,
@@ -103,13 +111,17 @@ describe('PrepareBridgePage', () => {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
             [CHAIN_IDS.LINEA_MAINNET]: {
               isActiveSrc: true,
               isActiveDest: true,
             },
           },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -117,15 +129,23 @@ describe('PrepareBridgePage', () => {
         fromToken: {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
-          chainId: CHAIN_IDS.MAINNET,
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+          assetId: toAssetId(
+            '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+            formatChainIdToCaip(CHAIN_IDS.MAINNET),
+          ),
         },
         toToken: {
           iconUrl: 'http://url',
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+          assetId: toAssetId(
+            '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+            formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+          ),
         },
-        toChainId: toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quoteRequest: {
@@ -196,8 +216,8 @@ describe('PrepareBridgePage', () => {
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          chainId: CHAIN_IDS.LINEA_MAINNET,
         },
-        toChainId: toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
       },
     });
 
@@ -219,7 +239,7 @@ describe('PrepareBridgePage', () => {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
           },
         },
