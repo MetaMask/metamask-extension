@@ -204,20 +204,16 @@ class SmartTransactionHook {
       const extensionReturnTxHashAsap =
         this.#featureFlags?.extensionReturnTxHashAsap;
 
-      let transactionHash: string | undefined | null;
+      let transactionHash: string | undefined;
       if (extensionReturnTxHashAsap && submitTransactionResponse?.txHash) {
         transactionHash = submitTransactionResponse.txHash;
       } else {
+        // #waitForTransactionHash now rejects on errors instead of resolving to null
         transactionHash = await this.#waitForTransactionHash({
           uuid,
         });
       }
 
-      if (transactionHash === null) {
-        throw new Error(
-          'Transaction does not have a transaction hash, there was a problem',
-        );
-      }
       return { transactionHash };
     } catch (error) {
       log.error('Error in smart transaction publish hook', error);
@@ -271,15 +267,11 @@ class SmartTransactionHook {
         return submitBatchResponse;
       }
 
-      const transactionHash = await this.#waitForTransactionHash({
+      // #waitForTransactionHash now rejects on errors instead of resolving to null
+      // We call it to wait for completion but use the submitBatchResponse for results
+      await this.#waitForTransactionHash({
         uuid,
       });
-
-      if (transactionHash === null) {
-        throw new Error(
-          'submitBatch: Transaction does not have a transaction hash, there was a problem',
-        );
-      }
 
       return submitBatchResponse;
     } catch (error) {
@@ -426,8 +418,8 @@ class SmartTransactionHook {
     );
   }
 
-  #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string | null> {
-    return new Promise((resolve) => {
+  #waitForTransactionHash({ uuid }: { uuid: string }): Promise<string> {
+    return new Promise((resolve, reject) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -446,7 +438,31 @@ class SmartTransactionHook {
               );
               resolve(statusMetadata.minedHash);
             } else {
-              resolve(null);
+              // Handle different transaction statuses when minedHash is missing
+              if (
+                status === SmartTransactionStatuses.cancelled ||
+                status.toString().startsWith('cancelled')
+              ) {
+                reject(
+                  new Error(
+                    'Smart transaction was cancelled. The transaction was not submitted to the network.',
+                  ),
+                );
+              } else if (status === SmartTransactionStatuses.success) {
+                // Success status but no hash is unexpected
+                reject(
+                  new Error(
+                    'Transaction does not have a transaction hash, there was a problem',
+                  ),
+                );
+              } else {
+                // Other failure statuses (failed, reverted, etc.)
+                reject(
+                  new Error(
+                    `Smart transaction failed with status: ${status}. The transaction was not submitted to the network.`,
+                  ),
+                );
+              }
             }
           }
         },

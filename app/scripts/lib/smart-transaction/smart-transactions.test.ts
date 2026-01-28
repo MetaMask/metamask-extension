@@ -348,7 +348,7 @@ describe('submitSmartTransactionHook', () => {
     });
   });
 
-  it('throws an error if there is no transaction hash', async () => {
+  it('throws an error if the transaction is cancelled', async () => {
     withRequest(async ({ request, messenger }) => {
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -360,7 +360,41 @@ describe('submitSmartTransactionHook', () => {
         } as SmartTransaction);
       });
       await expect(submitSmartTransactionHook(request)).rejects.toThrow(
+        'Smart transaction was cancelled. The transaction was not submitted to the network.',
+      );
+    });
+  });
+
+  it('throws an error if the transaction succeeds but has no hash', async () => {
+    withRequest(async ({ request, messenger }) => {
+      setImmediate(() => {
+        messenger.publish('SmartTransactionsController:smartTransaction', {
+          status: 'success',
+          uuid,
+          statusMetadata: {
+            minedHash: '',
+          },
+        } as SmartTransaction);
+      });
+      await expect(submitSmartTransactionHook(request)).rejects.toThrow(
         'Transaction does not have a transaction hash, there was a problem',
+      );
+    });
+  });
+
+  it('throws an error if the transaction fails with other status', async () => {
+    withRequest(async ({ request, messenger }) => {
+      setImmediate(() => {
+        messenger.publish('SmartTransactionsController:smartTransaction', {
+          status: 'failed',
+          uuid,
+          statusMetadata: {
+            minedHash: '',
+          },
+        } as SmartTransaction);
+      });
+      await expect(submitSmartTransactionHook(request)).rejects.toThrow(
+        'Smart transaction failed with status: failed. The transaction was not submitted to the network.',
       );
     });
   });
@@ -1047,7 +1081,7 @@ describe('submitBatchSmartTransactionHook', () => {
     });
   });
 
-  it('throws an error if there is no transaction hash', async () => {
+  it('throws an error if the transaction is cancelled', async () => {
     withRequest(async ({ request, messenger }) => {
       setImmediate(() => {
         messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -1059,7 +1093,41 @@ describe('submitBatchSmartTransactionHook', () => {
         } as SmartTransaction);
       });
       await expect(submitBatchSmartTransactionHook(request)).rejects.toThrow(
+        'Smart transaction was cancelled. The transaction was not submitted to the network.',
+      );
+    });
+  });
+
+  it('throws an error if the transaction succeeds but has no hash', async () => {
+    withRequest(async ({ request, messenger }) => {
+      setImmediate(() => {
+        messenger.publish('SmartTransactionsController:smartTransaction', {
+          status: 'success',
+          uuid,
+          statusMetadata: {
+            minedHash: '',
+          },
+        } as SmartTransaction);
+      });
+      await expect(submitBatchSmartTransactionHook(request)).rejects.toThrow(
         'Transaction does not have a transaction hash, there was a problem',
+      );
+    });
+  });
+
+  it('throws an error if the transaction fails with other status', async () => {
+    withRequest(async ({ request, messenger }) => {
+      setImmediate(() => {
+        messenger.publish('SmartTransactionsController:smartTransaction', {
+          status: 'failed',
+          uuid,
+          statusMetadata: {
+            minedHash: '',
+          },
+        } as SmartTransaction);
+      });
+      await expect(submitBatchSmartTransactionHook(request)).rejects.toThrow(
+        'Smart transaction failed with status: failed. The transaction was not submitted to the network.',
       );
     });
   });
