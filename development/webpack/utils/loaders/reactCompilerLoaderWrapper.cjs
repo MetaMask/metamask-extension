@@ -4,6 +4,10 @@
  *
  * NOTE: Must be CommonJS (.cjs) - thread-loader workers need native require().
  *
+ * LIMITATION: Stats collection via buildMeta does NOT work with thread-loader
+ * because `this._module` is null in worker contexts. The webpack config
+ * automatically disables thread-loader when --reactCompilerVerbose is used.
+ *
  * @type {import('webpack').LoaderDefinitionFunction<LoaderOptions>}
  */
 'use strict';

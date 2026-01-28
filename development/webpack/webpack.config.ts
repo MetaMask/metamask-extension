@@ -341,9 +341,11 @@ const config = {
         test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
         include: UI_DIR_RE,
         use: [
-          // Disable thread-loader when generating LavaMoat policies to ensure
-          // static analysis can properly trace all module dependencies
-          ...(args.generatePolicy
+          // Disable thread-loader when:
+          // - Generating LavaMoat policies (static analysis needs full module graph)
+          // - Using --reactCompilerVerbose (stats collection requires _module.buildMeta
+          //   which is null in thread-loader workers)
+          ...(args.generatePolicy || args.reactCompilerVerbose
             ? []
             : [
                 {

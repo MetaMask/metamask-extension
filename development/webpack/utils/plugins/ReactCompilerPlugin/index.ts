@@ -7,8 +7,10 @@ import {
 
 /**
  * Collect React Compiler statistics from all modules' buildMeta.
- * This works with thread-loader because buildMeta is collected by webpack
- * in the main process after all loaders complete.
+ *
+ * NOTE: This does NOT work with thread-loader because workers cannot access
+ * `_module.buildMeta` (it's null in worker contexts). The webpack config
+ * automatically disables thread-loader when --reactCompilerVerbose is used.
  *
  * @param compilation - The webpack compilation object.
  * @returns The React Compiler statistics.
