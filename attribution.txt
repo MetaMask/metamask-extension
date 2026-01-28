@@ -2290,7 +2290,7 @@ THE SOFTWARE.
 ******************************
 
 @babel/runtime
-7.25.9 <https://github.com/babel/babel>
+7.26.10 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -26510,7 +26510,7 @@ localforage
 ******************************
 
 lodash
-4.17.21 <https://github.com/lodash/lodash>
+4.17.23 <https://github.com/lodash/lodash>
 Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
 
 Based on Underscore.js, copyright Jeremy Ashkenas,
