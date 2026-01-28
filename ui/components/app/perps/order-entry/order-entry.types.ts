@@ -106,6 +106,10 @@ export type AmountInputProps = {
   availableBalance: number;
   /** Current leverage (affects max amount) */
   leverage: number;
+  /** Asset symbol for token conversion display */
+  asset: string;
+  /** Current asset price for token conversion */
+  currentPrice: number;
 };
 
 /**
@@ -126,10 +130,12 @@ export type LeverageSliderProps = {
  * Props for OrderSummary component
  */
 export type OrderSummaryProps = {
+  /** Margin required for the position */
+  marginRequired: string | null;
+  /** Estimated trading fees */
+  estimatedFees: string | null;
   /** Estimated liquidation price */
   liquidationPrice: string | null;
-  /** Total order value */
-  orderValue: string | null;
 };
 
 /**

@@ -5,20 +5,22 @@ import {
   Text,
   TextVariant,
   TextColor,
+  FontWeight,
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
   ButtonBase,
 } from '@metamask/design-system-react';
-import { TextField, TextFieldSize } from '../../../../../component-library';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { AmountInputProps } from '../../order-entry.types';
 import {
   BALANCE_PERCENT_PRESETS,
   calculateMaxAmount,
+  calculatePositionSize,
 } from '../../order-entry.mocks';
 
 /**
- * AmountInput - USD amount input with percentage slider
+ * AmountInput - USD amount input with percentage slider and token conversion
  *
  * @param props - Component props
  * @param props.amount - Current amount value
@@ -27,6 +29,8 @@ import {
  * @param props.onBalancePercentChange - Callback when percentage changes
  * @param props.availableBalance - Available balance for calculations
  * @param props.leverage - Current leverage multiplier
+ * @param props.asset - Asset symbol for token conversion
+ * @param props.currentPrice - Current asset price for conversion
  */
 export const AmountInput: React.FC<AmountInputProps> = ({
   amount,
@@ -35,12 +39,25 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   onBalancePercentChange,
   availableBalance,
   leverage,
+  asset,
+  currentPrice,
 }) => {
+  const t = useI18nContext();
+
   // Calculate max amount based on available balance and leverage
   const maxAmount = useMemo(
     () => calculateMaxAmount(availableBalance, leverage),
     [availableBalance, leverage],
   );
+
+  // Calculate token conversion
+  const tokenAmount = useMemo(() => {
+    const numAmount = parseFloat(amount) || 0;
+    if (numAmount === 0 || currentPrice === 0) {
+      return null;
+    }
+    return calculatePositionSize(numAmount, currentPrice);
+  }, [amount, currentPrice]);
 
   // Handle direct amount input
   const handleAmountChange = useCallback(
@@ -88,25 +105,68 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-      {/* Amount Input Field */}
-      <Box className="w-full">
-        <TextField
-          size={TextFieldSize.Lg}
-          value={amount}
-          onChange={handleAmountChange}
-          placeholder="0"
-          className="w-full"
-          startAccessory={
+      {/* Available to Trade */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {t('perpsAvailableToTrade')}
+        </Text>
+        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+          ${availableBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </Text>
+      </Box>
+
+      {/* Order Amount Section */}
+      <Box
+        className="bg-muted rounded-xl"
+        paddingLeft={4}
+        paddingRight={4}
+        paddingTop={4}
+        paddingBottom={4}
+      >
+        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+          {/* Label */}
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsOrderAmount')}
+          </Text>
+
+          {/* USD Amount Input - Large and prominent */}
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+          >
             <Text
-              variant={TextVariant.BodyLg}
+              variant={TextVariant.HeadingLg}
+              fontWeight={FontWeight.Medium}
               color={TextColor.TextAlternative}
-              className="pl-2"
             >
               $
             </Text>
-          }
-          data-testid="amount-input-field"
-        />
+            <input
+              type="text"
+              inputMode="decimal"
+              value={amount}
+              onChange={handleAmountChange}
+              placeholder="0.00"
+              className={twMerge(
+                'flex-1 bg-transparent border-none outline-none',
+                'text-3xl font-medium text-default',
+                'placeholder:text-muted',
+              )}
+              data-testid="amount-input-field"
+            />
+          </Box>
+
+          {/* Token Conversion */}
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {tokenAmount !== null
+              ? `≈ ${tokenAmount.toFixed(6)} ${asset}`
+              : `0 ${asset}`}
+          </Text>
+        </Box>
       </Box>
 
       {/* Percentage Slider */}
@@ -172,18 +232,6 @@ export const AmountInput: React.FC<AmountInputProps> = ({
               {preset}%
             </ButtonBase>
           ))}
-        </Box>
-      </Box>
-
-      {/* Current Percentage Badge */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.End}
-      >
-        <Box className="bg-muted px-3 py-1 rounded-md">
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {balancePercent} %
-          </Text>
         </Box>
       </Box>
     </Box>

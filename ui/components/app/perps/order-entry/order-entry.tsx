@@ -1,37 +1,9 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import {
-  twMerge,
-  Box,
-  Text,
-  TextVariant,
-  TextColor,
-  FontWeight,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
-  ButtonBase,
-} from '@metamask/design-system-react';
-import {
-  Button,
-  ButtonVariant,
-  ButtonSize,
-  TextField,
-  TextFieldSize,
-} from '../../../component-library';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { twMerge, Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { Button, ButtonVariant, ButtonSize } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
 
-import { AmountInput } from './components/amount-input';
-import { LeverageSlider } from './components/leverage-slider';
-import { OrderSummary } from './components/order-summary';
-import { AutoCloseSection } from './components/auto-close-section';
-
-import type {
-  OrderEntryProps,
-  OrderFormState,
-  OrderDirection,
-} from './order-entry.types';
-import type { OrderType } from '../types';
+import type { OrderEntryProps, OrderFormState } from './order-entry.types';
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
@@ -39,22 +11,29 @@ import {
   estimateLiquidationPrice,
 } from './order-entry.mocks';
 
+import { AmountInput } from './components/amount-input';
+import { LeverageSlider } from './components/leverage-slider';
+import { OrderSummary } from './components/order-summary';
+import { AutoCloseSection } from './components/auto-close-section';
+
 /**
- * OrderEntry - Main order entry form for Perps trading
+ * OrderEntry - Main component for creating perps orders
  *
- * Allows users to:
- * - Select order direction (Long/Short)
- * - Enter order amount in USD
+ * This component provides a form interface for users to:
+ * - Set order amount (USD)
  * - Adjust leverage
- * - Configure Take Profit / Stop Loss
- * - Submit market or limit orders
+ * - Configure take profit and stop loss (auto-close)
+ * - View order summary (liquidation price, order value)
  *
  * @param props - Component props
  * @param props.asset - Asset symbol to trade
- * @param props.currentPrice - Current asset price
- * @param props.maxLeverage - Maximum allowed leverage
+ * @param props.currentPrice - Current asset price in USD
+ * @param props.maxLeverage - Maximum leverage allowed for this asset
  * @param props.availableBalance - Available balance for trading
+ * @param props.initialDirection - Initial order direction (defaults to 'long')
  * @param props.onSubmit - Callback when order is submitted
+ * @param props.onFormStateChange - Callback when form state changes
+ * @param props.showSubmitButton - Whether to show the internal submit button
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -67,21 +46,53 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   showSubmitButton = true,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
 
-  // Form state
-  const [formState, setFormState] = useState<OrderFormState>({
+  // Initialize form state
+  const [formState, setFormState] = useState<OrderFormState>(() => ({
     ...mockOrderFormDefaults,
     asset,
     direction: initialDirection,
-  });
+  }));
 
   // Notify parent of form state changes
-  React.useEffect(() => {
+  useEffect(() => {
     onFormStateChange?.(formState);
   }, [formState, onFormStateChange]);
 
-  // Individual state setters
+  // Calculate derived values
+  const calculations = useMemo(() => {
+    const amount = parseFloat(formState.amount) || 0;
+
+    if (amount === 0) {
+      return {
+        positionSize: null,
+        marginRequired: null,
+        liquidationPrice: null,
+        orderValue: null,
+        estimatedFees: null,
+      };
+    }
+
+    const positionSize = calculatePositionSize(amount, currentPrice);
+    const marginRequired = calculateMarginRequired(amount, formState.leverage);
+    const liquidationPrice = estimateLiquidationPrice(
+      currentPrice,
+      formState.leverage,
+      formState.direction === 'long',
+    );
+    // Mock fee calculation: 0.05% of order value
+    const estimatedFees = amount * 0.0005;
+
+    return {
+      positionSize: positionSize.toFixed(6),
+      marginRequired: `$${marginRequired.toFixed(2)}`,
+      liquidationPrice: `$${liquidationPrice.toFixed(2)}`,
+      orderValue: `$${amount.toFixed(2)}`,
+      estimatedFees: `$${estimatedFees.toFixed(2)}`,
+    };
+  }, [formState.amount, formState.leverage, formState.direction, currentPrice]);
+
+  // Form state update handlers
   const handleAmountChange = useCallback((amount: string) => {
     setFormState((prev) => ({ ...prev, amount }));
   }, []);
@@ -94,178 +105,73 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     setFormState((prev) => ({ ...prev, leverage }));
   }, []);
 
-  const handleOrderTypeChange = useCallback((type: OrderType) => {
-    setFormState((prev) => ({ ...prev, type }));
-  }, []);
-
-  const handleLimitPriceChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      if (value === '' || /^\d*\.?\d*$/.test(value)) {
-        setFormState((prev) => ({ ...prev, limitPrice: value }));
-      }
-    },
-    [],
-  );
-
   const handleAutoCloseEnabledChange = useCallback((enabled: boolean) => {
     setFormState((prev) => ({ ...prev, autoCloseEnabled: enabled }));
   }, []);
 
-  const handleTakeProfitPriceChange = useCallback((price: string) => {
-    setFormState((prev) => ({ ...prev, takeProfitPrice: price }));
+  const handleTakeProfitPriceChange = useCallback((takeProfitPrice: string) => {
+    setFormState((prev) => ({ ...prev, takeProfitPrice }));
   }, []);
 
-  const handleStopLossPriceChange = useCallback((price: string) => {
-    setFormState((prev) => ({ ...prev, stopLossPrice: price }));
+  const handleStopLossPriceChange = useCallback((stopLossPrice: string) => {
+    setFormState((prev) => ({ ...prev, stopLossPrice }));
   }, []);
 
-  // Calculate derived values
-  const calculations = useMemo(() => {
-    const amountNum = parseFloat(formState.amount);
-    if (isNaN(amountNum) || amountNum === 0) {
-      return {
-        positionSize: null,
-        marginRequired: null,
-        liquidationPrice: null,
-        orderValue: null,
-      };
-    }
-
-    const positionSize = calculatePositionSize(amountNum, currentPrice);
-    const marginRequired = calculateMarginRequired(
-      amountNum,
-      formState.leverage,
-    );
-    const liquidationPrice = estimateLiquidationPrice(
-      currentPrice,
-      formState.leverage,
-      formState.direction === 'long',
-    );
-
-    return {
-      positionSize: positionSize.toFixed(6),
-      marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
-      liquidationPrice: formatCurrencyWithMinThreshold(
-        liquidationPrice,
-        'USD',
-      ),
-      orderValue: formatCurrencyWithMinThreshold(amountNum, 'USD'),
-    };
-  }, [
-    formState.amount,
-    formState.leverage,
-    formState.direction,
-    currentPrice,
-    formatCurrencyWithMinThreshold,
-  ]);
-
-  // Handle form submission
+  // Submit handler
   const handleSubmit = useCallback(() => {
     onSubmit?.(formState);
   }, [formState, onSubmit]);
 
-  // Determine button text and color based on direction
-  const submitButtonText =
-    formState.direction === 'long'
-      ? t('perpsOpenLong', [asset])
-      : t('perpsOpenShort', [asset]);
-
   const isLong = formState.direction === 'long';
+  const submitButtonText = isLong
+    ? t('perpsOpenLong', [asset])
+    : t('perpsOpenShort', [asset]);
 
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      className="w-full h-full"
+      className="w-full h-full overflow-x-hidden"
       data-testid="order-entry"
     >
       {/* Scrollable Form Content */}
       <Box
         flexDirection={BoxFlexDirection.Column}
         gap={4}
-        className="flex-1 overflow-y-auto pb-4"
+        className="flex-1 overflow-y-auto overflow-x-hidden pb-4"
       >
-        {/* Available Balance Row */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsAvailableToTrade')}
-        </Text>
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {formatCurrencyWithMinThreshold(availableBalance, 'USD')}
-        </Text>
-      </Box>
-
-      {/* Order Type Selector */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsOrderType')}
-        </Text>
-        <ButtonBase
-          onClick={() =>
-            handleOrderTypeChange(
-              formState.type === 'market' ? 'limit' : 'market',
-            )
-          }
-          className="hover:bg-muted-hover active:bg-muted-pressed rounded px-2 py-1"
-          data-testid="order-type-selector"
-        >
-          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-            {formState.type === 'market' ? t('perpsMarket') : t('perpsLimit')}
-          </Text>
-        </ButtonBase>
-      </Box>
-
-      {/* Limit Price Input (shown only for limit orders) */}
-      {formState.type === 'limit' && (
-        <TextField
-          size={TextFieldSize.Md}
-          value={formState.limitPrice}
-          onChange={handleLimitPriceChange}
-          placeholder={t('perpsLimitPrice')}
-          className="w-full"
-          startAccessory={
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              className="pl-2"
-            >
-              $
-            </Text>
-          }
-          data-testid="limit-price-input"
+        {/* Amount Input Section */}
+        <AmountInput
+          amount={formState.amount}
+          onAmountChange={handleAmountChange}
+          balancePercent={formState.balancePercent}
+          onBalancePercentChange={handleBalancePercentChange}
+          availableBalance={availableBalance}
+          leverage={formState.leverage}
+          asset={asset}
+          currentPrice={currentPrice}
         />
-      )}
 
-      {/* Amount Input with Percentage Slider */}
-      <AmountInput
-        amount={formState.amount}
-        onAmountChange={handleAmountChange}
-        balancePercent={formState.balancePercent}
-        onBalancePercentChange={handleBalancePercentChange}
-        availableBalance={availableBalance}
-        leverage={formState.leverage}
-      />
+        {/* Leverage Slider Section */}
+        <LeverageSlider
+          leverage={formState.leverage}
+          onLeverageChange={handleLeverageChange}
+          maxLeverage={maxLeverage}
+        />
 
-      {/* Leverage Slider */}
-      <LeverageSlider
-        leverage={formState.leverage}
-        onLeverageChange={handleLeverageChange}
-        maxLeverage={maxLeverage}
-      />
-
-      {/* Order Summary (Liquidation Price, Order Value) */}
-      <OrderSummary
-        liquidationPrice={calculations.liquidationPrice}
-        orderValue={calculations.orderValue}
-      />
+        {/* Order Summary Section */}
+        <Box
+          className="bg-muted rounded-lg"
+          paddingLeft={3}
+          paddingRight={3}
+          paddingTop={3}
+          paddingBottom={3}
+        >
+          <OrderSummary
+            marginRequired={calculations.marginRequired}
+            estimatedFees={calculations.estimatedFees}
+            liquidationPrice={calculations.liquidationPrice}
+          />
+        </Box>
 
         {/* Auto Close (TP/SL) Section */}
         <AutoCloseSection
@@ -280,10 +186,12 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         />
       </Box>
 
-      {/* Sticky Submit Button (optional) */}
+      {/* Submit Button - shown only when showSubmitButton is true */}
       {showSubmitButton && (
         <Box
-          className="sticky bottom-0 left-0 right-0 bg-default pt-3 pb-4 border-t border-muted"
+          className="sticky bottom-0 left-0 right-0 bg-default border-t border-muted"
+          paddingTop={3}
+          paddingBottom={4}
         >
           <Button
             variant={ButtonVariant.Primary}
@@ -295,7 +203,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
                 ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
                 : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
             )}
-            data-testid="submit-order-button"
+            data-testid="order-entry-submit-button"
           >
             {submitButtonText}
           </Button>

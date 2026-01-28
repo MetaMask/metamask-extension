@@ -12,20 +12,50 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { OrderSummaryProps } from '../../order-entry.types';
 
 /**
- * OrderSummary - Displays calculated order values (liquidation price, order value)
+ * OrderSummary - Displays calculated order values (margin, fees, liquidation price)
  *
  * @param props - Component props
+ * @param props.marginRequired - Margin required for the position
+ * @param props.estimatedFees - Estimated trading fees
  * @param props.liquidationPrice - Estimated liquidation price
- * @param props.orderValue - Total order value
  */
 export const OrderSummary: React.FC<OrderSummaryProps> = ({
+  marginRequired,
+  estimatedFees,
   liquidationPrice,
-  orderValue,
 }) => {
   const t = useI18nContext();
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+      {/* Margin Row */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {t('perpsMargin')}
+        </Text>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+          {marginRequired ?? '-'}
+        </Text>
+      </Box>
+
+      {/* Fees Row */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {t('perpsFees')}
+        </Text>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+          {estimatedFees ?? '-'}
+        </Text>
+      </Box>
+
       {/* Liquidation Price Row */}
       <Box
         flexDirection={BoxFlexDirection.Row}
@@ -35,22 +65,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsLiquidationPriceEst')}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {liquidationPrice ?? 'N/A'}
-        </Text>
-      </Box>
-
-      {/* Order Value Row */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsOrderValue')}
-        </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {orderValue ?? 'N/A'}
+        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+          {liquidationPrice ?? '-'}
         </Text>
       </Box>
     </Box>

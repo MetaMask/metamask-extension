@@ -5195,6 +5195,9 @@
   "perpsFundingPayments": {
     "message": "Funding payments"
   },
+  "perpsFees": {
+    "message": "Fees"
+  },
   "perpsFundingRate": {
     "message": "Funding Rate"
   },
@@ -5272,6 +5275,9 @@
   },
   "perpsOpenedLong": {
     "message": "Opened long"
+  },
+  "perpsOrderAmount": {
+    "message": "Order Amount"
   },
   "perpsOrders": {
     "message": "Orders"

@@ -17,7 +17,11 @@ import {
   IconColor,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
-import { Button, ButtonVariant, ButtonSize } from '../../components/component-library';
+import {
+  Button,
+  ButtonVariant,
+  ButtonSize,
+} from '../../components/component-library';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -50,6 +54,7 @@ import {
   type OrderFormState,
   mockOrderFormDefaults,
 } from '../../components/app/perps/order-entry';
+import type { OrderType } from '../../components/app/perps/types';
 
 /**
  * View state for the market detail page
@@ -116,7 +121,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   // View state: 'detail' or 'order'
   const [currentView, setCurrentView] = useState<MarketDetailView>('detail');
   const [orderDirection, setOrderDirection] = useState<OrderDirection>('long');
-  const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(null);
+  const [orderType, setOrderType] = useState<OrderType>('market');
+  const [isOrderTypeDropdownOpen, setIsOrderTypeDropdownOpen] = useState(false);
+  const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(
+    null,
+  );
 
   // Get available balance from mock account state
   const availableBalance = parseFloat(mockAccountState.availableBalance);
@@ -276,99 +285,11 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const displayName = getDisplayName(market.symbol);
 
-  // Render Order Entry View
-  if (currentView === 'order') {
-    const isLong = orderDirection === 'long';
-    const submitButtonText = isLong
-      ? t('perpsOpenLong', [displayName])
-      : t('perpsOpenShort', [displayName]);
-
-    return (
-      <Box
-        className="main-container asset__container flex flex-col"
-        data-testid="perps-market-detail-page-order"
-      >
-        {/* Header */}
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={4}
-          paddingBottom={4}
-          gap={2}
-        >
-          {/* Back Button */}
-          <Box
-            data-testid="perps-order-entry-back-button"
-            onClick={handleBackClick}
-            aria-label={t('back')}
-            className="p-2 -ml-2 cursor-pointer"
-          >
-            <Icon
-              name={IconName.ArrowLeft}
-              size={IconSize.Md}
-              color={IconColor.IconAlternative}
-            />
-          </Box>
-
-          {/* Token Logo */}
-          <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
-
-          {/* Symbol and Title */}
-          <Box flexDirection={BoxFlexDirection.Column}>
-            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              {submitButtonText}
-            </Text>
-            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-              {market.price}
-            </Text>
-          </Box>
-        </Box>
-
-        {/* Order Entry Form - Scrollable */}
-        <Box
-          paddingLeft={4}
-          paddingRight={4}
-          className="flex-1 overflow-y-auto"
-        >
-          <OrderEntry
-            asset={decodedSymbol}
-            currentPrice={currentPrice}
-            maxLeverage={maxLeverage}
-            availableBalance={availableBalance}
-            initialDirection={orderDirection}
-            showSubmitButton={false}
-            onFormStateChange={handleFormStateChange}
-          />
-        </Box>
-
-        {/* Sticky Submit Button - Footer */}
-        <Box
-          className="sticky bottom-0 left-0 right-0 bg-default border-t border-muted"
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={3}
-          paddingBottom={4}
-        >
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={handleOrderSubmit}
-            className={twMerge(
-              'w-full',
-              isLong
-                ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
-                : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
-            )}
-            data-testid="submit-order-button"
-          >
-            {submitButtonText}
-          </Button>
-        </Box>
-      </Box>
-    );
-  }
+  // Determine submit button text for order mode
+  const isLong = orderDirection === 'long';
+  const submitButtonText = isLong
+    ? t('perpsOpenLong', [displayName])
+    : t('perpsOpenShort', [displayName]);
 
   return (
     <Box
@@ -402,54 +323,177 @@ const PerpsMarketDetailPage: React.FC = () => {
         {/* Token Logo */}
         <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
 
-        {/* Symbol and Price */}
-        <Box flexDirection={BoxFlexDirection.Column}>
-          {/* Symbol */}
-          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-            {displayName}-USD
-          </Text>
-
-          {/* Price and Change Row */}
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Baseline}
-            gap={1}
-          >
+        {/* Header Content - Different for detail vs order view */}
+        {currentView === 'order' ? (
+          /* Order View: Show direction + asset name, price + change */
+          <Box flexDirection={BoxFlexDirection.Column}>
+            {/* Direction + Asset */}
             <Text
-              variant={TextVariant.BodySm}
+              variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
-              data-testid="perps-market-detail-price"
+              color={
+                orderDirection === 'long'
+                  ? TextColor.SuccessDefault
+                  : TextColor.ErrorDefault
+              }
             >
-              {market.price}
+              {orderDirection === 'long' ? t('perpsLong') : t('perpsShort')}{' '}
+              {displayName}
             </Text>
-            <Text
-              variant={TextVariant.BodyXs}
-              color={getChangeColor(market.change24hPercent)}
-              data-testid="perps-market-detail-change"
+
+            {/* Price and Change Row */}
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Baseline}
+              gap={1}
             >
-              {market.change24h} ({market.change24hPercent})
-            </Text>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+                data-testid="perps-order-price"
+              >
+                {market.price}
+              </Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                color={getChangeColor(market.change24hPercent)}
+                data-testid="perps-order-change"
+              >
+                {market.change24hPercent}
+              </Text>
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          /* Detail View: Show symbol-USD, price + change */
+          <Box flexDirection={BoxFlexDirection.Column}>
+            {/* Symbol */}
+            <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              {displayName}-USD
+            </Text>
+
+            {/* Price and Change Row */}
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Baseline}
+              gap={1}
+            >
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                data-testid="perps-market-detail-price"
+              >
+                {market.price}
+              </Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                color={getChangeColor(market.change24hPercent)}
+                data-testid="perps-market-detail-change"
+              >
+                {market.change24h} ({market.change24hPercent})
+              </Text>
+            </Box>
+          </Box>
+        )}
 
         {/* Spacer */}
         <Box className="flex-1" />
 
-        {/* Favorite Star */}
-        <Box
-          data-testid="perps-market-detail-favorite-button"
-          aria-label={t('perpsAddToFavorites')}
-          className="p-2 cursor-pointer"
-          onClick={() => {
-            // TODO: Handle favorite toggle
-          }}
-        >
-          <Icon
-            name={IconName.Star}
-            size={IconSize.Md}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
+        {/* Right Side Action - Different for detail vs order view */}
+        {currentView === 'order' ? (
+          /* Order View: Market/Limit Dropdown */
+          <Box className="relative">
+            <Box
+              data-testid="perps-order-type-dropdown"
+              onClick={() => setIsOrderTypeDropdownOpen(!isOrderTypeDropdownOpen)}
+              className={twMerge(
+                'flex items-center gap-1 px-3 py-2 rounded-lg cursor-pointer',
+                'bg-muted hover:bg-muted-hover',
+              )}
+            >
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                {orderType === 'market' ? t('perpsMarket') : t('perpsLimit')}
+              </Text>
+              <Icon
+                name={IconName.ArrowDown}
+                size={IconSize.Xs}
+                color={IconColor.IconAlternative}
+              />
+            </Box>
+
+            {/* Dropdown Menu */}
+            {isOrderTypeDropdownOpen && (
+              <Box
+                className="absolute right-0 top-full mt-1 bg-default border border-muted rounded-lg shadow-lg z-10 min-w-[100px]"
+                data-testid="perps-order-type-dropdown-menu"
+              >
+                <Box
+                  onClick={() => {
+                    setOrderType('market');
+                    setIsOrderTypeDropdownOpen(false);
+                  }}
+                  className={twMerge(
+                    'px-3 py-2 cursor-pointer rounded-t-lg',
+                    orderType === 'market'
+                      ? 'bg-primary-muted'
+                      : 'hover:bg-muted-hover',
+                  )}
+                  data-testid="perps-order-type-market"
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={
+                      orderType === 'market'
+                        ? TextColor.PrimaryDefault
+                        : TextColor.TextDefault
+                    }
+                  >
+                    {t('perpsMarket')}
+                  </Text>
+                </Box>
+                <Box
+                  onClick={() => {
+                    setOrderType('limit');
+                    setIsOrderTypeDropdownOpen(false);
+                  }}
+                  className={twMerge(
+                    'px-3 py-2 cursor-pointer rounded-b-lg',
+                    orderType === 'limit'
+                      ? 'bg-primary-muted'
+                      : 'hover:bg-muted-hover',
+                  )}
+                  data-testid="perps-order-type-limit"
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={
+                      orderType === 'limit'
+                        ? TextColor.PrimaryDefault
+                        : TextColor.TextDefault
+                    }
+                  >
+                    {t('perpsLimit')}
+                  </Text>
+                </Box>
+              </Box>
+            )}
+          </Box>
+        ) : (
+          /* Detail View: Favorite Star */
+          <Box
+            data-testid="perps-market-detail-favorite-button"
+            aria-label={t('perpsAddToFavorites')}
+            className="p-2 cursor-pointer"
+            onClick={() => {
+              // TODO: Handle favorite toggle
+            }}
+          >
+            <Icon
+              name={IconName.Star}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+        )}
       </Box>
 
       {/* Candlestick Chart */}
@@ -471,8 +515,31 @@ const PerpsMarketDetailPage: React.FC = () => {
         onPeriodChange={handlePeriodChange}
       />
 
-      {/* Position Section */}
-      {position && (
+      {/* Order Entry View - shown when in order mode */}
+      {currentView === 'order' && (
+        <Box
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={4}
+          className="flex-1"
+        >
+          <OrderEntry
+            asset={decodedSymbol}
+            currentPrice={currentPrice}
+            maxLeverage={maxLeverage}
+            availableBalance={availableBalance}
+            initialDirection={orderDirection}
+            showSubmitButton={false}
+            onFormStateChange={handleFormStateChange}
+          />
+        </Box>
+      )}
+
+      {/* Detail View Content - shown when in detail mode */}
+      {currentView === 'detail' && (
+        <>
+          {/* Position Section */}
+          {position && (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <Box paddingBottom={2}>
             <Text
@@ -960,8 +1027,10 @@ const PerpsMarketDetailPage: React.FC = () => {
           </Text>
         </Box>
       </Box>
+        </>
+      )}
 
-      {/* Trade CTA Buttons - Sticky Footer */}
+      {/* Sticky Footer */}
       <Box
         className="sticky bottom-0 left-0 right-0 bg-default border-t border-muted"
         paddingLeft={4}
@@ -969,8 +1038,24 @@ const PerpsMarketDetailPage: React.FC = () => {
         paddingTop={3}
         paddingBottom={4}
       >
-        {position ? (
-          /* Has Position: Show Modify and Close buttons */
+        {currentView === 'order' ? (
+          /* Order Mode: Show Submit Order button */
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            onClick={handleOrderSubmit}
+            className={twMerge(
+              'w-full',
+              isLong
+                ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
+                : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
+            )}
+            data-testid="submit-order-button"
+          >
+            {submitButtonText}
+          </Button>
+        ) : position ? (
+          /* Detail Mode with Position: Show Modify and Close buttons */
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}
@@ -1012,7 +1097,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             </Button>
           </Box>
         ) : (
-          /* No Position: Show Long and Short buttons */
+          /* Detail Mode without Position: Show Long and Short buttons */
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}

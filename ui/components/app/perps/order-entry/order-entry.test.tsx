@@ -9,13 +9,11 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
       perpsLong: 'Long',
       perpsShort: 'Short',
       perpsAvailableToTrade: 'Available to Trade',
-      perpsOrderType: 'Order Type',
-      perpsMarket: 'Market',
-      perpsLimit: 'Limit',
-      perpsLimitPrice: 'Limit Price',
+      perpsOrderAmount: 'Order Amount',
       perpsLeverage: 'Leverage',
+      perpsMargin: 'Margin',
+      perpsFees: 'Fees',
       perpsLiquidationPriceEst: 'Liquidation Price Est.',
-      perpsOrderValue: 'Order Value',
       perpsAutoClose: 'Auto Close',
       perpsTpPrice: 'TP Price',
       perpsSlPrice: 'SL Price',
@@ -69,48 +67,32 @@ describe('OrderEntry', () => {
 
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
       expect(screen.getByText('Available to Trade')).toBeInTheDocument();
-      expect(screen.getByText('Order Type')).toBeInTheDocument();
+      expect(screen.getByText('Order Amount')).toBeInTheDocument();
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
+      expect(screen.getByText('Margin')).toBeInTheDocument();
+      expect(screen.getByText('Fees')).toBeInTheDocument();
       expect(screen.getByText('Liquidation Price Est.')).toBeInTheDocument();
       expect(screen.getByText('Auto Close')).toBeInTheDocument();
-      expect(screen.getByTestId('submit-order-button')).toBeInTheDocument();
+      expect(screen.getByTestId('order-entry-submit-button')).toBeInTheDocument();
     });
 
     it('displays available balance', () => {
       render(<OrderEntry {...defaultProps} />);
 
-      expect(screen.getByText('$10000.00')).toBeInTheDocument();
+      expect(screen.getByText('$10,000.00')).toBeInTheDocument();
     });
 
     it('displays correct submit button text for long direction', () => {
       render(<OrderEntry {...defaultProps} />);
 
-      expect(screen.getByTestId('submit-order-button')).toHaveTextContent('Open Long BTC');
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent('Open Long BTC');
     });
 
     it('respects initialDirection prop for short', () => {
       render(<OrderEntry {...defaultProps} initialDirection="short" />);
 
-      expect(screen.getByTestId('submit-order-button')).toHaveTextContent('Open Short BTC');
-    });
-  });
-
-  describe('order type', () => {
-    it('defaults to market order', () => {
-      render(<OrderEntry {...defaultProps} />);
-
-      expect(screen.getByText('Market')).toBeInTheDocument();
-    });
-
-    it('toggles to limit order when clicked', () => {
-      render(<OrderEntry {...defaultProps} />);
-
-      const orderTypeSelector = screen.getByTestId('order-type-selector');
-      fireEvent.click(orderTypeSelector);
-
-      expect(screen.getByText('Limit')).toBeInTheDocument();
-      expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent('Open Short BTC');
     });
   });
 
@@ -124,14 +106,14 @@ describe('OrderEntry', () => {
       expect(amountInput).toHaveValue('1000');
     });
 
-    it('updates percentage when amount is entered', () => {
+    it('shows token conversion when amount is entered', () => {
       render(<OrderEntry {...defaultProps} />);
 
       const amountInput = screen.getByTestId('amount-input-field');
-      // With 10000 balance and 1x leverage, 1000 = 10%
-      fireEvent.change(amountInput, { target: { value: '1000' } });
+      fireEvent.change(amountInput, { target: { value: '45250' } });
 
-      expect(screen.getByText('10 %')).toBeInTheDocument();
+      // $45250 / $45250 = 1 BTC
+      expect(screen.getByText('≈ 1.000000 BTC')).toBeInTheDocument();
     });
   });
 
@@ -150,22 +132,23 @@ describe('OrderEntry', () => {
   });
 
   describe('order summary', () => {
-    it('shows N/A when no amount entered', () => {
+    it('shows dash when no amount entered', () => {
       render(<OrderEntry {...defaultProps} />);
 
-      const naElements = screen.getAllByText('N/A');
-      expect(naElements.length).toBeGreaterThanOrEqual(2);
+      const dashElements = screen.getAllByText('-');
+      expect(dashElements.length).toBeGreaterThanOrEqual(3);
     });
 
-    it('calculates liquidation price when amount is entered', () => {
+    it('calculates values when amount is entered', () => {
       render(<OrderEntry {...defaultProps} />);
 
       const amountInput = screen.getByTestId('amount-input-field');
       fireEvent.change(amountInput, { target: { value: '1000' } });
 
-      // Should not show N/A for order value
-      const orderValueElement = screen.getByText('$1000.00');
-      expect(orderValueElement).toBeInTheDocument();
+      // Should show calculated margin (1000 / 1 leverage = $1000)
+      expect(screen.getByText('$1000.00')).toBeInTheDocument();
+      // Should show calculated fees (0.05% of 1000 = $0.50)
+      expect(screen.getByText('$0.50')).toBeInTheDocument();
     });
   });
 
@@ -193,7 +176,7 @@ describe('OrderEntry', () => {
       const onSubmit = jest.fn();
       render(<OrderEntry {...defaultProps} onSubmit={onSubmit} />);
 
-      const submitButton = screen.getByTestId('submit-order-button');
+      const submitButton = screen.getByTestId('order-entry-submit-button');
       fireEvent.click(submitButton);
 
       expect(onSubmit).toHaveBeenCalledTimes(1);
