@@ -1700,7 +1700,17 @@ class FixtureBuilder {
             'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
               id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
               address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-              options: {},
+              options: {
+                entropySource: '01KG2PT3Y3FHYEM874K8J5SZ07', // Can be found in the vault.
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01KG2PT3Y3FHYEM874K8J5SZ07', // Can be found in the vault.
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
               methods: [
                 'personal_sign',
                 'eth_sign',
