@@ -11,7 +11,8 @@
     },
     "AccountTreeController": {
       "accountWalletsMetadata": {},
-      "hasAccountTreeSyncingSyncedAtLeastOnce": true
+      "hasAccountTreeSyncingSyncedAtLeastOnce": false,
+      "accountGroupsMetadata": {}
     },
     "AccountsController": {
       "internalAccounts": {
