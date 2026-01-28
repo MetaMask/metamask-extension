@@ -40,6 +40,14 @@ export type HardwareWalletRefs = {
    */
   connectingPromiseRef: React.MutableRefObject<Promise<void> | null>;
   /**
+   * Stores the pending ensureDeviceReady promise to prevent overlapping checks.
+   */
+  ensureDeviceReadyPromiseRef: React.MutableRefObject<Promise<boolean> | null>;
+  /**
+   * Tracks the device ID for the in-flight ensureDeviceReady call.
+   */
+  ensureDeviceReadyDeviceIdRef: React.MutableRefObject<string | null>;
+  /**
    * Flag to prevent concurrent connection attempts.
    * Used to synchronously check-and-set before any async work.
    */
@@ -86,6 +94,8 @@ export const useHardwareWalletStateManager = () => {
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const connectingPromiseRef = useRef<Promise<void> | null>(null);
+  const ensureDeviceReadyPromiseRef = useRef<Promise<boolean> | null>(null);
+  const ensureDeviceReadyDeviceIdRef = useRef<string | null>(null);
   const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
@@ -121,6 +131,8 @@ export const useHardwareWalletStateManager = () => {
       adapterRef,
       abortControllerRef,
       connectingPromiseRef,
+      ensureDeviceReadyPromiseRef,
+      ensureDeviceReadyDeviceIdRef,
       isConnectingRef,
       hasAutoConnectedRef,
       lastConnectedAccountRef,
@@ -163,6 +175,8 @@ export const useHardwareWalletStateManager = () => {
        */
       resetConnectionRefs: () => {
         connectingPromiseRef.current = null;
+        ensureDeviceReadyPromiseRef.current = null;
+        ensureDeviceReadyDeviceIdRef.current = null;
         currentConnectionIdRef.current = null;
         isConnectingRef.current = false;
       },
