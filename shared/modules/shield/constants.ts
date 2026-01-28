@@ -20,3 +20,5 @@ export function isNonUISubscriptionError(error: Error | undefined): boolean {
     lowerMessage.includes(SHIELD_ERROR.stripePaymentCancelled.toLowerCase())
   );
 }
+
+export const SHIELD_CAROUSEL_ID = 'contentful-1MftLVfZkCqPH1EA8jtSOm';
