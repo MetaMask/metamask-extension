@@ -11,6 +11,7 @@ import {
   BoxAlignItems,
   ButtonBase,
 } from '@metamask/design-system-react';
+import Slider from '../../../../../ui/slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { AmountInputProps } from '../../order-entry.types';
 import {
@@ -96,8 +97,8 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
   // Handle slider change
   const handleSliderChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const percent = parseInt(event.target.value, 10);
+    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+      const percent = Array.isArray(value) ? value[0] : value;
       handlePercentClick(percent);
     },
     [handlePercentClick],
@@ -171,43 +172,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
       {/* Percentage Slider */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-        <Box className="relative w-full px-2">
-          <input
-            type="range"
+        <Box className="px-1" data-testid="amount-slider">
+          <Slider
             min={0}
             max={100}
             step={1}
             value={balancePercent}
             onChange={handleSliderChange}
-            className={twMerge(
-              'w-full h-1 bg-muted rounded-full appearance-none cursor-pointer',
-              '[&::-webkit-slider-thumb]:appearance-none',
-              '[&::-webkit-slider-thumb]:w-4',
-              '[&::-webkit-slider-thumb]:h-4',
-              '[&::-webkit-slider-thumb]:bg-default',
-              '[&::-webkit-slider-thumb]:border-2',
-              '[&::-webkit-slider-thumb]:border-primary-default',
-              '[&::-webkit-slider-thumb]:rounded-full',
-              '[&::-webkit-slider-thumb]:cursor-pointer',
-            )}
-            data-testid="amount-slider"
           />
-          {/* Dot markers */}
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            className="absolute top-0 left-2 right-2 pointer-events-none"
-          >
-            {BALANCE_PERCENT_PRESETS.map((preset) => (
-              <Box
-                key={preset}
-                className={twMerge(
-                  'w-1.5 h-1.5 rounded-full -mt-0.5',
-                  balancePercent >= preset ? 'bg-primary-default' : 'bg-muted',
-                )}
-              />
-            ))}
-          </Box>
         </Box>
 
         {/* Percentage Preset Buttons */}
