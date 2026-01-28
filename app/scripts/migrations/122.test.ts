@@ -130,15 +130,16 @@ describe('migration #122', () => {
         data: oldStorage,
       });
 
-      expect(transformedState.data.PreferencesController).toHaveProperty(
+      const preferencesController = transformedState.data
+        .PreferencesController as Record<string, unknown>;
+
+      expect(preferencesController).toHaveProperty(
         'selectedAddress',
         '0xabcdef1234567890abcdef1234567890abcdef12',
       );
-      expect(transformedState.data.PreferencesController).toHaveProperty(
-        'identities',
-      );
+      expect(preferencesController).toHaveProperty('identities');
       expect(
-        transformedState.data.PreferencesController.preferences
+        (preferencesController.preferences as Record<string, unknown>)
           .redesignedConfirmationsEnabled,
       ).toBe(true);
     });
