@@ -44,8 +44,20 @@ export async function migrate(
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  const transactions: TransactionMeta[] =
-    state?.TransactionController?.transactions ?? [];
+  const transactionsData = state?.TransactionController?.transactions;
+
+  if (!transactionsData) {
+    return;
+  }
+
+  // Handle both object format (pre-migration 104) and array format (post-migration 104)
+  let transactions: TransactionMeta[];
+  if (Array.isArray(transactionsData)) {
+    transactions = transactionsData;
+  } else {
+    // Convert object to array if migration 104 was skipped or failed
+    transactions = Object.values(transactionsData);
+  }
 
   for (const transaction of transactions) {
     if (

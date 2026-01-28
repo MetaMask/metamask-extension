@@ -101,4 +101,62 @@ describe('migration #116', () => {
       },
     });
   });
+
+  it('handles transactions in object format (pre-migration 104)', async () => {
+    // Simulate the old object format where transactions is a map of id -> transaction
+    const transactionsObject = {
+      tx1: { id: 'tx1', time: TARGET_DATE - 1000, status: 'approved' },
+      tx2: { id: 'tx2', time: TARGET_DATE + 1000, status: 'approved' },
+      tx3: { id: 'tx3', time: TARGET_DATE - 1000, status: 'signed' },
+      tx4: { id: 'tx4', time: TARGET_DATE - 1000, status: 'confirmed' },
+    };
+
+    const oldState = {
+      TransactionController: {
+        transactions: transactionsObject,
+      },
+    };
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: oldState,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    // Verify that transactions in the object are updated correctly
+    const { transactions } = newStorage.data.TransactionController;
+
+    // Since we're converting from object, we can check the object properties directly
+    expect(transactions.tx1.status).toBe(TransactionStatus.failed);
+    expect(transactions.tx1.error).toEqual(StuckTransactionError);
+    expect(transactions.tx2.status).toBe('approved'); // After target date, unchanged
+    expect(transactions.tx3.status).toBe(TransactionStatus.failed);
+    expect(transactions.tx3.error).toEqual(StuckTransactionError);
+    expect(transactions.tx4.status).toBe('confirmed'); // Not in stuck states, unchanged
+  });
+
+  it('handles mixed scenarios with transactions object format', async () => {
+    const transactionsObject = {
+      tx1: { id: 'tx1', time: TARGET_DATE - 1000, status: 'approved' },
+    };
+
+    const oldState = {
+      TransactionController: {
+        transactions: transactionsObject,
+      },
+    };
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: oldState,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data.TransactionController.transactions.tx1.status).toBe(
+      TransactionStatus.failed,
+    );
+    expect(
+      newStorage.data.TransactionController.transactions.tx1.error,
+    ).toEqual(StuckTransactionError);
+  });
 });
