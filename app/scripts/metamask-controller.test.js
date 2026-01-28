@@ -794,22 +794,26 @@ describe('MetaMaskController', () => {
       const password = 'a-fake-password';
 
       it('should call resyncAccounts and alignWallets asynchronously when submitPasswordOrEncryptionKey is called', async () => {
-        const mockAlignWallets = jest.fn();
-        const mockResyncAccounts = jest.fn();
+        const resyncAccountsSpy = jest.spyOn(
+          metamaskController.multichainAccountService,
+          'resyncAccounts',
+        );
+        const alignWalletsSpy = jest.spyOn(
+          metamaskController.multichainAccountService,
+          'alignWallets',
+        );
 
-        metamaskController.multichainAccountService = {
-          init: jest.fn(),
-          resyncAccounts: mockResyncAccounts,
-          alignWallets: mockAlignWallets,
-        };
+        // Make them resolved right away for the test.
+        resyncAccountsSpy.mockResolvedValue();
+        alignWalletsSpy.mockResolvedValue();
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.submitPasswordOrEncryptionKey({ password });
 
         await waitForAllPromises();
 
-        expect(mockResyncAccounts).toHaveBeenCalled();
-        expect(mockAlignWallets).toHaveBeenCalled();
+        expect(resyncAccountsSpy).toHaveBeenCalled();
+        expect(alignWalletsSpy).toHaveBeenCalled();
       });
     });
 
@@ -894,8 +898,21 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
 
         expect(
-          metamaskController.keyringController.createNewVaultAndRestore,
-        ).toHaveBeenCalledTimes(2);
+          metamaskController.multichainAccountService
+            .createMultichainAccountWallet,
+        ).toHaveBeenNthCalledWith(1, {
+          type: 'restore',
+          password,
+          mnemonic: expect.any(Uint8Array),
+        });
+        expect(
+          metamaskController.multichainAccountService
+            .createMultichainAccountWallet,
+        ).toHaveBeenNthCalledWith(2, {
+          type: 'restore',
+          password,
+          mnemonic: expect.any(Uint8Array),
+        });
       });
 
       it('should clear previous identities after vault restoration', async () => {
@@ -5148,17 +5165,17 @@ describe('MetaMaskController', () => {
           ]),
       };
 
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValue(wallet);
+      const getMultichainAccountWalletSpy = jest.spyOn(
+        metamaskController.multichainAccountService,
+        'getMultichainAccountWallet',
+      );
+      getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
       const result = await metamaskController.discoverAndCreateAccounts();
 
-      expect(metamaskController.controllerMessenger.call).toHaveBeenCalledWith(
-        'MultichainAccountService:getMultichainAccountWallet',
-        { entropySource: primaryId },
-      );
-
+      expect(getMultichainAccountWalletSpy).toHaveBeenCalledWith({
+        entropySource: primaryId,
+      });
       expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
@@ -5175,17 +5192,18 @@ describe('MetaMaskController', () => {
           ]),
       };
 
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValue(wallet);
+      const getMultichainAccountWalletSpy = jest.spyOn(
+        metamaskController.multichainAccountService,
+        'getMultichainAccountWallet',
+      );
+      getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
       const result =
         await metamaskController.discoverAndCreateAccounts(providedId);
 
-      expect(metamaskController.controllerMessenger.call).toHaveBeenCalledWith(
-        'MultichainAccountService:getMultichainAccountWallet',
-        { entropySource: providedId },
-      );
+      expect(getMultichainAccountWalletSpy).toHaveBeenCalledWith({
+        entropySource: providedId,
+      });
 
       expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
@@ -5217,9 +5235,11 @@ describe('MetaMaskController', () => {
         call: jest.fn().mockReturnValue(wallet),
       };
 
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValue(wallet);
+      const getMultichainAccountWalletSpy = jest.spyOn(
+        metamaskController.multichainAccountService,
+        'getMultichainAccountWallet',
+      );
+      getMultichainAccountWalletSpy.mockReturnValue(wallet);
 
       const warnSpy = jest.spyOn(log, 'warn');
 

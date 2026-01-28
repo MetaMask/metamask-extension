@@ -4484,10 +4484,10 @@ export default class MetamaskController extends EventEmitter {
         this.txController.clearUnapprovedTransactions();
       }
 
-      await this.controllerMessenger.call(
-        'MultichainAccountService:createMultichainAccountWallet',
-        { type: 'create', password },
-      );
+      await this.multichainAccountService.createMultichainAccountWallet({
+        type: 'create',
+        password,
+      });
 
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
@@ -4575,10 +4575,9 @@ export default class MetamaskController extends EventEmitter {
       // Ensure the snap keyring is initialized
       await this.getSnapKeyring();
 
-      const wallet = this.controllerMessenger.call(
-        'MultichainAccountService:getMultichainAccountWallet',
-        { entropySource: keyringIdToDiscover },
-      );
+      const wallet = this.multichainAccountService.getMultichainAccountWallet({
+        entropySource: keyringIdToDiscover,
+      });
 
       const result = await wallet.discoverAccounts();
 
@@ -4626,15 +4625,13 @@ export default class MetamaskController extends EventEmitter {
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
-      const { entropySource: id } = await this.controllerMessenger.call(
-        'MultichainAccountService:createMultichainAccountWallet',
-        {
+      const { entropySource: id } =
+        await this.multichainAccountService.createMultichainAccountWallet({
           type: 'import',
           mnemonic: this._convertMnemonicToWordlistIndices(
             Buffer.from(mnemonic, 'utf8'),
           ),
-        },
-      );
+        });
 
       const [newAccountAddress] = await this.keyringController.withKeyring(
         { id },
@@ -4653,8 +4650,7 @@ export default class MetamaskController extends EventEmitter {
             shouldCreateSocialBackup,
           );
         } catch (err) {
-          await this.controllerMessenger.call(
-            'MultichainAccountService:removeMultichainAccountWallet',
+          await this.multichainAccountService.removeMultichainAccountWallet(
             id,
             newAccountAddress,
           );
@@ -4901,10 +4897,12 @@ export default class MetamaskController extends EventEmitter {
       const seedPhraseAsUint8Array =
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
-      const { entropySource: id } = await this.controllerMessenger.call(
-        'MultichainAccountService:createMultichainAccountWallet',
-        { type: 'restore', password, mnemonic: seedPhraseAsUint8Array },
-      );
+      const { entropySource: id } =
+        await this.multichainAccountService.createMultichainAccountWallet({
+          type: 'restore',
+          password,
+          mnemonic: seedPhraseAsUint8Array,
+        });
 
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
