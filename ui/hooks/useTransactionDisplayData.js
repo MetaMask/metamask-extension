@@ -24,6 +24,7 @@ import {
 import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
+  EXCLUDED_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
 import { getNfts } from '../ducks/metamask/metamask';
 import { captureSingleException } from '../store/actions';
@@ -413,6 +414,12 @@ export function useTransactionDisplayData(transactionGroup) {
       primaryDisplayValue = metamaskPay.targetFiat;
       secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
     }
+  } else if (EXCLUDED_TRANSACTION_TYPES.has(type)) {
+    // Handle excluded transaction types (gas_payment, relayDeposit, etc.)
+    // These should generally be filtered out before reaching this hook,
+    // but we handle them gracefully to avoid errors
+    title = t('transaction');
+    prefix = '';
   } else {
     dispatch(
       captureSingleException(
