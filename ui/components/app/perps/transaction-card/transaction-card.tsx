@@ -57,7 +57,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   const getAmountDisplay = (): { text: string; color: TextColor } => {
     if (transaction.fill?.realizedPnl) {
       return {
-        text: `${transaction.fill.realizedPnl.startsWith('-') ? '' : '+'}$${transaction.fill.realizedPnl.replace(/^[+-]/u, '')}`,
+        text: `${transaction.fill.realizedPnl.startsWith('-') ? '-' : '+'}$${transaction.fill.realizedPnl.replace(/^[+-]/u, '')}`,
         color: getTransactionAmountColor(transaction.fill.realizedPnl),
       };
     }
@@ -66,7 +66,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
       const isNegative = amount.startsWith('-');
       return {
         text: `${isNegative ? '-' : '+'}$${amount.replace(/^[+-]/u, '')}`,
-        color: getTransactionAmountColor(amount),
+        color: isNegative ? TextColor.ErrorDefault : TextColor.SuccessDefault,
       };
     }
     if (transaction.depositWithdrawal) {
@@ -76,14 +76,55 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         color: isWithdrawal ? TextColor.ErrorDefault : TextColor.SuccessDefault,
       };
     }
-    // For trades and orders without realized PnL, show the symbol
-    return {
-      text: displayName,
-      color: TextColor.TextDefault,
-    };
+    // For trades without realized PnL, return empty (don't show symbol)
+    if (transaction.type === 'trade') {
+      return { text: '', color: TextColor.TextDefault };
+    }
+    // For orders, show status in muted text
+    if (transaction.type === 'order' && transaction.order) {
+      const status = transaction.order.status;
+      // Only show certain statuses, blank for 'open'
+      const statusText =
+        status === 'filled'
+          ? 'Filled'
+          : status === 'canceled'
+            ? 'Canceled'
+            : status === 'queued'
+              ? 'Queued'
+              : status === 'rejected'
+                ? 'Rejected'
+                : status === 'triggered'
+                  ? 'Triggered'
+                  : '';
+      return { text: statusText, color: TextColor.TextMuted };
+    }
+    return { text: displayName, color: TextColor.TextDefault };
   };
 
   const amountDisplay = getAmountDisplay();
+
+  // Construct subtitle display based on transaction type
+  const getSubtitleDisplay = (): string => {
+    if (transaction.type === 'trade' && transaction.fill) {
+      return `${transaction.fill.size} ${displayName}`;
+    }
+    // For orders, extract size + symbol from subtitle (format: "X SYMBOL @ $Y.YY")
+    if (transaction.type === 'order') {
+      const atIndex = transaction.subtitle.indexOf(' @');
+      if (atIndex > 0) {
+        return transaction.subtitle.substring(0, atIndex);
+      }
+    }
+    // For funding, show asset symbol
+    if (transaction.type === 'funding') {
+      return displayName;
+    }
+    // For deposits/withdrawals, show status
+    if (transaction.type === 'deposit' || transaction.type === 'withdrawal') {
+      return 'Completed';
+    }
+    return transaction.subtitle;
+  };
 
   return (
     <ButtonBase
@@ -115,7 +156,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
       >
         <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {transaction.subtitle}
+          {getSubtitleDisplay()}
         </Text>
       </Box>
 
@@ -133,9 +174,15 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         >
           {amountDisplay.text}
         </Text>
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {formatRelativeTime(transaction.timestamp)}
-        </Text>
+        {transaction.type !== 'trade' &&
+          transaction.type !== 'order' &&
+          transaction.type !== 'funding' &&
+          transaction.type !== 'deposit' &&
+          transaction.type !== 'withdrawal' && (
+            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+              {formatRelativeTime(transaction.timestamp)}
+            </Text>
+          )}
       </Box>
     </ButtonBase>
   );

@@ -93,13 +93,13 @@ const PerpsActivityPage: React.FC = () => {
           <Icon
             name={IconName.ArrowLeft}
             size={IconSize.Md}
-            color={IconColor.IconAlternative}
+            color={IconColor.IconInverse}
           />
         </Box>
 
         {/* Title */}
-        <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Medium}>
-          {t('perpsRecentActivity')}
+        <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
+          {t('perpsActivity')}
         </Text>
       </Box>
 
