@@ -14,6 +14,10 @@ jest.mock('../segment', () => ({
   },
 }));
 
+jest.mock('../util', () => ({
+  getPlatform: jest.fn().mockReturnValue('Chrome'),
+}));
+
 const mockSegment = segment as jest.Mocked<typeof segment>;
 
 describe('trackVaultCorruptionEvent', () => {
@@ -44,6 +48,7 @@ describe('trackVaultCorruptionEvent', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_type: VaultCorruptionType.InaccessibleDatabase,
         category: MetaMetricsEventCategory.Error,
+        platform: 'Chrome',
       },
       context: {
         app: {

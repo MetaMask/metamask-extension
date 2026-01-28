@@ -57,7 +57,12 @@ import type {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
+import {
+  checkAlarmExists,
+  generateRandomId,
+  getPlatform,
+  isValidDate,
+} from '../lib/util';
 import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
@@ -1011,6 +1016,7 @@ export default class MetaMetricsController extends BaseController<
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
+          platform: getPlatform(),
         },
         context: this.#buildContext(referrer, page),
       });
@@ -1344,6 +1350,7 @@ export default class MetaMetricsController extends BaseController<
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
+        platform: getPlatform(),
       },
       context: this.#buildContext(referrer, page),
       timestamp,

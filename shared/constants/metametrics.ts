@@ -317,6 +317,11 @@ export type SegmentEventPayload = {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type?: string;
+    /**
+     * The platform (browser) where the extension is running.
+     * Can be 'Chrome', 'Firefox', 'Brave', 'Edge', or 'Opera'.
+     */
+    platform?: string;
     revenue?: number;
     value?: number;
     currency?: string;
