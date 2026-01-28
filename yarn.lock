@@ -6282,7 +6282,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^5.0.0":
+"@metamask/core-backend@npm:5.0.0":
   version: 5.0.0
   resolution: "@metamask/core-backend@npm:5.0.0"
   dependencies:
@@ -6295,6 +6295,22 @@ __metadata:
     "@metamask/accounts-controller": ^35.0.0
     "@metamask/keyring-controller": ^25.0.0
   checksum: 10/c3c8d527ccbc9d56f6ddb5579cc8c58af971e9b81ece48ea7107c48e496ec2574283119cd4b258cc6c733f15d1432632a4e975d7616809147e2d4510dba59219
+  languageName: node
+  linkType: hard
+
+"@metamask/core-backend@patch:@metamask/core-backend@npm%3A5.0.0#~/.yarn/patches/@metamask-core-backend-npm-5.0.0-1aa6e270a5.patch":
+  version: 5.0.0
+  resolution: "@metamask/core-backend@patch:@metamask/core-backend@npm%3A5.0.0#~/.yarn/patches/@metamask-core-backend-npm-5.0.0-1aa6e270a5.patch::version=5.0.0&hash=92ea82"
+  dependencies:
+    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/profile-sync-controller": "npm:^27.0.0"
+    "@metamask/utils": "npm:^11.8.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^35.0.0
+    "@metamask/keyring-controller": ^25.0.0
+  checksum: 10/ad398e1b14b140c3817b45333448feca679baf7e3a4f2e844fc327ec4c84bb00308d848138d5a605592cef0180e9cfc2605154cf2c64b070e9cd8aaf65241eeb
   languageName: node
   linkType: hard
 
@@ -33625,7 +33641,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/core-backend": "npm:^5.0.0"
+    "@metamask/core-backend": "patch:@metamask/core-backend@npm%3A5.0.0#~/.yarn/patches/@metamask-core-backend-npm-5.0.0-1aa6e270a5.patch"
     "@metamask/delegation-controller": "npm:^1.0.0"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
