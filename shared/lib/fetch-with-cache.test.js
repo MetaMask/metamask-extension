@@ -182,4 +182,116 @@ describe('Fetch with cache', () => {
         .cachedResponse,
     ).toStrictEqual({ average: 9 });
   });
+
+  it('throws when response is HTML instead of JSON', async () => {
+    nock('https://fetchwithcache.metamask.io')
+      .get('/price')
+      .reply(200, '<!DOCTYPE html><html><body>Error</body></html>', {
+        'Content-Type': 'text/html',
+      });
+
+    await expect(() =>
+      fetchWithCache({
+        url: 'https://fetchwithcache.metamask.io/price',
+        functionName: 'fetchPrice',
+      }),
+    ).rejects.toThrow(
+      "Fetch with cache failed within function fetchPrice: expected JSON response but received Content-Type 'text/html'",
+    );
+  });
+
+  it('throws when response body is not valid JSON', async () => {
+    nock('https://fetchwithcache.metamask.io')
+      .get('/price')
+      .reply(200, 'not valid json', {
+        'Content-Type': 'application/json',
+      });
+
+    await expect(() =>
+      fetchWithCache({
+        url: 'https://fetchwithcache.metamask.io/price',
+        functionName: 'fetchPrice',
+      }),
+    ).rejects.toThrow(
+      'Fetch with cache failed within function fetchPrice: unable to parse response as JSON',
+    );
+  });
+
+  it('returns cached response when HTML is received and allowStale is true', async () => {
+    nock('https://fetchwithcache.metamask.io')
+      .get('/price')
+      .reply(200, '<!DOCTYPE html><html><body>Error</body></html>', {
+        'Content-Type': 'text/html',
+      });
+
+    getStorageItem.mockReturnValueOnce({
+      cachedResponse: { average: 5 },
+      cachedTime: Date.now() - 1000,
+    });
+
+    const response = await fetchWithCache({
+      url: 'https://fetchwithcache.metamask.io/price',
+      cacheOptions: { cacheRefreshTime: 123 },
+      functionName: 'fetchPrice',
+      allowStale: true,
+    });
+
+    expect(response).toStrictEqual({ average: 5 });
+  });
+
+  it('returns cached response when invalid JSON is received and allowStale is true', async () => {
+    nock('https://fetchwithcache.metamask.io')
+      .get('/price')
+      .reply(200, 'not valid json', {
+        'Content-Type': 'application/json',
+      });
+
+    getStorageItem.mockReturnValueOnce({
+      cachedResponse: { average: 6 },
+      cachedTime: Date.now() - 1000,
+    });
+
+    const response = await fetchWithCache({
+      url: 'https://fetchwithcache.metamask.io/price',
+      cacheOptions: { cacheRefreshTime: 123 },
+      functionName: 'fetchPrice',
+      allowStale: true,
+    });
+
+    expect(response).toStrictEqual({ average: 6 });
+  });
+
+  it('handles 204 No Content responses correctly', async () => {
+    nock('https://fetchwithcache.metamask.io').get('/price').reply(204);
+
+    const response = await fetchWithCache({
+      url: 'https://fetchwithcache.metamask.io/price',
+      functionName: 'fetchPrice',
+    });
+
+    expect(response).toBeUndefined();
+    expect(setStorageItem).toHaveBeenCalledWith(
+      'cachedFetch:https://fetchwithcache.metamask.io/price',
+      expect.objectContaining({
+        cachedResponse: undefined,
+      }),
+    );
+  });
+
+  it('handles responses with Content-Type that includes charset', async () => {
+    nock('https://fetchwithcache.metamask.io')
+      .get('/price')
+      .reply(200, '{"average": 10}', {
+        'Content-Type': 'application/json; charset=utf-8',
+      });
+
+    const response = await fetchWithCache({
+      url: 'https://fetchwithcache.metamask.io/price',
+      functionName: 'fetchPrice',
+    });
+
+    expect(response).toStrictEqual({
+      average: 10,
+    });
+  });
 });

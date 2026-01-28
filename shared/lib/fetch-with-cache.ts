@@ -62,8 +62,41 @@ const fetchWithCache = async ({
       `Fetch with cache failed within function ${functionName} with status'${response.status}': '${response.statusText}'`,
     );
   }
-  const responseJson =
-    response.status === 204 ? undefined : await response.json();
+
+  // Handle 204 No Content responses
+  if (response.status === 204) {
+    const cacheEntry = {
+      cachedResponse: undefined,
+      cachedTime: currentTime,
+    };
+    await setStorageItem(cacheKey, cacheEntry);
+    return undefined;
+  }
+
+  // Validate response Content-Type
+  const contentType = response.headers.get('Content-Type');
+  if (contentType && !contentType.includes('application/json')) {
+    const message = `Fetch with cache failed within function ${functionName}: expected JSON response but received Content-Type '${contentType}'`;
+    if (allowStale) {
+      console.debug(`${message}. Returning cached result`);
+      return cachedResponse;
+    }
+    throw new Error(message);
+  }
+
+  // Parse JSON with error handling
+  let responseJson;
+  try {
+    responseJson = await response.json();
+  } catch (error) {
+    const message = `Fetch with cache failed within function ${functionName}: unable to parse response as JSON. ${error instanceof Error ? error.message : 'Unknown error'}`;
+    if (allowStale) {
+      console.debug(`${message}. Returning cached result`);
+      return cachedResponse;
+    }
+    throw new Error(message);
+  }
+
   const cacheEntry = {
     cachedResponse: responseJson,
     cachedTime: currentTime,
