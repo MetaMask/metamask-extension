@@ -34,27 +34,20 @@ function transformState(state: Record<string, unknown>) {
   const newState = cloneDeep(state);
 
   if (!hasProperty(newState, 'NetworkController')) {
-    throw new Error(`newState.NetworkController must be present`);
+    return newState;
   }
 
   if (!isObject(newState.NetworkController)) {
-    throw new Error(
-      `state.NetworkController must be an object, but is: ${typeof newState.NetworkController}`,
-    );
+    return newState;
   }
   if (
     !hasProperty(newState.NetworkController, 'networkConfigurationsByChainId')
   ) {
-    throw new Error(
-      `state.NetworkController.networkConfigurationsByChainId must be present`,
-    );
+    return newState;
   }
 
   if (!isObject(newState.NetworkController.networkConfigurationsByChainId)) {
-    throw new Error(
-      `state.NetworkController.networkConfigurationsByChainId must be an object, but is: ${typeof newState
-        .NetworkController.networkConfigurationsByChainId}`,
-    );
+    return newState;
   }
 
   const { networkConfigurationsByChainId } = newState.NetworkController;
@@ -62,18 +55,20 @@ function transformState(state: Record<string, unknown>) {
   for (const [chainId, networkConfiguration] of Object.entries(
     networkConfigurationsByChainId,
   )) {
-    const chainIdAsHex = toHex(chainId);
+    let chainIdAsHex;
+    try {
+      chainIdAsHex = toHex(chainId);
+    } catch {
+      // If chainId cannot be converted to hex, skip this migration
+      return state;
+    }
 
     if (!isObject(networkConfiguration)) {
-      throw new Error(
-        `state.NetworkController.networkConfigurationsByChainId has a network configuration under '${chainId}' that must be an object but is: ${typeof networkConfiguration}`,
-      );
+      return state;
     }
 
     if (typeof networkConfiguration.chainId !== 'string') {
-      throw new Error(
-        `state.NetworkController.networkConfigurationsByChainId has a network configuration under '${chainId}' with a chainId that must be a string but is: ${typeof networkConfiguration.chainId}`,
-      );
+      return state;
     }
 
     networkConfiguration.chainId = chainIdAsHex;
