@@ -83,9 +83,6 @@ import {
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
 
-const HYPERLIQUID_ORIGIN =
-  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
-
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
 const ganacheServer = new Ganache();
@@ -1698,14 +1695,6 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.removeAllScopePermissions,
         ).toHaveBeenCalledWith('eip155:10');
-      });
-    });
-
-    describe('#getApi', () => {
-      it('getState', () => {
-        const getApi = metamaskController.getApi();
-        const state = getApi.getState();
-        expect(state).toStrictEqual(metamaskController.getState());
       });
     });
 
@@ -4536,6 +4525,12 @@ describe('MetaMaskController', () => {
     });
 
     describe('handleDefiReferral', () => {
+      const HYPERLIQUID_LEARN_MORE_URL =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].learnMoreUrl;
+      const HYPERLIQUID_ORIGIN =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
+      const HYPERLIQUID_NAME =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].name;
       const mockTabId = 140;
       const mockNewConnectionTriggerType = 'new_connection';
       const mockOnNavigateTriggerType = 'on_navigate_connected_tab';
@@ -4550,7 +4545,9 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
             remoteFeatureFlags: {
-              extensionUxDefiReferral: true,
+              extensionUxDefiReferralPartners: {
+                [DefiReferralPartner.Hyperliquid]: true,
+              },
             },
           });
         jest.spyOn(metamaskController.approvalController, 'add');
@@ -4571,7 +4568,9 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValueOnce({
             remoteFeatureFlags: {
-              extensionUxDefiReferral: false,
+              extensionUxDefiReferralPartners: {
+                [DefiReferralPartner.Hyperliquid]: false,
+              },
             },
           });
         jest.spyOn(metamaskController, 'getPermittedAccounts');
@@ -4674,7 +4673,12 @@ describe('MetaMaskController', () => {
         expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
-          requestData: { selectedAddress: mockPermittedAccount },
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: mockPermittedAccount,
+          },
           shouldShowRequest: true, // pop-up = true because triggerType is new connection
         });
       });
@@ -4695,7 +4699,12 @@ describe('MetaMaskController', () => {
         expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
-          requestData: { selectedAddress: mockPermittedAccount },
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: mockPermittedAccount,
+          },
           shouldShowRequest: false, // false because triggerType is navigate to connected tab
         });
       });

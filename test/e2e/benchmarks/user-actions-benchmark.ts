@@ -23,14 +23,22 @@ import { createInternalTransaction } from '../page-objects/flows/transaction';
 import { Driver } from '../webdriver/driver';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(`https://token.api.cx.metamask.io/tokens/1`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: MOCK_TOKENS_ETHEREUM,
-      };
-    });
+  return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        data: MOCK_TOKENS_ETHEREUM.map((token) => ({
+          ...token,
+          assetId: `eip155:1/erc20:${token.address.toLowerCase()}`,
+          chainId: 'eip155:1',
+        })),
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+        },
+      },
+    };
+  });
 }
 
 const USER_ACTIONS_PERSONA = 'standard';

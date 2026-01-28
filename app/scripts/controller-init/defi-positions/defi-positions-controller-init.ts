@@ -4,6 +4,10 @@ import {
   DeFiPositionsControllerMessenger,
   DeFiPositionsControllerInitMessenger,
 } from '../messengers/defi-positions';
+import {
+  DEFAULT_FEATURE_FLAG_VALUES,
+  FeatureFlagNames,
+} from '../../../../shared/modules/feature-flags';
 
 export const DeFiPositionsControllerInit: ControllerInitFunction<
   DeFiPositionsController,
@@ -23,13 +27,17 @@ export const DeFiPositionsControllerInit: ControllerInitFunction<
         state: { completedOnboarding },
       } = getOnboardingController();
 
-      const state = initMessenger.call('RemoteFeatureFlagController:getState');
-
-      const featureFlagForDeFi = Boolean(
-        state?.remoteFeatureFlags?.assetsDefiPositionsEnabled,
+      const assetsDefiPositionsEnabled = Boolean(
+        initMessenger.call('RemoteFeatureFlagController:getState')
+          ?.remoteFeatureFlags?.[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
+          DEFAULT_FEATURE_FLAG_VALUES[
+            FeatureFlagNames.AssetsDefiPositionsEnabled
+          ],
       );
 
-      return completedOnboarding && useExternalServices && featureFlagForDeFi;
+      return (
+        completedOnboarding && useExternalServices && assetsDefiPositionsEnabled
+      );
     },
     trackEvent: initMessenger.call.bind(
       initMessenger,
