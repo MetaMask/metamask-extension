@@ -21,6 +21,7 @@
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "warn: ⚠️ React Router Future Flag": 2,
+      "React: Act warnings (component updates not wrapped)": 1,
       "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/transactions/alerts.test.tsx": {
@@ -102,6 +103,7 @@
       "Reselect: Input stability warnings": 4,
       "Reselect: Identity function warnings": 9,
       "warn: ⚠️ React Router Future Flag": 2,
+      "React: State updates on unmounted components": 1,
       "error: Error: AggregateError": 1
     },
     "test/integration/defi/defi-positions.test.tsx": {

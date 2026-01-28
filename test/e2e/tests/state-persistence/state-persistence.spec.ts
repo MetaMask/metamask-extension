@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -181,6 +182,9 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
   for (const key of Object.keys(storage)) {
     if (MIGRATION_OVERRIDE_KEYS.includes(key)) {
       continue; // these are testing-only keys
+    }
+    if (key.startsWith(STORAGE_KEY_PREFIX)) {
+      continue; // StorageService keys are managed independently
     }
     assert.ok(
       key === 'manifest' || storage.manifest.includes(key),
