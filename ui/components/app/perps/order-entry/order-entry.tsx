@@ -21,7 +21,6 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 
-import { DirectionTabs } from './components/direction-tabs';
 import { AmountInput } from './components/amount-input';
 import { LeverageSlider } from './components/leverage-slider';
 import { OrderSummary } from './components/order-summary';
@@ -64,6 +63,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   availableBalance,
   initialDirection = 'long',
   onSubmit,
+  onFormStateChange,
+  showSubmitButton = true,
 }) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
@@ -75,11 +76,12 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     direction: initialDirection,
   });
 
-  // Individual state setters
-  const handleDirectionChange = useCallback((direction: OrderDirection) => {
-    setFormState((prev) => ({ ...prev, direction }));
-  }, []);
+  // Notify parent of form state changes
+  React.useEffect(() => {
+    onFormStateChange?.(formState);
+  }, [formState, onFormStateChange]);
 
+  // Individual state setters
   const handleAmountChange = useCallback((amount: string) => {
     setFormState((prev) => ({ ...prev, amount }));
   }, []);
@@ -174,17 +176,16 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      gap={4}
-      className="w-full"
+      className="w-full h-full"
       data-testid="order-entry"
     >
-      {/* Direction Tabs (Long/Short) */}
-      <DirectionTabs
-        direction={formState.direction}
-        onDirectionChange={handleDirectionChange}
-      />
-
-      {/* Available Balance Row */}
+      {/* Scrollable Form Content */}
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        gap={4}
+        className="flex-1 overflow-y-auto pb-4"
+      >
+        {/* Available Balance Row */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
@@ -266,31 +267,40 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         orderValue={calculations.orderValue}
       />
 
-      {/* Auto Close (TP/SL) Section */}
-      <AutoCloseSection
-        enabled={formState.autoCloseEnabled}
-        onEnabledChange={handleAutoCloseEnabledChange}
-        takeProfitPrice={formState.takeProfitPrice}
-        onTakeProfitPriceChange={handleTakeProfitPriceChange}
-        stopLossPrice={formState.stopLossPrice}
-        onStopLossPriceChange={handleStopLossPriceChange}
-        direction={formState.direction}
-        currentPrice={currentPrice}
-      />
+        {/* Auto Close (TP/SL) Section */}
+        <AutoCloseSection
+          enabled={formState.autoCloseEnabled}
+          onEnabledChange={handleAutoCloseEnabledChange}
+          takeProfitPrice={formState.takeProfitPrice}
+          onTakeProfitPriceChange={handleTakeProfitPriceChange}
+          stopLossPrice={formState.stopLossPrice}
+          onStopLossPriceChange={handleStopLossPriceChange}
+          direction={formState.direction}
+          currentPrice={currentPrice}
+        />
+      </Box>
 
-      {/* Submit Button */}
-      <Button
-        variant={ButtonVariant.Primary}
-        size={ButtonSize.Lg}
-        onClick={handleSubmit}
-        className={twMerge(
-          'w-full',
-          isLong ? 'bg-success-default hover:bg-success-hover' : 'bg-error-default hover:bg-error-hover',
-        )}
-        data-testid="submit-order-button"
-      >
-        {submitButtonText}
-      </Button>
+      {/* Sticky Submit Button (optional) */}
+      {showSubmitButton && (
+        <Box
+          className="sticky bottom-0 left-0 right-0 bg-default pt-3 pb-4 border-t border-muted"
+        >
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            onClick={handleSubmit}
+            className={twMerge(
+              'w-full',
+              isLong
+                ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
+                : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
+            )}
+            data-testid="submit-order-button"
+          >
+            {submitButtonText}
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

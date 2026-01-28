@@ -68,7 +68,6 @@ describe('OrderEntry', () => {
       render(<OrderEntry {...defaultProps} />);
 
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
-      expect(screen.getByTestId('direction-tabs')).toBeInTheDocument();
       expect(screen.getByText('Available to Trade')).toBeInTheDocument();
       expect(screen.getByText('Order Type')).toBeInTheDocument();
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
@@ -92,24 +91,6 @@ describe('OrderEntry', () => {
 
     it('respects initialDirection prop for short', () => {
       render(<OrderEntry {...defaultProps} initialDirection="short" />);
-
-      expect(screen.getByTestId('submit-order-button')).toHaveTextContent('Open Short BTC');
-    });
-  });
-
-  describe('direction tabs', () => {
-    it('defaults to long direction', () => {
-      render(<OrderEntry {...defaultProps} />);
-
-      const longTab = screen.getByTestId('direction-tab-long');
-      expect(longTab).toBeInTheDocument();
-    });
-
-    it('changes direction when short tab is clicked', () => {
-      render(<OrderEntry {...defaultProps} />);
-
-      const shortTab = screen.getByTestId('direction-tab-short');
-      fireEvent.click(shortTab);
 
       expect(screen.getByTestId('submit-order-button')).toHaveTextContent('Open Short BTC');
     });

@@ -48,6 +48,7 @@ import {
   OrderEntry,
   type OrderDirection,
   type OrderFormState,
+  mockOrderFormDefaults,
 } from '../../components/app/perps/order-entry';
 
 /**
@@ -115,6 +116,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   // View state: 'detail' or 'order'
   const [currentView, setCurrentView] = useState<MarketDetailView>('detail');
   const [orderDirection, setOrderDirection] = useState<OrderDirection>('long');
+  const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(null);
 
   // Get available balance from mock account state
   const availableBalance = parseFloat(mockAccountState.availableBalance);
@@ -200,13 +202,21 @@ const PerpsMarketDetailPage: React.FC = () => {
     setCurrentView('order');
   }, []);
 
+  // Handle form state changes from OrderEntry
+  const handleFormStateChange = useCallback((formState: OrderFormState) => {
+    setOrderFormState(formState);
+  }, []);
+
   // Handle order submission
-  const handleOrderSubmit = useCallback((formState: OrderFormState) => {
+  const handleOrderSubmit = useCallback(() => {
+    if (!orderFormState) {
+      return;
+    }
     // TODO: Integrate with PerpsController to submit order
     // For now, just log the order and return to detail view
-    console.log('Order submitted:', formState);
+    console.log('Order submitted:', orderFormState);
     setCurrentView('detail');
-  }, []);
+  }, [orderFormState]);
 
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere
@@ -268,9 +278,14 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Render Order Entry View
   if (currentView === 'order') {
+    const isLong = orderDirection === 'long';
+    const submitButtonText = isLong
+      ? t('perpsOpenLong', [displayName])
+      : t('perpsOpenShort', [displayName]);
+
     return (
       <Box
-        className="main-container asset__container"
+        className="main-container asset__container flex flex-col"
         data-testid="perps-market-detail-page-order"
       >
         {/* Header */}
@@ -303,7 +318,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           {/* Symbol and Title */}
           <Box flexDirection={BoxFlexDirection.Column}>
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              {orderDirection === 'long' ? t('perpsOpenLong', [displayName]) : t('perpsOpenShort', [displayName])}
+              {submitButtonText}
             </Text>
             <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
               {market.price}
@@ -311,16 +326,45 @@ const PerpsMarketDetailPage: React.FC = () => {
           </Box>
         </Box>
 
-        {/* Order Entry Form */}
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+        {/* Order Entry Form - Scrollable */}
+        <Box
+          paddingLeft={4}
+          paddingRight={4}
+          className="flex-1 overflow-y-auto"
+        >
           <OrderEntry
             asset={decodedSymbol}
             currentPrice={currentPrice}
             maxLeverage={maxLeverage}
             availableBalance={availableBalance}
             initialDirection={orderDirection}
-            onSubmit={handleOrderSubmit}
+            showSubmitButton={false}
+            onFormStateChange={handleFormStateChange}
           />
+        </Box>
+
+        {/* Sticky Submit Button - Footer */}
+        <Box
+          className="sticky bottom-0 left-0 right-0 bg-default border-t border-muted"
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={3}
+          paddingBottom={4}
+        >
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            onClick={handleOrderSubmit}
+            className={twMerge(
+              'w-full',
+              isLong
+                ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
+                : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
+            )}
+            data-testid="submit-order-button"
+          >
+            {submitButtonText}
+          </Button>
         </Box>
       </Box>
     );

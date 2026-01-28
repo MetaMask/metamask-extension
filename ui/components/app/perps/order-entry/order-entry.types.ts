@@ -72,8 +72,12 @@ export type OrderEntryProps = {
   availableBalance: number;
   /** Initial order direction (defaults to 'long') */
   initialDirection?: OrderDirection;
-  /** Callback when order is submitted */
+  /** Callback when order is submitted (used when showSubmitButton is true) */
   onSubmit?: (formState: OrderFormState) => void;
+  /** Callback when form state changes (used when showSubmitButton is false) */
+  onFormStateChange?: (formState: OrderFormState) => void;
+  /** Whether to show the internal submit button (defaults to true) */
+  showSubmitButton?: boolean;
 };
 
 /**
