@@ -20,7 +20,7 @@ export const CopyIcon: React.FC<{
   const [copied, handleCopy] = useCopyToClipboard(-1);
   const handleClick = useCallback(async () => {
     (handleCopy as CopyCallback)(copyText);
-  }, [copyText]);
+  }, [copyText, handleCopy]);
 
   return (
     <ButtonIcon
