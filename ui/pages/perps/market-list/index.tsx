@@ -33,6 +33,8 @@ import {
   type SortField,
   type SortDirection,
 } from '../utils/sortMarkets';
+import { filterMarketsByType, type CategoryFilter } from './types';
+import { useWatchlist } from './hooks/useWatchlist';
 import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import {
@@ -41,11 +43,8 @@ import {
   type SortOptionId,
 } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
-import { FilterSelect, type MarketFilter } from './components/filter-select';
-import {
-  StockSubFilterSelect,
-  type StockSubFilter,
-} from './components/stock-sub-filter';
+import { CategoryBadges } from './components/category-badges';
+import { WatchlistEmptyState } from './components/watchlist-empty-state';
 
 // Combine all markets
 const allMarkets: PerpsMarketData[] = [
@@ -53,56 +52,9 @@ const allMarkets: PerpsMarketData[] = [
   ...mockHip3Markets,
 ];
 
-type StockMarketType = 'equity' | 'commodity';
-
-const STOCK_SUB_FILTER_ALLOWED_TYPES = {
-  all: new Set<StockMarketType>(['equity', 'commodity']),
-  stocks: new Set<StockMarketType>(['equity']),
-  commodities: new Set<StockMarketType>(['commodity']),
-} satisfies Record<StockSubFilter, ReadonlySet<StockMarketType>>;
-
-const isStockMarketType = (
-  marketType: PerpsMarketData['marketType'],
-): marketType is StockMarketType =>
-  marketType === 'equity' || marketType === 'commodity';
-
-/**
- * Filter markets by market type
- *
- * @param markets - Array of markets to filter
- * @param filter - Market type filter
- * @param stockSubFilter - Stock sub-filter (only used when filter is 'stocks')
- * @returns Filtered array of markets
- */
-const filterByType = (
-  markets: PerpsMarketData[],
-  filter: MarketFilter,
-  stockSubFilter: StockSubFilter,
-): PerpsMarketData[] => {
-  switch (filter) {
-    case 'all': {
-      return markets;
-    }
-    case 'crypto': {
-      return markets.filter((m) => !m.marketType || m.marketType === 'crypto');
-    }
-    case 'stocks': {
-      const allowedMarketTypes = STOCK_SUB_FILTER_ALLOWED_TYPES[stockSubFilter];
-      return markets.filter((m) => {
-        if (!isStockMarketType(m.marketType)) {
-          return false;
-        }
-        return allowedMarketTypes.has(m.marketType);
-      });
-    }
-    default: {
-      return markets;
-    }
-  }
-};
-
 /**
  * MarketListView displays a searchable, sortable list of markets
+ * with category badge filtering and watchlist support.
  */
 export const MarketListView: React.FC = () => {
   const t = useI18nContext();
@@ -113,8 +65,17 @@ export const MarketListView: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSortId, setSelectedSortId] = useState<SortOptionId>('volume');
-  const [selectedFilter, setSelectedFilter] = useState<MarketFilter>('all');
-  const [stockSubFilter, setStockSubFilter] = useState<StockSubFilter>('all');
+  const [selectedCategory, setSelectedCategory] =
+    useState<CategoryFilter | null>(null);
+  const [isWatchlistSelected, setIsWatchlistSelected] = useState(false);
+
+  // Watchlist hook
+  const {
+    watchlist,
+    toggleWatchlist,
+    isInWatchlist,
+    isEmpty: isWatchlistEmpty,
+  } = useWatchlist();
 
   // Get current sort option
   const currentSortOption = SORT_OPTIONS.find(
@@ -138,9 +99,15 @@ export const MarketListView: React.FC = () => {
     if (searchQuery.trim()) {
       // Searching: search across ALL markets, ignore filters
       markets = filterMarketsByQuery(allMarkets, searchQuery);
+    } else if (isWatchlistSelected) {
+      // Watchlist filter
+      markets = filterMarketsByType(allMarkets, 'watchlist', watchlist);
+    } else if (selectedCategory) {
+      // Category filter
+      markets = filterMarketsByType(allMarkets, selectedCategory, watchlist);
     } else {
-      // Not searching: apply filters
-      markets = filterByType(allMarkets, selectedFilter, stockSubFilter);
+      // No filter - show all
+      markets = allMarkets;
     }
 
     if (currentSortOption) {
@@ -151,7 +118,13 @@ export const MarketListView: React.FC = () => {
       });
     }
     return markets;
-  }, [selectedFilter, stockSubFilter, searchQuery, currentSortOption]);
+  }, [
+    selectedCategory,
+    isWatchlistSelected,
+    watchlist,
+    searchQuery,
+    currentSortOption,
+  ]);
 
   // Handlers
   const handleBack = useCallback(() => {
@@ -173,9 +146,15 @@ export const MarketListView: React.FC = () => {
     [],
   );
 
-  const handleFilterChange = useCallback((filter: MarketFilter) => {
-    setSelectedFilter(filter);
-    setStockSubFilter('all'); // Reset sub-filter when main filter changes
+  const handleCategorySelect = useCallback(
+    (category: CategoryFilter | null) => {
+      setSelectedCategory(category);
+    },
+    [],
+  );
+
+  const handleWatchlistToggle = useCallback(() => {
+    setIsWatchlistSelected((prev) => !prev);
   }, []);
 
   const handleMarketSelect = useCallback(
@@ -191,6 +170,13 @@ export const MarketListView: React.FC = () => {
   if (!isPerpsEnabled) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
+
+  // Determine if we should show watchlist icons (when watchlist filter is active)
+  const showWatchlistIcons = isWatchlistSelected;
+
+  // Determine if we should show the empty watchlist state
+  const showEmptyWatchlistState =
+    !isLoading && isWatchlistSelected && isWatchlistEmpty;
 
   return (
     <Box
@@ -234,27 +220,36 @@ export const MarketListView: React.FC = () => {
         />
       </Box>
 
-      {/* Filter and Sort Row - Hidden when searching */}
+      {/* Category Badges Row - Hidden when searching */}
       {!searchQuery.trim() && (
         <Box
-          className="border-b border-border-muted px-4 py-3 flex-wrap"
+          className="border-b border-border-muted px-4 py-3"
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          data-testid="market-list-category-row"
+        >
+          <CategoryBadges
+            selectedCategory={selectedCategory}
+            onSelectCategory={handleCategorySelect}
+            isWatchlistSelected={isWatchlistSelected}
+            onToggleWatchlist={handleWatchlistToggle}
+          />
+        </Box>
+      )}
+
+      {/* Sort Row - Hidden when searching */}
+      {!searchQuery.trim() && (
+        <Box
+          className="border-b border-border-muted px-4 py-3"
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Start}
-          gap={3}
-          data-testid="market-list-filter-sort-row"
+          data-testid="market-list-sort-row"
         >
-          <FilterSelect value={selectedFilter} onChange={handleFilterChange} />
           <SortDropdown
             selectedOptionId={selectedSortId}
             onOptionChange={handleSortChange}
           />
-          {selectedFilter === 'stocks' && (
-            <StockSubFilterSelect
-              value={stockSubFilter}
-              onChange={setStockSubFilter}
-            />
-          )}
         </Box>
       )}
 
@@ -269,8 +264,19 @@ export const MarketListView: React.FC = () => {
             <MarketRowSkeleton key={`skeleton-${index}`} />
           ))}
 
+        {/* Empty watchlist state with suggestions */}
+        {showEmptyWatchlistState && (
+          <WatchlistEmptyState
+            allMarkets={allMarkets}
+            onToggleWatchlist={toggleWatchlist}
+            isInWatchlist={isInWatchlist}
+            onMarketPress={handleMarketSelect}
+          />
+        )}
+
         {/* Market rows */}
         {!isLoading &&
+          !showEmptyWatchlistState &&
           displayedMarkets.length > 0 &&
           displayedMarkets.map((market) => (
             <MarketRow
@@ -278,31 +284,36 @@ export const MarketListView: React.FC = () => {
               market={market}
               displayMetric={currentSortOption?.field || 'volume'}
               onPress={handleMarketSelect}
+              showWatchlistIcon={showWatchlistIcons}
+              isInWatchlist={isInWatchlist(market.symbol)}
+              onToggleWatchlist={toggleWatchlist}
             />
           ))}
 
-        {/* Empty state */}
-        {!isLoading && displayedMarkets.length === 0 && (
-          <Box
-            className="px-4 py-8"
-            flexDirection={BoxFlexDirection.Column}
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Center}
-            gap={2}
-          >
-            <Icon
-              name={IconName.Search}
-              size={IconSize.Lg}
-              color={IconColor.IconMuted}
-            />
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
+        {/* Empty state (for non-watchlist filters) */}
+        {!isLoading &&
+          !showEmptyWatchlistState &&
+          displayedMarkets.length === 0 && (
+            <Box
+              className="px-4 py-8"
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
+              gap={2}
             >
-              {t('perpsNoMarketsFound')}
-            </Text>
-          </Box>
-        )}
+              <Icon
+                name={IconName.Search}
+                size={IconSize.Lg}
+                color={IconColor.IconMuted}
+              />
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('perpsNoMarketsFound')}
+              </Text>
+            </Box>
+          )}
       </Box>
     </Box>
   );

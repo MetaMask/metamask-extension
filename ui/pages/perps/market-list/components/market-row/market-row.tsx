@@ -8,6 +8,11 @@ import {
   TextColor,
   FontWeight,
   AvatarTokenSize,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+  ButtonBase,
 } from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../../../../../components/app/perps/perps-token-logo';
 import {
@@ -24,6 +29,12 @@ export type MarketRowProps = {
   onPress?: (market: PerpsMarketData) => void;
   /** Which metric to display below the symbol */
   displayMetric?: SortField;
+  /** Whether to show the watchlist star icon */
+  showWatchlistIcon?: boolean;
+  /** Whether this market is in the watchlist */
+  isInWatchlist?: boolean;
+  /** Callback to toggle watchlist status */
+  onToggleWatchlist?: (symbol: string) => void;
 };
 
 /**
@@ -59,11 +70,17 @@ const getMetricValue = (market: PerpsMarketData, metric: SortField): string => {
  * @param options0.market - The market data to display
  * @param options0.onPress - Callback when row is pressed
  * @param options0.displayMetric - Which metric to display below the symbol
+ * @param options0.showWatchlistIcon - Whether to show the watchlist star icon
+ * @param options0.isInWatchlist - Whether this market is in the watchlist
+ * @param options0.onToggleWatchlist - Callback to toggle watchlist status
  */
 export const MarketRow: React.FC<MarketRowProps> = ({
   market,
   onPress,
   displayMetric = 'volume',
+  showWatchlistIcon = false,
+  isInWatchlist = false,
+  onToggleWatchlist,
 }) => {
   const displaySymbol = useMemo(
     () => getDisplaySymbol(market.symbol),
@@ -88,6 +105,16 @@ export const MarketRow: React.FC<MarketRowProps> = ({
       onPress(market);
     }
   }, [onPress, market]);
+
+  const handleWatchlistClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (onToggleWatchlist) {
+        onToggleWatchlist(market.symbol);
+      }
+    },
+    [onToggleWatchlist, market.symbol],
+  );
 
   return (
     <Box
@@ -146,6 +173,23 @@ export const MarketRow: React.FC<MarketRowProps> = ({
           {market.change24hPercent}
         </Text>
       </Box>
+
+      {/* Watchlist star icon */}
+      {showWatchlistIcon && (
+        <ButtonBase
+          className="shrink-0 p-1 bg-transparent hover:bg-hover active:bg-pressed rounded-full"
+          onClick={handleWatchlistClick}
+          data-testid={`market-row-watchlist-${market.symbol.replace(/:/gu, '-')}`}
+        >
+          <Icon
+            name={isInWatchlist ? IconName.StarFilled : IconName.Star}
+            size={IconSize.Md}
+            color={
+              isInWatchlist ? IconColor.WarningDefault : IconColor.IconMuted
+            }
+          />
+        </ButtonBase>
+      )}
     </Box>
   );
 };

@@ -24,6 +24,7 @@ const mockStore = configureStore({
 describe('MarketListView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    localStorage.clear();
   });
 
   describe('rendering', () => {
@@ -39,10 +40,12 @@ describe('MarketListView', () => {
       expect(screen.getByTestId('search-input')).toBeInTheDocument();
     });
 
-    it('displays filter dropdown', () => {
+    it('displays category badges', () => {
       renderWithProvider(<MarketListView />, mockStore);
 
-      expect(screen.getByTestId('filter-select-button')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('category-badges-unselected'),
+      ).toBeInTheDocument();
     });
 
     it('displays sort dropdown', () => {
@@ -147,13 +150,14 @@ describe('MarketListView', () => {
       });
     });
 
-    it('hides filter row when searching', async () => {
+    it('hides category and sort rows when searching', async () => {
       renderWithProvider(<MarketListView />, mockStore);
 
       await waitFor(() => {
         expect(
-          screen.getByTestId('market-list-filter-sort-row'),
+          screen.getByTestId('market-list-category-row'),
         ).toBeInTheDocument();
+        expect(screen.getByTestId('market-list-sort-row')).toBeInTheDocument();
       });
 
       const searchInput = screen.getByTestId('search-input');
@@ -161,21 +165,111 @@ describe('MarketListView', () => {
 
       await waitFor(() => {
         expect(
-          screen.queryByTestId('market-list-filter-sort-row'),
+          screen.queryByTestId('market-list-category-row'),
+        ).not.toBeInTheDocument();
+        expect(
+          screen.queryByTestId('market-list-sort-row'),
         ).not.toBeInTheDocument();
       });
     });
   });
 
-  describe('filter functionality', () => {
-    it('opens filter dropdown on click', async () => {
+  describe('category filter functionality', () => {
+    it('shows all category badges when no filter is selected', async () => {
       renderWithProvider(<MarketListView />, mockStore);
 
-      const filterButton = screen.getByTestId('filter-select-button');
-      fireEvent.click(filterButton);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('category-badge-watchlist'),
+        ).toBeInTheDocument();
+        expect(screen.getByTestId('category-badge-crypto')).toBeInTheDocument();
+        expect(screen.getByTestId('category-badge-stocks')).toBeInTheDocument();
+        expect(
+          screen.getByTestId('category-badge-commodities'),
+        ).toBeInTheDocument();
+        expect(screen.getByTestId('category-badge-forex')).toBeInTheDocument();
+      });
+    });
+
+    it('filters to crypto markets when crypto badge is clicked', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
 
       await waitFor(() => {
-        expect(screen.getByTestId('filter-select-menu')).toBeInTheDocument();
+        const skeletons = screen.queryAllByTestId(/market-row-skeleton/u);
+        expect(skeletons.length).toBe(0);
+      });
+
+      fireEvent.click(screen.getByTestId('category-badge-crypto'));
+
+      await waitFor(() => {
+        // Should show only the selected badge
+        expect(
+          screen.getByTestId('category-badges-selected'),
+        ).toBeInTheDocument();
+        expect(screen.getByTestId('category-badge-crypto')).toBeInTheDocument();
+      });
+    });
+
+    it('shows dismiss button when category is selected', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        const skeletons = screen.queryAllByTestId(/market-row-skeleton/u);
+        expect(skeletons.length).toBe(0);
+      });
+
+      fireEvent.click(screen.getByTestId('category-badge-stocks'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('category-badge-stocks-dismiss'),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('clears filter when dismiss button is clicked', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        const skeletons = screen.queryAllByTestId(/market-row-skeleton/u);
+        expect(skeletons.length).toBe(0);
+      });
+
+      // Select a category
+      fireEvent.click(screen.getByTestId('category-badge-crypto'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('category-badge-crypto-dismiss'),
+        ).toBeInTheDocument();
+      });
+
+      // Click dismiss
+      fireEvent.click(screen.getByTestId('category-badge-crypto-dismiss'));
+
+      await waitFor(() => {
+        // Should show all badges again
+        expect(
+          screen.getByTestId('category-badges-unselected'),
+        ).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('watchlist functionality', () => {
+    it('shows empty watchlist state when watchlist is selected and empty', async () => {
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        const skeletons = screen.queryAllByTestId(/market-row-skeleton/u);
+        expect(skeletons.length).toBe(0);
+      });
+
+      // Click watchlist badge
+      fireEvent.click(screen.getByTestId('category-badge-watchlist'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('watchlist-empty-state')).toBeInTheDocument();
       });
     });
   });

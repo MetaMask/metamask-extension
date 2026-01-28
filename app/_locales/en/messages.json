@@ -5192,6 +5192,21 @@
   "perpsFilterStocksOnly": {
     "message": "Stocks"
   },
+  "perpsFilterForex": {
+    "message": "Forex"
+  },
+  "perpsWatchlist": {
+    "message": "Watchlist"
+  },
+  "perpsWatchlistEmpty": {
+    "message": "Your watchlist is empty! Here are our most watched assets to get you started."
+  },
+  "perpsAddToWatchlist": {
+    "message": "Add to watchlist"
+  },
+  "perpsRemoveFromWatchlist": {
+    "message": "Remove from watchlist"
+  },
   "perpsFundingPayments": {
     "message": "Funding payments"
   },
