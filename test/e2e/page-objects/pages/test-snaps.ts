@@ -4,6 +4,174 @@ import { Driver } from '../../webdriver/driver';
 import { veryLargeDelayMs } from '../../helpers';
 import { DAPP_URL } from '../../constants';
 
+const inputLocator = {
+  dataManageStateInput: '#dataManageState',
+  dataStateInput: '#dataState',
+  dataUnencryptedManageStateInput: '#dataUnencryptedManageState',
+  entropyMessageInput: '#entropyMessage',
+  getStateInput: '#getState',
+  messageBip44Input: '#bip44Message',
+  messageEd25519Bip32Input: '#bip32Message-ed25519Bip32',
+  messageEd25519Input: '#bip32Message-ed25519',
+  messageSecp256k1Input: '#bip32Message-secp256k1',
+  personalSignMessageInput: '#personalSignMessage',
+  setStateKeyInput: '#setStateKey',
+  setStateKeyUnencryptedInput: '#setStateKeyUnencrypted',
+  signTypedDataMessageInput: '#signTypedData',
+  dataUnencryptedStateInput: '#dataUnencryptedState',
+  getUnencryptedStateInput: '#getUnencryptedState',
+  wasmInput: '#wasmInput',
+  backgroundEventDateInput: '#backgroundEventDate',
+  backgroundEventDurationInput: '#backgroundEventDuration',
+  cancelBackgroundEventInput: '#backgroundEventId',
+  signMessageMultichainInput: '#signMessageMultichain',
+  signTypedDataMultichainInput: '#signTypedDataMultichain',
+} satisfies Record<string, string>;
+
+export const buttonLocator = {
+  connectBip32Button: '#connectbip32',
+  connectBip44Button: '#connectbip44',
+  connectClientStatusButton: '#connectclient-status',
+  connectCronJobsButton: '#connectcronjobs',
+  connectCronjobDurationButton: '#connectcronjob-duration',
+  connectDialogsButton: '#connectdialogs',
+  connectErrorsButton: '#connecterrors',
+  connectGetEntropyButton: '#connectGetEntropySnap',
+  connectGetFileButton: '#connectgetfile',
+  connectHomePageButton: '#connecthomepage',
+  connectjsxButton: '#connectjsx',
+  displayJsxButton: '#displayJsx',
+  connectJsonRpcButton: '#connectjson-rpc',
+  connectInteractiveButton: '#connectinteractive-ui',
+  connectImagesButton: '#connectimages',
+  connectLifeCycleButton: '#connectlifecycle-hooks',
+  connectNameLookUpButton: '#connectname-lookup',
+  connectManageStateButton: '#connectmanage-state',
+  connectstateButton: '#connectstate',
+  connectPreinstalledButton: '#connectpreinstalled-snap',
+  connectProtocolButton: '#connectprotocol',
+  connectTransactionInsightButton: '#connecttransaction-insights',
+  connectUpdateButton: '#connectUpdate',
+  connectUpdateNewButton: '#connectUpdateNew',
+  connectWasmButton: '#connectwasm',
+  connectNotificationButton: '#connectnotifications',
+  connectMultichainProviderButton: '#connectmultichain-provider',
+  confirmationButton: '#sendConfirmationButton',
+  createDialogButton: '#createDialogButton',
+  createDialogDisabledButton: '#createDisabledDialogButton',
+  clearManageStateButton: '#clearManageState',
+  clearUnencryptedManageStateButton: '#clearUnencryptedManageState',
+  ethereumProviderConnectButton: '#connectethereum-provider',
+  getAccountButton: '#getAccounts',
+  getAccountsButton: '#sendEthproviderAccounts',
+  getBip32CompressedPublicKeyButton: '#bip32GetCompressedPublic',
+  getBip32PublicKeyButton: '#bip32GetPublic',
+  getPreferencesConnectButton: '#connectpreferences',
+  getPreferencesSubmitButton: '#getPreferences',
+  getVersionButton: '#sendEthprovider',
+  incrementButton: '#increment',
+  getSettingsStateButton: '#settings-state',
+  personalSignButton: '#signPersonalSignMessage',
+  publicKeyBip44Button: '#sendBip44Test',
+  connectNetworkAccessButton: '#connectnetwork-access',
+  sendCreateSessionButton: '#sendCreateSession',
+  sendMultichainChainIdButton: '#sendMultichainChainId',
+  sendMultichainGetGenesisHashButton: '#sendMultichainGetGenesisHash',
+  sendMultichainGetAccountsButton: '#sendMultichainAccounts',
+  sendErrorButton: '#sendError',
+  sendExpandedViewNotificationButton: '#sendExpandedViewNotification',
+  sendInAppNotificationButton: '#sendInAppNotification',
+  sendGetFileBase64Button: '#sendGetFileBase64Button',
+  sendGetFileHexButton: '#sendGetFileHexButton',
+  sendGetFileTextButton: '#sendGetFileTextButton',
+  sendGenesisBlockEthProvider: '#sendGenesisBlockEthProvider',
+  sendInsightButton: '#sendInsights',
+  sendGetStateButton: '#sendGetState',
+  sendNetworkAccessTestButton: '#sendNetworkAccessTest',
+  sendManageStateButton: '#sendManageState',
+  sendStateButton: '#sendState',
+  sendRpcButton: '#sendRpc',
+  sendUnencryptedManageStateButton: '#sendUnencryptedManageState',
+  sendWasmMessageButton: '#sendWasmMessage',
+  signBip32messageSecp256k1Button: '#sendBip32-secp256k1',
+  signBip44MessageButton: '#signBip44Message',
+  signEd25519Bip32MessageButton: '#sendBip32-ed25519Bip32',
+  signEd25519MessageButton: '#sendBip32-ed25519',
+  signEntropyMessageButton: '#signEntropyMessage',
+  signMessageMultichainButton: '#signMessageMultichainButton',
+  signTypedDataMultichainButton: '#signTypedDataMultichainButton',
+  signTypedDataButton: '#signTypedDataButton',
+  submitClientStatusButton: '#sendClientStatusTest',
+  trackErrorButton: '#trackError',
+  trackEventButton: '#trackEvent',
+  startTraceButton: '#start-trace',
+  endTraceButton: '#end-trace',
+  clearStateButton: '#clearState',
+  sendUnencryptedStateButton: '#sendUnencryptedState',
+  sendGetUnencryptedStateButton: '#sendGetUnencryptedState',
+  clearStateUnencryptedButton: '#clearStateUnencrypted',
+  connectBackgroundEventsButton: '#connectbackground-events',
+  scheduleBackgroundEventWithDateButton: '#scheduleBackgroundEventWithDate',
+  scheduleBackgroundEventWithDurationButton:
+    '#scheduleBackgroundEventWithDuration',
+  cancelBackgroundEventButton: '#cancelBackgroundEvent',
+  getBackgroundEventResultButton: '#getBackgroundEvents',
+  showPreinstalledDialogButton: '#showPreinstalledDialog',
+  startWebSocket: '#startWebSocket',
+  stopWebSocket: '#stopWebSocket',
+  getWebSocketState: '#getWebSocketState',
+} satisfies Record<string, string>;
+
+const spanLocator = {
+  addressResultSpan: '#ethproviderResult',
+  bip32MessageResultEd25519Span: '#bip32MessageResult-ed25519',
+  bip32MessageResultSecp256k1Span: '#bip32MessageResult-secp256k1',
+  bip32PublicKeyResultSpan: '#bip32PublicKeyResult',
+  bip32ResultSpan: '#bip32Result',
+  bip44ResultSpan: '#bip44Result',
+  bip44SignResultSpan: '#bip44SignResult',
+  clientStatusResultSpan: '#clientStatusResult',
+  clearManageStateResultSpan: '#clearManageStateResult',
+  clearUnencryptedManageStateResultSpan: '#clearUnencryptedManageStateResult',
+  encryptedStateResultSpan: '#encryptedStateResult',
+  entropySignResultSpan: '#entropySignResult',
+  errorResultSpan: '#errorResult',
+  getStateResultSpan: '#getStateResult',
+  fileResultSpan: '#getFileResult',
+  installedSnapResultSpan: '#installedSnapsResult',
+  interactiveUIResultSpan: '#interactiveUIResult',
+  networkAccessResultSpan: '#networkAccessResult',
+  messageResultEd25519SBip32Span: '#bip32MessageResult-ed25519Bip32',
+  personalSignResultSpan: '#personalSignResult',
+  preferencesResultSpan: '#preferencesResult',
+  providerVersionResultSpan: '#ethproviderResult',
+  multichainProviderResultSpan: '#multichainProviderResult',
+  sendManageStateResultSpan: '#sendManageStateResult',
+  snapUIRenderer: '.snap-ui-renderer__content',
+  sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
+  signMessageMultichainResultSpan: '#signMessageMultichainResult',
+  signTypedDataMultichainResultSpan: '#signTypedDataMultichainResult',
+  signTypedDataResultSpan: '#signTypedDataResult',
+  retrieveManageStateResultSpan: '#retrieveManageStateResult',
+  retrieveManageStateUnencryptedResultSpan:
+    '#retrieveManageStateUnencryptedResult',
+  rpcResultSpan: '#rpcResult',
+  updateVersionSpan: '#updateSnapVersion',
+  wasmResultSpan: '#wasmResult',
+  unencryptedStateResultSpan: '#unencryptedStateResult',
+  getStateUnencryptedResultSpan: '#getStateUnencryptedResult',
+  backgroundEventResultSpan: '#schedulebackgroundEventResult',
+  getBackgroundEventResultSpan: '#getBackgroundEventsResult',
+} satisfies Record<string, string>;
+
+const dropDownLocator = {
+  bip32EntropyDropDown: '#bip32-entropy-selector',
+  bip44EntropyDropDown: '#bip44-entropy-selector',
+  getEntropyDropDown: '#get-entropy-entropy-selector',
+  networkDropDown: '#select-chain',
+  multichainNetworkDropdown: '#select-multichain-chain',
+} satisfies Record<string, string>;
+
 /**
  * Page object for the Test Snaps dapp page.
  * Each button and input has a specific method - specs should not need to know selectors.
@@ -1328,6 +1496,33 @@ export class TestSnaps {
     await this.driver.waitForSelector({
       css: this.sendManageStateResultSpan,
       text: expectedMessage,
+    });
+  }
+
+  async fillNetworkInput(name: string) {
+    console.log(`Filling network input with ${name}`);
+    await this.driver.fill(this.networkUrlInput, name);
+  }
+
+  /**
+   * Select a network from the dropdown with the given name.
+   *
+   * @param dropDownName - The name of the dropdown locator to select the
+   * network from.
+   * @param name - The name of the network to select.
+   */
+  async scrollAndSelectNetwork(
+    dropDownName: keyof typeof dropDownLocator,
+    name: 'Ethereum' | 'Linea' | 'Sepolia' | 'Solana',
+  ) {
+    const locator = dropDownLocator[dropDownName];
+    console.log(`Select ${name} network`);
+    const selector = await this.driver.findElement(locator);
+    await this.driver.scrollToElement(selector);
+    await this.driver.clickElement(locator);
+    await this.driver.clickElement({
+      text: name,
+      css: `${locator} option`,
     });
   }
 
