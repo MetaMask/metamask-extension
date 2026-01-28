@@ -109,19 +109,32 @@ export class TestDappTron {
     };
   }
 
+  /**
+   * Find the header connected state.
+   */
   async findHeaderConnectedState () {
     await this.driver.findElement(this.headerConnectionStateSelector);
   }
+
+  /**
+   * Find the header not connected state.
+   */
   async findHeaderNotConnectedState() {
     await this.driver.findElement(
       this.headerConnectionNotConnectedStateSelector,
     );
   }
 
+  /**
+   * Connect to the tron test dapp.
+   */
   async connect() {
     await this.driver.clickElement(this.connectButtonSelector)
   }
   
+  /**
+   * Disconnect from the tron test dapp.
+   */
   async disconnect() {
     await this.driver.clickElement(this.disconnectButtonSelector);
 
@@ -130,6 +143,11 @@ export class TestDappTron {
     );
   }
 
+  /**
+   * Find the connected account.
+   *
+   * @param account - The account to find.
+   */
   async findConnectedAccount(account: string){
     await this.driver.findElement({
       css: this.connectedAccountSelectorTestId,
@@ -137,15 +155,29 @@ export class TestDappTron {
     });
   }
 
+  /**
+   * Set the message to sign input field.
+   *
+   * @param message - The message to sign.
+   */
   async setMessage(message: string) {
     await this.driver.fill({ testId: dataTestIds.testPage.signMessage.message }, message)
   }
 
+  /**
+   * Sign the message.
+   */
   async signMessage() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.signMessage.signMessage,
     })
   }
+
+  /**
+   * Find the signed message.
+   *
+   * @param signedMessage - The signed message to find.
+   */
   async findSignedMessage(signedMessage: string) {
     await this.driver.findElement({
       css: this.signedMessageSelectorTestId,
@@ -154,26 +186,47 @@ export class TestDappTron {
   }
 
 
+  /**
+   * Set the TRX recipient address.
+   *
+   * @param address - The TRX recipient address to set.
+   */
   async setTRXRecipientAddress(address: string) {
     await this.driver.fill({testId: dataTestIds.testPage.sendTRX.address}, address)
   }
 
+  /**
+   * Set the TRX amount.
+   *
+   * @param amount - The TRX amount to set.
+   */
   async setTRXAmount(amount: string) {
     await this.driver.fill({testId: dataTestIds.testPage.sendTRX.amount}, amount)
   }
 
+  /**
+   * Sign the TRX transaction.
+   */
   async signTRXTransaction() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.sendTRX.signTransaction,
     })
   }
 
+  /**
+   * Send the TRX transaction.
+   */
   async sendTRXTransaction() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.sendTRX.sendTransaction,
     })
   }
 
+  /**
+   * Find the TRX transaction hash.
+   *
+   * @param transactionHash - The TRX transaction hash to find.
+   */
   async findTRXTransactionHash(transactionHash: string) {
     await this.driver.findElement({
       css: this.trxTransactionHashSelectorTestId,
@@ -181,26 +234,47 @@ export class TestDappTron {
     })
   }
 
+  /**
+   * Find the signed TRX transaction.
+   */
   async findSignedTRXTransaction() {
     await this.driver.findElement({
       testId: dataTestIds.testPage.sendTRX.signedTransaction,
     })
   }
 
+  /**
+   * Set the USDT recipient address.
+   *
+   * @param address - The USDT recipient address to set.
+   */
   async setUSDTRecipientAddress(address: string) {
     await this.driver.fill({testId: dataTestIds.testPage.sendUSDT.address}, address)
   }
 
+  /**
+   * Set the USDT amount.
+   *
+   * @param amount - The USDT amount to set.
+   */
   async setUSDTAmount(amount: string) {
     await this.driver.fill({testId: dataTestIds.testPage.sendUSDT.amount}, amount)
   }
 
+  /**
+   * Sign the USDT transaction.
+   */
   async signUSDTTransaction() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.sendUSDT.signTransaction,
     })
   }
 
+  /**
+   * Find the USDT transaction hash.
+   *
+   * @param transactionHash - The USDT transaction hash to find.
+   */
   async findUSDTTransactionHash(transactionHash: string) {
     await this.driver.findElement({
       css: this.usdtTransactionHashSelectorTestId,
@@ -208,12 +282,18 @@ export class TestDappTron {
     })
   }
 
+  /**
+   * Send the USDT transaction.
+   */
   async sendUSDTTransaction() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.sendUSDT.sendTransaction,
     })
   }
 
+  /**
+   * Find the signed USDT transaction.
+   */
   async findSignedUSDTTransaction() {
     await this.driver.findElement({
       testId: dataTestIds.testPage.sendUSDT.signedTransaction,
