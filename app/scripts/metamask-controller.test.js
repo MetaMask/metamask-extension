@@ -527,14 +527,13 @@ describe('MetaMaskController', () => {
         )
         .mockResolvedValue();
 
+      // Mock MultichainAccountService to avoid creating wallets in tests (it's being mocked
+      // on a per-test basis when needed)
       jest.spyOn(
-        metamaskController.keyringController,
-        'createNewVaultAndKeychain',
+        metamaskController.multichainAccountService,
+        'createMultichainAccountWallet',
       );
-      jest.spyOn(
-        metamaskController.keyringController,
-        'createNewVaultAndRestore',
-      );
+
       jest.spyOn(
         metamaskController.seedlessOnboardingController,
         'authenticate',
