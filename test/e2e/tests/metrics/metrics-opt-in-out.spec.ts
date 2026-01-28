@@ -159,9 +159,16 @@ describe('Metrics Opt In/Out events', function () {
         await onboardingCompletionPage.checkPageIsLoaded();
         await onboardingCompletionPage.completeOnboarding();
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.equal(events[0].event, 'Metrics Opt Out');
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          // `Metrics Opt Out` event is not tracked on Firefox browsers when user opts out of metrics
+          const events = await getEventPayloads(driver, mockedEndpoints);
+          assert.equal(events.length, 0);
+        } else {
+          // `Metrics Opt Out` event is tracked only on non-Firefox browsers when user opts out of metrics
+          const events = await getEventPayloads(driver, mockedEndpoints);
+          assert.equal(events.length, 1);
+          assert.equal(events[0].event, 'Metrics Opt Out');
+        }
       },
     );
   });

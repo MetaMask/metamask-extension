@@ -66,6 +66,8 @@ import {
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -86,6 +88,8 @@ export default function CreationSuccessful() {
   const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+
+  const isNotFireFox = getBrowserName() !== PLATFORM_FIREFOX;
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -227,7 +231,7 @@ export default function CreationSuccessful() {
           properties: {},
         },
         {
-          isOptIn: true, // We want to track the MetricsOptIn/Out event even if participateInMetaMetrics is false
+          isOptIn: isNotFireFox, // We want to track the MetricsOptIn/Out event even if participateInMetaMetrics is false in non-Firefox browsers
         },
       );
     }
@@ -282,6 +286,7 @@ export default function CreationSuccessful() {
     isSidePanelEnabled,
     isSidePanelSetAsDefault,
     participateInMetaMetrics,
+    isNotFireFox,
   ]);
 
   const renderDoneButton = () => {
