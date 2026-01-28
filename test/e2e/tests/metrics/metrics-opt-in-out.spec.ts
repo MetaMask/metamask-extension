@@ -8,6 +8,7 @@ import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboardin
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
+import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -29,7 +30,7 @@ async function mockSegment(mockServer: Mockttp) {
             type: 'track',
             event: 'Metrics Opt In',
             properties: {
-              category: 'App',
+              category: 'Onboarding',
             },
           },
         ],
@@ -47,7 +48,7 @@ async function mockSegment(mockServer: Mockttp) {
             type: 'track',
             event: 'Metrics Opt Out',
             properties: {
-              category: 'App',
+              category: 'Onboarding',
             },
           },
         ],
@@ -99,6 +100,10 @@ describe('Metrics Opt In/Out events', function () {
           await onboardingMetricsPage.clickOnContinueButton();
         }
 
+        const onboardingCompletionPage = new OnboardingCompletePage(driver);
+        await onboardingCompletionPage.checkPageIsLoaded();
+        await onboardingCompletionPage.completeOnboarding();
+
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
         assert.equal(events[0].event, 'Metrics Opt In');
@@ -149,6 +154,10 @@ describe('Metrics Opt In/Out events', function () {
           await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
           await onboardingMetricsPage.clickOnContinueButton();
         }
+
+        const onboardingCompletionPage = new OnboardingCompletePage(driver);
+        await onboardingCompletionPage.checkPageIsLoaded();
+        await onboardingCompletionPage.completeOnboarding();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
