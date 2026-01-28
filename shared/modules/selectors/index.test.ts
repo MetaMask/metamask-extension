@@ -147,7 +147,7 @@ describe('Selectors', () => {
           ...state,
           metamask: {
             ...state.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+            ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
           },
         };
         const result = getChainSupportsSmartTransactions(newState);
@@ -161,14 +161,14 @@ describe('Selectors', () => {
         const state = createMockState(); // Has allowed chain ID
         // Should be false for non-allowed chain ID regardless of state
         expect(
-          getChainSupportsSmartTransactions(state, CHAIN_IDS.POLYGON),
+          getChainSupportsSmartTransactions(state, CHAIN_IDS.OPTIMISM),
         ).toBe(false);
 
         const nonSupportedState = {
           ...state,
           metamask: {
             ...state.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+            ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
           },
         };
         // Should be true for allowed chain ID regardless of state
@@ -251,14 +251,14 @@ describe('Selectors', () => {
     );
 
     jestIt(
-      'returns false if feature flag is enabled, not a HW and is Polygon network',
+      'returns false if feature flag is enabled, not a HW and is Optimism network',
       () => {
         const state = createSwapsMockStore();
         const newState = {
           ...state,
           metamask: {
             ...state.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
+            ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
           },
         };
         expect(getSmartTransactionsEnabled(newState)).toBe(false);
@@ -384,16 +384,18 @@ describe('Selectors', () => {
     jestIt('prioritizes provided chainId parameter over state chainId', () => {
       const state = createSwapsMockStore(); // Ethereum network (supported)
 
-      // Should be false for Polygon chainId regardless of state
-      expect(getSmartTransactionsEnabled(state, CHAIN_IDS.POLYGON)).toBe(false);
+      // Should be false for Optimism chainId regardless of state
+      expect(getSmartTransactionsEnabled(state, CHAIN_IDS.OPTIMISM)).toBe(
+        false,
+      );
 
       // Should be true for BSC chainId (supported) regardless of state
-      const polygonState = {
+      const optimismState = {
         ...state,
         metamask: {
           ...state.metamask,
           ...mockNetworkState(
-            { chainId: CHAIN_IDS.POLYGON },
+            { chainId: CHAIN_IDS.OPTIMISM },
             {
               chainId: CHAIN_IDS.BSC,
               rpcUrl: 'https://bsc-dataseed.binance.org/',
@@ -401,7 +403,7 @@ describe('Selectors', () => {
           ),
         },
       };
-      expect(getSmartTransactionsEnabled(polygonState, CHAIN_IDS.BSC)).toBe(
+      expect(getSmartTransactionsEnabled(optimismState, CHAIN_IDS.BSC)).toBe(
         true,
       );
     });
@@ -558,15 +560,15 @@ describe('Selectors', () => {
       const state = createMockState(); // Has enabled smart transactions
 
       // Should be false for non-supported chain ID despite state supporting it
-      expect(getIsSmartTransaction(state, CHAIN_IDS.POLYGON)).toBe(false);
+      expect(getIsSmartTransaction(state, CHAIN_IDS.OPTIMISM)).toBe(false);
 
-      // Create a state with Polygon (non-supported) chain ID
+      // Create a state with Optimism (non-supported) chain ID
       const nonSupportedState = {
         ...state,
         metamask: {
           ...state.metamask,
           ...mockNetworkState(
-            { chainId: CHAIN_IDS.POLYGON },
+            { chainId: CHAIN_IDS.OPTIMISM },
             {
               chainId: CHAIN_IDS.MAINNET,
               rpcUrl: 'https://mainnet.infura.io/v3/',
