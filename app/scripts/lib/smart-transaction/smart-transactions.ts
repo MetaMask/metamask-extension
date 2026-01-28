@@ -40,6 +40,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import { ControllerFlatState } from '../../controller-init/controller-list';
 import { getTransactionById } from '../transaction/util';
+import { getClientForTransactionMetadata } from './utils';
 
 const namespace = 'SmartTransactions';
 
@@ -477,7 +478,10 @@ class SmartTransactionHook {
           );
           const signedTx: SignedTransactionWithMetadata = { tx: tx.signedTx };
           if (transactionMeta) {
-            signedTx.metadata = { txType: transactionMeta.type };
+            signedTx.metadata = {
+              txType: transactionMeta.type,
+              client: getClientForTransactionMetadata(),
+            };
           }
           return signedTx;
         });
@@ -486,7 +490,10 @@ class SmartTransactionHook {
       signedTransactionsWithMetadata = [
         {
           tx: this.#signedTransactionInHex,
-          metadata: { txType: this.#transactionMeta.type },
+          metadata: {
+            txType: this.#transactionMeta.type,
+            client: getClientForTransactionMetadata(),
+          },
         },
       ];
     } else if (getFeesResponse) {
@@ -497,7 +504,10 @@ class SmartTransactionHook {
       );
       signedTransactionsWithMetadata = signed.map((signedTx) => ({
         tx: signedTx,
-        metadata: { txType: this.#transactionMeta.type },
+        metadata: {
+          txType: this.#transactionMeta.type,
+          client: getClientForTransactionMetadata(),
+        },
       }));
     }
     signedTransactions = signedTransactionsWithMetadata.map((tx) => tx.tx);
