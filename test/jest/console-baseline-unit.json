@@ -371,6 +371,8 @@
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1,
       "MetaMask: Chain processing errors": 2,
+      "error: StorageService: Failed to get keys": 33,
+      "error: TokenListController: Failed to load cache": 33,
       "Test errors: Fetch failures": 4
     },
     "ui/components/multichain/pages/gator-permissions/components/review-gator-permission-item.test.tsx": {
