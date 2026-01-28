@@ -7,7 +7,7 @@ INFURA_PROJECT_ID=00000000000
 ; Set this to `true` to enable Seedless onboarding (Social login flow)
 SEEDLESS_ONBOARDING_ENABLED='false'
 
-; Set this to `true` to enable Metamask Shield
+; Set this to `true` to enable Metamask ShieldШ
 METAMASK_SHIELD_ENABLED='false'
 
 ; Backend WebSocket URL
@@ -78,3 +78,7 @@ BLOCKAID_PUBLIC_KEY=
 
 ; Set this to `true` to enable `AuthenticationController` environment config to match the extension's build type. If set to `true`, `beta` and `uat` builds will result in using `Env.UAT`. Leaving it to `false` or unset will use `Env.PRD`.
 ; FORCE_AUTH_MATCH_BUILD='false'
+const trimmed = line.trim();
+if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith(';')) {
+  continue;
+}
