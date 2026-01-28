@@ -91,9 +91,21 @@ export async function migrate(
       `Migration #${version}: ${getErrorMessage(error)}`,
     );
     captureException(newError);
-    // Even though we encountered an error, we need the migration to pass for
-    // the migrator tests to work
-    versionedData.data = originalVersionedData.data;
+
+    // Initialize networkConfigurationsByChainId to empty object if missing or invalid
+    // to prevent subsequent migrations from failing
+    if (
+      hasProperty(versionedData.data, 'NetworkController') &&
+      isObject(versionedData.data.NetworkController)
+    ) {
+      const networkController = versionedData.data.NetworkController;
+      if (
+        !hasProperty(networkController, 'networkConfigurationsByChainId') ||
+        !isObject(networkController.networkConfigurationsByChainId)
+      ) {
+        networkController.networkConfigurationsByChainId = {};
+      }
+    }
   }
 
   return versionedData;

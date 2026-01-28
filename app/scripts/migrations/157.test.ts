@@ -104,7 +104,7 @@ describe(`migration #${VERSION}`, () => {
     );
   });
 
-  it('logs an error and returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is missing', async () => {
+  it('logs an error and initializes networkConfigurationsByChainId to empty object if missing', async () => {
     process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -114,7 +114,11 @@ describe(`migration #${VERSION}`, () => {
     };
     const expectedVersionData = {
       meta: { version: VERSION },
-      data: oldVersionedData.data,
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {},
+        },
+      },
     };
 
     const newVersionedData = await migrate(oldVersionedData);
@@ -128,7 +132,7 @@ describe(`migration #${VERSION}`, () => {
     );
   });
 
-  it('logs an error and returns a new version of the data unchanged if NetworkController.networkConfigurationsByChainId is not an object', async () => {
+  it('logs an error and initializes networkConfigurationsByChainId to empty object if not an object', async () => {
     process.env.INFURA_PROJECT_ID = INFURA_PROJECT_ID;
     const oldVersionedData = {
       meta: { version: VERSION - 1 },
@@ -140,7 +144,11 @@ describe(`migration #${VERSION}`, () => {
     };
     const expectedVersionData = {
       meta: { version: VERSION },
-      data: oldVersionedData.data,
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {},
+        },
+      },
     };
 
     const newVersionedData = await migrate(oldVersionedData);
