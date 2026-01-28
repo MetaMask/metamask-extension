@@ -370,9 +370,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           dispatch(showPermittedNetworkToast());
         }
 
-        await setNetworkClientIdForDomain(
-          selectedTabOrigin,
-          finalNetworkClientId,
+        await dispatch(
+          setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId),
         );
       }
 

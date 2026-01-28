@@ -54,7 +54,9 @@ jest.mock('../../../store/actions.ts', () => ({
   },
   setNetworkClientIdForDomain: jest.fn((network, id) => {
     mockSetNetworkClientIdForDomain(network, id);
-    return { type: 'SET_NETWORK_CLIENT_ID_FOR_DOMAIN', network, id };
+    return jest.fn(async () => {
+      // Thunk action that returns a promise
+    });
   }),
   setTokenNetworkFilter: () => {
     mockSetTokenNetworkFilter();
