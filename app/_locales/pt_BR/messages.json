@@ -674,9 +674,41 @@
     "message": "Código: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
+  "errorPageContactSupport": {
+    "message": "Falar com o suporte",
+    "description": "Button for contact MM support"
+  },
+  "errorPageDescribeUsWhatHappened": {
+    "message": "Descreva o que aconteceu",
+    "description": "Button for submitting report to sentry"
+  },
+  "errorPageInfo": {
+    "message": "Suas informações não podem ser exibidas. Não se preocupe, sua carteira e fundos estão seguros.",
+    "description": "Information banner shown in the error page"
+  },
+  "errorPageMessageTitle": {
+    "message": "Mensagem de erro",
+    "description": "Title for description, which is displayed for debugging purposes"
+  },
+  "errorPageSentryFormTitle": {
+    "message": "Descreva o que aconteceu",
+    "description": "In sentry feedback form, The title at the top of the feedback form."
+  },
+  "errorPageSentryMessagePlaceholder": {
+    "message": "Compartilhar detalhes como a forma de reproduzir o erro nos ajudará a corrigir o problema.",
+    "description": "In sentry feedback form, The placeholder for the feedback description input field."
+  },
+  "errorPageSentrySuccessMessageText": {
+    "message": "Obrigado! Verificaremos em breve.",
+    "description": "In sentry feedback form, The message displayed after a successful feedback submission."
+  },
   "errorPageTitle": {
     "message": "A MetaMask encontrou um erro",
     "description": "Title of generic error page"
+  },
+  "errorPageTryAgain": {
+    "message": "Tentar novamente",
+    "description": "Button for try again"
   },
   "errorStack": {
     "message": "Lista:",
