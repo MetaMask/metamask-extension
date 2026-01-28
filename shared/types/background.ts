@@ -216,6 +216,7 @@ export type ControllerStatePropertiesEnumerated = {
   selectedNetworkClientId: NetworkState['selectedNetworkClientId'];
   orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
   enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'];
+  nativeAssetIdentifiers: NetworkEnablementControllerState['nativeAssetIdentifiers'];
   allNftContracts: NftControllerState['allNftContracts'];
   allNfts: NftControllerState['allNfts'];
   ignoredNfts: NftControllerState['ignoredNfts'];

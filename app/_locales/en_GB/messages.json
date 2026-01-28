@@ -457,6 +457,9 @@
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
   },
+  "alertActionEditNetworkFee": {
+    "message": "Edit network fee"
+  },
   "alertActionUpdateGas": {
     "message": "Update gas limit"
   },
@@ -527,6 +530,9 @@
   "alertMessageSignInWrongAccount": {
     "message": "This site is asking you to sign in using the wrong account."
   },
+  "alertMessageSuggestedGasFeeHigh": {
+    "message": "This site is suggesting a higher network fee than necessary. Edit the network fee to pay less."
+  },
   "alertMessageTokenTrustSignalMalicious": {
     "message": "This token has been identified as malicious. Interacting with this token may result in a loss of funds."
   },
@@ -592,6 +598,9 @@
   },
   "alertReasonSignIn": {
     "message": "Suspicious sign-in request"
+  },
+  "alertReasonSuggestedGasFeeHigh": {
+    "message": "High site fee"
   },
   "alertReasonTokenTrustSignalMalicious": {
     "message": "Malicious token"

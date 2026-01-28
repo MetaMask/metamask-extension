@@ -24,6 +24,7 @@ import SitePermissionPage from '../../page-objects/pages/permission/site-permiss
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
@@ -345,7 +346,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
 
-        await testDapp.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
