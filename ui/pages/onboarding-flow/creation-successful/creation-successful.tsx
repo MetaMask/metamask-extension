@@ -191,26 +191,35 @@ export default function CreationSuccessful() {
   }, [navigate, t]);
 
   const handleOnDoneNavigationWithSidepanelOpen = useCallback(
-    (deferredDeepLinkResult: DeferredDeepLinkRoute) => {
-      if (!deferredDeepLinkResult) {
-        return;
+    (
+      deferredDeepLinkResult: DeferredDeepLinkRoute,
+      hasDeferredDeepLink: boolean,
+    ) => {
+      if (deferredDeepLinkResult) {
+        if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
+        ) {
+          window.location.assign(deferredDeepLinkResult.url);
+        } else if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+        ) {
+          navigate(deferredDeepLinkResult.route);
+        }
       }
 
-      if (deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect) {
-        window.location.assign(deferredDeepLinkResult.url);
-      } else if (
-        deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
-      ) {
-        navigate(deferredDeepLinkResult.route);
+      // Clean up deferred deep link from the state (both: expired or active)
+      if (hasDeferredDeepLink) {
+        dispatch(removeDeferredDeepLink());
       }
-
-      dispatch(removeDeferredDeepLink());
     },
     [dispatch, navigate],
   );
 
   const handleOnDoneNavigation = useCallback(
-    (deferredDeepLinkResult: DeferredDeepLinkRoute) => {
+    (
+      deferredDeepLinkResult: DeferredDeepLinkRoute,
+      hasDeferredDeepLink: boolean,
+    ) => {
       if (deferredDeepLinkResult) {
         if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
@@ -224,10 +233,13 @@ export default function CreationSuccessful() {
         } else {
           navigate(DEFAULT_ROUTE);
         }
-
-        dispatch(removeDeferredDeepLink());
       } else {
         navigate(DEFAULT_ROUTE);
+      }
+
+      // Clean up deferred deep link from the state (both: expired or active)
+      if (hasDeferredDeepLink) {
+        dispatch(removeDeferredDeepLink());
       }
     },
     [dispatch, navigate],
@@ -299,7 +311,10 @@ export default function CreationSuccessful() {
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
 
-            handleOnDoneNavigationWithSidepanelOpen(deferredDeepLinkResult);
+            handleOnDoneNavigationWithSidepanelOpen(
+              deferredDeepLinkResult,
+              Boolean(deferredDeepLink),
+            );
 
             return;
           }
@@ -312,7 +327,7 @@ export default function CreationSuccessful() {
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
 
-    handleOnDoneNavigation(deferredDeepLinkResult);
+    handleOnDoneNavigation(deferredDeepLinkResult, Boolean(deferredDeepLink));
   }, [
     isFromReminder,
     deferredDeepLink,
