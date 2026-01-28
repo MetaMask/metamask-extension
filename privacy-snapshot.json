@@ -8,6 +8,7 @@
   "api.segment.io",
   "api.simplehash.com",
   "api.testnet.solana.com",
+  "api.trongrid.io",
   "api.web3auth.io",
   "api.web3modal.com",
   "api.web3modal.org",
@@ -105,6 +106,7 @@
   "sourcify.dev",
   "start.metamask.io",
   "static.cx.metamask.io",
+  "subscription.api.cx.metamask.io",
   "subscription.dev-api.cx.metamask.io",
   "support.metamask-institutional.io",
   "support.metamask.io",
@@ -123,7 +125,5 @@
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
-  "www.4byte.directory",
-  "api.trongrid.io",
-  "subscription.api.cx.metamask.io"
+  "www.4byte.directory"
 ]
