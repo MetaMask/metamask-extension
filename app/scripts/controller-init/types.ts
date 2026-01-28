@@ -195,6 +195,22 @@ export type ControllerInitRequest<
   }): void;
 
   /**
+   * Create a multiplexed CAIP-25 stream for connecting to an untrusted context like a
+   * like a website, Snap, or other extension.
+   *
+   * @param options - The options for creating the stream.
+   * @param options.connectionStream - The stream to connect to the untrusted
+   * context.
+   * @param options.sender - The sender of the stream.
+   * @param options.subjectType - The type of the subject of the stream.
+   */
+  setupUntrustedCommunicationCaip(options: {
+    connectionStream: Duplex;
+    sender: Sender;
+    subjectType: SubjectType;
+  }): void;
+
+  /**
    * Lock the extension.
    */
   setLocked(): void;

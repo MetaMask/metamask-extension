@@ -309,6 +309,7 @@ const AssetPage = ({
           balance,
           secondary: balance ? Number(balance) : 0,
           accountType: bip44Asset?.accountType,
+          assetId: bip44Asset?.assetId ?? assetId,
         }
       : {
           ...mutichainTokenWithFiatAmount,
@@ -528,13 +529,11 @@ const AssetPage = ({
             {showUnifiedTransactionList ? (
               <UnifiedTransactionList
                 tokenAddress={address}
-                hideNetworkFilter
                 tokenChainIdOverride={chainId}
               />
             ) : (
               <TransactionList
                 tokenAddress={address}
-                hideNetworkFilter
                 overrideFilterForCurrentChain={type === AssetType.native}
               />
             )}

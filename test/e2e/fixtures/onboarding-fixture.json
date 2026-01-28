@@ -36,8 +36,8 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentAppVersion": "13.12.0",
-      "currentMigrationVersion": 184,
+      "currentAppVersion": "13.17.0",
+      "currentMigrationVersion": 189,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -64,8 +64,10 @@
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohortTxType": null,
+      "pna25Acknowledged": false,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
+      "recoveryPhraseReminderLastShown": 7952515200000,
       "shieldEndingToastLastClickedOrClosed": null,
       "shieldPausedToastLastClickedOrClosed": null,
       "showAccountBanner": true,
@@ -74,7 +76,6 @@
       "showNetworkBanner": true,
       "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
-      "showStorageErrorToast": false,
       "showTestnetMessageInDropdown": true,
       "slides": [],
       "surveyLinkLastClickedOrClosed": null,
@@ -82,11 +83,9 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "ApprovalController": {},
     "AuthenticationController": {
       "isSignedIn": false
     },
-    "BridgeController": {},
     "BridgeStatusController": {
       "txHistory": {}
     },
@@ -95,7 +94,8 @@
       "claimsConfigurations": {
         "supportedNetworks": ["0x1", "0xe708"],
         "validSubmissionWindowDays": 21
-      }
+      },
+      "drafts": []
     },
     "CurrencyController": {
       "currencyRates": {
@@ -107,12 +107,9 @@
       },
       "currentCurrency": "usd"
     },
-    "DeFiPositionsController": {},
-    "DecryptMessageController": {},
     "DelegationController": {
       "delegations": {}
     },
-    "EncryptionPublicKeyController": {},
     "EnsController": {
       "ensEntries": {
         "0x1": {
@@ -168,8 +165,8 @@
       "nonRPCGasFeeApisDisabled": false
     },
     "GatorPermissionsController": {
-      "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
-      "isGatorPermissionsEnabled": false
+      "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
+      "isGatorPermissionsEnabled": true
     },
     "KeyringController": {},
     "LoggingController": {
@@ -201,7 +198,8 @@
         }
       ],
       "traits": {
-        "install_date_ext": "2025-11-25"
+        "install_date_ext": "2026-01-22",
+        "storage_kind": "split"
       }
     },
     "MetaMetricsDataDeletionController": {
@@ -546,6 +544,19 @@
           "tron:3448148188": false,
           "tron:728126428": true
         }
+      },
+      "nativeAssetIdentifiers": {
+        "eip155:1": "eip155:1/slip44:60",
+        "eip155:10": "eip155:10/slip44:60",
+        "eip155:10143": "eip155:10143/slip44:60",
+        "eip155:11155111": "eip155:11155111/slip44:60",
+        "eip155:137": "eip155:137/slip44:60",
+        "eip155:42161": "eip155:42161/slip44:60",
+        "eip155:56": "eip155:56/slip44:60",
+        "eip155:59141": "eip155:59141/slip44:1",
+        "eip155:59144": "eip155:59144/slip44:60",
+        "eip155:6343": "eip155:6343/slip44:1",
+        "eip155:8453": "eip155:8453/slip44:60"
       }
     },
     "NetworkOrderController": {
@@ -2005,6 +2016,7 @@
         "npm:@metamask/gator-permissions-snap": "mainnet",
         "npm:@metamask/institutional-wallet-snap": "mainnet",
         "npm:@metamask/message-signing-snap": "mainnet",
+        "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
@@ -2013,21 +2025,19 @@
       "coverageResults": {},
       "orderedTransactionHistory": []
     },
-    "SignatureController": {},
-    "SmartTransactionsController": {},
     "SnapController": {
       "snapStates": {},
       "snaps": {},
       "unencryptedSnapStates": {}
     },
-    "SnapInsightsController": {},
     "SnapInterfaceController": {
       "interfaces": {}
     },
     "SnapsRegistry": {
       "database": null,
       "databaseUnavailable": false,
-      "lastUpdated": null
+      "lastUpdated": null,
+      "signature": null
     },
     "SubjectMetadataController": {
       "subjectMetadata": {
@@ -2105,7 +2115,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "SwapsController": {},
     "TokenBalancesController": {
       "tokenBalances": {}
     },
@@ -2136,13 +2145,10 @@
       "isBackupAndSyncEnabled": true,
       "isContactSyncingEnabled": true
     },
-    "config": {},
-    "firstTimeInfo": {
-      "date": 1764061389865,
-      "version": "13.12.0"
-    }
+    "config": {}
   },
   "meta": {
-    "version": 185
+    "storageKind": "split",
+    "version": 189
   }
 }
