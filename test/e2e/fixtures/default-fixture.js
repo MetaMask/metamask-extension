@@ -103,6 +103,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             'bip122:000000000019d6689c085ae165831e93': true,
           },
         },
+        nativeAssetIdentifiers: {},
       },
       AccountOrderController: {
         pinnedAccountList: [],

@@ -1,6 +1,7 @@
 {
   "duringOnboarding": [
     "accounts.google.com",
+    "chainid.network",
     "firefox.settings.services.mozilla.com",
     "metamask.github.io",
     "sentry.io"
@@ -15,6 +16,7 @@
     "base-mainnet.infura.io",
     "bridge.api.cx.metamask.io",
     "bsc-mainnet.infura.io",
+    "chainid.network",
     "firefox.settings.services.mozilla.com",
     "linea-mainnet.infura.io",
     "mainnet.infura.io",
