@@ -15,6 +15,21 @@ export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
   return process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true';
 };
 
+/**
+ * Returns the JWT secret key for MPC account authentication.
+ * The key is stored as base64-encoded PEM in the environment variable.
+ *
+ * @returns The decoded PEM key, or undefined if not set.
+ */
+export const getJwtSecretKey = (): string | undefined => {
+  const encoded = process.env.JWT_SECRET_KEY;
+  if (!encoded) {
+    return undefined;
+  }
+  // Decode base64-encoded PEM key
+  return Buffer.from(encoded, 'base64').toString('utf-8');
+};
+
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };

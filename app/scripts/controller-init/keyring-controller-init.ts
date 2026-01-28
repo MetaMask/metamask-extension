@@ -17,6 +17,7 @@ import {
   LedgerIframeBridge,
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
+import { sign } from 'jsonwebtoken';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
@@ -24,11 +25,26 @@ import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
+import { getJwtSecretKey } from '../../../shared/modules/environment';
 import { ControllerInitFunction } from './types';
 import {
   KeyringControllerMessenger,
   KeyringControllerInitMessenger,
 } from './messengers';
+
+const generateToken = (userId: string): string => {
+  const jwtSecretKey = getJwtSecretKey();
+  if (!jwtSecretKey) {
+    throw new Error('DEV_JWT_PRIVATE_KEY environment variable is not set');
+  }
+
+  try {
+    return generateCentrifugoToken(userId);
+  } catch (error) {
+    console.error('Failed to generate JWT token', error);
+    throw new Error('Failed to generate JWT token', { cause: error });
+  }
+};
 
 /**
  * Initialize the keyring controller.
@@ -119,6 +135,7 @@ export const KeyringControllerInit: ControllerInitFunction<
       relayerURL: 'ws://localhost:8000/connection/websocket',
       initRole: 'initiator',
       webSocket: WebSocket,
+      getToken: generateToken,
     };
     additionalKeyrings.push(
       Object.assign(() => new MPCKeyring(opts), { type: KeyringTypes.mpc }),

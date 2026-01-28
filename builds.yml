@@ -468,3 +468,6 @@ env:
 
   # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
+
+  # JWT secret key for MPC account authentication
+  - JWT_SECRET_KEY: null

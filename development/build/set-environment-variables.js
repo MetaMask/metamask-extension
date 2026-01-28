@@ -93,6 +93,7 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
+    JWT_SECRET_KEY: variables.getMaybe('JWT_SECRET_KEY'),
   });
 };
 

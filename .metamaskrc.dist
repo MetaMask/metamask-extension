@@ -18,6 +18,10 @@ METAMASK_SHIELD_ENABLED='false'
 GOOGLE_CLIENT_ID=
 APPLE_CLIENT_ID=
 
+; JWT secret key for MPC account authentication (base64 encoded PEM)
+; To encode your PEM key: cat key.pem | base64 | tr -d '\n'
+;JWT_SECRET_KEY=
+
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=
