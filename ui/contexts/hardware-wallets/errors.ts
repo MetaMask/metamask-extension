@@ -302,7 +302,81 @@ export function parseErrorByType(
     }
   }
 
-  // TODO: Add mappings for other hardware wallets
+  // Trezor error message mappings
+  // These errors come from @trezor/connect-web SDK
+  if (walletType === HardwareWalletType.Trezor) {
+    const trezorErrorMappings: Array<{
+      patterns: string[];
+      code: ErrorCode;
+    }> = [
+      // User cancelled/rejected in popup
+      {
+        patterns: [
+          'popup closed',
+          'window closed',
+          'action cancelled by user',
+          'cancelled by user',
+          'method_cancelled',
+          'permissions not granted',
+        ],
+        code: ErrorCode.UserCancelled,
+      },
+      // User rejected on device
+      {
+        patterns: [
+          'pin cancelled',
+          'passphrase cancelled',
+          'rejected',
+          'user refused',
+          'pin invalid',
+        ],
+        code: ErrorCode.UserRejected,
+      },
+      // Popup blocked by browser
+      {
+        patterns: ['popup blocked', 'popup request timed out'],
+        code: ErrorCode.ConnectionClosed,
+      },
+      // Device locked
+      {
+        patterns: ['device is locked', 'device locked'],
+        code: ErrorCode.AuthenticationDeviceLocked,
+      },
+      // Device disconnected
+      {
+        patterns: [
+          'device disconnected',
+          'device was disconnected',
+          'session not found',
+          'device not found',
+        ],
+        code: ErrorCode.DeviceDisconnected,
+      },
+      // Connection/session issues
+      {
+        patterns: [
+          'device call in progress',
+          'transport is missing',
+          'iframe timeout',
+          'initialization failed',
+        ],
+        code: ErrorCode.ConnectionClosed,
+      },
+      // Timeout
+      {
+        patterns: ['timeout', 'timed out'],
+        code: ErrorCode.ConnectionTimeout,
+      },
+    ];
+
+    for (const { patterns, code } of trezorErrorMappings) {
+      if (patterns.some((pattern) => errorMessageLower.includes(pattern))) {
+        return createHardwareWalletError(code, walletType, errorMessage, {
+          cause,
+        });
+      }
+    }
+  }
 
   // Default to unknown error
   return createHardwareWalletError(

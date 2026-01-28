@@ -1,13 +1,11 @@
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import {
-  HardwareDeviceNames,
-  TREZOR_USB_VENDOR_IDS,
-} from '../../../../shared/constants/hardware-wallets';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import {
   getHdPathForHardwareKeyring,
   getTrezorDeviceStatus,
 } from '../../../store/actions';
-import { createHardwareWalletError } from '../errors';
+import { createHardwareWalletError, getDeviceEventForError } from '../errors';
+import { toHardwareWalletError } from '../rpcErrorUtils';
 import {
   DeviceEvent,
   HardwareWalletType,
@@ -15,9 +13,10 @@ import {
   type HardwareWalletAdapterOptions,
 } from '../types';
 import {
-  extractHardwareWalletErrorCode,
-  reconstructHardwareWalletError,
-} from '../rpcErrorUtils';
+  getConnectedTrezorDevices,
+  isWebUsbAvailable,
+  subscribeToWebUsbEvents,
+} from '../webConnectionUtils';
 
 const LOG_TAG = '[TrezorAdapter]';
 
@@ -35,18 +34,37 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
   private currentDeviceId: string | null = null;
 
+  private unsubscribeUsbEvents: (() => void) | null = null;
+
   constructor(options: HardwareWalletAdapterOptions) {
     this.options = options;
+    this.setupUsbEventListeners();
   }
 
   /**
-   * Check if WebUSB is available
+   * Set up WebUSB event listeners for proactive disconnect detection.
+   * This allows the UI to immediately reflect when the device is unplugged,
+   * rather than waiting until the next operation attempt.
    */
-  private isWebUSBAvailable(): boolean {
-    return (
-      typeof window !== 'undefined' &&
-      typeof window.navigator !== 'undefined' &&
-      'usb' in window.navigator
+  private setupUsbEventListeners(): void {
+    this.unsubscribeUsbEvents = subscribeToWebUsbEvents(
+      HardwareWalletType.Trezor,
+      // onConnect - device plugged in (could be used for auto-reconnect in the future)
+      () => {
+        // Currently no-op: we don't auto-reconnect when device is plugged in
+        // The user will trigger connect through UI action
+      },
+      // onDisconnect - device unplugged
+      () => {
+        // Only emit disconnect if we were tracking a connection
+        if (this.connected || this.currentDeviceId) {
+          this.connected = false;
+          this.currentDeviceId = null;
+          this.options.onDeviceEvent({
+            event: DeviceEvent.Disconnected,
+          });
+        }
+      },
     );
   }
 
@@ -54,23 +72,8 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Check if device is currently connected via WebUSB
    */
   private async checkDeviceConnected(): Promise<boolean> {
-    if (!this.isWebUSBAvailable()) {
-      return false;
-    }
-
-    try {
-      const devices = await window.navigator.usb.getDevices();
-      return devices.some((device) =>
-        TREZOR_USB_VENDOR_IDS.some(
-          (filter) =>
-            device.vendorId === filter.vendorId &&
-            device.productId === filter.productId,
-        ),
-      );
-    } catch (error) {
-      console.error(LOG_TAG, 'Error checking device connection:', error);
-      return false;
-    }
+    const devices = await getConnectedTrezorDevices();
+    return devices.length > 0;
   }
 
   private async getHdPath(): Promise<string> {
@@ -90,9 +93,9 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
     try {
       // Step 1: Check WebUSB availability
-      if (!this.isWebUSBAvailable()) {
+      if (!isWebUsbAvailable()) {
         throw createHardwareWalletError(
-          ErrorCode.ConnTransportMissing,
+          ErrorCode.ConnectionTransportMissing,
           HardwareWalletType.Trezor,
           'WebUSB is not available',
         );
@@ -102,7 +105,7 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       const isDeviceConnected = await this.checkDeviceConnected();
       if (!isDeviceConnected) {
         throw createHardwareWalletError(
-          ErrorCode.DEVICE_STATE_003,
+          ErrorCode.DeviceDisconnected,
           HardwareWalletType.Trezor,
           'Trezor device not found. Please connect your Trezor device.',
         );
@@ -118,24 +121,14 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       this.connected = false;
       this.currentDeviceId = null;
 
-      // Extract the error code from the JsonRpcError
-      const errorCode = extractHardwareWalletErrorCode(error);
+      const hwError = toHardwareWalletError(error, HardwareWalletType.Trezor);
+      const deviceEvent = getDeviceEventForError(hwError.code);
 
-      if (errorCode) {
-        // Call appropriate callbacks based on error code
-        if (
-          errorCode === ErrorCode.AUTH_LOCK_001 ||
-          errorCode === ErrorCode.AUTH_LOCK_002
-        ) {
-          this.options.onDeviceLocked();
-        }
-      }
+      this.options.onDeviceEvent({
+        event: deviceEvent,
+        error: hwError,
+      });
 
-      // Reconstruct and re-throw as a proper HardwareWalletError
-      const hwError = reconstructHardwareWalletError(
-        error,
-        HardwareWalletType.Trezor,
-      );
       throw hwError;
     }
   }
@@ -172,6 +165,10 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   destroy(): void {
     console.log(LOG_TAG, 'Destroying adapter');
 
+    // Unsubscribe from WebUSB events
+    this.unsubscribeUsbEvents?.();
+    this.unsubscribeUsbEvents = null;
+
     this.connected = false;
     this.currentDeviceId = null;
     this.pendingOperation = false;
@@ -197,21 +194,28 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * @param deviceId - The device ID to verify
    * @returns true if device is ready
    */
-  async verifyDeviceReady(deviceId: string): Promise<boolean> {
+  async ensureDeviceReady(deviceId: string): Promise<boolean> {
+    // If connected to a different device, reconnect to the requested device
+    if (this.isConnected() && this.currentDeviceId !== deviceId) {
+      await this.disconnect();
+    }
+
+    if (!this.isConnected()) {
+      await this.connect(deviceId);
+    }
+
     try {
       console.log(LOG_TAG, 'Verifying device is ready');
-      if (!this.isConnected()) {
-        await this.connect(deviceId);
-      }
 
-      // // check if the device session has been created.
+      // Check if the device session has been created.
       const {
         _state: { sessionId },
       } = await getTrezorDeviceStatus();
       if (!sessionId) {
         throw createHardwareWalletError(
-          ErrorCode.DEVICE_STATE_002,
+          ErrorCode.ConnectionClosed,
           HardwareWalletType.Trezor,
+          'Trezor session not established. Please reconnect your device.',
         );
       }
 
@@ -219,51 +223,48 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     } catch (error) {
       console.error(LOG_TAG, 'Error verifying device ready:', error);
 
-      // Extract the error code from the JsonRpcError
-      // When errors cross the RPC boundary, HardwareWalletError properties
-      // are serialized into JsonRpcError.data
-      const errorCode = extractHardwareWalletErrorCode(error);
+      if (error instanceof HardwareWalletError && error.code !== undefined) {
+        // Emit appropriate device events with the properly reconstructed error
+        const deviceEvent = getDeviceEventForError(
+          error.code,
+          DeviceEvent.Disconnected,
+        );
+        this.options.onDeviceEvent({
+          event: deviceEvent,
+          error,
+        });
 
-      console.log(LOG_TAG, 'Extracted error code:', errorCode);
+        // Reset connection state for disconnection-related errors
+        const shouldResetConnection = [
+          ErrorCode.DeviceDisconnected,
+          ErrorCode.ConnectionClosed,
+        ].includes(error.code);
 
-      if (errorCode) {
-        // Emit appropriate device events based on the error code for UI state updates
-        if (
-          errorCode === ErrorCode.AUTH_LOCK_001 ||
-          errorCode === ErrorCode.AUTH_LOCK_002
-        ) {
-          console.log(LOG_TAG, 'Emitting DEVICE_LOCKED event');
-          this.options.onDeviceEvent({
-            event: DeviceEvent.DeviceLocked,
-            error: error as unknown as Error,
-          });
-        } else if (errorCode === ErrorCode.DEVICE_STATE_003) {
-          console.log(LOG_TAG, 'Emitting DISCONNECTED event');
-          this.options.onDeviceEvent({
-            event: DeviceEvent.Disconnected,
-            error: error as unknown as Error,
-          });
-        } else {
-          // Catch-all for other errors
-          console.log(LOG_TAG, 'Emitting DISCONNECTED event (catch-all)');
-          this.options.onDeviceEvent({
-            event: DeviceEvent.Disconnected,
-            error: error as unknown as Error,
-          });
+        if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
+          this.connected = false;
+          this.currentDeviceId = null;
         }
+
+        throw error;
       }
 
-      // Reconstruct the HardwareWalletError before re-throwing
-      // This ensures consumers of this error get a proper HardwareWalletError instance
-      const hwError = reconstructHardwareWalletError(
-        error,
-        HardwareWalletType.Trezor,
+      // Convert unknown errors to HardwareWalletError
+      const hwError = toHardwareWalletError(error, HardwareWalletType.Trezor);
+      const deviceEvent = getDeviceEventForError(
+        hwError.code,
+        DeviceEvent.Disconnected,
       );
 
-      console.log(LOG_TAG, 'Re-throwing reconstructed error:', {
-        code: hwError.code,
-        userActionable: hwError.userActionable,
+      this.options.onDeviceEvent({
+        event: deviceEvent,
+        error: hwError,
       });
+
+      // Reset connection state for disconnection-related errors
+      if (deviceEvent === DeviceEvent.Disconnected) {
+        this.connected = false;
+        this.currentDeviceId = null;
+      }
 
       throw hwError;
     }
