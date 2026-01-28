@@ -42,7 +42,7 @@ const BridgeAssetV2Schema = intersection([
     /**
      * URL for token icon
      */
-    iconUrl: optional(string()),
+    iconUrl: nullable(optional(string())),
     noFee: optional(
       type({
         isDestination: nullable(optional(boolean())),

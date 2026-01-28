@@ -105,7 +105,7 @@ export const BridgeAsset = React.forwardRef(
         >
           <AvatarToken
             name={asset.symbol}
-            src={asset.iconUrl}
+            src={asset.iconUrl ?? undefined}
             size={AvatarTokenSize.Md}
           />
         </BadgeWrapper>
