@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "브릿지 대상:"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "이 토큰을 직접 추가했다면, 브리지를 진행하기 전에 자금에 대한 위험을 충분히 인지하고 계셔야 합니다."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "이 토큰은 검증할 수 없습니다."
-  },
   "bridgeTransactionProgress": {
     "message": "트랜잭션 $1/2"
   },
@@ -2009,6 +2003,10 @@
   },
   "defiEmptyDescription": {
     "message": "지갑에서 바로 대출하고 차입하고 거래해 보세요."
+  },
+  "defiReferralCheckboxLabel": {
+    "message": "MetaMask가 추천인 코드를 추가하도록 허용하세요. 추가하면 변경할 수 없습니다. 사이트는 약관에 따라 할인을 제공합니다. MetaMask는 수수료를 받습니다.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
   "defiTabErrorContent": {
     "message": "나중에 다시 방문해 주세요."
@@ -2998,17 +2996,9 @@
   "honeypotTitle": {
     "message": "허니팟"
   },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "MetaMask가 추천인 코드를 추가하도록 허용하세요. 추가하면 변경할 수 없습니다. 사이트는 약관에 따라 할인을 제공합니다. MetaMask는 수수료를 받습니다.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMask 추천인 코드로 거래 시 최대 4% 절약하세요.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
@@ -8216,9 +8206,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"
-  },
-  "yourNetworks": {
-    "message": "내 네트워크"
   },
   "yourPrivateSeedPhrase": {
     "message": "비밀복구구문"

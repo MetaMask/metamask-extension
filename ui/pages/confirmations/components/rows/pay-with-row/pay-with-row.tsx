@@ -29,10 +29,7 @@ import { isHardwareAccount } from '../../../../multichain-accounts/account-detai
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { PayWithModal } from '../../modals/pay-with-modal';
-import {
-  GasFeeTokenIcon,
-  GasFeeTokenIconSize,
-} from '../../confirm/info/shared/gas-fee-token-icon';
+import { TokenIcon } from '../../token-icon';
 
 export const PayWithRowSkeleton = () => {
   return (
@@ -65,6 +62,7 @@ export const PayWithRow = () => {
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const from = currentConfirmation?.txParams?.from;
+  const chainId = payToken?.chainId;
 
   const fromAccount = useSelector((state) =>
     getInternalAccountByAddress(state, from ?? ''),
@@ -88,7 +86,7 @@ export const PayWithRow = () => {
     [fiatFormatter, payToken?.balanceUsd],
   );
 
-  if (!payToken) {
+  if (!payToken || !chainId) {
     return <PayWithRowSkeleton />;
   }
 
@@ -100,7 +98,7 @@ export const PayWithRow = () => {
       <Box
         data-testid="pay-with-row"
         onClick={handleClick}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BackgroundColor.backgroundAlternative}
         borderRadius={BorderRadius.pill}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -115,10 +113,7 @@ export const PayWithRow = () => {
           cursor: canEdit ? 'pointer' : 'default',
         }}
       >
-        <GasFeeTokenIcon
-          tokenAddress={payToken.address}
-          size={GasFeeTokenIconSize.Md}
-        />
+        <TokenIcon chainId={chainId} tokenAddress={payToken.address} />
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textDefault}

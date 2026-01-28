@@ -2,7 +2,11 @@ import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { SolMethod } from '@metamask/keyring-api';
 import { base58 } from 'ethers/lib/utils';
 import { assert } from '@metamask/superstruct';
-import { AllowedBridgeChainIds } from '../../constants/bridge';
+import {
+  KnownCaipNamespace,
+  parseCaipChainId,
+  type CaipChainId,
+} from '@metamask/utils';
 import {
   ScanTokenRequest,
   TokenFeature,
@@ -12,6 +16,7 @@ import {
   MessageScanResponse,
 } from '../../types/security-alerts-api';
 import { MultichainNetworks } from '../../constants/multichain/networks';
+import { decimalToPrefixedHex } from '../conversion.utils';
 
 const DOMAIN = 'https://metamask.io';
 
@@ -135,10 +140,7 @@ export function getTokenFeatureTitleDescriptionIds(
   return { ...tokenFeature, titleId, descriptionId };
 }
 
-export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
-  AllowedBridgeChainIds,
-  string | null
-> = {
+const CHAIN_ID_TO_SECURITY_API_NAME: Record<string, string | null> = {
   [CHAIN_IDS.MAINNET]: 'ethereum',
   [CHAIN_IDS.LINEA_MAINNET]: 'linea',
   [CHAIN_IDS.POLYGON]: 'polygon',
@@ -159,15 +161,26 @@ export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
 };
 
 export function convertChainIdToBlockAidChainName(
-  chainId: AllowedBridgeChainIds,
+  chainId: CaipChainId,
 ): string | null {
-  return CHAIN_ID_TO_SECURITY_API_NAME[chainId] ?? null;
+  try {
+    const { namespace, reference } = parseCaipChainId(chainId);
+    const name =
+      CHAIN_ID_TO_SECURITY_API_NAME[
+        namespace === KnownCaipNamespace.Eip155
+          ? decimalToPrefixedHex(reference)
+          : chainId
+      ];
+    return name ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchTxAlerts(
   params: {
     signal: AbortSignal;
-    chainId: AllowedBridgeChainIds;
+    chainId: CaipChainId;
     trade: string;
     accountAddress: string;
   } | null,

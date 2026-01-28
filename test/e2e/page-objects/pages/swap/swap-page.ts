@@ -51,8 +51,7 @@ class SwapPage {
   private readonly destinationTokenButton =
     '[data-testid="bridge-destination-button"]';
 
-  private readonly fromToText =
-    '[data-testid="multichain-token-list-button"] p';
+  private readonly fromToText = '[data-testid="bridge-asset"] p';
 
   private readonly moreQuotesButton = '[aria-label="More quotes"]';
 

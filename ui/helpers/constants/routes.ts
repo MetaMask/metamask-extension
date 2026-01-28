@@ -150,7 +150,9 @@ export const DEFI_ROUTE = '/defi';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
+export const PERPS_HOME_ROUTE = '/perps/home';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
+export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
@@ -161,6 +163,18 @@ export const ROUTES = [
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
+  { path: PERPS_ROUTE, label: 'Perps Tab', trackInAnalytics: true },
+  { path: PERPS_HOME_ROUTE, label: 'Perps Home', trackInAnalytics: true },
+  {
+    path: PERPS_MARKET_LIST_ROUTE,
+    label: 'Perps Market List',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+    label: 'Perps Market Detail',
+    trackInAnalytics: true,
+  },
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
@@ -557,13 +571,6 @@ export const ROUTES = [
   },
   // Additional routes
   { path: DEFI_ROUTE, label: 'DeFi', trackInAnalytics: false },
-  // Perps routes
-  { path: PERPS_ROUTE, label: 'Perps Home', trackInAnalytics: true },
-  {
-    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-    label: 'Perps Market Detail',
-    trackInAnalytics: true,
-  },
   {
     path: REVIEW_PERMISSIONS,
     label: 'Review Permissions',

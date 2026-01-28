@@ -80,6 +80,7 @@
     "showCopyAddressToast": "boolean",
     "showDataDeletionErrorModal": "boolean",
     "showDeleteMetaMetricsDataModal": "boolean",
+    "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
     "showNewSrpAddedToast": "boolean",
@@ -88,7 +89,6 @@
     "showPermittedNetworkToastOpen": "boolean",
     "showSupportDataConsentModal": "boolean",
     "showTermsOfUsePopup": "boolean",
-    "showWhatsNewPopup": "boolean",
     "singleExceptions": {
       "testKey": "null"
     },
@@ -280,7 +280,9 @@
       "unconnectedAccount": "boolean",
       "web3ShimUsage": "boolean"
     },
-    "allDeFiPositions": {},
+    "allDeFiPositions": {
+      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "null"
+    },
     "allDeFiPositionsCount": {},
     "allDetectedTokens": {},
     "allIgnoredAssets": {},
@@ -383,18 +385,52 @@
     "drafts": [],
     "enabledNetworkMap": {
       "bip122": {
-        "bip122:000000000019d6689c085ae165831e93": "boolean"
+        "bip122:000000000019d6689c085ae165831e93": "boolean",
+        "bip122:000000000933ea01ad0ee984209779ba": "boolean",
+        "bip122:00000000da84f2bafbbc53dee25a72ae": "boolean",
+        "bip122:00000008819873e925422c1ff0f99f7c": "boolean",
+        "bip122:regtest": "boolean"
       },
       "eip155": {
+        "0x1": "boolean",
         "0x539": "boolean",
-        "0x18c7": "boolean"
+        "0x18c7": "boolean",
+        "0xaa36a7": "boolean",
+        "0xe705": "boolean",
+        "0xe708": "boolean",
+        "0x279f": "boolean",
+        "0x2105": "boolean",
+        "0xa4b1": "boolean",
+        "0x38": "boolean",
+        "0xa": "boolean",
+        "0x89": "boolean",
+        "0x531": "boolean"
       },
       "solana": {
-        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "boolean"
+        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "boolean",
+        "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z": "boolean",
+        "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": "boolean"
       },
       "tron": {
-        "tron:728126428": "boolean"
+        "tron:728126428": "boolean",
+        "tron:3448148188": "boolean",
+        "tron:2494104990": "boolean"
       }
+    },
+    "nativeAssetIdentifiers": {
+      "eip155:1": "string",
+      "eip155:11155111": "string",
+      "eip155:59141": "string",
+      "eip155:59144": "string",
+      "eip155:1337": "string",
+      "eip155:10143": "string",
+      "eip155:8453": "string",
+      "eip155:42161": "string",
+      "eip155:56": "string",
+      "eip155:10": "string",
+      "eip155:137": "string",
+      "eip155:1329": "string",
+      "eip155:6343": "string"
     },
     "enableEnforcedSimulations": "boolean",
     "enableEnforcedSimulationsForTransactions": {},
