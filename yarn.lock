@@ -5836,6 +5836,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/providers": ^22.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/c44d5ede2f9bb9b54005ac3f0141788cf267edb489dc5feda53848caf9f106fa1f13f669bc4a7cda1e9d2123f925a8ac6594796d0a32a1741a7c8654526abba4
   languageName: node
   linkType: hard
