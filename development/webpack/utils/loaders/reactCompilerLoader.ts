@@ -1,4 +1,4 @@
-import { sep } from 'path';
+import { join, sep } from 'path';
 import {
   reactCompilerLoader,
   type ReactCompilerLoaderOption,
@@ -16,7 +16,7 @@ const getWrapperPath = (() => {
       // Resolve to source location regardless of whether running from source or compiled (.webpack) code
       // Use specific path segment replacement to avoid matching .webpack elsewhere in path
       // no need to escape for regex because we're using a specific path segment replacement
-      cachedPath = path.join(
+      cachedPath = join(
         __dirname.replace(
           `${sep}development${sep}.webpack${sep}`,
           `${sep}development${sep}webpack${sep}`,
