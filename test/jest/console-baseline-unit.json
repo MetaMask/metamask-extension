@@ -1038,6 +1038,10 @@
       "Reselect: Identity function warnings": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/hooks/alerts/transactions/useSuggestedGasFeeHighAlert.test.ts": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientPayTokenBalanceAlert.test.ts": {
       "Reselect: Input stability warnings": 2,
       "Reselect: Identity function warnings": 3,
