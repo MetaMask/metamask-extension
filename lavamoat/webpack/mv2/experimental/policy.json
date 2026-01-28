@@ -888,7 +888,7 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/assets-controllers>@metamask/phishing-controller": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/assets-controllers>@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -997,7 +997,7 @@
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/bridge-status-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
         "uuid": true
@@ -1118,7 +1118,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -1451,7 +1451,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
       }
@@ -1838,18 +1838,6 @@
         "punycode": true
       }
     },
-    "@metamask/assets-controllers>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
     "@metamask/bridge-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -1863,18 +1851,6 @@
       }
     },
     "@metamask/gas-fee-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2062,7 +2038,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
-        "@metamask/shield-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
         "lodash": true
@@ -2292,7 +2268,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
     },
@@ -2335,7 +2311,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -2360,7 +2336,7 @@
         "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-pay-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
         "lodash": true
