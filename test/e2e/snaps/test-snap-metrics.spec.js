@@ -271,6 +271,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Installed');
         assert.deepStrictEqual(events[1].properties, {
@@ -282,6 +283,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
         assert.deepStrictEqual(events[2].event, 'Snap Export Used');
         assert.deepStrictEqual(events[2].properties, {
@@ -294,6 +296,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
       },
     );
@@ -376,6 +379,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Install Rejected');
         assert.deepStrictEqual(events[1].properties, {
@@ -386,6 +390,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
       },
     );
@@ -466,6 +471,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Install Failed');
         assert.deepStrictEqual(events[1].properties, {
@@ -476,6 +482,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
       },
     );
@@ -611,6 +618,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
       },
     );
@@ -763,6 +771,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Updated');
         assert.deepStrictEqual(events[1].properties, {
@@ -775,6 +784,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
       },
     );
@@ -919,6 +929,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Rejected');
         assert.deepStrictEqual(events[1].properties, {
@@ -929,6 +940,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
       },
     );
@@ -1064,6 +1076,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Failed');
         assert.deepStrictEqual(events[1].properties, {
@@ -1074,6 +1087,7 @@ describe('Test Snap Metrics', function () {
           chain_id: '0x539',
           environment_type: 'background',
           platform: 'Chrome',
+          install_type: 'development',
         });
       },
     );

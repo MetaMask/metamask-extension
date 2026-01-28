@@ -322,6 +322,13 @@ export type SegmentEventPayload = {
      * Can be 'Chrome', 'Firefox', 'Brave', 'Edge', or 'Opera'.
      */
     platform?: string;
+    /**
+     * The installation type of the extension.
+     * Can be 'normal' (official store), 'development', 'sideload', 'admin', 'other', or 'unknown'.
+     */
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    install_type?: string;
     revenue?: number;
     value?: number;
     currency?: string;

@@ -134,6 +134,9 @@ describe('Wallet Created Events', function () {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: 'fullscreen',
             platform: 'Firefox',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            install_type: 'development',
             locale: 'en',
           });
           assert.equal(events[1].event, 'SRP Revealed');
@@ -147,6 +150,9 @@ describe('Wallet Created Events', function () {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: 'fullscreen',
             platform: 'Firefox',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            install_type: 'development',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
@@ -191,6 +197,9 @@ describe('Wallet Created Events', function () {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: 'fullscreen',
             platform: 'Firefox',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            install_type: 'development',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             wallet_setup_type: 'new',
@@ -283,6 +292,9 @@ describe('Wallet Created Events', function () {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
           platform: 'Chrome',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          install_type: 'development',
           locale: 'en',
         });
 
@@ -299,6 +311,9 @@ describe('Wallet Created Events', function () {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
           platform: 'Chrome',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          install_type: 'development',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           biometrics_enabled: false,
           locale: 'en',
@@ -317,6 +332,9 @@ describe('Wallet Created Events', function () {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
           platform: 'Chrome',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          install_type: 'development',
           locale: 'en',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention

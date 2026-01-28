@@ -40,7 +40,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import type { Backup } from '../stores/persistence-manager';
-import { getPlatform } from '../util';
+import { getInstallType, getPlatform } from '../util';
 
 /**
  * Extracts MetaMetrics consent and user ID from the backup state.
@@ -123,6 +123,8 @@ export function trackVaultCorruptionEvent(
         error_type: corruptionType,
         category: MetaMetricsEventCategory.Error,
         platform: getPlatform(),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        install_type: getInstallType(),
       },
       context: {
         app: {

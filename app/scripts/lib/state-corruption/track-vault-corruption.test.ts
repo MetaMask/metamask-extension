@@ -16,6 +16,7 @@ jest.mock('../segment', () => ({
 
 jest.mock('../util', () => ({
   getPlatform: jest.fn().mockReturnValue('Chrome'),
+  getInstallType: jest.fn().mockReturnValue('unknown'),
 }));
 
 const mockSegment = segment as jest.Mocked<typeof segment>;
@@ -49,6 +50,8 @@ describe('trackVaultCorruptionEvent', () => {
         error_type: VaultCorruptionType.InaccessibleDatabase,
         category: MetaMetricsEventCategory.Error,
         platform: 'Chrome',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        install_type: 'unknown',
       },
       context: {
         app: {

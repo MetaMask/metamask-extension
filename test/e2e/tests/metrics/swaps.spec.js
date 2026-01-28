@@ -188,6 +188,7 @@ async function assertNavSwapButtonClickedEvent(reqs) {
     chain_id: toHex(1337),
     environment_type: 'fullscreen',
     platform: 'Chrome',
+    install_type: 'development',
     locale: 'en',
     location: 'Main View',
     text: 'Swap',

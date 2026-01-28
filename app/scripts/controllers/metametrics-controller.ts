@@ -60,6 +60,7 @@ import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/const
 import {
   checkAlarmExists,
   generateRandomId,
+  getInstallType,
   getPlatform,
   isValidDate,
 } from '../lib/util';
@@ -1017,6 +1018,9 @@ export default class MetaMetricsController extends BaseController<
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
           platform: getPlatform(),
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          install_type: getInstallType(),
         },
         context: this.#buildContext(referrer, page),
       });
@@ -1351,6 +1355,9 @@ export default class MetaMetricsController extends BaseController<
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
         platform: getPlatform(),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        install_type: getInstallType(),
       },
       context: this.#buildContext(referrer, page),
       timestamp,
