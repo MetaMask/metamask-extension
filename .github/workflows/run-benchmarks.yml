@@ -12,9 +12,11 @@ on:
 env:
   COMMANDS: |
     {
-      standardHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2',
-      powerUserHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --persona powerUser --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2',
-      userActions: 'yarn tsx test/e2e/benchmarks/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
+      "standardHome": "yarn test:e2e:benchmark --preset standardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2",
+      "powerUserHome": "yarn test:e2e:benchmark --preset powerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2",
+      "userActions": "yarn test:e2e:benchmark --preset userActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2",
+      "performanceOnboarding": "yarn test:e2e:benchmark --preset performanceOnboarding --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboarding.json --retries 2",
+      "performanceAssets": "yarn test:e2e:benchmark --preset performanceAssets --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2"
     }
 
 jobs:
@@ -30,9 +32,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # PowerUser + UserActions benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
         pageType: [standardHome, powerUserHome, userActions]
+        # New added benchmarks only run on Chrome + Browserify to reduce CI runtime
+        include:
+          - browser: chrome
+            buildType: browserify
+            pageType: performanceOnboarding
+          - browser: chrome
+            buildType: browserify
+            pageType: performanceAssets
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
