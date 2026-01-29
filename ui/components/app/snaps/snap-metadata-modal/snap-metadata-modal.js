@@ -41,7 +41,6 @@ import {
   transformOriginToTitle,
 } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
@@ -137,7 +136,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
               </ButtonLink>
             </Box>
           )}
-          {installOrigin && (
+          {installOrigin && installInfo && (
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
