@@ -7,6 +7,7 @@ export enum HardwareWalletType {
   OneKey = 'oneKey',
   Lattice = 'lattice',
   Qr = 'qr',
+  Unknown = 'unknown', // use for connection errors when wallet type is unknown
 }
 
 /**
