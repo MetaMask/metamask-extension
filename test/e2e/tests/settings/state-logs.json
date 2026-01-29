@@ -149,6 +149,15 @@
   },
   "logs": [],
   "metamask": {
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": "object"
+      },
+      "etag": "null",
+      "fetchError": "null",
+      "lastFetched": "null",
+      "version": "null"
+    },
     "accountGroupsMetadata": {
       "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ/0": {
         "name": {
