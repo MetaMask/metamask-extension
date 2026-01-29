@@ -6,6 +6,7 @@ import {
   TransactionController,
   TransactionControllerMessenger,
   TransactionMeta,
+  TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import {
@@ -302,7 +303,24 @@ function addTransactionControllerListeners(
     'TransactionController:transactionApproved',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    handleTransactionApproved.bind(null, transactionMetricsRequest),
+    async (payload) => {
+      const { transactionMeta } = payload;
+      if (!transactionMeta) {
+        await handleTransactionApproved(transactionMetricsRequest, payload);
+        return;
+      }
+      // This is special case for hardware wallet, for some reason, the transaction controller still trigger transactionApproved event
+      // after user reject the transaction in devices. So we need to handle the transaction rejected here.
+      // ledger will make status as failed, and trezor will make status as rejected.
+      if (
+        transactionMeta.status === TransactionStatus.failed ||
+        transactionMeta.status === TransactionStatus.rejected
+      ) {
+        await handleTransactionRejected(transactionMetricsRequest, payload);
+      } else {
+        await handleTransactionApproved(transactionMetricsRequest, payload);
+      }
+    },
   );
 
   initMessenger.subscribe(
