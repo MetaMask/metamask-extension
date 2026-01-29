@@ -1755,7 +1755,6 @@ export default class MetaMetricsController extends BaseController<
       payload.event === MetaMetricsEventName.MetricsOptOut;
     const isFireFox = getPlatform() === PLATFORM_FIREFOX;
     const shouldTrackMetricsOptOutEvent = isMetricsOptOutEvent && !isFireFox;
-    console.log('shouldTrackMetricsOptOutEvent', shouldTrackMetricsOptOutEvent);
 
     // Block events when user opted out. Exception: MetricsOptOut events are still sent on
     // non-Firefox browsers to record the opt-out action (Firefox privacy policies prohibit this).
