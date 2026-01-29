@@ -2,7 +2,7 @@ import {
   formatChainIdToHex,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { isRelaySupported } from '../../../store/actions';
@@ -48,6 +48,11 @@ export function useGasIncluded7702({
     ),
   );
 
+  // Ref to track current isSwap value for async callback guard
+  // This prevents state updates when isSwap changes during API call
+  const isSwapRef = useRef(isSwap);
+  isSwapRef.current = isSwap;
+
   useEffect(() => {
     let isCancelled = false;
 
@@ -73,11 +78,14 @@ export function useGasIncluded7702({
         const chainIdInHex = formatChainIdToHex(fromChain.chainId);
         const is7702Supported = await isRelaySupported(chainIdInHex);
 
-        if (!isCancelled) {
+        // Guard: only update state if isSwap is still true
+        // This prevents stale API results from updating state when
+        // isSwap has changed (e.g., user switched from swap to bridge)
+        if (!isCancelled && isSwapRef.current) {
           setIsGasIncluded7702Supported(is7702Supported);
         }
       } catch (error) {
-        if (!isCancelled) {
+        if (!isCancelled && isSwapRef.current) {
           console.error('Error checking gasless 7702 support:', error);
           setIsGasIncluded7702Supported(false);
         }
