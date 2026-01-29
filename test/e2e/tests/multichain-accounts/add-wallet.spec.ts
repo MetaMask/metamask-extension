@@ -42,7 +42,8 @@ describe('Add wallet', function () {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: async (server: Mockttp) => {
-          userStorageMockttpController.setupPath(
+          // Await to prevent race conditions
+          await userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
             {
@@ -117,7 +118,8 @@ describe('Add wallet', function () {
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           await mockPriceApi(server);
-          userStorageMockttpController.setupPath(
+          // Await to prevent race conditions
+          await userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
             {
@@ -174,7 +176,8 @@ describe('Add wallet', function () {
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           await mockPriceApi(server);
-          userStorageMockttpController.setupPath(
+          // Await to prevent race conditions
+          await userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
             {

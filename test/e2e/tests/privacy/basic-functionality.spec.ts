@@ -30,7 +30,8 @@ async function mockApis(
   userStorageMockttpController: UserStorageMockttpController,
   mockedAccountSyncResponse: UserStorageResponseData[],
 ) {
-  userStorageMockttpController.setupPath(
+  // Await to prevent race conditions
+  await userStorageMockttpController.setupPath(
     USER_STORAGE_FEATURE_NAMES.accounts,
     mockServer,
     {

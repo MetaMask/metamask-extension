@@ -123,8 +123,9 @@ describe('Contact Syncing - Existing User', function () {
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
+          testSpecificMock: async (server: Mockttp) => {
+            // Await to prevent race conditions
+            await userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
               {
@@ -279,8 +280,9 @@ describe('Contact Syncing - Existing User', function () {
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
+          testSpecificMock: async (server: Mockttp) => {
+            // Await to prevent race conditions
+            await userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
             );

@@ -30,15 +30,20 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
-  // Storage
+  // Storage - await all setupPath calls to prevent race conditions where
+  // requests might hit the catch-all mock before specific mocks are registered
+  const setupPromises: Promise<void>[] = [];
+
   if (
     !userStorageMockttpControllerInstance?.paths.get(
       USER_STORAGE_FEATURE_NAMES.accounts,
     )
   ) {
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_FEATURE_NAMES.accounts,
-      server,
+    setupPromises.push(
+      userStorageMockttpControllerInstance.setupPath(
+        USER_STORAGE_FEATURE_NAMES.accounts,
+        server,
+      ),
     );
   }
   if (
@@ -46,9 +51,11 @@ export async function mockIdentityServices(
       USER_STORAGE_FEATURE_NAMES.addressBook,
     )
   ) {
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_FEATURE_NAMES.addressBook,
-      server,
+    setupPromises.push(
+      userStorageMockttpControllerInstance.setupPath(
+        USER_STORAGE_FEATURE_NAMES.addressBook,
+        server,
+      ),
     );
   }
   if (
@@ -56,9 +63,11 @@ export async function mockIdentityServices(
       USER_STORAGE_WALLETS_FEATURE_KEY,
     )
   ) {
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_WALLETS_FEATURE_KEY,
-      server,
+    setupPromises.push(
+      userStorageMockttpControllerInstance.setupPath(
+        USER_STORAGE_WALLETS_FEATURE_KEY,
+        server,
+      ),
     );
   }
   if (
@@ -66,11 +75,16 @@ export async function mockIdentityServices(
       USER_STORAGE_GROUPS_FEATURE_KEY,
     )
   ) {
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_GROUPS_FEATURE_KEY,
-      server,
+    setupPromises.push(
+      userStorageMockttpControllerInstance.setupPath(
+        USER_STORAGE_GROUPS_FEATURE_KEY,
+        server,
+      ),
     );
   }
+
+  // Wait for all mock registrations to complete before returning
+  await Promise.all(setupPromises);
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
@@ -163,13 +177,13 @@ export async function mockInfuraAndAccountSync(
 ): Promise<void> {
   const accounts = options.accountsToMockBalances ?? [];
 
-  // Set up User Storage / Account Sync mock
-  userStorageMockttpController.setupPath(
+  // Set up User Storage / Account Sync mock - await to prevent race conditions
+  await userStorageMockttpController.setupPath(
     USER_STORAGE_WALLETS_FEATURE_KEY,
     mockServer,
   );
 
-  userStorageMockttpController.setupPath(
+  await userStorageMockttpController.setupPath(
     USER_STORAGE_GROUPS_FEATURE_KEY,
     mockServer,
   );
@@ -195,7 +209,7 @@ export async function mockInfuraAndAccountSync(
     });
   }
 
-  mockIdentityServices(mockServer, userStorageMockttpController);
+  await mockIdentityServices(mockServer, userStorageMockttpController);
 }
 
 /**
