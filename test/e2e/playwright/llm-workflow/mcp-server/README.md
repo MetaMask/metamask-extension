@@ -141,6 +141,88 @@ Set the working directory to the MetaMask extension repository root.
 | -------------- | ---------------------------------- |
 | `mm_run_steps` | Execute multiple tools in sequence |
 
+### Context Switching
+
+| Tool             | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| `mm_set_context` | Switch workflow context (e2e or prod)          |
+| `mm_get_context` | Get current context and available capabilities |
+
+---
+
+## Context Switching
+
+The workflow supports switching between different execution contexts to test against different environments.
+
+### Default Context: E2E
+
+By default, the workflow runs in **e2e context**, which provides:
+
+- Local Anvil blockchain (port 8545)
+- Pre-onboarded wallet with 25 ETH
+- Test fixtures and contract seeding
+- Full visual testing capabilities
+- Mock servers for API responses
+
+### Switching Contexts
+
+Use `mm_set_context` to switch between contexts:
+
+```json
+mm_set_context { "context": "prod" }
+```
+
+### Getting Current Context
+
+Use `mm_get_context` to check the current context and available capabilities:
+
+```json
+mm_get_context
+```
+
+Response example:
+
+```json
+{
+  "ok": true,
+  "result": {
+    "context": "e2e",
+    "capabilities": [
+      "build",
+      "fixture",
+      "chain",
+      "seeding",
+      "state-snapshot",
+      "mock-server"
+    ]
+  }
+}
+```
+
+### Important Constraints
+
+- **Cannot switch during active session**: You must call `mm_cleanup` first before switching contexts
+- **Context persists**: Once set, the context remains active for subsequent sessions until changed
+- **Verify context**: Always use `mm_get_context` to confirm the context switched successfully
+
+### Example: Switching to Production Context
+
+```
+1. mm_cleanup                              # End current e2e session
+2. mm_set_context { "context": "prod" }   # Switch to production
+3. mm_get_context                          # Verify context switched
+4. mm_launch { ... }                       # Launch in production context
+```
+
+### Example: Switching Back to E2E
+
+```
+1. mm_cleanup                              # End current production session
+2. mm_set_context { "context": "e2e" }    # Switch back to e2e
+3. mm_get_context                          # Verify context switched
+4. mm_launch { ... }                       # Launch in e2e context
+```
+
 ---
 
 ## Smart Contract Seeding

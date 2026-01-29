@@ -171,6 +171,51 @@ When implementing UI changes, follow this cycle:
 | -------------- | ------------------------------------------------------ |
 | `mm_run_steps` | Execute multiple tools in sequence with error handling |
 
+### Context Switching
+
+| Tool             | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| `mm_set_context` | Switch workflow context (e2e or prod)          |
+| `mm_get_context` | Get current context and available capabilities |
+
+---
+
+## Context Switching
+
+The workflow supports switching between different execution contexts:
+
+### Default Context: E2E
+
+By default, the workflow runs in **e2e context**, which provides:
+
+- Local Anvil blockchain (port 8545)
+- Pre-onboarded wallet with 25 ETH
+- Test fixtures and contract seeding
+- Full visual testing capabilities
+
+### Switching Contexts
+
+Use `mm_set_context` to switch between contexts:
+
+```json
+mm_set_context { "context": "prod" }
+```
+
+### Important Constraints
+
+- **Cannot switch during active session**: You must call `mm_cleanup` first before switching contexts
+- **Context persists**: Once set, the context remains active for subsequent sessions until changed
+- **Verify context**: Use `mm_get_context` to check the current context and available capabilities
+
+### Example: Switching to Production Context
+
+```
+1. mm_cleanup                    # End current e2e session
+2. mm_set_context { "context": "prod" }  # Switch to production
+3. mm_get_context                # Verify context switched
+4. mm_launch { ... }             # Launch in production context
+```
+
 ---
 
 ## Launch Modes
