@@ -180,6 +180,7 @@ import { getHasShieldEntryModalShownOnce } from './subscription';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import('../../shared/lib/deep-links/types').DeferredDeepLink} DeferredDeepLink
  */
 
 // Re-export this file so we don't have to update all references
@@ -4118,4 +4119,14 @@ export function getNetworkConnectionBanner(state) {
  */
 export function getIsDeviceOffline(state) {
   return state.metamask.connectivityStatus === 'offline';
+}
+
+/**
+ * Retrieves the deferred deep link from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {DeferredDeepLink | null} The deferred deep link object if available, null otherwise.
+ */
+export function getDeferredDeepLink(state) {
+  return state.metamask?.deferredDeepLink || null;
 }

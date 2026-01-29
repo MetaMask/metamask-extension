@@ -45,6 +45,7 @@ import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
   getPreferences,
+  getDeferredDeepLink,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -61,10 +62,17 @@ import {
   setCompletedOnboarding,
   setCompletedOnboardingWithSidepanel,
   setUseSidePanelAsDefault,
+  removeDeferredDeepLink,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
+import { getDeferredDeepLinkRoute } from '../../../../shared/lib/deep-links/utils';
+import {
+  DeferredDeepLink,
+  DeferredDeepLinkRoute,
+  DeferredDeepLinkRouteType,
+} from '../../../../shared/lib/deep-links/types';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -84,6 +92,7 @@ export default function CreationSuccessful() {
   const preferences = useSelector(getPreferences);
   const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
+  const deferredDeepLink = useSelector(getDeferredDeepLink) as DeferredDeepLink;
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -181,11 +190,71 @@ export default function CreationSuccessful() {
     );
   }, [navigate, t]);
 
+  const handleOnDoneNavigationWithSidepanelOpen = useCallback(
+    (
+      deferredDeepLinkResult: DeferredDeepLinkRoute,
+      hasDeferredDeepLink: boolean,
+    ) => {
+      if (deferredDeepLinkResult) {
+        if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
+        ) {
+          window.location.assign(deferredDeepLinkResult.url);
+        } else if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+        ) {
+          navigate(deferredDeepLinkResult.route);
+        }
+      }
+
+      // Clean up deferred deep link from the state (both: expired or active)
+      if (hasDeferredDeepLink) {
+        dispatch(removeDeferredDeepLink());
+      }
+    },
+    [dispatch, navigate],
+  );
+
+  const handleOnDoneNavigation = useCallback(
+    (
+      deferredDeepLinkResult: DeferredDeepLinkRoute,
+      hasDeferredDeepLink: boolean,
+    ) => {
+      if (deferredDeepLinkResult) {
+        if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
+        ) {
+          window.open(deferredDeepLinkResult.url, '_blank');
+          navigate(DEFAULT_ROUTE);
+        } else if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+        ) {
+          navigate(deferredDeepLinkResult.route);
+        } else {
+          navigate(DEFAULT_ROUTE);
+        }
+      } else {
+        navigate(DEFAULT_ROUTE);
+      }
+
+      // Clean up deferred deep link from the state (both: expired or active)
+      if (hasDeferredDeepLink) {
+        dispatch(removeDeferredDeepLink());
+      }
+    },
+    [dispatch, navigate],
+  );
+
   const onDone = useCallback(async () => {
     if (isFromReminder) {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
+
+    const deferredDeepLinkResult =
+      await getDeferredDeepLinkRoute(deferredDeepLink);
+    const shouldOpenSidePanel =
+      deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate;
 
     // Track onboarding completion event
     if (!isOnboardingCompleted) {
@@ -230,13 +299,23 @@ export default function CreationSuccessful() {
             currentWindow: true,
           });
           if (tabs && tabs.length > 0) {
-            await browserWithSidePanel.sidePanel.open({
-              windowId: tabs[0].windowId,
-            });
+            // We deliberately skip the opening of the side panel
+            // if a user is coming from a deep link
+            if (shouldOpenSidePanel) {
+              await browserWithSidePanel.sidePanel.open({
+                windowId: tabs[0].windowId,
+              });
+              setIsSidePanelOpen(true);
+            }
             await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
-            setIsSidePanelOpen(true);
+
+            handleOnDoneNavigationWithSidepanelOpen(
+              deferredDeepLinkResult,
+              Boolean(deferredDeepLink),
+            );
+
             return;
           }
         }
@@ -247,18 +326,22 @@ export default function CreationSuccessful() {
     }
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
-    navigate(DEFAULT_ROUTE);
+
+    handleOnDoneNavigation(deferredDeepLinkResult, Boolean(deferredDeepLink));
   }, [
-    isOnboardingCompleted,
     isFromReminder,
+    deferredDeepLink,
+    isOnboardingCompleted,
     dispatch,
     externalServicesOnboardingToggleState,
-    navigate,
-    trackEvent,
-    firstTimeFlowType,
-    isFromSettingsSecurity,
     isSidePanelEnabled,
+    navigate,
+    isFromSettingsSecurity,
+    firstTimeFlowType,
+    trackEvent,
     isSidePanelSetAsDefault,
+    handleOnDoneNavigationWithSidepanelOpen,
+    handleOnDoneNavigation,
   ]);
 
   const renderDoneButton = () => {

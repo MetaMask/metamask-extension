@@ -8141,3 +8141,22 @@ export async function getAppNameAndVersion(): Promise<{
 }> {
   return await submitRequestToBackground('getAppNameAndVersion');
 }
+
+/**
+ * Removes deferred deep link data.
+ */
+export function removeDeferredDeepLink(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    log.debug(`background.removeDeferredDeepLink`);
+    try {
+      await submitRequestToBackground<void>('removeDeferredDeepLink');
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}

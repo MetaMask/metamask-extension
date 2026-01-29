@@ -29,6 +29,7 @@ type RootMessenger = Messenger<
 >;
 
 jest.mock('webextension-polyfill');
+jest.mock('../../../shared/lib/deep-links/utils');
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
 jest.mock('../../../shared/modules/mv3.utils', () => ({
@@ -1088,6 +1089,39 @@ describe('AppStateController', () => {
           `);
         },
       );
+    });
+  });
+
+  describe('setDeferredDeepLink', () => {
+    it('updates the state when deferred deep link is available', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        controller.setDeferredDeepLink(mockDeepLinkData);
+
+        expect(controller.state.deferredDeepLink).toStrictEqual(
+          mockDeepLinkData,
+        );
+      });
+    });
+  });
+
+  describe('removeDeferredDeepLink', () => {
+    it('removes the deferred deep link data from state', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        controller.setDeferredDeepLink(mockDeepLinkData);
+        controller.removeDeferredDeepLink();
+
+        expect(controller.state.deferredDeepLink).toBeUndefined();
+      });
     });
   });
 });
