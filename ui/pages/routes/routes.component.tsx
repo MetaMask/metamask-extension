@@ -18,6 +18,7 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
+import OneKeyErrors from '../onekey-errors';
 
 import {
   ASSET_ROUTE,
@@ -66,6 +67,7 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  HARDWARE_ONEKEY_ERRORS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -785,6 +787,12 @@ export default function Routes() {
       createRouteWithLayout({
         path: SHIELD_PLAN_ROUTE,
         component: ShieldPlan,
+        layout: LegacyLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: `${HARDWARE_ONEKEY_ERRORS_ROUTE}/:error`,
+        component: OneKeyErrors,
         layout: LegacyLayout,
         authenticated: true,
       }),

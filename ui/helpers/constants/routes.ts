@@ -140,6 +140,9 @@ export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 
+// Hardware OneKey
+export const HARDWARE_ONEKEY_ERRORS_ROUTE = '/onekey-errors';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
@@ -355,6 +358,11 @@ export const ROUTES = [
   {
     path: CONNECT_HARDWARE_ROUTE,
     label: 'Connect Hardware Wallet Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${HARDWARE_ONEKEY_ERRORS_ROUTE}/:error`,
+    label: 'Hardware OneKey Errors Page',
     trackInAnalytics: true,
   },
   { path: SEND_ROUTE, label: 'Send Page', trackInAnalytics: true },

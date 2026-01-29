@@ -18,6 +18,7 @@ import ExtensionPlatform from '../platforms/extension';
 // This import is only used for the type.
 // eslint-disable-next-line import/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
+import { OneKeyOffscreenBridge } from '../lib/offscreen-bridge/onekey-offscreen-bridge';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -144,7 +145,7 @@ export type ControllerInitRequest<
     qrBridge?: typeof QrKeyringScannerBridge;
     lattice?: KeyringClass;
     trezorBridge?: HardwareTransportBridgeClass;
-    oneKey?: HardwareTransportBridgeClass;
+    oneKey?: typeof OneKeyOffscreenBridge;
     ledgerBridge?: HardwareTransportBridgeClass;
   };
 

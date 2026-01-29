@@ -17,7 +17,7 @@ import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscripti
 import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
-import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
+import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
@@ -82,7 +82,7 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
-
+import { OneKeyKeyring } from '@metamask/eth-onekey-keyring';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 import {
