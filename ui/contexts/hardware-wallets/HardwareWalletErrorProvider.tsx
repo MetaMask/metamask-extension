@@ -8,7 +8,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   showModal,
@@ -16,6 +16,7 @@ import {
   setPendingHardwareSigning,
   closeCurrentNotificationWindow,
 } from '../../store/actions';
+import { getIsHardwareWalletErrorModalVisible } from '../../selectors/selectors';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
@@ -71,6 +72,9 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const dispatch = useDispatch();
+  const isHardwareWalletErrorModalVisible = useSelector(
+    getIsHardwareWalletErrorModalVisible,
+  );
 
   // Optimized: Use split hooks to subscribe only to what we need
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
@@ -80,6 +84,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   // Store the current error to display (independent of connection state)
   const [displayedError, setDisplayedError] = useState<unknown | null>(null);
   const isModalOpenRef = useRef(false);
+  const lastModalVisibleRef = useRef(isHardwareWalletErrorModalVisible);
   // Track the last error from connection state to detect resolution
   const lastConnectionErrorRef = useRef<unknown | null>(null);
   // Track if the modal was manually shown (vs from connection state)
@@ -320,6 +325,17 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       }
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    const wasVisible = lastModalVisibleRef.current;
+    if (wasVisible && !isHardwareWalletErrorModalVisible) {
+      isModalOpenRef.current = false;
+      isManuallyShownRef.current = false;
+      setDisplayedError(null);
+      lastConnectionErrorRef.current = null;
+    }
+    lastModalVisibleRef.current = isHardwareWalletErrorModalVisible;
+  }, [isHardwareWalletErrorModalVisible]);
 
   // Use displayedError to determine visibility instead of ref
   // This ensures the context value updates when the modal state changes

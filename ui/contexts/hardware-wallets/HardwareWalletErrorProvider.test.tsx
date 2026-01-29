@@ -34,6 +34,11 @@ const createMockState = (
   keyringType: string | null = KeyringTypes.ledger,
   address = '0x123',
 ) => ({
+  appState: {
+    modal: {
+      modalState: null,
+    },
+  },
   metamask: {
     internalAccounts: {
       accounts: {

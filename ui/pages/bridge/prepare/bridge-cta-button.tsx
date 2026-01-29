@@ -168,16 +168,17 @@ export const BridgeCTAButton = ({
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
           // Verify hardware wallet device is ready before submitting
-          if (isHardwareWalletAccount && deviceId) {
+          if (isHardwareWalletAccount) {
             console.log('[BridgeCTAButton] Verifying device is ready');
-            const isDeviceReady = await ensureDeviceReady(deviceId);
+            const isDeviceReady = await ensureDeviceReady(
+              deviceId ?? undefined,
+            );
             if (!isDeviceReady) {
               console.log(
                 '[BridgeCTAButton] Device not ready, error modal will be shown by HardwareWalletErrorMonitor',
               );
               return;
             }
-            console.log('[BridgeCTAButton] Device is ready, proceeding');
           }
 
           try {

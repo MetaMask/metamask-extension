@@ -268,11 +268,6 @@ const Footer = () => {
       return true;
     }
 
-    // if (!deviceId) {
-    //   console.log('[Footer] No device ID available');
-    //   return false;
-    // }
-
     console.log(
       '[Hardware debug Footer] Verifying hardware wallet device is ready',
       {
@@ -429,36 +424,28 @@ const Footer = () => {
       }
     }
   }, [
+    currentConfirmation,
+    onSubmitPreflightCheck,
     isAddEthereumChain,
     isTransactionConfirmation,
     isSignature,
     isHardwareWalletAccount,
-    resetTransactionState,
     onAddEthereumChain,
     navigate,
+    resetTransactionState,
     onTransactionConfirm,
-    navigateNext,
-    currentConfirmation,
     dispatch,
+    navigateNext,
     showErrorModal,
   ]);
 
   const handleFooterCancel = useCallback(async () => {
-    console.log('[Footer handleFooterCancel] Starting cancel', {
-      confirmationsCount,
-      currentConfirmationId: currentConfirmation?.id,
-      isAddEthereumChain,
-      shouldThrottleOrigin,
-    });
-
     if (shouldThrottleOrigin) {
       setShowOriginThrottleModal(true);
       return;
     }
 
     await onCancel({ location: MetaMetricsEventLocation.Confirmation });
-
-    console.log('[Footer handleFooterCancel] After onCancel, navigating...');
 
     onDappSwapCompleted();
 
@@ -474,8 +461,6 @@ const Footer = () => {
       );
       navigateNext(currentConfirmation.id);
     } else {
-      // Fallback: if somehow no confirmation ID, go home
-      console.log('[Footer handleFooterCancel] Fallback: Navigating to home');
       navigate(DEFAULT_ROUTE);
     }
   }, [

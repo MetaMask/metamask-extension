@@ -159,28 +159,6 @@ function isPlainObjectWithErrorCode(
 }
 
 /**
- * Known valid ErrorCode values from @metamask/hw-wallet-sdk
- * This whitelist ensures we only accept valid error codes
- */
-const VALID_ERROR_CODES = new Set<number>([
-  ErrorCode.AuthenticationSecurityCondition,
-  ErrorCode.UserRejected,
-  ErrorCode.UserCancelled,
-  ErrorCode.Unknown,
-  ErrorCode.AuthenticationDeviceLocked,
-  ErrorCode.AuthenticationDeviceBlocked,
-  ErrorCode.DeviceStateEthAppClosed,
-  ErrorCode.ConnectionTransportMissing,
-  ErrorCode.ConnectionClosed,
-  ErrorCode.DeviceDisconnected,
-  ErrorCode.ConnectionTimeout,
-]);
-
-function isValidErrorCode(code: unknown): code is ErrorCode {
-  return typeof code === 'number' && VALID_ERROR_CODES.has(code);
-}
-
-/**
  * Type guard to check if error is a JsonRpcError with HardwareWalletError data
  * Handles both actual JsonRpcError instances AND plain objects that were
  * deserialized from JsonRpcError (which lose their class type across RPC boundary)
@@ -345,22 +323,6 @@ function mapLedgerStatusCodeToErrorCode(statusCode: string): ErrorCode {
 }
 
 /**
- * Get a human-readable name for an ErrorCode
- *
- * @param code - The error code
- * @returns The name of the error code or the code itself
- */
-function getErrorCodeName(code: ErrorCode): string {
-  const entries = Object.entries(ErrorCode);
-  const entry = entries.find(([, value]) => value === code);
-  return entry ? entry[0] : String(code);
-}
-
-// #endregion
-
-// #region Exported Functions
-
-/**
  * Map a code (string or number) to an ErrorCode
  *
  * @param code - The error code (string name or numeric value)
@@ -473,7 +435,6 @@ export function toHardwareWalletError(
         cause: error instanceof Error ? error : undefined,
       });
     }
-  } else {
   }
 
   // Fallback: use the error parser to create a HardwareWalletError
