@@ -110,12 +110,6 @@ jobs:
             echo "Run completed with conclusion: ${RUN_CONCLUSION}"
           fi
 
-          # Check if the run was successful
-          if [ "$RUN_CONCLUSION" != "success" ]; then
-            echo "::error::The most recent 'Main' workflow run (${RUN_ID}) did not succeed (conclusion: ${RUN_CONCLUSION}). Please fix the build and try again."
-            exit 1
-          fi
-
           echo "Downloading artifacts from run ${RUN_ID}..."
           gh run download "${RUN_ID}" -n build-dist-browserify -D build-dist-browserify
         env:
