@@ -4,7 +4,6 @@ import {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
-import { isObject } from '@metamask/utils';
 import {
   PermissionSubjectMetadata,
   SubjectType,
@@ -41,7 +40,7 @@ const sendMetadata = {
 export default sendMetadata;
 
 /**
- * @param req - The JSON-RPC request object.
+ * @param _req - The JSON-RPC request object.
  * @param res - The JSON-RPC response object.
  * @param _next - The json-rpc-engine 'next' callback.
  * @param end - The json-rpc-engine 'end' callback.
@@ -49,16 +48,11 @@ export default sendMetadata;
 function sendMetadataHandler<
   Params extends SubjectMetadataToAdd = SubjectMetadataToAdd,
 >(
-  req: SendMetadataHandlerRequest<Params>,
+  _req: SendMetadataHandlerRequest<Params>,
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
 ): void {
-  const { params } = req;
-  if (!isObject(params)) {
-    return end(rpcErrors.invalidParams({ data: params }));
-  }
-
   // This handler is no longer in-use and simply remains as a no-op for backwards compatibility.
   res.result = true;
   return end();
