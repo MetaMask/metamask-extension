@@ -44,7 +44,7 @@ export type V4MultiAccountTransactionsResponse = {
     endCursor?: string;
   };
   data: V1TransactionByHashResponse[];
-}
+};
 
 export type DateGroupedTransactions = {
   date: string;
@@ -52,6 +52,6 @@ export type DateGroupedTransactions = {
   transactions: V1TransactionByHashResponse[];
 };
 
-export type FlattenedItem = { type: 'date-header'; date: string; dateMillis: number; } |
-{ type: 'transaction'; data: V1TransactionByHashResponse; id: string; };
-
+export type FlattenedItem =
+  | { type: 'date-header'; date: string; dateMillis: number }
+  | { type: 'transaction'; data: V1TransactionByHashResponse; id: string };
