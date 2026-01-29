@@ -22,7 +22,7 @@ describe('SendMetaData', () => {
     mockAddSubjectMetadata = jest.fn();
   });
 
-  it('should call AddSubjectMetadata when the handler is invoked', async () => {
+  it('should do nothing and return true', async () => {
     const req: SendMetadataHandlerRequest<SubjectMetadataToAdd> = {
       origin: 'testOrigin',
       params: paramsData,
@@ -37,11 +37,7 @@ describe('SendMetaData', () => {
       result: true,
     };
 
-    sendMetadata.implementation(req, res, jest.fn(), mockEnd, {
-      addSubjectMetadata: mockAddSubjectMetadata,
-      subjectType: SubjectType.Extension,
-    });
-    expect(mockAddSubjectMetadata).toHaveBeenCalled();
+    sendMetadata.implementation(req, res, jest.fn(), mockEnd);
     expect(res.result).toStrictEqual(true);
     expect(mockEnd).toHaveBeenCalled();
   });

@@ -24,11 +24,6 @@ export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
 
 export type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
 
-type SendMetadataOptions = {
-  addSubjectMetadata: AddSubjectMetadata;
-  subjectType: SubjectType;
-};
-
 type SendMetadataConstraint<
   Params extends SubjectMetadataToAdd = SubjectMetadataToAdd,
 > = {
@@ -36,22 +31,13 @@ type SendMetadataConstraint<
     req: SendMetadataHandlerRequest<Params>,
     res: PendingJsonRpcResponse<true>,
     _next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-    { addSubjectMetadata, subjectType }: SendMetadataOptions,
+    end: JsonRpcEngineEndCallback
   ) => void;
 } & HandlerWrapper;
-/**
- * This internal method is used by our external provider to send metadata about
- * permission subjects so that we can e.g. display a proper name and icon in
- * our UI.
- */
+
 const sendMetadata = {
   methodNames: [MESSAGE_TYPE.SEND_METADATA],
   implementation: sendMetadataHandler,
-  hookNames: {
-    addSubjectMetadata: true,
-    subjectType: true,
-  },
 } satisfies SendMetadataConstraint;
 export default sendMetadata;
 
@@ -72,23 +58,13 @@ function sendMetadataHandler<
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { addSubjectMetadata, subjectType }: SendMetadataOptions,
 ): void {
   const { origin, params } = req;
-  if (isObject(params)) {
-    const { icon = null, name = null, ...remainingParams } = params;
-
-    addSubjectMetadata({
-      ...remainingParams,
-      iconUrl: icon,
-      name,
-      subjectType,
-      origin,
-    });
-  } else {
+  if (!isObject(params)) {
     return end(rpcErrors.invalidParams({ data: params }));
   }
 
+  // This handler is no longer in-use and simply remains as a no-op for backwards compatibility.
   res.result = true;
   return end();
 }
