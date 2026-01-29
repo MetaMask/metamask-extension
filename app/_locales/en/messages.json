@@ -3035,41 +3035,11 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
-  "hardwareWalletConnectionRecoveryLedgerStep1": {
-    "message": "Your Ledger is unlocked",
-    "description": "Ledger is the hardware wallet device"
-  },
-  "hardwareWalletConnectionRecoveryLedgerStep2": {
-    "message": "The Ethereum app is open"
-  },
-  "hardwareWalletConnectionRecoverySteps": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletConnectionRecoveryTrezorStep1": {
-    "message": "Your Trezor is connected",
-    "description": "Trezor is the hardware wallet device"
-  },
-  "hardwareWalletConnectionRecoveryTrezorStep2": {
-    "message": "You have entered your PIN"
-  },
   "hardwareWalletErrorContinueButton": {
     "message": "Continue"
   },
-  "hardwareWalletErrorDescriptionDeviceLocked": {
-    "message": "Unlock it and try again to continue",
-    "description": "$1 is the hardware wallet type"
-  },
   "hardwareWalletErrorReconnectButton": {
     "message": "Reconnect"
-  },
-  "hardwareWalletErrorRecoveryApp1": {
-    "message": "Ensure your device is unlocked and the Ethereum app is open"
-  },
-  "hardwareWalletErrorRecoveryApp2": {
-    "message": "If the wrong app is open, close it and open the Ethereum app"
-  },
-  "hardwareWalletErrorRecoveryApp3": {
-    "message": "Try disconnecting and reconnecting your device"
   },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Ensure your hardware wallet is properly connected via USB"
@@ -3079,39 +3049,6 @@
   },
   "hardwareWalletErrorRecoveryConnection3": {
     "message": "Restart your device and try connecting again"
-  },
-  "hardwareWalletErrorRecoveryConnectionTitle": {
-    "message": "Connection to the Ledger device closed"
-  },
-  "hardwareWalletErrorRecoveryDefault1": {
-    "message": "Disconnect and reconnect your hardware wallet"
-  },
-  "hardwareWalletErrorRecoveryDefault2": {
-    "message": "If the problem persists, please contact support"
-  },
-  "hardwareWalletErrorRecoveryOpenApp": {
-    "message": "Please open the Ethereum app on your device"
-  },
-  "hardwareWalletErrorRecoveryOpenAppTitle": {
-    "message": "Wrong app open"
-  },
-  "hardwareWalletErrorRecoveryPermission1": {
-    "message": "Click the retry button to request device access again"
-  },
-  "hardwareWalletErrorRecoveryPermission2": {
-    "message": "Select your hardware wallet from the browser's device selection dialog"
-  },
-  "hardwareWalletErrorRecoveryPermission3": {
-    "message": "If you don't see your device, make sure it's plugged in and unlocked"
-  },
-  "hardwareWalletErrorRecoveryPermissionTitle": {
-    "message": "WebHID permission issue"
-  },
-  "hardwareWalletErrorRecoveryTimeout1": {
-    "message": "The connection timed out. Please ensure your device is ready and unlocked"
-  },
-  "hardwareWalletErrorRecoveryTimeout2": {
-    "message": "Try the operation again"
   },
   "hardwareWalletErrorRecoveryTitle": {
     "message": "Continue to make sure:"
@@ -3125,25 +3062,6 @@
   "hardwareWalletErrorRecoveryUnlock3": {
     "message": "The Ethereum app is open"
   },
-  "hardwareWalletErrorRecoveryUserCancel": {
-    "message": "You cancelled the operation. You can try again when ready"
-  },
-  "hardwareWalletErrorRecoveryWebHID1": {
-    "message": "WebHID is not available in your browser. Please use Chrome, Edge, or another WebHID-compatible browser"
-  },
-  "hardwareWalletErrorRecoveryWebHID2": {
-    "message": "Alternatively, update your browser to the latest version"
-  },
-  "hardwareWalletErrorSomethingWentWrong": {
-    "message": "Something went wrong"
-  },
-  "hardwareWalletErrorSomethingWentWrongDescription": {
-    "message": "Make sure your $1 is set up with the Secret Recovery Phrase or passphrase for this account",
-    "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitle": {
-    "message": "Hardware Wallet Error"
-  },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
     "message": "To continue, make sure:"
   },
@@ -3152,9 +3070,6 @@
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction3": {
     "message": "You’ve turned on Blind Signing in Settings"
-  },
-  "hardwareWalletErrorTitleBlindSignNotSupportedTitle": {
-    "message": "Enable blind signing"
   },
   "hardwareWalletErrorTitleConnectYourDevice": {
     "message": "Connect your $1",
@@ -3174,9 +3089,6 @@
   "hardwareWalletEthAppNotOpenDescription": {
     "message": "Open the Ethereum app on your device to continue"
   },
-  "hardwareWalletEthAppNotOpenTitle": {
-    "message": "Open Ethereum app"
-  },
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
@@ -3195,19 +3107,6 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
-  },
-  "hardwareWalletTransactionPendingDescription": {
-    "message": "Please review and confirm the transaction on your $1 device",
-    "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletTransactionPendingTitle": {
-    "message": "Confirm on your device"
-  },
-  "hardwareWalletTransactionSuccessDescription": {
-    "message": "Your transaction has been successfully signed on your hardware wallet"
-  },
-  "hardwareWalletTransactionSuccessTitle": {
-    "message": "Transaction signed"
   },
   "hardwareWalletTypeConnected": {
     "message": "$1 connected",
