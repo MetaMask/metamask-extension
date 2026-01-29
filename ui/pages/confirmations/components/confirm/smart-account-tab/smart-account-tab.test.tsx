@@ -41,7 +41,7 @@ describe('SmartAccountTab', () => {
   it('renders list of networks', async () => {
     const { getAllByText } = renderComponent();
 
-    expect(getAllByText('Smart Account')).toHaveLength(2);
+    expect(getAllByText('Smart account')).toHaveLength(2);
     expect(getAllByText('Standard account')).toHaveLength(2);
   });
 });

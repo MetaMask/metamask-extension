@@ -151,12 +151,12 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
       >
         <span>
            
-          Dismiss "Switch to Smart Account" suggestion
+          Dismiss "Switch to smart account" suggestion
         </span>
         <div
           class="settings-page__content-description"
         >
-          Turn this on to no longer see the "Switch to Smart Account" suggestion on any account. Smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those.
+          Turn this on to no longer see the "Switch to smart account" suggestion on any account. smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those.
         </div>
       </div>
       <div
@@ -218,14 +218,14 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item"
       >
         <span>
-          Smart Transactions
+          Smart transactions
         </span>
         <div
           class="settings-page__content-description"
         >
           <span>
              
-            Turn on Smart Transactions for more reliable and secure transactions on supported networks. 
+            Turn on smart transactions for more reliable and secure transactions on supported networks. 
             <a
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               href="https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/"

@@ -2259,10 +2259,10 @@
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
   "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Turn this on to no longer see the \"Switch to Smart Account\" suggestion on any account. Smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those."
+    "message": "Turn this on to no longer see the \"Switch to smart account\" suggestion on any account. smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those."
   },
   "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Dismiss \"Switch to Smart Account\" suggestion"
+    "message": "Dismiss \"Switch to smart account\" suggestion"
   },
   "displayNftMedia": {
     "message": "Display NFT media"
@@ -5242,7 +5242,7 @@
     "message": "Open Interest"
   },
   "perpsOpenOrders": {
-    "message": "Open Orders"
+    "message": "Open orders"
   },
   "perpsOpenedLong": {
     "message": "Opened long"
@@ -5302,7 +5302,7 @@
     "message": "Stats"
   },
   "perpsTotalBalance": {
-    "message": "Total Balance"
+    "message": "Total balance"
   },
   "perpsTradePerps": {
     "message": "Trade perps"
@@ -6634,7 +6634,7 @@
     "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
   "shieldFooterAgreement": {
-    "message": "By continuing, I agree to Transaction Shield $1"
+    "message": "By continuing, i agree to Transaction Shield $1"
   },
   "shieldManagePlan": {
     "message": "Manage plan"
@@ -7150,7 +7150,7 @@
     "message": "Keep the same account address, and you can switch back anytime."
   },
   "smartAccountLabel": {
-    "message": "Smart Account"
+    "message": "Smart account"
   },
   "smartAccountPayToken": {
     "message": "Pay with any token, any time"
@@ -7189,7 +7189,7 @@
     "message": "Not enough funds for a smart swap."
   },
   "smartSwapsErrorUnavailable": {
-    "message": "Smart Swaps are temporarily unavailable."
+    "message": "Smart swaps are temporarily unavailable."
   },
   "smartTransactionCancelled": {
     "message": "Your transaction was canceled"
@@ -7210,7 +7210,7 @@
     "message": "Your transaction is complete"
   },
   "smartTransactions": {
-    "message": "Smart Transactions"
+    "message": "Smart transactions"
   },
   "smartTransactionsEnabledDescription": {
     "message": " and MEV protection. Now on by default."
@@ -7753,7 +7753,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInSupportedNetworksDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on supported networks. $1"
+    "message": "Turn on smart transactions for more reliable and secure transactions on supported networks. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
