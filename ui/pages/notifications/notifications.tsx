@@ -193,7 +193,7 @@ export default function Notifications() {
       <Content padding={0}>
         {hasNotifySnaps && (
           <Tabs
-            defaultActiveTabKey={activeTab}
+            activeTab={activeTab}
             onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
             tabListProps={{ className: 'px-4' }}
           >

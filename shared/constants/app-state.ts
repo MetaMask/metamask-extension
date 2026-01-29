@@ -11,6 +11,8 @@ export enum AccountOverviewTabKey {
   Perps = 'perps',
 }
 
+export type AccountOverviewTab = `${AccountOverviewTabKey}`;
+
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
   [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
@@ -63,4 +65,10 @@ export type NetworkConnectionBanner =
       networkClientId: NetworkClientId;
       chainId: Hex;
       isInfuraEndpoint: boolean;
+      /**
+       * The index of an available Infura RPC endpoint in the network's
+       * rpcEndpoints array. Only set for custom networks that have an
+       * Infura endpoint available to switch to.
+       */
+      infuraEndpointIndex?: number;
     };

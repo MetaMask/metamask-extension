@@ -1,4 +1,5 @@
 import buy from './buy';
+import card from './card';
 import home from './home';
 import notifications from './notifications';
 import onboarding from './onboarding';
@@ -40,6 +41,7 @@ if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
 }
 
 addRoute(buy);
+addRoute(card);
 addRoute(home);
 addRoute(notifications);
 addRoute(onboarding);

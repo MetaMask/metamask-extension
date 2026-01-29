@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.15.0]
+
+### Added
+
+- Add MSU network and native token logos. Add Etherlink network and native token logos. (#38938)
+- Asset details sticky header (#39101)
+- Add BOB network and native token logos. Add Rootstock network and native token logos. (#39017)
+- Update Shield management UI (#38664)
+- Initialize static perps tab UI (#39199)
+- Virtualize send flow asset list (#39230)
+- Adds MetaMetrics tracking events to the Update Modal feature (#39221)
+- Add `perpsEnabledVersion` feature flag (#39145)
+- Fixes Firefox database corruption causing "An unexpected error occurred" by redirecting to vault recovery when possible, or displaying guidance to reinstall when recovery is not possible (#39010)
+
+### Changed
+
+- Improve responsiveness of network connection banner to connection issues (#37966)
+- Improve Snaps registry verification speed (#38628)
+- Migrate megaETH Testnet v1 to megaETH Testnet v2 Update megaETH Testnet RPC (#39118)
+- Portfolio network filter no longer changes when dapp permission network is changed (#39181)
+
+### Fixed
+
+- Remove migration 171 error logging (#38739)
+- Fixed a memory leak that would cause increased memory usage over time (#39171)
+- Updated asset list for send flow (#39218)
+- We prevent the back route once the user navigates to `Wallet Ready UI` in Firefox (#39243)
+- Fixed sentence case violations in locale strings for improved consistency (#39196)
+- Keep sidepanel open for hardware wallet connections (#39185)
+- Fix gas station gas transfer transaction details in Activity list (#39172)
+- Experimental builds should work (#39124)
+- Fixed sentry error capture for Social Login onboarding (#39089)
+- Optimized `getMetaMaskAccounts` and related selectors that were causing performance slowdowns in accounts flows (#38871)
+- Fixed critical bug in `getUpdatedAndSortedAccounts` that caused cache corruption and suboptimal performance (#38830)
+- Fixed a bug in the `getInternalAccounts` selector that was causing significant slowdowns across all accounts flows (#37147)
+- Fix multichain account syncing segment event formatting for extended event properties (#39213)
+- Always reset transaction state on transaction submit (#39179)
+- Do not throw an error when switching between queued dapp transactions (#39128)
+- Fixed gator permissions displaying "No expiration" when expiry timestamp exists (#37874)
+- Wait for the Snap platform to be ready before processing any non-EVM account operations (avoiding hitting `TimeoutError` during onboarding with Snaps) (#39051)
+- Makes sure UI filters out non-evm chains and tokens when BFT is OFF (#38914)
+- Show correct spending cap (#39098)
+- Token 2022 send (#39123)
+- Fix long ens name representation in send flow (#39035)
+- Fixed network selector on send flow (#39462)
+- Fix permission modal to show entire origin when it's too long (#39030)
+- Show notice that the account isn't connected when switching accounts - in side panel view (#39063)
+- Fixed Ledger hardware wallet connection failures during swap transactions (#39082)
+- Fixed misleading "Network Degraded" banners and false-positive RPC endpoint metrics when the device has no internet connection (#39016)
+- Prevent poisoning of backups, re-enable split state storage migration (#39301)
+
+## [13.14.2]
+
+### Fixed
+
+- Prevent crash during initialization when some controller has invalid state (#39465)
+
 ## [13.14.1]
 
 ### Changed
@@ -62,12 +119,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated network fee tooltip for gas fees sponsored case (#39021)
 - Add account cell gap (#38981)
 - Remove duplicated calls to account api v2 (#38841)
-- Add account cell gap (#38981)
-- Remove duplicated calls to account api v2 (#38841)
 - Fixes minor issues relates to locales removed Fox logo and locale dropdown in Onboarding app header (sidepanel view) (#38839)
 - Update styling of accounts address popover (#38687)
-- Improve Snaps registry verification speed (#38628)
-- Improve responsiveness of network connection banner to connection issues (#37966)
 - Fixes issue when switching networks from the dapp permissions networks button (#39173)
 - Network list when switching to hardware wallet (#39080)
 - Removed manifest for experimental build (#39070)
@@ -196,8 +249,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove 0x0..dead address from blocker alerts (#38345)
 - Improved responsiveness of revoke button in Gator permissions by adding immediate UI feedback (#38184)
 - Update recipient placeholder text in send (#38236)
-- Improve error message when UI can't retrieve state from background process (#38564)
-- Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices (#38561)
 - Account list padding (#38492)
 
 ## [13.12.2]
@@ -332,16 +383,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed deep link page design inconsistencies (#37872)
 - Fix error message when trying to import an SRP with an account that is already imported via private key (#37743)
 - Change available value text to total fiat value when fiat mode is enabled (#37749)
-- Prevents token list from fetching balances for all accounts (#38065)
 - Update dapp swap comparison banner UI (#38006)
 - Fixes issue with Tron resources not displaying in the details page (#38101)
-- Fixes dapp-swap comparison fiat rate fetching for polygon (#38102)
 - Fixes Shield subscription feature to properly handle multichain scenarios where non-EVM accounts (Bitcoin, Solana) are selected (#38155)
 - Fixes incorrect balances shown when multiple accounts are tied to different reward subscriptions (#38130)
 - Fixes broken uniswap shield middleware unable to find quote because of chainId derivation (#38057)
 - Automatically re-sync accounts between Snaps and MetaMask (#37987)
 - Prevents any dialogs for multichain wallet Snaps (Solana, Bitcoin, Tron) (#38061)
-- Fixes missing native token balances in wallet balance (#38126)
 - Enable metametrics toggle for active shield subscribers (#38176)
 - Fixes social login authentication validation in rehydrate (#38170)
 - Fixes loading indicators alignment on the deep link page (#38152)
@@ -626,20 +674,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Toast avatar icon (#37124)
 - Shield subscription default payment method crypto if available (#37101)
 - Fix a bug when multiple confirmation exist but navigation fails to when approving (#36990)
 - Fix coverage status not showing (#37097)
 - Fix recipient icon when recipient is ENS domain (#37043)
-- Fixed a bug where the wallet would not prompt the user for unlock and would silently drop `personal_sign` requests when the (#36963)
-  wallet was locked and the user was opted into MetaMetrics
-- Prevent unresponsive UI in the case where the user has more than 64MB of state; the trade off is that we now allow state (#35308)
-  size to increase until the memory the browser has allotted for the
-  extension process runs out (and crashes).
+- Fixed a bug where the wallet would not prompt the user for unlock and would silently drop `personal_sign` requests when the wallet was locked and the user was opted into MetaMetrics (#36963)
+- Prevent unresponsive UI in the case where the user has more than 64MB of state; the trade off is that we now allow state size to increase until the memory the browser has allotted for the extension process runs out (and crashes) (#35308)
 - Fixed missing `Bearer` in the shield-gateway proxy Authorization Header. (#36985)
-- Remove unneccesary callback and dependencies (#36974)
-- Fixed a bug that was causing the token list to show "No conversion rate available" once the user connects to testnet from a (#36685)
-  dapp.
+- Remove unnecessary callback and dependencies (#36974)
+- Fixed a bug that was causing the token list to show "No conversion rate available" once the user connects to testnet from a dapp (#36685)
 - Improves gator permissions page loading performance with cache-first strategy. (#36833)
 - Removes extra transactions call to improve performance (#36968)
 - Prevents quick reconnection when websocket connection is misbehaving (#37118)
@@ -689,25 +732,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changes to enable Snap accounts link to stable (#36770)
 - Fixed a bug that caused ENS content hashes not to resolve properly (#36812)
 - Correct transaction shield coverage text style (#36810)
-- Fixed `ShieldController.init` in `SubscriptionController:stateChange` event listener (#36779)
-  fixed `SubscriptionController` polling
-  refactor `useUserSubscription` hook usage.
+- Fixed `ShieldController.init` in `SubscriptionController:stateChange` event listener, fixed `SubscriptionController` polling, refactor `useUserSubscription` hook usage (#36779)
 - Use template for dollar amount on locale (#36741)
 - Update notifications enabled by default feature flag to control rollout (#36724)
 - Increase our security posture by locking down `cross_origin_opener_policy` to `same-origin-allow-popups` openers only. (#36500)
 - Show correct available token amount in shield subscription plan (#36494)
 - Design team’s review have been implemented (#36523)
 - Helps with ongoing performance regressions when using Solana (#36613)
-- Fixes a bug where first permitting accounts via the EVM provider would cause all requests to the Solana Wallet Standard provider (#36434)
-  to fail with an `The requested account and/or method has not been
-authorized by the user.` error until the user fully revoked dapp
-  permissions and then permitted accounts using the Solana Wallet Standard
-  provider first.
+- Fixes a bug where first permitting accounts via the EVM provider would cause all requests to the Solana Wallet Standard provider to fail with an `The requested account and/or method has not been authorized by the user.` error until the user fully revoked dapp permissions and then permitted accounts using the Solana Wallet Standard provider first. (#36434)
 - Patched ShieldController to `v0.3.2`. (#36809)
 - Fixes positioning issues for dropdowns, tooltips, and popovers (#36967)
-- Fixes a bug where the wallet would not prompt the user (#36963)
-  for unlock and would silently drop personal_sign requests when the
-  wallet was locked and the user was opted into MetaMetrics
 - Renders missing network row in transaction confirmations (#37048)
 - Adds address pattern matching to accounts list search (#37005)
 - Migrates user's existing pinned and hidden state to multichain account designs (#37017)
@@ -779,11 +813,7 @@ authorized by the user.` error until the user fully revoked dapp
 - Remove extra add network modal (#36309)
 - Changed account selector copy to read x network address(es) (#36293)
 - Updated the native ticker for Hemi (#36218)
-- Update: simplified network names for better readability - "Ethereum Mainnet" to "Ethereum", "Linea Mainnet" to "Linea", "Base (#35734)
-  Mainnet" to "Base", "Arbitrum One" to "Arbitrum", "Avalanche Network
-  C-Chain" to "Avalanche", "Binance Smart Chain" to "BNB Chain", "OP
-  Mainnet" to "OP", "Polygon Mainnet" to "Polygon", "Sei Mainnet" to
-  "Sei", and "zkSync Era Mainnet" to "zkSync Era" (#35734)
+- Simplified network names for better readability (#35734)
 - Swap indicator in hardware wallet confirmation page (#35776)
 - Updated IoTeX network and IoTeX token logos (SVG) to the latest branding. (#35720)
 - Updated announcement banner's design. (#35858)
@@ -808,7 +838,6 @@ authorized by the user.` error until the user fully revoked dapp
 - Fixed account balance display issue where only one account showed balance initially in account lists (#36451)
 - Align avatar in the site cell with the account list in account connect (#36392)
 - Use formatters for market cap (#36444)
-- Fixed intermittent connection and signing errors with Lattice1 hardware wallets by improving message validation (#36306)
 - Fixed DApp permissions page header to show "Edit Accounts" instead of "Connect with MetaMask" (#36421)
 - Fix solana connection after connecting with an evm account (#36242)
 - Fixed UI behavior for address copy action (#36424)
@@ -953,8 +982,6 @@ authorized by the user.` error until the user fully revoked dapp
 
 ### Fixed
 
-- fix: fixes a bug that was causing to show spam Solana transactions in the activity list (#35695)
-- fix: fixes an issue that was causing to show an empty symbol instead of UNKNOWN in activity list for Solana tokens with no metadata (#35695)
 - fix: adds UI adjustments for multichain accounts features (#35839)
 - fix: fixes a bug with opening multiple block explorer URLs from multichain QR code modal (#35822)
 - fix: adds token detail name to destination account picker (#35810)
@@ -1012,7 +1039,6 @@ authorized by the user.` error until the user fully revoked dapp
 
 ### Fixed
 
-- fix: fixes issues with balances not updating on Solana (#36129)
 - fix: improves Solana account synchronization and WebSocket subscriptions (#36129)
 - fix: adds multichain asset prices polling to ensure Solana chart always displays up-to-date price data (#36175)
 - fix: adds support for signing transactions where the fee payer differs from the user's account (#36251)
@@ -1103,7 +1129,6 @@ authorized by the user.` error until the user fully revoked dapp
 
 ### Changed
 
-- update: remove the Solana modal from the initial flow (#34988)
 - update: disable transaction resubmission (#35028)
 - update: update `SEI` network's name from `Sei Network` to `Sei Mainnet` (#34930)
 - update: reduce bundle size to improve performance (#34690)
@@ -1117,10 +1142,7 @@ authorized by the user.` error until the user fully revoked dapp
 - fix: hide 'Estimated changes have changed' alert from wallet initiated transactions (#34782)
 - fix: remove console error displayed when wallet is locked before transaction is confirmed (#34406)
 - fix: remove misleading console warning (#34816)
-- fix: remove console error displayed when connecting wallet to a dapp (#34783)
 - fix: use a static list of words for blurred SRP to prevent any potential possibility of a 'blur reversal attack' (#34288)
-- fix: revert 'set default theme to dark' (#34274)
-- fix: fixes incorrect email value in onboarding and setting page UI (#35170)
 - fix: fixes incorrect balances displayed on swap page, due to race condition when balances are set before URL params are applied (#35008)
 - fix: fixes ui not loading in old browsers due to use `Promise.withResolvers` (#35175)
 - fix: ensure that changing the global network should doesn't affect the dapp connected active network (#35432)
@@ -1129,7 +1151,6 @@ authorized by the user.` error until the user fully revoked dapp
 - fix: add the ability to temporarily hide carrousel to ensure a smoother experience (#35447)
 - fix: fixes issue where the petnames system attempts to resolve EIP-155 names for Solana accounts (#35477)
 - fix: ensure the dapp-connected network switches to a permitted network when the current dapp-connected network permission is revoked via the dapp popover modal (#35487)
-- fix: ensure the dapp-connected network remains unchanged when the global network RPC endpoint is switched (#35487)
 
 ## [13.1.2]
 
@@ -1196,13 +1217,10 @@ authorized by the user.` error until the user fully revoked dapp
 - fix: ensure Solana source token is properly displayed for solana -> evm bridges (#34521)
 - fix: fix an issue where signature requests with object-type data could fail by normalizing the data before parsing (#34054)
 - fix: set max limit of block gas used for gas estimation to 10M, which is required to fix ERC20 send issue on MegaETH Testnet (#34398)
-- fix: minimize frequent writes while the wallet UI is closed, to avoid abnormal disk writing (#34473)
 - fix: ensures we are scanning the same value origin that is actually displayed to users in the confirmation screen (#34459)
 - fix: inform user when tx simulation results in ResultWithNegativeLamports errors, as for some providers, like Debridge, it's the only way to detect whether quotes will succeed (#34477)
-- fix: prevent frequent writes while the wallet UI is closed (#34506)
 - fix: ensure 'view on explorer' button displayed below address qr code on the receive page redirects to the right explorer (#34377)
 - fix: update address qr code navigation to prevent infinite loop of navigation (#34381)
-- fix: show solana connected state in the dapp view (#34375)
 - fix: reduce occurrences of Ledger timeout errors (#34574)
 - fix: fix issue where network is always Mainnet when switching to a Bitcoin testnet account (#34286)
 - fix: eliminate 'MetaMask extension not found' error logged in the console when connecting to some dapps on Chrome (#34783)
@@ -1286,9 +1304,7 @@ authorized by the user.` error until the user fully revoked dapp
 - fix: display testnets for development mode (#34308)
 - fix: remove switch network toast (#34252)
 - fix: ellipses on long label names in destination acct picker (#34309)
-- fix: migrate bsc network rpc from bsc-dataseed.binance.org to bsc infura (#33997)
 - fix: ensure network deselect update the underlying network controller to an enable network (#34248)
-- fix: no positions wording update (#34229)
 - fix: update the multichain wallet header in the account list (#34325)
 - fix: change navigation to history.goback (#34245)
 - fix: move onclick handlers for base account details to the row level (#34243)
@@ -1297,23 +1313,16 @@ authorized by the user.` error until the user fully revoked dapp
 - fix: overwrite eth token logo (#34224)
 - fix: hide nested transaction tag when only 1 transaction is present (#34000)
 - fix: skip first-time interaction alert for first-party contracts (#34001)
-- fix: remove max button for native assets for now (#34293)
 - fix: use aggregate balance for srp list item balance (#34215)
 - fix: localize message for networkmanager (#34263)
 - fix: render add account button only for hd wallets (#34247)
 - fix: remove live network requests from seedless onboarding e2e tests (#34265)
-- fix: prevent swap between native assets (#34257)
 - fix: add changes to multichain accounts ui (#34190)
 - fix: show avatar account on all screens except header (#34273)
 - fix: fix select a contact during the Send flow does not clear when switching networks and send flow shows Select network (#34234)
 - fix: add performance tracing to UserStorage syncing features to improve monitoring and debugging capabilities (#34032)
-- fix: set confirm srp quiz word to readonly (#34225)
-- fix: resume metametrics if not set yet when close/open app during onboarding (#34177)
-- fix: use primary and secondary variants (#34230)
-- fix: fix crash on older browser versions (#34255)
 - fix: change from use `value` param to `amount` for swaps/bridge (#34035)
 - fix: address namedisplay component to show full address display name (#34188)
-- fix: handle if srp length paste is not equal to define srp lengths (#34183)
 - fix: prevent fetch invalid bridge quotes when dest address is not define cp-12.23.0 (#34115)
 - fix: solana onboarding from connect page (#34187)
 - fix: ui fixes in upgrade account page (#34084)
@@ -1329,7 +1338,6 @@ authorized by the user.` error until the user fully revoked dapp
 - fix: do not show backup reminder/notification when use social account (#34142)
 - fix: remove back button on wallet already exist and wallet not found pages (#34130)
 - fix: defi positions polling fix (#34023)
-- fix: use activequote amounts when display approval banners cp-12.22.1 (#34156)
 - fix: read issingleswapbridgebuttonenabled flag to show unified swaps cp-12.23.0 (#34153)
 - fix: feature flag enable networks on transaction history filter (#34149)
 - fix: ensure extension version has change when browser's onupdate event is fire (#34144)
@@ -1355,7 +1363,6 @@ authorized by the user.` error until the user fully revoked dapp
 - fix: properly revert keyring password and encryption key on password change rollback (#34520)
 - fix: add vault expiry info modal for old password recovery scenarios (#34118)
 - fix: prevent password field error text from dimming when field is disabled (#34545)
-- fix: add vault expiry modal for old password recovery scenarios (#34118)
 - fix: prevent incorrect onboarding navigation on browser back/refresh actions in social login flow (#34541)
 - fix: prevent background password sync checks from affecting UI state (#34534)
 - fix: prevent password field error text from dimming when field is disabled (#34564)
@@ -1597,7 +1604,9 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...HEAD
+[13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...v13.15.0
+[13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2
 [13.14.1]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.14.1
 [13.14.0]: https://github.com/MetaMask/metamask-extension/compare/v13.13.2...v13.14.0
 [13.13.2]: https://github.com/MetaMask/metamask-extension/compare/v13.13.1...v13.13.2

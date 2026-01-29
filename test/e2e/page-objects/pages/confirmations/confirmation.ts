@@ -120,6 +120,12 @@ class Confirmation {
     await this.driver.clickElement(this.inlineAlertButton);
   }
 
+  async checkNavigationIsNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.navigationTitle, {
+      waitAtLeastGuard: 1000,
+    });
+  }
+
   async clickNextPage(): Promise<void> {
     await this.driver.clickElement(this.nextPageButton);
   }

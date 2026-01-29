@@ -25,10 +25,13 @@ import {
   Caip25EndowmentPermissionName,
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue,
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import {
+  CaipChainId,
+  CaipNamespace,
   KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
@@ -36,7 +39,11 @@ import {
 import { toRelativeRoutePath } from '../routes/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
+import {
+  isEthAddress,
+  normalizeSafeAddress,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import {
   DEFAULT_ROUTE,
@@ -78,6 +85,7 @@ import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain
 import { supportsChainIds } from '../../hooks/useAccountGroupsForPermissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPageWrapper } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-account-wrapper';
+import { SnapsPermissionsRequestType } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
@@ -99,18 +107,42 @@ function getDefaultSelectedAccounts(
 ) {
   const requestedCaip25CaveatValue =
     getCaip25CaveatValueFromPermissions(permissions);
-  const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
 
-  if (requestedAccounts.length > 0) {
+  // First, try to get all CAIP account IDs from the permission request (chain-agnostic)
+  const requestedCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
+  );
+
+  if (requestedCaipAccountIds.length > 0) {
+    // Extract addresses from all CAIP account IDs (supports all chain types)
+    const addresses = requestedCaipAccountIds
+      .map((caipAccountId) => {
+        try {
+          return normalizeSafeAddress(
+            parseCaipAccountId(caipAccountId).address,
+          );
+        } catch {
+          return null;
+        }
+      })
+      .filter((address): address is string => address !== null);
+
+    if (addresses.length > 0) {
+      return new Set(addresses);
+    }
+  }
+
+  // Fallback: try EVM-specific accounts (for backward compatibility with eth_requestAccounts)
+  const requestedEthAccounts = getEthAccounts(requestedCaip25CaveatValue);
+  if (requestedEthAccounts.length > 0) {
     return new Set(
-      requestedAccounts
+      requestedEthAccounts
         .map((address) => address.toLowerCase())
-        // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
         .filter(isEthAddress),
     );
   }
 
-  // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
+  // Final fallback: use current address if it's an EVM address
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
@@ -118,6 +150,51 @@ function getRequestedChainIds(permissions: PermissionsRequest | undefined) {
   const requestedCaip25CaveatValue =
     getCaip25CaveatValueFromPermissions(permissions);
   return getPermittedEthChainIds(requestedCaip25CaveatValue);
+}
+
+/**
+ * Gets all requested CAIP chain IDs from the permission request.
+ * This includes all chains (EVM, Solana, Bitcoin, etc.), not just EVM.
+ *
+ * @param permissions
+ * @param includeEvm - Whether to include EVM chains (default: true)
+ */
+function getRequestedCaipChainIds(
+  permissions: PermissionsRequest | undefined,
+  includeEvm = true,
+): CaipChainId[] {
+  const requestedCaip25CaveatValue =
+    getCaip25CaveatValueFromPermissions(permissions);
+  return getAllScopesFromCaip25CaveatValue(requestedCaip25CaveatValue).filter(
+    (chainId) => {
+      try {
+        const { namespace } = parseCaipChainId(chainId);
+        // Exclude wallet namespace as it's not a chain
+        if (namespace === KnownCaipNamespace.Wallet) {
+          return false;
+        }
+        // Optionally exclude EVM chains (eip155 namespace)
+        if (!includeEvm && namespace === KnownCaipNamespace.Eip155) {
+          return false;
+        }
+        return true;
+      } catch {
+        return false;
+      }
+    },
+  ) as CaipChainId[];
+}
+
+/**
+ * Gets only non-EVM CAIP chain IDs from the permission request.
+ * This excludes EVM chains (eip155 namespace).
+ *
+ * @param permissions
+ */
+function getNonEvmRequestedCaipChainIds(
+  permissions: PermissionsRequest | undefined,
+): CaipChainId[] {
+  return getRequestedCaipChainIds(permissions, false);
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -196,8 +273,8 @@ function PermissionsConnect() {
   const requestState =
     useSelector((state) => getRequestState(state, permissionsRequestId)) || {};
 
-  // We only consider EVM accounts.
-  // Connections with non-EVM accounts (Bitcoin only for now) are used implicitly and handled by the Bitcoin Snap itself.
+  // We only consider EVM accounts for the legacy permission review flow.
+  // Multichain accounts are handled separately via the MultichainEditAccountsPageWrapper.
   const accountsWithLabels = useSelector(getAccountsWithLabels).filter(
     (account: { type: string }) =>
       isEvmAccountType(account.type as KeyringAccountType),
@@ -257,6 +334,15 @@ function PermissionsConnect() {
   const [snapsInstallPrivacyWarningShown] = useState(
     snapsInstallPrivacyWarningShownProp,
   );
+
+  // State for chain-agnostic CAIP account IDs and chain IDs
+  // These are set when accounts are selected in the multichain account selection UI
+  const [selectedCaipAccountIds, setSelectedCaipAccountIds] = useState<
+    string[] | null
+  >(null);
+  const [selectedCaipChainIds, setSelectedCaipChainIds] = useState<
+    CaipChainId[] | null
+  >(null);
 
   const prevPermissionsRequestRef = useRef<typeof permissionsRequest | null>(
     null,
@@ -502,26 +588,36 @@ function PermissionsConnect() {
       permissions as PermissionsRequest | undefined,
     );
 
-    const caipChainIdsToUse: `${string}:${string}`[] = [];
-
+    // Get all requested scopes (chain IDs), excluding wallet namespace
     const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
       requestedCaip25CaveatValue,
     ).filter((chainId) => {
-      const { namespace } = parseCaipChainId(chainId);
-      return namespace !== KnownCaipNamespace.Wallet;
-    });
+      try {
+        const { namespace } = parseCaipChainId(chainId);
+        return namespace !== KnownCaipNamespace.Wallet;
+      } catch {
+        return false;
+      }
+    }) as CaipChainId[];
+
+    // Get all requested namespaces, excluding wallet namespace
     const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
       requestedCaip25CaveatValue,
-    );
+    ).filter(
+      (namespace) => namespace !== KnownCaipNamespace.Wallet,
+    ) as CaipNamespace[];
 
-    if (requestedCaipChainIds.length > 0) {
-      requestedCaipChainIds.forEach((chainId) => {
-        caipChainIdsToUse.push(chainId);
-      });
-    }
+    // Build scopes to use: include all requested chain IDs
+    const caipChainIdsToUse: CaipChainId[] = [...requestedCaipChainIds];
 
+    // Only add wildcard scope for EIP-155 (EVM) namespace because
+    // getCaip25AccountIdsFromAccountGroupAndScope only handles wildcard matching for EVM.
+    // Non-EVM chains require exact scope matching.
     if (requestedNamespaces.includes(KnownCaipNamespace.Eip155)) {
-      caipChainIdsToUse.push(`${KnownCaipNamespace.Eip155}:0`);
+      const evmWildcard = `${KnownCaipNamespace.Eip155}:0` as CaipChainId;
+      if (!caipChainIdsToUse.includes(evmWildcard)) {
+        caipChainIdsToUse.push(evmWildcard);
+      }
     }
 
     return (
@@ -534,15 +630,24 @@ function PermissionsConnect() {
               accountGroupIds.includes(group.id) &&
               supportsChainIds(group, caipChainIdsToUse),
           );
-          const addresses = getCaip25AccountIdsFromAccountGroupAndScope(
+          const caipAccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
             filteredAccountGroups,
             caipChainIdsToUse,
-          ).map(
+          );
+
+          // Store CAIP account IDs and chain IDs for chain-agnostic permission approval
+          setSelectedCaipAccountIds(caipAccountIds);
+          // Store all requested CAIP chain IDs - the chain-agnostic system can handle mixed EVM/non-EVM chains
+          setSelectedCaipChainIds(requestedCaipChainIds);
+
+          // Extract addresses from CAIP account IDs
+          const addresses = caipAccountIds.map(
             (caip25AccountId) => parseCaipAccountId(caip25AccountId).address,
           );
           selectAccounts(new Set(addresses));
         }}
         onClose={() => cancelPermissionsRequest(permissionsRequestId || '')}
+        snapsPermissionsRequestType={SnapsPermissionsRequestType.Initial}
       />
     );
   }, [
@@ -678,6 +783,16 @@ function PermissionsConnect() {
                 requestedChainIds={getRequestedChainIds(
                   permissions as PermissionsRequest | undefined,
                 )}
+                // Chain-agnostic data for multichain permission approval
+                selectedCaipAccountIds={selectedCaipAccountIds}
+                // Use selectedCaipChainIds if set (from account selection), otherwise use non-EVM CAIP chain IDs
+                // EVM chains are already displayed via requestedChainIds, so we only pass non-EVM chains here
+                selectedCaipChainIds={
+                  selectedCaipChainIds ??
+                  getNonEvmRequestedCaipChainIds(
+                    permissions as PermissionsRequest | undefined,
+                  )
+                }
                 targetSubjectMetadata={targetSubjectMetadata}
                 navigate={navigate}
                 connectPath={connectPath}

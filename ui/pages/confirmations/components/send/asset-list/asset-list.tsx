@@ -30,6 +30,8 @@ type AssetListProps = {
   allTokens: Asset[];
   allNfts: Asset[];
   onClearFilters?: () => void;
+  hideNfts?: boolean;
+  onAssetSelect?: (asset: Asset) => void;
 };
 
 type ListItem =
@@ -46,22 +48,33 @@ export const AssetList = ({
   allTokens,
   allNfts,
   onClearFilters,
+  hideNfts = false,
+  onAssetSelect,
 }: AssetListProps) => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
   const { goToAmountRecipientPage } = useNavigateSendPage();
   const { updateAsset } = useSendContext();
   const { captureAssetSelected } = useAssetSelectionMetrics();
-  const hasFilteredResults = tokens.length > 0 || nfts.length > 0;
-  const hasAnyAssets = allTokens.length > 0 || allNfts.length > 0;
+
+  const effectiveNfts = hideNfts ? [] : nfts;
+  const effectiveAllNfts = hideNfts ? [] : allNfts;
+
+  const hasFilteredResults = tokens.length > 0 || effectiveNfts.length > 0;
+  const hasAnyAssets = allTokens.length > 0 || effectiveAllNfts.length > 0;
 
   const handleAssetClick = useCallback(
     (asset: Asset) => {
+      if (onAssetSelect) {
+        onAssetSelect(asset);
+        return;
+      }
+
       updateAsset(asset);
       goToAmountRecipientPage();
       captureAssetSelected(asset);
     },
-    [updateAsset, goToAmountRecipientPage, captureAssetSelected],
+    [updateAsset, goToAmountRecipientPage, captureAssetSelected, onAssetSelect],
   );
 
   const items: ListItem[] = [];
@@ -70,9 +83,9 @@ export const AssetList = ({
     items.push({ type: 'token', asset: token });
   });
 
-  if (nfts.length > 0) {
+  if (effectiveNfts.length > 0) {
     items.push({ type: 'nft-header' });
-    nfts.forEach((nft) => {
+    effectiveNfts.forEach((nft) => {
       items.push({ type: 'nft', asset: nft });
     });
   }

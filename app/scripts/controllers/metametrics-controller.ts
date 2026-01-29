@@ -8,10 +8,11 @@ import {
   size,
   sum,
 } from 'lodash';
-import { bufferToHex, keccak } from 'ethereumjs-util';
+import { keccak256 } from 'ethereum-cryptography/keccak';
 import { v4 as uuidv4 } from 'uuid';
 import { NameType } from '@metamask/name-controller';
 import {
+  bytesToHex,
   getErrorMessage,
   type Hex,
   isErrorWithMessage,
@@ -627,8 +628,8 @@ export default class MetaMetricsController extends BaseController<
   }
 
   generateMetaMetricsId(): string {
-    return bufferToHex(
-      keccak(
+    return bytesToHex(
+      keccak256(
         Buffer.from(
           String(Date.now()) +
             String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
@@ -1360,6 +1361,7 @@ export default class MetaMetricsController extends BaseController<
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
     const { traits } = this.state;
+    const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
 
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
@@ -1369,6 +1371,9 @@ export default class MetaMetricsController extends BaseController<
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
+      ...(storageKindTrait
+        ? { [MetaMetricsUserTrait.StorageKind]: storageKindTrait }
+        : {}),
       [MetaMetricsUserTrait.LedgerConnectionType]:
         metamaskState.ledgerTransportType,
       [MetaMetricsUserTrait.NetworksAdded]: Object.values(

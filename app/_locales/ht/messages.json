@@ -270,9 +270,6 @@
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Pa ka voye kantite lajan negatif ETH."
-  },
   "networks": {
     "message": "Rezo"
   },

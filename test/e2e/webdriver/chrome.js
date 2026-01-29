@@ -79,6 +79,13 @@ class ChromeDriver {
       args,
       prefs: {
         'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
+        // Allow clipboard access for paste operations in tests
+        'profile.content_settings.exceptions.clipboard': {
+          '[*.]': {
+            last_modified: Date.now(),
+            setting: 1, // 1 = allow
+          },
+        },
       },
       // Chrome 136+ hides extension windows from window_handles by default.
       // This flag makes extension target pages (like dialogs) available again.
