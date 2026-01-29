@@ -917,10 +917,9 @@ export default class MetaMetricsController extends BaseController<
   ): Promise<string | null> {
     const { metaMetricsId: existingMetaMetricsId } = this.state;
 
-    const metaMetricsId =
-      participateInMetaMetrics && !existingMetaMetricsId
-        ? this.generateMetaMetricsId()
-        : existingMetaMetricsId;
+    // regardless of the Opt In/Out status, we want to generate metaMetricsId if it doesn't exist
+    // this is to assign the id to the `Metrics Opt Out` event (in which participateInMetaMetrics is null/false)
+    const metaMetricsId = existingMetaMetricsId ?? this.generateMetaMetricsId();
 
     this.update((state) => {
       state.participateInMetaMetrics = participateInMetaMetrics;
@@ -1049,8 +1048,25 @@ export default class MetaMetricsController extends BaseController<
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): Promise<void> {
-    if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
+    const { useExternalServices } = this.messenger.call(
+      'PreferencesController:getState',
+    );
+    const isBasicFunctionalityDisabled = !useExternalServices;
+    if (isBasicFunctionalityDisabled) {
+      // If basic functionality is disabled, we block all events
       return;
+    }
+
+    const { participateInMetaMetrics, metaMetricsId } = this.state;
+    if (!participateInMetaMetrics && !options?.isOptIn) {
+      return;
+    }
+
+    const isMetricsOptOutEvent =
+      payload.event === MetaMetricsEventName.MetricsOptOut;
+    if (isMetricsOptOutEvent && options?.isOptIn) {
+      // For the `Metrics Opt Out` event, we want to track it with the user's `metaMetricsId`
+      options.metaMetricsId = metaMetricsId ?? undefined;
     }
 
     // We might track multiple events if sensitiveProperties is included, this array will hold
@@ -1695,24 +1711,43 @@ export default class MetaMetricsController extends BaseController<
     });
   }
 
-  /*
+  /**
    * Method below submits the request to analytics SDK.
    * It will also add event to controller store
    * and pass a callback to remove it from store once request is submitted to segment
    * Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
    * even if service worker terminates before events are submitted to segment.
+   *
+   * @param eventType - The type of event to track
+   * @param payload - The payload to track
+   * @param callback - The callback to call when the event is submitted
    */
   #submitSegmentAPICall(
     eventType: SegmentEventType,
     payload: Partial<SegmentEventPayload>,
     callback?: (result: unknown) => unknown,
   ): void {
+    const { useExternalServices } = this.messenger.call(
+      'PreferencesController:getState',
+    );
+    const isBasicFunctionalityDisabled = !useExternalServices;
+    if (isBasicFunctionalityDisabled) {
+      // If basic functionality is disabled, we block all events
+      return;
+    }
+
     const {
       metaMetricsId,
       latestNonAnonymousEventTimestamp,
       participateInMetaMetrics,
     } = this.state;
-    if (!participateInMetaMetrics || !metaMetricsId) {
+
+    const userOptedOut = !participateInMetaMetrics || !metaMetricsId;
+    const isMetricsOptOutEvent =
+      payload.event === MetaMetricsEventName.MetricsOptOut;
+
+    // Block all events if user opted out, except MetricsOptOut which is always sent when basic functionality is not disabled
+    if (userOptedOut && !isMetricsOptOutEvent) {
       return;
     }
 

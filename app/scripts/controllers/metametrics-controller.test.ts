@@ -2267,6 +2267,7 @@ async function withController<ReturnValue>(
       'PreferencesController:getState',
       jest.fn().mockReturnValue({
         currentLocale,
+        useExternalServices: true,
       }),
     );
 

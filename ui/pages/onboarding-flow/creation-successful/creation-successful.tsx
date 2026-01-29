@@ -44,6 +44,7 @@ import {
 import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
+  getParticipateInMetaMetrics,
   getPreferences,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -65,6 +66,8 @@ import {
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -84,6 +87,9 @@ export default function CreationSuccessful() {
   const preferences = useSelector(getPreferences);
   const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+
+  const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -211,6 +217,30 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
+    // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
+    // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
+    // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
+    if (!isOnboardingCompleted) {
+      // before onboarding completion, we track the MetricsOptIn/Out event
+
+      // We want to track the MetricsOptIn/Out event even if participateInMetaMetrics is false in non-Firefox browsers
+      const shouldForceEventTracking = isFireFox
+        ? false
+        : !participateInMetaMetrics;
+      trackEvent(
+        {
+          category: MetaMetricsEventCategory.Onboarding,
+          event: participateInMetaMetrics
+            ? MetaMetricsEventName.MetricsOptIn
+            : MetaMetricsEventName.MetricsOptOut,
+          properties: {},
+        },
+        {
+          isOptIn: shouldForceEventTracking,
+        },
+      );
+    }
+
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
       // If useSidePanelAsDefault is already true, side panel is already set up
@@ -247,6 +277,7 @@ export default function CreationSuccessful() {
     }
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
+
     navigate(DEFAULT_ROUTE);
   }, [
     isOnboardingCompleted,
@@ -259,6 +290,8 @@ export default function CreationSuccessful() {
     isFromSettingsSecurity,
     isSidePanelEnabled,
     isSidePanelSetAsDefault,
+    participateInMetaMetrics,
+    isFireFox,
   ]);
 
   const renderDoneButton = () => {
