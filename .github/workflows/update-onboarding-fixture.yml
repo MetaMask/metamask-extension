@@ -100,18 +100,14 @@ jobs:
           RUN_CONCLUSION=$(echo "$RUN_INFO" | jq -r '.conclusion')
 
           echo "Found run ${RUN_ID} with status: ${RUN_STATUS}, conclusion: ${RUN_CONCLUSION}"
+          echo "Attempting to download latest dist artifact..."
 
-          # If the run is still in progress, wait for it to complete
-          if [ "$RUN_STATUS" != "completed" ]; then
-            echo "Run ${RUN_ID} is still in progress. Waiting for it to complete..."
-            gh run watch "${RUN_ID}"
-            # Re-fetch the conclusion after waiting
-            RUN_CONCLUSION=$(gh run view "${RUN_ID}" --json conclusion --jq '.conclusion')
-            echo "Run completed with conclusion: ${RUN_CONCLUSION}"
+          if ! gh run download "${RUN_ID}" -n build-dist-browserify -D build-dist-browserify; then
+            echo "::error::Failed to download the 'build-dist-browserify' artifact. The build job may not have completed yet, may have failed. Please ensure the build-dist-browserify job has completed successfully."
+            exit 1
           fi
 
-          echo "Downloading artifacts from run ${RUN_ID}..."
-          gh run download "${RUN_ID}" -n build-dist-browserify -D build-dist-browserify
+          echo "Successfully downloaded dist artifact."
         env:
           BRANCH: ${{ steps.branch.outputs.BRANCH }}
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
