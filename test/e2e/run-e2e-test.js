@@ -137,19 +137,50 @@ async function main() {
 
     console.log(`Running tests on ${selectedBrowserForRun}`);
 
+    // Use enhanced spec reporter for readable console output with colors and summary
+    // Only add junit reporter in CI environments
+    // const isCI =
+    //   process.env.CI === 'true' ||
+    //   process.env.GITHUB_ACTIONS === 'true' ||
+    //   false;
+    // Use enhanced reporter by default, allow override via E2E_REPORTER env var
+    const consoleReporter =
+      process.env.E2E_REPORTER ||
+      path.join(__dirname, 'reporters/enhanced-spec-reporter.js');
+    const reporters = [`--reporter=${consoleReporter}`];
+    const reporterOptions = [];
+
+    // if (isCI) {
+    //   // Use absolute path and ensure toConsole is false to suppress XML output
+    //   const junitOutputPath = path.resolve(
+    //     process.cwd(),
+    //     'test/test-results/e2e/[hash].xml',
+    //   );
+    //   reporters.push('--reporter=mocha-junit-reporter');
+    //   reporterOptions.push(
+    //     '--reporter-options',
+    //     JSON.stringify({
+    //       mochaFile: junitOutputPath,
+    //       toConsole: false,
+    //     }),
+    //   );
+    // }
+
     try {
       await retry({ retries, stopAfterOneFailure }, async () => {
-        await runInShell('yarn', [
+        const mochaArgs = [
           'mocha',
           `--config=${configFile}`,
           `--timeout=${testTimeoutInMilliseconds}`,
-          '--reporter=mocha-junit-reporter',
-          '--reporter-options',
-          `mochaFile=test/test-results/e2e/[hash].xml,toConsole=true`,
+          '--color',
+          ...reporters,
+          ...reporterOptions,
           ...extraArgs,
           e2eTestPath,
           exit,
-        ]);
+        ];
+
+        await runInShell('yarn', mochaArgs);
       });
     } catch (error) {
       // If the file path includes 'tolerate-failure', we log and tolerate the failure
