@@ -3383,7 +3383,7 @@
     "message": "Ledger Live 应用程序"
   },
   "ledgerLocked": {
-    "message": "无法连接到 Ledger 设备。请确保您的设备已解锁并打开 Etherum 应用程序。"
+    "message": "无法连接到 Ledger 设备。请确保您的设备已解锁并打开 Ethereum 应用程序。"
   },
   "ledgerMultipleDevicesUnsupportedInfoDescription": {
     "message": "要连接至新设备，请先断开与先前设备的连接。"
@@ -7123,7 +7123,7 @@
     "message": "继续兑换"
   },
   "swapContractDataDisabledErrorDescription": {
-    "message": "在您的 Ledger 的 Etherum 应用程序中，转到“设置”并允许合约数据。然后再次尝试交换。"
+    "message": "在您的 Ledger 的 Ethereum 应用程序中，转到“设置”并允许合约数据。然后再次尝试交换。"
   },
   "swapContractDataDisabledErrorTitle": {
     "message": "您的 Ledger 上未启用合约数据"
