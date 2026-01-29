@@ -96,6 +96,10 @@ export default function NftGrid({
   const [itemsPerRow, setItemsPerRow] = useState(3);
 
   useEffect(() => {
+    if (process.env.IN_TEST) {
+      return;
+    }
+
     const container = containerRef.current;
     if (!container || typeof ResizeObserver === 'undefined') {
       return;
