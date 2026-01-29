@@ -499,69 +499,6 @@ function extractHostname(url: string): string | null {
 }
 
 /**
- * Initialize the set of known domains from the safe chainlist cache.
- * This should be called once at startup in the background context.
- *
- * @returns A promise that resolves when initialization is complete.
- */
-export async function initializeRpcProviderDomains(): Promise<void> {
-  if (initPromise) {
-    return initPromise;
-  }
-
-  initPromise = (async () => {
-    try {
-      const chainsList = await getSafeChainsListFromCacheOnly();
-      knownDomainsSet = new Set<string>();
-
-      for (const chain of chainsList) {
-        if (chain.rpc && Array.isArray(chain.rpc)) {
-          for (const rpcUrl of chain.rpc) {
-            const hostname = extractHostname(rpcUrl);
-            if (hostname) {
-              knownDomainsSet.add(hostname);
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error initializing known domains:', error);
-      knownDomainsSet = new Set<string>();
-    }
-  })();
-
-  return initPromise;
-}
-
-/**
- * Check if a domain is in the known domains list.
- *
- * @param domain - The domain to check.
- * @returns True if the domain is found in the chainlist cache.
- */
-export function isKnownDomain(domain: string): boolean {
-  if (!domain) {
-    return false;
-  }
-  return knownDomainsSet?.has(domain.toLowerCase()) ?? false;
-}
-
-/**
- * Check if an RPC endpoint URL has a "known", domain, i.e. the domain is listed
- * in a public registry.
- *
- * @param endpointUrl - The URL of the RPC endpoint.
- * @returns True if the endpoint's domain is listed in a public registry.
- */
-function isKnownEndpointUrl(endpointUrl: string): boolean {
-  const hostname = extractHostname(endpointUrl);
-  if (!hostname) {
-    return false;
-  }
-  return isKnownDomain(hostname);
-}
-
-/**
  * Check if a hostname is a localhost or private/local IP address.
  * These should never be considered "public" endpoints even if they appear in chainlist.
  *
@@ -614,6 +551,74 @@ function isLocalhostOrPrivateIP(hostname: string): boolean {
 }
 
 /**
+ * Initialize the set of known domains from the safe chainlist cache.
+ * This should be called once at startup in the background context.
+ * Localhost and private IP addresses are filtered out to prevent leaking
+ * private network information to analytics.
+ *
+ * @returns A promise that resolves when initialization is complete.
+ */
+export async function initializeRpcProviderDomains(): Promise<void> {
+  if (initPromise) {
+    return initPromise;
+  }
+
+  initPromise = (async () => {
+    try {
+      const chainsList = await getSafeChainsListFromCacheOnly();
+      knownDomainsSet = new Set<string>();
+
+      for (const chain of chainsList) {
+        if (chain.rpc && Array.isArray(chain.rpc)) {
+          for (const rpcUrl of chain.rpc) {
+            const hostname = extractHostname(rpcUrl);
+            // Filter out localhost and private IPs - these should never be
+            // considered "public" even if they appear in chainlist
+            if (hostname && !isLocalhostOrPrivateIP(hostname)) {
+              knownDomainsSet.add(hostname);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error initializing known domains:', error);
+      knownDomainsSet = new Set<string>();
+    }
+  })();
+
+  return initPromise;
+}
+
+/**
+ * Check if a domain is in the known domains list.
+ *
+ * @param domain - The domain to check.
+ * @returns True if the domain is found in the chainlist cache.
+ */
+export function isKnownDomain(domain: string): boolean {
+  if (!domain) {
+    return false;
+  }
+  return knownDomainsSet?.has(domain.toLowerCase()) ?? false;
+}
+
+/**
+ * Check if an RPC endpoint URL has a "known" domain, i.e. the domain is listed
+ * in a public registry. Localhost and private IPs are filtered out during
+ * initialization of the known domains set.
+ *
+ * @param endpointUrl - The URL of the RPC endpoint.
+ * @returns True if the endpoint's domain is listed in a public registry.
+ */
+function isKnownEndpointUrl(endpointUrl: string): boolean {
+  const hostname = extractHostname(endpointUrl);
+  if (!hostname) {
+    return false;
+  }
+  return isKnownDomain(hostname);
+}
+
+/**
  * Some URLs that users add as networks refer to private servers, and we do not
  * want to report these in Segment (or any other data collection service). This
  * function returns whether the given RPC endpoint is safe to share.
@@ -631,13 +636,6 @@ export function isPublicEndpointUrl(
   endpointUrl: string,
   infuraProjectId: string,
 ): boolean {
-  // First, check if this is a localhost or private IP address.
-  // These should never be considered "public" even if they appear in chainlist.
-  const hostname = extractHostname(endpointUrl);
-  if (hostname && isLocalhostOrPrivateIP(hostname)) {
-    return false;
-  }
-
   const isMetaMaskInfuraEndpointUrl = getIsMetaMaskInfuraEndpointUrl(
     endpointUrl,
     infuraProjectId,
