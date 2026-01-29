@@ -2,13 +2,8 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
-// BIP44 Stage 2 feature flags - enables automatic multichain account creation
-export const BIP44_STAGE_TWO = {
-  enableMultichainAccountsState2: {
-    enabled: true,
-    featureVersion: '2',
-    minimumVersion: '12.19.0',
-  },
+// Feature flags for Bitcoin testing
+export const BITCOIN_FEATURE_FLAGS = {
   sendRedesign: {
     enabled: true,
   },
@@ -19,8 +14,7 @@ export const BIP44_STAGE_TWO = {
 };
 
 /**
- * Mocks the feature flags endpoint with BIP44 Stage 2 configuration
- * This enables automatic Bitcoin account creation
+ * Mocks the feature flags endpoint for Bitcoin testing
  *
  * @param mockServer
  */
@@ -36,6 +30,6 @@ export async function mockBitcoinFeatureFlag(
     })
     .thenCallback(() => ({
       statusCode: 200,
-      json: [BIP44_STAGE_TWO],
+      json: [BITCOIN_FEATURE_FLAGS],
     }));
 }

@@ -91,7 +91,7 @@ export const DAPP_PATH = Object.freeze({
 } as const);
 
 /* Default BTC address created using test SRP (E2E_SRP) with BIP84 derivation */
-export const DEFAULT_BTC_ADDRESS = 'bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7';
+export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 
 /* Default BTC Account ID used in fixtures */
 export const DEFAULT_BTC_ACCOUNT_ID = 'btc-account-default';

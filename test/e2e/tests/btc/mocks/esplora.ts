@@ -11,17 +11,29 @@ import {
  * The Bitcoin address derived from E2E_SRP using BIP84 (P2WPKH).
  * This is deterministic - always the same for the test SRP.
  *
- * Address: bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7
- * ScriptPubKey: 0014b179e3f9e3d08721eb3c159a4352612d5d66f19c
- * Scripthash (SHA256): 7df1af9edc3f17e4e228fd287a14dfb79fc9f4155e2418152536cc7a3e249ba4
+ * Address: bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252
+ * ScriptPubKey: 0014469d76e8387e11cbe9010c72ee4b748dd9152fa5
+ * Scripthash (SHA256 reversed): 538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721
+ *
+ * NOTE: The scriptpubkey was verified against real mainnet API response.
  */
-const E2E_BTC_ADDRESS = 'bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7';
-const E2E_BTC_SCRIPTPUBKEY = '0014b179e3f9e3d08721eb3c159a4352612d5d66f19c';
+const E2E_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
+const E2E_BTC_SCRIPTPUBKEY = '0014469d76e8387e11cbe9010c72ee4b748dd9152fa5';
 const E2E_BTC_SCRIPTHASH =
-  '7df1af9edc3f17e4e228fd287a14dfb79fc9f4155e2418152536cc7a3e249ba4';
+  '538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721';
 
+/**
+ * Valid transaction IDs calculated from actual serialized transaction data.
+ * These are proper double-SHA256 hashes (reversed) of the transaction bytes.
+ *
+ * PREVOUT_TX_ID: Coinbase-like tx that funds FUNDING_TX
+ * FUNDING_TX_ID: Transaction that sends 1 BTC to E2E test address
+ */
+const PREVOUT_TX_ID =
+  '74191037a8a58e06b68d4341ac6f3b17b03a819925643143a371d103df98cdb0';
 const FUNDING_TX_ID =
-  'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2';
+  '7a9d27d80e05abc2cf15c6bc87a70a6badf5f5aa6615aa8e346d92fccf7dfc10';
+
 const FUNDING_BLOCK_HEIGHT = 932935;
 const FUNDING_BLOCK_HASH =
   '000000000000000000013d73c3bd23225714f2fd8b801ed076818f2971897748';
@@ -41,7 +53,7 @@ const FUNDING_TX = {
   locktime: 0,
   vin: [
     {
-      txid: '3b40b6a568e1d9b8e8c5fd0f9c5cf8a7d6e5c4b3a2918070605040302010000f',
+      txid: PREVOUT_TX_ID,
       vout: 1,
       prevout: {
         scriptpubkey: '0014a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0',
@@ -82,6 +94,12 @@ const FUNDING_TX = {
   },
 };
 
+/**
+ * Mock /blocks endpoint.
+ * Returns the latest blocks for BDK chain tip sync.
+ *
+ * @param mockServer - The mock server instance
+ */
 const mockBlocks = (mockServer: Mockttp) =>
   mockServer
     .forGet(
@@ -185,6 +203,95 @@ const mockAllScriptHashTxs = (mockServer: Mockttp) =>
     });
 
 /**
+ * Mock scripthash/{hash}/utxo requests.
+ * Returns the UTXO for the E2E test address.
+ *
+ * @param mockServer - The mock server instance
+ */
+const mockScriptHashUtxo = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/utxo$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const scripthashMatch = request.url.match(
+        /scripthash\/([a-f0-9]{64})\/utxo/u,
+      );
+      const scripthash = scripthashMatch?.[1];
+
+      if (scripthash === E2E_BTC_SCRIPTHASH) {
+        return {
+          statusCode: 200,
+          json: [
+            {
+              txid: FUNDING_TX_ID,
+              vout: 0,
+              status: {
+                confirmed: true,
+                block_height: FUNDING_BLOCK_HEIGHT,
+                block_hash: FUNDING_BLOCK_HASH,
+                block_time: 1768824955,
+              },
+              value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC,
+            },
+          ],
+        };
+      }
+
+      return { statusCode: 200, json: [] };
+    });
+
+/**
+ * The input transaction that FUNDING_TX spends from.
+ * This is a coinbase-like transaction needed so BDK can validate the transaction chain.
+ */
+const PREVOUT_TX = {
+  txid: PREVOUT_TX_ID,
+  version: 2,
+  locktime: 0,
+  vin: [
+    {
+      txid: '0000000000000000000000000000000000000000000000000000000000000000',
+      vout: 4294967295,
+      prevout: null,
+      scriptsig: '03936b0e',
+      scriptsig_asm: 'OP_PUSHBYTES_3 936b0e',
+      is_coinbase: true,
+      sequence: 4294967295,
+    },
+  ],
+  vout: [
+    {
+      scriptpubkey: '00140000000000000000000000000000000000000000',
+      scriptpubkey_asm:
+        'OP_0 OP_PUSHBYTES_20 0000000000000000000000000000000000000000',
+      scriptpubkey_type: 'v0_p2wpkh',
+      scriptpubkey_address: 'bc1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq9e75rs',
+      value: 50000000,
+    },
+    {
+      scriptpubkey: '0014a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0',
+      scriptpubkey_asm:
+        'OP_0 OP_PUSHBYTES_20 a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0',
+      scriptpubkey_type: 'v0_p2wpkh',
+      scriptpubkey_address: 'bc1q5xkv868t06f78yaxpu722adv2aul0gdcz3e3mw',
+      value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC + 1000,
+    },
+  ],
+  size: 117,
+  weight: 357,
+  fee: 0,
+  status: {
+    confirmed: true,
+    block_height: FUNDING_BLOCK_HEIGHT - 100,
+    block_hash:
+      '0000000000000000000000000000000000000000000000000000000000000001',
+    block_time: 1768824000,
+  },
+};
+
+/**
  * Mock transaction details endpoint.
  * Required by BDK to fetch full transaction data.
  *
@@ -205,6 +312,11 @@ const mockTxDetails = (mockServer: Mockttp) =>
       if (txid === FUNDING_TX_ID) {
         console.log(`[BTC MOCK] ✓ Returning FUNDING_TX details`);
         return { statusCode: 200, json: FUNDING_TX };
+      }
+
+      if (txid === PREVOUT_TX_ID) {
+        console.log(`[BTC MOCK] ✓ Returning PREVOUT_TX details`);
+        return { statusCode: 200, json: PREVOUT_TX };
       }
 
       console.log(`[BTC MOCK] ⚠️ Unknown txid - returning 404`);
@@ -288,6 +400,12 @@ const mockBlockHeight = (mockServer: Mockttp) =>
       };
     });
 
+/**
+ * Mock fee-estimates endpoint.
+ * Returns fee rates for transaction building.
+ *
+ * @param mockServer - The mock server instance
+ */
 const mockFeeEstimates = (mockServer: Mockttp) =>
   mockServer
     .forGet(
@@ -332,6 +450,107 @@ const mockFeeEstimates = (mockServer: Mockttp) =>
     });
 
 /**
+ * Mock transaction outspends endpoint.
+ * Returns spending status of transaction outputs.
+ *
+ * @param mockServer - The mock server instance
+ */
+const mockTxOutspends = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/tx\/[a-f0-9]{64}\/outspends$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const txidMatch = request.url.match(/\/tx\/([a-f0-9]{64})\/outspends/u);
+      const txid = txidMatch?.[1];
+
+      if (txid === FUNDING_TX_ID) {
+        return {
+          statusCode: 200,
+          json: [{ spent: false }],
+        };
+      }
+
+      if (txid === PREVOUT_TX_ID) {
+        return {
+          statusCode: 200,
+          json: [
+            { spent: false },
+            {
+              spent: true,
+              txid: FUNDING_TX_ID,
+              vin: 0,
+              status: {
+                confirmed: true,
+                block_height: FUNDING_BLOCK_HEIGHT,
+                block_hash: FUNDING_BLOCK_HASH,
+                block_time: 1768824955,
+              },
+            },
+          ],
+        };
+      }
+
+      return { statusCode: 200, json: [] };
+    });
+
+/**
+ * Mock POST /tx endpoint for broadcasting transactions.
+ * Returns a fake txid on success.
+ *
+ * @param mockServer - The mock server instance
+ */
+const mockBroadcastTx = (mockServer: Mockttp) =>
+  mockServer
+    .forPost(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/tx$/u,
+    )
+    .always()
+    .thenCallback(() => {
+      // Return a fake txid for the broadcast transaction
+      return {
+        statusCode: 200,
+        body: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+      };
+    });
+
+/**
+ * Mock /blocks/tip/height endpoint.
+ * Returns the current chain tip height.
+ *
+ * @param mockServer - The mock server instance
+ */
+const mockBlocksTipHeight = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks\/tip\/height$/u,
+    )
+    .always()
+    .thenCallback(() => {
+      return { statusCode: 200, body: '932936' };
+    });
+
+/**
+ * Mock /blocks/tip/hash endpoint.
+ * Returns the current chain tip hash.
+ *
+ * @param mockServer - The mock server instance
+ */
+const mockBlocksTipHash = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks\/tip\/hash$/u,
+    )
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409',
+      };
+    });
+
+/**
  * Catch-all for any Bitcoin Infura requests that are not mocked.
  * Helps debug which endpoints are being called.
  *
@@ -345,6 +564,15 @@ const mockCatchAllBitcoin = (mockServer: Mockttp) =>
     .always()
     .thenCallback((request) => {
       console.log(`[BTC MOCK] ⚠️ UNHANDLED Bitcoin request: ${request.url}`);
+      const path = request.url.replace(/.*\/esplora/, '/esplora');
+
+      if (path.includes('/txs')) {
+        return { statusCode: 200, json: [] };
+      }
+      if (path.includes('/utxo')) {
+        return { statusCode: 200, json: [] };
+      }
+
       return { statusCode: 404, body: 'Not mocked' };
     });
 
@@ -352,8 +580,8 @@ const mockCatchAllBitcoin = (mockServer: Mockttp) =>
  * Mocks the Esplora API calls for Bitcoin E2E tests.
  *
  * This mock is configured for the deterministic Bitcoin address derived from E2E_SRP:
- * - Address: bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7
- * - Scripthash: 7df1af9edc3f17e4e228fd287a14dfb79fc9f4155e2418152536cc7a3e249ba4
+ * - Address: bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252
+ * - Scripthash: 538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721
  *
  * The mock returns a funding transaction with DEFAULT_BTC_BALANCE (1 BTC) for this address.
  *
@@ -363,13 +591,17 @@ export async function mockInitialFullScan(mockServer: Mockttp) {
   // Mock latest blocks - required by BDK for chain tip
   await mockBlocks(mockServer);
 
+  await mockBlocksTipHeight(mockServer);
+  await mockBlocksTipHash(mockServer);
   // Mock scripthash/*/txs - returns FUNDING_TX for E2E address
   await mockAllScriptHashTxs(mockServer);
 
   // Mock transaction details - required by BDK
   await mockTxDetails(mockServer);
+  await mockScriptHashUtxo(mockServer);
 
   // Mock block details - required by BDK
+  await mockTxOutspends(mockServer);
   await mockBlockDetails(mockServer);
 
   // Mock block height lookups - required by BDK
@@ -379,5 +611,6 @@ export async function mockInitialFullScan(mockServer: Mockttp) {
   await mockFeeEstimates(mockServer);
 
   // Catch-all for debugging
+  await mockBroadcastTx(mockServer);
   await mockCatchAllBitcoin(mockServer);
 }
