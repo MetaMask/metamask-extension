@@ -353,6 +353,46 @@ class FixtureBuilder {
     });
   }
 
+  withNetworkControllerOnEtherlinkMainnet() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'etherlink',
+      networkConfigurations: {
+        etherlink: {
+          chainId: CHAIN_IDS.ETHERLINK,
+          nickname: 'Etherlink',
+          rpcUrl: 'https://node.mainnet.etherlink.com',
+          ticker: 'XTZ',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://explorer.etherlink.com',
+          },
+          id: 'etherlink',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnMSU() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'henesys',
+      networkConfigurations: {
+        etherlink: {
+          chainId: CHAIN_IDS.MSU,
+          nickname: 'Henesys',
+          rpcUrl: 'https://henesys-rpc.msu.io',
+          ticker: 'NXPC',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://msu-explorer.xangle.io',
+          },
+          id: 'henesys',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
   withNftController(data) {
     merge(
       this.fixture.data.NftController

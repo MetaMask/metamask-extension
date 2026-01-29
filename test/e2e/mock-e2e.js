@@ -79,6 +79,8 @@ const blocklistedHosts = [
   'sei-mainnet.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
+  'node.mainnet.etherlink.com',
+  'henesys-rpc.msu.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,

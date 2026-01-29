@@ -44,6 +44,20 @@ const networkConfigs: NetworkConfig[] = [
     testTitle: 'Sei Network Connection Tests',
     chainId: CHAIN_IDS.SEI,
   },
+  {
+    name: 'Etherlink',
+    tokenSymbol: 'XTZ',
+    fixtureMethod: (builder) => builder.withNetworkControllerOnEtherlinkMainnet(),
+    testTitle: 'Etherlink Network Connection Tests',
+    chainId: CHAIN_IDS.ETHERLINK,
+  },
+  {
+    name: 'Henesys',
+    tokenSymbol: 'NXPC',
+    fixtureMethod: (builder) => builder.withNetworkControllerOnMSU(),
+    testTitle: 'Henesys Network Connection Tests',
+    chainId: CHAIN_IDS.MSU,
+  },
 ];
 
 // Helper function to perform Dapp action and verify
