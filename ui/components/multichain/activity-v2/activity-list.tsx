@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
@@ -71,18 +71,6 @@ export const ActivityList = () => {
     isFetchingNextPage,
   ]);
 
-  const renderItem = useCallback((item: FlattenedItem) => {
-    if (item.type === 'date-header') {
-      return (
-        <Box className="px-4 py-2 bg-background-default">
-          <Text className="text-sm text-alternative">{item.date}</Text>
-        </Box>
-      );
-    }
-
-    return <ActivityListItem transaction={item.data} />;
-  }, []);
-
   if (flattenedItems.length > 0) {
     return (
       <Box>
@@ -102,7 +90,16 @@ export const ActivityList = () => {
                   transform: `translateY(${virtualItem.start}px)`,
                 }}
               >
-                {item && renderItem(item)}
+                {item &&
+                  (item.type === 'date-header' ? (
+                    <Box className="px-4 py-2 bg-background-default">
+                      <Text className="text-sm text-alternative">
+                        {item.date}
+                      </Text>
+                    </Box>
+                  ) : (
+                    <ActivityListItem transaction={item.data} />
+                  ))}
               </div>
             );
           })}
