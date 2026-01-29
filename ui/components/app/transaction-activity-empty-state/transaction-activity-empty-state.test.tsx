@@ -10,6 +10,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import * as useMultichainSelectorHook from '../../../hooks/useMultichainSelector';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   TransactionActivityEmptyState,
   type TransactionActivityEmptyStateProps,
@@ -17,6 +18,7 @@ import {
 
 // Mock the useBridging hook
 jest.mock('../../../hooks/bridge/useBridging');
+jest.mock('../../../selectors/accounts');
 
 const createAccount = (
   overrides: Partial<InternalAccount> = {},
@@ -136,14 +138,18 @@ describe('TransactionActivityEmptyState', () => {
   const renderComponent = (
     props: Partial<TransactionActivityEmptyStateProps> = {},
     stateOverrides = {},
+    account = mockAccount,
   ) => {
+    // Set up the mock for the selected account
+    (getSelectedInternalAccount as jest.Mock).mockReturnValue(account);
+
     const store = configureMockStore(middleware)({
       ...mockState,
       ...stateOverrides,
     });
 
     return renderWithProvider(
-      <TransactionActivityEmptyState account={mockAccount} {...props} />,
+      <TransactionActivityEmptyState {...props} />,
       store,
     );
   };
@@ -201,47 +207,36 @@ describe('TransactionActivityEmptyState', () => {
     (describe as unknown as jest.Describe).each<
       [
         string,
-        Partial<TransactionActivityEmptyStateProps>,
+        InternalAccount,
         ReturnType<typeof createStateOverrides> | Record<string, never>,
       ]
     >([
-      [
-        'not a swaps chain',
-        { account: accountWithSigning },
-        createTestnetState(),
-      ],
+      ['not a swaps chain', accountWithSigning, createTestnetState()],
       [
         'external services are disabled',
-        { account: accountWithSigning },
+        accountWithSigning,
         createStateWithoutExternalServices(),
       ],
-      [
-        'account cannot sign transactions',
-        { account: accountWithoutSigning },
-        {},
-      ],
+      ['account cannot sign transactions', accountWithoutSigning, {}],
     ])(
       'disables swap button when %s',
       (
         _condition: string,
-        props: Partial<TransactionActivityEmptyStateProps>,
+        account: InternalAccount,
         stateOverrides:
           | ReturnType<typeof createStateOverrides>
           | Record<string, never>,
       ) => {
         it(`should disable swap button`, () => {
-          renderComponent(props, stateOverrides);
+          renderComponent({}, stateOverrides, account);
           expectSwapButtonState(false);
         });
       },
     );
 
     it('enables swap button when all conditions are met', () => {
-      const props: Partial<TransactionActivityEmptyStateProps> = {
-        account: accountWithSigning,
-      };
       const stateOverrides = createValidSwapState();
-      renderComponent(props, stateOverrides);
+      renderComponent({}, stateOverrides, accountWithSigning);
       expectSwapButtonState(true);
     });
 
@@ -252,20 +247,14 @@ describe('TransactionActivityEmptyState', () => {
           chainId: MultichainNetworks.SOLANA,
           isEvmNetwork: false,
         });
-      const props: Partial<TransactionActivityEmptyStateProps> = {
-        account: accountWithSigning,
-      };
       const stateOverrides = createTestnetState();
-      renderComponent(props, stateOverrides);
+      renderComponent({}, stateOverrides, accountWithSigning);
       expectSwapButtonState(true); // Should be enabled due to Solana logic
     });
 
     it('calls openBridgeExperience when swap button is clicked', () => {
-      const props: Partial<TransactionActivityEmptyStateProps> = {
-        account: accountWithSigning,
-      };
       const stateOverrides = createValidSwapState();
-      renderComponent(props, stateOverrides);
+      renderComponent({}, stateOverrides, accountWithSigning);
       const swapButton = expectSwapButtonState(true);
 
       fireEvent.click(swapButton);
