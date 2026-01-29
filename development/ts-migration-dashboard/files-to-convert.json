@@ -1075,7 +1075,6 @@
   "ui/hooks/useAssetDetails.js",
   "ui/hooks/useAssetDetails.test.js",
   "ui/hooks/useNftsCollections.js",
-  "ui/hooks/useCopyToClipboard.js",
   "ui/hooks/useCurrencyDisplay.js",
   "ui/hooks/useCurrencyDisplay.test.js",
   "ui/hooks/useCurrentAsset.js",
