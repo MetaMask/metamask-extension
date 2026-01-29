@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
-import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   createAsyncMiddleware,
@@ -227,8 +226,10 @@ import {
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
 import {
+  HardwareWalletType,
   isRetryableHardwareWalletError,
   parseErrorByType,
+  toHardwareWalletError,
 } from '../../ui/contexts/hardware-wallets';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
