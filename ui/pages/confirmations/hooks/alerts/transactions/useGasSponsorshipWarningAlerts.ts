@@ -87,10 +87,8 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
         })
       : null;
 
-  const shouldShow = Boolean(message) && !isGasFeeSponsored;
-
   return useMemo(() => {
-    if (!shouldShow || !message) {
+    if (!message || isGasFeeSponsored) {
       return [];
     }
 
@@ -105,5 +103,5 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
         showArrow: false,
       },
     ];
-  }, [message, shouldShow]);
+  }, [message, isGasFeeSponsored]);
 }
