@@ -1195,6 +1195,43 @@ describe('MultichainAccountList', () => {
     });
   });
 
+  describe('Wallet collapse functionality', () => {
+    it('shows wallet headers when there are multiple wallets', () => {
+      renderComponent();
+
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      expect(walletHeaders).toHaveLength(2);
+
+      // Wallets are expanded by default
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+
+    it('collapses wallet when wallet header is clicked', async () => {
+      renderComponent();
+
+      // Click the first wallet header to collapse it
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1's account should no longer be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Wallet 2's account should still be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe('Trace events', () => {
     it('ends AccountList and ShowAccountList traces on mount', () => {
       renderComponent();

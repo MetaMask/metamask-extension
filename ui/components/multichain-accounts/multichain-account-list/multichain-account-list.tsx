@@ -81,6 +81,13 @@ type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
 type ListItem =
   | { type: 'header'; key: string; text: string; testId?: string }
   | {
+      type: 'wallet-header';
+      key: string;
+      walletId: AccountWalletId;
+      walletName: string;
+      isExpanded: boolean;
+    }
+  | {
       type: 'account';
       key: string;
       groupId: string;
@@ -152,6 +159,18 @@ export const MultichainAccountList = ({
   const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
     useState(false);
 
+  // Track which wallets are expanded (by default all are expanded)
+  const [expandedWallets, setExpandedWallets] = useState<
+    Record<AccountWalletId, boolean>
+  >(() => {
+    // Initialize all wallets as expanded (true)
+    const initialState: Record<AccountWalletId, boolean> = {};
+    (Object.keys(wallets) as AccountWalletId[]).forEach((walletId) => {
+      initialState[walletId] = true;
+    });
+    return initialState;
+  });
+
   const handleAccountRenameActionModalClose = useCallback(() => {
     setIsAccountRenameModalOpen(false);
     setRenameAccountGroupId(undefined);
@@ -171,6 +190,13 @@ export const MultichainAccountList = ({
     setOpenMenuAccountId((current) =>
       current === accountGroupId ? null : accountGroupId,
     );
+  }, []);
+
+  const handleWalletToggle = useCallback((walletId: AccountWalletId) => {
+    setExpandedWallets((current) => ({
+      ...current,
+      [walletId]: !current[walletId],
+    }));
   }, []);
 
   // Convert selectedAccountGroups array to Set for O(1) lookup
@@ -371,7 +397,9 @@ export const MultichainAccountList = ({
     const shouldShowWalletHeaders =
       displayWalletHeader || pinnedGroups.length > 0;
 
-    Object.entries(wallets).forEach(([walletId, walletData]) => {
+    const walletIds = Object.keys(wallets) as AccountWalletId[];
+    walletIds.forEach((walletId) => {
+      const walletData = wallets[walletId];
       const accounts: ListItem[] = [];
 
       Object.entries(walletData.groups || {}).forEach(
@@ -399,14 +427,22 @@ export const MultichainAccountList = ({
 
       if (accounts.length > 0) {
         if (shouldShowWalletHeaders) {
+          const isWalletExpanded = expandedWallets[walletId];
           result.push({
-            type: 'header',
+            type: 'wallet-header',
             key: `wallet-${walletId}`,
-            text: walletData.metadata?.name || '',
-            testId: 'multichain-account-tree-wallet-header',
+            walletId,
+            walletName: walletData.metadata?.name || '',
+            isExpanded: isWalletExpanded,
           });
+          // Only show accounts if wallet is expanded
+          if (isWalletExpanded) {
+            result.push(...accounts);
+          }
+        } else {
+          // If no wallet headers shown, always show accounts
+          result.push(...accounts);
         }
-        result.push(...accounts);
       }
     });
 
@@ -440,6 +476,7 @@ export const MultichainAccountList = ({
     isInSearchMode,
     displayWalletHeader,
     isHiddenAccountsExpanded,
+    expandedWallets,
     t,
   ]);
 
@@ -463,6 +500,31 @@ export const MultichainAccountList = ({
                 >
                   {item.text}
                 </Text>
+              </Box>
+            );
+          }
+
+          if (item.type === 'wallet-header') {
+            return (
+              <Box
+                as="button"
+                onClick={() => handleWalletToggle(item.walletId)}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                data-testid="multichain-account-tree-wallet-header"
+                width={BlockSize.Full}
+                className="wallet-header flex px-4 py-2 justify-between items-center"
+              >
+                <Text
+                  variant={TextVariant.bodyMdMedium}
+                  color={TextColor.textAlternative}
+                >
+                  {item.walletName}
+                </Text>
+                <Icon
+                  name={item.isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+                  size={IconSize.Md}
+                  color={IconColor.iconAlternative}
+                />
               </Box>
             );
           }
