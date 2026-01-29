@@ -162,6 +162,10 @@ describe('Vault Corruption', function () {
         ...config,
         manifestFlags: {
           ...config.manifestFlags,
+          sentry: {
+            ...(config.manifestFlags?.sentry ?? {}),
+            forceEnable: false,
+          },
         },
         testSpecificMock: mockSentryMissingVaultError,
       },
