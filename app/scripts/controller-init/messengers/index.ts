@@ -113,6 +113,10 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
 } from './token-balances-controller-messenger';
+import {
+  getConfigRegistryControllerMessenger,
+  getConfigRegistryControllerInitMessenger,
+} from './config-registry-controller-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
 import {
   getCurrencyRateControllerInitMessenger,
@@ -251,6 +255,14 @@ export {
   getCurrencyRateControllerMessenger,
   getCurrencyRateControllerInitMessenger,
 } from './currency-rate-controller-messenger';
+export type {
+  ConfigRegistryControllerMessenger,
+  ConfigRegistryControllerInitMessenger,
+} from './config-registry-controller-messenger';
+export {
+  getConfigRegistryControllerMessenger,
+  getConfigRegistryControllerInitMessenger,
+} from './config-registry-controller-messenger';
 export type { DecryptMessageControllerMessenger } from './decrypt-message-controller-messenger';
 export {
   getDecryptMessageControllerMessenger,
@@ -649,6 +661,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
     getInitMessenger: noop,
+  },
+  ConfigRegistryController: {
+    getMessenger: getConfigRegistryControllerMessenger,
+    getInitMessenger: getConfigRegistryControllerInitMessenger,
   },
   SnapController: {
     getMessenger: getSnapControllerMessenger,
