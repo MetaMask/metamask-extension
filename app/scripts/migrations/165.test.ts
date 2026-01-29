@@ -333,5 +333,83 @@ describe(`migration #${version}`, () => {
         },
       });
     });
+
+    it('skips jobs with invalid cron expressions', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          CronjobController: {
+            jobs: {
+              [`${MOCK_SNAP_ID}-0`]: {
+                lastRun: Date.now() - inMilliseconds(1, Duration.Day),
+              },
+              [`${MOCK_SNAP_ID}-1`]: {
+                lastRun: Date.now() - inMilliseconds(1, Duration.Day),
+              },
+            },
+            events: {},
+          },
+
+          PermissionController: {
+            subjects: {
+              [MOCK_SNAP_ID]: {
+                origin: MOCK_SNAP_ID,
+                permissions: {
+                  [SnapEndowments.Cronjob]: {
+                    caveats: [
+                      {
+                        type: SnapCaveatType.SnapCronjob,
+                        value: {
+                          jobs: [
+                            {
+                              expression: '5+15 * * * * *',
+                              request: {
+                                method: 'foo',
+                                params: { bar: 'baz' },
+                              },
+                            },
+                            {
+                              expression: '*/30 * * * * *',
+                              request: {
+                                method: 'foo',
+                                params: { bar: 'baz' },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                    date: 1664187844588,
+                    id: 'izn0WGUO8cvq_jqvLQuQP',
+                    invoker: MOCK_ORIGIN,
+                    parentCapability: SnapEndowments.EthereumProvider,
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      // Only the valid cron expression should be migrated
+      expect(newStorage.data.CronjobController).toStrictEqual({
+        events: {
+          [`cronjob-${MOCK_SNAP_ID}-1`]: {
+            id: `cronjob-${MOCK_SNAP_ID}-1`,
+            recurring: true,
+            date: '2023-09-30T23:59:00.000Z',
+            schedule: '*/30 * * * * *',
+            scheduledAt: '2023-10-01T00:00:00.000Z',
+            snapId: MOCK_SNAP_ID,
+            request: {
+              method: 'foo',
+              params: { bar: 'baz' },
+            },
+          },
+        },
+      });
+    });
   });
 });

@@ -107,7 +107,7 @@
       "MetaMask: Migration state warnings": 2
     },
     "app/scripts/migrations/165.test.ts": {
-      "MetaMask: Migration skipped warnings": 1
+      "MetaMask: Migration skipped warnings": 2
     },
     "app/scripts/migrations/167.test.ts": {
       "MetaMask: Migration state warnings": 2
