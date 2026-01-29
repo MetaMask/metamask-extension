@@ -10,6 +10,7 @@ import {
 } from '@metamask/keyring-controller';
 import {
   TransactionController,
+  TransactionControllerUpdateTransactionAction,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -87,6 +88,10 @@ describe('Delegation 7702 Publish Hook', () => {
     DelegationControllerSignDelegationAction['handler']
   > = jest.fn();
 
+  const updateTransactionMock: jest.MockedFn<
+    TransactionControllerUpdateTransactionAction['handler']
+  > = jest.fn();
+
   beforeEach(() => {
     jest.resetAllMocks();
 
@@ -97,7 +102,8 @@ describe('Delegation 7702 Publish Hook', () => {
       MockAnyNamespace,
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
-      | KeyringControllerSignTypedMessageAction,
+      | KeyringControllerSignTypedMessageAction
+      | TransactionControllerUpdateTransactionAction,
       never
     >({
       namespace: MOCK_ANY_NAMESPACE,
@@ -107,7 +113,8 @@ describe('Delegation 7702 Publish Hook', () => {
       'TransactionController',
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
-      | KeyringControllerSignTypedMessageAction,
+      | KeyringControllerSignTypedMessageAction
+      | TransactionControllerUpdateTransactionAction,
       never,
       typeof baseMessenger
     >({
@@ -120,6 +127,7 @@ describe('Delegation 7702 Publish Hook', () => {
         'KeyringController:signEip7702Authorization',
         'KeyringController:signTypedMessage',
         'DelegationController:signDelegation',
+        'TransactionController:updateTransaction',
       ],
     });
 
@@ -136,6 +144,11 @@ describe('Delegation 7702 Publish Hook', () => {
     baseMessenger.registerActionHandler(
       'DelegationController:signDelegation',
       signDelegationControllerMock,
+    );
+
+    baseMessenger.registerActionHandler(
+      'TransactionController:updateTransaction',
+      updateTransactionMock,
     );
 
     hookClass = new Delegation7702PublishHook({
@@ -283,6 +296,11 @@ describe('Delegation 7702 Publish Hook', () => {
         upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
       },
     ]);
+
+    // Mock getNextNonce to return the expected nonce since we removed it from txParams
+    getNextNonceMock.mockResolvedValueOnce(
+      TRANSACTION_META_MOCK.txParams.nonce as Hex,
+    );
 
     await hookClass.getHook()(
       {
