@@ -83,9 +83,9 @@ type ListItem =
   | {
       type: 'wallet-header';
       key: string;
-      text: string;
-      walletId: string;
-      testId?: string;
+      walletId: AccountWalletId;
+      walletName: string;
+      isExpanded: boolean;
     }
   | {
       type: 'account';
@@ -158,10 +158,18 @@ export const MultichainAccountList = ({
   const connectedAccountGroups = useSelector(selectConnectedAccountGroups);
   const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
     useState(false);
+
   // Track which wallets are expanded (by default all are expanded)
   const [expandedWallets, setExpandedWallets] = useState<
     Record<AccountWalletId, boolean>
-  >({});
+  >(() => {
+    // Initialize all wallets as expanded (true)
+    const initialState: Record<AccountWalletId, boolean> = {};
+    (Object.keys(wallets) as AccountWalletId[]).forEach((walletId) => {
+      initialState[walletId] = true;
+    });
+    return initialState;
+  });
 
   const handleAccountRenameActionModalClose = useCallback(() => {
     setIsAccountRenameModalOpen(false);
@@ -187,8 +195,7 @@ export const MultichainAccountList = ({
   const handleWalletToggle = useCallback((walletId: AccountWalletId) => {
     setExpandedWallets((current) => ({
       ...current,
-      // Toggle: if currently false, set to true; otherwise set to false (default expanded)
-      [walletId]: current[walletId] === false ? true : false,
+      [walletId]: !current[walletId],
     }));
   }, []);
 
@@ -390,7 +397,9 @@ export const MultichainAccountList = ({
     const shouldShowWalletHeaders =
       displayWalletHeader || pinnedGroups.length > 0;
 
-    Object.entries(wallets).forEach(([walletId, walletData]) => {
+    const walletIds = Object.keys(wallets) as AccountWalletId[];
+    walletIds.forEach((walletId) => {
+      const walletData = wallets[walletId];
       const accounts: ListItem[] = [];
 
       Object.entries(walletData.groups || {}).forEach(
@@ -418,18 +427,20 @@ export const MultichainAccountList = ({
 
       if (accounts.length > 0) {
         if (shouldShowWalletHeaders) {
+          const isWalletExpanded = expandedWallets[walletId];
           result.push({
             type: 'wallet-header',
             key: `wallet-${walletId}`,
-            text: walletData.metadata?.name || '',
             walletId,
-            testId: 'multichain-account-tree-wallet-header',
+            walletName: walletData.metadata?.name || '',
+            isExpanded: isWalletExpanded,
           });
-        }
-        // Only add accounts if wallet is expanded (default is expanded)
-        const isWalletExpanded =
-          expandedWallets[walletId as AccountWalletId] !== false;
-        if (!shouldShowWalletHeaders || isWalletExpanded) {
+          // Only show accounts if wallet is expanded
+          if (isWalletExpanded) {
+            result.push(...accounts);
+          }
+        } else {
+          // If no wallet headers shown, always show accounts
           result.push(...accounts);
         }
       }
@@ -494,27 +505,23 @@ export const MultichainAccountList = ({
           }
 
           if (item.type === 'wallet-header') {
-            const isWalletExpanded =
-              expandedWallets[item.walletId as AccountWalletId] !== false;
             return (
               <Box
                 as="button"
-                onClick={() =>
-                  handleWalletToggle(item.walletId as AccountWalletId)
-                }
+                onClick={() => handleWalletToggle(item.walletId)}
                 backgroundColor={BackgroundColor.backgroundDefault}
-                data-testid={item.testId}
+                data-testid="multichain-account-tree-wallet-header"
                 width={BlockSize.Full}
-                className="wallet-header flex px-4 pr-6 py-2 justify-between items-center"
+                className="wallet-header flex px-4 py-2 justify-between items-center"
               >
                 <Text
                   variant={TextVariant.bodyMdMedium}
                   color={TextColor.textAlternative}
                 >
-                  {item.text}
+                  {item.walletName}
                 </Text>
                 <Icon
-                  name={isWalletExpanded ? IconName.ArrowUp : IconName.ArrowDown}
+                  name={item.isExpanded ? IconName.ArrowUp : IconName.ArrowDown}
                   size={IconSize.Md}
                   color={IconColor.iconAlternative}
                 />
