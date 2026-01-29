@@ -135,28 +135,29 @@ describe('TransactionActivityEmptyState', () => {
 
   const renderComponent = (
     props: Partial<TransactionActivityEmptyStateProps> = {},
-    stateOverrides = {},
+    stateOverrides: Record<string, unknown> = {},
     account = mockAccount,
   ) => {
-    // Set up Redux state with the account properly configured
-    const stateWithAccount = {
+    const state = {
       ...mockState,
       ...stateOverrides,
       metamask: {
         ...mockState.metamask,
-        ...(stateOverrides as any).metamask,
+        ...(('metamask' in stateOverrides
+          ? stateOverrides.metamask
+          : {}) as Record<string, unknown>),
         internalAccounts: {
-          ...(mockState.metamask as any).internalAccounts,
+          ...mockState.metamask.internalAccounts,
           selectedAccount: account.id,
           accounts: {
-            ...((mockState.metamask as any).internalAccounts?.accounts || {}),
+            ...mockState.metamask.internalAccounts.accounts,
             [account.id]: account,
           },
         },
       },
     };
 
-    const store = configureMockStore(middleware)(stateWithAccount);
+    const store = configureMockStore(middleware)(state);
 
     return renderWithProvider(
       <TransactionActivityEmptyState {...props} />,
