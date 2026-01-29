@@ -112,6 +112,7 @@
     "canTrackWalletFundsObtained": false,
     "claims": "object",
     "claimsConfigurations": "object",
+    "ConfigRegistryController": "object",
     "completedOnboarding": true,
     "connectedStatusPopoverHasBeenShown": true,
     "connectivityStatus": "online",
