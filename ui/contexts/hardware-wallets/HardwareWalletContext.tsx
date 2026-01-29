@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -242,21 +243,33 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       refs.abortControllerRef.current?.abort();
       refs.adapterRef.current?.destroy();
     };
-  }, [refs]);
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const resetHardwareWalletConnection = useCallback(() => {
+    if (refs.adapterRef.current) {
+      refs.adapterRef.current.destroy();
+      refs.adapterRef.current = null;
+    }
+    updateConnectionState(ConnectionState.disconnected());
+    setDeviceId(null);
+    refs.isConnectingRef.current = false;
+    refs.currentConnectionIdRef.current = null;
+    refs.hasAutoConnectedRef.current = false;
+    refs.lastConnectedAccountRef.current = null;
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setDeviceId, updateConnectionState]);
 
   // Reset when leaving hardware wallet account
   useEffect(() => {
     if (!isHardwareWalletAccount && refs.adapterRef.current) {
-      refs.adapterRef.current.destroy();
-      refs.adapterRef.current = null;
-      updateConnectionState(ConnectionState.disconnected());
-      setDeviceId(null);
-      refs.isConnectingRef.current = false;
-      refs.currentConnectionIdRef.current = null;
-      refs.hasAutoConnectedRef.current = false;
-      refs.lastConnectedAccountRef.current = null;
+      resetHardwareWalletConnection();
     }
-  }, [isHardwareWalletAccount, updateConnectionState, refs, setDeviceId]);
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHardwareWalletAccount, resetHardwareWalletConnection]);
 
   // Disconnect when switching wallet type
   // Note: previousWalletTypeRef is managed by HardwareWalletStateManager (updated synchronously during render)
@@ -274,22 +287,11 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       previousWalletType !== walletType &&
       refs.adapterRef.current
     ) {
-      refs.adapterRef.current.destroy();
-      refs.adapterRef.current = null;
-      updateConnectionState(ConnectionState.disconnected());
-      setDeviceId(null);
-      refs.isConnectingRef.current = false;
-      refs.currentConnectionIdRef.current = null;
-      refs.hasAutoConnectedRef.current = false;
-      refs.lastConnectedAccountRef.current = null;
+      resetHardwareWalletConnection();
     }
-  }, [
-    isHardwareWalletAccount,
-    walletType,
-    updateConnectionState,
-    refs,
-    setDeviceId,
-  ]);
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHardwareWalletAccount, walletType, resetHardwareWalletConnection]);
 
   // === CONTEXT VALUE ===
   const contextValue = useMemo<HardwareWalletContextType>(
