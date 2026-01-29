@@ -64,8 +64,10 @@
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohortTxType": null,
+      "pna25Acknowledged": false,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
+      "recoveryPhraseReminderLastShown": 7952515200000,
       "shieldEndingToastLastClickedOrClosed": null,
       "shieldPausedToastLastClickedOrClosed": null,
       "showAccountBanner": true,
@@ -79,9 +81,7 @@
       "surveyLinkLastClickedOrClosed": null,
       "timeoutMinutes": 0,
       "trezorModel": null,
-      "updateModalLastDismissedAt": null,
-      "pna25Acknowledged": false,
-      "recoveryPhraseReminderLastShown": 7952515200000
+      "updateModalLastDismissedAt": null
     },
     "AuthenticationController": {
       "isSignedIn": false
@@ -168,6 +168,7 @@
       "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
       "isGatorPermissionsEnabled": true
     },
+    "KeyringController": {},
     "LoggingController": {
       "logs": {}
     },
@@ -543,6 +544,19 @@
           "tron:3448148188": false,
           "tron:728126428": true
         }
+      },
+      "nativeAssetIdentifiers": {
+        "eip155:1": "eip155:1/slip44:60",
+        "eip155:10": "eip155:10/slip44:60",
+        "eip155:10143": "eip155:10143/slip44:60",
+        "eip155:11155111": "eip155:11155111/slip44:60",
+        "eip155:137": "eip155:137/slip44:60",
+        "eip155:42161": "eip155:42161/slip44:60",
+        "eip155:56": "eip155:56/slip44:60",
+        "eip155:59141": "eip155:59141/slip44:1",
+        "eip155:59144": "eip155:59144/slip44:60",
+        "eip155:6343": "eip155:6343/slip44:1",
+        "eip155:8453": "eip155:8453/slip44:60"
       }
     },
     "NetworkOrderController": {
@@ -2002,9 +2016,9 @@
         "npm:@metamask/gator-permissions-snap": "mainnet",
         "npm:@metamask/institutional-wallet-snap": "mainnet",
         "npm:@metamask/message-signing-snap": "mainnet",
+        "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
-        "npm:@metamask/tron-wallet-snap": "mainnet",
-        "npm:@metamask/permissions-kernel-snap": "mainnet"
+        "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
     "ShieldController": {
@@ -2131,11 +2145,10 @@
       "isBackupAndSyncEnabled": true,
       "isContactSyncingEnabled": true
     },
-    "config": {},
-    "KeyringController": {}
+    "config": {}
   },
   "meta": {
-    "version": 189,
-    "storageKind": "split"
+    "storageKind": "split",
+    "version": 189
   }
 }
