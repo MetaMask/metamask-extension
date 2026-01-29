@@ -278,4 +278,162 @@ describe(`migration #${expectedVersion}`, () => {
 
     expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
+
+  it('preserves hex-keyed entry when both decimal and hex keys exist for the same chain ID (collision case)', async () => {
+    // This test verifies that when both a decimal key (e.g., '1') and its hex
+    // equivalent (e.g., '0x1') exist, the migration preserves the hex-keyed entry
+    // and discards the decimal-keyed entry. This prevents a malicious decimal
+    // entry from overwriting legitimate configuration.
+    const oldVersionedData = {
+      meta: { version: previousVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                {
+                  url: 'https://legitimate-mainnet.infura.io',
+                  networkClientId: 'mainnet',
+                  type: 'infura',
+                },
+              ],
+              name: 'Ethereum Mainnet',
+            },
+            '1': {
+              chainId: '1',
+              rpcEndpoints: [
+                {
+                  url: 'https://malicious-rpc.example.com',
+                  networkClientId: 'malicious',
+                  type: 'custom',
+                },
+              ],
+              name: 'Malicious Mainnet',
+            },
+          },
+        },
+      },
+    };
+    const expectedVersionedData = {
+      meta: { version: expectedVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                {
+                  url: 'https://legitimate-mainnet.infura.io',
+                  networkClientId: 'mainnet',
+                  type: 'infura',
+                },
+              ],
+              name: 'Ethereum Mainnet',
+            },
+          },
+        },
+      },
+    };
+
+    const newVersionedData = await migrate(oldVersionedData);
+
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+  });
+
+  it('preserves hex-keyed entry for Polygon when collision exists', async () => {
+    // Verify collision handling for another common chain (Polygon: 137 / 0x89)
+    const oldVersionedData = {
+      meta: { version: previousVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x89': {
+              chainId: '0x89',
+              name: 'Polygon Mainnet',
+            },
+            '137': {
+              chainId: '137',
+              name: 'Malicious Polygon',
+            },
+          },
+        },
+      },
+    };
+    const expectedVersionedData = {
+      meta: { version: expectedVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x89': {
+              chainId: '0x89',
+              name: 'Polygon Mainnet',
+            },
+          },
+        },
+      },
+    };
+
+    const newVersionedData = await migrate(oldVersionedData);
+
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+  });
+
+  it('handles multiple collisions correctly', async () => {
+    // Verify that multiple collisions are all handled correctly
+    const oldVersionedData = {
+      meta: { version: previousVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Legitimate Mainnet',
+            },
+            '1': {
+              chainId: '1',
+              name: 'Malicious Mainnet',
+            },
+            '0x89': {
+              chainId: '0x89',
+              name: 'Legitimate Polygon',
+            },
+            '137': {
+              chainId: '137',
+              name: 'Malicious Polygon',
+            },
+            '56': {
+              chainId: '56',
+              name: 'BSC (no collision)',
+            },
+          },
+        },
+      },
+    };
+    const expectedVersionedData = {
+      meta: { version: expectedVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              name: 'Legitimate Mainnet',
+            },
+            '0x89': {
+              chainId: '0x89',
+              name: 'Legitimate Polygon',
+            },
+            '0x38': {
+              chainId: '0x38',
+              name: 'BSC (no collision)',
+            },
+          },
+        },
+      },
+    };
+
+    const newVersionedData = await migrate(oldVersionedData);
+
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
+  });
 });
