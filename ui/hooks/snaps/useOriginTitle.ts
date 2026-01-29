@@ -1,6 +1,6 @@
 import { isSnapId } from '@metamask/snaps-utils';
-import { getSnapMetadata } from '../../selectors';
 import { useSelector } from 'react-redux';
+import { getSnapMetadata } from '../../selectors';
 import { transformOriginToTitle } from '../../helpers/utils/util';
 
 /**

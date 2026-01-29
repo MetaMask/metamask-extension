@@ -1,8 +1,8 @@
-import mockState from '../../../test/data/mock-state.json';
 import { createElement, ReactNode } from 'react';
 import { Provider } from 'react-redux';
-import configureStore from '../../store/store';
 import { renderHook } from '@testing-library/react-hooks';
+import configureStore from '../../store/store';
+import mockState from '../../../test/data/mock-state.json';
 import { useOriginTitle } from './useOriginTitle';
 
 const createMockState = (overrides = {}) => ({
@@ -13,19 +13,12 @@ const createMockState = (overrides = {}) => ({
   },
 });
 
-const renderHookWithStore = (
-  origin?: string,
-  stateOverrides = {},
-) => {
+const renderHookWithStore = (origin?: string, stateOverrides = {}) => {
   const state = createMockState(stateOverrides);
   const wrapper = ({ children }: { children: ReactNode }) =>
     createElement(Provider, { store: configureStore(state) }, children);
 
-  return renderHook(
-    () =>
-      useOriginTitle(origin),
-    { wrapper },
-  );
+  return renderHook(() => useOriginTitle(origin), { wrapper });
 };
 
 describe('useOriginTitle', () => {
