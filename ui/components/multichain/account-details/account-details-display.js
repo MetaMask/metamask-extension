@@ -51,7 +51,7 @@ export const AccountDetailsDisplay = ({
     : address;
 
   // useCopyToClipboard analysis: Copies one of your public addresses
-  const [copied, handleCopy] = useCopyToClipboard(-1);
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const handleClick = useCallback(() => {
     handleCopy(formatedAddress);
   }, [formatedAddress, handleCopy]);

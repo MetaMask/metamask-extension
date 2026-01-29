@@ -86,7 +86,7 @@ const MultichainPrivateKeyList = ({
   );
 
   // useCopyToClipboard analysis: Copies one of your private keys
-  const [, handleCopy] = useCopyToClipboard(MINUTE);
+  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: MINUTE });
 
   const accountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),

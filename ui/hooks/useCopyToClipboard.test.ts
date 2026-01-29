@@ -20,7 +20,9 @@ describe('useCopyToClipboard', () => {
 
   it('copies text and expires if clearDelay = 1000', () => {
     const clearDelay = 1000;
-    const { result } = renderHook(() => useCopyToClipboard(clearDelay));
+    const { result } = renderHook(() =>
+      useCopyToClipboard({ clearDelayMs: clearDelay }),
+    );
     const [, handleCopy] = result.current;
 
     // Act/Assert - Copy
@@ -41,8 +43,10 @@ describe('useCopyToClipboard', () => {
     expect(result.current[0]).toBe(false);
   });
 
-  it('copies text and does not expire if clearDelay = -1', () => {
-    const { result } = renderHook(() => useCopyToClipboard(-1));
+  it('copies text and does not expire if clearDelayMs is null', () => {
+    const { result } = renderHook(() =>
+      useCopyToClipboard({ clearDelayMs: null }),
+    );
     const [, handleCopy] = result.current;
 
     // Act/Assert - Copy
@@ -64,7 +68,9 @@ describe('useCopyToClipboard', () => {
 
   it('resets copied state when invoked', () => {
     const clearDelay = 1000;
-    const { result } = renderHook(() => useCopyToClipboard(clearDelay));
+    const { result } = renderHook(() =>
+      useCopyToClipboard({ clearDelayMs: clearDelay }),
+    );
     const [, handleCopy, resetCopyState] = result.current;
 
     // Act/Assert - Copy

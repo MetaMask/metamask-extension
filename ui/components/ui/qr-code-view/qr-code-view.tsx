@@ -51,7 +51,7 @@ function QrCodeView({
   const trackEvent = useContext(MetaMetricsContext);
 
   // useCopyToClipboard analysis: As of writing this, this is only used for public addresses
-  const [copied, handleCopy] = useCopyToClipboard(-1);
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
   const { message, data } = Qr;
   const checksummedAddress = normalizeSafeAddress(data);

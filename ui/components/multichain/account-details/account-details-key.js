@@ -36,7 +36,9 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
   const [showSelectDisableWarn, setShowDisableSelectWarn] = useState(false);
 
   // useCopyToClipboard analysis: Copies your private key
-  const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard(MINUTE);
+  const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard({
+    clearDelayMs: MINUTE,
+  });
 
   return (
     <>

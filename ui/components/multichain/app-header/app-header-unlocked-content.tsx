@@ -127,7 +127,9 @@ export const AppHeaderUnlockedContent = ({
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
 
   // useCopyToClipboard analysis: Copies a public address
-  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(-1);
+  const [copied, handleCopy, resetCopyState] = useCopyToClipboard({
+    clearDelayMs: null,
+  });
 
   const showSupportDataConsentModal = useSelector(
     getShowSupportDataConsentModal,

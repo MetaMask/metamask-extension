@@ -18,7 +18,7 @@ const DetectedTokenAddress = ({ tokenAddress }) => {
   const t = useI18nContext();
 
   // useCopyToClipboard analysis: Copies the public address of the detected token
-  const [copied, handleCopy] = useCopyToClipboard(-1);
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
   return (
     <Box display={Display.InlineFlex} className="detected-token-address">

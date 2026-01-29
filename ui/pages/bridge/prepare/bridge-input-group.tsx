@@ -92,7 +92,7 @@ export const BridgeInputGroup = ({
   const selectedChainId = token?.chainId;
 
   // useCopyToClipboard analysis: Copies a public address
-  const [, handleCopy] = useCopyToClipboard(-1);
+  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { assetReference } = token ? parseCaipAssetType(token.assetId) : {};

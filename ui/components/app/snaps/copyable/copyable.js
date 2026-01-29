@@ -27,7 +27,9 @@ export const Copyable = ({
   const t = useI18nContext();
 
   // useCopyToClipboard analysis: Could be sensitive or non-sensitive, so the param decides
-  const [, handleCopy] = useCopyToClipboard(sensitive ? MINUTE : -1);
+  const [, handleCopy] = useCopyToClipboard({
+    clearDelayMs: sensitive ? MINUTE : null,
+  });
   const [isVisible, setIsVisible] = useState(!sensitive);
   const [isClicked, setIsClicked] = useState(false);
 

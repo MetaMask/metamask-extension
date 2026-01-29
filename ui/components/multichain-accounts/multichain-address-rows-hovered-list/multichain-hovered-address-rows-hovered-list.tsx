@@ -82,7 +82,7 @@ export const MultichainHoveredAddressRowsList = ({
   const t = useI18nContext();
 
   // useCopyToClipboard analysis: Copies one of your public addresses
-  const [, handleCopy] = useCopyToClipboard(-1);
+  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const navigate = useNavigate();
   const [isHoverOpen, setIsHoverOpen] = useState(false);
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(

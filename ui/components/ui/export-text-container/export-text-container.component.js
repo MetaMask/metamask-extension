@@ -18,7 +18,7 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
   const t = useI18nContext();
 
   // useCopyToClipboard analysis: As of writing this, this is only used in RevealSeedPage, which is the sensitive SRP
-  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: MINUTE });
 
   return (
     <Box
