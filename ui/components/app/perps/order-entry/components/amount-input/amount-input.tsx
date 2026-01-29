@@ -11,6 +11,11 @@ import {
   BoxAlignItems,
   ButtonBase,
 } from '@metamask/design-system-react';
+import { TextField, TextFieldSize } from '../../../../../component-library';
+import {
+  BorderRadius,
+  BackgroundColor,
+} from '../../../../../../helpers/constants/design-system';
 import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
@@ -181,38 +186,46 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         >
           <Box flexDirection={BoxFlexDirection.Column} gap={1}>
             {/* USD Amount Input - Large and prominent */}
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Baseline}
-            >
-              <span className="text-[24px] leading-8 font-bold text-default">
-                $
-              </span>
-              <input
-                type="text"
-                inputMode="decimal"
-                value={amount}
-                onChange={handleAmountChange}
-                onBlur={handleAmountBlur}
-                placeholder={formattedPlaceholder}
-                className={twMerge(
-                  'flex-1 bg-transparent border-none outline-none',
-                  'text-[24px] leading-8 font-bold text-default',
-                  'placeholder:text-muted',
-                )}
-                data-testid="amount-input-field"
-              />
-            </Box>
+            <TextField
+              size={TextFieldSize.Lg}
+              value={amount}
+              onChange={handleAmountChange}
+              onBlur={handleAmountBlur}
+              placeholder={formattedPlaceholder}
+              borderRadius={BorderRadius.none}
+              borderWidth={0}
+              backgroundColor={BackgroundColor.transparent}
+              startAccessory={
+                <Text
+                  variant={TextVariant.HeadingLg}
+                  fontWeight={FontWeight.Bold}
+                >
+                  $
+                </Text>
+              }
+              inputProps={{
+                inputMode: 'decimal',
+                style: {
+                  fontSize: '24px',
+                  lineHeight: '32px',
+                  fontWeight: 700,
+                },
+              }}
+              className="w-full"
+              data-testid="amount-input-field"
+            />
 
             {/* Token Conversion */}
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {tokenAmount !== null
-                ? `≈ ${formatTokenQuantity(tokenAmount, asset)}`
-                : `0 ${asset}`}
-            </Text>
+            <Box paddingLeft={4}>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                {tokenAmount !== null
+                  ? `≈ ${formatTokenQuantity(tokenAmount, asset)}`
+                  : `0 ${asset}`}
+              </Text>
+            </Box>
           </Box>
         </Box>
       </Box>
