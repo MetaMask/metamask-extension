@@ -6,7 +6,7 @@ module.exports = {
     '<rootDir>/ui/**/*.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/integration',
-  coveragePathIgnorePatterns: ['.stories.*', '.snap', '.test.(js|ts|tsx)'],
+  coveragePathIgnorePatterns: ['.stories.*', '.snap', '.test\\.(js|ts|tsx)$'],
   coverageReporters: ['html', 'json'],
   maxWorkers: '50%',
   // The path to the Prettier executable used to format snapshots
