@@ -3097,7 +3097,7 @@
     "message": "Try the operation again"
   },
   "hardwareWalletErrorRecoveryTitle": {
-    "message": "How to fix this:"
+    "message": "Continue to make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
     "message": "To continue, make sure:"
