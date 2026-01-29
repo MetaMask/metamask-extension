@@ -125,20 +125,44 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
   }
 
   // Fix the network controller state (selectedNetworkClientId) if it is invalid and report the error
-  if (
-    initialNetworkControllerState.networkConfigurationsByChainId &&
-    !Object.values(initialNetworkControllerState.networkConfigurationsByChainId)
-      .flatMap((networkConfiguration) =>
-        networkConfiguration.rpcEndpoints.map(
-          (rpcEndpoint) => rpcEndpoint.networkClientId,
-        ),
+  if (initialNetworkControllerState.networkConfigurationsByChainId) {
+    const validNetworkClientIds = Object.values(
+      initialNetworkControllerState.networkConfigurationsByChainId,
+    ).flatMap((networkConfiguration) =>
+      networkConfiguration.rpcEndpoints.map(
+        (rpcEndpoint) => rpcEndpoint.networkClientId,
+      ),
+    );
+
+    // Check if selectedNetworkClientId is undefined, null, or not in the list of valid IDs
+    if (
+      !initialNetworkControllerState.selectedNetworkClientId ||
+      !validNetworkClientIds.includes(
+        initialNetworkControllerState.selectedNetworkClientId as string,
       )
-      .includes(initialNetworkControllerState.selectedNetworkClientId as string)
-  ) {
+    ) {
+      captureException(
+        new Error(
+          `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
+        ),
+      );
+
+      initialNetworkControllerState.selectedNetworkClientId =
+        initialNetworkControllerState.networkConfigurationsByChainId[
+          CHAIN_IDS.MAINNET
+        ].rpcEndpoints[0].networkClientId;
+    }
+  } else {
+    // If networkConfigurationsByChainId is missing, report and set to a safe default
     captureException(
       new Error(
-        `NetworkController state is invalid: \`selectedNetworkClientId\` '${initialNetworkControllerState.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`,
+        'NetworkController state is invalid: `networkConfigurationsByChainId` is missing',
       ),
+    );
+
+    // Reinitialize with default state
+    initialNetworkControllerState = getDefaultNetworkControllerState(
+      ADDITIONAL_DEFAULT_NETWORKS,
     );
 
     initialNetworkControllerState.selectedNetworkClientId =
