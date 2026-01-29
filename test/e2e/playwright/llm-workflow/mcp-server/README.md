@@ -105,11 +105,12 @@ Set the working directory to the MetaMask extension repository root.
 
 ### Interaction
 
-| Tool          | Description                                   |
-| ------------- | --------------------------------------------- |
-| `mm_click`    | Click element by a11yRef, testId, or selector |
-| `mm_type`     | Type text into element                        |
-| `mm_wait_for` | Wait for element to be visible                |
+| Tool           | Description                                   |
+| -------------- | --------------------------------------------- |
+| `mm_click`     | Click element by a11yRef, testId, or selector |
+| `mm_type`      | Type text into element                        |
+| `mm_wait_for`  | Wait for element to be visible                |
+| `mm_clipboard` | Read from or write to browser clipboard       |
 
 ### Screenshots
 

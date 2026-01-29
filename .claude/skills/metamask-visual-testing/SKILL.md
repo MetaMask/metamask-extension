@@ -53,11 +53,106 @@ The MetaMask MCP server provides tools for browser automation:
 | `mm_click`                  | Click element by a11yRef, testId, or selector               |
 | `mm_type`                   | Type text into element                                      |
 | `mm_wait_for`               | Wait for element to be visible                              |
+| `mm_clipboard`              | Read from or write to browser clipboard                     |
 | `mm_knowledge_last`         | Get last N recorded steps                                   |
 | `mm_knowledge_search`       | Search recorded steps (cross-session supported)             |
 | `mm_knowledge_summarize`    | Generate session recipe                                     |
 | `mm_knowledge_sessions`     | List recent sessions and their metadata (tags/flowTags)     |
 | `mm_run_steps`              | Execute multiple tools in sequence with error handling      |
+| `mm_set_context`            | Switch workflow context (e2e or prod)                       |
+| `mm_get_context`            | Get current context and available capabilities              |
+
+## Context Switching (e2e vs prod)
+
+The MCP server supports two execution contexts with different capabilities:
+
+### Available Contexts
+
+| Context | Description                                                                  |
+| ------- | ---------------------------------------------------------------------------- |
+| `e2e`   | **Default.** Local Anvil blockchain, pre-onboarded wallet, fixtures, seeding |
+| `prod`  | Production-like mode. No fixtures, no local chain, limited capabilities      |
+
+### E2E Context Capabilities (Default)
+
+- `build` - Build the extension
+- `fixture` - Wallet state management with presets
+- `chain` - Local Anvil blockchain (port 8545)
+- `contractSeeding` - Deploy test contracts (ERC-20, NFTs, etc.)
+- `stateSnapshot` - Extension state detection
+- `mockServer` - Mock API responses
+
+### Prod Context Capabilities
+
+- `stateSnapshot` - Extension state detection
+- `build` - Optional, if configured
+
+### Switching Contexts
+
+**Check current context:**
+
+```
+mm_get_context
+```
+
+Returns:
+
+```json
+{
+  "canSwitchContext": true,
+  "capabilities": {
+    "available": [
+      "build",
+      "fixture",
+      "chain",
+      "contractSeeding",
+      "stateSnapshot",
+      "mockServer"
+    ]
+  },
+  "currentContext": "e2e",
+  "hasActiveSession": false,
+  "sessionId": null
+}
+```
+
+**Switch to prod context:**
+
+```
+mm_set_context { "context": "prod" }
+```
+
+**Switch back to e2e:**
+
+```
+mm_set_context { "context": "e2e" }
+```
+
+### Context Switching Rules
+
+1. **Cannot switch during active session** - You must call `mm_cleanup` first
+2. **Default context is e2e** - On server startup, context is always e2e
+3. **Context persists** - Once switched, context remains until changed or server restarts
+
+### Example: Testing in Different Contexts
+
+```
+# Start in e2e (default)
+mm_get_context                           # Verify e2e context
+mm_launch { "stateMode": "default" }     # Launch with fixtures
+mm_describe_screen
+mm_cleanup                               # End session
+
+# Switch to prod
+mm_set_context { "context": "prod" }     # Switch context
+mm_get_context                           # Verify prod context
+mm_launch { "stateMode": "onboarding" }  # No fixtures in prod
+mm_describe_screen
+mm_cleanup
+
+# Switch back to e2e
+mm_set_context { "context": "e2e" }
+```
 
 ## Core Workflow
 
@@ -189,6 +284,17 @@ mm_type { "testId": "unlock-password", "text": "correct horse battery staple" }
 ```
 mm_wait_for { "testId": "home-balance", "timeoutMs": 10000 }
 ```
+
+#### Clipboard (Fast SRP Entry)
+
+Use `mm_clipboard` to write text to the browser clipboard, then trigger paste via UI button. This is much faster than typing 12 words individually during onboarding.
+
+```
+mm_clipboard { "action": "write", "text": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about" }
+mm_click { "testId": "srp-input-import__paste-button" }
+```
+
+This populates all 12 SRP words instantly via the component's paste handler.
 
 ### 5. Take Screenshots
 
@@ -379,19 +485,21 @@ The MCP server is a long-lived process. If you update the MCP server code (inclu
 
 ### Error Codes
 
-| Code                         | Meaning                               |
-| ---------------------------- | ------------------------------------- |
-| `MM_BUILD_FAILED`            | Build command failed                  |
-| `MM_SESSION_ALREADY_RUNNING` | Session exists, call mm_cleanup first |
-| `MM_NO_ACTIVE_SESSION`       | No session, call mm_launch first      |
-| `MM_LAUNCH_FAILED`           | Browser launch failed                 |
-| `MM_INVALID_INPUT`           | Invalid tool parameters               |
-| `MM_TARGET_NOT_FOUND`        | Element not found                     |
-| `MM_TAB_NOT_FOUND`           | Tab not found (for switch/close)      |
-| `MM_CLICK_FAILED`            | Click operation failed                |
-| `MM_TYPE_FAILED`             | Type operation failed                 |
-| `MM_WAIT_TIMEOUT`            | Wait timeout exceeded                 |
-| `MM_SCREENSHOT_FAILED`       | Screenshot capture failed             |
+| Code                         | Meaning                                     |
+| ---------------------------- | ------------------------------------------- |
+| `MM_BUILD_FAILED`            | Build command failed                        |
+| `MM_SESSION_ALREADY_RUNNING` | Session exists, call mm_cleanup first       |
+| `MM_NO_ACTIVE_SESSION`       | No session, call mm_launch first            |
+| `MM_LAUNCH_FAILED`           | Browser launch failed                       |
+| `MM_INVALID_INPUT`           | Invalid tool parameters                     |
+| `MM_TARGET_NOT_FOUND`        | Element not found                           |
+| `MM_TAB_NOT_FOUND`           | Tab not found (for switch/close)            |
+| `MM_CLICK_FAILED`            | Click operation failed                      |
+| `MM_TYPE_FAILED`             | Type operation failed                       |
+| `MM_WAIT_TIMEOUT`            | Wait timeout exceeded                       |
+| `MM_SCREENSHOT_FAILED`       | Screenshot capture failed                   |
+| `MM_CONTEXT_SWITCH_BLOCKED`  | Cannot switch context during active session |
+| `MM_SET_CONTEXT_FAILED`      | Context switch failed                       |
 
 ## Knowledge Store (How to Actually Reuse It)
 
@@ -477,14 +585,16 @@ Error responses:
 
 ## Common Failures & Solutions
 
-| Symptom                      | Likely Cause                  | Solution                                    |
-| ---------------------------- | ----------------------------- | ------------------------------------------- |
-| `MM_SESSION_ALREADY_RUNNING` | Previous session not cleaned  | Call `mm_cleanup` first                     |
-| `MM_NO_ACTIVE_SESSION`       | No browser running            | Call `mm_launch` first                      |
-| Extension not loading        | Extension not built           | Call `mm_build` or `yarn build:test`        |
-| `EADDRINUSE` port error      | Orphan processes              | `lsof -ti:8545,12345,8000 \| xargs kill -9` |
-| `MM_TARGET_NOT_FOUND`        | Element not visible           | Use `mm_describe_screen` to check state     |
-| `MM_WAIT_TIMEOUT`            | Slow environment or UI change | Increase timeout, check screenshot          |
+| Symptom                      | Likely Cause                  | Solution                                          |
+| ---------------------------- | ----------------------------- | ------------------------------------------------- |
+| `MM_SESSION_ALREADY_RUNNING` | Previous session not cleaned  | Call `mm_cleanup` first                           |
+| `MM_NO_ACTIVE_SESSION`       | No browser running            | Call `mm_launch` first                            |
+| Extension not loading        | Extension not built           | Call `mm_build` or `yarn build:test`              |
+| `EADDRINUSE` port error      | Orphan processes              | `lsof -ti:8545,12345,8000 \| xargs kill -9`       |
+| `MM_TARGET_NOT_FOUND`        | Element not visible           | Use `mm_describe_screen` to check state           |
+| `MM_WAIT_TIMEOUT`            | Slow environment or UI change | Increase timeout, check screenshot                |
+| `MM_CONTEXT_SWITCH_BLOCKED`  | Switching during session      | Call `mm_cleanup` before `mm_set_context`         |
+| Fixtures not available       | Running in prod context       | Switch to e2e: `mm_set_context {"context":"e2e"}` |
 
 ## Key Files
 

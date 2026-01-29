@@ -149,6 +149,11 @@ export class MetaMaskExtensionLauncher {
         slowMo: this.options.slowMo,
       });
 
+      await this.context.grantPermissions([
+        'clipboard-read',
+        'clipboard-write',
+      ]);
+
       await this.waitForExtensionReady();
 
       this.ensureExtensionInitialized();

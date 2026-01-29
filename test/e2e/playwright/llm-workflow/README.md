@@ -136,6 +136,7 @@ When implementing UI changes, follow this cycle:
 | `mm_click`                 | Click element by a11yRef, testId, or CSS               |
 | `mm_type`                  | Type text into element                                 |
 | `mm_wait_for`              | Wait for element to become visible                     |
+| `mm_clipboard`             | Read from or write to browser clipboard                |
 | `mm_navigate`              | Navigate to home, settings, notification, or URL       |
 | `mm_wait_for_notification` | Wait for notification popup and set it as active page  |
 | `mm_switch_to_tab`         | Switch active page to a different tab (by role or URL) |
