@@ -1029,6 +1029,63 @@
             }
           }
         },
+        "https://app.signer.cubist.dev": {
+          "origin": "https://app.signer.cubist.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389886,
+              "id": "cub1AppSignerCubistGfJvu",
+              "invoker": "https://app.signer.cubist.dev",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://app-gamma.signer.cubist.dev": {
+          "origin": "https://app-gamma.signer.cubist.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389887,
+              "id": "cub2GammaSignerCubistGfJvu",
+              "invoker": "https://app-gamma.signer.cubist.dev",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://app-beta.signer.cubist.dev": {
+          "origin": "https://app-beta.signer.cubist.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389888,
+              "id": "cub3BetaSignerCubistGfJvu",
+              "invoker": "https://app-beta.signer.cubist.dev",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
         "https://sandbox.fireblocks.io": {
           "origin": "https://sandbox.fireblocks.io",
           "permissions": {
