@@ -169,10 +169,19 @@ export const useTransactionFunctions = ({
         maxPriorityFeePerGas,
       } = transaction.previousGas || transaction.txParams;
 
-      const newMaxPriorityFeePerGas = new BigNumber(
+      const isMaxPriorityFeePerGasZero = new BigNumber(
         maxPriorityFeePerGas,
         16,
-      ).isZero()
+      ).isZero();
+
+      if (
+        isMaxPriorityFeePerGasZero &&
+        !gasFeeEstimates?.[defaultEstimateToUse]?.suggestedMaxPriorityFeePerGas
+      ) {
+        return;
+      }
+
+      const newMaxPriorityFeePerGas = isMaxPriorityFeePerGasZero
         ? decGWEIToHexWEI(
             gasFeeEstimates[defaultEstimateToUse].suggestedMaxPriorityFeePerGas,
           )
@@ -183,9 +192,6 @@ export const useTransactionFunctions = ({
           ? CUSTOM_GAS_ESTIMATE
           : PriorityLevels.tenPercentIncreased;
 
-      if (!gasFeeEstimates) {
-        return;
-      }
       updateTransaction({
         estimateSuggested: initTransaction
           ? defaultEstimateToUse
