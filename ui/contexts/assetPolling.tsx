@@ -17,5 +17,6 @@ export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   useDeFiPolling();
   useMultichainAssetsRatesPolling();
 
-  return <>{children}</>;
+  // Return children directly to avoid creating unnecessary wrapper elements
+  return children;
 };
