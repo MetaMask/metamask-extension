@@ -26,7 +26,8 @@
     "AlertController": {
       "alertEnabledness": {
         "smartTransactionsMigration": true,
-        "web3ShimUsage": false
+        "unconnectedAccount": true,
+        "web3ShimUsage": true
       },
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
@@ -54,8 +55,9 @@
       "hasShownMultichainAccountsIntroModal": false,
       "isRampCardClosed": false,
       "isWalletResetInProgress": false,
+      "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
-      "lastViewedUserSurvey": true,
+      "lastViewedUserSurvey": null,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "nftsDetectionNoticeDismissed": false,
