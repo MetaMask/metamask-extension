@@ -13,6 +13,7 @@ import { Textarea } from './textarea';
 import README from './README.mdx';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/Textarea',
   component: Textarea,
   parameters: {

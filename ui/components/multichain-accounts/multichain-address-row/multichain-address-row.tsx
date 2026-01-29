@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
@@ -26,12 +27,9 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { setShowCopyAddressToast } from '../../../ducks/app/app';
 
 export type CopyParams = {
-  /**
-   * Message to display when the copy callback is executed
-   */
-  message: string;
   /**
    * Callback function to execute when the copy action is triggered
    */
@@ -86,6 +84,7 @@ export const MultichainAddressRow = ({
   className = '',
 }: MultichainAddressRowProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const networkImageSrc = getImageForChainId(
     chainId.startsWith(KnownCaipNamespace.Eip155)
       ? convertCaipToHexChainId(chainId as CaipChainId)
@@ -93,17 +92,10 @@ export const MultichainAddressRow = ({
   );
 
   const truncatedAddress = shortenAddress(address); // Shorten address for display
-  const [subText, setSubText] = useState(truncatedAddress); // Message below the network name
   const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
-  const [addressCopied, setAddressCopied] = useState(false);
 
   // Track timeout ID for managing `setTimeout`
   const timeoutRef = useRef<number | null>(null);
-
-  // Update `subText` when the address prop changes
-  useEffect(() => {
-    setSubText(truncatedAddress);
-  }, [address, truncatedAddress]);
 
   // Cleanup timeout when component unmounts
   useEffect(() => {
@@ -122,20 +114,20 @@ export const MultichainAddressRow = ({
       clearTimeout(timeoutRef.current);
     }
 
-    setAddressCopied(true);
-
-    // Trigger copy callback and update UI state
+    // Trigger copy callback
     copyActionParams.callback();
-    setSubText(copyActionParams.message);
+
+    // Show toast notification
+    dispatch(setShowCopyAddressToast('address'));
+
+    // Update icon to success state
     setCopyIcon(IconName.CopySuccess);
 
-    // Reset state after 1 second and track the new timeout
+    // Reset icon after 400ms (brief visual feedback)
     timeoutRef.current = window.setTimeout(() => {
-      setSubText(truncatedAddress);
       setCopyIcon(IconName.Copy);
       timeoutRef.current = null; // Clear the reference after timeout resolves
-      setAddressCopied(false);
-    }, 1000);
+    }, 400);
   };
 
   // Handle "QR Code" button click
@@ -157,11 +149,7 @@ export const MultichainAddressRow = ({
       padding={4}
       gap={4}
       data-testid="multichain-address-row"
-      backgroundColor={
-        addressCopied
-          ? BackgroundColor.successMuted
-          : BackgroundColor.backgroundDefault
-      }
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       <AvatarNetwork
         size={AvatarNetworkSize.Md}
@@ -187,12 +175,10 @@ export const MultichainAddressRow = ({
         </Text>
         <Text
           variant={TextVariant.bodySm}
-          color={
-            addressCopied ? TextColor.successDefault : TextColor.textAlternative
-          }
+          color={TextColor.textAlternative}
           data-testid="multichain-address-row-address"
         >
-          {subText}
+          {truncatedAddress}
         </Text>
       </Box>
       <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
@@ -201,9 +187,7 @@ export const MultichainAddressRow = ({
           size={ButtonIconSize.Md}
           onClick={handleCopyClick}
           ariaLabel={t('copyAddressShort')}
-          color={
-            addressCopied ? IconColor.successDefault : IconColor.iconDefault
-          }
+          color={IconColor.iconDefault}
           data-testid="multichain-address-row-copy-button"
         />
         {qrActionParams ? (

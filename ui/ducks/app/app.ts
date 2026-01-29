@@ -131,7 +131,7 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
-  showCopyAddressToast: boolean;
+  showCopyAddressToast: 'address' | 'privateKey' | false;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   showInfuraSwitchToast: boolean;
   shieldEntryModal?: {

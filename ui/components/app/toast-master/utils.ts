@@ -91,7 +91,9 @@ export function setShowPasswordChangeToast(
   };
 }
 
-export function setShowCopyAddressToast(value: boolean) {
+export function setShowCopyAddressToast(
+  value: 'address' | 'privateKey' | false,
+) {
   return {
     type: SET_SHOW_COPY_ADDRESS_TOAST,
     payload: value,

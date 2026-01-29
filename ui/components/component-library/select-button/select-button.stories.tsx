@@ -20,6 +20,7 @@ import {
 import { SelectOption } from '../select-option';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/SelectButton',
   component: SelectButton,
   parameters: {

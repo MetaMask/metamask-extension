@@ -19,6 +19,7 @@ import { Button, ButtonVariant } from '../button';
 const meta: Meta<typeof Skeleton> = {
   title: 'Components/ComponentLibrary/Skeleton',
   component: Skeleton,
+  tags: ['autodocs'],
   parameters: {
     docs: {
       page: README,

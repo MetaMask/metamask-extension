@@ -35,6 +35,7 @@ import {
   TraceName,
   TraceOperation,
 } from '../../../../shared/lib/trace';
+import { setShowCopyAddressToast } from '../../app/toast-master/utils';
 
 /**
  * Check if the account has the private key available according to its keyring type.
@@ -222,6 +223,7 @@ const MultichainPrivateKeyList = ({
 
       const handleCopyClick = () => {
         handleCopy(privateKey);
+        dispatch(setShowCopyAddressToast('privateKey'));
       };
 
       return (
@@ -231,7 +233,6 @@ const MultichainPrivateKeyList = ({
           networkName={item.networkName}
           address={item.account.address}
           copyActionParams={{
-            message: t('multichainAccountPrivateKeyCopied'),
             callback: handleCopyClick,
           }}
         />

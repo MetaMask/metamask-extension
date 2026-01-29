@@ -15,7 +15,7 @@ import {
   TextVariant,
   TextAlign,
 } from '@metamask/design-system-react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,6 +24,7 @@ import { getNetworksByScopes } from '../../../../shared/modules/selectors/networ
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { setShowCopyAddressToast } from '../../../ducks/app/app';
 
 type MultichainAggregatedAddressListRowProps = {
   /**
@@ -51,19 +52,13 @@ export const MultichainAggregatedAddressListRow = ({
   className = '',
 }: MultichainAggregatedAddressListRowProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const truncatedAddress = shortenAddress(normalizeSafeAddress(address)); // Shorten address for display
-  const [displayText, setDisplayText] = useState(truncatedAddress); // Text to display (address or copy message)
   const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
-  const [addressCopied, setAddressCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   // Track timeout ID for managing `setTimeout`
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Update `displayText` when the address prop changes
-  useEffect(() => {
-    setDisplayText(truncatedAddress);
-  }, [address, truncatedAddress]);
 
   // Cleanup timeout when component unmounts
   useEffect(() => {
@@ -89,9 +84,6 @@ export const MultichainAggregatedAddressListRow = ({
 
   // Helper function to get text color based on state
   const getTextColor = () => {
-    if (addressCopied) {
-      return TextColor.SuccessDefault;
-    }
     if (isHovered) {
       return TextColor.PrimaryDefaultHover;
     }
@@ -100,9 +92,6 @@ export const MultichainAggregatedAddressListRow = ({
 
   // Helper function to get icon color based on state
   const getIconColor = () => {
-    if (addressCopied) {
-      return IconColor.SuccessDefault;
-    }
     if (isHovered) {
       return IconColor.PrimaryDefault;
     }
@@ -110,14 +99,11 @@ export const MultichainAggregatedAddressListRow = ({
   };
 
   const getBackgroundColor = useMemo(() => {
-    if (addressCopied) {
-      return BoxBackgroundColor.SuccessMuted;
-    }
     if (isHovered) {
       return BoxBackgroundColor.BackgroundMuted;
     }
     return BoxBackgroundColor.BackgroundDefault;
-  }, [addressCopied, isHovered]);
+  }, [isHovered]);
 
   // Handle "Copy" button click events
   const handleCopyClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -127,20 +113,20 @@ export const MultichainAggregatedAddressListRow = ({
       clearTimeout(timeoutRef.current);
     }
 
-    setAddressCopied(true);
-
-    // Trigger copy callback and update UI state
+    // Trigger copy callback
     copyActionParams.callback();
-    setDisplayText(copyActionParams.message);
+
+    // Show toast notification
+    dispatch(setShowCopyAddressToast('address'));
+
+    // Update icon to success state
     setCopyIcon(IconName.CopySuccess);
 
-    // Reset state after 1 second and track the new timeout
+    // Reset icon after 400ms (brief visual feedback)
     timeoutRef.current = setTimeout(() => {
-      setDisplayText(truncatedAddress);
       setCopyIcon(IconName.Copy);
       timeoutRef.current = null; // Clear the reference after timeout resolves
-      setAddressCopied(false);
-    }, 1000);
+    }, 400);
   };
 
   return (
@@ -183,7 +169,7 @@ export const MultichainAggregatedAddressListRow = ({
             minWidth: '100px',
           }}
         >
-          {displayText}
+          {truncatedAddress}
         </Text>
         <Icon
           name={copyIcon}

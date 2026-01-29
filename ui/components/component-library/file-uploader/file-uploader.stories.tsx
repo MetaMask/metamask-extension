@@ -2,6 +2,7 @@ import React from 'react';
 import { FileUploader } from './file-uploader';
 
 export default {
+  tags: ['autodocs'],
   title: 'Components/ComponentLibrary/FileUploader',
   component: FileUploader,
   argTypes: {
