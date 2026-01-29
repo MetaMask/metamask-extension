@@ -1,0 +1,48 @@
+.slider {
+  display: inline-block;
+  width: 100%;
+
+  &__heading,
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__heading-title {
+    display: flex;
+    align-items: center;
+
+    > p {
+      margin-left: 10px;
+      font-size: 14px;
+    }
+  }
+
+  &__heading-detail > p {
+    font-size: 14px;
+  }
+
+  &__footer-info {
+    display: flex;
+    align-items: center;
+
+    > p {
+      font-size: 12px;
+    }
+  }
+
+  &__footer-edit > button {
+    border: none;
+    background: none;
+    font-size: 12px;
+    color: var(--color-primary-default);
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  h6 {
+    margin-inline-end: 6px;
+  }
+}

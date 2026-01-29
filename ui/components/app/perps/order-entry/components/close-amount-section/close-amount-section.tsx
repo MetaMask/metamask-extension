@@ -123,14 +123,18 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
 
           {/* USD Value */}
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            ≈ ${closeValueUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ≈ $
+            {closeValueUsd.toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </Text>
         </Box>
       </Box>
 
       {/* Percentage Slider */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-        <Box className="px-1" data-testid="close-amount-slider">
+        <Box className="px-3" data-testid="close-amount-slider">
           <Slider
             min={0}
             max={100}

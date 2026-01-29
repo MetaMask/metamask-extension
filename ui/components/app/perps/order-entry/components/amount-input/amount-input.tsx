@@ -11,7 +11,7 @@ import {
   BoxAlignItems,
   ButtonBase,
 } from '@metamask/design-system-react';
-import Slider from '../../../../../ui/slider';
+import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { AmountInputProps } from '../../order-entry.types';
 import {
@@ -116,7 +116,11 @@ export const AmountInput: React.FC<AmountInputProps> = ({
           {t('perpsAvailableToTrade')}
         </Text>
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          ${availableBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          $
+          {availableBalance.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </Text>
       </Box>
 
@@ -166,8 +170,8 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 
       {/* Percentage Slider */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
-        <Box className="px-1" data-testid="amount-slider">
-          <Slider
+        <Box className="px-3" data-testid="amount-slider">
+          <PerpsSlider
             min={0}
             max={100}
             step={1}

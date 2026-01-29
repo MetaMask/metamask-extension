@@ -9,7 +9,7 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
 } from '@metamask/design-system-react';
-import Slider from '../../../../../ui/slider';
+import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { LeverageSliderProps } from '../../order-entry.types';
 
@@ -51,18 +51,15 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
           {t('perpsLeverage')}
         </Text>
         <Box className="bg-muted px-3 py-1 rounded-lg">
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-          >
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {leverage}x
           </Text>
         </Box>
       </Box>
 
       {/* Material UI Slider */}
-      <Box className="px-1" data-testid="leverage-slider">
-        <Slider
+      <Box className="px-3" data-testid="leverage-slider">
+        <PerpsSlider
           min={minLeverage}
           max={maxLeverage}
           step={1}
