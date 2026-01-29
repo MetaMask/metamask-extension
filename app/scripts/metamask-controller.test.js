@@ -2055,6 +2055,109 @@ describe('MetaMaskController', () => {
       it('should return address', async () => {
         expect(ret).toStrictEqual('0x1');
       });
+
+      it('should select a different account when removing the currently selected account', async () => {
+        const selectedAddress = '0xSelectedAccount';
+        const otherAddress = '0xOtherAccount';
+        const accountId1 = 'account1';
+        const accountId2 = 'account2';
+
+        // Mock the selected account
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({
+            id: accountId1,
+            address: selectedAddress,
+          });
+
+        // Mock the list of all accounts
+        jest
+          .spyOn(metamaskController.accountsController, 'listAccounts')
+          .mockReturnValue([
+            { id: accountId1, address: selectedAddress },
+            { id: accountId2, address: otherAddress },
+          ]);
+
+        // Mock setSelectedAccount
+        const setSelectedAccountSpy = jest
+          .spyOn(metamaskController.accountsController, 'setSelectedAccount')
+          .mockReturnValue();
+
+        // Remove the currently selected account
+        await metamaskController.removeAccount(selectedAddress);
+
+        // Verify that a different account was selected before removal
+        expect(setSelectedAccountSpy).toHaveBeenCalledWith(accountId2);
+      });
+
+      it('should not change selected account when removing a non-selected account', async () => {
+        const selectedAddress = '0xSelectedAccount';
+        const otherAddress = '0xOtherAccount';
+        const accountId1 = 'account1';
+        const accountId2 = 'account2';
+
+        // Mock the selected account
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({
+            id: accountId1,
+            address: selectedAddress,
+          });
+
+        // Mock the list of all accounts
+        jest
+          .spyOn(metamaskController.accountsController, 'listAccounts')
+          .mockReturnValue([
+            { id: accountId1, address: selectedAddress },
+            { id: accountId2, address: otherAddress },
+          ]);
+
+        // Mock setSelectedAccount
+        const setSelectedAccountSpy = jest
+          .spyOn(metamaskController.accountsController, 'setSelectedAccount')
+          .mockReturnValue();
+
+        // Remove a non-selected account
+        await metamaskController.removeAccount(otherAddress);
+
+        // Verify that setSelectedAccount was not called
+        expect(setSelectedAccountSpy).not.toHaveBeenCalled();
+      });
+
+      it('should handle case-insensitive address comparison', async () => {
+        const selectedAddress = '0xSelectedAccount';
+        const selectedAddressUpperCase = '0XSELECTEDACCOUNT';
+        const otherAddress = '0xOtherAccount';
+        const accountId1 = 'account1';
+        const accountId2 = 'account2';
+
+        // Mock the selected account (lowercase)
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({
+            id: accountId1,
+            address: selectedAddress,
+          });
+
+        // Mock the list of all accounts
+        jest
+          .spyOn(metamaskController.accountsController, 'listAccounts')
+          .mockReturnValue([
+            { id: accountId1, address: selectedAddress },
+            { id: accountId2, address: otherAddress },
+          ]);
+
+        // Mock setSelectedAccount
+        const setSelectedAccountSpy = jest
+          .spyOn(metamaskController.accountsController, 'setSelectedAccount')
+          .mockReturnValue();
+
+        // Remove the account using uppercase address
+        await metamaskController.removeAccount(selectedAddressUpperCase);
+
+        // Verify that a different account was selected (case-insensitive match)
+        expect(setSelectedAccountSpy).toHaveBeenCalledWith(accountId2);
+      });
     });
     describe('#setupPhishingCommunication', () => {
       beforeEach(() => {

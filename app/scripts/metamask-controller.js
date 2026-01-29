@@ -6175,6 +6175,31 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} address - A hex address
    */
   async removeAccount(address) {
+    // Ensure the address is in lowercase for comparison
+    const normalizedAddress = address.toLowerCase();
+
+    // Check if the account being removed is the currently selected account
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const isRemovingSelectedAccount =
+      selectedAccount.address.toLowerCase() === normalizedAddress;
+
+    // If removing the selected account, select a different account first
+    if (isRemovingSelectedAccount) {
+      const allAccounts = this.accountsController.listAccounts();
+
+      // Find an account that is not being removed
+      const accountToSelect = allAccounts.find(
+        (account) => account.address.toLowerCase() !== normalizedAddress,
+      );
+
+      if (accountToSelect) {
+        // Select the new account before removing the current one
+        this.accountsController.setSelectedAccount(accountToSelect.id);
+      }
+      // If no other account exists, the wallet will be in an invalid state
+      // but this should be prevented by the UI (can't remove the last account)
+    }
+
     this._onAccountRemoved(address);
     await this.keyringController.removeAccount(address);
 
