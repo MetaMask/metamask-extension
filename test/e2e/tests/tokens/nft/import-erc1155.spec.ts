@@ -4,7 +4,6 @@ import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { RESIZE_OBSERVER_IGNORED_ERRORS } from './ignored-console-errors';
 
 describe('Import ERC1155 NFT', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
@@ -17,7 +16,6 @@ describe('Import ERC1155 NFT', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        ignoredConsoleErrors: RESIZE_OBSERVER_IGNORED_ERRORS,
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {
@@ -46,7 +44,6 @@ describe('Import ERC1155 NFT', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        ignoredConsoleErrors: RESIZE_OBSERVER_IGNORED_ERRORS,
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {

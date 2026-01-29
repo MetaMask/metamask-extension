@@ -9,7 +9,6 @@ import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
-import { RESIZE_OBSERVER_IGNORED_ERRORS } from './ignored-console-errors';
 
 describe('NFT full', function () {
   it('displays NFT full image when NFT is on a network different from the current network', async function () {
@@ -26,7 +25,6 @@ describe('NFT full', function () {
           })
           .build(),
         driverOptions,
-        ignoredConsoleErrors: RESIZE_OBSERVER_IGNORED_ERRORS,
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
       },

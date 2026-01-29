@@ -1730,6 +1730,9 @@ class Driver {
       'Event fragment with id transaction-added-',
       // Sidepanel
       'GL Context was lost',
+      // ResizeObserver loop can occur during layout shifts
+      'ResizeObserver loop limit exceeded',
+      'ResizeObserver loop completed with undelivered notifications',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

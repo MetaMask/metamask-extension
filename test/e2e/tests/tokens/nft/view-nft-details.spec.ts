@@ -6,7 +6,6 @@ import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
-import { RESIZE_OBSERVER_IGNORED_ERRORS } from './ignored-console-errors';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -17,7 +16,6 @@ describe('View NFT details', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
-        ignoredConsoleErrors: RESIZE_OBSERVER_IGNORED_ERRORS,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
