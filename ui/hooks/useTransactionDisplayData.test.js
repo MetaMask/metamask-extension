@@ -262,4 +262,80 @@ describe('useTransactionDisplayData', () => {
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
+
+  describe('bridgeApproval transaction type', () => {
+    it('should handle bridgeApproval with missing sourceTokenSymbol by using fallback', () => {
+      const bridgeApprovalTransaction = {
+        initialTransaction: {
+          id: 'test-bridge-approval',
+          chainId: CHAIN_IDS.MAINNET,
+          type: 'bridgeApproval',
+          txParams: {
+            from: ADDRESS_MOCK,
+            to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            value: '0x0',
+          },
+        },
+        primaryTransaction: {
+          id: 'test-bridge-approval',
+          chainId: CHAIN_IDS.MAINNET,
+          type: 'bridgeApproval',
+          txParams: {
+            from: ADDRESS_MOCK,
+            to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            value: '0x0',
+          },
+          status: 'confirmed',
+        },
+        hasNonce: true,
+        nonce: '0x1',
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useTransactionDisplayData(bridgeApprovalTransaction),
+        getMockState(),
+        DEFAULT_ROUTE,
+      );
+
+      // Should use fallback 'Token' when sourceTokenSymbol is undefined
+      expect(result.current.title).toStrictEqual('Approve Token for bridge');
+    });
+
+    it('should handle bridgeApproval with sourceTokenSymbol from primaryTransaction', () => {
+      const bridgeApprovalTransaction = {
+        initialTransaction: {
+          id: 'test-bridge-approval',
+          chainId: CHAIN_IDS.MAINNET,
+          type: 'bridgeApproval',
+          txParams: {
+            from: ADDRESS_MOCK,
+            to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            value: '0x0',
+          },
+        },
+        primaryTransaction: {
+          id: 'test-bridge-approval',
+          chainId: CHAIN_IDS.MAINNET,
+          type: 'bridgeApproval',
+          sourceTokenSymbol: 'DAI',
+          txParams: {
+            from: ADDRESS_MOCK,
+            to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+            value: '0x0',
+          },
+          status: 'confirmed',
+        },
+        hasNonce: true,
+        nonce: '0x1',
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useTransactionDisplayData(bridgeApprovalTransaction),
+        getMockState(),
+        DEFAULT_ROUTE,
+      );
+
+      expect(result.current.title).toStrictEqual('Approve DAI for bridge');
+    });
+  });
 });
