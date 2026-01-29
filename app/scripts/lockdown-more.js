@@ -52,12 +52,16 @@ try {
           // If the property on globalThis is configurable, make it
           // non-configurable. If it has no accessor properties, also make it
           // non-writable.
+          // We must preserve the original descriptor properties (especially 'value')
+          // to avoid breaking intrinsics like Array.isArray.
           if (hasAccessor(descriptor)) {
             Object.defineProperty(globalThis, propertyName, {
+              ...descriptor,
               configurable: false,
             });
           } else {
             Object.defineProperty(globalThis, propertyName, {
+              ...descriptor,
               configurable: false,
               writable: false,
             });
