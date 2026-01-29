@@ -226,12 +226,8 @@ export default function CreationSuccessful() {
         ) {
           window.open(deferredDeepLinkResult.url, '_blank');
           navigate(DEFAULT_ROUTE);
-        } else if (
-          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
-        ) {
-          navigate(deferredDeepLinkResult.route);
         } else {
-          navigate(DEFAULT_ROUTE);
+          navigate(deferredDeepLinkResult.route);
         }
       } else {
         navigate(DEFAULT_ROUTE);
