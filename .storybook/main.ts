@@ -1,52 +1,75 @@
-const path = require('path');
-const { ProvidePlugin } = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const dotenv = require('dotenv');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+import webpack from 'webpack';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import dotenv from 'dotenv';
+import type { StorybookConfig } from '@storybook/react-webpack5';
+
+const { ProvidePlugin } = webpack;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
+
 dotenv.config({ path: path.resolve(__dirname, '../.metamaskrc') });
 
-module.exports = {
+const config: StorybookConfig = {
   core: {
     disableTelemetry: true,
   },
+
   features: {
     buildStoriesJson: true,
   },
+
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.tsx',
-    '../ui/**/*.stories.mdx',
-    './*.stories.mdx',
+    // MDX stories temporarily disabled for v10 upgrade - need migration
+    // '../ui/**/*.stories.mdx',
+    // './*.stories.mdx',
   ],
+
   addons: [
-    '@storybook/addon-essentials',
-    '@storybook/addon-actions',
     '@storybook/addon-a11y',
-    './i18n-party-addon/register.js',
+    // './i18n-party-addon/register.js', // Temporarily disabled for v10 upgrade
+    '@storybook/addon-docs',
+    '@storybook/addon-webpack5-compiler-swc',
   ],
+
   staticDirs: ['../app', './images'],
+
   env: (config) => ({
     ...config,
     INFURA_PROJECT_ID: process.env.INFURA_STORYBOOK_PROJECT_ID || '',
   }),
+
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
   babel: async (options) => ({
     overrides: options.overrides,
   }),
+
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {
       __filename: true,
     };
-    config.resolve.alias['webextension-polyfill'] = require.resolve(
+    config.resolve = config.resolve || {};
+    config.resolve.alias = config.resolve.alias || {};
+    config.resolve.alias['webextension-polyfill'] = path.resolve(
+      __dirname,
       '../ui/__mocks__/webextension-polyfill.js',
     );
-    config.resolve.alias['../../../../store/actions'] = require.resolve(
+    config.resolve.alias['../../../../store/actions'] = path.resolve(
+      __dirname,
       '../ui/__mocks__/actions.js',
     );
-    config.resolve.alias['../../../../../../store/actions'] = require.resolve(
+    config.resolve.alias['../../../../../../store/actions'] = path.resolve(
+      __dirname,
       '../ui/__mocks__/actions.js',
     );
-    config.resolve.alias['../../../store/actions'] = require.resolve(
+    config.resolve.alias['../../../store/actions'] = path.resolve(
+      __dirname,
       '../ui/__mocks__/actions.js',
     );
     config.resolve.fallback = {
@@ -64,7 +87,9 @@ module.exports = {
         'readable-stream/lib/_stream_transform.js',
       ),
     };
+    config.module = config.module || { rules: [] };
     config.module.strictExportPresence = true;
+    config.module.rules = config.module.rules || [];
     config.module.rules.push({
       test: /\.scss$/,
       use: [
@@ -97,6 +122,7 @@ module.exports = {
         },
       ],
     });
+    config.plugins = config.plugins || [];
     config.plugins.push(
       new CopyWebpackPlugin({
         patterns: [
@@ -123,15 +149,17 @@ module.exports = {
     );
     return config;
   },
-  docs: {
-    autodocs: true,
-  },
+
   framework: {
     name: '@storybook/react-webpack5',
-    options: {
-      builder: {
-        useSWC: true,
-      },
-    },
+    options: {},
+  },
+
+  docs: {},
+
+  typescript: {
+    reactDocgen: 'react-docgen-typescript',
   },
 };
+
+export default config;

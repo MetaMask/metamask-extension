@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from 'storybook/internal/preview-api';
 import { Button } from '../../../components/component-library';
 import ConfirmSrpModal from './confirm-srp-modal';
 

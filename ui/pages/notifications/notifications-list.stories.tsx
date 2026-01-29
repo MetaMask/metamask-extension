@@ -3,7 +3,7 @@ import {
   NotificationsList,
   type NotificationsListProps,
 } from './notifications-list';
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { TAB_KEYS } from './notifications-list';
 
 export default {

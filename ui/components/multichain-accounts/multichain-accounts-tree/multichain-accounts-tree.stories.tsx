@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { MultichainAccountsTree } from './index';

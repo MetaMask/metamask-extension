@@ -1,6 +1,6 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import React, { useState, useEffect } from 'react';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from 'storybook/internal/preview-api';
 
 import {
   Display,

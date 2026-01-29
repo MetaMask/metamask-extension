@@ -1,8 +1,7 @@
-// import { useGlobals } from '@storybook/api';
-const { useGlobals } = require('@storybook/api');
+const { useGlobals } = require('storybook/internal/preview-api');
+const { addons, types } = require('storybook/internal/manager/manager-stores');
 const React = require('react');
-const { addons, types } = require('@storybook/addons');
-const { Icons, IconButton } = require('@storybook/components');
+const { Icons, IconButton } = require('storybook/internal/components');
 const localeList = require('../../app/_locales/index.json');
 const { useEffect } = React;
 
@@ -28,13 +27,15 @@ addons.register('i18n-party', () => {
         return () => clearInterval(interval);
       });
 
-      return (
-        <IconButton
-          onClick={() => updateGlobals({ localeParty: !globals.localeParty })}
-        >
-          <Icons icon={globals.localeParty ? 'star' : 'starhollow'} />
-          <span>&nbsp;Shuffle i18n locale</span>
-        </IconButton>
+      return React.createElement(
+        IconButton,
+        {
+          onClick: () => updateGlobals({ localeParty: !globals.localeParty }),
+        },
+        React.createElement(Icons, {
+          icon: globals.localeParty ? 'star' : 'starhollow',
+        }),
+        React.createElement('span', null, '\u00A0Shuffle i18n locale'),
       );
     },
   });

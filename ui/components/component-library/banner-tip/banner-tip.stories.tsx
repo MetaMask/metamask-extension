@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import {
   Display,
   FlexDirection,
@@ -15,12 +15,13 @@ import { ButtonPrimary } from '../button-primary';
 export default {
   title: 'Components/ComponentLibrary/BannerTip',
   component: BannerTip,
+
   parameters: {
     docs: {
       page: README,
-    },
-    backgrounds: { default: 'alternative' },
+    }
   },
+
   argTypes: {
     logoType: {
       options: Object.values(BannerTipLogoType),
@@ -30,6 +31,12 @@ export default {
       control: 'text',
     },
   },
+
+  globals: {
+    backgrounds: {
+      value: "alternative"
+    }
+  }
 } as Meta<typeof BannerTip>;
 
 const Template: StoryFn<typeof BannerTip> = (args) => <BannerTip {...args} />;

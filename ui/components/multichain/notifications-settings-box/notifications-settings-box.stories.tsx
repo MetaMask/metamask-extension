@@ -1,6 +1,6 @@
 import React from 'react';
-import { Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { Meta } from '@storybook/react-webpack5';
+import { useArgs } from 'storybook/internal/preview-api';
 import { IconName } from '../../component-library';
 import {
   NotificationsSettingsBox,

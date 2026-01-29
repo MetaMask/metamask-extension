@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import { useArgs } from 'storybook/internal/preview-api';
 import { Button } from '../../component-library';
 import ConfigureSnapPopup, {
   ConfigureSnapPopupType,

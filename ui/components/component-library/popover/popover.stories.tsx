@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { Text } from '../text';
 import {
   AlignItems,

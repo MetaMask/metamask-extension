@@ -1,5 +1,5 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
+import { useArgs } from 'storybook/internal/preview-api';
 import LoginErrorModal from './login-error-modal';
 import { Button } from '../../../components/component-library';
 import { LOGIN_ERROR } from './types';

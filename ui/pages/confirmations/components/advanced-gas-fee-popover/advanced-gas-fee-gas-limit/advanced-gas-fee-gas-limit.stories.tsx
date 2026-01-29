@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import React from 'react';
 import { Provider } from 'react-redux';
 import testData from '../../../../../../.storybook/test-data';
