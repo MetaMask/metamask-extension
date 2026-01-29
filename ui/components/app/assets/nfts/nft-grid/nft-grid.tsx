@@ -97,6 +97,9 @@ export default function NftGrid({
 
   useEffect(() => {
     const container = containerRef.current;
+    if (process.env.IN_TEST) {
+      return;
+    }
     if (!container || typeof ResizeObserver === 'undefined') {
       return;
     }
