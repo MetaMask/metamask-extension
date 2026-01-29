@@ -68,7 +68,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t('perpsLeverage')}
         </Text>
         <Box className="bg-muted px-3 py-1 rounded-lg">

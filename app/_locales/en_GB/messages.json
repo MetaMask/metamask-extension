@@ -5126,8 +5126,8 @@
     "message": "Auto close"
   },
   "perpsAvailable": {
-    "message": "$1 available",
-    "description": "$1 is the available balance amount"
+    "message": "available",
+    "description": "is the available balance amount"
   },
   "perpsBuy": {
     "message": "buy"

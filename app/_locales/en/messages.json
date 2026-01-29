@@ -5126,8 +5126,8 @@
     "message": "Auto close"
   },
   "perpsAvailable": {
-    "message": "$1 available",
-    "description": "$1 is the available balance amount"
+    "message": "available",
+    "description": "is the available balance amount"
   },
   "perpsAvailableToTrade": {
     "message": "Available to Trade"
@@ -5135,20 +5135,20 @@
   "perpsBuy": {
     "message": "buy"
   },
+  "perpsClose": {
+    "message": "Close"
+  },
   "perpsCloseAll": {
     "message": "Close all"
+  },
+  "perpsCloseAmount": {
+    "message": "Close Amount"
   },
   "perpsCloseLong": {
     "message": "Close Long"
   },
   "perpsCloseShort": {
     "message": "Close Short"
-  },
-  "perpsClose": {
-    "message": "Close"
-  },
-  "perpsCloseAmount": {
-    "message": "Close Amount"
   },
   "perpsClosedShort": {
     "message": "Closed short"
@@ -5189,6 +5189,9 @@
   "perpsExploreStocksAndCommodities": {
     "message": "Explore stocks and commodities"
   },
+  "perpsFees": {
+    "message": "Fees"
+  },
   "perpsFilterAll": {
     "message": "All"
   },
@@ -5206,9 +5209,6 @@
   },
   "perpsFundingPayments": {
     "message": "Funding payments"
-  },
-  "perpsFees": {
-    "message": "Fees"
   },
   "perpsFundingRate": {
     "message": "Funding Rate"
@@ -5262,14 +5262,14 @@
   "perpsMarkets": {
     "message": "Markets"
   },
-  "perpsMore": {
-    "message": "More"
-  },
   "perpsModify": {
     "message": "Modify"
   },
   "perpsModifyPosition": {
     "message": "Modify Position"
+  },
+  "perpsMore": {
+    "message": "More"
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"
@@ -5294,14 +5294,14 @@
   "perpsOrderAmount": {
     "message": "Order Amount"
   },
-  "perpsOrders": {
-    "message": "Orders"
-  },
   "perpsOrderType": {
     "message": "Order Type"
   },
   "perpsOrderValue": {
     "message": "Order Value"
+  },
+  "perpsOrders": {
+    "message": "Orders"
   },
   "perpsPnl": {
     "message": "P&L"
@@ -5309,11 +5309,11 @@
   "perpsPosition": {
     "message": "Position"
   },
-  "perpsPositions": {
-    "message": "Positions"
-  },
   "perpsPositionSize": {
     "message": "Position Size"
+  },
+  "perpsPositions": {
+    "message": "Positions"
   },
   "perpsRecentActivity": {
     "message": "Recent Activity"
@@ -5327,14 +5327,14 @@
   "perpsSell": {
     "message": "sell"
   },
-  "perpsSlPrice": {
-    "message": "SL Price"
-  },
   "perpsShort": {
     "message": "Short"
   },
   "perpsSize": {
     "message": "Size"
+  },
+  "perpsSlPrice": {
+    "message": "SL Price"
   },
   "perpsSortFundingRate": {
     "message": "Funding rate"

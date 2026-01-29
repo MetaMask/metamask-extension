@@ -16,7 +16,6 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { AmountInputProps } from '../../order-entry.types';
 import {
   BALANCE_PERCENT_PRESETS,
-  calculateMaxAmount,
   calculatePositionSize,
 } from '../../order-entry.mocks';
 
@@ -45,20 +44,16 @@ export const AmountInput: React.FC<AmountInputProps> = ({
 }) => {
   const t = useI18nContext();
 
-  // Calculate max amount based on available balance and leverage
-  const maxAmount = useMemo(
-    () => calculateMaxAmount(availableBalance, leverage),
-    [availableBalance, leverage],
-  );
-
-  // Calculate token conversion
+  // Calculate token conversion based on leveraged position size
   const tokenAmount = useMemo(() => {
     const numAmount = parseFloat(amount) || 0;
     if (numAmount === 0 || currentPrice === 0) {
       return null;
     }
-    return calculatePositionSize(numAmount, currentPrice);
-  }, [amount, currentPrice]);
+    // Position size = margin amount * leverage
+    const positionValue = numAmount * leverage;
+    return calculatePositionSize(positionValue, currentPrice);
+  }, [amount, currentPrice, leverage]);
 
   // Handle direct amount input
   const handleAmountChange = useCallback(
@@ -68,17 +63,17 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       if (value === '' || /^\d*\.?\d*$/.test(value)) {
         onAmountChange(value);
 
-        // Update percentage based on amount
-        if (value && maxAmount > 0) {
+        // Update percentage based on amount relative to available balance
+        if (value && availableBalance > 0) {
           const numValue = parseFloat(value);
-          const percent = Math.min((numValue / maxAmount) * 100, 100);
+          const percent = Math.min((numValue / availableBalance) * 100, 100);
           onBalancePercentChange(Math.round(percent));
         } else {
           onBalancePercentChange(0);
         }
       }
     },
-    [onAmountChange, onBalancePercentChange, maxAmount],
+    [onAmountChange, onBalancePercentChange, availableBalance],
   );
 
   // Handle percentage preset button click
@@ -88,11 +83,12 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       if (percent === 0) {
         onAmountChange('');
       } else {
-        const newAmount = (maxAmount * percent) / 100;
+        // Calculate amount as percentage of available balance
+        const newAmount = (availableBalance * percent) / 100;
         onAmountChange(newAmount.toFixed(2));
       }
     },
-    [onAmountChange, onBalancePercentChange, maxAmount],
+    [onAmountChange, onBalancePercentChange, availableBalance],
   );
 
   // Handle slider change
@@ -105,66 +101,95 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   );
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={3}>
-      {/* Available to Trade */}
+    <Box flexDirection={BoxFlexDirection.Column} gap={5}>
+      {/* Balance Section */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
         alignItems={BoxAlignItems.Center}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('perpsAvailableToTrade')}
-        </Text>
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          $
-          {availableBalance.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </Text>
+        {/* Left: Balance and Available text */}
+        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
+            $
+            {availableBalance.toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            $
+            {availableBalance.toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{' '}
+            {t('perpsAvailable').toLowerCase()}
+          </Text>
+        </Box>
+
+        {/* Right: Add Funds Button */}
+        <ButtonBase
+          className={twMerge(
+            'px-4 py-2 rounded-lg',
+            'bg-muted hover:bg-hover active:bg-pressed',
+          )}
+          data-testid="add-funds-button"
+        >
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {t('perpsAddFunds')}
+          </Text>
+        </ButtonBase>
       </Box>
 
       {/* Order Amount Section */}
-      <Box
-        className="bg-muted rounded-xl"
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        paddingBottom={4}
-      >
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          {/* Label */}
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('perpsOrderAmount')}
-          </Text>
+      <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+        {/* Section Header */}
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {t('perpsOrderAmount')}
+        </Text>
 
-          {/* USD Amount Input - Large and prominent */}
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Baseline}
-          >
-            <span className="text-2xl font-medium text-default">$</span>
-            <input
-              type="text"
-              inputMode="decimal"
-              value={amount}
-              onChange={handleAmountChange}
-              placeholder="0.00"
-              className={twMerge(
-                'flex-1 bg-transparent border-none outline-none',
-                'text-2xl font-medium text-default',
-                'placeholder:text-muted',
-              )}
-              data-testid="amount-input-field"
-            />
+        {/* Order Input Box */}
+        <Box
+          className="bg-muted rounded-xl"
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={4}
+          paddingBottom={4}
+        >
+          <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+            {/* USD Amount Input - Large and prominent */}
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Baseline}
+            >
+              <span className="text-[24px] leading-8 font-bold text-default">
+                $
+              </span>
+              <input
+                type="text"
+                inputMode="decimal"
+                value={amount}
+                onChange={handleAmountChange}
+                placeholder="0.00"
+                className={twMerge(
+                  'flex-1 bg-transparent border-none outline-none',
+                  'text-[24px] leading-8 font-bold text-default',
+                  'placeholder:text-muted',
+                )}
+                data-testid="amount-input-field"
+              />
+            </Box>
+
+            {/* Token Conversion */}
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {tokenAmount !== null
+                ? `≈ ${tokenAmount.toFixed(6)} ${asset}`
+                : `0 ${asset}`}
+            </Text>
           </Box>
-
-          {/* Token Conversion */}
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {tokenAmount !== null
-              ? `≈ ${tokenAmount.toFixed(6)} ${asset}`
-              : `0 ${asset}`}
-          </Text>
         </Box>
       </Box>
 
