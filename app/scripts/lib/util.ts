@@ -499,13 +499,14 @@ function extractHostname(url: string): string | null {
 }
 
 /**
- * Check if a hostname is a localhost or private/local IP address.
+ * Check if a hostname is localhost or an IP address.
+ * Public RPC providers use domain names, not raw IP addresses.
  * These should never be considered "public" endpoints even if they appear in chainlist.
  *
  * @param hostname - The hostname to check.
- * @returns True if the hostname is localhost or a private IP address.
+ * @returns True if the hostname is localhost or an IP address (v4 or v6).
  */
-function isLocalhostOrPrivateIP(hostname: string): boolean {
+function isLocalhostOrIPAddress(hostname: string): boolean {
   if (!hostname) {
     return false;
   }
@@ -517,33 +518,16 @@ function isLocalhostOrPrivateIP(hostname: string): boolean {
     return true;
   }
 
-  // Check for IPv4 loopback (127.x.x.x)
-  if (lowerHostname.startsWith('127.')) {
+  // Check for IPv4 address (e.g., 192.168.1.1, 127.0.0.1, 8.8.8.8)
+  const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/u;
+  if (ipv4Regex.test(lowerHostname)) {
     return true;
   }
 
-  // Check for IPv6 loopback
-  if (lowerHostname === '::1' || lowerHostname === '[::1]') {
-    return true;
-  }
-
-  // Check for private IPv4 ranges
-  // 10.0.0.0 - 10.255.255.255
-  if (lowerHostname.startsWith('10.')) {
-    return true;
-  }
-
-  // 172.16.0.0 - 172.31.255.255
-  const match172 = lowerHostname.match(/^172\.(\d+)\./u);
-  if (match172) {
-    const secondOctet = parseInt(match172[1], 10);
-    if (secondOctet >= 16 && secondOctet <= 31) {
-      return true;
-    }
-  }
-
-  // 192.168.0.0 - 192.168.255.255
-  if (lowerHostname.startsWith('192.168.')) {
+  // Check for IPv6 address (with or without brackets)
+  // Matches: ::1, [::1], 2001:db8::1, [2001:db8::1]
+  const ipv6Regex = /^(\[)?([0-9a-f:]+)(\])?$/u;
+  if (ipv6Regex.test(lowerHostname) && lowerHostname.includes(':')) {
     return true;
   }
 
@@ -572,9 +556,8 @@ export async function initializeRpcProviderDomains(): Promise<void> {
         if (chain.rpc && Array.isArray(chain.rpc)) {
           for (const rpcUrl of chain.rpc) {
             const hostname = extractHostname(rpcUrl);
-            // Filter out localhost and private IPs - these should never be
-            // considered "public" even if they appear in chainlist
-            if (hostname && !isLocalhostOrPrivateIP(hostname)) {
+            // Filter out localhost and IP addresses - public providers use domain names
+            if (hostname && !isLocalhostOrIPAddress(hostname)) {
               knownDomainsSet.add(hostname);
             }
           }
