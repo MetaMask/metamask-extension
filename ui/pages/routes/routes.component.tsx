@@ -66,6 +66,7 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -341,6 +342,10 @@ const PerpsMarketDetailPage = mmLazy(
 const MarketListView = mmLazy(
   (() =>
     import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
+);
+const PerpsActivityPage = mmLazy(
+  (() =>
+    import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
 );
 // End Lazy Routes
 
@@ -803,6 +808,12 @@ export default function Routes() {
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
         component: PerpsMarketDetailPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: PERPS_ACTIVITY_ROUTE,
+        component: PerpsActivityPage,
         layout: RootLayout,
         authenticated: true,
       }),

@@ -5119,6 +5119,9 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
+  "perpsAll": {
+    "message": "All"
+  },
   "perpsActivity": {
     "message": "Activity"
   },
@@ -5159,6 +5162,9 @@
   "perpsDetails": {
     "message": "Details"
   },
+  "perpsDeposits": {
+    "message": "Deposits"
+  },
   "perpsDirection": {
     "message": "Direction"
   },
@@ -5170,6 +5176,9 @@
   },
   "perpsEntryPrice": {
     "message": "Entry price"
+  },
+  "perpsFunding": {
+    "message": "Funding"
   },
   "perpsExploreCrypto": {
     "message": "Explore crypto"
@@ -5229,6 +5238,9 @@
     "message": "The market \"$1\" could not be found.",
     "description": "$1 is the market symbol that was not found"
   },
+  "perpsNoTransactions": {
+    "message": "No transactions yet"
+  },
   "perpsMarkets": {
     "message": "Markets"
   },
@@ -5265,6 +5277,9 @@
   "perpsReturn": {
     "message": "Return"
   },
+  "perpsSeeAll": {
+    "message": "See All"
+  },
   "perpsSearchMarkets": {
     "message": "Search markets"
   },
@@ -5300,6 +5315,9 @@
   },
   "perpsStats": {
     "message": "Stats"
+  },
+  "perpsTrades": {
+    "message": "Trades"
   },
   "perpsTotalBalance": {
     "message": "Total Balance"

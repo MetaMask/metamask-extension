@@ -19,6 +19,10 @@ export { StartTradeCta } from './start-trade-cta';
 export type { StartTradeCtaProps } from './start-trade-cta';
 export { PerpsEmptyState } from './perps-empty-state';
 export type { PerpsEmptyStateProps } from './perps-empty-state';
+export { TransactionCard } from './transaction-card';
+export type { TransactionCardProps } from './transaction-card';
+export { PerpsRecentActivity } from './perps-recent-activity';
+export type { PerpsRecentActivityProps } from './perps-recent-activity';
 export {
   getDisplayName,
   getPositionDirection,
@@ -27,6 +31,11 @@ export {
   getStatusColor,
   getDisplaySymbol,
   getAssetIconUrl,
+  formatRelativeTime,
+  groupTransactionsByDate,
+  filterTransactionsByType,
+  getTransactionStatusColor,
+  getTransactionAmountColor,
   filterMarketsByQuery,
 } from './utils';
 export {

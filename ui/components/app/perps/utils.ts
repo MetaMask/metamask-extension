@@ -1,5 +1,10 @@
 import { TextColor } from '@metamask/design-system-react';
-import type { Order, PerpsMarketData } from './types';
+import type {
+  Order,
+  PerpsMarketData,
+  PerpsTransaction,
+  PerpsTransactionFilter,
+} from './types';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
 import { mockCryptoMarkets, mockHip3Markets } from './mocks';
 
@@ -194,6 +199,173 @@ export const safeDecodeURIComponent = (value: string): string | undefined => {
   } catch {
     return undefined;
   }
+};
+
+// Transaction history utility types
+type GroupedTransactions = {
+  date: string;
+  transactions: PerpsTransaction[];
+};
+
+/**
+ * Formats a timestamp into a relative time string
+ *
+ * @param timestamp - The timestamp in milliseconds
+ * @returns A human-readable relative time string
+ * @example
+ * formatRelativeTime(Date.now() - 3600000) => '1h ago'
+ * formatRelativeTime(Date.now() - 86400000) => 'Yesterday'
+ * formatRelativeTime(Date.now() - 172800000) => '2 days ago'
+ */
+export const formatRelativeTime = (timestamp: number): string => {
+  const now = Date.now();
+  const diffMs = now - timestamp;
+  const diffMinutes = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMinutes < 1) {
+    return 'Just now';
+  }
+  if (diffMinutes < 60) {
+    return `${diffMinutes}m ago`;
+  }
+  if (diffHours < 24) {
+    return `${diffHours}h ago`;
+  }
+  if (diffDays === 1) {
+    return 'Yesterday';
+  }
+  if (diffDays < 7) {
+    return `${diffDays} days ago`;
+  }
+
+  // For older transactions, show the date
+  const date = new Date(timestamp);
+  return date.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+/**
+ * Groups transactions by date for display in the activity list
+ *
+ * @param transactions - Array of transactions to group
+ * @returns Array of grouped transactions with date labels
+ * @example
+ * groupTransactionsByDate(transactions) => [
+ *   { date: 'Today', transactions: [...] },
+ *   { date: 'Yesterday', transactions: [...] },
+ *   { date: 'Jan 15', transactions: [...] }
+ * ]
+ */
+export const groupTransactionsByDate = (
+  transactions: PerpsTransaction[],
+): GroupedTransactions[] => {
+  const groups = new Map<string, PerpsTransaction[]>();
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today.getTime() - 86400000);
+
+  // Sort transactions by timestamp (newest first)
+  const sortedTransactions = [...transactions].sort(
+    (a, b) => b.timestamp - a.timestamp,
+  );
+
+  for (const transaction of sortedTransactions) {
+    const txDate = new Date(transaction.timestamp);
+    const txDay = new Date(
+      txDate.getFullYear(),
+      txDate.getMonth(),
+      txDate.getDate(),
+    );
+
+    let dateLabel: string;
+    if (txDay.getTime() === today.getTime()) {
+      dateLabel = 'Today';
+    } else if (txDay.getTime() === yesterday.getTime()) {
+      dateLabel = 'Yesterday';
+    } else {
+      dateLabel = txDate.toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+      });
+    }
+
+    const existing = groups.get(dateLabel) || [];
+    existing.push(transaction);
+    groups.set(dateLabel, existing);
+  }
+
+  return Array.from(groups.entries()).map(([date, txs]) => ({
+    date,
+    transactions: txs,
+  }));
+};
+
+/**
+ * Filters transactions by type
+ *
+ * @param transactions - Array of transactions to filter
+ * @param filter - The filter type to apply
+ * @returns Filtered array of transactions
+ * @example
+ * filterTransactionsByType(transactions, 'trade') => [... only trade transactions]
+ * filterTransactionsByType(transactions, 'deposit') => [... deposits and withdrawals]
+ */
+export const filterTransactionsByType = (
+  transactions: PerpsTransaction[],
+  filter: PerpsTransactionFilter,
+): PerpsTransaction[] => {
+  if (filter === 'deposit') {
+    // Include both deposits and withdrawals
+    return transactions.filter(
+      (tx) => tx.type === 'deposit' || tx.type === 'withdrawal',
+    );
+  }
+
+  return transactions.filter((tx) => tx.type === filter);
+};
+
+/**
+ * Get the appropriate text color for transaction status
+ *
+ * @param status - The transaction status
+ * @returns The appropriate text color
+ */
+export const getTransactionStatusColor = (
+  status: PerpsTransaction['status'],
+): TextColor => {
+  switch (status) {
+    case 'confirmed':
+      return TextColor.SuccessDefault;
+    case 'pending':
+      return TextColor.WarningDefault;
+    case 'failed':
+      return TextColor.ErrorDefault;
+    default:
+      return TextColor.TextAlternative;
+  }
+};
+
+/**
+ * Get the appropriate text color for transaction amount
+ * Positive amounts (received/profit) → green, negative (paid/loss) → red
+ *
+ * @param amount - The amount string (may include +/- prefix)
+ * @returns The appropriate text color
+ */
+export const getTransactionAmountColor = (amount: string): TextColor => {
+  // Check for explicit negative sign or "paid" in context
+  if (amount.startsWith('-')) {
+    return TextColor.ErrorDefault;
+  }
+  if (amount.startsWith('+')) {
+    return TextColor.SuccessDefault;
+  }
+  // Default to neutral
+  return TextColor.TextDefault;
 };
 
 /**

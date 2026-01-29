@@ -32,6 +32,8 @@ export {
 export type { ButtonProps } from './button';
 export { ButtonBase, ButtonBaseSize } from './button-base';
 export type { ButtonBaseProps } from './button-base';
+export { ButtonFilter } from './button-filter';
+export type { ButtonFilterProps } from './button-filter';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
 export type { ButtonIconProps } from './button-icon';
 export { ButtonLink, ButtonLinkSize } from './button-link';
