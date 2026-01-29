@@ -22,8 +22,6 @@ export type SubjectMetadataToAdd = PermissionSubjectMetadata & {
   iconUrl?: string | null;
 };
 
-export type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
-
 type SendMetadataConstraint<
   Params extends SubjectMetadataToAdd = SubjectMetadataToAdd,
 > = {
@@ -31,7 +29,7 @@ type SendMetadataConstraint<
     req: SendMetadataHandlerRequest<Params>,
     res: PendingJsonRpcResponse<true>,
     _next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback
+    end: JsonRpcEngineEndCallback,
   ) => void;
 } & HandlerWrapper;
 

@@ -3,24 +3,14 @@ import { PendingJsonRpcResponse } from '@metamask/utils';
 import { SubjectType } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { HandlerRequestType as SendMetadataHandlerRequest } from './types';
-import sendMetadata, {
-  AddSubjectMetadata,
-  SubjectMetadataToAdd,
-} from './send-metadata';
+import sendMetadata, { SubjectMetadataToAdd } from './send-metadata';
 
 describe('SendMetaData', () => {
-  let mockEnd: JsonRpcEngineEndCallback;
-  let mockAddSubjectMetadata: AddSubjectMetadata;
   const paramsData = {
     origin: 'testOrigin',
     iconUrl: 'testicon',
     name: 'testname',
   };
-
-  beforeEach(() => {
-    mockEnd = jest.fn();
-    mockAddSubjectMetadata = jest.fn();
-  });
 
   it('should do nothing and return true', async () => {
     const req: SendMetadataHandlerRequest<SubjectMetadataToAdd> = {
@@ -37,6 +27,7 @@ describe('SendMetaData', () => {
       result: true,
     };
 
+    const mockEnd = jest.fn();
     sendMetadata.implementation(req, res, jest.fn(), mockEnd);
     expect(res.result).toStrictEqual(true);
     expect(mockEnd).toHaveBeenCalled();
