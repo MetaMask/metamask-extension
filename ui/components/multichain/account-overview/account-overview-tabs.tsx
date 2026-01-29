@@ -42,11 +42,16 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
-const NftsTab = lazy(() => import('../../app/assets/nfts/nfts-tab'));
-const DeFiTab = lazy(() => import('../../app/assets/defi-list/defi-tab'));
+// eslint-disable-next-line import/extensions
+const NftsTab = lazy(() => import('../../app/assets/nfts/nfts-tab.js'));
+// eslint-disable-next-line import/extensions
+const DeFiTab = lazy(() => import('../../app/assets/defi-list/defi-tab.js'));
+// eslint-disable-next-line import/extensions
 const TransactionList = lazy(() => import('../../app/transaction-list'));
 const UnifiedTransactionList = lazy(
-  () => import('../../app/transaction-list/unified-transaction-list.component'),
+  () =>
+    // eslint-disable-next-line import/extensions
+    import('../../app/transaction-list/unified-transaction-list.component.js'),
 );
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
