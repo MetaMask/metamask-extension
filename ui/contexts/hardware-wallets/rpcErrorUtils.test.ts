@@ -190,6 +190,19 @@ describe('rpcErrorUtils', () => {
       expect(result.message).toBe('Hardware wallet error');
     });
 
+    it('maps Ledger status codes in JsonRpcError data to ErrorCode', () => {
+      const jsonRpcError = new JsonRpcError(1234, 'Ledger device error', {
+        code: 21781,
+      });
+
+      const result = toHardwareWalletError(
+        jsonRpcError,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result.code).toBe(ErrorCode.AuthenticationDeviceLocked);
+    });
+
     it('preserves stack trace from JsonRpcError', () => {
       const jsonRpcError = new JsonRpcError(1234, 'Hardware wallet error', {
         code: ErrorCode.DeviceDisconnected,

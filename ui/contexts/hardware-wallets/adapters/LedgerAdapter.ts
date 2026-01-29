@@ -238,30 +238,28 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
       return true;
     } catch (error) {
-      if (error instanceof HardwareWalletError && error.code !== undefined) {
-        // Emit appropriate device events with the properly reconstructed error
-        const deviceEvent = getDeviceEventForError(
-          error.code,
-          DeviceEvent.Disconnected,
-        );
-        this.options.onDeviceEvent({
-          event: deviceEvent,
-          error,
-        });
+      const hwError = toHardwareWalletError(error, HardwareWalletType.Ledger);
+      // Emit appropriate device events with the properly reconstructed error
+      const deviceEvent = getDeviceEventForError(
+        hwError.code,
+        DeviceEvent.Disconnected,
+      );
+      this.options.onDeviceEvent({
+        event: deviceEvent,
+        error: hwError,
+      });
 
-        // Reset connection state for disconnection-related errors
-        const shouldResetConnection = [
-          ErrorCode.DeviceDisconnected,
-          ErrorCode.ConnectionClosed,
-        ].includes(error.code);
+      // Reset connection state for disconnection-related errors
+      const shouldResetConnection = [
+        ErrorCode.DeviceDisconnected,
+        ErrorCode.ConnectionClosed,
+      ].includes(hwError.code);
 
-        if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
-          this.connected = false;
-          this.currentDeviceId = null;
-        }
+      if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
+        this.connected = false;
+        this.currentDeviceId = null;
       }
-
-      throw error;
+      throw hwError;
     }
   }
 }

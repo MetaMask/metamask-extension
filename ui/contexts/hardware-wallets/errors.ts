@@ -137,148 +137,141 @@ export function parseErrorByType(
   error: unknown,
   walletType: HardwareWalletType,
 ): HardwareWalletError {
-  debugger;
-  try {
-    // Log the raw error to understand its structure
-    const errorAsAny = error as Record<string, unknown>;
+  // Log the raw error to understand its structure
+  const errorAsAny = error as Record<string, unknown>;
 
-    // If already a HardwareWalletError, return it
-    if (error instanceof HardwareWalletError) {
-      return error;
-    }
+  // If already a HardwareWalletError, return it
+  if (error instanceof HardwareWalletError) {
+    return error;
+  }
 
-    // Check if error has name === 'HardwareWalletError' (duck typing)
-    // This handles cases where the class instance check fails due to different module instances
-    if (
-      errorAsAny?.name === 'HardwareWalletError' &&
-      typeof errorAsAny?.code === 'number'
-    ) {
-      const errorCode = mapNumericToErrorCode(errorAsAny.code as number);
-      const errorMessage =
-        typeof errorAsAny?.message === 'string'
-          ? errorAsAny.message
-          : 'Hardware wallet error';
-      return createHardwareWalletError(errorCode, walletType, errorMessage, {
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
+  // Check if error has name === 'HardwareWalletError' (duck typing)
+  // This handles cases where the class instance check fails due to different module instances
+  if (
+    errorAsAny?.name === 'HardwareWalletError' &&
+    typeof errorAsAny?.code === 'number'
+  ) {
+    const errorCode = mapNumericToErrorCode(errorAsAny.code as number);
+    const errorMessage =
+      typeof errorAsAny?.message === 'string'
+        ? errorAsAny.message
+        : 'Hardware wallet error';
+    return createHardwareWalletError(errorCode, walletType, errorMessage, {
+      cause: error instanceof Error ? error : undefined,
+    });
+  }
 
-    // Try to extract error code from data.cause structure
-    // This is how errors look after crossing the RPC boundary
-    const errorObj = error as {
-      data?: {
-        cause?: {
-          name?: string;
-          code?: number;
-          message?: string;
-        };
+  // Try to extract error code from data.cause structure
+  // This is how errors look after crossing the RPC boundary
+  const errorObj = error as {
+    data?: {
+      cause?: {
+        name?: string;
+        code?: number;
+        message?: string;
       };
-      message?: string;
     };
+    message?: string;
+  };
 
-    // Check for data.cause.name === 'HardwareWalletError'
-    if (
-      errorObj?.data?.cause?.name === 'HardwareWalletError' &&
-      typeof errorObj.data.cause.code === 'number'
-    ) {
-      const causeCode = errorObj.data.cause.code;
-      const causeMessage =
-        errorObj.data.cause.message ?? 'Hardware wallet error';
-      const mappedCode = mapNumericToErrorCode(causeCode);
+  // Check for data.cause.name === 'HardwareWalletError'
+  if (
+    errorObj?.data?.cause?.name === 'HardwareWalletError' &&
+    typeof errorObj.data.cause.code === 'number'
+  ) {
+    const causeCode = errorObj.data.cause.code;
+    const causeMessage = errorObj.data.cause.message ?? 'Hardware wallet error';
+    const mappedCode = mapNumericToErrorCode(causeCode);
 
-      return createHardwareWalletError(mappedCode, walletType, causeMessage, {
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
+    return createHardwareWalletError(mappedCode, walletType, causeMessage, {
+      cause: error instanceof Error ? error : undefined,
+    });
+  }
 
-    // Check for serialized TransportStatusError in data.cause
-    // This handles cases where the Ledger error has been serialized across the RPC boundary
-    const dataCause = errorObj?.data?.cause as
-      | {
-          name?: string;
-          statusCode?: number;
-          message?: string;
-        }
-      | undefined;
-    if (
-      (dataCause?.name === 'TransportStatusError' ||
-        dataCause?.name === 'LockedDeviceError') &&
-      typeof dataCause?.statusCode === 'number'
-    ) {
-      const { statusCode } = dataCause;
-      const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
-      const mapping =
-        LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
-      const mappedCode = mapping?.code ?? ErrorCode.Unknown;
-      const causeMessage = dataCause.message ?? 'Ledger device error';
+  // Check for serialized TransportStatusError in data.cause
+  // This handles cases where the Ledger error has been serialized across the RPC boundary
+  const dataCause = errorObj?.data?.cause as
+    | {
+        name?: string;
+        statusCode?: number;
+        message?: string;
+      }
+    | undefined;
+  if (
+    (dataCause?.name === 'TransportStatusError' ||
+      dataCause?.name === 'LockedDeviceError') &&
+    typeof dataCause?.statusCode === 'number'
+  ) {
+    const { statusCode } = dataCause;
+    const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
+    const mapping =
+      LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
+    const mappedCode = mapping?.code ?? ErrorCode.Unknown;
+    const causeMessage = dataCause.message ?? 'Ledger device error';
 
-      return createHardwareWalletError(mappedCode, walletType, causeMessage, {
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
+    return createHardwareWalletError(mappedCode, walletType, causeMessage, {
+      cause: error instanceof Error ? error : undefined,
+    });
+  }
 
-    // Check for TransportStatusError (Ledger errors) by name or statusCode property
-    // TransportStatusError has name: 'TransportStatusError' or 'LockedDeviceError'
-    // and a numeric statusCode property (e.g., 0x6985 for user rejection)
-    if (
-      (errorAsAny?.name === 'TransportStatusError' ||
-        errorAsAny?.name === 'LockedDeviceError') &&
-      typeof errorAsAny?.statusCode === 'number'
-    ) {
-      const statusCode = errorAsAny.statusCode as number;
-      const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
-      const mapping =
-        LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
-      const mappedCode = mapping?.code ?? ErrorCode.Unknown;
-      const errorMessage =
-        typeof errorAsAny?.message === 'string'
-          ? errorAsAny.message
-          : 'Ledger device error';
+  // Check for TransportStatusError (Ledger errors) by name or statusCode property
+  // TransportStatusError has name: 'TransportStatusError' or 'LockedDeviceError'
+  // and a numeric statusCode property (e.g., 0x6985 for user rejection)
+  if (
+    (errorAsAny?.name === 'TransportStatusError' ||
+      errorAsAny?.name === 'LockedDeviceError') &&
+    typeof errorAsAny?.statusCode === 'number'
+  ) {
+    const statusCode = errorAsAny.statusCode as number;
+    const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
+    const mapping =
+      LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
+    const mappedCode = mapping?.code ?? ErrorCode.Unknown;
+    const errorMessage =
+      typeof errorAsAny?.message === 'string'
+        ? errorAsAny.message
+        : 'Ledger device error';
 
-      return createHardwareWalletError(mappedCode, walletType, errorMessage, {
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
+    return createHardwareWalletError(mappedCode, walletType, errorMessage, {
+      cause: error instanceof Error ? error : undefined,
+    });
+  }
 
-    // Check for any error with a numeric statusCode property (Ledger-style errors)
-    // This handles cases where the error class check fails but statusCode is present
-    if (
-      typeof errorAsAny?.statusCode === 'number' &&
-      errorAsAny.statusCode > 0
-    ) {
-      const statusCode = errorAsAny.statusCode as number;
-      const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
-      const mapping =
-        LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
-      const mappedCode = mapping?.code ?? ErrorCode.Unknown;
-      const errorMessage =
-        typeof errorAsAny?.message === 'string'
-          ? errorAsAny.message
-          : 'Ledger device error';
+  // Check for any error with a numeric statusCode property (Ledger-style errors)
+  // This handles cases where the error class check fails but statusCode is present
+  if (typeof errorAsAny?.statusCode === 'number' && errorAsAny.statusCode > 0) {
+    const statusCode = errorAsAny.statusCode as number;
+    const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
+    const mapping =
+      LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
+    const mappedCode = mapping?.code ?? ErrorCode.Unknown;
+    const errorMessage =
+      typeof errorAsAny?.message === 'string'
+        ? errorAsAny.message
+        : 'Ledger device error';
 
-      return createHardwareWalletError(mappedCode, walletType, errorMessage, {
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
+    return createHardwareWalletError(mappedCode, walletType, errorMessage, {
+      cause: error instanceof Error ? error : undefined,
+    });
+  }
 
-    // Check for statusCode in error.data (serialized Ledger error format)
-    const dataObj = errorObj?.data as { statusCode?: number } | undefined;
-    if (typeof dataObj?.statusCode === 'number' && dataObj.statusCode > 0) {
-      const { statusCode } = dataObj;
-      const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
-      const mapping =
-        LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
-      const mappedCode = mapping?.code ?? ErrorCode.Unknown;
-      const errorMessage =
-        typeof errorAsAny?.message === 'string'
-          ? errorAsAny.message
-          : 'Ledger device error';
+  // Check for statusCode in error.data (serialized Ledger error format)
+  const dataObj = errorObj?.data as { statusCode?: number } | undefined;
+  if (typeof dataObj?.statusCode === 'number' && dataObj.statusCode > 0) {
+    const { statusCode } = dataObj;
+    const hexCode = `0x${statusCode.toString(16).padStart(4, '0')}`;
+    const mapping =
+      LEDGER_ERROR_MAPPINGS[hexCode as keyof typeof LEDGER_ERROR_MAPPINGS];
+    const mappedCode = mapping?.code ?? ErrorCode.Unknown;
+    const errorMessage =
+      typeof errorAsAny?.message === 'string'
+        ? errorAsAny.message
+        : 'Ledger device error';
 
-      return createHardwareWalletError(mappedCode, walletType, errorMessage, {
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
-  } catch (parseError) {}
+    return createHardwareWalletError(mappedCode, walletType, errorMessage, {
+      cause: error instanceof Error ? error : undefined,
+    });
+  }
 
   // Get error message
   const errorMessage = error instanceof Error ? error.message : String(error);
@@ -305,10 +298,10 @@ export function parseErrorByType(
   // Trezor error message mappings
   // These errors come from @trezor/connect-web SDK
   if (walletType === HardwareWalletType.Trezor) {
-    const trezorErrorMappings: Array<{
+    const trezorErrorMappings: {
       patterns: string[];
       code: ErrorCode;
-    }> = [
+    }[] = [
       // User cancelled/rejected in popup
       {
         patterns: [

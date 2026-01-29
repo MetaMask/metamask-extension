@@ -4,12 +4,12 @@ import {
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
+import { TransportStatusError } from '@ledgerhq/errors';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-import { TransportStatusError } from '@ledgerhq/errors';
 
 const MESSAGE_TIMEOUT = 4000;
 

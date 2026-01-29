@@ -20,22 +20,57 @@ import {
   record,
   unknown,
   union,
+  refine,
   type Infer,
 } from '@metamask/superstruct';
 import { HardwareWalletType } from './types';
 import { createHardwareWalletError } from './errors';
 
 /**
- * Struct for a serialized HardwareWalletError cause object.
- * This represents the structure of a HardwareWalletError after it has been
- * serialized across the RPC boundary.
+ * Structs for serialized HardwareWalletError cause objects.
+ * This supports both legacy and extended shapes across the RPC boundary.
  */
-const SerializedHardwareWalletErrorCauseStruct = object({
+const LegacySerializedHardwareWalletErrorCauseStruct = object({
   name: literal('HardwareWalletError'),
   message: string(),
   stack: optional(string()),
   code: number(),
 });
+
+const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
+  category: string(),
+  severity: string(),
+  id: string(),
+  userMessage: string(),
+  timestamp: string(),
+
+  name: literal('HardwareWalletError'),
+  message: string(),
+  stack: optional(string()),
+  code: number(),
+});
+
+const SerializedHardwareWalletErrorCauseStruct = refine(
+  union([
+    LegacySerializedHardwareWalletErrorCauseStruct,
+    ExtendedSerializedHardwareWalletErrorCauseStruct,
+  ]),
+  'SerializedHardwareWalletErrorCauseStruct',
+  (value) => {
+    const matchesLegacy = is(
+      value,
+      LegacySerializedHardwareWalletErrorCauseStruct,
+    );
+    const matchesExtended = is(
+      value,
+      ExtendedSerializedHardwareWalletErrorCauseStruct,
+    );
+
+    return (
+      (matchesLegacy || matchesExtended) && matchesLegacy !== matchesExtended
+    );
+  },
+);
 
 /**
  * Struct for a serialized RPC error containing a HardwareWalletError.
@@ -231,10 +266,22 @@ function convertDataToHardwareWalletError(
   stack?: string,
 ): HardwareWalletError {
   // Handle both string and numeric error codes
-  const errorCode =
+  let errorCode =
     typeof data.code === 'number'
       ? mapNumericCodeToErrorCode(data.code)
       : mapStringCodeToErrorCode(data.code);
+
+  if (
+    errorCode === ErrorCode.Unknown &&
+    walletType === HardwareWalletType.Ledger
+  ) {
+    const numericCode =
+      typeof data.code === 'number' ? data.code : parseInt(data.code, 10);
+    if (!Number.isNaN(numericCode)) {
+      const hexStatusCode = `0x${numericCode.toString(16).padStart(4, '0')}`;
+      errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
+    }
+  }
 
   const hwError = new HardwareWalletError(
     message || data.userMessage || 'Hardware wallet error',
@@ -335,14 +382,12 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
 }
 
 /**
- * Extract HardwareWalletError code from a JsonRpcError
+ * Get HardwareWalletError code from a JsonRpcError
  *
  * @param error - The error to extract from
  * @returns The ErrorCode if found, null otherwise
  */
-export function extractHardwareWalletErrorCode(
-  error: unknown,
-): ErrorCode | null {
+export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
   // Check for serialized RPC error with cause
   if (isSerializedRpcHardwareWalletError(error)) {
     return mapNumericCodeToErrorCode(error.data.cause.code);
