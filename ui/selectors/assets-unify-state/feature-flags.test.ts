@@ -3,12 +3,23 @@ import {
   getIsAssetsUnifyStateEnabled,
   ASSETS_UNIFY_STATE_FLAG,
 } from './feature-flags';
+import { hasMinimumRequiredVersion } from '../../../shared/lib/feature-flags/version-gating';
 
-jest.mock('../../../../package.json', () => ({
-  version: '13.50.0',
+jest.mock('../../../shared/lib/feature-flags/version-gating', () => ({
+  hasMinimumRequiredVersion: jest.fn(),
 }));
 
+const mockHasMinimumRequiredVersion =
+  hasMinimumRequiredVersion as jest.MockedFunction<
+    typeof hasMinimumRequiredVersion
+  >;
+
 describe('Assets Unify State Feature Flags', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Default to version check passing
+    mockHasMinimumRequiredVersion.mockReturnValue(true);
+  });
   describe('getAssetsUnifyStateRemoteFeatureFlag', () => {
     it('returns the feature flag when it exists and is valid', () => {
       const state = {
@@ -129,13 +140,15 @@ describe('Assets Unify State Feature Flags', () => {
     });
 
     it('returns false when app version is below minimum required version', () => {
+      mockHasMinimumRequiredVersion.mockReturnValue(false);
+
       const state = {
         metamask: {
           remoteFeatureFlags: {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: '1',
-              minimumVersion: '14.0.0', // Higher than mocked version 13.50.0
+              minimumVersion: '14.0.0',
             },
           },
         },
@@ -144,16 +157,19 @@ describe('Assets Unify State Feature Flags', () => {
       const result = getIsAssetsUnifyStateEnabled(state);
 
       expect(result).toBe(false);
+      expect(mockHasMinimumRequiredVersion).toHaveBeenCalledWith('14.0.0');
     });
 
     it('returns true when app version meets minimum required version', () => {
+      mockHasMinimumRequiredVersion.mockReturnValue(true);
+
       const state = {
         metamask: {
           remoteFeatureFlags: {
             [ASSETS_UNIFY_STATE_FLAG]: {
               enabled: true,
               featureVersion: '1',
-              minimumVersion: '13.0.0', // Lower than mocked version 13.50.0
+              minimumVersion: '13.0.0',
             },
           },
         },
@@ -162,6 +178,7 @@ describe('Assets Unify State Feature Flags', () => {
       const result = getIsAssetsUnifyStateEnabled(state);
 
       expect(result).toBe(true);
+      expect(mockHasMinimumRequiredVersion).toHaveBeenCalledWith('13.0.0');
     });
 
     it('returns true when minimumVersion is null', () => {
@@ -180,6 +197,8 @@ describe('Assets Unify State Feature Flags', () => {
       const result = getIsAssetsUnifyStateEnabled(state);
 
       expect(result).toBe(true);
+      // hasMinimumRequiredVersion should not be called when minimumVersion is null
+      expect(mockHasMinimumRequiredVersion).not.toHaveBeenCalled();
     });
   });
 });
