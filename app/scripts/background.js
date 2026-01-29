@@ -1055,10 +1055,14 @@ export async function loadStateFromPersistence(backup) {
 
     // Try to get firstTimeInfo for Sentry tags (installation version and date)
     // Check in-memory sources first (fast, synchronous checks)
+    // Check both new location (AppMetadataController) and old location (top-level)
+    // for compatibility with pre-migration-190 state
     let firstTimeInfo =
       backup?.AppMetadataController?.firstTimeInfo ??
       versionedData?.data?.AppMetadataController?.firstTimeInfo ??
-      preMigrationVersionedData?.data?.AppMetadataController?.firstTimeInfo;
+      versionedData?.data?.firstTimeInfo ??
+      preMigrationVersionedData?.data?.AppMetadataController?.firstTimeInfo ??
+      preMigrationVersionedData?.data?.firstTimeInfo;
 
     // Fallback to IndexedDB backup if in-memory sources don't have it
     // (handles corruption scenarios where storage.local is damaged)
