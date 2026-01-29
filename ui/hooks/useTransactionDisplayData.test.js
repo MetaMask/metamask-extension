@@ -1,5 +1,6 @@
 import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
+import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import transactions from '../../test/data/transaction-data.json';
 // TODO: Remove restricted import
@@ -119,6 +120,30 @@ const expectedResults = [
 let useI18nContext, useTokenFiatAmount;
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'Account 1';
+
+const SWAP_APPROVAL_MISSING_SYMBOL_GROUP = {
+  initialTransaction: {
+    id: 'swapApprovalMissingSymbol',
+    chainId: CHAIN_IDS.MAINNET,
+    type: TransactionType.swapApproval,
+    sourceTokenSymbol: undefined,
+    txParams: {
+      data: '0x',
+      from: ADDRESS_MOCK,
+      to: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
+      value: '0x0',
+    },
+  },
+  primaryTransaction: {
+    id: 'swapApprovalMissingSymbol',
+    chainId: CHAIN_IDS.MAINNET,
+    type: TransactionType.swapApproval,
+    status: TransactionStatus.confirmed,
+    txParams: {
+      value: '0x0',
+    },
+  },
+};
 
 const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: ADDRESS_MOCK,
@@ -261,5 +286,14 @@ describe('useTransactionDisplayData', () => {
       DEFAULT_ROUTE,
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
+  });
+
+  it('falls back to generic token label when swap approval token symbol is unavailable', () => {
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(SWAP_APPROVAL_MISSING_SYMBOL_GROUP),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+    expect(result.current.title).toStrictEqual('Approve Token for swaps');
   });
 });
