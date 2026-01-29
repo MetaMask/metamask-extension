@@ -44,6 +44,7 @@ import {
   waitForRelayResult,
 } from '../transaction-relay';
 import { stripSingleLeadingZero } from '../util';
+import { getClientForTransactionMetadata } from '../../smart-transaction/utils';
 
 const EMPTY_HEX = '0x';
 const POLLING_INTERVAL_MS = 1000; // 1 Second
@@ -193,6 +194,7 @@ export class Delegation7702PublishHook {
       to: delegationManagerAddress,
       metadata: {
         txType: transactionMeta.type,
+        client: getClientForTransactionMetadata(),
       },
     };
 
