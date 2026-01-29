@@ -1,5 +1,4 @@
 import assert from 'assert';
-import { By } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 import { regularDelayMs } from '../../helpers';
 
@@ -65,9 +64,7 @@ export default class DeepLink {
   }
 
   async hasSkipDeepLinkInterstitialCheckBox(): Promise<boolean> {
-    const skipCheckbox = await this.driver.driver.findElements(
-      By.css(this.checkbox),
-    );
+    const skipCheckbox = await this.driver.findElements(this.checkbox);
     return skipCheckbox.length > 0;
   }
 
@@ -90,9 +87,7 @@ export default class DeepLink {
   }
 
   async getDescriptionText(): Promise<string> {
-    const routeBox = await this.driver.driver.findElement(
-      By.css(this.descriptionBox),
-    );
+    const routeBox = await this.driver.findElement(this.descriptionBox);
     assert.strictEqual(await routeBox.isDisplayed(), true);
     const routeText = await routeBox.getText();
     return routeText;
