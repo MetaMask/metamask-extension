@@ -19,7 +19,7 @@ const createMockMarket = (
 ): PerpsMarketData => ({
   symbol: overrides.symbol ?? 'BTC',
   name: overrides.name ?? 'Bitcoin',
-  maxLeverage: overrides.maxLeverage ?? '50x',
+  maxLeverage: overrides.maxLeverage ?? '20x',
   price: overrides.price ?? '$50,000',
   change24h: overrides.change24h ?? '+$1,250.00',
   change24hPercent: overrides.change24hPercent ?? '+2.5%',

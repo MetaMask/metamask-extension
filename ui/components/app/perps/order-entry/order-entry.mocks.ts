@@ -51,7 +51,7 @@ export const mockAvailableBalance = 10125.0;
 /**
  * Preset percentage buttons for balance slider
  */
-export const BALANCE_PERCENT_PRESETS = [0, 25, 50, 75, 100] as const;
+export const BALANCE_PERCENT_PRESETS = [25, 50, 75, 100] as const;
 
 /**
  * Leverage slider step markers

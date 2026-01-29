@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
+  twMerge,
   Box,
   Text,
   TextVariant,
@@ -8,10 +9,16 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
+  ButtonBase,
 } from '@metamask/design-system-react';
 import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { LeverageSliderProps } from '../../order-entry.types';
+
+/**
+ * Preset leverage values for quick selection
+ */
+const LEVERAGE_PRESETS = [5, 10, 15, 20] as const;
 
 /**
  * LeverageSlider - Slider for selecting leverage multiplier
@@ -30,11 +37,25 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
 }) => {
   const t = useI18nContext();
 
+  // Filter presets to only show values within the allowed range
+  const availablePresets = useMemo(
+    () => LEVERAGE_PRESETS.filter((preset) => preset >= minLeverage && preset <= maxLeverage),
+    [minLeverage, maxLeverage],
+  );
+
   // Handle slider change
   const handleSliderChange = useCallback(
     (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
       onLeverageChange(newValue);
+    },
+    [onLeverageChange],
+  );
+
+  // Handle preset button click
+  const handlePresetClick = useCallback(
+    (preset: number) => {
+      onLeverageChange(preset);
     },
     [onLeverageChange],
   );
@@ -68,17 +89,28 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
         />
       </Box>
 
-      {/* Min/Max Labels */}
+      {/* Leverage Preset Buttons */}
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
+        className="w-full"
       >
-        <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-          {minLeverage}x
-        </Text>
-        <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-          {maxLeverage}x
-        </Text>
+        {availablePresets.map((preset) => (
+          <ButtonBase
+            key={preset}
+            onClick={() => handlePresetClick(preset)}
+            className={twMerge(
+              'px-3 py-1 rounded-md text-sm',
+              leverage === preset
+                ? 'bg-muted text-[#FFFFFF]'
+                : 'bg-transparent text-muted hover:bg-hover',
+            )}
+            data-testid={`leverage-preset-${preset}`}
+          >
+            {preset}x
+          </ButtonBase>
+        ))}
       </Box>
     </Box>
   );

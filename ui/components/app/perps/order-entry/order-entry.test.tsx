@@ -57,7 +57,7 @@ describe('OrderEntry', () => {
   const defaultProps = {
     asset: 'BTC',
     currentPrice: 45250.0,
-    maxLeverage: 50,
+    maxLeverage: 20,
     availableBalance: 10000.0,
     onSubmit: jest.fn(),
   };

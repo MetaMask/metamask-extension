@@ -194,8 +194,8 @@ export const AmountInput: React.FC<AmountInputProps> = ({
               className={twMerge(
                 'px-3 py-1 rounded-md text-sm',
                 balancePercent === preset
-                  ? 'bg-primary-muted text-primary-default'
-                  : 'bg-transparent text-muted hover:bg-muted-hover',
+                  ? 'bg-muted text-[#FFFFFF]'
+                  : 'bg-transparent text-muted hover:bg-hover',
               )}
               data-testid={`percent-preset-${preset}`}
             >
