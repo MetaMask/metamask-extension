@@ -360,17 +360,6 @@ describe('App State', () => {
     expect(state.errorInSettings).toBeNull();
   });
 
-  it('toggles account menu', () => {
-    const state = reduceApp(
-      {},
-      {
-        type: actionConstants.TOGGLE_ACCOUNT_MENU,
-      },
-    );
-
-    expect(state.isAccountMenuOpen).toStrictEqual(true);
-  });
-
   it('toggles network menu', () => {
     const state = reduceApp(
       {},

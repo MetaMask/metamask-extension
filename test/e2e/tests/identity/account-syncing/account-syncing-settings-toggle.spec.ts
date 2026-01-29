@@ -4,8 +4,9 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -57,7 +58,7 @@ describe('Account syncing - Settings Toggle', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Wait for the initial account sync to complete before adding new accounts
         const homePage = new HomePage(driver);
@@ -136,7 +137,7 @@ describe('Account syncing - Settings Toggle', function () {
       },
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Wait for the account sync to complete before verifying accounts
         const homePage = new HomePage(driver);

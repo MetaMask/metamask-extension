@@ -378,11 +378,11 @@ function compareSecurityAlertProperties(
 ) {
   if (
     expectedProperties.security_alert_response &&
-    (expectedProperties.security_alert_response === 'loading' ||
+    (expectedProperties.security_alert_response === 'Loading' ||
       expectedProperties.security_alert_response === 'Benign')
   ) {
     if (
-      actualProperties.security_alert_response !== 'loading' &&
+      actualProperties.security_alert_response !== 'Loading' &&
       actualProperties.security_alert_response !== 'Benign'
     ) {
       assert.fail(

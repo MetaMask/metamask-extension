@@ -6,5 +6,4 @@ export type ShieldEnvConfig = {
   claimsEnv: ClaimsEnv;
   gatewayUrl: string;
   ruleEngineUrl: string;
-  claimUrl: string;
 };

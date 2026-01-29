@@ -9,7 +9,7 @@ import {
   isWritable,
 } from '../../helpers/file';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { unlockWallet, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';
 import HomePage from '../page-objects/pages/home/homepage';
@@ -19,17 +19,26 @@ import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
   MOCK_TOKENS_ETHEREUM,
 } from '../tests/bridge/constants';
+import { createInternalTransaction } from '../page-objects/flows/transaction';
 import { Driver } from '../webdriver/driver';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(`https://token.api.cx.metamask.io/tokens/1`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: MOCK_TOKENS_ETHEREUM,
-      };
-    });
+  return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        data: MOCK_TOKENS_ETHEREUM.map((token) => ({
+          ...token,
+          assetId: `eip155:1/erc20:${token.address.toLowerCase()}`,
+          chainId: 'eip155:1',
+        })),
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+        },
+      },
+    };
+  });
 }
 
 const USER_ACTIONS_PERSONA = 'standard';
@@ -52,7 +61,7 @@ async function loadNewAccount(): Promise<{
       title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
-      await unlockWallet(driver);
+      await loginWithBalanceValidation(driver);
 
       const headerNavbar = new HeaderNavbar(driver);
       await headerNavbar.openAccountMenu();
@@ -86,18 +95,11 @@ async function confirmTx(): Promise<{
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
 
-      const homePage = new HomePage(driver);
-      await homePage.startSendFlow();
-
-      await driver.fill(
-        'input[placeholder="Enter public address (0x) or domain name"]',
-        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-      );
-
-      await driver.fill('.unit-input__input', '1');
-
-      await driver.waitForSelector({ text: 'Continue', tag: 'button' });
-      await driver.clickElement({ text: 'Continue', tag: 'button' });
+      await createInternalTransaction({
+        driver,
+        recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+        amount: '1',
+      });
 
       const timestampBeforeAction = new Date();
 

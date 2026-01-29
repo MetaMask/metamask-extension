@@ -157,9 +157,6 @@ export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
     name: 'groupC',
     value: 'valueC',
   },
-  sendRedesign: {
-    enabled: false,
-  },
 };
 
 /* Mock customized remote feature flags response*/

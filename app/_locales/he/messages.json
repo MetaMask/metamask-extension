@@ -382,9 +382,6 @@
     "message": "יש לבחור קובץ לייצוא.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "לא ניתן לשלוח סכומים שליליים של ETH."
-  },
   "networkName": {
     "message": "שם רשת"
   },

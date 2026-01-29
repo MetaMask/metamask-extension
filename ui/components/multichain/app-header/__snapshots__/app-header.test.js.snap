@@ -135,11 +135,11 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-2"
+            class="mm-box mm-box--margin-top-1 mm-box--margin-left-2 mm-box--padding-1 mm-box--background-color-background-muted mm-box--rounded-lg"
             data-testid="networks-subtitle-test-id"
           >
             <div
-              class=""
+              class="flex flex-row gap-1 items-center"
             >
               <div
                 class="flex flex-row items-center"
@@ -211,6 +211,16 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                   </div>
                 </div>
               </div>
+              <svg
+                class="inline-block w-4 h-4 text-icon-alternative"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 18q-.825 0-1.412-.587C7 16.826 7 16.55 7 16V4q0-.824.588-1.412C8.176 1.999 8.45 2 9 2h9q.824 0 1.413.588C20.002 3.175 20 3.45 20 4v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587zm0-2h9V4H9zm-4 6q-.824 0-1.412-.587C2.999 20.826 3 20.55 3 20V6h2v14h11v2z"
+                />
+              </svg>
             </div>
           </div>
         </div>

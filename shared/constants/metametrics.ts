@@ -518,6 +518,12 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   install_date_ext?: string;
   /**
+   * The persistence storage kind currently in use.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  storage_kind?: 'data' | 'split';
+  /**
    * Whether the security provider feature has been enabled.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -578,6 +584,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user installed the extension.
    */
   InstallDateExt = 'install_date_ext',
+  /**
+   * Identifies which persistence storage kind is in use.
+   */
+  StorageKind = 'storage_kind',
   /**
    * Identified when the Ledger Live connection type is changed.
    */
@@ -705,6 +715,8 @@ export enum MetaMetricsEventName {
   AccountImportFailed = 'Account Import Failed',
   AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
+  AccountPinned = 'Account Pinned',
+  AccountHidden = 'Account Hidden',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
@@ -767,9 +779,16 @@ export enum MetaMetricsEventName {
   NavPermissionsOpened = 'Permissions Opened',
   NetworkConnectionBannerShown = 'Network Connection Banner Shown',
   NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
+  NetworkConnectionBannerSwitchToInfuraClicked = 'Network Connection Banner Switch To Infura Clicked',
   NetworkConnectionBannerRpcUpdated = 'Network Connection Banner RPC Updated',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
+  StorageErrorToastViewed = 'Storage Error Toast Viewed',
+  StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
+  StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  VaultCorruptionDetected = 'Vault Corruption Detected',
+  VaultCorruptionRestoreWalletScreenViewed = 'Vault Corruption Restore Wallet Screen Viewed',
+  VaultCorruptionRestoreWalletButtonPressed = 'Vault Corruption Restore Wallet Button Pressed',
   ViewPermissionedNetworks = 'View Permissioned Networks',
   ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',

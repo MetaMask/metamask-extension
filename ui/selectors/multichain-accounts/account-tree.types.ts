@@ -78,3 +78,13 @@ export type AccountGroupWithInternalAccounts = {
     ? InternalAccount[]
     : AccountGroupObjectWithWalletNameAndId[K];
 };
+
+/**
+ * Statistics about account groups in the account tree.
+ * Used for analytics tracking.
+ */
+export type AccountListStats = {
+  pinnedCount: number;
+  hiddenCount: number;
+  totalAccounts: number;
+};

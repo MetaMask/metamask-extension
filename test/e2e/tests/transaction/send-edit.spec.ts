@@ -29,7 +29,7 @@ describe('Editing Confirm Transaction', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await createInternalTransaction(driver);
+        await createInternalTransaction({ driver });
 
         const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
         const gasFeeModal = new GasFeeModal(driver);
@@ -47,7 +47,9 @@ describe('Editing Confirm Transaction', function () {
           '[data-testid="wallet-initiated-header-back-button"]',
         );
 
-        const inputAmount = await driver.findElement('input[placeholder="0"]');
+        const inputAmount = await driver.findElement(
+          '[data-testid="send-amount-input"]',
+        );
 
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press('2');
@@ -99,7 +101,7 @@ describe('Editing Confirm Transaction', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await createInternalTransaction(driver);
+        await createInternalTransaction({ driver });
 
         const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
         const gasFeeModal = new GasFeeModal(driver);
@@ -117,7 +119,9 @@ describe('Editing Confirm Transaction', function () {
           '[data-testid="wallet-initiated-header-back-button"]',
         );
 
-        const inputAmount = await driver.findElement('input[placeholder="0"]');
+        const inputAmount = await driver.findElement(
+          '[data-testid="send-amount-input"]',
+        );
 
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press('2');

@@ -18,7 +18,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         >
           <button
             aria-label="Back"
-            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             data-testid="nft__back"
           >
             <span
@@ -99,13 +99,15 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
             </h4>
           </div>
           <div
-            class="mm-box nft-details__show-more mm-box--margin-top-2"
-            style="position: relative; overflow: hidden;"
+            class="mm-box mm-box--margin-top-2"
           >
             <p
-              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-medium mm-box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
               data-testid="nft-details__description"
-            />
+              style="display: -webkit-box; overflow: hidden;"
+            >
+              At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
+            </p>
           </div>
           <div
             class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap"

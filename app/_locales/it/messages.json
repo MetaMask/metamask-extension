@@ -860,9 +860,6 @@
     "message": "Devi selezionare un file da importare.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Non puoi inviare una quantità di ETH negativa."
-  },
   "networkName": {
     "message": "Nome Rete"
   },

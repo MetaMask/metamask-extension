@@ -25,6 +25,7 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
+import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -221,7 +222,8 @@ export type AllowedActions =
   | AddApprovalRequest
   | AcceptRequest
   | KeyringControllerGetStateAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | ProfileMetricsControllerSkipInitialDelayAction;
 
 /**
  * Event emitted when the state of the {@link AppStateController} changes.
@@ -933,10 +935,13 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setPna25Acknowledged(acknowledged: boolean): void {
+  setPna25Acknowledged(acknowledged: boolean, disableDelay = false): void {
     this.update((state) => {
       state.pna25Acknowledged = acknowledged;
     });
+    if (disableDelay && acknowledged) {
+      this.messenger.call('ProfileMetricsController:skipInitialDelay');
+    }
   }
 
   setShieldPausedToastLastClickedOrClosed(time: number): void {
