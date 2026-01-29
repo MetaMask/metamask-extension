@@ -31,7 +31,10 @@ jest.mock('../../../../store/actions', () => ({
 jest.mock('../../../../contexts/transaction-modal', () => ({
   useTransactionModalContext: () => ({
     closeModal: () => undefined,
+    closeAllModals: () => undefined,
+    openModal: () => undefined,
     currentModal: 'editGasFee',
+    openModalCount: 1,
   }),
 }));
 
