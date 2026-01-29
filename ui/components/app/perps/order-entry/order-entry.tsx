@@ -15,6 +15,7 @@ import { AmountInput } from './components/amount-input';
 import { LeverageSlider } from './components/leverage-slider';
 import { OrderSummary } from './components/order-summary';
 import { AutoCloseSection } from './components/auto-close-section';
+import { CloseAmountSection } from './components/close-amount-section';
 
 /**
  * OrderEntry - Main component for creating perps orders
@@ -25,6 +26,11 @@ import { AutoCloseSection } from './components/auto-close-section';
  * - Configure take profit and stop loss (auto-close)
  * - View order summary (liquidation price, order value)
  *
+ * Supports three modes:
+ * - 'new': Creating a new position (default)
+ * - 'modify': Modifying an existing position (pre-populated values)
+ * - 'close': Closing an existing position (partial or full)
+ *
  * @param props - Component props
  * @param props.asset - Asset symbol to trade
  * @param props.currentPrice - Current asset price in USD
@@ -34,6 +40,8 @@ import { AutoCloseSection } from './components/auto-close-section';
  * @param props.onSubmit - Callback when order is submitted
  * @param props.onFormStateChange - Callback when form state changes
  * @param props.showSubmitButton - Whether to show the internal submit button
+ * @param props.mode - Order mode: 'new', 'modify', or 'close' (defaults to 'new')
+ * @param props.existingPosition - Existing position data for pre-population
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -44,15 +52,37 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   onSubmit,
   onFormStateChange,
   showSubmitButton = true,
+  mode = 'new',
+  existingPosition,
 }) => {
   const t = useI18nContext();
 
-  // Initialize form state
-  const [formState, setFormState] = useState<OrderFormState>(() => ({
-    ...mockOrderFormDefaults,
-    asset,
-    direction: initialDirection,
-  }));
+  // Close percentage state (for 'close' mode, defaults to 100%)
+  const [closePercent, setClosePercent] = useState<number>(100);
+
+  // Initialize form state based on mode
+  const [formState, setFormState] = useState<OrderFormState>(() => {
+    // For modify mode, pre-populate from existing position
+    if (mode === 'modify' && existingPosition) {
+      return {
+        ...mockOrderFormDefaults,
+        asset,
+        direction: initialDirection,
+        leverage: existingPosition.leverage,
+        takeProfitPrice: existingPosition.takeProfitPrice ?? '',
+        stopLossPrice: existingPosition.stopLossPrice ?? '',
+        autoCloseEnabled: Boolean(
+          existingPosition.takeProfitPrice || existingPosition.stopLossPrice,
+        ),
+      };
+    }
+    // For new and close modes, use defaults
+    return {
+      ...mockOrderFormDefaults,
+      asset,
+      direction: initialDirection,
+    };
+  });
 
   // Notify parent of form state changes
   useEffect(() => {
@@ -61,6 +91,25 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
 
   // Calculate derived values
   const calculations = useMemo(() => {
+    // For close mode, calculate based on close amount
+    if (mode === 'close' && existingPosition) {
+      const positionSize = Math.abs(parseFloat(existingPosition.size)) || 0;
+      const closeAmount = (positionSize * closePercent) / 100;
+      const closeValueUsd = closeAmount * currentPrice;
+
+      // Mock fee calculation: 0.05% of close value
+      const estimatedFees = closeValueUsd * 0.0005;
+
+      return {
+        positionSize: closeAmount.toFixed(6),
+        marginRequired: null, // Not relevant for closing
+        liquidationPrice: null, // Not relevant for closing
+        orderValue: `$${closeValueUsd.toFixed(2)}`,
+        estimatedFees: `$${estimatedFees.toFixed(2)}`,
+      };
+    }
+
+    // For new/modify modes, calculate based on form amount
     const amount = parseFloat(formState.amount) || 0;
 
     if (amount === 0) {
@@ -90,7 +139,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
       orderValue: `$${amount.toFixed(2)}`,
       estimatedFees: `$${estimatedFees.toFixed(2)}`,
     };
-  }, [formState.amount, formState.leverage, formState.direction, currentPrice]);
+  }, [formState.amount, formState.leverage, formState.direction, currentPrice, mode, existingPosition, closePercent]);
 
   // Form state update handlers
   const handleAmountChange = useCallback((amount: string) => {
@@ -117,15 +166,32 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     setFormState((prev) => ({ ...prev, stopLossPrice }));
   }, []);
 
+  // Close percent change handler (for close mode)
+  const handleClosePercentChange = useCallback((percent: number) => {
+    setClosePercent(percent);
+  }, []);
+
   // Submit handler
   const handleSubmit = useCallback(() => {
     onSubmit?.(formState);
   }, [formState, onSubmit]);
 
   const isLong = formState.direction === 'long';
-  const submitButtonText = isLong
-    ? t('perpsOpenLong', [asset])
-    : t('perpsOpenShort', [asset]);
+
+  // Determine submit button text based on mode
+  const submitButtonText = useMemo(() => {
+    switch (mode) {
+      case 'modify':
+        return t('perpsModifyPosition');
+      case 'close':
+        return isLong ? t('perpsConfirmCloseLong') : t('perpsConfirmCloseShort');
+      default:
+        return isLong ? t('perpsOpenLong', [asset]) : t('perpsOpenShort', [asset]);
+    }
+  }, [mode, isLong, asset, t]);
+
+  // Get position size for close mode
+  const positionSize = existingPosition?.size ?? '0';
 
   return (
     <Box
@@ -139,26 +205,41 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
         gap={4}
         className="flex-1 overflow-y-auto overflow-x-hidden pb-4"
       >
-        {/* Amount Input Section */}
-        <AmountInput
-          amount={formState.amount}
-          onAmountChange={handleAmountChange}
-          balancePercent={formState.balancePercent}
-          onBalancePercentChange={handleBalancePercentChange}
-          availableBalance={availableBalance}
-          leverage={formState.leverage}
-          asset={asset}
-          currentPrice={currentPrice}
-        />
+        {/* Close Mode: Show CloseAmountSection */}
+        {mode === 'close' && existingPosition && (
+          <CloseAmountSection
+            positionSize={positionSize}
+            closePercent={closePercent}
+            onClosePercentChange={handleClosePercentChange}
+            asset={asset}
+            currentPrice={currentPrice}
+          />
+        )}
 
-        {/* Leverage Slider Section */}
-        <LeverageSlider
-          leverage={formState.leverage}
-          onLeverageChange={handleLeverageChange}
-          maxLeverage={maxLeverage}
-        />
+        {/* New/Modify Modes: Show Amount Input Section */}
+        {mode !== 'close' && (
+          <AmountInput
+            amount={formState.amount}
+            onAmountChange={handleAmountChange}
+            balancePercent={formState.balancePercent}
+            onBalancePercentChange={handleBalancePercentChange}
+            availableBalance={availableBalance}
+            leverage={formState.leverage}
+            asset={asset}
+            currentPrice={currentPrice}
+          />
+        )}
 
-        {/* Order Summary Section */}
+        {/* New/Modify Modes: Show Leverage Slider Section */}
+        {mode !== 'close' && (
+          <LeverageSlider
+            leverage={formState.leverage}
+            onLeverageChange={handleLeverageChange}
+            maxLeverage={maxLeverage}
+          />
+        )}
+
+        {/* Order Summary Section - shown in all modes */}
         <Box
           className="bg-muted rounded-lg"
           paddingLeft={3}
@@ -173,17 +254,19 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           />
         </Box>
 
-        {/* Auto Close (TP/SL) Section */}
-        <AutoCloseSection
-          enabled={formState.autoCloseEnabled}
-          onEnabledChange={handleAutoCloseEnabledChange}
-          takeProfitPrice={formState.takeProfitPrice}
-          onTakeProfitPriceChange={handleTakeProfitPriceChange}
-          stopLossPrice={formState.stopLossPrice}
-          onStopLossPriceChange={handleStopLossPriceChange}
-          direction={formState.direction}
-          currentPrice={currentPrice}
-        />
+        {/* New/Modify Modes: Show Auto Close (TP/SL) Section */}
+        {mode !== 'close' && (
+          <AutoCloseSection
+            enabled={formState.autoCloseEnabled}
+            onEnabledChange={handleAutoCloseEnabledChange}
+            takeProfitPrice={formState.takeProfitPrice}
+            onTakeProfitPriceChange={handleTakeProfitPriceChange}
+            stopLossPrice={formState.stopLossPrice}
+            onStopLossPriceChange={handleStopLossPriceChange}
+            direction={formState.direction}
+            currentPrice={currentPrice}
+          />
+        )}
       </Box>
 
       {/* Submit Button - shown only when showSubmitButton is true */}

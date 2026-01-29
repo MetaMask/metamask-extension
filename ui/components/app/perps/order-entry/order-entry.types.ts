@@ -15,6 +15,31 @@ export type OrderDirection = 'long' | 'short';
 export type TPSLUnit = 'percent' | 'usd';
 
 /**
+ * Order mode for the order entry component
+ * - 'new': Creating a new position
+ * - 'modify': Modifying an existing position (add margin, adjust TP/SL)
+ * - 'close': Closing an existing position (partial or full)
+ */
+export type OrderMode = 'new' | 'modify' | 'close';
+
+/**
+ * Existing position data for pre-populating the order form
+ * Used in 'modify' and 'close' modes
+ */
+export type ExistingPositionData = {
+  /** Position size (signed: positive = long, negative = short) */
+  size: string;
+  /** Current leverage multiplier */
+  leverage: number;
+  /** Entry price for reference display */
+  entryPrice: string;
+  /** Take profit price (if set) */
+  takeProfitPrice?: string;
+  /** Stop loss price (if set) */
+  stopLossPrice?: string;
+};
+
+/**
  * Form state for the order entry component
  * Manages all user inputs for creating a perps order
  */
@@ -78,6 +103,10 @@ export type OrderEntryProps = {
   onFormStateChange?: (formState: OrderFormState) => void;
   /** Whether to show the internal submit button (defaults to true) */
   showSubmitButton?: boolean;
+  /** Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing (defaults to 'new') */
+  mode?: OrderMode;
+  /** Existing position data for pre-populating form in modify/close modes */
+  existingPosition?: ExistingPositionData;
 };
 
 /**
@@ -157,5 +186,22 @@ export type AutoCloseSectionProps = {
   /** Current order direction (affects TP/SL validation) */
   direction: OrderDirection;
   /** Current asset price (for TP/SL calculations) */
+  currentPrice: number;
+};
+
+/**
+ * Props for CloseAmountSection component
+ * Used in 'close' mode to select how much of the position to close
+ */
+export type CloseAmountSectionProps = {
+  /** Total position size (absolute value) */
+  positionSize: string;
+  /** Percentage of position to close (0-100, default 100) */
+  closePercent: number;
+  /** Callback when close percentage changes */
+  onClosePercentChange: (percent: number) => void;
+  /** Asset symbol for display */
+  asset: string;
+  /** Current asset price for USD value calculation */
   currentPrice: number;
 };

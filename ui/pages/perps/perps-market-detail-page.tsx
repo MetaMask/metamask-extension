@@ -52,6 +52,7 @@ import {
   OrderEntry,
   type OrderDirection,
   type OrderFormState,
+  type OrderMode,
   mockOrderFormDefaults,
 } from '../../components/app/perps/order-entry';
 import type { OrderType } from '../../components/app/perps/types';
@@ -126,6 +127,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(
     null,
   );
+  // Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing
+  const [orderMode, setOrderMode] = useState<OrderMode>('new');
 
   // Get available balance from mock account state
   const availableBalance = parseFloat(mockAccountState.availableBalance);
@@ -197,19 +200,43 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Navigation handlers - use history back to return to wherever user came from
   // (perps home page or perps tab)
   const handleBackClick = useCallback(() => {
-    // If in order view, go back to detail view
+    // If in order view, go back to detail view and reset mode
     if (currentView === 'order') {
       setCurrentView('detail');
+      setOrderMode('new'); // Reset mode when leaving order view
       return;
     }
     navigate(-1);
   }, [navigate, currentView]);
 
-  // Handle opening order entry with a specific direction
+  // Handle opening order entry with a specific direction (new order)
   const handleOpenOrder = useCallback((direction: OrderDirection) => {
     setOrderDirection(direction);
+    setOrderMode('new');
     setCurrentView('order');
   }, []);
+
+  // Handle modifying an existing position
+  const handleModifyPosition = useCallback(() => {
+    if (!position) {
+      return;
+    }
+    const isLong = parseFloat(position.size) >= 0;
+    setOrderDirection(isLong ? 'long' : 'short');
+    setOrderMode('modify');
+    setCurrentView('order');
+  }, [position]);
+
+  // Handle closing an existing position
+  const handleClosePosition = useCallback(() => {
+    if (!position) {
+      return;
+    }
+    const isLong = parseFloat(position.size) >= 0;
+    setOrderDirection(isLong ? 'long' : 'short');
+    setOrderMode('close');
+    setCurrentView('order');
+  }, [position]);
 
   // Handle form state changes from OrderEntry
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
@@ -285,11 +312,32 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   const displayName = getDisplayName(market.symbol);
 
-  // Determine submit button text for order mode
+  // Determine submit button text based on order mode
   const isLong = orderDirection === 'long';
-  const submitButtonText = isLong
-    ? t('perpsOpenLong', [displayName])
-    : t('perpsOpenShort', [displayName]);
+  const getSubmitButtonText = () => {
+    switch (orderMode) {
+      case 'modify':
+        return t('perpsModifyPosition');
+      case 'close':
+        return isLong ? t('perpsConfirmCloseLong') : t('perpsConfirmCloseShort');
+      default:
+        return isLong ? t('perpsOpenLong', [displayName]) : t('perpsOpenShort', [displayName]);
+    }
+  };
+  const submitButtonText = getSubmitButtonText();
+
+  // Determine header text based on order mode
+  const getHeaderText = () => {
+    const directionText = isLong ? t('perpsLong') : t('perpsShort');
+    switch (orderMode) {
+      case 'modify':
+        return `${t('perpsModify')} ${directionText} ${displayName}`;
+      case 'close':
+        return `${t('perpsClose')} ${directionText} ${displayName}`;
+      default:
+        return `${directionText} ${displayName}`;
+    }
+  };
 
   return (
     <Box
@@ -325,9 +373,9 @@ const PerpsMarketDetailPage: React.FC = () => {
 
         {/* Header Content - Different for detail vs order view */}
         {currentView === 'order' ? (
-          /* Order View: Show direction + asset name, price + change */
+          /* Order View: Show mode + direction + asset name, price + change */
           <Box flexDirection={BoxFlexDirection.Column}>
-            {/* Direction + Asset */}
+            {/* Mode + Direction + Asset */}
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
@@ -337,8 +385,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   : TextColor.ErrorDefault
               }
             >
-              {orderDirection === 'long' ? t('perpsLong') : t('perpsShort')}{' '}
-              {displayName}
+              {getHeaderText()}
             </Text>
 
             {/* Price and Change Row */}
@@ -531,6 +578,18 @@ const PerpsMarketDetailPage: React.FC = () => {
             initialDirection={orderDirection}
             showSubmitButton={false}
             onFormStateChange={handleFormStateChange}
+            mode={orderMode}
+            existingPosition={
+              position
+                ? {
+                    size: position.size,
+                    leverage: position.leverage.value,
+                    entryPrice: position.entryPrice,
+                    takeProfitPrice: position.takeProfitPrice,
+                    stopLossPrice: position.stopLossPrice,
+                  }
+                : undefined
+            }
           />
         </Box>
       )}
@@ -1065,10 +1124,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             <Button
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
-              onClick={() => {
-                // TODO: Handle modify position
-                console.log('Modify position:', position.coin);
-              }}
+              onClick={handleModifyPosition}
               className="flex-1"
               data-testid="perps-modify-cta-button"
             >
@@ -1079,10 +1135,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
-              onClick={() => {
-                // TODO: Handle close position
-                console.log('Close position:', position.coin);
-              }}
+              onClick={handleClosePosition}
               className={twMerge(
                 'flex-1',
                 parseFloat(position.size) >= 0

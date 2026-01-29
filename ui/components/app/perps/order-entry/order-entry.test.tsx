@@ -21,6 +21,11 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
       perpsLoss: 'Loss',
       perpsOpenLong: `Open Long ${args?.[0] ?? ''}`,
       perpsOpenShort: `Open Short ${args?.[0] ?? ''}`,
+      perpsModifyPosition: 'Modify Position',
+      perpsConfirmCloseLong: 'Close Long',
+      perpsConfirmCloseShort: 'Close Short',
+      perpsPositionSize: 'Position Size',
+      perpsCloseAmount: 'Close Amount',
     };
     return translations[key] || key;
   },
@@ -187,6 +192,196 @@ describe('OrderEntry', () => {
           type: 'market',
         }),
       );
+    });
+  });
+
+  describe('modify mode', () => {
+    const existingPosition = {
+      size: '2.5',
+      leverage: 3,
+      entryPrice: '2850.00',
+      takeProfitPrice: '3200.00',
+      stopLossPrice: '2600.00',
+    };
+
+    it('displays modify button text', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
+        'Modify Position',
+      );
+    });
+
+    it('pre-populates leverage from existing position', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      // Should show 3x leverage (pre-populated from existing position)
+      expect(screen.getByText('3x')).toBeInTheDocument();
+    });
+
+    it('shows amount input in modify mode', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
+    });
+
+    it('shows leverage slider in modify mode', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
+    });
+
+    it('auto-expands auto-close section when TP/SL exists', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="modify"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      // Should show TP/SL inputs because existing position has TP/SL
+      expect(screen.getByTestId('tp-price-input')).toBeInTheDocument();
+      expect(screen.getByTestId('sl-price-input')).toBeInTheDocument();
+    });
+  });
+
+  describe('close mode', () => {
+    const existingPosition = {
+      size: '2.5',
+      leverage: 3,
+      entryPrice: '2850.00',
+    };
+
+    it('displays close button text for long position', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          initialDirection="long"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
+        'Close Long',
+      );
+    });
+
+    it('displays close button text for short position', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          initialDirection="short"
+          existingPosition={{ ...existingPosition, size: '-2.5' }}
+        />,
+      );
+
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
+        'Close Short',
+      );
+    });
+
+    it('shows CloseAmountSection in close mode', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.getByText('Position Size')).toBeInTheDocument();
+      expect(screen.getByText('Close Amount')).toBeInTheDocument();
+      expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
+    });
+
+    it('hides amount input in close mode', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.queryByTestId('amount-input-field')).not.toBeInTheDocument();
+    });
+
+    it('hides leverage slider in close mode', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.queryByTestId('leverage-slider')).not.toBeInTheDocument();
+    });
+
+    it('hides auto-close section in close mode', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
+    });
+
+    it('defaults to 100% close', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.getByText('100%')).toBeInTheDocument();
+    });
+
+    it('shows close percentage preset buttons', () => {
+      render(
+        <OrderEntry
+          {...defaultProps}
+          mode="close"
+          existingPosition={existingPosition}
+        />,
+      );
+
+      expect(screen.getByTestId('close-percent-preset-25')).toBeInTheDocument();
+      expect(screen.getByTestId('close-percent-preset-50')).toBeInTheDocument();
+      expect(screen.getByTestId('close-percent-preset-75')).toBeInTheDocument();
+      expect(screen.getByTestId('close-percent-preset-100')).toBeInTheDocument();
     });
   });
 });

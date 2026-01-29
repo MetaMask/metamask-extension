@@ -13,6 +13,9 @@ export type {
   OrderSummaryProps,
   AutoCloseSectionProps,
   TPSLUnit,
+  OrderMode,
+  ExistingPositionData,
+  CloseAmountSectionProps,
 } from './order-entry.types';
 
 // Subcomponent exports (for advanced usage)
@@ -21,6 +24,7 @@ export { AmountInput } from './components/amount-input';
 export { LeverageSlider } from './components/leverage-slider';
 export { OrderSummary } from './components/order-summary';
 export { AutoCloseSection } from './components/auto-close-section';
+export { CloseAmountSection } from './components/close-amount-section';
 
 // Mock data exports (for development/testing)
 export {

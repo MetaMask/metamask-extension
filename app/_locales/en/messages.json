@@ -5144,8 +5144,20 @@
   "perpsCloseShort": {
     "message": "Close Short"
   },
+  "perpsClose": {
+    "message": "Close"
+  },
+  "perpsCloseAmount": {
+    "message": "Close Amount"
+  },
   "perpsClosedShort": {
     "message": "Closed short"
+  },
+  "perpsConfirmCloseLong": {
+    "message": "Close Long"
+  },
+  "perpsConfirmCloseShort": {
+    "message": "Close Short"
   },
   "perpsContactSupport": {
     "message": "Contact support"
@@ -5256,6 +5268,9 @@
   "perpsModify": {
     "message": "Modify"
   },
+  "perpsModifyPosition": {
+    "message": "Modify Position"
+  },
   "perpsNoMarketsFound": {
     "message": "No markets found"
   },
@@ -5296,6 +5311,9 @@
   },
   "perpsPositions": {
     "message": "Positions"
+  },
+  "perpsPositionSize": {
+    "message": "Position Size"
   },
   "perpsRecentActivity": {
     "message": "Recent Activity"
