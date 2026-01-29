@@ -46,6 +46,7 @@ import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 
 import log from 'loglevel';
+import browser from 'webextension-polyfill';
 import { parseCaipAccountId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -83,11 +84,7 @@ import {
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
-
-const ganacheServer = new Ganache();
-
-const browserPolyfillMock = {
+jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
@@ -99,6 +96,11 @@ const browserPolyfillMock = {
     getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
   },
   storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
+      remove: jest.fn().mockResolvedValue(undefined),
+    },
     session: {
       set: jest.fn(),
     },
@@ -111,7 +113,15 @@ const browserPolyfillMock = {
       addListener: jest.fn(),
     },
   },
-};
+}));
+
+// Use the actual mocked module so all code importing webextension-polyfill
+// shares the same mock instance
+const browserPolyfillMock = jest.mocked(browser);
+
+const { Ganache } = require('../../test/e2e/seeder/ganache');
+
+const ganacheServer = new Ganache();
 
 const mockULIDs = [
   '01JKAF3DSGM3AB87EM9N0K41AJ',
