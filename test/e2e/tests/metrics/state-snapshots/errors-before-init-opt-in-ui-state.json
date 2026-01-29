@@ -23,6 +23,7 @@
     "AppMetadataController": {
       "currentAppVersion": "string",
       "currentMigrationVersion": "number",
+      "firstTimeInfo": "object",
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -314,8 +315,7 @@
       "isBackupAndSyncEnabled": true,
       "isContactSyncingEnabled": true
     },
-    "config": "object",
-    "firstTimeInfo": "object"
+    "config": "object"
   },
-  "meta": { "version": 189 }
+  "meta": { "version": 190 }
 }

@@ -24,6 +24,7 @@
   "AppMetadataController": {
     "currentAppVersion": "string",
     "currentMigrationVersion": "number",
+    "firstTimeInfo": "object",
     "previousAppVersion": "",
     "previousMigrationVersion": 0
   },

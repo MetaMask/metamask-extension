@@ -37,7 +37,11 @@
     },
     "AppMetadataController": {
       "currentAppVersion": "13.17.0",
-      "currentMigrationVersion": 189,
+      "currentMigrationVersion": 190,
+      "firstTimeInfo": {
+        "date": 0,
+        "version": "13.17.0"
+      },
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -2149,6 +2153,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 189
+    "version": 190
   }
 }
