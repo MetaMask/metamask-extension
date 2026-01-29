@@ -379,11 +379,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
-              color={
-                orderDirection === 'long'
-                  ? TextColor.SuccessDefault
-                  : TextColor.ErrorDefault
-              }
+              color={TextColor.TextDefault}
             >
               {getHeaderText()}
             </Text>
