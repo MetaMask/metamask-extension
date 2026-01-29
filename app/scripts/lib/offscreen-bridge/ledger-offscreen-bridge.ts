@@ -45,7 +45,8 @@ export class LedgerOffscreenBridge
         msg.target === OffscreenCommunicationTarget.extension &&
         msg.event === OffscreenCommunicationEvents.ledgerDeviceConnect
       ) {
-        this.isDeviceConnected = true;
+        // Respect the payload value for both connect (true) and disconnect (false)
+        this.isDeviceConnected = Boolean(msg.payload);
       }
     });
 
