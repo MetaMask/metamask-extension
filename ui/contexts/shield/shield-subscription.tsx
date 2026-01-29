@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   PRODUCT_TYPES,
@@ -120,20 +126,20 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   );
 
   /**
-   * Evaluates cohort eligibility at a specific entrypoint.
-   * Follows the flowchart logic for cohort assignment and modal display.
-   *
-   * Shield entry modal will be shown if:
-   * - MetaMask Shield feature is enabled
-   * - Basic functionality is enabled
-   * - Subscription is not active
-   * - User is signed in and unlocked
-   * - User has not shown the shield entry modal before
-   * - User's balance meets the minimum fiat balance threshold
-   * - User meets cohort-specific eligibility criteria
+   * Ref to hold the latest implementation of evaluateCohortEligibility.
+   * This allows the stable callback to access current values without recreating.
    */
-  const evaluateCohortEligibility = useCallback(
-    async (entrypointCohort: string): Promise<void> => {
+  const evaluateCohortEligibilityRef =
+    useRef<(entrypointCohort: string) => Promise<void>>();
+
+  /**
+   * Update the ref with the latest implementation whenever dependencies change.
+   * This ensures the stable callback always has access to current values.
+   */
+  useEffect(() => {
+    evaluateCohortEligibilityRef.current = async (
+      entrypointCohort: string,
+    ): Promise<void> => {
       try {
         if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
           return;
@@ -234,19 +240,41 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       } catch (error) {
         log.warn('[evaluateCohortEligibility] error', error);
       }
+    };
+  }, [
+    dispatch,
+    isMetaMaskShieldFeatureEnabled,
+    isBasicFunctionalityEnabled,
+    isShieldSubscriptionActive,
+    isSignedIn,
+    isUnlocked,
+    hasShieldEntryModalShownOnce,
+    getShieldSubscriptionEligibility,
+    assignToCohort,
+    captureShieldEligibilityCohortEvent,
+  ]);
+
+  /**
+   * Evaluates cohort eligibility at a specific entrypoint.
+   * Follows the flowchart logic for cohort assignment and modal display.
+   *
+   * Shield entry modal will be shown if:
+   * - MetaMask Shield feature is enabled
+   * - Basic functionality is enabled
+   * - Subscription is not active
+   * - User is signed in and unlocked
+   * - User has not shown the shield entry modal before
+   * - User's balance meets the minimum fiat balance threshold
+   * - User meets cohort-specific eligibility criteria
+   *
+   * This callback remains stable across renders using the ref pattern,
+   * preventing unnecessary re-renders of consuming components.
+   */
+  const evaluateCohortEligibility = useCallback(
+    async (entrypointCohort: string): Promise<void> => {
+      await evaluateCohortEligibilityRef.current?.(entrypointCohort);
     },
-    [
-      dispatch,
-      isMetaMaskShieldFeatureEnabled,
-      isBasicFunctionalityEnabled,
-      isShieldSubscriptionActive,
-      isSignedIn,
-      isUnlocked,
-      hasShieldEntryModalShownOnce,
-      getShieldSubscriptionEligibility,
-      assignToCohort,
-      captureShieldEligibilityCohortEvent,
-    ],
+    [], // Empty deps = always stable!
   );
 
   useEffect(() => {
@@ -267,12 +295,17 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     isBasicFunctionalityEnabled,
   ]);
 
+  /**
+   * Memoize the context value to prevent creating a new object reference
+   * on every render, which would cause unnecessary re-renders of consuming components.
+   */
+  const contextValue = useMemo(
+    () => ({ evaluateCohortEligibility }),
+    [evaluateCohortEligibility],
+  );
+
   return (
-    <ShieldSubscriptionContext.Provider
-      value={{
-        evaluateCohortEligibility,
-      }}
-    >
+    <ShieldSubscriptionContext.Provider value={contextValue}>
       {children}
     </ShieldSubscriptionContext.Provider>
   );
