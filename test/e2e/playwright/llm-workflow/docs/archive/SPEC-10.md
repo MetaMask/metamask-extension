@@ -6,7 +6,7 @@ This specification details how to decouple the `llm-workflow` MCP server solutio
 
 ### Goals
 
-1. Create a generic `@metamask/metamask-extension-mcp` package that can live in its own repository
+1. Create a generic `@metamask/metamask-mcp-core` package that can live in its own repository
 2. Provide a thin wrapper in the MetaMask Extension repo that injects extension-specific dependencies
 3. Support both **e2e environment** (current: local Anvil node, fixture server, mocked state) AND **prod-like environment** (real blockchain, no mocks)
 4. Maintain backward compatibility with existing `mm_*` tool names
@@ -277,7 +277,7 @@ metamask-extension-mcp/                 # SEPARATE REPO (generic core)
 │   │   ├── extension-readiness.ts
 │   │   └── retry.ts
 │   └── index.ts                       # Public exports
-├── package.json                       # @metamask/metamask-extension-mcp
+├── package.json                       # @metamask/metamask-mcp-core
 ├── tsconfig.json
 └── tsconfig.build.json
 
@@ -306,7 +306,7 @@ cd /Users/joaotavares/Documents/projects/consensys/Metamask/metamask-extension-m
 yarn build && yalc publish
 
 cd /path/to/metamask-extension
-yalc add @metamask/metamask-extension-mcp
+yalc add @metamask/metamask-mcp-core
 ```
 
 ---
@@ -438,7 +438,7 @@ export function createToolRegistry(context: WorkflowContext): ToolRegistry {
 ```typescript
 // MetaMask Extension - test/e2e/playwright/llm-workflow/server.ts
 
-import { createMCPServer } from '@metamask/metamask-extension-mcp';
+import { createMCPServer } from '@metamask/metamask-mcp-core';
 import { createMetaMaskProvider } from './metamask-provider';
 
 const context = createMetaMaskProvider({
@@ -810,7 +810,7 @@ export class ToolRegistry {
 import {
   createMCPServer,
   ToolRegistry,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
 import {
   createMetaMaskProvider,
   METAMASK_TOOL_ALIASES,
@@ -840,7 +840,7 @@ yalc publish
 
 # In metamask-extension repo
 cd /Users/joaotavares/Documents/projects/consensys/metamask-extension-worktrees/worktree-2
-yalc add @metamask/metamask-extension-mcp
+yalc add @metamask/metamask-mcp-core
 
 # After code changes, push updates
 cd /Users/joaotavares/Documents/projects/consensys/Metamask/metamask-extension-mcp
@@ -854,7 +854,7 @@ yarn build && yalc push
 yarn link
 
 # In metamask-extension repo
-yarn link @metamask/metamask-extension-mcp
+yarn link @metamask/metamask-mcp-core
 ```
 
 ### Phase 3: Prod-Like Environment Support
@@ -975,7 +975,7 @@ export function createLaunchTool(context: WorkflowContext) {
 
 ## Success Criteria
 
-1. **Decoupled Packages**: `@metamask/metamask-extension-mcp` has zero MetaMask-specific imports
+1. **Decoupled Packages**: `@metamask/metamask-mcp-core` has zero MetaMask-specific imports
 2. **Backward Compatibility**: All existing `mm_*` tools work without changes to agent configurations
 3. **Environment Support**: Same server binary supports both e2e and prod modes via configuration
 4. **Capability Isolation**: Tools gracefully handle missing capabilities with clear error messages
@@ -1053,9 +1053,9 @@ npm install -g yalc
 yalc publish
 
 # In metamask-extension repo
-yalc add @metamask/metamask-extension-mcp
+yalc add @metamask/metamask-mcp-core
 # or
-yalc link @metamask/metamask-extension-mcp
+yalc link @metamask/metamask-mcp-core
 
 # After making changes to core, republish
 cd /path/to/metamask-extension-mcp
@@ -1069,7 +1069,7 @@ yalc push  # automatically updates linked consumers
 yarn link
 
 # In metamask-extension repo
-yarn link @metamask/metamask-extension-mcp
+yarn link @metamask/metamask-mcp-core
 ```
 
 #### Task Breakdown
@@ -1167,7 +1167,7 @@ metamask-extension-mcp/
   ],
   "license": "MIT",
   "main": "dist/index.js",
-  "name": "@metamask/metamask-extension-mcp",
+  "name": "@metamask/metamask-mcp-core",
   "peerDependencies": {
     "@playwright/test": "^1.49.0",
     "playwright": "^1.49.0"
@@ -1204,7 +1204,7 @@ yalc publish
 
 # In metamask-extension repo
 cd /Users/joaotavares/Documents/projects/consensys/metamask-extension-worktrees/worktree-2
-yalc add @metamask/metamask-extension-mcp
+yalc add @metamask/metamask-mcp-core
 
 # Add to .gitignore in metamask-extension
 echo ".yalc" >> .gitignore
@@ -1316,7 +1316,7 @@ import type {
   BuildCapability,
   BuildOptions,
   BuildResult,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
 
 export class MetaMaskBuildCapability implements BuildCapability {
   private options: { command: string; outputPath: string; timeout: number };
@@ -1374,7 +1374,7 @@ export class MetaMaskBuildCapability implements BuildCapability {
 // capabilities/chain.ts
 
 import { Anvil } from '../../../seeder/anvil';
-import type { ChainCapability } from '@metamask/metamask-extension-mcp';
+import type { ChainCapability } from '@metamask/metamask-mcp-core';
 
 export class MetaMaskChainCapability implements ChainCapability {
   private anvil: Anvil | undefined;
@@ -1429,7 +1429,7 @@ export class MetaMaskChainCapability implements ChainCapability {
 import {
   createMCPServer,
   WorkflowContext,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
 
 const context: WorkflowContext = {
   browser: new ExampleWalletBrowserCapability({

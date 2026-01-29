@@ -20,12 +20,14 @@ import {
   ErrorCodes,
   generateSessionId,
   knowledgeStore,
-} from '@metamask/metamask-extension-mcp';
+  MockServerCapability,
+} from '@metamask/metamask-mcp-core';
 
 import { MetaMaskExtensionLauncher, launchMetaMask } from '..';
 import type { LauncherLaunchOptions } from '../launcher-types';
 import type { AnvilSeederWrapper } from '../anvil-seeder-wrapper';
 import type { MetaMaskFixtureCapability } from '../capabilities/fixture';
+import type { MetaMaskContractSeedingCapability } from '../capabilities/seeding';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
@@ -80,6 +82,10 @@ export class MetaMaskSessionManager implements ISessionManager {
     return this.workflowContext?.stateSnapshot;
   }
 
+  private getMockServerCapability(): MockServerCapability | undefined {
+    return this.workflowContext?.mockServer;
+  }
+
   getSessionId(): string | undefined {
     return this.activeSession?.state.sessionId;
   }
@@ -100,7 +106,15 @@ export class MetaMaskSessionManager implements ISessionManager {
     if (!this.activeSession) {
       throw new Error('No active session. Call launch() first.');
     }
-    return this.activeSession.launcher.getSeeder();
+
+    const contractSeeding = this.getContractSeedingCapability() as
+      | MetaMaskContractSeedingCapability
+      | undefined;
+    if (!contractSeeding) {
+      throw new Error('ContractSeedingCapability not available.');
+    }
+
+    return contractSeeding.getSeeder();
   }
 
   private isActivePageValid(): boolean {
@@ -179,7 +193,19 @@ export class MetaMaskSessionManager implements ISessionManager {
     if (!this.activeSession) {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
-    return this.activeSession.launcher.getState();
+
+    const stateSnapshot = this.getStateSnapshotCapability();
+    if (!stateSnapshot) {
+      throw new Error('StateSnapshotCapability is not available.');
+    }
+
+    const chainId = this.workflowContext?.config?.defaultChainId ?? 1337;
+    const extensionPage = this.activeSession.launcher.getPage();
+
+    return stateSnapshot.getState(extensionPage, {
+      extensionId: this.activeSession.state.extensionId,
+      chainId,
+    });
   }
 
   setRefMap(map: Map<string, string>): void {
@@ -272,30 +298,62 @@ export class MetaMaskSessionManager implements ISessionManager {
       await fixtureCapability.start(fixtureState);
     }
 
+    const chainCapability = this.getChainCapability();
+    if (chainCapability) {
+      const anvilPort = input.ports?.anvil ?? DEFAULT_ANVIL_PORT;
+      if (chainCapability.setPort) {
+        chainCapability.setPort(anvilPort);
+      }
+      await chainCapability.start();
+    }
+
+    const mockServerCapability = this.getMockServerCapability();
+    if (mockServerCapability) {
+      await mockServerCapability.start();
+    }
+
+    const contractSeedingCapability = this.getContractSeedingCapability();
+    if (contractSeedingCapability) {
+      contractSeedingCapability.initialize();
+
+      if (input.seedContracts?.length) {
+        await contractSeedingCapability.deployContracts(input.seedContracts);
+      }
+    } else if (input.seedContracts?.length) {
+      throw new Error(
+        'seedContracts provided but ContractSeedingCapability is not available.',
+      );
+    }
+
     const launchOptions: LauncherLaunchOptions = {
       stateMode,
       slowMo: input.slowMo ?? 0,
       extensionPath,
-      ports: {
-        anvil: input.ports?.anvil ?? DEFAULT_ANVIL_PORT,
-        fixtureServer:
-          input.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT,
-      },
     };
 
     const launcher = await launchMetaMask(launchOptions);
-    const extensionState = await launcher.getState();
+    const extensionId = launcher.getExtensionId();
+    const stateSnapshot = this.getStateSnapshotCapability();
+    if (!stateSnapshot) {
+      throw new Error('StateSnapshotCapability is not available.');
+    }
+
+    const chainId = this.workflowContext?.config?.defaultChainId ?? 1337;
+    const extensionState = await stateSnapshot.getState(launcher.getPage(), {
+      extensionId,
+      chainId,
+    });
     const startedAt = new Date().toISOString();
 
     this.activeSession = {
       state: {
         sessionId,
-        extensionId: extensionState.extensionId,
+        extensionId,
         startedAt,
         ports: {
-          anvil: launchOptions.ports?.anvil ?? DEFAULT_ANVIL_PORT,
+          anvil: input.ports?.anvil ?? DEFAULT_ANVIL_PORT,
           fixtureServer:
-            launchOptions.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT,
+            input.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT,
         },
         stateMode,
       },
@@ -321,9 +379,9 @@ export class MetaMaskSessionManager implements ISessionManager {
         fixturePreset: input.fixturePreset ?? null,
         extensionPath: input.extensionPath,
         ports: {
-          anvil: launchOptions.ports?.anvil ?? DEFAULT_ANVIL_PORT,
+          anvil: input.ports?.anvil ?? DEFAULT_ANVIL_PORT,
           fixtureServer:
-            launchOptions.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT,
+            input.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT,
         },
       },
     };
@@ -333,7 +391,7 @@ export class MetaMaskSessionManager implements ISessionManager {
 
     return {
       sessionId,
-      extensionId: extensionState.extensionId,
+      extensionId,
       state: extensionState,
     };
   }
@@ -348,6 +406,16 @@ export class MetaMaskSessionManager implements ISessionManager {
     const fixtureCapability = this.getFixtureCapability();
     if (fixtureCapability) {
       await fixtureCapability.stop();
+    }
+
+    const mockServerCapability = this.getMockServerCapability();
+    if (mockServerCapability) {
+      await mockServerCapability.stop();
+    }
+
+    const chainCapability = this.getChainCapability();
+    if (chainCapability) {
+      await chainCapability.stop();
     }
 
     this.activeSession = null;

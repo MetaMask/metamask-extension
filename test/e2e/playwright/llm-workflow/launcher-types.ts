@@ -1,5 +1,4 @@
 import type { Page, BrowserContext } from '@playwright/test';
-import type { Mockttp } from 'mockttp';
 
 export type StateMode = 'default' | 'onboarding' | 'custom';
 
@@ -17,20 +16,9 @@ export type NetworkConfig = {
   };
 };
 
-export type MockServerConfig = {
-  enabled?: boolean;
-  port?: number;
-  testSpecificMock?: (mockServer: Mockttp) => Promise<void>;
-};
-
 export type FixtureData = {
   data: Record<string, unknown>;
   meta?: { version: number };
-};
-
-export type PortsConfig = {
-  anvil?: number;
-  fixtureServer?: number;
 };
 
 export type LaunchOptions = {
@@ -50,9 +38,7 @@ export type LaunchOptions = {
   screenshotDir?: string;
   stateMode?: StateMode;
   network?: NetworkConfig;
-  mockServer?: MockServerConfig;
   fixture?: FixtureData;
-  ports?: PortsConfig;
 };
 
 export type LauncherLaunchOptions = LaunchOptions;

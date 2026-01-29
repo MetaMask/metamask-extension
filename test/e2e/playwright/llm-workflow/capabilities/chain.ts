@@ -1,5 +1,6 @@
-import { fetchWithTimeout, retryUntil } from '@metamask/metamask-extension-mcp';
-import type { ChainCapability } from '@metamask/metamask-extension-mcp';
+/* eslint-disable no-empty-function */
+import { fetchWithTimeout, retryUntil } from '@metamask/metamask-mcp-core';
+import type { ChainCapability } from '@metamask/metamask-mcp-core';
 import { Anvil } from '../../../seeder/anvil';
 
 export type MetaMaskChainCapabilityOptions = {
@@ -30,7 +31,7 @@ export class NoOpChainCapability implements ChainCapability {
 
   private readonly chainId: number;
 
-  private readonly port: number;
+  private port: number;
 
   constructor(options: NoOpChainCapabilityOptions) {
     if (!options.rpcUrl) {
@@ -52,12 +53,16 @@ export class NoOpChainCapability implements ChainCapability {
   isRunning(): boolean {
     return true;
   }
+
+  setPort(port: number): void {
+    this.port = port;
+  }
 }
 
 export class MetaMaskChainCapability implements ChainCapability {
   private anvil: Anvil | undefined;
 
-  private readonly port: number;
+  private port: number;
 
   private readonly chainId: number;
 
@@ -122,6 +127,10 @@ export class MetaMaskChainCapability implements ChainCapability {
 
   getAnvil(): Anvil | undefined {
     return this.anvil;
+  }
+
+  setPort(port: number): void {
+    this.port = port;
   }
 
   private async waitForReady(maxAttempts = 20): Promise<void> {

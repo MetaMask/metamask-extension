@@ -1,8 +1,8 @@
-import { fetchWithTimeout, retryUntil } from '@metamask/metamask-extension-mcp';
+import { fetchWithTimeout, retryUntil } from '@metamask/metamask-mcp-core';
 import type {
   FixtureCapability,
   WalletState,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
 
 import FixtureServerClass from '../../../fixtures/fixture-server';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../../fixtures/default-fixture';

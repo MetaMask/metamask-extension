@@ -5,10 +5,10 @@ import {
   setSessionManager,
   createKnowledgeStore,
   setKnowledgeStore,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
 /* eslint-enable import/extensions */
 
-import type { WorkflowContext } from '@metamask/metamask-extension-mcp';
+import type { WorkflowContext } from '@metamask/metamask-mcp-core';
 import { createMetaMaskE2EContext } from '../capabilities/factory';
 import { metaMaskSessionManager } from './metamask-provider';
 

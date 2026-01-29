@@ -3,7 +3,7 @@ import type {
   StateSnapshotCapability,
   StateSnapshot,
   StateOptions,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
 import {
   getExtensionState,
   detectCurrentScreen,

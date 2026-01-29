@@ -4,6 +4,7 @@ import { MetaMaskFixtureCapability } from './fixture';
 import { MetaMaskChainCapability, NoOpChainCapability } from './chain';
 import { MetaMaskContractSeedingCapability } from './seeding';
 import { MetaMaskStateSnapshotCapability } from './state-snapshot';
+import { MetaMaskMockServerCapability } from './mock-server';
 
 describe('Capability Factory', () => {
   describe('createMetaMaskE2EContext', () => {
@@ -19,6 +20,7 @@ describe('Capability Factory', () => {
       expect(context.stateSnapshot).toBeInstanceOf(
         MetaMaskStateSnapshotCapability,
       );
+      expect(context.mockServer).toBeInstanceOf(MetaMaskMockServerCapability);
     });
 
     it('creates config with E2E environment', () => {
@@ -63,12 +65,6 @@ describe('Capability Factory', () => {
       expect(context.build).toBeDefined();
     });
 
-    it('includes initializeSeeding function', () => {
-      const context = createMetaMaskE2EContext();
-
-      expect(context.initializeSeeding).toBeInstanceOf(Function);
-    });
-
     it('merges custom config with defaults', () => {
       const context = createMetaMaskE2EContext({
         config: {
@@ -98,6 +94,7 @@ describe('Capability Factory', () => {
       expect(context.fixture).toBeUndefined();
       expect(context.chain).toBeUndefined();
       expect(context.contractSeeding).toBeUndefined();
+      expect((context as { mockServer?: unknown }).mockServer).toBeUndefined();
     });
 
     it('creates config with prod environment', () => {

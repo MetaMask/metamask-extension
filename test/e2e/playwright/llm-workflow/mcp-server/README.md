@@ -18,12 +18,12 @@ This server is a thin wrapper that connects the generic MCP core package to Meta
 │  metamask-provider.ts (MetaMaskSessionManager)                   │
 │  - Implements ISessionManager from core package                  │
 │  - Manages browser session lifecycle                             │
-│  - Coordinates capabilities (build, fixture, chain, etc.)        │
+│  - Coordinates capabilities (build, fixture, chain, mock, etc.)  │
 │  - Tracks pages (extension, notification, dapp tabs)             │
 └──────────────────────────────────────────────────────────────────┘
                               │
 ┌──────────────────────────────────────────────────────────────────┐
-│  @metamask/metamask-extension-mcp (core package)                 │
+│  @metamask/metamask-mcp-core (core package)                 │
 │  - MCP server infrastructure                                     │
 │  - Tool definitions (mm_click, mm_type, mm_screenshot, etc.)     │
 │  - Knowledge store for session history                           │
@@ -41,6 +41,11 @@ yarn tsx test/e2e/playwright/llm-workflow/mcp-server/server.ts
 ```
 
 The server communicates over stdio using the MCP protocol.
+
+### Capability Ownership
+
+- **Build/Fixture/Chain/Mock** lifecycles are owned by capabilities and started by the session manager.
+- **Launcher** handles browser/extension startup only.
 
 ## MCP Client Configuration
 

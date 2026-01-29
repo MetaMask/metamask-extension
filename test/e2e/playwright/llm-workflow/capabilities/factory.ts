@@ -3,18 +3,25 @@ import type {
   BaseEnvironmentConfig,
   E2EEnvironmentConfig,
   ProdEnvironmentConfig,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
+import type { Mockttp } from 'mockttp';
 import { MetaMaskBuildCapability } from './build';
 import { MetaMaskFixtureCapability } from './fixture';
 import { MetaMaskChainCapability, NoOpChainCapability } from './chain';
 import { MetaMaskContractSeedingCapability } from './seeding';
 import { MetaMaskStateSnapshotCapability } from './state-snapshot';
+import { MetaMaskMockServerCapability } from './mock-server';
 
 export type CreateMetaMaskContextOptions = {
   config?: Partial<E2EEnvironmentConfig>;
   ports?: {
     anvil?: number;
     fixtureServer?: number;
+  };
+  mockServer?: {
+    enabled?: boolean;
+    port?: number;
+    testSpecificMock?: (mockServer: Mockttp) => Promise<void>;
   };
   buildCommand?: string;
   buildOutputPath?: string;
@@ -43,7 +50,7 @@ const DEFAULT_PROD_CONFIG: ProdEnvironmentConfig = {
 
 export function createMetaMaskE2EContext(
   options: CreateMetaMaskContextOptions = {},
-): WorkflowContext & { initializeSeeding: () => void } {
+): WorkflowContext {
   const config: E2EEnvironmentConfig = {
     ...DEFAULT_E2E_CONFIG,
     ...options.config,
@@ -73,14 +80,20 @@ export function createMetaMaskE2EContext(
     defaultChainId: config.defaultChainId,
   });
 
+  const mockServer = new MetaMaskMockServerCapability({
+    enabled: options.mockServer?.enabled,
+    port: options.mockServer?.port,
+    testSpecificMock: options.mockServer?.testSpecificMock,
+  });
+
   return {
     build,
     fixture,
     chain,
     contractSeeding,
     stateSnapshot,
+    mockServer,
     config,
-    initializeSeeding: () => contractSeeding.initialize(),
   };
 }
 

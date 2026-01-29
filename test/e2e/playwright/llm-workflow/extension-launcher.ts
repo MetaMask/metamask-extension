@@ -3,30 +3,18 @@ import { promises as fs, existsSync } from 'fs';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
 import {
   ConsoleErrorBuffer,
-  fetchWithTimeout,
   resolveExtensionId,
-  retryUntil,
   waitForExtensionUiReady,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
 import type {
   LauncherLaunchOptions,
   ScreenshotOptions,
   ScreenshotResult,
-  ExtensionState,
   LauncherContext,
-  MockServerConfig,
   NetworkConfig,
 } from './launcher-types';
-import { MockServer } from './mock-server';
-import type {
-  AnvilSeederWrapper,
-  SmartContractName,
-} from './anvil-seeder-wrapper';
-import { getExtensionState } from './launcher/state-inspector';
-import { AnvilService } from './launcher/anvil-service';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
-const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_CHAIN_ID = 1337;
 
 type ResolvedOptions = {
@@ -37,10 +25,7 @@ type ResolvedOptions = {
   slowMo: number;
   screenshotDir: string;
   stateMode: 'default' | 'onboarding' | 'custom';
-  mockServer: MockServerConfig | null;
   network: NetworkConfig;
-  anvilPort: number;
-  seedContracts?: SmartContractName[];
 };
 
 export class MetaMaskExtensionLauncher {
@@ -49,12 +34,6 @@ export class MetaMaskExtensionLauncher {
   private extensionPage: Page | undefined;
 
   private extensionId: string | undefined;
-
-  private anvilService: AnvilService | undefined;
-
-  private mockServer: MockServer | undefined;
-
-  private seeder: AnvilSeederWrapper | undefined;
 
   private options: ResolvedOptions;
 
@@ -74,14 +53,10 @@ export class MetaMaskExtensionLauncher {
         options.screenshotDir ??
         path.join(process.cwd(), 'test-artifacts', 'screenshots'),
       stateMode: options.stateMode ?? 'default',
-      mockServer: options.mockServer ?? null,
       network: options.network ?? {
         mode: 'localhost',
         chainId: DEFAULT_CHAIN_ID,
       },
-      anvilPort: options.ports?.anvil ?? DEFAULT_ANVIL_PORT,
-      seedContracts: (options as { seedContracts?: SmartContractName[] })
-        .seedContracts,
     };
     this.userDataDir = '';
 
@@ -144,33 +119,12 @@ export class MetaMaskExtensionLauncher {
     }
   }
 
-  private getAnvilPort(): number {
-    if (
-      this.options.network?.mode === 'custom' &&
-      this.options.network.rpcUrl
-    ) {
-      const parsedPort = parseInt(
-        new URL(this.options.network.rpcUrl).port,
-        10,
-      );
-      return parsedPort || this.options.anvilPort;
-    }
-    return this.options.anvilPort;
-  }
-
-  private getChainId(): number {
-    return this.options.network?.chainId ?? DEFAULT_CHAIN_ID;
-  }
-
   async launch(): Promise<LauncherContext> {
     await this.validateExtensionExists();
 
     await this.ensureDirectories();
 
     try {
-      await this.startAnvil();
-      await this.startMockServer();
-
       this.userDataDir =
         this.options.userDataDir ||
         path.join(process.cwd(), `temp-llm-workflow-${Date.now()}`);
@@ -209,91 +163,6 @@ export class MetaMaskExtensionLauncher {
       await this.cleanup();
       throw error;
     }
-  }
-
-  private async startAnvil(): Promise<void> {
-    this.anvilService = new AnvilService({
-      network: this.options.network,
-      anvilPort: this.options.anvilPort,
-      defaultChainId: DEFAULT_CHAIN_ID,
-      seedContracts: this.options.seedContracts,
-      fetchWithTimeout,
-      log: {
-        info: (message: string) => console.log(message),
-        error: (message: string, error?: unknown) =>
-          console.error(message, error),
-      },
-    });
-
-    await this.anvilService.start();
-    this.seeder = this.anvilService.getSeeder();
-  }
-
-  private async startMockServer(): Promise<void> {
-    if (!this.options.mockServer?.enabled) {
-      return;
-    }
-
-    console.log(
-      'Starting MockServer (EXPERIMENTAL - not wired to browser proxy)...',
-    );
-    this.mockServer = new MockServer({ port: this.options.mockServer.port });
-    await this.mockServer.start();
-    await this.waitForMockServerReady();
-    await this.mockServer.setupDefaultMocks();
-
-    if (this.options.mockServer.testSpecificMock) {
-      await this.options.mockServer.testSpecificMock(
-        this.mockServer.getServer(),
-      );
-    }
-  }
-
-  private async waitForMockServerReady(maxAttempts = 10): Promise<void> {
-    if (!this.mockServer) {
-      return;
-    }
-
-    const port = this.mockServer.getPort();
-
-    // MockServer uses self-signed certificates. We retry until the server responds,
-    // treating cert errors as "server is ready" since they indicate the server is listening.
-    const response = await retryUntil(
-      async () => {
-        try {
-          const result = await fetchWithTimeout(
-            `https://localhost:${port}/`,
-            { method: 'GET' },
-            3000,
-          );
-          // Success: got a response (503 is expected during startup)
-          return result;
-        } catch (e) {
-          const error = e as Error;
-          // Connection refused or timeout - server not ready yet, keep retrying
-          if (
-            (error.cause && String(error.cause).includes('ECONNREFUSED')) ||
-            error.name === 'AbortError'
-          ) {
-            return null;
-          }
-          // Other errors (e.g., self-signed cert rejection) mean server is responding
-          return { ok: true } as Response;
-        }
-      },
-      (result) => result !== null,
-      { attempts: maxAttempts, delayMs: 200 },
-    );
-
-    if (response) {
-      console.log('MockServer is ready');
-      return;
-    }
-
-    throw new Error(
-      `MockServer failed to respond after ${maxAttempts} attempts on port ${port}. ` +
-        `To kill any orphan process: lsof -ti:${port} | xargs kill -9`,
-    );
   }
 
   /**
@@ -425,13 +294,9 @@ export class MetaMaskExtensionLauncher {
     };
   }
 
-  async getState(): Promise<ExtensionState> {
+  getExtensionId(): string {
     this.ensureExtensionInitialized();
-
-    return getExtensionState(this.extensionPage, {
-      extensionId: this.extensionId,
-      chainId: this.getChainId(),
-    });
+    return this.extensionId as string;
   }
 
   private async navigateToExtensionPath(navigationPath: string): Promise<void> {
@@ -462,13 +327,6 @@ export class MetaMaskExtensionLauncher {
       throw new Error('Browser context not initialized');
     }
     return this.context;
-  }
-
-  getSeeder(): AnvilSeederWrapper {
-    if (!this.seeder) {
-      throw new Error('Seeder not initialized. Ensure Anvil has started.');
-    }
-    return this.seeder;
   }
 
   async getAllExtensionPages(): Promise<Page[]> {
@@ -543,8 +401,6 @@ export class MetaMaskExtensionLauncher {
   }
 
   async cleanup(): Promise<void> {
-    const errors: string[] = [];
-
     if (this.context) {
       try {
         await this.context.close();
@@ -552,47 +408,6 @@ export class MetaMaskExtensionLauncher {
         console.warn('Failed to close browser context:', e);
       }
       this.context = undefined;
-    }
-
-    if (this.mockServer) {
-      const port = this.mockServer.getPort();
-      try {
-        await this.mockServer.stop();
-      } catch (e) {
-        const msg = `Failed to stop MockServer on port ${port}. Kill manually: lsof -ti:${port} | xargs kill -9`;
-        console.error(msg);
-        errors.push(msg);
-      }
-      this.mockServer = undefined;
-    }
-
-    if (this.seeder) {
-      this.seeder.clearRegistry();
-      this.seeder = undefined;
-    }
-
-    const anvilPort = this.getAnvilPort();
-    if (this.anvilService) {
-      try {
-        await this.anvilService.stop();
-      } catch (e) {
-        const msg = `Failed to stop Anvil on port ${anvilPort}. Kill manually: lsof -ti:${anvilPort} | xargs kill -9`;
-        console.error(msg);
-        errors.push(msg);
-      }
-      this.anvilService = undefined;
-    }
-
-    if (errors.length > 0) {
-      const mockServerPort = this.options.mockServer?.port ?? 8000;
-      const allPorts = [anvilPort, mockServerPort].join(',');
-      console.error(
-        '\n=== CLEANUP ERRORS ===\n' +
-          'Some services failed to stop. This may cause port conflicts on next run.\n' +
-          'To kill all potentially orphaned processes:\n' +
-          `  lsof -ti:${allPorts} | xargs kill -9\n` +
-          '======================\n',
-      );
     }
 
     if (this.userDataDir && !this.options.userDataDir) {

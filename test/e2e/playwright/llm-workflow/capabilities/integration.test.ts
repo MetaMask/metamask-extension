@@ -3,9 +3,9 @@ import {
   getToolHandler,
   hasToolHandler,
   setSessionManager,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
 /* eslint-enable import/extensions */
-import type { WorkflowContext } from '@metamask/metamask-extension-mcp';
+import type { WorkflowContext } from '@metamask/metamask-mcp-core';
 import { metaMaskSessionManager as sessionManager } from '../mcp-server/metamask-provider';
 import { createMetaMaskE2EContext, createMetaMaskProdContext } from './factory';
 
@@ -27,6 +27,7 @@ describe('Capability Integration', () => {
       expect(context.chain).toBeDefined();
       expect(context.contractSeeding).toBeDefined();
       expect(context.stateSnapshot).toBeDefined();
+      expect(context.mockServer).toBeDefined();
       expect(context.config).toBeDefined();
     });
 

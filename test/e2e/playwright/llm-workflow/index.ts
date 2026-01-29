@@ -28,8 +28,6 @@ export type {
   StateMode,
   NetworkMode,
   NetworkConfig,
-  MockServerConfig,
   FixtureData,
   ScreenName,
-  PortsConfig,
 } from './launcher-types';

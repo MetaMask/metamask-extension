@@ -3,7 +3,7 @@ import type {
   ContractDeployment,
   ContractInfo,
   DeployOptions,
-} from '@metamask/metamask-extension-mcp';
+} from '@metamask/metamask-mcp-core';
 import {
   AnvilSeederWrapper,
   type SmartContractName,

@@ -18,6 +18,8 @@ export type { MetaMaskContractSeedingCapabilityOptions } from './seeding';
 
 export { MetaMaskStateSnapshotCapability } from './state-snapshot';
 export type { MetaMaskStateSnapshotCapabilityOptions } from './state-snapshot';
+export { MetaMaskMockServerCapability } from './mock-server';
+export type { MetaMaskMockServerCapabilityOptions } from './mock-server';
 
 export { createMetaMaskE2EContext, createMetaMaskProdContext } from './factory';
 export type {
