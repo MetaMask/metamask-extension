@@ -6,6 +6,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import {
+  CANCEL_TYPES,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -71,6 +72,7 @@ const MOCK_ACTIVE_SHIELD_SUBSCRIPTION: Subscription = {
   currentPeriodStart: new Date().toISOString(),
   currentPeriodEnd: new Date(Date.now() + 30 * DAY).toISOString(),
   isEligibleForSupport: true,
+  cancelType: CANCEL_TYPES.ALLOWED_AT_PERIOD_END,
 };
 
 const getRedirectUrlSpy = jest.fn().mockReturnValue(MOCK_REDIRECT_URI);
@@ -300,6 +302,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       isTrialRequested: false,
       recurringInterval: RECURRING_INTERVALS.month,
       successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
     });
 
     expect(mockGetSubscriptions).toHaveBeenCalled();
@@ -343,6 +346,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       isTrialRequested: false,
       recurringInterval: RECURRING_INTERVALS.month,
       successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
       rewardAccountId: 'eip155:0:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     });
 
@@ -373,6 +377,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       isTrialRequested: false,
       recurringInterval: RECURRING_INTERVALS.month,
       successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
       rewardSubscriptionId: undefined,
     });
 

@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
+  CANCEL_TYPES,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -56,6 +57,7 @@ describe('Manage Shield Plan Page', () => {
             },
           },
           isEligibleForSupport: true,
+          cancelType: CANCEL_TYPES.ALLOWED_AT_PERIOD_END,
         } satisfies Subscription,
       ],
     },
