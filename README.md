@@ -267,6 +267,11 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [How to add new confirmations](./docs/confirmations.md)
 - [Browser support guidelines](./docs/browser-support.md)
 
+## FAQ
+
+See [docs/FAQ.md](docs/FAQ.md) for answers to common questions.
+
+
 ## Dapp Developer Resources
 
 - [Extend MetaMask's features w/ MetaMask Snaps.](https://docs.metamask.io/snaps/)
