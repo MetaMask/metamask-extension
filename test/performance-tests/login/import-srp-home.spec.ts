@@ -1,0 +1,106 @@
+import { Mockttp } from 'mockttp';
+import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
+import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
+import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
+import { withFixtures } from '../../e2e/helpers';
+import HomePage from '../../e2e/page-objects/pages/home/homepage';
+import { Driver } from '../../e2e/webdriver/driver';
+import {
+  setupPerformanceReporting,
+  performanceTracker,
+  TimerHelper,
+} from '../utils/testSetup';
+import LoginPage from '../../e2e/page-objects/pages/login-page';
+import HeaderNavbar from '../../e2e/page-objects/pages/header-navbar';
+import AccountListPage from '../../e2e/page-objects/pages/account-list-page';
+import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
+
+// SRP for import testing - must be set via environment variable
+const SECOND_SRP = process.env.TEST_SRP_2;
+
+describe('Import SRP Home', function () {
+  setupPerformanceReporting();
+
+  it('imports an existing wallet from home interface', async function () {
+    if (!process.env.INFURA_PROJECT_ID) {
+      throw new Error(
+        'Running this E2E test requires a valid process.env.INFURA_PROJECT_ID',
+      );
+    }
+
+    if (!SECOND_SRP) {
+      throw new Error(
+        'Running this E2E test requires a valid process.env.TEST_SRP_2',
+      );
+    }
+
+    await withFixtures(
+      {
+        title: this.test?.fullTitle(),
+        fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
+          .withEnabledNetworks(ALL_POPULAR_NETWORKS)
+          .build(),
+        manifestFlags: {
+          testing: {
+            disableSync: true,
+            infuraProjectId: process.env.INFURA_PROJECT_ID,
+          },
+        },
+        disableServerMochaToBackground: true,
+        extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (server: Mockttp) => {
+          return mockPowerUserPrices(server);
+        },
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const timerLogin = new TimerHelper(
+          'Time to login and reach home page',
+          10000,
+        );
+        const timerOpenAccountMenu = new TimerHelper(
+          'Time to open account menu after login',
+          3000,
+        );
+        const timerHomeAfterImport = new TimerHelper(
+          'Time to return to home page after import with new wallet visible',
+          30000,
+        );
+
+        // Measure: Login flow
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await timerLogin.measure(async () => {
+          await loginPage.loginToHomepage();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+        });
+        performanceTracker.addTimer(timerLogin);
+
+        // Measure: Open account menu
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+        await timerOpenAccountMenu.measure(async () => {
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.checkPageIsLoaded();
+        });
+        performanceTracker.addTimer(timerOpenAccountMenu);
+
+        // Measure: Import SRP and return to home
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.startImportSecretPhrase(SECOND_SRP);
+        await timerHomeAfterImport.measure(async () => {
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          const assetListPage = new AssetListPage(driver);
+          await assetListPage.checkTokenListIsDisplayed();
+          await assetListPage.checkConversionRateDisplayed();
+          await assetListPage.checkTokenExistsInList('Ethereum');
+          await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
+        });
+        performanceTracker.addTimer(timerHomeAfterImport);
+      },
+    );
+  });
+});
