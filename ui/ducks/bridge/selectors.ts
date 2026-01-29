@@ -11,7 +11,6 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
-  selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteWarning,
   isCrossChain,
@@ -655,8 +654,6 @@ export const getValidationErrors = createDeepEqualSelector(
     _getValidatedSrcAmount,
     getFromToken,
     getFromAmount,
-    ({ metamask }: BridgeAppState) =>
-      selectMinimumBalanceForRentExemptionInSOL(metamask),
     getQuoteRequest,
     getTxAlerts,
     _getFromNativeBalance,
@@ -668,7 +665,6 @@ export const getValidationErrors = createDeepEqualSelector(
     validatedSrcAmount,
     fromToken,
     fromTokenInputValue,
-    minimumBalanceForRentExemptionInSOL,
     quoteRequest,
     txAlert,
     nativeBalance,
@@ -678,13 +674,6 @@ export const getValidationErrors = createDeepEqualSelector(
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
     const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
-
-    const srcChainId =
-      quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    const minimumBalanceToUse =
-      srcChainId && isSolanaChainId(srcChainId)
-        ? minimumBalanceForRentExemptionInSOL
-        : '0';
 
     return {
       isTxAlertPresent: Boolean(txAlert),
@@ -704,9 +693,7 @@ export const getValidationErrors = createDeepEqualSelector(
           fromToken &&
           !isGasless &&
           (isNativeAddress(fromToken.assetId)
-            ? new BigNumber(nativeBalance)
-                .sub(minimumBalanceToUse)
-                .lte(validatedSrcAmount)
+            ? new BigNumber(nativeBalance).lte(validatedSrcAmount)
             : new BigNumber(nativeBalance).lte(0)),
       ),
       // Shown after fetching quotes
@@ -720,7 +707,6 @@ export const getValidationErrors = createDeepEqualSelector(
             ? new BigNumber(nativeBalance)
                 .sub(activeQuote.totalNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
-                .sub(minimumBalanceToUse)
                 .lte(0)
             : new BigNumber(nativeBalance).lte(
                 activeQuote.totalNetworkFee.amount,
