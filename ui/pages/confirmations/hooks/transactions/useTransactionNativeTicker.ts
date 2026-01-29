@@ -5,9 +5,10 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
 
 export const useTransactionNativeTicker = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId } = currentConfirmation;
-  const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
-    chainId
-  ];
+  const chainId = currentConfirmation?.chainId;
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const networkConfiguration = chainId
+    ? networkConfigurations?.[chainId]
+    : undefined;
   return networkConfiguration?.nativeCurrency;
 };
