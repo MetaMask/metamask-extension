@@ -105,6 +105,8 @@ describe('Capability Integration', () => {
         'mm_get_contract_address',
         'mm_list_contracts',
         'mm_run_steps',
+        'mm_set_context',
+        'mm_get_context',
       ];
 
       for (const toolName of expectedTools) {

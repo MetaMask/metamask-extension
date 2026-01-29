@@ -235,4 +235,86 @@ describe('Capability Factory', () => {
       });
     });
   });
+
+  describe('MetaMaskSessionManager context switching', () => {
+    let sessionManager: typeof import('../mcp-server/metamask-provider').metaMaskSessionManager;
+
+    beforeEach(() => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+      sessionManager =
+        require('../mcp-server/metamask-provider').metaMaskSessionManager;
+      sessionManager.setWorkflowContext(
+        createMetaMaskE2EContext() as import('@metamask/metamask-mcp-core').WorkflowContext,
+      );
+    });
+
+    afterEach(() => {
+      sessionManager.setWorkflowContext(
+        undefined as unknown as import('@metamask/metamask-mcp-core').WorkflowContext,
+      );
+    });
+
+    describe('setContext', () => {
+      it('switches from e2e to prod context successfully', () => {
+        expect(sessionManager.getEnvironmentMode()).toBe('e2e');
+        sessionManager.setContext('prod');
+        expect(sessionManager.getEnvironmentMode()).toBe('prod');
+      });
+
+      it('is no-op when switching to same context', () => {
+        sessionManager.setContext('e2e');
+        expect(sessionManager.getEnvironmentMode()).toBe('e2e');
+      });
+
+      it('throws MM_CONTEXT_SWITCH_BLOCKED when session is active', () => {
+        const hasActiveSessionSpy = jest
+          .spyOn(sessionManager, 'hasActiveSession')
+          .mockReturnValue(true);
+        const getSessionIdSpy = jest
+          .spyOn(sessionManager, 'getSessionId')
+          .mockReturnValue('test-session-123');
+
+        expect(() => sessionManager.setContext('prod')).toThrow(
+          'MM_CONTEXT_SWITCH_BLOCKED',
+        );
+
+        hasActiveSessionSpy.mockRestore();
+        getSessionIdSpy.mockRestore();
+      });
+
+      it('creates new context instance on switch', () => {
+        const originalContext = sessionManager.getWorkflowContext();
+        sessionManager.setContext('prod');
+        sessionManager.setContext('e2e');
+        const newContext = sessionManager.getWorkflowContext();
+        expect(newContext).not.toBe(originalContext);
+      });
+    });
+
+    describe('getContextInfo', () => {
+      it('returns correct info for e2e context', () => {
+        const info = sessionManager.getContextInfo();
+        expect(info.currentContext).toBe('e2e');
+        expect(info.capabilities.available).toContain('build');
+      });
+
+      it('returns canSwitchContext=false when session active', () => {
+        const spy = jest
+          .spyOn(sessionManager, 'hasActiveSession')
+          .mockReturnValue(true);
+        const info = sessionManager.getContextInfo();
+        expect(info.canSwitchContext).toBe(false);
+        spy.mockRestore();
+      });
+
+      it('returns canSwitchContext=true when no session', () => {
+        const spy = jest
+          .spyOn(sessionManager, 'hasActiveSession')
+          .mockReturnValue(false);
+        const info = sessionManager.getContextInfo();
+        expect(info.canSwitchContext).toBe(true);
+        spy.mockRestore();
+      });
+    });
+  });
 });
