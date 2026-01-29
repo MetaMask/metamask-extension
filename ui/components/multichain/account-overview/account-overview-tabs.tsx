@@ -43,7 +43,7 @@ import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
 // eslint-disable-next-line import/extensions
-const NftsTab = lazy(() => import('../../app/assets/nfts/nfts-tab.js'));
+const NftsTab = lazy(() => import('../../app/assets/nfts/nfts-tab'));
 // eslint-disable-next-line import/extensions
 const DeFiTab = lazy(() => import('../../app/assets/defi-list/defi-tab.js'));
 // eslint-disable-next-line import/extensions
