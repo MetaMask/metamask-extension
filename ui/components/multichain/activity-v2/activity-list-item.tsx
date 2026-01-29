@@ -17,23 +17,22 @@ import {
   getSelectedAddress,
 } from '../../../selectors/selectors';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainIdDecimal } from '../../../../shared/modules/selectors/networks';
 import {
   extractCategoryAndAction,
   extractAmountAndSymbol,
   calculateTransactionFiatAmount as calculateFiatAmount,
   extractChainDisplayInfo as extractChainInfo,
 } from '../../../helpers/transaction-mappers';
-import type { V1TransactionByHashResponse } from '../../../helpers/types';
+import type { TransactionForDisplay } from '../../../helpers/types';
+import { PendingTransactionActions } from './pending-transaction-actions';
 
 type Props = {
-  transaction: V1TransactionByHashResponse;
+  transaction: TransactionForDisplay;
 };
 
 export const ActivityListItem = ({ transaction }: Props) => {
-  const { chainId, isError } = transaction;
   const { formatToken, formatCurrencyWithMinThreshold } = useFormatters();
-
   const selectedAddress = useSelector(getSelectedAddress)?.toLowerCase();
   const currentCurrency = useSelector(getCurrentCurrency);
   const currencyRates = useSelector(getCurrencyRates);
@@ -41,9 +40,12 @@ export const ActivityListItem = ({ transaction }: Props) => {
     string,
     Record<string, { price: number }>
   >;
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  ) as Record<string, { nativeCurrency: string }>;
+  const networkConfigsByChainIdDecimal = useSelector(
+    getNetworkConfigurationsByChainIdDecimal,
+  );
+
+  const { chainId, isError, pendingTransactionMeta } = transaction;
+  const isPending = Boolean(pendingTransactionMeta);
 
   // Determine transaction category and action
   const { category, action } = extractCategoryAndAction(
@@ -55,7 +57,7 @@ export const ActivityListItem = ({ transaction }: Props) => {
   const { amount, symbol } = extractAmountAndSymbol(
     transaction,
     selectedAddress,
-    networkConfigurationsByChainId,
+    networkConfigsByChainIdDecimal,
   );
 
   // Calculate fiat amount
@@ -64,10 +66,25 @@ export const ActivityListItem = ({ transaction }: Props) => {
     amount,
     marketData,
     currencyRates,
-    networkConfigurationsByChainId,
+    networkConfigsByChainIdDecimal,
   );
 
   const { chainImageUrl, chainName } = extractChainInfo(chainId);
+
+  // Determine display status
+  let displayStatus = 'Confirmed';
+  let statusColor = 'text-success-default';
+  let transactionStatus = TransactionStatus.confirmed;
+
+  if (isPending) {
+    displayStatus = 'Pending';
+    statusColor = 'text-warning-default';
+    transactionStatus = TransactionStatus.submitted;
+  } else if (isError) {
+    displayStatus = 'Failed';
+    statusColor = 'text-error-default';
+    transactionStatus = TransactionStatus.failed;
+  }
 
   return (
     <Box className="px-4 py-3 bg-background-default border-b border-border-muted">
@@ -83,12 +100,7 @@ export const ActivityListItem = ({ transaction }: Props) => {
               />
             }
           >
-            <TransactionIcon
-              category={category}
-              status={
-                isError ? TransactionStatus.failed : TransactionStatus.confirmed
-              }
-            />
+            <TransactionIcon category={category} status={transactionStatus} />
           </BadgeWrapper>
         </div>
 
@@ -96,13 +108,8 @@ export const ActivityListItem = ({ transaction }: Props) => {
         <div className="flex-1 min-w-0">
           <Text className="font-medium truncate ">{action}</Text>
           <div className="flex gap-2 items-center">
-            <Text
-              variant={TextVariant.BodySm}
-              className={
-                isError ? 'text-error-default' : 'text-success-default'
-              }
-            >
-              {isError ? 'Failed' : 'Confirmed'}
+            <Text variant={TextVariant.BodySm} className={statusColor}>
+              {displayStatus}
             </Text>
           </div>
         </div>
@@ -122,6 +129,14 @@ export const ActivityListItem = ({ transaction }: Props) => {
           )}
         </div>
       </div>
+
+      {/* Pending transaction actions (speed up / cancel) */}
+      {pendingTransactionMeta && (
+        <PendingTransactionActions
+          transaction={pendingTransactionMeta}
+          isEarliestNonce={true}
+        />
+      )}
     </Box>
   );
 };

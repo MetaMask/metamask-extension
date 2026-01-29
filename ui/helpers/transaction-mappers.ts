@@ -3,20 +3,16 @@ import {
   NATIVE_TOKEN_ADDRESS,
 } from '../../shared/constants/transaction';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
+  CHAIN_ID_DECIMAL_TO_IMAGE,
+  CHAIN_ID_DECIMAL_TO_NAME,
 } from '../../shared/constants/network';
 import type { V1TransactionByHashResponse } from './types';
 
 // Consider moving these transformations server side
 
 export function extractChainDisplayInfo(chainId: number) {
-  // Convert decimal chainId to hex format for lookup
-  const chainIdHex = `0x${chainId.toString(16)}`;
-  const chainImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainIdHex];
-  const chainName =
-    NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ||
-    'Ethereum';
+  const chainImageUrl = CHAIN_ID_DECIMAL_TO_IMAGE[chainId];
+  const chainName = CHAIN_ID_DECIMAL_TO_NAME[chainId] || 'Ethereum';
 
   return {
     chainImageUrl,
@@ -80,7 +76,7 @@ export function extractCategoryAndAction(
 export function extractAmountAndSymbol(
   transaction: V1TransactionByHashResponse,
   selectedAddress: string | undefined,
-  networkConfigurationsByChainId: Record<string, { nativeCurrency: string }>,
+  networksByDecimalChainId: Record<number, { nativeCurrency: string }>,
 ) {
   const { value, valueTransfers, from, chainId } = transaction;
   const isSend = from?.toLowerCase() === selectedAddress;
@@ -102,9 +98,8 @@ export function extractAmountAndSymbol(
 
   // Native currency
   if (value && value !== '0') {
-    const chainIdHex = `0x${chainId.toString(16)}`;
     const nativeCurrencySymbol =
-      networkConfigurationsByChainId?.[chainIdHex]?.nativeCurrency || 'ETH';
+      networksByDecimalChainId[chainId]?.nativeCurrency || 'ETH';
     const ethValue = parseFloat(value) / 1e18;
     return {
       amount: isSend ? -ethValue : ethValue,
@@ -120,10 +115,19 @@ export function calculateTransactionFiatAmount(
   amount: number,
   marketData: Record<string, Record<string, { price: number }>>,
   currencyRates: Record<string, { conversionRate: number }>,
-  networkConfigurationsByChainId: Record<string, { nativeCurrency: string }>,
+  networksByDecimalChainId: Record<number, { nativeCurrency: string }>,
 ): number | null {
+  // Convert marketData to use decimal chainId
+  const marketDataByDecimal: Record<
+    number,
+    Record<string, { price: number }>
+  > = {};
+
+  for (const [hexChainId, data] of Object.entries(marketData)) {
+    marketDataByDecimal[parseInt(hexChainId, 16)] = data;
+  }
+
   const { value, valueTransfers, chainId } = transaction;
-  const chainIdHex = `0x${chainId.toString(16)}`;
 
   // Get token address for price lookup
   let tokenAddress;
@@ -141,7 +145,7 @@ export function calculateTransactionFiatAmount(
     return null;
   }
 
-  const chainMarketData = marketData?.[chainIdHex];
+  const chainMarketData = marketDataByDecimal[chainId];
 
   if (!chainMarketData) {
     return null;
@@ -159,8 +163,7 @@ export function calculateTransactionFiatAmount(
   const tokenPrice = chainMarketData[marketDataKey]?.price;
 
   // Get native currency conversion rate to USD
-  const nativeCurrency =
-    networkConfigurationsByChainId?.[chainIdHex]?.nativeCurrency;
+  const nativeCurrency = networksByDecimalChainId[chainId]?.nativeCurrency;
   const conversionRate = currencyRates?.[nativeCurrency]?.conversionRate;
 
   if (tokenPrice && conversionRate) {

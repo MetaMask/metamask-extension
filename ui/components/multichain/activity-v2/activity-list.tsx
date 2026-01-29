@@ -6,11 +6,13 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import { getSelectedInternalAccount } from '../../../selectors';
+import { getPendingTransactionsAsApiShape } from '../../../selectors/activity';
 import { useActivityQuery } from '../../../hooks/useActivityQuery';
 import {
   groupTransactionsByDate,
   flattenGroupedTransactions,
 } from '../../../helpers/transaction-filtering-logic';
+import { mergeActivityTransactions } from '../../../helpers/activity-adapters';
 import { FlattenedItem } from '../../../helpers/types';
 import { ActivityListItem } from './activity-list-item';
 
@@ -22,19 +24,29 @@ export const ActivityList = () => {
   const scrollContainerRef = useScrollContainer();
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
+  // Get pending transactions already transformed to API shape
+  const pendingTransactions = useSelector(getPendingTransactionsAsApiShape);
+
   // Fetch transactions using React Query
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useActivityQuery();
 
-  // Flatten pages into a single array for virtualization
+  // Merge pending and confirmed transactions, then flatten for virtualization
   const flattenedItems: FlattenedItem[] = useMemo(() => {
     if (!data?.pages) {
       return [];
     }
-    const allTransactions = data.pages.flatMap((page) => page.data ?? []);
+    const apiTransactions = data.pages.flatMap((page) => page.data ?? []);
+
+    // Merge pending transactions with API transactions
+    const allTransactions = mergeActivityTransactions(
+      pendingTransactions,
+      apiTransactions,
+    );
+
     const grouped = groupTransactionsByDate(allTransactions);
     return flattenGroupedTransactions(grouped);
-  }, [data]);
+  }, [data, pendingTransactions]);
 
   const virtualizer = useVirtualizer({
     count: flattenedItems.length,

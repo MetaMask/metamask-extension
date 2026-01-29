@@ -1,7 +1,9 @@
+import type { TransactionMeta } from '@metamask/transaction-controller';
+
 export type V1TransactionByHashResponse = {
   hash: string;
   timestamp: string;
-  chainId: number;
+  chainId: number; // API returns decimal number
   blockNumber: number;
   blockHash: string;
   gas: number;
@@ -36,6 +38,14 @@ export type V1TransactionByHashResponse = {
   transactionProtocol?: string;
 };
 
+/**
+ * Extended type for pending transactions that have been transformed to API shape
+ * Includes reference to original TransactionMeta for actions (speed up/cancel)
+ */
+export type TransactionForDisplay = V1TransactionByHashResponse & {
+  pendingTransactionMeta?: TransactionMeta;
+};
+
 export type V4MultiAccountTransactionsResponse = {
   unprocessedNetworks: string[];
   pageInfo: {
@@ -49,9 +59,9 @@ export type V4MultiAccountTransactionsResponse = {
 export type DateGroupedTransactions = {
   date: string;
   dateMillis: number;
-  transactions: V1TransactionByHashResponse[];
+  transactions: TransactionForDisplay[];
 };
 
 export type FlattenedItem =
   | { type: 'date-header'; date: string; dateMillis: number }
-  | { type: 'transaction'; data: V1TransactionByHashResponse; id: string };
+  | { type: 'transaction'; data: TransactionForDisplay; id: string };

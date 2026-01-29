@@ -2,14 +2,12 @@ import type { InfiniteData } from 'react-query';
 import type {
   DateGroupedTransactions,
   FlattenedItem,
-  V1TransactionByHashResponse,
+  TransactionForDisplay,
   V4MultiAccountTransactionsResponse,
 } from './types';
 import { formatDateWithYearContext } from './utils/util';
 
-export function groupTransactionsByDate(
-  transactions: V1TransactionByHashResponse[],
-) {
+export function groupTransactionsByDate(transactions: TransactionForDisplay[]) {
   const groupedMap = new Map<string, DateGroupedTransactions>();
 
   transactions.forEach((transaction) => {

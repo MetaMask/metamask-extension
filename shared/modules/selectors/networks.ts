@@ -68,6 +68,24 @@ export const getNetworkConfigurationsByChainId = (
   state: NetworkConfigurationsByChainIdState,
 ) => state.metamask.networkConfigurationsByChainId;
 
+// Decimal chainId version for API responses that use decimal numbers
+export const getNetworkConfigurationsByChainIdDecimal = createSelector(
+  getNetworkConfigurationsByChainId,
+  (
+    networkConfigurationsByChainId,
+  ): Record<number, { nativeCurrency: string }> => {
+    const result: Record<number, { nativeCurrency: string }> = {};
+    for (const [hexChainId, config] of Object.entries(
+      networkConfigurationsByChainId,
+    )) {
+      result[parseInt(hexChainId, 16)] = {
+        nativeCurrency: config.nativeCurrency,
+      };
+    }
+    return result;
+  },
+);
+
 export const selectDefaultNetworkClientIdsByChainId = createSelector(
   getNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
