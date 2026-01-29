@@ -112,7 +112,7 @@ export class TestDappTron {
   /**
    * Find the header connected state.
    */
-  async findHeaderConnectedState () {
+  async findHeaderConnectedState() {
     await this.driver.findElement(this.headerConnectionStateSelector);
   }
 
@@ -129,18 +129,16 @@ export class TestDappTron {
    * Connect to the tron test dapp.
    */
   async connect() {
-    await this.driver.clickElement(this.connectButtonSelector)
+    await this.driver.clickElement(this.connectButtonSelector);
   }
-  
+
   /**
    * Disconnect from the tron test dapp.
    */
   async disconnect() {
     await this.driver.clickElement(this.disconnectButtonSelector);
 
-    await this.driver.clickElement(
-      this.disconnectButtonDropdownItemSelector,
-    );
+    await this.driver.clickElement(this.disconnectButtonDropdownItemSelector);
   }
 
   /**
@@ -148,7 +146,7 @@ export class TestDappTron {
    *
    * @param account - The account to find.
    */
-  async findConnectedAccount(account: string){
+  async findConnectedAccount(account: string) {
     await this.driver.findElement({
       css: this.connectedAccountSelectorTestId,
       text: account,
@@ -161,7 +159,10 @@ export class TestDappTron {
    * @param message - The message to sign.
    */
   async setMessage(message: string) {
-    await this.driver.fill({ testId: dataTestIds.testPage.signMessage.message }, message)
+    await this.driver.fill(
+      { testId: dataTestIds.testPage.signMessage.message },
+      message,
+    );
   }
 
   /**
@@ -170,7 +171,7 @@ export class TestDappTron {
   async signMessage() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.signMessage.signMessage,
-    })
+    });
   }
 
   /**
@@ -182,9 +183,8 @@ export class TestDappTron {
     await this.driver.findElement({
       css: this.signedMessageSelectorTestId,
       text: signedMessage,
-    })
+    });
   }
-
 
   /**
    * Set the TRX recipient address.
@@ -192,7 +192,10 @@ export class TestDappTron {
    * @param address - The TRX recipient address to set.
    */
   async setTRXRecipientAddress(address: string) {
-    await this.driver.fill({testId: dataTestIds.testPage.sendTRX.address}, address)
+    await this.driver.fill(
+      { testId: dataTestIds.testPage.sendTRX.address },
+      address,
+    );
   }
 
   /**
@@ -201,7 +204,10 @@ export class TestDappTron {
    * @param amount - The TRX amount to set.
    */
   async setTRXAmount(amount: string) {
-    await this.driver.fill({testId: dataTestIds.testPage.sendTRX.amount}, amount)
+    await this.driver.fill(
+      { testId: dataTestIds.testPage.sendTRX.amount },
+      amount,
+    );
   }
 
   /**
@@ -210,7 +216,7 @@ export class TestDappTron {
   async signTRXTransaction() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.sendTRX.signTransaction,
-    })
+    });
   }
 
   /**
@@ -219,7 +225,7 @@ export class TestDappTron {
   async sendTRXTransaction() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.sendTRX.sendTransaction,
-    })
+    });
   }
 
   /**
@@ -231,7 +237,7 @@ export class TestDappTron {
     await this.driver.findElement({
       css: this.trxTransactionHashSelectorTestId,
       text: transactionHash,
-    })
+    });
   }
 
   /**
@@ -240,7 +246,7 @@ export class TestDappTron {
   async findSignedTRXTransaction() {
     await this.driver.findElement({
       testId: dataTestIds.testPage.sendTRX.signedTransaction,
-    })
+    });
   }
 
   /**
@@ -249,7 +255,10 @@ export class TestDappTron {
    * @param address - The USDT recipient address to set.
    */
   async setUSDTRecipientAddress(address: string) {
-    await this.driver.fill({testId: dataTestIds.testPage.sendUSDT.address}, address)
+    await this.driver.fill(
+      { testId: dataTestIds.testPage.sendUSDT.address },
+      address,
+    );
   }
 
   /**
@@ -258,7 +267,10 @@ export class TestDappTron {
    * @param amount - The USDT amount to set.
    */
   async setUSDTAmount(amount: string) {
-    await this.driver.fill({testId: dataTestIds.testPage.sendUSDT.amount}, amount)
+    await this.driver.fill(
+      { testId: dataTestIds.testPage.sendUSDT.amount },
+      amount,
+    );
   }
 
   /**
@@ -267,7 +279,7 @@ export class TestDappTron {
   async signUSDTTransaction() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.sendUSDT.signTransaction,
-    })
+    });
   }
 
   /**
@@ -279,7 +291,7 @@ export class TestDappTron {
     await this.driver.findElement({
       css: this.usdtTransactionHashSelectorTestId,
       text: transactionHash,
-    })
+    });
   }
 
   /**
@@ -288,7 +300,7 @@ export class TestDappTron {
   async sendUSDTTransaction() {
     await this.driver.clickElement({
       testId: dataTestIds.testPage.sendUSDT.sendTransaction,
-    })
+    });
   }
 
   /**
@@ -297,6 +309,6 @@ export class TestDappTron {
   async findSignedUSDTTransaction() {
     await this.driver.findElement({
       testId: dataTestIds.testPage.sendUSDT.signedTransaction,
-    })
+    });
   }
 }
