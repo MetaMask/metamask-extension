@@ -24,6 +24,10 @@ import {
 } from '@metamask/metamask-mcp-core';
 
 import { MetaMaskExtensionLauncher, launchMetaMask } from '..';
+import {
+  createMetaMaskE2EContext,
+  createMetaMaskProdContext,
+} from '../capabilities/factory';
 import type { LauncherLaunchOptions } from '../launcher-types';
 import type { AnvilSeederWrapper } from '../anvil-seeder-wrapper';
 import type { MetaMaskFixtureCapability } from '../capabilities/fixture';
@@ -84,6 +88,57 @@ export class MetaMaskSessionManager implements ISessionManager {
 
   private getMockServerCapability(): MockServerCapability | undefined {
     return this.workflowContext?.mockServer;
+  }
+
+  setContext(context: 'e2e' | 'prod'): void {
+    if (this.hasActiveSession()) {
+      throw new Error(
+        `${ErrorCodes.MM_CONTEXT_SWITCH_BLOCKED}: Cannot switch context while session is active. ` +
+          `Current session: ${this.getSessionId()}. Call mm_cleanup first.`,
+      );
+    }
+
+    const currentContext = this.getEnvironmentMode();
+    if (currentContext === context) {
+      return;
+    }
+
+    const newContext =
+      context === 'e2e'
+        ? createMetaMaskE2EContext()
+        : createMetaMaskProdContext();
+
+    this.setWorkflowContext(newContext as WorkflowContext);
+  }
+
+  getContextInfo(): {
+    currentContext: 'e2e' | 'prod';
+    hasActiveSession: boolean;
+    sessionId: string | null;
+    capabilities: { available: string[] };
+    canSwitchContext: boolean;
+  } {
+    const context = this.getEnvironmentMode();
+    const hasSession = this.hasActiveSession();
+
+    const availableCapabilities: string[] = [];
+    if (this.getBuildCapability()) availableCapabilities.push('build');
+    if (this.getFixtureCapability()) availableCapabilities.push('fixture');
+    if (this.getChainCapability()) availableCapabilities.push('chain');
+    if (this.getContractSeedingCapability())
+      availableCapabilities.push('contractSeeding');
+    if (this.getStateSnapshotCapability())
+      availableCapabilities.push('stateSnapshot');
+    if (this.getMockServerCapability())
+      availableCapabilities.push('mockServer');
+
+    return {
+      currentContext: context,
+      hasActiveSession: hasSession,
+      sessionId: this.getSessionId() ?? null,
+      capabilities: { available: availableCapabilities },
+      canSwitchContext: !hasSession,
+    };
   }
 
   getSessionId(): string | undefined {
