@@ -47,8 +47,11 @@ class Timers {
       throw new Error(`Timer with id "${id}" does not exist.`);
     }
     const timer = this.timers.get(id) as TimerData;
+    if (timer.start === null) {
+      throw new Error(`Timer "${id}" was never started.`);
+    }
     timer.end = performance.now();
-    timer.duration = timer.end - (timer.start as number);
+    timer.duration = timer.end - timer.start;
   }
 
   getTimer(id: string): TimerData {
@@ -56,18 +59,6 @@ class Timers {
       throw new Error(`Timer with id "${id}" does not exist.`);
     }
     return this.timers.get(id) as TimerData;
-  }
-
-  renameTimer(oldId: string, newId: string): void {
-    if (!this.timers.has(oldId)) {
-      throw new Error(`Timer with id "${oldId}" does not exist.`);
-    }
-    if (this.timers.has(newId)) {
-      throw new Error(`Timer with id "${newId}" already exists.`);
-    }
-    const timerData = this.timers.get(oldId) as TimerData;
-    this.timers.delete(oldId);
-    this.timers.set(newId, timerData);
   }
 
   getAllTimers(): TimerWithId[] {

@@ -51,12 +51,6 @@ class TimerHelper {
     return null;
   }
 
-  changeName(newName: string): void {
-    const oldId = this._id;
-    Timers.renameTimer(oldId, newName);
-    this._id = newName;
-  }
-
   getDurationInSeconds(): number {
     const duration = this.getDuration();
     return duration ? duration / 1000 : 0;

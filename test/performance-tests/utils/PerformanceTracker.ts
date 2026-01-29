@@ -48,17 +48,6 @@ export class PerformanceTracker {
   }
 
   /**
-   * Add multiple timers at once
-   *
-   * @param timers
-   */
-  addTimers(...timers: TimerHelper[]): void {
-    timers.forEach((timer) => {
-      this.addTimer(timer);
-    });
-  }
-
-  /**
    * Add a single timer to the tracker
    *
    * @param timer

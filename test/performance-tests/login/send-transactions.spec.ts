@@ -77,7 +77,7 @@ describe('Send Transactions Performance', function () {
         // Measure: Select token and load form
         const sendPage = new SendPage(driver);
         await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqsZKvdp',
           'SOL',
         );
         await timerAssetPicker.measure(async () => {

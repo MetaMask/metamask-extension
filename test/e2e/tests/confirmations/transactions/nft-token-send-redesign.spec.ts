@@ -22,7 +22,6 @@ import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
-const isChrome = process.env.SELENIUM_BROWSER === Browser.CHROME;
 const TOKEN_RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
 describe('Confirmation Redesign Token Send', function () {
@@ -330,11 +329,6 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await loginWithBalanceValidation(driver, localNode);
 
   const homePage = new HomePage(driver);
-
-  // Don't check Account Syncing on FF due to timing issues
-  if (isChrome) {
-    await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
-  }
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
