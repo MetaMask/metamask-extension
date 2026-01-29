@@ -1,6 +1,6 @@
 import React from 'react';
+import README from "./README.mdx";
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-
 import Box from '../../ui/box';
 
 import {
@@ -10,16 +10,10 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { ModalFocus } from './modal-focus';
-import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/ModalFocus',
   component: ModalFocus,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   args: {
     children: (
       <>

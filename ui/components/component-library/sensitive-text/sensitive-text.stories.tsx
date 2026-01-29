@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import README from "./README.mdx";
 import { SensitiveText } from './sensitive-text';
 import { SensitiveTextLength } from './sensitive-text.types';
-import README from './README.mdx';
 import { Box } from '../box';
 import {
   Display,
@@ -12,11 +12,6 @@ import {
 const meta: Meta<typeof SensitiveText> = {
   title: 'Components/ComponentLibrary/SensitiveText',
   component: SensitiveText,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   args: {
     children: 'Sensitive information',
     isHidden: false,

@@ -4,7 +4,6 @@
 Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
   * */
 import React, { useEffect } from 'react';
-import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
@@ -14,9 +13,6 @@ import { I18nProvider, LegacyI18nProvider } from './i18n';
 import testData from './test-data.js';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { setBackgroundConnection } from '../ui/store/background-connection';
-import { metamaskStorybookTheme } from './metamask-storybook-theme';
-import { DocsContainer } from '@storybook/addon-docs';
-import { themes } from '@storybook/theming';
 import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
 import './index.css';
 
@@ -31,31 +27,6 @@ export const parameters = {
       { name: 'default', value: 'var(--color-background-default)' },
       { name: 'alternative', value: 'var(--color-background-alternative)' },
     ],
-  },
-  docs: {
-    container: (context) => {
-      const theme = context?.globals?.theme || 'both';
-      const systemPrefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)',
-      ).matches;
-
-      const isDark =
-        theme === 'dark' || (theme === 'both' && systemPrefersDark);
-
-      const props = {
-        ...context,
-        theme: isDark
-          ? { ...themes.dark, ...metamaskStorybookTheme }
-          : { ...themes.light, ...metamaskStorybookTheme },
-        'data-theme': isDark ? 'dark' : 'light',
-      };
-
-      return (
-        <div data-theme={isDark ? 'dark' : 'light'}>
-          <DocsContainer {...props} />
-        </div>
-      );
-    },
   },
   options: {
     storySort: {
@@ -111,7 +82,7 @@ const proxiedBackground = new Proxy(
   {
     get(_, method) {
       return function () {
-        action(`Background call: ${method}`)();
+        // No-op function for background calls in Storybook
         return new Promise(() => {});
       };
     },

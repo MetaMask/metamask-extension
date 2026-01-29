@@ -1,14 +1,8 @@
 import React from 'react';
+import README from "./README.mdx";
 import { Meta, StoryFn } from '@storybook/react';
-import {
-  Display,
-  AlignItems,
-  BorderColor,
-} from '../../../helpers/constants/design-system';
+import { BorderColor } from '../../../helpers/constants/design-system';
 
-import { Box } from '../box';
-
-import README from './README.mdx';
 import { AvatarFavicon } from './avatar-favicon';
 import { AvatarFaviconSize } from './avatar-favicon.types';
 
@@ -18,8 +12,12 @@ export default {
   parameters: {
     docs: {
       page: README,
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the equivalent component from [@metamask/design-system-react](https://metamask.github.io/metamask-design-system/) instead.',
+      },
     },
-  },
+    },
   argTypes: {
     size: {
       control: 'select',
@@ -49,24 +47,3 @@ const Template: StoryFn<typeof AvatarFavicon> = (args) => {
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-
-export const SizeStory: StoryFn<typeof AvatarFavicon> = (args) => (
-  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
-    <AvatarFavicon {...args} size={AvatarFaviconSize.Xs} />
-    <AvatarFavicon {...args} size={AvatarFaviconSize.Sm} />
-    <AvatarFavicon {...args} size={AvatarFaviconSize.Md} />
-    <AvatarFavicon {...args} size={AvatarFaviconSize.Lg} />
-    <AvatarFavicon {...args} size={AvatarFaviconSize.Xl} />
-  </Box>
-);
-SizeStory.storyName = 'Size';
-
-export const Src: StoryFn<typeof AvatarFavicon> = (args) => (
-  <Box display={Display.Flex} alignItems={AlignItems.flexStart} gap={1}>
-    <AvatarFavicon {...args} src="https://uniswap.org/favicon.ico" />
-    <AvatarFavicon
-      {...args}
-      src="https://1inch.exchange/assets/favicon/favicon-32x32.png"
-    />
-  </Box>
-);

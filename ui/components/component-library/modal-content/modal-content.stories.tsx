@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-
 import { Display, FlexWrap } from '../../../helpers/constants/design-system';
 
 import { Text } from '../text';
@@ -8,7 +7,6 @@ import { Text } from '../text';
 import { ModalContent } from './modal-content';
 import { ModalContentSize } from './modal-content.types';
 
-import README from './README.mdx';
 import { Button, ButtonVariant } from '../button';
 import { Modal } from '../modal';
 import { ModalHeader } from '../modal-header';
@@ -19,11 +17,6 @@ import { Box } from '../box';
 export default {
   title: 'Components/ComponentLibrary/ModalContent',
   component: ModalContent,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     children: { control: 'text' },
     size: {
@@ -169,7 +162,8 @@ export const Size: StoryFn<typeof ModalContent> = (args) => {
                 {currentSize === ModalContentSizeStoryOption.ClassName ? (
                   <>
                     This ModalContent has size set using modalDialogProps and
-                    adding a className setting a max width (max-width: 800px){' '}
+                    adding a className setting a max width (max-width:
+                    800px){' '}
                   </>
                 ) : (
                   <>This ModalContent is using size: {currentSize}</>

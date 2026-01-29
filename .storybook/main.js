@@ -11,16 +11,11 @@ module.exports = {
   features: {
     buildStoriesJson: true,
   },
-  stories: [
-    '../ui/**/*.stories.js',
-    '../ui/**/*.stories.tsx',
-    '../ui/**/*.stories.mdx',
-    './*.stories.mdx',
-  ],
+  stories: ['../ui/**/*.stories.js', '../ui/**/*.stories.tsx'],
   addons: [
     '@storybook/addon-essentials',
-    '@storybook/addon-actions',
     '@storybook/addon-a11y',
+    '@storybook/addon-docs',
     './i18n-party-addon/register.js',
   ],
   staticDirs: ['../app', './images'],
@@ -124,7 +119,7 @@ module.exports = {
     return config;
   },
   docs: {
-    autodocs: true,
+    autodocs: false,
   },
   framework: {
     name: '@storybook/react-webpack5',

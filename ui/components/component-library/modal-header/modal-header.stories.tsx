@@ -1,6 +1,6 @@
 import React from 'react';
+import README from "./README.mdx";
 import { StoryFn, Meta } from '@storybook/react';
-
 import {
   TextVariant,
   TextAlign,
@@ -12,18 +12,12 @@ import {
 
 import { ModalHeader } from './modal-header';
 import { Text } from '../text';
-import README from './README.mdx';
 import { AvatarAccount } from '@metamask/design-system-react';
 import { Button, ButtonSize } from '../button';
 
 export default {
   title: 'Components/ComponentLibrary/ModalHeader',
   component: ModalHeader,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     children: { control: 'text' },
     className: { control: 'text' },

@@ -1,12 +1,11 @@
 import React from 'react';
+import README from "./README.mdx";
 import { StoryFn, Meta } from '@storybook/react';
-import { actions } from '@storybook/addon-actions';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
 import { Button } from '../button';
 import { Text } from '../text';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import { SelectWrapper } from './select-wrapper';
 import { useSelectContext } from './select-wrapper.context';
 
@@ -16,11 +15,8 @@ export default {
   parameters: {
     docs: {
       page: README,
-      story: {
-        inline: false,
-      },
     },
-  },
+    },
   argTypes: {
     placeholder: {
       control: {
@@ -271,7 +267,6 @@ export const OnBlur: StoryFn<typeof SelectWrapper> = (args) => {
         {...args}
         onBlur={() => {
           setOnBlur(onBlur + 1);
-          actions('onBlur');
         }}
         placeholder=""
         triggerComponent={<SelectButton>onBlur Count: {onBlur}</SelectButton>}

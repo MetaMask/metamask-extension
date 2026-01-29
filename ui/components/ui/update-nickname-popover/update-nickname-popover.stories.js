@@ -1,17 +1,10 @@
 import { useArgs } from '@storybook/client-api';
 import React from 'react';
 import Button from '../button';
-import README from './README.mdx';
 import UpdateNicknamePopover from '.';
 
 export default {
   title: 'Components/UI/UpdateNicknamePopover',
-
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     address: {
       control: { type: 'text' },

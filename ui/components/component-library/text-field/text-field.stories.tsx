@@ -22,7 +22,6 @@ import { TextFieldSize, TextFieldType } from './text-field.types';
 import { TextField } from './text-field';
 import { ButtonIcon } from '../button-icon';
 
-import README from './README.mdx';
 import { Icon, IconName, IconSize } from '../icon';
 import {
   AvatarAccount,
@@ -33,11 +32,6 @@ import { Button } from '../button';
 export default {
   title: 'Components/ComponentLibrary/TextField',
   component: TextField,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     autoComplete: {
       control: 'boolean',

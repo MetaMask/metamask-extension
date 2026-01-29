@@ -12,7 +12,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'A modal component for editing account names with form validation and Redux integration.',
+        component:
+          'A modal component for editing account names with form validation and Redux integration.',
       },
     },
   },

@@ -1,17 +1,10 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
-import README from './README.mdx';
 import ToggleButton from './toggle-button.component';
 
 export default {
   title: 'Components/UI/ToggleButton',
   component: ToggleButton,
-
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     value: { control: 'boolean' },
     onToggle: { action: 'onToggle' },

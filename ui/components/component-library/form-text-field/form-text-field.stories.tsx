@@ -13,7 +13,6 @@ import {
 
 import { FormTextField } from './form-text-field';
 
-import README from './README.mdx';
 import { Text } from '../text';
 import { Box } from '../box';
 import { ButtonSecondary } from '../button-secondary';
@@ -27,11 +26,6 @@ import { TextFieldType } from '../text-field';
 export default {
   title: 'Components/ComponentLibrary/FormTextField',
   component: FormTextField,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   args: {
     placeholder: 'Form text field',
     label: 'Label',

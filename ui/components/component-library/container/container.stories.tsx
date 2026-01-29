@@ -1,12 +1,12 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
+import README from "./README.mdx";
 import { Box } from '../box';
 import {
   Display,
   FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 
 import { ContainerMaxWidth } from './container.types';
 import { Container } from './container';
@@ -14,11 +14,6 @@ import { Container } from './container';
 export default {
   title: 'Components/ComponentLibrary/Container',
   component: Container,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   args: {
     children:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc.',

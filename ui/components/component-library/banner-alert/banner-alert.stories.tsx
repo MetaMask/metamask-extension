@@ -1,12 +1,11 @@
 import React from 'react';
+import README from "./README.mdx";
 import { Meta, StoryFn } from '@storybook/react';
 import { useState } from '@storybook/addons';
 import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-
-import README from './README.mdx';
 
 import { BannerAlert } from './banner-alert';
 import { BannerAlertSeverity } from './banner-alert.types';
@@ -18,11 +17,6 @@ import { ButtonPrimary } from '../button-primary';
 export default {
   title: 'Components/ComponentLibrary/BannerAlert',
   component: BannerAlert,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     severity: {
       control: 'select',

@@ -1,6 +1,6 @@
 import React from 'react';
+import README from "./README.mdx";
 import type { Meta, StoryObj } from '@storybook/react';
-
 import {
   BackgroundColor,
   Display,
@@ -8,7 +8,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ModalFooter } from './modal-footer';
 
-import README from './README.mdx';
 import { Box } from '../box';
 import { Container, ContainerMaxWidth } from '../container';
 import { Checkbox } from '../checkbox';
@@ -16,11 +15,6 @@ import { Checkbox } from '../checkbox';
 const meta: Meta<typeof ModalFooter> = {
   title: 'Components/ComponentLibrary/ModalFooter',
   component: ModalFooter,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
 };
 
 export default meta;

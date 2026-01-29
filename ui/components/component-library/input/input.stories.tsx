@@ -11,7 +11,6 @@ import {
 import { InputType } from './input.types';
 import { Input } from './input';
 
-import README from './README.mdx';
 import { Box } from '../box';
 import { Button, ButtonVariant } from '../button';
 
@@ -36,11 +35,6 @@ const marginSizeControlOptions = [
 export default {
   title: 'Components/ComponentLibrary/Input',
   component: Input,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     autoComplete: {
       control: 'boolean',

@@ -4,7 +4,6 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import { BannerTip } from './banner-tip';
 import { BannerTipLogoType } from './banner-tip.types';
 import { Box } from '../box';
@@ -19,8 +18,7 @@ export default {
     docs: {
       page: README,
     },
-    backgrounds: { default: 'alternative' },
-  },
+    backgrounds: { default: 'alternative' },},
   argTypes: {
     logoType: {
       options: Object.values(BannerTipLogoType),

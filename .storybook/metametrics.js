@@ -1,16 +1,13 @@
 import React from 'react';
 import {
   MetaMetricsProvider,
-  LegacyMetaMetricsProvider
+  LegacyMetaMetricsProvider,
 } from '../ui/contexts/metametrics';
 
-const MetaMetricsProviderStorybook = (props) => 
-    (
-        <MetaMetricsProvider>
-          <LegacyMetaMetricsProvider>
-            {props.children}
-          </LegacyMetaMetricsProvider>
-        </MetaMetricsProvider>
-  );
+const MetaMetricsProviderStorybook = (props) => (
+  <MetaMetricsProvider>
+    <LegacyMetaMetricsProvider>{props.children}</LegacyMetaMetricsProvider>
+  </MetaMetricsProvider>
+);
 
-export default MetaMetricsProviderStorybook
+export default MetaMetricsProviderStorybook;
