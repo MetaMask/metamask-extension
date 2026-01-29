@@ -226,6 +226,10 @@ export class RewardsController extends BaseController<
 
   #isDisabled: () => boolean;
 
+  #isBitcoinDisabled: () => boolean;
+
+  #isTronDisabled: () => boolean;
+
   /**
    * Calculate tier status and next tier information
    */
@@ -331,10 +335,14 @@ export class RewardsController extends BaseController<
     messenger,
     state,
     isDisabled,
+    isBitcoinDisabled,
+    isTronDisabled,
   }: {
     messenger: RewardsControllerMessenger;
     state?: Partial<RewardsControllerState>;
     isDisabled: () => boolean;
+    isBitcoinDisabled: () => boolean;
+    isTronDisabled: () => boolean;
   }) {
     super({
       name: controllerName,
@@ -349,6 +357,8 @@ export class RewardsController extends BaseController<
     this.#registerActionHandlers();
     this.#initializeEventSubscriptions();
     this.#isDisabled = isDisabled;
+    this.#isBitcoinDisabled = isBitcoinDisabled;
+    this.#isTronDisabled = isTronDisabled;
   }
 
   /**
@@ -499,6 +509,9 @@ export class RewardsController extends BaseController<
       isBtcMainnetAddress(account.address) ||
       isBtcTestnetAddress(account.address)
     ) {
+      if (this.#isBitcoinDisabled()) {
+        throw new Error('Unsupported account type for signing rewards message');
+      }
       const result = await signBitcoinRewardsMessage(
         this.messenger.call.bind(
           this.messenger,
@@ -512,6 +525,9 @@ export class RewardsController extends BaseController<
         ? result.signature
         : `0x${result.signature}`;
     } else if (isTronAddress(account.address)) {
+      if (this.#isTronDisabled()) {
+        throw new Error('nsupported account type for signing rewards message');
+      }
       const result = await signTronRewardsMessage(
         this.messenger.call.bind(
           this.messenger,
@@ -680,17 +696,17 @@ export class RewardsController extends BaseController<
         return true;
       }
 
-      // Check if it's a Bitcoin address
+      // Check if it's a Bitcoin address (gated by feature flag)
       if (
         isBtcMainnetAddress(account.address) ||
         isBtcTestnetAddress(account.address)
       ) {
-        return true;
+        return !this.#isBitcoinDisabled();
       }
 
-      // Check if it's a Tron address
+      // Check if it's a Tron address (gated by feature flag)
       if (isTronAddress(account.address)) {
-        return true;
+        return !this.#isTronDisabled();
       }
 
       // If it's none of the supported types, opt-in is not supported

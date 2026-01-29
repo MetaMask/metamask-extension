@@ -191,6 +191,8 @@ type WithControllerArgs<ReturnValue> = [
   {
     state?: Partial<RewardsControllerState>;
     isDisabled?: boolean;
+    isBitcoinDisabled?: boolean;
+    isTronDisabled?: boolean;
   },
   WithControllerCallback<ReturnValue>,
 ];
@@ -199,7 +201,12 @@ async function withController<ReturnValue>(
   ...args: WithControllerArgs<ReturnValue>
 ): Promise<ReturnValue> {
   const [options, fn] = args;
-  const { state, isDisabled = false } = options;
+  const {
+    state,
+    isDisabled = false,
+    isBitcoinDisabled = false,
+    isTronDisabled = false,
+  } = options;
 
   type TestAllowedActions =
     | AccountsControllerGetSelectedMultichainAccountAction
@@ -271,6 +278,8 @@ async function withController<ReturnValue>(
     messenger: controllerMessenger,
     state,
     isDisabled: () => isDisabled,
+    isBitcoinDisabled: () => isBitcoinDisabled,
+    isTronDisabled: () => isTronDisabled,
   });
 
   return await fn({
@@ -597,6 +606,54 @@ describe('RewardsController', () => {
 
         expect(result).toBe(true);
       });
+    });
+
+    it('should return false for Bitcoin addresses when Bitcoin feature flag is disabled', async () => {
+      await withController(
+        { isDisabled: false, isBitcoinDisabled: true },
+        ({ controller }) => {
+          const bitcoinAccount: InternalAccount = {
+            ...MOCK_INTERNAL_ACCOUNT,
+            address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+          };
+
+          const result = controller.isOptInSupported(bitcoinAccount);
+
+          expect(result).toBe(false);
+        },
+      );
+    });
+
+    it('should return false for Bitcoin testnet addresses when Bitcoin feature flag is disabled', async () => {
+      await withController(
+        { isDisabled: false, isBitcoinDisabled: true },
+        ({ controller }) => {
+          const bitcoinAccount: InternalAccount = {
+            ...MOCK_INTERNAL_ACCOUNT,
+            address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
+          };
+
+          const result = controller.isOptInSupported(bitcoinAccount);
+
+          expect(result).toBe(false);
+        },
+      );
+    });
+
+    it('should return false for Tron addresses when Tron feature flag is disabled', async () => {
+      await withController(
+        { isDisabled: false, isTronDisabled: true },
+        ({ controller }) => {
+          const tronAccount: InternalAccount = {
+            ...MOCK_INTERNAL_ACCOUNT,
+            address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+          };
+
+          const result = controller.isOptInSupported(tronAccount);
+
+          expect(result).toBe(false);
+        },
+      );
     });
   });
 
@@ -951,6 +1008,78 @@ describe('RewardsController', () => {
           );
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+
+    it('should throw error when signing with Bitcoin account while Bitcoin is disabled', async () => {
+      const bitcoinAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'bitcoin-account-1',
+        address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        scopes: ['bip122:000000000019d6689c085ae165831e93'],
+      };
+
+      await withController(
+        { isDisabled: false, isBitcoinDisabled: true },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            bitcoinAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBeNull();
+          expect(mockMessengerCall).not.toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.anything(),
+          );
+        },
+      );
+    });
+
+    it('should throw error when signing with Tron account while Tron is disabled', async () => {
+      const tronAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'tron-account-1',
+        address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        scopes: ['tron:728126428'],
+      };
+
+      await withController(
+        { isDisabled: false, isTronDisabled: true },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            tronAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBeNull();
+          expect(mockMessengerCall).not.toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.anything(),
+          );
         },
       );
     });
