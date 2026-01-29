@@ -6,6 +6,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import {
+  CANCEL_TYPES,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -71,6 +72,7 @@ const MOCK_ACTIVE_SHIELD_SUBSCRIPTION: Subscription = {
   currentPeriodStart: new Date().toISOString(),
   currentPeriodEnd: new Date(Date.now() + 30 * DAY).toISOString(),
   isEligibleForSupport: true,
+  cancelType: CANCEL_TYPES.ALLOWED_AT_PERIOD_END,
 };
 
 const getRedirectUrlSpy = jest.fn().mockReturnValue(MOCK_REDIRECT_URI);
