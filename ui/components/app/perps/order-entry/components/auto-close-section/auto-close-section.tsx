@@ -11,6 +11,10 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldSize } from '../../../../../component-library';
+import {
+  BorderRadius,
+  BackgroundColor,
+} from '../../../../../../helpers/constants/design-system';
 import ToggleButton from '../../../../../ui/toggle-button';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { AutoCloseSectionProps, TPSLUnit } from '../../order-entry.types';
@@ -139,6 +143,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 value={takeProfitPrice}
                 onChange={handleTpPriceChange}
                 placeholder={t('perpsTpPrice')}
+                borderRadius={BorderRadius.MD}
+                borderWidth={0}
+                backgroundColor={BackgroundColor.backgroundMuted}
                 className="w-full"
                 data-testid="tp-price-input"
               />
@@ -150,6 +157,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 size={TextFieldSize.Md}
                 value={calculateGainLoss(takeProfitPrice, true)}
                 placeholder={t('perpsGain')}
+                borderRadius={BorderRadius.MD}
+                borderWidth={0}
+                backgroundColor={BackgroundColor.backgroundMuted}
                 className="w-full"
                 readOnly
                 data-testid="tp-gain-input"
@@ -160,8 +170,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
             <ButtonBase
               onClick={toggleTpUnit}
               className={twMerge(
-                'px-3 py-2 rounded-lg bg-muted',
-                'hover:bg-muted-hover active:bg-muted-pressed',
+                'px-3 h-10 rounded-lg bg-muted',
+                'hover:bg-hover active:bg-pressed',
                 'min-w-[50px]',
               )}
               data-testid="tp-unit-toggle"
@@ -188,6 +198,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 value={stopLossPrice}
                 onChange={handleSlPriceChange}
                 placeholder={t('perpsSlPrice')}
+                borderRadius={BorderRadius.MD}
+                borderWidth={0}
+                backgroundColor={BackgroundColor.backgroundMuted}
                 className="w-full"
                 data-testid="sl-price-input"
               />
@@ -199,6 +212,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 size={TextFieldSize.Md}
                 value={calculateGainLoss(stopLossPrice, false)}
                 placeholder={t('perpsLoss')}
+                borderRadius={BorderRadius.MD}
+                borderWidth={0}
+                backgroundColor={BackgroundColor.backgroundMuted}
                 className="w-full"
                 readOnly
                 data-testid="sl-loss-input"
@@ -209,8 +225,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
             <ButtonBase
               onClick={toggleSlUnit}
               className={twMerge(
-                'px-3 py-2 rounded-lg bg-muted',
-                'hover:bg-muted-hover active:bg-muted-pressed',
+                'px-3 h-10 rounded-lg bg-muted',
+                'hover:bg-hover active:bg-pressed',
                 'min-w-[50px]',
               )}
               data-testid="sl-unit-toggle"
