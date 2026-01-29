@@ -99,3 +99,6 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
+
+# Yarn error logs
+yarn-error.log*
