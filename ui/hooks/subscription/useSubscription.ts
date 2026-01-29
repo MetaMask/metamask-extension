@@ -203,7 +203,7 @@ export const useCancelSubscription = (subscription?: Subscription) => {
 
       const subscriptionId = subscription.id;
       const cancelAtPeriodEnd =
-        cancelType === CANCEL_TYPES.ALLOWED_IMMEDIATE ? true : undefined;
+        cancelType === CANCEL_TYPES.ALLOWED_AT_PERIOD_END;
 
       await dispatch(cancelSubscription({ subscriptionId, cancelAtPeriodEnd }));
       trackMembershipCancelledEvent('succeeded');
