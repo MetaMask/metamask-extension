@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.17.0]
+
+### Uncategorized
+
+- Add polygon to the networks supporting smart transactions (#39614)
+- No user facing changes; this only updates the storage location for tokenListController. (#39250)
+- Bump assets controllers to v97 (#39551)
+- Remove network dropdown from Activity tab (#39565)
+- Removed the divider above the Manage permissions button in the connected app popover. (#39505)
+- Updated the disconnect modal button to use the primary button color. (#39535)
+- Update swaps QuotesReceived event properties (#39437)
+- Increased network avatars copy icon to size small (#39512)
+- chore: update tron-wallet-snap to latest version 1.19.2 (#39514)
+- Removed unused "What's New" modal feature, improving Home page performance (#39314)
+- Removed calls to nft collections endpoint (#39456)
+
+### Added
+
+- Improved MetaMetrics opt-out tracking to properly attribute opt-out events and prevent duplicates (#39413)
+- Add Bitcoin and Tron account support for rewards (#39363)
+- Adds the feature flag infrastructure for the unified `AssetsController` state (#39631)
+- Added support for queueing non-EVM confirmations (#39599)
+- Add client to metadata for smartTransactions and relayTransactions (#39612)
+- Exclude `SeedlessOnboardingController.pendingToBeRevokedTokens` from the state (#39607)
+  logs
+- Adds an alert for when the site suggested network fee is much higher than ours (#39245)
+- Update in app navigation for shield carousel slide (#38695)
+- Added support for the multichain API to Snaps (#39071)
+- Fixed focus behavior in network list menu - menu button now properly toggles menu open/closed without focusing menu items (#39279)
+- Implement new bridge asset picker and read token data from new popular and search api endpoints (#37685)
+
+### Fixed
+
+- Extension no longer clears the clipboard if it's a hex address (#39209)
+- Show selected swap asset at the top of the list (#39542)
+- Prevent scroll reset on interface update (#39100)
+- Update the icon spacing on NFT and Network notifications (#39556)
+- Fixed an issue where multichain requests would fail when the wallet is locked (#39592)
+- Fixed malicious address alert incorrectly blocking revoke transactions (#38992)
+- Updates the SRP details modal body text colour to text-alternative and fixes the description section in the Settings (#39550)
+  component.
+- Fixes nonevm account selection in the multichain provider snap flow. (#39365)
+- Removed the outer glow effect from the app icon in connect confirmation pages. (#39530)
+- Updated NFT description styling with improved "Show More" button placement and text sizing (#39504)
+- Optimize initial page load and prevent rare temporary UI state corruption (#39407)
+- Uupdate dependencies for @keystonehq/bc-ur-registry-eth and qrcode-generator to improve QR scan successful rate. (#39414)
+- Missing token activity in details page (#39406)
+- Improve name resolvers in send flow (#39410)
+- Fix styling in edit accounts during snap requests. (#38357)
+- Fixed critical performance issue slowing down all user actions by fixing confirmations selector memoization (#39313)
+
 ## [13.16.0]
 
 ### Added
@@ -1643,7 +1694,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...HEAD
+[13.17.0]: https://github.com/MetaMask/metamask-extension/compare/v13.16.0...v13.17.0
 [13.16.0]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...v13.16.0
 [13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...v13.15.0
 [13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2
