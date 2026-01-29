@@ -13,8 +13,6 @@ const blocklist = [
   // test files are typically generated; optimizing them will cause developer
   // annoyance
   'test/**/*',
-  // too big to optimize
-  'docs/assets/sentry-cli-release-process.gif',
 ];
 
 /**
