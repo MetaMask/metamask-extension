@@ -43,6 +43,7 @@ _Note: You are billed for both time spent running, and for storage used_
 
 ### Codespaces on a fork
 
+
 If you are not a MetaMask Internal Developer, or are otherwise developing on a fork, the default Infura key will be on the Free Plan and have very limited requests per second. If you want to use your own Infura key, follow the `.metamaskrc` and `INFURA_PROJECT_ID` instructions in the section [Building on your local machine](#building-on-your-local-machine).
 
 ## Building on your local machine
