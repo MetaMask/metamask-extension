@@ -30,61 +30,30 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
-  // Storage - await all setupPath calls to prevent race conditions where
-  // requests might hit the catch-all mock before specific mocks are registered
-  const setupPromises: Promise<void>[] = [];
-
-  if (
-    !userStorageMockttpControllerInstance?.paths.get(
+  // Storage - ALWAYS register mocks on the current server, even if paths were
+  // previously set up. In multi-phase tests, each phase gets a NEW mock server,
+  // so we must re-register mocks on the new server even though the path data
+  // (response) is preserved in the controller.
+  // Also await all setupPath calls to prevent race conditions where requests
+  // might hit the catch-all mock before specific mocks are registered.
+  await Promise.all([
+    userStorageMockttpControllerInstance.setupPath(
       USER_STORAGE_FEATURE_NAMES.accounts,
-    )
-  ) {
-    setupPromises.push(
-      userStorageMockttpControllerInstance.setupPath(
-        USER_STORAGE_FEATURE_NAMES.accounts,
-        server,
-      ),
-    );
-  }
-  if (
-    !userStorageMockttpControllerInstance?.paths.get(
+      server,
+    ),
+    userStorageMockttpControllerInstance.setupPath(
       USER_STORAGE_FEATURE_NAMES.addressBook,
-    )
-  ) {
-    setupPromises.push(
-      userStorageMockttpControllerInstance.setupPath(
-        USER_STORAGE_FEATURE_NAMES.addressBook,
-        server,
-      ),
-    );
-  }
-  if (
-    !userStorageMockttpControllerInstance?.paths.get(
+      server,
+    ),
+    userStorageMockttpControllerInstance.setupPath(
       USER_STORAGE_WALLETS_FEATURE_KEY,
-    )
-  ) {
-    setupPromises.push(
-      userStorageMockttpControllerInstance.setupPath(
-        USER_STORAGE_WALLETS_FEATURE_KEY,
-        server,
-      ),
-    );
-  }
-  if (
-    !userStorageMockttpControllerInstance?.paths.get(
+      server,
+    ),
+    userStorageMockttpControllerInstance.setupPath(
       USER_STORAGE_GROUPS_FEATURE_KEY,
-    )
-  ) {
-    setupPromises.push(
-      userStorageMockttpControllerInstance.setupPath(
-        USER_STORAGE_GROUPS_FEATURE_KEY,
-        server,
-      ),
-    );
-  }
-
-  // Wait for all mock registrations to complete before returning
-  await Promise.all(setupPromises);
+      server,
+    ),
+  ]);
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
