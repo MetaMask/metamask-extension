@@ -544,6 +544,36 @@ describe('NameDetails', () => {
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(3);
   });
 
+  it('does not reset polling interval during rerenders', () => {
+    const nameDetails = (
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
+        onClose={() => undefined}
+      />
+    );
+
+    const component = renderWithProvider(nameDetails, store);
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+
+    // Simulate frequent rerenders (e.g. redux updates) before the polling delay elapses.
+    act(() => {
+      for (let index = 0; index < 50; index++) {
+        component.rerender(nameDetails);
+      }
+    });
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(2);
+  });
+
   describe('metrics', () => {
     it('sends open modal event', async () => {
       const trackEventMock = jest.fn();
