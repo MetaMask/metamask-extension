@@ -1,7 +1,7 @@
 import { hasProperty } from '@metamask/utils';
 import type { Migrate } from './types';
 
-export const version = 190;
+export const version = 191;
 
 /**
  * Migration that removes `null` seedWords and forgottenPassword values from the persisted state.
