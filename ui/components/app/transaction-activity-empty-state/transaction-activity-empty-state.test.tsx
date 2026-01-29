@@ -10,7 +10,6 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import * as useMultichainSelectorHook from '../../../hooks/useMultichainSelector';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   TransactionActivityEmptyState,
   type TransactionActivityEmptyStateProps,
@@ -18,7 +17,6 @@ import {
 
 // Mock the useBridging hook
 jest.mock('../../../hooks/bridge/useBridging');
-jest.mock('../../../selectors/accounts');
 
 const createAccount = (
   overrides: Partial<InternalAccount> = {},
@@ -140,13 +138,25 @@ describe('TransactionActivityEmptyState', () => {
     stateOverrides = {},
     account = mockAccount,
   ) => {
-    // Set up the mock for the selected account
-    (getSelectedInternalAccount as jest.Mock).mockReturnValue(account);
-
-    const store = configureMockStore(middleware)({
+    // Set up Redux state with the account properly configured
+    const stateWithAccount = {
       ...mockState,
       ...stateOverrides,
-    });
+      metamask: {
+        ...mockState.metamask,
+        ...(stateOverrides as any).metamask,
+        internalAccounts: {
+          ...(mockState.metamask as any).internalAccounts,
+          selectedAccount: account.id,
+          accounts: {
+            ...((mockState.metamask as any).internalAccounts?.accounts || {}),
+            [account.id]: account,
+          },
+        },
+      },
+    };
+
+    const store = configureMockStore(middleware)(stateWithAccount);
 
     return renderWithProvider(
       <TransactionActivityEmptyState {...props} />,
