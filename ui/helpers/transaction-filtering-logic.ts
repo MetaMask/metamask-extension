@@ -1,4 +1,4 @@
-import type { InfiniteData } from 'react-query';
+import type { InfiniteData } from '@tanstack/react-query';
 import type {
   DateGroupedTransactions,
   FlattenedItem,

@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from 'react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import { fetchV4MultiAccountTransactions } from '../helpers/api-client';
@@ -16,19 +16,17 @@ export function useActivityQuery() {
     [accountIds],
   );
 
-  return useInfiniteQuery(
-    ['activity-list', accountIds, networks],
-    ({ pageParam }) =>
+  return useInfiniteQuery({
+    queryKey: ['activity-list', accountIds, networks],
+    queryFn: ({ pageParam }) =>
       fetchV4MultiAccountTransactions({
         accountIds,
         cursor: pageParam,
         networks,
       }),
-    {
-      enabled: accountIds.length > 0,
-      getNextPageParam: ({ pageInfo }) =>
-        pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
-      select: selectFilter,
-    },
-  );
+    enabled: accountIds.length > 0,
+    getNextPageParam: ({ pageInfo }) =>
+      pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
+    select: selectFilter,
+  });
 }
