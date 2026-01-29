@@ -34,6 +34,9 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
+import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
@@ -87,22 +90,45 @@ const useCombinedNotifications = () => {
     walletNotifications,
     snapNotifications,
   } = useMetaMaskNotifications();
+  const isSidePanelEnabled = useSidePanelEnabled();
 
   const combinedNotifications = useMemo(() => {
+    const currentEnvironment = getEnvironmentType();
+
+    const isEnvironmentApplicable = (n: INotification) => {
+      // POC using a Contentful property. This can be modified to use a different property.
+      const actionType =
+        'template' in n
+          ? (n.template as Record<string, unknown>)?.actionType
+          : undefined;
+      if (!actionType) {
+        return true;
+      }
+      // Hide notifications promoting sidepanel if feature is disabled
+      if (actionType === 'sidepanel' && !isSidePanelEnabled) {
+        return false;
+      }
+      // Hide notifications promoting the current environment
+      return actionType !== currentEnvironment;
+    };
+
     const notifications = [
       ...snapNotifications,
       ...featureAnnouncementNotifications,
       ...walletNotifications,
-    ].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
+    ]
+      .filter(isEnvironmentApplicable)
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
 
     return notifications;
   }, [
     snapNotifications,
     featureAnnouncementNotifications,
     walletNotifications,
+    isSidePanelEnabled,
   ]);
 
   return combinedNotifications;
