@@ -441,7 +441,10 @@ const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
  * @param delay - The delay to wait between emitting each quote
  * @returns The Readable stream
  */
-const mockSseEventSource = (mockQuotes: unknown[], delay: number = 2000) => {
+export const mockSseEventSource = (
+  mockQuotes: unknown[],
+  delay: number = 2000,
+) => {
   let index = 0;
   return Readable.fromWeb(
     new ReadableStreamWeb({

@@ -1,9 +1,11 @@
+import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
 import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
 import { withFixtures } from '../../e2e/helpers';
 import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
 import HomePage from '../../e2e/page-objects/pages/home/homepage';
+import NetworkManager from '../../e2e/page-objects/pages/network-manager';
 import { Driver } from '../../e2e/webdriver/driver';
 import {
   setupPerformanceReporting,
@@ -11,6 +13,7 @@ import {
   TimerHelper,
 } from '../utils/testSetup';
 import LoginPage from '../../e2e/page-objects/pages/login-page';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 
@@ -36,9 +39,11 @@ describe('Power user persona', function () {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (server: Mockttp) => {
+          return mockPowerUserPrices(server);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const timerAssetDetails = new TimerHelper(
@@ -55,7 +60,13 @@ describe('Power user persona', function () {
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
+
+        // Filter to Solana network
+        await assetListPage.openNetworksFilter();
+        const networkManager = new NetworkManager(driver);
+        await networkManager.selectNetworkByNameWithWait('Solana');
+        await homePage.checkPageIsLoaded();
+        await assetListPage.checkTokenListIsDisplayed();
 
         // Measure: Click on Solana asset and wait for chart
         await assetListPage.clickOnAsset('Solana');

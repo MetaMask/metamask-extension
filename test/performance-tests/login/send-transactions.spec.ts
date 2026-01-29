@@ -1,8 +1,10 @@
+import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
 import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
 import { withFixtures } from '../../e2e/helpers';
 import HomePage from '../../e2e/page-objects/pages/home/homepage';
+import NonEvmHomepage from '../../e2e/page-objects/pages/home/non-evm-homepage';
 import { Driver } from '../../e2e/webdriver/driver';
 import {
   setupPerformanceReporting,
@@ -13,6 +15,8 @@ import LoginPage from '../../e2e/page-objects/pages/login-page';
 import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
 import SendPage from '../../e2e/page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../e2e/page-objects/pages/confirmations/snap-transaction-confirmation';
+import NetworkManager from '../../e2e/page-objects/pages/network-manager';
+import { mockPowerUserPrices } from '../utils/performanceMocks';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 
@@ -37,10 +41,15 @@ describe('Send Transactions Performance', function () {
             disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
+          remoteFeatureFlags: {
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
+          },
         },
-        useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (server: Mockttp) => {
+          return mockPowerUserPrices(server);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSendPage = new TimerHelper(
@@ -66,8 +75,18 @@ describe('Send Transactions Performance', function () {
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
 
+        // Switch to Solana network (required for Solana account to be available)
+        const networkManager = new NetworkManager(driver);
+        await networkManager.openNetworkManager();
+        await networkManager.selectTab('Popular');
+        await networkManager.selectNetworkByNameWithWait('Solana');
+
+        // Wait for Solana page to load (non-EVM homepage)
+        const nonEvmHomepage = new NonEvmHomepage(driver);
+        await nonEvmHomepage.checkPageIsLoaded();
+
         // Measure: Open send page
-        await homePage.startSendFlow();
+        await nonEvmHomepage.clickOnSendButton();
         await timerOpenSendPage.measure(async () => {
           const sendPage = new SendPage(driver);
           await sendPage.checkNetworkFilterToggleIsDisplayed();
@@ -77,7 +96,7 @@ describe('Send Transactions Performance', function () {
         // Measure: Select token and load form
         const sendPage = new SendPage(driver);
         await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqsZKvdp',
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           'SOL',
         );
         await timerAssetPicker.measure(async () => {
