@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added searchable market list view for Perps with filtering and sorting capabilities (#39307)
 - Update MegaETH RPC (Infura) and explorer (Blockscout) URLs (#39398)
 - Added Copy icon to network avatar group on home screen (#39384)
-- Enables erc20-token-revocation 7715 permission (#39417)
 - Added support for `wallet_getSupportedExecutionPermissions` and `wallet_getGrantedExecutionPermissions` RPC methods (#39176)
 - Removed non-functional account name dialog from Snap account creation flow (#39399)
 - Update smart-transactions-controller to 22.1.0 and enhance transaction metadata handling (#39408)
