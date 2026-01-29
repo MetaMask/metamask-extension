@@ -43,15 +43,19 @@ import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
 // eslint-disable-next-line import/extensions
+// @ts-expect-error -- Bundler resolves TS/TSX without extensions.
 const NftsTab = lazy(() => import('../../app/assets/nfts/nfts-tab'));
 // eslint-disable-next-line import/extensions
-const DeFiTab = lazy(() => import('../../app/assets/defi-list/defi-tab.js'));
+// @ts-expect-error -- Bundler resolves TS/TSX without extensions.
+const DeFiTab = lazy(() => import('../../app/assets/defi-list/defi-tab'));
 // eslint-disable-next-line import/extensions
+// @ts-expect-error -- Bundler resolves TS/TSX without extensions.
 const TransactionList = lazy(() => import('../../app/transaction-list'));
 const UnifiedTransactionList = lazy(
   () =>
     // eslint-disable-next-line import/extensions
-    import('../../app/transaction-list/unified-transaction-list.component.js'),
+    // @ts-expect-error -- Bundler resolves TS/JS without extensions.
+    import('../../app/transaction-list/unified-transaction-list.component'),
 );
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
