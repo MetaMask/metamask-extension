@@ -290,7 +290,6 @@
     "SubscriptionController": "object",
     "SwapsController": {},
     "TokenBalancesController": { "tokenBalances": "object" },
-    "TokenListController": {},
     "TokenRatesController": { "marketData": "object" },
     "TokensController": {
       "allDetectedTokens": {},
