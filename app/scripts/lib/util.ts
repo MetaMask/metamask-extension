@@ -22,6 +22,9 @@ import {
   PLATFORM_EDGE,
   PLATFORM_FIREFOX,
   PLATFORM_OPERA,
+  INSTALL_TYPE,
+  type InstallType,
+  type Platform,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
@@ -66,7 +69,7 @@ const getEnvironmentType = (url = window.location.href) =>
  *
  * @returns the platform ENUM
  */
-const getPlatform = () => {
+const getPlatform = (): Platform => {
   const { navigator } = window;
   const { userAgent } = navigator;
 
@@ -84,27 +87,23 @@ const getPlatform = () => {
 
 /**
  * Cached install type value.
- * Possible values: 'admin', 'development', 'normal', 'sideload', 'other', 'unknown'
- * - 'normal' means installed from official store (Chrome Web Store, Firefox Add-ons, etc.)
- * - 'development' means loaded unpacked in developer mode
- * - 'sideload' means installed by other software
- * - 'admin' means installed by admin policy (enterprise)
- * - 'unknown' means the value hasn't been fetched yet or fetch failed
+ *
+ * @see {@link INSTALL_TYPE} for possible values and their meanings.
  */
-let cachedInstallType = 'unknown';
+let cachedInstallType: InstallType = INSTALL_TYPE.UNKNOWN;
 
 /**
  * Initializes the install type by fetching it from the browser API.
  * This should be called early in the extension lifecycle.
  * The result is cached and can be retrieved synchronously via getInstallType().
  *
- * @returns A promise that resolves to the install type string
+ * @returns A promise that resolves to the install type
  */
-const initInstallType = async (): Promise<string> => {
+const initInstallType = async (): Promise<InstallType> => {
   try {
     const extensionInfo = await browser.management.getSelf();
     if (extensionInfo.installType) {
-      cachedInstallType = extensionInfo.installType;
+      cachedInstallType = extensionInfo.installType as InstallType;
     }
   } catch (error) {
     // Silently fail - install type will remain 'unknown'
@@ -117,9 +116,9 @@ const initInstallType = async (): Promise<string> => {
  * Returns the cached install type.
  * Call initInstallType() first to populate the cache.
  *
- * @returns The install type string ('normal', 'development', 'sideload', 'admin', 'other', or 'unknown')
+ * @returns The install type
  */
-const getInstallType = (): string => {
+const getInstallType = (): InstallType => {
   return cachedInstallType;
 };
 

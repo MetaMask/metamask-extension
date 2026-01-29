@@ -1,5 +1,5 @@
 import { Json } from '@metamask/utils';
-import type { EnvironmentType } from './app';
+import type { EnvironmentType, InstallType, Platform } from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
 
 type JsonWithUndefined =
@@ -567,16 +567,14 @@ export type MetaMetricsUserTraits = {
   rewards_referral_code_used?: string;
   /**
    * The platform (browser) where the extension is running.
-   * Can be 'Chrome', 'Firefox', 'Brave', 'Edge', or 'Opera'.
    */
-  platform?: string;
+  platform?: Platform;
   /**
    * The installation type of the extension.
-   * Can be 'normal' (official store), 'development', 'sideload', 'admin', 'other', or 'unknown'.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  install_type?: string;
+  install_type?: InstallType;
 };
 
 export enum MetaMetricsUserTrait {
