@@ -47,10 +47,7 @@ const mockAccount = createAccount();
 const createStateOverrides = (
   metamaskOverrides: Record<string, unknown> = {},
 ) => ({
-  metamask: {
-    ...mockState.metamask,
-    ...metamaskOverrides,
-  },
+  metamask: metamaskOverrides,
 });
 
 const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
