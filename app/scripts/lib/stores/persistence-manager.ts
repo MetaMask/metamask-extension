@@ -8,8 +8,12 @@ import {
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
+import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -840,33 +844,58 @@ export class PersistenceManager {
    * occur.
    */
   async migrateToSplitState(state: MetaMaskStateType) {
-    return runTrackedTask('migrateToSplitState', async () => {
-      if (this.storageKind === 'split') {
-        log.debug(
-          '[Split State]: Storage is already split, skipping migration',
-        );
-        return;
+    try {
+      const didMigrate = await runTrackedTask(
+        'migrateToSplitState',
+        async () => {
+          if (this.storageKind === 'split') {
+            log.debug(
+              '[Split State]: Storage is already split, skipping migration',
+            );
+            return false;
+          }
+
+          if (!this.#metadata) {
+            throw new Error(
+              'MetaMask - metadata must be set before calling "migrateToSplitState"',
+            );
+          }
+
+          this.storageKind = 'split';
+          const metadata = structuredClone(this.#metadata);
+          metadata.storageKind = 'split';
+          this.setMetadata(metadata);
+          for (const [key, value] of Object.entries(state)) {
+            this.update(key, value);
+          }
+
+          // mark data key for deletion
+          this.update('data', undefined);
+
+          log.debug('[Split State]: Migrating to split state storage');
+          await this.persist();
+
+          return true;
+        },
+      );
+
+      if (didMigrate) {
+        trackEarlySegmentEvent({
+          state,
+          event: MetaMetricsEventName.StateMigrationSucceeded,
+          category: MetaMetricsEventCategory.StateMigration,
+          properties: migrationProperties,
+        });
       }
+    } catch (error) {
+      trackEarlySegmentEvent({
+        state,
+        event: MetaMetricsEventName.StateMigrationFailed,
+        category: MetaMetricsEventCategory.StateMigration,
+        properties: migrationProperties,
+      });
 
-      if (!this.#metadata) {
-        throw new Error(
-          'MetaMask - metadata must be set before calling "migrateToSplitState"',
-        );
-      }
-
-      this.storageKind = 'split';
-      const metadata = structuredClone(this.#metadata);
-      metadata.storageKind = 'split';
-      this.setMetadata(metadata);
-      for (const [key, value] of Object.entries(state)) {
-        this.update(key, value);
-      }
-
-      // mark data key for deletion
-      this.update('data', undefined);
-
-      log.debug('[Split State]: Migrating to split state storage');
-      await this.persist();
-    });
+      throw error;
+    }
   }
 }
