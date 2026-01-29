@@ -71,7 +71,7 @@ export const SelectedAssetButton = ({
             />
           }
         >
-          <AvatarToken src={asset.image} name={asset.symbol} />
+          <AvatarToken src={asset.iconUrl} name={asset.symbol} />
         </BadgeWrapper>
       }
       {...props}
