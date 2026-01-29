@@ -17,35 +17,34 @@ import {
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
+import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import MetaMaskController from './metamask-controller';
 
-function mockMakeBrowserPolyfill() {
-  return {
-    runtime: {
-      id: 'fake-extension-id',
-      onInstalled: {
-        addListener: () => undefined,
-      },
-      onMessageExternal: {
-        addListener: () => undefined,
-      },
-      getPlatformInfo: async () => 'mac',
+jest.mock('webextension-polyfill', () => ({
+  runtime: {
+    id: 'fake-extension-id',
+    onInstalled: {
+      addListener: () => undefined,
     },
-    storage: {
-      local: {
-        get: jest.fn().mockResolvedValue({}),
-        set: jest.fn().mockResolvedValue(undefined),
-        remove: jest.fn().mockResolvedValue(undefined),
-      },
+    onMessageExternal: {
+      addListener: () => undefined,
     },
-  };
-}
+    getPlatformInfo: async () => 'mac',
+  },
+  storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
+      remove: jest.fn().mockResolvedValue(undefined),
+    },
+  },
+}));
 
-const browserPolyfillMock = mockMakeBrowserPolyfill();
-
-jest.mock('webextension-polyfill', () => mockMakeBrowserPolyfill());
+// Use the actual mocked module so all code importing webextension-polyfill
+// shares the same mock instance
+const browserPolyfillMock = jest.mocked(browser);
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 

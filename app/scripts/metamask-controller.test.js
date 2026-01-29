@@ -46,6 +46,7 @@ import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 
 import log from 'loglevel';
+import browser from 'webextension-polyfill';
 import { parseCaipAccountId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -83,42 +84,40 @@ import {
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
 
-function mockMakeBrowserPolyfill() {
-  return {
-    runtime: {
-      id: 'fake-extension-id',
-      onInstalled: {
-        addListener: jest.fn(),
-      },
-      onMessageExternal: {
-        addListener: jest.fn(),
-      },
-      getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
+jest.mock('webextension-polyfill', () => ({
+  runtime: {
+    id: 'fake-extension-id',
+    onInstalled: {
+      addListener: jest.fn(),
     },
-    storage: {
-      local: {
-        get: jest.fn().mockResolvedValue({}),
-        set: jest.fn().mockResolvedValue(undefined),
-        remove: jest.fn().mockResolvedValue(undefined),
-      },
-      session: {
-        set: jest.fn(),
-      },
+    onMessageExternal: {
+      addListener: jest.fn(),
     },
-    alarms: {
-      getAll: jest.fn(() => Promise.resolve([])),
-      create: jest.fn(),
-      clear: jest.fn(),
-      onAlarm: {
-        addListener: jest.fn(),
-      },
+    getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
+  },
+  storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
+      remove: jest.fn().mockResolvedValue(undefined),
     },
-  };
-}
+    session: {
+      set: jest.fn(),
+    },
+  },
+  alarms: {
+    getAll: jest.fn(() => Promise.resolve([])),
+    create: jest.fn(),
+    clear: jest.fn(),
+    onAlarm: {
+      addListener: jest.fn(),
+    },
+  },
+}));
 
-const browserPolyfillMock = mockMakeBrowserPolyfill();
-
-jest.mock('webextension-polyfill', () => mockMakeBrowserPolyfill());
+// Use the actual mocked module so all code importing webextension-polyfill
+// shares the same mock instance
+const browserPolyfillMock = jest.mocked(browser);
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
