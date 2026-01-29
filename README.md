@@ -33,6 +33,8 @@ _Note: You are billed for both time spent running, and for storage used_
 6. Change some code, then run `yarn start` to build in dev mode
 7. After a minute or two, it will finish building, and you can see your changes in the noVNC desktop
 
+> **⚠️ Important for Fork Users:** If you are running this Codespace from your own fork (not the main repository), you must manually create the `.metamaskrc` file and add your own Infura API key. The default key has very limited requests and will cause connection errors during development.
+
 ### Tips to keep your Codespaces usage lower
 
 - You are billed for both time spent running, and for storage used
