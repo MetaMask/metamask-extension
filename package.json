@@ -353,7 +353,7 @@
     "@metamask/logging-controller": "^7.0.0",
     "@metamask/logo": "^4.0.0",
     "@metamask/message-manager": "^14.0.0",
-    "@metamask/message-signing-snap": "1.1.4",
+    "@metamask/message-signing-snap": "patch:@metamask/message-signing-snap@npm%3A1.1.4#~/.yarn/patches/@metamask-message-signing-snap-npm-1.1.4-ab3a030f82.patch",
     "@metamask/messenger": "^0.3.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^5.0.0",
