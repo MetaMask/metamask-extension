@@ -37,7 +37,7 @@
     },
     "AppMetadataController": {
       "currentAppVersion": "13.17.0",
-      "currentMigrationVersion": 190,
+      "currentMigrationVersion": 191,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -2118,9 +2118,7 @@
     "TokenBalancesController": {
       "tokenBalances": {}
     },
-    "TokenListController": {
-      "preventPollingOnNetworkRestart": false
-    },
+    "TokenListController": {},
     "TokenRatesController": {
       "marketData": {}
     },
@@ -2148,6 +2146,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 190
+    "version": 191
   }
 }
