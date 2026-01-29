@@ -11,7 +11,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { HardwareDeviceNames } from '../../../../../../shared/constants/hardware-wallets';
+import { HardwareKeyringType } from '../../../../../../shared/constants/hardware-wallets';
 import { usePayHardwareAccountAlert } from './usePayHardwareAccountAlert';
 
 const HARDWARE_ACCOUNT_ID = 'hardware-account-id';
@@ -77,7 +77,7 @@ function runHookWithoutTransaction() {
 
 describe('usePayHardwareAccountAlert', () => {
   it('returns alert if from address is a Ledger hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.ledger);
+    const { result } = runHookWithTransaction(HardwareKeyringType.ledger);
 
     expect(result.current).toStrictEqual([
       {
@@ -93,7 +93,7 @@ describe('usePayHardwareAccountAlert', () => {
   });
 
   it('returns alert if from address is a Trezor hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.trezor);
+    const { result } = runHookWithTransaction(HardwareKeyringType.trezor);
 
     expect(result.current).toStrictEqual([
       {
@@ -109,7 +109,7 @@ describe('usePayHardwareAccountAlert', () => {
   });
 
   it('returns alert if from address is a Lattice hardware wallet account', () => {
-    const { result } = runHookWithTransaction(HardwareDeviceNames.lattice);
+    const { result } = runHookWithTransaction(HardwareKeyringType.lattice);
 
     expect(result.current).toStrictEqual([
       {
