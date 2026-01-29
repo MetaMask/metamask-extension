@@ -4,6 +4,10 @@ import { parseAccountGroupId } from '@metamask/account-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { AccountTreeControllerState } from '@metamask/account-tree-controller';
 
+const flushPromises = async () => {
+  await new Promise((resolve) => setImmediate(resolve));
+};
+
 // Used to "relax" (widen) types that are too strict. This can be useful when using mocked data from JSON
 // files. As some of the literal strings are being interpreted as general strings, this can cause some
 // type mismatches. (This could be moved to `@metamask/utils`)
@@ -109,6 +113,7 @@ export const getSelectedAccountGroupAccounts = <
 export const clickElementById = async (testId: string) => {
   await act(async () => {
     fireEvent.click(await screen.findByTestId(testId));
+    await flushPromises();
   });
 };
 
@@ -170,5 +175,6 @@ export const waitForElementByTextToNotBePresent = async (text: string) => {
 export const clickElementByText = async (text: string) => {
   await act(async () => {
     fireEvent.click(await screen.findByText(text));
+    await flushPromises();
   });
 };
