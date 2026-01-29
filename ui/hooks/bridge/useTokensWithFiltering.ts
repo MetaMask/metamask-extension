@@ -39,6 +39,22 @@ import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import { isTronEnergyOrBandwidthResource } from '../../ducks/bridge/utils';
 
+/**
+ * Safely retrieves the native asset for a given chain ID.
+ * Returns undefined if the chain ID is not supported instead of throwing an error.
+ *
+ * @param chainId - The chain ID to get the native asset for
+ * @returns The native asset or undefined if not found
+ */
+const getSafeNativeAssetForChainId = (chainId: ChainId | Hex | CaipChainId) => {
+  try {
+    return getNativeAssetForChainId(chainId);
+  } catch (error) {
+    // Chain ID is not supported by XChain Swaps, return undefined
+    return undefined;
+  }
+};
+
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
   chainId: ChainId | Hex | CaipChainId,
@@ -140,7 +156,7 @@ export const useTokensWithFiltering = (
     // For Bitcoin chains, we only support native asset
     if (isBitcoinChainId(chainId)) {
       // Return native asset for Bitcoin chains
-      const nativeAsset = getNativeAssetForChainId(chainId);
+      const nativeAsset = getSafeNativeAssetForChainId(chainId);
       if (nativeAsset) {
         const key = nativeAsset.address ?? '';
         return {
@@ -281,10 +297,10 @@ export const useTokensWithFiltering = (
                   ] ??
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                  (getNativeAssetForChainId(token.chainId)?.icon ||
+                  (getSafeNativeAssetForChainId(token.chainId)?.icon ||
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
+                    getSafeNativeAssetForChainId(token.chainId)?.iconUrl ||
                     getAssetImageUrl(
                       token.address,
                       formatChainIdToCaip(token.chainId),
