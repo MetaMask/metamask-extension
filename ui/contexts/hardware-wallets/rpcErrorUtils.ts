@@ -404,6 +404,19 @@ export function extractHardwareWalletErrorCode(
   return null;
 }
 
+// Helper to extract message from error (handles plain objects from RPC boundary)
+const getErrorMessage = (err: unknown): string => {
+  if (err instanceof Error) {
+    return err.message;
+  }
+  // Handle plain objects with message property (from RPC boundary)
+  const errObj = err as { message?: string };
+  if (errObj?.message && typeof errObj.message === 'string') {
+    return errObj.message;
+  }
+  return String(err);
+};
+
 /**
  * Reconstruct a HardwareWalletError from a JsonRpcError
  *
@@ -418,7 +431,6 @@ export function toHardwareWalletError(
   error: unknown,
   walletType: HardwareWalletType,
 ): HardwareWalletError {
-  // Already a HardwareWalletError instance
   if (error instanceof HardwareWalletError) {
     return error;
   }
@@ -447,19 +459,6 @@ export function toHardwareWalletError(
 
     return hwError;
   }
-
-  // Helper to extract message from error (handles plain objects from RPC boundary)
-  const getErrorMessage = (err: unknown): string => {
-    if (err instanceof Error) {
-      return err.message;
-    }
-    // Handle plain objects with message property (from RPC boundary)
-    const errObj = err as { message?: string };
-    if (errObj?.message && typeof errObj.message === 'string') {
-      return errObj.message;
-    }
-    return String(err);
-  };
 
   // For Ledger errors, the status code might be in the error message
   // (e.g., "Device is locked (Ledger device: Locked device (0x5515))")

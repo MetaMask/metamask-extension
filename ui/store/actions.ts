@@ -85,7 +85,7 @@ import {
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
 import {
-  reconstructHardwareWalletError,
+  toHardwareWalletError,
   HardwareWalletType,
 } from '../contexts/hardware-wallets';
 import { ModalType } from '../selectors/subscription/subscription';
@@ -2223,7 +2223,7 @@ async function approveHardwareTransaction(
     await forceUpdateMetamaskState(dispatch);
     // Reconstruct the error to ensure it's a proper HardwareWalletError instance
     // Errors lose their class type when crossing the RPC boundary from background
-    const hwError = reconstructHardwareWalletError(error, walletType);
+    const hwError = toHardwareWalletError(error, walletType);
 
     // Rethrow the properly typed error for hook to handle
     throw hwError;
@@ -5895,7 +5895,7 @@ async function resolveHardwareApproval(
     await forceUpdateMetamaskState(dispatch);
     // Reconstruct the error to ensure it's a proper HardwareWalletError instance
     // Errors lose their class type when crossing the RPC boundary from background
-    const hwError = reconstructHardwareWalletError(error, walletType);
+    const hwError = toHardwareWalletError(error, walletType);
 
     throw hwError;
   } finally {
@@ -8466,16 +8466,4 @@ export async function saveClaimDraft(
  */
 export async function deleteClaimDraft(draftId: string): Promise<void> {
   return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
-}
-
-/**
- * Gets the app name and version from the connected Ledger device.
- *
- * @returns A promise that resolves to an object containing the app name and version.
- */
-export async function getAppNameAndVersion(): Promise<{
-  appName: string;
-  version: string;
-}> {
-  return await submitRequestToBackground('getAppNameAndVersion');
 }

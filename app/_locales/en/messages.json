@@ -3042,6 +3042,9 @@
     "message": "Unlock it and try again to continue",
     "description": "$1 is the hardware wallet type"
   },
+  "hardwareWalletErrorReconnectButton": {
+    "message": "Reconnect"
+  },
   "hardwareWalletErrorRecoveryApp1": {
     "message": "Ensure your device is unlocked and the Ethereum app is open"
   },
@@ -3100,10 +3103,10 @@
     "message": "To continue, make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
-    "message": "- Your Ledger is unlocked"
+    "message": "Your Ledger is unlocked"
   },
   "hardwareWalletErrorRecoveryUnlock3": {
-    "message": "- The Ethereum app is open"
+    "message": "The Ethereum app is open"
   },
   "hardwareWalletErrorRecoveryUserCancel": {
     "message": "You cancelled the operation. You can try again when ready"
@@ -3128,21 +3131,28 @@
     "message": "To continue, make sure:"
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
-    "message": "• The Ethereum app is open on your Ledger"
+    "message": "The Ethereum app is open on your Ledger"
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction3": {
-    "message": "• You’ve turned on Blind Signing in Settings"
+    "message": "You’ve turned on Blind Signing in Settings"
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedTitle": {
     "message": "Enable blind signing"
   },
   "hardwareWalletErrorTitleConnectYourDevice": {
-    "message": "Connect your $1 device",
+    "message": "Connect your $1",
     "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 locked",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorUnknownErrorDescription": {
+    "message": "Make sure your $1 device is set up with the Secret Recovery Phrase or passphrase for the selected account",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorUnknownErrorTitle": {
+    "message": "Something went wrong"
   },
   "hardwareWalletEthAppNotOpenDescription": {
     "message": "Open the Ethereum app on your device to continue"

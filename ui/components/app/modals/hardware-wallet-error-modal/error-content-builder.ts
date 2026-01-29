@@ -1,16 +1,41 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { IconName } from '../../../component-library';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
+import { IconColor } from '../../../../helpers/constants/design-system';
 
 /**
  * Error content structure
  */
-export type ErrorContent = {
-  icon: IconName;
+type ErrorContentBase = {
   title: string;
-  description?: string;
+};
+
+type ErrorContentWithRecovery = ErrorContentBase & {
+  variant: 'recovery';
   recoveryInstructions: string[];
 };
+
+type ErrorContentWithIcon = ErrorContentWithRecovery & {
+  icon: IconName;
+  iconColor: IconColor;
+};
+
+type ErrorContentWithoutIcon = ErrorContentWithRecovery & {
+  icon?: undefined;
+  iconColor?: undefined;
+};
+
+type ErrorContentWithDescription = ErrorContentBase & {
+  variant: 'description';
+  description: string;
+  icon: IconName;
+  iconColor: IconColor;
+};
+
+export type ErrorContent =
+  | ErrorContentWithIcon
+  | ErrorContentWithoutIcon
+  | ErrorContentWithDescription;
 
 /**
  * Extract error code from a hardware wallet error.
@@ -54,9 +79,10 @@ export function buildErrorContent(
     // Locked device errors
     case ErrorCode.AuthenticationDeviceLocked:
       return {
+        variant: 'recovery',
         icon: IconName.Lock,
+        iconColor: IconColor.iconDefault,
         title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
-        description: t('hardwareWalletErrorDescriptionDeviceLocked'),
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryUnlock1'),
           t('hardwareWalletErrorRecoveryUnlock2'),
@@ -67,106 +93,44 @@ export function buildErrorContent(
     // Device state - Wrong app
     case ErrorCode.DeviceStateEthAppClosed:
       return {
-        icon: IconName.Apps,
-        title: t('hardwareWalletEthAppNotOpenTitle'),
+        variant: 'recovery',
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: [t('hardwareWalletEthAppNotOpenDescription')],
       };
 
     case ErrorCode.DeviceStateBlindSignNotSupported:
       return {
-        icon: IconName.Plug,
-        title: t('hardwareWalletErrorTitleBlindSignNotSupportedTitle', [
-          t(walletType),
-        ]),
+        variant: 'recovery',
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: [
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction1'),
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction2'),
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction3'),
         ],
       };
-    case ErrorCode.DeviceStateOnlyV4Supported:
-      return {
-        icon: IconName.Plug,
-        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryConnection1'),
-          t('hardwareWalletErrorRecoveryConnection2'),
-          t('hardwareWalletErrorRecoveryConnection3'),
-        ],
-      };
-
-    case ErrorCode.DeviceStateEthAppOutOfDate:
-      return {
-        icon: IconName.Plug,
-        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryConnection1'),
-          t('hardwareWalletErrorRecoveryConnection2'),
-          t('hardwareWalletErrorRecoveryConnection3'),
-        ],
-      };
 
     // Device state - Disconnected/Connection issues
     case ErrorCode.DeviceDisconnected:
       return {
-        icon: IconName.Plug,
+        variant: 'recovery',
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryConnection1'),
           t('hardwareWalletErrorRecoveryConnection2'),
           t('hardwareWalletErrorRecoveryConnection3'),
         ],
-      };
-
-    // WebHID transport error
-    case ErrorCode.ConnectionTransportMissing:
-      return {
-        icon: IconName.Danger,
-        title: t('hardwareWalletErrorTitle'),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryWebHID1'),
-          t('hardwareWalletErrorRecoveryWebHID2'),
-        ],
-      };
-
-    case ErrorCode.ConnectionClosed:
-      return {
-        icon: IconName.Close,
-        title: t('hardwareWalletErrorRecoveryConnectionTitle'),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryConnection1'),
-          t('hardwareWalletErrorRecoveryConnection2'),
-          t('hardwareWalletErrorRecoveryConnection3'),
-        ],
-      };
-
-    case ErrorCode.ConnectionTimeout:
-      return {
-        icon: IconName.Clock,
-        title: t('hardwareWalletErrorTitle'),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryTimeout1'),
-          t('hardwareWalletErrorRecoveryTimeout2'),
-        ],
-      };
-
-    case ErrorCode.UserCancelled:
-    case ErrorCode.UserRejected:
-      return {
-        icon: IconName.Close,
-        title: t('hardwareWalletErrorTitle'),
-        recoveryInstructions: [t('hardwareWalletErrorRecoveryUserCancel')],
       };
 
     // Unknown/default
     default:
       return {
+        variant: 'description',
         icon: IconName.Danger,
-        title: t('hardwareWalletErrorTitle'),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryDefault1'),
-          t('hardwareWalletErrorRecoveryDefault2'),
-        ],
+        iconColor: IconColor.warningDefault,
+        title: t('hardwareWalletErrorUnknownErrorTitle'),
+        description: t('hardwareWalletErrorUnknownErrorDescription', [
+          t(walletType),
+        ]),
       };
   }
 }

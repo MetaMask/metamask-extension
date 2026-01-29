@@ -457,7 +457,6 @@ export function getDeviceEventForError(
  * @returns true if the error is a HardwareWalletError, false otherwise
  */
 export function isHardwareWalletError(error: unknown): boolean {
-  debugger;
   if (error instanceof HardwareWalletError) {
     return true;
   }
@@ -535,12 +534,6 @@ function getHardwareWalletErrorCode(error: unknown): ErrorCode | undefined {
 export function isRetryableHardwareWalletError(error: unknown): boolean {
   const isHwError = isHardwareWalletError(error);
   if (!isHwError) {
-    console.log('[isRetryableHardwareWalletError] Not a HW error:', {
-      errorType: typeof error,
-      errorName: (error as { name?: string })?.name,
-      errorCode: (error as { code?: number })?.code,
-      isInstanceOf: error instanceof HardwareWalletError,
-    });
     return false;
   }
 
@@ -557,6 +550,7 @@ export function isRetryableHardwareWalletError(error: unknown): boolean {
     ErrorCode.AuthenticationDeviceBlocked,
     ErrorCode.DeviceStateEthAppClosed,
     ErrorCode.DeviceStateBlindSignNotSupported,
+    ErrorCode.DeviceDisconnected,
     ErrorCode.ConnectionClosed, // Can be connection closed or eth app closed.
   ];
 

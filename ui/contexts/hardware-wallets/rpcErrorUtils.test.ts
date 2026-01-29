@@ -153,7 +153,7 @@ describe('rpcErrorUtils', () => {
     });
   });
 
-  describe('reconstructHardwareWalletError', () => {
+  describe('toHardwareWalletError', () => {
     it('returns original HardwareWalletError instance unchanged', () => {
       const originalError = new HardwareWalletError('Device disconnected', {
         code: ErrorCode.DeviceDisconnected,

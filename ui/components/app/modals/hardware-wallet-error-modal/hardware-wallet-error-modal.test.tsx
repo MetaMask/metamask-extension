@@ -1,10 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
-import {
-  ErrorCode,
-  HardwareWalletError,
-  createHardwareWalletError,
-} from '../../../../contexts/hardware-wallets/errors';
+import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
@@ -342,7 +339,7 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('displays default instructions for unknown errors', () => {
+    it('displays description for unknown errors', () => {
       const error = createTestError(
         'UNKNOWN_ERROR' as ErrorCode,
         'Unknown error',
@@ -352,10 +349,7 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('[hardwareWalletErrorRecoveryDefault1]'),
-      ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryDefault2]'),
+        getByText('[hardwareWalletErrorUnknownErrorDescription]'),
       ).toBeInTheDocument();
     });
   });
