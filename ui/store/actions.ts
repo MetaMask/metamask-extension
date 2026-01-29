@@ -369,10 +369,13 @@ export function createNewVaultAndSyncWithSocial(
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
+      // return result of the createVault function should be the wallet.
       const primaryKeyring = await createNewVault(password);
       if (!primaryKeyring) {
         throw new Error('No keyring found');
       }
+
+      // we use wallet.entropySource to get the primaryKeyring.metadata.id equivalent
 
       const seedPhrase = await getSeedPhrase(password);
       await createSeedPhraseBackup(

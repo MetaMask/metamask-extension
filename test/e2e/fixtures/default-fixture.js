@@ -39,7 +39,17 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                   type: 'HD Key Tree',
                 },
               },
-              options: {},
+              options: {
+                entropySource: '01KG2PT3Y3FHYEM874K8J5SZ07', // Can be found in the vault.
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01KG2PT3Y3FHYEM874K8J5SZ07', // Can be found in the vault.
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
               methods: [
                 'personal_sign',
                 'eth_signTransaction',
@@ -166,7 +176,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       KeyringController: {
         vault:
-          '{"data":"WHaP1FrrtV4zUonudIppDifsLHF39g6oPkVksAIdWAHBRzax1uy1asfAJprR7u72t4/HuYz5yPIFQrnNnv+hwQu9GRuty88VKMnvMy+sq8MNtoXI+C54bZpWa8r4iUQfa0Mj/cfJbpFpzOdF1ZYXahTfTcU5WsrHwvJew842CiJR4B2jmCHHXfm/DxLK3WazsVQwXJGx/U71UelGoOOrT8NI28EKrAwgPn+7Xmv0j92gmhau30N7Bo2fr6Zv","iv":"LfD8/tY1EjXzxuemSmDVdA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
+          '{"data":"5VhA+4ipgCG+XHdD+pQRUBhb6ZOFwnM+Mw6Bb1LJ9Ue96Jkp8w8myd92zQKPHoQZO8J5YiOqLP8h4sDdxSZSgt7fZJTa4L16MjOP+FDNmgK6A5Iu+u8l8zZKGn+A1qPYgUmgFrQYqrilrjrgJJts5u8RjUJIthjV2QjCog3zVUF7h9UT+6L+nSwior4y1TOnycVxv26jJzjszQRNqYMoltEtMwUzArdTrsUzYZ/5baaYdsc1v/LzcZDET0aRGhw1Sn2IVjTtrRUDrN8YdYcwqCcsTEP96WcBg8SI5tCR+xhEBbAH7GtLa+2tEJursftrqP9YDyA9ZQt6ShQKBxgflrPRNhpNBY3aV0tB/vXxxrZXJPrk4SrALd4A6u3+PECD6oRrsUXulWH7kWpTrvPw4jldFWKI1pB+4twCsbiGuP2pxTy1DDAJihkt+pruMMaItK4dtAjZijhCY1j4n2690Zkqk2mC0VjI41dRQ3cBLx/FwCCoS12NNXBgOS+mE9JQ7bfK2goqvfX7LPtlHhofmpMx3md2Vy+S41gKhrMY7zaFX4PILCSPLmj2G0XbSIvXiTqyhZlljFl0owR5GBrm/lU/iTc7VPEVVKelZQ==","iv":"2gQo/hRW1U3zlW9PdJR/dw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"naUac92J74qqtaBU8XqJ2sW0wMqb7KzChs/eO2KnOPg="}',
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
