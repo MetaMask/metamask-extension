@@ -121,6 +121,10 @@
     "app/scripts/migrations/186.test.ts": {
       "warn: Migration 186: Missing or invalid": 13
     },
+    "app/scripts/migrations/191.test.ts": {
+      "warn: Migration #191: Removing event cronjob-1": 1,
+      "warn: Migration #191: Removing event cronjob-unfixable": 1
+    },
     "app/scripts/services/subscription/subscription-service.test.ts": {
       "Reselect: Identity function warnings": 1
     },
