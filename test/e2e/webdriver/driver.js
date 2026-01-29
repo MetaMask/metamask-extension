@@ -69,15 +69,16 @@ function wrapElementWithAPI(element, driver) {
       const el = arguments[0];
       const value = arguments[1];
       
-      // Get the native value setter from HTMLInputElement prototype
-      // This is necessary for React controlled components
-      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-        window.HTMLInputElement.prototype,
-        'value'
-      ).set;
+      // Get the native value setter from the appropriate prototype
+      // Use tagName check to avoid accessing globals that may be scuttled by LavaMoat
+      const isTextArea = el.tagName.toLowerCase() === 'textarea';
+      const prototype = isTextArea
+        ? Object.getPrototypeOf(document.createElement('textarea'))
+        : Object.getPrototypeOf(document.createElement('input'));
+      const nativeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
       
       el.focus();
-      nativeInputValueSetter.call(el, value);
+      nativeValueSetter.call(el, value);
       
       // Dispatch input event to notify React of the change
       el.dispatchEvent(new Event('input', { bubbles: true }));
