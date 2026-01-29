@@ -66,8 +66,6 @@ import {
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -88,8 +86,6 @@ export default function CreationSuccessful() {
   const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-
-  const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -223,10 +219,6 @@ export default function CreationSuccessful() {
     if (!isOnboardingCompleted) {
       // before onboarding completion, we track the MetricsOptIn/Out event
 
-      // We want to track the MetricsOptIn/Out event even if participateInMetaMetrics is false in non-Firefox browsers
-      const shouldForceEventTracking = isFireFox
-        ? false
-        : !participateInMetaMetrics;
       trackEvent(
         {
           category: MetaMetricsEventCategory.Onboarding,
@@ -236,7 +228,7 @@ export default function CreationSuccessful() {
           properties: {},
         },
         {
-          isOptIn: shouldForceEventTracking,
+          isOptIn: !participateInMetaMetrics, // Force the event to be tracked even if participateInMetaMetrics is false
         },
       );
     }
@@ -291,7 +283,6 @@ export default function CreationSuccessful() {
     isSidePanelEnabled,
     isSidePanelSetAsDefault,
     participateInMetaMetrics,
-    isFireFox,
   ]);
 
   const renderDoneButton = () => {

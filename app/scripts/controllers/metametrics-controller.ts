@@ -34,7 +34,10 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json } from '@metamask/utils';
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_BACKGROUND,
+  PLATFORM_FIREFOX,
+} from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
@@ -57,7 +60,12 @@ import type {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
+import {
+  checkAlarmExists,
+  generateRandomId,
+  getPlatform,
+  isValidDate,
+} from '../lib/util';
 import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
@@ -1745,9 +1753,13 @@ export default class MetaMetricsController extends BaseController<
     const userOptedOut = !participateInMetaMetrics || !metaMetricsId;
     const isMetricsOptOutEvent =
       payload.event === MetaMetricsEventName.MetricsOptOut;
+    const isFireFox = getPlatform() === PLATFORM_FIREFOX;
+    const shouldTrackMetricsOptOutEvent = isMetricsOptOutEvent && !isFireFox;
+    console.log('shouldTrackMetricsOptOutEvent', shouldTrackMetricsOptOutEvent);
 
-    // Block all events if user opted out, except MetricsOptOut which is always sent when basic functionality is not disabled
-    if (userOptedOut && !isMetricsOptOutEvent) {
+    // Block events when user opted out. Exception: MetricsOptOut events are still sent on
+    // non-Firefox browsers to record the opt-out action (Firefox privacy policies prohibit this).
+    if (userOptedOut && !shouldTrackMetricsOptOutEvent) {
       return;
     }
 
