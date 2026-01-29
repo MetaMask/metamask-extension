@@ -43,6 +43,21 @@ export const useShouldDispatchAccountSyncing = () => {
       completedOnboarding,
   );
 
+  // #region agent log
+  console.log(
+    '[DEBUG:useShouldDispatchAccountSyncing] Conditions:',
+    JSON.stringify({
+      isBackupAndSyncEnabled,
+      isAccountSyncingEnabled,
+      basicFunctionality,
+      isUnlocked,
+      isSignedIn,
+      completedOnboarding,
+      shouldDispatchAccountSyncing,
+    }),
+  );
+  // #endregion
+
   return shouldDispatchAccountSyncing;
 };
 
@@ -58,12 +73,31 @@ export const useAccountSyncing = () => {
   const shouldDispatchAccountSyncing = useShouldDispatchAccountSyncing();
 
   const dispatchAccountSyncing = useCallback(() => {
+    // #region agent log
+    console.log(
+      '[DEBUG:dispatchAccountSyncing] Called, shouldDispatchAccountSyncing=',
+      shouldDispatchAccountSyncing,
+    );
+    // #endregion
     try {
       if (!shouldDispatchAccountSyncing) {
+        // #region agent log
+        console.log(
+          '[DEBUG:dispatchAccountSyncing] Skipping - conditions not met',
+        );
+        // #endregion
         return;
       }
+      // #region agent log
+      console.log(
+        '[DEBUG:dispatchAccountSyncing] Dispatching syncAccountTreeWithUserStorage action...',
+      );
+      // #endregion
       dispatch(syncAccountTreeWithUserStorage());
     } catch (e) {
+      // #region agent log
+      console.log('[DEBUG:dispatchAccountSyncing] Error:', e);
+      // #endregion
       log.error(e);
     }
   }, [dispatch, shouldDispatchAccountSyncing]);

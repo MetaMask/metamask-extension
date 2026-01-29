@@ -30,30 +30,23 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
-  // Storage - ALWAYS register mocks on the current server, even if paths were
-  // previously set up. In multi-phase tests, each phase gets a NEW mock server,
-  // so we must re-register mocks on the new server even though the path data
-  // (response) is preserved in the controller.
-  // Also await all setupPath calls to prevent race conditions where requests
-  // might hit the catch-all mock before specific mocks are registered.
-  await Promise.all([
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_FEATURE_NAMES.accounts,
-      server,
-    ),
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_FEATURE_NAMES.addressBook,
-      server,
-    ),
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_WALLETS_FEATURE_KEY,
-      server,
-    ),
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_GROUPS_FEATURE_KEY,
-      server,
-    ),
-  ]);
+  // Storage
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_FEATURE_NAMES.accounts,
+    server,
+  );
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_FEATURE_NAMES.addressBook,
+    server,
+  );
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_WALLETS_FEATURE_KEY,
+    server,
+  );
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_GROUPS_FEATURE_KEY,
+    server,
+  );
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
@@ -146,13 +139,13 @@ export async function mockInfuraAndAccountSync(
 ): Promise<void> {
   const accounts = options.accountsToMockBalances ?? [];
 
-  // Set up User Storage / Account Sync mock - await to prevent race conditions
-  await userStorageMockttpController.setupPath(
+  // Set up User Storage / Account Sync mock
+  userStorageMockttpController.setupPath(
     USER_STORAGE_WALLETS_FEATURE_KEY,
     mockServer,
   );
 
-  await userStorageMockttpController.setupPath(
+  userStorageMockttpController.setupPath(
     USER_STORAGE_GROUPS_FEATURE_KEY,
     mockServer,
   );

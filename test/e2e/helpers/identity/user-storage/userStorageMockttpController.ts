@@ -319,7 +319,7 @@ export class UserStorageMockttpController {
     };
   };
 
-  setupPath = async (
+  setupPath = (
     path: keyof typeof pathRegexps,
     server: Mockttp,
     overrides?: {
@@ -336,29 +336,26 @@ export class UserStorageMockttpController {
       server,
     });
 
-    // Await the mock registrations to prevent race conditions
-    // Previously these were NOT awaited, causing requests to potentially
-    // hit the catch-all mock before specific mocks were registered
-    const pathData = this.paths.get(path);
-    if (pathData) {
-      await pathData.server
-        .forGet(pathRegexps[path])
-        .always()
-        .thenCallback((request) =>
-          this.onGet(path, request, overrides?.getStatusCode),
-        );
-      await pathData.server
-        .forPut(pathRegexps[path])
-        .always()
-        .thenCallback((request) =>
-          this.onPut(path, request, overrides?.putStatusCode),
-        );
-      await pathData.server
-        .forDelete(pathRegexps[path])
-        .always()
-        .thenCallback((request) =>
-          this.onDelete(path, request, overrides?.deleteStatusCode),
-        );
-    }
+    this.paths
+      .get(path)
+      ?.server.forGet(pathRegexps[path])
+      .always()
+      .thenCallback((request) =>
+        this.onGet(path, request, overrides?.getStatusCode),
+      );
+    this.paths
+      .get(path)
+      ?.server.forPut(pathRegexps[path])
+      .always()
+      .thenCallback((request) =>
+        this.onPut(path, request, overrides?.putStatusCode),
+      );
+    this.paths
+      .get(path)
+      ?.server.forDelete(pathRegexps[path])
+      .always()
+      .thenCallback((request) =>
+        this.onDelete(path, request, overrides?.deleteStatusCode),
+      );
   };
 }

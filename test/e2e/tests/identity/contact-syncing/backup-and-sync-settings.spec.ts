@@ -29,9 +29,8 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
         {
           fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
-            // Await to prevent race conditions
-            await userStorageMockttpController.setupPath(
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
             );
@@ -154,9 +153,8 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
         {
           fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
-            // Await to prevent race conditions
-            await userStorageMockttpController.setupPath(
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
             );
@@ -204,9 +202,8 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
         {
           fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
-            // Await to prevent race conditions
-            await userStorageMockttpController.setupPath(
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
             );

@@ -44,9 +44,9 @@ describe('Contact syncing - New User', function () {
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (server: Mockttp) => {
-          // Setup contact syncing mock path - await to prevent race conditions
-          await userStorageMockttpController.setupPath(
+        testSpecificMock: (server: Mockttp) => {
+          // Setup contact syncing mock path
+          userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.addressBook,
             server,
           );
@@ -133,9 +133,8 @@ describe('Contact syncing - New User', function () {
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (server: Mockttp) => {
-          // Await to prevent race conditions
-          await userStorageMockttpController.setupPath(
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.addressBook,
             server,
             {

@@ -41,16 +41,15 @@ describe('Add wallet', function () {
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
-        testSpecificMock: async (server: Mockttp) => {
-          // Await to prevent race conditions
-          await userStorageMockttpController.setupPath(
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
             {
               getResponse: mockedAccountSyncResponse,
             },
           );
-          await mockPriceApi(server);
+          mockPriceApi(server);
           return mockIdentityServices(server, userStorageMockttpController);
         },
         title: this.test?.fullTitle(),
@@ -116,10 +115,9 @@ describe('Add wallet', function () {
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
           .build(),
-        testSpecificMock: async (server: Mockttp) => {
-          await mockPriceApi(server);
-          // Await to prevent race conditions
-          await userStorageMockttpController.setupPath(
+        testSpecificMock: (server: Mockttp) => {
+          mockPriceApi(server);
+          userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
             {
@@ -174,10 +172,9 @@ describe('Add wallet', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .build(),
-        testSpecificMock: async (server: Mockttp) => {
-          await mockPriceApi(server);
-          // Await to prevent race conditions
-          await userStorageMockttpController.setupPath(
+        testSpecificMock: (server: Mockttp) => {
+          mockPriceApi(server);
+          userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
             {

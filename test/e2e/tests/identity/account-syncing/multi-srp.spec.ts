@@ -36,14 +36,12 @@ describe('Account syncing - Multiple SRPs', function () {
 
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = async (server: Mockttp) => {
-      // Await all setupPath calls to prevent race conditions where requests
-      // might hit the catch-all mock before specific mocks are registered
-      await userStorageMockttpController.setupPath(
+    const sharedMockSetup = (server: Mockttp) => {
+      userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
       );
-      await userStorageMockttpController.setupPath(
+      userStorageMockttpController.setupPath(
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );

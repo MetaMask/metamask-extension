@@ -453,9 +453,26 @@ class HomePage {
     );
     await this.driver.delay(POST_UNLOCK_DELAY);
     console.log('Check if account syncing has synced at least once');
+    // #region agent log
+    let pollCount = 0;
+    // #endregion
     await this.driver.waitUntil(
       async () => {
         const uiState = await getCleanAppState(this.driver);
+        // #region agent log
+        pollCount++;
+        const syncState =
+          uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce;
+        const isSignedIn = uiState?.metamask?.isSignedIn;
+        const isUnlocked = uiState?.metamask?.isUnlocked;
+        const isBackupAndSyncEnabled =
+          uiState?.metamask?.isBackupAndSyncEnabled;
+        const isAccountSyncingEnabled =
+          uiState?.metamask?.isAccountSyncingEnabled;
+        console.log(
+          `[DEBUG POLL #${pollCount}] syncState=${syncState}, isSignedIn=${isSignedIn}, isUnlocked=${isUnlocked}, isBackupAndSyncEnabled=${isBackupAndSyncEnabled}, isAccountSyncingEnabled=${isAccountSyncingEnabled}`,
+        );
+        // #endregion
         // Check for nullish, as the state we might seems to be `null` sometimes.
         return (
           uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
