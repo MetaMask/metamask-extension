@@ -2,6 +2,10 @@ import { isProduction } from '../modules/environment';
 import { SECOND } from './time';
 import { CHAIN_IDS } from './network';
 
+// Client identifiers for transaction metadata
+export const CLIENT_ID_EXTENSION_CHROME = 'extensionChrome';
+export const CLIENT_ID_EXTENSION_FIREFOX = 'extensionFirefox';
+
 export const FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME: number = SECOND * 10;
 export const FALLBACK_SMART_TRANSACTIONS_DEADLINE: number = 180;
 export const FALLBACK_SMART_TRANSACTIONS_EXPECTED_DEADLINE = 45;
