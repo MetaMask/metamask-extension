@@ -524,7 +524,7 @@ describe('NameDetails', () => {
     });
   });
 
-  it('updates proposed names on regular interval', () => {
+  it('updates proposed names on regular interval', async () => {
     renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -536,11 +536,17 @@ describe('NameDetails', () => {
     );
 
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(1999);
+    await act(async () => {
+      jest.advanceTimersByTime(1999);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(1);
+    await act(async () => {
+      jest.advanceTimersByTime(1);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(2);
-    jest.advanceTimersByTime(2000);
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(3);
   });
 
