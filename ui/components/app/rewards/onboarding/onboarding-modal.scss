@@ -1,0 +1,10 @@
+@use "design-system";
+
+// Lower z-index to ensure this modal appears behind other modals (e.g., QR code signing modal)
+.rewards-onboarding-modal {
+  &__overlay,
+  &__content {
+    z-index: design-system.$modal-z-index - 50;
+  }
+}
+

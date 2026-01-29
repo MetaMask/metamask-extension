@@ -2,6 +2,7 @@ import { useCallback, useContext, useState, useRef, useEffect } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useDispatch } from 'react-redux';
 import {
+  getRewardsHasAccountOptedIn,
   rewardsGetOptInStatus,
   rewardsIsOptInSupported,
   rewardsLinkAccountsToSubscriptionCandidate,
@@ -14,6 +15,11 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../../pages/multichain-accounts/account-details/account-type-utils';
 import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
+import { useMultichainSelector } from '../useMultichainSelector';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
+import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
+import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
+import { useRequestHardwareWalletAccess } from './useRequestHardwareWalletAccess';
 
 type UseLinkAccountAddressResult = {
   linkAccountAddress: (account: InternalAccount) => Promise<boolean>;
@@ -27,6 +33,12 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
   const [isError, setIsError] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
   const isMountedRef = useRef(true);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const { requestHardwareWalletAccess } = useRequestHardwareWalletAccess();
+
+  // Get accounts for the primary account group
+  const { accounts: primaryWalletGroupAccounts } =
+    usePrimaryWalletGroupAccounts();
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -73,8 +85,8 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
           return false;
         }
 
-        // Check opt-in status
-        const optInResponse = (await dispatch(
+        // Trigger opt-in status check
+        (await dispatch(
           rewardsGetOptInStatus({ addresses: [account.address] }),
         )) as unknown as OptInStatusDto;
 
@@ -82,9 +94,34 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
           return false;
         }
 
+        // Check if account has opted in
+        const caipAccountId = formatAccountToCaipAccountId(
+          account.address,
+          currentChainId?.toString() ?? '',
+        );
+        if (!caipAccountId) {
+          setIsError(true);
+          return false;
+        }
+
+        const hasOptedIn = (await dispatch(
+          getRewardsHasAccountOptedIn(caipAccountId),
+        )) as unknown as boolean;
+
         // If already opted in, return success
-        if (optInResponse.ois[0]) {
+        if (hasOptedIn) {
           return true;
+        }
+
+        // Request hardware wallet access before signing (must be in user gesture context)
+        const accessGranted = await requestHardwareWalletAccess();
+        if (!accessGranted) {
+          triggerAccountLinkingEvent(
+            MetaMetricsEventName.RewardsAccountLinkingFailed,
+            account,
+          );
+          setIsError(true);
+          return false;
         }
 
         // Emit started event
@@ -96,7 +133,10 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
         try {
           // Link the account
           const results = (await dispatch(
-            rewardsLinkAccountsToSubscriptionCandidate([account]),
+            rewardsLinkAccountsToSubscriptionCandidate(
+              [account],
+              primaryWalletGroupAccounts,
+            ),
           )) as unknown as { account: InternalAccount; success: boolean }[];
 
           if (!isMountedRef.current) {
@@ -146,7 +186,12 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
         }
       }
     },
-    [triggerAccountLinkingEvent, dispatch],
+    [
+      triggerAccountLinkingEvent,
+      dispatch,
+      requestHardwareWalletAccess,
+      primaryWalletGroupAccounts,
+    ],
   );
 
   return {

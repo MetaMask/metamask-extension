@@ -1,15 +1,12 @@
 import { useCallback, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import { AccountGroupId } from '@metamask/account-api';
 import log from 'loglevel';
 import {
-  getMultichainAccountsByWalletId,
-  getWalletIdAndNameByAccountAddress,
   getSelectedAccountGroup,
   getInternalAccountsFromGroupById,
 } from '../../selectors/multichain-accounts/account-tree';
 import { setCandidateSubscriptionId } from '../../ducks/rewards';
-import { getSelectedAccount } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -24,7 +21,9 @@ import {
 } from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { useI18nContext } from '../useI18nContext';
-import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+import { getHardwareWalletName } from '../../ducks/bridge/selectors';
+import { useRequestHardwareWalletAccess } from './useRequestHardwareWalletAccess';
+import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 export type UseOptinResult = {
   /**
@@ -54,37 +53,15 @@ type UseOptInOptions = {
 export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const [optinError, setOptinError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const hardwareWalletName = useSelector(getHardwareWalletName);
   const [optinLoading, setOptinLoading] = useState<boolean>(false);
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
-  const selectedAccount = useSelector(getSelectedAccount);
-  const { id: walletId } = useSelector((state) =>
-    getWalletIdAndNameByAccountAddress(state, selectedAccount.address),
-  ) || { walletId: undefined };
 
-  const accountGroupsByWallet = useSelector((state: MultichainAccountsState) =>
-    walletId
-      ? getMultichainAccountsByWalletId(state, walletId as AccountWalletId)
-      : {},
-  );
-
-  // Link the first account group in the wallet if it's not the selected account group.
-  const sideEffectAccountGroupIdToLink = useMemo(
-    () =>
-      accountGroupsByWallet ? Object.keys(accountGroupsByWallet)[0] : undefined,
-    [accountGroupsByWallet],
-  );
-
-  // Get accounts for side effect account group
-  const sideEffectAccounts = useSelector((state) =>
-    sideEffectAccountGroupIdToLink
-      ? getInternalAccountsFromGroupById(
-          state,
-          sideEffectAccountGroupIdToLink as AccountGroupId,
-        )
-      : [],
-  );
+  // Hardware wallet detection and access
+  const { requestHardwareWalletAccess, isHardwareWalletAccount } =
+    useRequestHardwareWalletAccess();
 
   // Get accounts for active (selected) account group
   const activeGroupAccounts = useSelector((state) =>
@@ -96,6 +73,12 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
       : [],
   );
 
+  // Get accounts for the primary account group
+  const {
+    accounts: primaryWalletGroupAccounts,
+    accountGroupId: primaryWalletAccountGroupId,
+  } = usePrimaryWalletGroupAccounts();
+
   const handleOptIn = useCallback(
     async (referralCode?: string) => {
       const referred = Boolean(referralCode);
@@ -103,6 +86,8 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
         referred,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         referral_code_used: referralCode,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        is_hardware_wallet: isHardwareWalletAccount,
       };
       trackEvent({
         category: MetaMetricsEventCategory.Rewards,
@@ -116,27 +101,51 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
         setOptinLoading(true);
         setOptinError(null);
 
+        // For hardware wallets, request USB/HID access first (must be in user gesture context)
+        if (isHardwareWalletAccount) {
+          const accessGranted = await requestHardwareWalletAccess();
+          if (!accessGranted) {
+            setOptinError(
+              t('hardwareWalletSubmissionWarningStep1', [hardwareWalletName]),
+            );
+            setOptinLoading(false);
+            trackEvent({
+              category: MetaMetricsEventCategory.Rewards,
+              event: MetaMetricsEventName.RewardsOptInFailed,
+              properties: {
+                ...metricsProps,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                failure_reason: 'hardware_wallet_access_denied',
+              },
+            });
+            return;
+          }
+        }
+
         // First, opt in with side effect accounts
         const accountsToOptIn =
-          sideEffectAccountGroupIdToLink && sideEffectAccounts.length > 0
-            ? sideEffectAccounts
+          primaryWalletAccountGroupId && primaryWalletGroupAccounts.length > 0
+            ? primaryWalletGroupAccounts
             : activeGroupAccounts;
 
         const accountsToLinkAfterOptIn =
-          sideEffectAccountGroupIdToLink && sideEffectAccounts.length > 0
+          primaryWalletAccountGroupId && primaryWalletGroupAccounts.length > 0
             ? activeGroupAccounts
-            : sideEffectAccounts;
+            : primaryWalletGroupAccounts;
 
         subscriptionId = (await dispatch(
           rewardsOptIn({ accounts: accountsToOptIn, referralCode }),
         )) as unknown as string | null;
 
         if (subscriptionId) {
-          if (accountsToLinkAfterOptIn.length > 0) {
+          // Prevent more than 1 explicit sign request for opting in, in case of hardware wallet
+          // Linking of other accounts for the hardware wallet can be handled later.
+          if (accountsToLinkAfterOptIn.length > 0 && !isHardwareWalletAccount) {
             try {
               await dispatch(
                 rewardsLinkAccountsToSubscriptionCandidate(
                   accountsToLinkAfterOptIn,
+                  primaryWalletGroupAccounts,
                 ),
               );
             } catch {
@@ -199,13 +208,16 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
     },
     [
       trackEvent,
-      sideEffectAccountGroupIdToLink,
-      sideEffectAccounts,
+      primaryWalletAccountGroupId,
+      primaryWalletGroupAccounts,
       activeGroupAccounts,
       dispatch,
       t,
       options?.rewardPoints,
       options?.shieldSubscriptionId,
+      isHardwareWalletAccount,
+      requestHardwareWalletAccess,
+      hardwareWalletName,
     ],
   );
 
