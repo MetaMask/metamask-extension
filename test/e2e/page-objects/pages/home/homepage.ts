@@ -460,7 +460,7 @@ class HomePage {
       async () => {
         const uiState = await getCleanAppState(this.driver);
         // #region agent log
-        pollCount++;
+        pollCount += 1;
         const syncState =
           uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce;
         const isSignedIn = uiState?.metamask?.isSignedIn;
