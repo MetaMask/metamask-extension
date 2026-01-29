@@ -1,4 +1,5 @@
 import urlLib from 'url';
+import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
@@ -518,16 +519,11 @@ function isLocalhostOrIPAddress(hostname: string): boolean {
     return true;
   }
 
-  // Check for IPv4 address (e.g., 192.168.1.1, 127.0.0.1, 8.8.8.8)
-  const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/u;
-  if (ipv4Regex.test(lowerHostname)) {
-    return true;
-  }
+  // Remove brackets from IPv6 addresses for testing (e.g., [::1] -> ::1)
+  const hostnameWithoutBrackets = lowerHostname.replace(/^\[|\]$/gu, '');
 
-  // Check for IPv6 address (with or without brackets)
-  // Matches: ::1, [::1], 2001:db8::1, [2001:db8::1]
-  const ipv6Regex = /^(\[)?([0-9a-f:]+)(\])?$/u;
-  if (ipv6Regex.test(lowerHostname) && lowerHostname.includes(':')) {
+  // Check for IP address (v4 or v6)
+  if (ipRegex({ exact: true }).test(hostnameWithoutBrackets)) {
     return true;
   }
 
