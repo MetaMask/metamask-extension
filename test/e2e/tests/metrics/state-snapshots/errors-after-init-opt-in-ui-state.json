@@ -82,6 +82,7 @@
   "invalidCustomNetwork": "object",
   "localeMessages": "object",
   "metamask": {
+    "ConfigRegistryController": "object",
     "accountGroupsMetadata": "object",
     "accountTree": "object",
     "accountWalletsMetadata": "object",
@@ -112,7 +113,6 @@
     "canTrackWalletFundsObtained": false,
     "claims": "object",
     "claimsConfigurations": "object",
-    "ConfigRegistryController": "object",
     "completedOnboarding": true,
     "connectedStatusPopoverHasBeenShown": true,
     "connectivityStatus": "online",
