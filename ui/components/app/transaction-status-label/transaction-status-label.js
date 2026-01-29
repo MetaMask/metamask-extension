@@ -22,6 +22,7 @@ const SIGNING_PSUEDO_STATUS = 'signing';
 const pendingStatusHash = {
   [TransactionStatus.submitted]: TransactionGroupStatus.pending,
   [TransactionStatus.approved]: TransactionGroupStatus.pending,
+  [TransactionStatus.signed]: TransactionGroupStatus.pending,
 };
 
 const statusToClassNameHash = {
