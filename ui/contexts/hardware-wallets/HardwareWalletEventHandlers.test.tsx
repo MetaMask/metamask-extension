@@ -16,6 +16,7 @@ import { ConnectionState } from './connectionState';
 describe('useDeviceEventHandlers', () => {
   let mockRefs: {
     abortControllerRef: { current: AbortController | null };
+    connectingPromiseRef: { current: Promise<void> | null };
     isConnectingRef: { current: boolean };
     adapterRef: { current: HardwareWalletAdapter | null };
     currentConnectionIdRef: { current: number | null };
@@ -25,6 +26,8 @@ describe('useDeviceEventHandlers', () => {
     deviceIdRef: { current: string | null };
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
+    ensureDeviceReadyPromiseRef: { current: Promise<boolean> | null };
+    ensureDeviceReadyDeviceIdRef: { current: string | null };
   };
   let mockSetters: {
     setConnectionState: jest.Mock;
@@ -38,6 +41,7 @@ describe('useDeviceEventHandlers', () => {
 
     mockRefs = {
       abortControllerRef: { current: new AbortController() },
+      connectingPromiseRef: { current: null },
       isConnectingRef: { current: false },
       adapterRef: { current: null },
       currentConnectionIdRef: { current: null },
@@ -47,6 +51,8 @@ describe('useDeviceEventHandlers', () => {
       deviceIdRef: { current: null },
       walletTypeRef: { current: null },
       previousWalletTypeRef: { current: null },
+      ensureDeviceReadyPromiseRef: { current: null },
+      ensureDeviceReadyDeviceIdRef: { current: null },
     };
 
     mockSetters = {
