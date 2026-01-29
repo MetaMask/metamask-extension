@@ -1053,18 +1053,22 @@ export async function loadStateFromPersistence(backup) {
     const backupShouldExist =
       typeof preMigrationVersion === 'number' && preMigrationVersion >= 157;
 
-    // Fetch backup from IndexedDB for Sentry tags (only when error occurs)
-    // The backup parameter to loadStateFromPersistence is only set during vault recovery,
-    // so we need to fetch from IndexedDB to get firstTimeInfo for normal error scenarios
-    // Wrapped in try/catch to avoid blocking the migration error if backup fetch fails
-    let firstTimeInfo;
-    try {
-      const indexedDbBackup = await persistenceManager.getBackup();
-      // Get firstTimeInfo from AppMetadataController in backup (contains installation version and date)
-      // AppMetadataController is in backedUpStateKeys, so firstTimeInfo is automatically backed up
-      firstTimeInfo = indexedDbBackup?.AppMetadataController?.firstTimeInfo;
-    } catch {
-      // Ignore backup fetch errors - we still want to report the migration error
+    // Try to get firstTimeInfo for Sentry tags (installation version and date)
+    // Check in-memory sources first (fast, synchronous checks)
+    let firstTimeInfo =
+      backup?.AppMetadataController?.firstTimeInfo ??
+      versionedData?.data?.AppMetadataController?.firstTimeInfo ??
+      preMigrationVersionedData?.data?.AppMetadataController?.firstTimeInfo;
+
+    // Fallback to IndexedDB backup if in-memory sources don't have it
+    // (handles corruption scenarios where storage.local is damaged)
+    if (!firstTimeInfo) {
+      try {
+        const indexedDbBackup = await persistenceManager.getBackup();
+        firstTimeInfo = indexedDbBackup?.AppMetadataController?.firstTimeInfo;
+      } catch {
+        // Ignore backup fetch errors - we still want to report the migration error
+      }
     }
 
     const error = new Error(message);
