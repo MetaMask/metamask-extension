@@ -158,7 +158,7 @@ const createControllerMessenger = ({
         return mockGetAccountByAddress.mockReturnValue(account)(params);
 
       case 'AccountsController:listMultichainAccounts':
-        return mockListMultichainAccounts.mockReturnValue([])();
+        return mockListMultichainAccounts.mockReturnValue([account])();
 
       case 'AccountsController:setSelectedAccount':
         return mockSetSelectedAccount(params);
@@ -274,6 +274,9 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
+      // Wait for all promises to complete, including the fire-and-forget #addAccountFinalize
+      await waitForAllPromises();
+
       // 1. Account creation confirmation dialogs
       // 2. Account creation summary dialog
       expect(mockStartFlow).toHaveBeenCalledTimes(2);
@@ -353,6 +356,9 @@ describe('Snap Keyring Methods', () => {
           displayConfirmation: false,
         },
       });
+
+      // Wait for all promises to complete, including the fire-and-forget #addAccountFinalize
+      await waitForAllPromises();
 
       // Skipping confirmations means no dialogs are shown, so no confirmations flows are started.
       expect(mockStartFlow).toHaveBeenCalledTimes(0);

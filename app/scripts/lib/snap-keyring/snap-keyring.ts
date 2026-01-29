@@ -201,6 +201,40 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     });
   }
 
+  /**
+   * Wait for an account to be available in the AccountsController.
+   * This function polls the AccountsController to check if an account with the given ID exists.
+   *
+   * @param accountId - The ID of the account to wait for.
+   * @param maxAttempts - Maximum number of polling attempts (default: 50).
+   * @param delayMs - Delay between polling attempts in milliseconds (default: 100).
+   * @returns A promise that resolves to true when the account is found, or false if max attempts reached.
+   */
+  async #waitForAccountInController(
+    accountId: string,
+    maxAttempts = 50,
+    delayMs = 100,
+  ): Promise<boolean> {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const accounts = this.#messenger.call(
+        'AccountsController:listMultichainAccounts',
+      );
+
+      const accountExists = accounts.some(
+        (account) => account.id === accountId,
+      );
+
+      if (accountExists) {
+        return true;
+      }
+
+      // Wait before the next attempt
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+
+    return false;
+  }
+
   async #addAccountFinalize({
     address,
     snapId,
@@ -253,10 +287,20 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         const accountId = await onceSaved;
 
         // From here, we know the account has been saved into the Snap keyring
-        // state, so we can safely uses this state to run post-processing.
-        // (e.g. renaming the account, select the account, etc...)
+        // state, but we need to wait for it to be persisted in AccountsController
+        // before we can safely use it for post-processing operations.
 
         if (!skipSetSelectedAccountStep) {
+          // Wait for the account to be available in AccountsController to prevent race conditions
+          const accountAvailable =
+            await this.#waitForAccountInController(accountId);
+
+          if (!accountAvailable) {
+            throw new Error(
+              `Account "${accountId}" not found in AccountsController after waiting`,
+            );
+          }
+
           // Set the selected account to the new account
           this.#messenger.call(
             'AccountsController:setSelectedAccount',
