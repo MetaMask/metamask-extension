@@ -1,6 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 
-class SnapTransactionConfirmation {
+class SnapSignTransactionConfirmation {
   protected driver: Driver;
 
   private cancelButton = {
@@ -24,13 +24,6 @@ class SnapTransactionConfirmation {
     this.driver = driver;
   }
 
-  async checkAccountIsDisplayed(expectedValue: string): Promise<void> {
-    await this.driver.findElement({
-      testId: this.addressTestId,
-      text: expectedValue,
-    });
-  }
-
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -48,12 +41,8 @@ class SnapTransactionConfirmation {
     console.log('Snap transaction confirmation page is loaded');
   }
 
-  async clickFooterCancelButton() {
-    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
-  }
-
   async clickFooterConfirmButton() {
     await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
   }
 }
-export default SnapTransactionConfirmation;
+export default SnapSignTransactionConfirmation;
