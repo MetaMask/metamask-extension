@@ -36,7 +36,10 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { formatDate } from '../../../../helpers/utils/util';
+import {
+  formatDate,
+  transformOriginToTitle,
+} from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { ShowMore } from '../show-more';
@@ -63,7 +66,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
     ? versionHistory[versionHistory.length - 1]
     : undefined;
 
-  const installOrigin = useOriginMetadata(installInfo?.origin);
+  const installOrigin = transformOriginToTitle(installInfo?.origin);
   const isSnapRequesting = isSnapId(installInfo?.origin);
 
   const snapPrefix = getSnapPrefix(snapId);
@@ -169,7 +172,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
               <Text ellipsis>
                 {isSnapRequesting
                   ? stripSnapPrefix(installInfo.origin)
-                  : installOrigin.host}
+                  : installOrigin}
               </Text>
             </Box>
           )}

@@ -44,8 +44,7 @@ export default function SnapInstall({
   targetSubjectMetadata,
 }) {
   const t = useI18nContext();
-  const siteMetadata = useOriginMetadata(request?.metadata?.dappOrigin) || {};
-  const { origin, iconUrl } = siteMetadata;
+  const { iconUrl } = useOriginMetadata(request?.metadata?.dappOrigin) || {};
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
   const [showAllPermissions, setShowAllPermissions] = useState(false);
@@ -116,7 +115,10 @@ export default function SnapInstall({
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
       {(isLoading || hasError) && !isOriginSnap ? (
-        <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
+        <PermissionConnectHeader
+          origin={request?.metadata?.dappOrigin}
+          iconUrl={iconUrl}
+        />
       ) : (
         <SnapAuthorshipHeader
           snapId={

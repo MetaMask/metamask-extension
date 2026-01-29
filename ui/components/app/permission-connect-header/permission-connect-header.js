@@ -18,18 +18,13 @@ import {
   AvatarFavicon,
   AvatarBase,
 } from '../../component-library';
-import { getAvatarFallbackLetter } from '../../../helpers/utils/util';
+import {
+  getAvatarFallbackLetter,
+  transformOriginToTitle,
+} from '../../../helpers/utils/util';
 import { Nav } from '../../../pages/confirmations/components/confirm/nav';
 
 const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
-  const transformOriginToTitle = (rawOrigin) => {
-    try {
-      const url = new URL(rawOrigin);
-      return url.hostname;
-    } catch (e) {
-      return 'Unknown Origin';
-    }
-  };
   const title = transformOriginToTitle(origin);
 
   return (

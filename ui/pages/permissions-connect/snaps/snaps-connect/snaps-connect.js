@@ -18,7 +18,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
-import { getDedupedSnaps } from '../../../../helpers/utils/util';
+import {
+  getDedupedSnaps,
+  transformOriginToTitle,
+} from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
 import {
@@ -26,7 +29,6 @@ import {
   getPreinstalledSnaps,
   getSnapMetadata,
 } from '../../../../selectors';
-import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
 
 export default function SnapsConnect({
@@ -71,7 +73,7 @@ export default function SnapsConnect({
   }, [request, approveConnection]);
 
   const SnapsConnectContent = () => {
-    let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;
+    let trimmedOrigin = transformOriginToTitle(origin);
     const { name } = useSelector((state) =>
       // hack around the selector throwing
       getSnapMetadata(state, isSnapId(origin) ? origin : `npm:${origin}`),

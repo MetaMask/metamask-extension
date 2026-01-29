@@ -19,9 +19,11 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { formatDate } from '../../../../helpers/utils/util';
+import {
+  formatDate,
+  transformOriginToTitle,
+} from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapRegistryData } from '../../../../selectors';
 import { disableSnap, enableSnap } from '../../../../store/actions';
 import { Box, ButtonLink, Text } from '../../../component-library';
@@ -58,7 +60,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const installInfo = versionHistory.length
     ? versionHistory[versionHistory.length - 1]
     : undefined;
-  const installOrigin = useOriginMetadata(installInfo?.origin);
+  const installOrigin = transformOriginToTitle(installInfo?.origin);
 
   const onToggle = () => {
     if (snap?.enabled) {
@@ -144,7 +146,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
               flexDirection={FlexDirection.Column}
               alignItems={AlignItems.flexEnd}
             >
-              <Text textAlign={TextAlign.End}>{installOrigin.host}</Text>
+              <Text textAlign={TextAlign.End}>{installOrigin}</Text>
               <Text color={Color.textMuted}>
                 {t('installedOn', [
                   formatDate(installInfo.date, 'dd MMM yyyy'),
