@@ -19,6 +19,12 @@ import { MultichainAccountServiceInit } from './multichain-account-service-init'
 
 jest.mock('@metamask/multichain-account-service');
 
+// Get the actual SOL_ACCOUNT_PROVIDER_NAME constant from the real module
+// since we need it for the test assertion even though the module is mocked
+const { SOL_ACCOUNT_PROVIDER_NAME } = jest.requireActual<
+  typeof import('@metamask/multichain-account-service')
+>('@metamask/multichain-account-service');
+
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
     MultichainAccountServiceMessenger,
@@ -86,5 +92,28 @@ describe('MultichainAccountServiceInit', () => {
       providerConfigs: expect.any(Object),
       config: expect.any(Object),
     });
+  });
+
+  it('initializes with correct timeout configuration for Bitcoin/Solana alignment', () => {
+    const requestMock = buildInitRequestMock();
+    MultichainAccountServiceInit(requestMock);
+
+    expect(accountTreeControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        providerConfigs: expect.objectContaining({
+          [SOL_ACCOUNT_PROVIDER_NAME]: expect.objectContaining({
+            discovery: expect.objectContaining({
+              timeoutMs: 10000,
+              maxAttempts: 3,
+              backOffMs: 1000,
+            }),
+            createAccounts: expect.objectContaining({
+              timeoutMs: 15000,
+            }),
+            maxConcurrency: 1,
+          }),
+        }),
+      }),
+    );
   });
 });
