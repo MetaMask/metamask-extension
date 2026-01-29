@@ -3,6 +3,7 @@
  */
 
 import { readFileSync } from 'node:fs';
+import { cpus } from 'node:os';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
@@ -33,7 +34,7 @@ import {
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
-import { getSwcLoader } from './utils/loaders/swcLoader';
+import { getSwcLoader } from './utils/loaders/getSwcLoader';
 import { getVariables, resolveEnvironment } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
@@ -232,6 +233,7 @@ const reactCompilerLoader = getReactCompilerLoader(
   '17',
   args.reactCompilerVerbose,
   args.reactCompilerDebug,
+  !args.generatePolicy, // Skip wrapper during policy generation (not resolvable under LavaMoat)
 );
 
 const config = {
@@ -338,7 +340,24 @@ const config = {
       {
         test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
         include: UI_DIR_RE,
-        use: [reactCompilerLoader],
+        use: [
+          // Disable thread-loader when:
+          // - Generating LavaMoat policies (static analysis needs full module graph)
+          // - Using --reactCompilerVerbose (stats collection requires _module.buildMeta
+          //   which is null in thread-loader workers)
+          ...(args.generatePolicy || args.reactCompilerVerbose
+            ? []
+            : [
+                {
+                  loader: 'thread-loader',
+                  options: {
+                    workers: Math.max(1, cpus().length - 1),
+                    workerParallelJobs: 50,
+                  },
+                },
+              ]),
+          reactCompilerLoader,
+        ],
       },
       // own typescript, and own typescript with jsx
       {

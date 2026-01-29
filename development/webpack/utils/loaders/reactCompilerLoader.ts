@@ -1,142 +1,101 @@
+import { join, sep } from 'path';
 import {
+  reactCompilerLoader,
   type ReactCompilerLoaderOption,
   defineReactCompilerLoaderOption,
-  reactCompilerLoader,
 } from 'react-compiler-webpack';
-import type { Logger } from 'babel-plugin-react-compiler';
 
 /**
- * React Compiler logger that tracks compilation statistics
+ * Lazily resolve the wrapper path to avoid resolution errors during LavaMoat policy generation.
+ * The wrapper is only needed when thread-loader is active (i.e., NOT during policy generation).
  */
-class ReactCompilerLogger {
-  private compiledCount = 0;
-
-  private skippedCount = 0;
-
-  private errorCount = 0;
-
-  private todoCount = 0;
-
-  private compiledFiles: string[] = [];
-
-  private skippedFiles: string[] = [];
-
-  private errorFiles: string[] = [];
-
-  private todoFiles: string[] = [];
-
-  logEvent(
-    filename: string | null,
-    event: { kind: string; detail: { options: { category: string } } },
-  ) {
-    if (filename === null) {
-      return;
+const getWrapperPath = (() => {
+  let cachedPath: string | null = null;
+  return () => {
+    if (cachedPath === null) {
+      // Resolve to source location regardless of whether running from source or compiled (.webpack) code
+      // Use specific path segment replacement to avoid matching .webpack elsewhere in path
+      // no need to escape for regex because we're using a specific path segment replacement
+      cachedPath = join(
+        __dirname.replace(
+          `${sep}development${sep}.webpack${sep}`,
+          `${sep}development${sep}webpack${sep}`,
+        ),
+        'reactCompilerLoaderWrapper.cjs',
+      );
     }
-    const { options: errorDetails } = event.detail ?? {};
-    switch (event.kind) {
-      case 'CompileSuccess':
-        this.compiledCount++;
-        this.compiledFiles.push(filename);
-        console.log(`✅ Compiled: ${filename}`);
-        break;
-      case 'CompileSkip':
-        this.skippedCount++;
-        this.skippedFiles.push(filename);
-        break;
-      case 'CompileError':
-        // This error is thrown for syntax that is not yet supported by the React Compiler.
-        // We count these separately as "unsupported" errors, since there's no actionable fix we can apply.
-        if (errorDetails?.category === 'Todo') {
-          this.todoCount++;
-          this.todoFiles.push(filename);
-          break;
-        }
-        this.errorCount++;
-        this.errorFiles.push(filename);
-        console.error(
-          `❌ React Compiler error in ${filename}: ${errorDetails ? JSON.stringify(errorDetails) : 'Unknown error'}`,
-        );
-        break;
-      default:
-        break;
-    }
-  }
-
-  getStats() {
-    return {
-      compiled: this.compiledCount,
-      skipped: this.skippedCount,
-      errors: this.errorCount,
-      unsupported: this.todoCount,
-      total:
-        this.compiledCount +
-        this.skippedCount +
-        this.errorCount +
-        this.todoCount,
-      compiledFiles: this.compiledFiles,
-      skippedFiles: this.skippedFiles,
-      errorFiles: this.errorFiles,
-      unsupportedFiles: this.todoFiles,
-    };
-  }
-
-  logSummary() {
-    const stats = this.getStats();
-    console.log('\n📊 React Compiler Statistics:');
-    console.log(`   ✅ Compiled: ${stats.compiled} files`);
-    console.log(`   ⏭️  Skipped: ${stats.skipped} files`);
-    console.log(`   ❌ Errors: ${stats.errors} files`);
-    console.log(`   🔍 Unsupported: ${stats.unsupported} files`);
-    console.log(`   📦 Total processed: ${stats.total} files`);
-  }
-
-  /**
-   * Reset all statistics. Should be called after each build in watch mode
-   * to prevent accumulation across rebuilds.
-   */
-  reset() {
-    this.compiledCount = 0;
-    this.skippedCount = 0;
-    this.errorCount = 0;
-    this.todoCount = 0;
-    this.compiledFiles = [];
-    this.skippedFiles = [];
-    this.errorFiles = [];
-    this.todoFiles = [];
-  }
-}
-
-const reactCompilerLogger = new ReactCompilerLogger();
+    return cachedPath;
+  };
+})();
 
 /**
- * Get the React Compiler logger singleton instance to access statistics.
+ * React Compiler result status stored in module.buildMeta.
+ * This allows statistics to be collected from all modules after compilation,
+ * even when using thread-loader (which runs loaders in separate worker threads).
  */
-export function getReactCompilerLogger(): ReactCompilerLogger {
-  return reactCompilerLogger;
-}
+export type ReactCompilerStatus =
+  | 'compiled'
+  | 'skipped'
+  | 'error'
+  | 'unsupported';
+
+// Key for storing react compiler status in buildMeta
+// Must match the key in reactCompilerLoaderWrapper.cjs
+export const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
 
 /**
- * Get the React Compiler loader.
+ * Statistics collected from module buildMeta after compilation.
+ */
+export type ReactCompilerStats = {
+  compiled: number;
+  skipped: number;
+  errors: number;
+  unsupported: number;
+  total: number;
+  compiledFiles: string[];
+  skippedFiles: string[];
+  errorFiles: string[];
+  unsupportedFiles: string[];
+};
+
+/**
+ * Get the React Compiler loader configuration.
  *
  * @param target - The target version of the React Compiler.
- * @param verbose - Whether to enable verbose mode.
+ * @param verbose - Whether to enable verbose mode (per-file logging).
  * @param debug - The debug level to use.
- * - 'all': Fail build on and display debug information for all compilation errors.
- * - 'critical': Fail build on and display debug information only for critical compilation errors.
- * - 'none': Prevent build from failing.
+ * - 'all': Fail build on all compilation errors.
+ * - 'critical': Fail build on critical compilation errors only.
+ * - 'none': Don't fail the build on errors.
+ * @param useWrapper - Whether to use the wrapper loader for buildMeta tracking.
+ * Set to false when generating LavaMoat policies (thread-loader is disabled anyway).
  * @returns The React Compiler loader object with the loader and configured options.
  */
 export const getReactCompilerLoader = (
   target: ReactCompilerLoaderOption['target'],
   verbose: boolean,
   debug: 'all' | 'critical' | 'none',
+  useWrapper = true,
 ) => {
   const reactCompilerOptions = {
     target,
-    logger: verbose ? (reactCompilerLogger as Logger) : undefined,
     panicThreshold: debug === 'none' ? undefined : `${debug}_errors`,
   } as const satisfies ReactCompilerLoaderOption;
 
+  // Use wrapper for buildMeta tracking (needed for thread-loader stats collection)
+  // Skip wrapper during policy generation (thread-loader disabled, wrapper not resolvable under LavaMoat)
+  if (useWrapper) {
+    return {
+      loader: getWrapperPath(),
+      options: {
+        ...defineReactCompilerLoaderOption(reactCompilerOptions),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        __verbose: verbose,
+      },
+    };
+  }
+
+  // Direct loader without wrapper (for policy generation)
   return {
     loader: reactCompilerLoader,
     options: defineReactCompilerLoaderOption(reactCompilerOptions),
