@@ -1,3 +1,5 @@
+import { hasMinimumRequiredVersion } from '../feature-flags/version-gating';
+
 export const ASSETS_UNIFY_STATE_VERSION_1 = '1';
 
 export type AssetsUnifyStateFeatureFlag = {
@@ -31,11 +33,13 @@ export const isAssetsUnifyStateFeatureEnabled = (
     return false;
   }
 
-  // TODO: Add minimum version check if needed
-  // const currentVersion = getAppVersion();
-  // if (featureFlag.minimumVersion && semver.lt(currentVersion, featureFlag.minimumVersion)) {
-  //   return false;
-  // }
+  // Check if the app version meets the minimum required version
+  if (
+    featureFlag.minimumVersion &&
+    !hasMinimumRequiredVersion(featureFlag.minimumVersion)
+  ) {
+    return false;
+  }
 
   return true;
 };

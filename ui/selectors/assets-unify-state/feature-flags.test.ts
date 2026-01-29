@@ -4,6 +4,10 @@ import {
   ASSETS_UNIFY_STATE_FLAG,
 } from './feature-flags';
 
+jest.mock('../../../../package.json', () => ({
+  version: '13.50.0',
+}));
+
 describe('Assets Unify State Feature Flags', () => {
   describe('getAssetsUnifyStateRemoteFeatureFlag', () => {
     it('returns the feature flag when it exists and is valid', () => {
@@ -122,6 +126,60 @@ describe('Assets Unify State Feature Flags', () => {
       const result = getIsAssetsUnifyStateEnabled(state);
 
       expect(result).toBe(false);
+    });
+
+    it('returns false when app version is below minimum required version', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: '1',
+              minimumVersion: '14.0.0', // Higher than mocked version 13.50.0
+            },
+          },
+        },
+      };
+
+      const result = getIsAssetsUnifyStateEnabled(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('returns true when app version meets minimum required version', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: '1',
+              minimumVersion: '13.0.0', // Lower than mocked version 13.50.0
+            },
+          },
+        },
+      };
+
+      const result = getIsAssetsUnifyStateEnabled(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('returns true when minimumVersion is null', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            [ASSETS_UNIFY_STATE_FLAG]: {
+              enabled: true,
+              featureVersion: '1',
+              minimumVersion: null,
+            },
+          },
+        },
+      };
+
+      const result = getIsAssetsUnifyStateEnabled(state);
+
+      expect(result).toBe(true);
     });
   });
 });
