@@ -10,6 +10,11 @@ import { SignatureRequestType } from '../../../types/confirm';
 import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigationOptions,
+} from '../../../hooks/useConfirmationNavigation';
+import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
 import { MusdConversionInfo } from './musd-conversion-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
 import ApproveInfo from './approve/approve';
@@ -35,8 +40,8 @@ export const InfoSkeleton = () => (
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
+  const { loader } = useConfirmationNavigationOptions();
 
-  // TODO: Create TransactionInfo and SignatureInfo components.
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
 
@@ -85,6 +90,10 @@ const Info = () => {
   );
 
   if (!currentConfirmation?.type) {
+    if (loader === ConfirmationLoader.CustomAmount) {
+      return <CustomAmountInfoSkeleton />;
+    }
+
     return <InfoSkeleton />;
   }
 
