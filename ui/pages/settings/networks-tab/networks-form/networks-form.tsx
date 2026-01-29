@@ -27,7 +27,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
-import { isPublicEndpointUrl } from '../../../../../shared/lib/network-utils';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
@@ -326,10 +326,20 @@ export const NetworksForm = ({
 
             const chainIdAsDecimal = hexToNumber(chainIdHex);
 
-            const sanitizeRpcUrl = (url: string) =>
-              isPublicEndpointUrl(url, infuraProjectId ?? '')
-                ? onlyKeepHost(url)
-                : 'custom';
+            const sanitizeRpcUrl = async (url: string) => {
+              const isPublic = await submitRequestToBackground<boolean>(
+                'isPublicEndpointUrl',
+                [url],
+              );
+              return isPublic ? onlyKeepHost(url) : 'custom';
+            };
+
+            const [fromRpcDomain, toRpcDomain] = await Promise.all([
+              oldRpcEndpoint?.url
+                ? sanitizeRpcUrl(oldRpcEndpoint.url)
+                : Promise.resolve('unknown'),
+              sanitizeRpcUrl(newRpcEndpoint.url),
+            ]);
 
             trackEvent({
               category: MetaMetricsEventCategory.Network,
@@ -338,10 +348,8 @@ export const NetworksForm = ({
               /* eslint-disable @typescript-eslint/naming-convention */
               properties: {
                 chain_id_caip: `eip155:${chainIdAsDecimal}`,
-                from_rpc_domain: oldRpcEndpoint?.url
-                  ? sanitizeRpcUrl(oldRpcEndpoint.url)
-                  : 'unknown',
-                to_rpc_domain: sanitizeRpcUrl(newRpcEndpoint.url),
+                from_rpc_domain: fromRpcDomain,
+                to_rpc_domain: toRpcDomain,
               },
               /* eslint-enable @typescript-eslint/naming-convention */
             });

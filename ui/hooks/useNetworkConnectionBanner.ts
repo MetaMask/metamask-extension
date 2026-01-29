@@ -12,10 +12,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import { infuraProjectId } from '../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { onlyKeepHost } from '../../shared/lib/only-keep-host';
-import { isPublicEndpointUrl } from '../../shared/lib/network-utils';
+import { submitRequestToBackground } from '../store/background-connection';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 
@@ -76,7 +75,7 @@ export const useNetworkConnectionBanner =
     }, [clearDegradedTimer, clearUnavailableTimer]);
 
     const trackNetworkBannerEvent = useCallback(
-      ({
+      async ({
         bannerType,
         eventName,
         networkClientId,
@@ -85,13 +84,6 @@ export const useNetworkConnectionBanner =
         eventName: string;
         networkClientId: string;
       }) => {
-        if (!infuraProjectId) {
-          console.warn(
-            'Infura project ID not found, cannot track network banner event',
-          );
-          return;
-        }
-
         let foundNetwork: { chainId: Hex; url: string } | undefined;
         for (const networkConfiguration of Object.values(
           networkConfigurationsByChainId,
@@ -116,9 +108,11 @@ export const useNetworkConnectionBanner =
 
         const rpcUrl = foundNetwork.url;
         const chainIdAsDecimal = hexToNumber(foundNetwork.chainId);
-        const sanitizedRpcUrl = isPublicEndpointUrl(rpcUrl, infuraProjectId)
-          ? onlyKeepHost(rpcUrl)
-          : 'custom';
+        const isPublic = await submitRequestToBackground<boolean>(
+          'isPublicEndpointUrl',
+          [rpcUrl],
+        );
+        const sanitizedRpcUrl = isPublic ? onlyKeepHost(rpcUrl) : 'custom';
 
         trackEvent({
           category: MetaMetricsEventCategory.Network,

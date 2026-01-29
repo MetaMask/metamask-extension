@@ -30,6 +30,7 @@ import {
   extractRpcDomain,
   isKnownDomain,
   initializeRpcProviderDomains,
+  isPublicEndpointUrl,
 } from './util';
 
 // Mock the module
@@ -606,6 +607,28 @@ describe('app utils', () => {
       expect(extractRpcDomain(null)).toBe('invalid');
       expect(extractRpcDomain('http://')).toBe('invalid');
       expect(extractRpcDomain('https://')).toBe('invalid');
+    });
+  });
+
+  describe('isPublicEndpointUrl', () => {
+    const MOCK_INFURA_PROJECT_ID = 'test-project-id';
+
+    it('should return true for Infura URLs', () => {
+      expect(
+        isPublicEndpointUrl(
+          `https://mainnet.infura.io/v3/${MOCK_INFURA_PROJECT_ID}`,
+          MOCK_INFURA_PROJECT_ID,
+        ),
+      ).toBe(true);
+    });
+
+    it('should return false for unknown URLs', () => {
+      expect(
+        isPublicEndpointUrl(
+          'https://unknown.example.com',
+          MOCK_INFURA_PROJECT_ID,
+        ),
+      ).toBe(false);
     });
   });
 });

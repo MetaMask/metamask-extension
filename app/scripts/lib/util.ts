@@ -26,8 +26,10 @@ import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
-  initializeChainlistDomains,
-  isChainlistDomain,
+  getSafeChainsListFromCacheOnly,
+  getIsMetaMaskInfuraEndpointUrl,
+  getIsQuicknodeEndpointUrl,
+  KNOWN_CUSTOM_ENDPOINT_URLS,
 } from '../../../shared/lib/network-utils';
 
 /**
@@ -477,12 +479,120 @@ export function getConversionRatesForNativeAsset({
   return conversionRateResult;
 }
 
-// Re-export chainlist domain functions for backward compatibility
-// These were moved to shared/lib/network-utils.ts
-export {
-  initializeChainlistDomains as initializeRpcProviderDomains,
-  isChainlistDomain as isKnownDomain,
-};
+// Cache for known domains from eth-chainlist
+let knownDomainsSet: Set<string> | null = null;
+let initPromise: Promise<void> | null = null;
+
+/**
+ * Extracts the hostname from a URL.
+ *
+ * @param url - The URL to extract the hostname from.
+ * @returns The lowercase hostname, or null if the URL is invalid.
+ */
+function extractHostname(url: string): string | null {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Initialize the set of known domains from the eth-chainlist cache.
+ * This should be called once at startup in the background context.
+ *
+ * @returns A promise that resolves when initialization is complete.
+ */
+export async function initializeRpcProviderDomains(): Promise<void> {
+  if (initPromise) {
+    return initPromise;
+  }
+
+  initPromise = (async () => {
+    try {
+      const chainsList = await getSafeChainsListFromCacheOnly();
+      knownDomainsSet = new Set<string>();
+
+      for (const chain of chainsList) {
+        if (chain.rpc && Array.isArray(chain.rpc)) {
+          for (const rpcUrl of chain.rpc) {
+            const hostname = extractHostname(rpcUrl);
+            if (hostname) {
+              knownDomainsSet.add(hostname);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error initializing known domains:', error);
+      knownDomainsSet = new Set<string>();
+    }
+  })();
+
+  return initPromise;
+}
+
+/**
+ * Check if a domain is in the known domains list (eth-chainlist).
+ *
+ * @param domain - The domain to check.
+ * @returns True if the domain is found in the chainlist cache.
+ */
+export function isKnownDomain(domain: string): boolean {
+  if (!domain) {
+    return false;
+  }
+  return knownDomainsSet?.has(domain.toLowerCase()) ?? false;
+}
+
+/**
+ * Check if an RPC endpoint URL's domain is defined in eth-chainlist.
+ *
+ * @param endpointUrl - The URL of the RPC endpoint.
+ * @returns True if the endpoint's domain is in the chainlist.
+ */
+function isChainlistEndpointUrl(endpointUrl: string): boolean {
+  const hostname = extractHostname(endpointUrl);
+  if (!hostname) {
+    return false;
+  }
+  return isKnownDomain(hostname);
+}
+
+/**
+ * Some URLs that users add as networks refer to private servers, and we do not
+ * want to report these in Segment (or any other data collection service). This
+ * function returns whether the given RPC endpoint is safe to share.
+ *
+ * This function is only available in the background context where the chainlist
+ * domains are initialized. UI should call the background API method instead.
+ *
+ * @param endpointUrl - The URL of the endpoint.
+ * @param infuraProjectId - Our Infura project ID.
+ * @returns True if the endpoint URL is safe to share with external data
+ * collection services, false otherwise.
+ */
+export function isPublicEndpointUrl(
+  endpointUrl: string,
+  infuraProjectId: string,
+): boolean {
+  const isMetaMaskInfuraEndpointUrl = getIsMetaMaskInfuraEndpointUrl(
+    endpointUrl,
+    infuraProjectId,
+  );
+  const isQuicknodeEndpointUrl = getIsQuicknodeEndpointUrl(endpointUrl);
+  const isKnownCustomEndpointUrl =
+    KNOWN_CUSTOM_ENDPOINT_URLS.includes(endpointUrl);
+  const isChainlistEndpoint = isChainlistEndpointUrl(endpointUrl);
+
+  return (
+    isMetaMaskInfuraEndpointUrl ||
+    isQuicknodeEndpointUrl ||
+    isKnownCustomEndpointUrl ||
+    isChainlistEndpoint
+  );
+}
 
 /**
  * Extracts the domain from an RPC endpoint URL with privacy considerations
@@ -518,12 +628,12 @@ export function extractRpcDomain(
       }
     }
 
-    // Use the provided test domains if available, otherwise use isChainlistDomain
+    // Use the provided test domains if available, otherwise use isKnownDomain
     if (knownDomainsForTesting) {
       if (knownDomainsForTesting.has(url.hostname.toLowerCase())) {
         return url.hostname.toLowerCase();
       }
-    } else if (isChainlistDomain(url.hostname)) {
+    } else if (isKnownDomain(url.hostname)) {
       return url.hostname.toLowerCase();
     }
 
