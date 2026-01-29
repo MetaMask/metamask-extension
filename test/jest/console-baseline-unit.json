@@ -2524,6 +2524,10 @@
       "Reselect: Input stability warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/hooks/alerts/transactions/useGasSponsorshipWarningAlerts.test.ts": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/hooks/alerts/transactions/useGasTooLowAlerts.test.ts": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
@@ -3545,14 +3549,6 @@
     "ui/selectors/permissions.test.js": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1
-    },
-    "ui/pages/confirmations/components/activity/transaction-details-modal/transaction-details-modal.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2,
-      "warn: No tokens found for chainId:": 1
-    },
-    "ui/pages/confirmations/hooks/alerts/transactions/useGasSponsorshipWarningAlerts.test.ts": {
-      "Reselect: Identity function warnings": 3,
-      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/selectors/selectors.test.js": {
       "Reselect: Identity function warnings": 2,
