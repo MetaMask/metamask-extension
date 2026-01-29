@@ -91,11 +91,6 @@ export class UserStorageMockttpController {
     request: Pick<CompletedRequest, 'path' | 'headers'>,
     statusCode: number = 200,
   ) => {
-    // #region agent log
-    console.log(
-      `[UserStorageMock] GET request received for path: ${path}, url: ${request.path}`,
-    );
-    // #endregion
     const srpIdentifier = getSrpIdentifierFromHeaders(request.headers);
     const internalPathData = this.paths.get(path);
 
@@ -159,11 +154,6 @@ export class UserStorageMockttpController {
     request: Pick<CompletedRequest, 'path' | 'body' | 'headers'>,
     statusCode: number = 204,
   ) => {
-    // #region agent log
-    console.log(
-      `[UserStorageMock] PUT request received for path: ${path}, url: ${request.path}`,
-    );
-    // #endregion
     const srpIdentifier = getSrpIdentifierFromHeaders(request.headers);
     const isFeatureEntry = determineIfFeatureEntryFromURL(request.path);
 
@@ -282,11 +272,6 @@ export class UserStorageMockttpController {
     request: Pick<CompletedRequest, 'path'>,
     statusCode: number = 204,
   ) => {
-    // #region agent log
-    console.log(
-      `[UserStorageMock] DELETE request received for path: ${path}, url: ${request.path}`,
-    );
-    // #endregion
     const internalPathData = this.paths.get(path);
 
     if (!internalPathData) {
@@ -344,9 +329,6 @@ export class UserStorageMockttpController {
       deleteStatusCode?: number;
     },
   ) => {
-    // #region agent log
-    console.log(`[UserStorageMock] setupPath called for: ${path}`);
-    // #endregion
     const previouslySetupPath = this.paths.get(path);
 
     this.paths.set(path, {

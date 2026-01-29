@@ -2844,28 +2844,10 @@ export default class MetamaskController extends EventEmitter {
           this.accountTreeController,
         ),
       syncAccountTreeWithUserStorage: async () => {
-        // #region agent log
-        console.log('[DEBUG:background:syncAccountTreeWithUserStorage] Called');
-        // #endregion
-        try {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
-          await this.accountTreeController.syncWithUserStorage();
-          // #region agent log
-          console.log(
-            '[DEBUG:background:syncAccountTreeWithUserStorage] Completed successfully',
-          );
-          // #endregion
-        } catch (e) {
-          // #region agent log
-          console.log(
-            '[DEBUG:background:syncAccountTreeWithUserStorage] Failed:',
-            e,
-          );
-          // #endregion
-          throw e;
-        }
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        await this.getSnapKeyring();
+        ///: END:ONLY_INCLUDE_IF
+        await this.accountTreeController.syncWithUserStorage();
       },
 
       // MultichainAccountService

@@ -18,18 +18,7 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
    * Backup and sync effects
    */
   useEffect(() => {
-    // #region agent log
-    console.log(
-      '[DEBUG:MetamaskIdentityProvider] Account sync effect triggered, shouldDispatchAccountSyncing=',
-      shouldDispatchAccountSyncing,
-    );
-    // #endregion
     if (shouldDispatchAccountSyncing) {
-      // #region agent log
-      console.log(
-        '[DEBUG:MetamaskIdentityProvider] Calling dispatchAccountSyncing...',
-      );
-      // #endregion
       dispatchAccountSyncing();
     }
   }, [shouldDispatchAccountSyncing, dispatchAccountSyncing]);
