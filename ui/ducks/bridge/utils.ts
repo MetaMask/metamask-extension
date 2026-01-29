@@ -217,7 +217,7 @@ export const toBridgeToken = (
     symbol,
     name: name ?? symbol,
     chainId,
-    image: getAssetImageUrl(assetId, chainId),
+    iconUrl: payload.iconUrl || getAssetImageUrl(assetId, chainId),
     assetId,
     balance: tokenMetadata?.balance ?? balance ?? '0',
     tokenFiatAmount: tokenMetadata?.tokenFiatAmount ?? tokenFiatAmount,
