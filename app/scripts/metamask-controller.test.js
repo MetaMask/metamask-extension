@@ -4327,6 +4327,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4334,6 +4336,8 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4371,6 +4375,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
@@ -4401,6 +4407,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4408,18 +4416,24 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id-1',
+            dataType: 2, // ImportedSrp
           },
           {
             data: new Uint8Array([15, 16, 17, 18]),
             type: 'privateKey',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-pk-id',
+            dataType: 3, // ImportedPrivateKey
           },
           {
             data: new Uint8Array([19, 20, 21, 22]),
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id-2',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4459,6 +4473,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
@@ -4485,6 +4501,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4492,6 +4510,8 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4511,6 +4531,96 @@ describe('MetaMaskController', () => {
         await expect(
           metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
         ).rejects.toThrow('Failed to restore seed phrases');
+      });
+    });
+
+    describe('#addNewSeedPhraseBackup', () => {
+      it('should call addNewSecretData with ImportedSrp dataType', async () => {
+        await metamaskController.createNewVaultAndKeychain('test-password');
+
+        // Mock completedOnboarding to allow migration to run
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
+        // Mock runMigrations (migration runs before adding new secret data)
+        // Returns false to indicate no migration was performed
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'runMigrations',
+          )
+          .mockResolvedValue(false);
+
+        const addNewSecretDataSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'addNewSecretData',
+          )
+          .mockResolvedValue();
+
+        const mockMnemonic =
+          'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+        const mockKeyringId = 'test-keyring-id';
+
+        await metamaskController.addNewSeedPhraseBackup(
+          mockMnemonic,
+          mockKeyringId,
+          true,
+        );
+
+        expect(addNewSecretDataSpy).toHaveBeenCalledWith(
+          expect.any(Uint8Array),
+          2, // EncAccountDataType.ImportedSrp
+          {
+            keyringId: mockKeyringId,
+          },
+        );
+      });
+    });
+
+    describe('#addNewPrivateKeyBackup', () => {
+      it('should call addNewSecretData with ImportedPrivateKey dataType', async () => {
+        await metamaskController.createNewVaultAndKeychain('test-password');
+
+        // Mock completedOnboarding to allow migration to run
+        jest
+          .spyOn(metamaskController.onboardingController, 'state', 'get')
+          .mockReturnValue({ completedOnboarding: true });
+
+        // Mock runMigrations (migration runs before adding new secret data)
+        // Returns false to indicate no migration was performed
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'runMigrations',
+          )
+          .mockResolvedValue(false);
+
+        const addNewSecretDataSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'addNewSecretData',
+          )
+          .mockResolvedValue();
+
+        const mockPrivateKey =
+          '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+        const mockKeyringId = 'test-keyring-id';
+
+        await metamaskController.addNewPrivateKeyBackup(
+          mockPrivateKey,
+          mockKeyringId,
+          true,
+        );
+
+        expect(addNewSecretDataSpy).toHaveBeenCalledWith(
+          expect.any(Uint8Array),
+          3, // EncAccountDataType.ImportedPrivateKey
+          {
+            keyringId: mockKeyringId,
+          },
+        );
       });
     });
 

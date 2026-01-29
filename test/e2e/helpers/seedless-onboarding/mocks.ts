@@ -29,8 +29,8 @@ import {
   InitialMockEncryptionKey,
   MockKeyShareData,
   MockJwtPrivateKey,
-  NewMockPwdEncryptionKeyAfterPasswordChange,
   MockAuthPubKey2,
+  NewMockPwdEncryptionKeyAfterPasswordChange,
 } from './data';
 
 function generateMockJwtToken(userId: string) {
@@ -105,56 +105,90 @@ async function generateBlindedOutput(
 }
 
 /**
- * Generate a mock encrypted secret data for Metadata Service.
+ * Generate mock encrypted secret data for Metadata Service.
  *
- * @param secretDataArr - The array of secret data.
- * @returns The encrypted secret data.
+ * @param secretDataArr - Array of secret data items.
+ * @returns Parallel arrays matching the server response format (data, ids, versions, dataTypes, createdAt).
  */
-async function generateEncryptedSecretData(
-  secretDataArr: { data: Uint8Array; timestamp?: number; type?: SecretType }[],
-) {
-  const encData = secretDataArr.map((secretData) => {
+function generateEncryptedSecretData(
+  secretDataArr: {
+    data: Uint8Array;
+    timestamp?: number;
+    type?: SecretType;
+    itemId?: string;
+    dataType?: number | null;
+    createdAt?: string | null;
+    version?: string;
+  }[],
+): {
+  data: string[];
+  ids: string[];
+  versions: string[];
+  dataTypes: (number | null)[];
+  createdAt: (string | null)[];
+} {
+  const data: string[] = [];
+  const ids: string[] = [];
+  const versions: string[] = [];
+  const dataTypes: (number | null)[] = [];
+  const createdAt: (string | null)[] = [];
+
+  for (const secretData of secretDataArr) {
     const b64SecretData = Buffer.from(secretData.data).toString('base64');
     const secretMetadata = JSON.stringify({
       data: b64SecretData,
       timestamp: secretData.timestamp ?? 1752564090656,
       type: secretData.type,
     });
-    const secretBytes = stringToBytes(secretMetadata);
 
     const aes = managedNonce(gcm)(InitialMockEncryptionKey);
-    const cipherText = aes.encrypt(secretBytes);
-    return bytesToBase64(cipherText);
-  });
-  return encData;
+    const cipherText = aes.encrypt(stringToBytes(secretMetadata));
+
+    data.push(bytesToBase64(cipherText));
+    ids.push(secretData.itemId ?? '');
+    versions.push(secretData.version ?? 'v2');
+    dataTypes.push(secretData.dataType === undefined ? 1 : secretData.dataType); // Default to PrimarySrp if not specified
+    createdAt.push(secretData.createdAt ?? null);
+  }
+
+  return { data, ids, versions, dataTypes, createdAt };
 }
 
 /**
- * Generate a mock encrypted password change item for Metadata Service.
- * This is to mock the password change operation for social login flow.
+ * Generate mock encrypted password change item for Metadata Service.
+ * Used to simulate the password outdated flow in social login.
  *
- * @returns The encrypted password change item.
+ * The PW_BACKUP is made self-referential (encKey points to itself) with a
+ * non-matching authKeyPair.pk, causing the SDK's password chain loop to
+ * exhaust and throw `maxKeyChainLengthExceeded`.
+ *
+ * @returns Encrypted password change item with metadata.
  */
-async function generateEncryptedPasswordChangeItem() {
-  const pwdChangeItem = {
-    itemId: PasswordChangeItemId,
-    data: utf8ToBytes(
-      JSON.stringify({
-        pw: 'newPassword',
-        encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
-        authKeyPair: {
-          sk: '1',
-          pk: 'deadbeef',
-        },
-      }),
-    ),
-  };
+function generateEncryptedPasswordChangeItem(): {
+  data: string;
+  id: string;
+  version: string;
+  dataType: null;
+  createdAt: null;
+} {
+  const pwdChangeItemData = utf8ToBytes(
+    JSON.stringify({
+      pw: 'newPassword',
+      encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
+      authKeyPair: { sk: '1', pk: 'deadbeef' },
+    }),
+  );
 
   const aes = managedNonce(gcm)(NewMockPwdEncryptionKeyAfterPasswordChange);
-  const cipherText = aes.encrypt(pwdChangeItem.data);
-  const encryptedPwdChangeItem = bytesToBase64(cipherText);
+  const cipherText = aes.encrypt(pwdChangeItemData);
 
-  return encryptedPwdChangeItem;
+  return {
+    data: bytesToBase64(cipherText),
+    id: PasswordChangeItemId,
+    version: 'v2',
+    dataType: null,
+    createdAt: null,
+  };
 }
 
 // Mock OAuth Service and Authentication Server
@@ -352,7 +386,7 @@ export class OAuthMockttpService {
     };
   }
 
-  async onPostMetadataGet() {
+  async onPostMetadataGet(requestedItemId?: string) {
     const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
       .toString()
@@ -360,24 +394,40 @@ export class OAuthMockttpService {
       .map((word: string) => wordlist.indexOf(word));
     const seedPhraseBytes = new Uint8Array(new Uint16Array(indices).buffer);
 
-    const secretData = [
+    // Server-side filtering
+    if (requestedItemId === PasswordChangeItemId) {
+      const pwdChangeItem = generateEncryptedPasswordChangeItem();
+      return {
+        statusCode: 200,
+        json: {
+          success: true,
+          data: [pwdChangeItem.data],
+          ids: [pwdChangeItem.id],
+          versions: [pwdChangeItem.version],
+          dataTypes: [pwdChangeItem.dataType],
+          createdAt: [pwdChangeItem.createdAt],
+        },
+      };
+    }
+
+    // Default: return SRP data only (PW_BACKUP excluded from regular queries)
+    const result = generateEncryptedSecretData([
       {
         data: seedPhraseBytes,
         timestamp: Date.now(),
         type: SecretType.Mnemonic,
+        itemId: crypto.randomUUID(),
+        dataType: 1,
+        createdAt: new Date().toISOString(),
+        version: 'v2',
       },
-    ];
-
-    const encryptedSecretData = await generateEncryptedSecretData(secretData);
-    const encryptedPwdChangeItem = await generateEncryptedPasswordChangeItem();
-    encryptedSecretData.push(encryptedPwdChangeItem);
+    ]);
 
     return {
       statusCode: 200,
       json: {
         success: true,
-        data: encryptedSecretData,
-        ids: ['', PasswordChangeItemId],
+        ...result,
       },
     };
   }
@@ -547,8 +597,10 @@ export class OAuthMockttpService {
     server
       .forPost(MetadataService.Get)
       .always()
-      .thenCallback(async (_request) => {
-        return this.onPostMetadataGet();
+      .thenCallback(async (request) => {
+        const body = await request.body.getJson();
+        const requestedItemId = (body as { itemId?: string })?.itemId;
+        return this.onPostMetadataGet(requestedItemId);
       });
 
     server

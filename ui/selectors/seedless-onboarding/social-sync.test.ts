@@ -34,6 +34,7 @@ const MOCK_STATE: BackupState = {
     socialLoginEmail: 'mock-social-login-email',
     authConnection: AuthConnection.Google,
     isSeedlessOnboardingUserAuthenticated: true,
+    migrationVersion: 0,
   },
 };
 

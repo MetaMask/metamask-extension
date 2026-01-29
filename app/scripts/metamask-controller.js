@@ -126,8 +126,10 @@ import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controlle
 
 import {
   SeedlessOnboardingControllerErrorMessage,
+  SeedlessOnboardingMigrationVersion,
   SecretType,
   RecoveryError,
+  EncAccountDataType,
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -453,6 +455,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import('@metamask/seedless-onboarding-controller').SecretMetadata} SecretMetadata
  */
 
 // Types of APIs
@@ -4012,6 +4015,11 @@ export default class MetamaskController extends EventEmitter {
       );
       createSeedPhraseBackupSuccess = true;
 
+      // Set migration version for new users so migration never runs
+      this.seedlessOnboardingController.setMigrationVersion(
+        SeedlessOnboardingMigrationVersion.V1,
+      );
+
       await this.syncKeyringEncryptionKey();
     } catch (error) {
       this.controllerMessenger?.captureException?.(
@@ -4032,10 +4040,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Fetches and restores all the backed-up Secret Data (SRPs and Private keys)
+   * Fetches all backed-up Secret Data (SRPs and Private keys) from the server.
    *
    * @param {string} password - The user's password.
-   * @returns {Promise<Buffer[]>} The seed phrase.
+   * @returns {Promise<SecretMetadata[]>} Array of secret metadata items.
    */
   async fetchAllSecretData(password) {
     let fetchAllSeedPhrasesSuccess = false;
@@ -4350,9 +4358,13 @@ export default class MetamaskController extends EventEmitter {
           name: TraceName.OnboardingAddSrp,
           op: TraceOperation.OnboardingSecurityOp,
         });
+
+        // Run data type migration before adding new SRP to ensure data consistency.
+        await this._runSeedlessOnboardingMigrations();
+
         await this.seedlessOnboardingController.addNewSecretData(
           seedPhraseAsUint8Array,
-          SecretType.Mnemonic,
+          EncAccountDataType.ImportedSrp,
           {
             keyringId,
           },
@@ -4716,11 +4728,9 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Restores an array of seed phrases to the vault and updates the SocialBackupMetadataState if import is successful.
+   * Restores an array of seed phrases to the vault.
    *
-   * This method is used to restore seed phrases from the Social Backup.
-   *
-   * @param {{data: Uint8Array, type: SecretType, timestamp: number, version: number}[]} secretDatas - The seed phrases to restore.
+   * @param {SecretMetadata[]} secretDatas - The secret metadata items to restore.
    * @returns {Promise<void>}
    */
   async restoreSeedPhrasesToVault(secretDatas) {
@@ -6255,9 +6265,12 @@ export default class MetamaskController extends EventEmitter {
     if (syncWithSocial) {
       const releaseLock = await this.seedlessOperationMutex.acquire();
       try {
+        // Run data type migration before adding new private key to ensure data consistency.
+        await this._runSeedlessOnboardingMigrations();
+
         await this.seedlessOnboardingController.addNewSecretData(
           bufferedPrivateKey,
-          SecretType.PrivateKey,
+          EncAccountDataType.ImportedPrivateKey,
           { keyringId },
         );
       } catch (error) {
@@ -8081,6 +8094,57 @@ export default class MetamaskController extends EventEmitter {
     // KeyringController event. Other controllers subscribe to the 'unlock'
     // event of the MetaMaskController itself.
     this.emit('unlock');
+  }
+
+  /**
+   * Run seedless onboarding migrations.
+   *
+   * Delegates to SeedlessOnboardingController.runMigrations() which handles
+   * version tracking and migration logic. Called before adding new secret data
+   * to ensure data type consistency and correct ordering.
+   *
+   * @returns {Promise<void>}
+   */
+  async _runSeedlessOnboardingMigrations() {
+    const { completedOnboarding } = this.onboardingController.state;
+
+    if (!completedOnboarding) {
+      return;
+    }
+
+    try {
+      const migrationPerformed =
+        await this.seedlessOnboardingController.runMigrations();
+
+      if (migrationPerformed) {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.SeedlessOnboardingMigrationCompleted,
+          category: MetaMetricsEventCategory.Background,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            migration_version:
+              this.seedlessOnboardingController.state?.migrationVersion,
+          },
+        });
+      }
+    } catch (error) {
+      const isError = error instanceof Error;
+      const errorMessage = isError ? error.message : 'Unknown error';
+
+      this.metaMetricsController.trackEvent({
+        event: MetaMetricsEventName.SeedlessOnboardingMigrationFailed,
+        category: MetaMetricsEventCategory.Background,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          migration_version:
+            this.seedlessOnboardingController.state?.migrationVersion,
+          error: errorMessage,
+        },
+      });
+      captureException(isError ? error : new Error(errorMessage));
+
+      throw error;
+    }
   }
 
   /**

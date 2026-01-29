@@ -230,6 +230,7 @@
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
     "methodData": "object",
+    "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "multichainNetworkConfigurationsByChainId": "object",
     "nameSources": "object",
