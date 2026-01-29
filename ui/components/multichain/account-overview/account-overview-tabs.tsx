@@ -42,10 +42,14 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
+// @ts-expect-error -- Bundler resolves TS/TSX without extensions.
 const NftsTab = lazy(() => import('../../app/assets/nfts/nfts-tab'));
+// @ts-expect-error -- Bundler resolves TS/TSX without extensions.
 const DeFiTab = lazy(() => import('../../app/assets/defi-list/defi-tab'));
+// @ts-expect-error -- Bundler resolves TS/TSX without extensions.
 const TransactionList = lazy(() => import('../../app/transaction-list'));
 const UnifiedTransactionList = lazy(
+  // @ts-expect-error -- Bundler resolves TS/TSX without extensions.
   () => import('../../app/transaction-list/unified-transaction-list.component'),
 );
 
