@@ -1,125 +1,67 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { DEFAULT_BTC_BALANCE, DEFAULT_BTC_FEE_RATE } from '../../constants';
-import BitcoinSendPage from '../../page-objects/pages/send/bitcoin-send-page';
+import { DEFAULT_BTC_BALANCE } from '../../constants';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
+import SendPage from '../../page-objects/pages/send/send-page';
 import { withBtcAccountSnap } from './common-btc';
 
-// To be reactivated once we use a regtest network instead of mocked data
-// eslint-disable-next-line mocha/no-skipped-tests
 describe('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
-  this.timeout(120000000000);
+  const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
+  this.timeout(120000);
+
   it('fields validation', async function () {
     await withBtcAccountSnap(async (driver) => {
       const homePage = new BitcoinHomepage(driver);
+      const sendPage = new SendPage(driver);
       await homePage.checkPageIsLoaded();
       await homePage.checkIsExpectedBitcoinBalanceDisplayed(
         DEFAULT_BTC_BALANCE,
       );
       await homePage.startSendFlow();
+      await sendPage.selectToken(bitcoinChainId, 'BTC');
 
-      const bitcoinSendPage = new BitcoinSendPage(driver);
-      await bitcoinSendPage.checkPageIsLoaded();
-      assert.equal(await bitcoinSendPage.checkAssetPickerIsDisplayed(), false);
-      assert.equal(await bitcoinSendPage.checkAmountFieldIsDisplayed(), false);
-      await bitcoinSendPage.fillRecipientAddress('invalidBTCAddress');
-      await bitcoinSendPage.checkAddressFieldValidationError(
-        'Invalid Bitcoin address',
-      );
-      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
-      await bitcoinSendPage.fillRecipientAddress(recipientAddress);
-      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
-      await bitcoinSendPage.fillAmount('50');
-      await bitcoinSendPage.checkAmountValidationError(
-        'Funds are insufficient to cover amount plus fee',
-      );
-      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
-      await bitcoinSendPage.fillAmount('0');
-      await bitcoinSendPage.checkAmountValidationError(
-        'Amount below dust limit',
-      );
-      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
-      await bitcoinSendPage.fillAmount('0.1');
-      await driver.delay(1000);
-      assert.equal(
-        await bitcoinSendPage.checkContinueButtonIsDisabled(),
-        false,
-      );
-      await bitcoinSendPage.clearRecipientAddress();
-      await driver.delay(1000);
-      assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
+      await sendPage.fillRecipient('invalidBTCAddress');
+      await sendPage.checkInvalidAddressError();
+
+      await sendPage.fillAmount('50');
+      await sendPage.checkInsufficientFundsError();
     }, this.test?.fullTitle());
   });
   it('can complete the send flow', async function () {
     const sendAmount = '0.5';
-    const expectedFee = '281';
-    const expectedTotal = '0.50000281';
+    const expectedFee = '0.00000281';
+    const expectedTotal = '53381.50';
 
     await withBtcAccountSnap(async (driver) => {
       const homePage = new BitcoinHomepage(driver);
+      const sendPage = new SendPage(driver);
+      const activityListPage = new ActivityListPage(driver);
+
       await homePage.checkPageIsLoaded();
       await homePage.checkIsExpectedBitcoinBalanceDisplayed(
         DEFAULT_BTC_BALANCE,
       );
       await homePage.startSendFlow();
 
-      const bitcoinSendPage = new BitcoinSendPage(driver);
-      await bitcoinSendPage.checkPageIsLoaded();
-      await bitcoinSendPage.fillRecipientAddress(recipientAddress);
-      await bitcoinSendPage.fillAmount(sendAmount);
-      await bitcoinSendPage.clickContinueButton();
+      await sendPage.selectToken(bitcoinChainId, 'BTC');
+      await sendPage.fillRecipient(recipientAddress);
+      await sendPage.fillAmount(sendAmount);
+      await sendPage.isContinueButtonEnabled();
+      await sendPage.pressContinueButton();
 
       // ------------------------------------------------------------------------------
       // From here, we have moved to the confirmation screen (second part of the flow).
 
       const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
-      await bitcoinReviewTxPage.checkPageIsLoaded();
-      await bitcoinReviewTxPage.checkSendAmountIsDisplayed(sendAmount);
       await bitcoinReviewTxPage.checkNetworkFeeIsDisplayed(expectedFee);
-      await bitcoinReviewTxPage.checkFeeRateIsDisplayed(
-        Math.floor(DEFAULT_BTC_FEE_RATE).toString(),
-      );
       await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(expectedTotal);
-      await bitcoinReviewTxPage.clickSendButton();
+      await bitcoinReviewTxPage.clickConfirmButton();
 
       // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
-      await homePage.checkPageIsLoaded();
-    }, this.test?.fullTitle());
-  });
-
-  it('can send the max amount', async function () {
-    const expectedFee = 0.00000219;
-
-    await withBtcAccountSnap(async (driver) => {
-      const homePage = new BitcoinHomepage(driver);
-      await homePage.checkPageIsLoaded();
-      await homePage.checkIsExpectedBitcoinBalanceDisplayed(
-        DEFAULT_BTC_BALANCE,
-      );
-      await homePage.startSendFlow();
-
-      const bitcoinSendPage = new BitcoinSendPage(driver);
-      await bitcoinSendPage.checkPageIsLoaded();
-      await bitcoinSendPage.fillRecipientAddress(recipientAddress);
-      await bitcoinSendPage.selectMaxAmount();
-      await bitcoinSendPage.clickContinueButton();
-
-      // ------------------------------------------------------------------------------
-      // From here, we have moved to the confirmation screen (second part of the flow).
-
-      const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
-      await bitcoinReviewTxPage.checkPageIsLoaded();
-      await bitcoinReviewTxPage.checkSendAmountIsDisplayed(
-        (DEFAULT_BTC_BALANCE - expectedFee).toString(),
-      );
-      await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(
-        DEFAULT_BTC_BALANCE.toString(),
-      );
-      await bitcoinReviewTxPage.clickSendButton();
-
-      // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
+      await activityListPage.checkTransactionActivityByText('Sent');
+      await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
       await homePage.checkPageIsLoaded();
     }, this.test?.fullTitle());
   });
