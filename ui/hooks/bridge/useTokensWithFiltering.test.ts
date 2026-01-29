@@ -237,4 +237,56 @@ describe('useTokensWithFiltering', () => {
     ].slice(0, 10);
     expect(first10Tokens).toMatchSnapshot();
   });
+
+  it('should handle unsupported chains gracefully without throwing errors', async () => {
+    // This test simulates the scenario where multichain balances include tokens
+    // from chains not supported by the bridge controller (e.g., Immutable zkEVM 0x343b)
+    const mockStore = createBridgeMockStore({
+      metamaskStateOverrides: {
+        completedOnboarding: true,
+        allDetectedTokens: {},
+        tokensChainsCache: {
+          [CHAIN_IDS.MAINNET]: {
+            timestamp: Date.now(),
+            data: {
+              [NATIVE_TOKEN.address]: NATIVE_TOKEN,
+              ...STATIC_MAINNET_TOKEN_LIST,
+            },
+          },
+        },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
+      },
+      multichainBalancesOverrides: [
+        {
+          chainId: 'eip155:13371', // Immutable zkEVM (0x343b)
+          symbol: 'IMX',
+          address: '',
+          decimals: 18,
+          balance: '1000000000000000000',
+          string: '1',
+          isNative: true,
+        },
+      ],
+    });
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+      const { filteredTokenListGenerator } = useTokensWithFiltering(
+        CHAIN_IDS.MAINNET,
+      );
+      return filteredTokenListGenerator;
+    }, mockStore);
+
+    await waitForNextUpdate();
+
+    // Should not throw an error
+    expect(() => {
+      const tokens = [...result.current(() => true)];
+      // The unsupported chain token should either be filtered out or handled gracefully
+      // with a fallback icon
+      expect(tokens).toBeDefined();
+    }).not.toThrow();
+  });
 });
