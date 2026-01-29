@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { Browser } from 'selenium-webdriver';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { veryLargeDelayMs } from '../../../helpers';

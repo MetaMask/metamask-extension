@@ -33,10 +33,6 @@ type PerformanceMetrics = {
   } | null;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type BenchmarkOptions = {
-  iterations?: number; // default 1, but allow 3-5 for critical flows
-};
 /**
  * PerformanceTracker - Collects TimerHelper instances and generates performance reports
  */
