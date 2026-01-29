@@ -10,6 +10,7 @@ import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmation
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
@@ -91,7 +92,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithUrl(DAPP_URL);
 
@@ -229,7 +230,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithUrl(DAPP_URL);
         await testDapp.checkPageIsLoaded();

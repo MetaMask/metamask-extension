@@ -216,6 +216,32 @@ const getLeafKeyPath = (keyPath: string): string => {
 };
 
 /**
+ * Recursively sorts all object keys alphabetically.
+ * Arrays are preserved as-is (their elements are sorted if they are objects).
+ *
+ * @param value - The value to sort (object, array, or primitive)
+ * @returns The value with all object keys sorted alphabetically
+ */
+const sortObjectKeysDeep = (value: unknown): unknown => {
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(sortObjectKeysDeep);
+  }
+
+  const sortedKeys = Object.keys(value as Record<string, unknown>).sort();
+  const sorted: Record<string, unknown> = {};
+
+  for (const key of sortedKeys) {
+    sorted[key] = sortObjectKeysDeep((value as Record<string, unknown>)[key]);
+  }
+
+  return sorted;
+};
+
+/**
  * Merge changes from the new state into the existing fixture.
  * Only updates the specific keys that have actually changed (new, missing, or type mismatch),
  * preserving all other values including timestamps.
@@ -343,7 +369,8 @@ export const mergeFixtureChanges = (
     }
   }
 
-  return merged;
+  // Sort all keys alphabetically to ensure consistent ordering in output
+  return sortObjectKeysDeep(merged) as JsonLike;
 };
 
 /**
