@@ -13,7 +13,7 @@ import {
 import {
   CaipAssetTypeStruct,
   type CaipChainId,
-  CaipChainIdStruct,
+
 } from '@metamask/utils';
 
 const MinimalAssetSchema = type({
@@ -35,10 +35,6 @@ const MinimalAssetSchema = type({
 const BridgeAssetV2Schema = intersection([
   MinimalAssetSchema,
   type({
-    /**
-     * The chainId of the token
-     */
-    chainId: optional(CaipChainIdStruct),
     /**
      * URL for token icon
      */

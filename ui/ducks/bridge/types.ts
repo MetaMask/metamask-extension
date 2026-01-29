@@ -18,7 +18,7 @@ type BridgeTokenBalanceData = {
   tokenFiatAmount?: number | null;
   accountType?: KeyringAccountType;
 };
-export type BridgeToken = Omit<BridgeAssetV2, 'chainId'> & {
+export type BridgeToken = BridgeAssetV2 & {
   chainId: CaipChainId;
 } & BridgeTokenBalanceData &
   Pick<TokenListToken, 'rwaData'>;
