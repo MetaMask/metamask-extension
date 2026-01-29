@@ -34,7 +34,7 @@ export default function Pna25Modal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const hasTrackedView = useRef(false);
 

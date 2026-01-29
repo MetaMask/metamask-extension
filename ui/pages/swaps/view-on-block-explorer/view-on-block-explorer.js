@@ -16,7 +16,7 @@ export default function ViewOnBlockExplorer({
   sensitiveTrackingProperties,
 }) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const blockExplorerHostName = getURLHostName(blockExplorerUrl);
 
   return (

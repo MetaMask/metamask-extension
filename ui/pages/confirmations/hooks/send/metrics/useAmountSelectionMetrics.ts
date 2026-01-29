@@ -14,7 +14,7 @@ import {
 import { useSendType } from '../useSendType';
 
 export const useAmountSelectionMetrics = () => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { chainId } = useSendContext();
   const { isEvmSendType } = useSendType();
   const {

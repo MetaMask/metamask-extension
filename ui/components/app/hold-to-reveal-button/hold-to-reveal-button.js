@@ -25,7 +25,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [hasTriggeredUnlock, setHasTriggeredUnlock] = useState(false);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   /**
    * Prevent animation events from propogating up

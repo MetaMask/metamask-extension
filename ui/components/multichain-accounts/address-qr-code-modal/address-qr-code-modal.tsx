@@ -77,7 +77,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
 }) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const [addressCopied, setAddressCopied] = useState(false);
   const timeoutRef = useRef<number | null>(null);

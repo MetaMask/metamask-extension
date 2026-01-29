@@ -27,7 +27,7 @@ export const NotificationDetailBlockExplorerButton = ({
   txHash,
 }: NotificationDetailBlockExplorerButtonProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const chainIdHex = toHex(chainId);
   const { blockExplorerConfig } = getNetworkDetailsByChainId(chainId);

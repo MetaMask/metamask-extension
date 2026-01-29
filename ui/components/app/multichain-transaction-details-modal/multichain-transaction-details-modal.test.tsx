@@ -137,6 +137,12 @@ const mockProps = {
 
 describe('MultichainTransactionDetailsModal', () => {
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
   const useI18nContextMock = useI18nContext as jest.Mock;
 
   beforeEach(() => {
@@ -157,7 +163,7 @@ describe('MultichainTransactionDetailsModal', () => {
   ) => {
     const store = configureStore(mockState.metamask);
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <MultichainTransactionDetailsModal {...props} />
       </MetaMetricsContext.Provider>,
       store,
@@ -378,7 +384,7 @@ describe('MultichainTransactionDetailsModal', () => {
     };
 
     renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <MultichainTransactionDetailsModal {...props} />
       </MetaMetricsContext.Provider>,
       store,

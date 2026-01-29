@@ -55,7 +55,7 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const [optinError, setOptinError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const [optinLoading, setOptinLoading] = useState<boolean>(false);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const selectedAccount = useSelector(getSelectedAccount);

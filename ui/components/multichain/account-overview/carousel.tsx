@@ -25,7 +25,7 @@ export const Carousel = () => {
   const isCarouselEnabled = Boolean(
     remoteFeatureFlags && remoteFeatureFlags.carouselBanners,
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
 
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =

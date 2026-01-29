@@ -108,7 +108,7 @@ export default function Swap() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const { pathname } = location;

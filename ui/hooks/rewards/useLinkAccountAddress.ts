@@ -25,7 +25,7 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const isMountedRef = useRef(true);
 
   useEffect(() => {

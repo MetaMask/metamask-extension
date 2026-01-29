@@ -46,7 +46,7 @@ const AddFundsModal = ({
 }) => {
   const t = useI18nContext();
   const { openBuyCryptoInPdapp } = useRamps();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const buyableChains = useSelector(getBuyableChains);
 

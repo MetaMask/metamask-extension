@@ -55,7 +55,7 @@ export const NotificationDetailCopyButton: FC<
 }): JSX.Element => {
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
   const tooltipTitle = tooltipText;

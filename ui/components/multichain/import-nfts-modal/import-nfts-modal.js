@@ -96,7 +96,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const [nftAddress, setNftAddress] = useState(initialTokenAddress ?? '');
   const [tokenId, setTokenId] = useState(initialTokenId ?? '');
   const [nftAddFailed, setNftAddFailed] = useState(false);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const [actionMode, setActionMode] = useState(ACTION_MODES.IMPORT_NFT);
 

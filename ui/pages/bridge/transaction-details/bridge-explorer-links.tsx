@@ -56,7 +56,7 @@ export default function BridgeExplorerLinks({
   srcBlockExplorerUrl,
   destBlockExplorerUrl,
 }: ExplorerLinksProps) {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
   // Not sure why but the text is not being changed to white on hover, unless it's put into a variable before the render

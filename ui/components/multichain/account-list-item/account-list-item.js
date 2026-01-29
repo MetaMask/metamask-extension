@@ -180,7 +180,7 @@ const AccountListItem = ({
     }
   }, [itemRef, selected, shouldScrollToWhenSelected]);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
