@@ -39,7 +39,7 @@ const prerequisites = {
   },
   // `as const` makes it easier for developers to see the values of the type
   // when hovering over it in their IDE. `satisfies Options` enables type
-  // checking, without loosing the `const` property of the values, which is
+  // checking, without losing the `const` property of the values, which is
   // necessary for yargs to infer the final types
 } as const satisfies YargsOptionsMap;
 
