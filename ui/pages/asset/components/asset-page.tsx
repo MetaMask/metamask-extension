@@ -309,6 +309,7 @@ const AssetPage = ({
           balance,
           secondary: balance ? Number(balance) : 0,
           accountType: bip44Asset?.accountType,
+          assetId: bip44Asset?.assetId ?? assetId,
         }
       : {
           ...mutichainTokenWithFiatAmount,
