@@ -1,9 +1,9 @@
+import { hasMinimumRequiredVersion } from '../../../shared/lib/feature-flags/version-gating';
 import {
   getAssetsUnifyStateRemoteFeatureFlag,
   getIsAssetsUnifyStateEnabled,
   ASSETS_UNIFY_STATE_FLAG,
 } from './feature-flags';
-import { hasMinimumRequiredVersion } from '../../../shared/lib/feature-flags/version-gating';
 
 jest.mock('../../../shared/lib/feature-flags/version-gating', () => ({
   hasMinimumRequiredVersion: jest.fn(),
