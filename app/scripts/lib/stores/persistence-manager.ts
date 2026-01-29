@@ -884,7 +884,6 @@ export class PersistenceManager {
           state,
           event: MetaMetricsEventName.StateMigrationSucceeded,
           category: MetaMetricsEventCategory.StateMigration,
-          properties: migrationProperties,
         });
       }
     } catch (error) {
@@ -892,7 +891,6 @@ export class PersistenceManager {
         state,
         event: MetaMetricsEventName.StateMigrationFailed,
         category: MetaMetricsEventCategory.StateMigration,
-        properties: migrationProperties,
       });
 
       throw error;
