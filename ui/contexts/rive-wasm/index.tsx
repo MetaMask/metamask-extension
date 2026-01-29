@@ -6,9 +6,11 @@ import { RuntimeLoader } from '@rive-app/react-canvas';
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { useAsyncResult } from '../../hooks/useAsync';
 
-// WASM file URL - the file is copied to dist/chrome/images/ by the build process
-// We don't import it as a module to avoid browserify resolution issues
-const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
+const RIVE_WASM_URL = new URL(
+  '@rive-app/canvas/rive.wasm',
+  // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
+  import.meta.url,
+);
 
 export const useRiveWasmReady = () => {
   const [isWasmReady, setIsWasmReady] = useState(false);
@@ -22,19 +24,14 @@ export const useRiveWasmReady = () => {
       setIsWasmReady(true);
       return true;
     }
-    const response = await fetch(RIVE_WASM_URL);
-    if (!response.ok) {
-      throw new Error(
-        `HTTP error! status while fetching rive.wasm: ${response.status}`,
-      );
-    }
-    const arrayBuffer = await response.arrayBuffer();
-    (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
-      arrayBuffer;
-    RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
 
     // Preload the WASM
-    await RuntimeLoader.awaitInstance();
+    try {
+      RuntimeLoader.setWasmUrl(RIVE_WASM_URL.href);
+      await RuntimeLoader.awaitInstance();
+    } catch (e) {
+      throw new Error(`HTTP error! status while fetching rive.wasm`);
+    }
     setIsWasmReady(true);
     return true;
   }, [isWasmReady, setIsWasmReady]);
