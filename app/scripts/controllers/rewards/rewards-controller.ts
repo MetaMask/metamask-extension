@@ -526,7 +526,7 @@ export class RewardsController extends BaseController<
         : `0x${result.signature}`;
     } else if (isTronAddress(account.address)) {
       if (this.#isTronDisabled()) {
-        throw new Error('nsupported account type for signing rewards message');
+        throw new Error('Unsupported account type for signing rewards message');
       }
       const result = await signTronRewardsMessage(
         this.messenger.call.bind(
