@@ -20,8 +20,12 @@ export const MultichainRouterInit: ControllerInitFunction<
   MultichainRouterMessenger
 > = ({ controllerMessenger, getController }) => {
   const keyringController = getController('KeyringController');
+  const appStateController = getController('AppStateController');
 
   const getSnapKeyring = async (): Promise<SnapKeyring> => {
+    // Ensure the client is unlocked before attempting to access keyrings.
+    await appStateController.getUnlockPromise(true);
+
     // TODO: Use `withKeyring` instead
     let [snapKeyring] = keyringController.getKeyringsByType(KeyringType.snap);
 
