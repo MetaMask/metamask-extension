@@ -107,6 +107,8 @@ export function NotificationsListItem({
       flexDirection={FlexDirection.Row}
       width={BlockSize.Full}
       data-testid={`notification-list-item-${notification.id}`}
+      data-notification-id={notification.id}
+      className={notification.isRead ? '' : 'notification-list-item--unread'}
     >
       <ncs.item notification={notification} onClick={handleNotificationClick} />
     </Box>
