@@ -3,7 +3,7 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
 // Feature flags for Bitcoin testing
-export const BITCOIN_FEATURE_FLAGS = {
+const BITCOIN_FEATURE_FLAGS = {
   sendRedesign: {
     enabled: true,
   },

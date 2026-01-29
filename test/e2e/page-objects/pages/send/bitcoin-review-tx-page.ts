@@ -1,4 +1,3 @@
-import { id } from 'ethers/lib/utils';
 import { Driver } from '../../../webdriver/driver';
 
 class BitcoinReviewTxPage {
@@ -18,7 +17,7 @@ class BitcoinReviewTxPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.cancelButton,
-        this.cancelButton,
+        this.confirmButton,
       ]);
     } catch (e) {
       console.log(

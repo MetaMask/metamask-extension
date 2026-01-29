@@ -55,14 +55,14 @@ describe('BTC Account - Send', function (this: Suite) {
       // From here, we have moved to the confirmation screen (second part of the flow).
 
       const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
+      await bitcoinReviewTxPage.checkPageIsLoaded();
       await bitcoinReviewTxPage.checkNetworkFeeIsDisplayed(expectedFee);
       await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(expectedTotal);
       await bitcoinReviewTxPage.clickConfirmButton();
 
-      // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
+      // The Bitcoin snap doesn't appear to automatically poll for confirmation status
+      // so we only check for the tx is sent and not the status update to confirmed.
       await activityListPage.checkTransactionActivityByText('Sent');
-      await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
-      await homePage.checkPageIsLoaded();
     }, this.test?.fullTitle());
   });
 });

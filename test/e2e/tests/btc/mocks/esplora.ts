@@ -1,5 +1,6 @@
 import { Mockttp } from 'mockttp';
 import {
+  DEFAULT_BTC_ADDRESS,
   DEFAULT_BTC_BALANCE,
   DEFAULT_BTC_FEE_RATE,
   SATS_IN_1_BTC,
@@ -8,16 +9,14 @@ import {
 /* eslint-disable @typescript-eslint/naming-convention */
 
 /**
- * The Bitcoin address derived from E2E_SRP using BIP84 (P2WPKH).
- * This is deterministic - always the same for the test SRP.
+ * Bitcoin address constants derived from E2E_SRP using BIP84 (P2WPKH).
+ * The address is imported from constants.ts as DEFAULT_BTC_ADDRESS.
  *
- * Address: bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252
  * ScriptPubKey: 0014469d76e8387e11cbe9010c72ee4b748dd9152fa5
  * Scripthash (SHA256 reversed): 538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721
  *
  * NOTE: The scriptpubkey was verified against real mainnet API response.
  */
-const E2E_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 const E2E_BTC_SCRIPTPUBKEY = '0014469d76e8387e11cbe9010c72ee4b748dd9152fa5';
 const E2E_BTC_SCRIPTHASH =
   '538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721';
@@ -79,7 +78,7 @@ const FUNDING_TX = {
       scriptpubkey: E2E_BTC_SCRIPTPUBKEY,
       scriptpubkey_asm: `OP_0 OP_PUSHBYTES_20 ${E2E_BTC_SCRIPTPUBKEY.slice(4)}`,
       scriptpubkey_type: 'v0_p2wpkh',
-      scriptpubkey_address: E2E_BTC_ADDRESS,
+      scriptpubkey_address: DEFAULT_BTC_ADDRESS,
       value: DEFAULT_BTC_BALANCE * SATS_IN_1_BTC, // 1 BTC = 100,000,000 sats
     },
   ],
@@ -564,7 +563,7 @@ const mockCatchAllBitcoin = (mockServer: Mockttp) =>
     .always()
     .thenCallback((request) => {
       console.log(`[BTC MOCK] ⚠️ UNHANDLED Bitcoin request: ${request.url}`);
-      const path = request.url.replace(/.*\/esplora/, '/esplora');
+      const path = request.url.replace(/.*\/esplora/u, '/esplora');
 
       if (path.includes('/txs')) {
         return { statusCode: 200, json: [] };
