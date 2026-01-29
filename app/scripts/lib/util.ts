@@ -479,7 +479,7 @@ export function getConversionRatesForNativeAsset({
   return conversionRateResult;
 }
 
-// Cache for known domains from eth-chainlist
+// Cache for known domains
 let knownDomainsSet: Set<string> | null = null;
 let initPromise: Promise<void> | null = null;
 
@@ -499,7 +499,7 @@ function extractHostname(url: string): string | null {
 }
 
 /**
- * Initialize the set of known domains from the eth-chainlist cache.
+ * Initialize the set of known domains from the safe chainlist cache.
  * This should be called once at startup in the background context.
  *
  * @returns A promise that resolves when initialization is complete.
@@ -534,7 +534,7 @@ export async function initializeRpcProviderDomains(): Promise<void> {
 }
 
 /**
- * Check if a domain is in the known domains list (eth-chainlist).
+ * Check if a domain is in the known domains list.
  *
  * @param domain - The domain to check.
  * @returns True if the domain is found in the chainlist cache.
@@ -547,12 +547,13 @@ export function isKnownDomain(domain: string): boolean {
 }
 
 /**
- * Check if an RPC endpoint URL's domain is defined in eth-chainlist.
+ * Check if an RPC endpoint URL has a "known", domain, i.e. the domain is listed
+ * in a public registry.
  *
  * @param endpointUrl - The URL of the RPC endpoint.
- * @returns True if the endpoint's domain is in the chainlist.
+ * @returns True if the endpoint's domain is listed in a public registry.
  */
-function isChainlistEndpointUrl(endpointUrl: string): boolean {
+function isKnownEndpointUrl(endpointUrl: string): boolean {
   const hostname = extractHostname(endpointUrl);
   if (!hostname) {
     return false;
@@ -561,12 +562,65 @@ function isChainlistEndpointUrl(endpointUrl: string): boolean {
 }
 
 /**
+ * Check if a hostname is a localhost or private/local IP address.
+ * These should never be considered "public" endpoints even if they appear in chainlist.
+ *
+ * @param hostname - The hostname to check.
+ * @returns True if the hostname is localhost or a private IP address.
+ */
+function isLocalhostOrPrivateIP(hostname: string): boolean {
+  if (!hostname) {
+    return false;
+  }
+
+  const lowerHostname = hostname.toLowerCase();
+
+  // Check for localhost
+  if (lowerHostname === 'localhost') {
+    return true;
+  }
+
+  // Check for IPv4 loopback (127.x.x.x)
+  if (lowerHostname.startsWith('127.')) {
+    return true;
+  }
+
+  // Check for IPv6 loopback
+  if (lowerHostname === '::1' || lowerHostname === '[::1]') {
+    return true;
+  }
+
+  // Check for private IPv4 ranges
+  // 10.0.0.0 - 10.255.255.255
+  if (lowerHostname.startsWith('10.')) {
+    return true;
+  }
+
+  // 172.16.0.0 - 172.31.255.255
+  const match172 = lowerHostname.match(/^172\.(\d+)\./u);
+  if (match172) {
+    const secondOctet = parseInt(match172[1], 10);
+    if (secondOctet >= 16 && secondOctet <= 31) {
+      return true;
+    }
+  }
+
+  // 192.168.0.0 - 192.168.255.255
+  if (lowerHostname.startsWith('192.168.')) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Some URLs that users add as networks refer to private servers, and we do not
  * want to report these in Segment (or any other data collection service). This
  * function returns whether the given RPC endpoint is safe to share.
  *
- * This function is only available in the background context where the chainlist
- * domains are initialized. UI should call the background API method instead.
+ * This function is only available in the background context where the set of
+ * known domains is initialized. UI should call the background API method
+ * instead.
  *
  * @param endpointUrl - The URL of the endpoint.
  * @param infuraProjectId - Our Infura project ID.
@@ -577,6 +631,13 @@ export function isPublicEndpointUrl(
   endpointUrl: string,
   infuraProjectId: string,
 ): boolean {
+  // First, check if this is a localhost or private IP address.
+  // These should never be considered "public" even if they appear in chainlist.
+  const hostname = extractHostname(endpointUrl);
+  if (hostname && isLocalhostOrPrivateIP(hostname)) {
+    return false;
+  }
+
   const isMetaMaskInfuraEndpointUrl = getIsMetaMaskInfuraEndpointUrl(
     endpointUrl,
     infuraProjectId,
@@ -584,13 +645,13 @@ export function isPublicEndpointUrl(
   const isQuicknodeEndpointUrl = getIsQuicknodeEndpointUrl(endpointUrl);
   const isKnownCustomEndpointUrl =
     KNOWN_CUSTOM_ENDPOINT_URLS.includes(endpointUrl);
-  const isChainlistEndpoint = isChainlistEndpointUrl(endpointUrl);
+  const isKnownEndpoint = isKnownEndpointUrl(endpointUrl);
 
   return (
     isMetaMaskInfuraEndpointUrl ||
     isQuicknodeEndpointUrl ||
     isKnownCustomEndpointUrl ||
-    isChainlistEndpoint
+    isKnownEndpoint
   );
 }
 

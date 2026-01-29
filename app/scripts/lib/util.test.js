@@ -630,5 +630,81 @@ describe('app utils', () => {
         ),
       ).toBe(false);
     });
+
+    describe('localhost and private IP addresses', () => {
+      it('should return false for localhost', () => {
+        expect(
+          isPublicEndpointUrl('http://localhost:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+      });
+
+      it('should return false for 127.0.0.1', () => {
+        expect(
+          isPublicEndpointUrl('http://127.0.0.1:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+      });
+
+      it('should return false for 127.x.x.x loopback addresses', () => {
+        expect(
+          isPublicEndpointUrl('http://127.1.2.3:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+      });
+
+      it('should return false for IPv6 loopback ::1', () => {
+        expect(
+          isPublicEndpointUrl('http://[::1]:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+      });
+
+      it('should return false for private IP 10.x.x.x', () => {
+        expect(
+          isPublicEndpointUrl('http://10.0.0.1:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+        expect(
+          isPublicEndpointUrl(
+            'http://10.255.255.255:8545',
+            MOCK_INFURA_PROJECT_ID,
+          ),
+        ).toBe(false);
+      });
+
+      it('should return false for private IP 172.16.x.x - 172.31.x.x', () => {
+        expect(
+          isPublicEndpointUrl('http://172.16.0.1:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+        expect(
+          isPublicEndpointUrl(
+            'http://172.31.255.255:8545',
+            MOCK_INFURA_PROJECT_ID,
+          ),
+        ).toBe(false);
+      });
+
+      it('should return true for non-private 172.x.x.x addresses', () => {
+        // 172.15.x.x is not in the private range
+        expect(
+          isPublicEndpointUrl('http://172.15.0.1:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false); // Still false because it's not a known public endpoint
+        // 172.32.x.x is not in the private range
+        expect(
+          isPublicEndpointUrl('http://172.32.0.1:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false); // Still false because it's not a known public endpoint
+      });
+
+      it('should return false for private IP 192.168.x.x', () => {
+        expect(
+          isPublicEndpointUrl(
+            'http://192.168.0.1:8545',
+            MOCK_INFURA_PROJECT_ID,
+          ),
+        ).toBe(false);
+        expect(
+          isPublicEndpointUrl(
+            'http://192.168.255.255:8545',
+            MOCK_INFURA_PROJECT_ID,
+          ),
+        ).toBe(false);
+      });
+    });
   });
 });
