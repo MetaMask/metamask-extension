@@ -20,6 +20,7 @@ export type BaseToken = {
   decimals: number;
   chainId: Hex;
   isNative?: boolean;
+  assetId?: CaipAssetType | Hex;
 };
 
 // type created for non-evm tokens
@@ -30,6 +31,7 @@ export type NonEvmBaseToken = {
   decimals: number;
   chainId: CaipChainId;
   isNative?: boolean;
+  assetId?: CaipAssetType;
 };
 
 // Token type with optional aggregators
