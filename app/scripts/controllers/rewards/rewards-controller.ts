@@ -13,6 +13,11 @@ import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
 import { isHardwareAccount } from '../../../../shared/lib/accounts';
 import {
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+  isTronAddress,
+} from '../../../../shared/lib/multichain/accounts';
+import {
   EstimatedPointsDto,
   EstimatePointsDto,
   SeasonDtoState,
@@ -40,6 +45,8 @@ import {
   SeasonNotFoundError,
 } from './rewards-data-service';
 import { signSolanaRewardsMessage } from './utils/solana-snap';
+import { signBitcoinRewardsMessage } from './utils/bitcoin-snap';
+import { signTronRewardsMessage } from './utils/tron-snap';
 import { sortAccounts } from './utils/sortAccounts';
 
 export const DEFAULT_BLOCKED_REGIONS = ['UK'];
@@ -488,6 +495,35 @@ export class RewardsController extends BaseController<
       return `0x${Buffer.from(base58.decode(result.signature)).toString(
         'hex',
       )}`;
+    } else if (
+      isBtcMainnetAddress(account.address) ||
+      isBtcTestnetAddress(account.address)
+    ) {
+      const result = await signBitcoinRewardsMessage(
+        this.messenger.call.bind(
+          this.messenger,
+          'SnapController:handleRequest',
+        ) as unknown as HandleSnapRequest['handler'],
+        account.id,
+        Buffer.from(message, 'utf8').toString('base64'),
+      );
+      // Bitcoin signatures are typically hex-encoded, return as-is or convert if needed
+      return result.signature.startsWith('0x')
+        ? result.signature
+        : `0x${result.signature}`;
+    } else if (isTronAddress(account.address)) {
+      const result = await signTronRewardsMessage(
+        this.messenger.call.bind(
+          this.messenger,
+          'SnapController:handleRequest',
+        ) as unknown as HandleSnapRequest['handler'],
+        account.id,
+        Buffer.from(message, 'utf8').toString('base64'),
+      );
+      // Tron signatures are typically hex-encoded, return as-is or convert if needed
+      return result.signature.startsWith('0x')
+        ? result.signature
+        : `0x${result.signature}`;
     } else if (isEvmAddress(account.address)) {
       const result = await this.#signEvmMessage(account, message);
       return result;
@@ -644,7 +680,20 @@ export class RewardsController extends BaseController<
         return true;
       }
 
-      // If it's neither Solana nor EVM, opt-in is not supported
+      // Check if it's a Bitcoin address
+      if (
+        isBtcMainnetAddress(account.address) ||
+        isBtcTestnetAddress(account.address)
+      ) {
+        return true;
+      }
+
+      // Check if it's a Tron address
+      if (isTronAddress(account.address)) {
+        return true;
+      }
+
+      // If it's none of the supported types, opt-in is not supported
       return false;
     } catch (error) {
       // If there's an exception (e.g., checking hardware wallet status fails),

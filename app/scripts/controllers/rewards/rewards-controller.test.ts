@@ -546,6 +546,58 @@ describe('RewardsController', () => {
         expect(result).toBe(false);
       });
     });
+
+    it('should return true for Bitcoin mainnet addresses', async () => {
+      await withController({ isDisabled: false }, ({ controller }) => {
+        const bitcoinAccount: InternalAccount = {
+          ...MOCK_INTERNAL_ACCOUNT,
+          address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        };
+
+        const result = controller.isOptInSupported(bitcoinAccount);
+
+        expect(result).toBe(true);
+      });
+    });
+
+    it('should return true for Bitcoin testnet addresses', async () => {
+      await withController({ isDisabled: false }, ({ controller }) => {
+        const bitcoinAccount: InternalAccount = {
+          ...MOCK_INTERNAL_ACCOUNT,
+          address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
+        };
+
+        const result = controller.isOptInSupported(bitcoinAccount);
+
+        expect(result).toBe(true);
+      });
+    });
+
+    it('should return true for Bitcoin addresses', async () => {
+      await withController({ isDisabled: false }, ({ controller }) => {
+        const bitcoinAccount: InternalAccount = {
+          ...MOCK_INTERNAL_ACCOUNT,
+          address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        };
+
+        const result = controller.isOptInSupported(bitcoinAccount);
+
+        expect(result).toBe(true);
+      });
+    });
+
+    it('should return true for Tron addresses', async () => {
+      await withController({ isDisabled: false }, ({ controller }) => {
+        const tronAccount: InternalAccount = {
+          ...MOCK_INTERNAL_ACCOUNT,
+          address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        };
+
+        const result = controller.isOptInSupported(tronAccount);
+
+        expect(result).toBe(true);
+      });
+    });
   });
 
   describe('getActualSubscriptionId', () => {
@@ -645,6 +697,260 @@ describe('RewardsController', () => {
             hasOptedIn: true,
             subscriptionId: MOCK_SUBSCRIPTION_ID,
           });
+        },
+      );
+    });
+
+    it('should successfully perform silent auth for Bitcoin mainnet account when Bitcoin rewards are enabled', async () => {
+      const bitcoinAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'bitcoin-account-1',
+        address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        scopes: ['bip122:000000000019d6689c085ae165831e93'],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: '0xbitcoinSignature123',
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            bitcoinAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.objectContaining({
+              snapId: 'npm:@metamask/bitcoin-wallet-snap',
+              request: expect.objectContaining({
+                method: 'signRewardsMessage',
+              }),
+            }),
+          );
+        },
+      );
+    });
+
+    it('should successfully perform silent auth for Bitcoin testnet account when Bitcoin rewards are enabled', async () => {
+      const bitcoinAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'bitcoin-account-1',
+        address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
+        scopes: [
+          'bip122:000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943',
+        ],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: '0xbitcoinSignature123',
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            bitcoinAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.objectContaining({
+              snapId: 'npm:@metamask/bitcoin-wallet-snap',
+              request: expect.objectContaining({
+                method: 'signRewardsMessage',
+              }),
+            }),
+          );
+        },
+      );
+    });
+
+    it('should successfully perform silent auth for Tron account when Tron rewards are enabled', async () => {
+      const tronAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'tron-account-1',
+        address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        scopes: ['tron:728126428'],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: '0xtronSignature123',
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            tronAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.objectContaining({
+              snapId: 'npm:@metamask/tron-wallet-snap',
+              request: expect.objectContaining({
+                method: 'signRewardsMessage',
+              }),
+            }),
+          );
+        },
+      );
+    });
+
+    it('should handle Bitcoin signature without 0x prefix', async () => {
+      const bitcoinAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'bitcoin-account-1',
+        address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        scopes: ['bip122:000000000019d6689c085ae165831e93'],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: 'bitcoinSignature123', // No 0x prefix
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            bitcoinAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+
+    it('should handle Tron signature without 0x prefix', async () => {
+      const tronAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'tron-account-1',
+        address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        scopes: ['tron:728126428'],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: 'tronSignature123', // No 0x prefix
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            tronAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
         },
       );
     });
