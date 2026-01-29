@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.16.0]
+
+### Added
+
+- Added Perps home page and market detail candlestick chart with mock data UI (#39302)
+- Added one-click "Switch to Infura" button for custom networks experiencing connectivity issues (#39459)
+- Added searchable market list view for Perps with filtering and sorting capabilities (#39307)
+- Update MegaETH RPC (Infura) and explorer (Blockscout) URLs (#39398)
+- Added Copy icon to network avatar group on home screen (#39384)
+- Added support for `wallet_getSupportedExecutionPermissions` and `wallet_getGrantedExecutionPermissions` RPC methods (#39176)
+- Removed non-functional account name dialog from Snap account creation flow (#39399)
+- Update smart-transactions-controller to 22.1.0 and enhance transaction metadata handling (#39408)
+- Initialize perps detail page (#39257)
+- Add change utxo dropped when full swap use case (#39383)
+- Added QuickNode fallback RPC for Monad (#38428)
+- Add support for `InsufficientBalanceToCoverFee` error response from Snaps (#39323)
+- Adds Sentry instrumentation to monitor storage-related errors and enables error reporting even during database corruption scenarios (#39113)
+- Show shortId on the UI instead of full ID which is long (#39308)
+- Upgrade smart-transactions-controller and replace the legacy smart transactions swaps flag with smart transactions flag from remote config API (#38572)
+
+### Fixed
+
+- Fixed critical performance issue slowing down all user actions by fixing approvals selector memoization (#39312)
+- Fixed sort by tooltip overlapping filter (#39443)
+- Fixed align additional networks info icon (#39444)
+- Fixed alignment of gas option tooltip values in the Edit gas fee tooltip (#39343)
+- Fixed the gas fee stability tooltip text styling (#39350)
+- Fixed subscription polling when wallet is locked or the wallet window/sidepanel/pop-up is no longer active (#39435)
+- Reduce memory usage when visiting dapps (#39415)
+- Fixed a bug that caused the gas fee tooltip arrow color to drift from the gradient indicator (#39344)
+- Fixed tooltip alignment (#39326)
+- Fixed incorrect fiat amounts shown for transactions on non-Ethereum chains when viewing all networks (#39280)
+- Fixed back arrow icon colors on NFT details, asset, and DeFi detail pages (#39278)
+- Updated add button to + icon (#39096)
+- Updated appActiveTab to check dapp url (#39040)
+- Change cta copy for confirmations screen (#39249)
+- Updates the background color for onboarding flow cards and the SRP import chips/text inputs (#39271)
+- Used dynamic height measurement of transaction list items (#39515)
+
 ## [13.15.0]
 
 ### Added
@@ -1604,7 +1643,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.16.0...HEAD
+[13.16.0]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...v13.16.0
 [13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...v13.15.0
 [13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2
 [13.14.1]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.14.1

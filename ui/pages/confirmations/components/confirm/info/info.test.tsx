@@ -15,6 +15,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import { getEnabledAdvancedPermissions } from '../../../../../../shared/modules/environment';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import Info from './info';
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
@@ -65,6 +66,30 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn(),
 }));
 
+const mockUseConfirmationNavigationOptions = jest.fn();
+jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  ...jest.requireActual('../../../hooks/useConfirmationNavigation'),
+  useConfirmationNavigationOptions: () =>
+    mockUseConfirmationNavigationOptions(),
+}));
+
+let mockConfirmContextValue: ReturnType<
+  typeof import('../../../context/confirm').useConfirmContext
+> | null = null;
+
+jest.mock('../../../context/confirm', () => {
+  const actual = jest.requireActual('../../../context/confirm');
+  return {
+    ...actual,
+    useConfirmContext: () => {
+      if (mockConfirmContextValue !== null) {
+        return mockConfirmContextValue;
+      }
+      return actual.useConfirmContext();
+    },
+  };
+});
+
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
   const mockedUseParams = jest.mocked(useParams);
@@ -77,6 +102,7 @@ describe('Info', () => {
       decimals: '4' as any,
     }));
     mockedUseParams.mockReturnValue({});
+    mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
   });
 
   it('renders info section for personal sign request', () => {
@@ -157,5 +183,45 @@ describe('Info', () => {
     expect(screen.getByText('example.com')).toBeInTheDocument();
     expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
     expect(screen.getByText('RPC')).toBeInTheDocument();
+  });
+
+  describe('when no confirmation type exists', () => {
+    beforeEach(() => {
+      mockConfirmContextValue = {
+        currentConfirmation: undefined as never,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+      };
+    });
+
+    afterEach(() => {
+      mockConfirmContextValue = null;
+    });
+
+    it('renders InfoSkeleton when loader is not set', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('confirmation__info_skeleton'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders CustomAmountInfoSkeleton when loader is CustomAmount', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({
+        loader: ConfirmationLoader.CustomAmount,
+      });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('custom-amount-info-skeleton'),
+      ).toBeInTheDocument();
+    });
   });
 });
