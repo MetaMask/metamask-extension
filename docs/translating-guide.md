@@ -19,7 +19,7 @@ That's it! When MetaMask is loaded on a computer with that language set as the s
 To automatically see if you are missing any phrases to translate, we have a script you can run (if you know how to use the command line). The script is:
 
 ```
-node development/verify-locale-strings.js $YOUR_LOCALE
+yarn verify-locales $YOUR_LOCALE
 ```
 
 Where `$YOUR_LOCALE` is your locale string (example: `es`), i.e. the name of your language folder.
