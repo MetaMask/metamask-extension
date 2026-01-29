@@ -237,4 +237,36 @@ describe('useTokensWithFiltering', () => {
     ].slice(0, 10);
     expect(first10Tokens).toMatchSnapshot();
   });
+
+  it('should handle unsupported chain IDs gracefully without crashing', async () => {
+    // Immutable zkEVM (0x343b) is not in SWAPS_CHAINID_DEFAULT_TOKEN_MAP
+    const UNSUPPORTED_CHAIN_ID = '0x343b';
+
+    const mockStore = createBridgeMockStore({
+      metamaskStateOverrides: {
+        completedOnboarding: true,
+        allDetectedTokens: {},
+        tokensChainsCache: {},
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: UNSUPPORTED_CHAIN_ID,
+        isEvmSelected: true,
+      },
+    });
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+      const { filteredTokenListGenerator } = useTokensWithFiltering(
+        UNSUPPORTED_CHAIN_ID,
+      );
+      return filteredTokenListGenerator;
+    }, mockStore);
+
+    await waitForNextUpdate();
+
+    // Should not throw an error when processing tokens with unsupported chain IDs
+    expect(() => {
+      const tokens = [...result.current(() => true)];
+      return tokens;
+    }).not.toThrow();
+  });
 });
