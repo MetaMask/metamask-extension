@@ -26,6 +26,7 @@ describe('smartTransactions', () => {
         CHAIN_IDS.ARBITRUM,
         CHAIN_IDS.LINEA_MAINNET,
         CHAIN_IDS.LINEA_SEPOLIA,
+        CHAIN_IDS.POLYGON,
       ]);
     });
 
@@ -38,6 +39,7 @@ describe('smartTransactions', () => {
         CHAIN_IDS.BASE,
         CHAIN_IDS.ARBITRUM,
         CHAIN_IDS.LINEA_MAINNET,
+        CHAIN_IDS.POLYGON,
       ]);
     });
   });
