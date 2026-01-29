@@ -1,5 +1,7 @@
 import { SnapController } from '@metamask/snaps-controllers';
 import { createDeferredPromise, hasProperty, Json } from '@metamask/utils';
+import { mnemonicToEntropy } from '@metamask/scure-bip39';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english.js';
 import { ControllerInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -64,6 +66,15 @@ export const SnapControllerInit: ControllerInitFunction<
   );
   ///: END:ONLY_INCLUDE_IF
 
+  /**
+   * Get the mnemonic seed for entropy derivation.
+   *
+   * This returns the raw mnemonic entropy (16-32 bytes), NOT the derived
+   * BIP-39 seed (64 bytes). This is required for proper key derivation
+   * in the Snaps RPC methods.
+   *
+   * @returns The raw mnemonic entropy as bytes.
+   */
   async function getMnemonicSeed() {
     const keyrings = initMessenger.call(
       'KeyringController:getKeyringsByType',
@@ -72,13 +83,15 @@ export const SnapControllerInit: ControllerInitFunction<
 
     if (
       !keyrings[0] ||
-      !hasProperty(keyrings[0], 'seed') ||
-      !(keyrings[0].seed instanceof Uint8Array)
+      !hasProperty(keyrings[0], 'mnemonic') ||
+      typeof keyrings[0].mnemonic !== 'string'
     ) {
       throw new Error('Primary keyring mnemonic unavailable.');
     }
 
-    return keyrings[0].seed;
+    // Convert mnemonic to raw entropy bytes (16-32 bytes)
+    // This is what the key-tree library expects when deriving keys
+    return mnemonicToEntropy(keyrings[0].mnemonic, wordlist);
   }
 
   /**

@@ -25,6 +25,8 @@ import {
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
+import { mnemonicToEntropy } from '@metamask/scure-bip39';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english.js';
 import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
@@ -174,43 +176,52 @@ export function getSnapPermissionSpecifications(
          * Get the mnemonic seed for a given entropy source. If no source is
          * provided, the primary HD keyring's mnemonic seed will be returned.
          *
+         * This returns the raw mnemonic entropy (16-32 bytes), NOT the derived
+         * BIP-39 seed (64 bytes). This is required for proper key derivation
+         * in the Snaps RPC methods.
+         *
          * @param source - The ID of the entropy source keyring.
-         * @returns The mnemonic seed.
+         * @returns The raw mnemonic entropy as bytes.
          */
         getMnemonicSeed: async (source: string) => {
           if (!source) {
             const [keyring] = messenger.call(
               'KeyringController:getKeyringsByType',
               KeyringType.hdKeyTree,
-            ) as { seed?: Uint8Array }[];
+            ) as { mnemonic?: string }[];
 
-            if (!keyring.seed) {
+            if (!keyring.mnemonic) {
               throw new Error('Primary keyring mnemonic unavailable.');
             }
 
-            return keyring.seed;
+            // Convert mnemonic to raw entropy bytes (16-32 bytes)
+            // This is what the key-tree library expects when deriving keys
+            return mnemonicToEntropy(keyring.mnemonic, wordlist);
           }
 
           try {
-            const { type, seed } = (await messenger.call(
+            const { type, mnemonic } = (await messenger.call(
               'KeyringController:withKeyring',
               {
                 id: source,
               },
               async ({ keyring }) => ({
                 type: keyring.type,
-                seed: hasProperty(keyring, 'seed') ? keyring.seed : undefined,
+                mnemonic: hasProperty(keyring, 'mnemonic')
+                  ? keyring.mnemonic
+                  : undefined,
               }),
-            )) as { type: string; seed?: Uint8Array };
+            )) as { type: string; mnemonic?: string };
 
-            if (type !== KeyringTypes.hd || !seed) {
+            if (type !== KeyringTypes.hd || !mnemonic) {
               // The keyring isn't guaranteed to have a mnemonic (e.g.,
               // hardware wallets, which can't be used as entropy sources),
               // so we throw an error if it doesn't.
               throw new Error(`Entropy source with ID "${source}" not found.`);
             }
 
-            return seed;
+            // Convert mnemonic to raw entropy bytes (16-32 bytes)
+            return mnemonicToEntropy(mnemonic, wordlist);
           } catch {
             throw new Error(`Entropy source with ID "${source}" not found.`);
           }
