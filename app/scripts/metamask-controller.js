@@ -2438,6 +2438,7 @@ export default class MetamaskController extends EventEmitter {
       onboardingController,
       permissionController,
       preferencesController,
+      profileMetricsController,
       tokensController,
       smartTransactionsController,
       txController,
@@ -3031,6 +3032,11 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldSubscriptionMetricsProps.bind(
           appStateController,
         ),
+
+      // ProfileMetricsController
+      skipPna25TimeDelay: profileMetricsController.skipInitialDelay.bind(
+        profileMetricsController,
+      ),
 
       // EnsController
       tryReverseResolveAddress:
