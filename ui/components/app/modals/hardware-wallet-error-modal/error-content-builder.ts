@@ -121,6 +121,18 @@ export function buildErrorContent(
         ],
       };
 
+    // Usually bolos will yield this result
+    case ErrorCode.ConnectionClosed:
+      return {
+        variant: 'recovery',
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+        recoveryInstructions: [
+          t('hardwareWalletErrorRecoveryUnlock1'),
+          t('hardwareWalletErrorRecoveryUnlock2'),
+          t('hardwareWalletErrorRecoveryUnlock3'),
+        ],
+      };
+
     // Unknown/default
     default:
       return {

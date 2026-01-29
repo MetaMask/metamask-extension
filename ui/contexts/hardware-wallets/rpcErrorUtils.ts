@@ -25,6 +25,7 @@ import {
 } from '@metamask/superstruct';
 import { HardwareWalletType } from './types';
 import { createHardwareWalletError } from './errors';
+import { KeyringControllerError } from '@metamask/keyring-controller';
 
 /**
  * Structs for serialized HardwareWalletError cause objects.
@@ -43,7 +44,6 @@ const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
   id: string(),
   userMessage: string(),
   timestamp: string(),
-
   name: literal('HardwareWalletError'),
   message: string(),
   stack: optional(string()),
@@ -440,6 +440,17 @@ export function toHardwareWalletError(
 ): HardwareWalletError {
   if (error instanceof HardwareWalletError) {
     return error;
+  }
+
+  if (error instanceof KeyringControllerError) {
+    return createHardwareWalletError(
+      (error.cause as HardwareWalletError)?.code as ErrorCode,
+      walletType,
+      error.message,
+      {
+        cause: error.cause,
+      },
+    );
   }
 
   // Check for serialized RPC error with HardwareWalletError in data.cause

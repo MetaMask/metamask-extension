@@ -226,10 +226,9 @@ import {
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
 import {
-  HardwareWalletType,
   isRetryableHardwareWalletError,
-  parseErrorByType,
   toHardwareWalletError,
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../ui/contexts/hardware-wallets';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -8812,7 +8811,7 @@ export default class MetamaskController extends EventEmitter {
    * @throws {JsonRpcError} Always throws with hardware wallet error data
    */
   async #handleHardwareWalletError(error, walletType, context) {
-    const hwWalletError = parseErrorByType(error, walletType);
+    const hwWalletError = toHardwareWalletError(error, walletType);
     const isTransaction = context.type === 'transaction';
     const isSignature = context.type === 'signature';
 
