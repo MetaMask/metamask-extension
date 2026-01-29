@@ -565,6 +565,18 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   rewards_referral_code_used?: string;
+  /**
+   * The platform (browser) where the extension is running.
+   * Can be 'Chrome', 'Firefox', 'Brave', 'Edge', or 'Opera'.
+   */
+  platform?: string;
+  /**
+   * The installation type of the extension.
+   * Can be 'normal' (official store), 'development', 'sideload', 'admin', 'other', or 'unknown'.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  install_type?: string;
 };
 
 export enum MetaMetricsUserTrait {
@@ -681,6 +693,14 @@ export enum MetaMetricsUserTrait {
   HasRewardsOptedIn = 'has_rewards_opted_in',
   RewardsReferred = 'rewards_referred',
   RewardsReferralCodeUsed = 'rewards_referral_code_used',
+  /**
+   * The platform (browser) where the extension is running.
+   */
+  Platform = 'platform',
+  /**
+   * The installation type of the extension.
+   */
+  InstallType = 'install_type',
 }
 
 /**

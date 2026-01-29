@@ -57,7 +57,13 @@ import type {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
+import {
+  checkAlarmExists,
+  generateRandomId,
+  getInstallType,
+  getPlatform,
+  isValidDate,
+} from '../lib/util';
 import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
@@ -1435,6 +1441,8 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
       )?.[0]?.[1]?.profile?.profileId,
+      [MetaMetricsUserTrait.Platform]: getPlatform(),
+      [MetaMetricsUserTrait.InstallType]: getInstallType(),
     };
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {

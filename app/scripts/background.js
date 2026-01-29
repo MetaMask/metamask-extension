@@ -79,6 +79,7 @@ import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
   getPlatform,
+  initInstallType,
   isWebOrigin,
   shouldEmitDappViewedEvent,
 } from './lib/util';
@@ -709,6 +710,10 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize(backup) {
+  // Initialize install type early so it's cached for MetaMetrics user traits
+  // This is fire-and-forget - we don't await it to avoid blocking initialization
+  initInstallType();
+
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
   // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
