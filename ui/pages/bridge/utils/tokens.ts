@@ -38,11 +38,11 @@ const BridgeAssetV2Schema = intersection([
     /**
      * The chainId of the token
      */
-    chainId: CaipChainIdStruct,
+    chainId: optional(CaipChainIdStruct),
     /**
      * URL for token icon
      */
-    image: optional(string()),
+    iconUrl: nullable(optional(string())),
     noFee: optional(
       type({
         isDestination: nullable(optional(boolean())),
