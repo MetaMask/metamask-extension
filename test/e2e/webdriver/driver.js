@@ -44,22 +44,29 @@ function wrapElementWithAPI(element, driver) {
     // The 'fill' method in playwright replaces existing input
     await driver.wait(until.elementIsVisible(element));
 
-    // Wait for DOM to update before checking if clearing worked
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    if ((await element.getProperty('value')) !== '') {
-      await driver.driver
-        .actions()
-        .click(element)
-        .keyDown(driver.Key.MODIFIER)
-        .sendKeys('a')
-        .keyUp(driver.Key.MODIFIER)
-        .perform();
-
-      // Wait for second clearing method to complete
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    }
-    await driver.driver.actions().click(element).sendKeys(input).perform();
+    // Use JavaScript with native value setter - works with React controlled components
+    // This approach avoids issues with Key.chord() and Actions API in Chrome 140+
+    await driver.driver.executeScript(
+      `
+      const el = arguments[0];
+      const value = arguments[1];
+      
+      // Get the native value setter from HTMLInputElement prototype
+      // This is necessary for React controlled components
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype,
+        'value'
+      ).set;
+      
+      el.focus();
+      nativeInputValueSetter.call(el, value);
+      
+      // Dispatch input event to notify React of the change
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      `,
+      element,
+      input,
+    );
   };
 
   element.waitForElementState = async (state, timeout) => {
@@ -81,6 +88,7 @@ function wrapElementWithAPI(element, driver) {
   }
 
   // This special click() method waits for the loading overlay to disappear before clicking
+  // Also handles Chrome 140+ compatibility issues by falling back to JavaScript click
   element.click = async () => {
     try {
       await element.originalClick();
@@ -99,6 +107,9 @@ function wrapElementWithAPI(element, driver) {
           );
         }
         await element.originalClick();
+      } else if (e.name === 'JavascriptError') {
+        // Chrome 140+ has issues with native WebDriver click, fall back to JavaScript click
+        await driver.driver.executeScript('arguments[0].click()', element);
       } else {
         throw e; // If the error is not related to the loading overlay or modal backdrop, throw it
       }
@@ -718,7 +729,6 @@ class Driver {
     for (let attempt = 0; attempt < retries; attempt++) {
       try {
         const element = await this.findClickableElement(rawLocator);
-        await this.scrollToElement(element);
         await element.click();
         return;
       } catch (error) {
@@ -847,6 +857,24 @@ class Driver {
   }
 
   /**
+   * Clicks a nested button element by its text content.
+   * First attempts to click a button with the exact text, then falls back
+   * to finding an element containing the text and clicking its parent button.
+   *
+   * @param {string} buttonText - The text content of the button to click
+   * @returns {Promise<void>}
+   */
+  async clickNestedButton(buttonText) {
+    try {
+      await this.clickElement({ text: buttonText, tag: 'button' });
+    } catch (error) {
+      await this.clickElement({
+        xpath: `//*[contains(text(),"${buttonText}")]/parent::button`,
+      });
+    }
+  }
+
+  /**
    * Can fix instances where a normal click produces ElementClickInterceptedError
    *
    * @param rawLocator
@@ -915,7 +943,7 @@ class Driver {
    */
   async scrollToElement(element) {
     await this.driver.executeScript(
-      'arguments[0].scrollIntoView({block: "center", inline: "center", behavior: "instant"});',
+      'arguments[0].scrollIntoView(true)',
       element,
     );
   }
@@ -1024,6 +1052,28 @@ class Driver {
   }
 
   /**
+   * Retrieves the content of the clipboard.
+   *
+   * @returns {Promise<string>} promise that resolves to the clipboard content
+   * @throws {Error} throws an error if the clipboard content cannot be read
+   */
+  async getClipboardContent() {
+    try {
+      const clipboardText = await this.driver.executeScript(`
+        return navigator.clipboard.readText();
+      `);
+      console.log('Clipboard:', clipboardText || '(empty)');
+      return clipboardText;
+    } catch (error) {
+      console.log(
+        'Could not read clipboard - permission denied or not supported',
+        error,
+      );
+      return '';
+    }
+  }
+
+  /**
    * Paste a string into a field.
    *
    * @param {string} rawLocator  - Element locator
@@ -1031,33 +1081,30 @@ class Driver {
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
   async pasteIntoField(rawLocator, contentToPaste) {
-    // Click to focus the field
-    await this.clickElement(rawLocator);
-    await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste.replace(
-        /"/gu,
-        '\\"',
-      )}")`,
-    );
-    const element = await this.findElement(rawLocator);
-    await this.driver
-      .actions()
-      .click(element)
-      .keyDown(this.Key.MODIFIER)
-      .sendKeys('v')
-      .keyUp(this.Key.MODIFIER)
-      .perform();
+    // Use fill method which uses JavaScript - more reliable with Chrome 140+
+    await this.fill(rawLocator, contentToPaste);
   }
 
   async pasteFromClipboardIntoField(rawLocator) {
+    // Read from clipboard and use fill method - more reliable with Chrome 140+
     const element = await this.findElement(rawLocator);
-    await this.driver
-      .actions()
-      .click(element)
-      .keyDown(this.Key.MODIFIER)
-      .sendKeys('v')
-      .keyUp(this.Key.MODIFIER)
-      .perform();
+    await this.driver.executeScript(
+      `
+      const el = arguments[0];
+      navigator.clipboard.readText().then(text => {
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          'value'
+        ).set;
+        el.focus();
+        nativeInputValueSetter.call(el, text);
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      `,
+      element,
+    );
+    // Wait a bit for the async clipboard read to complete
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   // Navigation
@@ -1295,8 +1342,8 @@ class Driver {
    */
   async switchToWindowWithTitle(title) {
     if (this.windowHandles) {
-        await this.windowHandles.switchToWindowWithProperty('title', title);
-        return;
+      await this.windowHandles.switchToWindowWithProperty('title', title);
+      return;
     }
 
     let windowHandles = await this.driver.getAllWindowHandles();
@@ -1325,10 +1372,10 @@ class Driver {
       timeElapsed += delayTime;
       // refresh the window handles
       windowHandles = await this.driver.getAllWindowHandles();
-          }
+    }
 
     throw new Error(`No window with title: ${title}`);
-    }
+  }
 
   /**
    * Waits until there is a window/tab with the given title, without changing the current window focus.
