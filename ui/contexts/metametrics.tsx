@@ -31,6 +31,7 @@ import {
 } from '../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
+  MetaMetricsEventName,
   type UnsanitizedMetaMetricsEventPayload,
   type MetaMetricsEventOptions,
   type MetaMetricsEventPayload,
@@ -174,7 +175,10 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         ...context,
       };
 
-      if (isMetricsEnabled) {
+      if (
+        isMetricsEnabled ||
+        payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
+      ) {
         // If metrics are enabled, track immediately
         trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
       } else {
