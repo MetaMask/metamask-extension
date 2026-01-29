@@ -21,17 +21,10 @@ export async function withBtcAccountSnap(
     {
       // Use onboarding flow to trigger fullScan (not sync)
       onboarding: true,
-      // Disable BIP44 stage 2 to use legacy BTC account derivation
-      forceBip44Version: false,
       title,
       dappOptions: { numberOfTestDapps: 1 },
       manifestFlags: {
         remoteFeatureFlags: {
-          enableMultichainAccountsState2: {
-            enabled: true,
-            featureVersion: '2',
-            minimumVersion: '12.19.0',
-          },
           bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
           sendRedesign: { enabled: true },
         },
