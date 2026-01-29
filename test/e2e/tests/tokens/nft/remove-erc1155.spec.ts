@@ -11,6 +11,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
+import { RESIZE_OBSERVER_IGNORED_ERRORS } from './ignored-console-errors';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -38,6 +39,7 @@ describe('Remove ERC1155 NFT', function () {
           })
           .build(),
         smartContract,
+        ignoredConsoleErrors: RESIZE_OBSERVER_IGNORED_ERRORS,
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },
@@ -73,6 +75,7 @@ describe('Remove ERC1155 NFT', function () {
           })
           .build(),
         driverOptions,
+        ignoredConsoleErrors: RESIZE_OBSERVER_IGNORED_ERRORS,
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
       },

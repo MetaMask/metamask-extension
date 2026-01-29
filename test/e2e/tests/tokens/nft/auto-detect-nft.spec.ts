@@ -7,6 +7,7 @@ import PrivacySettings from '../../../page-objects/pages/settings/privacy-settin
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { setupAutoDetectMocking } from './mocks';
+import { RESIZE_OBSERVER_IGNORED_ERRORS } from './ignored-console-errors';
 
 describe('NFT detection', function () {
   /**
@@ -25,6 +26,7 @@ describe('NFT detection', function () {
           })
           .build(),
         driverOptions,
+        ignoredConsoleErrors: RESIZE_OBSERVER_IGNORED_ERRORS,
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
       },

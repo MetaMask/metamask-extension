@@ -6,6 +6,7 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { RESIZE_OBSERVER_IGNORED_ERRORS } from './ignored-console-errors';
 
 describe('Remove NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -22,6 +23,7 @@ describe('Remove NFT', function () {
           })
           .build(),
         smartContract,
+        ignoredConsoleErrors: RESIZE_OBSERVER_IGNORED_ERRORS,
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {

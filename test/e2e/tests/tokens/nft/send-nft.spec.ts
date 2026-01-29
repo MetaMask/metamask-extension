@@ -8,6 +8,7 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import SendPage from '../../../page-objects/pages/send/send-page';
+import { RESIZE_OBSERVER_IGNORED_ERRORS } from './ignored-console-errors';
 
 describe('Send NFTs', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -18,6 +19,7 @@ describe('Send NFTs', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
+        ignoredConsoleErrors: RESIZE_OBSERVER_IGNORED_ERRORS,
         title: this.test?.fullTitle(),
       },
       async ({
