@@ -13,6 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { AmountInputProps } from '../../order-entry.types';
 import {
   BALANCE_PERCENT_PRESETS,
@@ -43,10 +44,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold, formatTokenQuantity, formatNumber } =
+    useFormatters();
 
   // Calculate token conversion based on leveraged position size
   const tokenAmount = useMemo(() => {
-    const numAmount = parseFloat(amount) || 0;
+    // Remove commas from formatted amount for parsing
+    const cleanAmount = amount.replace(/,/g, '');
+    const numAmount = parseFloat(cleanAmount) || 0;
     if (numAmount === 0 || currentPrice === 0) {
       return null;
     }
@@ -59,13 +64,15 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
-      // Allow empty string or valid numbers
-      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      // Allow empty string, valid numbers, or numbers with commas (for formatted input)
+      if (value === '' || /^[\d,]*\.?\d*$/.test(value)) {
         onAmountChange(value);
 
         // Update percentage based on amount relative to available balance
-        if (value && availableBalance > 0) {
-          const numValue = parseFloat(value);
+        // Remove commas for parsing
+        const cleanValue = value.replace(/,/g, '');
+        if (cleanValue && availableBalance > 0) {
+          const numValue = parseFloat(cleanValue);
           const percent = Math.min((numValue / availableBalance) * 100, 100);
           onBalancePercentChange(Math.round(percent));
         } else {
@@ -76,6 +83,20 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     [onAmountChange, onBalancePercentChange, availableBalance],
   );
 
+  // Format amount for display (with locale-aware formatting)
+  const formatAmount = useCallback(
+    (value: number): string => {
+      return formatNumber(value, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    },
+    [formatNumber],
+  );
+
+  // Formatted placeholder for the amount input
+  const formattedPlaceholder = useMemo(() => formatAmount(0), [formatAmount]);
+
   // Handle percentage preset button click
   const handlePercentClick = useCallback(
     (percent: number) => {
@@ -85,11 +106,21 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       } else {
         // Calculate amount as percentage of available balance
         const newAmount = (availableBalance * percent) / 100;
-        onAmountChange(newAmount.toFixed(2));
+        onAmountChange(formatAmount(newAmount));
       }
     },
-    [onAmountChange, onBalancePercentChange, availableBalance],
+    [onAmountChange, onBalancePercentChange, availableBalance, formatAmount],
   );
+
+  // Handle blur - format the amount when user finishes typing
+  const handleAmountBlur = useCallback(() => {
+    if (amount) {
+      const numValue = parseFloat(amount.replace(/,/g, ''));
+      if (!isNaN(numValue) && numValue > 0) {
+        onAmountChange(formatAmount(numValue));
+      }
+    }
+  }, [amount, onAmountChange, formatAmount]);
 
   // Handle slider change
   const handleSliderChange = useCallback(
@@ -111,18 +142,10 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         {/* Left: Balance and Available text */}
         <Box flexDirection={BoxFlexDirection.Column} gap={1}>
           <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
-            $
-            {availableBalance.toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {formatCurrencyWithMinThreshold(availableBalance, 'USD')}
           </Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            $
-            {availableBalance.toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}{' '}
+            {formatCurrencyWithMinThreshold(availableBalance, 'USD')}{' '}
             {t('perpsAvailable').toLowerCase()}
           </Text>
         </Box>
@@ -170,7 +193,8 @@ export const AmountInput: React.FC<AmountInputProps> = ({
                 inputMode="decimal"
                 value={amount}
                 onChange={handleAmountChange}
-                placeholder="0.00"
+                onBlur={handleAmountBlur}
+                placeholder={formattedPlaceholder}
                 className={twMerge(
                   'flex-1 bg-transparent border-none outline-none',
                   'text-[24px] leading-8 font-bold text-default',
@@ -186,7 +210,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
               color={TextColor.TextAlternative}
             >
               {tokenAmount !== null
-                ? `≈ ${tokenAmount.toFixed(6)} ${asset}`
+                ? `≈ ${formatTokenQuantity(tokenAmount, asset)}`
                 : `0 ${asset}`}
             </Text>
           </Box>

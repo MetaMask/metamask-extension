@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   twMerge,
   Box,
@@ -17,6 +17,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import ToggleButton from '../../../../../ui/toggle-button';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { AutoCloseSectionProps, TPSLUnit } from '../../order-entry.types';
 
 /**
@@ -43,8 +44,23 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext();
+  const { formatNumber } = useFormatters();
   const [tpUnit, setTpUnit] = useState<TPSLUnit>('percent');
   const [slUnit, setSlUnit] = useState<TPSLUnit>('percent');
+
+  // Format price for display (with locale-aware formatting)
+  const formatPrice = useCallback(
+    (value: number): string => {
+      return formatNumber(value, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    },
+    [formatNumber],
+  );
+
+  // Formatted placeholder for the price inputs
+  const formattedPlaceholder = useMemo(() => formatPrice(0), [formatPrice]);
 
   // Calculate gain/loss based on price and direction
   const calculateGainLoss = useCallback(
@@ -52,7 +68,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       if (!price || !currentPrice) {
         return '';
       }
-      const priceNum = parseFloat(price);
+      // Remove commas from formatted price for parsing
+      const cleanPrice = price.replace(/,/g, '');
+      const priceNum = parseFloat(cleanPrice);
       if (isNaN(priceNum)) {
         return '';
       }
@@ -62,16 +80,18 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
       // For long: TP is above entry (positive), SL is below entry (negative)
       // For short: TP is below entry (negative gain = profit), SL is above entry
+      let value: number;
       if (direction === 'long') {
-        return isTP
-          ? percentChange.toFixed(2)
-          : Math.abs(percentChange).toFixed(2);
+        value = isTP ? percentChange : Math.abs(percentChange);
+      } else {
+        value = isTP ? Math.abs(percentChange) : percentChange;
       }
-      return isTP
-        ? Math.abs(percentChange).toFixed(2)
-        : percentChange.toFixed(2);
+      return formatNumber(value, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
     },
-    [currentPrice, direction],
+    [currentPrice, direction, formatNumber],
   );
 
   const handleToggle = useCallback(
@@ -84,22 +104,44 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   const handleTpPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
-      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      // Allow empty string, valid numbers, or numbers with commas (for formatted input)
+      if (value === '' || /^[\d,]*\.?\d*$/.test(value)) {
         onTakeProfitPriceChange(value);
       }
     },
     [onTakeProfitPriceChange],
   );
 
+  // Handle blur - format the TP price when user finishes typing
+  const handleTpPriceBlur = useCallback(() => {
+    if (takeProfitPrice) {
+      const numValue = parseFloat(takeProfitPrice.replace(/,/g, ''));
+      if (!isNaN(numValue) && numValue > 0) {
+        onTakeProfitPriceChange(formatPrice(numValue));
+      }
+    }
+  }, [takeProfitPrice, onTakeProfitPriceChange, formatPrice]);
+
   const handleSlPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
-      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      // Allow empty string, valid numbers, or numbers with commas (for formatted input)
+      if (value === '' || /^[\d,]*\.?\d*$/.test(value)) {
         onStopLossPriceChange(value);
       }
     },
     [onStopLossPriceChange],
   );
+
+  // Handle blur - format the SL price when user finishes typing
+  const handleSlPriceBlur = useCallback(() => {
+    if (stopLossPrice) {
+      const numValue = parseFloat(stopLossPrice.replace(/,/g, ''));
+      if (!isNaN(numValue) && numValue > 0) {
+        onStopLossPriceChange(formatPrice(numValue));
+      }
+    }
+  }, [stopLossPrice, onStopLossPriceChange, formatPrice]);
 
   const toggleTpUnit = useCallback(() => {
     setTpUnit((prev) => (prev === 'percent' ? 'usd' : 'percent'));
@@ -142,7 +184,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 size={TextFieldSize.Md}
                 value={takeProfitPrice}
                 onChange={handleTpPriceChange}
-                placeholder={t('perpsTpPrice')}
+                onBlur={handleTpPriceBlur}
+                placeholder={formattedPlaceholder}
                 borderRadius={BorderRadius.MD}
                 borderWidth={0}
                 backgroundColor={BackgroundColor.backgroundMuted}
@@ -156,7 +199,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               <TextField
                 size={TextFieldSize.Md}
                 value={calculateGainLoss(takeProfitPrice, true)}
-                placeholder={t('perpsGain')}
+                placeholder={formattedPlaceholder}
                 borderRadius={BorderRadius.MD}
                 borderWidth={0}
                 backgroundColor={BackgroundColor.backgroundMuted}
@@ -197,7 +240,8 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
                 size={TextFieldSize.Md}
                 value={stopLossPrice}
                 onChange={handleSlPriceChange}
-                placeholder={t('perpsSlPrice')}
+                onBlur={handleSlPriceBlur}
+                placeholder={formattedPlaceholder}
                 borderRadius={BorderRadius.MD}
                 borderWidth={0}
                 backgroundColor={BackgroundColor.backgroundMuted}
@@ -211,7 +255,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               <TextField
                 size={TextFieldSize.Md}
                 value={calculateGainLoss(stopLossPrice, false)}
-                placeholder={t('perpsLoss')}
+                placeholder={formattedPlaceholder}
                 borderRadius={BorderRadius.MD}
                 borderWidth={0}
                 backgroundColor={BackgroundColor.backgroundMuted}

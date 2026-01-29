@@ -74,7 +74,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
-  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatCurrencyWithMinThreshold, formatTokenQuantity, formatNumber } =
+    useFormatters();
   // Safely decode the symbol from URL
   const decodedSymbol = useMemo(() => {
     if (!symbol) {
@@ -683,8 +684,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
                 >
-                  {Math.abs(parseFloat(position.size)).toFixed(5)}{' '}
-                  {getDisplayName(position.coin)}
+                  {formatTokenQuantity(
+                    Math.abs(parseFloat(position.size)),
+                    getDisplayName(position.coin),
+                  )}
                 </Text>
               </Box>
 
@@ -937,7 +940,11 @@ const PerpsMarketDetailPage: React.FC = () => {
                 }
               >
                 {market.fundingRate >= 0 ? '+' : ''}
-                {(market.fundingRate * 100).toFixed(4)}%
+                {formatNumber(market.fundingRate * 100, {
+                  minimumFractionDigits: 4,
+                  maximumFractionDigits: 4,
+                })}
+                %
               </Text>
             </Box>
           )}

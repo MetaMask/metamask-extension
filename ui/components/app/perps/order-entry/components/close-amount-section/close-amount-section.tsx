@@ -13,6 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import Slider from '../../../../../ui/slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { CloseAmountSectionProps } from '../../order-entry.types';
 
 /**
@@ -38,6 +39,8 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
   currentPrice,
 }) => {
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
+    useFormatters();
 
   // Calculate the amount to close based on percentage
   const closeAmount = useMemo(() => {
@@ -81,7 +84,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
           {t('perpsPositionSize')}
         </Text>
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {totalPositionSize.toFixed(6)} {asset}
+          {formatTokenQuantity(totalPositionSize, asset)}
         </Text>
       </Box>
 
@@ -110,7 +113,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
               fontWeight={FontWeight.Medium}
               data-testid="close-amount-value"
             >
-              {closeAmount.toFixed(6)} {asset}
+              {formatTokenQuantity(closeAmount, asset)}
             </Text>
             <Text
               variant={TextVariant.BodyMd}
@@ -123,11 +126,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
 
           {/* USD Value */}
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            ≈ $
-            {closeValueUsd.toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            ≈ {formatCurrencyWithMinThreshold(closeValueUsd, 'USD')}
           </Text>
         </Box>
       </Box>

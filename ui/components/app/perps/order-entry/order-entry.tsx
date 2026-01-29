@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { twMerge, Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { Button, ButtonVariant, ButtonSize } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
 
 import type { OrderEntryProps, OrderFormState } from './order-entry.types';
 import {
@@ -56,6 +57,8 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   existingPosition,
 }) => {
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
+    useFormatters();
 
   // Close percentage state (for 'close' mode, defaults to 100%)
   const [closePercent, setClosePercent] = useState<number>(100);
@@ -101,16 +104,18 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
       const estimatedFees = closeValueUsd * 0.0005;
 
       return {
-        positionSize: closeAmount.toFixed(6),
+        positionSize: formatTokenQuantity(closeAmount, asset),
         marginRequired: null, // Not relevant for closing
         liquidationPrice: null, // Not relevant for closing
-        orderValue: `$${closeValueUsd.toFixed(2)}`,
-        estimatedFees: `$${estimatedFees.toFixed(2)}`,
+        orderValue: formatCurrencyWithMinThreshold(closeValueUsd, 'USD'),
+        estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
       };
     }
 
     // For new/modify modes, calculate based on form amount
-    const amount = parseFloat(formState.amount) || 0;
+    // Remove commas from formatted amount for parsing
+    const cleanAmount = formState.amount.replace(/,/g, '');
+    const amount = parseFloat(cleanAmount) || 0;
 
     if (amount === 0) {
       return {
@@ -133,13 +138,13 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     const estimatedFees = amount * 0.0005;
 
     return {
-      positionSize: positionSize.toFixed(6),
-      marginRequired: `$${marginRequired.toFixed(2)}`,
-      liquidationPrice: `$${liquidationPrice.toFixed(2)}`,
-      orderValue: `$${amount.toFixed(2)}`,
-      estimatedFees: `$${estimatedFees.toFixed(2)}`,
+      positionSize: formatTokenQuantity(positionSize, asset),
+      marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
+      liquidationPrice: formatCurrencyWithMinThreshold(liquidationPrice, 'USD'),
+      orderValue: formatCurrencyWithMinThreshold(amount, 'USD'),
+      estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
     };
-  }, [formState.amount, formState.leverage, formState.direction, currentPrice, mode, existingPosition, closePercent]);
+  }, [formState.amount, formState.leverage, formState.direction, currentPrice, mode, existingPosition, closePercent, asset, formatCurrencyWithMinThreshold, formatTokenQuantity]);
 
   // Form state update handlers
   const handleAmountChange = useCallback((amount: string) => {
