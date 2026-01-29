@@ -11,10 +11,12 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import {
+  installSnapSimpleKeyring,
+  importSnapAccount,
+} from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
@@ -54,12 +56,9 @@ describe('Snap Account Contract interaction', function (this: Suite) {
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
         await installSnapSimpleKeyring(driver);
-        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
-        // Import snap account with private key on snap simple keyring page.
-        await snapSimpleKeyringPage.importAccountWithPrivateKey(
-          PRIVATE_KEY_TWO,
-        );
+        // Import snap account with private key using flow
+        await importSnapAccount(driver, PRIVATE_KEY_TWO);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

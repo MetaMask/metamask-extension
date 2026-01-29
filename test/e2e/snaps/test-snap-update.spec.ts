@@ -6,7 +6,10 @@ import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import {
   mockWebpackPluginOldSnap,
   mockWebpackPluginSnap,
@@ -37,14 +40,16 @@ describe('Test Snap update', function () {
         const snapInstall = new SnapInstall(driver);
 
         // Navigate to test snaps page, connect update, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.update,
+        );
+        await testSnaps.checkConnectUpdateButtonText(
           'Reconnect to Update Snap',
         );
 
         // Click update snap and check the installation status
-        await testSnaps.scrollAndClickButton('connectUpdateNewButton');
+        await testSnaps.connectUpdateNewButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: 'Update request' });
         await snapInstall.checkPageIsLoaded();
@@ -53,7 +58,7 @@ describe('Test Snap update', function () {
 
         // Switch to test snap page and validate the version text
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkMessageResultSpan('updateVersionSpan', '"2.1.3"');
+        await testSnaps.checkUpdateVersionSpan('"2.1.3"');
       },
     );
   });

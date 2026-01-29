@@ -32,8 +32,7 @@ describe('Test Snap Cronjob Duration', function () {
           driver,
           'connectCronjobDurationButton',
         );
-        await testSnaps.checkInstallationComplete(
-          'connectCronjobDurationButton',
+        await testSnaps.checkConnectCronjobDurationButtonText(
           'Reconnect to Cronjob Duration Snap',
         );
 

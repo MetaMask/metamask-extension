@@ -33,11 +33,10 @@ describe('Test Snap Notification', function () {
           driver,
           'connectNotificationButton',
         );
-        await testSnaps.checkInstallationComplete(
-          'connectNotificationButton',
+        await testSnaps.checkConnectNotificationButtonText(
           'Reconnect to Notifications Snap',
         );
-        await testSnaps.clickButton('sendInAppNotificationButton');
+        await testSnaps.clickSendInAppNotificationButton();
 
         // switch back to the extension page and validation one notification appears
         await driver.switchToWindowWithTitle(
@@ -80,11 +79,10 @@ describe('Test Snap Notification', function () {
           driver,
           'connectNotificationButton',
         );
-        await testSnaps.checkInstallationComplete(
-          'connectNotificationButton',
+        await testSnaps.checkConnectNotificationButtonText(
           'Reconnect to Notifications Snap',
         );
-        await testSnaps.clickButton('sendExpandedViewNotificationButton');
+        await testSnaps.clickSendExpandedViewNotificationButton();
 
         // switch back to the extension page and validation one notification appears
         await driver.switchToWindowWithTitle(

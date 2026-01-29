@@ -139,7 +139,7 @@ describe('Confirmation Navigation', function (this: Suite) {
           'connectDialogsButton',
           { url: DAPP_ONE_URL },
         );
-        await testSnaps.scrollAndClickButton('confirmationButton');
+        await testSnaps.clickConfirmationButton();
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

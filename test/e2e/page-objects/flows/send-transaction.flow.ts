@@ -1,8 +1,8 @@
 import HomePage from '../pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
-import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../pages/home/activity-list';
+import { approveOrRejectSnapAccountTransaction } from './snap-simple-keyring.flow';
 import { createInternalTransaction } from './transaction';
 
 /**
@@ -97,9 +97,10 @@ export const sendRedesignedTransactionWithSnapAccount = async ({
     amount,
   });
   if (!isSyncFlow) {
-    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+    await approveOrRejectSnapAccountTransaction(driver, {
       approveTransaction,
-    );
+      isSignatureRequest: false,
+    });
   }
 };
 

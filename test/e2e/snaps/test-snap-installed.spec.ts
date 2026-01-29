@@ -5,7 +5,10 @@ import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import {
   mockDialogSnap,
   mockErrorSnap,
@@ -75,11 +78,13 @@ describe('Test Snap installed', function () {
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.dialogs,
+        );
 
         // Check installation success
-        await testSnaps.checkInstallationComplete(
-          'connectDialogsButton',
+        await testSnaps.checkConnectDialogsButtonText(
           'Reconnect to Dialogs Snap',
         );
 
@@ -103,18 +108,15 @@ describe('Test Snap installed', function () {
         });
 
         // Click to connect to errors snap and validate the install snaps result
-        await testSnaps.scrollAndClickButton('connectErrorsButton');
+        await testSnaps.connectErrorsButton();
         await completeSnapInstallSwitchToTestSnap(driver);
         await testSnaps.checkInstalledSnapsResult(
           'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         );
 
         // Click Send error button and validate the message result
-        await testSnaps.scrollAndClickButton('sendErrorButton');
-        await testSnaps.checkMessageResultSpan(
-          'errorResultSpan',
-          '"Hello, world!"',
-        );
+        await testSnaps.clickSendErrorButton();
+        await testSnaps.checkErrorResult('"Hello, world!"');
       },
     );
   });

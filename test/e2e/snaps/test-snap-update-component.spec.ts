@@ -9,7 +9,10 @@ import {
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import SnapListPage from '../page-objects/pages/snap-list-page';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  openTestSnapClickButtonAndInstall,
+  SnapConnectButton,
+} from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { Driver } from '../webdriver/driver';
@@ -39,11 +42,14 @@ describe('Test Snap update via snaps component', function () {
         const snapListPage = new SnapListPage(driver);
         const snapInstall = new SnapInstall(driver);
 
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
-          withExtraScreen: true,
-        });
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          SnapConnectButton.update,
+          {
+            withExtraScreen: true,
+          },
+        );
+        await testSnaps.checkConnectUpdateButtonText(
           'Reconnect to Update Snap',
         );
         await driver.switchToWindowWithTitle(

@@ -30,8 +30,7 @@ describe('Test Snap Cronjob', function () {
             withExtraScreen: true,
           },
         );
-        await testSnaps.checkInstallationComplete(
-          'connectCronJobsButton',
+        await testSnaps.checkConnectCronJobsButtonText(
           'Reconnect to Cronjobs Snap',
         );
 
@@ -40,8 +39,7 @@ describe('Test Snap Cronjob', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // look for the dialog popup to verify cronjob fired
-        await testSnaps.checkMessageResultSpan(
-          'snapUIRenderer',
+        await testSnaps.checkSnapUIRendererResult(
           'This dialog was triggered by a cronjob',
         );
 

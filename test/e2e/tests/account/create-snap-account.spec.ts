@@ -6,7 +6,11 @@ import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
-import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import SnapAccountConfirmationDialog from '../../page-objects/pages/dialog/snap-account-confirmation-dialog';
+import {
+  installSnapSimpleKeyring,
+  createSnapAccount,
+} from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
@@ -24,9 +28,8 @@ describe('Create Snap Account', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver);
-        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
-        await snapSimpleKeyringPage.createNewAccount();
+        await createSnapAccount(driver);
 
         // Check snap account is displayed after adding the snap account.
         await driver.switchToWindowWithTitle(
@@ -52,17 +55,17 @@ describe('Create Snap Account', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver);
-        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
+
         const expectedNames = [
           'Snap Account 1',
           'Snap Account 2',
           'Snap Account 3',
         ];
 
-        // Create multiple snap accounts on snap simple keyring page
-        await snapSimpleKeyringPage.createNewAccount(true);
-        await snapSimpleKeyringPage.createNewAccount(false);
-        await snapSimpleKeyringPage.createNewAccount(false);
+        // Create multiple snap accounts using the flow
+        for (let i = 0; i < expectedNames.length; i++) {
+          await createSnapAccount(driver, { isFirstAccount: i === 0 });
+        }
 
         // Check 3 created snap accounts are displayed in the account list.
         await driver.switchToWindowWithTitle(
@@ -93,11 +96,19 @@ describe('Create Snap Account', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver);
+
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
-        // cancel snap account creation on confirmation screen
-        await snapSimpleKeyringPage.openCreateSnapAccountConfirmationScreen();
-        await snapSimpleKeyringPage.cancelCreateSnapOnConfirmationScreen();
+        // Click create account on the dapp
+        await snapSimpleKeyringPage.clickCreateAccount();
+
+        // Switch to dialog and cancel
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const snapAccountDialog = new SnapAccountConfirmationDialog(driver);
+        await snapAccountDialog.checkConfirmationDialogIsLoaded();
+        await snapAccountDialog.clickCancelButton();
+
+        // Switch back to dapp and check error
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.SnapSimpleKeyringDapp,
         );

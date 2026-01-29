@@ -33,10 +33,10 @@ describe('Test Snap Client Status', function () {
           driver,
           'connectClientStatusButton',
         );
-        await testSnaps.scrollAndClickButton('submitClientStatusButton');
+        await testSnaps.clickSubmitClientStatusButton();
 
         // Validate the client status is false when the wallet is unlocked
-        await testSnaps.checkClientStatus({
+        await testSnaps.checkClientStatusResult({
           locked: false,
           active: true,
           clientVersion: packageJson.version,
@@ -53,10 +53,10 @@ describe('Test Snap Client Status', function () {
         // Click submit client status on test snap page
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkPageIsLoaded();
-        await testSnaps.scrollAndClickButton('submitClientStatusButton');
+        await testSnaps.clickSubmitClientStatusButton();
 
         // Validate the client status is accurate
-        await testSnaps.checkClientStatus({
+        await testSnaps.checkClientStatusResult({
           locked: true,
           active: false,
           clientVersion: packageJson.version,

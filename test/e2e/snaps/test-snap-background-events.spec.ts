@@ -28,34 +28,30 @@ describe('Test Snap Background Events', function () {
           driver,
           'connectBackgroundEventsButton',
         );
-        await testSnaps.checkInstallationComplete(
-          'connectBackgroundEventsButton',
+        await testSnaps.checkConnectBackgroundEventsButtonText(
           'Reconnect to Background Events Snap',
         );
 
         // ISO 8601 date string
         const futureDate = new Date(Date.now() + 5000).toISOString();
 
-        await testSnaps.fillMessage('backgroundEventDateInput', futureDate);
+        await testSnaps.fillBackgroundEventDateInput(futureDate);
 
-        await testSnaps.clickButton('scheduleBackgroundEventWithDateButton');
+        await testSnaps.clickScheduleBackgroundEventWithDateButton();
 
         const scheduleResult = await driver.findElement(
           '#scheduleBackgroundEventResult',
         );
         await driver.waitForNonEmptyElement(scheduleResult);
 
-        await testSnaps.clickButton('getBackgroundEventResultButton');
+        await testSnaps.clickGetBackgroundEventResultButton();
 
         const eventsResult = await driver.findElement(
           '#getBackgroundEventsResult',
         );
         await driver.waitForNonEmptyElement(eventsResult);
 
-        await testSnaps.checkMessageResultSpanIncludes(
-          'getBackgroundEventResultSpan',
-          'fireDialog',
-        );
+        await testSnaps.checkGetBackgroundEventResultIncludes('fireDialog');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -95,39 +91,30 @@ describe('Test Snap Background Events', function () {
           'connectBackgroundEventsButton',
         );
 
-        await testSnaps.checkInstallationComplete(
-          'connectBackgroundEventsButton',
+        await testSnaps.checkConnectBackgroundEventsButtonText(
           'Reconnect to Background Events Snap',
         );
 
         // ISO 8601 duration string
         const futureDuration = 'PT5S';
 
-        await testSnaps.fillMessage(
-          'backgroundEventDurationInput',
-          futureDuration,
-        );
+        await testSnaps.fillBackgroundEventDurationInput(futureDuration);
 
-        await testSnaps.clickButton(
-          'scheduleBackgroundEventWithDurationButton',
-        );
+        await testSnaps.clickScheduleBackgroundEventWithDurationButton();
 
         const scheduleResult = await driver.findElement(
           '#scheduleBackgroundEventResult',
         );
         await driver.waitForNonEmptyElement(scheduleResult);
 
-        await testSnaps.clickButton('getBackgroundEventResultButton');
+        await testSnaps.clickGetBackgroundEventResultButton();
 
         const eventsResult = await driver.findElement(
           '#getBackgroundEventsResult',
         );
         await driver.waitForNonEmptyElement(eventsResult);
 
-        await testSnaps.checkMessageResultSpanIncludes(
-          'getBackgroundEventResultSpan',
-          'fireDialog',
-        );
+        await testSnaps.checkGetBackgroundEventResultIncludes('fireDialog');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -165,48 +152,41 @@ describe('Test Snap Background Events', function () {
           driver,
           'connectBackgroundEventsButton',
         );
-        await testSnaps.checkInstallationComplete(
-          'connectBackgroundEventsButton',
+        await testSnaps.checkConnectBackgroundEventsButtonText(
           'Reconnect to Background Events Snap',
         );
 
         const futureDate = new Date(Date.now() + 5000).toISOString();
 
-        await testSnaps.fillMessage('backgroundEventDateInput', futureDate);
+        await testSnaps.fillBackgroundEventDateInput(futureDate);
 
-        await testSnaps.clickButton('scheduleBackgroundEventWithDateButton');
+        await testSnaps.clickScheduleBackgroundEventWithDateButton();
 
         const scheduleResult = await driver.findElement(
           '#scheduleBackgroundEventResult',
         );
         await driver.waitForNonEmptyElement(scheduleResult);
 
-        await testSnaps.clickButton('getBackgroundEventResultButton');
+        await testSnaps.clickGetBackgroundEventResultButton();
 
         const eventsResult = await driver.findElement(
           '#getBackgroundEventsResult',
         );
         await driver.waitForNonEmptyElement(eventsResult);
 
-        await testSnaps.checkMessageResultSpanIncludes(
-          'getBackgroundEventResultSpan',
-          'fireDialog',
-        );
+        await testSnaps.checkGetBackgroundEventResultIncludes('fireDialog');
 
         const eventIdText = JSON.parse(await scheduleResult.getText());
-        await testSnaps.fillMessage('cancelBackgroundEventInput', eventIdText);
+        await testSnaps.fillCancelBackgroundEventInput(eventIdText);
 
-        await testSnaps.clickButton('cancelBackgroundEventButton');
+        await testSnaps.clickCancelBackgroundEventButton();
 
         // We don't have a visible event to wait for here, so we just wait a couple seconds.
         await driver.delay(2000);
 
-        await testSnaps.clickButton('getBackgroundEventResultButton');
+        await testSnaps.clickGetBackgroundEventResultButton();
 
-        await testSnaps.checkMessageResultSpan(
-          'getBackgroundEventResultSpan',
-          '[]',
-        );
+        await testSnaps.checkGetBackgroundEventResult('[]');
       },
     );
   });

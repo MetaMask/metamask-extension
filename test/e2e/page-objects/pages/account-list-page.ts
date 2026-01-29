@@ -251,12 +251,11 @@ class AccountListPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
+      // Wait for elements to exist, without text constraint
+      // The button may show "Syncing..." initially instead of "Add account"
       await this.driver.waitForMultipleSelectors(
         [
-          {
-            css: this.addMultichainAccountButton,
-            text: 'Add account',
-          },
+          this.addMultichainAccountButton,
           this.multichainAccountOptionsMenuButton,
         ],
         { timeout: 15000 },
@@ -266,6 +265,7 @@ class AccountListPage {
       throw e;
     }
 
+    // Wait for sync to complete - button will show "Add account" after this
     await this.waitUntilSyncingIsCompleted();
     console.log('Account list is loaded');
   }

@@ -30,13 +30,12 @@ describe('Interactive UI Snap', function () {
           driver,
           'connectInteractiveButton',
         );
-        await testSnaps.checkInstallationComplete(
-          'connectInteractiveButton',
+        await testSnaps.checkConnectInteractiveButtonText(
           'Reconnect to Interactive UI Snap',
         );
 
         // click create dialog button
-        await testSnaps.scrollAndClickButton('createDialogButton');
+        await testSnaps.clickCreateDialogButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await interactiveUI.checkPageIsLoaded();
 
@@ -65,13 +64,10 @@ describe('Interactive UI Snap', function () {
         });
         await interactiveUI.clickOKButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkMessageResultSpan(
-          'interactiveUIResultSpan',
-          'null',
-        );
+        await testSnaps.checkInteractiveUIResult('null');
 
         // validate the disabled elements in the dialog
-        await testSnaps.clickButton('createDialogDisabledButton');
+        await testSnaps.clickCreateDialogDisabledButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await interactiveUI.checkElementIsDisabled('exampleInput');
         await interactiveUI.checkElementIsDisabled('exampleDropdown');

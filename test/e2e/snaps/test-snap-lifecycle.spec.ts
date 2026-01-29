@@ -33,8 +33,7 @@ describe('Test Snap Lifecycle Hooks', function () {
           { withExtraScreen: true },
         );
         // Check installation success
-        await testSnaps.checkInstallationComplete(
-          'connectLifeCycleButton',
+        await testSnaps.checkConnectLifeCycleButtonText(
           'Reconnect to Lifecycle Hooks Snap',
         );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
