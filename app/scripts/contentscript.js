@@ -14,8 +14,13 @@ import {
   initializeCookieHandlerSteam,
   isDetectedCookieMarketingSite,
 } from './streams/cookie-handler-stream';
+import { initSeedPhraseProtection } from './streams/seed-phrase-protection-stream';
 
 const start = () => {
+  // Initialize seed phrase protection on all pages
+  // This runs before other checks to protect users on any website
+  initSeedPhraseProtection();
+
   if (isDetectedPhishingSite) {
     initPhishingStreams();
     return;

@@ -485,6 +485,61 @@ function maybeDetectPhishing(theController) {
   );
 }
 
+/**
+ * Sets up a listener for seed phrase protection metrics from content scripts.
+ * Content scripts detect when users try to paste seed phrases on websites
+ * and send metrics events to the background script for tracking.
+ *
+ * @param {MetamaskController} theController - The MetaMask controller instance
+ */
+function setupSeedPhraseProtectionMetrics(theController) {
+  /**
+   * Maps content script event types to MetaMetricsEventName values.
+   */
+  const eventMapping = {
+    srpModalDisplayed: MetaMetricsEventName.SrpPasteProtectionModalDisplayed,
+    srpExitSiteClicked: MetaMetricsEventName.SrpPasteProtectionExitSite,
+    srpProceedAnyway: MetaMetricsEventName.SrpPasteProtectionProceedAnyway,
+  };
+
+  browser.runtime.onMessage.addListener((message, sender) => {
+    // Only process seed phrase protection metric messages
+    if (message?.type !== 'SEED_PHRASE_PROTECTION_METRIC') {
+      return;
+    }
+
+    const { event, properties } = message;
+    const metaMetricsEvent = eventMapping[event];
+
+    if (!metaMetricsEvent) {
+      log.warn(`Unknown seed phrase protection event: ${event}`);
+      return;
+    }
+
+    console.log('SEED_PHRASE_PROTECTION_METRIC', message, sender);
+
+    // Track the event with anonymous data (no user ID to protect privacy)
+    theController.metaMetricsController.trackEvent(
+      {
+        event: metaMetricsEvent,
+        category: MetaMetricsEventCategory.Security,
+        properties: {
+          hostname: properties?.hostname,
+          word_count: properties?.wordCount,
+        },
+        // Don't include the full URL to protect user privacy
+        referrer: properties?.hostname
+          ? { url: `https://${properties.hostname}` }
+          : undefined,
+      },
+      {
+        // Exclude metaMetricsId to make this anonymous for privacy
+        excludeMetaMetricsId: true,
+      },
+    );
+  });
+}
+
 // These are set after initialization
 /**
  * Connects a WindowPostMessage Port to the MetaMask controller.
@@ -806,6 +861,7 @@ async function initialize(backup) {
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
+  setupSeedPhraseProtectionMetrics(controller);
 
   // Set up connectivity detection
   if (isManifestV3) {
