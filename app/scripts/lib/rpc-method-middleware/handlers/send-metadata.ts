@@ -1,4 +1,3 @@
-import { rpcErrors } from '@metamask/rpc-errors';
 import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
