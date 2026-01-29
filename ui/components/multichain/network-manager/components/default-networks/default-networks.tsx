@@ -30,13 +30,13 @@ import {
   setActiveNetwork,
 } from '../../../../../store/actions';
 import {
+  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  IconSize,
   Text,
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
@@ -450,7 +450,8 @@ const DefaultNetworks = memo(() => {
               name={t('allPopularNetworks')}
               onClick={selectAllDefaultNetworks}
               iconSrc={IconName.Global}
-              iconSize={IconSize.Xl}
+              iconSize={AvatarIconSize.Md}
+              iconColor={IconColor.primaryDefault}
               selected={isAllPopularNetworksSelected}
               focus={false}
             />
