@@ -484,6 +484,45 @@ export type RewardsAccountState = {
   lastFreshOptInStatusCheck?: number | null;
 };
 
+/**
+ * A single entry in the points estimate history.
+ * Used by Customer Support to verify points estimates shown to users.
+ */
+export type PointsEstimateHistoryEntry = {
+  /**
+   * Timestamp when the estimate was made (milliseconds since epoch)
+   */
+  timestamp: number;
+
+  /**
+   * Type of point earning activity
+   *
+   * @example 'SWAP'
+   */
+  activityType: string;
+
+  /**
+   * Account address in CAIP-10 format
+   *
+   * @example 'eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+   */
+  account: CaipAccountId;
+
+  /**
+   * Estimated points for the activity
+   *
+   * @example 100
+   */
+  pointsEstimate: number;
+
+  /**
+   * Bonus applied to the points estimate, in basis points (100 = 1%)
+   *
+   * @example 200
+   */
+  bonusBips: number;
+};
+
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type RewardsControllerState = {
   rewardsActiveAccount: RewardsAccountState | null;
@@ -492,6 +531,11 @@ export type RewardsControllerState = {
   rewardsSeasons: { [seasonId: string]: SeasonDtoState };
   rewardsSeasonStatuses: { [compositeId: string]: SeasonStatusState };
   rewardsSubscriptionTokens: { [subscriptionId: string]: string };
+  /**
+   * History of points estimates for Customer Support diagnostics.
+   * Stores the last N successful estimates to verify user-reported discrepancies.
+   */
+  rewardsPointsEstimateHistory: PointsEstimateHistoryEntry[];
 };
 
 /**

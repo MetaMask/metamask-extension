@@ -343,6 +343,7 @@ describe('RewardsController', () => {
         rewardsSeasons: {},
         rewardsSeasonStatuses: {},
         rewardsSubscriptionTokens: {},
+        rewardsPointsEstimateHistory: [],
       });
     });
   });
@@ -1143,6 +1144,191 @@ describe('RewardsController', () => {
           const result = await controller.estimatePoints(request);
 
           expect(result).toEqual(mockEstimatedPoints);
+        },
+      );
+    });
+
+    it('should add successful estimate to history', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const mockEstimatedPoints: EstimatedPointsDto = {
+            pointsEstimate: 150,
+            bonusBips: 300,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:estimatePoints') {
+              return Promise.resolve(mockEstimatedPoints);
+            }
+            return undefined;
+          });
+
+          const request: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: MOCK_CAIP_ACCOUNT,
+            activityContext: {
+              swapContext: {
+                srcAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '1000000000000000000',
+                },
+                destAsset: {
+                  id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                  amount: '4500000000',
+                },
+                feeAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '5000000000000000',
+                },
+              },
+            },
+          };
+
+          // History should be empty initially
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(0);
+
+          await controller.estimatePoints(request);
+
+          // History should now have one entry
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+          const historyEntry = controller.state.rewardsPointsEstimateHistory[0];
+          expect(historyEntry).toMatchObject({
+            activityType: 'SWAP',
+            account: MOCK_CAIP_ACCOUNT,
+            pointsEstimate: 150,
+            bonusBips: 300,
+          });
+          expect(historyEntry.timestamp).toBeGreaterThan(0);
+        },
+      );
+    });
+
+    it('should not add to history when rewards are disabled', async () => {
+      await withController({ isDisabled: true }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            swapContext: {
+              srcAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '1000000000000000000',
+              },
+              destAsset: {
+                id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                amount: '4500000000',
+              },
+              feeAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '5000000000000000',
+              },
+            },
+          },
+        };
+
+        await controller.estimatePoints(request);
+
+        // History should remain empty when disabled
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(0);
+      });
+    });
+
+    it('should limit history to 20 entries', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:estimatePoints') {
+              return Promise.resolve({ pointsEstimate: 100, bonusBips: 0 });
+            }
+            return undefined;
+          });
+
+          const request: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: MOCK_CAIP_ACCOUNT,
+            activityContext: {
+              swapContext: {
+                srcAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '1000000000000000000',
+                },
+                destAsset: {
+                  id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                  amount: '4500000000',
+                },
+                feeAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '5000000000000000',
+                },
+              },
+            },
+          };
+
+          // Make 25 calls - should only keep last 20
+          for (let i = 0; i < 25; i++) {
+            await controller.estimatePoints(request);
+          }
+
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(
+            20,
+          );
+        },
+      );
+    });
+
+    it('should store most recent estimates first in history', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let callCount = 0;
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:estimatePoints') {
+              callCount += 1;
+              return Promise.resolve({
+                pointsEstimate: callCount * 100,
+                bonusBips: 0,
+              });
+            }
+            return undefined;
+          });
+
+          const request: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: MOCK_CAIP_ACCOUNT,
+            activityContext: {
+              swapContext: {
+                srcAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '1000000000000000000',
+                },
+                destAsset: {
+                  id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                  amount: '4500000000',
+                },
+                feeAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '5000000000000000',
+                },
+              },
+            },
+          };
+
+          await controller.estimatePoints(request);
+          await controller.estimatePoints(request);
+          await controller.estimatePoints(request);
+
+          // Most recent (300 points) should be first
+          expect(
+            controller.state.rewardsPointsEstimateHistory[0].pointsEstimate,
+          ).toBe(300);
+          expect(
+            controller.state.rewardsPointsEstimateHistory[1].pointsEstimate,
+          ).toBe(200);
+          expect(
+            controller.state.rewardsPointsEstimateHistory[2].pointsEstimate,
+          ).toBe(100);
         },
       );
     });

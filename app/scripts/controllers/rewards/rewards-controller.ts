@@ -29,6 +29,7 @@ import {
   type SeasonTierDto,
   type SeasonStatusDto,
   type SubscriptionDto,
+  type PointsEstimateHistoryEntry,
   SeasonStateDto,
   SeasonMetadataDto,
   DiscoverSeasonsDto,
@@ -54,6 +55,9 @@ const SEASON_METADATA_CACHE_THRESHOLD_MS = 1000 * 60 * 10; // 10 minutes
 
 // Opt-in status stale threshold for not opted-in accounts to force a fresh check (less strict than in mobile for now)
 const NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS = 1000 * 60 * 60; // 1 hour
+
+// Maximum number of points estimate history entries to keep for Customer Support diagnostics
+const MAX_POINTS_ESTIMATE_HISTORY_ENTRIES = 20;
 
 /**
  * State metadata for the RewardsController
@@ -101,6 +105,12 @@ const metadata = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  rewardsPointsEstimateHistory: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
 };
 
 /**
@@ -113,6 +123,7 @@ export const getRewardsControllerDefaultState = (): RewardsControllerState => ({
   rewardsSeasons: {},
   rewardsSeasonStatuses: {},
   rewardsSubscriptionTokens: {},
+  rewardsPointsEstimateHistory: [],
 });
 
 export const defaultRewardsControllerState = getRewardsControllerDefaultState();
@@ -1109,6 +1120,9 @@ export class RewardsController extends BaseController<
         request,
       );
 
+      // Track successful estimate in history for Customer Support diagnostics
+      this.#addPointsEstimateToHistory(request, estimatedPoints);
+
       return estimatedPoints;
     } catch (error) {
       log.error(
@@ -1117,6 +1131,43 @@ export class RewardsController extends BaseController<
       );
       throw error;
     }
+  }
+
+  /**
+   * Add a successful points estimate to the history for Customer Support diagnostics.
+   * Maintains a bounded history of the last N estimates.
+   *
+   * @param request - The estimate request containing activity details
+   * @param response - The estimated points response
+   */
+  #addPointsEstimateToHistory(
+    request: EstimatePointsDto,
+    response: EstimatedPointsDto,
+  ): void {
+    const entry: PointsEstimateHistoryEntry = {
+      timestamp: Date.now(),
+      activityType: request.activityType,
+      account: request.account,
+      pointsEstimate: response.pointsEstimate,
+      bonusBips: response.bonusBips,
+    };
+
+    this.update((state: RewardsControllerState) => {
+      // Add new entry at the beginning (most recent first)
+      state.rewardsPointsEstimateHistory.unshift(entry);
+
+      // Keep only the last N entries
+      if (
+        state.rewardsPointsEstimateHistory.length >
+        MAX_POINTS_ESTIMATE_HISTORY_ENTRIES
+      ) {
+        state.rewardsPointsEstimateHistory =
+          state.rewardsPointsEstimateHistory.slice(
+            0,
+            MAX_POINTS_ESTIMATE_HISTORY_ENTRIES,
+          );
+      }
+    });
   }
 
   /**
