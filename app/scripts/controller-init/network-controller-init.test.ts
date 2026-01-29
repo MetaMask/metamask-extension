@@ -8,6 +8,7 @@ import {
 import {
   NetworkController,
   NetworkControllerMessenger,
+  RpcEndpointType,
 } from '@metamask/network-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
@@ -391,9 +392,9 @@ describe('NetworkControllerInit', () => {
 
   it('fixes undefined selectedNetworkClientId in persisted state', () => {
     const request = getInitRequestMock();
-    // @ts-expect-error Testing with intentionally invalid state
     request.persistedState.NetworkController = {
       selectedNetworkClientId: undefined,
+      networksMetadata: {},
       networkConfigurationsByChainId: {
         '0x1': {
           chainId: '0x1',
@@ -404,7 +405,7 @@ describe('NetworkControllerInit', () => {
           rpcEndpoints: [
             {
               networkClientId: 'mainnet',
-              type: 'infura',
+              type: RpcEndpointType.Infura,
               url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
               failoverUrls: [],
             },
@@ -424,10 +425,9 @@ describe('NetworkControllerInit', () => {
 
   it('fixes missing networkConfigurationsByChainId in persisted state', () => {
     const request = getInitRequestMock();
-    // @ts-expect-error Testing with intentionally invalid state
     request.persistedState.NetworkController = {
       selectedNetworkClientId: 'some-invalid-id',
-      networkConfigurationsByChainId: undefined,
+      networksMetadata: {},
     };
 
     NetworkControllerInit(request);
@@ -443,9 +443,9 @@ describe('NetworkControllerInit', () => {
 
   it('fixes invalid selectedNetworkClientId in persisted state', () => {
     const request = getInitRequestMock();
-    // @ts-expect-error Testing with intentionally invalid state
     request.persistedState.NetworkController = {
       selectedNetworkClientId: 'invalid-network-client-id',
+      networksMetadata: {},
       networkConfigurationsByChainId: {
         '0x1': {
           chainId: '0x1',
@@ -456,7 +456,7 @@ describe('NetworkControllerInit', () => {
           rpcEndpoints: [
             {
               networkClientId: 'mainnet',
-              type: 'infura',
+              type: RpcEndpointType.Infura,
               url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
               failoverUrls: [],
             },

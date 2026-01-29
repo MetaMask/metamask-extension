@@ -166,9 +166,9 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
     );
 
     initialNetworkControllerState.selectedNetworkClientId =
-      initialNetworkControllerState.networkConfigurationsByChainId[
+      initialNetworkControllerState.networkConfigurationsByChainId?.[
         CHAIN_IDS.MAINNET
-      ].rpcEndpoints[0].networkClientId;
+      ]?.rpcEndpoints[0]?.networkClientId ?? 'mainnet';
   }
 
   return initialNetworkControllerState;
