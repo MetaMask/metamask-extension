@@ -25,7 +25,10 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
-import { getSafeChainsListFromCacheOnly } from '../../../shared/lib/network-utils';
+import {
+  initializeChainlistDomains,
+  isChainlistDomain,
+} from '../../../shared/lib/network-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -474,53 +477,12 @@ export function getConversionRatesForNativeAsset({
   return conversionRateResult;
 }
 
-// Cache for known domains
-let knownDomainsSet: Set<string> | null = null;
-let initPromise: Promise<void> | null = null;
-
-/**
- * Initialize the set of known domains from the chains list
- */
-export async function initializeRpcProviderDomains(): Promise<void> {
-  if (initPromise) {
-    return initPromise;
-  }
-
-  initPromise = (async () => {
-    try {
-      const chainsList = await getSafeChainsListFromCacheOnly();
-      knownDomainsSet = new Set<string>();
-
-      for (const chain of chainsList) {
-        if (chain.rpc && Array.isArray(chain.rpc)) {
-          for (const rpcUrl of chain.rpc) {
-            try {
-              const url = new URL(rpcUrl);
-              knownDomainsSet.add(url.hostname);
-            } catch (e) {
-              // Skip invalid URLs
-              continue;
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error initializing known domains:', error);
-      knownDomainsSet = new Set<string>();
-    }
-  })();
-
-  return initPromise;
-}
-
-/**
- * Check if a domain is in the known domains list
- *
- * @param domain - The domain to check
- */
-export function isKnownDomain(domain: string): boolean {
-  return knownDomainsSet?.has(domain?.toLowerCase()) ?? false;
-}
+// Re-export chainlist domain functions for backward compatibility
+// These were moved to shared/lib/network-utils.ts
+export {
+  initializeChainlistDomains as initializeRpcProviderDomains,
+  isChainlistDomain as isKnownDomain,
+};
 
 /**
  * Extracts the domain from an RPC endpoint URL with privacy considerations
@@ -556,12 +518,12 @@ export function extractRpcDomain(
       }
     }
 
-    // Use the provided test domains if available, otherwise use isKnownDomain
+    // Use the provided test domains if available, otherwise use isChainlistDomain
     if (knownDomainsForTesting) {
       if (knownDomainsForTesting.has(url.hostname.toLowerCase())) {
         return url.hostname.toLowerCase();
       }
-    } else if (isKnownDomain(url.hostname)) {
+    } else if (isChainlistDomain(url.hostname)) {
       return url.hostname.toLowerCase();
     }
 

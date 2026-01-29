@@ -9,6 +9,10 @@ import { getStorageItem } from './storage-helpers';
 
 const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
 
+// Cache for known domains from eth-chainlist
+let knownDomainsSet: Set<string> | null = null;
+let initPromise: Promise<void> | null = null;
+
 type ChainInfo = {
   name: string;
   shortName?: string;
@@ -107,10 +111,101 @@ export function isPublicEndpointUrl(
   const isQuicknodeEndpointUrl = getIsQuicknodeEndpointUrl(endpointUrl);
   const isKnownCustomEndpointUrl =
     KNOWN_CUSTOM_ENDPOINT_URLS.includes(endpointUrl);
+  const isChainlistEndpoint = isChainlistEndpointUrl(endpointUrl);
 
   return (
     isMetaMaskInfuraEndpointUrl ||
     isQuicknodeEndpointUrl ||
-    isKnownCustomEndpointUrl
+    isKnownCustomEndpointUrl ||
+    isChainlistEndpoint
   );
+}
+
+/**
+ * Extracts the hostname from a URL.
+ *
+ * @param url - The URL to extract the hostname from.
+ * @returns The lowercase hostname, or null if the URL is invalid.
+ */
+function extractHostname(url: string): string | null {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Initialize the set of known domains from the eth-chainlist cache.
+ * This should be called once at startup in the background context only.
+ * The UI should NOT call this to avoid the ~300KB memory footprint.
+ * When not initialized, isChainlistDomain() returns false, which means
+ * isPublicEndpointUrl() falls back to checking Infura, Quicknode, and
+ * known custom endpoints only.
+ *
+ * @returns A promise that resolves when initialization is complete.
+ */
+export async function initializeChainlistDomains(): Promise<void> {
+  if (initPromise) {
+    return initPromise;
+  }
+
+  initPromise = (async () => {
+    try {
+      const chainsList = await getSafeChainsListFromCacheOnly();
+      knownDomainsSet = new Set<string>();
+
+      for (const chain of chainsList) {
+        if (chain.rpc && Array.isArray(chain.rpc)) {
+          for (const rpcUrl of chain.rpc) {
+            const hostname = extractHostname(rpcUrl);
+            if (hostname) {
+              knownDomainsSet.add(hostname);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error initializing chainlist domains:', error);
+      knownDomainsSet = new Set<string>();
+    }
+  })();
+
+  return initPromise;
+}
+
+/**
+ * Check if a domain is in the eth-chainlist (cached).
+ *
+ * @param domain - The domain to check.
+ * @returns True if the domain is found in the chainlist cache.
+ */
+export function isChainlistDomain(domain: string): boolean {
+  if (!domain) {
+    return false;
+  }
+  return knownDomainsSet?.has(domain.toLowerCase()) ?? false;
+}
+
+/**
+ * Check if an RPC endpoint URL's domain is defined in eth-chainlist.
+ *
+ * @param endpointUrl - The URL of the RPC endpoint.
+ * @returns True if the endpoint's domain is in the chainlist.
+ */
+export function isChainlistEndpointUrl(endpointUrl: string): boolean {
+  const hostname = extractHostname(endpointUrl);
+  if (!hostname) {
+    return false;
+  }
+  return isChainlistDomain(hostname);
+}
+
+/**
+ * Resets the chainlist domains cache. Useful for testing.
+ */
+export function resetChainlistDomainsCache(): void {
+  knownDomainsSet = null;
+  initPromise = null;
 }

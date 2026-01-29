@@ -8,7 +8,12 @@ import {
   getIsMetaMaskInfuraEndpointUrl,
   getIsQuicknodeEndpointUrl,
   isPublicEndpointUrl,
+  initializeChainlistDomains,
+  isChainlistDomain,
+  isChainlistEndpointUrl,
+  resetChainlistDomainsCache,
 } from './network-utils';
+import * as storageHelpers from './storage-helpers';
 
 jest.mock('../constants/network', () => ({
   FEATURED_RPCS: [
@@ -193,12 +198,233 @@ describe('isPublicEndpointUrl', () => {
     ).toBe(true);
   });
 
-  it('returns false for unknown URLs', () => {
+  it('returns false for unknown URLs when chainlist is not initialized', () => {
+    resetChainlistDomainsCache();
     expect(
       isPublicEndpointUrl(
         'https://unknown.example.com',
         MOCK_METAMASK_INFURA_PROJECT_ID,
       ),
     ).toBe(false);
+  });
+
+  it('returns true for chainlist domains after initialization', async () => {
+    resetChainlistDomainsCache();
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        {
+          name: 'Test Chain',
+          chainId: 1,
+          rpc: ['https://chainlist-rpc.example.com/rpc'],
+        },
+      ],
+    });
+
+    await initializeChainlistDomains();
+
+    expect(
+      isPublicEndpointUrl(
+        'https://chainlist-rpc.example.com/v1/abc123',
+        MOCK_METAMASK_INFURA_PROJECT_ID,
+      ),
+    ).toBe(true);
+  });
+});
+
+describe('initializeChainlistDomains', () => {
+  beforeEach(() => {
+    resetChainlistDomainsCache();
+    jest.clearAllMocks();
+  });
+
+  it('initializes domains from cached chains list', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        {
+          name: 'Ethereum Mainnet',
+          chainId: 1,
+          rpc: [
+            'https://mainnet.infura.io/v3/key',
+            'https://eth-mainnet.alchemyapi.io/v2/key',
+          ],
+        },
+        {
+          name: 'Polygon',
+          chainId: 137,
+          rpc: ['https://polygon-rpc.com'],
+        },
+      ],
+    });
+
+    await initializeChainlistDomains();
+
+    expect(isChainlistDomain('mainnet.infura.io')).toBe(true);
+    expect(isChainlistDomain('eth-mainnet.alchemyapi.io')).toBe(true);
+    expect(isChainlistDomain('polygon-rpc.com')).toBe(true);
+    expect(isChainlistDomain('unknown.com')).toBe(false);
+  });
+
+  it('handles empty chains list', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [],
+    });
+
+    await initializeChainlistDomains();
+
+    expect(isChainlistDomain('any-domain.com')).toBe(false);
+  });
+
+  it('handles missing cache', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue(undefined);
+
+    await initializeChainlistDomains();
+
+    expect(isChainlistDomain('any-domain.com')).toBe(false);
+  });
+
+  it('handles chains without rpc field', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        {
+          name: 'Chain Without RPC',
+          chainId: 999,
+        },
+      ],
+    });
+
+    await initializeChainlistDomains();
+
+    expect(isChainlistDomain('any-domain.com')).toBe(false);
+  });
+
+  it('skips invalid URLs in rpc list', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        {
+          name: 'Chain With Invalid RPC',
+          chainId: 999,
+          rpc: ['not-a-valid-url', 'https://valid-rpc.com'],
+        },
+      ],
+    });
+
+    await initializeChainlistDomains();
+
+    expect(isChainlistDomain('valid-rpc.com')).toBe(true);
+  });
+
+  it('only fetches from storage once on subsequent calls', async () => {
+    const getStorageItemSpy = jest
+      .spyOn(storageHelpers, 'getStorageItem')
+      .mockResolvedValue({
+        cachedResponse: [],
+      });
+
+    await initializeChainlistDomains();
+    await initializeChainlistDomains();
+    await initializeChainlistDomains();
+
+    // Storage should only be accessed once despite multiple calls
+    expect(getStorageItemSpy).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('isChainlistDomain', () => {
+  beforeEach(() => {
+    resetChainlistDomainsCache();
+  });
+
+  it('returns false when not initialized', () => {
+    expect(isChainlistDomain('any-domain.com')).toBe(false);
+  });
+
+  it('returns false for empty domain', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        { name: 'Test', chainId: 1, rpc: ['https://test.com'] },
+      ],
+    });
+    await initializeChainlistDomains();
+
+    expect(isChainlistDomain('')).toBe(false);
+  });
+
+  it('is case insensitive', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        { name: 'Test', chainId: 1, rpc: ['https://Test-RPC.COM/path'] },
+      ],
+    });
+    await initializeChainlistDomains();
+
+    expect(isChainlistDomain('test-rpc.com')).toBe(true);
+    expect(isChainlistDomain('TEST-RPC.COM')).toBe(true);
+    expect(isChainlistDomain('Test-RPC.com')).toBe(true);
+  });
+});
+
+describe('isChainlistEndpointUrl', () => {
+  beforeEach(() => {
+    resetChainlistDomainsCache();
+  });
+
+  it('returns false when not initialized', () => {
+    expect(isChainlistEndpointUrl('https://any-domain.com/rpc')).toBe(false);
+  });
+
+  it('returns true for URLs with chainlist domains', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        { name: 'Test', chainId: 1, rpc: ['https://chainlist-domain.com'] },
+      ],
+    });
+    await initializeChainlistDomains();
+
+    expect(
+      isChainlistEndpointUrl('https://chainlist-domain.com/v1/abc123'),
+    ).toBe(true);
+    expect(isChainlistEndpointUrl('https://chainlist-domain.com')).toBe(true);
+  });
+
+  it('returns false for URLs with unknown domains', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        { name: 'Test', chainId: 1, rpc: ['https://known-domain.com'] },
+      ],
+    });
+    await initializeChainlistDomains();
+
+    expect(isChainlistEndpointUrl('https://unknown-domain.com/rpc')).toBe(
+      false,
+    );
+  });
+
+  it('returns false for invalid URLs', () => {
+    expect(isChainlistEndpointUrl('not-a-url')).toBe(false);
+    expect(isChainlistEndpointUrl('')).toBe(false);
+  });
+});
+
+describe('resetChainlistDomainsCache', () => {
+  it('clears the cache and allows reinitialization', async () => {
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        { name: 'First', chainId: 1, rpc: ['https://first-domain.com'] },
+      ],
+    });
+    await initializeChainlistDomains();
+    expect(isChainlistDomain('first-domain.com')).toBe(true);
+
+    resetChainlistDomainsCache();
+    expect(isChainlistDomain('first-domain.com')).toBe(false);
+
+    jest.spyOn(storageHelpers, 'getStorageItem').mockResolvedValue({
+      cachedResponse: [
+        { name: 'Second', chainId: 2, rpc: ['https://second-domain.com'] },
+      ],
+    });
+    await initializeChainlistDomains();
+    expect(isChainlistDomain('second-domain.com')).toBe(true);
+    expect(isChainlistDomain('first-domain.com')).toBe(false);
   });
 });
