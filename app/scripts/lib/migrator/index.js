@@ -97,11 +97,20 @@ export default class Migrator extends EventEmitter {
 
         log.info(`Migration ${migration.version} complete`);
       } catch (err) {
-        // rewrite error message to add context without clobbering stack
+        // Create a new error with context to avoid modifying read-only properties
+        // (e.g., DOMException.message is read-only)
         const originalErrorMessage = err.message;
-        err.message = `MetaMask Migration Error #${migration.version}: ${originalErrorMessage}`;
+        const enhancedError = new Error(
+          `MetaMask Migration Error #${migration.version}: ${originalErrorMessage}`,
+        );
+        // Preserve the original error's stack trace if available
+        if (err.stack) {
+          enhancedError.stack = err.stack;
+        }
+        // Attach the original error as the cause for debugging
+        enhancedError.cause = err;
         // emit error instead of throw so as to not break the run (gracefully fail)
-        this.emit('error', err);
+        this.emit('error', enhancedError);
         // stop migrating and use state as is
         break;
       }

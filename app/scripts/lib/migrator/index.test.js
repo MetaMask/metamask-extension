@@ -114,9 +114,82 @@ describe('migrations', () => {
           },
         ],
       });
-      await expect(async () => {
-        await migrator.migrateData({ meta: { version: 0 } });
-      }).rejects.toThrow('Error: MetaMask Migration Error #1: test');
+
+      let errorEmitted = null;
+      migrator.on('error', (err) => {
+        errorEmitted = err;
+      });
+
+      const result = await migrator.migrateData({ meta: { version: 0 } });
+
+      // Should emit error, not throw
+      expect(errorEmitted).toBeTruthy();
+      expect(errorEmitted.message).toBe('MetaMask Migration Error #1: test');
+      // Original error should be preserved as cause
+      expect(errorEmitted.cause).toBeInstanceOf(Error);
+      expect(errorEmitted.cause.message).toBe('test');
+      // Migration should stop at version 0 (not progress to version 1)
+      expect(result.state.meta.version).toBe(0);
+    });
+
+    it('should handle DOMException errors without throwing TypeError', async () => {
+      const migrator = new Migrator({
+        migrations: [
+          {
+            version: 1,
+            async migrate() {
+              // Create a DOMException (which has a read-only message property)
+              const domException = new DOMException(
+                'IndexedDB operation failed',
+                'AbortError',
+              );
+              throw domException;
+            },
+          },
+        ],
+      });
+
+      let errorEmitted = null;
+      migrator.on('error', (err) => {
+        errorEmitted = err;
+      });
+
+      const result = await migrator.migrateData({ meta: { version: 0 } });
+
+      // Should not throw a TypeError when trying to set error message
+      expect(errorEmitted).toBeTruthy();
+      expect(errorEmitted.message).toContain('MetaMask Migration Error #1');
+      expect(errorEmitted.message).toContain('IndexedDB operation failed');
+      // Original error should be preserved as cause
+      expect(errorEmitted.cause).toBeInstanceOf(DOMException);
+      expect(errorEmitted.cause.message).toBe('IndexedDB operation failed');
+      // Migration should stop at version 0 (not progress to version 1)
+      expect(result.state.meta.version).toBe(0);
+    });
+
+    it('should preserve stack trace when handling errors', async () => {
+      const testError = new Error('test error with stack');
+      const migrator = new Migrator({
+        migrations: [
+          {
+            version: 1,
+            async migrate() {
+              throw testError;
+            },
+          },
+        ],
+      });
+
+      let errorEmitted = null;
+      migrator.on('error', (err) => {
+        errorEmitted = err;
+      });
+
+      await migrator.migrateData({ meta: { version: 0 } });
+
+      expect(errorEmitted).toBeTruthy();
+      expect(errorEmitted.stack).toBe(testError.stack);
+      expect(errorEmitted.cause).toBe(testError);
     });
   });
 });
