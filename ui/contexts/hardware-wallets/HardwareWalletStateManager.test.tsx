@@ -517,9 +517,18 @@ describe('HardwareWalletStateManager', () => {
       it('syncs walletTypeRef to null for non-hardware accounts', () => {
         const store = mockStore(createMockState(KeyringTypes.hd));
 
-        const { result } = renderHook(() => useHardwareWalletStateManager(), {
-          wrapper: createWrapper(store),
-        });
+      expect(refs.adapterRef).toEqual({ current: null });
+      expect(refs.abortControllerRef).toEqual({ current: null });
+      expect(refs.connectingPromiseRef).toEqual({ current: null });
+      expect(refs.isConnectingRef).toEqual({ current: false });
+      expect(refs.hasAutoConnectedRef).toEqual({ current: false });
+      expect(refs.lastConnectedAccountRef).toEqual({ current: null });
+      expect(refs.currentConnectionIdRef).toEqual({ current: null });
+      expect(refs.connectRef).toEqual({ current: null });
+      expect(refs.deviceIdRef).toEqual({ current: null });
+      expect(refs.walletTypeRef).toEqual({ current: null });
+      expect(refs.previousWalletTypeRef).toEqual({ current: null });
+    });
 
         expect(result.current.refs.walletTypeRef.current).toBe(null);
       });
