@@ -10,6 +10,8 @@ jobs:
   run-tests:
     name: Run tests
     uses: ./.github/workflows/run-tests.yml
+    with:
+      needs-unit-and-integration: ${{ 'true' }}
 
   update-coverage:
     if: ${{ needs.run-tests.outputs.current-coverage > needs.run-tests.outputs.stored-coverage }}

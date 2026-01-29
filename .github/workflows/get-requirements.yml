@@ -1,0 +1,160 @@
+name: Get workflow and job requirements
+
+on:
+  workflow_call:
+    outputs:
+      skip-merge-queue:
+        description: Whether the merge queue skip flag was detected
+        value: ${{ jobs.detect-changes.outputs.skip-merge-queue }}
+      locales-only:
+        description: Whether only locale files were changed
+        value: ${{ jobs.detect-changes.outputs.locales-only }}
+      skip-everything:
+        description: Whether everything should be skipped
+        value: ${{ jobs.detect-changes.outputs.skip-everything }}
+      builds-from-run:
+        description: The github.run_id to get builds from
+        value: ${{ jobs.detect-changes.outputs.builds-from-run }}
+      needs-lint:
+        description: Whether lint job is needed
+        value: ${{ jobs.detect-changes.outputs.needs-lint }}
+      needs-unit-and-integration:
+        description: Whether unit and integration tests are needed
+        value: ${{ jobs.detect-changes.outputs.needs-unit-and-integration }}
+      needs-releases:
+        description: Whether releases job is needed
+        value: ${{ jobs.detect-changes.outputs.needs-releases }}
+      needs-benchmarks:
+        description: Whether benchmarks job is needed
+        value: ${{ jobs.detect-changes.outputs.needs-benchmarks }}
+      needs-e2e:
+        description: Whether E2E tests are needed
+        value: ${{ jobs.detect-changes.outputs.needs-e2e }}
+
+env:
+  # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+  # For a `push` event, the head commit hash is `github.sha`.
+  HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+  BRANCH: ${{ github.head_ref || github.ref_name }}
+  RUN_ID: ${{ github.run_id }}
+  IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+
+jobs:
+  detect-changes:
+    name: Filter files changed and decide which jobs to run
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      skip-merge-queue: ${{ steps.check-skip-merge-queue.outputs.up-to-date || 'false' }}
+      locales-only: ${{ steps.set-locales-only.outputs.locales-only || 'false' }}
+      skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}
+      builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run || env.RUN_ID }}
+      needs-lint: ${{ steps.set-needs-lint.outputs.needs-lint || 'false' }}
+      needs-unit-and-integration: ${{ steps.set-needs-unit-and-integration.outputs.needs-unit-and-integration || 'false' }}
+      needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false'}}
+      needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false'}}
+      needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false'}}
+    steps:
+      - name: Check pull request merge queue status
+        id: check-skip-merge-queue
+        if: ${{ github.event_name == 'merge_group' }}
+        uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
+
+      - uses: actions/checkout@v6
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        with:
+          # Specifying `ref` ensures that the head commit is checked out directly.
+          ref: ${{ env.HEAD_COMMIT_HASH }}
+          fetch-depth: 1
+
+      # Do this before we use dorny/paths-filter, which might checkout other commits
+      - name: Check skip-e2e tag
+        id: skip-e2e-tag
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        run: |
+          echo "SKIP=false" >> "$GITHUB_OUTPUT"
+          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; then
+            if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip-e2e]'; then
+              echo "SKIP=true" >> "$GITHUB_OUTPUT"
+              echo "-> SKIP=true due to [skip-e2e] tag in last commit message"
+            fi
+          fi
+
+      # Do this before we use dorny/paths-filter, which might checkout other commits
+      - name: 'Look for `[builds-from-run: <run>]` in the last commit message'
+        id: identify-builds
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        run: .github/scripts/identify-builds-from-run.sh
+
+      - id: filter
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
+        with:
+          filters: .github/filter-rules.yml
+          list-files: shell
+
+      - name: Compute locales-only flag
+        id: set-locales-only
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        run: |
+          if [[ "${{ steps.filter.outputs.locales }}" == "true" && "${{ steps.filter.outputs.non_locales }}" != "true" ]]; then
+            echo "locales-only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "locales-only=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # skip-everything is a shortcut for up-to-date == 'true' || locales-only == 'true'
+      - name: Compute skip-everything flag
+        id: set-skip-everything
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-locales-only.outputs.locales-only == 'true' }}
+        run: echo "skip-everything=true" >> "$GITHUB_OUTPUT"
+
+      # This is very simple right now (and equivalent to !skip-everything), but is built to have future complexity
+      - name: Compute needs-lint flag
+        id: set-needs-lint
+        if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        run: echo "needs-lint=true" >> "$GITHUB_OUTPUT"
+
+      # May be split into two later, but can't easily be split right now
+      - name: Compute needs-unit-and-integration flag
+        id: set-needs-unit-and-integration
+        if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        run: echo "needs-unit-and-integration=true" >> "$GITHUB_OUTPUT"
+
+      # This is very simple right now (and equivalent to !skip-everything), but is built to have future complexity
+      - name: Compute needs-releases flag
+        id: set-needs-releases
+        if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        run: echo "needs-releases=true" >> "$GITHUB_OUTPUT"
+
+      # This is very simple right now, but is built to have future complexity
+      - name: Compute needs-benchmarks flag
+        id: set-needs-benchmarks
+        # Do not run benchmarks on a fork
+        if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' && env.IS_FORK == 'false' }}
+        run: echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
+
+      - name: Compute needs-e2e flag
+        id: set-needs-e2e
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' && steps.set-locales-only.outputs.locales-only != 'true'}}
+        run: |
+          # Default to running E2E tests
+          echo "needs-e2e=true" >> "$GITHUB_OUTPUT"
+
+          # Only consider skipping for PRs, merge-queue events, or trigger-ci-* branches
+          if [[ "${{ steps.skip-e2e-tag.outputs.SKIP }}" == "true" || "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "merge_group" ]]; then
+
+            # Skip if [skip-e2e] tag found
+            if [[ "${{ steps.skip-e2e-tag.outputs.SKIP }}" == "true" ]]; then
+              echo "needs-e2e=false" >> "$GITHUB_OUTPUT"
+              echo "-> Skipping E2E tests due to 'skip-e2e' tag"
+
+            # Skip E2E only if ALL changed files are in non_e2e_related_files filter
+            elif [[ "${{ steps.filter.outputs.non_e2e_related_files_count }}" == "${{ steps.filter.outputs.all_changes_count }}" ]]; then
+              echo "needs-e2e=false" >> "$GITHUB_OUTPUT"
+              echo "-> Skipping E2E tests - only non_e2e_related_files changes found"
+
+            else
+              echo "-> Running E2E tests - found changes outside non_e2e_related_files filter"
+            fi
+          fi
