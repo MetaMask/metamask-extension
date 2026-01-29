@@ -19,10 +19,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  formatDate,
-  transformOriginToTitle,
-} from '../../../../helpers/utils/util';
+import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getSnapRegistryData } from '../../../../selectors';
 import { disableSnap, enableSnap } from '../../../../store/actions';
@@ -31,6 +28,7 @@ import ToggleButton from '../../../ui/toggle-button';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
+import { useOriginTitle } from '../../../../hooks/snaps/useOriginTitle';
 
 const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const t = useI18nContext();
@@ -60,7 +58,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const installInfo = versionHistory.length
     ? versionHistory[versionHistory.length - 1]
     : undefined;
-  const installOrigin = transformOriginToTitle(installInfo?.origin);
+  const installOrigin = useOriginTitle(installInfo?.origin);
 
   const onToggle = () => {
     if (snap?.enabled) {

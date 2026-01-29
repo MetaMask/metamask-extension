@@ -36,16 +36,14 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  formatDate,
-  transformOriginToTitle,
-} from '../../../../helpers/utils/util';
+import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ShowMore } from '../show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 import Tooltip from '../../../ui/tooltip';
 import { SnapIcon } from '../snap-icon';
+import { useOriginTitle } from '../../../../hooks/snaps/useOriginTitle';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   const t = useI18nContext();
@@ -65,7 +63,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
     ? versionHistory[versionHistory.length - 1]
     : undefined;
 
-  const installOrigin = transformOriginToTitle(installInfo?.origin);
+  const installOrigin = useOriginTitle(installInfo?.origin);
   const isSnapRequesting = isSnapId(installInfo?.origin);
 
   const snapPrefix = getSnapPrefix(snapId);

@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isSnapId } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Box, IconSize, Text } from '../../../../components/component-library';
 import {
@@ -18,10 +17,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
-import {
-  getDedupedSnaps,
-  transformOriginToTitle,
-} from '../../../../helpers/utils/util';
+import { getDedupedSnaps } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
 import {
@@ -30,6 +26,7 @@ import {
   getSnapMetadata,
 } from '../../../../selectors';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
+import { useOriginTitle } from '../../../../hooks/snaps/useOriginTitle';
 
 export default function SnapsConnect({
   request,
@@ -73,15 +70,7 @@ export default function SnapsConnect({
   }, [request, approveConnection]);
 
   const SnapsConnectContent = () => {
-    let trimmedOrigin = transformOriginToTitle(origin);
-    const { name } = useSelector((state) =>
-      // hack around the selector throwing
-      getSnapMetadata(state, isSnapId(origin) ? origin : `npm:${origin}`),
-    );
-
-    if (isSnapId(origin)) {
-      trimmedOrigin = name;
-    }
+    const trimmedOrigin = useOriginTitle(origin);
 
     if (isLoading) {
       return (
