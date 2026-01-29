@@ -1,0 +1,15 @@
+diff --git a/dist/react-tippy.js b/dist/react-tippy.js
+index c861191ac9a0ec7cdeaf280edf993d3630ff771a..6dae4518d4a724f6742011c8f6a7ed615ca47ccc 100644
+--- a/dist/react-tippy.js
++++ b/dist/react-tippy.js
+@@ -2313,6 +2313,10 @@ var Tippy = function () {
+       // custom react
+       // Prevent hide if open
+ 
++      // Guard against undefined data (component may have unmounted)
++      if (!data || !data.settings) {
++        return;
++      }
+ 
+       if (data.settings.disabled === false && data.settings.open) {
+         return;

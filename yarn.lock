@@ -33997,7 +33997,7 @@ __metadata:
     react-router-dom: "npm:^6.28.0"
     react-simple-file-input: "npm:^2.0.0"
     react-syntax-highlighter: "npm:^15.5.0"
-    react-tippy: "npm:^1.2.2"
+    react-tippy: "patch:react-tippy@npm%3A1.2.2#~/.yarn/patches/react-tippy-npm-1.2.2-9a7f96e94f.patch"
     react-toggle-button: "npm:^2.2.0"
     react-transition-group: "npm:^4.4.5"
     read-installed: "npm:^4.0.3"
@@ -38626,12 +38626,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-tippy@npm:^1.2.2":
+"react-tippy@npm:1.2.2":
   version: 1.2.2
   resolution: "react-tippy@npm:1.2.2"
   dependencies:
     popper.js: "npm:^1.11.1"
   checksum: 10/0c82a6dc3b276da00ad268e0f122a8147352d32e5fe224de1bed0ce54971166453a8af9494df8808ec3f77ebe3c54e2ce056a95469eb36686ea567e9e5e263fe
+  languageName: node
+  linkType: hard
+
+"react-tippy@patch:react-tippy@npm%3A1.2.2#~/.yarn/patches/react-tippy-npm-1.2.2-9a7f96e94f.patch":
+  version: 1.2.2
+  resolution: "react-tippy@patch:react-tippy@npm%3A1.2.2#~/.yarn/patches/react-tippy-npm-1.2.2-9a7f96e94f.patch::version=1.2.2&hash=3c114b"
+  dependencies:
+    popper.js: "npm:^1.11.1"
+  checksum: 10/766de30640b34c6630ff4a8eed64abfd862781d20865667f1542cc52b8359e4b82e804029c912a77210ab11244bf72aa81586070d762a284530e78bfdd6e12b0
   languageName: node
   linkType: hard
 

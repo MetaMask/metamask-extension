@@ -475,7 +475,7 @@
     "react-redux": "^7.2.9",
     "react-router-dom": "^6.28.0",
     "react-simple-file-input": "^2.0.0",
-    "react-tippy": "^1.2.2",
+    "react-tippy": "patch:react-tippy@npm%3A1.2.2#~/.yarn/patches/react-tippy-npm-1.2.2-9a7f96e94f.patch",
     "react-toggle-button": "^2.2.0",
     "react-transition-group": "^4.4.5",
     "readable-stream": "^4.7.0",
