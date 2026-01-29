@@ -1,228 +1,185 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
+import { Box, Icon, IconSize, Text } from '../../../component-library';
 import {
-  ErrorCode,
-  RetryStrategy,
-  HardwareWalletError,
-} from '../../../../contexts/hardware-wallets/errors';
+  AlignItems,
+  BlockSize,
+  Display,
+  FlexDirection,
+  IconColor,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
-import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext.split';
+import { buildErrorContent } from './error-content-builder';
 
-const meta: Meta<typeof HardwareWalletErrorModal> = {
+interface HardwareWalletErrorContentProps {
+  error: ReturnType<typeof createHardwareWalletError>;
+  walletType: HardwareWalletType;
+}
+
+const HardwareWalletErrorContent = ({
+  error,
+  walletType,
+}: HardwareWalletErrorContentProps) => {
+  const t = useI18nContext();
+  const { icon, title, description, recoveryInstructions } = buildErrorContent(
+    error,
+    walletType,
+    t as (key: string, substitutions?: string[]) => string,
+  );
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.center}
+      gap={4}
+    >
+      <Icon name={icon} color={IconColor.errorDefault} size={IconSize.Xl} />
+      <Text
+        variant={TextVariant.bodyMdMedium}
+        textAlign={TextAlign.Center}
+        color={TextColor.textAlternative}
+      >
+        {title}
+      </Text>
+      {description ? (
+        <Text
+          variant={TextVariant.bodyMd}
+          textAlign={TextAlign.Center}
+          color={TextColor.textAlternative}
+        >
+          {description}
+        </Text>
+      ) : null}
+      {recoveryInstructions.length > 0 ? (
+        <Box
+          width={BlockSize.Full}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={2}
+        >
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textDefault}
+          >
+            {t('hardwareWalletErrorRecoveryTitle')}
+          </Text>
+          {recoveryInstructions.map((instruction, index) => (
+            <Box
+              key={instruction}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              gap={2}
+              alignItems={AlignItems.flexStart}
+            >
+              <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+                {`${index + 1}.`}
+              </Text>
+              <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+                {instruction}
+              </Text>
+            </Box>
+          ))}
+        </Box>
+      ) : null}
+    </Box>
+  );
+};
+
+const meta: Meta<typeof HardwareWalletErrorContent> = {
   title: 'Components/App/Modals/HardwareWalletErrorModal',
-  component: HardwareWalletErrorModal,
-  decorators: [
-    (Story) => (
-      <HardwareWalletProvider>
-        <Story />
-      </HardwareWalletProvider>
-    ),
-  ],
-  argTypes: {
-    onRetry: { action: 'retry clicked' },
-    onCancel: { action: 'cancel clicked' },
-    onClose: { action: 'close clicked' },
-  },
+  component: HardwareWalletErrorContent,
 };
 
 export default meta;
-type Story = StoryObj<typeof HardwareWalletErrorModal>;
+type Story = StoryObj<typeof HardwareWalletErrorContent>;
+
+const DEFAULT_WALLET_TYPE = HardwareWalletType.Ledger;
 
 const createTestError = (
   code: ErrorCode,
-  message: string,
-  userMessage: string,
-  retryStrategy: RetryStrategy = RetryStrategy.RETRY,
-  userActionable: boolean = true,
-): HardwareWalletError => {
-  return new HardwareWalletError(message, {
-    code,
-    severity: 'error' as any,
-    category: 'unknown' as any,
-    retryStrategy,
-    userActionable,
-    userMessage,
-  });
-};
+  walletType: HardwareWalletType = DEFAULT_WALLET_TYPE,
+) => createHardwareWalletError(code, walletType);
 
-/**
- * Device Locked Error - User needs to unlock their device
- */
 export const DeviceLocked: Story = {
   args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.AUTH_LOCK_001,
-      'Device is locked',
-      'Your Ledger device is locked. Please unlock it to continue.',
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
+    error: createTestError(ErrorCode.AuthenticationDeviceLocked),
+    walletType: DEFAULT_WALLET_TYPE,
   },
 };
 
-/**
- * Device Locked Error (AUTH_LOCK_002) - Alternative lock code
- */
-export const DeviceLockedAlt: Story = {
+export const EthAppNotOpen: Story = {
   args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.AUTH_LOCK_002,
-      'Device is locked',
-      'Your Ledger device is locked. Please unlock it to continue.',
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
+    error: createTestError(ErrorCode.DeviceStateEthAppClosed),
+    walletType: DEFAULT_WALLET_TYPE,
   },
 };
 
-/**
- * Wrong App Open - User needs to open the correct app
- */
-export const WrongAppOpen: Story = {
+export const BlindSignNotSupported: Story = {
   args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.DEVICE_STATE_001,
-      'Wrong app open',
-      'Please open the Ethereum app on your Ledger device.',
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
+    error: createTestError(ErrorCode.DeviceStateBlindSignNotSupported),
+    walletType: DEFAULT_WALLET_TYPE,
   },
 };
 
-/**
- * Device State Error (DEVICE_STATE_002) - Device not ready
- */
-export const DeviceNotReady: Story = {
+export const OnlyV4Supported: Story = {
   args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.DEVICE_STATE_002,
-      'Device not ready',
-      'Your device is not ready. Please check the connection.',
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
+    error: createTestError(ErrorCode.DeviceStateOnlyV4Supported),
+    walletType: DEFAULT_WALLET_TYPE,
   },
 };
 
-/**
- * WebHID Permission Error - Browser permissions issue
- */
-export const WebHIDPermissionError: Story = {
+export const EthAppOutOfDate: Story = {
   args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.CONN_TRANSPORT_001,
-      'WebHID permission denied',
-      'Browser permission is required to connect to your hardware wallet.',
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
+    error: createTestError(ErrorCode.DeviceStateEthAppOutOfDate),
+    walletType: DEFAULT_WALLET_TYPE,
   },
 };
 
-/**
- * Device Permission Error - Device permissions not granted
- */
-export const DevicePermissionError: Story = {
+export const DeviceDisconnected: Story = {
   args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.CONFIG_PERM_001,
-      'Device permission denied',
-      'Please grant permission to access your Ledger device.',
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
+    error: createTestError(ErrorCode.DeviceDisconnected),
+    walletType: DEFAULT_WALLET_TYPE,
   },
 };
 
-/**
- * Connection Timeout - Operation took too long
- */
+export const WebHidTransportMissing: Story = {
+  args: {
+    error: createTestError(ErrorCode.ConnectionTransportMissing),
+    walletType: DEFAULT_WALLET_TYPE,
+  },
+};
+
+export const ConnectionClosed: Story = {
+  args: {
+    error: createTestError(ErrorCode.ConnectionClosed),
+    walletType: DEFAULT_WALLET_TYPE,
+  },
+};
+
 export const ConnectionTimeout: Story = {
   args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.CONN_TIMEOUT_001,
-      'Connection timeout',
-      'The operation timed out. Please try again.',
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
+    error: createTestError(ErrorCode.ConnectionTimeout),
+    walletType: DEFAULT_WALLET_TYPE,
   },
 };
 
-/**
- * Unknown Error - Generic error with default recovery instructions
- */
+export const UserCancelled: Story = {
+  args: {
+    error: createTestError(ErrorCode.UserCancelled),
+    walletType: DEFAULT_WALLET_TYPE,
+  },
+};
+
 export const UnknownError: Story = {
   args: {
-    isOpen: true,
-    error: createTestError(
-      'UNKNOWN_ERROR' as ErrorCode,
-      'Unknown error occurred',
-      'An unexpected error occurred. Please try again.',
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
-  },
-};
-
-/**
- * Non-Retryable Error - Shows only Close button
- */
-export const NonRetryableError: Story = {
-  args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.AUTH_LOCK_001,
-      'Device is locked',
-      'Your Ledger device is locked. Please unlock it to continue.',
-      RetryStrategy.NO_RETRY,
-      false,
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onCancel: () => console.log('Close clicked'),
-    onClose: () => console.log('Close clicked'),
-  },
-};
-
-/**
- * Long Error Message - Tests text wrapping
- */
-export const LongErrorMessage: Story = {
-  args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.UNKNOWN_001,
-      'A very long error message that should wrap properly',
-      'This is a very long error message that should wrap to multiple lines and still display correctly in the modal. It contains important information that the user needs to read carefully before proceeding.',
-    ),
-    walletType: HardwareWalletType.Ledger,
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
+    error: createTestError(ErrorCode.Unknown),
+    walletType: DEFAULT_WALLET_TYPE,
   },
 };

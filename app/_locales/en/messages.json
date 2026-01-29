@@ -3097,13 +3097,13 @@
     "message": "How to fix this:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "Enter your PIN to unlock your hardware wallet device"
+    "message": "To continue, make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock2": {
-    "message": "Ensure the device is not in standby mode"
+    "message": "- Your Ledger is unlocked"
   },
   "hardwareWalletErrorRecoveryUnlock3": {
-    "message": "Try again after unlocking"
+    "message": "- The Ethereum app is open"
   },
   "hardwareWalletErrorRecoveryUserCancel": {
     "message": "You cancelled the operation. You can try again when ready"
@@ -3124,6 +3124,18 @@
   "hardwareWalletErrorTitle": {
     "message": "Hardware Wallet Error"
   },
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
+    "message": "To continue, make sure:"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
+    "message": "• The Ethereum app is open on your Ledger"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction3": {
+    "message": "• You’ve turned on Blind Signing in Settings"
+  },
+  "hardwareWalletErrorTitleBlindSignNotSupportedTitle": {
+    "message": "Enable blind signing"
+  },
   "hardwareWalletErrorTitleConnectYourDevice": {
     "message": "Connect your $1 device",
     "description": "$1 is the hardware wallet type"
@@ -3131,6 +3143,12 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 locked",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletEthAppNotOpenDescription": {
+    "message": "Open the Ethereum app on your device to continue"
+  },
+  "hardwareWalletEthAppNotOpenTitle": {
+    "message": "Open Ethereum app"
   },
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",

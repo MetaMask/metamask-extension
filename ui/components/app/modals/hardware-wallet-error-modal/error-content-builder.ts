@@ -68,22 +68,20 @@ export function buildErrorContent(
     case ErrorCode.DeviceStateEthAppClosed:
       return {
         icon: IconName.Apps,
-        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryApp1'),
-          t('hardwareWalletErrorRecoveryApp2'),
-          t('hardwareWalletErrorRecoveryApp3'),
-        ],
+        title: t('hardwareWalletEthAppNotOpenTitle'),
+        recoveryInstructions: [t('hardwareWalletEthAppNotOpenDescription')],
       };
 
     case ErrorCode.DeviceStateBlindSignNotSupported:
       return {
         icon: IconName.Plug,
-        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+        title: t('hardwareWalletErrorTitleBlindSignNotSupportedTitle', [
+          t(walletType),
+        ]),
         recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryConnection1'),
-          t('hardwareWalletErrorRecoveryConnection2'),
-          t('hardwareWalletErrorRecoveryConnection3'),
+          t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction1'),
+          t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction2'),
+          t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction3'),
         ],
       };
     case ErrorCode.DeviceStateOnlyV4Supported:
