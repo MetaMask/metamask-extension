@@ -1,6 +1,5 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import { PendingJsonRpcResponse } from '@metamask/utils';
-import { SubjectType } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import { HandlerRequestType as SendMetadataHandlerRequest } from './types';
 import sendMetadata, { SubjectMetadataToAdd } from './send-metadata';
@@ -27,7 +26,7 @@ describe('SendMetaData', () => {
       result: true,
     };
 
-    const mockEnd = jest.fn();
+    const mockEnd: JsonRpcEngineEndCallback = jest.fn();
     sendMetadata.implementation(req, res, jest.fn(), mockEnd);
     expect(res.result).toStrictEqual(true);
     expect(mockEnd).toHaveBeenCalled();

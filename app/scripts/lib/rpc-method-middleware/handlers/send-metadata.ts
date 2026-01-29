@@ -36,6 +36,7 @@ type SendMetadataConstraint<
 const sendMetadata = {
   methodNames: [MESSAGE_TYPE.SEND_METADATA],
   implementation: sendMetadataHandler,
+  hookNames: {},
 } satisfies SendMetadataConstraint;
 export default sendMetadata;
 
@@ -44,10 +45,6 @@ export default sendMetadata;
  * @param res - The JSON-RPC response object.
  * @param _next - The json-rpc-engine 'next' callback.
  * @param end - The json-rpc-engine 'end' callback.
- * @param options
- * @param options.addSubjectMetadata - A function that records subject
- * metadata, bound to the requesting origin.
- * @param options.subjectType - The type of the requesting origin / subject.
  */
 function sendMetadataHandler<
   Params extends SubjectMetadataToAdd = SubjectMetadataToAdd,
@@ -57,7 +54,7 @@ function sendMetadataHandler<
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
 ): void {
-  const { origin, params } = req;
+  const { params } = req;
   if (!isObject(params)) {
     return end(rpcErrors.invalidParams({ data: params }));
   }
