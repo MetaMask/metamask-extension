@@ -267,6 +267,14 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [How to add new confirmations](./docs/confirmations.md)
 - [Browser support guidelines](./docs/browser-support.md)
 
+## Snaps branch note
+
+You are viewing the `snaps` branch. Some build and feature behavior differs from `main`.
+
+- Follow the standard local build steps from this README.
+- If you previously built another branch, clear artifacts before building:
+  - `rm -rf dist builds .cache`
+
 ## Dapp Developer Resources
 
 - [Extend MetaMask's features w/ MetaMask Snaps.](https://docs.metamask.io/snaps/)
