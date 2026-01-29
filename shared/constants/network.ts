@@ -393,7 +393,7 @@ export const MSU_DISPLAY_NAME = 'MapleStory Universe';
 export const BOB_DISPLAY_NAME = 'BOB';
 export const ROOTSTOCK_DISPLAY_NAME = 'Rootstock Mainnet';
 export const ROOTSTOCK_TESTNET_DISPLAY_NAME = 'Rootstock Testnet';
-export const TEMPO_TESTNET_DISPLAY_NAME = 'Tempo Testnet';
+export const TEMPO_TESTNET_DISPLAY_NAME = 'Tempo Testnet Moderato';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
