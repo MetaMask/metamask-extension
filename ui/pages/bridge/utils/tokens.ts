@@ -10,11 +10,7 @@ import {
   optional,
   intersection,
 } from '@metamask/superstruct';
-import {
-  CaipAssetTypeStruct,
-  type CaipChainId,
-
-} from '@metamask/utils';
+import { CaipAssetTypeStruct, type CaipChainId } from '@metamask/utils';
 
 const MinimalAssetSchema = type({
   /**
