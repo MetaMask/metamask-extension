@@ -388,4 +388,89 @@ describe('NetworkControllerInit', () => {
 
     expect(controller.disableRpcFailover).toHaveBeenCalled();
   });
+
+  it('fixes undefined selectedNetworkClientId in persisted state', () => {
+    const request = getInitRequestMock();
+    // @ts-expect-error Testing with intentionally invalid state
+    request.persistedState.NetworkController = {
+      selectedNetworkClientId: undefined,
+      networkConfigurationsByChainId: {
+        '0x1': {
+          chainId: '0x1',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+          blockExplorerUrls: [],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'mainnet',
+              type: 'infura',
+              url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+              failoverUrls: [],
+            },
+          ],
+        },
+      },
+    };
+
+    NetworkControllerInit(request);
+
+    const controllerMock = jest.mocked(NetworkController);
+    const initialState = controllerMock.mock.calls[0][0].state;
+
+    // Should have been fixed to mainnet's network client ID
+    expect(initialState?.selectedNetworkClientId).toBe('mainnet');
+  });
+
+  it('fixes missing networkConfigurationsByChainId in persisted state', () => {
+    const request = getInitRequestMock();
+    // @ts-expect-error Testing with intentionally invalid state
+    request.persistedState.NetworkController = {
+      selectedNetworkClientId: 'some-invalid-id',
+      networkConfigurationsByChainId: undefined,
+    };
+
+    NetworkControllerInit(request);
+
+    const controllerMock = jest.mocked(NetworkController);
+    const initialState = controllerMock.mock.calls[0][0].state;
+
+    // Should have been reinitialized with defaults
+    expect(initialState?.networkConfigurationsByChainId).toBeDefined();
+    expect(initialState?.selectedNetworkClientId).toBeDefined();
+    expect(initialState?.selectedNetworkClientId).not.toBe('some-invalid-id');
+  });
+
+  it('fixes invalid selectedNetworkClientId in persisted state', () => {
+    const request = getInitRequestMock();
+    // @ts-expect-error Testing with intentionally invalid state
+    request.persistedState.NetworkController = {
+      selectedNetworkClientId: 'invalid-network-client-id',
+      networkConfigurationsByChainId: {
+        '0x1': {
+          chainId: '0x1',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+          blockExplorerUrls: [],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'mainnet',
+              type: 'infura',
+              url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
+              failoverUrls: [],
+            },
+          ],
+        },
+      },
+    };
+
+    NetworkControllerInit(request);
+
+    const controllerMock = jest.mocked(NetworkController);
+    const initialState = controllerMock.mock.calls[0][0].state;
+
+    // Should have been fixed to mainnet's network client ID
+    expect(initialState?.selectedNetworkClientId).toBe('mainnet');
+  });
 });
