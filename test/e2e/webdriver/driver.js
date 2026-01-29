@@ -40,6 +40,24 @@ const PAGES = {
  */
 function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
+
+  // Wrap findElement to ensure nested elements also get Chrome 140+ compatibility wrappers
+  if (!element.originalFindElement) {
+    element.originalFindElement = element.findElement;
+  }
+  element.findElement = async (locator) => {
+    const nestedElement = await element.originalFindElement(locator);
+    return wrapElementWithAPI(nestedElement, driver);
+  };
+
+  // Wrap findElements to ensure nested elements also get Chrome 140+ compatibility wrappers
+  if (!element.originalFindElements) {
+    element.originalFindElements = element.findElements;
+  }
+  element.findElements = async (locator) => {
+    const nestedElements = await element.originalFindElements(locator);
+    return nestedElements.map((el) => wrapElementWithAPI(el, driver));
+  };
   element.fill = async (input) => {
     // The 'fill' method in playwright replaces existing input
     await driver.wait(until.elementIsVisible(element));
@@ -79,6 +97,64 @@ function wrapElementWithAPI(element, driver) {
         return await driver.wait(until.elementIsDisabled(element), timeout);
       default:
         throw new Error(`Provided state: '${state}' is not supported`);
+    }
+  };
+
+  // Wrap isSelected() with JavaScript fallback for Chrome 140+ compatibility
+  if (!element.originalIsSelected) {
+    element.originalIsSelected = element.isSelected;
+  }
+  element.isSelected = async () => {
+    try {
+      return await element.originalIsSelected();
+    } catch (e) {
+      if (e.name === 'JavascriptError') {
+        // Chrome 140+ has issues with native WebDriver isSelected, fall back to JavaScript
+        return await driver.driver.executeScript(
+          'return arguments[0].checked || arguments[0].selected || false',
+          element,
+        );
+      }
+      throw e;
+    }
+  };
+
+  // Wrap getAttribute() with JavaScript fallback for Chrome 140+ compatibility
+  if (!element.originalGetAttribute) {
+    element.originalGetAttribute = element.getAttribute;
+  }
+  element.getAttribute = async (name) => {
+    try {
+      return await element.originalGetAttribute(name);
+    } catch (e) {
+      if (e.name === 'JavascriptError') {
+        // Chrome 140+ has issues with native WebDriver getAttribute, fall back to JavaScript
+        return await driver.driver.executeScript(
+          'return arguments[0].getAttribute(arguments[1])',
+          element,
+          name,
+        );
+      }
+      throw e;
+    }
+  };
+
+  // Wrap getText() with JavaScript fallback for Chrome 140+ compatibility
+  if (!element.originalGetText) {
+    element.originalGetText = element.getText;
+  }
+  element.getText = async () => {
+    try {
+      return await element.originalGetText();
+    } catch (e) {
+      if (e.name === 'JavascriptError') {
+        // Chrome 140+ has issues with native WebDriver getText, fall back to JavaScript
+        return await driver.driver.executeScript(
+          'return arguments[0].textContent',
+          element,
+        );
+      }
+      throw e;
     }
   };
 

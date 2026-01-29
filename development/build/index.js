@@ -176,6 +176,10 @@ async function defineAndRunBuildTasks() {
         'browser', // for testing vault corruption
         'chrome', // for testing vault corruption
         `indexedDB`, // for testing vault corruption
+
+        // Chrome 140+ compatibility: needed for Selenium fill() workaround
+        // that uses native HTMLInputElement value setter for React controlled inputs
+        'HTMLInputElement',
       ];
     }
 
