@@ -1,11 +1,10 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
-import { getSelectedInternalAccount } from '../../../selectors';
 import { getPendingTransactionsAsApiShape } from '../../../selectors/activity';
 import { useActivityQuery } from '../../../hooks/useActivityQuery';
 import {
@@ -14,7 +13,9 @@ import {
 } from '../../../helpers/transaction-filtering-logic';
 import { mergeActivityTransactions } from '../../../helpers/activity-adapters';
 import { FlattenedItem } from '../../../helpers/types';
+import type { TransactionForDisplay } from '../../../helpers/types';
 import { ActivityListItem } from './activity-list-item';
+import { ActivityDetailsModal } from './activity-details-modal';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
@@ -22,7 +23,20 @@ const HEADER_HEIGHT = 36;
 export const ActivityList = () => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<TransactionForDisplay | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleItemClick = (transaction: TransactionForDisplay) => {
+    setSelectedTransaction(transaction);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedTransaction(null);
+  };
 
   // Get pending transactions already transformed to API shape
   const pendingTransactions = useSelector(getPendingTransactionsAsApiShape);
@@ -110,7 +124,10 @@ export const ActivityList = () => {
                       </Text>
                     </Box>
                   ) : (
-                    <ActivityListItem transaction={item.data} />
+                    <ActivityListItem
+                      transaction={item.data}
+                      onClick={() => handleItemClick(item.data)}
+                    />
                   ))}
               </div>
             );
@@ -123,6 +140,12 @@ export const ActivityList = () => {
             <Text className="text-alternative">{t('loading')}...</Text>
           </Box>
         )}
+
+        <ActivityDetailsModal
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          transaction={selectedTransaction}
+        />
       </Box>
     );
   }
@@ -135,11 +158,5 @@ export const ActivityList = () => {
     );
   }
 
-  return (
-    <>
-      {selectedAccount && (
-        <TransactionActivityEmptyState account={selectedAccount} />
-      )}
-    </>
-  );
+  return <TransactionActivityEmptyState />;
 };

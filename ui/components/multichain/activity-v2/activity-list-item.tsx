@@ -30,6 +30,7 @@ import { PendingTransactionActions } from './pending-transaction-actions';
 
 type Props = {
   transaction: TransactionForDisplay;
+  onClick?: () => void;
 };
 
 /**
@@ -62,7 +63,7 @@ const detectActualFailure = (
   return false;
 };
 
-export const ActivityListItem = ({ transaction }: Props) => {
+export const ActivityListItem = ({ transaction, onClick }: Props) => {
   const { formatToken, formatCurrencyWithMinThreshold } = useFormatters();
   const t = useI18nContext() as (
     key: string,
@@ -133,7 +134,10 @@ export const ActivityListItem = ({ transaction }: Props) => {
   }
 
   return (
-    <Box className="px-4 py-3 bg-background-default border-b border-border-muted">
+    <Box
+      className="px-4 py-3 bg-background-default border-b border-border-muted cursor-pointer hover:bg-hover"
+      onClick={onClick}
+    >
       <div className="flex gap-4 items-center">
         <div className="flex-shrink-0">
           <BadgeWrapper
