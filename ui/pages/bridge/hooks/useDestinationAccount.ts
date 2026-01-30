@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   getAccountGroupNameByInternalAccount,
   getToChain,
@@ -27,10 +26,7 @@ export const useDestinationAccount = () => {
   // For bridges, use the appropriate account type for the destination chain
   const defaultInternalDestinationAccount = useSelector((state) =>
     toChain?.chainId
-      ? getInternalAccountBySelectedAccountGroupAndCaip(
-          state,
-          formatChainIdToCaip(toChain.chainId),
-        )
+      ? getInternalAccountBySelectedAccountGroupAndCaip(state, toChain.chainId)
       : null,
   );
 

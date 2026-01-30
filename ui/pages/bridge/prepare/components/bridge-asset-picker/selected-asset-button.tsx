@@ -1,5 +1,4 @@
 import React from 'react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -34,8 +33,6 @@ export const SelectedAssetButton = ({
 }: {
   asset: BridgeToken;
 } & SelectButtonProps<'div'>) => {
-  const caipChainId = formatChainIdToCaip(asset.chainId);
-
   return (
     <SelectButton
       borderRadius={BorderRadius.pill}
@@ -63,8 +60,8 @@ export const SelectedAssetButton = ({
           style={{ marginRight: 2 }}
           badge={
             <AvatarNetwork
-              name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[caipChainId]}
-              src={BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[caipChainId]}
+              name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[asset.chainId]}
+              src={BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[asset.chainId]}
               size={AvatarNetworkSize.Xs}
               style={{ borderWidth: 1, borderRadius: 6 }}
               hasBorder
