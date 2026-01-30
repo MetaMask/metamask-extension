@@ -707,9 +707,9 @@ jobs:
             exit 0
           fi
 
-          # If the merge queue was skipped, consider all jobs as passed
-          if [[ "${{ needs.get-requirements.outputs.skip-merge-queue }}" == "true" ]]; then
-            echo "Merge queue skipped, considering all jobs as passed"
+          # If everything was skipped, consider all jobs as passed
+          if [[ "${{ needs.get-requirements.outputs.skip-everything }}" == "true" ]]; then
+            echo "Everything skipped, considering all jobs as passed"
             exit 0
           fi
 

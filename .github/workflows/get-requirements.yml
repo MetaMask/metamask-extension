@@ -3,9 +3,6 @@ name: Get workflow and job requirements
 on:
   workflow_call:
     outputs:
-      skip-merge-queue:
-        description: Whether the merge queue skip flag was detected
-        value: ${{ jobs.detect-changes.outputs.skip-merge-queue }}
       locales-only:
         description: Whether only locale files were changed
         value: ${{ jobs.detect-changes.outputs.locales-only }}
@@ -46,7 +43,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
-      skip-merge-queue: ${{ steps.check-skip-merge-queue.outputs.up-to-date || 'false' }}
       locales-only: ${{ steps.set-locales-only.outputs.locales-only || 'false' }}
       skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}
       builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run || env.RUN_ID }}
