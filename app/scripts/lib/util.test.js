@@ -31,6 +31,7 @@ import {
   isKnownDomain,
   initializeRpcProviderDomains,
   isPublicEndpointUrl,
+  isSpecialUseDomain,
 } from './util';
 
 // Mock the module
@@ -669,6 +670,89 @@ describe('app utils', () => {
             MOCK_INFURA_PROJECT_ID,
           ),
         ).toBe(false);
+      });
+    });
+  });
+
+  describe('isSpecialUseDomain', () => {
+    describe('RFC 6761 special-use TLDs', () => {
+      it('should return true for .test TLD', () => {
+        expect(isSpecialUseDomain('myapp.test')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.test')).toBe(true);
+      });
+
+      it('should return true for .localhost TLD', () => {
+        expect(isSpecialUseDomain('myapp.localhost')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.localhost')).toBe(true);
+      });
+
+      it('should return true for .invalid TLD', () => {
+        expect(isSpecialUseDomain('myapp.invalid')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.invalid')).toBe(true);
+      });
+
+      it('should return true for .example TLD', () => {
+        expect(isSpecialUseDomain('myapp.example')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.example')).toBe(true);
+      });
+
+      it('should return true for .local TLD', () => {
+        expect(isSpecialUseDomain('myapp.local')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.local')).toBe(true);
+      });
+    });
+
+    describe('RFC 6761 reserved example domains', () => {
+      it('should return true for example.com', () => {
+        expect(isSpecialUseDomain('example.com')).toBe(true);
+        expect(isSpecialUseDomain('rpc.example.com')).toBe(true);
+        expect(isSpecialUseDomain('api.rpc.example.com')).toBe(true);
+      });
+
+      it('should return true for example.net', () => {
+        expect(isSpecialUseDomain('example.net')).toBe(true);
+        expect(isSpecialUseDomain('rpc.example.net')).toBe(true);
+        expect(isSpecialUseDomain('api.rpc.example.net')).toBe(true);
+      });
+
+      it('should return true for example.org', () => {
+        expect(isSpecialUseDomain('example.org')).toBe(true);
+        expect(isSpecialUseDomain('rpc.example.org')).toBe(true);
+        expect(isSpecialUseDomain('api.rpc.example.org')).toBe(true);
+      });
+    });
+
+    describe('case insensitivity', () => {
+      it('should be case insensitive', () => {
+        expect(isSpecialUseDomain('EXAMPLE.COM')).toBe(true);
+        expect(isSpecialUseDomain('MyApp.TEST')).toBe(true);
+        expect(isSpecialUseDomain('RPC.Example.Org')).toBe(true);
+      });
+    });
+
+    describe('valid public domains', () => {
+      it('should return false for regular domains', () => {
+        expect(isSpecialUseDomain('infura.io')).toBe(false);
+        expect(isSpecialUseDomain('mainnet.infura.io')).toBe(false);
+        expect(isSpecialUseDomain('alchemy.com')).toBe(false);
+        expect(isSpecialUseDomain('rpc.ankr.com')).toBe(false);
+      });
+
+      it('should return false for domains containing but not ending with special TLDs', () => {
+        expect(isSpecialUseDomain('test-rpc.com')).toBe(false);
+        expect(isSpecialUseDomain('example-provider.io')).toBe(false);
+        expect(isSpecialUseDomain('localhost-rpc.net')).toBe(false);
+      });
+    });
+
+    describe('edge cases', () => {
+      it('should return false for empty string', () => {
+        expect(isSpecialUseDomain('')).toBe(false);
+      });
+
+      it('should return false for null/undefined', () => {
+        expect(isSpecialUseDomain(null)).toBe(false);
+        expect(isSpecialUseDomain(undefined)).toBe(false);
       });
     });
   });

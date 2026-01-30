@@ -531,6 +531,47 @@ function isLocalhostOrIPAddress(hostname: string): boolean {
 }
 
 /**
+ * Check if a hostname is a special-use domain per RFC 6761.
+ * These domains are reserved and should never be used by real public RPC providers.
+ *
+ * @param hostname - The hostname to check.
+ * @returns True if the hostname is a special-use domain.
+ * @see https://datatracker.ietf.org/doc/html/rfc6761
+ */
+export function isSpecialUseDomain(hostname: string): boolean {
+  if (!hostname) {
+    return false;
+  }
+
+  const lowerHostname = hostname.toLowerCase();
+
+  // RFC 6761 special-use TLDs
+  if (
+    lowerHostname.endsWith('.test') ||
+    lowerHostname.endsWith('.localhost') ||
+    lowerHostname.endsWith('.invalid') ||
+    lowerHostname.endsWith('.example') ||
+    lowerHostname.endsWith('.local')
+  ) {
+    return true;
+  }
+
+  // RFC 6761 reserved example domains
+  if (
+    lowerHostname === 'example.com' ||
+    lowerHostname === 'example.net' ||
+    lowerHostname === 'example.org' ||
+    lowerHostname.endsWith('.example.com') ||
+    lowerHostname.endsWith('.example.net') ||
+    lowerHostname.endsWith('.example.org')
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Initialize the set of known domains from the safe chainlist cache.
  * This should be called once at startup in the background context.
  * Localhost and private IP addresses are filtered out to prevent leaking
@@ -552,8 +593,13 @@ export async function initializeRpcProviderDomains(): Promise<void> {
         if (chain.rpc && Array.isArray(chain.rpc)) {
           for (const rpcUrl of chain.rpc) {
             const hostname = extractHostname(rpcUrl);
-            // Filter out localhost and IP addresses - public providers use domain names
-            if (hostname && !isLocalhostOrIPAddress(hostname)) {
+            // Filter out localhost, IP addresses, and RFC 6761 special-use domains
+            // Public providers use real domain names
+            if (
+              hostname &&
+              !isLocalhostOrIPAddress(hostname) &&
+              !isSpecialUseDomain(hostname)
+            ) {
               knownDomainsSet.add(hostname);
             }
           }
