@@ -20,6 +20,7 @@ type SetCurrentLocaleAction = Action & {
   payload: {
     messages: { [key: string]: string };
     locale: string;
+    enMessages?: { [key: string]: string };
   };
 };
 
@@ -51,6 +52,8 @@ export default function reduceLocaleMessages(
         ...state,
         current: action.payload.messages,
         currentLocale: action.payload.locale,
+        // Update English messages if provided, otherwise preserve existing
+        en: action.payload.enMessages ?? state.en,
       };
     default:
       return state;

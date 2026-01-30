@@ -5111,17 +5111,27 @@ export function updateCurrentLocale(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
     dispatch(showLoadingIndication());
 
     try {
       await loadRelativeTimeFormatLocaleData(key);
       const localeMessages = await fetchLocale(key);
+
+      // Ensure English fallback messages are always available
+      const state = getState();
+      let enMessages = state.localeMessages?.en;
+
+      // If English messages are not in state, fetch them
+      if (!enMessages || Object.keys(enMessages).length === 0) {
+        enMessages = await fetchLocale('en');
+      }
+
       const textDirection = await submitRequestToBackground<
         'rtl' | 'ltr' | 'auto'
       >('setCurrentLocale', [key]);
       switchDirection(textDirection);
-      dispatch(setCurrentLocale(key, localeMessages));
+      dispatch(setCurrentLocale(key, localeMessages, enMessages));
     } catch (error) {
       dispatch(displayWarning(error));
       return;
@@ -5136,9 +5146,15 @@ export function setCurrentLocale(
   messages: {
     [translationKey: string]: { message: string; description?: string };
   },
+  enMessages?: {
+    [translationKey: string]: { message: string; description?: string };
+  },
 ): PayloadAction<{
   locale: string;
   messages: {
+    [translationKey: string]: { message: string; description?: string };
+  };
+  enMessages?: {
     [translationKey: string]: { message: string; description?: string };
   };
 }> {
@@ -5147,6 +5163,7 @@ export function setCurrentLocale(
     payload: {
       locale,
       messages,
+      enMessages,
     },
   };
 }

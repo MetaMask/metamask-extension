@@ -2360,7 +2360,7 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         {
           type: 'SET_CURRENT_LOCALE',
-          payload: { locale: 'test', messages: enLocale },
+          payload: { locale: 'test', messages: enLocale, enMessages: enLocale },
         },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
