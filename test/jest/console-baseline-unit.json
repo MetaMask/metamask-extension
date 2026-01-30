@@ -425,7 +425,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/name/name-details/name-details.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 13,
+      "React: Act warnings (component updates not wrapped)": 12,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/name/name-details/name-display.test.tsx": {
@@ -1225,6 +1225,9 @@
       "React: PropTypes validation failures": 2,
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/contexts/hardware-wallets/HardwareWalletContext.test.tsx": {
+      "Test errors: Uncaught Errors": 4
     },
     "ui/contexts/metamask-notifications/metamask-notifications.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -2713,6 +2716,9 @@
     "ui/pages/confirmations/hooks/send/useSnapAmountOnInput.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/hooks/tokens/useAddToken.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/hooks/tokens/useTokenFiatRates.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3551,6 +3557,6 @@
       "Reselect: Identity function warnings": 4
     }
   },
-  "generated": "2025-12-15T13:34:23.962Z",
-  "nodeVersion": "v24.11.1"
+  "generated": "2026-01-29T10:30:07.782Z",
+  "nodeVersion": "v24.13.0"
 }
