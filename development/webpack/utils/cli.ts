@@ -339,6 +339,15 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
+    validateEnv: {
+      array: false,
+      default: isProduction,
+      defaultDescription: prodDefaultDesc,
+      description:
+        'Validate environment variables against builds.yml declarations',
+      group: toOrange('Build options:'),
+      type: 'boolean',
+    },
 
     lavamoat: {
       alias: 'l',
@@ -375,15 +384,7 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
-    validateEnv: {
-      array: false,
-      default: isProduction,
-      defaultDescription: prodDefaultDesc,
-      description:
-        'Validate environment variables against builds.yml declarations',
-      group: toOrange('Build options:'),
-      type: 'boolean',
-    },
+
     targetEnvironment: {
       array: false,
       choices: environmentOptions,
@@ -396,6 +397,7 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
+
     dryRun: {
       array: false,
       default: false,
