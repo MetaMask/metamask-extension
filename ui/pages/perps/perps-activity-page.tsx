@@ -17,7 +17,6 @@ import {
   IconName,
 } from '../../components/component-library';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
-import { ButtonFilter } from '../../components/app/perps';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -28,14 +27,10 @@ import {
   filterTransactionsByType,
 } from '../../components/app/perps/utils';
 import type { PerpsTransactionFilter } from '../../components/app/perps/types';
-
-// Filter tab configuration (matches mobile PerpsTransactionsView)
-const FILTER_TABS: { key: PerpsTransactionFilter; labelKey: string }[] = [
-  { key: 'trade', labelKey: 'perpsTrades' },
-  { key: 'order', labelKey: 'perpsOrders' },
-  { key: 'funding', labelKey: 'perpsFunding' },
-  { key: 'deposit', labelKey: 'perpsDeposits' },
-];
+import {
+  Dropdown,
+  type DropdownOption,
+} from './market-list/components/dropdown';
 
 /**
  * PerpsActivityPage component
@@ -48,6 +43,17 @@ const PerpsActivityPage: React.FC = () => {
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
+
+  // Filter options for dropdown
+  const filterOptions: DropdownOption<PerpsTransactionFilter>[] = useMemo(
+    () => [
+      { id: 'trade', label: t('perpsTrades') },
+      { id: 'order', label: t('perpsOrders') },
+      { id: 'funding', label: t('perpsFunding') },
+      { id: 'deposit', label: t('perpsDeposits') },
+    ],
+    [t],
+  );
 
   // Filter and group transactions
   const filteredTransactions = useMemo(
@@ -90,29 +96,14 @@ const PerpsActivityPage: React.FC = () => {
         {t('perpsActivity')}
       </Header>
       <Content padding={0}>
-        {/* Filter Tabs */}
-        <Box
-          paddingLeft={4}
-          paddingRight={4}
-          paddingBottom={4}
-          data-testid="perps-activity-filter-tabs"
-        >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            gap={2}
-            className="overflow-x-auto"
-          >
-            {FILTER_TABS.map((tab) => (
-              <ButtonFilter
-                key={tab.key}
-                isActive={activeFilter === tab.key}
-                onClick={() => setActiveFilter(tab.key)}
-                data-testid={`perps-activity-filter-${tab.key}`}
-              >
-                {t(tab.labelKey)}
-              </ButtonFilter>
-            ))}
-          </Box>
+        {/* Filter Dropdown */}
+        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          <Dropdown
+            options={filterOptions}
+            selectedId={activeFilter}
+            onChange={setActiveFilter}
+            testId="perps-activity-filter"
+          />
         </Box>
 
         {/* Transaction List */}
