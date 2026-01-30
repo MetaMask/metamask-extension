@@ -6,16 +6,17 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
-  ButtonBase,
   Text,
   TextVariant,
   TextColor,
   FontWeight,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
 } from '@metamask/design-system-react';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '../../components/component-library';
+import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { ButtonFilter } from '../../components/app/perps';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -74,120 +75,102 @@ const PerpsActivityPage: React.FC = () => {
   }
 
   return (
-    <Box
-      className="main-container asset__container"
-      data-testid="perps-activity-page"
-    >
-      {/* Header */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        paddingBottom={4}
-        gap={2}
-      >
-        {/* Back Button */}
-        <ButtonBase
-          data-testid="perps-activity-back-button"
-          onClick={handleBackClick}
-          aria-label={t('back')}
-          className="p-2 -ml-2"
-        >
-          <Icon
-            name={IconName.ArrowLeft}
-            size={IconSize.Md}
-            color={IconColor.IconInverse}
+    <Page data-testid="perps-activity-page">
+      <Header
+        startAccessory={
+          <ButtonIcon
+            data-testid="perps-activity-back-button"
+            iconName={IconName.ArrowLeft}
+            ariaLabel={t('back')}
+            size={ButtonIconSize.Md}
+            onClick={handleBackClick}
           />
-        </ButtonBase>
-
-        {/* Title */}
-        <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
-          {t('perpsActivity')}
-        </Text>
-      </Box>
-
-      {/* Filter Tabs */}
-      <Box
-        paddingLeft={4}
-        paddingRight={4}
-        paddingBottom={4}
-        data-testid="perps-activity-filter-tabs"
+        }
       >
+        {t('perpsActivity')}
+      </Header>
+      <Content padding={0}>
+        {/* Filter Tabs */}
         <Box
-          flexDirection={BoxFlexDirection.Row}
-          gap={2}
-          className="overflow-x-auto"
+          paddingLeft={4}
+          paddingRight={4}
+          paddingBottom={4}
+          data-testid="perps-activity-filter-tabs"
         >
-          {FILTER_TABS.map((tab) => (
-            <ButtonFilter
-              key={tab.key}
-              isActive={activeFilter === tab.key}
-              onClick={() => setActiveFilter(tab.key)}
-              data-testid={`perps-activity-filter-${tab.key}`}
-            >
-              {t(tab.labelKey)}
-            </ButtonFilter>
-          ))}
-        </Box>
-      </Box>
-
-      {/* Transaction List */}
-      <Box flexDirection={BoxFlexDirection.Column}>
-        {groupedTransactions.length === 0 ? (
           <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingTop={8}
-            paddingBottom={8}
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Center}
+            flexDirection={BoxFlexDirection.Row}
+            gap={2}
+            className="overflow-x-auto"
           >
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-            >
-              {t('perpsNoTransactions')}
-            </Text>
-          </Box>
-        ) : (
-          groupedTransactions.map((group) => (
-            <Box
-              key={group.date}
-              flexDirection={BoxFlexDirection.Column}
-              data-testid={`perps-activity-group-${group.date}`}
-            >
-              {/* Date Header */}
-              <Box
-                paddingLeft={4}
-                paddingRight={4}
-                paddingTop={3}
-                paddingBottom={2}
+            {FILTER_TABS.map((tab) => (
+              <ButtonFilter
+                key={tab.key}
+                isActive={activeFilter === tab.key}
+                onClick={() => setActiveFilter(tab.key)}
+                data-testid={`perps-activity-filter-${tab.key}`}
               >
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
-                >
-                  {group.date}
-                </Text>
-              </Box>
+                {t(tab.labelKey)}
+              </ButtonFilter>
+            ))}
+          </Box>
+        </Box>
 
-              {/* Transactions */}
-              <Box flexDirection={BoxFlexDirection.Column}>
-                {group.transactions.map((transaction) => (
-                  <TransactionCard
-                    key={transaction.id}
-                    transaction={transaction}
-                  />
-                ))}
-              </Box>
+        {/* Transaction List */}
+        <Box flexDirection={BoxFlexDirection.Column}>
+          {groupedTransactions.length === 0 ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={8}
+              paddingBottom={8}
+              alignItems={BoxAlignItems.Center}
+              justifyContent={BoxJustifyContent.Center}
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('perpsNoTransactions')}
+              </Text>
             </Box>
-          ))
-        )}
-      </Box>
-    </Box>
+          ) : (
+            groupedTransactions.map((group) => (
+              <Box
+                key={group.date}
+                flexDirection={BoxFlexDirection.Column}
+                data-testid={`perps-activity-group-${group.date}`}
+              >
+                {/* Date Header */}
+                <Box
+                  paddingLeft={4}
+                  paddingRight={4}
+                  paddingTop={3}
+                  paddingBottom={2}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.TextAlternative}
+                  >
+                    {group.date}
+                  </Text>
+                </Box>
+
+                {/* Transactions */}
+                <Box flexDirection={BoxFlexDirection.Column}>
+                  {group.transactions.map((transaction) => (
+                    <TransactionCard
+                      key={transaction.id}
+                      transaction={transaction}
+                    />
+                  ))}
+                </Box>
+              </Box>
+            ))
+          )}
+        </Box>
+      </Content>
+    </Page>
   );
 };
 
