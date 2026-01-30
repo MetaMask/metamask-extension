@@ -4,34 +4,22 @@
       "hiddenAccountList": {},
       "pinnedAccountList": {}
     },
-    "AccountTracker": {
-      "accountsByChainId": "object"
-    },
+    "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountWalletsMetadata": "object",
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean"
     },
     "AccountsController": {
-      "internalAccounts": {
-        "accounts": "object",
-        "selectedAccount": "string"
-      }
+      "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
     },
-    "AddressBookController": {
-      "addressBook": "object"
-    },
+    "AddressBookController": { "addressBook": "object" },
     "AlertController": {
-      "alertEnabledness": {
-        "unconnectedAccount": true,
-        "web3ShimUsage": true
-      },
+      "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
       "unconnectedAccountAlertShownOrigins": "object",
       "web3ShimUsageOrigins": "object"
     },
-    "AnnouncementController": {
-      "announcements": "object"
-    },
+    "AnnouncementController": { "announcements": "object" },
     "AppMetadataController": {
       "currentAppVersion": "string",
       "currentMigrationVersion": "number",
@@ -39,10 +27,7 @@
       "previousMigrationVersion": 0
     },
     "AppStateController": {
-      "browserEnvironment": {
-        "browser": "string",
-        "os": "string"
-      },
+      "browserEnvironment": { "browser": "string", "os": "string" },
       "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
@@ -81,13 +66,9 @@
       "updateModalLastDismissedAt": null
     },
     "ApprovalController": {},
-    "AuthenticationController": {
-      "isSignedIn": "boolean"
-    },
+    "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeController": {},
-    "BridgeStatusController": {
-      "txHistory": "object"
-    },
+    "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "CurrencyController": {
       "currencyRates": {
@@ -120,12 +101,8 @@
       "nonRPCGasFeeApisDisabled": "boolean"
     },
     "GatorPermissionsController": "object",
-    "KeyringController": {
-      "vault": "string"
-    },
-    "LoggingController": {
-      "logs": "object"
-    },
+    "KeyringController": { "vault": "string" },
+    "LoggingController": { "logs": "object" },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
       "eventsBeforeMetricsOptIn": "object",
@@ -147,35 +124,19 @@
       "allIgnoredAssets": "object",
       "assetsMetadata": "object"
     },
-    "MultichainAssetsRatesController": {
-      "conversionRates": "object"
-    },
-    "MultichainBalancesController": {
-      "balances": "object"
-    },
+    "MultichainAssetsRatesController": { "conversionRates": "object" },
+    "MultichainBalancesController": { "balances": "object" },
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
-      "cryptocurrencies": [
-        "btc",
-        "sol"
-      ],
+      "cryptocurrencies": ["btc", "sol"],
       "fiatCurrency": "usd",
       "rates": {
-        "btc": {
-          "conversionDate": 0,
-          "conversionRate": 0
-        },
-        "sol": {
-          "conversionDate": 0,
-          "conversionRate": 0
-        }
+        "btc": { "conversionDate": 0, "conversionRate": 0 },
+        "sol": { "conversionDate": 0, "conversionRate": 0 }
       }
     },
     "MultichainTransactionsController": "object",
-    "NameController": {
-      "nameSources": "object",
-      "names": "object"
-    },
+    "NameController": { "nameSources": "object", "names": "object" },
     "NetworkController": {
       "networkConfigurationsByChainId": "object",
       "networksMetadata": "object",
@@ -224,15 +185,9 @@
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": true
     },
-    "PPOMController": {
-      "storageMetadata": {}
-    },
-    "PermissionController": {
-      "subjects": "object"
-    },
-    "PermissionLogController": {
-      "permissionHistory": "object"
-    },
+    "PPOMController": { "storageMetadata": {} },
+    "PermissionController": { "subjects": "object" },
+    "PermissionLogController": { "permissionHistory": "object" },
     "PhishingController": {
       "tokenScanCache": "object",
       "urlScanCache": "object"
@@ -302,10 +257,7 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": {
-          "name": "groupC",
-          "value": "valueC"
-        }
+        "feature3": { "name": "groupC", "value": "valueC" }
       }
     },
     "RewardsController": {
@@ -317,9 +269,7 @@
       "rewardsSubscriptions": "object"
     },
     "SeedlessOnboardingController": "object",
-    "SelectedNetworkController": {
-      "domains": "object"
-    },
+    "SelectedNetworkController": { "domains": "object" },
     "ShieldController": "object",
     "SignatureController": {},
     "SmartTransactionsController": {},
@@ -329,29 +279,21 @@
       "unencryptedSnapStates": "object"
     },
     "SnapInsightsController": {},
-    "SnapInterfaceController": {
-      "interfaces": "object"
-    },
+    "SnapInterfaceController": { "interfaces": "object" },
     "SnapsRegistry": {
       "database": "object",
       "databaseUnavailable": "boolean",
       "lastUpdated": "number",
       "signature": "string"
     },
-    "SubjectMetadataController": {
-      "subjectMetadata": "object"
-    },
+    "SubjectMetadataController": { "subjectMetadata": "object" },
     "SubscriptionController": "object",
     "SwapsController": {},
-    "TokenBalancesController": {
-      "tokenBalances": "object"
-    },
+    "TokenBalancesController": { "tokenBalances": "object" },
     "TokenListController": {
       "preventPollingOnNetworkRestart": false
     },
-    "TokenRatesController": {
-      "marketData": "object"
-    },
+    "TokenRatesController": { "marketData": "object" },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
@@ -365,9 +307,7 @@
       "transactions": "object"
     },
     "TransactionPayController": {},
-    "UserOperationController": {
-      "userOperations": "object"
-    },
+    "UserOperationController": { "userOperations": "object" },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
@@ -376,7 +316,5 @@
     "config": "object",
     "firstTimeInfo": "object"
   },
-  "meta": {
-    "version": 191
-  }
+  "meta": { "version": 191 }
 }
