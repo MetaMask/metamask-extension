@@ -80,20 +80,17 @@ import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
-import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
 import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page';
 import { supportsChainIds } from '../../hooks/useAccountGroupsForPermissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPageWrapper } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-account-wrapper';
 import { SnapsPermissionsRequestType } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
 import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
-import { ConnectPage } from './connect-page/connect-page';
 import {
   getCaip25CaveatValueFromPermissions,
   PermissionsRequest,
@@ -546,44 +543,7 @@ function PermissionsConnect() {
     [dispatch],
   );
 
-  const renderSnapChooseAccountState1 = useCallback(() => {
-    return (
-      <ChooseAccount
-        accounts={accountsWithLabels}
-        nativeCurrency={nativeCurrency}
-        selectAccounts={(addresses) => selectAccounts(addresses)}
-        selectNewAccountViaModal={(
-          handleAccountClick: (address: string) => void,
-        ) => {
-          showNewAccountModal({
-            onCreateNewAccount: (address: string) =>
-              handleAccountClick(address),
-            newAccountNumber,
-          });
-        }}
-        addressLastConnectedMap={addressLastConnectedMap}
-        cancelPermissionsRequest={(requestId: string) =>
-          cancelPermissionsRequest(requestId)
-        }
-        permissionsRequestId={permissionsRequestId || ''}
-        selectedAccountAddresses={selectedAccountAddresses}
-        targetSubjectMetadata={targetSubjectMetadata}
-      />
-    );
-  }, [
-    accountsWithLabels,
-    nativeCurrency,
-    selectAccounts,
-    showNewAccountModal,
-    newAccountNumber,
-    addressLastConnectedMap,
-    cancelPermissionsRequest,
-    permissionsRequestId,
-    selectedAccountAddresses,
-    targetSubjectMetadata,
-  ]);
-
-  const renderSnapChooseAccountState2 = useCallback(() => {
+  const renderSnapChooseAccount = useCallback(() => {
     const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
       permissions as PermissionsRequest | undefined,
     );
@@ -659,28 +619,7 @@ function PermissionsConnect() {
     permissionsRequestId,
   ]);
 
-  const renderConnectPageState1 = useCallback(() => {
-    const connectPageProps = {
-      rejectPermissionsRequest: (requestId: string) =>
-        cancelPermissionsRequest(requestId),
-      activeTabOrigin: origin,
-      request: permissionsRequest || {},
-      permissionsRequestId: permissionsRequestId || '',
-      approveConnection,
-      targetSubjectMetadata,
-    };
-
-    return <ConnectPage {...connectPageProps} />;
-  }, [
-    cancelPermissionsRequest,
-    origin,
-    permissionsRequest,
-    permissionsRequestId,
-    approveConnection,
-    targetSubjectMetadata,
-  ]);
-
-  const renderConnectPageState2 = useCallback(() => {
+  const renderConnectPage = useCallback(() => {
     const connectPageProps = {
       rejectPermissionsRequest: (requestId: string) =>
         cancelPermissionsRequest(requestId),
@@ -745,19 +684,9 @@ function PermissionsConnect() {
             path="/"
             element={(() => {
               if (isRequestingSnap) {
-                return (
-                  <State2Wrapper
-                    state1Component={renderSnapChooseAccountState1}
-                    state2Component={renderSnapChooseAccountState2}
-                  />
-                );
+                return renderSnapChooseAccount();
               }
-              return (
-                <State2Wrapper
-                  state1Component={renderConnectPageState1}
-                  state2Component={renderConnectPageState2}
-                />
-              );
+              return renderConnectPage();
             })()}
           />
           <Route
