@@ -84,49 +84,54 @@ export const useNetworkConnectionBanner =
         eventName: string;
         networkClientId: string;
       }) => {
-        let foundNetwork: { chainId: Hex; url: string } | undefined;
-        for (const networkConfiguration of Object.values(
-          networkConfigurationsByChainId,
-        )) {
-          const rpcEndpoint = networkConfiguration.rpcEndpoints.find(
-            (endpoint) => endpoint.networkClientId === networkClientId,
-          );
-          if (rpcEndpoint) {
-            foundNetwork = {
-              chainId: networkConfiguration.chainId,
-              url: rpcEndpoint.url,
-            };
-            break;
+        try {
+          let foundNetwork: { chainId: Hex; url: string } | undefined;
+          for (const networkConfiguration of Object.values(
+            networkConfigurationsByChainId,
+          )) {
+            const rpcEndpoint = networkConfiguration.rpcEndpoints.find(
+              (endpoint) => endpoint.networkClientId === networkClientId,
+            );
+            if (rpcEndpoint) {
+              foundNetwork = {
+                chainId: networkConfiguration.chainId,
+                url: rpcEndpoint.url,
+              };
+              break;
+            }
           }
-        }
-        if (!foundNetwork) {
-          console.warn(
-            `RPC endpoint not found for network client ID: ${networkClientId}`,
+          if (!foundNetwork) {
+            console.warn(
+              `RPC endpoint not found for network client ID: ${networkClientId}`,
+            );
+            return;
+          }
+
+          const rpcUrl = foundNetwork.url;
+          const chainIdAsDecimal = hexToNumber(foundNetwork.chainId);
+          const isPublic = await submitRequestToBackground<boolean>(
+            'isPublicEndpointUrl',
+            [rpcUrl],
           );
-          return;
+          const sanitizedRpcUrl = isPublic ? onlyKeepHost(rpcUrl) : 'custom';
+
+          trackEvent({
+            category: MetaMetricsEventCategory.Network,
+            event: eventName,
+            // The names of Segment properties have a particular case.
+            /* eslint-disable @typescript-eslint/naming-convention */
+            properties: {
+              banner_type: bannerType,
+              chain_id_caip: `eip155:${chainIdAsDecimal}`,
+              rpc_domain: sanitizedRpcUrl,
+              rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
+            },
+            /* eslint-enable @typescript-eslint/naming-convention */
+          });
+        } catch (error) {
+          // Analytics tracking failed - don't surface this error since it's non-critical
+          console.error('Failed to track network banner event:', error);
         }
-
-        const rpcUrl = foundNetwork.url;
-        const chainIdAsDecimal = hexToNumber(foundNetwork.chainId);
-        const isPublic = await submitRequestToBackground<boolean>(
-          'isPublicEndpointUrl',
-          [rpcUrl],
-        );
-        const sanitizedRpcUrl = isPublic ? onlyKeepHost(rpcUrl) : 'custom';
-
-        trackEvent({
-          category: MetaMetricsEventCategory.Network,
-          event: eventName,
-          // The names of Segment properties have a particular case.
-          /* eslint-disable @typescript-eslint/naming-convention */
-          properties: {
-            banner_type: bannerType,
-            chain_id_caip: `eip155:${chainIdAsDecimal}`,
-            rpc_domain: sanitizedRpcUrl,
-            rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
-          },
-          /* eslint-enable @typescript-eslint/naming-convention */
-        });
       },
       [networkConfigurationsByChainId, trackEvent],
     );
