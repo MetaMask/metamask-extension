@@ -89,6 +89,12 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "app/offscreen/ledger.test.ts": {
+      "error: Ledger makeApp error: Error: No": 1,
+      "error: Ledger action ledger-make-app failed: Error:": 1,
+      "error: Ledger action ledger-unlock failed: Error:": 2,
+      "error: Ledger action unknown-action failed: Error:": 1
+    },
     "app/scripts/metamask-controller.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
