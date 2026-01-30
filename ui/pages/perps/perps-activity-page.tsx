@@ -15,7 +15,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { ButtonFilter } from '../../components/component-library';
+import { ButtonFilter } from '../../components/app/perps';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';

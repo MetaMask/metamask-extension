@@ -51,3 +51,5 @@ export type {
   OrderType,
   AccountState,
 } from './types';
+export { ButtonFilter } from './button-filter';
+export type { ButtonFilterProps } from './button-filter';

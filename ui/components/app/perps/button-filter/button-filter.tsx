@@ -1,21 +1,20 @@
-import React from 'react';
+import React, { type ComponentPropsWithoutRef } from 'react';
 import {
   ButtonBase,
-  ButtonBaseProps,
   ButtonSize,
   twMerge,
 } from '@metamask/design-system-react';
 
-export interface ButtonFilterProps extends ButtonBaseProps {
+export type ButtonFilterProps = {
   isActive?: boolean;
-}
+} & Omit<ComponentPropsWithoutRef<typeof ButtonBase>, 'size'>;
 
-export const ButtonFilter: React.FC<ButtonFilterProps> = ({
+export function ButtonFilter({
   children,
   isActive = false,
   className,
   ...props
-}) => {
+}: ButtonFilterProps) {
   return (
     <ButtonBase
       size={ButtonSize.Sm}
@@ -31,4 +30,4 @@ export const ButtonFilter: React.FC<ButtonFilterProps> = ({
       {children}
     </ButtonBase>
   );
-};
+}
