@@ -423,12 +423,11 @@ jobs:
       - get-requirements
       - prep-deps
       - build-dist-browserify
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && github.event_name != 'merge_group' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -436,7 +435,6 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
-        if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
@@ -444,10 +442,9 @@ jobs:
           run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
       - run: ./development/source-map-explorer.sh
-        if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
 
       - name: Upload 'source-map-explorer' to S3
-        if: ${{ github.event_name != 'merge_group' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
