@@ -1,4 +1,4 @@
-import { CaipAccountId } from '@metamask/utils';
+import { CaipAccountId, CaipAssetType } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   EstimateAssetDto,
