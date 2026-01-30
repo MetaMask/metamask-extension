@@ -1,0 +1,83 @@
+import { useEffect, useState, useRef } from 'react';
+import { usePerpsStream } from '../../../providers/perps';
+import type { OrderFill } from '../../../../app/scripts/controllers/perps/types';
+
+/**
+ * Options for usePerpsLiveFills hook
+ */
+export interface UsePerpsLiveFillsOptions {
+  /** Throttle delay in milliseconds (default: 0 - no throttling) */
+  throttleMs?: number;
+}
+
+/**
+ * Return type for usePerpsLiveFills hook
+ */
+export interface UsePerpsLiveFillsReturn {
+  /** Array of order fills (most recent first) */
+  fills: OrderFill[];
+  /** Whether we're waiting for the first real data */
+  isInitialLoading: boolean;
+}
+
+// Stable empty array reference to prevent re-renders
+const EMPTY_FILLS: OrderFill[] = [];
+
+/**
+ * Hook for real-time order fill updates via stream subscription
+ *
+ * @param options - Configuration options
+ * @returns Object containing fills array and loading state
+ *
+ * @example
+ * ```tsx
+ * function RecentFills() {
+ *   const { fills, isInitialLoading } = usePerpsLiveFills();
+ *
+ *   if (isInitialLoading) return <Spinner />;
+ *
+ *   return (
+ *     <ul>
+ *       {fills.slice(0, 10).map((fill) => (
+ *         <li key={fill.orderId}>
+ *           {fill.symbol}: {fill.side} {fill.size} @ {fill.price}
+ *         </li>
+ *       ))}
+ *     </ul>
+ *   );
+ * }
+ * ```
+ */
+export function usePerpsLiveFills(
+  options: UsePerpsLiveFillsOptions = {},
+): UsePerpsLiveFillsReturn {
+  const { throttleMs = 0 } = options;
+  const stream = usePerpsStream();
+  const [fills, setFills] = useState<OrderFill[]>(EMPTY_FILLS);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const hasReceivedFirstUpdate = useRef(false);
+
+  useEffect(() => {
+    const unsubscribe = stream.fills.subscribe({
+      callback: (newFills) => {
+        if (newFills === null) {
+          return;
+        }
+
+        if (!hasReceivedFirstUpdate.current) {
+          hasReceivedFirstUpdate.current = true;
+          setIsInitialLoading(false);
+        }
+
+        setFills(newFills);
+      },
+      throttleMs,
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [stream, throttleMs]);
+
+  return { fills, isInitialLoading };
+}
