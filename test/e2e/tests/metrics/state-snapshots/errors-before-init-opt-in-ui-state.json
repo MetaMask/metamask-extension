@@ -292,8 +292,7 @@
     "SwapsController": {},
     "TokenBalancesController": { "tokenBalances": "object" },
     "TokenListController": {
-      "preventPollingOnNetworkRestart": false,
-      "tokensChainsCache": {}
+      "preventPollingOnNetworkRestart": false
     },
     "TokenRatesController": { "marketData": "object" },
     "TokensController": {
@@ -317,5 +316,5 @@
     },
     "config": "object"
   },
-  "meta": { "version": 190 }
+  "meta": { "version": 191 }
 }
