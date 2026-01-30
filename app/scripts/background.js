@@ -552,12 +552,15 @@ const handleOnConnect = async (port) => {
     // `handleOnConnect` can be called asynchronously, well after the `onConnect`
     // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
     // might not be able to send this message if the window has already closed.
-    port.postMessage({
-      data: {
-        method: BACKGROUND_LIVENESS_METHOD,
-      },
-      name: 'background-liveness',
-    });
+
+    // Create a plain message object to ensure serializability in Firefox MV2.
+    // Using Object.create(null) and explicit property assignment ensures no
+    // prototype chain or hidden properties that could cause DataCloneError.
+    const message = Object.create(null);
+    message.data = Object.create(null);
+    message.data.method = BACKGROUND_LIVENESS_METHOD;
+
+    port.postMessage(message);
   } catch (e) {
     log.error(
       'MetaMask - background-liveness check: Failed to message to port',
