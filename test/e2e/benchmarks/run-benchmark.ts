@@ -14,10 +14,20 @@ import {
   isWritable,
 } from '../../helpers/file';
 import { runBenchmarkWithIterations } from './utils';
+import {
+  ONBOARDING_IMPORT_THRESHOLDS,
+  ONBOARDING_NEW_WALLET_THRESHOLDS,
+  IMPORT_SRP_HOME_THRESHOLDS,
+  SWAP_THRESHOLDS,
+  SEND_TRANSACTIONS_THRESHOLDS,
+  ASSET_DETAILS_THRESHOLDS,
+  SOLANA_ASSET_DETAILS_THRESHOLDS,
+} from './utils/constants';
 import type {
   BenchmarkResults,
   BenchmarkSummary,
   StatisticalResult,
+  ThresholdConfig,
 } from './utils/types';
 
 /**
@@ -70,6 +80,21 @@ function supportsIterations(filePath: string): boolean {
   return (
     filePath.includes('/performance/') || filePath.includes('/user-actions/')
   );
+}
+
+function getThresholdConfig(filePath: string): ThresholdConfig | undefined {
+  const fileName = path.basename(filePath, path.extname(filePath));
+  const thresholdMap: Record<string, ThresholdConfig> = {
+    'onboarding-import-wallet': ONBOARDING_IMPORT_THRESHOLDS,
+    'onboarding-new-wallet': ONBOARDING_NEW_WALLET_THRESHOLDS,
+    'import-srp-home': IMPORT_SRP_HOME_THRESHOLDS,
+    swap: SWAP_THRESHOLDS,
+    'send-transactions': SEND_TRANSACTIONS_THRESHOLDS,
+    'asset-details': ASSET_DETAILS_THRESHOLDS,
+    'solana-asset-details': SOLANA_ASSET_DETAILS_THRESHOLDS,
+  };
+
+  return thresholdMap[fileName];
 }
 
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
@@ -149,11 +174,25 @@ async function runBenchmarkFile(
       runFn,
       options.iterations,
       options.retries,
+      getThresholdConfig(filePath),
     );
 
     console.log(
       `Completed: ${summary.successfulRuns}/${summary.iterations} successful runs`,
     );
+
+    // Log threshold violations if any
+    if (summary.thresholdViolations && summary.thresholdViolations.length > 0) {
+      console.log('\n⚠️  Threshold Violations:');
+      summary.thresholdViolations.forEach((v) => {
+        const icon = v.severity === 'fail' ? '❌' : '⚠️';
+        console.log(
+          `  ${icon} ${v.metricId} (${v.percentile}): ${v.value.toFixed(2)}ms > ${v.threshold}ms`,
+        );
+      });
+    } else if (summary.thresholdsPassed !== undefined) {
+      console.log('✅ All thresholds passed');
+    }
 
     return convertSummaryToResults(summary, testTitle, persona);
   }
@@ -195,10 +234,11 @@ async function main(): Promise<void> {
   const presetNames = Object.keys(PRESETS);
 
   const argv = await yargs(hideBin(process.argv))
-    .usage('$0 [file] [options]', 'Run benchmarks')
-    .positional('file', {
-      type: 'string',
-      description: 'Benchmark file path to run',
+    .command('$0 [file]', 'Run benchmarks', (yargs) => {
+      return yargs.positional('file', {
+        type: 'string',
+        description: 'Benchmark file path to run',
+      });
     })
     .option('preset', {
       alias: 'p',
@@ -239,7 +279,7 @@ async function main(): Promise<void> {
     .parseAsync();
 
   let filesToRun: string[] = [];
-  const fileArg = argv.file;
+  const fileArg = argv.file as string | undefined;
 
   if (fileArg) {
     filesToRun = [fileArg];
