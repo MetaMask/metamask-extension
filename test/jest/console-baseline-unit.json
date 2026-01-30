@@ -192,7 +192,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.test.tsx": {
-      "MetaMask: Background connection not initialized": 9,
+      "MetaMask: Background connection not initialized": 10,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/assets/asset-list/asset-list.ramps-card.test.js": {
