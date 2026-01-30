@@ -75,7 +75,7 @@ function getMetaMetricsFromState(
 /**
  * Arguments for tracking an early Segment event.
  */
-export type EarlySegmentEventArgs = {
+type EarlySegmentEventArgs = {
   /**
    * Partial state object that may contain MetaMetricsController state.
    */

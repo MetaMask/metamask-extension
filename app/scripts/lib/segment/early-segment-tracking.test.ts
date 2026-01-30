@@ -8,7 +8,7 @@ import {
 } from './early-segment-tracking';
 import { segment } from '.';
 
-jest.mock('../segment', () => ({
+jest.mock('.', () => ({
   segment: {
     track: jest.fn(),
     flush: jest.fn(),

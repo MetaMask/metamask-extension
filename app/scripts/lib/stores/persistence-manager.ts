@@ -246,6 +246,10 @@ export class PersistenceManager {
     }
   }
 
+  #normalizePersistError(error: unknown): Error {
+    return error instanceof Error ? error : new Error(String(error));
+  }
+
   async open() {
     if (!this.#open) {
       try {
@@ -383,12 +387,11 @@ export class PersistenceManager {
    *
    * @param state - The state to set in the local store. This should be an object
    * containing the state data to be stored.
+   * @returns Tuple containing success status and error (if any).
    * @throws Error if the state is missing or if the metadata is not set before
    * calling this method.
-   * @throws Error if the local store is not open.
-   * @throws Error if the data persistence fails during the write operation.
    */
-  async set(state: MetaMaskStateType) {
+  async set(state: MetaMaskStateType): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'data') {
       throw new Error(
         'MetaMask - cannot set full state when storageKind is not "data"',
@@ -418,7 +421,7 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
@@ -463,6 +466,8 @@ export class PersistenceManager {
               },
             );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
@@ -479,6 +484,7 @@ export class PersistenceManager {
           }
           this.#notifySetFailed();
           log.error('error setting state in local store:', err);
+          return [false, this.#normalizePersistError(err)];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -503,7 +509,7 @@ export class PersistenceManager {
     this.#pendingPairs.set(key, value);
   }
 
-  async persist() {
+  async persist(): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'split') {
       throw new Error(
         'MetaMask - cannot use `persist` when storageKind is not "split"',
@@ -532,7 +538,7 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
@@ -590,6 +596,8 @@ export class PersistenceManager {
               },
             );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
@@ -608,6 +616,7 @@ export class PersistenceManager {
           }
           this.#notifySetFailed();
           log.error('error setting state in local store:', err);
+          return [false, this.#normalizePersistError(err)];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -845,14 +854,16 @@ export class PersistenceManager {
    */
   async migrateToSplitState(state: MetaMaskStateType) {
     try {
-      const didMigrate = await runTrackedTask(
+      type MigrationStatus = 'skipped' | 'succeeded';
+
+      const migrationStatus = await runTrackedTask<MigrationStatus>(
         'migrateToSplitState',
         async () => {
           if (this.storageKind === 'split') {
             log.debug(
               '[Split State]: Storage is already split, skipping migration',
             );
-            return false;
+            return 'skipped';
           }
 
           if (!this.#metadata) {
@@ -873,13 +884,23 @@ export class PersistenceManager {
           this.update('data', undefined);
 
           log.debug('[Split State]: Migrating to split state storage');
-          await this.persist();
+          // persist doesn't throw when it fails, so we need to check the return
+          // value for an error condition and throw it in that case.
+          const [didPersist, persistError] = await this.persist();
+          if (!didPersist) {
+            throw (
+              persistError ??
+              new Error(
+                'MetaMask - persist failed during "migrateToSplitState"',
+              )
+            );
+          }
 
-          return true;
+          return 'succeeded';
         },
       );
 
-      if (didMigrate) {
+      if (migrationStatus === 'succeeded') {
         trackEarlySegmentEvent({
           state,
           event: MetaMetricsEventName.StateMigrationSucceeded,
