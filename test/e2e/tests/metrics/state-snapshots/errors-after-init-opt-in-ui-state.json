@@ -234,6 +234,7 @@
     "multichainNetworkConfigurationsByChainId": "object",
     "nameSources": "object",
     "names": "object",
+    "nativeAssetIdentifiers": "object",
     "networkConfigurations": "object",
     "networkConfigurationsByChainId": "object",
     "networkConnectionBanner": "object",

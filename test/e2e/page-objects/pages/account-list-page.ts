@@ -249,7 +249,7 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
       // Wait for elements to exist, without text constraint
       // The button may show "Syncing..." initially instead of "Add account"
@@ -258,7 +258,7 @@ class AccountListPage {
           this.addMultichainAccountButton,
           this.multichainAccountOptionsMenuButton,
         ],
-        { timeout: 15000 },
+        { timeout },
       );
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);

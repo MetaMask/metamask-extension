@@ -626,6 +626,10 @@ export default class MetamaskController extends EventEmitter {
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
+      // MultichainNetworkController and NetworkEnablementController must be initialized before TokenRatesController
+      // because TokenRatesController depends on NetworkEnablementController:getState during construction.
+      MultichainNetworkController: MultichainNetworkControllerInit,
+      NetworkEnablementController: NetworkEnablementControllerInit,
       TokenRatesController: TokenRatesControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,
@@ -642,7 +646,6 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       MultichainRouter: MultichainRouterInit,
       ///: END:ONLY_INCLUDE_IF
-      MultichainNetworkController: MultichainNetworkControllerInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
@@ -663,7 +666,6 @@ export default class MetamaskController extends EventEmitter {
       SnapsNameProvider: SnapsNameProviderInit,
       EnsController: EnsControllerInit,
       NameController: NameControllerInit,
-      NetworkEnablementController: NetworkEnablementControllerInit,
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,
@@ -7070,10 +7072,6 @@ export default class MetamaskController extends EventEmitter {
   setupCommonMiddlewareHooks(origin) {
     return {
       // Miscellaneous
-      addSubjectMetadata:
-        this.subjectMetadataController.addSubjectMetadata.bind(
-          this.subjectMetadataController,
-        ),
       getProviderState: this.getProviderState.bind(this),
       handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
       requestUserApproval:
@@ -7389,7 +7387,6 @@ export default class MetamaskController extends EventEmitter {
     // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
       createEip1193MethodMiddleware({
-        subjectType,
         ...this.setupCommonMiddlewareHooks(origin),
 
         // Miscellaneous
@@ -7827,10 +7824,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     engine.push(
-      createMultichainMethodMiddleware({
-        subjectType,
-        ...this.setupCommonMiddlewareHooks(origin),
-      }),
+      createMultichainMethodMiddleware(this.setupCommonMiddlewareHooks(origin)),
     );
 
     engine.push(this.metamaskMiddleware);
