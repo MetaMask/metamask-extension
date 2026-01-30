@@ -60,7 +60,7 @@ jobs:
           skip-allow-scripts: true
           use-yarn-hydrate: true
 
-      - name: Lint
+      - name: lint:prettier (for json,md,mdx,yml files)
         run: yarn lint:prettier
 
       - name: Verify locales
@@ -98,6 +98,7 @@ jobs:
 
   test-lint:
     name: Test lint
+    if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
     needs:
       - prep-deps
       - get-requirements
@@ -105,8 +106,6 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        # This has to be gated at the steps level, so that all-jobs-completed considers test-lint as passed and not skipped
-        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -114,15 +113,12 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Lint
-        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
         run: yarn lint
 
       - name: Verify locales
-        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
         run: yarn verify-locales --quiet
 
       - name: Check circular dependencies
-        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
         run: yarn circular-deps:check
 
   repository-health-checks:
@@ -312,9 +308,8 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
+    if: ${{ needs.get-requirements.outputs.needs-unit-and-integration == 'true' }}
     uses: ./.github/workflows/run-tests.yml
-    with:
-      needs-unit-and-integration: ${{ needs.get-requirements.outputs.needs-unit-and-integration }}
 
   bundle-size:
     needs:
@@ -384,7 +379,6 @@ jobs:
       - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
-    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -400,7 +394,6 @@ jobs:
       - build-test-mv2-browserify
       - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
-    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -625,15 +618,24 @@ jobs:
 
           echo "Regression validation triggered successfully"
 
-  # Explanation for all-jobs-completed and all-jobs-pass being separate:
-  # https://github.com/MetaMask/metamask-module-template/pull/151
-  all-jobs-completed:
-    name: All jobs completed (non-locales-only)
-    if: ${{ needs.get-requirements.outputs.locales-only != 'true' }}
+  all-jobs-pass:
+    name: All jobs pass
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
+    # We list every job we want to validate in `needs`, because `needs` only contains results for jobs explicitly
+    # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
+    # the upstream job is also included.
+    #
+    # For instance, if prep-e2e fails, e2e-chrome and e2e-firefox are skipped, so we need the direct result of prep-e2e.
+    #
+    # Jobs intentionally excluded:
+    # - Publish jobs (not required for CI pass)
+    # - Jobs that depend on all-jobs-pass (e.g., log-merge-group-failure) cannot be included here
     needs:
       - get-requirements
+      - locales-changed-only
+      - prep-deps
       - lint-workflows
       - test-lint
       - repository-health-checks
@@ -651,93 +653,55 @@ jobs:
       - build-test-flask-mv2-browserify
       - build-test-webpack
       - build-test-mv2-webpack
+      - run-benchmarks
       - run-tests
+      - bundle-size
+      - page-load-benchmark
+      - prep-e2e
+      - e2e-chrome
+      - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
       - build-source-map-explorer
       - build-lavamoat-viz
-    outputs:
-      PASSED: ${{ steps.set-output.outputs.PASSED }}
-    steps:
-      - name: Set PASSED output
-        id: set-output
-        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
-
-  all-jobs-completed-locales:
-    name: All jobs completed (locales-only)
-    if: ${{ needs.get-requirements.outputs.locales-only == 'true' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    needs:
-      - get-requirements
-      - locales-changed-only
-    outputs:
-      PASSED: ${{ steps.set-output.outputs.PASSED }}
-    steps:
-      - name: Set PASSED output
-        id: set-output
-        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
-
-  all-jobs-pass:
-    name: All jobs pass
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    needs:
-      - get-requirements
-      - all-jobs-completed
-      - all-jobs-completed-locales
-      - e2e-chrome
-      - e2e-firefox
+      - trigger-regression-validation
     steps:
       - name: Check that all jobs have passed
+        env:
+          NEEDS_JSON: ${{ toJson(needs) }} # This is required for the the job_result lookup and the job_id loop
         run: |
-          # Locales-only path
-          if [[ "${{ needs.get-requirements.outputs.locales-only }}" == "true" ]]; then
-            if [[ "${{ github.event_name }}" == "merge_group" ]]; then
-              echo "Locales-only in the Merge Queue, skipped everything"
-              exit 0
-            fi
-            if [[ "${{ needs.all-jobs-completed-locales.outputs.PASSED }}" != "true" ]]; then
-              echo "Locales-only checks failed"
+          # Function to ensure a job's result is either 'success' or 'skipped'
+          requireJobSuccessOrSkipped() {
+            local job_id="$1"
+
+            # This is a little bit of trickery that is computing `job_result = needs[$job_id].result` (because you can't do that directly in bash)
+            local job_result
+            job_result=$(jq -r --arg job_id "$job_id" '.[$job_id].result // empty' <<<"$NEEDS_JSON")
+
+            if [[ -z "$job_result" ]]; then
+              echo "Could not determine result for job: $job_id"
               exit 1
             fi
-            echo "Locales-only checks passed"
-            exit 0
-          fi
 
-          # If everything was skipped, consider all jobs as passed
-          if [[ "${{ needs.get-requirements.outputs.skip-everything }}" == "true" ]]; then
-            echo "Everything skipped, considering all jobs as passed"
-            exit 0
-          fi
-
-          # Check if all non-E2E jobs passed
-          if [[ "${{ needs.all-jobs-completed.outputs.PASSED }}" != "true" ]]; then
-            echo "Non-E2E jobs failed"
-            exit 1
-          fi
-
-          # Check E2E jobs only if they should have run
-          if [[ "${{ needs.get-requirements.outputs.needs-e2e }}" == "true" ]]; then
-            if [[ "${{ needs.e2e-chrome.result }}" != "success" ]]; then
-              echo "E2E Chrome tests did not succeed (result: ${{ needs.e2e-chrome.result }})"
+            if [[ "$job_result" != "skipped" && "$job_result" != "success" ]]; then
+              echo "$job_id did not succeed (result: $job_result)"
               exit 1
             fi
-            if [[ "${{ needs.e2e-firefox.result }}" != "success" ]]; then
-              echo "E2E Firefox tests did not succeed (result: ${{ needs.e2e-firefox.result }})"
-              exit 1
-            fi
-          fi
+          }
 
-          # Check if the builds-from-run output is the current run ID
+          # Loop through each job in the needs array to ensure it succeeded or was skipped
+          for job_id in $(jq -r 'keys[]' <<<"$NEEDS_JSON"); do
+            requireJobSuccessOrSkipped "$job_id"
+          done
+
+          # # Check if the builds-from-run output is the current run ID
           if [[ "${{ needs.get-requirements.outputs.builds-from-run }}" != "${{ github.run_id }}" ]]; then
             echo "Builds were used from a different GHA run: ${{ needs.get-requirements.outputs.builds-from-run }}"
             echo "Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it."
             exit 1
           fi
 
-          echo "All required jobs passed"
+          echo "All required jobs either passed or were skipped"
 
   log-merge-group-failure:
     name: Log merge group failure
