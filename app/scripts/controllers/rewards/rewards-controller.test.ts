@@ -1193,12 +1193,8 @@ describe('RewardsController', () => {
           // History should now have one entry
           expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
           const historyEntry = controller.state.rewardsPointsEstimateHistory[0];
-          expect(historyEntry).toMatchObject({
-            activityType: 'SWAP',
-            account: MOCK_CAIP_ACCOUNT,
-            pointsEstimate: 150,
-            bonusBips: 300,
-          });
+          expect(historyEntry.request).toEqual(request);
+          expect(historyEntry.response).toEqual(mockEstimatedPoints);
           expect(historyEntry.timestamp).toBeGreaterThan(0);
         },
       );
@@ -1321,13 +1317,16 @@ describe('RewardsController', () => {
 
           // Most recent (300 points) should be first
           expect(
-            controller.state.rewardsPointsEstimateHistory[0].pointsEstimate,
+            controller.state.rewardsPointsEstimateHistory[0].response
+              .pointsEstimate,
           ).toBe(300);
           expect(
-            controller.state.rewardsPointsEstimateHistory[1].pointsEstimate,
+            controller.state.rewardsPointsEstimateHistory[1].response
+              .pointsEstimate,
           ).toBe(200);
           expect(
-            controller.state.rewardsPointsEstimateHistory[2].pointsEstimate,
+            controller.state.rewardsPointsEstimateHistory[2].response
+              .pointsEstimate,
           ).toBe(100);
         },
       );

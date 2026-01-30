@@ -1146,10 +1146,8 @@ export class RewardsController extends BaseController<
   ): void {
     const entry: PointsEstimateHistoryEntry = {
       timestamp: Date.now(),
-      activityType: request.activityType,
-      account: request.account,
-      pointsEstimate: response.pointsEstimate,
-      bonusBips: response.bonusBips,
+      request,
+      response,
     };
 
     this.update((state: RewardsControllerState) => {

@@ -495,32 +495,14 @@ export type PointsEstimateHistoryEntry = {
   timestamp: number;
 
   /**
-   * Type of point earning activity
-   *
-   * @example 'SWAP'
+   * The original request containing activity type, account, and context
    */
-  activityType: string;
+  request: EstimatePointsDto;
 
   /**
-   * Account address in CAIP-10 format
-   *
-   * @example 'eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+   * The response containing estimated points and bonus information
    */
-  account: CaipAccountId;
-
-  /**
-   * Estimated points for the activity
-   *
-   * @example 100
-   */
-  pointsEstimate: number;
-
-  /**
-   * Bonus applied to the points estimate, in basis points (100 = 1%)
-   *
-   * @example 200
-   */
-  bonusBips: number;
+  response: EstimatedPointsDto;
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
