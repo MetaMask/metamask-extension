@@ -382,6 +382,31 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
 }
 
 /**
+ * Checks if the error is a preinstalled snap permission sync error that was automatically restored.
+ * These errors are expected and self-healing, so we don't need to report them to Sentry.
+ *
+ * @param {object} report - A Sentry event object: https://develop.sentry.dev/sdk/event-payloads/
+ * @returns {boolean} True if this error should be filtered out, false otherwise.
+ */
+function shouldFilterPreinstalledSnapPermissionError(report) {
+  // Check error message
+  const errorMessage = report.message || '';
+
+  // Check exception values for the error message
+  const exceptionMessages =
+    report.exception?.values?.map((item) => item.value || '') || [];
+
+  const allMessages = [errorMessage, ...exceptionMessages];
+
+  // Filter out preinstalled snap permission sync errors that are automatically restored
+  // These errors indicate that the SnapController detected and fixed a permission mismatch
+  const permissionSyncPattern =
+    /permissions.*were out of sync.*automatically restored.*persistence issues/iu;
+
+  return allMessages.some((msg) => permissionSyncPattern.test(msg));
+}
+
+/**
  * Receives a Sentry event object and modifies it before the
  * error is sent to Sentry. Modifications include both sanitization
  * of data via helper methods and addition of state data from the
@@ -392,6 +417,14 @@ export function removeUrlsFromBreadCrumb(breadcrumb) {
  */
 export function rewriteReport(report) {
   try {
+    // Filter out expected preinstalled snap permission sync errors that are automatically restored
+    if (shouldFilterPreinstalledSnapPermissionError(report)) {
+      internalLog(
+        'Filtering out auto-recovered preinstalled snap permission sync error',
+      );
+      return null;
+    }
+
     // simplify certain complex error messages (e.g. Ethjs)
     simplifyErrorMessages(report);
     // remove urls from error message
