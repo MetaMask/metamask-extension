@@ -1446,7 +1446,7 @@ describe('RewardsController', () => {
               srcAsset: {
                 id: 'eip155:1/slip44:60',
                 amount: '1000000000000000000',
-                usdPrice: '2500'  ,
+                usdPrice: '2500',
               },
               destAsset: {
                 id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -1633,13 +1633,16 @@ describe('RewardsController', () => {
 
         // Most recent (300 points) should be first
         expect(
-          controller.state.rewardsPointsEstimateHistory[0].responsePointsEstimate,
+          controller.state.rewardsPointsEstimateHistory[0]
+            .responsePointsEstimate,
         ).toBe(300);
         expect(
-          controller.state.rewardsPointsEstimateHistory[1].responsePointsEstimate,
+          controller.state.rewardsPointsEstimateHistory[1]
+            .responsePointsEstimate,
         ).toBe(200);
         expect(
-          controller.state.rewardsPointsEstimateHistory[2].responsePointsEstimate,
+          controller.state.rewardsPointsEstimateHistory[2]
+            .responsePointsEstimate,
         ).toBe(100);
       });
     });
