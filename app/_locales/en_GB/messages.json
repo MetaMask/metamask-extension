@@ -5156,6 +5156,12 @@
   "perpsContactSupport": {
     "message": "Contact support"
   },
+  "perpsDateToday": {
+    "message": "Today"
+  },
+  "perpsDateYesterday": {
+    "message": "Yesterday"
+  },
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },

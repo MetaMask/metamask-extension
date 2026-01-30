@@ -22,6 +22,14 @@ export type TransactionCardProps = {
   variant?: 'default' | 'muted';
 };
 
+const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
+  filled: 'perpsStatusFilled',
+  canceled: 'perpsStatusCanceled',
+  queued: 'perpsStatusQueued',
+  rejected: 'perpsStatusRejected',
+  triggered: 'perpsStatusTriggered',
+};
+
 /**
  * TransactionCard component displays individual transaction information
  * Two rows: logo + title/subtitle on left, amount + time on right
@@ -80,15 +88,9 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     // For orders, show status in muted text
     if (transaction.type === 'order' && transaction.order) {
       const status = transaction.order.status;
-      // Only show certain statuses, blank for 'open'
-      const STATUS_KEYS: Record<string, string> = {
-        filled: 'perpsStatusFilled',
-        canceled: 'perpsStatusCanceled',
-        queued: 'perpsStatusQueued',
-        rejected: 'perpsStatusRejected',
-        triggered: 'perpsStatusTriggered',
-      };
-      const statusText = STATUS_KEYS[status] ? t(STATUS_KEYS[status]) : '';
+      const statusText = ORDER_STATUS_TO_I18N_KEY[status]
+        ? t(ORDER_STATUS_TO_I18N_KEY[status])
+        : '';
       return { text: statusText, color: TextColor.TextMuted };
     }
     return { text: displayName, color: TextColor.TextDefault };

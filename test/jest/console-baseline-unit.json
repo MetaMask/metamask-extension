@@ -464,6 +464,9 @@
     "ui/components/app/perps/start-trade-cta/start-trade-cta.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/transaction-card/transaction-card.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/qr-hardware-popover/base-reader.test.js": {
       "React: Component update warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
@@ -3563,6 +3566,6 @@
       "Reselect: Identity function warnings": 4
     }
   },
-  "generated": "2026-01-29T10:30:07.782Z",
+  "generated": "2026-01-30T20:01:38.851Z",
   "nodeVersion": "v24.13.0"
 }
