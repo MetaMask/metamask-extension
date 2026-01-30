@@ -598,11 +598,6 @@ export type PointsEstimateHistoryEntry = {
   requestPerpsCoin?: string;
 
   /**
-   * Fee asset for predict activity (if applicable)
-   */
-  requestPredictFeeAsset?: EstimateAssetDto;
-
-  /**
    * Recurring interval for shield activity (if applicable)
    *
    * @example 'month'
