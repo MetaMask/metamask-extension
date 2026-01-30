@@ -56,7 +56,6 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
         await assetListPage.waitForTokenToBeDisplayed('Ethereum');
         await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
 

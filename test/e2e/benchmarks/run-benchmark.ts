@@ -234,8 +234,8 @@ async function main(): Promise<void> {
   const presetNames = Object.keys(PRESETS);
 
   const argv = await yargs(hideBin(process.argv))
-    .command('$0 [file]', 'Run benchmarks', (yargs) => {
-      return yargs.positional('file', {
+    .command('$0 [file]', 'Run benchmarks', (cmd) => {
+      return cmd.positional('file', {
         type: 'string',
         description: 'Benchmark file path to run',
       });

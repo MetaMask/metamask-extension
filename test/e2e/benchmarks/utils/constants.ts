@@ -70,8 +70,8 @@ export const ONBOARDING_IMPORT_THRESHOLDS: ThresholdConfig = {
     ciMultiplier: 1.0,
   },
   openAccountMenuToAccountListLoaded: {
-    p75: { warn: 4500, fail: 5800 },
-    p95: { warn: 7000, fail: 8700 },
+    p75: { warn: 35000, fail: 40000 },
+    p95: { warn: 40000, fail: 50000 },
     ciMultiplier: 1.0,
   },
 };

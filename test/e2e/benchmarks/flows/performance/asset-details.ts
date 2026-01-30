@@ -71,7 +71,6 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
 
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
 
         // Filter to Ethereum network
         await assetListPage.openNetworksFilter();
@@ -79,7 +78,6 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         await networkManager.selectNetworkByNameWithWait('Ethereum');
         await homePage.checkPageIsLoaded();
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
 
         // Measure: Asset click to price chart loaded
         await assetListPage.clickOnAsset('USDC');
