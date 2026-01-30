@@ -25,7 +25,6 @@ describe('Gas timing', () => {
   it('renders nothing when gas is loading', () => {
     // Fails the networkAndAccountSupports1559 check
     const nullGasState = {
-      send: { draftTransactions: {} },
       metamask: {
         gasFeeEstimates: null,
         gasEstimateType: GasEstimateTypes.feeMarket,

@@ -1,31 +1,42 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
+  twMerge,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  ButtonBase,
   Text,
   TextVariant,
   TextColor,
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, getPositionDirection } from '../utils';
 import type { Position } from '../types';
+import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
 export type PositionCardProps = {
   position: Position;
+  onClick?: (position: Position) => void;
 };
 
 /**
  * PositionCard component displays individual position information
  * Two rows: coin/leverage/direction + size on left, entry price + P&L on right
+ * Clicking the card navigates to the market detail page for that symbol
  *
  * @param options0 - Component props
  * @param options0.position - The position data to display
+ * @param options0.onClick
  */
-export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
+export const PositionCard: React.FC<PositionCardProps> = ({
+  position,
+  onClick,
+}) => {
+  const navigate = useNavigate();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const direction = getPositionDirection(position.size);
   const pnlNum = parseFloat(position.unrealizedPnl);
@@ -35,12 +46,29 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
   const pnlPrefix = isProfit ? '+' : '-';
   const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
 
+  const handleClick = useCallback(() => {
+    if (onClick) {
+      onClick(position);
+    } else {
+      // TODO: Add Metrics tracking
+      navigate(
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(position.coin)}`,
+      );
+    }
+  }, [navigate, position, onClick]);
+
   return (
-    <Box
-      className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={3}
+    <ButtonBase
+      className={twMerge(
+        // Reset ButtonBase defaults for card layout
+        'justify-start rounded-none min-w-0 h-auto',
+        // Card styles
+        'gap-3 text-left cursor-pointer',
+        'bg-default px-4 py-3',
+        'hover:bg-hover active:bg-pressed',
+      )}
+      isFullWidth
+      onClick={handleClick}
       data-testid={`position-card-${position.coin}`}
     >
       {/* Token Logo */}
@@ -89,7 +117,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
           {formattedPnl}
         </Text>
       </Box>
-    </Box>
+    </ButtonBase>
   );
 };
 

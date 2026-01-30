@@ -29,6 +29,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         await testDapp.openTestDappPage();
         // deploy contract
         await testDapp.clickPiggyBankContract();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const deploymentConfirmation = new ContractDeploymentConfirmation(
           driver,
         );
@@ -66,6 +67,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickPiggyBankContract();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const deploymentConfirmation = new ContractDeploymentConfirmation(
           driver,
         );

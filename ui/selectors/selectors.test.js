@@ -18,6 +18,10 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+import {
+  DEFAULT_FEATURE_FLAG_VALUES,
+  FeatureFlagNames,
+} from '../../shared/modules/feature-flags';
 
 import {
   SOLANA_WALLET_NAME,
@@ -4051,5 +4055,163 @@ describe('getShouldSubmitEventsForShieldEntryModal', () => {
 
     const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
     expect(result).toBe(false);
+  });
+});
+
+describe('getPermissionsForActiveTab', () => {
+  const permissionsTestState = {
+    activeTab: {
+      origin: 'https://example.com',
+    },
+    metamask: {
+      appActiveTab: {
+        id: 123,
+        title: 'Test Dapp',
+        origin: 'https://testdapp.com',
+        protocol: 'https:',
+        url: 'https://testdapp.com',
+        host: 'testdapp.com',
+        href: 'https://testdapp.com',
+      },
+      subjects: {
+        'https://example.com': {
+          permissions: {
+            eth_accounts: {
+              date: 1234567890,
+            },
+          },
+        },
+        'https://testdapp.com': {
+          permissions: {
+            eth_accounts: {
+              date: 1234567890,
+            },
+            eth_requestAccounts: {
+              date: 1234567890,
+            },
+          },
+        },
+      },
+    },
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return permissions for popup context using activeTab.origin', () => {
+    const util = jest.requireMock('../../app/scripts/lib/util');
+    util.getEnvironmentType.mockReturnValue('popup');
+
+    const result = selectors.getPermissionsForActiveTab(permissionsTestState);
+
+    expect(result).toStrictEqual([
+      { key: 'eth_accounts', value: { date: 1234567890 } },
+    ]);
+  });
+
+  it('should return permissions for sidepanel context using appActiveTab.origin', () => {
+    const util = jest.requireMock('../../app/scripts/lib/util');
+    util.getEnvironmentType.mockReturnValue('sidepanel');
+
+    const result = selectors.getPermissionsForActiveTab(permissionsTestState);
+
+    expect(result).toStrictEqual([
+      { key: 'eth_accounts', value: { date: 1234567890 } },
+      { key: 'eth_requestAccounts', value: { date: 1234567890 } },
+    ]);
+  });
+
+  it('should return empty array when no permissions exist for the origin', () => {
+    const util = jest.requireMock('../../app/scripts/lib/util');
+    util.getEnvironmentType.mockReturnValue('popup');
+
+    const stateWithoutPermissions = {
+      ...permissionsTestState,
+      metamask: {
+        ...permissionsTestState.metamask,
+        subjects: {},
+      },
+    };
+
+    const result = selectors.getPermissionsForActiveTab(
+      stateWithoutPermissions,
+    );
+
+    expect(result).toStrictEqual([]);
+  });
+
+  it('should return empty array when origin is undefined in popup context', () => {
+    const util = jest.requireMock('../../app/scripts/lib/util');
+    util.getEnvironmentType.mockReturnValue('popup');
+
+    const stateWithoutOrigin = {
+      ...permissionsTestState,
+      activeTab: {},
+    };
+
+    const result = selectors.getPermissionsForActiveTab(stateWithoutOrigin);
+
+    expect(result).toStrictEqual([]);
+  });
+
+  it('should return empty array when appActiveTab is undefined in sidepanel context', () => {
+    const util = jest.requireMock('../../app/scripts/lib/util');
+    util.getEnvironmentType.mockReturnValue('sidepanel');
+
+    const stateWithoutAppActiveTab = {
+      ...permissionsTestState,
+      metamask: {
+        ...permissionsTestState.metamask,
+        appActiveTab: undefined,
+      },
+    };
+
+    const result = selectors.getPermissionsForActiveTab(
+      stateWithoutAppActiveTab,
+    );
+
+    expect(result).toStrictEqual([]);
+  });
+});
+
+describe('getIsDefiPositionsEnabled', () => {
+  it('returns true when assetsDefiPositionsEnabled flag is true', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          assetsDefiPositionsEnabled: true,
+        },
+      },
+    };
+    expect(selectors.getIsDefiPositionsEnabled(state)).toBe(true);
+  });
+
+  it('returns false when assetsDefiPositionsEnabled flag is false', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          assetsDefiPositionsEnabled: false,
+        },
+      },
+    };
+    expect(selectors.getIsDefiPositionsEnabled(state)).toBe(false);
+  });
+
+  it('returns true (default) when assetsDefiPositionsEnabled flag is undefined', () => {
+    const state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {},
+      },
+    };
+    expect(selectors.getIsDefiPositionsEnabled(state)).toBe(
+      DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
+    );
   });
 });

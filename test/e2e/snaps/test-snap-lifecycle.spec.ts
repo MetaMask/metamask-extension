@@ -2,11 +2,12 @@ import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { DAPP_PATH, WINDOW_TITLES } from '../constants';
-import { unlockWallet, withFixtures } from '../helpers';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockLifecycleHooksSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import LoginPage from '../page-objects/pages/login-page';
 
 describe('Test Snap Lifecycle Hooks', function () {
   it('runs the `onInstall` lifecycle hook when the Snap is installed', async function () {
@@ -20,7 +21,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
@@ -69,9 +70,11 @@ describe('Test Snap Lifecycle Hooks', function () {
           } catch {
             return false;
           }
-        });
+        }, 15000);
 
-        await unlockWallet(driver, { navigate: false });
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
 
         // Validate the "onStart" lifecycle hook message.
         const snapInstall = new SnapInstall(driver);

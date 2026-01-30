@@ -22,8 +22,6 @@ export type DefiReferralPartnerConfig = {
   learnMoreUrl: string;
   /** Approval type string for ApprovalController */
   approvalType: string;
-  /** Remote feature flag key to check if referral is enabled */
-  featureFlagKey: string;
 };
 
 /**
@@ -40,7 +38,6 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     referralUrl: 'https://app.hyperliquid.xyz/join/MMREFCSI',
     learnMoreUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
     approvalType: 'hyperliquid_referral_consent',
-    featureFlagKey: 'extensionUxDefiReferral',
   },
   // [DefiReferralPartner.AsterDex]: {
   //   id: DefiReferralPartner.AsterDex,
@@ -49,7 +46,6 @@ export const DEFI_REFERRAL_PARTNERS: Record<
   //   referralUrl: 'https://www.asterdex.com/en/referral/wsuZBc',
   //   learnMoreUrl: 'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
   //   approvalType: 'asterdex_referral_consent',
-  //   featureFlagKey: 'tbd',
   // },
 };
 

@@ -6,11 +6,9 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
@@ -36,7 +34,6 @@ export const ConfirmContextProvider: React.FC<{
   useSyncConfirmPath(currentConfirmation);
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
-  const dispatch = useDispatch();
 
   /**
    * The hook below takes care of navigating to the home page when the confirmation not acted on by user
@@ -44,10 +41,9 @@ export const ConfirmContextProvider: React.FC<{
    */
   useEffect(() => {
     if (previousConfirmation && !currentConfirmation) {
-      dispatch(setDefaultHomeActiveTabName('activity'));
-      navigate(DEFAULT_ROUTE, { replace: true });
+      navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
     }
-  }, [previousConfirmation, currentConfirmation, navigate, dispatch]);
+  }, [previousConfirmation, currentConfirmation, navigate]);
 
   const value = useMemo(
     () => ({

@@ -53,8 +53,8 @@ export type HardwareWalletConnectionState =
   | { status: ConnectionStatus.Connected }
   | { status: ConnectionStatus.Ready }
   | { status: ConnectionStatus.AwaitingConfirmation }
-  | { status: ConnectionStatus.AwaitingApp; reason: string; appName?: string }
-  | { status: ConnectionStatus.ErrorState; reason: string; error: Error };
+  | { status: ConnectionStatus.AwaitingApp; appName?: string }
+  | { status: ConnectionStatus.ErrorState; error: Error };
 
 /**
  * Device event payload

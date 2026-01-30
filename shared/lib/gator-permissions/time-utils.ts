@@ -11,7 +11,6 @@ import {
 
 export type GatorPermissionRule = {
   type: string;
-  isAdjustmentAllowed: boolean;
   data: Record<string, unknown>;
 };
 

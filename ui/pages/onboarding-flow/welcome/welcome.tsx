@@ -445,7 +445,7 @@ export default function OnboardingWelcome() {
         if (!isFireFox && process.env.EXTENSION_UX_PNA25) {
           // Set pna25Acknowledged to true for social login users if feature flag is enabled
           if (process.env.EXTENSION_UX_PNA25) {
-            dispatch(setPna25Acknowledged(true));
+            dispatch(setPna25Acknowledged(true, true));
           }
         }
       } catch (error) {
