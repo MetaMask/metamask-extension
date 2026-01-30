@@ -1193,8 +1193,46 @@ describe('RewardsController', () => {
           // History should now have one entry
           expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
           const historyEntry = controller.state.rewardsPointsEstimateHistory[0];
-          expect(historyEntry.request).toEqual(request);
-          expect(historyEntry.response).toEqual(mockEstimatedPoints);
+          // Verify flattened request fields
+          expect(historyEntry.requestActivityType).toBe(request.activityType);
+          expect(historyEntry.requestAccount).toBe(request.account);
+          // Verify flattened swap source asset fields
+          expect(historyEntry.requestSwapSrcAssetId).toBe(
+            request.activityContext.swapContext?.srcAsset.id,
+          );
+          expect(historyEntry.requestSwapSrcAssetAmount).toBe(
+            request.activityContext.swapContext?.srcAsset.amount,
+          );
+          expect(historyEntry.requestSwapSrcAssetUsdPrice).toBe(
+            request.activityContext.swapContext?.srcAsset.usdPrice,
+          );
+          // Verify flattened swap destination asset fields
+          expect(historyEntry.requestSwapDestAssetId).toBe(
+            request.activityContext.swapContext?.destAsset.id,
+          );
+          expect(historyEntry.requestSwapDestAssetAmount).toBe(
+            request.activityContext.swapContext?.destAsset.amount,
+          );
+          expect(historyEntry.requestSwapDestAssetUsdPrice).toBe(
+            request.activityContext.swapContext?.destAsset.usdPrice,
+          );
+          // Verify flattened swap fee asset fields
+          expect(historyEntry.requestSwapFeeAssetId).toBe(
+            request.activityContext.swapContext?.feeAsset.id,
+          );
+          expect(historyEntry.requestSwapFeeAssetAmount).toBe(
+            request.activityContext.swapContext?.feeAsset.amount,
+          );
+          expect(historyEntry.requestSwapFeeAssetUsdPrice).toBe(
+            request.activityContext.swapContext?.feeAsset.usdPrice,
+          );
+          // Verify flattened response fields
+          expect(historyEntry.responsePointsEstimate).toBe(
+            mockEstimatedPoints.pointsEstimate,
+          );
+          expect(historyEntry.responseBonusBips).toBe(
+            mockEstimatedPoints.bonusBips,
+          );
           expect(historyEntry.timestamp).toBeGreaterThan(0);
         },
       );
@@ -1317,16 +1355,16 @@ describe('RewardsController', () => {
 
           // Most recent (300 points) should be first
           expect(
-            controller.state.rewardsPointsEstimateHistory[0].response
-              .pointsEstimate,
+            controller.state.rewardsPointsEstimateHistory[0]
+              .responsePointsEstimate,
           ).toBe(300);
           expect(
-            controller.state.rewardsPointsEstimateHistory[1].response
-              .pointsEstimate,
+            controller.state.rewardsPointsEstimateHistory[1]
+              .responsePointsEstimate,
           ).toBe(200);
           expect(
-            controller.state.rewardsPointsEstimateHistory[2].response
-              .pointsEstimate,
+            controller.state.rewardsPointsEstimateHistory[2]
+              .responsePointsEstimate,
           ).toBe(100);
         },
       );
