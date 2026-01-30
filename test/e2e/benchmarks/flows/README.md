@@ -9,7 +9,7 @@ This directory contains all benchmark implementations organized by category.
 yarn test:e2e:benchmark test/e2e/benchmarks/flows/performance/onboarding-import-wallet.ts
 
 # Run a preset (group of benchmarks)
-yarn test:e2e:benchmark --preset performanceOnboarding
+yarn test:e2e:benchmark --preset performanceOnboardingImport
 
 # Run all benchmarks
 yarn test:e2e:benchmark
@@ -21,21 +21,22 @@ yarn test:e2e:benchmark --preset userActions --iterations 5 --retries 3
 yarn test:e2e:benchmark --preset performanceAssets --preset performanceLogin
 
 # Save results to file
-yarn test:e2e:benchmark --preset performanceOnboarding --out results.json
+yarn test:e2e:benchmark --preset performanceOnboardingImport --out results.json
 ```
 
 ### Available Presets
 
-| Preset                  | Description               | Benchmarks                                                       |
-| ----------------------- | ------------------------- | ---------------------------------------------------------------- |
-| `standardHome`          | Standard user page load   | `standard-home.ts`                                               |
-| `powerUserHome`         | Power user page load      | `power-user-home.ts`                                             |
-| `userActions`           | User interaction timings  | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
-| `performanceOnboarding` | Onboarding flows          | `onboarding-import-wallet.ts`, `onboarding-new-wallet.ts`        |
-| `performanceAssets`     | Asset detail page loads   | `asset-details.ts`, `solana-asset-details.ts`                    |
-| `performanceLogin`      | Login & transaction flows | `import-srp-home.ts`, `send-transactions.ts`, `swap.ts`          |
-| `pageLoadBenchmark`     | Playwright benchmarks     | `page-load-benchmark.spec.ts`                                    |
-| `all`                   | All benchmarks            | Everything above                                                 |
+| Preset                         | Description               | Benchmarks                                                       |
+| ------------------------------ | ------------------------- | ---------------------------------------------------------------- |
+| `standardHome`                 | Standard user page load   | `standard-home.ts`                                               |
+| `powerUserHome`                | Power user page load      | `power-user-home.ts`                                             |
+| `userActions`                  | User interaction timings  | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
+| `performanceOnboardingImport`  | Import wallet onboarding  | `onboarding-import-wallet.ts`                                    |
+| `performanceOnboardingNew`     | New wallet onboarding     | `onboarding-new-wallet.ts`                                       |
+| `performanceAssets`            | Asset detail page loads   | `asset-details.ts`, `solana-asset-details.ts`                    |
+| `performanceLogin`             | Login & transaction flows | `import-srp-home.ts`, `send-transactions.ts`, `swap.ts`          |
+| `pageLoadBenchmark`            | Playwright benchmarks     | `page-load-benchmark.spec.ts`                                    |
+| `all`                          | All benchmarks            | Everything above                                                 |
 
 ### 1. Create a new file in the appropriate subdirectory
 
@@ -56,8 +57,7 @@ Performance benchmarks use the `TimerHelper` class to measure operations:
 ```typescript
 // Constructor
 const timer = new TimerHelper(
-  id: string,             // camelCase identifier (e.g., 'assetClickToPriceChartLoaded')
-  threshold?: number      // Optional: Expected time in ms (10% margin applied, 1.5x in CI)
+  id: string  // camelCase identifier (e.g., 'assetClickToPriceChart')
 );
 
 // Measure method - wraps async action
@@ -67,6 +67,22 @@ await timer.measure(async () => {
   await element.click();
 });
 ```
+
+**Threshold Validation:**
+
+Thresholds are configured separately in `test/e2e/benchmarks/utils/constants.ts` for statistical validation after multiple iterations. Each timer can have P75 and P95 thresholds with warn/fail levels:
+
+```typescript
+export const MY_BENCHMARK_THRESHOLDS: ThresholdConfig = {
+  myTimerId: {
+    p75: { warn: 1000, fail: 1500 },  // 75th percentile thresholds (ms)
+    p95: { warn: 2000, fail: 3000 },  // 95th percentile thresholds (ms)
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,  // 1.5x multiplier for CI environments
+  },
+};
+```
+
+Thresholds are validated by the benchmark runner after collecting statistics from all iterations. This approach is more reliable than per-run validation for performance testing.
 
 ### 3. Add to a preset (optional)
 

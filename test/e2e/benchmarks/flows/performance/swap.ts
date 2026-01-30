@@ -42,9 +42,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
       },
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSwapPage = new TimerHelper('openSwapPageFromHome');
-        const timerQuoteFetching = new TimerHelper(
-          'fetchAndDisplaySwapQuotes',
-        );
+        const timerQuoteFetching = new TimerHelper('fetchAndDisplaySwapQuotes');
 
         // Login flow
         await driver.navigate();

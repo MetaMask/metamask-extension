@@ -63,15 +63,11 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         const timerPasswordToRecovery = new TimerHelper(
           'createPasswordToRecoveryScreen',
         );
-        const timerSkipToMetrics = new TimerHelper(
-          'skipBackupToMetricsScreen',
-        );
+        const timerSkipToMetrics = new TimerHelper('skipBackupToMetricsScreen');
         const timerAgreeToComplete = new TimerHelper(
           'agreeButtonToOnboardingSuccess',
         );
-        const timerDoneToAssetList = new TimerHelper(
-          'doneButtonToAssetList',
-        );
+        const timerDoneToAssetList = new TimerHelper('doneButtonToAssetList');
 
         await driver.navigate();
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;

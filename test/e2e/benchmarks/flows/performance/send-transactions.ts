@@ -45,9 +45,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
       },
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSendPage = new TimerHelper('openSendPageFromHome');
-        const timerAssetPicker = new TimerHelper(
-          'selectTokenToSendFormLoaded',
-        );
+        const timerAssetPicker = new TimerHelper('selectTokenToSendFormLoaded');
         const timerReviewTransaction = new TimerHelper(
           'reviewTransactionToConfirmationPage',
         );

@@ -15,7 +15,8 @@ env:
       "standardHome": "yarn test:e2e:benchmark --preset standardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2",
       "powerUserHome": "yarn test:e2e:benchmark --preset powerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2",
       "userActions": "yarn test:e2e:benchmark --preset userActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2",
-      "performanceOnboarding": "yarn test:e2e:benchmark --preset performanceOnboarding --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboarding.json --retries 2",
+      "performanceOnboardingImport": "yarn test:e2e:benchmark --preset performanceOnboardingImport --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingImport.json --retries 2",
+      "performanceOnboardingNew": "yarn test:e2e:benchmark --preset performanceOnboardingNew --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingNew.json --retries 2",
       "performanceAssets": "yarn test:e2e:benchmark --preset performanceAssets --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2",
       "performanceLogin": "yarn test:e2e:benchmark --preset performanceLogin --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceLogin.json --retries 2"
     }
@@ -41,7 +42,10 @@ jobs:
         include:
           - browser: chrome
             buildType: browserify
-            pageType: performanceOnboarding
+            pageType: performanceOnboardingImport
+          - browser: chrome
+            buildType: browserify
+            pageType: performanceOnboardingNew
           - browser: chrome
             buildType: browserify
             pageType: performanceAssets
