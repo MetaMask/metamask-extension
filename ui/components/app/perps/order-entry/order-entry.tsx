@@ -1,16 +1,10 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { twMerge, Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { Button, ButtonVariant, ButtonSize } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
 
-import type { OrderEntryProps, OrderFormState } from './order-entry.types';
-import {
-  mockOrderFormDefaults,
-  calculatePositionSize,
-  calculateMarginRequired,
-  estimateLiquidationPrice,
-} from './order-entry.mocks';
+import type { OrderEntryProps } from './order-entry.types';
+import { usePerpsOrderForm } from './hooks';
 
 import { AmountInput } from './components/amount-input';
 import { LeverageSlider } from './components/leverage-slider';
@@ -57,129 +51,29 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   existingPosition,
 }) => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
-    useFormatters();
 
-  // Close percentage state (for 'close' mode, defaults to 100%)
-  const [closePercent, setClosePercent] = useState<number>(100);
-
-  // Initialize form state based on mode
-  const [formState, setFormState] = useState<OrderFormState>(() => {
-    // For modify mode, pre-populate from existing position
-    if (mode === 'modify' && existingPosition) {
-      return {
-        ...mockOrderFormDefaults,
-        asset,
-        direction: initialDirection,
-        leverage: existingPosition.leverage,
-        takeProfitPrice: existingPosition.takeProfitPrice ?? '',
-        stopLossPrice: existingPosition.stopLossPrice ?? '',
-        autoCloseEnabled: Boolean(
-          existingPosition.takeProfitPrice || existingPosition.stopLossPrice,
-        ),
-      };
-    }
-    // For new and close modes, use defaults
-    return {
-      ...mockOrderFormDefaults,
-      asset,
-      direction: initialDirection,
-    };
+  // Use custom hook for form state management
+  const {
+    formState,
+    closePercent,
+    calculations,
+    handleAmountChange,
+    handleBalancePercentChange,
+    handleLeverageChange,
+    handleAutoCloseEnabledChange,
+    handleTakeProfitPriceChange,
+    handleStopLossPriceChange,
+    handleClosePercentChange,
+    handleSubmit,
+  } = usePerpsOrderForm({
+    asset,
+    currentPrice,
+    initialDirection,
+    mode,
+    existingPosition,
+    onFormStateChange,
+    onSubmit,
   });
-
-  // Notify parent of form state changes
-  useEffect(() => {
-    onFormStateChange?.(formState);
-  }, [formState, onFormStateChange]);
-
-  // Calculate derived values
-  const calculations = useMemo(() => {
-    // For close mode, calculate based on close amount
-    if (mode === 'close' && existingPosition) {
-      const positionSize = Math.abs(parseFloat(existingPosition.size)) || 0;
-      const closeAmount = (positionSize * closePercent) / 100;
-      const closeValueUsd = closeAmount * currentPrice;
-
-      // Mock fee calculation: 0.05% of close value
-      const estimatedFees = closeValueUsd * 0.0005;
-
-      return {
-        positionSize: formatTokenQuantity(closeAmount, asset),
-        marginRequired: null, // Not relevant for closing
-        liquidationPrice: null, // Not relevant for closing
-        orderValue: formatCurrencyWithMinThreshold(closeValueUsd, 'USD'),
-        estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
-      };
-    }
-
-    // For new/modify modes, calculate based on form amount
-    // Remove commas from formatted amount for parsing
-    const cleanAmount = formState.amount.replace(/,/g, '');
-    const amount = parseFloat(cleanAmount) || 0;
-
-    if (amount === 0) {
-      return {
-        positionSize: null,
-        marginRequired: null,
-        liquidationPrice: null,
-        orderValue: null,
-        estimatedFees: null,
-      };
-    }
-
-    const positionSize = calculatePositionSize(amount, currentPrice);
-    const marginRequired = calculateMarginRequired(amount, formState.leverage);
-    const liquidationPrice = estimateLiquidationPrice(
-      currentPrice,
-      formState.leverage,
-      formState.direction === 'long',
-    );
-    // Mock fee calculation: 0.05% of order value
-    const estimatedFees = amount * 0.0005;
-
-    return {
-      positionSize: formatTokenQuantity(positionSize, asset),
-      marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
-      liquidationPrice: formatCurrencyWithMinThreshold(liquidationPrice, 'USD'),
-      orderValue: formatCurrencyWithMinThreshold(amount, 'USD'),
-      estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
-    };
-  }, [formState.amount, formState.leverage, formState.direction, currentPrice, mode, existingPosition, closePercent, asset, formatCurrencyWithMinThreshold, formatTokenQuantity]);
-
-  // Form state update handlers
-  const handleAmountChange = useCallback((amount: string) => {
-    setFormState((prev) => ({ ...prev, amount }));
-  }, []);
-
-  const handleBalancePercentChange = useCallback((balancePercent: number) => {
-    setFormState((prev) => ({ ...prev, balancePercent }));
-  }, []);
-
-  const handleLeverageChange = useCallback((leverage: number) => {
-    setFormState((prev) => ({ ...prev, leverage }));
-  }, []);
-
-  const handleAutoCloseEnabledChange = useCallback((enabled: boolean) => {
-    setFormState((prev) => ({ ...prev, autoCloseEnabled: enabled }));
-  }, []);
-
-  const handleTakeProfitPriceChange = useCallback((takeProfitPrice: string) => {
-    setFormState((prev) => ({ ...prev, takeProfitPrice }));
-  }, []);
-
-  const handleStopLossPriceChange = useCallback((stopLossPrice: string) => {
-    setFormState((prev) => ({ ...prev, stopLossPrice }));
-  }, []);
-
-  // Close percent change handler (for close mode)
-  const handleClosePercentChange = useCallback((percent: number) => {
-    setClosePercent(percent);
-  }, []);
-
-  // Submit handler
-  const handleSubmit = useCallback(() => {
-    onSubmit?.(formState);
-  }, [formState, onSubmit]);
 
   const isLong = formState.direction === 'long';
 
