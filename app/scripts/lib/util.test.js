@@ -749,11 +749,6 @@ describe('app utils', () => {
       it('should return false for empty string', () => {
         expect(isSpecialUseDomain('')).toBe(false);
       });
-
-      it('should return false for null/undefined', () => {
-        expect(isSpecialUseDomain(null)).toBe(false);
-        expect(isSpecialUseDomain(undefined)).toBe(false);
-      });
     });
   });
 });

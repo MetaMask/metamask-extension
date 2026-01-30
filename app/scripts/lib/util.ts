@@ -508,10 +508,6 @@ function extractHostname(url: string): string | null {
  * @returns True if the hostname is localhost or an IP address (v4 or v6).
  */
 function isLocalhostOrIPAddress(hostname: string): boolean {
-  if (!hostname) {
-    return false;
-  }
-
   const lowerHostname = hostname.toLowerCase();
 
   // Check for localhost
@@ -530,6 +526,18 @@ function isLocalhostOrIPAddress(hostname: string): boolean {
   return false;
 }
 
+// RFC 6761 special-use TLDs that should never be used by real public RPC providers
+const SPECIAL_USE_TLDS = [
+  '.test',
+  '.localhost',
+  '.invalid',
+  '.example',
+  '.local',
+] as const;
+
+// RFC 6761 reserved example domains
+const RESERVED_EXAMPLE_DOMAINS = ['example.com', 'example.net', 'example.org'];
+
 /**
  * Check if a hostname is a special-use domain per RFC 6761.
  * These domains are reserved and should never be used by real public RPC providers.
@@ -539,31 +547,19 @@ function isLocalhostOrIPAddress(hostname: string): boolean {
  * @see https://datatracker.ietf.org/doc/html/rfc6761
  */
 export function isSpecialUseDomain(hostname: string): boolean {
-  if (!hostname) {
-    return false;
-  }
-
   const lowerHostname = hostname.toLowerCase();
 
-  // RFC 6761 special-use TLDs
-  if (
-    lowerHostname.endsWith('.test') ||
-    lowerHostname.endsWith('.localhost') ||
-    lowerHostname.endsWith('.invalid') ||
-    lowerHostname.endsWith('.example') ||
-    lowerHostname.endsWith('.local')
-  ) {
+  // Check special-use TLDs
+  if (SPECIAL_USE_TLDS.some((tld) => lowerHostname.endsWith(tld))) {
     return true;
   }
 
-  // RFC 6761 reserved example domains
+  // Check reserved example domains (exact match or subdomain)
   if (
-    lowerHostname === 'example.com' ||
-    lowerHostname === 'example.net' ||
-    lowerHostname === 'example.org' ||
-    lowerHostname.endsWith('.example.com') ||
-    lowerHostname.endsWith('.example.net') ||
-    lowerHostname.endsWith('.example.org')
+    RESERVED_EXAMPLE_DOMAINS.some(
+      (domain) =>
+        lowerHostname === domain || lowerHostname.endsWith(`.${domain}`),
+    )
   ) {
     return true;
   }
@@ -615,16 +611,13 @@ export async function initializeRpcProviderDomains(): Promise<void> {
 }
 
 /**
- * Check if a domain is in the known domains list.
+ * Check if a domain is in the known domains list
  *
  * @param domain - The domain to check.
  * @returns True if the domain is found in the chainlist cache.
  */
 export function isKnownDomain(domain: string): boolean {
-  if (!domain) {
-    return false;
-  }
-  return knownDomainsSet?.has(domain.toLowerCase()) ?? false;
+  return knownDomainsSet?.has(domain?.toLowerCase()) ?? false;
 }
 
 /**
@@ -647,10 +640,6 @@ function isKnownEndpointUrl(endpointUrl: string): boolean {
  * Some URLs that users add as networks refer to private servers, and we do not
  * want to report these in Segment (or any other data collection service). This
  * function returns whether the given RPC endpoint is safe to share.
- *
- * This function is only available in the background context where the set of
- * known domains is initialized. UI should call the background API method
- * instead.
  *
  * @param endpointUrl - The URL of the endpoint.
  * @param infuraProjectId - Our Infura project ID.
