@@ -22,9 +22,7 @@ import {
   getToToken,
   getQuoteRequest,
 } from '../../ducks/bridge/selectors';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { usePrevious } from '../usePrevious';
-import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getRewardsHasAccountOptedIn,
   estimateRewardsPoints,
@@ -42,6 +40,7 @@ import {
   selectRewardsAccountLinkedTimestamp,
   selectRewardsEnabled,
 } from '../../ducks/rewards/selectors';
+import { getMaybeHexChainId } from '../../ducks/bridge/utils';
 
 /**
  *
@@ -389,8 +388,8 @@ export const useRewardsWithQuote = ({
     hasError,
     accountOptedIn,
     rewardsAccountScope:
-      quote && shouldShowRewardsRow
-        ? (fromAddressAccount as InternalAccount | null)
+      quote && shouldShowRewardsRow && fromAddressAccount
+        ? fromAddressAccount
         : null,
   };
 };
@@ -410,14 +409,8 @@ export const useRewards = ({
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const quoteRequest = useSelector(getQuoteRequest);
-  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
-  const caipChainId = currentChainId
-    ? formatChainIdToCaip(currentChainId.toString())
-    : null;
   const selectedAccount = useSelector((state) =>
-    caipChainId
-      ? getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId)
-      : null,
+    getInternalAccountBySelectedAccountGroupAndCaip(state, fromToken.chainId),
   );
 
   // Bridge-specific validation: ensure all required Bridge UI data is present
@@ -432,6 +425,6 @@ export const useRewards = ({
     quote: hasRequiredBridgeData ? activeQuote : null,
     fromAddress: selectedAccount?.address,
     fromAddressAccount: selectedAccount,
-    chainId: currentChainId?.toString(),
+    chainId: getMaybeHexChainId(fromToken.chainId) ?? fromToken.chainId,
   });
 };

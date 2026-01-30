@@ -19,7 +19,6 @@ import {
   setToToken,
 } from '../../ducks/bridge/actions';
 import { getFromToken } from '../../ducks/bridge/selectors';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -69,11 +68,6 @@ export const useBridgeQueryParams = () => {
   const fromToken = useSelector(getFromToken);
 
   const abortController = useRef<AbortController>(new AbortController());
-
-  /**
-   * @deprecated remove this when GNS references are removed
-   */
-  const currentChainId = useSelector(getMultichainCurrentChainId);
 
   const { search, pathname, state } = useLocation();
   const navigate = useNavigate();
@@ -227,7 +221,7 @@ export const useBridgeQueryParams = () => {
     if (fromToken?.assetId) {
       dispatch(setEvmBalances(fromToken.assetId));
     }
-  }, [fromToken, fromToken?.assetId, currentChainId]);
+  }, [fromToken, fromToken?.assetId]);
 
   // If srcToken object is passed through navigation options, use it as the fromToken
   useEffect(() => {

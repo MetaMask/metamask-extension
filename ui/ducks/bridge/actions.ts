@@ -146,31 +146,14 @@ export const setFromToken = (token: TokenPayload) => {
   ) => {
     const { assetId } = token;
     const { chainId } = parseCaipAssetType(assetId);
-    const isNonEvm = isNonEvmChainId(chainId);
 
-    const currentChainId = getMultichainProviderConfig(getState()).chainId;
-    const maybeHexChainId = getMaybeHexChainId(chainId);
-    const currentNetworkMatchesToken = [chainId, maybeHexChainId].some(
-      (c) => c && c === currentChainId,
-    );
+    const lastSelectedChainId = getLastSelectedChainId(getState());
+    const currentNetworkMatchesToken = chainId === lastSelectedChainId;
 
-    // Set the src network
+    // If the source token's chain changes, enable All Networks view so the user
+    // can see their bridging activity on the new chain
     if (!currentNetworkMatchesToken) {
-      // If the source chain changes, enable All Networks view so the user
-      // can see their bridging activity on the new chain
-      const lastSelectedChainId = getLastSelectedChainId(getState());
-      if (isCrossChain(chainId, lastSelectedChainId)) {
-        dispatch(setEnabledAllPopularNetworks());
-      }
-      if (isNonEvm) {
-        dispatch(setActiveNetworkWithError(chainId));
-      } else if (maybeHexChainId) {
-        const networkId =
-          selectDefaultNetworkClientIdsByChainId(getState())[maybeHexChainId];
-        if (networkId) {
-          dispatch(setActiveNetworkWithError(networkId));
-        }
-      }
+      dispatch(setEnabledAllPopularNetworks());
     }
     // Set the fromToken
     dispatch(setFromTokenAction(token));

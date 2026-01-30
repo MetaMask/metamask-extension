@@ -253,22 +253,20 @@ export const getLastSelectedChainId = createSelector(
   },
 );
 
-// TODO when GNS is removed, use the getLastSelectedChain instead of providerChainId
 export const getFromToken = createSelector(
   [
     (state: BridgeAppState) => state.bridge?.fromToken,
     getFromChains,
-    getMultichainProviderConfig,
+    getLastSelectedChainId,
   ],
-  (fromToken, fromChains, providerConfig) => {
+  (fromToken, fromChains, lastSelectedChainId) => {
     if (fromToken) {
       return fromToken;
     }
-    // When the page loads the global network always matches the network filter
-    // Because useBridging checks whether the lastSelectedNetwork matches the provider config
-    // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
+    // Matches the top chain from LD if "All Networks" is selected
+    // Otherwise matches the selected network filter
     const fromChain = fromChains.find(
-      ({ chainId }) => !isCrossChain(chainId, providerConfig?.chainId),
+      ({ chainId }) => chainId === lastSelectedChainId,
     );
     // If the user has not selected a token, return the native token for the selected network as default
     // If selected network is not supported by swap/bridge, return ETH (edge case)
