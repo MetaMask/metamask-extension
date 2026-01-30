@@ -88,7 +88,7 @@ export default function configureStore(preloadedState: any) {
     preloadedState,
   });
 }
-type Store = ReturnType<typeof configureStore>;
+export type Store = ReturnType<typeof configureStore>;
 export type MetaMaskReduxState = ReturnType<Store['getState']>;
 export type MetaMaskReduxDispatch = Store['dispatch'];
 export const useAppSelector: TypedUseSelectorHook<MetaMaskReduxState> =
