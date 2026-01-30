@@ -10,13 +10,28 @@ import {
   mockFiatExchangeRates,
   mockInitialFullScan,
   mockSolanaSpotPrices,
+  mockBtcSpotPrices,
+  mockAllBridgeEndpoints,
 } from './mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
+
+/**
+ * Options for configuring the BTC account snap test environment.
+ */
+export type BtcAccountSnapOptions = {
+  /** Enable swap/bridge mocks for testing BTC swaps */
+  mockSwap?: boolean;
+  /** If mockSwap is true, whether to return quotes (default: true) */
+  mockSwapQuotes?: boolean;
+};
 
 export async function withBtcAccountSnap(
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
   title?: string,
+  options: BtcAccountSnapOptions = {},
 ) {
+  const { mockSwap = false, mockSwapQuotes = true } = options;
+
   await withFixtures(
     {
       // Use onboarding flow to trigger fullScan (not sync)
@@ -27,18 +42,33 @@ export async function withBtcAccountSnap(
         remoteFeatureFlags: {
           bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
           sendRedesign: { enabled: true },
+          ...(mockSwap && { bitcoinSwaps: { enabled: true } }),
         },
       },
-      testSpecificMock: async (mockServer: Mockttp) => [
-        await mockBitcoinFeatureFlag(mockServer),
-        await mockInitialFullScan(mockServer),
-        await mockExchangeRates(mockServer),
-        await mockCurrencyExchangeRates(mockServer),
-        await mockFiatExchangeRates(mockServer),
-        await mockSolanaSpotPrices(mockServer),
-        await mockPriceMulti(mockServer),
-        await mockPriceMultiBtcAndSol(mockServer),
-      ],
+      testSpecificMock: async (mockServer: Mockttp) => {
+        const mocks = [
+          await mockBitcoinFeatureFlag(mockServer),
+          await mockInitialFullScan(mockServer),
+          await mockExchangeRates(mockServer),
+          await mockCurrencyExchangeRates(mockServer),
+          await mockFiatExchangeRates(mockServer),
+          await mockSolanaSpotPrices(mockServer),
+          await mockPriceMulti(mockServer),
+          await mockPriceMultiBtcAndSol(mockServer),
+        ];
+
+        // Add bridge mocks for swap functionality if enabled
+        if (mockSwap) {
+          mocks.push(
+            await mockBtcSpotPrices(mockServer),
+            ...(await mockAllBridgeEndpoints(mockServer, {
+              returnQuotes: mockSwapQuotes,
+            })),
+          );
+        }
+
+        return mocks;
+      },
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       // Complete onboarding - this triggers fullScan for Bitcoin snap

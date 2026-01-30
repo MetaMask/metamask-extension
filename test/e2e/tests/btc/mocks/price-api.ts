@@ -132,3 +132,17 @@ export const mockSolanaSpotPrices = (mockServer: Mockttp) =>
       },
       'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501': null,
     });
+
+// Mock for BTC spot prices (used for bridge/swap)
+export const mockBtcSpotPrices = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+      vsCurrency: 'usd',
+    })
+    .thenJson(200, {
+      'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+        usd: 82661,
+      },
+    });

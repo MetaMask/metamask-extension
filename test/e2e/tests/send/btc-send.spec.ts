@@ -4,7 +4,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
-import { withBtcAccountSnap } from './common-btc';
+import { withBtcAccountSnap } from '../btc/common-btc';
 
 describe('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
@@ -24,11 +24,27 @@ describe('BTC Account - Send', function (this: Suite) {
 
       await sendPage.fillRecipient('invalidBTCAddress');
       await sendPage.checkInvalidAddressError();
+    }, this.test?.fullTitle());
+  });
 
-      await sendPage.fillAmount('50');
+  it('amount validation', async function () {
+    await withBtcAccountSnap(async (driver) => {
+      const homePage = new BitcoinHomepage(driver);
+      const sendPage = new SendPage(driver);
+      await homePage.checkPageIsLoaded();
+      await homePage.checkIsExpectedBitcoinBalanceDisplayed(
+        DEFAULT_BTC_BALANCE,
+      );
+      await homePage.startSendFlow();
+      await sendPage.selectToken(bitcoinChainId, 'BTC');
+
+      await sendPage.fillRecipient(recipientAddress);
+
+      await sendPage.fillAmount('5');
       await sendPage.checkInsufficientFundsError();
     }, this.test?.fullTitle());
   });
+
   it('can complete the send flow', async function () {
     const sendAmount = '0.5';
     const expectedFee = '0.00000281';
@@ -51,18 +67,19 @@ describe('BTC Account - Send', function (this: Suite) {
       await sendPage.isContinueButtonEnabled();
       await sendPage.pressContinueButton();
 
-      // ------------------------------------------------------------------------------
-      // From here, we have moved to the confirmation screen (second part of the flow).
-
+      // From here, we have moved to the confirmation screen
       const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
       await bitcoinReviewTxPage.checkPageIsLoaded();
       await bitcoinReviewTxPage.checkNetworkFeeIsDisplayed(expectedFee);
       await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(expectedTotal);
       await bitcoinReviewTxPage.clickConfirmButton();
 
-      // The Bitcoin snap doesn't appear to automatically poll for confirmation status
-      // so we only check for the tx is sent and not the status update to confirmed.
+      // Wait for the transaction to appear in the activity list
       await activityListPage.checkTransactionActivityByText('Sent');
+
+      // Note: Transaction shows as "Pending" immediately after broadcast.
+      // The BTC snap stores it with "Unconfirmed" status when broadcast.
+      await activityListPage.checkWaitForTransactionStatus('pending');
     }, this.test?.fullTitle());
   });
 });
