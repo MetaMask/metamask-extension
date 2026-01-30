@@ -4274,15 +4274,6 @@
         "setTimeout": true
       }
     },
-    "@metamask/snaps-utils>fast-xml-parser": {
-      "globals": {
-        "entityName": true,
-        "val": true
-      },
-      "packages": {
-        "@metamask/snaps-utils>fast-xml-parser>strnum": true
-      }
-    },
     "@metamask/notification-services-controller>firebase": {
       "packages": {
         "@metamask/notification-services-controller>firebase>@firebase/app": true,
