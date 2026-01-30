@@ -167,7 +167,7 @@ export class PerformanceTracker {
     try {
       const resultsDir = path.join(
         __dirname,
-        '../../../test-artifacts/benchmarks/performance-tracker',
+        '../../../../test-artifacts/benchmarks/performance-tracker',
       );
       if (!fs.existsSync(resultsDir)) {
         fs.mkdirSync(resultsDir, { recursive: true });

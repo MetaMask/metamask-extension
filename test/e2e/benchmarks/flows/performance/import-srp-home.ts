@@ -29,7 +29,7 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
   if (!SECOND_SRP) {
     throw new Error(
       'TEST_SRP_2 environment variable is required for import-srp-home benchmark. ' +
-      'Please set TEST_SRP_2 with a valid 12-word seed phrase.'
+        'Please set TEST_SRP_2 with a valid 12-word seed phrase.',
     );
   }
 
@@ -53,10 +53,13 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerLogin = new TimerHelper('loginToHomePage', 10000);
-        const timerOpenAccountMenu = new TimerHelper('openAccountMenuAfterLogin', 3000);
+        const timerLogin = new TimerHelper('loginToHomeScreen', 10000);
+        const timerOpenAccountMenu = new TimerHelper(
+          'openAccountMenuAfterLogin',
+          3000,
+        );
         const timerHomeAfterImport = new TimerHelper(
-          'importWalletToHomeScreen',
+          'homeAfterImportWithNewWallet',
           30000,
         );
 

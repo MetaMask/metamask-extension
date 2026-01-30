@@ -46,10 +46,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timer = new TimerHelper(
-          'assetClickToPriceChartLoaded',
-          5000,
-        );
+        const timer = new TimerHelper('assetClickToPriceChart', 5000);
 
         // Login flow
         await driver.navigate();
