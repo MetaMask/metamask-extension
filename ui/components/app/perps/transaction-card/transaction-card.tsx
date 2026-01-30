@@ -45,7 +45,6 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     }
   }, [transaction, onClick]);
 
-  const baseStyles = 'cursor-pointer px-4 py-3';
   const variantStyles =
     variant === 'muted'
       ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
@@ -120,20 +119,10 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     return transaction.subtitle;
   };
 
-  return (
-    <ButtonBase
-      className={twMerge(
-        // Reset ButtonBase defaults for card layout
-        'justify-start rounded-none min-w-0 h-auto',
-        // Card styles
-        'gap-3 text-left',
-        baseStyles,
-        variantStyles,
-      )}
-      isFullWidth
-      onClick={handleClick}
-      data-testid={`transaction-card-${transaction.id}`}
-    >
+  const isClickable = Boolean(onClick);
+
+  const content = (
+    <>
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={transaction.symbol}
@@ -169,7 +158,36 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
           {amountDisplay.text}
         </Text>
       </Box>
-    </ButtonBase>
+    </>
+  );
+
+  const sharedClassName = twMerge('gap-3 px-4 py-3', variantStyles);
+
+  if (isClickable) {
+    return (
+      <ButtonBase
+        className={twMerge(
+          'justify-start rounded-none min-w-0 h-auto text-left cursor-pointer',
+          sharedClassName,
+        )}
+        isFullWidth
+        onClick={handleClick}
+        data-testid={`transaction-card-${transaction.id}`}
+      >
+        {content}
+      </ButtonBase>
+    );
+  }
+
+  return (
+    <Box
+      className={sharedClassName}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      data-testid={`transaction-card-${transaction.id}`}
+    >
+      {content}
+    </Box>
   );
 };
 
