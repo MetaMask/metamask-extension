@@ -3702,11 +3702,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async resetWallet() {
+    // sign out from Authentication service and clear the Session Data
+    this.authenticationController.performSignOut();
+
     // clear SeedlessOnboardingController state
     this.seedlessOnboardingController.clearState();
 
     // reset onboarding state
     this.onboardingController.resetOnboarding();
+
+    // stop subscription polling
+    this.subscriptionController.stopAllPolling();
 
     this.appStateController.setIsWalletResetInProgress(true);
   }
@@ -8585,6 +8591,9 @@ export default class MetamaskController extends EventEmitter {
 
       // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
       this.subscriptionController.stopAllPolling();
+
+      // sign out from Authentication service and clear the Session Data
+      this.authenticationController.performSignOut();
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;
