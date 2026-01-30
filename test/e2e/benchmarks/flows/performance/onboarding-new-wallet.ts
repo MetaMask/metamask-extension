@@ -56,27 +56,21 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
       async ({ driver }: { driver: Driver }) => {
         const timerCreateWalletToSocial = new TimerHelper(
           'createWalletToSocialScreen',
-          2000,
         );
         const timerSrpButtonToPassword = new TimerHelper(
           'srpButtonToPasswordForm',
-          2000,
         );
         const timerPasswordToRecovery = new TimerHelper(
           'createPasswordToRecoveryScreen',
-          3000,
         );
         const timerSkipToMetrics = new TimerHelper(
           'skipBackupToMetricsScreen',
-          3000,
         );
         const timerAgreeToComplete = new TimerHelper(
           'agreeButtonToOnboardingSuccess',
-          3000,
         );
         const timerDoneToAssetList = new TimerHelper(
           'doneButtonToAssetList',
-          15000,
         );
 
         await driver.navigate();

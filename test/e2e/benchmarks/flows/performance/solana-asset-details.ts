@@ -42,7 +42,7 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timer = new TimerHelper('assetClickToPriceChart', 5000);
+        const timer = new TimerHelper('assetClickToPriceChart');
 
         // Login flow
         await driver.navigate();

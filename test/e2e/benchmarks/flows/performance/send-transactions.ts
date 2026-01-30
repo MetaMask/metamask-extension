@@ -44,14 +44,12 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerOpenSendPage = new TimerHelper('openSendPageFromHome', 3000);
+        const timerOpenSendPage = new TimerHelper('openSendPageFromHome');
         const timerAssetPicker = new TimerHelper(
           'selectTokenToSendFormLoaded',
-          2000,
         );
         const timerReviewTransaction = new TimerHelper(
           'reviewTransactionToConfirmationPage',
-          5000,
         );
 
         // Login flow

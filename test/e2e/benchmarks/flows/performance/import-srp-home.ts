@@ -52,14 +52,12 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerLogin = new TimerHelper('loginToHomeScreen', 10000);
+        const timerLogin = new TimerHelper('loginToHomeScreen');
         const timerOpenAccountMenu = new TimerHelper(
           'openAccountMenuAfterLogin',
-          3000,
         );
         const timerHomeAfterImport = new TimerHelper(
           'homeAfterImportWithNewWallet',
-          30000,
         );
 
         // Measure: Login flow

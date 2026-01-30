@@ -61,31 +61,24 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
 
         const timerImportWalletToSocial = new TimerHelper(
           'importWalletToSocialScreen',
-          2000,
         );
         const timerSrpButtonToForm = new TimerHelper(
           'srpButtonToSrpForm',
-          2000,
         );
         const timerConfirmToPassword = new TimerHelper(
           'confirmSrpToPasswordForm',
-          3000,
         );
         const timerPasswordToMetrics = new TimerHelper(
           'passwordFormToMetricsScreen',
-          3000,
         );
         const timerMetricsToComplete = new TimerHelper(
           'metricsToWalletReadyScreen',
-          3000,
         );
         const timerDoneToHome = new TimerHelper(
           'doneButtonToHomeScreen',
-          15000,
         );
         const timerAccountListLoad = new TimerHelper(
           'openAccountMenuToAccountListLoaded',
-          5000,
         );
 
         await driver.navigate();

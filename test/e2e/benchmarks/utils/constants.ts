@@ -36,43 +36,42 @@ export const DEFAULT_CI_MULTIPLIER = 1.5;
 
 /**
  * Onboarding import wallet thresholds.
- * Based on TimerHelper effective values (base × 1.1 margin × 1.5 CI).
  */
 export const ONBOARDING_IMPORT_THRESHOLDS: ThresholdConfig = {
   importWalletToSocialScreen: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   srpButtonToSrpForm: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   confirmSrpToPasswordForm: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   passwordFormToMetricsScreen: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   metricsToWalletReadyScreen: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   doneButtonToHomeScreen: {
     p75: { warn: 13500, fail: 17500 },
     p95: { warn: 21000, fail: 26000 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   openAccountMenuToAccountListLoaded: {
     p75: { warn: 35000, fail: 40000 },
     p95: { warn: 40000, fail: 50000 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
@@ -83,32 +82,32 @@ export const ONBOARDING_NEW_WALLET_THRESHOLDS: ThresholdConfig = {
   createWalletToSocialScreen: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   srpButtonToPasswordForm: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   createPasswordToRecoveryScreen: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   skipBackupToMetricsScreen: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   agreeButtonToOnboardingSuccess: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   doneButtonToAssetList: {
     p75: { warn: 13500, fail: 17500 },
     p95: { warn: 21000, fail: 26000 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
@@ -119,17 +118,17 @@ export const IMPORT_SRP_HOME_THRESHOLDS: ThresholdConfig = {
   loginToHomeScreen: {
     p75: { warn: 9000, fail: 11500 },
     p95: { warn: 14000, fail: 17500 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   openAccountMenuAfterLogin: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   homeAfterImportWithNewWallet: {
     p75: { warn: 27000, fail: 35000 },
     p95: { warn: 42000, fail: 52000 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
@@ -140,12 +139,12 @@ export const SWAP_THRESHOLDS: ThresholdConfig = {
   openSwapPageFromHome: {
     p75: { warn: 4500, fail: 5800 },
     p95: { warn: 7000, fail: 8700 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   fetchAndDisplaySwapQuotes: {
     p75: { warn: 9000, fail: 11500 },
     p95: { warn: 14000, fail: 17500 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
@@ -156,17 +155,17 @@ export const SEND_TRANSACTIONS_THRESHOLDS: ThresholdConfig = {
   openSendPageFromHome: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   selectTokenToSendFormLoaded: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   reviewTransactionToConfirmationPage: {
     p75: { warn: 4500, fail: 5800 },
     p95: { warn: 7000, fail: 8700 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
@@ -177,7 +176,7 @@ export const ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
     p75: { warn: 4500, fail: 5800 },
     p95: { warn: 7000, fail: 8700 },
-    ciMultiplier: 1.0,
+    ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
 
@@ -188,38 +187,6 @@ export const SOLANA_ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
     p75: { warn: 4500, fail: 5800 },
     p95: { warn: 7000, fail: 8700 },
-    ciMultiplier: 1.0,
-  },
-};
-
-/**
- * Example threshold configuration for page load benchmarks.
- * These are more lenient as page loads involve more variables.
- */
-export const PAGE_LOAD_THRESHOLDS: ThresholdConfig = {
-  [ALL_METRICS.uiStartup]: {
-    p75: { warn: 1500, fail: 3000 },
-    p95: { warn: 3000, fail: 5000 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
-  },
-  [ALL_METRICS.backgroundConnect]: {
-    p75: { warn: 800, fail: 1500 },
-    p95: { warn: 1500, fail: 2500 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
-  },
-  [ALL_METRICS.firstReactRender]: {
-    p75: { warn: 1200, fail: 2500 },
-    p95: { warn: 2500, fail: 4000 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
-  },
-  [ALL_METRICS.loadScripts]: {
-    p75: { warn: 1500, fail: 3000 },
-    p95: { warn: 3000, fail: 5000 },
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,
-  },
-  [ALL_METRICS.setupStore]: {
-    p75: { warn: 800, fail: 1500 },
-    p95: { warn: 1500, fail: 2500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };

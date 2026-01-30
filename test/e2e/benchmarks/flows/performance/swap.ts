@@ -41,10 +41,9 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerOpenSwapPage = new TimerHelper('openSwapPageFromHome', 5000);
+        const timerOpenSwapPage = new TimerHelper('openSwapPageFromHome');
         const timerQuoteFetching = new TimerHelper(
           'fetchAndDisplaySwapQuotes',
-          10000,
         );
 
         // Login flow
