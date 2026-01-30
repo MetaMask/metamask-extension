@@ -35,7 +35,7 @@ export function createDappSwapMiddleware<
     enabled: boolean;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     bridge_quote_fees: number;
-    origins: string[];
+    origins?: string[];
   };
 }) {
   return async (

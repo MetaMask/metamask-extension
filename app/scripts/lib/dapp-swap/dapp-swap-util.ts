@@ -81,7 +81,7 @@ export function getQuotesForConfirmation({
     enabled: boolean;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     bridge_quote_fees: number;
-    origins: string[];
+    origins?: string[];
   };
   securityAlertId?: string;
 }) {
@@ -92,7 +92,7 @@ export function getQuotesForConfirmation({
       enabled: dappSwapEnabled,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       bridge_quote_fees: bridgeQuoteFees,
-      origins,
+      origins = [],
     } = dappSwapMetricsFlag;
     if (!dappSwapEnabled) {
       return;
