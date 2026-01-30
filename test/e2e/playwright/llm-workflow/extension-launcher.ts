@@ -5,7 +5,7 @@ import {
   ConsoleErrorBuffer,
   resolveExtensionId,
   waitForExtensionUiReady,
-} from '@metamask/metamask-mcp-core';
+} from '@metamask/client-mcp-core';
 import type {
   LauncherLaunchOptions,
   ScreenshotOptions,

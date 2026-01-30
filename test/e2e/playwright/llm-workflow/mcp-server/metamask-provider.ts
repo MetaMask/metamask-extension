@@ -21,7 +21,7 @@ import {
   generateSessionId,
   knowledgeStore,
   MockServerCapability,
-} from '@metamask/metamask-mcp-core';
+} from '@metamask/client-mcp-core';
 
 import { MetaMaskExtensionLauncher, launchMetaMask } from '..';
 import {

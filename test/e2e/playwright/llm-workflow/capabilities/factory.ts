@@ -3,7 +3,7 @@ import type {
   BaseEnvironmentConfig,
   E2EEnvironmentConfig,
   ProdEnvironmentConfig,
-} from '@metamask/metamask-mcp-core';
+} from '@metamask/client-mcp-core';
 import type { Mockttp } from 'mockttp';
 import { MetaMaskBuildCapability } from './build';
 import { MetaMaskFixtureCapability } from './fixture';

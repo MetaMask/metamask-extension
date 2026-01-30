@@ -23,7 +23,7 @@ This server is a thin wrapper that connects the generic MCP core package to Meta
 └──────────────────────────────────────────────────────────────────┘
                               │
 ┌──────────────────────────────────────────────────────────────────┐
-│  @metamask/metamask-mcp-core (core package)                 │
+│  @metamask/client-mcp-core (core package)                 │
 │  - MCP server infrastructure                                     │
 │  - Tool definitions (mm_click, mm_type, mm_screenshot, etc.)     │
 │  - Knowledge store for session history                           │

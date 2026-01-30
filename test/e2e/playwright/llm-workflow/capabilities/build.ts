@@ -5,7 +5,7 @@ import type {
   BuildCapability,
   BuildOptions,
   BuildResult,
-} from '@metamask/metamask-mcp-core';
+} from '@metamask/client-mcp-core';
 
 export type MetaMaskBuildCapabilityOptions = {
   command?: string;

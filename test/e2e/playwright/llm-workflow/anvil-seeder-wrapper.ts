@@ -1,4 +1,4 @@
-import type { SmartContractName, Hardfork } from '@metamask/metamask-mcp-core';
+import type { SmartContractName, Hardfork } from '@metamask/client-mcp-core';
 import type { Anvil } from '../../seeder/anvil';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires

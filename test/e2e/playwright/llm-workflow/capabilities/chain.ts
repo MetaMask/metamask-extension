@@ -1,6 +1,6 @@
 /* eslint-disable no-empty-function */
-import { fetchWithTimeout, retryUntil } from '@metamask/metamask-mcp-core';
-import type { ChainCapability } from '@metamask/metamask-mcp-core';
+import { fetchWithTimeout, retryUntil } from '@metamask/client-mcp-core';
+import type { ChainCapability } from '@metamask/client-mcp-core';
 import { Anvil } from '../../../seeder/anvil';
 
 export type MetaMaskChainCapabilityOptions = {

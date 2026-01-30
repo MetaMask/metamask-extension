@@ -1,6 +1,6 @@
 import type { Mockttp } from 'mockttp';
-import type { MockServerCapability } from '@metamask/metamask-mcp-core';
-import { fetchWithTimeout, retryUntil } from '@metamask/metamask-mcp-core';
+import type { MockServerCapability } from '@metamask/client-mcp-core';
+import { fetchWithTimeout, retryUntil } from '@metamask/client-mcp-core';
 import { MockServer } from '../mock-server';
 
 export type MetaMaskMockServerCapabilityOptions = {

@@ -244,13 +244,13 @@ describe('Capability Factory', () => {
       sessionManager =
         require('../mcp-server/metamask-provider').metaMaskSessionManager;
       sessionManager.setWorkflowContext(
-        createMetaMaskE2EContext() as import('@metamask/metamask-mcp-core').WorkflowContext,
+        createMetaMaskE2EContext() as import('@metamask/client-mcp-core').WorkflowContext,
       );
     });
 
     afterEach(() => {
       sessionManager.setWorkflowContext(
-        undefined as unknown as import('@metamask/metamask-mcp-core').WorkflowContext,
+        undefined as unknown as import('@metamask/client-mcp-core').WorkflowContext,
       );
     });
 

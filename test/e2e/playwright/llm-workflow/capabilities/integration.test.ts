@@ -3,9 +3,9 @@ import {
   getToolHandler,
   hasToolHandler,
   setSessionManager,
-} from '@metamask/metamask-mcp-core';
+} from '@metamask/client-mcp-core';
 /* eslint-enable import/extensions */
-import type { WorkflowContext } from '@metamask/metamask-mcp-core';
+import type { WorkflowContext } from '@metamask/client-mcp-core';
 import { metaMaskSessionManager as sessionManager } from '../mcp-server/metamask-provider';
 import { createMetaMaskE2EContext, createMetaMaskProdContext } from './factory';
 

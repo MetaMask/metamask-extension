@@ -1,4 +1,4 @@
-import { retryUntil } from '@metamask/metamask-mcp-core';
+import { retryUntil } from '@metamask/client-mcp-core';
 import type { NetworkConfig } from '../launcher-types';
 import type { SmartContractName } from '../anvil-seeder-wrapper';
 import { Anvil } from '../../../seeder/anvil';

@@ -6,7 +6,7 @@ MCP-based tooling for LLM agents to build, launch, and interact with the MetaMas
 
 The system uses a **decoupled, capability-based architecture**:
 
-- **Generic Core**: `@metamask/metamask-mcp-core` package provides MCP server infrastructure, tool definitions, knowledge store, and capability interfaces
+- **Generic Core**: `@metamask/client-mcp-core` package provides MCP server infrastructure, tool definitions, knowledge store, and capability interfaces
 - **MetaMask Implementation**: This directory implements MetaMask-specific capabilities that plug into the core
 
 ```
@@ -22,7 +22,7 @@ The system uses a **decoupled, capability-based architecture**:
 │              test/e2e/playwright/llm-workflow/mcp-server/               │
 │                                                                         │
 │  ┌─────────────────────────────────────────────────────────────────┐   │
-│  │  @metamask/metamask-mcp-core (generic core)                │   │
+│  │  @metamask/client-mcp-core (generic core)                │   │
 │  │  - MCP server infrastructure                                    │   │
 │  │  - Tool definitions (mm_click, mm_type, mm_screenshot, etc.)    │   │
 │  │  - Knowledge store                                              │   │
@@ -329,5 +329,5 @@ test/e2e/playwright/llm-workflow/
 ## See Also
 
 - **MCP Server Details**: [`mcp-server/README.md`](./mcp-server/README.md) - Tool reference, launch modes, examples
-- **Core Package**: `@metamask/metamask-mcp-core` - Generic MCP infrastructure
+- **Core Package**: `@metamask/client-mcp-core` - Generic MCP infrastructure
 - **Agent Skill**: `.claude/skills/metamask-visual-testing/SKILL.md` - Agent usage instructions

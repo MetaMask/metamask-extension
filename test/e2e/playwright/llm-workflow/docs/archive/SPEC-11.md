@@ -745,7 +745,7 @@ Critical Path: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 9
 
   ```bash
   cd /Users/joaotavares/Documents/projects/consensys/metamask-extension-worktrees/worktree-2
-  yalc update @metamask/metamask-mcp-core
+  yalc update @metamask/client-mcp-core
   ```
 
   **Must NOT do**:
@@ -795,7 +795,7 @@ Critical Path: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 9
 
   # In extension:
   cd /Users/joaotavares/Documents/projects/consensys/metamask-extension-worktrees/worktree-2
-  yalc update @metamask/metamask-mcp-core
+  yalc update @metamask/client-mcp-core
   # Assert: Package updated
   ```
 
@@ -816,7 +816,7 @@ Critical Path: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 9
       createMetaMaskE2EContext,
       createMetaMaskProdContext,
     } from '../capabilities/factory';
-    import { ErrorCodes } from '@metamask/metamask-mcp-core';
+    import { ErrorCodes } from '@metamask/client-mcp-core';
     ```
 
   - Add method implementations to MetaMaskSessionManager class:
