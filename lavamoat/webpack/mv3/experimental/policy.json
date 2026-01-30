@@ -588,7 +588,6 @@
         "ethers>@ethersproject/address": true,
         "ethers>@ethersproject/constants": true,
         "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
