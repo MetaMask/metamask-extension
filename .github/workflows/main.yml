@@ -355,7 +355,7 @@ jobs:
     needs:
       - get-requirements
       - build-test-browserify
-    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main')) }}
     uses: ./.github/workflows/page-load-benchmark.yml
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
