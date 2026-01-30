@@ -149,7 +149,7 @@ const AssetListControlBar = ({
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
       const entry = allNetworks[chainId as `0x${string}`];
-      if (!entry) {
+      if (!entry?.rpcEndpoints) {
         return [];
       }
       const index = entry.defaultRpcEndpointIndex;
