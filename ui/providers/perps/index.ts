@@ -27,3 +27,9 @@ export {
   PerpsStreamContext,
   type PerpsStreamProviderProps,
 } from './PerpsStreamProvider';
+
+// Route Wrapper
+export {
+  PerpsRouteWrapper,
+  type PerpsRouteWrapperProps,
+} from './PerpsRouteWrapper';

@@ -42,7 +42,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   const pnlNum = parseFloat(position.unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const absSize = Math.abs(parseFloat(position.size)).toString();
-  const displayName = getDisplayName(position.coin);
+  const displayName = getDisplayName(position.symbol);
   const pnlPrefix = isProfit ? '+' : '-';
   const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
 
@@ -52,7 +52,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({
     } else {
       // TODO: Add Metrics tracking
       navigate(
-        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(position.coin)}`,
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(position.symbol)}`,
       );
     }
   }, [navigate, position, onClick]);
@@ -69,11 +69,11 @@ export const PositionCard: React.FC<PositionCardProps> = ({
       )}
       isFullWidth
       onClick={handleClick}
-      data-testid={`position-card-${position.coin}`}
+      data-testid={`position-card-${position.symbol}`}
     >
       {/* Token Logo */}
       <PerpsTokenLogo
-        symbol={position.coin}
+        symbol={position.symbol}
         size={AvatarTokenSize.Md}
         className="shrink-0"
       />

@@ -95,7 +95,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       return undefined;
     }
     return mockPositions.find(
-      (pos) => pos.coin.toLowerCase() === decodedSymbol.toLowerCase(),
+      (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
   }, [decodedSymbol]);
 
@@ -689,7 +689,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     >
                       {formatTokenQuantity(
                         Math.abs(parseFloat(position.size)),
-                        getDisplayName(position.coin),
+                        getDisplayName(position.symbol),
                       )}
                     </Text>
                   </Box>

@@ -1,6 +1,10 @@
 /**
  * Mock data for Perps UI development
  * Used for building UI while PerpsController is being migrated to core
+ *
+ * @deprecated These mocks are being migrated to the controller layer.
+ * Once integration is complete, import from:
+ * `app/scripts/controllers/perps/mocks`
  */
 
 import { AccountState, Order, PerpsMarketData, Position } from './types';
@@ -23,7 +27,7 @@ export const mockAccountState: AccountState = {
  */
 export const mockPositions: Position[] = [
   {
-    coin: 'ETH',
+    symbol: 'ETH',
     size: '2.5',
     entryPrice: '2850.00',
     positionValue: '7125.00',
@@ -48,7 +52,7 @@ export const mockPositions: Position[] = [
     stopLossCount: 1,
   },
   {
-    coin: 'BTC',
+    symbol: 'BTC',
     size: '-0.5',
     entryPrice: '45000.00',
     positionValue: '22500.00',
@@ -72,7 +76,7 @@ export const mockPositions: Position[] = [
     stopLossCount: 1,
   },
   {
-    coin: 'SOL',
+    symbol: 'SOL',
     size: '50.0',
     entryPrice: '95.00',
     positionValue: '4750.00',
@@ -97,7 +101,7 @@ export const mockPositions: Position[] = [
     stopLossCount: 0,
   },
   {
-    coin: 'ARB',
+    symbol: 'ARB',
     size: '1000.0',
     entryPrice: '1.20',
     positionValue: '1200.00',
@@ -121,7 +125,7 @@ export const mockPositions: Position[] = [
     stopLossCount: 0,
   },
   {
-    coin: 'POL',
+    symbol: 'POL',
     size: '-5000.0',
     entryPrice: '0.75',
     positionValue: '3750.00',
@@ -147,7 +151,7 @@ export const mockPositions: Position[] = [
   },
   // HIP-3 Equity positions (stocks)
   {
-    coin: 'xyz:TSLA',
+    symbol: 'xyz:TSLA',
     size: '10.0',
     entryPrice: '240.00',
     positionValue: '2400.00',
@@ -172,7 +176,7 @@ export const mockPositions: Position[] = [
     stopLossCount: 1,
   },
   {
-    coin: 'xyz:NVDA',
+    symbol: 'xyz:NVDA',
     size: '-5.0',
     entryPrice: '480.00',
     positionValue: '2400.00',
@@ -197,7 +201,7 @@ export const mockPositions: Position[] = [
   },
   // HIP-3 Commodity position
   {
-    coin: 'xyz:GOLD',
+    symbol: 'xyz:GOLD',
     size: '2.0',
     entryPrice: '2030.00',
     positionValue: '4060.00',
@@ -223,7 +227,7 @@ export const mockPositions: Position[] = [
   },
   // HIP-3 Forex position
   {
-    coin: 'xyz:EUR',
+    symbol: 'xyz:EUR',
     size: '50000.0',
     entryPrice: '1.0820',
     positionValue: '54100.00',

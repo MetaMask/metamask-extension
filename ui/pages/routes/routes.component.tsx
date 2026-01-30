@@ -68,6 +68,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { PerpsRouteWrapper } from '../../providers/perps';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -341,6 +342,23 @@ const PerpsMarketDetailPage = mmLazy(
 const MarketListView = mmLazy(
   (() =>
     import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
+);
+
+// Perps pages wrapped with PerpsStreamProvider
+const WrappedPerpsHomePage = () => (
+  <PerpsRouteWrapper>
+    <PerpsHomePage />
+  </PerpsRouteWrapper>
+);
+const WrappedPerpsMarketDetailPage = () => (
+  <PerpsRouteWrapper>
+    <PerpsMarketDetailPage />
+  </PerpsRouteWrapper>
+);
+const WrappedMarketListView = () => (
+  <PerpsRouteWrapper>
+    <MarketListView />
+  </PerpsRouteWrapper>
 );
 // End Lazy Routes
 
@@ -796,19 +814,19 @@ export default function Routes() {
       }),
       createRouteWithLayout({
         path: PERPS_HOME_ROUTE,
-        component: PerpsHomePage,
+        component: WrappedPerpsHomePage,
         layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-        component: PerpsMarketDetailPage,
+        component: WrappedPerpsMarketDetailPage,
         layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: PERPS_MARKET_LIST_ROUTE,
-        component: MarketListView,
+        component: WrappedMarketListView,
         layout: RootLayout,
         authenticated: true,
       }),

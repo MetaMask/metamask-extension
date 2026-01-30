@@ -8,7 +8,7 @@ export type OrderType = 'market' | 'limit';
 export type MarketType = 'crypto' | 'equity' | 'commodity' | 'forex';
 
 export type Position = {
-  coin: string; // Asset symbol (e.g., 'ETH', 'BTC')
+  symbol: string; // Asset symbol (e.g., 'ETH', 'BTC')
   size: string; // Signed position size (+ = LONG, - = SHORT)
   entryPrice: string; // Average entry price
   positionValue: string; // Total position value in USD

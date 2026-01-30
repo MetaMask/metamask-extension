@@ -55,7 +55,7 @@ const PerpsHomePage: React.FC = () => {
 
   // Filter positions (only crypto for now, limit to 3)
   const positions = useMemo(() => {
-    return mockPositions.filter((pos) => !pos.coin.includes(':')).slice(0, 3);
+    return mockPositions.filter((pos) => !pos.symbol.includes(':')).slice(0, 3);
   }, []);
 
   // Filter open orders (limit to 5)
@@ -188,26 +188,26 @@ const PerpsHomePage: React.FC = () => {
           </Box>
           <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
             {positions.map((position) => {
-              const displaySymbol = getDisplayName(position.coin);
+              const displaySymbol = getDisplayName(position.symbol);
               const isLong = parseFloat(position.size) >= 0;
               const pnlValue = parseFloat(position.unrealizedPnl);
               const isProfit = pnlValue >= 0;
 
               return (
                 <Box
-                  key={position.coin}
+                  key={position.symbol}
                   className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
                   role="button"
                   tabIndex={0}
-                  onClick={() => handlePositionClick(position.coin)}
+                  onClick={() => handlePositionClick(position.symbol)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                      handlePositionClick(position.coin);
+                      handlePositionClick(position.symbol);
                     }
                   }}
                 >
                   <PerpsTokenLogo
-                    symbol={position.coin}
+                    symbol={position.symbol}
                     size={AvatarTokenSize.Md}
                   />
                   <Box className="flex-1 min-w-0 flex flex-col gap-1">
