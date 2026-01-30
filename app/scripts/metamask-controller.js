@@ -1669,10 +1669,31 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   async handleSnapRequest(args) {
-    return await this.controllerMessenger.call(
-      'SnapController:handleRequest',
-      args,
-    );
+    try {
+      return await this.controllerMessenger.call(
+        'SnapController:handleRequest',
+        args,
+      );
+    } catch (error) {
+      // Check if the error is due to a missing handler export
+      if (
+        error?.message &&
+        error.message.includes('handler exported for snap')
+      ) {
+        // Log the error as a warning instead of throwing
+        console.warn(
+          `Snap ${args.snapId} does not export handler ${args.handler}:`,
+          error.message,
+        );
+
+        // Return null or appropriate default based on the handler type
+        // This prevents the snap from crashing and allows other operations to continue
+        return null;
+      }
+
+      // Re-throw other errors
+      throw error;
+    }
   }
 
   /**
