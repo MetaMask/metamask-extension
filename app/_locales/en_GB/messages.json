@@ -5125,6 +5125,9 @@
   "perpsActivity": {
     "message": "Activity"
   },
+  "perpsAll": {
+    "message": "All"
+  },
   "perpsAddFunds": {
     "message": "Add funds"
   },
@@ -5162,6 +5165,9 @@
   "perpsDetails": {
     "message": "Details"
   },
+  "perpsDeposits": {
+    "message": "Deposits"
+  },
   "perpsDirection": {
     "message": "Direction"
   },
@@ -5194,6 +5200,9 @@
   },
   "perpsFilterStocksOnly": {
     "message": "Stocks"
+  },
+  "perpsFunding": {
+    "message": "Funding"
   },
   "perpsFundingPayments": {
     "message": "Funding payments"
@@ -5241,6 +5250,9 @@
   "perpsNoMarketsFound": {
     "message": "No markets found"
   },
+  "perpsNoTransactions": {
+    "message": "No transactions yet"
+  },
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
@@ -5270,6 +5282,9 @@
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
+  },
+  "perpsSeeAll": {
+    "message": "See All"
   },
   "perpsSell": {
     "message": "sell"
@@ -5304,8 +5319,29 @@
   "perpsStats": {
     "message": "Stats"
   },
+  "perpsStatusCanceled": {
+    "message": "Canceled"
+  },
+  "perpsStatusCompleted": {
+    "message": "Completed"
+  },
+  "perpsStatusFilled": {
+    "message": "Filled"
+  },
+  "perpsStatusQueued": {
+    "message": "Queued"
+  },
+  "perpsStatusRejected": {
+    "message": "Rejected"
+  },
+  "perpsStatusTriggered": {
+    "message": "Triggered"
+  },
   "perpsTotalBalance": {
     "message": "Total Balance"
+  },
+  "perpsTrades": {
+    "message": "Trades"
   },
   "perpsTradePerps": {
     "message": "Trade perps"

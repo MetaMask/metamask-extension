@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   twMerge,
   Box,
@@ -39,6 +40,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   onClick,
   variant = 'default',
 }) => {
+  const t = useI18nContext();
   const displayName = getDisplayName(transaction.symbol);
 
   const handleClick = useCallback(() => {
@@ -86,15 +88,15 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
       // Only show certain statuses, blank for 'open'
       const statusText =
         status === 'filled'
-          ? 'Filled'
+          ? t('perpsStatusFilled')
           : status === 'canceled'
-            ? 'Canceled'
+            ? t('perpsStatusCanceled')
             : status === 'queued'
-              ? 'Queued'
+              ? t('perpsStatusQueued')
               : status === 'rejected'
-                ? 'Rejected'
+                ? t('perpsStatusRejected')
                 : status === 'triggered'
-                  ? 'Triggered'
+                  ? t('perpsStatusTriggered')
                   : '';
       return { text: statusText, color: TextColor.TextMuted };
     }
@@ -121,7 +123,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     }
     // For deposits/withdrawals, show status
     if (transaction.type === 'deposit' || transaction.type === 'withdrawal') {
-      return 'Completed';
+      return t('perpsStatusCompleted');
     }
     return transaction.subtitle;
   };
