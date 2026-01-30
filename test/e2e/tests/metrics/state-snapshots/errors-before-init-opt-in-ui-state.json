@@ -266,7 +266,8 @@
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
       "rewardsSubscriptionTokens": "object",
-      "rewardsSubscriptions": "object"
+      "rewardsSubscriptions": "object",
+      "rewardsPointsEstimateHistory": "object"
     },
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },
