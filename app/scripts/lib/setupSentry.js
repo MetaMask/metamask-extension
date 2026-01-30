@@ -8,7 +8,7 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
-import { getInstallType, initInstallType } from './util';
+import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
 

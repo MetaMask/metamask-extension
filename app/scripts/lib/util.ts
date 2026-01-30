@@ -2,7 +2,6 @@ import urlLib from 'url';
 import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
-import browser from 'webextension-polyfill';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
@@ -22,14 +21,15 @@ import {
   PLATFORM_EDGE,
   PLATFORM_FIREFOX,
   PLATFORM_OPERA,
-  INSTALL_TYPE,
-  type InstallType,
   type Platform,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import { getSafeChainsListFromCacheOnly } from '../../../shared/lib/network-utils';
+// Re-export install type utilities from dedicated module to avoid circular dependencies
+// and keep the sentry bundle lightweight
+export { getInstallType, initInstallType } from './install-type';
 
 /**
  * @see {@link getEnvironmentType}
@@ -83,43 +83,6 @@ const getPlatform = (): Platform => {
     return PLATFORM_OPERA;
   }
   return PLATFORM_CHROME;
-};
-
-/**
- * Cached install type value.
- *
- * @see {@link INSTALL_TYPE} for possible values and their meanings.
- */
-let cachedInstallType: InstallType = INSTALL_TYPE.UNKNOWN;
-
-/**
- * Initializes the install type by fetching it from the browser API.
- * This should be called early in the extension lifecycle.
- * The result is cached and can be retrieved synchronously via getInstallType().
- *
- * @returns A promise that resolves to the install type
- */
-const initInstallType = async (): Promise<InstallType> => {
-  try {
-    const extensionInfo = await browser.management.getSelf();
-    if (extensionInfo.installType) {
-      cachedInstallType = extensionInfo.installType as InstallType;
-    }
-  } catch (error) {
-    // Silently fail - install type will remain 'unknown'
-    console.error('Error getting extension installType', error);
-  }
-  return cachedInstallType;
-};
-
-/**
- * Returns the cached install type.
- * Call initInstallType() first to populate the cache.
- *
- * @returns The install type
- */
-const getInstallType = (): InstallType => {
-  return cachedInstallType;
 };
 
 /**
@@ -200,10 +163,8 @@ export {
   checkAlarmExists,
   getChainType,
   getEnvironmentType,
-  getInstallType,
   getPlatform,
   hexToBn,
-  initInstallType,
 };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
