@@ -38,6 +38,7 @@ env:
   BRANCH: ${{ github.head_ref || github.ref_name }}
   RUN_ID: ${{ github.run_id }}
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+  EVENT_NAME: ${{ github.event_name }}
 
 jobs:
   detect-changes:
@@ -57,7 +58,7 @@ jobs:
     steps:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
-        if: ${{ github.event_name == 'merge_group' }}
+        if: ${{ env.EVENT_NAME == 'merge_group' }}
         uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
 
       - uses: actions/checkout@v6
@@ -73,7 +74,7 @@ jobs:
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         run: |
           echo "SKIP=false" >> "$GITHUB_OUTPUT"
-          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; then
+          if [[ "$EVENT_NAME" == "pull_request" ]] || [[ "$EVENT_NAME" == "merge_group" ]] || [[ "$BRANCH" == trigger-ci-* ]]; then
             if git show --format='%B' --no-patch "${HEAD_COMMIT_HASH}" | grep --fixed-strings --quiet '[skip-e2e]'; then
               echo "SKIP=true" >> "$GITHUB_OUTPUT"
               echo "-> SKIP=true due to [skip-e2e] tag in last commit message"
@@ -142,7 +143,7 @@ jobs:
           echo "needs-e2e=true" >> "$GITHUB_OUTPUT"
 
           # Only consider skipping for PRs, merge-queue events, or trigger-ci-* branches
-          if [[ "${{ steps.skip-e2e-tag.outputs.SKIP }}" == "true" || "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "merge_group" ]]; then
+          if [[ "${{ steps.skip-e2e-tag.outputs.SKIP }}" == "true" || "$EVENT_NAME" == "pull_request" || "$EVENT_NAME" == "merge_group" ]]; then
 
             # Skip if [skip-e2e] tag found
             if [[ "${{ steps.skip-e2e-tag.outputs.SKIP }}" == "true" ]]; then
