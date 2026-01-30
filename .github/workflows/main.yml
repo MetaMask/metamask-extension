@@ -49,8 +49,7 @@ jobs:
     name: Locales changed only checks
     needs:
       - get-requirements
-    # Do not run the locales-only tests in the Merge Queue
-    if: ${{ needs.get-requirements.outputs.locales-only == 'true' && github.event_name != 'merge_group' }}
+    if: ${{ needs.get-requirements.outputs.locales-only == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -62,7 +61,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Lint
-        run: yarn lint
+        run: yarn lint:prettier
 
       - name: Verify locales
         run: yarn verify-locales --quiet
