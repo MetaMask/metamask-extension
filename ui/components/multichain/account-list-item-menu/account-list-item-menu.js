@@ -1,17 +1,11 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getHardwareWalletType,
-  getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 
 import { MenuItem } from '../../ui/menu';
@@ -24,18 +18,11 @@ import {
   Text,
 } from '../../component-library';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import {
-  showModal,
   updateAccountsList,
   updateHiddenAccountsList,
 } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
-import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -43,27 +30,14 @@ export const AccountListItemMenu = ({
   anchorElement,
   onClose,
   closeMenu,
-  isRemovable,
+  isRemovable: _isRemovable,
   account,
   isOpen,
   isPinned,
   isHidden,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
-
-  const chainId = useSelector(getCurrentChainId);
-
-  const deviceName = useSelector(getHardwareWalletType);
-
-  const isMultichainAccountsState1Enabled = useSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
-
-  const { keyring } = account.metadata;
-  const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
   const hiddenAccountList = useSelector(getHiddenAccountsList);
@@ -212,36 +186,6 @@ export const AccountListItemMenu = ({
               {isHidden ? t('showAccount') : t('hideAccount')}
             </Text>
           </MenuItem>
-          {isRemovable && !isMultichainAccountsState1Enabled ? (
-            <MenuItem
-              ref={removeAccountItemRef}
-              data-testid="account-list-menu-remove"
-              onClick={() => {
-                dispatch(
-                  showModal({
-                    name: 'CONFIRM_REMOVE_ACCOUNT',
-                    account,
-                  }),
-                );
-                trackEvent({
-                  event: MetaMetricsEventName.AccountRemoved,
-                  category: MetaMetricsEventCategory.Accounts,
-                  properties: {
-                    account_hardware_type: deviceName,
-                    chain_id: chainId,
-                    account_type: accountType,
-                    hd_entropy_index: hdEntropyIndex,
-                    caip_chain_id: formatChainIdToCaip(chainId),
-                  },
-                });
-                onClose();
-                closeMenu?.();
-              }}
-              iconName={IconName.Trash}
-            >
-              <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
-            </MenuItem>
-          ) : null}
         </div>
       </ModalFocus>
     </Popover>
