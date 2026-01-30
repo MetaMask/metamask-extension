@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.17.0]
 
+### Uncategorized
+
+- No user facing changes; this only updates the storage location for tokenListController. (#39250)
+- Bump assets controllers to v97 (#39551)
+- chore: update tron-wallet-snap to latest version 1.19.2 (#39514)
+
 ### Added
 
 - Improved MetaMetrics opt-out tracking to properly attribute opt-out events and prevent duplicates (#39413)
