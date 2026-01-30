@@ -18,3 +18,13 @@ export async function updateTransactionPaymentToken({
     },
   ]);
 }
+
+export async function setIsMaxAmount(
+  transactionId: string,
+  isMaxAmount: boolean,
+): Promise<void> {
+  return await submitRequestToBackground('setTransactionPayIsMaxAmount', [
+    transactionId,
+    isMaxAmount,
+  ]);
+}

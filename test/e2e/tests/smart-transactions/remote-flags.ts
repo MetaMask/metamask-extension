@@ -28,11 +28,6 @@ export async function mockSmartTransactionsRemoteFlags(
               },
             },
           },
-          {
-            sendRedesign: {
-              enabled: false,
-            },
-          },
         ],
       };
     });

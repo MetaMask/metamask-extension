@@ -204,7 +204,8 @@
       "eip155": "object",
       "solana": "object",
       "tron": "object"
-    }
+    },
+    "nativeAssetIdentifiers": "object"
   },
   "NetworkOrderController": {
     "orderedNetworkList": {
@@ -322,8 +323,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" },
-      "sendRedesign": { "enabled": false }
+      "feature3": { "name": "groupC", "value": "valueC" }
     }
   },
   "RewardsController": {

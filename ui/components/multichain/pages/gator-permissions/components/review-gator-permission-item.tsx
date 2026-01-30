@@ -24,7 +24,6 @@ import {
   NativeTokenPeriodicPermission,
   NativeTokenStreamPermission,
   PermissionTypesWithCustom,
-  Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import { getImageForChainId } from '../../../../../selectors/multichain';
@@ -119,10 +118,7 @@ type ReviewGatorPermissionItemProps = {
   /**
    * The gator permission to display
    */
-  gatorPermission: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  >;
+  gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>;
 
   /**
    * The function to call when the revoke is clicked
@@ -167,13 +163,15 @@ export const ReviewGatorPermissionItem = ({
   const t = useI18nContext();
 
   const { permissionResponse, siteOrigin } = gatorPermission;
-  const { chainId } = permissionResponse;
   const {
-    permission: { type: permissionType, data },
+    chainId,
+    permission: {
+      type: permissionType,
+      data: { justification, tokenAddress },
+    },
     context: permissionContext,
-    address: permissionAccount = '0x',
+    from: permissionAccount = '0x',
   } = permissionResponse;
-  const { justification, tokenAddress } = data;
 
   const [isExpanded, setIsExpanded] = useState(false);
   const pendingRevocations = useSelector(getPendingRevocations);
@@ -212,7 +210,7 @@ export const ReviewGatorPermissionItem = ({
    * Returns the expiration date from the rules
    */
   const getExpirationDate = useCallback(
-    (rules: GatorPermissionRule[]): string => {
+    (rules: GatorPermissionRule[] | undefined | null): string => {
       if (!rules?.length) {
         return t('gatorPermissionNoExpiration');
       }
@@ -237,6 +235,7 @@ export const ReviewGatorPermissionItem = ({
         permission.data.amountPerSecond,
         'weekly',
       );
+
       return {
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
@@ -277,7 +276,7 @@ export const ReviewGatorPermissionItem = ({
 
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(permissionResponse.rules || []),
+            value: getExpirationDate(permissionResponse.rules),
             testId: 'review-gator-permission-expiration-date',
           },
           streamRate: {
@@ -332,7 +331,7 @@ export const ReviewGatorPermissionItem = ({
 
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(permissionResponse.rules || []),
+            value: getExpirationDate(permissionResponse.rules),
             testId: 'review-gator-permission-expiration-date',
           },
         },
@@ -362,7 +361,7 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(permissionResponse.rules || []),
+            value: getExpirationDate(permissionResponse.rules),
             testId: 'review-gator-permission-expiration-date',
           },
         },

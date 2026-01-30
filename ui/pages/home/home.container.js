@@ -10,8 +10,6 @@ import {
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
   getWeb3ShimUsageStateForOrigin,
-  getShowWhatsNewPopup,
-  getSortedAnnouncementsToShow,
   getShowRecoveryPhraseReminder,
   getShowTermsOfUse,
   getShowOutdatedBrowserWarning,
@@ -34,7 +32,6 @@ import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
-  setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
@@ -52,10 +49,7 @@ import {
   lookupSelectedNetworks,
   setPendingShieldCohort,
 } from '../../store/actions';
-import {
-  hideWhatsNewPopup,
-  openBasicFunctionalityModal,
-} from '../../ducks/app/app';
+import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
   getIsPrimarySeedPhraseBackedUp,
   getIsSeedlessPasswordOutdated,
@@ -97,7 +91,6 @@ const mapStateToProps = (state) => {
   const {
     seedPhraseBackedUp,
     connectedStatusPopoverHasBeenShown,
-    defaultHomeActiveTabName,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
@@ -126,16 +119,9 @@ const mapStateToProps = (state) => {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
-    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ///: END:ONLY_INCLUDE_IF
   ]);
-
-  const TEMPORARY_DISABLE_WHATS_NEW = true;
-
-  const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
-    ? false
-    : getShowWhatsNewPopup(state);
 
   const shouldShowSeedPhraseReminder =
     selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
@@ -154,15 +140,12 @@ const mapStateToProps = (state) => {
     participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
-    defaultHomeActiveTabName,
     firstTimeFlowType,
     completedOnboarding,
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
     infuraBlocked: getInfuraBlocked(state),
-    announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    showWhatsNewPopup,
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
     showOutdatedBrowserWarning:
@@ -201,12 +184,10 @@ const mapDispatchToProps = (dispatch) => {
     attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
-    onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
     setWeb3ShimUsageAlertDismissed: (origin) =>
       setWeb3ShimUsageAlertDismissed(origin),
     disableWeb3ShimUsageAlert: () =>
       setAlertEnabledness(AlertTypes.web3ShimUsage, false),
-    hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
     setRecoveryPhraseReminderHasBeenShown: () =>
       dispatch(setRecoveryPhraseReminderHasBeenShown()),
     setRecoveryPhraseReminderLastShown: (lastShown) =>

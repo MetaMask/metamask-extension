@@ -1446,6 +1446,10 @@ describe('MetaMetricsController', function () {
       };
 
       await withController(({ controller }) => {
+        controller.updateTraits({
+          [MetaMetricsUserTrait.StorageKind]: 'split',
+        });
+
         const traits = controller._buildUserTraitsObject({
           addressBook: {
             [CHAIN_IDS.MAINNET]: {
@@ -1575,6 +1579,7 @@ describe('MetaMetricsController', function () {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           ],
           [MetaMetricsUserTrait.InstallDateExt]: '',
+          [MetaMetricsUserTrait.StorageKind]: 'split',
           [MetaMetricsUserTrait.LedgerConnectionType]:
             LedgerTransportTypes.webhid,
           [MetaMetricsUserTrait.NetworksAdded]: [
@@ -2262,6 +2267,7 @@ async function withController<ReturnValue>(
       'PreferencesController:getState',
       jest.fn().mockReturnValue({
         currentLocale,
+        useExternalServices: true,
       }),
     );
 

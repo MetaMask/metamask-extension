@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { Navigate, useParams } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
+import { ScrollContainer } from '../../contexts/scroll-container';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
@@ -62,7 +63,11 @@ const Asset = () => {
     return <NativeAsset chainId={chainId} token={token} />;
   })();
 
-  return <div className="main-container asset__container">{content}</div>;
+  return (
+    <ScrollContainer className="main-container asset__container">
+      {content}
+    </ScrollContainer>
+  );
 };
 
 export default Asset;

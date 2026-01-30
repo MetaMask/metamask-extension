@@ -49,10 +49,9 @@ class SwapPage {
   private readonly closeQuotesButton = 'header button';
 
   private readonly destinationTokenButton =
-    '[data-testid="prepare-swap-page-swap-to"]';
+    '[data-testid="bridge-destination-button"]';
 
-  private readonly fromToText =
-    '[data-testid="multichain-token-list-button"] p';
+  private readonly fromToText = '[data-testid="bridge-asset"] p';
 
   private readonly moreQuotesButton = '[aria-label="More quotes"]';
 
@@ -83,9 +82,6 @@ class SwapPage {
   private readonly transactionStatusDescription =
     '[data-testid="swap-smart-transaction-status-description"]';
 
-  private readonly swapAmount =
-    '[data-testid="prepare-swap-page-from-token-amount"]';
-
   private readonly swapButton = {
     tag: 'button',
     text: 'Swap',
@@ -93,14 +89,29 @@ class SwapPage {
 
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
+  private readonly networkFees = '[data-testid="network-fees"]';
+
+  private readonly slippageEditButton = '[data-testid="slippage-edit-button"]';
+
+  private readonly minimumReceived = '[data-testid="minimum-received"]';
+
+  private readonly maxButton = {
+    text: 'Max',
+    tag: 'button',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async waitForMaxButtonToBeDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.maxButton);
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.swapAmount,
+        this.reviewFromAmount,
         this.destinationTokenButton,
       ]);
     } catch (e) {
@@ -139,7 +150,7 @@ class SwapPage {
 
   async enterSwapAmount(amount: string): Promise<void> {
     console.log('Entering swap amount');
-    const stxToggle = await this.driver.findElement(this.swapAmount);
+    const stxToggle = await this.driver.findElement(this.reviewFromAmount);
     stxToggle.sendKeys(amount);
   }
 
@@ -196,6 +207,14 @@ class SwapPage {
 
   async checkNoQuotesAvailable(): Promise<void> {
     await this.driver.waitForSelector(this.noQuotesAvailableMessage);
+  }
+
+  async checkQuoteIsDisplayed(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.networkFees,
+      this.slippageEditButton,
+      this.minimumReceived,
+    ]);
   }
 
   async checkQuoteIsGasIncluded(): Promise<void> {

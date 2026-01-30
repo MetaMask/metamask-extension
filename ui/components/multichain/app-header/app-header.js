@@ -10,6 +10,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONFIRM_TRANSACTION_ROUTE,
+  SEND_ROUTE,
   SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
 
@@ -32,7 +33,6 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
-import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
@@ -60,12 +60,6 @@ export const AppHeader = ({ location }) => {
 
   // Disable the network and account pickers if the user is in
   // a critical flow
-  const sendStage = useSelector(getSendStage);
-  const isTransactionEditPage = [
-    SEND_STAGES.EDIT,
-    SEND_STAGES.DRAFT,
-    SEND_STAGES.ADD_RECIPIENT,
-  ].includes(sendStage);
   const isConfirmationPage = Boolean(
     matchPath(
       {
@@ -78,6 +72,9 @@ export const AppHeader = ({ location }) => {
   const isSwapsPage = Boolean(
     matchPath({ path: SWAPS_ROUTE, end: false }, location?.pathname || ''),
   );
+  const isSendPage = Boolean(
+    matchPath({ path: SEND_ROUTE, end: false }, location?.pathname || ''),
+  );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
@@ -88,8 +85,8 @@ export const AppHeader = ({ location }) => {
 
   const disableNetworkPicker =
     isSwapsPage ||
-    isTransactionEditPage ||
     isConfirmationPage ||
+    isSendPage ||
     hasUnapprovedTransactions;
 
   // Callback for network dropdown

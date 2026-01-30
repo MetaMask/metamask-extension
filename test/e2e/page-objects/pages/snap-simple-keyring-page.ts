@@ -27,9 +27,6 @@ class SnapSimpleKeyringPage {
     tag: 'div',
   };
 
-  private readonly cancelAddAccountWithNameButton =
-    '[data-testid="cancel-add-account-with-name"]';
-
   private readonly confirmAddtoMetamask = {
     text: 'Confirm',
     tag: 'button',
@@ -65,8 +62,6 @@ class SnapSimpleKeyringPage {
     text: 'Create account',
     tag: 'div',
   };
-
-  private readonly createSnapAccountName = '#account-name';
 
   private readonly errorRequestMessage = {
     text: 'Error request',
@@ -131,9 +126,6 @@ class SnapSimpleKeyringPage {
 
   private readonly snapInstallScrollButton =
     '[data-testid="snap-install-scroll"]';
-
-  private readonly submitAddAccountWithNameButton =
-    '[data-testid="submit-add-account-with-name"]';
 
   private readonly useSyncApprovalToggle =
     '[data-testid="use-sync-flow-toggle"]';
@@ -228,36 +220,6 @@ class SnapSimpleKeyringPage {
     );
   }
 
-  async cancelCreateSnapOnFillNameScreen(): Promise<void> {
-    console.log('Cancel create snap on fill name screen');
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.cancelAddAccountWithNameButton,
-    );
-  }
-
-  /**
-   * Confirms the add account dialog on Snap Simple Keyring page.
-   *
-   * @param accountName - Optional: name for the snap account. Defaults to "SSK Account".
-   */
-  async confirmAddAccountDialog(
-    accountName: string = 'SSK Account',
-  ): Promise<void> {
-    console.log('Confirm add account dialog');
-    await this.driver.waitForSelector(this.createSnapAccountName);
-    await this.driver.fill(this.createSnapAccountName, accountName);
-    await this.driver.clickElement(this.submitAddAccountWithNameButton);
-
-    await this.driver.waitForSelector(this.accountCreatedMessage);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmationSubmitButton,
-    );
-    await this.driver.switchToWindowWithTitle(
-      WINDOW_TITLES.SnapSimpleKeyringDapp,
-    );
-    await this.driver.waitForSelector(this.newAccountMessage);
-  }
-
   async confirmCreateSnapOnConfirmationScreen(): Promise<void> {
     console.log('Confirm create snap on confirmation screen');
     await this.driver.clickElement(this.confirmationSubmitButton);
@@ -266,18 +228,25 @@ class SnapSimpleKeyringPage {
   /**
    * Creates a new account on the Snap Simple Keyring page and checks the account is created.
    *
-   * @param accountName - Optional: name for the snap account. Defaults to "SSK Account".
    * @param isFirstAccount - Indicates if this is the first snap account being created. Defaults to true.
    * @returns the public key of the new created account
    */
-  async createNewAccount(
-    accountName: string = 'SSK Account',
-    isFirstAccount: boolean = true,
-  ): Promise<string> {
+  async createNewAccount(isFirstAccount: boolean = true): Promise<string> {
     console.log('Create new account on Snap Simple Keyring page');
     await this.openCreateSnapAccountConfirmationScreen(isFirstAccount);
     await this.confirmCreateSnapOnConfirmationScreen();
-    await this.confirmAddAccountDialog(accountName);
+
+    // Wait for account creation to complete and success message
+    await this.driver.waitForSelector(this.accountCreatedMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmationSubmitButton,
+    );
+
+    await this.driver.switchToWindowWithTitle(
+      WINDOW_TITLES.SnapSimpleKeyringDapp,
+    );
+    await this.driver.waitForSelector(this.newAccountMessage);
+
     const newAccountJSONMessage = await (
       await this.driver.waitForSelector(this.newAccountMessage)
     ).getText();
@@ -297,7 +266,17 @@ class SnapSimpleKeyringPage {
     await this.driver.clickElement(this.importAccountButton);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await this.confirmCreateSnapOnConfirmationScreen();
-    await this.confirmAddAccountDialog();
+
+    // Wait for account creation to complete
+    await this.driver.waitForSelector(this.accountCreatedMessage);
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.confirmationSubmitButton,
+    );
+
+    await this.driver.switchToWindowWithTitle(
+      WINDOW_TITLES.SnapSimpleKeyringDapp,
+    );
+    await this.driver.waitForSelector(this.newAccountMessage);
   }
 
   /**

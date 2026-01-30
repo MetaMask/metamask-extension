@@ -373,9 +373,6 @@
     "message": "Du måste välja en fil att importera.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Kan inte skicka negativa summor av ETH."
-  },
   "networkName": {
     "message": "Nätverksnamn"
   },
