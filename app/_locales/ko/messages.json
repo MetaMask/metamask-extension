@@ -1962,6 +1962,9 @@
     "message": "MetaMask 아닌 제3자에 의해 이 페이지로 이동되었습니다. $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
+  "deepLink_theAssetPage": {
+    "message": "the asset page"
+  },
   "deepLink_theBuyPage": {
     "message": "구매 페이지"
   },

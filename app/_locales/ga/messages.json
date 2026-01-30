@@ -1820,6 +1820,9 @@
     "message": "Cuireadh anseo thú ag tríú páirtí, ní ag MetaMask. $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
+  "deepLink_theAssetPage": {
+    "message": "the asset page"
+  },
   "deepLink_theBuyPage": {
     "message": "an leathanach ceannaigh"
   },

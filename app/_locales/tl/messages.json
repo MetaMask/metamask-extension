@@ -1965,6 +1965,9 @@
     "message": "Ipinadala ka rito ng third-party, hindi ng MetaMask.$1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
+  "deepLink_theAssetPage": {
+    "message": "the asset page"
+  },
   "deepLink_theBuyPage": {
     "message": "ang pahina sa pagbili"
   },
