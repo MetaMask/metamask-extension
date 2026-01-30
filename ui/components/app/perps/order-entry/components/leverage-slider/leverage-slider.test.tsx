@@ -90,7 +90,10 @@ describe('LeverageSlider', () => {
     it('calls onLeverageChange when preset button is clicked', () => {
       const onLeverageChange = jest.fn();
       renderWithProvider(
-        <LeverageSlider {...defaultProps} onLeverageChange={onLeverageChange} />,
+        <LeverageSlider
+          {...defaultProps}
+          onLeverageChange={onLeverageChange}
+        />,
         mockStore,
       );
 
@@ -102,7 +105,10 @@ describe('LeverageSlider', () => {
     it('calls onLeverageChange for each preset button', () => {
       const onLeverageChange = jest.fn();
       renderWithProvider(
-        <LeverageSlider {...defaultProps} onLeverageChange={onLeverageChange} />,
+        <LeverageSlider
+          {...defaultProps}
+          onLeverageChange={onLeverageChange}
+        />,
         mockStore,
       );
 

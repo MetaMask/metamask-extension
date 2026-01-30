@@ -4,7 +4,6 @@ import {
   Box,
   Text,
   TextVariant,
-  TextColor,
   FontWeight,
   BoxFlexDirection,
   BoxJustifyContent,
@@ -39,7 +38,10 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
 
   // Filter presets to only show values within the allowed range
   const availablePresets = useMemo(
-    () => LEVERAGE_PRESETS.filter((preset) => preset >= minLeverage && preset <= maxLeverage),
+    () =>
+      LEVERAGE_PRESETS.filter(
+        (preset) => preset >= minLeverage && preset <= maxLeverage,
+      ),
     [minLeverage, maxLeverage],
   );
 
@@ -103,7 +105,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             className={twMerge(
               'px-3 py-1 rounded-md text-sm',
               leverage === preset
-                ? 'bg-muted text-[#FFFFFF]'
+                ? 'bg-muted text-primary-inverse'
                 : 'bg-transparent text-muted hover:bg-hover',
             )}
             data-testid={`leverage-preset-${preset}`}

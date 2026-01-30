@@ -9,7 +9,10 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import type { DirectionTabsProps, OrderDirection } from '../../order-entry.types';
+import type {
+  DirectionTabsProps,
+  OrderDirection,
+} from '../../order-entry.types';
 
 /**
  * DirectionTabs - Segmented control for selecting Long or Short order direction

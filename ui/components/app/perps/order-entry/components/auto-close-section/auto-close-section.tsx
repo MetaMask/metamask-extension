@@ -69,7 +69,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
         return '';
       }
       // Remove commas from formatted price for parsing
-      const cleanPrice = price.replace(/,/g, '');
+      const cleanPrice = price.replace(/,/gu, '');
       const priceNum = parseFloat(cleanPrice);
       if (isNaN(priceNum)) {
         return '';
@@ -103,9 +103,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
   const handleTpPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
+      const { value } = event.target;
       // Allow empty string, valid numbers, or numbers with commas (for formatted input)
-      if (value === '' || /^[\d,]*\.?\d*$/.test(value)) {
+      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
         onTakeProfitPriceChange(value);
       }
     },
@@ -115,7 +115,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   // Handle blur - format the TP price when user finishes typing
   const handleTpPriceBlur = useCallback(() => {
     if (takeProfitPrice) {
-      const numValue = parseFloat(takeProfitPrice.replace(/,/g, ''));
+      const numValue = parseFloat(takeProfitPrice.replace(/,/gu, ''));
       if (!isNaN(numValue) && numValue > 0) {
         onTakeProfitPriceChange(formatPrice(numValue));
       }
@@ -124,9 +124,9 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
 
   const handleSlPriceChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
+      const { value } = event.target;
       // Allow empty string, valid numbers, or numbers with commas (for formatted input)
-      if (value === '' || /^[\d,]*\.?\d*$/.test(value)) {
+      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
         onStopLossPriceChange(value);
       }
     },
@@ -136,7 +136,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   // Handle blur - format the SL price when user finishes typing
   const handleSlPriceBlur = useCallback(() => {
     if (stopLossPrice) {
-      const numValue = parseFloat(stopLossPrice.replace(/,/g, ''));
+      const numValue = parseFloat(stopLossPrice.replace(/,/gu, ''));
       if (!isNaN(numValue) && numValue > 0) {
         onStopLossPriceChange(formatPrice(numValue));
       }

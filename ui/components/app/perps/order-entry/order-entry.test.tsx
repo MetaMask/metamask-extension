@@ -5,30 +5,6 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { OrderEntry } from './order-entry';
 
-// Mock ToggleButton component (keeps tests simpler for toggle interaction)
-// Note: The real ToggleButton passes the current value to onToggle,
-// and the component's handleToggle does the inversion
-jest.mock('../../../ui/toggle-button', () => ({
-  __esModule: true,
-  default: ({
-    value,
-    onToggle,
-    dataTestId,
-  }: {
-    value: boolean;
-    onToggle: (v: boolean) => void;
-    dataTestId: string;
-  }) => (
-    <button
-      data-testid={dataTestId}
-      onClick={() => onToggle(value)}
-      aria-pressed={value}
-    >
-      {value ? 'On' : 'Off'}
-    </button>
-  ),
-}));
-
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -60,7 +36,9 @@ describe('OrderEntry', () => {
       expect(screen.getByText('Fees')).toBeInTheDocument();
       expect(screen.getByText('Liquidation Price Est.')).toBeInTheDocument();
       expect(screen.getByTestId('auto-close-toggle')).toBeInTheDocument();
-      expect(screen.getByTestId('order-entry-submit-button')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('order-entry-submit-button'),
+      ).toBeInTheDocument();
     });
 
     it('displays available balance', () => {
@@ -72,9 +50,9 @@ describe('OrderEntry', () => {
     it('displays correct submit button text for long direction', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
-      expect(
-        screen.getByTestId('order-entry-submit-button'),
-      ).toHaveTextContent('Open Long BTC');
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
+        'Open Long BTC',
+      );
     });
 
     it('respects initialDirection prop for short', () => {
@@ -83,9 +61,9 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(
-        screen.getByTestId('order-entry-submit-button'),
-      ).toHaveTextContent('Open Short BTC');
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
+        'Open Short BTC',
+      );
     });
   });
 
@@ -95,7 +73,10 @@ describe('OrderEntry', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: '1000' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
 
       expect(input).toHaveValue('1000');
     });
@@ -105,10 +86,13 @@ describe('OrderEntry', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: '45250' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '45250' },
+      });
 
       // $45250 / $45250 = 1 BTC - real formatter uses compact format
-      expect(screen.getByText(/≈.*1.*BTC/)).toBeInTheDocument();
+      expect(screen.getByText(/≈.*1.*BTC/u)).toBeInTheDocument();
     });
   });
 
@@ -133,7 +117,10 @@ describe('OrderEntry', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: '1000' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1000' },
+      });
 
       // Should show calculated margin (1000 / 1 leverage = $1000)
       expect(screen.getByText('$1,000.00')).toBeInTheDocument();
@@ -323,7 +310,9 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.queryByTestId('amount-input-field')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('amount-input-field'),
+      ).not.toBeInTheDocument();
     });
 
     it('hides leverage slider in close mode', () => {
@@ -363,7 +352,7 @@ describe('OrderEntry', () => {
       );
 
       // Both the close amount display and the 100% preset button show "100%"
-      const percentElements = screen.getAllByText(/100.*%/);
+      const percentElements = screen.getAllByText(/100.*%/u);
       expect(percentElements.length).toBeGreaterThanOrEqual(1);
     });
 

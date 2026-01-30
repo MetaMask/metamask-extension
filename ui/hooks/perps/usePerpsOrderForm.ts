@@ -9,7 +9,6 @@ import type { OrderType } from '../../components/app/perps/types';
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
-  calculateMarginRequired,
   estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
 
@@ -70,6 +69,14 @@ export type UsePerpsOrderFormReturn = {
  * Supports three modes: 'new', 'modify', and 'close'.
  *
  * @param options - Hook configuration options
+ * @param options.asset - Asset symbol
+ * @param options.currentPrice - Current asset price in USD
+ * @param options.initialDirection - Initial order direction
+ * @param options.mode - Order mode: 'new', 'modify', or 'close'
+ * @param options.existingPosition - Existing position data for pre-population
+ * @param options.onFormStateChange - Callback when form state changes
+ * @param options.onSubmit - Callback when order is submitted
+ * @param options.orderType - Order type: 'market' or 'limit' (defaults to 'market')
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -176,8 +183,8 @@ export function usePerpsOrderForm({
 
     // For new/modify modes, calculate based on form amount
     // Remove commas from formatted amount for parsing
-    const cleanAmount = formState.amount.replace(/,/g, '');
-    const amount = parseFloat(cleanAmount) || 0;
+    const cleanAmount = formState.amount.replace(/,/gu, '');
+    const amount = parseFloat(cleanAmount.replace(/,/gu, '')) || 0;
 
     if (amount === 0) {
       return {

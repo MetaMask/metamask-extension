@@ -32,7 +32,7 @@ describe('AmountInput', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
       expect(screen.getByText('$10,000.00')).toBeInTheDocument();
-      expect(screen.getByText(/available/i)).toBeInTheDocument();
+      expect(screen.getByText(/available/iu)).toBeInTheDocument();
     });
 
     it('renders order amount section', () => {
@@ -97,7 +97,8 @@ describe('AmountInput', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: '500' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '500' } });
 
       expect(onAmountChange).toHaveBeenCalledWith('500');
     });
@@ -115,7 +116,8 @@ describe('AmountInput', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: '500' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: '500' } });
 
       expect(onBalancePercentChange).toHaveBeenCalledWith(50);
     });
@@ -133,7 +135,10 @@ describe('AmountInput', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: '1500' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1500' },
+      });
 
       expect(onBalancePercentChange).toHaveBeenCalledWith(100);
     });
@@ -147,7 +152,8 @@ describe('AmountInput', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: 'abc' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: 'abc' } });
 
       expect(onAmountChange).not.toHaveBeenCalled();
     });
@@ -161,7 +167,10 @@ describe('AmountInput', () => {
 
       const container = screen.getByTestId('amount-input-field');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: '1,000' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '1,000' },
+      });
 
       expect(onAmountChange).toHaveBeenCalledWith('1,000');
     });
@@ -181,7 +190,7 @@ describe('AmountInput', () => {
 
       // $45000 / $45000 = 1 BTC position with 1x leverage
       // Real formatter uses compact format
-      expect(screen.getByText(/≈.*1.*BTC/)).toBeInTheDocument();
+      expect(screen.getByText(/≈.*1.*BTC/u)).toBeInTheDocument();
     });
 
     it('displays zero token when amount is empty', () => {
@@ -190,7 +199,7 @@ describe('AmountInput', () => {
         mockStore,
       );
 
-      expect(screen.getByText(/0.*BTC/)).toBeInTheDocument();
+      expect(screen.getByText(/0.*BTC/u)).toBeInTheDocument();
     });
   });
 
