@@ -19,12 +19,20 @@ import { performanceTracker } from '../../utils/PerformanceTracker';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
-const SECOND_SRP = process.env.TEST_SRP_2 || '';
+const SECOND_SRP = process.env.TEST_SRP_2;
 
 export const testTitle = 'benchmark-import-srp-home-power-user';
 export const persona = 'powerUser';
 
 export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
+  // Validate required environment variable
+  if (!SECOND_SRP) {
+    throw new Error(
+      'TEST_SRP_2 environment variable is required for import-srp-home benchmark. ' +
+      'Please set TEST_SRP_2 with a valid 12-word seed phrase.'
+    );
+  }
+
   Timers.resetTimers();
 
   try {

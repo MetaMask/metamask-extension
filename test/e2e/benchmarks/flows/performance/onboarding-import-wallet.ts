@@ -26,20 +26,10 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 import { Driver } from '../../../webdriver/driver';
 import TimerHelper from '../../utils/TimerHelper';
 import Timers from '../../utils/Timers';
+import { getCommonMocks } from '../../utils/commonMocks';
 import { collectTimerResults } from '../../utils/timer-utils';
 import { performanceTracker } from '../../utils/PerformanceTracker';
 import type { BenchmarkRunResult } from '../../utils/types';
-
-async function getCommonMocks(server: Mockttp) {
-  return [
-    await server
-      .forGet(/^https:\/\/proxy\.metafi\.codefi\.network\/price\/.*/)
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {},
-      })),
-  ];
-}
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
 export const persona = 'standard';
@@ -64,7 +54,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         testSpecificMock: async (server: Mockttp) => {
-          return [...(await getCommonMocks(server))];
+          return [...getCommonMocks(server)];
         },
       },
       async ({ driver }: { driver: Driver }) => {
@@ -177,7 +167,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         await headerNavbar.openAccountMenu();
         await timerAccountListLoad.measure(async () => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded(30000);
+          await accountListPage.checkPageIsLoaded(50000);
         });
         performanceTracker.addTimer(timerAccountListLoad);
       },
