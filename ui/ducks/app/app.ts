@@ -132,6 +132,7 @@ type AppState = {
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
   showCopyAddressToast: boolean;
+  showCopyTransactionIdToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   showInfuraSwitchToast: boolean;
   shieldEntryModal?: {
@@ -242,6 +243,7 @@ const initialState: AppState = {
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
+  showCopyTransactionIdToast: false,
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
@@ -774,6 +776,12 @@ export default function reduceApp(
         showCopyAddressToast: action.payload,
       };
 
+    case actionConstants.SET_SHOW_COPY_TRANSACTION_ID_TOAST:
+      return {
+        ...appState,
+        showCopyTransactionIdToast: action.payload,
+      };
+
     case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
       return {
         ...appState,
@@ -862,6 +870,12 @@ export function setShowCopyAddressToast(
   payload: boolean,
 ): PayloadAction<boolean> {
   return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
+}
+
+export function setShowCopyTransactionIdToast(
+  payload: boolean,
+): PayloadAction<boolean> {
+  return { type: actionConstants.SET_SHOW_COPY_TRANSACTION_ID_TOAST, payload };
 }
 
 export function setCustomTokenAmount(payload: string): PayloadAction<string> {

@@ -96,6 +96,7 @@ import {
   selectNewSrpAdded,
   selectPasswordChangeToast,
   selectShowCopyAddressToast,
+  selectShowCopyTransactionIdToast,
   selectShowConnectAccountGroupToast,
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
@@ -111,6 +112,7 @@ import {
   setShowNewSrpAddedToast,
   setShowPasswordChangeToast,
   setShowCopyAddressToast,
+  setShowCopyTransactionIdToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
@@ -152,6 +154,7 @@ export function ToastMaster() {
         <NewSrpAddedToast />
         <InfuraSwitchToast />
         <CopyAddressToast />
+        <CopyTransactionIdToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
       </ToastContainer>
@@ -605,6 +608,32 @@ function CopyAddressToast() {
         autoHideTime={autoHideToastDelay}
         onAutoHideToast={() => dispatch(setShowCopyAddressToast(false))}
         dataTestId="copy-address-toast"
+      />
+    )
+  );
+}
+
+function CopyTransactionIdToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showCopyTransactionIdToast = useSelector(
+    selectShowCopyTransactionIdToast,
+  );
+  const autoHideToastDelay = 2 * SECOND;
+
+  return (
+    showCopyTransactionIdToast && (
+      <Toast
+        key="copy-transaction-id-toast"
+        text={t('copiedTransactionId')}
+        startAdornment={
+          <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowCopyTransactionIdToast(false))}
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() => dispatch(setShowCopyTransactionIdToast(false))}
+        dataTestId="copy-transaction-id-toast"
       />
     )
   );

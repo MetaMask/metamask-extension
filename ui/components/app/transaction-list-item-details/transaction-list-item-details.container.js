@@ -11,6 +11,7 @@ import {
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import { tryReverseResolveAddress } from '../../../store/actions';
+import { setShowCopyTransactionIdToast } from '../../../ducks/app/app';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -43,6 +44,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
+    },
+    setShowCopyTransactionIdToast: (value) => {
+      return dispatch(setShowCopyTransactionIdToast(value));
     },
   };
 };

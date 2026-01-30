@@ -9,16 +9,15 @@ import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipien
 import Disclosure from '../../ui/disclosure';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
-import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { Box } from '../../component-library/box';
-import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { setShowCopyTransactionIdToast } from '../../../ducks/app/app';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -54,10 +53,7 @@ export default class TransactionListItemDetails extends PureComponent {
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
-  };
-
-  state = {
-    justCopied: false,
+    setShowCopyTransactionIdToast: PropTypes.func.isRequired,
   };
 
   handleBlockExplorerClick = () => {
@@ -117,7 +113,7 @@ export default class TransactionListItemDetails extends PureComponent {
   };
 
   handleCopyTxId = () => {
-    const { transactionGroup } = this.props;
+    const { transactionGroup, setShowCopyTransactionIdToast } = this.props;
     const { primaryTransaction: transaction } = transactionGroup;
     const { hash } = transaction;
 
@@ -130,10 +126,8 @@ export default class TransactionListItemDetails extends PureComponent {
       },
     });
 
-    this.setState({ justCopied: true }, () => {
-      copyToClipboard(hash, COPY_OPTIONS);
-      setTimeout(() => this.setState({ justCopied: false }), SECOND);
-    });
+    copyToClipboard(hash, COPY_OPTIONS);
+    setShowCopyTransactionIdToast(true);
   };
 
   componentDidMount() {
@@ -146,7 +140,6 @@ export default class TransactionListItemDetails extends PureComponent {
 
   render() {
     const { t } = this.context;
-    const { justCopied } = this.state;
     const {
       transactionGroup,
       primaryCurrency,
@@ -226,20 +219,14 @@ export default class TransactionListItemDetails extends PureComponent {
                   : t('viewOnBlockExplorer')}
               </button>
 
-              <Tooltip
-                wrapperClassName="transaction-list-item-details__header-button"
-                containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                title={justCopied ? t('copiedExclamation') : null}
+              <button
+                type="button"
+                className="text-primary-default"
+                onClick={this.handleCopyTxId}
+                disabled={!hash}
               >
-                <button
-                  type="button"
-                  className="text-primary-default"
-                  onClick={this.handleCopyTxId}
-                  disabled={!hash}
-                >
-                  {t('copyTransactionId')}
-                </button>
-              </Tooltip>
+                {t('copyTransactionId')}
+              </button>
             </div>
           </div>
           <div className="transaction-list-item-details__body">

@@ -1768,6 +1768,9 @@
   "copiedExclamation": {
     "message": "Copied."
   },
+  "copiedTransactionId": {
+    "message": "Transaction ID copied"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },

@@ -35,6 +35,7 @@ type State = {
       | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
       | 'showCopyAddressToast'
+      | 'showCopyTransactionIdToast'
       | 'showClaimSubmitToast'
       | 'showInfuraSwitchToast'
     >
@@ -205,6 +206,18 @@ export function selectShowCopyAddressToast(
   state: Pick<State, 'appState'>,
 ): boolean {
   return Boolean(state.appState.showCopyAddressToast);
+}
+
+/**
+ * Retrieves user preference to see the "Copy Transaction ID" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowCopyTransactionIdToast(
+  state: Pick<State, 'appState'>,
+): boolean {
+  return Boolean(state.appState.showCopyTransactionIdToast);
 }
 
 /**
