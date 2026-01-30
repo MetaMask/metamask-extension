@@ -289,7 +289,6 @@ const toBridgeTokenResponse = (
     ...token,
     assetId:
       token.assetId ?? `eip155:${chainId}/erc20:${token.address.toLowerCase()}`,
-    chainId: `eip155:${chainId}`,
   };
 };
 

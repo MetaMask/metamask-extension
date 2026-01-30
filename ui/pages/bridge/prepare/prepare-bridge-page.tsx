@@ -780,7 +780,7 @@ const PrepareBridgePage = ({
                 <AvatarFavicon
                   name={blockExplorerToken.symbol}
                   size={AvatarFaviconSize.Sm}
-                  src={toToken.image ?? undefined}
+                  src={toToken.iconUrl ?? undefined}
                 />
               }
             />
