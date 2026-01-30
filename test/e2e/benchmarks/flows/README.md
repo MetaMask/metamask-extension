@@ -2,64 +2,40 @@
 
 This directory contains all benchmark implementations organized by category.
 
-## Summary of Changes
-
-Previously, benchmarks had multiple entry points:
-
-- `yarn tsx test/e2e/benchmarks/benchmark.ts` (page load)
-- `yarn tsx test/e2e/benchmarks/user-actions-benchmark.ts` (user actions)
-- `yarn tsx test/e2e/benchmarks/performance-benchmark.ts` (performance flows)
-- `yarn test:e2e:benchmark:performance` (package.json script)
-
-This structure made sense when the list was short, but as more teams add flow benchmarks, having multiple entry points becomes confusing and hard to maintain.
-
-**What changed:**
-
-- ✅ **Single entry point**: All benchmarks now run through `run-benchmark.ts`
-- ✅ **File-based execution**: Run any benchmark by specifying its file path
-- ✅ **Presets for CI**: Groups of benchmarks defined in code, not scattered across scripts
-- ✅ **TypeScript decides**: The runner auto-detects benchmark type (performance, page-load, user-actions, Playwright) and handles execution appropriately
-- ✅ **Simplified CLI**: One command (`yarn test:e2e:benchmark`) to rule them all
-
-**Deleted files:**
-
-- `benchmark.ts` → logic moved to `flows/page-load/*.ts`
-- `user-actions-benchmark.ts` → logic moved to `flows/user-actions/*.ts`
-- `performance-benchmark.ts` → logic moved to `flows/performance/*.ts`
-
-## Unified Entry Point
-
-All benchmarks are run through a single entry point: `test/e2e/benchmarks/run-benchmark.ts`
-
 ### Running Benchmarks
 
 ```bash
-# Run a specific benchmark by file path, default is 10 iterarions
+# Run a specific benchmark by file path, default is 10 iterations
 yarn test:e2e:benchmark test/e2e/benchmarks/flows/performance/onboarding-import-wallet.ts
 
 # Run a preset (group of benchmarks)
-yarn test:e2e:benchmark --preset performance-onboarding
+yarn test:e2e:benchmark --preset performanceOnboarding
 
 # Run all benchmarks
 yarn test:e2e:benchmark
 
-# Run with options
-yarn test:e2e:benchmark --preset user-actions --iterations 5 --retries 3
+# Run with custom iterations and retries
+yarn test:e2e:benchmark --preset userActions --iterations 5 --retries 3
+
+# Run multiple presets
+yarn test:e2e:benchmark --preset performanceAssets --preset performanceLogin
+
+# Save results to file
+yarn test:e2e:benchmark --preset performanceOnboarding --out results.json
 ```
 
 ### Available Presets
 
-| Preset                   | Description              | Benchmarks                                                       |
-| ------------------------ | ------------------------ | ---------------------------------------------------------------- |
-| `standard-home`          | Standard user page load  | `standard-home.ts`                                               |
-| `power-user-home`        | Power user page load     | `power-user-home.ts`                                             |
-| `user-actions`           | User interaction timings | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
-| `performance-onboarding` | Onboarding flows         | `onboarding-import-wallet.ts`, `onboarding-new-wallet.ts`        |
-| `performance-assets`     | Asset page loads         | `asset-details.ts`, `solana-asset-details.ts`                    |
-| `playwright-page-load`   | Playwright benchmarks    | `page-load-benchmark.spec.ts`                                    |
-| `all`                    | All benchmarks           | Everything above                                                 |
-
-## Writing New Benchmarks
+| Preset                     | Description                    | Benchmarks                                                       |
+| -------------------------- | ------------------------------ | ---------------------------------------------------------------- |
+| `standardHome`             | Standard user page load        | `standard-home.ts`                                               |
+| `powerUserHome`            | Power user page load           | `power-user-home.ts`                                             |
+| `userActions`              | User interaction timings       | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
+| `performanceOnboarding`    | Onboarding flows               | `onboarding-import-wallet.ts`, `onboarding-new-wallet.ts`        |
+| `performanceAssets`        | Asset detail page loads        | `asset-details.ts`, `solana-asset-details.ts`                    |
+| `performanceLogin`         | Login & transaction flows      | `import-srp-home.ts`, `send-transactions.ts`, `swap.ts`          |
+| `pageLoadBenchmark`        | Playwright benchmarks          | `page-load-benchmark.spec.ts`                                    |
+| `all`                      | All benchmarks                 | Everything above                                                 |
 
 ### 1. Create a new file in the appropriate subdirectory
 
@@ -73,43 +49,23 @@ Choose the category that best fits your benchmark:
 
 Every benchmark must export a `run` function. The signature depends on the benchmark type:
 
-**Performance benchmarks** (return `BenchmarkRunResult`):
+#### TimerHelper API (for performance benchmarks)
+
+Performance benchmarks use the `TimerHelper` class to measure operations:
 
 ```typescript
-import type { BenchmarkRunResult } from '../../utils/types';
+// Constructor
+const timer = new TimerHelper(
+  id: string,             // camelCase identifier (e.g., 'assetClickToPriceChartLoaded')
+  threshold?: number      // Optional: Expected time in ms (10% margin applied, 1.5x in CI)
+);
 
-export async function run(): Promise<BenchmarkRunResult> {
-  // Use Timers to measure specific operations
-  const timer = Timers.createTimer('operation_name');
-  timer.startTimer();
-  // ... do work ...
-  timer.stopTimer();
-
-  return { timers: collectTimerResults(), success: true };
-}
-```
-
-**Page load benchmarks** (accept options, return results):
-
-```typescript
-export async function run(options: {
-  browserLoads: number;
-  pageLoads: number;
-  retries: number;
-}): Promise<BenchmarkResults> {
-  // ... benchmark logic ...
-}
-```
-
-**User action benchmarks** (return `UserActionResult`):
-
-```typescript
-import type { UserActionResult } from '../../utils/types';
-
-export async function run(): Promise<UserActionResult> {
-  // ... benchmark logic ...
-  return { actionName: timingMs, ... };
-}
+// Measure method - wraps async action
+await timer.measure(async () => {
+  // Your async actions to measure
+  await page.load();
+  await element.click();
+});
 ```
 
 ### 3. Add to a preset (optional)
@@ -121,23 +77,6 @@ const CI_PRESETS: Record<string, string[]> = {
   'my-preset': ['test/e2e/benchmarks/flows/category/my-benchmark.ts'],
   // ...
 };
-```
-
-### 4. Handle errors gracefully
-
-Return `{ success: false, error }` on failure instead of throwing:
-
-```typescript
-try {
-  // ... benchmark logic ...
-  return { timers: collectTimerResults(), success: true };
-} catch (error) {
-  return {
-    timers: collectTimerResults(),
-    success: false,
-    error: error instanceof Error ? error.message : String(error),
-  };
-}
 ```
 
 ## Output Format

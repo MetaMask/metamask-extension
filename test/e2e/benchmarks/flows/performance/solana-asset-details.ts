@@ -5,17 +5,21 @@
 
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
-import Timers from '../../../../timers/Timers';
 import { withFixtures } from '../../../helpers';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import LoginPage from '../../../page-objects/pages/login-page';
 import { Driver } from '../../../webdriver/driver';
-import { collectTimerResults } from '../../../../timers/utils';
+import TimerHelper from '../../utils/TimerHelper';
+import Timers from '../../utils/Timers';
+import { collectTimerResults } from '../../utils/timer-utils';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+
+export const testTitle = 'benchmark-solana-asset-details-power-user';
+export const persona = 'powerUser';
 
 export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
   Timers.resetTimers();
@@ -23,7 +27,7 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
   try {
     await withFixtures(
       {
-        title: 'benchmark-solana-asset-details-power-user',
+        title: testTitle,
         fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
@@ -38,6 +42,7 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
+        // Login flow
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
@@ -50,13 +55,16 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
 
-        // Timer: Time since user clicks on the asset until the price chart is shown
-        const timer = Timers.createTimer('solana_asset_click_to_price_chart');
+        // Timer: Asset click to price chart loaded
+        const timer = new TimerHelper(
+          'assetClickToPriceChartLoaded',
+          5000,
+        );
         await assetListPage.clickOnAsset('Solana');
-        timer.startTimer();
-        await assetListPage.checkPriceChartIsShown();
-        await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS);
-        timer.stopTimer();
+        await timer.measure(async () => {
+          await assetListPage.checkPriceChartIsShown();
+          await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS);
+        });
       },
     );
 

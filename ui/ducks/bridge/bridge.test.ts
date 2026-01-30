@@ -53,6 +53,8 @@ describe('Ducks - Bridge', () => {
     it('calls the "bridge/setFromToken" action', () => {
       setBackgroundConnection({
         setActiveNetwork: jest.fn(),
+        setEnabledAllPopularNetworks: jest.fn(),
+        getStatePatches: jest.fn(),
       } as never);
       const state = store.getState().bridge;
       const actionPayload = {
@@ -73,7 +75,7 @@ describe('Ducks - Bridge', () => {
           "balance": "0",
           "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
           "decimals": 9,
-          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/So11111111111111111111111111111111111111112.png",
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/So11111111111111111111111111111111111111112.png",
           "name": "SYMBOL",
           "rwaData": undefined,
           "symbol": "SYMBOL",
@@ -107,7 +109,7 @@ describe('Ducks - Bridge', () => {
         balance: '0',
         chainId: 'eip155:10',
         rwaData: undefined,
-        image:
+        iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
       });
     });
@@ -155,6 +157,7 @@ describe('Ducks - Bridge', () => {
       const mockUpdateParams = jest.fn();
       setBackgroundConnection({
         [BridgeUserAction.UPDATE_QUOTE_PARAMS]: mockUpdateParams,
+        getStatePatches: jest.fn(),
       } as never);
 
       store.dispatch(
@@ -227,6 +230,7 @@ describe('Ducks - Bridge', () => {
       const mockResetBridgeState = jest.fn();
       setBackgroundConnection({
         [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
+        getStatePatches: jest.fn(),
       } as never);
 
       mockStore.dispatch(resetBridgeState() as never);

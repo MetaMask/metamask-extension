@@ -1,4 +1,7 @@
-import type { TimerResult } from '../../../timers/utils';
+export type TimerResult = {
+  id: string;
+  duration: number;
+};
 
 type NavigationMetric = {
   load: number;

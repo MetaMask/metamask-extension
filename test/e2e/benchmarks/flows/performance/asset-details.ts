@@ -4,7 +4,6 @@
  */
 
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
-import Timers from '../../../../timers/Timers';
 import { withFixtures } from '../../../helpers';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
@@ -13,11 +12,16 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import LoginPage from '../../../page-objects/pages/login-page';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
-import { collectTimerResults } from '../../../../timers/utils';
+import TimerHelper from '../../utils/TimerHelper';
+import Timers from '../../utils/Timers';
+import { collectTimerResults } from '../../utils/timer-utils';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const USDC_TOKEN_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+
+export const testTitle = 'benchmark-asset-details-power-user';
+export const persona = 'powerUser';
 
 export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
   // Reset timers at start of each benchmark run
@@ -26,7 +30,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
   try {
     await withFixtures(
       {
-        title: 'benchmark-asset-details-power-user',
+        title: testTitle,
         fixtures: (
           await generateWalletState(WITH_STATE_POWER_USER, true)
         ).build(),
@@ -41,6 +45,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
+        // Login flow
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
@@ -74,13 +79,16 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
 
-        // Timer: Time since user clicks on the asset until the price chart is shown
-        const timer = Timers.createTimer('asset_click_to_price_chart');
+        // Timer: Asset click to price chart loaded
+        const timer = new TimerHelper(
+          'assetClickToPriceChartLoaded',
+          5000,
+        );
         await assetListPage.clickOnAsset('USDC');
-        timer.startTimer();
-        await assetListPage.checkPriceChartIsShown();
-        await assetListPage.checkPriceChartLoaded(USDC_TOKEN_ADDRESS);
-        timer.stopTimer();
+        await timer.measure(async () => {
+          await assetListPage.checkPriceChartIsShown();
+          await assetListPage.checkPriceChartLoaded(USDC_TOKEN_ADDRESS);
+        });
       },
     );
 
