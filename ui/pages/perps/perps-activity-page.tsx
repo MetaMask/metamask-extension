@@ -6,6 +6,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
+  ButtonBase,
   Text,
   TextVariant,
   TextColor,
@@ -88,18 +89,18 @@ const PerpsActivityPage: React.FC = () => {
         gap={2}
       >
         {/* Back Button */}
-        <Box
+        <ButtonBase
           data-testid="perps-activity-back-button"
           onClick={handleBackClick}
           aria-label={t('back')}
-          className="p-2 -ml-2 cursor-pointer"
+          className="p-2 -ml-2"
         >
           <Icon
             name={IconName.ArrowLeft}
             size={IconSize.Md}
             color={IconColor.IconInverse}
           />
-        </Box>
+        </ButtonBase>
 
         {/* Title */}
         <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
