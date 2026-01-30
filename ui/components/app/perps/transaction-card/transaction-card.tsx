@@ -13,11 +13,7 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import {
-  getDisplayName,
-  formatRelativeTime,
-  getTransactionAmountColor,
-} from '../utils';
+import { getDisplayName, getTransactionAmountColor } from '../utils';
 import type { PerpsTransaction } from '../types';
 
 export type TransactionCardProps = {
@@ -172,15 +168,6 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         >
           {amountDisplay.text}
         </Text>
-        {transaction.type !== 'trade' &&
-          transaction.type !== 'order' &&
-          transaction.type !== 'funding' &&
-          transaction.type !== 'deposit' &&
-          transaction.type !== 'withdrawal' && (
-            <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-              {formatRelativeTime(transaction.timestamp)}
-            </Text>
-          )}
       </Box>
     </ButtonBase>
   );
