@@ -78,8 +78,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         const cleanValue = value.replace(/,/g, '');
         if (cleanValue && availableBalance > 0) {
           const numValue = parseFloat(cleanValue);
-          const percent = Math.min((numValue / availableBalance) * 100, 100);
-          onBalancePercentChange(Math.round(percent));
+          // Guard against NaN (e.g., lone decimal point ".")
+          if (!isNaN(numValue) && numValue > 0) {
+            const percent = Math.min((numValue / availableBalance) * 100, 100);
+            onBalancePercentChange(Math.round(percent));
+          } else {
+            onBalancePercentChange(0);
+          }
         } else {
           onBalancePercentChange(0);
         }

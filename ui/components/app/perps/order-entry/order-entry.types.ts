@@ -107,6 +107,8 @@ export type OrderEntryProps = {
   mode?: OrderMode;
   /** Existing position data for pre-populating form in modify/close modes */
   existingPosition?: ExistingPositionData;
+  /** Order type: 'market' or 'limit' (defaults to 'market') */
+  orderType?: OrderType;
 };
 
 /**

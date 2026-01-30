@@ -49,6 +49,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   showSubmitButton = true,
   mode = 'new',
   existingPosition,
+  orderType = 'market',
 }) => {
   const t = useI18nContext();
 
@@ -73,6 +74,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     existingPosition,
     onFormStateChange,
     onSubmit,
+    orderType,
   });
 
   const isLong = formState.direction === 'long';

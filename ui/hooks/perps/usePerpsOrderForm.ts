@@ -5,6 +5,7 @@ import type {
   OrderMode,
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
+import type { OrderType } from '../../components/app/perps/types';
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
@@ -27,6 +28,8 @@ export type UsePerpsOrderFormOptions = {
   onFormStateChange?: (formState: OrderFormState) => void;
   /** Callback when order is submitted */
   onSubmit?: (formState: OrderFormState) => void;
+  /** Order type: 'market' or 'limit' (defaults to 'market') */
+  orderType?: OrderType;
 };
 
 export type UsePerpsOrderFormReturn = {
@@ -77,6 +80,7 @@ export function usePerpsOrderForm({
   existingPosition,
   onFormStateChange,
   onSubmit,
+  orderType = 'market',
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
@@ -92,6 +96,7 @@ export function usePerpsOrderForm({
         ...mockOrderFormDefaults,
         asset,
         direction: initialDirection,
+        type: orderType,
         leverage: existingPosition.leverage,
         takeProfitPrice: existingPosition.takeProfitPrice ?? '',
         stopLossPrice: existingPosition.stopLossPrice ?? '',
@@ -105,8 +110,44 @@ export function usePerpsOrderForm({
       ...mockOrderFormDefaults,
       asset,
       direction: initialDirection,
+      type: orderType,
     };
   });
+
+  // Update order type when prop changes (from dropdown)
+  useEffect(() => {
+    setFormState((prev) => ({ ...prev, type: orderType }));
+  }, [orderType]);
+
+  // Reset form state when mode or existingPosition changes
+  useEffect(() => {
+    // Reset close percent when mode changes
+    setClosePercent(100);
+
+    // For modify mode, pre-populate from existing position
+    if (mode === 'modify' && existingPosition) {
+      setFormState({
+        ...mockOrderFormDefaults,
+        asset,
+        direction: initialDirection,
+        type: orderType,
+        leverage: existingPosition.leverage,
+        takeProfitPrice: existingPosition.takeProfitPrice ?? '',
+        stopLossPrice: existingPosition.stopLossPrice ?? '',
+        autoCloseEnabled: Boolean(
+          existingPosition.takeProfitPrice || existingPosition.stopLossPrice,
+        ),
+      });
+    } else {
+      // For new and close modes, reset to defaults
+      setFormState({
+        ...mockOrderFormDefaults,
+        asset,
+        direction: initialDirection,
+        type: orderType,
+      });
+    }
+  }, [mode, existingPosition, asset, initialDirection, orderType]);
 
   // Notify parent of form state changes
   useEffect(() => {
@@ -148,21 +189,23 @@ export function usePerpsOrderForm({
       };
     }
 
-    const positionSize = calculatePositionSize(amount, currentPrice);
-    const marginRequired = calculateMarginRequired(amount, formState.leverage);
+    // User enters MARGIN amount. Position value = margin × leverage
+    const positionValue = amount * formState.leverage;
+    const positionSize = calculatePositionSize(positionValue, currentPrice);
+    const marginRequired = amount; // The entered amount IS the margin
     const liquidationPrice = estimateLiquidationPrice(
       currentPrice,
       formState.leverage,
       formState.direction === 'long',
     );
-    // Mock fee calculation: 0.05% of order value
-    const estimatedFees = amount * 0.0005;
+    // Mock fee calculation: 0.05% of position value (not margin)
+    const estimatedFees = positionValue * 0.0005;
 
     return {
       positionSize: formatTokenQuantity(positionSize, asset),
       marginRequired: formatCurrencyWithMinThreshold(marginRequired, 'USD'),
       liquidationPrice: formatCurrencyWithMinThreshold(liquidationPrice, 'USD'),
-      orderValue: formatCurrencyWithMinThreshold(amount, 'USD'),
+      orderValue: formatCurrencyWithMinThreshold(positionValue, 'USD'),
       estimatedFees: formatCurrencyWithMinThreshold(estimatedFees, 'USD'),
     };
   }, [

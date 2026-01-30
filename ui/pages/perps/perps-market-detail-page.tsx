@@ -16,12 +16,10 @@ import {
   IconSize,
   IconColor,
   AvatarTokenSize,
-} from '@metamask/design-system-react';
-import {
   Button,
   ButtonVariant,
   ButtonSize,
-} from '../../components/component-library';
+} from '@metamask/design-system-react';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -53,7 +51,6 @@ import {
   type OrderDirection,
   type OrderFormState,
   type OrderMode,
-  mockOrderFormDefaults,
 } from '../../components/app/perps/order-entry';
 import type { OrderType } from '../../components/app/perps/types';
 
@@ -320,9 +317,13 @@ const PerpsMarketDetailPage: React.FC = () => {
       case 'modify':
         return t('perpsModifyPosition');
       case 'close':
-        return isLong ? t('perpsConfirmCloseLong') : t('perpsConfirmCloseShort');
+        return isLong
+          ? t('perpsConfirmCloseLong')
+          : t('perpsConfirmCloseShort');
       default:
-        return isLong ? t('perpsOpenLong', [displayName]) : t('perpsOpenShort', [displayName]);
+        return isLong
+          ? t('perpsOpenLong', [displayName])
+          : t('perpsOpenShort', [displayName]);
     }
   };
   const submitButtonText = getSubmitButtonText();
@@ -448,7 +449,9 @@ const PerpsMarketDetailPage: React.FC = () => {
           <Box className="relative">
             <Box
               data-testid="perps-order-type-dropdown"
-              onClick={() => setIsOrderTypeDropdownOpen(!isOrderTypeDropdownOpen)}
+              onClick={() =>
+                setIsOrderTypeDropdownOpen(!isOrderTypeDropdownOpen)
+              }
               className={twMerge(
                 'flex items-center gap-1 px-3 py-2 rounded-lg cursor-pointer',
                 'bg-muted hover:bg-muted-hover',
@@ -561,12 +564,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
       {/* Order Entry View - shown when in order mode */}
       {currentView === 'order' && (
-        <Box
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={4}
-          className="flex-1"
-        >
+        <Box paddingLeft={4} paddingRight={4} paddingTop={4} className="flex-1">
           <OrderEntry
             asset={decodedSymbol}
             currentPrice={currentPrice}
@@ -576,6 +574,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             showSubmitButton={false}
             onFormStateChange={handleFormStateChange}
             mode={orderMode}
+            orderType={orderType}
             existingPosition={
               position
                 ? {
@@ -596,499 +595,550 @@ const PerpsMarketDetailPage: React.FC = () => {
         <>
           {/* Position Section */}
           {position && (
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-          <Box paddingBottom={2}>
-            <Text
-              variant={TextVariant.HeadingSm}
-              fontWeight={FontWeight.Medium}
-            >
-              {t('perpsPosition')}
-            </Text>
-          </Box>
-
-          {/* Position Details Cards */}
-          <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingTop={2}>
-            {/* First Row: P&L and Return */}
-            <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-              {/* P&L Card */}
-              <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
-                <Box paddingBottom={1}>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('perpsPnl')}
-                  </Text>
-                </Box>
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <Box paddingBottom={2}>
                 <Text
-                  variant={TextVariant.BodyMd}
+                  variant={TextVariant.HeadingSm}
                   fontWeight={FontWeight.Medium}
-                  color={
-                    parseFloat(position.unrealizedPnl) >= 0
-                      ? TextColor.SuccessDefault
-                      : TextColor.ErrorDefault
-                  }
                 >
-                  {parseFloat(position.unrealizedPnl) >= 0 ? '+' : '-'}
-                  {formatCurrencyWithMinThreshold(
-                    Math.abs(parseFloat(position.unrealizedPnl)),
-                    'USD',
-                  )}
+                  {t('perpsPosition')}
                 </Text>
               </Box>
 
-              {/* Return Card */}
-              <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
-                <Box paddingBottom={1}>
+              {/* Position Details Cards */}
+              <Box
+                flexDirection={BoxFlexDirection.Column}
+                gap={2}
+                paddingTop={2}
+              >
+                {/* First Row: P&L and Return */}
+                <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+                  {/* P&L Card */}
+                  <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
+                    <Box paddingBottom={1}>
+                      <Text
+                        variant={TextVariant.BodySm}
+                        color={TextColor.TextAlternative}
+                      >
+                        {t('perpsPnl')}
+                      </Text>
+                    </Box>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                      color={
+                        parseFloat(position.unrealizedPnl) >= 0
+                          ? TextColor.SuccessDefault
+                          : TextColor.ErrorDefault
+                      }
+                    >
+                      {parseFloat(position.unrealizedPnl) >= 0 ? '+' : '-'}
+                      {formatCurrencyWithMinThreshold(
+                        Math.abs(parseFloat(position.unrealizedPnl)),
+                        'USD',
+                      )}
+                    </Text>
+                  </Box>
+
+                  {/* Return Card */}
+                  <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
+                    <Box paddingBottom={1}>
+                      <Text
+                        variant={TextVariant.BodySm}
+                        color={TextColor.TextAlternative}
+                      >
+                        {t('perpsReturn')}
+                      </Text>
+                    </Box>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                      color={
+                        parseFloat(position.returnOnEquity) >= 0
+                          ? TextColor.SuccessDefault
+                          : TextColor.ErrorDefault
+                      }
+                    >
+                      {parseFloat(position.returnOnEquity) >= 0 ? '+' : ''}
+                      {position.returnOnEquity}%
+                    </Text>
+                  </Box>
+                </Box>
+
+                {/* Second Row: Size and Margin */}
+                <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+                  {/* Size Card */}
+                  <Box
+                    className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+                    flexDirection={BoxFlexDirection.Column}
+                    onClick={() => {
+                      // TODO: Handle size card press
+                    }}
+                  >
+                    <Box paddingBottom={1}>
+                      <Text
+                        variant={TextVariant.BodySm}
+                        color={TextColor.TextAlternative}
+                      >
+                        {t('perpsSize')}
+                      </Text>
+                    </Box>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {formatTokenQuantity(
+                        Math.abs(parseFloat(position.size)),
+                        getDisplayName(position.coin),
+                      )}
+                    </Text>
+                  </Box>
+
+                  {/* Margin Card */}
+                  <Box
+                    className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+                    flexDirection={BoxFlexDirection.Column}
+                    onClick={() => {
+                      // TODO: Handle margin card press
+                    }}
+                  >
+                    <Box paddingBottom={1}>
+                      <Text
+                        variant={TextVariant.BodySm}
+                        color={TextColor.TextAlternative}
+                      >
+                        {t('perpsMargin')}
+                      </Text>
+                    </Box>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      ${position.marginUsed}
+                    </Text>
+                  </Box>
+                </Box>
+
+                {/* Third Row: Auto Close (Full Width) */}
+                <Box
+                  className="cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+                  flexDirection={BoxFlexDirection.Column}
+                  onClick={() => {
+                    // TODO: Handle auto close card press
+                  }}
+                >
+                  <Box paddingBottom={1}>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsAutoClose')}
+                    </Text>
+                  </Box>
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    TP{' '}
+                    {position.takeProfitPrice
+                      ? `$${position.takeProfitPrice}`
+                      : '-'}
+                    , SL{' '}
+                    {position.stopLossPrice
+                      ? `$${position.stopLossPrice}`
+                      : '-'}
+                  </Text>
+                </Box>
+              </Box>
+
+              {/* Details Section */}
+              <Box paddingTop={4} paddingBottom={2}>
+                <Text
+                  variant={TextVariant.HeadingSm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('perpsDetails')}
+                </Text>
+              </Box>
+              <Box flexDirection={BoxFlexDirection.Column}>
+                {/* Direction Row */}
+                <Box
+                  className="rounded-t-xl bg-muted px-4 py-3"
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
                   <Text
                     variant={TextVariant.BodySm}
                     color={TextColor.TextAlternative}
                   >
-                    {t('perpsReturn')}
+                    {t('perpsDirection')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                    color={
+                      parseFloat(position.size) >= 0
+                        ? TextColor.SuccessDefault
+                        : TextColor.ErrorDefault
+                    }
+                  >
+                    {parseFloat(position.size) >= 0
+                      ? t('perpsLong')
+                      : t('perpsShort')}
                   </Text>
                 </Box>
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={
-                    parseFloat(position.returnOnEquity) >= 0
-                      ? TextColor.SuccessDefault
-                      : TextColor.ErrorDefault
-                  }
+
+                {/* Entry Price Row */}
+                <Box
+                  className="bg-muted px-4 py-3"
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
                 >
-                  {parseFloat(position.returnOnEquity) >= 0 ? '+' : ''}
-                  {position.returnOnEquity}%
-                </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsEntryPrice')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    ${position.entryPrice}
+                  </Text>
+                </Box>
+
+                {/* Liquidation Price Row */}
+                <Box
+                  className="bg-muted px-4 py-3"
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsLiquidationPrice')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {position.liquidationPrice
+                      ? `$${position.liquidationPrice}`
+                      : '-'}
+                  </Text>
+                </Box>
+
+                {/* Funding Payments Row */}
+                <Box
+                  className="rounded-b-xl bg-muted px-4 py-3"
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsFundingPayments')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    ${position.cumulativeFunding.sinceOpen}
+                  </Text>
+                </Box>
               </Box>
             </Box>
+          )}
 
-            {/* Second Row: Size and Margin */}
-            <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-              {/* Size Card */}
-              <Box
-                className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
-                flexDirection={BoxFlexDirection.Column}
-                onClick={() => {
-                  // TODO: Handle size card press
-                }}
-              >
-                <Box paddingBottom={1}>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('perpsSize')}
-                  </Text>
-                </Box>
+          {/* Orders Section - shown regardless of position, but only if there are orders */}
+          {orders.length > 0 && (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <Box paddingBottom={2}>
                 <Text
-                  variant={TextVariant.BodyMd}
+                  variant={TextVariant.HeadingSm}
                   fontWeight={FontWeight.Medium}
                 >
-                  {formatTokenQuantity(
-                    Math.abs(parseFloat(position.size)),
-                    getDisplayName(position.coin),
-                  )}
+                  {t('perpsOrders')}
                 </Text>
               </Box>
-
-              {/* Margin Card */}
               <Box
-                className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
                 flexDirection={BoxFlexDirection.Column}
-                onClick={() => {
-                  // TODO: Handle margin card press
-                }}
+                className="overflow-hidden rounded-xl"
               >
-                <Box paddingBottom={1}>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('perpsMargin')}
-                  </Text>
-                </Box>
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  ${position.marginUsed}
-                </Text>
+                {orders.map((order) => (
+                  <OrderCard
+                    key={order.orderId}
+                    order={order}
+                    variant="muted"
+                    onClick={handleOrderClick}
+                  />
+                ))}
               </Box>
             </Box>
+          )}
 
-            {/* Third Row: Auto Close (Full Width) */}
+          {/* Stats Section - always visible */}
+          <Box paddingLeft={4} paddingRight={4}>
+            <Box paddingTop={4} paddingBottom={2}>
+              <Text
+                variant={TextVariant.HeadingSm}
+                fontWeight={FontWeight.Medium}
+              >
+                {t('perpsStats')}
+              </Text>
+            </Box>
             <Box
-              className="cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
               flexDirection={BoxFlexDirection.Column}
-              onClick={() => {
-                // TODO: Handle auto close card press
-              }}
+              className="overflow-hidden rounded-xl"
             >
-              <Box paddingBottom={1}>
+              {/* 24h Volume Row */}
+              <Box
+                className="bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
                 <Text
                   variant={TextVariant.BodySm}
                   color={TextColor.TextAlternative}
                 >
-                  {t('perpsAutoClose')}
+                  {t('perps24hVolume')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {market.volume}
                 </Text>
               </Box>
+
+              {/* Open Interest Row */}
+              {market.openInterest && (
+                <Box
+                  className="bg-muted px-4 py-3"
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsOpenInterest')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {market.openInterest}
+                  </Text>
+                </Box>
+              )}
+
+              {/* Funding Rate Row */}
+              {market.fundingRate !== undefined && (
+                <Box
+                  className="bg-muted px-4 py-3"
+                  flexDirection={BoxFlexDirection.Row}
+                  justifyContent={BoxJustifyContent.Between}
+                  alignItems={BoxAlignItems.Center}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    {t('perpsFundingRate')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                    color={
+                      market.fundingRate >= 0
+                        ? TextColor.SuccessDefault
+                        : TextColor.ErrorDefault
+                    }
+                  >
+                    {market.fundingRate >= 0 ? '+' : ''}
+                    {formatNumber(market.fundingRate * 100, {
+                      minimumFractionDigits: 4,
+                      maximumFractionDigits: 4,
+                    })}
+                    %
+                  </Text>
+                </Box>
+              )}
+            </Box>
+          </Box>
+
+          {/* Recent Activity Section - always visible */}
+          <Box paddingLeft={4} paddingRight={4}>
+            <Box paddingTop={4} paddingBottom={2}>
+              <Text
+                variant={TextVariant.HeadingSm}
+                fontWeight={FontWeight.Medium}
+              >
+                {t('perpsRecentActivity')}
+              </Text>
+            </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              className="overflow-hidden rounded-xl"
+            >
+              {/* Activity Item 1 - Opened long */}
+              <Box
+                className="w-full bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={3}
+              >
+                <PerpsTokenLogo
+                  symbol={market.symbol}
+                  size={AvatarTokenSize.Md}
+                />
+                <Box
+                  flexDirection={BoxFlexDirection.Column}
+                  alignItems={BoxAlignItems.Start}
+                  className="min-w-0 flex-1"
+                  gap={1}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {t('perpsOpenedLong')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodyXs}
+                    color={TextColor.TextAlternative}
+                  >
+                    2.50000 {displayName}
+                  </Text>
+                </Box>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.SuccessDefault}
+                >
+                  +$125.00
+                </Text>
+              </Box>
+
+              {/* Activity Item 2 - Increased position */}
+              <Box
+                className="w-full bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={3}
+              >
+                <PerpsTokenLogo
+                  symbol={market.symbol}
+                  size={AvatarTokenSize.Md}
+                />
+                <Box
+                  flexDirection={BoxFlexDirection.Column}
+                  alignItems={BoxAlignItems.Start}
+                  className="min-w-0 flex-1"
+                  gap={1}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {t('perpsIncreasedPosition')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodyXs}
+                    color={TextColor.TextAlternative}
+                  >
+                    0.50000 {displayName}
+                  </Text>
+                </Box>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.SuccessDefault}
+                >
+                  +$45.20
+                </Text>
+              </Box>
+
+              {/* Activity Item 3 - Closed short */}
+              <Box
+                className="w-full bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={3}
+              >
+                <PerpsTokenLogo
+                  symbol={market.symbol}
+                  size={AvatarTokenSize.Md}
+                />
+                <Box
+                  flexDirection={BoxFlexDirection.Column}
+                  alignItems={BoxAlignItems.Start}
+                  className="min-w-0 flex-1"
+                  gap={1}
+                >
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {t('perpsClosedShort')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodyXs}
+                    color={TextColor.TextAlternative}
+                  >
+                    1.25000 {displayName}
+                  </Text>
+                </Box>
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.ErrorDefault}
+                >
+                  -$32.50
+                </Text>
+              </Box>
+            </Box>
+
+            {/* Learn Section */}
+            <Box
+              className="mt-4 w-full cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+              onClick={() => {
+                // TODO: Navigate to learn page
+              }}
+            >
               <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-                TP{' '}
-                {position.takeProfitPrice
-                  ? `$${position.takeProfitPrice}`
-                  : '-'}
-                , SL{' '}
-                {position.stopLossPrice ? `$${position.stopLossPrice}` : '-'}
+                {t('perpsLearnBasics')}
               </Text>
-            </Box>
-          </Box>
-
-          {/* Details Section */}
-          <Box paddingTop={4} paddingBottom={2}>
-            <Text
-              variant={TextVariant.HeadingSm}
-              fontWeight={FontWeight.Medium}
-            >
-              {t('perpsDetails')}
-            </Text>
-          </Box>
-          <Box flexDirection={BoxFlexDirection.Column}>
-            {/* Direction Row */}
-            <Box
-              className="rounded-t-xl bg-muted px-4 py-3"
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsDirection')}
-              </Text>
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                color={
-                  parseFloat(position.size) >= 0
-                    ? TextColor.SuccessDefault
-                    : TextColor.ErrorDefault
-                }
-              >
-                {parseFloat(position.size) >= 0
-                  ? t('perpsLong')
-                  : t('perpsShort')}
-              </Text>
-            </Box>
-
-            {/* Entry Price Row */}
-            <Box
-              className="bg-muted px-4 py-3"
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsEntryPrice')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                ${position.entryPrice}
-              </Text>
-            </Box>
-
-            {/* Liquidation Price Row */}
-            <Box
-              className="bg-muted px-4 py-3"
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsLiquidationPrice')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {position.liquidationPrice
-                  ? `$${position.liquidationPrice}`
-                  : '-'}
-              </Text>
-            </Box>
-
-            {/* Funding Payments Row */}
-            <Box
-              className="rounded-b-xl bg-muted px-4 py-3"
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsFundingPayments')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                ${position.cumulativeFunding.sinceOpen}
-              </Text>
-            </Box>
-          </Box>
-        </Box>
-      )}
-
-      {/* Orders Section - shown regardless of position, but only if there are orders */}
-      {orders.length > 0 && (
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-          <Box paddingBottom={2}>
-            <Text
-              variant={TextVariant.HeadingSm}
-              fontWeight={FontWeight.Medium}
-            >
-              {t('perpsOrders')}
-            </Text>
-          </Box>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            className="overflow-hidden rounded-xl"
-          >
-            {orders.map((order) => (
-              <OrderCard
-                key={order.orderId}
-                order={order}
-                variant="muted"
-                onClick={handleOrderClick}
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Sm}
+                color={IconColor.IconAlternative}
               />
-            ))}
-          </Box>
-        </Box>
-      )}
-
-      {/* Stats Section - always visible */}
-      <Box paddingLeft={4} paddingRight={4}>
-        <Box paddingTop={4} paddingBottom={2}>
-          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
-            {t('perpsStats')}
-          </Text>
-        </Box>
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          className="overflow-hidden rounded-xl"
-        >
-          {/* 24h Volume Row */}
-          <Box
-            className="bg-muted px-4 py-3"
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-          >
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('perps24hVolume')}
-            </Text>
-            <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-              {market.volume}
-            </Text>
-          </Box>
-
-          {/* Open Interest Row */}
-          {market.openInterest && (
-            <Box
-              className="bg-muted px-4 py-3"
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsOpenInterest')}
-              </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {market.openInterest}
-              </Text>
             </Box>
-          )}
 
-          {/* Funding Rate Row */}
-          {market.fundingRate !== undefined && (
-            <Box
-              className="bg-muted px-4 py-3"
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsFundingRate')}
-              </Text>
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                color={
-                  market.fundingRate >= 0
-                    ? TextColor.SuccessDefault
-                    : TextColor.ErrorDefault
-                }
-              >
-                {market.fundingRate >= 0 ? '+' : ''}
-                {formatNumber(market.fundingRate * 100, {
-                  minimumFractionDigits: 4,
-                  maximumFractionDigits: 4,
-                })}
-                %
-              </Text>
-            </Box>
-          )}
-        </Box>
-      </Box>
-
-      {/* Recent Activity Section - always visible */}
-      <Box paddingLeft={4} paddingRight={4}>
-        <Box paddingTop={4} paddingBottom={2}>
-          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
-            {t('perpsRecentActivity')}
-          </Text>
-        </Box>
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          className="overflow-hidden rounded-xl"
-        >
-          {/* Activity Item 1 - Opened long */}
-          <Box
-            className="w-full bg-muted px-4 py-3"
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={3}
-          >
-            <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Start}
-              className="min-w-0 flex-1"
-              gap={1}
-            >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {t('perpsOpenedLong')}
-              </Text>
+            {/* Disclaimer */}
+            <Box paddingTop={4} paddingBottom={4}>
               <Text
                 variant={TextVariant.BodyXs}
                 color={TextColor.TextAlternative}
               >
-                2.50000 {displayName}
+                {t('perpsDisclaimer')}
               </Text>
             </Box>
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.SuccessDefault}
-            >
-              +$125.00
-            </Text>
           </Box>
-
-          {/* Activity Item 2 - Increased position */}
-          <Box
-            className="w-full bg-muted px-4 py-3"
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={3}
-          >
-            <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Start}
-              className="min-w-0 flex-1"
-              gap={1}
-            >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {t('perpsIncreasedPosition')}
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
-              >
-                0.50000 {displayName}
-              </Text>
-            </Box>
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.SuccessDefault}
-            >
-              +$45.20
-            </Text>
-          </Box>
-
-          {/* Activity Item 3 - Closed short */}
-          <Box
-            className="w-full bg-muted px-4 py-3"
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={3}
-          >
-            <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Start}
-              className="min-w-0 flex-1"
-              gap={1}
-            >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-                {t('perpsClosedShort')}
-              </Text>
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
-              >
-                1.25000 {displayName}
-              </Text>
-            </Box>
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.ErrorDefault}
-            >
-              -$32.50
-            </Text>
-          </Box>
-        </Box>
-
-        {/* Learn Section */}
-        <Box
-          className="mt-4 w-full cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          alignItems={BoxAlignItems.Center}
-          onClick={() => {
-            // TODO: Navigate to learn page
-          }}
-        >
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {t('perpsLearnBasics')}
-          </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
-        </Box>
-
-        {/* Disclaimer */}
-        <Box paddingTop={4} paddingBottom={4}>
-          <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-            {t('perpsDisclaimer')}
-          </Text>
-        </Box>
-      </Box>
         </>
       )}
 
@@ -1100,8 +1150,8 @@ const PerpsMarketDetailPage: React.FC = () => {
         paddingTop={3}
         paddingBottom={4}
       >
-        {currentView === 'order' ? (
-          /* Order Mode: Show Submit Order button */
+        {/* Order Mode: Show Submit Order button */}
+        {currentView === 'order' && (
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
@@ -1116,8 +1166,10 @@ const PerpsMarketDetailPage: React.FC = () => {
           >
             {submitButtonText}
           </Button>
-        ) : position ? (
-          /* Detail Mode with Position: Show Modify and Close buttons */
+        )}
+
+        {/* Detail Mode with Position: Show Modify and Close buttons */}
+        {currentView !== 'order' && position && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}
@@ -1152,8 +1204,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                 : t('perpsCloseShort')}
             </Button>
           </Box>
-        ) : (
-          /* Detail Mode without Position: Show Long and Short buttons */
+        )}
+
+        {/* Detail Mode without Position: Show Long and Short buttons */}
+        {currentView !== 'order' && !position && (
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={3}
