@@ -5826,7 +5826,39 @@ export default class MetamaskController extends EventEmitter {
    */
   sortEvmAccountsByLastSelected(addresses) {
     const internalAccounts = this.accountsController.listAccounts();
-    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
+
+    // Filter out addresses that don't have corresponding internal accounts
+    const addressesWithIdentities = addresses.filter((address) =>
+      internalAccounts.some(
+        (account) => account.address.toLowerCase() === address.toLowerCase(),
+      ),
+    );
+
+    // If some addresses were filtered out, capture the issue for monitoring
+    if (addressesWithIdentities.length !== addresses.length) {
+      const missingAddresses = addresses.filter(
+        (address) =>
+          !internalAccounts.some(
+            (account) =>
+              account.address.toLowerCase() === address.toLowerCase(),
+          ),
+      );
+
+      console.warn(
+        `sortEvmAccountsByLastSelected: Filtered out ${missingAddresses.length} address(es) without corresponding internal accounts:`,
+        missingAddresses,
+      );
+
+      this.captureKeyringTypesWithMissingIdentities(
+        internalAccounts,
+        addresses,
+      );
+    }
+
+    return this.sortAddressesWithInternalAccounts(
+      addressesWithIdentities,
+      internalAccounts,
+    );
   }
 
   /**
