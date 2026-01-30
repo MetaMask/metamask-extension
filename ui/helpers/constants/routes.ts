@@ -177,6 +177,11 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: PERPS_ACTIVITY_ROUTE,
+    label: 'Perps Activity',
+    trackInAnalytics: true,
+  },
+  {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
     trackInAnalytics: true,
@@ -572,18 +577,6 @@ export const ROUTES = [
   },
   // Additional routes
   { path: DEFI_ROUTE, label: 'DeFi', trackInAnalytics: false },
-  // Perps routes
-  { path: PERPS_ROUTE, label: 'Perps Home', trackInAnalytics: true },
-  {
-    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-    label: 'Perps Market Detail',
-    trackInAnalytics: true,
-  },
-  {
-    path: PERPS_ACTIVITY_ROUTE,
-    label: 'Perps Activity',
-    trackInAnalytics: true,
-  },
   {
     path: REVIEW_PERMISSIONS,
     label: 'Review Permissions',
