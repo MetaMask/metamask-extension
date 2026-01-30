@@ -21,11 +21,10 @@ import OnboardingPasswordPage from '../../../page-objects/pages/onboarding/onboa
 import SecureWalletPage from '../../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
 import { Driver } from '../../../webdriver/driver';
-import TimerHelper from '../../utils/TimerHelper';
-import Timers from '../../utils/Timers';
-import { getCommonMocks } from '../../utils/commonMocks';
-import { collectTimerResults } from '../../utils/timer-utils';
-import { performanceTracker } from '../../utils/PerformanceTracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import Timers from '../../utils/timers';
+import { getCommonMocks } from '../../utils/common-mocks';
+import { performanceTracker } from '../../utils/performance-tracker';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-new-wallet';

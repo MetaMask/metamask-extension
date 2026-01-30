@@ -12,10 +12,9 @@ import LoginPage from '../../../page-objects/pages/login-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { Driver } from '../../../webdriver/driver';
-import TimerHelper from '../../utils/TimerHelper';
-import Timers from '../../utils/Timers';
-import { collectTimerResults } from '../../utils/timer-utils';
-import { performanceTracker } from '../../utils/PerformanceTracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import Timers from '../../utils/timers';
+import { performanceTracker } from '../../utils/performance-tracker';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 

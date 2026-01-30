@@ -12,10 +12,9 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import LoginPage from '../../../page-objects/pages/login-page';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
-import TimerHelper from '../../utils/TimerHelper';
-import Timers from '../../utils/Timers';
-import { collectTimerResults } from '../../utils/timer-utils';
-import { performanceTracker } from '../../utils/PerformanceTracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import Timers from '../../utils/timers';
+import { performanceTracker } from '../../utils/performance-tracker';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 

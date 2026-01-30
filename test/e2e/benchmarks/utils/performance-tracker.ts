@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import TimerHelper from './TimerHelper';
-import Timers from './Timers';
+import TimerHelper from './timer-helper';
+import Timers from './timers';
 
 const THRESHOLD_MARGIN_PERCENT = 10;
 

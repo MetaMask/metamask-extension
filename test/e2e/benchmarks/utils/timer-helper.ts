@@ -1,4 +1,5 @@
-import Timers from './Timers';
+import Timers from './timers';
+import type { TimerResult } from './types';
 
 const THRESHOLD_MARGIN = 0.1; // 10% margin
 
@@ -99,6 +100,19 @@ class TimerHelper {
   get id(): string {
     return this._id;
   }
+}
+
+/**
+ * Convert Timers singleton data to TimerResult array for benchmark runner.
+ * Use this at the end of a benchmark to collect all timer results.
+ */
+export function collectTimerResults(): TimerResult[] {
+  return Timers.getAllTimers()
+    .filter((t) => t.duration !== null)
+    .map((t) => ({
+      id: t.id,
+      duration: t.duration as number,
+    }));
 }
 
 export default TimerHelper;

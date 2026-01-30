@@ -1,7 +1,6 @@
 export * from './types';
 export * from './constants';
-export * from './commonMocks';
+export * from './common-mocks';
 export * from './statistics';
 export * from './runner';
-export { performanceTracker, PerformanceTracker } from './PerformanceTracker';
-export { setupPerformanceReporting } from './testSetup';
+export { performanceTracker, PerformanceTracker } from './performance-tracker';
