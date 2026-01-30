@@ -110,6 +110,15 @@ class BitcoinHomepage extends HomePage {
     console.log('Swap button is enabled');
     return true;
   }
+
+  /**
+   * Clicks the swap button on bitcoin account homepage.
+   */
+  async clickOnSwapButton(): Promise<void> {
+    console.log('Clicking swap button on Bitcoin homepage');
+    await this.driver.waitForSelector(this.swapButton);
+    await this.driver.clickElement(this.swapButton);
+  }
 }
 
 export default BitcoinHomepage;

@@ -23,14 +23,11 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         assert.ok(isSwapEnabled, 'Swap button should be enabled for BTC');
 
         // Click swap button to open bridge page
-        await driver.clickElement('[data-testid="coin-overview-swap"]');
+        await homePage.clickOnSwapButton();
 
         // Verify we navigated to the bridge/swap page
         const bridgePage = new BridgeQuotePage(driver);
-        await driver.waitForSelector(bridgePage.sourceAssetPickerButton, {
-          timeout: 10000,
-        });
-        console.log('Bridge/Swap page loaded successfully');
+        await bridgePage.checkPageIsLoaded();
       },
       this.test?.fullTitle(),
       { mockSwap: true },
@@ -47,12 +44,10 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         );
 
         // Click swap button
-        await driver.clickElement('[data-testid="coin-overview-swap"]');
+        await homePage.clickOnSwapButton();
 
         const bridgePage = new BridgeQuotePage(driver);
-        await driver.waitForSelector(bridgePage.sourceAssetPickerButton, {
-          timeout: 10000,
-        });
+        await bridgePage.checkPageIsLoaded();
 
         // Enter amount for the swap
         await bridgePage.enterBridgeQuote({
@@ -83,14 +78,12 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         );
 
         // Click swap button
-        await driver.clickElement('[data-testid="coin-overview-swap"]');
+        await homePage.clickOnSwapButton();
 
         const bridgePage = new BridgeQuotePage(driver);
-        await driver.waitForSelector(bridgePage.sourceAssetPickerButton, {
-          timeout: 10000,
-        });
+        await bridgePage.checkPageIsLoaded();
 
-        // Enter amount greater than balance (DEFAULT_BTC_BALANCE is 0.5 BTC)
+        // Enter amount greater than balance (DEFAULT_BTC_BALANCE is 1 BTC)
         await bridgePage.enterBridgeQuote({
           amount: '10',
           tokenTo: 'ETH',
@@ -115,12 +108,10 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         );
 
         // Click swap button
-        await driver.clickElement('[data-testid="coin-overview-swap"]');
+        await homePage.clickOnSwapButton();
 
         const bridgePage = new BridgeQuotePage(driver);
-        await driver.waitForSelector(bridgePage.sourceAssetPickerButton, {
-          timeout: 10000,
-        });
+        await bridgePage.checkPageIsLoaded();
 
         // Enter amount for the swap
         await bridgePage.enterBridgeQuote({
@@ -148,12 +139,10 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
         );
 
         // Click swap button
-        await driver.clickElement('[data-testid="coin-overview-swap"]');
+        await homePage.clickOnSwapButton();
 
         const bridgePage = new BridgeQuotePage(driver);
-        await driver.waitForSelector(bridgePage.sourceAssetPickerButton, {
-          timeout: 10000,
-        });
+        await bridgePage.checkPageIsLoaded();
 
         // Enter amount for the swap
         await bridgePage.enterBridgeQuote({
@@ -170,9 +159,9 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
 
         // Submit the swap quote
         await bridgePage.submitQuote();
+
         // Navigate to activity list and verify the bridge transaction
         const activityListPage = new ActivityListPage(driver);
-
         await activityListPage.checkPendingBridgeTransactionActivity(1);
 
         // Verify the transaction shows as "Bridge to Ethereum"
