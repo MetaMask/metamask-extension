@@ -390,6 +390,19 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     id: 'ethereum-provider-access',
     message: t('ethereumProviderAccess', [getSnapNameComponent(subjectName)]),
   }),
+  [EndowmentPermissions['endowment:multichain-provider']]: ({
+    t,
+    subjectName,
+  }) => ({
+    label: t('permission_multichainProvider'),
+    description: t('permission_multichainProviderDescription', [
+      getSnapNameComponent(subjectName),
+    ]),
+    leftIcon: IconName.Connect,
+    weight: PermissionWeight.endowment_multichainProvider,
+    id: 'multichain-provider-access',
+    message: t('multichainProviderAccess', [getSnapNameComponent(subjectName)]),
+  }),
   [EndowmentPermissions['endowment:rpc']]: ({
     t,
     permissionValue,

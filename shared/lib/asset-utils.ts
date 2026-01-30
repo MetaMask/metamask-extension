@@ -77,7 +77,7 @@ export const toAssetId = (
  * @returns The image url for the asset
  */
 export const getAssetImageUrl = (
-  assetId: CaipAssetType | string,
+  assetId: CaipAssetType | Hex | string,
   chainId: CaipChainId | Hex,
 ) => {
   const assetIdInCaip = toAssetId(assetId, chainId);

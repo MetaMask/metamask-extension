@@ -9,6 +9,11 @@ import { Duplex } from 'readable-stream';
 import { ControllerInitFunction } from '../types';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import { ExecutionServiceMessenger } from '../messengers/snaps';
+import { setupMultiplex } from '../../lib/stream-utils';
+import {
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
+} from '../../constants/stream';
 
 /**
  * Initialize the Snaps execution service.
@@ -19,6 +24,8 @@ import { ExecutionServiceMessenger } from '../messengers/snaps';
  * offscreen document is ready.
  * @param request.setupUntrustedCommunicationEip1193 - The setup function for
  * EIP-1193 communication.
+ * @param request.setupUntrustedCommunicationCaip - The setup function for
+ * CAIP-25 communication.
  * @returns The initialized controller.
  */
 export const ExecutionServiceInit: ControllerInitFunction<
@@ -28,6 +35,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
   controllerMessenger,
   offscreenPromise,
   setupUntrustedCommunicationEip1193,
+  setupUntrustedCommunicationCaip,
 }) => {
   const useOffscreenDocument =
     isManifestV3 &&
@@ -43,6 +51,15 @@ export const ExecutionServiceInit: ControllerInitFunction<
   function setupSnapProvider(snapId: string, connectionStream: Duplex) {
     setupUntrustedCommunicationEip1193({
       connectionStream,
+      sender: { snapId },
+      subjectType: SubjectType.Snap,
+    });
+
+    const mux = setupMultiplex(connectionStream);
+    mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+
+    setupUntrustedCommunicationCaip({
+      connectionStream: mux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER),
       sender: { snapId },
       subjectType: SubjectType.Snap,
     });
