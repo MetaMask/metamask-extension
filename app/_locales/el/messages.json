@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Διασύνδεση προς"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Εάν προσθέσατε αυτό το token μη αυτόματα, βεβαιωθείτε ότι γνωρίζετε τους κινδύνους για τα κεφάλαιά σας πριν από τη διασύνδεση."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Δεν μπορούμε να επαληθεύσουμε αυτό το token."
-  },
   "bridgeTransactionProgress": {
     "message": "Συναλλαγή $1 από 2"
   },
@@ -2012,6 +2006,10 @@
   },
   "defiEmptyDescription": {
     "message": "Δανείστε, αποκτήστε και κάντε συναλλαγές, απευθείας στο πορτοφόλι σας."
+  },
+  "defiReferralCheckboxLabel": {
+    "message": "Επιτρέψτε στο MetaMask να προσθέσει έναν κωδικό παραπομπής. Αυτό είναι μόνιμο. Ο ιστότοπος προσφέρει εκπτώσεις σύμφωνα με τους όρους του. Το MetaMask λαμβάνει προμήθεια.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
   "defiTabErrorContent": {
     "message": "Προσπαθήστε ξανά αργότερα."
@@ -3001,17 +2999,9 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "Επιτρέψτε στο MetaMask να προσθέσει έναν κωδικό παραπομπής. Αυτό είναι μόνιμο. Ο ιστότοπος προσφέρει εκπτώσεις σύμφωνα με τους όρους του. Το MetaMask λαμβάνει προμήθεια.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Κερδίστε έως και 4% στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "Αναγνωριστικό"
@@ -8216,9 +8206,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Τα NFT μπορεί να κινδυνεύουν"
-  },
-  "yourNetworks": {
-    "message": "Τα δίκτυά σας"
   },
   "yourPrivateSeedPhrase": {
     "message": "Η Μυστική σας Φράση Ανάκτησης"

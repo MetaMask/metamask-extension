@@ -11,6 +11,7 @@ import {
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 const mockUseNavigate = jest.fn();
@@ -125,6 +126,14 @@ const makeWrapper =
     );
   };
 
+const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
+
+setBackgroundConnection({
+  submitTx: submitTxSpy,
+  getStatePatches: jest.fn(),
+  setEnabledAllPopularNetworks: jest.fn(),
+} as never);
+
 describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {
     beforeEach(() => {
@@ -132,7 +141,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
     });
 
     it('executes bridge transaction', async () => {
-      const submitTx = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -146,11 +154,10 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(submitTx.mock.calls).toMatchSnapshot();
+      expect(submitTxSpy.mock.calls).toMatchSnapshot();
     });
 
     it('executes bridge transaction with no approval', async () => {
-      const submitTx = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
       const store = makeMockStore();
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
@@ -164,7 +171,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(submitTx.mock.calls).toMatchSnapshot();
+      expect(submitTxSpy.mock.calls).toMatchSnapshot();
     });
 
     it('routes to activity tab', async () => {

@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Fazer ponte para"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Se você adicionou esse token manualmente, confirme que está ciente dos riscos para seus fundos antes de fazer a ponte."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Não foi possível confirmar esse token."
-  },
   "bridgeTransactionProgress": {
     "message": "Transação $1 de 2"
   },
@@ -2012,6 +2006,10 @@
   },
   "defiEmptyDescription": {
     "message": "Empreste, peça emprestado e negocie, direto na sua carteira."
+  },
+  "defiReferralCheckboxLabel": {
+    "message": "Permita que a MetaMask adicione um código de indicação. Isso é permanente. O site oferece descontos conforme seus próprios termos. A MetaMask ganha uma taxa.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
   "defiTabErrorContent": {
     "message": "Tente visitar novamente mais tarde."
@@ -3001,17 +2999,9 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "Permita que a MetaMask adicione um código de indicação. Isso é permanente. O site oferece descontos conforme seus próprios termos. A MetaMask ganha uma taxa.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Economize até 4% em negociações com um código de indicação da MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
@@ -8219,9 +8209,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"
-  },
-  "yourNetworks": {
-    "message": "Suas redes"
   },
   "yourPrivateSeedPhrase": {
     "message": "Sua Frase de Recuperação Secreta"

@@ -43,6 +43,16 @@ export const TokenListControllerInit: ControllerInitFunction<
     chainId: getGlobalChainId(initMessenger),
   });
 
+  // Initialize the controller to load cached token lists from storage.
+  // This is a fire-and-forget operation - if it fails, the controller will
+  // self-heal by fetching token lists on demand when needed.
+  controller.initialize().catch((error: Error) => {
+    console.error(
+      'TokenListController: Failed to initialize from storage:',
+      error,
+    );
+  });
+
   /**
    * Enable or disable token list polling based on whether any feature that
    * requires it is enabled.
