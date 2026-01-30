@@ -121,8 +121,11 @@ const DeserializedJsonRpcHardwareWalletErrorStruct = superstructType({
 
 /**
  * Struct for a plain object with an ErrorCode property (string or number).
+ *
+ * Uses superstructType() instead of object() to allow additional properties
+ * like message or metadata from serialized errors.
  */
-const PlainObjectWithErrorCodeStruct = object({
+const PlainObjectWithErrorCodeStruct = superstructType({
   code: union([string(), number()]),
 });
 
