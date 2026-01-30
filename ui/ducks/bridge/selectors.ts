@@ -38,7 +38,10 @@ import type {
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
-import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import {
+  AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+  type MultichainNetworkControllerState,
+} from '@metamask/multichain-network-controller';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import {
   type AccountGroupObject,
@@ -47,15 +50,13 @@ import {
 import { getHardwareWalletType } from '../../selectors/selectors';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_CHAIN_IDS,
+  ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
 } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
-  getMultichainNetworkConfigurationsByChainId,
-  getMultichainProviderConfig,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
 import {
@@ -80,7 +81,10 @@ import {
   getInternalAccountBySelectedAccountGroupAndCaip,
   getWalletsWithAccounts,
 } from '../../selectors/multichain-accounts/account-tree';
-import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getAllMultichainNetworkConfigurations,
+} from '../../selectors/multichain/networks';
 import { type MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 import {
   exchangeRateFromMarketData,
@@ -124,21 +128,20 @@ export type BridgeAppState = {
 
 // Only includes networks user has added
 const getAllBridgeableNetworks = createDeepEqualSelector(
-  [getMultichainNetworkConfigurationsByChainId],
+  [getAllMultichainNetworkConfigurations],
   (
     multichainNetworkConfigurationsByChainId,
   ): Record<CaipChainId, BridgeNetwork> => {
     // Build a record of networks keyed by ALLOWED_BRIDGE_CHAIN_IDS
-    return ALLOWED_BRIDGE_CHAIN_IDS.reduce(
+    return ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP.reduce(
       (
         networkRecord: Record<Hex | CaipChainId, BridgeNetwork>,
-        chainId: Hex | CaipChainId,
+        chainId: CaipChainId,
       ) => {
-        const caipChainId = formatChainIdToCaip(chainId);
         if (multichainNetworkConfigurationsByChainId[chainId]) {
-          networkRecord[caipChainId] = {
+          networkRecord[chainId] = {
             ...multichainNetworkConfigurationsByChainId[chainId],
-            chainId: caipChainId,
+            chainId,
           };
         }
         return networkRecord;
@@ -299,6 +302,15 @@ export const getToChains = createDeepEqualSelector(
             },
           ];
         }),
+      ),
+      ...Object.fromEntries(
+        Object.values(AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS)
+          .filter(({ chainId }) =>
+            ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+          )
+          .map(({ chainId }) => {
+            return [chainId, { chainId }];
+          }),
       ),
     };
     const filteredChains: BridgeNetwork[] = [];
