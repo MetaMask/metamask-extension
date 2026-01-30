@@ -153,7 +153,7 @@ describe('rpcErrorUtils', () => {
     });
   });
 
-  describe('reconstructHardwareWalletError', () => {
+  describe('toHardwareWalletError', () => {
     it('returns original HardwareWalletError instance unchanged', () => {
       const originalError = new HardwareWalletError('Device disconnected', {
         code: ErrorCode.DeviceDisconnected,
@@ -188,6 +188,19 @@ describe('rpcErrorUtils', () => {
         walletType: mockWalletType,
       });
       expect(result.message).toBe('Hardware wallet error');
+    });
+
+    it('maps Ledger status codes in JsonRpcError data to ErrorCode', () => {
+      const jsonRpcError = new JsonRpcError(1234, 'Ledger device error', {
+        code: 21781,
+      });
+
+      const result = toHardwareWalletError(
+        jsonRpcError,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result.code).toBe(ErrorCode.AuthenticationDeviceLocked);
     });
 
     it('preserves stack trace from JsonRpcError', () => {

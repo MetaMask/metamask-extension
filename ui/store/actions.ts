@@ -4168,7 +4168,7 @@ export function hideLoadingIndication(): Action {
   };
 }
 
-export function setPendingHardwareSigning(
+export function setPendingHardwareWalletSigning(
   isPending: boolean,
 ): PayloadAction<boolean> {
   return {

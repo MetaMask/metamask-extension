@@ -3,19 +3,20 @@ import { render, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   showModal,
   hideModal,
-  setPendingHardwareSigning,
+  setPendingHardwareWalletSigning,
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import { createHardwareWalletError } from './errors';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   HardwareWalletErrorProvider,
   useHardwareWalletError,
 } from './HardwareWalletErrorProvider';
 import { HardwareWalletType } from './types';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
 
 const mockStore = configureStore([]);
 
@@ -35,7 +36,8 @@ jest.mock('./HardwareWalletContext', () => ({
 
 const mockShowModal = showModal as jest.Mock;
 const mockHideModal = hideModal as jest.Mock;
-const mockSetPendingHardwareSigning = setPendingHardwareSigning as jest.Mock;
+const mocksetPendingHardwareWalletSigning =
+  setPendingHardwareWalletSigning as jest.Mock;
 const mockCloseCurrentNotificationWindow =
   closeCurrentNotificationWindow as jest.Mock;
 
@@ -50,7 +52,7 @@ mockHideModal.mockImplementation(() => ({
   type: 'MODAL_CLOSE',
 }));
 
-mockSetPendingHardwareSigning.mockImplementation((payload) => ({
+mocksetPendingHardwareWalletSigning.mockImplementation((payload) => ({
   type: 'SET_PENDING_HARDWARE_SIGNING',
   payload,
 }));
@@ -150,7 +152,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
 
       expect(mockShowModal).toHaveBeenCalledWith({
-        name: 'HARDWARE_WALLET_ERROR',
+        name: HARDWARE_WALLET_ERROR_MODAL_NAME,
         error,
         onRetry: expect.any(Function),
         onCancel: expect.any(Function),
@@ -267,7 +269,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
 
       expect(mockShowModal).toHaveBeenCalledWith({
-        name: 'HARDWARE_WALLET_ERROR',
+        name: HARDWARE_WALLET_ERROR_MODAL_NAME,
         error: userCancelError,
         onRetry: expect.any(Function),
         onCancel: expect.any(Function),

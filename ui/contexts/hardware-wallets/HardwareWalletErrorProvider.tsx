@@ -13,7 +13,7 @@ import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   showModal,
   hideModal,
-  setPendingHardwareSigning,
+  setPendingHardwareWalletSigning,
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import {
@@ -78,58 +78,49 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   // Store the current error to display (independent of connection state)
   const [displayedError, setDisplayedError] = useState<unknown | null>(null);
   const isModalOpenRef = useRef(false);
-  // Track the last error from connection state to detect resolution
-  const lastConnectionErrorRef = useRef<unknown | null>(null);
   // Track if the modal was manually shown (vs from connection state)
   // Manually shown modals should NOT be dismissed based on selected account
   const isManuallyShownRef = useRef(false);
+
+  const resetModalState = useCallback(() => {
+    isModalOpenRef.current = false;
+    isManuallyShownRef.current = false;
+    setDisplayedError(null);
+    dispatch(hideModal());
+    dispatch(setPendingHardwareWalletSigning(false));
+  }, [dispatch]);
 
   /**
    * Handle retry action from the modal
    */
   const handleRetry = useCallback(async () => {
     // Close the modal and clear the pending hardware signing flag
-    isModalOpenRef.current = false;
-    isManuallyShownRef.current = false;
-    setDisplayedError(null);
-    lastConnectionErrorRef.current = null;
-    dispatch(hideModal());
-    dispatch(setPendingHardwareSigning(false));
+    resetModalState();
 
     // Attempt retry
     await ensureDeviceReady();
-  }, [ensureDeviceReady, dispatch]);
+  }, [ensureDeviceReady, resetModalState]);
 
   /**
    * Handle cancel/close action from the modal
    */
   const handleCancel = useCallback(() => {
-    isModalOpenRef.current = false;
-    isManuallyShownRef.current = false;
-    setDisplayedError(null);
-    lastConnectionErrorRef.current = null;
-    dispatch(hideModal());
-    dispatch(setPendingHardwareSigning(false));
+    resetModalState();
     clearError();
     // Close the popup if there are no more pending approvals
     dispatch(closeCurrentNotificationWindow());
-  }, [clearError, dispatch]);
+  }, [clearError, dispatch, resetModalState]);
 
   /**
    * Manually dismiss the error modal
    */
   const dismissErrorModal = useCallback(() => {
     if (isModalOpenRef.current) {
-      isModalOpenRef.current = false;
-      isManuallyShownRef.current = false;
-      setDisplayedError(null);
-      lastConnectionErrorRef.current = null;
-      dispatch(hideModal());
-      dispatch(setPendingHardwareSigning(false));
+      resetModalState();
       // Close the popup if there are no more pending approvals
       dispatch(closeCurrentNotificationWindow());
     }
-  }, [dispatch]);
+  }, [dispatch, resetModalState]);
 
   /**
    * Check if an error is a user rejection (UserRejected or UserCancelled)
@@ -171,11 +162,10 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
           isModalOpenRef.current = false;
           isManuallyShownRef.current = false;
           setDisplayedError(null);
-          lastConnectionErrorRef.current = null;
           dispatch(hideModal());
         }
         // Clear pendingHardwareSigning and close the popup
-        dispatch(setPendingHardwareSigning(false));
+        dispatch(setPendingHardwareWalletSigning(false));
         dispatch(closeCurrentNotificationWindow());
         return;
       }
@@ -187,11 +177,9 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
 
       setDisplayedError(error);
       isModalOpenRef.current = true;
-      // Track this error so we know when it's resolved
       if (skipFilters) {
-        // Manually shown errors - track them and mark as manually shown
+        // Manually shown errors - mark them as manually shown
         // so they won't be dismissed by the selected account check
-        lastConnectionErrorRef.current = error;
         isManuallyShownRef.current = true;
       }
 
@@ -235,7 +223,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     // Reset state when not a hardware wallet account (for auto-shown modals only)
     if (!isHardwareWalletAccount && displayedError) {
       setDisplayedError(null);
-      lastConnectionErrorRef.current = null;
       if (isModalOpenRef.current) {
         isModalOpenRef.current = false;
         dispatch(hideModal());
@@ -258,15 +245,12 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       // Object reference equality (error !== displayedError) doesn't work reliably
       // because new error objects are created each time connection state changes
       const errorCode = (error as { code?: number })?.code;
-      const lastErrorCode = (
-        lastConnectionErrorRef.current as { code?: number }
-      )?.code;
+      const displayedErrorCode = (displayedError as { code?: number })?.code;
 
       // Only show modal if the error code has changed
       // OR if we haven't shown an error yet (displayedError is null)
       // Note: showErrorModalInternal will handle user rejections by dismissing the modal
-      if (errorCode !== lastErrorCode || !displayedError) {
-        lastConnectionErrorRef.current = error;
+      if (errorCode !== displayedErrorCode || !displayedError) {
         setDisplayedError(error);
         showErrorModalInternal(error, false);
       }
@@ -288,7 +272,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
         dispatch(hideModal());
         isModalOpenRef.current = false;
         setDisplayedError(null);
-        lastConnectionErrorRef.current = null;
       }
     };
   }, [dispatch]);
