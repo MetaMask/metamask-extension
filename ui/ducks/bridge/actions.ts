@@ -118,7 +118,7 @@ const getBalanceAmount = (
       {
         name: TraceName.BridgeBalancesUpdated,
         data: {
-          srcChainId: srcChainId,
+          srcChainId,
           isNative,
         },
         startTime: Date.now(),
