@@ -1,9 +1,14 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { render, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { showModal, hideModal } from '../../store/actions';
+import {
+  showModal,
+  hideModal,
+  setPendingHardwareSigning,
+  closeCurrentNotificationWindow,
+} from '../../store/actions';
 import { createHardwareWalletError } from './errors';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
@@ -15,9 +20,24 @@ import { HardwareWalletType } from './types';
 const mockStore = configureStore([]);
 
 jest.mock('../../store/actions');
+jest.mock('./HardwareWalletContext', () => ({
+  HardwareWalletProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
+  useHardwareWalletConfig: () => ({ isHardwareWalletAccount: true }),
+  useHardwareWalletState: () => ({
+    connectionState: { status: 'ready' },
+  }),
+  useHardwareWalletActions: () => ({
+    ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    clearError: jest.fn(),
+  }),
+}));
 
 const mockShowModal = showModal as jest.Mock;
 const mockHideModal = hideModal as jest.Mock;
+const mockSetPendingHardwareSigning = setPendingHardwareSigning as jest.Mock;
+const mockCloseCurrentNotificationWindow =
+  closeCurrentNotificationWindow as jest.Mock;
 
 // Mock showModal to return a proper action object
 mockShowModal.mockImplementation((payload) => ({
@@ -28,6 +48,15 @@ mockShowModal.mockImplementation((payload) => ({
 // Mock hideModal to return a proper action object
 mockHideModal.mockImplementation(() => ({
   type: 'MODAL_CLOSE',
+}));
+
+mockSetPendingHardwareSigning.mockImplementation((payload) => ({
+  type: 'SET_PENDING_HARDWARE_SIGNING',
+  payload,
+}));
+
+mockCloseCurrentNotificationWindow.mockImplementation(() => ({
+  type: 'CLOSE_NOTIFICATION_WINDOW',
 }));
 
 const createMockState = (
@@ -60,6 +89,25 @@ const createWrapper =
     </Provider>
   );
 
+type HardwareWalletErrorHook = ReturnType<typeof useHardwareWalletError>;
+
+const renderHardwareWalletErrorHook = (store: ReturnType<typeof mockStore>) => {
+  const result = { current: null as HardwareWalletErrorHook | null };
+
+  const HookConsumer = () => {
+    result.current = useHardwareWalletError();
+    return null;
+  };
+
+  render(<HookConsumer />, { wrapper: createWrapper(store) });
+
+  if (!result.current) {
+    throw new Error('HardwareWalletError hook did not initialize');
+  }
+
+  return { result: result as { current: HardwareWalletErrorHook } };
+};
+
 describe('HardwareWalletErrorProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -67,20 +115,29 @@ describe('HardwareWalletErrorProvider', () => {
 
   describe('useHardwareWalletError', () => {
     it('throws error when used outside provider', () => {
-      const { result } = renderHook(() => useHardwareWalletError());
+      const HookConsumer = () => {
+        useHardwareWalletError();
+        return null;
+      };
 
-      expect(result.error?.message).toContain(
-        'useHardwareWalletError must be used within HardwareWalletErrorProvider',
-      );
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        expect(() => render(<HookConsumer />)).toThrow(
+          'useHardwareWalletError must be used within HardwareWalletErrorProvider',
+        );
+      } finally {
+        consoleError.mockRestore();
+      }
     });
   });
 
   describe('error modal functionality', () => {
     it('shows error modal when showErrorModal is called', () => {
       const store = mockStore(createMockState());
-      const { result } = renderHook(() => useHardwareWalletError(), {
-        wrapper: createWrapper(store),
-      });
+      const { result } = renderHardwareWalletErrorHook(store);
 
       const error = createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
@@ -103,9 +160,7 @@ describe('HardwareWalletErrorProvider', () => {
 
     it('dismisses error modal when dismissErrorModal is called', () => {
       const store = mockStore(createMockState());
-      const { result } = renderHook(() => useHardwareWalletError(), {
-        wrapper: createWrapper(store),
-      });
+      const { result } = renderHardwareWalletErrorHook(store);
 
       const error = createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
@@ -128,9 +183,7 @@ describe('HardwareWalletErrorProvider', () => {
 
     it('reports modal visibility state', () => {
       const store = mockStore(createMockState());
-      const { result } = renderHook(() => useHardwareWalletError(), {
-        wrapper: createWrapper(store),
-      });
+      const { result } = renderHardwareWalletErrorHook(store);
 
       const error = createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
@@ -155,9 +208,7 @@ describe('HardwareWalletErrorProvider', () => {
 
     it('calls onRetry callback when retry is triggered', async () => {
       const store = mockStore(createMockState());
-      const { result } = renderHook(() => useHardwareWalletError(), {
-        wrapper: createWrapper(store),
-      });
+      const { result } = renderHardwareWalletErrorHook(store);
 
       const error = createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
@@ -180,9 +231,7 @@ describe('HardwareWalletErrorProvider', () => {
 
     it('calls onCancel callback when cancel is triggered', () => {
       const store = mockStore(createMockState());
-      const { result } = renderHook(() => useHardwareWalletError(), {
-        wrapper: createWrapper(store),
-      });
+      const { result } = renderHardwareWalletErrorHook(store);
 
       const error = createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
@@ -205,9 +254,7 @@ describe('HardwareWalletErrorProvider', () => {
 
     it('shows modal for user cancellation errors when called manually', () => {
       const store = mockStore(createMockState());
-      const { result } = renderHook(() => useHardwareWalletError(), {
-        wrapper: createWrapper(store),
-      });
+      const { result } = renderHardwareWalletErrorHook(store);
 
       const userCancelError = createHardwareWalletError(
         ErrorCode.UserCancelled,

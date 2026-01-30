@@ -165,8 +165,8 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   const showErrorModalInternal = useCallback(
     (error: unknown, skipFilters = false) => {
       // For user rejections/cancellations: dismiss any open modal and close the popup
-      // This applies regardless of skipFilters - user rejections should ALWAYS dismiss
-      if (isUserRejection(error)) {
+      // unless explicitly forced (manual calls can show these errors)
+      if (isUserRejection(error) && !skipFilters) {
         if (isModalOpenRef.current) {
           isModalOpenRef.current = false;
           isManuallyShownRef.current = false;
