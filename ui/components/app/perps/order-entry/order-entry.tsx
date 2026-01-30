@@ -4,7 +4,7 @@ import { Button, ButtonVariant, ButtonSize } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import type { OrderEntryProps } from './order-entry.types';
-import { usePerpsOrderForm } from './hooks';
+import { usePerpsOrderForm } from '../../../../hooks/perps';
 
 import { AmountInput } from './components/amount-input';
 import { LeverageSlider } from './components/leverage-slider';

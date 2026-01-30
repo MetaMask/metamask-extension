@@ -1,12 +1,16 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useFormatters } from '../../../../../hooks/useFormatters';
-import type { OrderFormState, OrderMode, ExistingPositionData } from '../order-entry.types';
+import { useFormatters } from '../useFormatters';
+import type {
+  OrderFormState,
+  OrderMode,
+  ExistingPositionData,
+} from '../../components/app/perps/order-entry/order-entry.types';
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
   calculateMarginRequired,
   estimateLiquidationPrice,
-} from '../order-entry.mocks';
+} from '../../components/app/perps/order-entry/order-entry.mocks';
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
