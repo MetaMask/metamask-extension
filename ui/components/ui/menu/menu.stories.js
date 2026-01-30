@@ -1,43 +1,47 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
-import PropTypes from 'prop-types';
-import { IconName, BannerAlert } from '../../component-library';
-import { Severity } from '../../../helpers/constants/design-system';
-import { Menu, MenuItem } from '.';
+
+import Popover from '../popover';
+import { Box, Text } from '../../component-library';
 
 export default {
-  title: 'Components/UI/Menu',
-};
-
-const Deprecated = ({ children }) => (
-  <>
-    <BannerAlert
-      severity={Severity.Warning}
-      title="Deprecated"
-      description="<Menu/> has been deprecated in favor of <Popover/>"
-      marginBottom={4}
-    />
-    {children}
-  </>
-);
-
-Deprecated.propTypes = {
-  children: PropTypes.node,
+  title: 'Components/UI/Menu (Popover Migration)',
 };
 
 export const DefaultStory = () => {
+  const [anchorElement, setAnchorElement] = useState(null);
   return (
-    <Deprecated>
-      <Menu onHide={action('Hide')}>
-        <MenuItem iconName={IconName.Eye} onClick={action('Menu Item 1')}>
-          Menu Item 1
-        </MenuItem>
-        <MenuItem onClick={action('Menu Item 2')}>Menu Item 2</MenuItem>
-        <MenuItem iconName={IconName.EyeSlash} onClick={action('Menu Item 3')}>
-          Menu Item 3
-        </MenuItem>
-      </Menu>
-    </Deprecated>
+    <div style={{ padding: '120px' }}>
+      <button ref={setAnchorElement}>Anchor</button>
+
+      <Popover referenceElement={anchorElement} onClose={action('Close')}>
+        <Box
+          role="menuitem"
+          tabIndex={0}
+          onClick={action('Menu Item 1')}
+          style={{ padding: '8px 12px', cursor: 'pointer' }}
+        >
+          <Text>Menu Item 1</Text>
+        </Box>
+
+        <Box
+          role="menuitem"
+          tabIndex={0}
+          onClick={action('Menu Item 2')}
+          style={{ padding: '8px 12px', cursor: 'pointer' }}
+        >
+          <Text>Menu Item 2</Text>
+        </Box>
+        <Box
+          role="menuitem"
+          tabIndex={0}
+          onClick={action('Menu Item 3')}
+          style={{ padding: '8px 12px', cursor: 'pointer' }}
+        >
+          <Text>Menu Item 3</Text>
+        </Box>
+      </Popover>
+    </div>
   );
 };
 
@@ -46,23 +50,38 @@ DefaultStory.storyName = 'Default';
 export const Anchored = () => {
   const [anchorElement, setAnchorElement] = useState(null);
   return (
-    <Deprecated>
-      <button ref={setAnchorElement}>Menu</button>
-      <Menu anchorElement={anchorElement} onHide={action('Hide')}>
-        <MenuItem iconName={IconName.Export} onClick={action('Menu Item 1')}>
-          Menu Item 1
-        </MenuItem>
-        <MenuItem onClick={action('Menu Item 2')}>Menu Item 2</MenuItem>
-        <MenuItem iconName={IconName.EyeSlash} onClick={action('Menu Item 3')}>
-          Menu Item 3
-        </MenuItem>
-        <MenuItem
-          iconName={IconName.AddSquare}
-          onClick={action('Disabled Item')}
-        >
-          Disabled Item
-        </MenuItem>
-      </Menu>
-    </Deprecated>
+    <>
+      <button ref={setAnchorElement}>Open Popover</button>
+      {anchorElement && (
+        <Popover referenceElement={anchorElement} onClose={action('Close')}>
+          <Box padding={2}>
+            <Box
+              role="menuitem"
+              tabIndex={0}
+              onClick={action('Item 1')}
+              style={{ padding: '8px 12px', cursor: 'pointer' }}
+            >
+              <Text>Menu Item 1</Text>
+            </Box>
+            <Box
+              role="menuitem"
+              tabIndex={0}
+              onClick={action('Item 2')}
+              style={{ padding: '8px 12px', cursor: 'pointer' }}
+            >
+              <Text>Menu Item 2</Text>
+            </Box>
+            <Box
+              role="menuitem"
+              tabIndex={0}
+              onClick={action('Item 3')}
+              style={{ padding: '8px 12px', cursor: 'pointer' }}
+            >
+              <Text>Menu Item 3</Text>
+            </Box>
+          </Box>
+        </Popover>
+      )}
+    </>
   );
 };
