@@ -93,6 +93,7 @@ import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
@@ -2218,6 +2219,7 @@ async function approveHardwareTransaction(
     await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(txMeta.id));
     dispatch(updateCustomNonce(''));
+    dispatch(setPendingHardwareSigning(false));
     dispatch(closeCurrentNotificationWindow());
   } catch (error) {
     await forceUpdateMetamaskState(dispatch);
@@ -2229,10 +2231,6 @@ async function approveHardwareTransaction(
     throw hwError;
   } finally {
     dispatch(hideLoadingIndication());
-    // Only clear pendingHardwareSigning on success.
-    // On error, keep it true to prevent auto-navigation/close of the popup.
-    // The error modal will clear it when dismissed via useTransactionConfirm.
-    dispatch(setPendingHardwareSigning(false));
   }
 }
 
@@ -4182,8 +4180,11 @@ export function closeCurrentNotificationWindow(): ThunkAction<
       return;
     }
 
+    const environmentType = getEnvironmentType();
     if (
-      getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
+      [ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_POPUP].includes(
+        environmentType,
+      ) &&
       !hasTransactionPendingApprovals(state) &&
       !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
@@ -5887,6 +5888,8 @@ async function resolveHardwareApproval(
     ]);
 
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+
+    dispatch(setPendingHardwareSigning(false));
 
     if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());

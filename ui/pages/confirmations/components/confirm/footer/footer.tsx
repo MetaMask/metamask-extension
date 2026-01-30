@@ -6,8 +6,13 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
+import { AccountOverviewTabKey } from '../../../../../../shared/constants/app-state';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import {
+  isFullScreenEnvironmentType,
+  isPopupEnvironmentType,
+} from '../../../../../../shared/constants/app';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
   Box,
@@ -37,6 +42,9 @@ import {
   setPendingHardwareSigning,
   closeCurrentNotificationWindow,
 } from '../../../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
@@ -122,11 +130,12 @@ const ConfirmButton = ({
 
   const {
     alerts,
-    hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
     hasUnconfirmedFieldDangerAlerts,
     unconfirmedFieldDangerAlerts,
   } = useAlerts(alertOwnerId);
+
+  const shouldShowReviewAlerts = false;
 
   const hasDangerBlockingAlerts = alerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
@@ -153,7 +162,7 @@ const ConfirmButton = ({
           onSubmit={onSubmit}
         />
       )}
-      {false ? (
+      {shouldShowReviewAlerts ? (
         <Button
           block
           danger
@@ -292,6 +301,35 @@ const Footer = () => {
     return true;
   }, [isHardwareWalletAccount, deviceId, ensureDeviceReady]);
 
+  const handleSignatureCompletion = useCallback(() => {
+    const environmentType = getEnvironmentType();
+    const isPopupEnvironment = isPopupEnvironmentType(environmentType);
+    const isFullScreenEnvironment =
+      isFullScreenEnvironmentType(environmentType);
+
+    if (confirmationsCount > 1 && currentConfirmation?.id) {
+      navigateNext(currentConfirmation.id);
+      return;
+    }
+
+    if (isPopupEnvironment) {
+      dispatch(closeCurrentNotificationWindow());
+      return;
+    }
+
+    if (isFullScreenEnvironment) {
+      navigate(`${DEFAULT_ROUTE}?tab=${AccountOverviewTabKey.Activity}`, {
+        replace: true,
+      });
+    }
+  }, [
+    confirmationsCount,
+    currentConfirmation?.id,
+    dispatch,
+    navigate,
+    navigateNext,
+  ]);
+
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
       return;
@@ -337,8 +375,8 @@ const Footer = () => {
             fromAddress,
           }),
         );
-        navigateNext(currentConfirmation.id);
         resetTransactionState();
+        handleSignatureCompletion();
       } catch (error) {
         // Handle hardware wallet errors from resolveHardwareApproval
         console.log(
@@ -361,14 +399,14 @@ const Footer = () => {
         // 2. Close the popup directly
         if (isUserRejectedHardwareWalletError(error)) {
           console.log(
-            '[Footer onSubmit] User rejection - clearing flag and closing popup',
+            '[Footer onSubmit] User rejection - clearing flag and routing',
           );
 
-          // Clear pendingHardwareSigning and close the popup directly.
+          // Clear pendingHardwareSigning before any navigation/close logic.
           // The approval is already gone (processed by accept with an error result),
           // so rejectPendingApproval would do nothing useful.
           dispatch(setPendingHardwareSigning(false));
-          dispatch(closeCurrentNotificationWindow());
+          handleSignatureCompletion();
           return;
         }
 
@@ -435,8 +473,8 @@ const Footer = () => {
     resetTransactionState,
     onTransactionConfirm,
     dispatch,
-    navigateNext,
     showErrorModal,
+    handleSignatureCompletion,
   ]);
 
   const handleFooterCancel = useCallback(async () => {
