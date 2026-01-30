@@ -35,10 +35,10 @@ jest.mock('../animations/useTransitionToEmpty', () => ({
   }),
 }));
 
-// Simple mock slides for testing
+// Simple mock slides for testing (with contentful- prefix to match Contentful slides)
 const mockSlides = [
   {
-    id: 'test-slide-1',
+    id: 'contentful-test-slide-1',
     title: 'Test Slide 1',
     description: 'Test description 1',
     image: 'https://example.com/image1.jpg',
@@ -46,7 +46,7 @@ const mockSlides = [
     variableName: 'test1',
   },
   {
-    id: 'test-slide-2',
+    id: 'contentful-test-slide-2',
     title: 'Test Slide 2',
     description: 'Test description 2',
     image: 'https://example.com/image2.jpg',
@@ -72,7 +72,7 @@ describe('Carousel', () => {
   it('renders without crashing', () => {
     render(<Carousel {...defaultProps} />);
     expect(
-      screen.getByTestId('carousel-slide-test-slide-1'),
+      screen.getByTestId('carousel-slide-contentful-test-slide-1'),
     ).toBeInTheDocument();
   });
 
@@ -117,7 +117,7 @@ describe('Carousel', () => {
     const slidesWithDismissed = [
       ...mockSlides,
       {
-        id: 'dismissed-slide',
+        id: 'contentful-dismissed-slide',
         title: 'Dismissed Slide',
         description: 'Should not show',
         image: 'https://example.com/dismissed.jpg',
@@ -131,6 +131,32 @@ describe('Carousel', () => {
     // Should not show dismissed slide
     expect(screen.queryByText('Dismissed Slide')).not.toBeInTheDocument();
     // Should still show non-dismissed slides
+    expect(screen.getByText('Test Slide 1')).toBeInTheDocument();
+  });
+
+  it('filters out non-Contentful slides (deprecated slides)', () => {
+    const slidesWithDeprecated = [
+      ...mockSlides,
+      {
+        id: 'deprecated-slide',
+        title: 'slideDebitCardTitle',
+        description: 'slideDebitCardDescription',
+        image: 'https://example.com/deprecated.jpg',
+        dismissed: false,
+        variableName: 'debitCard',
+      },
+    ];
+
+    render(<Carousel {...defaultProps} slides={slidesWithDeprecated} />);
+
+    // Should not show non-Contentful slide
+    expect(
+      screen.queryByText('slideDebitCardTitle'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('slideDebitCardDescription'),
+    ).not.toBeInTheDocument();
+    // Should still show Contentful slides
     expect(screen.getByText('Test Slide 1')).toBeInTheDocument();
   });
 });

@@ -28,6 +28,16 @@ export const StackCard: React.FC<StackCardProps> = ({
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
+  // Helper function to safely get translated text or fallback to original
+  const getTranslatedText = (key: string): string => {
+    if (isContentfulContent) {
+      return key;
+    }
+    // Attempt translation, fallback to key if translation doesn't exist
+    const translated = t(key);
+    return translated || key;
+  };
+
   const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -96,7 +106,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
-            {isContentfulContent ? slide.title : t(slide.title)}
+            {getTranslatedText(slide.title)}
           </Text>
 
           {onTransitionToNextCard && (
@@ -104,9 +114,7 @@ export const StackCard: React.FC<StackCardProps> = ({
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
-              ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
-              ])}
+              ariaLabel={t('closeSlide', [getTranslatedText(slide.title)])}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}
             />
@@ -120,7 +128,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
-            {isContentfulContent ? slide.description : t(slide.description)}
+            {getTranslatedText(slide.description)}
           </Text>
         </div>
       </div>

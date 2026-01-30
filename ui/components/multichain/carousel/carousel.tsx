@@ -48,6 +48,10 @@ export const Carousel = React.forwardRef(
     // Filter visible slides
     const visibleSlides = slides
       .filter((slide) => {
+        // Only show Contentful slides to prevent rendering deprecated slides with missing i18n keys
+        if (!slide.id.startsWith('contentful-')) {
+          return false;
+        }
         if (
           slide.variableName === 'solana' &&
           selectedAccount?.type === SolAccountType.DataAccount
