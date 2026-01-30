@@ -10,13 +10,22 @@ import {
   PREVIOUS_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SendPages } from '../../constants/send';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
 import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
+import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
+
+type SnapConfirmSendResult = {
+  valid?: boolean;
+  errors?: { code: string }[];
+  transactionId?: string;
+};
 
 export const useSendActions = () => {
+  const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
@@ -27,6 +36,7 @@ export const useSendActions = () => {
     hexData,
     maxValueMode,
     toResolved: to,
+    updateSubmitError,
     value,
   } = useSendContext();
   const { isEvmSendType } = useSendType();
@@ -36,6 +46,10 @@ export const useSendActions = () => {
       return;
     }
     const toAddress = to;
+
+    // Clear any previous submit error
+    updateSubmitError(undefined);
+
     if (isEvmSendType) {
       dispatch(
         await submitEvmTransaction({
@@ -54,7 +68,7 @@ export const useSendActions = () => {
     } else {
       navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
       try {
-        await sendMultichainTransactionForReview(
+        const result = (await sendMultichainTransactionForReview(
           fromAccount as InternalAccount,
           {
             fromAccountId: fromAccount?.id as string,
@@ -62,7 +76,20 @@ export const useSendActions = () => {
             assetId: asset.assetId as CaipAssetType,
             amount: addLeadingZeroIfNeeded(value || ('0' as string)) as string,
           },
-        );
+        )) as SnapConfirmSendResult;
+
+        // Check if the snap returned a validation error
+        if (result?.valid === false && result?.errors?.length) {
+          const errorMessage = mapSnapErrorCodeIntoTranslation(
+            result.errors[0].code,
+            t,
+          );
+          updateSubmitError(errorMessage);
+          navigate(-1);
+          return;
+        }
+
+        // Success - navigate to activity tab
         navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } catch (error) {
         // intentional empty catch
@@ -78,7 +105,9 @@ export const useSendActions = () => {
     navigate,
     isEvmSendType,
     maxValueMode,
+    t,
     to,
+    updateSubmitError,
     value,
   ]);
 
