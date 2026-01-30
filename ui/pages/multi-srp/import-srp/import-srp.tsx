@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { isValidMnemonic } from '@ethersproject/hdnode';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   hideWarning,
@@ -55,7 +56,7 @@ export const ImportSrp = () => {
 
   async function importWallet() {
     try {
-      if (!secretRecoveryPhrase) {
+      if (!secretRecoveryPhrase || !isValidMnemonic(secretRecoveryPhrase)) {
         return;
       }
 
