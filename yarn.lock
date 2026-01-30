@@ -6985,9 +6985,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-controller@npm:^1.0.0, @metamask/gator-permissions-controller@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/gator-permissions-controller@npm:1.1.0"
+"@metamask/gator-permissions-controller@npm:^1.0.0, @metamask/gator-permissions-controller@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@metamask/gator-permissions-controller@npm:1.1.2"
   dependencies:
     "@metamask/7715-permission-types": "npm:^0.5.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -6997,9 +6997,9 @@ __metadata:
     "@metamask/snaps-controllers": "npm:^17.2.0"
     "@metamask/snaps-sdk": "npm:^10.3.0"
     "@metamask/snaps-utils": "npm:^11.7.0"
-    "@metamask/transaction-controller": "npm:^62.9.2"
+    "@metamask/transaction-controller": "npm:^62.11.0"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/859fb7acb95879775272f802d213f88d2191c1fa009d626a405ca624c4ddc73959314d1165594dd2ef0766a084e8df355ccf31dde54220e7669334ac03006810
+  checksum: 10/cf0f032f272a7633ea9553fcc5176df110676e93d6ab63b7b61564b1d8a05acb57c9daded3d980e391891ab525697dd4bd194763d453c227e3a70d323aa85e9c
   languageName: node
   linkType: hard
 
@@ -8739,19 +8739,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "@metamask/subscription-controller@npm:5.3.1"
+"@metamask/subscription-controller@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "@metamask/subscription-controller@npm:5.4.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/polling-controller": "npm:^16.0.0"
+    "@metamask/polling-controller": "npm:^16.0.2"
     "@metamask/profile-sync-controller": "npm:^27.0.0"
-    "@metamask/transaction-controller": "npm:^62.4.0"
-    "@metamask/utils": "npm:^11.8.1"
+    "@metamask/transaction-controller": "npm:^62.9.2"
+    "@metamask/utils": "npm:^11.9.0"
     bignumber.js: "npm:^9.1.2"
-  checksum: 10/fdf9188838f9f988a964f9239d8298ac536d7ea2dc46da8b9c31fa4ed3e4e33121fb71e2297002adca4715b9ee115e3e9f275cc980f6ef95752981af57319964
+  checksum: 10/a44b012489ac01f5ae2f2b3a6ad492374f0a45b1b27e6ff64607005b1511162fd841e0b3e97dd088781ab42921c5bbabba828c714e71d54321e6f0f61eaeda74
   languageName: node
   linkType: hard
 
@@ -8852,8 +8852,8 @@ __metadata:
   linkType: hard
 
 "@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.8.0, @metamask/transaction-controller@npm:^62.9.1, @metamask/transaction-controller@npm:^62.9.2":
-  version: 62.11.0
-  resolution: "@metamask/transaction-controller@npm:62.11.0"
+  version: 62.12.0
+  resolution: "@metamask/transaction-controller@npm:62.12.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -8886,7 +8886,7 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/88ba9f1b09226524ad10805c34f395209a0d2d10ff6ed1710280e66a160461dff04a9ce1d1cceecc8521a7bfe39202aa8bc4ac8af5088b940ad0e2a27881006c
+  checksum: 10/949150f95a68186b9c919876c9c70ba2c8e6a072e3bb504624a650b8bd161931126fc50d5112c3d1fd58d541ca762a788116376b6325a19d2ee8e9d9ac0e3a4a
   languageName: node
   linkType: hard
 
@@ -33658,7 +33658,7 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^25.0.0"
-    "@metamask/gator-permissions-controller": "npm:^1.1.0"
+    "@metamask/gator-permissions-controller": "npm:^1.1.2"
     "@metamask/gator-permissions-snap": "npm:^1.1.1"
     "@metamask/hw-wallet-sdk": "npm:^0.1.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
@@ -33726,7 +33726,7 @@ __metadata:
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/storage-service": "npm:^0.0.1"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^5.3.1"
+    "@metamask/subscription-controller": "npm:^5.4.1"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
