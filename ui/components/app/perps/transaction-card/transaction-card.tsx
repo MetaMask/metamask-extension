@@ -86,18 +86,14 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     if (transaction.type === 'order' && transaction.order) {
       const status = transaction.order.status;
       // Only show certain statuses, blank for 'open'
-      const statusText =
-        status === 'filled'
-          ? t('perpsStatusFilled')
-          : status === 'canceled'
-            ? t('perpsStatusCanceled')
-            : status === 'queued'
-              ? t('perpsStatusQueued')
-              : status === 'rejected'
-                ? t('perpsStatusRejected')
-                : status === 'triggered'
-                  ? t('perpsStatusTriggered')
-                  : '';
+      const STATUS_KEYS: Record<string, string> = {
+        filled: 'perpsStatusFilled',
+        canceled: 'perpsStatusCanceled',
+        queued: 'perpsStatusQueued',
+        rejected: 'perpsStatusRejected',
+        triggered: 'perpsStatusTriggered',
+      };
+      const statusText = STATUS_KEYS[status] ? t(STATUS_KEYS[status]) : '';
       return { text: statusText, color: TextColor.TextMuted };
     }
     return { text: displayName, color: TextColor.TextDefault };
