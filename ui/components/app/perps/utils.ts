@@ -1,4 +1,5 @@
 import { TextColor } from '@metamask/design-system-react';
+import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import type {
   Order,
   PerpsMarketData,
@@ -208,53 +209,13 @@ type GroupedTransactions = {
 };
 
 /**
- * Formats a timestamp into a relative time string
- *
- * @param timestamp - The timestamp in milliseconds
- * @returns A human-readable relative time string
- * @example
- * formatRelativeTime(Date.now() - 3600000) => '1h ago'
- * formatRelativeTime(Date.now() - 86400000) => 'Yesterday'
- * formatRelativeTime(Date.now() - 172800000) => '2 days ago'
- */
-export const formatRelativeTime = (timestamp: number): string => {
-  const now = Date.now();
-  const diffMs = now - timestamp;
-  const diffMinutes = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
-
-  if (diffMinutes < 1) {
-    return 'Just now';
-  }
-  if (diffMinutes < 60) {
-    return `${diffMinutes}m ago`;
-  }
-  if (diffHours < 24) {
-    return `${diffHours}h ago`;
-  }
-  if (diffDays === 1) {
-    return 'Yesterday';
-  }
-  if (diffDays < 7) {
-    return `${diffDays} days ago`;
-  }
-
-  // For older transactions, show the date
-  const date = new Date(timestamp);
-  return date.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-  });
-};
-
-/**
  * Groups transactions by date for display in the activity list
  *
  * @param transactions - Array of transactions to group
+ * @param t - Translation function for date labels
  * @returns Array of grouped transactions with date labels
  * @example
- * groupTransactionsByDate(transactions) => [
+ * groupTransactionsByDate(transactions, t) => [
  *   { date: 'Today', transactions: [...] },
  *   { date: 'Yesterday', transactions: [...] },
  *   { date: 'Jan 15', transactions: [...] }
@@ -262,6 +223,7 @@ export const formatRelativeTime = (timestamp: number): string => {
  */
 export const groupTransactionsByDate = (
   transactions: PerpsTransaction[],
+  t: (key: string) => string,
 ): GroupedTransactions[] => {
   const groups = new Map<string, PerpsTransaction[]>();
   const now = new Date();
@@ -283,14 +245,11 @@ export const groupTransactionsByDate = (
 
     let dateLabel: string;
     if (txDay.getTime() === today.getTime()) {
-      dateLabel = 'Today';
+      dateLabel = t('perpsDateToday');
     } else if (txDay.getTime() === yesterday.getTime()) {
-      dateLabel = 'Yesterday';
+      dateLabel = t('perpsDateYesterday');
     } else {
-      dateLabel = txDate.toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric',
-      });
+      dateLabel = formatDateWithYearContext(transaction.timestamp);
     }
 
     const existing = groups.get(dateLabel) || [];

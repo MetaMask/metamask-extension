@@ -31,7 +31,6 @@ export {
   getStatusColor,
   getDisplaySymbol,
   getAssetIconUrl,
-  formatRelativeTime,
   groupTransactionsByDate,
   filterTransactionsByType,
   getTransactionStatusColor,

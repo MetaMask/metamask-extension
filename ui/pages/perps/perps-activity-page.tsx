@@ -54,8 +54,12 @@ const PerpsActivityPage: React.FC = () => {
   );
 
   const groupedTransactions = useMemo(
-    () => groupTransactionsByDate(filteredTransactions),
-    [filteredTransactions],
+    () =>
+      groupTransactionsByDate(
+        filteredTransactions,
+        t as (key: string) => string,
+      ),
+    [filteredTransactions, t],
   );
 
   // Navigation handlers
