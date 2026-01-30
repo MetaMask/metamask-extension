@@ -329,11 +329,11 @@
   "RewardsController": {
     "rewardsAccounts": "object",
     "rewardsActiveAccount": null,
+    "rewardsPointsEstimateHistory": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
     "rewardsSubscriptionTokens": "object",
-    "rewardsSubscriptions": "object",
-    "rewardsPointsEstimateHistory": "object"
+    "rewardsSubscriptions": "object"
   },
   "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",
