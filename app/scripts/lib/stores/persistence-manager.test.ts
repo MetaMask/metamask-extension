@@ -263,6 +263,24 @@ describe('PersistenceManager', () => {
         MISSING_VAULT_ERROR,
       );
     });
+
+    it('does not throw when validating state with a *missing vault* and backup contains only metadata', async () => {
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: undefined, // vault is missing on purpose
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+      // Backup contains only metadata, no actual vault data
+      manager.getBackup = jest.fn().mockResolvedValueOnce({
+        meta: { version: 10 },
+      });
+
+      const result = await manager.get({ validateVault: true });
+      expect(result).toStrictEqual({ data: mockData });
+    });
   });
   describe('persist', () => {
     it('throws if storageKind is not split', async () => {

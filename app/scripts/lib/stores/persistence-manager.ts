@@ -675,12 +675,10 @@ export class PersistenceManager {
               // Ignore getBackup errors - we're already in an error state
             }
 
-            // This check verifies if we have any keys saved in our backup.
-            // We use this as a sigil to determine if we've ever saved a vault before.
-            if (
-              backup &&
-              Object.values(backup).some((value) => value !== undefined)
-            ) {
+            // This check verifies if we have a vault saved in our backup.
+            // We only trigger recovery if there's actual vault data to recover,
+            // not just metadata.
+            if (backup && hasVault(backup)) {
               log.info('Backup vault found in IndexedDB, triggering recovery');
 
               // Track vault corruption detected event directly to Segment.
