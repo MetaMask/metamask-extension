@@ -24,6 +24,7 @@ import { Driver } from '../../../webdriver/driver';
 import TimerHelper from '../../utils/TimerHelper';
 import Timers from '../../utils/Timers';
 import { collectTimerResults } from '../../utils/timer-utils';
+import { performanceTracker } from '../../utils/PerformanceTracker';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 async function getCommonMocks(server: Mockttp) {
@@ -64,6 +65,31 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         },
       },
       async ({ driver }: { driver: Driver }) => {
+        const timerCreateWalletToSocial = new TimerHelper(
+          'createWalletToSocialScreen',
+          2000,
+        );
+        const timerSrpButtonToPassword = new TimerHelper(
+          'srpButtonToPasswordForm',
+          2000,
+        );
+        const timerPasswordToRecovery = new TimerHelper(
+          'createPasswordToRecoveryScreen',
+          3000,
+        );
+        const timerSkipToMetrics = new TimerHelper(
+          'skipBackupToMetricsScreen',
+          3000,
+        );
+        const timerAgreeToComplete = new TimerHelper(
+          'agreeButtonToOnboardingSuccess',
+          3000,
+        );
+        const timerDoneToAssetList = new TimerHelper(
+          'doneButtonToAssetList',
+          15000,
+        );
+
         await driver.navigate();
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
         if (isFirefox) {
@@ -73,74 +99,55 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
           });
         }
 
-        // Timer: Create wallet to Social screen
-        const timerCreateWalletToSocial = new TimerHelper(
-          'createWalletToSocialScreen',
-          2000,
-        );
+        // Measure: Create wallet to Social screen
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp(false);
         await timerCreateWalletToSocial.measure(async () => {
           await startOnboardingPage.checkSocialSignUpFormIsVisible();
         });
+        performanceTracker.addTimer(timerCreateWalletToSocial);
 
-        // Timer: SRP button to Password form
-        const timerSrpButtonToPassword = new TimerHelper(
-          'srpButtonToPasswordForm',
-          2000,
-        );
+        // Measure: SRP button to Password form
         await startOnboardingPage.clickCreateWithSrpButton();
         await timerSrpButtonToPassword.measure(async () => {
           const onboardingPasswordPage = new OnboardingPasswordPage(driver);
           await onboardingPasswordPage.checkPageIsLoaded();
         });
+        performanceTracker.addTimer(timerSrpButtonToPassword);
 
-        // Timer: Password to Recovery
-        const timerPasswordToRecovery = new TimerHelper(
-          'createPasswordToRecoveryScreen',
-          3000,
-        );
+        // Measure: Password to Recovery
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
         await timerPasswordToRecovery.measure(async () => {
           const secureWalletPage = new SecureWalletPage(driver);
           await secureWalletPage.checkPageIsLoaded();
         });
+        performanceTracker.addTimer(timerPasswordToRecovery);
 
         // Skip recovery backup
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.skipSRPBackup();
 
-        // Timer: Skip to Metrics (Chrome only)
+        // Measure: Skip to Metrics (Chrome only)
         if (!isFirefox) {
-          const timerSkipToMetrics = new TimerHelper(
-            'skipBackupToMetricsScreen',
-            3000,
-          );
           await timerSkipToMetrics.measure(async () => {
             const onboardingMetricsPage = new OnboardingMetricsPage(driver);
             await onboardingMetricsPage.checkPageIsLoaded();
           });
+          performanceTracker.addTimer(timerSkipToMetrics);
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.clickOnContinueButton();
         }
 
-        // Timer: Agree to Complete
-        const timerAgreeToComplete = new TimerHelper(
-          'agreeButtonToOnboardingSuccess',
-          3000,
-        );
+        // Measure: Agree to Complete
         await timerAgreeToComplete.measure(async () => {
           const onboardingCompletePage = new OnboardingCompletePage(driver);
           await onboardingCompletePage.checkPageIsLoaded();
         });
+        performanceTracker.addTimer(timerAgreeToComplete);
 
-        // Timer: Done to Asset list
-        const timerDoneToAssetList = new TimerHelper(
-          'doneButtonToAssetList',
-          15000,
-        );
+        // Measure: Done to Asset list
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.completeOnboarding();
         await handleSidepanelPostOnboarding(driver);
@@ -153,6 +160,7 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
           await assetListPage.waitForTokenToBeDisplayed('Ethereum');
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
+        performanceTracker.addTimer(timerDoneToAssetList);
       },
     );
 

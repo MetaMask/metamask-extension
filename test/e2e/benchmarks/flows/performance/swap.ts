@@ -14,6 +14,7 @@ import { Driver } from '../../../webdriver/driver';
 import TimerHelper from '../../utils/TimerHelper';
 import Timers from '../../utils/Timers';
 import { collectTimerResults } from '../../utils/timer-utils';
+import { performanceTracker } from '../../utils/PerformanceTracker';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -41,6 +42,12 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
+        const timerOpenSwapPage = new TimerHelper('openSwapPageFromHome', 5000);
+        const timerQuoteFetching = new TimerHelper(
+          'fetchAndDisplaySwapQuotes',
+          10000,
+        );
+
         // Login flow
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -54,25 +61,22 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         await assetListPage.waitForTokenToBeDisplayed('Ethereum');
         await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
 
-        // Timer: Open swap page
-        const timerOpenSwapPage = new TimerHelper('openSwapPageFromHome', 5000);
+        // Measure: Open swap page
         await homePage.startSwapFlow();
         await timerOpenSwapPage.measure(async () => {
           const swapPage = new SwapPage(driver);
           await swapPage.checkPageIsLoaded();
           await swapPage.waitForMaxButtonToBeDisplayed();
         });
+        performanceTracker.addTimer(timerOpenSwapPage);
 
-        // Timer: Fetch quotes
-        const timerQuoteFetching = new TimerHelper(
-          'fetchAndDisplaySwapQuotes',
-          10000,
-        );
+        // Measure: Fetch quotes
         const swapPage = new SwapPage(driver);
         await swapPage.enterSwapAmount('1');
         await timerQuoteFetching.measure(async () => {
           await swapPage.checkQuoteIsDisplayed();
         });
+        performanceTracker.addTimer(timerQuoteFetching);
       },
     );
 

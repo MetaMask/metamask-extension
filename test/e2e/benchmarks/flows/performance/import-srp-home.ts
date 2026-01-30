@@ -15,6 +15,7 @@ import { Driver } from '../../../webdriver/driver';
 import TimerHelper from '../../utils/TimerHelper';
 import Timers from '../../utils/Timers';
 import { collectTimerResults } from '../../utils/timer-utils';
+import { performanceTracker } from '../../utils/PerformanceTracker';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -44,8 +45,14 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        // Timer: Login flow
         const timerLogin = new TimerHelper('loginToHomePage', 10000);
+        const timerOpenAccountMenu = new TimerHelper('openAccountMenuAfterLogin', 3000);
+        const timerHomeAfterImport = new TimerHelper(
+          'importWalletToHomeScreen',
+          30000,
+        );
+
+        // Measure: Login flow
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
@@ -54,21 +61,18 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
         });
+        performanceTracker.addTimer(timerLogin);
 
-        // Timer: Open account menu
-        const timerOpenAccountMenu = new TimerHelper('openAccountMenuAfterLogin', 3000);
+        // Measure: Open account menu
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         await timerOpenAccountMenu.measure(async () => {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
         });
+        performanceTracker.addTimer(timerOpenAccountMenu);
 
-        // Timer: Import SRP and return to home
-        const timerHomeAfterImport = new TimerHelper(
-          'importWalletToHomeScreen',
-          30000,
-        );
+        // Measure: Import SRP and return to home
         const accountListPage = new AccountListPage(driver);
         await accountListPage.startImportSecretPhrase(SECOND_SRP);
         await timerHomeAfterImport.measure(async () => {
@@ -80,6 +84,7 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
           await assetListPage.checkTokenExistsInList('Ethereum');
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
+        performanceTracker.addTimer(timerHomeAfterImport);
       },
     );
 

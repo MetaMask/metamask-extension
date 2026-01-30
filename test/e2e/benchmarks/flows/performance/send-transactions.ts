@@ -15,6 +15,7 @@ import { Driver } from '../../../webdriver/driver';
 import TimerHelper from '../../utils/TimerHelper';
 import Timers from '../../utils/Timers';
 import { collectTimerResults } from '../../utils/timer-utils';
+import { performanceTracker } from '../../utils/PerformanceTracker';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -44,6 +45,16 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
+        const timerOpenSendPage = new TimerHelper('openSendPageFromHome', 3000);
+        const timerAssetPicker = new TimerHelper(
+          'selectTokenToSendForm',
+          2000,
+        );
+        const timerReviewTransaction = new TimerHelper(
+          'reviewTransactionToConfirmationScreen',
+          5000,
+        );
+
         // Login flow
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -54,19 +65,15 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
 
-        // Timer: Open send page
-        const timerOpenSendPage = new TimerHelper('openSendPageFromHome', 3000);
+        // Measure: Open send page
         await homePage.startSendFlow();
         await timerOpenSendPage.measure(async () => {
           const sendPage = new SendPage(driver);
           await sendPage.checkNetworkFilterToggleIsDisplayed();
         });
+        performanceTracker.addTimer(timerOpenSendPage);
 
-        // Timer: Select token and load form
-        const timerAssetPicker = new TimerHelper(
-          'selectTokenToSendForm',
-          2000,
-        );
+        // Measure: Select token and load form
         const sendPage = new SendPage(driver);
         await sendPage.selectToken(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqsZKvdp',
@@ -75,12 +82,9 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         await timerAssetPicker.measure(async () => {
           await sendPage.checkSendFormIsLoaded();
         });
+        performanceTracker.addTimer(timerAssetPicker);
 
-        // Timer: Review transaction
-        const timerReviewTransaction = new TimerHelper(
-          'reviewTransactionToConfirmationScreen',
-          5000,
-        );
+        // Measure: Review transaction
         await sendPage.fillRecipient(RECIPIENT_ADDRESS);
         await sendPage.fillAmount('0.00001');
         await sendPage.pressContinueButton();
@@ -88,6 +92,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
           const confirmation = new SnapTransactionConfirmation(driver);
           await confirmation.checkPageIsLoaded();
         });
+        performanceTracker.addTimer(timerReviewTransaction);
       },
     );
 

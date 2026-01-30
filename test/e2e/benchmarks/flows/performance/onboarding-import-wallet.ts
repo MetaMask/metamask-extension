@@ -27,6 +27,7 @@ import { Driver } from '../../../webdriver/driver';
 import TimerHelper from '../../utils/TimerHelper';
 import Timers from '../../utils/Timers';
 import { collectTimerResults } from '../../utils/timer-utils';
+import { performanceTracker } from '../../utils/PerformanceTracker';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 async function getCommonMocks(server: Mockttp) {
@@ -69,6 +70,35 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
       async ({ driver }: { driver: Driver }) => {
         const srp = process.env.E2E_POWER_USER_SRP || E2E_SRP;
 
+        const timerImportWalletToSocial = new TimerHelper(
+          'importWalletToSocialScreen',
+          2000,
+        );
+        const timerSrpButtonToForm = new TimerHelper(
+          'srpButtonToSrpForm',
+          2000,
+        );
+        const timerConfirmToPassword = new TimerHelper(
+          'confirmSrpToPasswordForm',
+          3000,
+        );
+        const timerPasswordToMetrics = new TimerHelper(
+          'passwordFormToMetricsScreen',
+          3000,
+        );
+        const timerMetricsToComplete = new TimerHelper(
+          'metricsToWalletReadyScreen',
+          3000,
+        );
+        const timerDoneToHome = new TimerHelper(
+          'doneButtonToHomeScreen',
+          15000,
+        );
+        const timerAccountListLoad = new TimerHelper(
+          'openAccountMenuToAccountListLoaded',
+          5000,
+        );
+
         await driver.navigate();
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
         if (isFirefox) {
@@ -78,34 +108,24 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           });
         }
 
-        // Timer: Import wallet button to Social screen
-        const timerImportWalletToSocial = new TimerHelper(
-          'importWalletToSocialScreen',
-          2000,
-        );
+        // Measure: Import wallet button to Social screen
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.importWallet(false);
         await timerImportWalletToSocial.measure(async () => {
           await startOnboardingPage.checkUserSrpButtonIsVisible();
         });
+        performanceTracker.addTimer(timerImportWalletToSocial);
 
-        // Timer: SRP button to form
-        const timerSrpButtonToForm = new TimerHelper(
-          'srpButtonToSrpForm',
-          2000,
-        );
+        // Measure: SRP button to form
         await startOnboardingPage.clickImportWithSrpButton();
         await timerSrpButtonToForm.measure(async () => {
           const onboardingSrpPage = new OnboardingSrpPage(driver);
           await onboardingSrpPage.checkPageIsLoaded();
         });
+        performanceTracker.addTimer(timerSrpButtonToForm);
 
-        // Timer: Confirm to Password form
-        const timerConfirmToPassword = new TimerHelper(
-          'confirmSrpToPasswordForm',
-          3000,
-        );
+        // Measure: Confirm to Password form
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.fillSrp(srp);
         await onboardingSrpPage.clickConfirmButton();
@@ -113,40 +133,31 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           const onboardingPasswordPage = new OnboardingPasswordPage(driver);
           await onboardingPasswordPage.checkPageIsLoaded();
         });
+        performanceTracker.addTimer(timerConfirmToPassword);
 
         // Create password
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
 
-        // Timer: Password to Metrics (Chrome only)
+        // Measure: Password to Metrics (Chrome only)
         if (!isFirefox) {
-          const timerPasswordToMetrics = new TimerHelper(
-            'passwordFormToMetricsScreen',
-            3000,
-          );
           await timerPasswordToMetrics.measure(async () => {
             const onboardingMetricsPage = new OnboardingMetricsPage(driver);
             await onboardingMetricsPage.checkPageIsLoaded();
           });
+          performanceTracker.addTimer(timerPasswordToMetrics);
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.clickOnContinueButton();
         }
 
-        // Timer: Metrics to Complete
-        const timerMetricsToComplete = new TimerHelper(
-          'metricsToWalletReadyScreen',
-          3000,
-        );
+        // Measure: Metrics to Complete
         await timerMetricsToComplete.measure(async () => {
           const onboardingCompletePage = new OnboardingCompletePage(driver);
           await onboardingCompletePage.checkPageIsLoaded();
         });
+        performanceTracker.addTimer(timerMetricsToComplete);
 
-        // Timer: Done to Home
-        const timerDoneToHome = new TimerHelper(
-          'doneButtonToHomeScreen',
-          15000,
-        );
+        // Measure: Done to Home
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.completeOnboarding();
         await handleSidepanelPostOnboarding(driver);
@@ -159,18 +170,16 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           await assetListPage.checkTokenExistsInList('Ethereum');
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
+        performanceTracker.addTimer(timerDoneToHome);
 
-        // Timer: Account list load
-        const timerAccountListLoad = new TimerHelper(
-          'openAccountMenuToAccountListLoaded',
-          5000,
-        );
+        // Measure: Account list load
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         await timerAccountListLoad.measure(async () => {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded(30000);
         });
+        performanceTracker.addTimer(timerAccountListLoad);
       },
     );
 

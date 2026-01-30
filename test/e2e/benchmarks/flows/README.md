@@ -26,16 +26,16 @@ yarn test:e2e:benchmark --preset performanceOnboarding --out results.json
 
 ### Available Presets
 
-| Preset                     | Description                    | Benchmarks                                                       |
-| -------------------------- | ------------------------------ | ---------------------------------------------------------------- |
-| `standardHome`             | Standard user page load        | `standard-home.ts`                                               |
-| `powerUserHome`            | Power user page load           | `power-user-home.ts`                                             |
-| `userActions`              | User interaction timings       | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
-| `performanceOnboarding`    | Onboarding flows               | `onboarding-import-wallet.ts`, `onboarding-new-wallet.ts`        |
-| `performanceAssets`        | Asset detail page loads        | `asset-details.ts`, `solana-asset-details.ts`                    |
-| `performanceLogin`         | Login & transaction flows      | `import-srp-home.ts`, `send-transactions.ts`, `swap.ts`          |
-| `pageLoadBenchmark`        | Playwright benchmarks          | `page-load-benchmark.spec.ts`                                    |
-| `all`                      | All benchmarks                 | Everything above                                                 |
+| Preset                  | Description               | Benchmarks                                                       |
+| ----------------------- | ------------------------- | ---------------------------------------------------------------- |
+| `standardHome`          | Standard user page load   | `standard-home.ts`                                               |
+| `powerUserHome`         | Power user page load      | `power-user-home.ts`                                             |
+| `userActions`           | User interaction timings  | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
+| `performanceOnboarding` | Onboarding flows          | `onboarding-import-wallet.ts`, `onboarding-new-wallet.ts`        |
+| `performanceAssets`     | Asset detail page loads   | `asset-details.ts`, `solana-asset-details.ts`                    |
+| `performanceLogin`      | Login & transaction flows | `import-srp-home.ts`, `send-transactions.ts`, `swap.ts`          |
+| `pageLoadBenchmark`     | Playwright benchmarks     | `page-load-benchmark.spec.ts`                                    |
+| `all`                   | All benchmarks            | Everything above                                                 |
 
 ### 1. Create a new file in the appropriate subdirectory
 

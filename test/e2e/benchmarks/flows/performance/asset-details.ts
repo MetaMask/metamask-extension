@@ -15,6 +15,7 @@ import { Driver } from '../../../webdriver/driver';
 import TimerHelper from '../../utils/TimerHelper';
 import Timers from '../../utils/Timers';
 import { collectTimerResults } from '../../utils/timer-utils';
+import { performanceTracker } from '../../utils/PerformanceTracker';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -45,6 +46,11 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
+        const timer = new TimerHelper(
+          'assetClickToPriceChartLoaded',
+          5000,
+        );
+
         // Login flow
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -79,16 +85,13 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
 
-        // Timer: Asset click to price chart loaded
-        const timer = new TimerHelper(
-          'assetClickToPriceChartLoaded',
-          5000,
-        );
+        // Measure: Asset click to price chart loaded
         await assetListPage.clickOnAsset('USDC');
         await timer.measure(async () => {
           await assetListPage.checkPriceChartIsShown();
           await assetListPage.checkPriceChartLoaded(USDC_TOKEN_ADDRESS);
         });
+        performanceTracker.addTimer(timer);
       },
     );
 
