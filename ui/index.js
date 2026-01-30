@@ -90,11 +90,20 @@ export const connectToBackground = (
 };
 
 export async function launchMetamaskUi(opts) {
-  const { backgroundConnection, initialState } = opts;
+  const { patchSubstream, initialState } = opts;
 
   const store = await startApp(initialState, opts);
 
-  await backgroundConnection.startSendingPatches();
+  //========
+  // Although the patch substream does live in the background, the "background
+  // connection" object that we previously had access to represents the
+  // controller API. In any case we have another way to call
+  // `startSendingPatches` now.
+  //========
+  await patchSubstream.write({
+    jsonrpc: '2.0',
+    method: 'startSendingPatches',
+  });
 
   setupStateHooks(store);
 
