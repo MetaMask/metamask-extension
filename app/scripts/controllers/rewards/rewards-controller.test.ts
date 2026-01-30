@@ -1371,6 +1371,267 @@ describe('RewardsController', () => {
     });
   });
 
+  describe('addPointsEstimateToHistory', () => {
+    it('adds a swap activity entry to history', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            swapContext: {
+              srcAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '1000000000000000000',
+                usdPrice: '2500'  ,
+              },
+              destAsset: {
+                id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                amount: '4500000000',
+                usdPrice: '1',
+              },
+              feeAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '5000000000000000',
+                usdPrice: '2500',
+              },
+            },
+          },
+        };
+
+        const response: EstimatedPointsDto = {
+          pointsEstimate: 250,
+          bonusBips: 100,
+        };
+
+        controller.addPointsEstimateToHistory(request, response);
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.requestActivityType).toBe('SWAP');
+        expect(entry.requestAccount).toBe(MOCK_CAIP_ACCOUNT);
+        expect(entry.requestSwapSrcAssetId).toBe('eip155:1/slip44:60');
+        expect(entry.requestSwapSrcAssetAmount).toBe('1000000000000000000');
+        expect(entry.requestSwapSrcAssetUsdPrice).toBe('2500');
+        expect(entry.requestSwapDestAssetId).toBe(
+          'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        );
+        expect(entry.requestSwapDestAssetAmount).toBe('4500000000');
+        expect(entry.requestSwapDestAssetUsdPrice).toBe('1');
+        expect(entry.requestSwapFeeAssetId).toBe('eip155:1/slip44:60');
+        expect(entry.requestSwapFeeAssetAmount).toBe('5000000000000000');
+        expect(entry.requestSwapFeeAssetUsdPrice).toBe('2500');
+        expect(entry.responsePointsEstimate).toBe(250);
+        expect(entry.responseBonusBips).toBe(100);
+        expect(entry.timestamp).toBeGreaterThan(0);
+      });
+    });
+
+    it('adds a perps activity entry to history', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'PERPS',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            perpsContext: {
+              type: 'OPEN_POSITION',
+              usdFeeValue: '25.5',
+              coin: 'ETH',
+            },
+          },
+        };
+
+        const response: EstimatedPointsDto = {
+          pointsEstimate: 500,
+          bonusBips: 200,
+        };
+
+        controller.addPointsEstimateToHistory(request, response);
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.requestActivityType).toBe('PERPS');
+        expect(entry.requestAccount).toBe(MOCK_CAIP_ACCOUNT);
+        expect(entry.requestPerpsType).toBe('OPEN_POSITION');
+        expect(entry.requestPerpsUsdFeeValue).toBe('25.5');
+        expect(entry.requestPerpsCoin).toBe('ETH');
+        expect(entry.responsePointsEstimate).toBe(500);
+        expect(entry.responseBonusBips).toBe(200);
+        // Swap fields should be undefined for perps
+        expect(entry.requestSwapSrcAssetId).toBeUndefined();
+      });
+    });
+
+    it('adds a shield activity entry to history', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SHIELD',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            shieldContext: {
+              recurringInterval: 'month',
+            },
+          },
+        };
+
+        const response: EstimatedPointsDto = {
+          pointsEstimate: 1000,
+          bonusBips: 0,
+        };
+
+        controller.addPointsEstimateToHistory(request, response);
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.requestActivityType).toBe('SHIELD');
+        expect(entry.requestAccount).toBe(MOCK_CAIP_ACCOUNT);
+        expect(entry.requestShieldRecurringInterval).toBe('month');
+        expect(entry.responsePointsEstimate).toBe(1000);
+        expect(entry.responseBonusBips).toBe(0);
+        // Swap and perps fields should be undefined
+        expect(entry.requestSwapSrcAssetId).toBeUndefined();
+        expect(entry.requestPerpsType).toBeUndefined();
+      });
+    });
+
+    it('limits history to 50 entries', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            swapContext: {
+              srcAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '1000000000000000000',
+              },
+              destAsset: {
+                id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                amount: '4500000000',
+              },
+              feeAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '5000000000000000',
+              },
+            },
+          },
+        };
+
+        // Add 55 entries directly
+        for (let i = 0; i < 55; i++) {
+          controller.addPointsEstimateToHistory(request, {
+            pointsEstimate: i * 10,
+            bonusBips: 0,
+          });
+        }
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(50);
+      });
+    });
+
+    it('stores most recent entries first', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            swapContext: {
+              srcAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '1000000000000000000',
+              },
+              destAsset: {
+                id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                amount: '4500000000',
+              },
+              feeAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '5000000000000000',
+              },
+            },
+          },
+        };
+
+        controller.addPointsEstimateToHistory(request, {
+          pointsEstimate: 100,
+          bonusBips: 0,
+        });
+        controller.addPointsEstimateToHistory(request, {
+          pointsEstimate: 200,
+          bonusBips: 0,
+        });
+        controller.addPointsEstimateToHistory(request, {
+          pointsEstimate: 300,
+          bonusBips: 0,
+        });
+
+        // Most recent (300 points) should be first
+        expect(
+          controller.state.rewardsPointsEstimateHistory[0].responsePointsEstimate,
+        ).toBe(300);
+        expect(
+          controller.state.rewardsPointsEstimateHistory[1].responsePointsEstimate,
+        ).toBe(200);
+        expect(
+          controller.state.rewardsPointsEstimateHistory[2].responsePointsEstimate,
+        ).toBe(100);
+      });
+    });
+
+    it('handles activity with empty context gracefully', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {},
+        };
+
+        const response: EstimatedPointsDto = {
+          pointsEstimate: 50,
+          bonusBips: 0,
+        };
+
+        controller.addPointsEstimateToHistory(request, response);
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.requestActivityType).toBe('SWAP');
+        expect(entry.requestAccount).toBe(MOCK_CAIP_ACCOUNT);
+        expect(entry.responsePointsEstimate).toBe(50);
+        // All context-specific fields should be undefined
+        expect(entry.requestSwapSrcAssetId).toBeUndefined();
+        expect(entry.requestPerpsType).toBeUndefined();
+        expect(entry.requestShieldRecurringInterval).toBeUndefined();
+      });
+    });
+
+    it('records timestamp at the time of adding entry', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const beforeTimestamp = Date.now();
+
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {},
+        };
+
+        controller.addPointsEstimateToHistory(request, {
+          pointsEstimate: 100,
+          bonusBips: 0,
+        });
+
+        const afterTimestamp = Date.now();
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.timestamp).toBeGreaterThanOrEqual(beforeTimestamp);
+        expect(entry.timestamp).toBeLessThanOrEqual(afterTimestamp);
+      });
+    });
+  });
+
   describe('getSeasonMetadata', () => {
     it('should fetch current season metadata', async () => {
       await withController(

@@ -1121,7 +1121,7 @@ export class RewardsController extends BaseController<
       );
 
       // Track successful estimate in history for Customer Support diagnostics
-      this.#addPointsEstimateToHistory(request, estimatedPoints);
+      this.addPointsEstimateToHistory(request, estimatedPoints);
 
       return estimatedPoints;
     } catch (error) {
@@ -1140,7 +1140,7 @@ export class RewardsController extends BaseController<
    * @param request - The estimate request containing activity details
    * @param response - The estimated points response
    */
-  #addPointsEstimateToHistory(
+  addPointsEstimateToHistory(
     request: EstimatePointsDto,
     response: EstimatedPointsDto,
   ): void {
