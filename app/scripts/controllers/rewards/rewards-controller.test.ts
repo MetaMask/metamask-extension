@@ -1230,7 +1230,7 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should limit history to 20 entries', async () => {
+    it('should limit history to 50 entries', async () => {
       await withController(
         { isDisabled: false },
         async ({ controller, mockMessengerCall }) => {
@@ -1262,13 +1262,13 @@ describe('RewardsController', () => {
             },
           };
 
-          // Make 25 calls - should only keep last 20
-          for (let i = 0; i < 25; i++) {
+          // Make 55 calls - should only keep last 50
+          for (let i = 0; i < 55; i++) {
             await controller.estimatePoints(request);
           }
 
           expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(
-            20,
+            50,
           );
         },
       );
