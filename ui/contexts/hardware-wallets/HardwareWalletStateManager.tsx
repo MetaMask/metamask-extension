@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
@@ -105,17 +105,15 @@ export const useHardwareWalletStateManager = () => {
   const walletTypeRef = useRef<HardwareWalletType | null>(null);
   const previousWalletTypeRef = useRef<HardwareWalletType | null>(null);
 
-  // Sync deviceId with deviceIdRef
-  useEffect(() => {
-    deviceIdRef.current = deviceId;
-  }, [deviceId]);
+  // Sync refs immediately during render (not in useEffect) to avoid stale values
+  // This is safe because updating refs doesn't trigger re-renders
+  deviceIdRef.current = deviceId;
 
-  // Sync walletType with walletTypeRef
-  useEffect(() => {
-    // Keep the previous reference so we know when to reset event subscriptions (e.g Trezor -> Ledger).
+  // Track previous wallet type for detecting wallet type changes (e.g., Trezor -> Ledger)
+  if (walletTypeRef.current !== walletType) {
     previousWalletTypeRef.current = walletTypeRef.current;
     walletTypeRef.current = walletType;
-  }, [walletType]);
+  }
 
   const state: HardwareWalletState = {
     deviceId,
@@ -181,28 +179,28 @@ export const useHardwareWalletStateManager = () => {
         isConnectingRef.current = false;
       },
       /**
-       * Resets auto-connect state refs
+       * Resets auto-connect state, allowing auto-connect to run again
        */
       resetAutoConnectState: () => {
         hasAutoConnectedRef.current = false;
         lastConnectedAccountRef.current = null;
       },
       /**
-       * Sets the auto-connected state for a specific account
+       * Marks auto-connect as completed for an account with a specific device
        *
        * @param connectedAccountAddress - The account address that was auto-connected
-       * @param newDeviceId - The device ID that was connected
+       * @param connectedDeviceId - The device ID that was connected
        */
       setAutoConnected: (
         connectedAccountAddress: string | null,
-        newDeviceId: string,
+        connectedDeviceId: string,
       ) => {
         hasAutoConnectedRef.current = true;
         lastConnectedAccountRef.current = connectedAccountAddress;
-        deviceIdRef.current = newDeviceId;
+        deviceIdRef.current = connectedDeviceId;
       },
       /**
-       * Sets the device ID ref directly
+       * Updates the device ID ref directly (for auto-connect scenarios)
        *
        * @param newDeviceId - The device ID to set
        */

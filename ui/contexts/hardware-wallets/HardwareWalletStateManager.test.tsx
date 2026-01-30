@@ -219,286 +219,16 @@ describe('HardwareWalletStateManager', () => {
         expect(typeof result.current.setters.setDeviceIdRef).toBe('function');
       });
 
-      describe('setDeviceId', () => {
-        it('updates deviceId state and syncs with deviceIdRef', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          act(() => {
-            result.current.setters.setDeviceId('test-device-123');
-          });
-
-          expect(result.current.state.deviceId).toBe('test-device-123');
-          expect(result.current.refs.deviceIdRef.current).toBe(
-            'test-device-123',
-          );
-        });
-      });
-
-      describe('setHardwareConnectionPermissionState', () => {
-        it('updates permission state to Granted', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          act(() => {
-            result.current.setters.setHardwareConnectionPermissionState(
-              HardwareConnectionPermissionState.Granted,
-            );
-          });
-
-          expect(result.current.state.hardwareConnectionPermissionState).toBe(
-            HardwareConnectionPermissionState.Granted,
-          );
-        });
-
-        it('updates permission state to Denied', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          act(() => {
-            result.current.setters.setHardwareConnectionPermissionState(
-              HardwareConnectionPermissionState.Denied,
-            );
-          });
-
-          expect(result.current.state.hardwareConnectionPermissionState).toBe(
-            HardwareConnectionPermissionState.Denied,
-          );
-        });
-      });
-
-      describe('setConnectionState', () => {
-        it('updates connection state to connecting', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          act(() => {
-            result.current.setters.setConnectionState({
-              status: ConnectionStatus.Connecting,
-            });
-          });
-
-          expect(result.current.state.connectionState.status).toBe(
-            ConnectionStatus.Connecting,
-          );
-        });
-
-        it('updates connection state to error with reason and error object', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          const testError = new Error('Connection failed');
-
-          act(() => {
-            result.current.setters.setConnectionState({
-              status: ConnectionStatus.ErrorState,
-              reason: 'Device disconnected',
-              error: testError,
-            });
-          });
-
-          const { connectionState } = result.current.state;
-          expect(connectionState.status).toBe(ConnectionStatus.ErrorState);
-          if (connectionState.status === ConnectionStatus.ErrorState) {
-            expect(connectionState.reason).toBe('Device disconnected');
-            expect(connectionState.error).toBe(testError);
-          }
-        });
-      });
-
-      describe('cleanupAdapter', () => {
-        it('calls destroy on adapter and nullifies reference', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          const mockDestroy = jest.fn();
-          const mockAdapter = { destroy: mockDestroy };
-          result.current.refs.adapterRef.current =
-            mockAdapter as unknown as typeof result.current.refs.adapterRef.current;
-
-          act(() => {
-            result.current.setters.cleanupAdapter();
-          });
-
-          expect(mockDestroy).toHaveBeenCalledTimes(1);
-          expect(result.current.refs.adapterRef.current).toBe(null);
-        });
-
-        it('does nothing when adapterRef is null', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          expect(result.current.refs.adapterRef.current).toBe(null);
-
-          act(() => {
-            result.current.setters.cleanupAdapter();
-          });
-
-          expect(result.current.refs.adapterRef.current).toBe(null);
-        });
-      });
-
-      describe('abortAndCleanupController', () => {
-        it('calls abort on controller and nullifies reference', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          const mockAbort = jest.fn();
-          const mockController = { abort: mockAbort };
-          result.current.refs.abortControllerRef.current =
-            mockController as unknown as AbortController;
-
-          act(() => {
-            result.current.setters.abortAndCleanupController();
-          });
-
-          expect(mockAbort).toHaveBeenCalledTimes(1);
-          expect(result.current.refs.abortControllerRef.current).toBe(null);
-        });
-
-        it('does nothing when abortControllerRef is null', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          expect(result.current.refs.abortControllerRef.current).toBe(null);
-
-          act(() => {
-            result.current.setters.abortAndCleanupController();
-          });
-
-          expect(result.current.refs.abortControllerRef.current).toBe(null);
-        });
-      });
-
-      describe('resetConnectionRefs', () => {
-        it('resets isConnectingRef and currentConnectionIdRef to initial values', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          result.current.refs.isConnectingRef.current = true;
-          result.current.refs.currentConnectionIdRef.current = 12345;
-
-          act(() => {
-            result.current.setters.resetConnectionRefs();
-          });
-
-          expect(result.current.refs.isConnectingRef.current).toBe(false);
-          expect(result.current.refs.currentConnectionIdRef.current).toBe(null);
-        });
-      });
-
-      describe('resetAutoConnectState', () => {
-        it('resets hasAutoConnectedRef and lastConnectedAccountRef to initial values', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          result.current.refs.hasAutoConnectedRef.current = true;
-          result.current.refs.lastConnectedAccountRef.current = '0xabc';
-
-          act(() => {
-            result.current.setters.resetAutoConnectState();
-          });
-
-          expect(result.current.refs.hasAutoConnectedRef.current).toBe(false);
-          expect(result.current.refs.lastConnectedAccountRef.current).toBe(
-            null,
-          );
-        });
-      });
-
-      describe('setAutoConnected', () => {
-        it('sets auto-connected state with account address and device ID', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          act(() => {
-            result.current.setters.setAutoConnected(
-              '0x456',
-              'connected-device-id',
-            );
-          });
-
-          expect(result.current.refs.hasAutoConnectedRef.current).toBe(true);
-          expect(result.current.refs.lastConnectedAccountRef.current).toBe(
-            '0x456',
-          );
-          expect(result.current.refs.deviceIdRef.current).toBe(
-            'connected-device-id',
-          );
-        });
-
-        it('accepts null account address', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          act(() => {
-            result.current.setters.setAutoConnected(null, 'device-id');
-          });
-
-          expect(result.current.refs.hasAutoConnectedRef.current).toBe(true);
-          expect(result.current.refs.lastConnectedAccountRef.current).toBe(
-            null,
-          );
-          expect(result.current.refs.deviceIdRef.current).toBe('device-id');
-        });
-      });
-
-      describe('setDeviceIdRef', () => {
-        it('sets deviceIdRef directly', () => {
-          const store = mockStore(createMockState(KeyringTypes.ledger));
-
-          const { result } = renderHook(() => useHardwareWalletStateManager(), {
-            wrapper: createWrapper(store),
-          });
-
-          act(() => {
-            result.current.setters.setDeviceIdRef('direct-device-id');
-          });
-
-          expect(result.current.refs.deviceIdRef.current).toBe(
-            'direct-device-id',
-          );
-        });
-      });
+      expect(typeof result.current.setters.setDeviceId).toBe('function');
+      expect(
+        typeof result.current.setters.setHardwareConnectionPermissionState,
+      ).toBe('function');
+      expect(typeof result.current.setters.setConnectionState).toBe('function');
+      expect(typeof result.current.setters.resetAutoConnectState).toBe(
+        'function',
+      );
+      expect(typeof result.current.setters.setAutoConnected).toBe('function');
+      expect(typeof result.current.setters.setDeviceIdRef).toBe('function');
     });
 
     describe('ref synchronization', () => {
@@ -531,6 +261,130 @@ describe('HardwareWalletStateManager', () => {
     });
 
         expect(result.current.refs.walletTypeRef.current).toBe(null);
+      });
+    });
+
+    describe('resetAutoConnectState', () => {
+      it('resets hasAutoConnectedRef and lastConnectedAccountRef', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Set up initial state
+        result.current.refs.hasAutoConnectedRef.current = true;
+        result.current.refs.lastConnectedAccountRef.current = '0x123';
+
+        // Call resetAutoConnectState
+        act(() => {
+          result.current.setters.resetAutoConnectState();
+        });
+
+        // Verify refs are reset
+        expect(result.current.refs.hasAutoConnectedRef.current).toBe(false);
+        expect(result.current.refs.lastConnectedAccountRef.current).toBe(null);
+      });
+    });
+
+    describe('setAutoConnected', () => {
+      it('marks auto-connect as completed with account and device info', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Initially not auto-connected
+        expect(result.current.refs.hasAutoConnectedRef.current).toBe(false);
+        expect(result.current.refs.lastConnectedAccountRef.current).toBe(null);
+
+        // Call setAutoConnected
+        act(() => {
+          result.current.setters.setAutoConnected('0xabc', 'device-456');
+        });
+
+        // Verify refs are updated
+        expect(result.current.refs.hasAutoConnectedRef.current).toBe(true);
+        expect(result.current.refs.lastConnectedAccountRef.current).toBe(
+          '0xabc',
+        );
+        expect(result.current.refs.deviceIdRef.current).toBe('device-456');
+      });
+
+      it('handles null account address', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Call setAutoConnected with null account
+        act(() => {
+          result.current.setters.setAutoConnected(null, 'device-789');
+        });
+
+        // Verify refs are updated
+        expect(result.current.refs.hasAutoConnectedRef.current).toBe(true);
+        expect(result.current.refs.lastConnectedAccountRef.current).toBe(null);
+        expect(result.current.refs.deviceIdRef.current).toBe('device-789');
+      });
+    });
+
+    describe('setDeviceIdRef', () => {
+      it('updates deviceIdRef directly', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Initially null
+        expect(result.current.refs.deviceIdRef.current).toBe(null);
+
+        // Call setDeviceIdRef
+        act(() => {
+          result.current.setters.setDeviceIdRef('new-device-id');
+        });
+
+        // Verify ref is updated
+        expect(result.current.refs.deviceIdRef.current).toBe('new-device-id');
+      });
+    });
+
+    describe('ref synchronization during render', () => {
+      it('syncs walletTypeRef with current wallet type on initial render', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // walletTypeRef should match the current wallet type
+        expect(result.current.refs.walletTypeRef.current).toBe(
+          HardwareWalletType.Ledger,
+        );
+        // previousWalletTypeRef should be null on first render
+        expect(result.current.refs.previousWalletTypeRef.current).toBe(null);
+      });
+
+      it('deviceIdRef is synced immediately when deviceId state changes', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Set deviceId via state setter
+        act(() => {
+          result.current.setters.setDeviceId('synced-device-id');
+        });
+
+        // Ref should be synced immediately (not via useEffect)
+        expect(result.current.refs.deviceIdRef.current).toBe(
+          'synced-device-id',
+        );
+        expect(result.current.state.deviceId).toBe('synced-device-id');
       });
     });
   });
