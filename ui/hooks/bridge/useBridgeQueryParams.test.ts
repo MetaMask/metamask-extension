@@ -9,7 +9,7 @@ import {
 import * as assetUtils from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
-
+import { setBackgroundConnection } from '../../store/background-connection';
 import { useBridgeQueryParams } from './useBridgeQueryParams';
 
 // Helper hook that combines useBridgeQueryParams with useLocation
@@ -28,6 +28,10 @@ const renderUseBridgeQueryParams = (mockStoreState: object, path?: string) =>
   );
 
 let calcLatestSrcBalanceSpy: jest.SpyInstance;
+
+setBackgroundConnection({
+  getLatestBalance: jest.fn().mockResolvedValue('1000000'),
+} as never);
 
 describe('useBridgeQueryParams', () => {
   const { ChainId } = bridgeControllerUtils;
