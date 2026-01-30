@@ -23,8 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed focus behavior in network list menu - menu button now properly toggles menu open/closed without focusing menu items (#39279)
 - Implement new bridge asset picker and read token data from new popular and search api endpoints (#37685)
 - Add polygon to the networks supporting smart transactions (#39614)
-- Improved user experience and bug fixes for Advanced Permissions in Flask (#39442)
-- Enables erc20-token-revocation 7715 permission (#39417)
+- Adds support for ERC-7715 `wallet_requestExecutionPermissions` RPC method, with `erc20-token-revocation` permission type (#39417)
 - Added support for `wallet_getSupportedExecutionPermissions` and `wallet_getGrantedExecutionPermissions` RPC methods (#39176)
 
 ### Changed
