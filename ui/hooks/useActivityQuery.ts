@@ -2,29 +2,26 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import { fetchV4MultiAccountTransactions } from '../helpers/api-client';
-import { getSelectedAccountIds } from '../selectors/accounts';
-import { getAllEnabledNetworksInCaipFormat } from '../selectors/multichain/networks';
+import { getSelectedInternalAccount } from '../selectors/accounts';
 import { filterTransactions } from '../helpers/transaction-filtering-logic';
 
 export function useActivityQuery() {
-  const accountIds = useSelector(getSelectedAccountIds);
-  const networks = useSelector(getAllEnabledNetworksInCaipFormat);
+  const accountAddress = useSelector(getSelectedInternalAccount)?.address;
 
   // This is filtering that should done server side
   const selectFilter = useMemo(
-    () => filterTransactions(accountIds),
-    [accountIds],
+    () => filterTransactions(accountAddress),
+    [accountAddress],
   );
 
   return useInfiniteQuery({
-    queryKey: ['activity-list', accountIds, networks],
+    queryKey: ['activity-list', accountAddress],
     queryFn: ({ pageParam }) =>
       fetchV4MultiAccountTransactions({
-        accountIds,
+        accountAddresses: accountAddress ? [accountAddress] : [],
         cursor: pageParam,
-        networks,
       }),
-    enabled: accountIds.length > 0,
+    enabled: Boolean(accountAddress),
     getNextPageParam: ({ pageInfo }) =>
       pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
     select: selectFilter,

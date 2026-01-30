@@ -113,13 +113,6 @@ export function getStatusKey(transaction) {
 export function getTransactionTypeTitle(t, type, options = {}) {
   const { tokenSymbol } = options;
 
-  console.log(
-    '>>> getTransactionTypeTitle called with type:',
-    type,
-    'options:',
-    options,
-  );
-
   switch (type) {
     case TransactionType.incoming: {
       return t('received');

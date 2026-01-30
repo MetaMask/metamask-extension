@@ -1,4 +1,5 @@
 import type { InfiniteData } from '@tanstack/react-query';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import type {
   DateGroupedTransactions,
   FlattenedItem,
@@ -70,7 +71,7 @@ export function flattenGroupedTransactions(
 
 // These filtering logic should be done server side
 
-export function filterTransactions(accountIds: string[]) {
+export function filterTransactions(accountAddress: string | undefined) {
   return (
     data: InfiniteData<V4MultiAccountTransactionsResponse>,
   ): InfiniteData<V4MultiAccountTransactionsResponse> => ({
@@ -83,8 +84,8 @@ export function filterTransactions(accountIds: string[]) {
         }
 
         // Filter unsolicited token airdrops (user didn't initiate)
-        const accountAddress = accountIds[0]?.toLowerCase();
-        const userInitiated = tx.from.toLowerCase() === accountAddress;
+        const userInitiated =
+          accountAddress && isEqualCaseInsensitive(tx.from, accountAddress);
 
         // Keep transactions you initiated
         if (userInitiated) {
@@ -104,7 +105,10 @@ export function filterTransactions(accountIds: string[]) {
         if (hasTokenTransfer) {
           // Check if any transfer is to this account
           const isRecipient = tx.valueTransfers?.some(
-            (transfer) => transfer.to?.toLowerCase() === accountAddress,
+            (transfer) =>
+              transfer.to &&
+              accountAddress &&
+              isEqualCaseInsensitive(transfer.to, accountAddress),
           );
           if (isRecipient) {
             return true;

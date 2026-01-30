@@ -3,7 +3,7 @@ import type { V4MultiAccountTransactionsResponse } from './types';
 const API_BASE_URL = 'https://accounts.api.cx.metamask.io';
 
 type Params = {
-  accountIds: string[];
+  accountAddresses: string[];
   cursor?: string;
   limit?: number;
   networks?: string[];
@@ -12,27 +12,23 @@ type Params = {
 // Vanilla fetch function that can be shared across clients
 
 export async function fetchV4MultiAccountTransactions(params: Params) {
-  const { accountIds, cursor, limit = 50, networks } = params;
-
-  if (!accountIds || accountIds.length === 0) {
-    throw new Error('No account addresses provided');
-  }
-
-  const formattedAddresses = accountIds.map(
-    (addr) => `eip155:0:${addr.toLowerCase()}`,
-  );
+  const { accountAddresses = [], cursor, limit = 50, networks = [] } = params;
 
   const searchParams = new URLSearchParams();
-  searchParams.append('accountAddresses', formattedAddresses.join(','));
   searchParams.append('limit', limit.toString());
   searchParams.append('includeTxMetadata', 'true');
 
-  if (cursor) {
-    searchParams.append('cursor', cursor);
+  const formattedAddresses = accountAddresses.map(
+    (addr) => `eip155:0:${addr.toLowerCase()}`,
+  );
+  searchParams.append('accountAddresses', formattedAddresses.join(','));
+
+  if (networks.length > 0) {
+    searchParams.append('networks', networks.join(','));
   }
 
-  if (networks && networks.length > 0) {
-    searchParams.append('networks', networks.join(','));
+  if (cursor) {
+    searchParams.append('cursor', cursor);
   }
 
   const url = `${API_BASE_URL}/v4/multiaccount/transactions?${searchParams.toString()}`;

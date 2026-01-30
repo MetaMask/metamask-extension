@@ -108,7 +108,6 @@ export const ActivityDetailsModal = ({
     isError,
     gasUsed,
     effectiveGasPrice,
-    value,
   } = transaction;
 
   // Detect actual failure status (checks logs for ERC20 transfers)
@@ -126,11 +125,6 @@ export const ActivityDetailsModal = ({
       ? BigInt(gasUsed) * BigInt(effectiveGasPrice)
       : BigInt(0);
   const networkFeeEth = Number(networkFeeWei) / 10 ** 18;
-
-  // Calculate total amount (value + network fee for sends)
-  const valueWei = BigInt(value || '0');
-  const totalWei = valueWei + networkFeeWei;
-  const totalEth = Number(totalWei) / 10 ** 18;
 
   // Detect swap transactions
   const isSwap =
