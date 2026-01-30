@@ -212,7 +212,7 @@ export function getVariables(
   variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
 
   // Validate required production variables
-  if (environment === ENVIRONMENT.PRODUCTION) {
+  if (args.validateEnv && environment === ENVIRONMENT.PRODUCTION) {
     const requiredVars = Object.keys(activeBuild.env ?? {});
     const undefinedVariables = requiredVars.filter(
       (variable) =>

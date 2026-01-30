@@ -160,7 +160,7 @@ describe('./utils/config.ts', () => {
 
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
-        ['--targetEnvironment', 'production'],
+        ['--targetEnvironment', 'production', '--validateEnv'],
         buildTypes,
       );
 
@@ -175,6 +175,26 @@ describe('./utils/config.ts', () => {
           return true;
         },
       );
+    });
+
+    it('should not throw when production environment is missing required variables if --validateEnv is false', () => {
+      const rcVars: Record<string, string> = {};
+      mockRc(rcVars);
+      // Some variables require more specific values
+      // because of additional validation happening in setEnvironmentVariables
+      rcVars.SEEDLESS_ONBOARDING_ENABLED = 'false';
+      rcVars.INFURA_PROD_PROJECT_ID = 'dd98248f370d4063b81c0299f919dc11';
+      rcVars.INFURA_ENV_KEY_REF = 'INFURA_PROD_PROJECT_ID';
+      rcVars.SEGMENT_WRITE_KEY_REF = 'SEGMENT_PROD_WRITE_KEY';
+      rcVars.SEGMENT_PROD_WRITE_KEY = 'SEGMENT_PROD_WRITE_KEY';
+
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv(
+        ['--targetEnvironment', 'production', '--validateEnv', 'false'],
+        buildTypes,
+      );
+
+      assert.doesNotThrow(() => config.getVariables(args, buildTypes));
     });
 
     it('should not throw when all required production variables are defined', () => {
