@@ -68,7 +68,7 @@ describe('displayCriticalError', () => {
     });
 
     jest.spyOn(errorUtils, 'getErrorHtml').mockImplementation(
-      (_errorKey, _error, _localeContext, _supportLink) => `
+      (_errorKey, _error, _localeContext, _supportLink, _hasBackup) => `
         <div>
           <input type="checkbox" id="critical-error-checkbox" checked />
           <button id="critical-error-button">Restart</button>
@@ -98,6 +98,7 @@ describe('displayCriticalError', () => {
       error,
       { preferredLocale: 'en', t: expect.any(Function) },
       expect.any(String),
+      false, // canTriggerRestore is false when no port is provided
     );
     expect(
       rootContainer.querySelector('#critical-error-content')?.innerHTML,
@@ -242,6 +243,208 @@ describe('displayCriticalError', () => {
       expect(fetch).not.toHaveBeenCalled();
       expect(browser.runtime.reload).toHaveBeenCalled();
     }
+  });
+});
+
+describe('displayCriticalErrorMessage with backup', () => {
+  let rootContainer: HTMLElement;
+  let container: HTMLElement;
+  let mockPort: browser.Runtime.Port;
+  const MOCK_ERROR_MESSAGE = 'test error';
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    rootContainer = document.createElement('div');
+    rootContainer.appendChild(container);
+
+    mockPort = {
+      postMessage: jest.fn(),
+      onMessage: { addListener: jest.fn(), removeListener: jest.fn() },
+      onDisconnect: { addListener: jest.fn(), removeListener: jest.fn() },
+      name: 'test-port',
+    } as unknown as browser.Runtime.Port;
+
+    jest.spyOn(errorUtils, 'maybeGetLocaleContext').mockResolvedValue({
+      preferredLocale: 'en',
+      t: (key: string) => key,
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('passes hasBackup=false when no port is provided', async () => {
+    jest.spyOn(errorUtils, 'getErrorHtml').mockImplementation(
+      (_errorKey, _error, _localeContext, _supportLink, _hasBackup) => `
+        <div>
+          <input type="checkbox" id="critical-error-checkbox" checked />
+          <button id="critical-error-button">Restart</button>
+        </div>
+      `,
+    );
+
+    const error = new Error(MOCK_ERROR_MESSAGE);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        // No port provided
+      ),
+    ).rejects.toThrow(error);
+
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      expect.any(Object),
+      expect.any(String),
+      false, // canTriggerRestore should be false when no port is provided
+    );
+  });
+
+  it('checks IndexedDB for backup when port is provided and handles errors gracefully', async () => {
+    // Mock IndexedDB to throw an error
+    const originalIndexedDB = global.indexedDB;
+    const mockOpen = jest.fn().mockImplementation(() => {
+      const request = {
+        result: null,
+        error: new Error('DB error'),
+        onsuccess: null as (() => void) | null,
+        onerror: null as (() => void) | null,
+      };
+      // Simulate async error
+      setTimeout(() => {
+        if (request.onerror) {
+          request.onerror();
+        }
+      }, 0);
+      return request;
+    });
+    global.indexedDB = { open: mockOpen } as unknown as IDBFactory;
+
+    jest.spyOn(errorUtils, 'getErrorHtml').mockImplementation(
+      (_errorKey, _error, _localeContext, _supportLink, hasBackup) => `
+        <div>
+          <input type="checkbox" id="critical-error-checkbox" checked />
+          <button id="critical-error-button">Restart</button>
+          ${hasBackup ? '<a id="critical-error-restore-link" href="#">Restore</a>' : ''}
+        </div>
+      `,
+    );
+
+    const error = new Error(MOCK_ERROR_MESSAGE);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+      ),
+    ).rejects.toThrow(error);
+
+    // Should have tried to open IndexedDB
+    expect(mockOpen).toHaveBeenCalledWith('metamask-backup', 1);
+
+    // canTriggerRestore should be false because the backup check failed
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      expect.any(Object),
+      expect.any(String),
+      false,
+    );
+
+    global.indexedDB = originalIndexedDB;
+  });
+
+  it('shows restore option when backup exists in IndexedDB and port is provided', async () => {
+    // Mock IndexedDB to return a backup with vault
+    const originalIndexedDB = global.indexedDB;
+
+    const mockKeyringResult = { vault: 'encrypted-vault-data' };
+    const mockStore = {
+      get: jest.fn().mockImplementation(() => {
+        const getRequest = {
+          result: mockKeyringResult,
+          onsuccess: null as (() => void) | null,
+          onerror: null as (() => void) | null,
+        };
+        setTimeout(() => {
+          if (getRequest.onsuccess) {
+            getRequest.onsuccess();
+          }
+        }, 0);
+        return getRequest;
+      }),
+    };
+    const mockTransaction = {
+      objectStore: jest.fn().mockReturnValue(mockStore),
+    };
+    const mockDb = {
+      transaction: jest.fn().mockReturnValue(mockTransaction),
+      close: jest.fn(),
+    };
+
+    const mockOpen = jest.fn().mockImplementation(() => {
+      const request = {
+        result: mockDb,
+        onsuccess: null as (() => void) | null,
+        onerror: null as (() => void) | null,
+      };
+      setTimeout(() => {
+        if (request.onsuccess) {
+          request.onsuccess();
+        }
+      }, 0);
+      return request;
+    });
+    global.indexedDB = { open: mockOpen } as unknown as IDBFactory;
+
+    jest.spyOn(errorUtils, 'getErrorHtml').mockImplementation(
+      (_errorKey, _error, _localeContext, _supportLink, hasBackup) => `
+        <div>
+          <input type="checkbox" id="critical-error-checkbox" checked />
+          <button id="critical-error-button">Restart</button>
+          ${hasBackup ? '<a id="critical-error-restore-link" href="#">Restore</a>' : ''}
+        </div>
+      `,
+    );
+
+    const error = new Error(MOCK_ERROR_MESSAGE);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        'en',
+        mockPort,
+      ),
+    ).rejects.toThrow(error);
+
+    // Should have opened IndexedDB
+    expect(mockOpen).toHaveBeenCalledWith('metamask-backup', 1);
+
+    // canTriggerRestore should be true because backup exists
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      expect.any(Object),
+      expect.any(String),
+      true,
+    );
+
+    // Restore link should be in the DOM
+    expect(
+      rootContainer.querySelector('#critical-error-restore-link'),
+    ).toBeTruthy();
+
+    global.indexedDB = originalIndexedDB;
   });
 });
 

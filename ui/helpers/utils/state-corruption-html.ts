@@ -9,8 +9,8 @@ import { getErrorHtmlBase } from '../../../shared/lib/error-utils';
 import type { ErrorLike } from '../../../shared/constants/errors';
 import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
 import getFirstPreferredLangCode from '../../../shared/lib/get-first-preferred-lang-code';
-import { METHOD_REPAIR_DATABASE } from '../../../shared/constants/state-corruption';
 import { t, updateCurrentLocale } from '../../../shared/lib/translate';
+import { confirmAndTriggerVaultRestore } from '../../../shared/lib/vault-restore-utils';
 import { displayCriticalErrorPage } from './display-critical-error';
 
 export async function getStateCorruptionErrorHtml(
@@ -94,9 +94,8 @@ export async function displayStateCorruptionError(
   log.error(err);
 
   function handleRestoreClick(this: HTMLButtonElement) {
-    // eslint-disable-next-line no-alert
-    const theyAreSure = confirm(t('stateCorruptionAreYouSure') ?? '');
-    if (theyAreSure) {
+    const confirmed = confirmAndTriggerVaultRestore(port);
+    if (confirmed) {
       this.removeEventListener('click', handleRestoreClick);
       this.disabled = true;
       if (hasBackup) {
@@ -104,12 +103,6 @@ export async function displayStateCorruptionError(
       } else {
         this.innerText = t('stateCorruptionResettingDatabase') ?? '';
       }
-
-      port.postMessage({
-        data: {
-          method: METHOD_REPAIR_DATABASE,
-        },
-      });
     }
   }
 

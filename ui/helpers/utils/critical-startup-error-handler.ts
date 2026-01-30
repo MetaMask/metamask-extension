@@ -95,6 +95,8 @@ export class CriticalStartupErrorHandler {
         // This cast is safe because `livenessCheck` can't throw, and `livenessCheckTimeoutPromise`
         // only throws an error.
         error as ErrorLike,
+        undefined,
+        this.#port,
       );
     } finally {
       clearTimeout(this.#livenessCheckTimeoutId);
@@ -123,6 +125,8 @@ export class CriticalStartupErrorHandler {
         // This cast is safe because `startSyncUi` can't throw, and `syncUiTimeoutPromise` only
         // throws an error.
         error as ErrorLike,
+        undefined,
+        this.#port,
       );
     } finally {
       clearTimeout(this.#startUiSyncTimeoutId);
@@ -157,6 +161,8 @@ export class CriticalStartupErrorHandler {
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           new Error('Unreachable error, liveness check not initialized'),
+          undefined,
+          this.#port,
         );
       }
     } else if (method === RELOAD_WINDOW) {
@@ -201,6 +207,7 @@ export class CriticalStartupErrorHandler {
         CriticalErrorTranslationKey.TroubleStarting,
         error as ErrorLike,
         currentLocale,
+        this.#port,
       );
     }
   };

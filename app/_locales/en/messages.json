@@ -1827,6 +1827,10 @@
   "creatorAddress": {
     "message": "Creator address"
   },
+  "criticalErrorOr": {
+    "message": "or",
+    "description": "Conjunction between 'Contact support' and 'restore accounts' links on the critical error screen"
+  },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
   },
