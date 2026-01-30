@@ -5,7 +5,7 @@ import ConnectAccountConfirmation from '../pages/confirmations/connect-account-c
 import { largeDelayMs } from '../../helpers';
 
 /**
- * Tries opening the wallet seleciton modal and selecting the MetaMask option
+ * Tries opening the wallet selection modal and selecting the MetaMask option
  *
  * @param driver - The driver instance.
  * @param testDapp
@@ -16,6 +16,9 @@ const tryConnectWithRetry = async (
   testDapp: TestDappTron,
   retries: number,
 ) => {
+  // The button we are clicking at `await testDapp.connect()` comes from a third party library
+  // The reason we need to retry is that even though the button becomes visible and clickable
+  // its not immediately responsive so we may need to click again
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
       await testDapp.connect();
