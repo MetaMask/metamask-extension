@@ -26,17 +26,17 @@ yarn test:e2e:benchmark --preset performanceOnboardingImport --out results.json
 
 ### Available Presets
 
-| Preset                         | Description               | Benchmarks                                                       |
-| ------------------------------ | ------------------------- | ---------------------------------------------------------------- |
-| `standardHome`                 | Standard user page load   | `standard-home.ts`                                               |
-| `powerUserHome`                | Power user page load      | `power-user-home.ts`                                             |
-| `userActions`                  | User interaction timings  | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
-| `performanceOnboardingImport`  | Import wallet onboarding  | `onboarding-import-wallet.ts`                                    |
-| `performanceOnboardingNew`     | New wallet onboarding     | `onboarding-new-wallet.ts`                                       |
-| `performanceAssets`            | Asset detail page loads   | `asset-details.ts`, `solana-asset-details.ts`                    |
-| `performanceLogin`             | Login & transaction flows | `import-srp-home.ts`, `send-transactions.ts`, `swap.ts`          |
-| `pageLoadBenchmark`            | Playwright benchmarks     | `page-load-benchmark.spec.ts`                                    |
-| `all`                          | All benchmarks            | Everything above                                                 |
+| Preset                        | Description               | Benchmarks                                                       |
+| ----------------------------- | ------------------------- | ---------------------------------------------------------------- |
+| `standardHome`                | Standard user page load   | `standard-home.ts`                                               |
+| `powerUserHome`               | Power user page load      | `power-user-home.ts`                                             |
+| `userActions`                 | User interaction timings  | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
+| `performanceOnboardingImport` | Import wallet onboarding  | `onboarding-import-wallet.ts`                                    |
+| `performanceOnboardingNew`    | New wallet onboarding     | `onboarding-new-wallet.ts`                                       |
+| `performanceAssets`           | Asset detail page loads   | `asset-details.ts`, `solana-asset-details.ts`                    |
+| `performanceLogin`            | Login & transaction flows | `import-srp-home.ts`, `send-transactions.ts`, `swap.ts`          |
+| `pageLoadBenchmark`           | Playwright benchmarks     | `page-load-benchmark.spec.ts`                                    |
+| `all`                         | All benchmarks            | Everything above                                                 |
 
 ### 1. Create a new file in the appropriate subdirectory
 
@@ -75,9 +75,9 @@ Thresholds are configured separately in `test/e2e/benchmarks/utils/constants.ts`
 ```typescript
 export const MY_BENCHMARK_THRESHOLDS: ThresholdConfig = {
   myTimerId: {
-    p75: { warn: 1000, fail: 1500 },  // 75th percentile thresholds (ms)
-    p95: { warn: 2000, fail: 3000 },  // 95th percentile thresholds (ms)
-    ciMultiplier: DEFAULT_CI_MULTIPLIER,  // 1.5x multiplier for CI environments
+    p75: { warn: 1000, fail: 1500 }, // 75th percentile thresholds (ms)
+    p95: { warn: 2000, fail: 3000 }, // 95th percentile thresholds (ms)
+    ciMultiplier: DEFAULT_CI_MULTIPLIER, // 1.5x multiplier for CI environments
   },
 };
 ```
