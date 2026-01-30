@@ -506,9 +506,20 @@ function getGenericValues(
     Object.values(swapCommandsDefinition).includes(commandByte),
   );
 
-  if (swapCommands.length !== 1) {
-    throw new DappSwapDecodingError(
-      `Found swap commands ${swapCommands.length} instead of 1`,
+  if (swapCommands.length === 0) {
+    return {
+      amountMin: undefined,
+      quotesInput: undefined,
+    };
+  }
+
+  // Handle multiple swap commands by processing only the first one
+  // Transactions with multiple swap commands are too complex for meaningful comparison
+  if (swapCommands.length > 1) {
+    // Log for debugging but don't throw an error
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Found ${swapCommands.length} swap commands, processing only the first one`,
     );
   }
 
@@ -521,7 +532,8 @@ function getGenericValues(
     );
   }
 
-  const commands = [...swapCommands, ...nonSwapCommands];
+  // Process only the first swap command when multiple are found
+  const commands = [swapCommands[0], ...nonSwapCommands];
 
   let decodingResult: COMMAND_VALUES_RESULT = {
     amountMin: undefined,

@@ -488,4 +488,65 @@ describe('dapp-swap command utils', () => {
       });
     });
   });
+
+  describe('getCommandValues - multiple swap commands', () => {
+    it('processes only the first swap command when multiple are found', () => {
+      // Mock console.warn to avoid cluttering test output
+      const consoleWarnSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {
+          // Intentionally empty
+        });
+
+      // Simulate a transaction with two swap commands: V2_SWAP_EXACT_IN ('08') and V3_SWAP_EXACT_IN ('00')
+      const result = getCommandValues(
+        ['08', '00'], // Two swap commands
+        [
+          // V2 swap input
+          '0x00000000000000000000000068d3ad12ea94779cb37262be1c179dbd8e208afe00000000000000000000000000000000000000000000000000000000000007d0000000000000000000000000000000000000000000000000000000000000079b00000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000fde4c96c8593536e31f229ea8f37b2ada2699bb2000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+          // V3 swap input (should be ignored)
+          '0x00000000000000000000000068d3ad12ea94779cb37262be1c179dbd8e208afe00000000000000000000000000000000000000000000000000000000000186a00000000000000000000000000000000000000000000000000000000000017d2a00000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002b833589fcd6edb6e08f4c7c32d4f71b54bda02913000064fde4c96c8593536e31f229ea8f37b2ada2699bb2000000000000000000000000000000000000000000',
+        ],
+        '0x2105',
+      );
+
+      // Should process only the first swap command (V2 '08')
+      expect(result).toStrictEqual({
+        amountMin: '0x079b',
+        quotesInput: {
+          destChainId: '0x2105',
+          destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+          gasIncluded: false,
+          gasIncluded7702: false,
+          srcChainId: '0x2105',
+          srcTokenAddress: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2',
+          srcTokenAmount: '0x07d0',
+        },
+      });
+
+      // Verify console.warn was called
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Found 2 swap commands, processing only the first one',
+      );
+
+      consoleWarnSpy.mockRestore();
+    });
+
+    it('returns undefined result when no swap commands are found', () => {
+      // Only non-swap commands
+      const result = getCommandValues(
+        ['04', '0b'], // SWEEP and WRAP_ETH
+        [
+          '0x000000000000000000000000833589fcd6edb6e08f4c7c32d4f71b54bda029130000000000000000000000005d64d14d2cf4fe5fe4e65b1c7e3d11e18d49309100000000000000000000000000000000000000000000000000000000000000019',
+          '0x0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000012309ce54000',
+        ],
+        '0x2105',
+      );
+
+      expect(result).toStrictEqual({
+        amountMin: undefined,
+        quotesInput: undefined,
+      });
+    });
+  });
 });
