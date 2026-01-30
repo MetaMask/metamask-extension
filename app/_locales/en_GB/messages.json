@@ -2078,6 +2078,9 @@
   "deepLink_theHomePage": {
     "message": "the home page"
   },
+  "deepLink_theNFTsPage": {
+    "message": "the NFTs page"
+  },
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
   },
