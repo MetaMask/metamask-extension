@@ -628,12 +628,12 @@ export default class MetamaskController extends EventEmitter {
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
-      TokenRatesController: TokenRatesControllerInit,
-      // MultichainNetworkController and NetworkEnablementController must be initialized before AssetsController
-      // because AssetsController depends on NetworkEnablementController:getState during construction.
+      // MultichainNetworkController and NetworkEnablementController must be initialized before
+      // TokenRatesController and AssetsController because they depend on
+      // NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
-      AssetsController: AssetsControllerInit,
+      TokenRatesController: TokenRatesControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
@@ -649,7 +649,11 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       MultichainRouter: MultichainRouterInit,
       ///: END:ONLY_INCLUDE_IF
+      // AuthenticationController must be initialized before AssetsController because
+      // AssetsController needs AuthenticationController:getBearerToken during initialization.
       AuthenticationController: AuthenticationControllerInit,
+      // AssetsController depends on AuthenticationController:getBearerToken
+      AssetsController: AssetsControllerInit,
       UserStorageController: UserStorageControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:

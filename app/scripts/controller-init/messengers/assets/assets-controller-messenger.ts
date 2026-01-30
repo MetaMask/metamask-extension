@@ -24,22 +24,6 @@ import { RootMessenger } from '../../../lib/messenger';
 export type AssetsControllerMessenger = AssetsControllerMessengerType;
 
 /**
- * App lifecycle event: fired when app becomes active (opened/foregrounded)
- */
-type AppStateControllerAppOpenedEvent = {
-  type: 'AppStateController:appOpened';
-  payload: [];
-};
-
-/**
- * App lifecycle event: fired when app becomes inactive (closed/backgrounded)
- */
-type AppStateControllerAppClosedEvent = {
-  type: 'AppStateController:appClosed';
-  payload: [];
-};
-
-/**
  * NetworkController:getState action
  */
 type NetworkControllerGetStateAction = {
@@ -77,6 +61,38 @@ type SnapControllerHandleRequestAction = {
 };
 
 /**
+ * SnapController:getRunnableSnaps action to get runnable snaps for keyring discovery
+ */
+type SnapControllerGetRunnableSnapsAction = {
+  type: 'SnapController:getRunnableSnaps';
+  handler: () => Array<{ id: string; version: string }>;
+};
+
+/**
+ * PermissionController:getPermissions action for dynamic snap discovery
+ */
+type PermissionControllerGetPermissionsAction = {
+  type: 'PermissionController:getPermissions';
+  handler: (origin: string) => unknown;
+};
+
+/**
+ * PermissionController:stateChange event for runtime snap discovery
+ */
+type PermissionControllerStateChangeEvent = {
+  type: 'PermissionController:stateChange';
+  payload: [{ subjects: Record<string, unknown> }, unknown[]];
+};
+
+/**
+ * AccountsController:accountBalancesUpdated event for snap keyring balance updates
+ */
+type AccountsControllerAccountBalancesUpdatedEvent = {
+  type: 'AccountsController:accountBalancesUpdated';
+  payload: [{ accountId: string; balances: Record<string, unknown> }];
+};
+
+/**
  * Actions that the AssetsController needs to call
  */
 type AllowedActions =
@@ -87,7 +103,9 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | TokenListControllerGetStateAction
   | BackendWebSocketServiceActions
-  | SnapControllerHandleRequestAction;
+  | SnapControllerHandleRequestAction
+  | SnapControllerGetRunnableSnapsAction
+  | PermissionControllerGetPermissionsAction;
 
 /**
  * Events that the AssetsController subscribes to
@@ -97,11 +115,12 @@ type AllowedEvents =
   | NetworkEnablementControllerEvents
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent
-  | AppStateControllerAppOpenedEvent
-  | AppStateControllerAppClosedEvent
   // Data source dependencies
   | NetworkControllerStateChangeEvent
-  | BackendWebSocketServiceEvents;
+  | BackendWebSocketServiceEvents
+  // SnapDataSource: runtime snap discovery and balance updates
+  | PermissionControllerStateChangeEvent
+  | AccountsControllerAccountBalancesUpdatedEvent;
 
 export type AssetsControllerInitMessenger = ReturnType<
   typeof getAssetsControllerInitMessenger
@@ -146,8 +165,11 @@ export function getAssetsControllerMessenger(
       'BackendWebSocketService:subscribe',
       'BackendWebSocketService:getConnectionInfo',
       'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-      // Data source dependencies - SnapController
+      // Data source dependencies - SnapController (for dynamic snap discovery)
       'SnapController:handleRequest',
+      'SnapController:getRunnableSnaps',
+      // Data source dependencies - PermissionController (for dynamic snap discovery)
+      'PermissionController:getPermissions',
     ],
     events: [
       // Core AssetsController events
@@ -155,15 +177,15 @@ export function getAssetsControllerMessenger(
       'NetworkEnablementController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
-      'AppStateController:appOpened',
-      'AppStateController:appClosed',
       // Data source events
       'NetworkController:stateChange',
       'BackendWebSocketService:connectionStateChanged',
+      // SnapDataSource: runtime snap discovery and balance updates
+      'PermissionController:stateChange',
+      'AccountsController:accountBalancesUpdated',
     ],
   });
 
-  console.log('[AssetsController] AssetsController messenger created');
   return controllerMessenger as unknown as AssetsControllerMessenger;
 }
 
@@ -172,7 +194,9 @@ export function getAssetsControllerMessenger(
  */
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerToken
-  | SnapControllerHandleRequestAction;
+  | SnapControllerHandleRequestAction
+  | SnapControllerGetRunnableSnapsAction
+  | PermissionControllerGetPermissionsAction;
 
 /**
  * Get a restricted messenger for AssetsController initialization.
@@ -199,6 +223,8 @@ export function getAssetsControllerInitMessenger(
     actions: [
       'AuthenticationController:getBearerToken',
       'SnapController:handleRequest',
+      'SnapController:getRunnableSnaps',
+      'PermissionController:getPermissions',
     ],
   });
 
