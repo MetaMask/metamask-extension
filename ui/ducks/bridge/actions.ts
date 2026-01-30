@@ -1,36 +1,29 @@
+import { zeroAddress } from 'ethereumjs-util';
 import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
-  isCrossChain,
+  formatChainIdToHex,
+  isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
-import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/modules/selectors/networks';
+import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
+import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
-  setActiveNetworkWithError,
   setEnabledAllPopularNetworks,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
-import { getMultichainProviderConfig } from '../../selectors/multichain';
-import {
-  bridgeSlice,
-  setSrcTokenExchangeRates,
-  setTxAlerts,
-  setEVMSrcTokenBalance,
-  setEVMSrcNativeBalance,
-} from './bridge';
+import { bridgeSlice, setSrcTokenExchangeRates, setTxAlerts } from './bridge';
 import type { TokenPayload } from './types';
 import {
   type BridgeAppState,
   getFromAccount,
   getLastSelectedChainId,
 } from './selectors';
-import { getMaybeHexChainId } from './utils';
 
 const {
   setFromToken: setFromTokenAction,
@@ -42,6 +35,8 @@ const {
   setWasTxDeclined,
   setSlippage,
   restoreQuoteRequestFromState,
+  setEVMSrcTokenBalance,
+  setEVMSrcNativeBalance,
 } = bridgeSlice.actions;
 
 export {
@@ -58,12 +53,13 @@ export {
 };
 
 const callBridgeControllerMethod = (
-  bridgeAction: BridgeUserAction | BridgeBackgroundAction,
+  bridgeAction: BridgeUserAction | BridgeBackgroundAction | 'getLatestBalance',
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
+    const result = await submitRequestToBackground(bridgeAction, args);
     await forceUpdateMetamaskState(dispatch);
+    return result;
   };
 };
 
@@ -112,6 +108,29 @@ export const updateQuoteRequestParams = (
   };
 };
 
+const getBalanceAmount = (
+  isNative: boolean,
+  srcChainId: Hex,
+  ...args: unknown[]
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    return await trace(
+      {
+        name: TraceName.BridgeBalancesUpdated,
+        data: {
+          srcChainId: srcChainId,
+          isNative,
+        },
+        startTime: Date.now(),
+      },
+      async () =>
+        await dispatch(
+          callBridgeControllerMethod('getLatestBalance', ...args, srcChainId),
+        ),
+    );
+  };
+};
+
 export const setEvmBalances = (assetId: CaipAssetType) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
@@ -122,18 +141,29 @@ export const setEvmBalances = (assetId: CaipAssetType) => {
       return;
     }
     const { chainId, assetReference } = parseCaipAssetType(assetId);
-    await dispatch(
+    if (isNonEvmChainId(chainId)) {
+      return;
+    }
+    const hexChainId = formatChainIdToHex(chainId);
+    const isNative = isNativeAddress(assetReference);
+
+    const balance = await dispatch(
+      getBalanceAmount(isNative, hexChainId, selectedAddress, assetReference),
+    );
+    dispatch(
       setEVMSrcTokenBalance({
-        selectedAddress,
-        tokenAddress: assetReference,
-        chainId,
         assetId,
+        balance,
       }),
     );
-    await dispatch(
+
+    const nativeBalance = await dispatch(
+      getBalanceAmount(true, hexChainId, selectedAddress, zeroAddress()),
+    );
+    dispatch(
       setEVMSrcNativeBalance({
-        selectedAddress,
         chainId,
+        balance: nativeBalance,
       }),
     );
   };
