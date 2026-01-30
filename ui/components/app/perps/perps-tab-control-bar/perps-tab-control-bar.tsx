@@ -17,7 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { mockAccountState } from '../mocks';
+import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 
 export type PerpsTabControlBarProps = {
   /** Callback when balance row is clicked */
@@ -41,7 +41,13 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold, formatPercentWithMinThreshold } =
     useFormatters();
-  const { totalBalance, unrealizedPnl, returnOnEquity } = mockAccountState;
+  const { account } = usePerpsLiveAccount();
+
+  // Use account data or defaults
+  const totalBalance = account?.totalBalance ?? '0';
+  const unrealizedPnl = account?.unrealizedPnl ?? '0';
+  const returnOnEquity = account?.returnOnEquity ?? '0';
+
   const pnlNum = parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const pnlPrefix = isProfit ? '+' : '-';

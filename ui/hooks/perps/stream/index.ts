@@ -85,6 +85,13 @@ export {
   type TopOfBookData,
 } from './usePerpsTopOfBook';
 
+// Market data hooks
+export {
+  usePerpsLiveMarketData,
+  type UsePerpsLiveMarketDataOptions,
+  type UsePerpsLiveMarketDataReturn,
+} from './usePerpsLiveMarketData';
+
 // Re-export types from controller for convenience
 export type {
   PriceUpdate,
@@ -96,4 +103,5 @@ export type {
   OrderBookData,
   CandlePeriod,
   TimeDuration,
+  PerpsMarketData,
 } from '../../../../app/scripts/controllers/perps/types';

@@ -15,7 +15,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { mockAccountState } from '../mocks';
+import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 
 type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
@@ -36,9 +36,11 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
 }) => {
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
+  const { account } = usePerpsLiveAccount();
 
-  // Use mock data for now
-  const { totalBalance, availableBalance } = mockAccountState;
+  // Use account data or defaults
+  const totalBalance = account?.totalBalance ?? '0';
+  const availableBalance = account?.availableBalance ?? '0';
   const isBalanceEmpty = parseFloat(totalBalance) === 0;
 
   const handleAddFunds = useCallback(() => {

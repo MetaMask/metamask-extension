@@ -17,10 +17,7 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  mockCryptoMarkets,
-  mockHip3Markets,
-} from '../../../components/app/perps/mocks';
+import { usePerpsLiveMarketData } from '../../../hooks/perps/stream';
 import type { PerpsMarketData } from '../../../components/app/perps/types';
 import { filterMarketsByQuery } from '../../../components/app/perps/utils';
 import {
@@ -46,12 +43,6 @@ import {
   StockSubFilterSelect,
   type StockSubFilter,
 } from './components/stock-sub-filter';
-
-// Combine all markets
-const allMarkets: PerpsMarketData[] = [
-  ...mockCryptoMarkets,
-  ...mockHip3Markets,
-];
 
 type StockMarketType = 'equity' | 'commodity';
 
@@ -109,8 +100,11 @@ export const MarketListView: React.FC = () => {
   const navigate = useNavigate();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
+  // Use stream hooks for real-time market data
+  const { markets: allMarkets, isInitialLoading: marketsLoading } =
+    usePerpsLiveMarketData();
+
   // State
-  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSortId, setSelectedSortId] = useState<SortOptionId>('volume');
   const [selectedFilter, setSelectedFilter] = useState<MarketFilter>('all');
@@ -121,13 +115,8 @@ export const MarketListView: React.FC = () => {
     (option) => option.id === selectedSortId,
   );
 
-  // Simulate loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
+  // Use stream loading state
+  const isLoading = marketsLoading;
 
   // Filter and sort markets
   // When searching, bypass filters and search ALL markets (like mobile)
@@ -151,7 +140,7 @@ export const MarketListView: React.FC = () => {
       });
     }
     return markets;
-  }, [selectedFilter, stockSubFilter, searchQuery, currentSortOption]);
+  }, [allMarkets, selectedFilter, stockSubFilter, searchQuery, currentSortOption]);
 
   // Handlers
   const handleBack = useCallback(() => {

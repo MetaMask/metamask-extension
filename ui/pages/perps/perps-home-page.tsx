@@ -27,11 +27,10 @@ import {
   PERPS_MARKET_LIST_ROUTE,
 } from '../../helpers/constants/routes';
 import {
-  mockPositions,
-  mockOrders,
-  mockCryptoMarkets,
-  mockHip3Markets,
-} from '../../components/app/perps/mocks';
+  usePerpsLivePositions,
+  usePerpsLiveOrders,
+  usePerpsLiveMarketData,
+} from '../../hooks/perps/stream';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import { PerpsMarketBalanceActions } from '../../components/app/perps/perps-market-balance-actions';
 import { getDisplayName } from '../../components/app/perps/utils';
@@ -53,25 +52,31 @@ const PerpsHomePage: React.FC = () => {
   const navigate = useNavigate();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
+  // Use stream hooks for real-time data
+  const { positions: allPositions } = usePerpsLivePositions();
+  const { orders: allOrders } = usePerpsLiveOrders();
+  const { cryptoMarkets: allCryptoMarkets, hip3Markets: allHip3Markets } =
+    usePerpsLiveMarketData();
+
   // Filter positions (only crypto for now, limit to 3)
   const positions = useMemo(() => {
-    return mockPositions.filter((pos) => !pos.symbol.includes(':')).slice(0, 3);
-  }, []);
+    return allPositions.filter((pos) => !pos.symbol.includes(':')).slice(0, 3);
+  }, [allPositions]);
 
   // Filter open orders (limit to 5)
   const openOrders = useMemo(() => {
-    return mockOrders.filter((order) => order.status === 'open').slice(0, 5);
-  }, []);
+    return allOrders.filter((order) => order.status === 'open').slice(0, 5);
+  }, [allOrders]);
 
   // Filter crypto markets (limit to 5)
   const cryptoMarkets = useMemo(() => {
-    return mockCryptoMarkets.slice(0, 5);
-  }, []);
+    return allCryptoMarkets.slice(0, 5);
+  }, [allCryptoMarkets]);
 
   // Filter HIP-3 markets (stocks and commodities, limit to 5)
   const hip3Markets = useMemo(() => {
-    return mockHip3Markets.slice(0, 5);
-  }, []);
+    return allHip3Markets.slice(0, 5);
+  }, [allHip3Markets]);
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {

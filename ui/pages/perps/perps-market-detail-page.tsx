@@ -24,10 +24,11 @@ import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
-  mockPositions,
-  mockOrders,
-  mockAccountState,
-} from '../../components/app/perps/mocks';
+  usePerpsLivePositions,
+  usePerpsLiveOrders,
+  usePerpsLiveAccount,
+  usePerpsLiveMarketData,
+} from '../../hooks/perps/stream';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -41,7 +42,6 @@ import {
 } from '../../components/app/perps/constants/chartConfig';
 import {
   getDisplayName,
-  findMarketBySymbol,
   safeDecodeURIComponent,
   getChangeColor,
 } from '../../components/app/perps/utils';
@@ -73,6 +73,14 @@ const PerpsMarketDetailPage: React.FC = () => {
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const { formatCurrencyWithMinThreshold, formatTokenQuantity, formatNumber } =
     useFormatters();
+
+  // Use stream hooks for real-time data
+  const { positions: allPositions } = usePerpsLivePositions();
+  const { orders: allOrders } = usePerpsLiveOrders();
+  const { account } = usePerpsLiveAccount();
+  const { markets: allMarkets, isInitialLoading: marketsLoading } =
+    usePerpsLiveMarketData();
+
   // Safely decode the symbol from URL
   const decodedSymbol = useMemo(() => {
     if (!symbol) {
@@ -86,30 +94,32 @@ const PerpsMarketDetailPage: React.FC = () => {
     if (!decodedSymbol) {
       return undefined;
     }
-    return findMarketBySymbol(decodedSymbol);
-  }, [decodedSymbol]);
+    return allMarkets.find(
+      (m) => m.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
+    );
+  }, [decodedSymbol, allMarkets]);
 
   // Find position for this market (if exists)
   const position = useMemo(() => {
     if (!decodedSymbol) {
       return undefined;
     }
-    return mockPositions.find(
+    return allPositions.find(
       (pos) => pos.symbol.toLowerCase() === decodedSymbol.toLowerCase(),
     );
-  }, [decodedSymbol]);
+  }, [decodedSymbol, allPositions]);
 
   // Find orders for this market
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
     }
-    return mockOrders.filter(
+    return allOrders.filter(
       (order) =>
         order.symbol.toLowerCase() === decodedSymbol.toLowerCase() &&
         order.status === 'open',
     );
-  }, [decodedSymbol]);
+  }, [decodedSymbol, allOrders]);
 
   // Candle period state and chart ref
   const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
@@ -128,8 +138,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing
   const [orderMode, setOrderMode] = useState<OrderMode>('new');
 
-  // Get available balance from mock account state
-  const availableBalance = parseFloat(mockAccountState.availableBalance);
+  // Get available balance from account state
+  const availableBalance = account ? parseFloat(account.availableBalance) : 0;
 
   // Parse current price from market data (remove $ and commas)
   const currentPrice = useMemo(() => {
@@ -266,7 +276,39 @@ const PerpsMarketDetailPage: React.FC = () => {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
-  // If market not found, show error state
+  // Show loading state while market data is being fetched
+  if (marketsLoading) {
+    return (
+      <Box className="main-container asset__container">
+        <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
+          <Box
+            data-testid="perps-market-detail-back-button"
+            onClick={handleBackClick}
+            aria-label={t('back')}
+            className="p-2 cursor-pointer"
+          >
+            <Icon
+              name={IconName.ArrowLeft}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+        </Box>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          padding={4}
+        >
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {t('loading')}
+          </Text>
+        </Box>
+      </Box>
+    );
+  }
+
+  // If market not found after loading, show error state
   if (!market) {
     return (
       <Box className="main-container asset__container">
