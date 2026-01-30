@@ -2,6 +2,42 @@ import { rewriteReport, removeUrlsFromBreadCrumb } from './setupSentry';
 
 describe('Setup Sentry', () => {
   describe('rewriteReport', () => {
+    it('should filter out preinstalled snap permission sync errors', () => {
+      const testReport = {
+        message:
+          'The permissions for "npm:@metamask/institutional-wallet-snap" were out of sync and have been automatically restored. This could indicate persistence issues.',
+        request: {},
+      };
+      const rewrittenReport = rewriteReport(testReport);
+      expect(rewrittenReport).toBeNull();
+    });
+
+    it('should filter out preinstalled snap permission sync errors from exception values', () => {
+      const testReport = {
+        exception: {
+          values: [
+            {
+              value:
+                'The permissions for "npm:@metamask/some-snap" were out of sync and have been automatically restored. This could indicate persistence issues.',
+            },
+          ],
+        },
+        request: {},
+      };
+      const rewrittenReport = rewriteReport(testReport);
+      expect(rewrittenReport).toBeNull();
+    });
+
+    it('should not filter out other errors', () => {
+      const testReport = {
+        message: 'Some other error occurred',
+        request: {},
+      };
+      const rewrittenReport = rewriteReport(testReport);
+      expect(rewrittenReport).not.toBeNull();
+      expect(rewrittenReport.message).toStrictEqual('Some other error occurred');
+    });
+
     it('should remove urls from error messages', () => {
       const testReport = {
         message: 'This report has a test url: http://example.com',
