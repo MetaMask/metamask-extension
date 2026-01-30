@@ -363,6 +363,9 @@
   "lock": {
     "message": "Wyloguj się"
   },
+  "logo": {
+    "message": "$1 logo"
+  },
   "mainnet": {
     "message": "Główna sieć Ethereum"
   },
