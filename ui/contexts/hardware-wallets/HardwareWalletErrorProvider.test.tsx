@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, act } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -91,24 +92,10 @@ const createWrapper =
     </Provider>
   );
 
-type HardwareWalletErrorHook = ReturnType<typeof useHardwareWalletError>;
-
-const renderHardwareWalletErrorHook = (store: ReturnType<typeof mockStore>) => {
-  const result = { current: null as HardwareWalletErrorHook | null };
-
-  const HookConsumer = () => {
-    result.current = useHardwareWalletError();
-    return null;
-  };
-
-  render(<HookConsumer />, { wrapper: createWrapper(store) });
-
-  if (!result.current) {
-    throw new Error('HardwareWalletError hook did not initialize');
-  }
-
-  return { result: result as { current: HardwareWalletErrorHook } };
-};
+const renderHardwareWalletErrorHook = (store: ReturnType<typeof mockStore>) =>
+  renderHook(() => useHardwareWalletError(), {
+    wrapper: createWrapper(store),
+  });
 
 describe('HardwareWalletErrorProvider', () => {
   beforeEach(() => {
