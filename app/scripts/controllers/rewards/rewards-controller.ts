@@ -1121,7 +1121,17 @@ export class RewardsController extends BaseController<
       );
 
       // Track successful estimate in history for Customer Support diagnostics
-      this.addPointsEstimateToHistory(request, estimatedPoints);
+      // Wrapped in its own try-catch so history tracking failures don't affect the main functionality
+      try {
+        this.addPointsEstimateToHistory(request, estimatedPoints);
+      } catch (historyError) {
+        log.error(
+          'RewardsController: Failed to add points estimate to history:',
+          historyError instanceof Error
+            ? historyError.message
+            : String(historyError),
+        );
+      }
 
       return estimatedPoints;
     } catch (error) {

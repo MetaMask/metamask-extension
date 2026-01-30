@@ -1369,6 +1369,70 @@ describe('RewardsController', () => {
         },
       );
     });
+
+    it('returns estimated points even when history tracking fails', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const mockEstimatedPoints: EstimatedPointsDto = {
+            pointsEstimate: 250,
+            bonusBips: 100,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:estimatePoints') {
+              return Promise.resolve(mockEstimatedPoints);
+            }
+            return undefined;
+          });
+
+          // Mock addPointsEstimateToHistory to throw an error
+          const originalAddToHistory =
+            controller.addPointsEstimateToHistory.bind(controller);
+          jest
+            .spyOn(controller, 'addPointsEstimateToHistory')
+            .mockImplementation(() => {
+              throw new Error('State update failed');
+            });
+
+          const request: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: MOCK_CAIP_ACCOUNT,
+            activityContext: {
+              swapContext: {
+                srcAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '1000000000000000000',
+                },
+                destAsset: {
+                  id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                  amount: '4500000000',
+                },
+                feeAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '5000000000000000',
+                },
+              },
+            },
+          };
+
+          // Should still return successful estimate despite history tracking failure
+          const result = await controller.estimatePoints(request);
+
+          expect(result).toEqual(mockEstimatedPoints);
+
+          // Restore original implementation
+          jest.restoreAllMocks();
+
+          // Verify history was not updated (since it threw)
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(0);
+
+          // Call again with working history to verify it works after restore
+          originalAddToHistory(request, mockEstimatedPoints);
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        },
+      );
+    });
   });
 
   describe('addPointsEstimateToHistory', () => {
