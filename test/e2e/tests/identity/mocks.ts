@@ -139,17 +139,6 @@ export async function mockInfuraAndAccountSync(
 ): Promise<void> {
   const accounts = options.accountsToMockBalances ?? [];
 
-  // Set up User Storage / Account Sync mock
-  userStorageMockttpController.setupPath(
-    USER_STORAGE_WALLETS_FEATURE_KEY,
-    mockServer,
-  );
-
-  userStorageMockttpController.setupPath(
-    USER_STORAGE_GROUPS_FEATURE_KEY,
-    mockServer,
-  );
-
   // Account Balances
   if (accounts.length > 0) {
     accounts.forEach((account) => {
