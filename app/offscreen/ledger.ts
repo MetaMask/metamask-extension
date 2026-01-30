@@ -325,20 +325,23 @@ function setupMessageListener(): void {
 
       // Handle the action asynchronously
       handleLedgerAction(msg.action, msg.params)
-        .then((result) => {
+        .then(async (result) => {
           sendResponse({
             success: true,
             payload: result,
           });
+          await closeTransport();
         })
-        .catch((error) => {
+        .catch(async (error) => {
           console.error(`Ledger action ${msg.action} failed:`, error);
+
           sendResponse({
             success: false,
             payload: {
               error: serializeError(error),
             },
           });
+          await closeTransport();
         });
 
       // Return true to indicate we will send response asynchronously
