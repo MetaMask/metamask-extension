@@ -36,7 +36,7 @@ import {
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
 // HardwareWalletType is used as a default fallback when walletType cannot be extracted
-import { buildErrorContent, type ErrorContent } from './error-content-builder';
+import { buildErrorContent } from './error-content-builder';
 
 type HardwareWalletErrorModalProps = {
   isOpen?: boolean;
@@ -57,7 +57,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
-    const { error, onCancel, onClose } = { ...modalProps, ...props };
+    const { error, onClose } = { ...modalProps, ...props };
 
     const { deviceId, walletType: selectedAccountWalletType } =
       useHardwareWalletConfig();
@@ -128,7 +128,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       const result = await ensureDeviceReady(deviceId ?? '');
       if (result) {
         setRecovered(true);
-        clearError();
       }
       setIsLoading(false);
     };
