@@ -363,21 +363,21 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.deployContract) {
     title = getTransactionTypeTitle(t, type);
   } else if (type === TransactionType.incoming) {
-    title = t('received');
+    title = getTransactionTypeTitle(t, type);
     prefix = '';
   } else if (
     type === TransactionType.tokenMethodTransferFrom ||
     type === TransactionType.tokenMethodTransfer
   ) {
-    title = t('sentSpecifiedTokens', [
-      token?.symbol || nft?.name || t('token'),
-    ]);
+    title = getTransactionTypeTitle(t, type, {
+      tokenSymbol: token?.symbol || nft?.name,
+    });
     recipientAddress = getTokenAddressParam(tokenData);
   } else if (type === TransactionType.tokenMethodSafeTransferFrom) {
     title = t('safeTransferFrom');
     recipientAddress = getTokenAddressParam(tokenData);
   } else if (type === TransactionType.simpleSend) {
-    title = t('sent');
+    title = getTransactionTypeTitle(t, type);
   } else if (type === TransactionType.bridgeApproval) {
     title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;

@@ -91,12 +91,24 @@ export function filterTransactions(accountIds: string[]) {
           return true;
         }
 
-        // Keep native token receives (ETH, MATIC, etc - not spam)
-        const hasValue = tx.value && tx.value !== '0';
+        // Keep native token receives (ETH, MATIC, POL, etc - not spam)
+        // Check for any native value transfer, even tiny amounts
+        const hasValue = tx.value && tx.value !== '0' && tx.value !== '0x0';
+        if (hasValue) {
+          return true; // Keep all native token transfers
+        }
+
+        // Keep token transfers where you're the recipient
         const hasTokenTransfer =
           tx.valueTransfers && tx.valueTransfers.length > 0;
-        if (hasValue && !hasTokenTransfer) {
-          return true;
+        if (hasTokenTransfer) {
+          // Check if any transfer is to this account
+          const isRecipient = tx.valueTransfers?.some(
+            (transfer) => transfer.to?.toLowerCase() === accountAddress,
+          );
+          if (isRecipient) {
+            return true;
+          }
         }
 
         // Filter out token airdrops you didn't initiate (likely spam)

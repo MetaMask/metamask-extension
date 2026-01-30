@@ -25,14 +25,49 @@ import {
   extractChainDisplayInfo as extractChainInfo,
 } from '../../../helpers/transaction-mappers';
 import type { TransactionForDisplay } from '../../../helpers/types';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PendingTransactionActions } from './pending-transaction-actions';
 
 type Props = {
   transaction: TransactionForDisplay;
 };
 
+/**
+ * Detects if a transaction actually failed based on transaction data
+ * For ERC20 transfers, successful transactions MUST emit a Transfer event in logs
+ * If logs array is empty, the transaction reverted/failed
+ *
+ * @param transaction
+ * @param isError
+ */
+const detectActualFailure = (
+  transaction: TransactionForDisplay,
+  isError: boolean | undefined,
+): boolean => {
+  // If API already marked as error, trust that
+  if (isError) {
+    return true;
+  }
+
+  // Check for ERC20 transfer with empty logs (indicates failure)
+  const isERC20Transfer =
+    transaction.transactionType === 'ERC_20_TRANSFER' ||
+    transaction.transactionProtocol === 'ERC_20';
+  const hasEmptyLogs = !transaction.logs || transaction.logs.length === 0;
+
+  if (isERC20Transfer && hasEmptyLogs) {
+    return true;
+  }
+
+  return false;
+};
+
 export const ActivityListItem = ({ transaction }: Props) => {
   const { formatToken, formatCurrencyWithMinThreshold } = useFormatters();
+  const t = useI18nContext() as (
+    key: string,
+    substitutions?: string[],
+  ) => string;
   const selectedAddress = useSelector(getSelectedAddress)?.toLowerCase();
   const currentCurrency = useSelector(getCurrentCurrency);
   const currencyRates = useSelector(getCurrencyRates);
@@ -47,10 +82,14 @@ export const ActivityListItem = ({ transaction }: Props) => {
   const { chainId, isError, pendingTransactionMeta } = transaction;
   const isPending = Boolean(pendingTransactionMeta);
 
+  // Detect actual failure status (checks logs for ERC20 transfers)
+  const actuallyFailed = detectActualFailure(transaction, isError);
+
   // Determine transaction category and action
   const { category, action } = extractCategoryAndAction(
     transaction,
     selectedAddress,
+    t,
   );
 
   // Extract amount and symbol
@@ -71,16 +110,23 @@ export const ActivityListItem = ({ transaction }: Props) => {
 
   const { chainImageUrl, chainName } = extractChainInfo(chainId);
 
-  // Determine display status
+  // Determine display status using actual failure detection
   let displayStatus = 'Confirmed';
   let statusColor = 'text-success-default';
   let transactionStatus = TransactionStatus.confirmed;
 
   if (isPending) {
-    displayStatus = 'Pending';
-    statusColor = 'text-warning-default';
-    transactionStatus = TransactionStatus.submitted;
-  } else if (isError) {
+    // Pending transactions may also be failed
+    if (actuallyFailed) {
+      displayStatus = 'Failed';
+      statusColor = 'text-error-default';
+      transactionStatus = TransactionStatus.failed;
+    } else {
+      displayStatus = 'Pending';
+      statusColor = 'text-warning-default';
+      transactionStatus = TransactionStatus.submitted;
+    }
+  } else if (actuallyFailed) {
     displayStatus = 'Failed';
     statusColor = 'text-error-default';
     transactionStatus = TransactionStatus.failed;

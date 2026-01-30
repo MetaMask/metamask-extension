@@ -102,22 +102,34 @@ export function getStatusKey(transaction) {
 }
 
 /**
- * Returns a title for the given transaction category.
- *
- * This will throw an error if the transaction category is unrecognized and no default is provided.
+ * Returns a title for the given transaction type.
  *
  * @param {Function} t - The translation function
  * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
- * @param {string} nativeCurrency - The native currency of the currently selected network
- * @returns {string} The transaction category title
+ * @param {object} options - Additional data needed for title
+ * @param {string} [options.tokenSymbol] - Token symbol for token transactions
+ * @returns {string} The transaction title
  */
-export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
+export function getTransactionTypeTitle(t, type, options = {}) {
+  const { tokenSymbol } = options;
+
+  console.log(
+    '>>> getTransactionTypeTitle called with type:',
+    type,
+    'options:',
+    options,
+  );
+
   switch (type) {
-    case TransactionType.tokenMethodTransfer: {
-      return t('transfer');
+    case TransactionType.incoming: {
+      return t('received');
     }
+    case TransactionType.simpleSend: {
+      return t('sent');
+    }
+    case TransactionType.tokenMethodTransfer:
     case TransactionType.tokenMethodTransferFrom: {
-      return t('transferFrom');
+      return t('sentSpecifiedTokens', [tokenSymbol || t('token')]);
     }
     case TransactionType.tokenMethodSafeTransferFrom: {
       return t('safeTransferFrom');
@@ -130,9 +142,6 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
     case TransactionType.tokenMethodIncreaseAllowance: {
       return t('approveIncreaseAllowance');
-    }
-    case TransactionType.simpleSend: {
-      return t('sendingNativeAsset', [nativeCurrency]);
     }
     case TransactionType.contractInteraction:
     case TransactionType.batch:
@@ -152,7 +161,7 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
       return t('swapApproval');
     }
     default: {
-      throw new Error(`Unrecognized transaction type: ${type}`);
+      return t('contractInteraction');
     }
   }
 }

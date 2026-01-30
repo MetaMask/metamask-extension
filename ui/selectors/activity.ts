@@ -3,33 +3,37 @@ import {
   TransactionStatus,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { submittedPendingTransactionsSelector } from './transactions';
+import { transactionsSelector } from './transactions';
 
 /**
- * Transforms pending TransactionMeta to V1 API shape
- * Minimal transformation - only what's needed
+ * Transforms submitted (pending) transactions to API-compatible shape
+ * These take precedence over API data in merge logic
  */
 export const getPendingTransactionsAsApiShape = createSelector(
-  submittedPendingTransactionsSelector,
-  (pendingTxs) =>
-    (pendingTxs as TransactionMeta[]).map((tx) => ({
-      hash: tx.hash || '',
-      timestamp: new Date(tx.time).toISOString(),
-      chainId: parseInt(tx.chainId, 16), // Convert hex to number to match API format
-      blockNumber: 0,
-      blockHash: '',
-      gas: 0, // Not used by display logic
-      gasUsed: 0,
-      gasPrice: tx.txParams.gasPrice || tx.txParams.maxFeePerGas || '0',
-      effectiveGasPrice:
-        tx.txParams.gasPrice || tx.txParams.maxFeePerGas || '0',
-      nonce: 0, // Not used by display logic
-      cumulativeGasUsed: 0,
-      value: tx.txParams.value || '0x0',
-      to: tx.txParams.to || '',
-      from: tx.txParams.from || '',
-      isError: tx.status === TransactionStatus.failed,
-      // Keep reference to original for pending actions
-      pendingTransactionMeta: tx,
-    })),
+  transactionsSelector,
+  (allTxs) =>
+    (allTxs as TransactionMeta[])
+      .filter((tx) => tx.status === TransactionStatus.submitted)
+      .map((tx) => {
+        let transactionType: string | undefined;
+        if (tx.type === 'transfer' || tx.type === 'transferFrom') {
+          transactionType = 'ERC_20_TRANSFER';
+        } else if (tx.type === 'approve') {
+          transactionType = 'ERC_20_APPROVE';
+        } else if (tx.type === 'swap') {
+          transactionType = 'METAMASK_V1_EXCHANGE';
+        }
+
+        return {
+          hash: tx.hash || '',
+          timestamp: new Date(tx.time).toISOString(),
+          chainId: parseInt(tx.chainId, 16),
+          value: tx.txParams.value || '0x0',
+          to: tx.txParams.to || '',
+          from: tx.txParams.from || '',
+          isError: false,
+          transactionType,
+          pendingTransactionMeta: tx,
+        };
+      }),
 );

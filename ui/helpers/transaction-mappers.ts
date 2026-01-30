@@ -1,3 +1,4 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   TransactionGroupCategory,
   NATIVE_TOKEN_ADDRESS,
@@ -6,6 +7,8 @@ import {
   CHAIN_ID_DECIMAL_TO_IMAGE,
   CHAIN_ID_DECIMAL_TO_NAME,
 } from '../../shared/constants/network';
+import { mapTransactionTypeToCategory } from '../components/app/transaction-list-item/helpers';
+import { getTransactionTypeTitle } from './utils/transactions.util';
 import type { V1TransactionByHashResponse } from './types';
 
 // Consider moving these transformations server side
@@ -20,57 +23,102 @@ export function extractChainDisplayInfo(chainId: number) {
   };
 }
 
+/**
+ * Determines category for API transactions by inferring TransactionType
+ * Trusts API's transactionType field for known types, otherwise infers from transaction properties
+ *
+ * @param transaction
+ */
+export function inferTransactionTypeFromApiData(
+  transaction: V1TransactionByHashResponse,
+): TransactionType {
+  const { to, methodId, value, valueTransfers, transactionType } = transaction;
+
+  // Use API's transactionType for known types
+  if (transactionType === 'ERC_20_APPROVE') {
+    return TransactionType.tokenMethodApprove;
+  }
+  if (transactionType === 'ERC_20_TRANSFER') {
+    return TransactionType.tokenMethodTransfer;
+  }
+  if (transactionType === 'METAMASK_V1_EXCHANGE') {
+    return TransactionType.swap;
+  }
+  if (transactionType === 'METAMASK_BRIDGE_V2_BRIDGE_OUT') {
+    return TransactionType.bridge;
+  }
+
+  // Token transfers with valueTransfers
+  if (valueTransfers && valueTransfers.length > 0) {
+    const transfer = valueTransfers[0];
+    if (transfer.transferType === 'erc20') {
+      return TransactionType.tokenMethodTransfer;
+    }
+    if (transfer.transferType === 'erc721') {
+      return TransactionType.tokenMethodTransferFrom;
+    }
+    if (transfer.transferType === 'erc1155') {
+      return TransactionType.tokenMethodSafeTransferFrom;
+    }
+  }
+
+  // Contract deployment
+  if (!to) {
+    return TransactionType.deployContract;
+  }
+
+  // Check if sending native currency (ETH, POL, etc.)
+  const hasNativeValue =
+    value && value !== '0x0' && value !== '0x' && BigInt(value) > 0;
+
+  if (hasNativeValue && (!valueTransfers || valueTransfers.length === 0)) {
+    return TransactionType.simpleSend;
+  }
+
+  // Has contract interaction data (methodId)
+  if (methodId && methodId !== '0x' && methodId !== null) {
+    return TransactionType.contractInteraction;
+  }
+
+  // Default to simple send
+  return TransactionType.simpleSend;
+}
+
 export function extractCategoryAndAction(
   transaction: V1TransactionByHashResponse,
   accountAddress: string | undefined,
+  t: (key: string, substitutions?: string[]) => string,
 ) {
-  const { from, to, valueTransfers, methodId } = transaction;
+  const accountAddressLower = accountAddress?.toLowerCase();
+  const { valueTransfers, to, from } = transaction;
 
-  // Token transfer
-  if (valueTransfers && valueTransfers.length > 0) {
-    const transfer = valueTransfers[0];
-    const isReceive = transfer.to.toLowerCase() === accountAddress;
-    const { symbol } = transfer;
+  // Check if this is an incoming transaction
+  const isReceive = to?.toLowerCase() === accountAddressLower;
+  const isSend = from?.toLowerCase() === accountAddressLower;
 
-    return {
-      category: isReceive
-        ? TransactionGroupCategory.receive
-        : TransactionGroupCategory.send,
-      action: isReceive ? `Receive ${symbol || ''}` : `Sent ${symbol || ''}`,
-    };
+  // Infer the transaction type from API data
+  let inferredType = inferTransactionTypeFromApiData(transaction);
+
+  // If receiving, override to incoming type
+  if (isReceive && !isSend) {
+    inferredType = TransactionType.incoming;
   }
 
-  // Native currency transfer
-  if (to && from && accountAddress) {
-    const isReceive = to.toLowerCase() === accountAddress;
-    const isSend = from.toLowerCase() === accountAddress;
+  // Use V1's categorization logic
+  const category = mapTransactionTypeToCategory(inferredType);
 
-    if (isReceive && !isSend) {
-      return {
-        category: TransactionGroupCategory.receive,
-        action: 'Receive',
-      };
-    }
-    if (isSend && !isReceive) {
-      return {
-        category: TransactionGroupCategory.send,
-        action: 'Send',
-      };
-    }
-  }
+  // Get token symbol from valueTransfers if available
+  const tokenSymbol =
+    valueTransfers && valueTransfers.length > 0
+      ? valueTransfers[0].symbol
+      : undefined;
 
-  // Contract interaction
-  if (methodId && methodId !== '0x' && methodId !== null) {
-    return {
-      category: TransactionGroupCategory.interaction,
-      action: 'Contract Interaction',
-    };
-  }
+  // Get the translated action from V1's title function
+  const action = getTransactionTypeTitle(t, inferredType, {
+    tokenSymbol,
+  });
 
-  return {
-    category: TransactionGroupCategory.interaction,
-    action: 'Transaction',
-  };
+  return { category: category || TransactionGroupCategory.interaction, action };
 }
 
 export function extractAmountAndSymbol(
@@ -97,12 +145,20 @@ export function extractAmountAndSymbol(
   }
 
   // Native currency
-  if (value && value !== '0') {
+  if (value && value !== '0' && value !== '0x0') {
     const nativeCurrencySymbol =
       networksByDecimalChainId[chainId]?.nativeCurrency || 'ETH';
-    const ethValue = parseFloat(value) / 1e18;
+    // Use string manipulation to avoid precision loss with very small amounts
+    let numericValue: number;
+    if (value.startsWith('0x')) {
+      // Convert hex to decimal, handling very small values
+      const bigIntValue = BigInt(value);
+      numericValue = Number(bigIntValue) / 1e18;
+    } else {
+      numericValue = parseFloat(value) / 1e18;
+    }
     return {
-      amount: isSend ? -ethValue : ethValue,
+      amount: isSend ? -numericValue : numericValue,
       symbol: nativeCurrencySymbol,
     };
   }
