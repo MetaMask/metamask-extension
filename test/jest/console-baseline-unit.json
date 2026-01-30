@@ -446,6 +446,16 @@
     "ui/components/app/perps/order-card/order-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/order-entry/components/amount-input/amount-input.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/order-entry/components/auto-close-section/auto-close-section.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/order-entry/components/close-amount-section/close-amount-section.test.tsx": {
+      "Material-UI: JSS warnings": 15,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/perps-empty-state/perps-empty-state.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
