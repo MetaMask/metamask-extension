@@ -6720,6 +6720,7 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
     // connect features
     this.setupControllerConnection(mux.createStream('controller'));
+    this.setupPatchStore(mux.createStream('patch-store'));
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
       sender,
@@ -6809,12 +6810,7 @@ export default class MetamaskController extends EventEmitter {
     phishingStream.write({ hostname });
   }
 
-  /**
-   * A method for providing our API over a stream using JSON-RPC.
-   *
-   * @param {*} outStream - The stream to provide our API over.
-   */
-  setupControllerConnection(outStream) {
+  setupPatchStore(outStream) {
     const patchStore = new PatchStore(this.memStore);
     let uiReady = false;
 
@@ -6832,24 +6828,24 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
-    const api = {
-      ...this.getApi(),
-      ...this.controllerApi,
-      startSendingPatches: () => {
+    outStream.on('data', (data) => {
+      // TODO: Validate data is object, and has method
+      const { method } = data;
+
+      if (method === 'startSendingPatches') {
         uiReady = true;
         handleUpdate();
-      },
-      getStatePatches: () => patchStore.flushPendingPatches(),
-    };
+      } else if (method === 'getStatePatches') {
+        const patches = patchStore.flushPendingPatches();
+        outStream.write({
+          jsonrpc: '2.0',
+          result: patches,
+          id: data.id,
+        });
+      }
+    });
 
     this.on('update', handleUpdate);
-
-    // report new active controller connection
-    this.activeControllerConnections += 1;
-    this.emit('controllerConnectionChanged', this.activeControllerConnections);
-
-    // set up postStream transport
-    outStream.on('data', createMetaRPCHandler(api, outStream));
 
     const startUISync = () => {
       if (!isStreamWritable(outStream)) {
@@ -6876,14 +6872,61 @@ export default class MetamaskController extends EventEmitter {
 
     const outstreamEndHandler = () => {
       if (!outStream.mmFinished) {
+        this.removeListener('update', handleUpdate);
+        patchStore.destroy();
+        outStream.mmFinished = true;
+      }
+    };
+
+    // The presence of both of the below handlers may be redundant.
+    // After upgrading metamask/object-multiples to v2.0.0, which included
+    // an upgrade of readable-streams from v2 to v3, we saw that the
+    // `outStream.on('end'` handler was almost never being called. This seems to
+    // related to how v3 handles errors vs how v2 handles errors; there
+    // are "premature close" errors in both cases, although in the case
+    // of v2 they don't prevent `outStream.on('end'` from being called.
+    // At the time that this comment was committed, it was known that we
+    // need to investigate and resolve the underlying error, however,
+    // for expediency, we are not addressing them at this time. Instead, we
+    // can observe that `readableStream.finished` preserves the same
+    // functionality as we had when we relied on readable-stream v2. Meanwhile,
+    // the `outStream.on('end')` handler was observed to have been called at least once.
+    // In an abundance of caution to prevent against unexpected future behavioral changes in
+    // streams implementations, we redundantly use multiple paths to attach the same event handler.
+    // The outstreamEndHandler therefore needs to be idempotent, which introduces the `mmFinished` property.
+
+    outStream.mmFinished = false;
+    finished(outStream, outstreamEndHandler);
+    outStream.once('close', outstreamEndHandler);
+    outStream.once('end', outstreamEndHandler);
+  }
+
+  /**
+   * A method for providing our API over a stream using JSON-RPC.
+   *
+   * @param {*} outStream - The stream to provide our API over.
+   */
+  setupControllerConnection(outStream) {
+    const api = {
+      ...this.getApi(),
+      ...this.controllerApi,
+    };
+
+    // report new active controller connection
+    this.activeControllerConnections += 1;
+    this.emit('controllerConnectionChanged', this.activeControllerConnections);
+
+    // set up postStream transport
+    outStream.on('data', createMetaRPCHandler(api, outStream));
+
+    const outstreamEndHandler = () => {
+      if (!outStream.mmFinished) {
         this.activeControllerConnections -= 1;
         this.emit(
           'controllerConnectionChanged',
           this.activeControllerConnections,
         );
         outStream.mmFinished = true;
-        this.removeListener('update', handleUpdate);
-        patchStore.destroy();
       }
     };
 

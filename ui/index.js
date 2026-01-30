@@ -90,11 +90,14 @@ export const connectToBackground = (
 };
 
 export default async function launchMetamaskUi(opts) {
-  const { backgroundConnection, initialState } = opts;
+  const { patchSubstream, initialState } = opts;
 
   const store = await startApp(initialState, opts);
 
-  await backgroundConnection.startSendingPatches();
+  await patchSubstream.write({
+    jsonrpc: '2.0',
+    method: 'startSendingPatches',
+  });
 
   setupStateHooks(store);
 
