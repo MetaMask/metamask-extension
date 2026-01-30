@@ -24,7 +24,7 @@ const createMiddleware = (
     dappSwapMetricsFlag?: {
       enabled: boolean;
       bridge_quote_fees: number;
-      origins: string[];
+      origins?: string[];
     };
   } = {},
 ) => {
