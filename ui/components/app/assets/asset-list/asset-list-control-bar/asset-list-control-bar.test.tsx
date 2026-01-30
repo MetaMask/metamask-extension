@@ -201,4 +201,33 @@ describe('NFTs options', () => {
     fireEvent.click(autodetectButton);
     expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
   });
+
+  it('should handle network configuration without rpcEndpoints gracefully', async () => {
+    const state = createMockState();
+    // Set up a network configuration with undefined rpcEndpoints
+    state.metamask.tokenNetworkFilter = { '0x1': true, '0x2': true };
+    state.metamask.networkConfigurationsByChainId = {
+      '0x1': {
+        chainId: '0x1',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            networkClientId: 'selectedNetworkClientId',
+          },
+        ],
+      } as unknown as NetworkConfiguration,
+      '0x2': {
+        chainId: '0x2',
+        defaultRpcEndpointIndex: 0,
+        // rpcEndpoints is undefined - simulating the error condition
+      } as unknown as NetworkConfiguration,
+    };
+    const store = configureMockStore([thunk])(state);
+
+    // The component should render without throwing an error
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    const sortButton = await findByTestId('sort-by-popover-toggle');
+    expect(sortButton).toBeInTheDocument();
+  });
 });
