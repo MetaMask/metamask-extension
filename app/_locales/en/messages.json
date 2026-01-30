@@ -2081,6 +2081,9 @@
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
   },
+  "deepLink_theNFTsPage": {
+    "message": "the NFTs page"
+  },
   "deepLink_theOnboardingPage": {
     "message": "the onboarding page"
   },
