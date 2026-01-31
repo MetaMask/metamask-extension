@@ -669,14 +669,13 @@ jobs:
       - name: Check that all jobs have passed
         env:
           NEEDS_JSON: ${{ toJson(needs) }} # This is required for the the job_result lookup and the job_id loop
+          BUILDS_FROM_RUN: ${{ needs.get-requirements.outputs.builds-from-run }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           # Function to ensure a job's result is either 'success' or 'skipped'
           requireJobSuccessOrSkipped() {
             local job_id="$1"
-
-            # This is a little bit of trickery that is computing `job_result = needs[$job_id].result` (because you can't do that directly in bash)
-            local job_result
-            job_result=$(jq -r --arg job_id "$job_id" '.[$job_id].result // empty' <<<"$NEEDS_JSON")
+            local job_result="$2"
 
             if [[ -z "$job_result" ]]; then
               echo "Could not determine result for job: $job_id"
@@ -690,13 +689,16 @@ jobs:
           }
 
           # Loop through each job in the needs array to ensure it succeeded or was skipped
-          for job_id in $(jq -r 'keys[]' <<<"$NEEDS_JSON"); do
-            requireJobSuccessOrSkipped "$job_id"
-          done
+          while IFS=$'\t' read -r job_id job_result; do
+            # job_result is effectively `needs[$job_id].result`
+            requireJobSuccessOrSkipped "$job_id" "$job_result"
+          done < <(
+            jq -r 'to_entries[] | [.key, (.value.result // "")] | @tsv' <<<"$NEEDS_JSON"
+          )
 
           # # Check if the builds-from-run output is the current run ID
-          if [[ "${{ needs.get-requirements.outputs.builds-from-run }}" != "${{ github.run_id }}" ]]; then
-            echo "Builds were used from a different GHA run: ${{ needs.get-requirements.outputs.builds-from-run }}"
+          if [[ "$BUILDS_FROM_RUN" != "$RUN_ID" ]]; then
+            echo "Builds were used from a different GHA run: $BUILDS_FROM_RUN"
             echo "Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it."
             exit 1
           fi
