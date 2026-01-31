@@ -12,7 +12,7 @@ on:
         description: The run ID to get builds from
     secrets:
       PR_COMMENT_TOKEN:
-        required: true
+        required: false
       INFURA_PROJECT_ID:
         required: false
 
@@ -111,7 +111,7 @@ jobs:
     needs:
       - test-e2e-chrome-api-specs
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    if: ${{ github.event_name == 'pull_request' && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     environment: pr-comment
     env:
       GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -154,7 +154,7 @@ jobs:
     needs:
       - test-e2e-chrome-api-specs-multichain
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    if: ${{ github.event_name == 'pull_request' && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
     environment: pr-comment
     env:
       GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
