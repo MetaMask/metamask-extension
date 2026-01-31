@@ -102,27 +102,22 @@ export function getStatusKey(transaction) {
 }
 
 /**
- * Returns a title for the given transaction type.
+ * Returns a title for the given transaction category.
+ *
+ * This will throw an error if the transaction category is unrecognized and no default is provided.
  *
  * @param {Function} t - The translation function
  * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
- * @param {object} options - Additional data needed for title
- * @param {string} [options.tokenSymbol] - Token symbol for token transactions
- * @returns {string} The transaction title
+ * @param {string} nativeCurrency - The native currency of the currently selected network
+ * @returns {string} The transaction category title
  */
-export function getTransactionTypeTitle(t, type, options = {}) {
-  const { tokenSymbol } = options;
-
+export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
   switch (type) {
-    case TransactionType.incoming: {
-      return t('received');
+    case TransactionType.tokenMethodTransfer: {
+      return t('transfer');
     }
-    case TransactionType.simpleSend: {
-      return t('sent');
-    }
-    case TransactionType.tokenMethodTransfer:
     case TransactionType.tokenMethodTransferFrom: {
-      return t('sentSpecifiedTokens', [tokenSymbol || t('token')]);
+      return t('transferFrom');
     }
     case TransactionType.tokenMethodSafeTransferFrom: {
       return t('safeTransferFrom');
@@ -135,6 +130,9 @@ export function getTransactionTypeTitle(t, type, options = {}) {
     }
     case TransactionType.tokenMethodIncreaseAllowance: {
       return t('approveIncreaseAllowance');
+    }
+    case TransactionType.simpleSend: {
+      return t('sendingNativeAsset', [nativeCurrency]);
     }
     case TransactionType.contractInteraction:
     case TransactionType.batch:
@@ -154,7 +152,7 @@ export function getTransactionTypeTitle(t, type, options = {}) {
       return t('swapApproval');
     }
     default: {
-      return t('contractInteraction');
+      throw new Error(`Unrecognized transaction type: ${type}`);
     }
   }
 }

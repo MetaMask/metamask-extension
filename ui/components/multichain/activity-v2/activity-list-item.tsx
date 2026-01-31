@@ -9,107 +9,66 @@ import {
 } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getTransactionTypeTitle } from '../../../helpers/utils/transactions.util';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import { useFormatters } from '../../../hooks/useFormatters';
 import {
-  getMarketData,
-  getCurrencyRates,
   getSelectedAddress,
+  selectNetworkConfigurationByChainId,
 } from '../../../selectors/selectors';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { getNetworkConfigurationsByChainIdDecimal } from '../../../../shared/modules/selectors/networks';
+import type { TransactionViewModel } from '../../../../shared/lib/types';
 import {
-  extractCategoryAndAction,
+  extractCategory,
   extractAmountAndSymbol,
-  calculateTransactionFiatAmount as calculateFiatAmount,
-  extractChainDisplayInfo as extractChainInfo,
-} from '../../../helpers/transaction-mappers';
-import type { TransactionForDisplay } from '../../../helpers/types';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+  calculateFiatFromMarketRates,
+  mapChainInfo,
+} from './helpers';
 import { PendingTransactionActions } from './pending-transaction-actions';
 
 type Props = {
-  transaction: TransactionForDisplay;
+  transaction: TransactionViewModel;
   onClick?: () => void;
+  marketRates: Record<number, Record<string, number>>;
+  currentCurrency: string;
 };
 
-/**
- * Detects if a transaction actually failed based on transaction data
- * For ERC20 transfers, successful transactions MUST emit a Transfer event in logs
- * If logs array is empty, the transaction reverted/failed
- *
- * @param transaction
- * @param isError
- */
-const detectActualFailure = (
-  transaction: TransactionForDisplay,
-  isError: boolean | undefined,
-): boolean => {
-  // If API already marked as error, trust that
-  if (isError) {
-    return true;
-  }
-
-  // Check for ERC20 transfer with empty logs (indicates failure)
-  const isERC20Transfer =
-    transaction.transactionType === 'ERC_20_TRANSFER' ||
-    transaction.transactionProtocol === 'ERC_20';
-  const hasEmptyLogs = !transaction.logs || transaction.logs.length === 0;
-
-  if (isERC20Transfer && hasEmptyLogs) {
-    return true;
-  }
-
-  return false;
-};
-
-export const ActivityListItem = ({ transaction, onClick }: Props) => {
-  const { formatToken, formatCurrencyWithMinThreshold } = useFormatters();
-  const t = useI18nContext() as (
-    key: string,
-    substitutions?: string[],
-  ) => string;
+export const ActivityListItem = ({
+  transaction,
+  onClick,
+  marketRates,
+  currentCurrency,
+}: Props) => {
+  const t = useI18nContext();
+  const { formatTokenQuantity, formatCurrencyWithMinThreshold } =
+    useFormatters();
   const selectedAddress = useSelector(getSelectedAddress)?.toLowerCase();
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const currencyRates = useSelector(getCurrencyRates);
-  const marketData = useSelector(getMarketData) as Record<
-    string,
-    Record<string, { price: number }>
-  >;
-  const networkConfigsByChainIdDecimal = useSelector(
-    getNetworkConfigurationsByChainIdDecimal,
-  );
+  const { readable, chainId, isError, pendingTransactionMeta } = transaction;
 
-  const { chainId, isError, pendingTransactionMeta } = transaction;
-  const isPending = Boolean(pendingTransactionMeta);
+  // Infer transaction category from transaction type
+  const { category } = extractCategory(transaction, selectedAddress);
 
-  // Detect actual failure status (checks logs for ERC20 transfers)
-  const actuallyFailed = detectActualFailure(transaction, isError);
+  const chainIdHex = `0x${transaction.chainId.toString(16)}`;
+  const nativeCurrency = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainIdHex),
+  )?.nativeCurrency;
 
-  // Determine transaction category and action
-  const { category, action } = extractCategoryAndAction(
-    transaction,
-    selectedAddress,
-    t,
-  );
+  const title =
+    readable ??
+    getTransactionTypeTitle(t, pendingTransactionMeta?.type, nativeCurrency);
 
   // Extract amount and symbol
   const { amount, symbol } = extractAmountAndSymbol(
     transaction,
     selectedAddress,
-    networkConfigsByChainIdDecimal,
+    nativeCurrency,
   );
 
-  // Calculate fiat amount
-  const fiatAmount = calculateFiatAmount(
-    transaction,
-    amount,
-    marketData,
-    currencyRates,
-    networkConfigsByChainIdDecimal,
-  );
+  const fiatAmount = calculateFiatFromMarketRates(transaction, marketRates);
 
-  const { chainImageUrl, chainName } = extractChainInfo(chainId);
+  const { chainImageUrl, chainName } = mapChainInfo(chainId);
+
+  const isPending = pendingTransactionMeta?.status === 'submitted';
 
   // Determine display status using actual failure detection
   let displayStatus = 'Confirmed';
@@ -118,7 +77,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
 
   if (isPending) {
     // Pending transactions may also be failed
-    if (actuallyFailed) {
+    if (isError) {
       displayStatus = 'Failed';
       statusColor = 'text-error-default';
       transactionStatus = TransactionStatus.failed;
@@ -127,7 +86,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       statusColor = 'text-warning-default';
       transactionStatus = TransactionStatus.submitted;
     }
-  } else if (actuallyFailed) {
+  } else if (isError) {
     displayStatus = 'Failed';
     statusColor = 'text-error-default';
     transactionStatus = TransactionStatus.failed;
@@ -135,7 +94,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
 
   return (
     <Box
-      className="px-4 py-3 bg-background-default border-b border-border-muted cursor-pointer hover:bg-hover"
+      className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover"
       onClick={onClick}
     >
       <div className="flex gap-4 items-center">
@@ -156,7 +115,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
 
         {/* Left side - Action and Details */}
         <div className="flex-1 min-w-0">
-          <Text className="font-medium truncate ">{action}</Text>
+          <Text className="font-medium truncate ">{title}</Text>
           <div className="flex gap-2 items-center">
             <Text variant={TextVariant.BodySm} className={statusColor}>
               {displayStatus}
@@ -166,10 +125,12 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
 
         {/* Right side - Value */}
         <div className="flex flex-col items-end">
-          {amount !== 0 && (
-            <Text className="font-medium">{formatToken(amount, symbol)}</Text>
+          {amount !== 0 && symbol && (
+            <Text className="font-medium">
+              {formatTokenQuantity(amount, symbol)}
+            </Text>
           )}
-          {fiatAmount !== null && (
+          {fiatAmount !== null && fiatAmount > 0 && (
             <Text
               variant={TextVariant.BodySm}
               className="text-text-alternative"
@@ -180,8 +141,8 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         </div>
       </div>
 
-      {/* Pending transaction actions (speed up / cancel) */}
-      {pendingTransactionMeta && (
+      {/* Wrapper for existing pending transaction actions (speed up / cancel) */}
+      {isPending && pendingTransactionMeta && (
         <PendingTransactionActions
           transaction={pendingTransactionMeta}
           isEarliestNonce={true}

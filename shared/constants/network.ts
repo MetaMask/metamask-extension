@@ -833,7 +833,7 @@ export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
 //   };
 // };
 
-export const NETWORK_TO_NAME_MAP = {
+export const NETWORK_TO_NAME_MAP: Record<string, string> = {
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
@@ -902,15 +902,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_DISPLAY_NAME,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_DISPLAY_NAME,
-} as const;
-
-// Decimal chainId to name lookup (for API responses that use decimal numbers)
-const CHAIN_ID_DECIMAL_TO_NAME: Record<number, string> = {};
-for (const [hexChainId, name] of Object.entries(NETWORK_TO_NAME_MAP)) {
-  const decimal = parseInt(hexChainId, 16);
-  CHAIN_ID_DECIMAL_TO_NAME[decimal] = name;
-}
-export { CHAIN_ID_DECIMAL_TO_NAME };
+};
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.AVALANCHE]: CHAINLIST_CURRENCY_SYMBOLS_MAP.AVALANCHE,
@@ -1265,16 +1257,6 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_IMAGE_URL,
   [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TESTNET_IMAGE_URL,
 } as const;
-
-// Decimal chainId lookups (for API responses that use decimal numbers)
-const CHAIN_ID_DECIMAL_TO_IMAGE: Record<number, string> = {};
-for (const [hexChainId, imageUrl] of Object.entries(
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-)) {
-  const decimal = parseInt(hexChainId, 16);
-  CHAIN_ID_DECIMAL_TO_IMAGE[decimal] = imageUrl;
-}
-export { CHAIN_ID_DECIMAL_TO_IMAGE };
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,

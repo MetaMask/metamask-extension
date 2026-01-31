@@ -235,7 +235,9 @@ export const AccountOverviewTabs = ({
 
         {showActivity && (
           <Tab name="Activity V2" tabKey="activity-v2">
-            <ActivityList />
+            <ErrorBoundary key="activity-v2">
+              <ActivityList />
+            </ErrorBoundary>
           </Tab>
         )}
       </Tabs>

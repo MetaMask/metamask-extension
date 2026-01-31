@@ -2,18 +2,27 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
-import { getPendingTransactionsAsApiShape } from '../../../selectors/activity';
-import { useActivityQuery } from '../../../hooks/useActivityQuery';
+import {
+  getPendingTransactions,
+  getMarketRates,
+} from '../../../selectors/activity';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import type {
+  FlattenedItem,
+  TransactionViewModel,
+} from '../../../../shared/lib/types';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import { queries } from '../../../../shared/lib/queries';
 import {
   groupTransactionsByDate,
   flattenGroupedTransactions,
-} from '../../../helpers/transaction-filtering-logic';
-import { mergeActivityTransactions } from '../../../helpers/activity-adapters';
-import { FlattenedItem } from '../../../helpers/types';
-import type { TransactionForDisplay } from '../../../helpers/types';
+  mergeTransactions,
+  formatDate,
+} from './helpers';
 import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModal } from './activity-details-modal';
 
@@ -23,12 +32,17 @@ const HEADER_HEIGHT = 36;
 export const ActivityList = () => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
+  const accountAddress = useSelector(getSelectedInternalAccount)?.address;
+  // Pending transactions are still in Redux
+  const pendingTransactions = useSelector(getPendingTransactions);
+  const marketRates = useSelector(getMarketRates);
+  const currentCurrency = useSelector(getCurrentCurrency);
 
   const [selectedTransaction, setSelectedTransaction] =
-    useState<TransactionForDisplay | null>(null);
+    useState<TransactionViewModel | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleItemClick = (transaction: TransactionForDisplay) => {
+  const handleItemClick = (transaction: TransactionViewModel) => {
     setSelectedTransaction(transaction);
     setIsModalOpen(true);
   };
@@ -38,22 +52,19 @@ export const ActivityList = () => {
     setSelectedTransaction(null);
   };
 
-  // Get pending transactions already transformed to API shape
-  const pendingTransactions = useSelector(getPendingTransactionsAsApiShape);
-
   // Fetch transactions using React Query
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useActivityQuery();
+    useInfiniteQuery(queries.transactions(accountAddress));
 
   // Merge pending and confirmed transactions, then flatten for virtualization
   const flattenedItems: FlattenedItem[] = useMemo(() => {
     if (!data?.pages) {
       return [];
     }
+
     const apiTransactions = data.pages.flatMap((page) => page.data ?? []);
 
-    // Merge pending transactions with API transactions
-    const allTransactions = mergeActivityTransactions(
+    const allTransactions = mergeTransactions(
       pendingTransactions,
       apiTransactions,
     );
@@ -73,6 +84,12 @@ export const ActivityList = () => {
   });
 
   const virtualItems = virtualizer.getVirtualItems();
+
+  useEffect(() => {
+    if (scrollContainerRef?.current) {
+      virtualizer.measure();
+    }
+  }, [scrollContainerRef, virtualizer]);
 
   // Fetch more items when scrolling near the end
   useEffect(() => {
@@ -111,8 +128,9 @@ export const ActivityList = () => {
               <div
                 key={virtualItem.key.toString()}
                 className="absolute top-0 left-0 w-full"
+                data-index={virtualItem.index}
+                ref={virtualizer.measureElement}
                 style={{
-                  height: `${virtualItem.size}px`,
                   transform: `translateY(${virtualItem.start}px)`,
                 }}
               >
@@ -120,13 +138,15 @@ export const ActivityList = () => {
                   (item.type === 'date-header' ? (
                     <Box className="px-4 py-2 bg-background-default">
                       <Text className="text-sm text-alternative">
-                        {item.date}
+                        {formatDate(item.date)}
                       </Text>
                     </Box>
                   ) : (
                     <ActivityListItem
                       transaction={item.data}
                       onClick={() => handleItemClick(item.data)}
+                      marketRates={marketRates}
+                      currentCurrency={currentCurrency}
                     />
                   ))}
               </div>
@@ -134,10 +154,9 @@ export const ActivityList = () => {
           })}
         </div>
 
-        {/* Loading more indicator */}
         {isFetchingNextPage && (
           <Box className="p-4 flex justify-center">
-            <Text className="text-alternative">{t('loading')}...</Text>
+            <Text className="text-alternative">{t('loading')}</Text>
           </Box>
         )}
 

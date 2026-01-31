@@ -21,6 +21,7 @@ export const PendingTransactionActions = ({
     transactions: [transaction],
     hasRetried: false, // TODO: Track retry status
   };
+
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
     isEarliestNonce,
