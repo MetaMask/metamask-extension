@@ -5125,9 +5125,6 @@
   "perpsActivity": {
     "message": "Activity"
   },
-  "perpsAll": {
-    "message": "All"
-  },
   "perpsAddFunds": {
     "message": "Add funds"
   },
@@ -5136,6 +5133,9 @@
   },
   "perpsAddToFavorites": {
     "message": "Add to favorites"
+  },
+  "perpsAll": {
+    "message": "All"
   },
   "perpsAutoClose": {
     "message": "Auto close"
@@ -5168,11 +5168,11 @@
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
-  "perpsDetails": {
-    "message": "Details"
-  },
   "perpsDeposits": {
     "message": "Deposits"
+  },
+  "perpsDetails": {
+    "message": "Details"
   },
   "perpsDirection": {
     "message": "Direction"
@@ -5349,11 +5349,11 @@
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
-  "perpsTrades": {
-    "message": "Trades"
-  },
   "perpsTradePerps": {
     "message": "Trade perps"
+  },
+  "perpsTrades": {
+    "message": "Trades"
   },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"

@@ -5137,6 +5137,9 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
+  "perpsAll": {
+    "message": "All"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
@@ -5168,11 +5171,11 @@
   "perpsDepositTitle": {
     "message": "Funded perps account"
   },
-  "perpsDetails": {
-    "message": "Details"
-  },
   "perpsDeposits": {
     "message": "Deposits"
+  },
+  "perpsDetails": {
+    "message": "Details"
   },
   "perpsDirection": {
     "message": "Direction"
@@ -5185,9 +5188,6 @@
   },
   "perpsEntryPrice": {
     "message": "Entry price"
-  },
-  "perpsFunding": {
-    "message": "Funding"
   },
   "perpsExploreCrypto": {
     "message": "Explore crypto"
@@ -5209,6 +5209,9 @@
   },
   "perpsFilterStocksOnly": {
     "message": "Stocks"
+  },
+  "perpsFunding": {
+    "message": "Funding"
   },
   "perpsFundingPayments": {
     "message": "Funding payments"
@@ -5247,9 +5250,6 @@
     "message": "The market \"$1\" could not be found.",
     "description": "$1 is the market symbol that was not found"
   },
-  "perpsNoTransactions": {
-    "message": "No transactions yet"
-  },
   "perpsMarkets": {
     "message": "Markets"
   },
@@ -5258,6 +5258,9 @@
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"
+  },
+  "perpsNoTransactions": {
+    "message": "No transactions yet"
   },
   "perpsOpenInterest": {
     "message": "Open Interest"
@@ -5286,11 +5289,11 @@
   "perpsReturn": {
     "message": "Return"
   },
-  "perpsSeeAll": {
-    "message": "See All"
-  },
   "perpsSearchMarkets": {
     "message": "Search markets"
+  },
+  "perpsSeeAll": {
+    "message": "See All"
   },
   "perpsSell": {
     "message": "sell"
@@ -5346,14 +5349,14 @@
   "perpsStatusTriggered": {
     "message": "Triggered"
   },
-  "perpsTrades": {
-    "message": "Trades"
-  },
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
   "perpsTradePerps": {
     "message": "Trade perps"
+  },
+  "perpsTrades": {
+    "message": "Trades"
   },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
