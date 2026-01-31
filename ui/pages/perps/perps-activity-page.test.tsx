@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import PerpsActivityPage from './perps-activity-page';
 
 const mockNavigate = jest.fn();
@@ -11,15 +12,15 @@ const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
-  Navigate: ({ to }: { to: string }) => <div data-testid="navigate-to">{to}</div>,
+  Navigate: ({ to }: { to: string }) => (
+    <div data-testid="navigate-to">{to}</div>
+  ),
 }));
 
 // Mock the perps feature flag selector
 jest.mock('../../selectors/perps/feature-flags', () => ({
   getIsPerpsEnabled: jest.fn(),
 }));
-
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 
 const mockGetIsPerpsEnabled = getIsPerpsEnabled as jest.MockedFunction<
   typeof getIsPerpsEnabled
@@ -44,51 +45,65 @@ describe('PerpsActivityPage', () => {
     expect(screen.getByTestId('perps-activity-page')).toBeInTheDocument();
   });
 
-  it('displays all four filter tabs', () => {
+  it('displays all four filter options', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
-    expect(screen.getByTestId('perps-activity-filter-trade')).toBeInTheDocument();
-    expect(screen.getByTestId('perps-activity-filter-order')).toBeInTheDocument();
-    expect(screen.getByTestId('perps-activity-filter-funding')).toBeInTheDocument();
-    expect(screen.getByTestId('perps-activity-filter-deposit')).toBeInTheDocument();
+    // Open the dropdown
+    fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+
+    // Check all options are present
+    expect(
+      screen.getByTestId('perps-activity-filter-option-trade'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-activity-filter-option-order'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-activity-filter-option-funding'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-activity-filter-option-deposit'),
+    ).toBeInTheDocument();
   });
 
-  it('displays filter tab labels', () => {
+  it('displays filter option labels', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
-    expect(screen.getByText('Trades')).toBeInTheDocument();
+    // Open the dropdown
+    fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+
+    // Use getAllByText since "Trades" appears in both the button and dropdown option
+    expect(screen.getAllByText('Trades').length).toBeGreaterThan(0);
     expect(screen.getByText('Orders')).toBeInTheDocument();
     expect(screen.getByText('Funding')).toBeInTheDocument();
     expect(screen.getByText('Deposits')).toBeInTheDocument();
   });
 
-  it('switches between filter tabs and updates displayed transactions', () => {
+  it('switches between filter options and updates displayed transactions', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
-    // Trade tab is active by default, should show trade transactions
-    expect(screen.getByTestId('perps-activity-filter-trade')).toHaveClass(
-      'bg-icon-default',
-    );
+    // Default shows "Trades" in the dropdown button
+    expect(
+      screen.getByTestId('perps-activity-filter-button'),
+    ).toHaveTextContent('Trades');
 
-    // Click on orders tab
-    fireEvent.click(screen.getByTestId('perps-activity-filter-order'));
+    // Open dropdown and select Orders
+    fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+    fireEvent.click(screen.getByTestId('perps-activity-filter-option-order'));
 
-    // Orders tab should now be active
-    expect(screen.getByTestId('perps-activity-filter-order')).toHaveClass(
-      'bg-icon-default',
-    );
-
-    // Trade tab should be inactive
-    expect(screen.getByTestId('perps-activity-filter-trade')).toHaveClass(
-      'bg-background-muted',
-    );
+    // Dropdown button should now show "Orders"
+    expect(
+      screen.getByTestId('perps-activity-filter-button'),
+    ).toHaveTextContent('Orders');
   });
 
   it('groups transactions by date with proper labels', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
-    // The filter tabs container should be present
-    expect(screen.getByTestId('perps-activity-filter-tabs')).toBeInTheDocument();
+    // The dropdown filter should be present
+    expect(
+      screen.getByTestId('perps-activity-filter-button'),
+    ).toBeInTheDocument();
   });
 
   it('back button navigates to DEFAULT_ROUTE', () => {
@@ -122,27 +137,29 @@ describe('PerpsActivityPage', () => {
     expect(backButton).toHaveAttribute('aria-label', 'Back');
   });
 
-  it('shows funding tab transactions when funding filter is selected', () => {
+  it('shows funding transactions when funding filter is selected', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
-    // Click on funding tab
-    fireEvent.click(screen.getByTestId('perps-activity-filter-funding'));
+    // Open dropdown and select Funding
+    fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+    fireEvent.click(screen.getByTestId('perps-activity-filter-option-funding'));
 
-    // Funding tab should now be active
-    expect(screen.getByTestId('perps-activity-filter-funding')).toHaveClass(
-      'bg-icon-default',
-    );
+    // Dropdown button should now show "Funding"
+    expect(
+      screen.getByTestId('perps-activity-filter-button'),
+    ).toHaveTextContent('Funding');
   });
 
-  it('shows deposit tab transactions when deposit filter is selected', () => {
+  it('shows deposit transactions when deposit filter is selected', () => {
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 
-    // Click on deposits tab
-    fireEvent.click(screen.getByTestId('perps-activity-filter-deposit'));
+    // Open dropdown and select Deposits
+    fireEvent.click(screen.getByTestId('perps-activity-filter-button'));
+    fireEvent.click(screen.getByTestId('perps-activity-filter-option-deposit'));
 
-    // Deposits tab should now be active
-    expect(screen.getByTestId('perps-activity-filter-deposit')).toHaveClass(
-      'bg-icon-default',
-    );
+    // Dropdown button should now show "Deposits"
+    expect(
+      screen.getByTestId('perps-activity-filter-button'),
+    ).toHaveTextContent('Deposits');
   });
 });
