@@ -326,6 +326,12 @@
   "invalidSeedPhrase": {
     "message": "Nieprawidłowa fraza seed"
   },
+  "isSigningOrSubmitting": {
+    "message": "Poprzednia transakcja jest nadal podpisywana lub przesyłana"
+  },
+  "isSigningOrSubmittingPayToken": {
+    "message": "Masz oczekującą transakcję w tej sieci. Poczekaj na jej zakończenie lub wybierz token w innej sieci."
+  },
   "jsonFile": {
     "message": "Plik JSON",
     "description": "format for importing an account"

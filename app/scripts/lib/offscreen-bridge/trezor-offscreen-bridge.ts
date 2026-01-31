@@ -18,6 +18,44 @@ import {
 } from '../../../../shared/constants/offscreen-communication';
 
 /**
+ * Normalizes the transaction object to ensure it has a valid 'type' field
+ * required for RLP encoding by Trezor Connect SDK.
+ *
+ * @param transaction - The transaction object to normalize
+ * @returns The normalized transaction with type field set
+ */
+function normalizeTransactionType(
+  transaction: EthereumSignTransaction,
+): EthereumSignTransaction {
+  // If type is already set, use it
+  if (transaction.type !== undefined && transaction.type !== null) {
+    return transaction;
+  }
+
+  // Determine transaction type based on parameters:
+  // - Type 2 (EIP-1559): has maxFeePerGas and maxPriorityFeePerGas
+  // - Type 1 (EIP-2930): has accessList but not EIP-1559 fields
+  // - Type 0 (Legacy): everything else
+  let type: number;
+
+  if (transaction.maxFeePerGas && transaction.maxPriorityFeePerGas) {
+    // EIP-1559 transaction
+    type = 2;
+  } else if (transaction.accessList) {
+    // EIP-2930 transaction
+    type = 1;
+  } else {
+    // Legacy transaction
+    type = 0;
+  }
+
+  return {
+    ...transaction,
+    type,
+  };
+}
+
+/**
  * This class is used as a custom bridge for the Trezor connection. Every
  * hardware wallet keyring also requires a bridge that has a known interface
  * that the keyring can call into for specific functions. The bridge then makes
@@ -91,12 +129,18 @@ export class TrezorOffscreenBridge implements TrezorBridge {
   }
 
   ethereumSignTransaction(params: Params<EthereumSignTransaction>) {
+    // Normalize the transaction to ensure it has the 'type' field
+    const normalizedParams = {
+      ...params,
+      transaction: normalizeTransactionType(params.transaction),
+    };
+
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.trezorOffscreen,
           action: TrezorAction.signTransaction,
-          params,
+          params: normalizedParams,
         },
         (response) => {
           resolve(response);
