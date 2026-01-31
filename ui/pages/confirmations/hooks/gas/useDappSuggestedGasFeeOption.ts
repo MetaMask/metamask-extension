@@ -32,10 +32,32 @@ export const useDappSuggestedGasFeeOption = ({
   const { dappSuggestedGasFees, id, origin, userFeeLevel } = transactionMeta;
 
   const onDappSuggestedGasFeeClick = useCallback(async () => {
+    // Filter gas parameters to avoid mixing legacy and EIP-1559 formats
+    let gasParams = {};
+    if (dappSuggestedGasFees) {
+      // If EIP-1559 parameters are present, use only those
+      if (
+        dappSuggestedGasFees.maxFeePerGas &&
+        dappSuggestedGasFees.maxPriorityFeePerGas
+      ) {
+        gasParams = {
+          maxFeePerGas: dappSuggestedGasFees.maxFeePerGas,
+          maxPriorityFeePerGas: dappSuggestedGasFees.maxPriorityFeePerGas,
+          gas: dappSuggestedGasFees.gas,
+        };
+      } else if (dappSuggestedGasFees.gasPrice) {
+        // If only legacy gasPrice is present, use that
+        gasParams = {
+          gasPrice: dappSuggestedGasFees.gasPrice,
+          gas: dappSuggestedGasFees.gas,
+        };
+      }
+    }
+
     await dispatch(
       updateTransactionGasFees(id, {
         userFeeLevel: UserFeeLevel.DAPP_SUGGESTED,
-        ...(dappSuggestedGasFees || {}),
+        ...gasParams,
       }),
     );
     handleCloseModals();
