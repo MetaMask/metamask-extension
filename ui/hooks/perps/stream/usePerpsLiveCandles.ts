@@ -1,10 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsStream } from '../../../providers/perps';
-import type {
-  CandleData,
-  CandlePeriod,
-  TimeDuration,
-} from '../../../../app/scripts/controllers/perps/types';
+import { usePerpsClient } from '../../../providers/perps';
+import type { CandleData, CandlePeriod, TimeDuration } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveCandles hook
@@ -38,7 +34,7 @@ export interface UsePerpsLiveCandlesReturn {
  *
  * @example
  * ```tsx
- * import { CandlePeriod } from '../../controllers/perps/types';
+ * import { CandlePeriod } from '../../providers/perps';
  *
  * function CandleChart() {
  *   const { candleData, isInitialLoading } = usePerpsLiveCandles({
@@ -57,7 +53,7 @@ export function usePerpsLiveCandles(
   options: UsePerpsLiveCandlesOptions,
 ): UsePerpsLiveCandlesReturn {
   const { symbol, interval, duration, onError } = options;
-  const stream = usePerpsStream();
+  const client = usePerpsClient();
   const [candleData, setCandleData] = useState<CandleData | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
@@ -69,7 +65,7 @@ export function usePerpsLiveCandles(
       return undefined;
     }
 
-    const unsubscribe = stream.candles.subscribeToCandles({
+    const unsubscribe = client.streams.candles.subscribe({
       symbol,
       interval,
       duration,
@@ -86,7 +82,7 @@ export function usePerpsLiveCandles(
     return () => {
       unsubscribe();
     };
-  }, [stream, symbol, interval, duration, onError]);
+  }, [client, symbol, interval, duration, onError]);
 
   return { candleData, isInitialLoading };
 }

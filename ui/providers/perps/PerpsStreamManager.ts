@@ -1,9 +1,19 @@
 /**
- * PerpsStreamManager - Manages real-time data streams for Perps UI
+ * @deprecated Use `createMockPerpsClient()` from `ui/providers/perps` instead.
  *
- * This is a mock implementation that provides the same API as the mobile version
- * but returns mock data immediately. When the real controller is integrated,
- * channels will connect to actual WebSocket subscriptions.
+ * PerpsStreamManager - Legacy mock stream manager
+ *
+ * This file is deprecated in favor of the PerpsClient abstraction layer.
+ * The new pattern uses:
+ * - `PerpsClient` interface for UI code
+ * - `createMockPerpsClient()` for mock implementation
+ * - `usePerpsClient()` hook for React components
+ *
+ * Migration:
+ * - Replace `usePerpsStream()` with `usePerpsClient()`
+ * - Replace `stream.positions.subscribe()` with `client.streams.positions.subscribe()`
+ *
+ * This file is kept for backward compatibility and will be removed in a future version.
  */
 
 import type {
@@ -633,7 +643,8 @@ class OrderBookStreamChannel extends StreamChannel<OrderBookData | null> {
 // ============================================================================
 
 /**
- * PerpsStreamManager - Manages all stream channels
+ * @deprecated Use `createMockPerpsClient()` from `ui/providers/perps` instead.
+ * PerpsStreamManager - Legacy manager for all stream channels
  */
 export class PerpsStreamManager {
   public readonly prices = new PriceStreamChannel();
@@ -684,9 +695,15 @@ export class PerpsStreamManager {
   }
 }
 
-// Export singleton instance getter
+/**
+ * @deprecated Use `createMockPerpsClient()` from `ui/providers/perps` instead.
+ * Get the singleton stream manager instance (legacy)
+ */
 let streamManagerInstance: PerpsStreamManager | null = null;
 
+/**
+ * @deprecated Use `createMockPerpsClient()` from `ui/providers/perps` instead.
+ */
 export function getStreamManagerInstance(): PerpsStreamManager {
   if (!streamManagerInstance) {
     streamManagerInstance = new PerpsStreamManager();

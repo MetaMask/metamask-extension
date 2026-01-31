@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { usePerpsStream } from '../../../providers/perps';
-import type { PerpsMarketData } from '../../../../app/scripts/controllers/perps/types';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { usePerpsClient } from '../../../providers/perps';
+import type { PerpsMarketData } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveMarketData hook
@@ -44,6 +44,7 @@ export interface UsePerpsLiveMarketDataReturn {
 
   /**
    * Manually refresh market data
+   * Note: In mock mode, this is a no-op as data comes from static mocks
    */
   refresh: () => void;
 }
@@ -74,25 +75,35 @@ export function usePerpsLiveMarketData(
   options: UsePerpsLiveMarketDataOptions = {},
 ): UsePerpsLiveMarketDataReturn {
   const { autoSubscribe = true } = options;
-  const stream = usePerpsStream();
+  const client = usePerpsClient();
 
   const [markets, setMarkets] = useState<PerpsMarketData[]>([]);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   // Derive crypto and HIP-3 markets
   const cryptoMarkets = markets.filter((m) => !m.marketSource);
   const hip3Markets = markets.filter((m) => m.marketSource);
 
   const refresh = useCallback(() => {
-    // Clear cache and re-subscribe
-    stream.marketData.clearCache();
-    stream.marketData.subscribe({
-      callback: (data) => {
-        setMarkets(data);
-      },
-    });
-  }, [stream]);
+    // Unsubscribe and resubscribe to trigger new data
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+    }
+
+    try {
+      unsubscribeRef.current = client.streams.marketData.subscribe({
+        callback: (data) => {
+          setMarkets(data);
+          setIsInitialLoading(false);
+          setError(null);
+        },
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Refresh failed'));
+    }
+  }, [client]);
 
   useEffect(() => {
     if (!autoSubscribe) {
@@ -101,7 +112,7 @@ export function usePerpsLiveMarketData(
     }
 
     try {
-      const unsubscribe = stream.marketData.subscribe({
+      unsubscribeRef.current = client.streams.marketData.subscribe({
         callback: (data) => {
           setMarkets(data);
           setIsInitialLoading(false);
@@ -110,14 +121,17 @@ export function usePerpsLiveMarketData(
       });
 
       return () => {
-        unsubscribe();
+        if (unsubscribeRef.current) {
+          unsubscribeRef.current();
+          unsubscribeRef.current = null;
+        }
       };
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Subscription failed'));
       setIsInitialLoading(false);
       return undefined;
     }
-  }, [stream, autoSubscribe]);
+  }, [client, autoSubscribe]);
 
   return {
     markets,

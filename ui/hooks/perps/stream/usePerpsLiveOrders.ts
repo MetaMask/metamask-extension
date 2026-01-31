@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsStream } from '../../../providers/perps';
-import type { Order } from '../../../../app/scripts/controllers/perps/types';
+import { usePerpsClient } from '../../../providers/perps';
+import type { Order } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveOrders hook
@@ -53,19 +53,16 @@ const EMPTY_ORDERS: Order[] = [];
 export function usePerpsLiveOrders(
   options: UsePerpsLiveOrdersOptions = {},
 ): UsePerpsLiveOrdersReturn {
-  const { throttleMs = 0 } = options;
-  const stream = usePerpsStream();
+  // Note: throttleMs is accepted for API compatibility but not used by controller
+  const { throttleMs: _throttleMs = 0 } = options;
+  const client = usePerpsClient();
   const [orders, setOrders] = useState<Order[]>(EMPTY_ORDERS);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
-    const unsubscribe = stream.orders.subscribe({
+    const unsubscribe = client.streams.orders.subscribe({
       callback: (newOrders) => {
-        if (newOrders === null) {
-          return;
-        }
-
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
           setIsInitialLoading(false);
@@ -73,13 +70,12 @@ export function usePerpsLiveOrders(
 
         setOrders(newOrders);
       },
-      throttleMs,
     });
 
     return () => {
       unsubscribe();
     };
-  }, [stream, throttleMs]);
+  }, [client]);
 
   return { orders, isInitialLoading };
 }

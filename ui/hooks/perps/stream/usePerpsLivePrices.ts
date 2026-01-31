@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsStream } from '../../../providers/perps';
-import type { PriceUpdate } from '../../../../app/scripts/controllers/perps/types';
+import { usePerpsClient } from '../../../providers/perps';
+import type { PriceUpdate } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLivePrices hook
@@ -53,7 +53,7 @@ export function usePerpsLivePrices(
   options: UsePerpsLivePricesOptions,
 ): UsePerpsLivePricesReturn {
   const { symbols, throttleMs = 0 } = options;
-  const stream = usePerpsStream();
+  const client = usePerpsClient();
   const [prices, setPrices] = useState<Record<string, PriceUpdate>>(EMPTY_PRICES);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
@@ -65,14 +65,20 @@ export function usePerpsLivePrices(
       return undefined;
     }
 
-    const unsubscribe = stream.prices.subscribeToSymbols({
+    const unsubscribe = client.streams.prices.subscribe({
       symbols,
-      callback: (newPrices) => {
+      callback: (priceUpdates) => {
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
           setIsInitialLoading(false);
         }
-        setPrices(newPrices);
+
+        // Convert array to record for backward compatibility
+        const priceRecord: Record<string, PriceUpdate> = {};
+        priceUpdates.forEach((update) => {
+          priceRecord[update.symbol] = update;
+        });
+        setPrices(priceRecord);
       },
       throttleMs,
     });
@@ -80,7 +86,7 @@ export function usePerpsLivePrices(
     return () => {
       unsubscribe();
     };
-  }, [stream, symbols.join(','), throttleMs]);
+  }, [client, symbols.join(','), throttleMs]);
 
   return { prices, isInitialLoading };
 }

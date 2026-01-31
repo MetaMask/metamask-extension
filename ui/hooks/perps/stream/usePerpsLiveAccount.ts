@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsStream } from '../../../providers/perps';
-import type { AccountState } from '../../../../app/scripts/controllers/perps/types';
+import { usePerpsClient } from '../../../providers/perps';
+import type { AccountState } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveAccount hook
@@ -47,14 +47,15 @@ export interface UsePerpsLiveAccountReturn {
 export function usePerpsLiveAccount(
   options: UsePerpsLiveAccountOptions = {},
 ): UsePerpsLiveAccountReturn {
-  const { throttleMs = 0 } = options;
-  const stream = usePerpsStream();
+  // Note: throttleMs is accepted for API compatibility but not used by controller
+  const { throttleMs: _throttleMs = 0 } = options;
+  const client = usePerpsClient();
   const [account, setAccount] = useState<AccountState | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
-    const unsubscribe = stream.account.subscribe({
+    const unsubscribe = client.streams.account.subscribe({
       callback: (newAccount) => {
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
@@ -63,13 +64,12 @@ export function usePerpsLiveAccount(
 
         setAccount(newAccount);
       },
-      throttleMs,
     });
 
     return () => {
       unsubscribe();
     };
-  }, [stream, throttleMs]);
+  }, [client]);
 
   return { account, isInitialLoading };
 }

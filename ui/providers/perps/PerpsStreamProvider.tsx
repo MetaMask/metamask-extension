@@ -4,27 +4,25 @@ import React, {
   useMemo,
   type ReactNode,
 } from 'react';
-import {
-  PerpsStreamManager,
-  getStreamManagerInstance,
-} from './PerpsStreamManager';
+import { createMockPerpsClient } from './MockPerpsClient';
+import type { PerpsClient } from './PerpsClient.types';
 
 /**
- * Context for PerpsStreamManager
+ * Context for PerpsClient
  */
-const PerpsStreamContext = createContext<PerpsStreamManager | null>(null);
+const PerpsClientContext = createContext<PerpsClient | null>(null);
 
 /**
  * Props for PerpsStreamProvider
  */
 export interface PerpsStreamProviderProps {
   children: ReactNode;
-  /** Optional custom stream manager for testing */
-  testStreamManager?: PerpsStreamManager;
+  /** Optional custom client for testing */
+  client?: PerpsClient;
 }
 
 /**
- * Provider component for PerpsStreamManager
+ * Provider component for PerpsClient
  *
  * Wrap your Perps UI components with this provider to enable
  * real-time data subscriptions via stream hooks.
@@ -38,48 +36,48 @@ export interface PerpsStreamProviderProps {
  */
 export const PerpsStreamProvider: React.FC<PerpsStreamProviderProps> = ({
   children,
-  testStreamManager,
+  client,
 }) => {
-  // Use provided test manager or singleton instance
-  const streamManager = useMemo(() => {
-    return testStreamManager ?? getStreamManagerInstance();
-  }, [testStreamManager]);
+  // Use provided client or create mock client
+  const perpsClient = useMemo(() => {
+    return client ?? createMockPerpsClient();
+  }, [client]);
 
   return (
-    <PerpsStreamContext.Provider value={streamManager}>
+    <PerpsClientContext.Provider value={perpsClient}>
       {children}
-    </PerpsStreamContext.Provider>
+    </PerpsClientContext.Provider>
   );
 };
 
 /**
- * Hook to access the PerpsStreamManager
+ * Hook to access the PerpsClient
  *
  * Must be used within a PerpsStreamProvider.
  *
- * @returns The PerpsStreamManager instance
+ * @returns The PerpsClient instance
  * @throws Error if used outside of PerpsStreamProvider
  *
  * @example
  * ```tsx
  * function MyComponent() {
- *   const stream = usePerpsStream();
+ *   const client = usePerpsClient();
  *
  *   useEffect(() => {
- *     const unsubscribe = stream.positions.subscribe({
+ *     const unsubscribe = client.streams.positions.subscribe({
  *       callback: (positions) => console.log(positions),
  *     });
  *     return unsubscribe;
- *   }, [stream]);
+ *   }, [client]);
  * }
  * ```
  */
-export function usePerpsStream(): PerpsStreamManager {
-  const context = useContext(PerpsStreamContext);
+export function usePerpsClient(): PerpsClient {
+  const context = useContext(PerpsClientContext);
 
   if (!context) {
     throw new Error(
-      'usePerpsStream must be used within a PerpsStreamProvider. ' +
+      'usePerpsClient must be used within a PerpsStreamProvider. ' +
         'Wrap your component tree with <PerpsStreamProvider>.',
     );
   }
@@ -87,5 +85,19 @@ export function usePerpsStream(): PerpsStreamManager {
   return context;
 }
 
+/**
+ * @deprecated Use usePerpsClient() instead.
+ * This alias is kept for backward compatibility during migration.
+ *
+ * Note: The returned client has a different API than the old PerpsStreamManager.
+ * Stream hooks have been updated to use client.streams.* pattern.
+ */
+export function usePerpsStream(): PerpsClient {
+  return usePerpsClient();
+}
+
 // Export context for advanced use cases
-export { PerpsStreamContext };
+export { PerpsClientContext };
+
+// Re-export PerpsClient type for convenience
+export type { PerpsClient };

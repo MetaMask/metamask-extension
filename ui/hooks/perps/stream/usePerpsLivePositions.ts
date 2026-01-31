@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsStream } from '../../../providers/perps';
-import type { Position } from '../../../../app/scripts/controllers/perps/types';
+import { usePerpsClient } from '../../../providers/perps';
+import type { Position } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLivePositions hook
@@ -51,19 +51,16 @@ const EMPTY_POSITIONS: Position[] = [];
 export function usePerpsLivePositions(
   options: UsePerpsLivePositionsOptions = {},
 ): UsePerpsLivePositionsReturn {
-  const { throttleMs = 0 } = options;
-  const stream = usePerpsStream();
+  // Note: throttleMs is accepted for API compatibility but not used by controller
+  const { throttleMs: _throttleMs = 0 } = options;
+  const client = usePerpsClient();
   const [positions, setPositions] = useState<Position[]>(EMPTY_POSITIONS);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
-    const unsubscribe = stream.positions.subscribe({
+    const unsubscribe = client.streams.positions.subscribe({
       callback: (newPositions) => {
-        if (newPositions === null) {
-          return;
-        }
-
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
           setIsInitialLoading(false);
@@ -71,13 +68,12 @@ export function usePerpsLivePositions(
 
         setPositions(newPositions);
       },
-      throttleMs,
     });
 
     return () => {
       unsubscribe();
     };
-  }, [stream, throttleMs]);
+  }, [client]);
 
   return { positions, isInitialLoading };
 }

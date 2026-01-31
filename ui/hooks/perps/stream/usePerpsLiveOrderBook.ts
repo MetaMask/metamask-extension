@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsStream } from '../../../providers/perps';
-import type { OrderBookData } from '../../../../app/scripts/controllers/perps/types';
+import { usePerpsClient } from '../../../providers/perps';
+import type { OrderBookData } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveOrderBook hook
@@ -59,7 +59,7 @@ export function usePerpsLiveOrderBook(
   options: UsePerpsLiveOrderBookOptions,
 ): UsePerpsLiveOrderBookReturn {
   const { symbol, levels, nSigFigs, mantissa, onError } = options;
-  const stream = usePerpsStream();
+  const client = usePerpsClient();
   const [orderBook, setOrderBook] = useState<OrderBookData | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
@@ -71,7 +71,7 @@ export function usePerpsLiveOrderBook(
       return undefined;
     }
 
-    const unsubscribe = stream.orderBook.subscribeToOrderBook({
+    const unsubscribe = client.streams.orderBook.subscribe({
       symbol,
       levels,
       nSigFigs,
@@ -89,7 +89,7 @@ export function usePerpsLiveOrderBook(
     return () => {
       unsubscribe();
     };
-  }, [stream, symbol, levels, nSigFigs, mantissa, onError]);
+  }, [client, symbol, levels, nSigFigs, mantissa, onError]);
 
   return { orderBook, isInitialLoading };
 }

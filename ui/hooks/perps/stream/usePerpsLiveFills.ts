@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsStream } from '../../../providers/perps';
-import type { OrderFill } from '../../../../app/scripts/controllers/perps/types';
+import { usePerpsClient } from '../../../providers/perps';
+import type { OrderFill } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveFills hook
@@ -51,19 +51,16 @@ const EMPTY_FILLS: OrderFill[] = [];
 export function usePerpsLiveFills(
   options: UsePerpsLiveFillsOptions = {},
 ): UsePerpsLiveFillsReturn {
-  const { throttleMs = 0 } = options;
-  const stream = usePerpsStream();
+  // Note: throttleMs is accepted for API compatibility but not used by controller
+  const { throttleMs: _throttleMs = 0 } = options;
+  const client = usePerpsClient();
   const [fills, setFills] = useState<OrderFill[]>(EMPTY_FILLS);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
-    const unsubscribe = stream.fills.subscribe({
+    const unsubscribe = client.streams.orderFills.subscribe({
       callback: (newFills) => {
-        if (newFills === null) {
-          return;
-        }
-
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
           setIsInitialLoading(false);
@@ -71,13 +68,12 @@ export function usePerpsLiveFills(
 
         setFills(newFills);
       },
-      throttleMs,
     });
 
     return () => {
       unsubscribe();
     };
-  }, [stream, throttleMs]);
+  }, [client]);
 
   return { fills, isInitialLoading };
 }

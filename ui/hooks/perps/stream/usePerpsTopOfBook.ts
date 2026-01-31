@@ -1,5 +1,25 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsStream, type TopOfBookData } from '../../../providers/perps';
+import { usePerpsClient } from '../../../providers/perps';
+
+/**
+ * Top of book data (best bid/ask)
+ */
+export interface TopOfBookData {
+  /** Best bid price */
+  bestBid: string;
+  /** Best bid size */
+  bestBidSize: string;
+  /** Best ask price */
+  bestAsk: string;
+  /** Best ask size */
+  bestAskSize: string;
+  /** Spread between best bid and ask */
+  spread: string;
+  /** Spread as percentage of mid price */
+  spreadPercent: string;
+  /** Mid price between bid and ask */
+  midPrice: string;
+}
 
 /**
  * Options for usePerpsTopOfBook hook
@@ -23,7 +43,8 @@ export interface UsePerpsTopOfBookReturn {
  * Hook for real-time top of book (best bid/ask) data via stream subscription
  *
  * This is a lightweight alternative to usePerpsLiveOrderBook when you only
- * need the best bid and ask prices.
+ * need the best bid and ask prices. Internally, it subscribes to the order book
+ * stream and extracts the top level.
  *
  * @param options - Configuration options
  * @returns Object containing top of book data and loading state
@@ -52,7 +73,7 @@ export function usePerpsTopOfBook(
   options: UsePerpsTopOfBookOptions,
 ): UsePerpsTopOfBookReturn {
   const { symbol } = options;
-  const stream = usePerpsStream();
+  const client = usePerpsClient();
   const [topOfBook, setTopOfBook] = useState<TopOfBookData | undefined>(
     undefined,
   );
@@ -66,24 +87,40 @@ export function usePerpsTopOfBook(
       return undefined;
     }
 
-    const unsubscribe = stream.topOfBook.subscribeToSymbol({
+    // Subscribe to order book and extract top of book data
+    const unsubscribe = client.streams.orderBook.subscribe({
       symbol,
-      callback: (data) => {
+      levels: 1, // Only need top level
+      callback: (orderBook) => {
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
           setIsInitialLoading(false);
         }
-        setTopOfBook(data);
+
+        // Extract top of book from order book data
+        if (orderBook.bids.length > 0 && orderBook.asks.length > 0) {
+          const topBid = orderBook.bids[0];
+          const topAsk = orderBook.asks[0];
+
+          setTopOfBook({
+            bestBid: topBid.price,
+            bestBidSize: topBid.size,
+            bestAsk: topAsk.price,
+            bestAskSize: topAsk.size,
+            spread: orderBook.spread,
+            spreadPercent: orderBook.spreadPercentage,
+            midPrice: orderBook.midPrice,
+          });
+        } else {
+          setTopOfBook(undefined);
+        }
       },
     });
 
     return () => {
       unsubscribe();
     };
-  }, [stream, symbol]);
+  }, [client, symbol]);
 
   return { topOfBook, isInitialLoading };
 }
-
-// Re-export TopOfBookData for convenience
-export type { TopOfBookData };
