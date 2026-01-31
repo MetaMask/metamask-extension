@@ -118,6 +118,10 @@
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },
+  "bridgeApproval": {
+    "message": "אשר $1 עבור גישור",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
+  },
   "bytes": {
     "message": "בייטים"
   },
@@ -607,6 +611,14 @@
   },
   "supportCenter": {
     "message": "בקר/י במרכז התמיכה שלנו"
+  },
+  "swapApproval": {
+    "message": "אשר $1 עבור החלפות",
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
+  },
+  "swapTokenToToken": {
+    "message": "החלף $1 ל-$2",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
   "symbol": {
     "message": "סמל"
