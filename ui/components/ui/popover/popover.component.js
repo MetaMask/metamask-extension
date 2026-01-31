@@ -283,29 +283,62 @@ Popover.propTypes = {
 export default class PopoverPortal extends PureComponent {
   static propTypes = Popover.propTypes;
 
-  rootNode = document.getElementById('popover-content');
+  rootNode = null;
 
-  instanceNode = document.createElement('div');
+  instanceNode = null;
 
   componentDidMount() {
+    // Retrieve fresh DOM references on mount to avoid stale references
+    // This is especially important with LavaMoat's Snow security layer
+    // which intercepts DOM operations
+    this.rootNode = document.getElementById('popover-content');
+    
     if (!this.rootNode) {
       return;
     }
 
-    this.rootNode.appendChild(this.instanceNode);
+    // Create instance node only after confirming root node exists
+    this.instanceNode = document.createElement('div');
+    
+    // Safely append with validation to prevent DOM operation errors
+    try {
+      if (this.rootNode && this.instanceNode) {
+        this.rootNode.appendChild(this.instanceNode);
+      }
+    } catch (error) {
+      console.error('Error appending popover instance node:', error);
+      this.instanceNode = null;
+    }
   }
 
   componentWillUnmount() {
-    if (!this.rootNode) {
+    // Re-validate rootNode exists before attempting removal
+    // DOM references can become stale due to Snow/LavaMoat interception
+    const currentRootNode = document.getElementById('popover-content');
+    
+    if (!currentRootNode || !this.instanceNode) {
       return;
     }
 
-    this.rootNode.removeChild(this.instanceNode);
+    // Safely remove child with validation to prevent NotFoundError
+    try {
+      // Verify instanceNode is still a child of the root before removing
+      if (currentRootNode.contains(this.instanceNode)) {
+        currentRootNode.removeChild(this.instanceNode);
+      }
+    } catch (error) {
+      console.error('Error removing popover instance node:', error);
+    } finally {
+      this.instanceNode = null;
+      this.rootNode = null;
+    }
   }
 
   render() {
     const children = <Popover {...this.props} />;
-    return this.rootNode
+    // Only create portal if we have a valid instance node
+    // Fall back to rendering children directly if portal is unavailable
+    return this.instanceNode
       ? ReactDOM.createPortal(children, this.instanceNode)
       : children;
   }
