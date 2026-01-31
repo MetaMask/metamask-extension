@@ -19,6 +19,7 @@ import { useTransactionDisplayData } from './useTransactionDisplayData';
 const expectedResults = [
   {
     title: 'Sent',
+    category: 'send',
     primaryCurrency: '-1 ETH',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-1 ETH',
@@ -26,6 +27,7 @@ const expectedResults = [
   },
   {
     title: 'Sent',
+    category: 'send',
     primaryCurrency: '-2 ETH',
     recipientAddress: '0x0ccc8aeeaf5ce790f3b448325981a143fdef8848',
     secondaryCurrency: '-2 ETH',
@@ -33,6 +35,7 @@ const expectedResults = [
   },
   {
     title: 'Sent',
+    category: 'send',
     primaryCurrency: '-2 ETH',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-2 ETH',
@@ -40,6 +43,7 @@ const expectedResults = [
   },
   {
     title: 'Received',
+    category: 'receive',
     primaryCurrency: '18.75 ETH',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '18.75 ETH',
@@ -47,6 +51,7 @@ const expectedResults = [
   },
   {
     title: 'Received',
+    category: 'receive',
     primaryCurrency: '0 ETH',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '0 ETH',
@@ -54,6 +59,7 @@ const expectedResults = [
   },
   {
     title: 'Received',
+    category: 'receive',
     primaryCurrency: '1 ETH',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: '1 ETH',
@@ -61,12 +67,14 @@ const expectedResults = [
   },
   {
     title: 'Swap ETH to ABC',
+    category: 'swap',
     primaryCurrency: '+1 ABC',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
     isPending: false,
   },
   {
     title: 'Contract deployment',
+    category: 'interaction',
     primaryCurrency: '-0 ETH',
     recipientAddress: undefined,
     secondaryCurrency: '-0 ETH',
@@ -74,6 +82,7 @@ const expectedResults = [
   },
   {
     title: 'Safe transfer from',
+    category: 'send',
     primaryCurrency: '-0 ETH',
     recipientAddress: '0xe7d522230eff653bb0a9b4385f0be0815420dd98',
     secondaryCurrency: '-0 ETH',
@@ -81,6 +90,7 @@ const expectedResults = [
   },
   {
     title: 'Approve ABC spending cap',
+    category: 'approval',
     primaryCurrency: '0.00000000000005 ABC',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: undefined,
@@ -88,6 +98,7 @@ const expectedResults = [
   },
   {
     title: 'Sent BAT as ETH',
+    category: 'swapAndSend',
     primaryCurrency: '-33.425656732428330864 BAT',
     recipientAddress: '0xc6f6ca03d790168758285264bcbf7fb30d27322b',
     secondaryCurrency: undefined,
@@ -95,6 +106,7 @@ const expectedResults = [
   },
   {
     title: 'Sent USDC as DAI',
+    category: 'swapAndSend',
     primaryCurrency: '-5 USDC',
     recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
     secondaryCurrency: undefined,
@@ -102,6 +114,7 @@ const expectedResults = [
   },
   {
     title: 'Sent BNB as USDC',
+    category: 'swapAndSend',
     primaryCurrency: '-0.05 BNB',
     recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
     secondaryCurrency: undefined,
@@ -109,6 +122,7 @@ const expectedResults = [
   },
   {
     title: 'Sent ABC',
+    category: 'send',
     primaryCurrency: '-1.234 ABC',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
     secondaryCurrency: undefined,
