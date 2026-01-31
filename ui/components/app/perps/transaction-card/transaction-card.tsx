@@ -23,6 +23,7 @@ export type TransactionCardProps = {
 };
 
 const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
+  open: 'perpsStatusOpen',
   filled: 'perpsStatusFilled',
   canceled: 'perpsStatusCanceled',
   queued: 'perpsStatusQueued',

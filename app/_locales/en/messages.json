@@ -5334,6 +5334,9 @@
   "perpsStatusFilled": {
     "message": "Filled"
   },
+  "perpsStatusOpen": {
+    "message": "Open"
+  },
   "perpsStatusQueued": {
     "message": "Queued"
   },
