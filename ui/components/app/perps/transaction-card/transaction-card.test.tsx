@@ -34,21 +34,30 @@ const createMockTransaction = (
 describe('TransactionCard', () => {
   it('renders with correct data-testid', () => {
     const transaction = createMockTransaction({ id: 'tx-001' });
-    renderWithProvider(<TransactionCard transaction={transaction} />, mockStore);
+    renderWithProvider(
+      <TransactionCard transaction={transaction} />,
+      mockStore,
+    );
 
     expect(screen.getByTestId('transaction-card-tx-001')).toBeInTheDocument();
   });
 
   it('displays the transaction title', () => {
     const transaction = createMockTransaction({ title: 'Opened long' });
-    renderWithProvider(<TransactionCard transaction={transaction} />, mockStore);
+    renderWithProvider(
+      <TransactionCard transaction={transaction} />,
+      mockStore,
+    );
 
     expect(screen.getByText('Opened long')).toBeInTheDocument();
   });
 
   it('displays the token logo', () => {
     const transaction = createMockTransaction({ symbol: 'ETH' });
-    renderWithProvider(<TransactionCard transaction={transaction} />, mockStore);
+    renderWithProvider(
+      <TransactionCard transaction={transaction} />,
+      mockStore,
+    );
 
     expect(screen.getByTestId('perps-token-logo-ETH')).toBeInTheDocument();
   });
@@ -294,7 +303,10 @@ describe('TransactionCard', () => {
   describe('Variant styling', () => {
     it('applies default styling by default', () => {
       const transaction = createMockTransaction();
-      renderWithProvider(<TransactionCard transaction={transaction} />, mockStore);
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
 
       const card = screen.getByTestId(`transaction-card-${transaction.id}`);
       expect(card).toHaveClass('bg-default');
@@ -342,7 +354,10 @@ describe('TransactionCard', () => {
 
     it('does not have cursor-pointer class when onClick is not provided', () => {
       const transaction = createMockTransaction();
-      renderWithProvider(<TransactionCard transaction={transaction} />, mockStore);
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
 
       const card = screen.getByTestId(`transaction-card-${transaction.id}`);
       expect(card).not.toHaveClass('cursor-pointer');

@@ -463,7 +463,9 @@ describe('Perps Utils', () => {
 
     it('returns ErrorDefault for negative amounts with - prefix', () => {
       expect(getTransactionAmountColor('-45.50')).toBe(TextColor.ErrorDefault);
-      expect(getTransactionAmountColor('-1000.00')).toBe(TextColor.ErrorDefault);
+      expect(getTransactionAmountColor('-1000.00')).toBe(
+        TextColor.ErrorDefault,
+      );
     });
 
     it('returns TextDefault for amounts without prefix', () => {

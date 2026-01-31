@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   twMerge,
   Box,
@@ -12,6 +11,7 @@ import {
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, getTransactionAmountColor } from '../utils';
 import type { PerpsTransaction } from '../types';
@@ -88,7 +88,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     }
     // For orders, show status in muted text
     if (transaction.type === 'order' && transaction.order) {
-      const status = transaction.order.status;
+      const { status } = transaction.order;
       const statusText = ORDER_STATUS_TO_I18N_KEY[status]
         ? t(ORDER_STATUS_TO_I18N_KEY[status])
         : '';
