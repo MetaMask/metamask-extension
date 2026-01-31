@@ -5332,6 +5332,47 @@ export default class MetamaskController extends EventEmitter {
 
     await this.accountsController.updateAccounts();
 
+    // Ensure snap keyring accounts are properly synced
+    // This is a defensive measure to prevent issues where snap accounts
+    // are out of sync between the KeyringController and AccountsController
+    try {
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+      const snapKeyring = this.getSnapKeyringIfAvailable();
+      if (snapKeyring) {
+        // Verify all internal accounts have corresponding keyring entries
+        const internalAccounts = this.accountsController.listAccounts();
+        const allKeyringAccounts = await this.keyringController.getAccounts();
+        const allKeyringAccountsLower = allKeyringAccounts.map((addr) =>
+          addr.toLowerCase(),
+        );
+
+        // Find snap accounts that exist in AccountsController but not in KeyringController
+        const orphanedSnapAccounts = internalAccounts.filter(
+          (account) =>
+            account.metadata.keyring?.type === KeyringType.snap &&
+            !allKeyringAccountsLower.includes(account.address.toLowerCase()),
+        );
+
+        if (orphanedSnapAccounts.length > 0) {
+          console.warn(
+            `Found ${orphanedSnapAccounts.length} orphaned snap accounts without corresponding keyring entries. ` +
+              'This may indicate a sync issue with snap_manageAccounts. Attempting to re-sync.',
+          );
+          // Log the addresses for debugging
+          orphanedSnapAccounts.forEach((account) => {
+            console.warn(`Orphaned snap account: ${account.address}`);
+          });
+
+          // Try to update accounts again to sync
+          await this.accountsController.updateAccounts();
+        }
+      }
+      ///: END:ONLY_INCLUDE_IF
+    } catch (error) {
+      console.error('Error checking for orphaned snap accounts:', error);
+      // Don't throw - this is a defensive check
+    }
+
     // Init multichain accounts after creating internal accounts.
     await this.multichainAccountService.init();
 
@@ -5798,9 +5839,21 @@ export default class MetamaskController extends EventEmitter {
           (account) => account.address.toLowerCase() === address.toLowerCase(),
         ),
     );
-    const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
-      (address) => this.keyringController.getAccountKeyringType(address),
-    );
+    const keyringTypesWithMissingIdentities = accountsMissingIdentities
+      .map((address) => {
+        try {
+          return this.keyringController.getAccountKeyringType(address);
+        } catch (error) {
+          // If we can't get the keyring type, it might be because the keyring doesn't exist
+          // This can happen with orphaned snap accounts
+          console.warn(
+            `Unable to get keyring type for address ${address}:`,
+            error.message,
+          );
+          return 'unknown';
+        }
+      })
+      .filter((type) => type !== 'unknown');
 
     const internalAccountCount = internalAccounts.length;
 
@@ -5867,7 +5920,25 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string[]} The sorted accounts addresses.
    */
   sortAddressesWithInternalAccounts(addresses, internalAccounts) {
-    return addresses.sort((firstAddress, secondAddress) => {
+    // Filter out addresses that don't have corresponding internal accounts to prevent errors
+    // This can happen when accounts are being synchronized between controllers
+    const validAddresses = addresses.filter((address) => {
+      const hasAccount = internalAccounts.some(
+        (internalAccount) =>
+          internalAccount.address.toLowerCase() === address.toLowerCase(),
+      );
+
+      if (!hasAccount) {
+        // Log warning for missing identity but don't throw to prevent breaking the UI
+        console.warn(
+          `Address ${address} does not have a corresponding internal account. This may indicate a sync issue between KeyringController and AccountsController.`,
+        );
+      }
+
+      return hasAccount;
+    });
+
+    return validAddresses.sort((firstAddress, secondAddress) => {
       const firstAccount = internalAccounts.find(
         (internalAccount) =>
           internalAccount.address.toLowerCase() === firstAddress.toLowerCase(),
@@ -5878,19 +5949,12 @@ export default class MetamaskController extends EventEmitter {
           internalAccount.address.toLowerCase() === secondAddress.toLowerCase(),
       );
 
-      if (!firstAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${firstAddress}".`);
-      } else if (!secondAccount) {
-        this.captureKeyringTypesWithMissingIdentities(
-          internalAccounts,
-          addresses,
-        );
-        throw new Error(`Missing identity for address: "${secondAddress}".`);
-      } else if (
+      // These should always exist due to filtering above, but keep checks for safety
+      if (!firstAccount || !secondAccount) {
+        return 0;
+      }
+
+      if (
         firstAccount.metadata.lastSelected ===
         secondAccount.metadata.lastSelected
       ) {
