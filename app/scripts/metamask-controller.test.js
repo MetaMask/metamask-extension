@@ -2452,6 +2452,55 @@ describe('MetaMaskController', () => {
         });
         streamTest.end();
       });
+
+      it('handles extension-to-extension connections without sender.url', async () => {
+        const extensionSender = {
+          id: 'external-extension-id',
+          // sender.url is undefined for extension-to-extension connections
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        // Should not throw TypeError
+        expect(() => {
+          metamaskController.setupUntrustedCommunicationEip1193({
+            connectionStream: streamTest,
+            sender: extensionSender,
+          });
+        }).not.toThrow();
+
+        const message = {
+          jsonrpc: '2.0',
+          method: 'eth_chainId',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                );
+                // Origin should be chrome-extension://<extension-id>
+                expect(loggerMiddlewareMock.requests[0].origin).toMatch(
+                  /^(chrome|moz)-extension:\/\/external-extension-id$/u,
+                );
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
