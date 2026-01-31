@@ -715,5 +715,13 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"
+  },
+  "slideBridgeDescription": {
+    "message": "Move your crypto across chains quickly and securely with MetaMask Bridge.",
+    "description": "Description for the bridge promotional carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Bridge your assets",
+    "description": "Title for the bridge promotional carousel slide"
   }
 }

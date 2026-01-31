@@ -8221,5 +8221,13 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "비밀복구구문을 안전하게 보관하세요!"
+  },
+  "slideBridgeDescription": {
+    "message": "Move your crypto across chains quickly and securely with MetaMask Bridge.",
+    "description": "Description for the bridge promotional carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Bridge your assets",
+    "description": "Title for the bridge promotional carousel slide"
   }
 }

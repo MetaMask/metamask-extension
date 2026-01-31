@@ -8224,5 +8224,13 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Lưu giữ Cụm từ khôi phục bí mật của bạn ở nơi an toàn!"
+  },
+  "slideBridgeDescription": {
+    "message": "Move your crypto across chains quickly and securely with MetaMask Bridge.",
+    "description": "Description for the bridge promotional carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Bridge your assets",
+    "description": "Title for the bridge promotional carousel slide"
   }
 }

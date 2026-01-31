@@ -709,5 +709,13 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Twoja prywatna fraza seed"
+  },
+  "slideBridgeDescription": {
+    "message": "Move your crypto across chains quickly and securely with MetaMask Bridge.",
+    "description": "Description for the bridge promotional carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Bridge your assets",
+    "description": "Title for the bridge promotional carousel slide"
   }
 }
