@@ -114,9 +114,84 @@ describe('migrations', () => {
           },
         ],
       });
-      await expect(async () => {
-        await migrator.migrateData({ meta: { version: 0 } });
-      }).rejects.toThrow('Error: MetaMask Migration Error #1: test');
+      const onError = jest.fn();
+      migrator.on('error', onError);
+
+      const initialState = { meta: { version: 0 }, data: { hello: 'world' } };
+      const migratedData = await migrator.migrateData(initialState);
+
+      expect(onError).toHaveBeenCalledTimes(1);
+      const [error] = onError.mock.calls[0];
+      expect(error).toBeInstanceOf(AggregateError);
+      expect(error.message).toBe('MetaMask Migration Error #1');
+      expect(error.errors[0].message).toBe('test');
+      expect(migratedData.state).toBe(initialState);
+    });
+
+    it('runs v2 migrations and reports changed controllers', async () => {
+      const migrate = jest.fn(async (state, localChangedControllers) => {
+        state.meta.version = 187;
+        state.data.foo = 'bar';
+        localChangedControllers.add('TestController');
+      });
+
+      const migrator = new Migrator({
+        migrations: [
+          {
+            version: 187,
+            migrate,
+          },
+        ],
+      });
+
+      const initialState = { meta: { version: 186 }, data: { hello: 'world' } };
+      const migratedData = await migrator.migrateData(initialState);
+
+      expect(migrate).toHaveBeenCalledTimes(1);
+      expect(migrate.mock.calls[0]).toHaveLength(2);
+      expect(migratedData.state).not.toBe(initialState);
+      // toStrictEqual won't work
+      // eslint-disable-next-line jest/prefer-strict-equal
+      expect(migratedData.state.data).toEqual({
+        hello: 'world',
+        foo: 'bar',
+      });
+      expect(migratedData.changedKeys.has('TestController')).toBe(true);
+    });
+
+    it('handles errors thrown when state is cloned for next migration', async () => {
+      const migrate = jest.fn();
+      const migrator = new Migrator({
+        migrations: [
+          {
+            version: 186,
+            migrate,
+          },
+        ],
+      });
+      const onError = jest.fn();
+      migrator.on('error', onError);
+
+      const initialState = {
+        meta: { version: 0 },
+        // Regression test for https://github.com/MetaMask/metamask-extension/issues/39567
+        // `bad` is a function, and cannot be serialized by `structuredClone`
+        // this will throw a DOMException, which doesn't allow its `message`
+        // property to be mutated
+        // eslint-disable-next-line no-empty-function
+        data: { bad: () => {} },
+      };
+      const migratedData = await migrator.migrateData(initialState);
+
+      expect(migrate).not.toHaveBeenCalled();
+      expect(onError).toHaveBeenCalledTimes(1);
+      const [error] = onError.mock.calls[0];
+      expect(error).toBeInstanceOf(AggregateError);
+      expect(error.message).toBe('MetaMask Migration Error #186');
+      expect(error.errors[0]?.constructor?.name).toBe('DOMException');
+      expect(error.errors[0].name).toBe('DataCloneError');
+      expect(error.errors[0].message).toMatch(/could not be cloned/iu);
+      expect(migratedData.state).toBe(initialState);
     });
   });
 });
