@@ -5,7 +5,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
-import { isPublicEndpointUrl } from '../../../../shared/lib/network-utils';
+import { isPublicEndpointUrl } from '../util';
 import MetaMetricsController from '../../controllers/metametrics-controller';
 import { shouldCreateRpcServiceEvents } from './utils';
 

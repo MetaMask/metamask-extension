@@ -448,6 +448,7 @@
     "human-standard-token-abi": "^2.0.0",
     "humanize-duration": "^3.32.1",
     "immer": "^9.0.6",
+    "ip-regex": "^4.3.0",
     "is-retry-allowed": "^2.2.0",
     "jest-junit": "^14.0.1",
     "labeled-stream-splicer": "^2.0.2",
