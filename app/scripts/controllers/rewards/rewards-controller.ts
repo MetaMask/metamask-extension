@@ -454,9 +454,7 @@ export class RewardsController extends BaseController<
     let accState = null;
     if (account?.startsWith('eip155')) {
       const address = account.split(':')[2];
-      accState =
-        this.state.rewardsAccounts[toMultiChainAccountId(address)] ||
-        this.state.rewardsAccounts[toMultiChainAccountId(address)];
+      accState = this.state.rewardsAccounts[toMultiChainAccountId(address)];
     }
     if (!accState) {
       accState = this.state.rewardsAccounts[account];
