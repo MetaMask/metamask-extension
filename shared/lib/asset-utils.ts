@@ -9,6 +9,7 @@ import {
   isStrictHexString,
   parseCaipAssetType,
   KnownCaipNamespace,
+  CaipAccountId,
 } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -250,3 +251,14 @@ export const isTronResource = (asset: Asset): boolean => {
     asset.symbol?.toLowerCase() as TronResourceSymbol,
   );
 };
+
+/**
+ * Converts an Ethereum account address to a multi-chain CAIP account reference.
+ * Uses the special chain ID 0 to represent "all EVM chains" for API compatibility.
+ *
+ * @param accountAddress - The Ethereum account address
+ * @returns The multi-chain CAIP account reference in format "eip155:0:address"
+ */
+export function toMultiChainAccountId(accountAddress: string) {
+  return `eip155:0:${accountAddress}` as CaipAccountId;
+}
