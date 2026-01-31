@@ -93,8 +93,11 @@ jobs:
       - name: Compute locales-only flag
         id: set-locales-only
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        env:
+          FILTER_LOCALES: ${{ steps.filter.outputs.locales }}
+          FILTER_NON_LOCALES: ${{ steps.filter.outputs.non_locales }}
         run: |
-          if [[ "${{ steps.filter.outputs.locales }}" == "true" && "${{ steps.filter.outputs.non_locales }}" != "true" ]]; then
+          if [[ "$FILTER_LOCALES" == "true" && "$FILTER_NON_LOCALES" != "true" ]]; then
             echo "locales-only=true" >> "$GITHUB_OUTPUT"
           else
             echo "locales-only=false" >> "$GITHUB_OUTPUT"
@@ -134,12 +137,16 @@ jobs:
       - name: Compute needs-e2e flag
         id: set-needs-e2e
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' && steps.set-locales-only.outputs.locales-only != 'true'}}
+        env:
+          SKIP_E2E: ${{ steps.skip-e2e-tag.outputs.SKIP }}
+          FILTER_NON_E2E_RELATED_FILES_COUNT: ${{ steps.filter.outputs.non_e2e_related_files_count }}
+          FILTER_ALL_CHANGES_COUNT: ${{ steps.filter.outputs.all_changes_count }}
         run: |
           # Default to running E2E tests
           echo "needs-e2e=true" >> "$GITHUB_OUTPUT"
 
           # Only consider skipping for PRs, merge-queue events, or trigger-ci-* branches
-          if [[ "${{ steps.skip-e2e-tag.outputs.SKIP }}" == "true" || "$EVENT_NAME" == "pull_request" || "$EVENT_NAME" == "merge_group" ]]; then
+          if [[ "$SKIP_E2E" == "true" || "$EVENT_NAME" == "pull_request" || "$EVENT_NAME" == "merge_group" ]]; then
 
             # Skip if [skip-e2e] tag found
             if [[ "${{ steps.skip-e2e-tag.outputs.SKIP }}" == "true" ]]; then
@@ -147,7 +154,7 @@ jobs:
               echo "-> Skipping E2E tests due to 'skip-e2e' tag"
 
             # Skip E2E only if ALL changed files are in non_e2e_related_files filter
-            elif [[ "${{ steps.filter.outputs.non_e2e_related_files_count }}" == "${{ steps.filter.outputs.all_changes_count }}" ]]; then
+            elif [[ "$FILTER_NON_E2E_RELATED_FILES_COUNT" == "$FILTER_ALL_CHANGES_COUNT" ]]; then
               echo "needs-e2e=false" >> "$GITHUB_OUTPUT"
               echo "-> Skipping E2E tests - only non_e2e_related_files changes found"
 
