@@ -4214,4 +4214,92 @@ describe('getIsDefiPositionsEnabled', () => {
       DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
     );
   });
+
+  describe('getSlides', () => {
+    it('should return only slides with contentful- prefix', () => {
+      const state = {
+        metamask: {
+          slides: [
+            {
+              id: 'contentful-123',
+              title: 'Valid Slide 1',
+              description: 'This is a valid Contentful slide',
+              image: 'https://example.com/image1.jpg',
+            },
+            {
+              id: 'slideSmartAccountUpgrade',
+              title: 'slideSmartAccountUpgradeTitle',
+              description: 'slideSmartAccountUpgradeDescription',
+              image: 'https://example.com/image2.jpg',
+            },
+            {
+              id: 'contentful-456',
+              title: 'Valid Slide 2',
+              description: 'Another valid Contentful slide',
+              image: 'https://example.com/image3.jpg',
+            },
+            {
+              id: 'slideBridge',
+              title: 'slideBridgeTitle',
+              description: 'slideBridgeDescription',
+              image: 'https://example.com/image4.jpg',
+            },
+          ],
+        },
+      };
+
+      const result = selectors.getSlides(state);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].id).toBe('contentful-123');
+      expect(result[1].id).toBe('contentful-456');
+    });
+
+    it('should return an empty array when no slides exist', () => {
+      const state = {
+        metamask: {
+          slides: [],
+        },
+      };
+
+      const result = selectors.getSlides(state);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should return an empty array when slides is undefined', () => {
+      const state = {
+        metamask: {},
+      };
+
+      const result = selectors.getSlides(state);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should filter out all non-contentful slides', () => {
+      const state = {
+        metamask: {
+          slides: [
+            {
+              id: 'slideSmartAccountUpgrade',
+              title: 'slideSmartAccountUpgradeTitle',
+              description: 'slideSmartAccountUpgradeDescription',
+              image: 'https://example.com/image.jpg',
+            },
+            {
+              id: 'slideBridge',
+              title: 'slideBridgeTitle',
+              description: 'slideBridgeDescription',
+              image: 'https://example.com/image.jpg',
+            },
+          ],
+        },
+      };
+
+      const result = selectors.getSlides(state);
+
+      expect(result).toEqual([]);
+    });
+  });
 });

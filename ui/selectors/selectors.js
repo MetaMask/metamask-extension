@@ -1371,7 +1371,10 @@ export function getTotalUnapprovedCount(state) {
 }
 
 export function getSlides(state) {
-  return state.metamask.slides || [];
+  const slides = state.metamask.slides || [];
+  // Filter out any legacy slides that don't have the contentful- prefix
+  // to prevent errors when trying to translate removed localization keys
+  return slides.filter((slide) => slide.id.startsWith('contentful-'));
 }
 
 export function getUnapprovedTxCount(state) {
