@@ -850,6 +850,62 @@ async function initialize(backup) {
 }
 
 /**
+ * Sanitizes control characters within JSON string values.
+ * Replaces unescaped control characters (0x00-0x1F except whitespace outside strings)
+ * with their escaped equivalents, while preserving valid JSON formatting.
+ *
+ * @param {string} text - The JSON text to sanitize
+ * @returns {string} The sanitized JSON text
+ */
+function sanitizeJsonText(text) {
+  let result = '';
+  let inString = false;
+  let escapeNext = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const charCode = char.charCodeAt(0);
+
+    // Handle escape sequences
+    if (escapeNext) {
+      result += char;
+      escapeNext = false;
+      continue;
+    }
+
+    if (char === '\\') {
+      result += char;
+      escapeNext = true;
+      continue;
+    }
+
+    // Track whether we're inside a string literal
+    if (char === '"') {
+      inString = !inString;
+      result += char;
+      continue;
+    }
+
+    // If we're inside a string and encounter a control character, escape it
+    if (inString && charCode >= 0x00 && charCode <= 0x1f) {
+      const escapeMap = {
+        '\b': '\\b',
+        '\f': '\\f',
+        '\n': '\\n',
+        '\r': '\\r',
+        '\t': '\\t',
+      };
+      result +=
+        escapeMap[char] || `\\u${charCode.toString(16).padStart(4, '0')}`;
+    } else {
+      result += char;
+    }
+  }
+
+  return result;
+}
+
+/**
  * Loads the preinstalled snaps from urls and returns them as an array.
  * It fails if any Snap fails to load in the expected time range.
  * Supports .json.gz files using gzip decompression.
@@ -863,7 +919,14 @@ async function loadPreinstalledSnaps() {
     if (url.pathname.endsWith('.json.gz')) {
       const ds = new DecompressionStream('gzip');
       const decompressedStream = response.body.pipeThrough(ds);
-      return await new Response(decompressedStream).json();
+
+      // Read the decompressed stream as text first
+      const text = await new Response(decompressedStream).text();
+
+      // Sanitize control characters within string values to prevent JSON parse errors
+      const sanitizedText = sanitizeJsonText(text);
+
+      return JSON.parse(sanitizedText);
     }
 
     return await response.json();
