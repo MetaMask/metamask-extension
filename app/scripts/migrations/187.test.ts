@@ -23,6 +23,27 @@ describe(`migration #${VERSION} - remove transaction history`, () => {
     expect(oldState.meta.version).toBe(VERSION);
   });
 
+  it('skips migration if TransactionController is missing', async () => {
+    const oldState = {
+      meta: { version: oldVersion },
+      data: {
+        // TransactionController is completely missing
+      },
+    };
+    const originalData = structuredClone(oldState.data);
+
+    const warn = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => undefined);
+    await migrate(oldState, new Set());
+
+    expect(warn).toHaveBeenCalledWith(
+      `Migration ${VERSION}: state.TransactionController is not defined, skipping migration.`,
+    );
+    expect(oldState.data).toEqual(originalData);
+    expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
+  });
+
   it('skips migration if TransactionController.transactions is missing', async () => {
     const oldState = {
       meta: { version: oldVersion },

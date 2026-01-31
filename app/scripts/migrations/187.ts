@@ -32,10 +32,8 @@ function transformState(state: Record<string, unknown>): boolean {
   // -- Step 1: Validate TransactionController exists
   //
   if (!hasProperty(state, 'TransactionController')) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: state.TransactionController is not defined`,
-      ),
+    console.warn(
+      `Migration ${version}: state.TransactionController is not defined, skipping migration.`,
     );
     return false;
   }
@@ -43,7 +41,7 @@ function transformState(state: Record<string, unknown>): boolean {
   const txController = state.TransactionController;
 
   if (!isObject(txController)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: typeof state.TransactionController is ${typeof txController}`,
       ),
@@ -62,7 +60,7 @@ function transformState(state: Record<string, unknown>): boolean {
   }
 
   if (!Array.isArray(txController.transactions)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: state.TransactionController.transactions is not an array: ${typeof txController.transactions}`,
       ),
