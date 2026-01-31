@@ -1,7 +1,7 @@
 import { Box, AddressInput, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
 import { renderInterface } from '../test-utils';
-import { toMultiChainAccountId } from '../../../../../../../shared/lib/asset-utils';
+import { toMultiChainAccountId } from '../../../../../../shared/lib/asset-utils';
 
 const MOCK_ACCOUNT_NAME = 'Account 1';
 

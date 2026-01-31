@@ -5,7 +5,7 @@ import { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { CaipAccountId, CaipChainId, CaipNamespace } from '@metamask/utils';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
-import { toMultiChainAccountId } from '../../../shared/lib/asset-utils';
+import { toMultiChainAccountId } from '../../shared/lib/asset-utils';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
