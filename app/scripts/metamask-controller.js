@@ -6926,6 +6926,13 @@ export default class MetamaskController extends EventEmitter {
       origin = ORIGIN_METAMASK;
     } else if (subjectType === SubjectType.Snap) {
       origin = sender.snapId;
+    } else if (sender.id && !sender.url) {
+      // Handle extension-to-extension connections where sender.url is undefined
+      const protocol =
+        getPlatform() === PLATFORM_FIREFOX
+          ? 'moz-extension'
+          : 'chrome-extension';
+      origin = `${protocol}://${sender.id}`;
     } else {
       origin = new URL(sender.url).origin;
     }
@@ -7003,6 +7010,13 @@ export default class MetamaskController extends EventEmitter {
       origin = ORIGIN_METAMASK;
     } else if (subjectType === SubjectType.Snap) {
       origin = sender.snapId;
+    } else if (sender.id && !sender.url) {
+      // Handle extension-to-extension connections where sender.url is undefined
+      const protocol =
+        getPlatform() === PLATFORM_FIREFOX
+          ? 'moz-extension'
+          : 'chrome-extension';
+      origin = `${protocol}://${sender.id}`;
     } else {
       origin = new URL(sender.url).origin;
     }
