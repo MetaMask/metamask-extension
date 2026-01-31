@@ -288,7 +288,6 @@ jobs:
     secrets: inherit
 
   run-benchmarks:
-    # If not a fork, run benchmarks
     if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
@@ -355,7 +354,7 @@ jobs:
     needs:
       - get-requirements
       - build-test-browserify
-    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main')) }}
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
     uses: ./.github/workflows/page-load-benchmark.yml
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
@@ -382,9 +381,7 @@ jobs:
     uses: ./.github/workflows/e2e-chrome.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-    secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+    secrets: inherit
 
   e2e-firefox:
     needs:
@@ -557,8 +554,7 @@ jobs:
     with:
       lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
       post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
-    secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+    secrets: inherit
 
   publish-release:
     name: Publish release
