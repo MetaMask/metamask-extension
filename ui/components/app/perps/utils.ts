@@ -228,7 +228,8 @@ export const groupTransactionsByDate = (
   const groups = new Map<string, PerpsTransaction[]>();
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const yesterday = new Date(today.getTime() - 86400000);
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
 
   // Sort transactions by timestamp (newest first)
   const sortedTransactions = [...transactions].sort(

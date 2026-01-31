@@ -5122,9 +5122,6 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
-  "perpsAll": {
-    "message": "All"
-  },
   "perpsActivity": {
     "message": "Activity"
   },
