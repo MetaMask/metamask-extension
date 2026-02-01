@@ -1350,6 +1350,22 @@
   "closeWindowAnytime": {
     "message": "You may close this window anytime."
   },
+  "slideBridgeDescription": {
+    "message": "Move your crypto across chains quickly and securely with MetaMask Bridge.",
+    "description": "Description for the bridge promotional carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Bridge your assets",
+    "description": "Title for the bridge promotional carousel slide"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Get faster transactions and lower fees",
+    "description": "Description for the smart account upgrade promotional slide"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Upgrade to Smart Account",
+    "description": "Title for the smart account upgrade promotional slide"
+  },
   "coingecko": {
     "message": "CoinGecko"
   },
