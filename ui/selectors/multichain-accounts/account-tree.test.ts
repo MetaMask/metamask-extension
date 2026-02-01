@@ -600,6 +600,21 @@ describe('Multichain Accounts Selectors', () => {
 
       expect(result).toBeNull();
     });
+
+    it('returns null when address is undefined', () => {
+      const result = getWalletIdAndNameByAccountAddress(
+        typedMockState,
+        undefined as unknown as string,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('returns null when address is empty string', () => {
+      const result = getWalletIdAndNameByAccountAddress(typedMockState, '');
+
+      expect(result).toBeNull();
+    });
   });
 
   describe('getInternalAccountByGroupAndCaip', () => {
