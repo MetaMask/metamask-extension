@@ -70,11 +70,20 @@ function chunkByApproxCommandLength(
   let currentLen = baseLength;
 
   for (const item of items) {
-    const nextLen = currentLen + item.length + 1;
-    if (current.length > 0 && nextLen > maxLen) {
+    const itemLen = item.length + 1;
+
+    if (current.length === 0) {
+      current.push(item);
+      currentLen = baseLength + itemLen;
+      continue;
+    }
+
+    const nextLen = currentLen + itemLen;
+    if (nextLen > maxLen) {
       chunks.push(current);
-      current = [];
-      currentLen = baseLength;
+      current = [item];
+      currentLen = baseLength + itemLen;
+      continue;
     }
 
     current.push(item);
@@ -137,6 +146,8 @@ function main(): void {
     baseCommandLength,
   );
 
+  let worstExitCode = 0;
+
   for (const fileChunk of fileChunks) {
     const result = spawnSync(
       process.execPath,
@@ -146,9 +157,14 @@ function main(): void {
       },
     );
 
-    if (result.status !== 0) {
-      process.exit(result.status ?? 1);
+    const exitCode = result.status ?? 1;
+    if (exitCode !== 0) {
+      worstExitCode = Math.max(worstExitCode, exitCode);
     }
+  }
+
+  if (worstExitCode !== 0) {
+    process.exit(worstExitCode);
   }
 }
 
