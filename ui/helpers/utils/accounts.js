@@ -24,10 +24,13 @@ export function getAccountNameErrorMessage(
   newAccountName,
   defaultAccountName,
 ) {
-  const isDuplicateAccountName = accounts.some(
-    (item) =>
-      item.metadata?.name?.toLowerCase() === newAccountName?.toLowerCase(),
-  );
+  const normalizedNewAccountName = newAccountName?.toLowerCase() ?? '';
+  const normalizedDefaultAccountName = defaultAccountName?.toLowerCase() ?? '';
+
+  const isDuplicateAccountName = accounts.some((item) => {
+    const itemName = item.metadata?.name?.toLowerCase() ?? '';
+    return itemName && itemName === normalizedNewAccountName;
+  });
 
   const isEmptyAccountName = !newAccountName || newAccountName === '';
 
@@ -44,7 +47,7 @@ export function getAccountNameErrorMessage(
   const isReservedAccountName = reservedRegEx.test(newAccountName || '');
 
   const isValidAccountName =
-    newAccountName?.toLowerCase() === defaultAccountName?.toLowerCase() || // What is written in the text
+    normalizedNewAccountName === normalizedDefaultAccountName || // What is written in the text
     // field is the same as the
     // placeholder
     (!isDuplicateAccountName && !isReservedAccountName && !isEmptyAccountName);

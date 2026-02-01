@@ -76,6 +76,60 @@ describe('Accounts', () => {
       );
       expect(isValidAccountName).toBe(true);
     });
+
+    it('handles accounts with undefined metadata gracefully', () => {
+      const accountsWithUndefinedMetadata = [
+        ...mockAccounts,
+        { id: 'test-1', metadata: undefined },
+        { id: 'test-2', metadata: { name: undefined } },
+        { id: 'test-3', metadata: null },
+      ];
+      const { isValidAccountName } = getAccountNameErrorMessage(
+        accountsWithUndefinedMetadata,
+        mockLocalization,
+        'New Account',
+        'Account 10',
+      );
+      expect(isValidAccountName).toBe(true);
+    });
+
+    it('handles undefined newAccountName gracefully', () => {
+      const mockContext = {
+        t: jest.fn((key) => {
+          if (key === 'required') {
+            return 'Required';
+          }
+          return 'Account';
+        }),
+      };
+      const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
+        mockAccounts,
+        mockContext,
+        undefined,
+        'Account 3',
+      );
+      expect(isValidAccountName).toBe(false);
+      expect(errorMessage).toBe('Required');
+    });
+
+    it('handles null newAccountName gracefully', () => {
+      const mockContext = {
+        t: jest.fn((key) => {
+          if (key === 'required') {
+            return 'Required';
+          }
+          return 'Account';
+        }),
+      };
+      const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
+        mockAccounts,
+        mockContext,
+        null,
+        'Account 3',
+      );
+      expect(isValidAccountName).toBe(false);
+      expect(errorMessage).toBe('Required');
+    });
   });
 
   describe('#getAvatarNetworkColor', () => {
