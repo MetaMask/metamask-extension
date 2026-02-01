@@ -65,16 +65,25 @@ try {
         }
 
         if (shouldHardenManually.has(propertyName)) {
-          try {
-            harden(globalThis[propertyName]);
-          } catch (err) {
-            if (!lmre.test(err.message)) {
-              throw err;
+          // Check if harden is available before using it
+          // In LavaMoat builds, harden might not be globally available yet
+          if (typeof harden !== 'undefined') {
+            try {
+              harden(globalThis[propertyName]);
+            } catch (err) {
+              if (!lmre.test(err.message)) {
+                throw err;
+              }
+              console.warn(
+                `Property ${propertyName} will not be hardened`,
+                `because it is scuttled by LavaMoat protection.`,
+                `Visit https://github.com/LavaMoat/LavaMoat/pull/360 to learn more.`,
+              );
             }
+          } else {
             console.warn(
-              `Property ${propertyName} will not be hardened`,
-              `because it is scuttled by LavaMoat protection.`,
-              `Visit https://github.com/LavaMoat/LavaMoat/pull/360 to learn more.`,
+              `Property ${propertyName} will not be hardened manually`,
+              `because 'harden' is not available in the global scope.`,
             );
           }
         }
