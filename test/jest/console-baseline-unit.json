@@ -449,6 +449,9 @@
     "ui/components/app/perps/perps-empty-state/perps-empty-state.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/perps-recent-activity/perps-recent-activity.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/perps-tab-control-bar/perps-tab-control-bar.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
