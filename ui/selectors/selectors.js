@@ -4107,7 +4107,7 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
  * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
  */
 export function getNetworkConnectionBanner(state) {
-  return state.metamask.networkConnectionBanner;
+  return state.metamask.networkConnectionBanner ?? { status: 'unknown' };
 }
 
 /**
