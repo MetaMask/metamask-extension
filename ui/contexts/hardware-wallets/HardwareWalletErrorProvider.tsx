@@ -13,7 +13,7 @@ import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   showModal,
   hideModal,
-  setPendingHardwareSigning,
+  setPendingHardwareWalletSigning,
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors/selectors';
@@ -103,7 +103,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     setDisplayedError(null);
     lastConnectionErrorRef.current = null;
     dispatch(hideModal());
-    dispatch(setPendingHardwareSigning(false));
+    dispatch(setPendingHardwareWalletSigning(false));
 
     // Attempt retry
     await ensureDeviceReady();
@@ -119,7 +119,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     setDisplayedError(null);
     lastConnectionErrorRef.current = null;
     dispatch(hideModal());
-    dispatch(setPendingHardwareSigning(false));
+    dispatch(setPendingHardwareWalletSigning(false));
     clearError();
     // Close the popup if there are no more pending approvals
     dispatch(closeCurrentNotificationWindow());
@@ -136,7 +136,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       setDisplayedError(null);
       lastConnectionErrorRef.current = null;
       dispatch(hideModal());
-      dispatch(setPendingHardwareSigning(false));
+      dispatch(setPendingHardwareWalletSigning(false));
       // Close the popup if there are no more pending approvals
       dispatch(closeCurrentNotificationWindow());
     }
@@ -195,7 +195,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
           dispatch(hideModal());
         }
         // Clear pendingHardwareSigning and close the popup
-        dispatch(setPendingHardwareSigning(false));
+        dispatch(setPendingHardwareWalletSigning(false));
         dispatch(closeCurrentNotificationWindow());
         return;
       }

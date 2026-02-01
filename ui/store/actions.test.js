@@ -710,6 +710,31 @@ describe('Actions', () => {
     });
   });
 
+  describe('#getLedgerAppConfiguration', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getLedgerAppConfiguration in background', async () => {
+      const mockConfiguration = {
+        arbitraryDataEnabled: 1,
+        erc20ProvisioningNecessary: 0,
+        starkEnabled: 0,
+        starkv2Supported: 0,
+        version: '1.0.0',
+      };
+
+      background.getLedgerAppConfiguration.resolves(mockConfiguration);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getLedgerAppConfiguration();
+
+      expect(background.getLedgerAppConfiguration.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockConfiguration);
+    });
+  });
+
   describe('#forgetDevice', () => {
     afterEach(() => {
       sinon.restore();

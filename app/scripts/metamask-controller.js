@@ -2711,6 +2711,7 @@ export default class MetamaskController extends EventEmitter {
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
+      getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
       getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
       // qr hardware devices
@@ -5487,6 +5488,13 @@ export default class MetamaskController extends EventEmitter {
     return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
       async (keyring) => await keyring.getAppNameAndVersion(),
+    );
+  }
+
+  async getLedgerAppConfiguration() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => await keyring.bridge.getAppConfiguration(),
     );
   }
 

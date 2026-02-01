@@ -6402,6 +6402,16 @@ export async function getAppNameAndVersion(): Promise<{
   return await submitRequestToBackground('getAppNameAndVersion');
 }
 
+export async function getLedgerAppConfiguration(): Promise<{
+  arbitraryDataEnabled: number;
+  erc20ProvisioningNecessary: number;
+  starkEnabled: number;
+  starkv2Supported: number;
+  version: string;
+}> {
+  return await submitRequestToBackground('getLedgerAppConfiguration');
+}
+
 /**
  * This method deduplicates error reports to sentry by maintaining a state
  * object 'singleExceptions' in the app slice. The only place this state object

@@ -272,6 +272,20 @@ async function signTypedData(params: {
   };
 }
 
+async function getAppConfiguration(): Promise<{
+  arbitraryDataEnabled: number;
+  erc20ProvisioningNecessary: number;
+  starkEnabled: number;
+  starkv2Supported: number;
+  version: string;
+}> {
+  const app = await ensureApp();
+  const result = await app.getAppConfiguration();
+
+  console.log('result', result);
+  return result;
+}
+
 /**
  * Sets up HID device event listeners for connect/disconnect events.
  */
@@ -440,6 +454,9 @@ async function handleLedgerAction(
           message: Record<string, unknown>;
         },
       });
+
+    case LedgerAction.getAppConfiguration:
+      return getAppConfiguration();
 
     default:
       throw new Error(`Unknown Ledger action: ${action as string}`);

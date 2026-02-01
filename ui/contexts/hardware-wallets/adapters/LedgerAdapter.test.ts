@@ -7,6 +7,7 @@ import {
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
+  getLedgerAppConfiguration,
 } from '../../../store/actions';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
 import * as webConnectionUtils from '../webConnectionUtils';
@@ -15,6 +16,7 @@ import { LedgerAdapter } from './LedgerAdapter';
 jest.mock('../../../store/actions', () => ({
   attemptLedgerTransportCreation: jest.fn(),
   getAppNameAndVersion: jest.fn(),
+  getLedgerAppConfiguration: jest.fn(),
 }));
 
 jest.mock('../webConnectionUtils', () => ({
@@ -29,6 +31,10 @@ const mockAttemptLedgerTransportCreation =
 const mockGetAppNameAndVersion = getAppNameAndVersion as jest.MockedFunction<
   typeof getAppNameAndVersion
 >;
+const mockGetLedgerAppConfiguration =
+  getLedgerAppConfiguration as jest.MockedFunction<
+    typeof getLedgerAppConfiguration
+  >;
 
 const mockSubscribeToWebHidEvents =
   webConnectionUtils.subscribeToWebHidEvents as jest.MockedFunction<
@@ -66,6 +72,14 @@ describe('LedgerAdapter', () => {
     return error;
   };
 
+  const DEFAULT_LEDGER_APP_CONFIGURATION = {
+    arbitraryDataEnabled: 1,
+    erc20ProvisioningNecessary: 0,
+    starkEnabled: 0,
+    starkv2Supported: 0,
+    version: '1.0.0',
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -93,6 +107,9 @@ describe('LedgerAdapter', () => {
     });
 
     adapter = new LedgerAdapter(mockOptions);
+    mockGetLedgerAppConfiguration.mockResolvedValue(
+      DEFAULT_LEDGER_APP_CONFIGURATION,
+    );
   });
 
   afterEach(() => {
@@ -692,6 +709,7 @@ describe('LedgerAdapter', () => {
       await adapter.ensureDeviceReady(deviceId);
 
       expect(mockGetAppNameAndVersion).toHaveBeenCalled();
+      expect(mockGetLedgerAppConfiguration).toHaveBeenCalled();
     });
 
     it('disconnects and reconnects when ensureDeviceReady is called with different device ID', async () => {
@@ -741,6 +759,34 @@ describe('LedgerAdapter', () => {
           ErrorCode.DeviceStateEthAppClosed,
         );
       }
+    });
+
+    it('throws error when blind signing is disabled', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect(deviceId);
+
+      mockGetAppNameAndVersion.mockResolvedValue({
+        appName: 'Ethereum',
+        version: '1.0.0',
+      });
+      mockGetLedgerAppConfiguration.mockResolvedValue({
+        ...DEFAULT_LEDGER_APP_CONFIGURATION,
+        arbitraryDataEnabled: 0,
+      });
+
+      await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
+        HardwareWalletError,
+      );
+
+      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: DeviceEvent.Disconnected,
+          error: expect.any(Error),
+        }),
+      );
     });
 
     it('emits DeviceLocked event when device is locked during verification', async () => {

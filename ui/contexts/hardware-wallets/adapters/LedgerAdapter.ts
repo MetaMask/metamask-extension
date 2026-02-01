@@ -2,6 +2,7 @@ import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
+  getLedgerAppConfiguration,
 } from '../../../store/actions';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
 import { toHardwareWalletError } from '../rpcErrorUtils';
@@ -233,6 +234,16 @@ export class LedgerAdapter implements HardwareWalletAdapter {
           ErrorCode.DeviceStateEthAppClosed,
           HardwareWalletType.Ledger,
           `Ethereum app is not open, got ${appName}`,
+        );
+      }
+
+      // This is blind signing check.
+      const { arbitraryDataEnabled } = await getLedgerAppConfiguration();
+      if (arbitraryDataEnabled !== 1) {
+        throw createHardwareWalletError(
+          ErrorCode.DeviceStateBlindSignNotSupported,
+          HardwareWalletType.Ledger,
+          'Blind signing is not enabled',
         );
       }
 
