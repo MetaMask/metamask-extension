@@ -3,9 +3,9 @@ name: Get workflow and job requirements
 on:
   workflow_call:
     outputs:
-      locales-only:
-        description: Whether only locale files were changed
-        value: ${{ jobs.detect-changes.outputs.locales-only }}
+      needs-locales:
+        description: Whether locales-only checks are needed
+        value: ${{ jobs.detect-changes.outputs.needs-locales }}
       skip-everything:
         description: Whether everything should be skipped
         value: ${{ jobs.detect-changes.outputs.skip-everything }}
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
-      locales-only: ${{ steps.set-locales-only.outputs.locales-only || 'false' }}
+      needs-locales: ${{ steps.set-needs-locales.outputs.needs-locales || 'false' }}
       skip-everything: ${{ steps.set-skip-everything.outputs.skip-everything || 'false' }}
       builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run || env.RUN_ID }}
       needs-lint: ${{ steps.set-needs-lint.outputs.needs-lint || 'false' }}
@@ -93,25 +93,31 @@ jobs:
           filters: .github/filter-rules.yml
           list-files: shell
 
-      - name: Compute locales-only flag
-        id: set-locales-only
+      # This puts the workflow in locales-only mode, with skip-everything=true and needs-locales=true
+      - name: Compute needs-locales flag
+        id: set-needs-locales
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         env:
-          FILTER_LOCALES: ${{ steps.filter.outputs.locales }}
-          FILTER_NON_LOCALES: ${{ steps.filter.outputs.non_locales }}
+          FILTER_LOCALES_COUNT: ${{ steps.filter.outputs.locales_count }}
+          FILTER_ALL_CHANGES_COUNT: ${{ steps.filter.outputs.all_changes_count }}
         run: |
-          if [[ "$IS_MAIN" != 'true' ]]; then
-            echo "locales-only=false" >> "$GITHUB_OUTPUT"
-          elif [[ "$FILTER_LOCALES" == "true" && "$FILTER_NON_LOCALES" != "true" ]]; then
-            echo "locales-only=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "locales-only=false" >> "$GITHUB_OUTPUT"
+          # On main we never run locales-only mode (full-signal CI and scheduled runs).
+          if [[ "$IS_MAIN" == 'true' ]]; then
+            echo "needs-locales=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
-      # skip-everything is a shortcut for up-to-date == 'true' || locales-only == 'true'
+          # locales-only when *all* changes are in app/_locales.
+          if [[ -n "$FILTER_ALL_CHANGES_COUNT" && "$FILTER_ALL_CHANGES_COUNT" != "0" && "$FILTER_LOCALES_COUNT" == "$FILTER_ALL_CHANGES_COUNT" ]]; then
+            echo "needs-locales=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs-locales=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true'
       - name: Compute skip-everything flag
         id: set-skip-everything
-        if: ${{ env.IS_MAIN == 'false' && (steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-locales-only.outputs.locales-only == 'true') }}
+        if: ${{ env.IS_MAIN == 'false' && (steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-needs-locales.outputs.needs-locales == 'true') }}
         run: echo "skip-everything=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now (and equivalent to !skip-everything)
@@ -142,7 +148,7 @@ jobs:
 
       - name: Compute needs-e2e flag
         id: set-needs-e2e
-        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' && steps.set-locales-only.outputs.locales-only != 'true'}}
+        if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
         env:
           SKIP_E2E: ${{ steps.skip-e2e-tag.outputs.SKIP }}
           FILTER_NON_E2E_RELATED_FILES_COUNT: ${{ steps.filter.outputs.non_e2e_related_files_count }}
@@ -155,7 +161,7 @@ jobs:
           if [[ "$SKIP_E2E" == "true" || "$EVENT_NAME" == "pull_request" || "$EVENT_NAME" == "merge_group" ]]; then
 
             # Skip if [skip-e2e] tag found
-            if [[ "${{ steps.skip-e2e-tag.outputs.SKIP }}" == "true" ]]; then
+            if [[ "$SKIP_E2E" == "true" ]]; then
               echo "needs-e2e=false" >> "$GITHUB_OUTPUT"
               echo "-> Skipping E2E tests due to 'skip-e2e' tag"
 

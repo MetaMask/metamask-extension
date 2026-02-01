@@ -53,10 +53,6 @@ non_e2e_related_files:
 all_changes:
   - '**'
 
-# To inform locales-only
+# To inform needs-locales
 locales:
   - 'app/_locales/**'
-
-non_locales:
-  - '**'
-  - '!app/_locales/**'
