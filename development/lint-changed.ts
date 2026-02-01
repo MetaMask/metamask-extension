@@ -35,18 +35,18 @@ function getChangedFileNames(): string[] {
     .map((line) => line.trim())
     .filter(Boolean);
 
-  const modified = runGit([
-    'diff-index',
-    '--name-only',
-    '--diff-filter=d',
-    'HEAD',
-  ])
+  const staged = runGit(['diff', '--name-only', '--cached', '--diff-filter=d'])
+    .split(/\r?\n/u)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const unstaged = runGit(['diff', '--name-only', '--diff-filter=d'])
     .split(/\r?\n/u)
     .map((line) => line.trim())
     .filter(Boolean);
 
   const unique = new Set<string>();
-  for (const file of [...untracked, ...modified]) {
+  for (const file of [...untracked, ...staged, ...unstaged]) {
     unique.add(file);
   }
 
@@ -136,10 +136,12 @@ function main(): void {
     path.join('node_modules', '.cache', 'eslint', '.eslint-cache'),
   ];
 
+  const eslintArgsWithDelimiter = [...eslintArgsBase, '--'];
+
   const baseCommandLength =
     process.execPath.length +
     eslintBin.length +
-    eslintArgsBase.join(' ').length +
+    eslintArgsWithDelimiter.join(' ').length +
     3;
   const fileChunks = chunkByApproxCommandLength(
     changedFiles,
@@ -151,7 +153,7 @@ function main(): void {
   for (const fileChunk of fileChunks) {
     const result = spawnSync(
       process.execPath,
-      [eslintBin, ...eslintArgsBase, ...fileChunk],
+      [eslintBin, ...eslintArgsWithDelimiter, ...fileChunk],
       {
         stdio: 'inherit',
       },

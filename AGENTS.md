@@ -20,7 +20,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 2. **ALWAYS run `yarn lint:changed:fix`** before committing
 3. **ALWAYS update LavaMoat policies** after dependency changes: `yarn lavamoat:auto`
 4. **ALWAYS colocate tests** with source files (`.test.ts`/`.test.tsx`)
-5. **ALWAYS use yarn.cmd** if you're running in Powershell
+5. **ALWAYS use yarn.cmd** if you're running in PowerShell
 6. **NEVER use class components** (use functional components with hooks)
 7. **NEVER modify git config** or run destructive git operations
 8. **NEVER commit** unless explicitly requested by user
