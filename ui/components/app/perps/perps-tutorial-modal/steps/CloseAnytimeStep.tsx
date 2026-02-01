@@ -44,23 +44,22 @@ const CloseAnytimeStep: React.FC = () => {
     >
       <ProgressIndicator totalSteps={TOTAL_STEPS} currentStep={CURRENT_STEP} />
 
-      <Box className="flex-1 flex flex-col items-center justify-center px-6 py-8">
-        <Box
-          className="mb-6 flex items-center justify-center"
-          data-testid="perps-tutorial-step-image"
-        >
-          <PerpsTutorialAnimation artboardName="04_Close" />
-        </Box>
-
+      <Box className="flex-1 flex flex-col items-center px-6 py-4">
         <Text variant={TextVariant.HeadingLg} className="text-center mb-2">
           {t('perpsTutorialCloseAnytimeTitle')}
         </Text>
         <Text
           variant={TextVariant.BodyMd}
-          className="text-center text-alternative"
+          className="text-center text-alternative mb-4"
         >
           {t('perpsTutorialCloseAnytimeDescription')}
         </Text>
+        <Box
+          className="w-full flex-1"
+          data-testid="perps-tutorial-step-image"
+        >
+          <PerpsTutorialAnimation artboardName="04_Close" />
+        </Box>
       </Box>
 
       <Box className="flex flex-col gap-2 px-4">

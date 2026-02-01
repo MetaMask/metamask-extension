@@ -62,7 +62,7 @@ export default function PerpsTutorialAnimation({
     artboard: riveFile ? artboardName : undefined,
     autoplay: false,
     layout: new Layout({
-      fit: Fit.Contain,
+      fit: Fit.FitWidth,
       alignment: Alignment.Center,
     }),
   });
@@ -82,14 +82,14 @@ export default function PerpsTutorialAnimation({
   ) {
     return (
       <Box
-        className="w-48 h-48 flex items-center justify-center"
+        className="w-full h-[240px] flex items-center justify-center"
         data-testid="perps-tutorial-animation-loading"
       />
     );
   }
 
   return (
-    <Box className="w-48 h-48" data-testid="perps-tutorial-animation">
+    <Box className="w-full h-[240px]" data-testid="perps-tutorial-animation">
       <RiveComponent className="w-full h-full" />
     </Box>
   );
