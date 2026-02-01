@@ -84,14 +84,12 @@ describe('displayCriticalError', () => {
   it('renders critical error html into parent of container', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
-    await expect(
-      displayCriticalErrorMessage(
-        container,
-        CriticalErrorTranslationKey.TroubleStarting,
-        error,
-        'en',
-      ),
-    ).rejects.toThrow(error);
+    await displayCriticalErrorMessage(
+      container,
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      'en',
+    );
 
     expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
       CriticalErrorTranslationKey.TroubleStarting,
@@ -107,14 +105,12 @@ describe('displayCriticalError', () => {
   it('clicking restart button calls fetch and reload if checkbox checked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
-    await expect(
-      displayCriticalErrorMessage(
-        container,
-        CriticalErrorTranslationKey.TroubleStarting,
-        error,
-        'en',
-      ),
-    ).rejects.toThrow(error);
+    await displayCriticalErrorMessage(
+      container,
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      'en',
+    );
 
     const restartButton = rootContainer.querySelector<HTMLButtonElement>(
       '#critical-error-button',
@@ -211,14 +207,12 @@ describe('displayCriticalError', () => {
   it('does not send to Sentry if checkbox is unchecked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
 
-    await expect(
-      displayCriticalErrorMessage(
-        container,
-        CriticalErrorTranslationKey.SomethingIsWrong,
-        error,
-        'en',
-      ),
-    ).rejects.toThrow(error);
+    await displayCriticalErrorMessage(
+      container,
+      CriticalErrorTranslationKey.SomethingIsWrong,
+      error,
+      'en',
+    );
 
     const restartButton = rootContainer.querySelector<HTMLButtonElement>(
       '#critical-error-button',
@@ -242,6 +236,32 @@ describe('displayCriticalError', () => {
       expect(fetch).not.toHaveBeenCalled();
       expect(browser.runtime.reload).toHaveBeenCalled();
     }
+  });
+
+  it('handles plain object errors without throwing unhandled rejection', async () => {
+    // Test with a plain object error (not an Error instance)
+    const plainObjectError = {
+      message: 'Plain object error',
+      name: 'PlainObjectError',
+    };
+
+    // This should not throw an unhandled rejection
+    await displayCriticalErrorMessage(
+      container,
+      CriticalErrorTranslationKey.TroubleStarting,
+      plainObjectError,
+      'en',
+    );
+
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      plainObjectError,
+      { preferredLocale: 'en', t: expect.any(Function) },
+      expect.any(String),
+    );
+    expect(
+      rootContainer.querySelector('#critical-error-content')?.innerHTML,
+    ).toContain('critical-error-button');
   });
 });
 

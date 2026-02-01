@@ -156,23 +156,47 @@ async function handleRestartAction(
 }
 
 /**
+ * Normalizes an error-like object to a proper Error instance.
+ *
+ * @param error - The error-like object to normalize.
+ * @returns A proper Error instance.
+ */
+function normalizeError(error: ErrorLike): Error {
+  // If it's already an Error instance, return as-is
+  if (error instanceof Error) {
+    return error;
+  }
+
+  // If it's a plain object with message and name, create a proper Error
+  const normalizedError = new Error(error.message || 'Unknown error');
+  normalizedError.name = error.name || 'Error';
+
+  // Preserve stack trace if available
+  if (error.stack) {
+    normalizedError.stack = error.stack;
+  }
+
+  return normalizedError;
+}
+
+/**
  * Displays a critical error message in the given container.
  *
- * This function always throws the error after displaying the message.
+ * This function displays the error UI and logs the error, but does not throw.
+ * It serves as the terminal error handler for critical startup errors.
  *
  * @param container - The HTML element to display the error in.
  * @param errorKey - The key for the error message to display.
  * @param error - The error object to log.
  * @param currentLocale - Optional locale context for translations.
- * @throws {ErrorLike} Throws the error after displaying the message.
- * @returns A promise that resolves to never, as it always throws an error.
+ * @returns A promise that resolves when the error has been displayed.
  */
 export async function displayCriticalErrorMessage(
   container: HTMLElement,
   errorKey: CriticalErrorTranslationKey,
   error: ErrorLike,
   currentLocale?: string,
-): Promise<never> {
+): Promise<void> {
   const localeContext = await maybeGetLocaleContext(currentLocale);
   const html = getErrorHtml(errorKey, error, localeContext, SUPPORT_LINK);
 
@@ -194,8 +218,9 @@ export async function displayCriticalErrorMessage(
     });
   }
 
-  log.error(error.stack);
-  throw error;
+  // Normalize the error to ensure it's a proper Error instance before logging
+  const normalizedError = normalizeError(error);
+  log.error(normalizedError);
 }
 
 /**
