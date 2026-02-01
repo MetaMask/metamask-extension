@@ -37,24 +37,7 @@ function transformState(state: Record<string, unknown>) {
       NetworkController: networkControllerState,
     };
   }
-  if (!isObject(state.NetworkController)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `typeof state.NetworkController is ${typeof state.NetworkController}`,
-      ),
-    );
-  } else if (!hasProperty(state.NetworkController, 'provider')) {
-    const thePost077SupplementFor086HasNotModifiedState =
-      state.NetworkController.providerConfig === undefined;
-    if (thePost077SupplementFor086HasNotModifiedState) {
-      global.sentry?.captureException?.(
-        new Error(
-          `typeof state.NetworkController.provider is ${typeof state
-            .NetworkController.provider}`,
-        ),
-      );
-    }
-  }
 
+  // No Sentry error for missing NetworkController - this is expected for new users
   return state;
 }

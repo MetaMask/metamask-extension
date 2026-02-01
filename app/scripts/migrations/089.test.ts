@@ -50,25 +50,7 @@ describe('migration #89', () => {
 
     const newStorage = await migrate(oldStorage);
     expect(newStorage.data).toStrictEqual(oldData);
-  });
-
-  it('should capture an exception if there is no network controller state', async () => {
-    const oldData = {
-      other: 'data',
-    };
-    const oldStorage = {
-      meta: {
-        version: 88,
-      },
-      data: oldData,
-    };
-
-    await migrate(oldStorage);
-
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(`typeof state.NetworkController is undefined`),
-    );
+    expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
   });
 
   it('should return state unaltered if there is no network controller providerConfig state', async () => {
@@ -91,32 +73,7 @@ describe('migration #89', () => {
 
     const newStorage = await migrate(oldStorage);
     expect(newStorage.data).toStrictEqual(oldData);
-  });
-
-  it('should capture an exception if there is no network controller providerConfig state', async () => {
-    const oldData = {
-      other: 'data',
-      NetworkController: {
-        networkConfigurations: {
-          id1: {
-            foo: 'bar',
-          },
-        },
-      },
-    };
-    const oldStorage = {
-      meta: {
-        version: 88,
-      },
-      data: oldData,
-    };
-
-    await migrate(oldStorage);
-
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(`typeof state.NetworkController.providerConfig is undefined`),
-    );
+    expect(sentryCaptureExceptionMock).not.toHaveBeenCalled();
   });
 
   it('should return state unaltered if the providerConfig already has an id', async () => {

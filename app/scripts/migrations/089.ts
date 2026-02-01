@@ -66,19 +66,8 @@ function transformState(state: Record<string, unknown>) {
       ...state,
       NetworkController: state.NetworkController,
     };
-  } else if (!isObject(state.NetworkController)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `typeof state.NetworkController is ${typeof state.NetworkController}`,
-      ),
-    );
-  } else if (!isObject(state.NetworkController.providerConfig)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `typeof state.NetworkController.providerConfig is ${typeof state
-          .NetworkController.providerConfig}`,
-      ),
-    );
   }
+
+  // No Sentry error for missing NetworkController or providerConfig - this is expected for new users
   return state;
 }
