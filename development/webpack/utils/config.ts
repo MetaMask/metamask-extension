@@ -213,12 +213,15 @@ export function getVariables(
 
   // Validate required production variables
   if (args.validateEnv && environment === ENVIRONMENT.PRODUCTION) {
-    const requiredVars = Object.keys(activeBuild.env ?? {});
-    const undefinedVariables = requiredVars.filter(
-      (variable) =>
+    const undefinedVariables: string[] = [];
+    for (const variable of required) {
+      if (
         variables.get(variable) === null ||
-        variables.get(variable) === undefined,
-    );
+        variables.get(variable) === undefined
+      ) {
+        undefinedVariables.push(variable);
+      }
+    }
 
     if (undefinedVariables.length !== 0) {
       throw new AssertionError({
