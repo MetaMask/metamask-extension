@@ -6,6 +6,7 @@ import { version } from '../../../package.json';
 import { loadBuildTypesConfig } from '../../lib/build-type';
 import * as config from '../utils/config';
 import { parseArgv } from '../utils/cli';
+import { VARIABLES_REQUIRED_IN_PRODUCTION } from '../utils/constants.ts';
 
 describe('./utils/config.ts', () => {
   // variables logic is complex, and is "owned" mostly by the other build
@@ -152,7 +153,6 @@ describe('./utils/config.ts', () => {
       mockRc(rcVars);
       // Some variables require more specific values
       // because of additional validation happening in setEnvironmentVariables
-      rcVars.SEEDLESS_ONBOARDING_ENABLED = 'false';
       rcVars.INFURA_PROD_PROJECT_ID = 'dd98248f370d4063b81c0299f919dc11';
       rcVars.INFURA_ENV_KEY_REF = 'INFURA_PROD_PROJECT_ID';
       rcVars.SEGMENT_WRITE_KEY_REF = 'SEGMENT_PROD_WRITE_KEY';
@@ -180,8 +180,8 @@ describe('./utils/config.ts', () => {
     it('should not throw when production environment is missing required variables if --validateEnv is false', () => {
       const rcVars: Record<string, string> = {};
       mockRc(rcVars);
-      // Some variables require more specific values
-      // because of additional validation happening in setEnvironmentVariables
+      // Some variables require definitions because of additional validation
+      // happening in setEnvironmentVariables
       rcVars.SEEDLESS_ONBOARDING_ENABLED = 'false';
       rcVars.INFURA_PROD_PROJECT_ID = 'dd98248f370d4063b81c0299f919dc11';
       rcVars.INFURA_ENV_KEY_REF = 'INFURA_PROD_PROJECT_ID';
@@ -198,25 +198,18 @@ describe('./utils/config.ts', () => {
     });
 
     it('should not throw when all required production variables are defined', () => {
+      const requiredVars = VARIABLES_REQUIRED_IN_PRODUCTION.main;
       const buildTypes = loadBuildTypesConfig();
-      const activeBuild = buildTypes.buildTypes.main;
-      const requiredVars = Object.keys(activeBuild.env ?? {});
 
       const rcVars: Record<string, string> = {};
       for (const varName of requiredVars) {
         rcVars[varName] = 'test-value';
       }
 
-      // Some variables require more specific values because of additional validation
-      rcVars.SEEDLESS_ONBOARDING_ENABLED = 'false';
-      rcVars.INFURA_PROD_PROJECT_ID = 'dd98248f370d4063b81c0299f919dc11';
-      rcVars.INFURA_ENV_KEY_REF = 'INFURA_PROD_PROJECT_ID';
-      rcVars.SEGMENT_WRITE_KEY_REF = 'SEGMENT_PROD_WRITE_KEY';
-
       mockRc(rcVars);
 
       const { args } = parseArgv(
-        ['--targetEnvironment', 'production', '--validateEnv', 'false'],
+        ['--targetEnvironment', 'production', '--validateEnv'],
         buildTypes,
       );
 
