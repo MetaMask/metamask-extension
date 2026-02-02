@@ -6,6 +6,7 @@ export {
   mockFiatExchangeRates,
   mockSolanaSpotPrices,
   mockBtcSpotPrices,
+  mockSupportedVsCurrencies,
 } from './price-api';
 export { mockRampsDynamicFeatureFlag } from './ramps';
 export {

@@ -11,6 +11,7 @@ import {
   mockInitialFullScan,
   mockSolanaSpotPrices,
   mockBtcSpotPrices,
+  mockSupportedVsCurrencies,
   mockAllBridgeEndpoints,
 } from './mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
@@ -53,6 +54,7 @@ export async function withBtcAccountSnap(
           await mockCurrencyExchangeRates(mockServer),
           await mockFiatExchangeRates(mockServer),
           await mockSolanaSpotPrices(mockServer),
+          await mockSupportedVsCurrencies(mockServer),
           await mockPriceMulti(mockServer),
           await mockPriceMultiBtcAndSol(mockServer),
         ];

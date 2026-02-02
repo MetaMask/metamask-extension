@@ -146,3 +146,20 @@ export const mockBtcSpotPrices = (mockServer: Mockttp) =>
         usd: 82661,
       },
     });
+
+// Mock for supported vs currencies (main currencies only)
+export const mockSupportedVsCurrencies = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(`${PRICE_API_URL}/v1/supportedVsCurrencies`)
+    .thenJson(200, [
+      'btc',
+      'eth',
+      'usd',
+      'eur',
+      'gbp',
+      'jpy',
+      'cad',
+      'aud',
+      'chf',
+      'cny',
+    ]);

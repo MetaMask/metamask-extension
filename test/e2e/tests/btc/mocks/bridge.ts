@@ -140,6 +140,7 @@ export const MOCK_ETH_TOKENS_FOR_BRIDGE = [
 export async function mockBridgeFeatureFlags(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .always()
     .thenCallback(() => {
       return {
         ok: true,
@@ -151,6 +152,7 @@ export async function mockBridgeFeatureFlags(mockServer: Mockttp) {
 
 /**
  * Mock the getQuote endpoint for BTC bridge.
+ * Uses .always() to respond to multiple requests (debounce, refresh, etc.)
  *
  * @param mockServer - The mock server instance
  * @param returnQuotes - Whether to return quotes or empty array (default: true)
@@ -161,13 +163,29 @@ export async function mockBridgeGetQuote(
 ) {
   return await mockServer
     .forGet(/getQuote/u)
-    .withQuery({
-      srcChainId: BTC_CHAIN_ID_NUMERIC.toString(),
-    })
-    .thenCallback(() => {
+    .always()
+    .thenCallback((req) => {
+      const url = new URL(req.url);
+      const srcChainId = url.searchParams.get('srcChainId');
+
+      // Only return BTC quotes for BTC source chain
+      if (srcChainId === BTC_CHAIN_ID_NUMERIC.toString()) {
+        console.log(
+          `[BTC Bridge Mock] getQuote called for BTC, returnQuotes: ${returnQuotes}`,
+        );
+        return {
+          statusCode: 200,
+          json: returnQuotes ? MOCK_BRIDGE_QUOTE_BTC_TO_ETH : [],
+        };
+      }
+
+      // Return empty for other chains
+      console.log(
+        `[BTC Bridge Mock] getQuote called for non-BTC chain: ${srcChainId}`,
+      );
       return {
         statusCode: 200,
-        json: returnQuotes ? MOCK_BRIDGE_QUOTE_BTC_TO_ETH : [],
+        json: [],
       };
     });
 }
@@ -176,6 +194,7 @@ export async function mockBridgeGetTokensBtc(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getTokens/u)
     .withQuery({ chainId: BTC_CHAIN_ID_NUMERIC.toString() })
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -188,6 +207,7 @@ export async function mockBridgeGetTokensEth(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getTokens/u)
     .withQuery({ chainId: '1' })
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -197,10 +217,13 @@ export async function mockBridgeGetTokensEth(mockServer: Mockttp) {
 }
 
 export async function mockBridgePopularTokens(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
-    statusCode: 200,
-    json: [...MOCK_BTC_TOKENS, ...MOCK_ETH_TOKENS_FOR_BRIDGE],
-  }));
+  return await mockServer
+    .forPost(/getTokens\/popular/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [...MOCK_BTC_TOKENS, ...MOCK_ETH_TOKENS_FOR_BRIDGE],
+    }));
 }
 
 export async function mockBridgeSearchTokensBtc(mockServer: Mockttp) {
@@ -209,6 +232,7 @@ export async function mockBridgeSearchTokensBtc(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       chainIds: [BTC_CHAIN_ID],
     })
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -229,6 +253,7 @@ export async function mockBridgeSearchTokensEth(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       chainIds: ['eip155:1'],
     })
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -244,34 +269,38 @@ export async function mockBridgeSearchTokensEth(mockServer: Mockttp) {
 }
 
 export async function mockBridgeTxStatus(mockServer: Mockttp) {
-  return await mockServer.forGet(/getTxStatus/u).thenCallback(async (req) => {
-    const urlObj = new URL(req.url);
-    const txHash = urlObj.searchParams.get('srcTxHash');
-    const srcChainId = urlObj.searchParams.get('srcChainId');
-    const destChainId = urlObj.searchParams.get('destChainId');
-    return {
-      statusCode: 200,
-      json: {
-        status: 'COMPLETE',
-        isExpectedToken: true,
-        bridge: 'rango',
-        srcChain: {
-          chainId: srcChainId,
-          txHash,
+  return await mockServer
+    .forGet(/getTxStatus/u)
+    .always()
+    .thenCallback(async (req) => {
+      const urlObj = new URL(req.url);
+      const txHash = urlObj.searchParams.get('srcTxHash');
+      const srcChainId = urlObj.searchParams.get('srcChainId');
+      const destChainId = urlObj.searchParams.get('destChainId');
+      return {
+        statusCode: 200,
+        json: {
+          status: 'COMPLETE',
+          isExpectedToken: true,
+          bridge: 'rango',
+          srcChain: {
+            chainId: srcChainId,
+            txHash,
+          },
+          destChain: {
+            chainId: Number(destChainId),
+            txHash:
+              '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+          },
         },
-        destChain: {
-          chainId: Number(destChainId),
-          txHash:
-            '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-        },
-      },
-    };
-  });
+      };
+    });
 }
 
 export async function mockTopAssetsBtc(mockServer: Mockttp) {
   return await mockServer
     .forGet(new RegExp(`${BTC_CHAIN_ID_NUMERIC}/topAssets`, 'u'))
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
