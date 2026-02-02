@@ -114,10 +114,6 @@ function getDestructuredKeyName(
  * @param envVars - Set to collect found environment variable names.
  */
 function walkAst(node: Node, envVars: Set<string>): void {
-  if (!node || typeof node !== 'object') {
-    return;
-  }
-
   // Pattern 1 & 2: process.env.VAR or process.env["VAR"]
   if (node.type === 'MemberExpression') {
     const memberExpression = node as MemberExpression;
