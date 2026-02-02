@@ -3,7 +3,6 @@ import {
   DEFAULT_TOP_X,
   DEFAULT_OCCURRENCE_FLOOR,
   DEFAULT_CACHE_EXPIRATION_MS,
-  DEFAULT_INTERVAL_MS,
   StaticAssetsController ,
   StaticAssetsPollingFeatureFlagOptions } from '../controllers/static-assets-controller';
 import { ControllerInitFunction } from './types';

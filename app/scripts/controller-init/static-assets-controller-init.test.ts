@@ -43,7 +43,6 @@ describe('StaticAssetsControllerInit', () => {
       messenger: expect.any(Object),
       getSupportedChains: expect.any(Function),
       getCacheExpirationTime: expect.any(Function),
-      getInterval: expect.any(Function),
       getTopX: expect.any(Function),
       getOccurrenceFloor: expect.any(Function),
     });
