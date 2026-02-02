@@ -106,7 +106,7 @@ export function BatchedApprovalFunction({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { isQuotedSwapDisplayedInInfo, selectedQuote } = useDappSwapContext();
 
-  const { chainId } = currentConfirmation;
+  const { chainId } = currentConfirmation ?? {};
   let transaction =
     currentConfirmation?.nestedTransactions?.[nestedTransactionIndex];
 

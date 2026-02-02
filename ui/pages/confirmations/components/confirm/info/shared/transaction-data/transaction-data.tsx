@@ -90,7 +90,7 @@ export const TransactionData = ({
 
   const { data: decodeData, source } = value;
   const isExpandable = decodeData.length > 1;
-  const { chainId } = currentConfirmation;
+  const { chainId } = currentConfirmation ?? {};
 
   return (
     <Container transactionData={transactionData} noPadding={noPadding}>
