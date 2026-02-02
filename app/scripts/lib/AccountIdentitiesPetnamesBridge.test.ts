@@ -203,6 +203,66 @@ describe('AccountIdentitiesPetnamesBridge', () => {
     );
   });
 
+  it('does not add petname entry when account has empty name', () => {
+    const nameController = createNameControllerMock(EMPTY_NAME_STATE);
+    const bridge = new AccountIdentitiesPetnamesBridge({
+      nameController,
+      messenger,
+    });
+    bridge.init();
+
+    const accountWithEmptyName = cloneDeep(MOCK_INTERNAL_ACCOUNT);
+    accountWithEmptyName.metadata.name = '';
+
+    // mock listAccounts call with account that has empty name
+    messenger.call.mockReturnValue([accountWithEmptyName]);
+
+    simulateSubscribe(
+      messenger,
+      {
+        internalAccounts: {
+          accounts: { [accountWithEmptyName.id]: accountWithEmptyName },
+          selectedAccount: accountWithEmptyName.id,
+        },
+      },
+      [],
+    );
+
+    // setName should not be called for accounts with empty names
+    expect(nameController.setName).not.toHaveBeenCalled();
+  });
+
+  it('does not add petname entry when account has whitespace-only name', () => {
+    const nameController = createNameControllerMock(EMPTY_NAME_STATE);
+    const bridge = new AccountIdentitiesPetnamesBridge({
+      nameController,
+      messenger,
+    });
+    bridge.init();
+
+    const accountWithWhitespaceName = cloneDeep(MOCK_INTERNAL_ACCOUNT);
+    accountWithWhitespaceName.metadata.name = '   ';
+
+    // mock listAccounts call with account that has whitespace-only name
+    messenger.call.mockReturnValue([accountWithWhitespaceName]);
+
+    simulateSubscribe(
+      messenger,
+      {
+        internalAccounts: {
+          accounts: {
+            [accountWithWhitespaceName.id]: accountWithWhitespaceName,
+          },
+          selectedAccount: accountWithWhitespaceName.id,
+        },
+      },
+      [],
+    );
+
+    // setName should not be called for accounts with whitespace-only names
+    expect(nameController.setName).not.toHaveBeenCalled();
+  });
+
   describe('shouldSyncPetname', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([

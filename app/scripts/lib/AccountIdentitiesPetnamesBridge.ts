@@ -49,14 +49,20 @@ export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge<
     const internalAccounts = this.messenger.call(
       'AccountsController:listAccounts',
     );
-    return internalAccounts.map((internalAccount: InternalAccount) => ({
-      value: internalAccount.address,
-      type: NameType.ETHEREUM_ADDRESS,
-      name: internalAccount.metadata.name,
-      sourceId: undefined,
-      variation: FALLBACK_VARIATION,
-      origin: NameOrigin.ACCOUNT_IDENTITY,
-    }));
+    return internalAccounts
+      .filter(
+        (internalAccount: InternalAccount) =>
+          internalAccount.metadata.name &&
+          internalAccount.metadata.name.trim().length > 0,
+      )
+      .map((internalAccount: InternalAccount) => ({
+        value: internalAccount.address,
+        type: NameType.ETHEREUM_ADDRESS,
+        name: internalAccount.metadata.name,
+        sourceId: undefined,
+        variation: FALLBACK_VARIATION,
+        origin: NameOrigin.ACCOUNT_IDENTITY,
+      }));
   }
 
   /**
