@@ -448,14 +448,12 @@ export function toHardwareWalletError(
   }
 
   if (error instanceof KeyringControllerError) {
-    return createHardwareWalletError(
-      (error.cause as HardwareWalletError)?.code as ErrorCode,
-      walletType,
-      error.message,
-      {
-        cause: error.cause,
-      },
-    );
+    const errorCode = error?.code
+      ? mapStringCodeToErrorCode(error.code)
+      : ErrorCode.Unknown;
+    return createHardwareWalletError(errorCode, walletType, error.message, {
+      cause: error?.cause,
+    });
   }
 
   // Check for serialized RPC error with HardwareWalletError in data.cause
