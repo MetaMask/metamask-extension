@@ -296,18 +296,14 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
       if (!isStrictHexString(chainId)) {
         return;
       }
-      // findNetworkClientIdByChainId will throw an error if the chainId is not supported.
-      // quit early if the network client id is not found
-      const networkClientId = await this.messenger.call(
-        'NetworkController:findNetworkClientIdByChainId',
-        chainId,
-      );
 
-      const filteredTokens = await this.#filterIgnoredTokens(
-        tokens,
-        chainId,
-        selectedAccountAddress,
-      );
+      const [networkClientId, filteredTokens] = await Promise.all([
+        this.messenger.call(
+          'NetworkController:findNetworkClientIdByChainId',
+          chainId,
+        ),
+        this.#filterIgnoredTokens(tokens, chainId, selectedAccountAddress),
+      ]);
 
       // Since we only support EVM chains,
       // we can safely expect the selectedAccountAddress will not change,
