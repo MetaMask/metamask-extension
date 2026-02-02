@@ -23,8 +23,8 @@ import {
   useHardwareWalletActions,
 } from './HardwareWalletContext';
 import { ConnectionStatus } from './types';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
 
-const HARDWARE_WALLET_ERROR_MODAL_NAME = 'HARDWARE_WALLET_ERROR';
 type HardwareWalletErrorContextType = {
   /**
    * Manually show the error modal with a specific error
