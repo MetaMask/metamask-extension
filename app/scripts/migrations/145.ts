@@ -36,9 +36,18 @@ function transformState(
     Array.isArray(state.NetworkOrderController.orderedNetworkList)
   ) {
     state.NetworkOrderController.orderedNetworkList =
-      state.NetworkOrderController.orderedNetworkList.map(({ networkId }) => ({
-        networkId: toEvmCaipChainId(networkId as Hex),
-      }));
+      state.NetworkOrderController.orderedNetworkList
+        .map(({ networkId }) => {
+          try {
+            return {
+              networkId: toEvmCaipChainId(networkId as Hex),
+            };
+          } catch (error) {
+            // Skip invalid chainIds that can't be converted (e.g., unsafe integers)
+            return null;
+          }
+        })
+        .filter((item): item is { networkId: string } => item !== null);
   }
 
   return state;

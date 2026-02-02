@@ -147,7 +147,16 @@ export class NetworkOrderController extends BaseController<
         (chainId) =>
           !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
       ) as Hex[];
-      const chainIds: CaipChainId[] = hexChainIds.map(toEvmCaipChainId);
+      const chainIds: CaipChainId[] = hexChainIds
+        .map((chainId) => {
+          try {
+            return toEvmCaipChainId(chainId);
+          } catch (error) {
+            // Skip invalid chainIds that can't be converted (e.g., unsafe integers)
+            return null;
+          }
+        })
+        .filter((chainId): chainId is CaipChainId => chainId !== null);
       const nonEvmChainIds: CaipChainId[] = [
         BtcScope.Mainnet,
         SolScope.Mainnet,

@@ -73,5 +73,30 @@ describe(`migration #${version}`, () => {
       const newStorage = await migrate(oldStorage);
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
+
+    it('filters out invalid network IDs that cannot be converted', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          NetworkOrderController: {
+            orderedNetworkList: [
+              { networkId: '0x1' },
+              { networkId: '0x20000000000001' }, // Exceeds MAX_SAFE_INTEGER
+              { networkId: '0x5' },
+            ],
+          },
+        },
+      };
+      const expectedData = {
+        NetworkOrderController: {
+          orderedNetworkList: [
+            { networkId: 'eip155:1' },
+            { networkId: 'eip155:5' },
+          ],
+        },
+      };
+      const newStorage = await migrate(oldStorage);
+      expect(newStorage.data).toStrictEqual(expectedData);
+    });
   });
 });
