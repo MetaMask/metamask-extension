@@ -802,6 +802,23 @@ export function setDefaultSubscriptionPaymentOptions(
   };
 }
 
+export function clearLastUsedSubscriptionPaymentDetails(
+  product: ProductType,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('clearLastSelectedPaymentMethod', [
+        product,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[clearLastUsedSubscriptionPaymentDetails] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
 export function setShieldSubscriptionMetricsProps(
   payload: ShieldSubscriptionMetricsPropsFromUI,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

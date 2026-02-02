@@ -2607,6 +2607,10 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.cacheLastSelectedPaymentMethod.bind(
           this.subscriptionController,
         ),
+      clearLastSelectedPaymentMethod:
+        this.subscriptionController.clearLastSelectedPaymentMethod.bind(
+          this.subscriptionController,
+        ),
       getSubscriptionCryptoApprovalAmount:
         this.subscriptionController.getCryptoApproveTransactionParams.bind(
           this.subscriptionController,
