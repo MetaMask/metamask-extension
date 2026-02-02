@@ -103,7 +103,7 @@ describe('ImportSrp', () => {
   });
 
   describe('mnemonic validation', () => {
-    it('displays error and does not proceed when mnemonic has invalid checksum', async () => {
+    it('displays error and disables button when mnemonic has invalid checksum', async () => {
       const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId, getByText } = renderWithProvider(
         <ImportSrp />,
@@ -117,26 +117,17 @@ describe('ImportSrp', () => {
         await userEvent.type(srpNote, INVALID_SEED);
       }
 
-      const confirmSrpButton = queryByTestId('import-srp-confirm');
-
-      // Button is enabled because all words are valid BIP39 words
-      await waitFor(() => {
-        expect(confirmSrpButton).not.toBeDisabled();
-      });
-
-      if (confirmSrpButton) {
-        fireEvent.click(confirmSrpButton);
-      }
-
-      // isValidMnemonic returns false due to invalid checksum,
-      // error message should be displayed
+      // SrpInputImport validates checksum and shows error message
       await waitFor(() => {
         expect(
           getByText(messages.invalidSeedPhraseNotFound.message),
         ).toBeInTheDocument();
       });
 
-      // Button should be disabled due to error
+      const confirmSrpButton = queryByTestId('import-srp-confirm');
+
+      // Button should be disabled because SrpInputImport passes empty string
+      // when checksum is invalid
       expect(confirmSrpButton).toBeDisabled();
 
       // importMnemonicToVault should not be called
