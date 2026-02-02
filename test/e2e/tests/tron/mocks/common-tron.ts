@@ -772,82 +772,92 @@ export async function mockTronGetBlock(
     }));
 }
 
+const MOCK_TRON_TOKENS = [
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/slip44:195',
+    symbol: 'TRX',
+    decimals: 6,
+    name: 'Tron',
+    aggregators: [],
+    occurrences: 100,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
+    metadata: {},
+  },
+  {
+    address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    symbol: 'USDT',
+    decimals: 6,
+    name: 'Tether',
+    aggregators: ['coinGecko'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png',
+    metadata: {},
+  },
+  {
+    address: 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/trc20:TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USDC',
+    aggregators: ['coinGecko'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8.png',
+    metadata: {},
+  },
+  {
+    address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+    symbol: 'USDD',
+    decimals: 18,
+    name: 'USDD',
+    aggregators: ['coinGecko'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz.png',
+    metadata: {},
+  },
+  {
+    address: 'TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S',
+    chainId: 'tron:728126428',
+    assetId: 'tron:728126428/trc20:TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S',
+    symbol: 'SUN',
+    decimals: 18,
+    name: 'Sun Token',
+    aggregators: ['coinGecko'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S.png',
+    metadata: {},
+  },
+];
+
 export async function mockBridgeGetTronTokens(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
-  return mockServer
-    .forGet(/^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getTokens/u)
-    .withQuery({ chainId: '728126428' })
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: [
-        {
-          address: '0x0000000000000000000000000000000000000000',
-          chainId: 728126428,
-          assetId: 'tron:728126428/slip44:195',
-          symbol: 'TRX',
-          decimals: 6,
-          name: 'Tron',
-          aggregators: [],
-          occurrences: 100,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
-          metadata: {},
-        },
-        {
-          address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-          chainId: 728126428,
-          assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-          symbol: 'USDT',
-          decimals: 6,
-          name: 'Tether',
-          aggregators: ['coinGecko'],
-          occurrences: 1,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t.png',
-          metadata: {},
-        },
-        {
-          address: 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8',
-          chainId: 728126428,
-          assetId: 'tron:728126428/trc20:TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8',
-          symbol: 'USDC',
-          decimals: 6,
-          name: 'USDC',
-          aggregators: ['coinGecko'],
-          occurrences: 1,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8.png',
-          metadata: {},
-        },
-        {
-          address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-          chainId: 728126428,
-          assetId: 'tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-          symbol: 'USDD',
-          decimals: 18,
-          name: 'USDD',
-          aggregators: ['coinGecko'],
-          occurrences: 1,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz.png',
-          metadata: {},
-        },
-        {
-          address: 'TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S',
-          chainId: 728126428,
-          assetId: 'tron:728126428/trc20:TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S',
-          symbol: 'SUN',
-          decimals: 18,
-          name: 'Sun Token',
-          aggregators: ['coinGecko'],
-          occurrences: 1,
-          iconUrl:
-            'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/trc20/TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S.png',
-          metadata: {},
-        },
-      ],
-    }));
+  mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      pageInfo: {
+        hasNextPage: false,
+        endCursor: null,
+      },
+      data: MOCK_TRON_TOKENS,
+    },
+  }));
+
+  return mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+    statusCode: 200,
+    json: MOCK_TRON_TOKENS,
+  }));
 }
 
 export async function mockBridgeGetTronQuote(

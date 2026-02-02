@@ -1,4 +1,4 @@
-import { isEqual, omit } from 'lodash';
+import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
 import {
@@ -10,6 +10,14 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+const isHexString = (str: unknown): boolean =>
+  typeof str === 'string' && /^0x[0-9A-Fa-f]+$/u.test(str);
+const isFloatString = (str: unknown): boolean =>
+  typeof str === 'string' && /^[0-9.]+$/u.test(str);
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -23,7 +31,28 @@ import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/sen
  *
  * @param mockServer
  */
-async function mockSegment(mockServer: Mockttp) {
+async function testSpecificMock(mockServer: Mockttp) {
+  // Mock feature flags - not included in returned array so getEventPayloads won't wait for it
+  await mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          {
+            extensionUxPna25: true,
+          },
+        ],
+      };
+    });
+
+  // Return only the segment mocks that getEventPayloads needs to track
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
@@ -151,18 +180,29 @@ describe('Transaction Finalized Event', function (this: Suite) {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
+          .withAppStateController({
+            pna25Acknowledged: true,
+          })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        testSpecificMock,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await loginWithBalanceValidation(driver);
+
         // TODO: Update Test when Multichain Send Flow is added
         await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,
-          amount: '2.0',
+          amount: '2',
         });
+
+        // Get the transaction hash from the activity list
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkCompletedTxNumberDisplayedInActivity(1);
+        await activityList.clickOnActivity(1);
+        await activityList.clickCopyTransactionHashButton();
+        const txHash = await driver.getClipboardContent();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
@@ -172,109 +212,48 @@ describe('Transaction Finalized Event', function (this: Suite) {
           eventDoesNotIncludeUserId,
           eventHasZeroAddressAnonymousId,
           (payload: EventPayload) =>
-            isEqual(omit(payload.properties, ['first_seen']), {
-              status: 'submitted',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              transaction_envelope_type: 'legacy',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              gas_limit: '0x5208',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              gas_price: '2',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              default_gas: '0.000021',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              default_gas_price: '2',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id: '0x539',
-              referrer: 'metamask',
-              source: 'user',
-              network: '1337',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              eip_1559_version: '0',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              gas_edit_type: 'none',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              gas_edit_attempted: 'none',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              account_type: 'MetaMask',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              device_model: 'N/A',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              asset_type: 'NATIVE',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              token_standard: 'NONE',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              transaction_type: 'simpleSend',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              transaction_speed_up: false,
-              category: 'Transactions',
-              locale: 'en',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              environment_type: 'background',
-            }),
+            // Check key properties for submitted transaction with sensitive data
+            payload.properties?.status === 'submitted' &&
+            payload.properties?.chain_id === '0x539' &&
+            payload.properties?.network === '1337' &&
+            payload.properties?.referrer === 'metamask' &&
+            payload.properties?.source === 'user' &&
+            payload.properties?.transaction_type === 'simpleSend' &&
+            payload.properties?.asset_type === 'NATIVE' &&
+            payload.properties?.token_standard === 'NONE' &&
+            payload.properties?.account_type === 'MetaMask' &&
+            payload.properties?.transaction_speed_up === false &&
+            payload.properties?.gas_edit_type === 'none' &&
+            payload.properties?.gas_edit_attempted === 'none' &&
+            payload.properties?.category === 'Transactions' &&
+            payload.properties?.locale === 'en' &&
+            payload.properties?.environment_type === 'background' &&
+            // Sensitive properties (only in anon events)
+            payload.properties?.transaction_envelope_type === 'fee-market' &&
+            isHexString(payload.properties?.gas_limit) &&
+            isFloatString(payload.properties?.default_gas),
         ];
 
         const transactionSubmittedWithoutSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,
           eventHasUserIdWithoutAnonymousId,
           (payload: EventPayload) =>
-            isEqual(payload.properties, {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id: '0x539',
-              referrer: 'metamask',
-              source: 'user',
-              network: '1337',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              eip_1559_version: '0',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              gas_edit_type: 'none',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              gas_edit_attempted: 'none',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              account_type: 'MetaMask',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              device_model: 'N/A',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              asset_type: 'NATIVE',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              token_standard: 'NONE',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              transaction_type: 'simpleSend',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              transaction_speed_up: false,
-              category: 'Transactions',
-              locale: 'en',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              environment_type: 'background',
-              status: 'submitted',
-            }),
+            // Check key properties for submitted transaction without sensitive data
+            payload.properties?.status === 'submitted' &&
+            payload.properties?.chain_id === '0x539' &&
+            payload.properties?.network === '1337' &&
+            payload.properties?.referrer === 'metamask' &&
+            payload.properties?.source === 'user' &&
+            payload.properties?.transaction_type === 'simpleSend' &&
+            payload.properties?.asset_type === 'NATIVE' &&
+            payload.properties?.token_standard === 'NONE' &&
+            payload.properties?.account_type === 'MetaMask' &&
+            payload.properties?.transaction_speed_up === false &&
+            payload.properties?.gas_edit_type === 'none' &&
+            payload.properties?.gas_edit_attempted === 'none' &&
+            payload.properties?.category === 'Transactions' &&
+            payload.properties?.locale === 'en' &&
+            payload.properties?.environment_type === 'background',
         ];
 
         await driver.delay(10000);
@@ -285,127 +264,83 @@ describe('Transaction Finalized Event', function (this: Suite) {
           eventDoesNotIncludeUserId,
           eventHasZeroAddressAnonymousId,
           (payload: EventPayload) =>
-            isEqual(
-              omit(payload.properties, ['first_seen', 'completion_time']),
-              {
-                status: 'confirmed',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                transaction_envelope_type: 'legacy',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                gas_limit: '0x5208',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                gas_price: '2',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                default_gas: '0.000021',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                default_gas_price: '2',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id: '0x539',
-                referrer: 'metamask',
-                source: 'user',
-                network: '1337',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                eip_1559_version: '0',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                gas_edit_type: 'none',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                gas_edit_attempted: 'none',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                account_type: 'MetaMask',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                device_model: 'N/A',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                asset_type: 'NATIVE',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                token_standard: 'NONE',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                transaction_type: 'simpleSend',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                transaction_speed_up: false,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                gas_used: '5208',
-                category: 'Transactions',
-                locale: 'en',
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                environment_type: 'background',
-              },
-            ),
+            // Check key properties for finalized transaction with sensitive data
+            payload.properties?.status === 'confirmed' &&
+            payload.properties?.chain_id === '0x539' &&
+            payload.properties?.network === '1337' &&
+            payload.properties?.referrer === 'metamask' &&
+            payload.properties?.source === 'user' &&
+            payload.properties?.transaction_type === 'simpleSend' &&
+            payload.properties?.asset_type === 'NATIVE' &&
+            payload.properties?.token_standard === 'NONE' &&
+            payload.properties?.account_type === 'MetaMask' &&
+            payload.properties?.transaction_speed_up === false &&
+            payload.properties?.gas_edit_type === 'none' &&
+            payload.properties?.gas_edit_attempted === 'none' &&
+            payload.properties?.category === 'Transactions' &&
+            payload.properties?.locale === 'en' &&
+            payload.properties?.environment_type === 'background' &&
+            // Sensitive properties (only in anon events)
+            payload.properties?.transaction_envelope_type === 'fee-market' &&
+            isHexString(payload.properties?.gas_limit) &&
+            isFloatString(payload.properties?.default_gas) &&
+            // Finalized-specific properties
+            typeof payload.properties?.gas_used === 'string' &&
+            typeof payload.properties?.completion_time === 'string',
         ];
 
         const transactionFinalizedWithoutSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,
           eventHasUserIdWithoutAnonymousId,
           (payload: EventPayload) =>
-            isEqual(payload.properties, {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              chain_id: '0x539',
-              referrer: 'metamask',
-              source: 'user',
-              network: '1337',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              eip_1559_version: '0',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              gas_edit_type: 'none',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              gas_edit_attempted: 'none',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              account_type: 'MetaMask',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              device_model: 'N/A',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              asset_type: 'NATIVE',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              token_standard: 'NONE',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              transaction_type: 'simpleSend',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              transaction_speed_up: false,
-              category: 'Transactions',
-              locale: 'en',
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              environment_type: 'background',
-              status: 'confirmed',
-            }),
+            // Check key properties for finalized transaction without sensitive data
+            payload.properties?.status === 'confirmed' &&
+            payload.properties?.chain_id === '0x539' &&
+            payload.properties?.network === '1337' &&
+            payload.properties?.referrer === 'metamask' &&
+            payload.properties?.source === 'user' &&
+            payload.properties?.transaction_type === 'simpleSend' &&
+            payload.properties?.asset_type === 'NATIVE' &&
+            payload.properties?.token_standard === 'NONE' &&
+            payload.properties?.account_type === 'MetaMask' &&
+            payload.properties?.transaction_speed_up === false &&
+            payload.properties?.gas_edit_type === 'none' &&
+            payload.properties?.gas_edit_attempted === 'none' &&
+            payload.properties?.category === 'Transactions' &&
+            payload.properties?.locale === 'en' &&
+            payload.properties?.environment_type === 'background',
         ];
 
         const [event1, event2, event3, event4] = events;
 
-        assertInAnyOrder(
-          [event1, event2, event3, event4],
-          [
-            transactionSubmittedWithSensitivePropertiesAssertions,
-            transactionSubmittedWithoutSensitivePropertiesAssertions,
-            transactionFinalizedWithSensitivePropertiesAssertions,
-            transactionFinalizedWithoutSensitivePropertiesAssertions,
-          ],
+        // Find the finalized events (they have transaction_hash)
+        const eventsWithHash = events.filter(
+          (event) => event?.properties?.transaction_hash,
+        );
+        assert.ok(
+          eventsWithHash.length === 2,
+          `Expected 2 events with transaction_hash, got ${eventsWithHash.length}`,
+        );
+
+        // Verify the transaction_hash matches the actual tx hash from the activity
+        assert.ok(
+          eventsWithHash.every(
+            (event) => event?.properties?.transaction_hash === txHash,
+          ),
+          `Transaction hash mismatch. Expected: ${txHash}, Got: ${eventsWithHash[0]?.properties?.transaction_hash}`,
+        );
+
+        assert.ok(
+          assertInAnyOrder(
+            [event1, event2, event3, event4],
+            [
+              transactionSubmittedWithSensitivePropertiesAssertions,
+              transactionSubmittedWithoutSensitivePropertiesAssertions,
+              transactionFinalizedWithSensitivePropertiesAssertions,
+              transactionFinalizedWithoutSensitivePropertiesAssertions,
+            ],
+          ),
+          'Events should match all assertion arrays',
         );
       },
     );

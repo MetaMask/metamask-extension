@@ -1009,12 +1009,6 @@
   "bridgeTo": {
     "message": "Droichead go"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Má chuir tú an comhartha seo leis de láimh, déan cinnte go bhfuil tú ar an eolas faoi na rioscaí a bhaineann le do chistí sula ndéanann tú droicheadú."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Ní féidir linn an comhartha seo a fhíorú."
-  },
   "bridgeTransactionProgress": {
     "message": "Idirbheart $1 de 2"
   },
@@ -1858,6 +1852,10 @@
   },
   "defiEmptyDescription": {
     "message": "Iasachtaigh, faigh iasacht, agus trádáil, díreach i do sparán."
+  },
+  "defiReferralCheckboxLabel": {
+    "message": "Lig do MetaMask cód atreoraithe a chur leis. Tá sé seo buan. Cuireann an suíomh lascainí ar fáil de réir a dtéarmaí féin. Gearrtar táille ar MetaMask.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
   "defiTabErrorContent": {
     "message": "Déan iarracht cuairt a thabhairt arís níos déanaí."
@@ -2783,17 +2781,9 @@
   "honeypotTitle": {
     "message": "Pota Meala"
   },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "Lig do MetaMask cód atreoraithe a chur leis. Tá sé seo buan. Cuireann an suíomh lascainí ar fáil de réir a dtéarmaí féin. Gearrtar táille ar MetaMask.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
   "hyperliquidReferralSubtitle": {
     "message": "Sábháil suas le 4% ar thrádálacha le cód atreoraithe MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "Aitheantas"
@@ -7509,9 +7499,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "D’fhéadfadh do NFT a bheith i mbaol"
-  },
-  "yourNetworks": {
-    "message": "Do líonraí"
   },
   "yourPrivateSeedPhrase": {
     "message": "Do Rún Aisghabhála Frása"

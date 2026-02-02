@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -8,16 +8,10 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
-  ButtonBase,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { PERPS_MARKET_LIST_ROUTE } from '../../../helpers/constants/routes';
+import { PERPS_HOME_ROUTE } from '../../../helpers/constants/routes';
 import { mockPositions, mockOrders } from './mocks';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
@@ -37,18 +31,12 @@ export const PerpsTabView: React.FC = () => {
   const hasNoPositionsOrOrders = !hasPositions && !hasOrders;
 
   const handleManageBalancePress = () => {
-    // TODO: Navigate to manage balance screen
-    log.info('handleManageBalancePress');
+    navigate(PERPS_HOME_ROUTE);
   };
 
   const handleNewTrade = () => {
-    // TODO: Navigate to trading view or tutorial for first-time users
-    log.info('handleNewTrade');
+    navigate(PERPS_HOME_ROUTE);
   };
-
-  const handleSearchPress = useCallback(() => {
-    navigate(PERPS_MARKET_LIST_ROUTE);
-  }, [navigate]);
 
   return (
     <Box
@@ -56,29 +44,6 @@ export const PerpsTabView: React.FC = () => {
       gap={4}
       data-testid="perps-tab-view"
     >
-      {/* Header with Search Icon */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.End}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={2}
-      >
-        <ButtonBase
-          onClick={handleSearchPress}
-          className="rounded-full p-2 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
-          data-testid="perps-search-button"
-          aria-label={t('perpsSearchMarkets')}
-        >
-          <Icon
-            name={IconName.Search}
-            size={IconSize.Md}
-            color={IconColor.IconDefault}
-          />
-        </ButtonBase>
-      </Box>
-
       {/* Control Bar with Balance and P&L */}
       <PerpsTabControlBar
         onManageBalancePress={handleManageBalancePress}

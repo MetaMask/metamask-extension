@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -22,6 +22,15 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { mockPositions, mockOrders } from '../../components/app/perps/mocks';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
+import {
+  PerpsCandlestickChart,
+  PerpsCandlestickChartRef,
+} from '../../components/app/perps/perps-candlestick-chart';
+import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
+import {
+  CandlePeriod,
+  ZOOM_CONFIG,
+} from '../../components/app/perps/constants/chartConfig';
 import {
   getDisplayName,
   findMarketBySymbol,
@@ -79,9 +88,64 @@ const PerpsMarketDetailPage: React.FC = () => {
     );
   }, [decodedSymbol]);
 
-  // Navigation handlers
+  // Candle period state and chart ref
+  const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
+    CandlePeriod.FiveMinutes,
+  );
+  const chartRef = useRef<PerpsCandlestickChartRef>(null);
+
+  // Handle candle period change
+  //
+  // TODO: When integrating live data, this handler must trigger a NEW API call
+  // for candle data at the selected interval. Key implementation notes:
+  //
+  // 1. RE-FETCH, DON'T AGGREGATE: Each interval change should call the candle
+  // API with the new interval parameter (e.g., candleSnapshot({ interval: '1h' })).
+  // The server returns pre-aggregated candles - do NOT fetch 1m candles and
+  // aggregate client-side.
+  //
+  // 2. CACHE KEY PER INTERVAL: Use separate cache keys for each interval
+  // (e.g., "BTC-1h", "BTC-15m") since they are different data sets.
+  //
+  // 3. DATA FLOW ON INTERVAL CHANGE:
+  // User taps interval → Update selectedPeriod state
+  // → Hook re-runs with new interval in dependency array
+  // → New API call: candleSnapshot({ symbol, interval: newPeriod })
+  // → Chart re-renders with new data
+  // → Call applyZoom() to reset view
+  //
+  // 4. LIVE CANDLE UPDATES VIA WEBSOCKET:
+  // Two-phase data loading:
+  // - Phase 1: Fetch historical candles (includes partial "forming" candle at end)
+  // - Phase 2: Subscribe to WebSocket for real-time updates
+  //
+  // WebSocket update logic (compare timestamps):
+  // | Condition                          | Action                              |
+  // |------------------------------------|-------------------------------------|
+  // | lastCandle.time === newCandle.time | REPLACE last candle (still forming) |
+  // | lastCandle.time !== newCandle.time | APPEND new candle (previous closed) |
+  //
+  // Example timeline:
+  // Initial:   [c1, c2, c3, c4, c5(partial)] ← c5 is forming
+  // WS update: [c1, c2, c3, c4, c5(updated)] ← REPLACE (same time)
+  // WS update: [c1, c2, c3, c4, c5, c6(new)] ← APPEND (new time)
+  //
+  // Key: Always create NEW arrays for immutable updates to trigger React re-renders.
+  //
+  // 5. MOBILE REFERENCE: See usePerpsLiveCandles hook, CandleStreamChannel,
+  // and HyperLiquidClientService.subscribeToCandles() in the mobile app.
+  const handlePeriodChange = useCallback((period: CandlePeriod) => {
+    setSelectedPeriod(period);
+    // Apply default zoom when period changes
+    if (chartRef.current) {
+      chartRef.current.applyZoom(ZOOM_CONFIG.DEFAULT_CANDLES, true);
+    }
+  }, []);
+
+  // Navigation handlers - use history back to return to wherever user came from
+  // (perps home page or perps tab)
   const handleBackClick = useCallback(() => {
-    navigate(DEFAULT_ROUTE);
+    navigate(-1);
   }, [navigate]);
 
   // No-op handler for order cards - orders on detail page are already
@@ -210,7 +274,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         {/* Favorite Star */}
         <Box
           data-testid="perps-market-detail-favorite-button"
-          aria-label="Add to favorites"
+          aria-label={t('perpsAddToFavorites')}
           className="p-2 cursor-pointer"
           onClick={() => {
             // TODO: Handle favorite toggle
@@ -224,28 +288,24 @@ const PerpsMarketDetailPage: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Chart Placeholder */}
+      {/* Candlestick Chart */}
       <Box
         paddingLeft={4}
         paddingRight={4}
-        paddingBottom={4}
-        data-testid="perps-market-detail-chart-placeholder"
+        data-testid="perps-market-detail-chart"
       >
-        <Box
-          justifyContent={BoxJustifyContent.Center}
-          alignItems={BoxAlignItems.Center}
-          className="h-[200px] bg-background-alternative rounded-lg"
-        >
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            Chart coming soon
-          </Text>
-        </Box>
+        <PerpsCandlestickChart
+          ref={chartRef}
+          height={250}
+          selectedPeriod={selectedPeriod}
+        />
       </Box>
 
-      {/* Divider */}
-      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Box className="h-px bg-border-muted" />
-      </Box>
+      {/* Candle Period Selector */}
+      <PerpsCandlePeriodSelector
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={handlePeriodChange}
+      />
 
       {/* Position Section */}
       {position && (

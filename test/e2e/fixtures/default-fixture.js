@@ -70,6 +70,16 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         },
       },
+      AppMetadataController: {
+        currentAppVersion: '',
+        previousAppVersion: '',
+        currentMigrationVersion: 0,
+        previousMigrationVersion: 0,
+        firstTimeInfo: {
+          date: 1665507600000,
+          version: '10.21.0',
+        },
+      },
       NetworkOrderController: {
         orderedNetworkList: [
           {
@@ -103,6 +113,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             'bip122:000000000019d6689c085ae165831e93': true,
           },
         },
+        nativeAssetIdentifiers: {},
       },
       AccountOrderController: {
         pinnedAccountList: [],
@@ -292,10 +303,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         syncQueue: {},
       },
       config: {},
-      firstTimeInfo: {
-        date: 1665507600000,
-        version: '10.21.0',
-      },
     },
   };
 }

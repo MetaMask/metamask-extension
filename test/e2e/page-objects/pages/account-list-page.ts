@@ -141,6 +141,31 @@ class AccountListPage {
   private readonly importAccountJsonPasswordInput =
     'input[id="json-password-box"]';
 
+  private readonly multichainAccountMenuAddresses = {
+    tag: 'p',
+    text: 'Addresses',
+  };
+
+  private readonly multichainAccountMenuDetails = {
+    tag: 'p',
+    text: 'Account details',
+  };
+
+  private readonly multichainAccountMenuHide = {
+    tag: 'p',
+    text: 'Hide account',
+  };
+
+  private readonly multichainAccountMenuPin = {
+    tag: 'p',
+    text: 'Pin to top',
+  };
+
+  private readonly multichainAccountMenuRename = {
+    tag: 'p',
+    text: 'Rename',
+  };
+
   private readonly pinUnpinAccountButton =
     '[data-testid="account-list-menu-pin"]';
 
@@ -224,7 +249,7 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
         [
@@ -234,7 +259,7 @@ class AccountListPage {
           },
           this.multichainAccountOptionsMenuButton,
         ],
-        { timeout: 15000 },
+        { timeout },
       );
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
@@ -951,6 +976,17 @@ class AccountListPage {
   async checkHiddenAccountsListExists(): Promise<void> {
     console.log(`Check that hidden accounts list is displayed in account list`);
     await this.driver.waitForSelector(this.hiddenAccountsList);
+  }
+
+  async checkMultiChainAccountMenuIsDisplayed(): Promise<void> {
+    console.log(`Check that multichain account menu is displayed`);
+    await this.driver.waitForMultipleSelectors([
+      this.multichainAccountMenuAddresses,
+      this.multichainAccountMenuDetails,
+      this.multichainAccountMenuHide,
+      this.multichainAccountMenuRename,
+      this.multichainAccountMenuPin,
+    ]);
   }
 
   /**

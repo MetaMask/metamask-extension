@@ -6,6 +6,7 @@
  * @see {@link https://github.com/MetaMask/metamask-extension} for more info
  */
 
+export { default as PerpsHomePage } from './perps-home-page';
 export { default as PerpsMarketDetailPage } from './perps-market-detail-page';
 export type {
   PerpsMarketDetailRouteParams,
