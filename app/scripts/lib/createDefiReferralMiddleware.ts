@@ -71,22 +71,39 @@ export function createDefiReferralMiddleware(
         return;
       }
 
-      // After the request is processed, check if it was a successful permission grant
-      const isConnectionRequest = req.method === 'wallet_requestPermissions';
-      const arePermissionsGranted =
-        Array.isArray(res.result) &&
-        res.result.some(
-          (permission) => permission?.parentCapability === 'eth_accounts',
-        );
+      const isWalletRequestPermissions =
+        req.method === 'wallet_requestPermissions';
+      const isEthRequestAccounts = req.method === 'eth_requestAccounts';
 
-      if (isConnectionRequest && arePermissionsGranted) {
+      // Only continue if the request is a relevant connection request
+      if (!isWalletRequestPermissions && !isEthRequestAccounts) {
+        return;
+      }
+
+      let arePermissionsGranted = false;
+      if (Array.isArray(res.result) && res.result.length > 0) {
+        if (isWalletRequestPermissions) {
+          // wallet_requestPermissions returns permission objects with parentCapability key
+          arePermissionsGranted = res.result.some(
+            (permission) =>
+              permission?.parentCapability === 'eth_accounts',
+          );
+        } else if (isEthRequestAccounts) {
+          // eth_requestAccounts returns an array of address strings
+          arePermissionsGranted = res.result.every(
+            (address) => typeof address === 'string',
+          );
+        }
+      }
+
+      if (arePermissionsGranted) {
         handleDefiReferral(
           partner,
           req.tabId,
           ReferralTriggerType.NewConnection,
         ).catch((error) => {
           log.error(
-            `Failed to handle ${partner.name} referral after wallet_requestPermissions grant: `,
+            `Failed to handle ${partner.name} referral after permissions grant: `,
             error,
           );
         });
