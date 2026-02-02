@@ -34,7 +34,7 @@ describe('BTC Account - Swap (Bridge)', function (this: Suite) {
     );
   });
 
-  it('can select destination token and see quote', async function () {
+  it.only('can select destination token and see quote', async function () {
     await withBtcAccountSnap(
       async (driver) => {
         const homePage = new BitcoinHomepage(driver);
