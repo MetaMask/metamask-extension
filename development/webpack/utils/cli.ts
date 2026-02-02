@@ -8,7 +8,6 @@ import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
 import type { BuildTypesConfig } from '../../lib/build-type';
-import { ENVIRONMENT } from '../../build/constants';
 import {
   Browsers,
   type Manifest,
@@ -16,6 +15,7 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
+import { ENVIRONMENT } from './constants';
 
 const environmentOptions = Object.values(ENVIRONMENT);
 const ENV_PREFIX = 'BUNDLE';

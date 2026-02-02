@@ -203,7 +203,7 @@ export default function envValidationLoader(
   } catch (error) {
     this.emitError(
       new Error(
-        `Environment variable validation error encountered while trying to parse ${this.resourcePath}. {${error}}`,
+        `Environment variable validation error encountered while trying to parse ${this.resourcePath}. {${error instanceof Error ? error.message : String(error)}}`,
       ),
     );
     return source;
