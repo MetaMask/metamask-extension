@@ -59,6 +59,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         // Measure: Open swap page
         await homePage.startSwapFlow();
         await timerOpenSwapPage.measure(async () => {
+          await homePage.startSwapFlow();
           const swapPage = new SwapPage(driver);
           await swapPage.checkPageIsLoaded();
           await swapPage.waitForMaxButtonToBeDisplayed();
@@ -67,8 +68,8 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
 
         // Measure: Fetch quotes
         const swapPage = new SwapPage(driver);
-        await swapPage.enterSwapAmount('1');
         await timerQuoteFetching.measure(async () => {
+          await swapPage.enterSwapAmount('1');
           await swapPage.checkQuoteIsDisplayed();
         });
         performanceTracker.addTimer(timerQuoteFetching);

@@ -61,8 +61,8 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         await assetListPage.checkTokenListIsDisplayed();
 
         // Measure: Open send page
-        await homePage.startSendFlow();
         await timerOpenSendPage.measure(async () => {
+          await homePage.startSendFlow();
           const sendPage = new SendPage(driver);
           await sendPage.checkNetworkFilterToggleIsDisplayed();
         });
@@ -70,11 +70,11 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
 
         // Measure: Select token and load form
         const sendPage = new SendPage(driver);
-        await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqsZKvdp',
-          'SOL',
-        );
         await timerAssetPicker.measure(async () => {
+          await sendPage.selectToken(
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqsZKvdp',
+            'SOL',
+          );
           await sendPage.checkSendFormIsLoaded();
         });
         performanceTracker.addTimer(timerAssetPicker);
@@ -82,8 +82,8 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         // Measure: Review transaction
         await sendPage.fillRecipient(RECIPIENT_ADDRESS);
         await sendPage.fillAmount('0.00001');
-        await sendPage.pressContinueButton();
         await timerReviewTransaction.measure(async () => {
+          await sendPage.pressContinueButton();
           const confirmation = new SnapTransactionConfirmation(driver);
           await confirmation.checkPageIsLoaded();
         });

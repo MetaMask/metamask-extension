@@ -81,15 +81,15 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         // Measure: Create wallet to Social screen
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
-        await startOnboardingPage.createWalletWithSrp(false);
         await timerCreateWalletToSocial.measure(async () => {
+          await startOnboardingPage.createWalletWithSrp(false);
           await startOnboardingPage.checkSocialSignUpFormIsVisible();
         });
         performanceTracker.addTimer(timerCreateWalletToSocial);
 
         // Measure: SRP button to Password form
-        await startOnboardingPage.clickCreateWithSrpButton();
         await timerSrpButtonToPassword.measure(async () => {
+          await startOnboardingPage.clickCreateWithSrpButton();
           const onboardingPasswordPage = new OnboardingPasswordPage(driver);
           await onboardingPasswordPage.checkPageIsLoaded();
         });
@@ -128,9 +128,9 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
 
         // Measure: Done to Asset list
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.completeOnboarding();
-        await handleSidepanelPostOnboarding(driver);
         await timerDoneToAssetList.measure(async () => {
+          await onboardingCompletePage.completeOnboarding();
+          await handleSidepanelPostOnboarding(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);

@@ -24,17 +24,16 @@ export const testTitle = 'benchmark-import-srp-home-power-user';
 export const persona = 'powerUser';
 
 export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
-  // Validate required environment variable
-  if (!SECOND_SRP) {
-    throw new Error(
-      'TEST_SRP_2 environment variable is required for import-srp-home benchmark. ' +
-        'Please set TEST_SRP_2 with a valid 12-word seed phrase.',
-    );
-  }
-
   Timers.resetTimers();
 
   try {
+    // Validate required environment variable
+    if (!SECOND_SRP) {
+      throw new Error(
+        'TEST_SRP_2 environment variable is required for import-srp-home benchmark. ' +
+          'Please set TEST_SRP_2 with a valid 12-word seed phrase.',
+      );
+    }
     await withFixtures(
       {
         title: testTitle,
@@ -60,7 +59,7 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
           'homeAfterImportWithNewWallet',
         );
 
-        // Measure: Login flow
+        // Measure: Login flow (includes triggering action)
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
@@ -73,8 +72,8 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
 
         // Measure: Open account menu
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
         await timerOpenAccountMenu.measure(async () => {
+          await headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
         });
@@ -82,8 +81,8 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
 
         // Measure: Import SRP and return to home
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.startImportSecretPhrase(SECOND_SRP);
         await timerHomeAfterImport.measure(async () => {
+          await accountListPage.startImportSecretPhrase(SECOND_SRP);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);
