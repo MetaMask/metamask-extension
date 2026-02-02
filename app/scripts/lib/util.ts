@@ -1,4 +1,5 @@
 import urlLib from 'url';
+import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
@@ -25,7 +26,12 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
-import { getSafeChainsListFromCacheOnly } from '../../../shared/lib/network-utils';
+import {
+  getSafeChainsListFromCacheOnly,
+  getIsMetaMaskInfuraEndpointUrl,
+  getIsQuicknodeEndpointUrl,
+  KNOWN_CUSTOM_ENDPOINT_URLS,
+} from '../../../shared/lib/network-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -479,7 +485,95 @@ let knownDomainsSet: Set<string> | null = null;
 let initPromise: Promise<void> | null = null;
 
 /**
- * Initialize the set of known domains from the chains list
+ * Extracts the hostname from a URL.
+ *
+ * @param url - The URL to extract the hostname from.
+ * @returns The lowercase hostname, or null if the URL is invalid.
+ */
+function extractHostname(url: string): string | null {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Check if a hostname is localhost or an IP address.
+ * Public RPC providers use domain names, not raw IP addresses.
+ * These should never be considered "public" endpoints even if they appear in chainlist.
+ *
+ * @param hostname - The hostname to check.
+ * @returns True if the hostname is localhost or an IP address (v4 or v6).
+ */
+function isLocalhostOrIPAddress(hostname: string): boolean {
+  const lowerHostname = hostname.toLowerCase();
+
+  // Check for localhost
+  if (lowerHostname === 'localhost') {
+    return true;
+  }
+
+  // Remove brackets from IPv6 addresses for testing (e.g., [::1] -> ::1)
+  const hostnameWithoutBrackets = lowerHostname.replace(/^\[|\]$/gu, '');
+
+  // Check for IP address (v4 or v6)
+  if (ipRegex({ exact: true }).test(hostnameWithoutBrackets)) {
+    return true;
+  }
+
+  return false;
+}
+
+// RFC 6761 special-use TLDs that should never be used by real public RPC providers
+const SPECIAL_USE_TLDS = [
+  '.test',
+  '.localhost',
+  '.invalid',
+  '.example',
+  '.local',
+] as const;
+
+// RFC 6761 reserved example domains
+const RESERVED_EXAMPLE_DOMAINS = ['example.com', 'example.net', 'example.org'];
+
+/**
+ * Check if a hostname is a special-use domain per RFC 6761.
+ * These domains are reserved and should never be used by real public RPC providers.
+ *
+ * @param hostname - The hostname to check.
+ * @returns True if the hostname is a special-use domain.
+ * @see https://datatracker.ietf.org/doc/html/rfc6761
+ */
+export function isSpecialUseDomain(hostname: string): boolean {
+  const lowerHostname = hostname.toLowerCase();
+
+  // Check special-use TLDs
+  if (SPECIAL_USE_TLDS.some((tld) => lowerHostname.endsWith(tld))) {
+    return true;
+  }
+
+  // Check reserved example domains (exact match or subdomain)
+  if (
+    RESERVED_EXAMPLE_DOMAINS.some(
+      (domain) =>
+        lowerHostname === domain || lowerHostname.endsWith(`.${domain}`),
+    )
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Initialize the set of known domains from the safe chainlist cache.
+ * This should be called once at startup in the background context.
+ * Localhost and private IP addresses are filtered out to prevent leaking
+ * private network information to analytics.
+ *
+ * @returns A promise that resolves when initialization is complete.
  */
 export async function initializeRpcProviderDomains(): Promise<void> {
   if (initPromise) {
@@ -494,12 +588,15 @@ export async function initializeRpcProviderDomains(): Promise<void> {
       for (const chain of chainsList) {
         if (chain.rpc && Array.isArray(chain.rpc)) {
           for (const rpcUrl of chain.rpc) {
-            try {
-              const url = new URL(rpcUrl);
-              knownDomainsSet.add(url.hostname);
-            } catch (e) {
-              // Skip invalid URLs
-              continue;
+            const hostname = extractHostname(rpcUrl);
+            // Filter out localhost, IP addresses, and RFC 6761 special-use domains
+            // Public providers use real domain names
+            if (
+              hostname &&
+              !isLocalhostOrIPAddress(hostname) &&
+              !isSpecialUseDomain(hostname)
+            ) {
+              knownDomainsSet.add(hostname);
             }
           }
         }
@@ -516,10 +613,58 @@ export async function initializeRpcProviderDomains(): Promise<void> {
 /**
  * Check if a domain is in the known domains list
  *
- * @param domain - The domain to check
+ * @param domain - The domain to check.
+ * @returns True if the domain is found in the chainlist cache.
  */
 export function isKnownDomain(domain: string): boolean {
   return knownDomainsSet?.has(domain?.toLowerCase()) ?? false;
+}
+
+/**
+ * Check if an RPC endpoint URL has a "known" domain, i.e. the domain is listed
+ * in a public registry. Localhost and private IPs are filtered out during
+ * initialization of the known domains set.
+ *
+ * @param endpointUrl - The URL of the RPC endpoint.
+ * @returns True if the endpoint's domain is listed in a public registry.
+ */
+function isKnownEndpointUrl(endpointUrl: string): boolean {
+  const hostname = extractHostname(endpointUrl);
+  if (!hostname) {
+    return false;
+  }
+  return isKnownDomain(hostname);
+}
+
+/**
+ * Some URLs that users add as networks refer to private servers, and we do not
+ * want to report these in Segment (or any other data collection service). This
+ * function returns whether the given RPC endpoint is safe to share.
+ *
+ * @param endpointUrl - The URL of the endpoint.
+ * @param infuraProjectId - Our Infura project ID.
+ * @returns True if the endpoint URL is safe to share with external data
+ * collection services, false otherwise.
+ */
+export function isPublicEndpointUrl(
+  endpointUrl: string,
+  infuraProjectId: string,
+): boolean {
+  const isMetaMaskInfuraEndpointUrl = getIsMetaMaskInfuraEndpointUrl(
+    endpointUrl,
+    infuraProjectId,
+  );
+  const isQuicknodeEndpointUrl = getIsQuicknodeEndpointUrl(endpointUrl);
+  const isKnownCustomEndpointUrl =
+    KNOWN_CUSTOM_ENDPOINT_URLS.includes(endpointUrl);
+  const isKnownEndpoint = isKnownEndpointUrl(endpointUrl);
+
+  return (
+    isMetaMaskInfuraEndpointUrl ||
+    isQuicknodeEndpointUrl ||
+    isKnownCustomEndpointUrl ||
+    isKnownEndpoint
+  );
 }
 
 /**

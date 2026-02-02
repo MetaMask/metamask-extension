@@ -1226,6 +1226,9 @@
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/contexts/hardware-wallets/HardwareWalletContext.test.tsx": {
+      "Test errors: Uncaught Errors": 4
+    },
     "ui/contexts/metamask-notifications/metamask-notifications.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2714,6 +2717,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/send/useSnapAmountOnInput.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/tokens/useAddToken.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/tokens/useTokenFiatRates.test.ts": {

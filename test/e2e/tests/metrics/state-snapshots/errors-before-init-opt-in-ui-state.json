@@ -290,9 +290,7 @@
     "SubscriptionController": "object",
     "SwapsController": {},
     "TokenBalancesController": { "tokenBalances": "object" },
-    "TokenListController": {
-      "preventPollingOnNetworkRestart": false
-    },
+    "TokenListController": {},
     "TokenRatesController": { "marketData": "object" },
     "TokensController": {
       "allDetectedTokens": {},
@@ -316,5 +314,5 @@
     "config": "object",
     "firstTimeInfo": "object"
   },
-  "meta": { "version": 190 }
+  "meta": { "version": 191 }
 }
