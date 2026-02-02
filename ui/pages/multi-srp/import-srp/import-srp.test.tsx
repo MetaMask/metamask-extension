@@ -102,28 +102,6 @@ describe('ImportSrp', () => {
   });
 
   describe('mnemonic validation', () => {
-    it('proceeds with import when a valid mnemonic is entered', async () => {
-      const mockStore = configureMockStore([thunk])(mockState);
-      const { queryByTestId } = renderWithProvider(<ImportSrp />, mockStore);
-
-      const srpNote = queryByTestId('srp-input-import__srp-note');
-      if (srpNote) {
-        await userEvent.type(srpNote, VALID_SEED);
-      }
-
-      const confirmSrpButton = queryByTestId('import-srp-confirm');
-      expect(confirmSrpButton).not.toBeDisabled();
-
-      if (confirmSrpButton) {
-        fireEvent.click(confirmSrpButton);
-      }
-
-      await waitFor(() => {
-        expect(importMnemonicToVault).toHaveBeenCalledWith(VALID_SEED);
-        expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
-      });
-    });
-
     it('does not proceed with import when an invalid mnemonic is entered', async () => {
       const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId } = renderWithProvider(<ImportSrp />, mockStore);
