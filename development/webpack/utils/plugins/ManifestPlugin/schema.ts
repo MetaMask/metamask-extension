@@ -114,7 +114,7 @@ export const schema = {
       additionalProperties: false,
     },
     buildType: {
-      description: 'The build type of the build being created.',
+      description: 'The build type to create.',
       type: 'string',
     },
   },
