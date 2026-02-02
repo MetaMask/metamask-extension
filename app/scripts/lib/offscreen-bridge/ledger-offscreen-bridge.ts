@@ -95,6 +95,21 @@ export class LedgerOffscreenBridge
     );
   }
 
+  getAppConfiguration(): Promise<{
+    arbitraryDataEnabled: number;
+    erc20ProvisioningNecessary: number;
+    starkEnabled: number;
+    starkv2Supported: number;
+    version: string;
+  }> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getAppConfiguration,
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
+  }
+
   getPublicKey(params: { hdPath: string }): Promise<{
     publicKey: string;
     address: string;
