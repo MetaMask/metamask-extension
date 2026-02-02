@@ -204,7 +204,8 @@
       "eip155": "object",
       "solana": "object",
       "tron": "object"
-    }
+    },
+    "nativeAssetIdentifiers": "object"
   },
   "NetworkOrderController": {
     "orderedNetworkList": {
@@ -401,7 +402,6 @@
   },
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
-    "preventPollingOnNetworkRestart": false,
     "tokensChainsCache": { "0x539": "object" }
   },
   "TokenRatesController": { "marketData": "object" },

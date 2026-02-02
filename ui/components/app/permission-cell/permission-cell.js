@@ -26,6 +26,7 @@ import {
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { getRequestingNetworkInfo } from '../../../selectors';
+import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';
 
@@ -43,6 +44,7 @@ const PermissionCell = ({
   hideStatus,
   accounts,
   chainIds,
+  caipChainIds,
 }) => {
   const infoIcon = IconName.Info;
   let infoIconColor = IconColor.iconMuted;
@@ -70,9 +72,41 @@ const PermissionCell = ({
     permissionIcon = avatarIcon.props.iconName;
   }
 
-  const networksInfo = useSelector((state) =>
+  // Get EVM network info from hex chain IDs (legacy fallback)
+  const evmNetworksInfo = useSelector((state) =>
     getRequestingNetworkInfo(state, chainIds),
   );
+
+  // Get all multichain network configurations (EVM and non-EVM) by CAIP chain ID
+  const allMultichainNetworks = useSelector(
+    getAllMultichainNetworkConfigurations,
+  );
+
+  // Get multichain network info from CAIP chain IDs (includes non-EVM networks)
+  const multichainNetworksInfo = React.useMemo(() => {
+    if (!caipChainIds || caipChainIds.length === 0) {
+      return null; // Return null to indicate caipChainIds was not provided
+    }
+    return caipChainIds
+      .map((caipChainId) => {
+        const network = allMultichainNetworks[caipChainId];
+        if (network) {
+          return { ...network, caipChainId };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  }, [caipChainIds, allMultichainNetworks]);
+
+  // Use multichain networks if caipChainIds was provided, otherwise fall back to EVM networks
+  const networksInfo = React.useMemo(() => {
+    // If caipChainIds was provided, use multichain networks exclusively
+    if (multichainNetworksInfo !== null) {
+      return multichainNetworksInfo;
+    }
+    // Fall back to EVM networks for legacy flows
+    return evmNetworksInfo || [];
+  }, [evmNetworksInfo, multichainNetworksInfo]);
 
   return (
     <Box
@@ -172,6 +206,8 @@ PermissionCell.propTypes = {
   hideStatus: PropTypes.bool,
   accounts: PropTypes.array,
   chainIds: PropTypes.array,
+  /** CAIP chain IDs for multichain display (e.g., 'solana:...') */
+  caipChainIds: PropTypes.array,
 };
 
 export default PermissionCell;

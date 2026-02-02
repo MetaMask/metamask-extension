@@ -18,10 +18,79 @@ import {
   useTrustSignal,
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
+import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
+import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/constants';
+import { useAsyncResult } from '../../../../hooks/useAsync';
+import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+
+function isZeroAmount(amount: string | number | undefined): boolean {
+  return amount === '0' || amount === 0;
+}
+
+enum AlertSkipReason {
+  None = 'none',
+  ZeroValue = 'zero-value',
+  ZeroValueUnlessNFT = 'zero-value-unless-nft',
+}
+
+function getAlertSkipReason(
+  currentConfirmation: TransactionMeta | SignatureRequestType | undefined,
+): AlertSkipReason {
+  if (!currentConfirmation) {
+    return AlertSkipReason.None;
+  }
+
+  // Approval transactions
+  const transactionMeta = currentConfirmation as TransactionMeta;
+  const txData = transactionMeta.txParams?.data;
+
+  if (txData) {
+    const approvalData = parseApprovalTransactionData(txData as `0x${string}`);
+    if (approvalData?.isRevokeAll) {
+      return AlertSkipReason.ZeroValue;
+    }
+    if (approvalData?.amountOrTokenId?.isZero()) {
+      return AlertSkipReason.ZeroValueUnlessNFT;
+    }
+    return AlertSkipReason.None;
+  }
+
+  // Permit signatures
+  if (
+    !isSignatureTransactionType(currentConfirmation) ||
+    currentConfirmation.type !== 'eth_signTypedData'
+  ) {
+    return AlertSkipReason.None;
+  }
+
+  const signatureRequest = currentConfirmation as SignatureRequestType;
+  const msgData = signatureRequest.msgParams?.data as string;
+  if (!msgData) {
+    return AlertSkipReason.None;
+  }
+
+  const { primaryType, message, domain } = parseTypedDataMessage(msgData);
+  const isPermit = PRIMARY_TYPES_PERMIT.some((type) => type === primaryType);
+  if (!isPermit) {
+    return AlertSkipReason.None;
+  }
+
+  const isDaiPermit =
+    domain?.verifyingContract?.toLowerCase() ===
+    DAI_CONTRACT_ADDRESS.toLowerCase();
+
+  const isZeroValuePermit = isDaiPermit
+    ? message?.allowed === false // DAI uses `allowed` boolean
+    : isZeroAmount(message?.value); // Standard EIP-2612 uses `value`
+
+  return isZeroValuePermit ? AlertSkipReason.ZeroValue : AlertSkipReason.None;
+}
 
 /**
  * Hook to generate alerts for spender addresses in approval transactions and permit signatures.
  * Supports both warning and malicious states using the trust signals system.
+ * Skips alerts for zero-value operations (revocations or zero-amount permits) since they pose no risk.
  *
  * @returns Array of alerts for spender addresses
  */
@@ -29,14 +98,79 @@ export function useSpenderAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
+  const { alertSkipReason, tokenAddressOverride } = useMemo(() => {
+    const reason = getAlertSkipReason(currentConfirmation);
+
+    if (reason === AlertSkipReason.ZeroValueUnlessNFT && currentConfirmation) {
+      const transactionMeta = currentConfirmation as TransactionMeta;
+      const txData = transactionMeta.txParams?.data;
+      if (txData) {
+        const approvalData = parseApprovalTransactionData(
+          txData as `0x${string}`,
+        );
+        if (approvalData?.tokenAddress) {
+          return {
+            alertSkipReason: reason,
+            tokenAddressOverride: approvalData.tokenAddress,
+          };
+        }
+      }
+    }
+
+    return { alertSkipReason: reason, tokenAddressOverride: undefined };
+  }, [currentConfirmation]);
+
+  const { isNFT: isNFTFromTxTo, pending: isNFTPendingFromTxTo } = useIsNFT(
+    currentConfirmation as TransactionMeta,
+  );
+
+  const transactionMeta = currentConfirmation as TransactionMeta;
+  const { value: tokenDetails, pending: isTokenDetailsPending } =
+    useAsyncResult(async () => {
+      if (!tokenAddressOverride) {
+        return null;
+      }
+      return await getTokenStandardAndDetailsByChain(
+        tokenAddressOverride,
+        transactionMeta?.txParams?.from as string,
+        undefined,
+        transactionMeta?.chainId as string,
+      );
+    }, [
+      tokenAddressOverride,
+      transactionMeta?.txParams?.from,
+      transactionMeta?.chainId,
+    ]);
+
+  const isSafeToSkipAlert = useMemo(() => {
+    if (alertSkipReason === AlertSkipReason.ZeroValue) {
+      return true;
+    }
+    if (alertSkipReason === AlertSkipReason.ZeroValueUnlessNFT) {
+      if (tokenAddressOverride) {
+        const isNFT = tokenDetails?.standard !== TokenStandard.ERC20;
+        return !isTokenDetailsPending && !isNFT;
+      }
+      return !isNFTPendingFromTxTo && !isNFTFromTxTo;
+    }
+    return false;
+  }, [
+    alertSkipReason,
+    tokenAddressOverride,
+    tokenDetails,
+    isTokenDetailsPending,
+    isNFTFromTxTo,
+    isNFTPendingFromTxTo,
+  ]);
+
   const spenderAddress = useMemo(() => {
     if (!currentConfirmation) {
       return null;
     }
 
     // Handle approval transactions
-    const transactionMeta = currentConfirmation as TransactionMeta;
-    const txData = transactionMeta.txParams?.data;
+    const txMeta = currentConfirmation as TransactionMeta;
+    const txData = txMeta.txParams?.data;
 
     if (txData) {
       const approvalData = parseApprovalTransactionData(
@@ -58,8 +192,7 @@ export function useSpenderAlerts(): Alert[] {
         const typedDataMessage = parseTypedDataMessage(msgData);
         const { primaryType } = typedDataMessage;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
+        if (PRIMARY_TYPES_PERMIT.some((type) => type === primaryType)) {
           return typedDataMessage.message?.spender || null;
         }
       }
@@ -75,7 +208,7 @@ export function useSpenderAlerts(): Alert[] {
   );
 
   return useMemo(() => {
-    if (!spenderAddress) {
+    if (!spenderAddress || isSafeToSkipAlert) {
       return [];
     }
 
@@ -104,5 +237,5 @@ export function useSpenderAlerts(): Alert[] {
     }
 
     return alerts;
-  }, [spenderAddress, trustSignalDisplayState, t]);
+  }, [spenderAddress, isSafeToSkipAlert, trustSignalDisplayState, t]);
 }

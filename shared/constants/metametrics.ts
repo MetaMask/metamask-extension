@@ -783,6 +783,14 @@ export enum MetaMetricsEventName {
   NetworkConnectionBannerRpcUpdated = 'Network Connection Banner RPC Updated',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
+  StorageErrorToastViewed = 'Storage Error Toast Viewed',
+  StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
+  StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  StateMigrationSucceeded = 'State Migration Succeeded',
+  StateMigrationFailed = 'State Migration Failed',
+  VaultCorruptionDetected = 'Vault Corruption Detected',
+  VaultCorruptionRestoreWalletScreenViewed = 'Vault Corruption Restore Wallet Screen Viewed',
+  VaultCorruptionRestoreWalletButtonPressed = 'Vault Corruption Restore Wallet Button Pressed',
   ViewPermissionedNetworks = 'View Permissioned Networks',
   ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
@@ -1049,6 +1057,7 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
+  StateMigration = 'State Migration',
   Banner = 'Banner',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
