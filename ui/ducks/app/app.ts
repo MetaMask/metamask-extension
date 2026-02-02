@@ -144,7 +144,7 @@ type AppState = {
      */
     hasUserInteractedWithModal?: boolean;
   };
-  pendingHardwareSigning: boolean;
+  pendingHardwareWalletSigning: boolean;
 };
 
 export type AppSliceState = {
@@ -246,7 +246,7 @@ const initialState: AppState = {
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
-  pendingHardwareSigning: false,
+  pendingHardwareWalletSigning: false,
 };
 
 export default function reduceApp(
@@ -802,10 +802,10 @@ export default function reduceApp(
         },
       };
 
-    case actionConstants.SET_PENDING_HARDWARE_SIGNING:
+    case actionConstants.SET_PENDING_HARDWARE_WALLET_SIGNING:
       return {
         ...appState,
-        pendingHardwareSigning: action.payload,
+        pendingHardwareWalletSigning: action.payload,
       };
 
     default:

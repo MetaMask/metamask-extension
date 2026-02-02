@@ -205,8 +205,8 @@ export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
 
-export function getPendingHardwareSigning(state) {
-  return state.appState.pendingHardwareSigning;
+export function getPendingHardwareWalletSigning(state) {
+  return state.appState.pendingHardwareWalletSigning;
 }
 
 /**

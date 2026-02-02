@@ -164,7 +164,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
           setDisplayedError(null);
           dispatch(hideModal());
         }
-        // Clear pendingHardwareSigning and close the popup
+        // Clear pendingHardwareWalletSigning and close the popup
         dispatch(setPendingHardwareWalletSigning(false));
         dispatch(closeCurrentNotificationWindow());
         return;
@@ -222,7 +222,11 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
 
     // Reset state when not a hardware wallet account (for auto-shown modals only)
     if (!isHardwareWalletAccount && displayedError) {
-      resetModalState();
+      setDisplayedError(null);
+      if (isModalOpenRef.current) {
+        isModalOpenRef.current = false;
+        dispatch(hideModal());
+      }
       return;
     }
 
@@ -257,7 +261,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     showErrorModalInternal,
     dispatch,
     displayedError,
-    resetModalState,
   ]);
 
   /**
