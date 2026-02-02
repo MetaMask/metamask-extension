@@ -17,7 +17,7 @@ import {
   LedgerIframeBridge,
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
-import { secp256k1 } from '@noble/curves/secp256k1';
+import { p256 } from '@noble/curves/nist';
 import { sha256 } from '@noble/hashes/sha2';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -44,7 +44,7 @@ function base64UrlEncode(data: Uint8Array | string): string {
 
 /**
  * Extract raw private key bytes from a PEM-encoded EC private key.
- * Parses the DER structure to find the 32-byte private key for secp256k1.
+ * Parses the DER structure to find the 32-byte private key for P-256 (secp256r1).
  *
  * @param pem - PEM-encoded EC private key string
  * @returns 32-byte Uint8Array containing the raw private key
@@ -103,7 +103,7 @@ function pemToPrivateKeyBytes(pem: string): Uint8Array {
 }
 
 /**
- * Synchronously sign a JWT using ES256K (secp256k1)
+ * Synchronously sign a JWT using ES256 (P-256/secp256r1)
  *
  * @param payload
  * @param privateKeyBytes
@@ -112,7 +112,7 @@ function signJwtSync(
   payload: Record<string, unknown>,
   privateKeyBytes: Uint8Array,
 ): string {
-  const header = { alg: 'ES256K', typ: 'JWT' };
+  const header = { alg: 'ES256', typ: 'JWT' };
 
   const encodedHeader = base64UrlEncode(JSON.stringify(header));
   const encodedPayload = base64UrlEncode(JSON.stringify(payload));
@@ -121,8 +121,8 @@ function signJwtSync(
   // Hash the message
   const messageHash = sha256(new TextEncoder().encode(message));
 
-  // Sign synchronously with secp256k1
-  const signature = secp256k1.sign(messageHash, privateKeyBytes);
+  // Sign synchronously with P-256
+  const signature = p256.sign(messageHash, privateKeyBytes);
 
   // Convert signature to compact format (r || s)
   const encodedSignature = base64UrlEncode(signature.toCompactRawBytes());
