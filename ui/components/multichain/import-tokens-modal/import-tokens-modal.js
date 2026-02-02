@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker-link';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
+import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -371,7 +372,7 @@ export const ImportTokensModal = ({ onClose }) => {
             source_connection_method: pendingToken.isCustom
               ? MetaMetricsTokenEventSource.Custom
               : MetaMetricsTokenEventSource.List,
-            token_standard: isNonEvm ? TokenStandard.none : TokenStandard.ERC20,
+            token_standard: isNonEvm ? TokenStandard.none : ERC20,
             asset_type: AssetType.token,
           },
         });
@@ -692,8 +693,7 @@ export const ImportTokensModal = ({ onClose }) => {
         setShowSymbolAndDecimals(false);
         break;
 
-      case standard === TokenStandard.ERC1155 ||
-        standard === TokenStandard.ERC721:
+      case standard === ERC1155 || standard === ERC721:
         setNftAddressError(
           t('nftAddressError', [
             <ButtonLink

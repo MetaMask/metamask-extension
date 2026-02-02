@@ -18,11 +18,8 @@ import type { Provider } from '@metamask/network-controller';
 
 import { Hex, JsonRpcParams } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import {
-  APPROVAL_METHOD_NAMES,
-  AssetType,
-  TokenStandard,
-} from '../constants/transaction';
+import { ERC20 } from '@metamask/controller-utils';
+import { APPROVAL_METHOD_NAMES, AssetType } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -304,9 +301,7 @@ export async function determineTransactionAssetType(
       if (details.standard) {
         return {
           assetType:
-            details.standard === TokenStandard.ERC20
-              ? AssetType.token
-              : AssetType.NFT,
+            details.standard === ERC20 ? AssetType.token : AssetType.NFT,
           tokenStandard: details.standard,
         };
       }

@@ -9,7 +9,6 @@ import {
 } from '@metamask/transaction-controller';
 import { Json, add0x, createProjectLogger } from '@metamask/utils';
 import { Hex } from 'viem';
-import { ERC20 } from '@metamask/controller-utils';
 import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
@@ -27,6 +26,7 @@ import {
 import {
   EIP5792ErrorCode,
   NATIVE_TOKEN_ADDRESS,
+  TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
 } from '../../../../shared/constants/transaction';
@@ -894,7 +894,7 @@ async function buildEventFragmentProperties({
     );
     if (
       transactionContractMethod === contractMethodNames.APPROVE &&
-      tokenStandard === ERC20
+      tokenStandard === TokenStandard.ERC20
     ) {
       if (dappProposedTokenAmount === '0' || customTokenAmount === '0') {
         transactionApprovalAmountType = TransactionApprovalAmountType.revoke;
