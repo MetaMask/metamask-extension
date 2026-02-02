@@ -8739,19 +8739,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "@metamask/subscription-controller@npm:5.4.1"
+"@metamask/subscription-controller@npm:^5.4.2":
+  version: 5.4.2
+  resolution: "@metamask/subscription-controller@npm:5.4.2"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^16.0.2"
     "@metamask/profile-sync-controller": "npm:^27.0.0"
-    "@metamask/transaction-controller": "npm:^62.9.2"
+    "@metamask/transaction-controller": "npm:^62.12.0"
     "@metamask/utils": "npm:^11.9.0"
     bignumber.js: "npm:^9.1.2"
-  checksum: 10/a44b012489ac01f5ae2f2b3a6ad492374f0a45b1b27e6ff64607005b1511162fd841e0b3e97dd088781ab42921c5bbabba828c714e71d54321e6f0f61eaeda74
+  checksum: 10/ac7971db705f2348445ab00ea45db60c1beaca9b71b5f225b0bcc5810dbaad1e625c7efe72c7d1dc546de01f199c33d3d9b5179f62a6220b8e794a9b06884279
   languageName: node
   linkType: hard
 
@@ -8851,7 +8851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.8.0, @metamask/transaction-controller@npm:^62.9.1, @metamask/transaction-controller@npm:^62.9.2":
+"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.8.0, @metamask/transaction-controller@npm:^62.9.1, @metamask/transaction-controller@npm:^62.9.2":
   version: 62.12.0
   resolution: "@metamask/transaction-controller@npm:62.12.0"
   dependencies:
@@ -33726,7 +33726,7 @@ __metadata:
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/storage-service": "npm:^0.0.1"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^5.4.1"
+    "@metamask/subscription-controller": "npm:^5.4.2"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
