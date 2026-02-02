@@ -3,166 +3,122 @@ import { migrate, version } from './191';
 const VERSION = version;
 const oldVersion = VERSION - 1;
 
-describe(`migration #${VERSION}`, () => {
+describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {},
     };
-
     const changedControllers = new Set<string>();
+
     await migrate(oldStorage, changedControllers);
 
-    expect(oldStorage.meta.version).toBe(VERSION);
+    expect(oldStorage.meta).toStrictEqual({ version });
   });
 
-  it('moves firstTimeInfo from top-level state to AppMetadataController', async () => {
-    const firstTimeInfo = {
-      version: '10.0.0',
-      date: 1700000000000,
+  it('does nothing if TokenListController state does not exist', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {},
     };
+    const changedControllers = new Set<string>();
 
+    await migrate(oldStorage, changedControllers);
+
+    expect(oldStorage.data).toStrictEqual({});
+    expect(changedControllers.size).toBe(0);
+  });
+
+  it('does nothing if TokenListController state is not an object', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        firstTimeInfo,
-        AppMetadataController: {
-          currentAppVersion: '11.0.0',
-          previousAppVersion: '10.0.0',
+        TokenListController: 'not an object',
+      },
+    };
+    const changedControllers = new Set<string>();
+
+    await migrate(oldStorage, changedControllers);
+
+    expect(oldStorage.data.TokenListController).toBe('not an object');
+    expect(changedControllers.size).toBe(0);
+  });
+
+  it('does nothing if preventPollingOnNetworkRestart does not exist', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        TokenListController: {
+          someOtherProperty: 'value',
         },
       },
     };
-
     const changedControllers = new Set<string>();
+
     await migrate(oldStorage, changedControllers);
 
-    expect(oldStorage.data.firstTimeInfo).toBeUndefined();
-    expect(oldStorage.data.AppMetadataController).toStrictEqual({
-      currentAppVersion: '11.0.0',
-      previousAppVersion: '10.0.0',
-      firstTimeInfo,
+    expect(oldStorage.data.TokenListController).toStrictEqual({
+      someOtherProperty: 'value',
     });
-    expect(changedControllers.has('AppMetadataController')).toBe(true);
-    // firstTimeInfo must be in changedControllers so it gets deleted in split storage mode
-    expect(changedControllers.has('firstTimeInfo')).toBe(true);
+    expect(changedControllers.size).toBe(0);
   });
 
-  it('creates AppMetadataController if it does not exist', async () => {
-    const firstTimeInfo = {
-      version: '10.0.0',
-      date: 1700000000000,
-    };
-
+  it('removes preventPollingOnNetworkRestart from TokenListController state', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        firstTimeInfo,
-      } as Record<string, unknown>,
-    };
-
-    const changedControllers = new Set<string>();
-    await migrate(oldStorage, changedControllers);
-
-    expect(oldStorage.data.firstTimeInfo).toBeUndefined();
-    expect(oldStorage.data.AppMetadataController).toStrictEqual({
-      firstTimeInfo,
-    });
-    expect(changedControllers.has('AppMetadataController')).toBe(true);
-    // firstTimeInfo must be in changedControllers so it gets deleted in split storage mode
-    expect(changedControllers.has('firstTimeInfo')).toBe(true);
-  });
-
-  it('does nothing if firstTimeInfo does not exist', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        AppMetadataController: {
-          currentAppVersion: '11.0.0',
+        TokenListController: {
+          preventPollingOnNetworkRestart: false,
+          someOtherProperty: 'value',
         },
       },
     };
-
     const changedControllers = new Set<string>();
+
     await migrate(oldStorage, changedControllers);
 
-    expect(oldStorage.data.AppMetadataController).toStrictEqual({
-      currentAppVersion: '11.0.0',
+    expect(oldStorage.data.TokenListController).toStrictEqual({
+      someOtherProperty: 'value',
     });
-    expect(changedControllers.has('AppMetadataController')).toBe(false);
+    expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
-  it('deletes invalid firstTimeInfo without version string', async () => {
+  it('removes preventPollingOnNetworkRestart when it is true', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        firstTimeInfo: {
-          version: 123, // should be string
-          date: 1700000000000,
-        },
-        AppMetadataController: {
-          currentAppVersion: '11.0.0',
+        TokenListController: {
+          preventPollingOnNetworkRestart: true,
         },
       },
     };
-
     const changedControllers = new Set<string>();
+
     await migrate(oldStorage, changedControllers);
 
-    expect(oldStorage.data.firstTimeInfo).toBeUndefined();
-    expect(oldStorage.data.AppMetadataController).toStrictEqual({
-      currentAppVersion: '11.0.0',
-    });
-    expect(changedControllers.has('AppMetadataController')).toBe(false);
-    // firstTimeInfo must be in changedControllers so it gets deleted in split storage mode
-    expect(changedControllers.has('firstTimeInfo')).toBe(true);
+    expect(oldStorage.data.TokenListController).toStrictEqual({});
+    expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
-  it('deletes invalid firstTimeInfo without date number', async () => {
+  it('preserves other TokenListController state properties', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
-        firstTimeInfo: {
-          version: '10.0.0',
-          date: 'invalid', // should be number
-        },
-        AppMetadataController: {
-          currentAppVersion: '11.0.0',
+        TokenListController: {
+          preventPollingOnNetworkRestart: false,
+          tokensChainsCache: {},
+          anotherProperty: 123,
         },
       },
     };
-
     const changedControllers = new Set<string>();
+
     await migrate(oldStorage, changedControllers);
 
-    expect(oldStorage.data.firstTimeInfo).toBeUndefined();
-    expect(oldStorage.data.AppMetadataController).toStrictEqual({
-      currentAppVersion: '11.0.0',
+    expect(oldStorage.data.TokenListController).toStrictEqual({
+      tokensChainsCache: {},
+      anotherProperty: 123,
     });
-    expect(changedControllers.has('AppMetadataController')).toBe(false);
-    // firstTimeInfo must be in changedControllers so it gets deleted in split storage mode
-    expect(changedControllers.has('firstTimeInfo')).toBe(true);
-  });
-
-  it('deletes firstTimeInfo if it is not an object', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        firstTimeInfo: 'invalid',
-        AppMetadataController: {
-          currentAppVersion: '11.0.0',
-        },
-      },
-    };
-
-    const changedControllers = new Set<string>();
-    await migrate(oldStorage, changedControllers);
-
-    expect(oldStorage.data.firstTimeInfo).toBeUndefined();
-    expect(oldStorage.data.AppMetadataController).toStrictEqual({
-      currentAppVersion: '11.0.0',
-    });
-    expect(changedControllers.has('AppMetadataController')).toBe(false);
-    // firstTimeInfo must be in changedControllers so it gets deleted in split storage mode
-    expect(changedControllers.has('firstTimeInfo')).toBe(true);
+    expect(changedControllers.has('TokenListController')).toBe(true);
   });
 });
