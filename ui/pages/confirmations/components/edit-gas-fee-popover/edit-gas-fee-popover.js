@@ -9,6 +9,8 @@ import {
   BoxFlexDirection,
   FontWeight,
   TextColor,
+  BoxBorderColor,
+  TextAlign,
 } from '@metamask/design-system-react';
 import {
   EditGasModes,
@@ -74,10 +76,13 @@ const EditGasFeePopoverWrapped = () => {
               <BannerAlert
                 severity={BannerAlertSeverity.Danger}
                 description={t(INSUFFICIENT_FUNDS_ERROR_KEY)}
-                className="mb-1"
+                marginBottom={1}
               />
             )}
-            <Box className="flex gap-0 mx-3 mb-0">
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              marginHorizontal={3}
+            >
               <Text
                 variant={TextVariant.BodyXs}
                 fontWeight={FontWeight.Bold}
@@ -112,18 +117,23 @@ const EditGasFeePopoverWrapped = () => {
             )}
             <EditGasItem priorityLevel={PriorityLevels.medium} />
             <EditGasItem priorityLevel={PriorityLevels.high} />
-            <Box className="border-t border-default my-2 mx-3" />
+            <Box
+              className="border-t"
+              borderColor={BoxBorderColor.BorderDefault}
+              marginVertical={2}
+              marginHorizontal={3}
+            />
             {editGasMode === EditGasModes.modifyInPlace && (
               <EditGasItem priorityLevel={PriorityLevels.dAppSuggested} />
             )}
             <EditGasItem priorityLevel={PriorityLevels.custom} />
           </Box>
-          <Box flexDirection={BoxFlexDirection.Column} className="mt-9">
+          <Box flexDirection={BoxFlexDirection.Column} marginTop={9}>
             <NetworkStatistics />
             <Text
               variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
-              className="text-center"
+              textAlign={TextAlign.Center}
             >
               {t('learnMoreAboutGas', [
                 <TextButton asChild key="learnMoreLink" className="inline">
