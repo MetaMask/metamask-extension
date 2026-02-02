@@ -4168,11 +4168,11 @@ export function hideLoadingIndication(): Action {
   };
 }
 
-export function setPendingHardwareSigning(
+export function setPendingHardwareWalletSigning(
   isPending: boolean,
 ): PayloadAction<boolean> {
   return {
-    type: actionConstants.SET_PENDING_HARDWARE_SIGNING,
+    type: actionConstants.SET_PENDING_HARDWARE_WALLET_SIGNING,
     payload: isPending,
   };
 }

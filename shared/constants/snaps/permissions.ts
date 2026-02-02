@@ -6,6 +6,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:rpc': 'endowment:rpc',
   'endowment:webassembly': 'endowment:webassembly',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
+  'endowment:multichain-provider': 'endowment:multichain-provider',
   'endowment:page-home': 'endowment:page-home',
   'endowment:page-settings': 'endowment:page-settings',
   'endowment:signature-insight': 'endowment:signature-insight',
