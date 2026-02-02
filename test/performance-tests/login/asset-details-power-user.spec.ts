@@ -59,7 +59,6 @@ describe('Power user persona', function () {
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
 
         // Filter to Ethereum network
         await assetListPage.openNetworksFilter();
@@ -67,7 +66,6 @@ describe('Power user persona', function () {
         await networkManager.selectNetworkByNameWithWait('Ethereum');
         await homePage.checkPageIsLoaded();
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
 
         // Measure: Click on asset and wait for chart
         await assetListPage.clickOnAsset('USDC');

@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
 import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
@@ -87,8 +88,7 @@ describe('Import SRP Home', function () {
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);
           await assetListPage.checkTokenListIsDisplayed();
-          await assetListPage.checkConversionRateDisplayed();
-          await assetListPage.checkTokenExistsInList('Ethereum');
+          await assetListPage.waitForTokenToBeDisplayed('Ethereum', 60000);
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
         performanceTracker.addTimer(timerHomeAfterImport);

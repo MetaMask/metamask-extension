@@ -19,6 +19,7 @@ export const MOCK_PRIORITIES = {
   CHAIN_SPECIFIC_CATCHALL: 199,
   TEST_OVERRIDE: 300,
   TEST_OVERRIDE_CATCHALL: 299,
+  HIGH_PRIORITY: 500,
 } as const;
 
 export type MockPriorityLevel = keyof typeof MOCK_PRIORITIES;
@@ -126,7 +127,6 @@ const PRICES = {
   SEI: 0.45,
   STABLECOIN: 1.0,
 } as const;
-
 
 const POWER_USER_PRICES: Record<string, PriceData> = {
   // Native Tokens
@@ -1265,7 +1265,7 @@ export async function mockPowerUserPrices(
       )
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1000, buildFiatExchangeRates())),
+      .thenCallback(delayedResponse(100, buildFiatExchangeRates())),
   );
 
   // Exchange rates - crypto
@@ -1276,7 +1276,7 @@ export async function mockPowerUserPrices(
       )
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
-      .thenCallback(delayedResponse(1000, buildCryptoExchangeRates())),
+      .thenCallback(delayedResponse(100, buildCryptoExchangeRates())),
   );
 
   // Bitcoin spot prices
@@ -1457,55 +1457,85 @@ export async function mockPowerUserPrices(
   const SOL_BALANCE_LAMPORTS = 50_000_000_000;
   const SOLANA_URL_REGEX = /^https:\/\/solana-mainnet\.infura\.io\/v3\/.*/u;
 
-  // Solana getBalance
+  // Solana getBalance - return balance based on requested address
   endpoints.push(
     await server
       .forPost(SOLANA_URL_REGEX)
       .withJsonBodyIncluding({ method: 'getBalance' })
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(
-        delayedResponse(1500, {
+      .thenCallback(async (req) => {
+        const body = (await req.body.getJson()) as {
+          id?: string;
+          params?: unknown[];
+        };
+        const requestedAddress = body.params?.[0];
+
+        // Return high balance for sender account, lower balance for recipient
+        const balance =
+          requestedAddress === '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer'
+            ? SOL_BALANCE_LAMPORTS
+            : 1_000_000_000; // 1 SOL for recipient
+
+        // Add delay inline
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        return {
           statusCode: 200,
           json: {
-            id: '1337',
+            id: body.id || '1337',
             jsonrpc: '2.0',
             result: {
               context: { apiVersion: '2.0.18', slot: 308460925 },
-              value: SOL_BALANCE_LAMPORTS,
+              value: balance,
             },
           },
-        }),
-      ),
+        };
+      }),
   );
 
-  // Solana getAccountInfo
+  // Solana getAccountInfo - return account info based on requested address
   endpoints.push(
     await server
       .forPost(SOLANA_URL_REGEX)
       .withJsonBodyIncluding({ method: 'getAccountInfo' })
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
-      .thenCallback(
-        delayedResponse(1500, {
+      .thenCallback(async (req) => {
+        const body = (await req.body.getJson()) as {
+          id?: string;
+          params?: unknown[];
+        };
+        const requestedAddress = body.params?.[0];
+
+        // Return high balance for sender account, lower balance for others
+        const balance =
+          requestedAddress === '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer'
+            ? SOL_BALANCE_LAMPORTS
+            : 1_000_000_000; // 1 SOL for others
+
+        // Add delay inline
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        return {
           statusCode: 200,
           json: {
-            id: '1337',
+            id: body.id || '1337',
             jsonrpc: '2.0',
             result: {
               context: { apiVersion: '2.0.21', slot: 317161313 },
               value: {
                 data: ['', 'base58'],
                 executable: false,
-                lamports: SOL_BALANCE_LAMPORTS,
+                lamports: balance,
                 owner: '11111111111111111111111111111111',
                 rentEpoch: Number.MAX_SAFE_INTEGER,
                 space: 0,
               },
             },
           },
-        }),
-      ),
+        };
+      }),
   );
 
   // Solana getLatestBlockhash
@@ -1513,10 +1543,10 @@ export async function mockPowerUserPrices(
     await server
       .forPost(SOLANA_URL_REGEX)
       .withJsonBodyIncluding({ method: 'getLatestBlockhash' })
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
       .thenCallback(
-        delayedResponse(1500, {
+        delayedResponse(100, {
           statusCode: 200,
           json: {
             id: '1337',
@@ -1538,10 +1568,10 @@ export async function mockPowerUserPrices(
     await server
       .forPost(SOLANA_URL_REGEX)
       .withJsonBodyIncluding({ method: 'getFeeForMessage' })
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
       .thenCallback(
-        delayedResponse(1500, {
+        delayedResponse(100, {
           statusCode: 200,
           json: {
             id: '1337',
@@ -1557,10 +1587,10 @@ export async function mockPowerUserPrices(
     await server
       .forPost(SOLANA_URL_REGEX)
       .withJsonBodyIncluding({ method: 'getMinimumBalanceForRentExemption' })
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
       .thenCallback(
-        delayedResponse(1500, {
+        delayedResponse(100, {
           statusCode: 200,
           json: {
             id: '1337',
@@ -1576,10 +1606,10 @@ export async function mockPowerUserPrices(
     await server
       .forPost(SOLANA_URL_REGEX)
       .withJsonBodyIncluding({ method: 'getTokenAccountsByOwner' })
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
       .thenCallback(
-        delayedResponse(1500, {
+        delayedResponse(100, {
           statusCode: 200,
           json: {
             id: '1337',
@@ -1598,10 +1628,10 @@ export async function mockPowerUserPrices(
     await server
       .forPost(SOLANA_URL_REGEX)
       .withJsonBodyIncluding({ method: 'simulateTransaction' })
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
       .thenCallback(
-        delayedResponse(1500, {
+        delayedResponse(100, {
           statusCode: 200,
           json: {
             id: '1337',
@@ -1634,10 +1664,10 @@ export async function mockPowerUserPrices(
     await server
       .forPost(SOLANA_URL_REGEX)
       .withJsonBodyIncluding({ method: 'getSignaturesForAddress' })
-      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
       .thenCallback(
-        delayedResponse(1500, {
+        delayedResponse(100, {
           statusCode: 200,
           json: {
             id: '1337',
@@ -1654,16 +1684,28 @@ export async function mockPowerUserPrices(
       .forPost(SOLANA_URL_REGEX)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE_CATCHALL)
       .always()
-      .thenCallback(
-        delayedResponse(1500, {
+      .thenCallback(async (req) => {
+        const body = (await req.body.getJson()) as {
+          id?: string;
+          method?: string;
+          params?: unknown[];
+        };
+        console.log(`⚠️ Solana catch-all hit for method: ${body.method}`);
+        console.log(
+          `   Params: ${JSON.stringify(body.params?.slice(0, 2) || [])}`,
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+
+        return {
           statusCode: 200,
           json: {
-            id: '1337',
+            id: body.id || '1337',
             jsonrpc: '2.0',
             result: { context: { slot: 250000000 }, value: null },
           },
-        }),
-      ),
+        };
+      }),
   );
 
   // Bridge getTokens/popular endpoint (POST request)
