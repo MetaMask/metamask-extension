@@ -1,12 +1,7 @@
 import { cloneDeep } from 'lodash';
-import { RpcEndpointType, NetworkStatus } from '@metamask/network-controller';
-import { SubjectType } from '@metamask/permission-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import type { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { ThemeType } from '../../../shared/constants/preferences';
 import onboardingFixtureJson from './onboarding-fixture.json';
 
 /**
@@ -133,45 +128,15 @@ export const defaultFixture = {
       },
     },
     dismissSeedBackUpReminder: true,
-    useExternalServices: true,
-    overrideContentSecurityPolicyHeader: true,
-    ipfsGateway: 'dweb.link',
-    ledgerTransportType: LedgerTransportTypes.webhid,
     openSeaEnabled: false,
-    useBlockie: false,
     useNftDetection: false,
-    usePhishDetect: true,
     useTokenDetection: false,
-    useCurrencyRateCheck: true,
-    useMultiAccountBalanceChecker: true,
-    isMultiAccountBalancesEnabled: true,
-    theme: ThemeType.light,
     preferences: {
-      hideZeroBalanceTokens: false,
-      showExtensionInFullSizeView: false,
-      showFiatInTestnets: false,
-      showTestNetworks: false,
-      smartTransactionsOptInStatus: true,
       showNativeTokenAsMainBalance: true,
-      petnamesEnabled: true,
-      showMultiRpcModal: false,
-      showConfirmationAdvancedDetails: false,
-      tokenSortConfig: {
-        key: 'tokenFiatAmount',
-        order: 'dsc',
-        sortCallback: 'stringNumeric',
-      },
-      shouldShowAggregatedBalancePopover: true,
-      tokenNetworkFilter: {},
-      avatarType: 'maskicon',
-    },
-    referrals: {
-      hyperliquid: {},
     },
   },
 
   AppStateController: {
-    connectedStatusPopoverHasBeenShown: true,
     // Note: These are placeholder strings that get replaced at runtime with actual timestamps
     termsOfUseLastAgreed:
       '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds' as unknown as number,
@@ -182,8 +147,6 @@ export const defaultFixture = {
     snapsInstallPrivacyWarningShown: true,
     hasShownMultichainAccountsIntroModal: true,
     showShieldEntryModalOnce: false,
-    pendingShieldCohort: null,
-    pendingShieldCohortTxType: null,
     appActiveTab: {
       id: 1,
       title: 'E2E Test Dapp',
@@ -195,19 +158,7 @@ export const defaultFixture = {
     },
   },
 
-  MetaMetricsController: {
-    eventsBeforeMetricsOptIn: [],
-    tracesBeforeMetricsOptIn: [],
-    participateInMetaMetrics: false,
-    dataCollectionForMarketing: false,
-    fragments: {},
-    metaMetricsId: null,
-    traits: {},
-    latestNonAnonymousEventTimestamp: 0,
-  },
-
   CurrencyController: {
-    currentCurrency: 'usd',
     currencyRates: {
       ETH: {
         conversionDate: 1665507600.0,
@@ -220,73 +171,6 @@ export const defaultFixture = {
         usdConversionRate: 0.2,
       },
     },
-  },
-
-  GasFeeController: {
-    estimatedGasFeeTimeBounds: {},
-    gasEstimateType: GasEstimateTypes.none,
-    gasFeeEstimates: {},
-  },
-
-  TokensController: {
-    allDetectedTokens: {},
-    allIgnoredTokens: {},
-    allTokens: {},
-  },
-
-  TransactionController: {
-    transactions: [],
-  },
-
-  SmartTransactionsController: {
-    smartTransactionsState: {
-      fees: {},
-      feesByChainId: {},
-      liveness: true,
-      livenessByChainId: {},
-      smartTransactions: {
-        [CHAIN_IDS.MAINNET]: [],
-      },
-    },
-  },
-
-  SubjectMetadataController: {
-    subjectMetadata: {
-      'https://metamask.github.io': {
-        extensionId: null,
-        iconUrl: null,
-        name: 'MetaMask < = > Ledger Bridge',
-        origin: 'https://metamask.github.io',
-        subjectType: SubjectType.Website,
-      },
-    },
-  },
-
-  PermissionController: {
-    subjects: {},
-  },
-
-  SelectedNetworkController: {
-    domains: {},
-  },
-
-  AnnouncementController: {
-    announcements: {
-      8: {
-        date: '2021-11-01',
-        id: 8,
-        isShown: false,
-      },
-    },
-  },
-
-  NotificationServicesController: {
-    subscriptionAccountsSeen: [],
-    isFeatureAnnouncementsEnabled: false,
-    isNotificationServicesEnabled: false,
-    isMetamaskNotificationsFeatureSeen: false,
-    metamaskNotificationsList: [],
-    metamaskNotificationsReadList: [],
   },
 } as const;
 
