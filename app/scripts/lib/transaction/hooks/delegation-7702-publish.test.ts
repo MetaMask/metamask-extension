@@ -363,7 +363,9 @@ describe('Delegation 7702 Publish Hook', () => {
       TRANSACTION_META_MOCK.txParams.maxFeePerGas,
     );
     // Verify the update reason
-    expect(updateCall[1]).toBe('Remove nonce for EIP-7702 delegation transaction');
+    expect(updateCall[1]).toBe(
+      'Remove nonce for EIP-7702 delegation transaction',
+    );
   });
 
   it('throws if relay status is not success', async () => {
