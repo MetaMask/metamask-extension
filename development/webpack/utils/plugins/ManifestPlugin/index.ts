@@ -265,7 +265,7 @@ export class ManifestPlugin<Z extends boolean> {
     const { transform } = this.options;
     const resources = this.options.web_accessible_resources;
     const baseDescription =
-      buildTypeBaseManifest?.description ?? baseManifest?.description;
+      buildTypeBaseManifest.description ?? baseManifest.description;
     const description = this.options.description
       ? `${baseDescription} – ${this.options.description}`
       : baseDescription;
