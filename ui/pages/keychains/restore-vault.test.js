@@ -158,6 +158,8 @@ describe('Restore vault Component', () => {
 
     // Wait for the async action to be called
     await waitFor(() => {
+      const restoreOnly = true;
+      expect(mockResetWallet.calledWith(restoreOnly)).toBe(true);
       expect(mockCreateNewVaultAndRestore.calledOnce).toBe(true);
     });
 
@@ -169,6 +171,7 @@ describe('Restore vault Component', () => {
     actions.unMarkPasswordForgotten.restore();
     actions.createNewVaultAndRestore.restore();
     actions.setFirstTimeFlowType.restore();
+    actions.resetWallet.restore();
 
     // Verify navigation to default route - component uses navigate, not history.push
     expect(props.navigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
