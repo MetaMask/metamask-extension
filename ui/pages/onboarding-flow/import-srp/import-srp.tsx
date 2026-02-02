@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { isValidMnemonic } from '@ethersproject/hdnode';
 import {
   AlignItems,
   BlockSize,
@@ -80,10 +79,7 @@ export default function ImportSRP({
 
   const onContinue = useCallback(() => {
     let newSrpError = '';
-    if (
-      hasUpperCase(secretRecoveryPhrase) ||
-      !isValidMnemonic(secretRecoveryPhrase)
-    ) {
+    if (hasUpperCase(secretRecoveryPhrase)) {
       newSrpError = t('invalidSeedPhraseNotFound');
     }
 
