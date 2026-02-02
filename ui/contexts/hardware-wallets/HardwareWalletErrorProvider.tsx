@@ -222,11 +222,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
 
     // Reset state when not a hardware wallet account (for auto-shown modals only)
     if (!isHardwareWalletAccount && displayedError) {
-      setDisplayedError(null);
-      if (isModalOpenRef.current) {
-        isModalOpenRef.current = false;
-        dispatch(hideModal());
-      }
+      resetModalState();
       return;
     }
 
