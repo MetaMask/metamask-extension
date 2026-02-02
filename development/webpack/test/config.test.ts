@@ -216,7 +216,7 @@ describe('./utils/config.ts', () => {
       mockRc(rcVars);
 
       const { args } = parseArgv(
-        ['--targetEnvironment', 'production'],
+        ['--targetEnvironment', 'production', '--validateEnv', 'false'],
         buildTypes,
       );
 
