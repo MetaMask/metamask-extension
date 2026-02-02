@@ -48,6 +48,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'localeMessages',
   // Timestamps and dates that change on every run
   'data.AppMetadataController.firstTimeInfo.date',
+  'data.AppMetadataController.firstTimeInfo.version',
   'data.AppStateController.newPrivacyPolicyToastShownDate',
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
