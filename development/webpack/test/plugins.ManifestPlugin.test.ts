@@ -100,6 +100,7 @@ describe('ManifestPlugin', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           web_accessible_resources: webAccessibleResources,
           ...getZipOptions(zip),
+          buildType: 'main',
         });
         manifestPlugin.apply(compiler);
         await promise;
