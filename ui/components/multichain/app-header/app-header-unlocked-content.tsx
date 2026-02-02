@@ -85,6 +85,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
+// import { GlobalMenuDrawer } from '../drawer';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -432,6 +433,13 @@ export const AppHeaderUnlockedContent = ({
             setAccountOptionsMenuOpen(false);
           }}
         />
+        {/* <GlobalMenuDrawer
+          isOpen={accountOptionsMenuOpen}
+          closeMenu={() => {
+            setAccountOptionsMenuOpen(false);
+          }}
+          anchorElement={menuRef.current}
+        /> */}
         <VisitSupportDataConsentModal
           isOpen={showSupportDataConsentModal}
           onClose={() => dispatch(setShowSupportDataConsentModal(false))}
