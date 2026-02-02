@@ -111,7 +111,7 @@ type TopAsset = {
  * @param params.chainId - The chain ID.
  * @param params.topX - The number of top assets to fetch.
  * @param params.occurrenceFloor - The occurrence floor.
- * @param params.cacheExpirationTime
+ * @param params.cacheExpirationTime - The cache expiration time in milliseconds.
  * @returns The top assets.
  */
 async function fetchTopAssets({
@@ -153,7 +153,7 @@ async function fetchTopAssets({
 
 function buildImageUrl(assetId: CaipAssetType, extension: string): string {
   const caipAssetType = parseCaipAssetType(assetId);
-  // Most of the token has migtated to v2, hence, we use v2 instead of v1.
+  // Most of the token has migrated to v2, hence, we use v2 instead of v1.
   return `${STATIC_ASSETS_URL}/api/v2/tokenIcons/assets/${caipAssetType.chain.namespace}/${caipAssetType.chain.reference}/${caipAssetType.assetNamespace}/${caipAssetType.assetReference.toLowerCase()}.${extension}`;
 }
 

@@ -41,7 +41,7 @@ export const StaticAssetsControllerInit: ControllerInitFunction<
     },
     getTopX: (): number => {
       const topX = getRemoteFeatureFlagControllerState(initMessenger)?.topX;
-      return Number(topX) ?? DEFAULT_TOP_X;
+      return topX ? Number(topX) : DEFAULT_TOP_X;
     },
     getOccurrenceFloor: (chainId: string): number => {
       const occurrenceFloor =

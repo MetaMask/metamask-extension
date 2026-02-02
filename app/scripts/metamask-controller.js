@@ -2459,8 +2459,8 @@ export default class MetamaskController extends EventEmitter {
       deFiPositionsController,
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       multichainAssetsRatesController,
-      staticAssetsController,
       ///: END:ONLY_INCLUDE_IF
+      staticAssetsController,
     } = this;
 
     return {

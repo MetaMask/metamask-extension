@@ -100,14 +100,14 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
   };
 };
 
-describe('staticAssetscontroller', () => {
+describe('StaticAssetsController', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
   });
 
   describe('_executePoll', () => {
-    it('fetchs top assets for a chain and add them to the TokensController', async () => {
+    it('fetches top assets for a chain and add them to the TokensController', async () => {
       const {
         controller,
         spies: {
@@ -364,7 +364,7 @@ describe('staticAssetscontroller', () => {
     });
 
     describe('filterIgnoredTokens', () => {
-      it('filters the tokens it they are not ignored and add them to the TokensController', async () => {
+      it('filters the tokens if they are not ignored and adds them to the TokensController', async () => {
         const {
           controller,
           spies: {
