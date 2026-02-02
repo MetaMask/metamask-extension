@@ -1,6 +1,5 @@
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { isStrictHexString, parseCaipAssetType } from '@metamask/utils';
-import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
@@ -62,7 +61,6 @@ export type StaticAssetsControllerEvents =
   StaticAssetsControllerStateChangeEvent;
 
 export type AllowedActions =
-  | AccountsControllerGetSelectedAccountAction
   | TokensControllerAddTokensAction
   | TokensControllerGetStateAction
   | NetworkControllerFindNetworkClientIdByChainIdAction;

@@ -1,13 +1,7 @@
 import type { ControllerGetStateAction } from '@metamask/base-controller';
-import { Messenger } from '@metamask/messenger';
-import type {
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerNetworkAddedEvent,
-} from '@metamask/network-controller';
-import {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerSelectedEvmAccountChangeEvent,
-} from '@metamask/accounts-controller';
+import { Messenger, MessengerEvents } from '@metamask/messenger';
+import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import {
   TokensControllerState,
   TokensControllerAddTokensAction,
@@ -15,6 +9,7 @@ import {
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 import { RootMessenger } from '../../lib/messenger';
+import { type StaticAssetsControllerMessenger as StaticAssetsControllerMessengerType } from '../../controllers/static-assets-controller';
 
 type TokensControllerGetStateAction = ControllerGetStateAction<
   'TokensController',
@@ -27,9 +22,7 @@ type AllowedActions =
   | TokensControllerGetStateAction
   | TokensControllerAddTokensAction;
 
-type AllowedEvents =
-  | AccountsControllerSelectedEvmAccountChangeEvent
-  | NetworkControllerNetworkAddedEvent;
+type AllowedEvents = MessengerEvents<StaticAssetsControllerMessengerType>;
 
 export type StaticAssetsControllerMessenger = ReturnType<
   typeof getStaticAssetsControllerMessenger
@@ -59,7 +52,6 @@ export function getStaticAssetsControllerMessenger(
     actions: [
       'NetworkController:findNetworkClientIdByChainId',
       'TokensController:getState',
-      'AccountsController:getSelectedAccount',
       'TokensController:addTokens',
     ],
     events: [],
