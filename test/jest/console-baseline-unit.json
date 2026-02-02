@@ -1435,6 +1435,9 @@
     "ui/hooks/useShouldShowSpeedUp.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/hooks/useStaticTokensPolling.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/hooks/useTheme.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3516,9 +3519,6 @@
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 1,
       "warn: No tokens found for chainId:": 1
-    },
-    "ui/hooks/useStaticTokensPolling.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/selectors/confirm-transaction.test.js": {
       "Reselect: Identity function warnings": 1
