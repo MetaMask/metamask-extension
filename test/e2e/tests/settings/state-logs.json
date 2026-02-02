@@ -540,6 +540,10 @@
     "featureFlags": {},
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
+    "firstTimeInfo": {
+      "date": "number",
+      "version": "string"
+    },
     "forgottenPassword": "boolean",
     "fragments": {},
     "fullScreenGasPollTokens": ["string"],
@@ -867,7 +871,6 @@
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
       "useSidePanelAsDefault": "boolean"
     },
-    "preventPollingOnNetworkRestart": "boolean",
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
