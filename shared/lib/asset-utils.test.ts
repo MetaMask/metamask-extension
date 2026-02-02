@@ -74,9 +74,9 @@ describe('asset-utils', () => {
       const nativeAddress = '0x0000000000000000000000000000000000000000';
       const chainId = 'eip155:1231' as CaipChainId;
 
-      expect(() => toAssetId(nativeAddress, chainId)).toThrow(
-        'No XChain Swaps native asset found for chainId: eip155:1231',
-      );
+      // With error handling, this should return undefined instead of throwing
+      const result = toAssetId(nativeAddress, chainId);
+      expect(result).toBeUndefined();
     });
 
     it('should create Solana token asset ID correctly', () => {
@@ -133,6 +133,34 @@ describe('asset-utils', () => {
         undefined,
         result,
       ]);
+    });
+
+    it('should return undefined when chainId is not a safe integer', () => {
+      // Mock toEvmCaipChainId to throw an error for unsafe integer
+      (toEvmCaipChainId as jest.Mock).mockImplementationOnce(() => {
+        throw new Error(
+          'Value is not a safe integer. Use `hexToBigInt` instead.',
+        );
+      });
+
+      const address = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984';
+      const unsafeChainId = '0x20000000000000' as Hex; // Exceeds MAX_SAFE_INTEGER
+
+      const result = toAssetId(address, unsafeChainId);
+      expect(result).toBeUndefined();
+    });
+
+    it('should return undefined when chainId conversion throws any error', () => {
+      // Mock toEvmCaipChainId to throw a generic error
+      (toEvmCaipChainId as jest.Mock).mockImplementationOnce(() => {
+        throw new Error('Generic conversion error');
+      });
+
+      const address = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984';
+      const invalidChainId = '0xinvalid' as Hex;
+
+      const result = toAssetId(address, invalidChainId);
+      expect(result).toBeUndefined();
     });
   });
 
@@ -470,6 +498,31 @@ describe('asset-utils', () => {
 
     it('should return false for non-EVM chain ids', () => {
       expect(isEvmChainId('solana:1')).toBe(false);
+    });
+
+    it('should return false when chainId is not a safe integer', () => {
+      // Mock toEvmCaipChainId to throw an error for unsafe integer
+      // A chainId that exceeds Number.MAX_SAFE_INTEGER (2^53 - 1)
+      (toEvmCaipChainId as jest.Mock).mockImplementationOnce(() => {
+        throw new Error(
+          'Value is not a safe integer. Use `hexToBigInt` instead.',
+        );
+      });
+
+      const unsafeChainId = '0x20000000000001' as Hex; // 9007199254740993 in decimal
+      expect(isEvmChainId(unsafeChainId)).toBe(false);
+    });
+
+    it('should return false when chainId conversion throws an error', () => {
+      // Mock toEvmCaipChainId to throw an error
+      (toEvmCaipChainId as jest.Mock).mockImplementationOnce(() => {
+        throw new Error(
+          'Value is not a safe integer. Use `hexToBigInt` instead.',
+        );
+      });
+
+      const invalidChainId = '0x9999999999999999' as Hex;
+      expect(isEvmChainId(invalidChainId)).toBe(false);
     });
   });
 });

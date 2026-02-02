@@ -34,39 +34,49 @@ export const toAssetId = (
   address: Hex | CaipAssetType | string,
   chainId?: CaipChainId | Hex,
 ): CaipAssetType | undefined => {
-  let addressToUse = address;
-  let chainIdToUse = isStrictHexString(chainId)
-    ? toEvmCaipChainId(chainId)
-    : chainId;
+  try {
+    let addressToUse = address;
+    let chainIdToUse = isStrictHexString(chainId)
+      ? toEvmCaipChainId(chainId)
+      : chainId;
 
-  // Use chainId and address from caip assetId if provided
-  if (isCaipAssetType(address)) {
-    const { assetReference, chainId: chainIdFromCaipAssetId } =
-      parseCaipAssetType(address);
-    addressToUse = assetReference;
-    chainIdToUse = chainIdFromCaipAssetId;
-  }
-  if (!chainIdToUse) {
+    // Use chainId and address from caip assetId if provided
+    if (isCaipAssetType(address)) {
+      const { assetReference, chainId: chainIdFromCaipAssetId } =
+        parseCaipAssetType(address);
+      addressToUse = assetReference;
+      chainIdToUse = chainIdFromCaipAssetId;
+    }
+    if (!chainIdToUse) {
+      return undefined;
+    }
+
+    if (isNativeAddress(addressToUse)) {
+      return getNativeAssetForChainId(chainIdToUse)?.assetId;
+    }
+    if (chainIdToUse === MultichainNetworks.SOLANA) {
+      return CaipAssetTypeStruct.create(
+        `${chainIdToUse}/token:${addressToUse}`,
+      );
+    }
+    if (chainIdToUse === MultichainNetworks.TRON) {
+      return CaipAssetTypeStruct.create(
+        `${chainIdToUse}/trc20:${addressToUse}`,
+      );
+    }
+    // EVM assets
+    const checksummedAddress =
+      toChecksumHexAddress(addressToUse) ?? addressToUse;
+    if (isStrictHexString(checksummedAddress)) {
+      return CaipAssetTypeStruct.create(
+        `${chainIdToUse}/erc20:${checksummedAddress}`,
+      );
+    }
+    return undefined;
+  } catch (error) {
+    // If chainId conversion fails (e.g., value is not a safe integer), return undefined
     return undefined;
   }
-
-  if (isNativeAddress(addressToUse)) {
-    return getNativeAssetForChainId(chainIdToUse)?.assetId;
-  }
-  if (chainIdToUse === MultichainNetworks.SOLANA) {
-    return CaipAssetTypeStruct.create(`${chainIdToUse}/token:${addressToUse}`);
-  }
-  if (chainIdToUse === MultichainNetworks.TRON) {
-    return CaipAssetTypeStruct.create(`${chainIdToUse}/trc20:${addressToUse}`);
-  }
-  // EVM assets
-  const checksummedAddress = toChecksumHexAddress(addressToUse) ?? addressToUse;
-  if (isStrictHexString(checksummedAddress)) {
-    return CaipAssetTypeStruct.create(
-      `${chainIdToUse}/erc20:${checksummedAddress}`,
-    );
-  }
-  return undefined;
 };
 
 /**
@@ -221,13 +231,18 @@ export const fetchAssetMetadataForAssetIds = async (
  * @returns `true` if the chain ID is an EVM chain ID, `false` otherwise.
  */
 export const isEvmChainId = (chainId: CaipChainId | Hex) => {
-  const chainIdInCaip = isCaipChainId(chainId)
-    ? chainId
-    : toEvmCaipChainId(chainId);
+  try {
+    const chainIdInCaip = isCaipChainId(chainId)
+      ? chainId
+      : toEvmCaipChainId(chainId);
 
-  // TODO Replace with isEvmCaipChainId from @metamask/multichain-network-controller when it is exported
-  const { namespace } = parseCaipChainId(chainIdInCaip);
-  return namespace === KnownCaipNamespace.Eip155;
+    // TODO Replace with isEvmCaipChainId from @metamask/multichain-network-controller when it is exported
+    const { namespace } = parseCaipChainId(chainIdInCaip);
+    return namespace === KnownCaipNamespace.Eip155;
+  } catch (error) {
+    // If chainId conversion fails (e.g., value is not a safe integer), return false
+    return false;
+  }
 };
 
 /**
