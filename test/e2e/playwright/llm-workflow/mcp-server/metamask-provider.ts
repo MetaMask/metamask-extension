@@ -122,15 +122,24 @@ export class MetaMaskSessionManager implements ISessionManager {
     const hasSession = this.hasActiveSession();
 
     const availableCapabilities: string[] = [];
-    if (this.getBuildCapability()) availableCapabilities.push('build');
-    if (this.getFixtureCapability()) availableCapabilities.push('fixture');
-    if (this.getChainCapability()) availableCapabilities.push('chain');
-    if (this.getContractSeedingCapability())
+    if (this.getBuildCapability()) {
+      availableCapabilities.push('build');
+    }
+    if (this.getFixtureCapability()) {
+      availableCapabilities.push('fixture');
+    }
+    if (this.getChainCapability()) {
+      availableCapabilities.push('chain');
+    }
+    if (this.getContractSeedingCapability()) {
       availableCapabilities.push('contractSeeding');
-    if (this.getStateSnapshotCapability())
+    }
+    if (this.getStateSnapshotCapability()) {
       availableCapabilities.push('stateSnapshot');
-    if (this.getMockServerCapability())
+    }
+    if (this.getMockServerCapability()) {
       availableCapabilities.push('mockServer');
+    }
 
     return {
       currentContext: context,

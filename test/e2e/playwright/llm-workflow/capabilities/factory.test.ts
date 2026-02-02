@@ -240,12 +240,13 @@ describe('Capability Factory', () => {
     let sessionManager: typeof import('../mcp-server/metamask-provider').metaMaskSessionManager;
 
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+      /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
       sessionManager =
         require('../mcp-server/metamask-provider').metaMaskSessionManager;
       sessionManager.setWorkflowContext(
         createMetaMaskE2EContext() as import('@metamask/client-mcp-core').WorkflowContext,
       );
+      /* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
     });
 
     afterEach(() => {
