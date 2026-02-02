@@ -867,7 +867,6 @@
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
       "useSidePanelAsDefault": "boolean"
     },
-    "preventPollingOnNetworkRestart": "boolean",
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
