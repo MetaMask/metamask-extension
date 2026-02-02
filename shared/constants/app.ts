@@ -22,9 +22,21 @@ export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
+export const PLATFORM_CHROMIUM = 'Chromium';
+export const PLATFORM_COCCOC = 'CocCoc';
 export const PLATFORM_EDGE = 'Edge';
 export const PLATFORM_FIREFOX = 'Firefox';
+export const PLATFORM_MAXTHON = 'Maxthon';
 export const PLATFORM_OPERA = 'Opera';
+export const PLATFORM_OTHER = 'Other';
+export const PLATFORM_PUFFIN = 'Puffin';
+export const PLATFORM_QQBROWSER = 'QQBrowser';
+export const PLATFORM_SAMSUNG = 'Samsung';
+export const PLATFORM_SILK = 'Silk';
+export const PLATFORM_UCBROWSER = 'UCBrowser';
+export const PLATFORM_VIVALDI = 'Vivaldi';
+export const PLATFORM_WHALE = 'Whale';
+export const PLATFORM_YANDEX = 'Yandex';
 
 export const MESSAGE_TYPE = {
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',

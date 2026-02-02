@@ -9,9 +9,15 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_CHROME,
+  PLATFORM_COCCOC,
   PLATFORM_EDGE,
   PLATFORM_FIREFOX,
   PLATFORM_OPERA,
+  PLATFORM_OTHER,
+  PLATFORM_QQBROWSER,
+  PLATFORM_SAMSUNG,
+  PLATFORM_VIVALDI,
+  PLATFORM_YANDEX,
 } from '../../../shared/constants/app';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import * as FourBiteUtils from '../../../shared/lib/four-byte';
@@ -240,6 +246,67 @@ describe('app utils', () => {
     it('should detect Chrome', () => {
       setBrowserSpecificWindow('chrome');
       expect(getPlatform()).toStrictEqual(PLATFORM_CHROME);
+    });
+
+    it('detects Vivaldi', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Vivaldi/7.7.3851.58',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_VIVALDI);
+    });
+
+    it('detects Samsung Internet', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Mobile Safari/537.36 SamsungBrowser/23.0',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_SAMSUNG);
+    });
+
+    it('detects Yandex browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 YaBrowser/23.7.0 Safari/537.36',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_YANDEX);
+    });
+
+    it('detects Cốc Cốc browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) coc_coc_browser/83.0.138 Chrome/77.0.3865.138 Safari/537.36',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_COCCOC);
+    });
+
+    it('detects QQ Browser desktop', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3715.128 Safari/537.36 Core/1.70.3722.400 QQBrowser/10.5.3739.400',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_QQBROWSER);
+    });
+
+    it('detects QQ Browser mobile', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; U; Android 13; zh-cn) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/109.0.5414.86 MQQBrowser/16.2 Mobile Safari/537.36',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_QQBROWSER);
+    });
+
+    it('returns Other for unknown browsers without Chrome identifier', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue('Mozilla/5.0 (compatible; SomeUnknownBrowser/1.0)');
+      expect(getPlatform()).toStrictEqual(PLATFORM_OTHER);
     });
   });
 

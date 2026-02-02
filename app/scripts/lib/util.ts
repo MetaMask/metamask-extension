@@ -19,9 +19,21 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
+  PLATFORM_CHROMIUM,
+  PLATFORM_COCCOC,
   PLATFORM_EDGE,
   PLATFORM_FIREFOX,
+  PLATFORM_MAXTHON,
   PLATFORM_OPERA,
+  PLATFORM_OTHER,
+  PLATFORM_PUFFIN,
+  PLATFORM_QQBROWSER,
+  PLATFORM_SAMSUNG,
+  PLATFORM_SILK,
+  PLATFORM_UCBROWSER,
+  PLATFORM_VIVALDI,
+  PLATFORM_WHALE,
+  PLATFORM_YANDEX,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
@@ -68,6 +80,7 @@ const getEnvironmentType = (url = window.location.href) =>
 
 /**
  * Returns the platform (browser) where the extension is running.
+ * Detects specific browsers based on their user agent strings or navigator properties.
  *
  * @returns the platform ENUM
  */
@@ -75,16 +88,70 @@ const getPlatform = () => {
   const { navigator } = window;
   const { userAgent } = navigator;
 
+  // Firefox - check first as it has a unique engine
   if (userAgent.includes('Firefox')) {
     return PLATFORM_FIREFOX;
-  } else if ('brave' in navigator) {
+  }
+
+  // Brave - uses navigator.brave API
+  if ('brave' in navigator) {
     return PLATFORM_BRAVE;
-  } else if (userAgent.includes('Edg/')) {
+  }
+
+  // Edge - identified by "Edg/" in user agent
+  if (userAgent.includes('Edg/')) {
     return PLATFORM_EDGE;
-  } else if (userAgent.includes('OPR')) {
+  }
+
+  // Opera - identified by "OPR" in user agent
+  if (userAgent.includes('OPR')) {
     return PLATFORM_OPERA;
   }
-  return PLATFORM_CHROME;
+
+  // Chromium-based browsers with unique identifiers
+  // Check these before Chrome since they include "Chrome/" in their user agent
+  if (userAgent.includes('Vivaldi/')) {
+    return PLATFORM_VIVALDI;
+  }
+  if (userAgent.includes('YaBrowser/')) {
+    return PLATFORM_YANDEX;
+  }
+  if (userAgent.includes('SamsungBrowser/')) {
+    return PLATFORM_SAMSUNG;
+  }
+  if (userAgent.includes('Whale/')) {
+    return PLATFORM_WHALE;
+  }
+  if (userAgent.includes('Puffin/')) {
+    return PLATFORM_PUFFIN;
+  }
+  if (userAgent.includes('Silk/')) {
+    return PLATFORM_SILK;
+  }
+  if (userAgent.includes('UCBrowser/')) {
+    return PLATFORM_UCBROWSER;
+  }
+  if (userAgent.includes('Maxthon/')) {
+    return PLATFORM_MAXTHON;
+  }
+  if (userAgent.includes('coc_coc_browser/')) {
+    return PLATFORM_COCCOC;
+  }
+  if (userAgent.includes('QQBrowser/') || userAgent.includes('MQQBrowser/')) {
+    return PLATFORM_QQBROWSER;
+  }
+  if (userAgent.includes('Chromium/')) {
+    return PLATFORM_CHROMIUM;
+  }
+
+  // Chrome - identified by "Chrome/" and "Safari/" in user agent
+  // Note: Some browsers like Arc mimic Chrome's exact user agent and cannot be distinguished
+  if (userAgent.includes('Chrome/') && userAgent.includes('Safari/')) {
+    return PLATFORM_CHROME;
+  }
+
+  // Unknown browser
+  return PLATFORM_OTHER;
 };
 
 /**
