@@ -333,16 +333,18 @@ function mapNumericCodeToErrorCode(numericCode: number): ErrorCode {
  * @returns The corresponding ErrorCode enum value
  */
 function mapStringCodeToErrorCode(stringCode: string): ErrorCode {
-  // Check if it's a valid ErrorCode key name
-  const errorCodeKey = stringCode as keyof typeof ErrorCode;
-  if (errorCodeKey in ErrorCode) {
-    return ErrorCode[errorCodeKey];
-  }
-
-  // Try parsing as a number (in case it's a numeric string)
+  // Try parsing as a number first (in case it's a numeric string like "3003")
+  // This must come before checking for enum key names because numeric enums
+  // have reverse mappings (e.g., ErrorCode["3003"] = "DeviceDisconnected")
   const numericCode = parseInt(stringCode, 10);
   if (!Number.isNaN(numericCode)) {
     return mapNumericCodeToErrorCode(numericCode);
+  }
+
+  // Check if it's a valid ErrorCode key name (e.g., "DeviceDisconnected")
+  const errorCodeKey = stringCode as keyof typeof ErrorCode;
+  if (errorCodeKey in ErrorCode) {
+    return ErrorCode[errorCodeKey];
   }
 
   return ErrorCode.Unknown;
