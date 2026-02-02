@@ -362,7 +362,6 @@ export const SENTRY_BACKGROUND_STATE = {
     [AllProperties]: false,
   },
   TokenListController: {
-    preventPollingOnNetworkRestart: true,
     tokensChainsCache: {
       [AllProperties]: false,
     },
