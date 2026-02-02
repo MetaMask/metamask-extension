@@ -1267,6 +1267,22 @@
   "closeWindowAnytime": {
     "message": "Μπορείτε να κλείσετε αυτό το παράθυρο ανά πάσα στιγμή."
   },
+  "slideBridgeDescription": {
+    "message": "Move crypto between networks seamlessly",
+    "description": "Description for the bridge carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Bridge",
+    "description": "Title for the bridge carousel slide"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Same address. Smarter features.",
+    "description": "Description for the smart account upgrade carousel slide"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Switch to smart account",
+    "description": "Title for the smart account upgrade carousel slide"
+  },
   "coingecko": {
     "message": "CoinGecko"
   },

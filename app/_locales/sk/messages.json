@@ -130,6 +130,26 @@
   "close": {
     "message": "Zavrieť"
   },
+  "closeSlide": {
+    "message": "Close $1",
+    "description": "Aria label for close button on carousel slides. $1 is the slide title"
+  },
+  "slideBridgeDescription": {
+    "message": "Move crypto between networks seamlessly",
+    "description": "Description for the bridge carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Bridge",
+    "description": "Title for the bridge carousel slide"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Same address. Smarter features.",
+    "description": "Description for the smart account upgrade carousel slide"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Switch to smart account",
+    "description": "Title for the smart account upgrade carousel slide"
+  },
   "confirm": {
     "message": "Potvrdit"
   },
