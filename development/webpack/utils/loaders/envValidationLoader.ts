@@ -174,6 +174,7 @@ function walkAst(node: Node, envVars: Set<string>): void {
  *
  * Verifies each variable is declared in `builds.yml`. Emits a webpack error listing
  * any undeclared variables found, helping catch configuration issues at build time.
+ * This is a validation-only loader; the source code is passed through unmodified.
  *
  * @example
  * // webpack.config.ts
@@ -181,8 +182,6 @@ function walkAst(node: Node, envVars: Set<string>): void {
  *   loader: 'envValidationLoader',
  *   options: { declarations: new Set(['NODE_ENV', 'API_URL']) }
  * }
- * This is a validation-only loader; the source code is passed through unmodified.
- *
  * @param source - The source code content of the file being processed.
  * @throws Emits a webpack error if any `process.env.*` references
  * are found that aren't included in the `declarations` set.
