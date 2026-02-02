@@ -720,8 +720,8 @@ export const MSU_NATIVE_TOKEN_IMAGE_URL = './images/msu-native.svg';
 export const BOB_IMAGE_URL = './images/bob.svg';
 export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
-export const CHILIZ_IMAGE_URL = './images/chiliz.png';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
+export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
