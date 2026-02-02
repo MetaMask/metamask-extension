@@ -4,35 +4,41 @@ on:
   issue_comment:
     types: created
 
+env:
+  INFURA_PROJECT_ID: 00000000000
+  INFURA_PROD_PROJECT_ID: 00000000000
+  SEGMENT_PROD_WRITE_KEY: 00000000000
+  GOOGLE_PROD_CLIENT_ID: 00000000000
+  APPLE_PROD_CLIENT_ID: 00000000000
+  GOOGLE_BETA_CLIENT_ID: 00000000000
+  APPLE_BETA_CLIENT_ID: 00000000000
+  GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+  APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+  GOOGLE_FLASK_CLIENT_ID: 00000000000
+  APPLE_FLASK_CLIENT_ID: 00000000000
+
 jobs:
-  is-fork-pull-request:
-    name: Determine whether this issue comment was on a pull request from a fork
+  prepare:
+    name: Prepare dependencies
+    # Only run when the comment is on a pull request containing '@metamaskbot update-policies'
     if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-policies') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      REPO: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.issue.number }}
+      COMMENT_ID: ${{ github.event.comment.id }}
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
-      - uses: actions/checkout@v4
-
       - name: Determine whether this PR is from a fork
         id: is-fork
-        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+        run: echo "IS_FORK=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json isCrossRepository --jq '.isCrossRepository')" >> "$GITHUB_OUTPUT"
 
-  react-to-comment:
-    name: React to the comment
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: is-fork-pull-request
-    # Early exit if this is a fork, since later steps are skipped for forks
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
       - name: React to the comment
+        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
         run: |
           gh api \
             --method POST \
@@ -40,56 +46,45 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
             -f content='+1'
-        env:
-          COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          REPO: ${{ github.repository }}
 
-  prepare:
-    name: Prepare dependencies
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: is-fork-pull-request
-    # Early exit if this is a fork, since later steps are skipped for forks
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
-    outputs:
-      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
-    steps:
       - name: Checkout repository
+        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
         uses: actions/checkout@v4
 
       - name: Checkout pull request
+        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
+        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
           use-yarn-hydrate: true
 
       - name: Get commit SHA
+        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
   update-lavamoat-build-policy:
     name: Update LavaMoat build policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
       - prepare
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -108,26 +103,22 @@ jobs:
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
 
   update-lavamoat-webapp-policy:
-    strategy:
-      matrix:
-        # Ensure this is synchronized with the list below in the "commit-updated-policies" job
-        # and with the build type list in `builds.yml`
-        build-type: [main, beta, experimental, flask]
-    name: Update LavaMoat ${{ matrix.build-type }} application policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    name: Update LavaMoat webapp policy
     needs:
       - prepare
       - update-lavamoat-build-policy
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -143,336 +134,31 @@ jobs:
           key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
 
-      - name: Update LavaMoat ${{ matrix.build-type }} policy
-        run: yarn lavamoat:webapp:auto:ci '--build-types=${{ matrix.build-type }}'
-        env:
-          INFURA_PROJECT_ID: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
-          GOOGLE_BETA_CLIENT_ID: 00000000000
-          APPLE_BETA_CLIENT_ID: 00000000000
-          GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
-          APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
-          GOOGLE_FLASK_CLIENT_ID: 00000000000
-          APPLE_FLASK_CLIENT_ID: 00000000000
+      - name: Update LavaMoat webapp policy
+        run: yarn lavamoat:webapp:auto
 
-      - name: Cache ${{ matrix.build-type }} application policy
+      - name: Cache webapp application policy
         uses: actions/cache/save@v4
         with:
-          path: lavamoat/browserify/${{ matrix.build-type }}
-          key: cache-${{ matrix.build-type }}-${{ needs.prepare.outputs.COMMIT_SHA }}
-
-  update-lavamoat-webpack-policy-mv2:
-    name: Update LavaMoat webpack MV2 policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - prepare
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Update LavaMoat webpack MV2 policy
-        run: yarn webpack:lavamoat:build --generatePolicy -v 2
-        env:
-          INFURA_PROD_PROJECT_ID: 00000000000
-          SEGMENT_PROD_WRITE_KEY: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
-
-      - name: Cache webpack MV2 policy
-        uses: actions/cache/save@v4
-        with:
-          path: lavamoat/webpack/mv2/main
-          key: cache-webpack-mv2-${{ needs.prepare.outputs.COMMIT_SHA }}
-
-  update-lavamoat-webpack-policy-mv2-flask:
-    name: Update LavaMoat webpack MV2 flask policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - prepare
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Update LavaMoat webpack MV2 flask policy
-        run: yarn webpack:lavamoat:build --generatePolicy -v 2 --type flask
-        env:
-          INFURA_PROD_PROJECT_ID: 00000000000
-          SEGMENT_PROD_WRITE_KEY: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
-
-      - name: Cache webpack MV2 flask policy
-        uses: actions/cache/save@v4
-        with:
-          path: lavamoat/webpack/mv2/flask
-          key: cache-webpack-mv2-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
-
-  update-lavamoat-webpack-policy-mv2-beta:
-    name: Update LavaMoat webpack MV2 beta policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - prepare
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Update LavaMoat webpack MV2 beta policy
-        run: yarn webpack:lavamoat:build --generatePolicy -v 2 --type beta
-        env:
-          INFURA_PROD_PROJECT_ID: 00000000000
-          SEGMENT_PROD_WRITE_KEY: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
-
-      - name: Cache webpack MV2 beta policy
-        uses: actions/cache/save@v4
-        with:
-          path: lavamoat/webpack/mv2/beta
-          key: cache-webpack-mv2-beta-${{ needs.prepare.outputs.COMMIT_SHA }}
-
-  update-lavamoat-webpack-policy-mv2-experimental:
-    name: Update LavaMoat webpack MV2 experimental policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - prepare
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Update LavaMoat webpack MV2 experimental policy
-        run: yarn webpack:lavamoat:build --generatePolicy -v 2 --type experimental
-        env:
-          INFURA_PROD_PROJECT_ID: 00000000000
-          SEGMENT_PROD_WRITE_KEY: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
-
-      - name: Cache webpack MV2 experimental policy
-        uses: actions/cache/save@v4
-        with:
-          path: lavamoat/webpack/mv2/experimental
-          key: cache-webpack-mv2-experimental-${{ needs.prepare.outputs.COMMIT_SHA }}
-
-  update-lavamoat-webpack-policy:
-    name: Update LavaMoat webpack policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - prepare
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Update LavaMoat webpack policy
-        run: yarn webpack:lavamoat:build --generatePolicy
-        env:
-          INFURA_PROD_PROJECT_ID: 00000000000
-          SEGMENT_PROD_WRITE_KEY: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
-
-      - name: Cache webpack policy
-        uses: actions/cache/save@v4
-        with:
-          path: lavamoat/webpack/mv3/main
-          key: cache-webpack-${{ needs.prepare.outputs.COMMIT_SHA }}
-
-  update-lavamoat-webpack-policy-flask:
-    name: Update LavaMoat webpack flask policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - prepare
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Update LavaMoat webpack flask policy
-        run: yarn webpack:lavamoat:build --generatePolicy --type flask
-        env:
-          INFURA_PROD_PROJECT_ID: 00000000000
-          SEGMENT_PROD_WRITE_KEY: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
-
-      - name: Cache webpack flask policy
-        uses: actions/cache/save@v4
-        with:
-          path: lavamoat/webpack/mv3/flask
-          key: cache-webpack-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
-
-  update-lavamoat-webpack-policy-beta:
-    name: Update LavaMoat webpack beta policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - prepare
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Update LavaMoat webpack beta policy
-        run: yarn webpack:lavamoat:build --generatePolicy --type beta
-        env:
-          INFURA_PROD_PROJECT_ID: 00000000000
-          SEGMENT_PROD_WRITE_KEY: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
-
-      - name: Cache webpack beta policy
-        uses: actions/cache/save@v4
-        with:
-          path: lavamoat/webpack/mv3/beta
-          key: cache-webpack-beta-${{ needs.prepare.outputs.COMMIT_SHA }}
-
-  update-lavamoat-webpack-policy-experimental:
-    name: Update LavaMoat webpack experimental policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - prepare
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-
-      - name: Update LavaMoat webpack experimental policy
-        run: yarn webpack:lavamoat:build --generatePolicy --type experimental
-        env:
-          INFURA_PROD_PROJECT_ID: 00000000000
-          SEGMENT_PROD_WRITE_KEY: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
-
-      - name: Cache webpack experimental policy
-        uses: actions/cache/save@v4
-        with:
-          path: lavamoat/webpack/mv3/experimental
-          key: cache-webpack-experimental-${{ needs.prepare.outputs.COMMIT_SHA }}
+          path: lavamoat/browserify
+          key: cache-webapp-${{ needs.prepare.outputs.COMMIT_SHA }}
 
   update-lavamoat-webpack-policy-build:
     name: Update LavaMoat webpack build policy
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
     needs:
       - prepare
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -482,149 +168,38 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Update LavaMoat webpack build policy
-        run: yarn webpack:lavamoat:generate
-        env:
-          INFURA_PROD_PROJECT_ID: 00000000000
-          SEGMENT_PROD_WRITE_KEY: 00000000000
-          GOOGLE_PROD_CLIENT_ID: 00000000000
-          APPLE_PROD_CLIENT_ID: 00000000000
+        run: yarn webpack:tsc && yarn webpack:lavamoat:policy:build
 
-      - name: Cache webpack policy
+      - name: Cache webpack build policy
         uses: actions/cache/save@v4
         with:
           path: lavamoat/webpack/build
           key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
 
-  commit-updated-policies:
-    name: Commit the updated LavaMoat policies
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+  update-lavamoat-webpack-policy-mv2:
+    name: Update LavaMoat webpack MV2 policy
     needs:
       - prepare
-      - is-fork-pull-request
-      - update-lavamoat-build-policy
-      - update-lavamoat-webapp-policy
-      - update-lavamoat-webpack-policy-mv2
-      - update-lavamoat-webpack-policy-mv2-flask
-      - update-lavamoat-webpack-policy-mv2-beta
-      - update-lavamoat-webpack-policy-mv2-experimental
-      - update-lavamoat-webpack-policy
-      - update-lavamoat-webpack-policy-flask
-      - update-lavamoat-webpack-policy-beta
-      - update-lavamoat-webpack-policy-experimental
       - update-lavamoat-webpack-policy-build
-    # Ensure forks don't get access to the LavaMoat update token
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          # Use PAT to ensure that the commit later can trigger status check workflows
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
 
-      - name: Get commit SHA
-        id: commit-sha
-        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Restore build policy
-        uses: actions/cache/restore@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          path: lavamoat/build-system
-          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      # One restore step per build type: [main, beta, experimental, flask]
-      # Ensure this is synchronized with the list above in the "update-lavamoat-webapp-policy" job
-      # and with the build type list in `builds.yml`
-      - name: Restore main application policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/browserify/main
-          key: cache-main-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore beta application policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/browserify/beta
-          key: cache-beta-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore flask application policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/browserify/flask
-          key: cache-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore experimental application policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/browserify/experimental
-          key: cache-experimental-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore webpack MV2 policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/webpack/mv2/main
-          key: cache-webpack-mv2-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore webpack MV2 flask policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/webpack/mv2/flask
-          key: cache-webpack-mv2-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore webpack MV2 beta policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/webpack/mv2/beta
-          key: cache-webpack-mv2-beta-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore webpack MV2 experimental policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/webpack/mv2/experimental
-          key: cache-webpack-mv2-experimental-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore webpack policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/webpack/mv3/main
-          key: cache-webpack-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore webpack flask policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/webpack/mv3/flask
-          key: cache-webpack-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore webpack beta policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/webpack/mv3/beta
-          key: cache-webpack-beta-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-
-      - name: Restore webpack experimental policy
-        uses: actions/cache/restore@v4
-        with:
-          path: lavamoat/webpack/mv3/experimental
-          key: cache-webpack-experimental-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
 
       - name: Restore webpack build policy
         uses: actions/cache/restore@v4
@@ -633,7 +208,128 @@ jobs:
           key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
 
+      - name: Update LavaMoat webpack MV2 policy
+        run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv2
+
+      - name: Cache webpack MV2 policy
+        uses: actions/cache/save@v4
+        with:
+          path: lavamoat/webpack/mv2
+          key: cache-webpack-mv2-${{ needs.prepare.outputs.COMMIT_SHA }}
+
+  update-lavamoat-webpack-policy-mv3:
+    name: Update LavaMoat webpack MV3 policy
+    needs:
+      - prepare
+      - update-lavamoat-webpack-policy-build
+    if: ${{ needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      PR_NUMBER: ${{ github.event.issue.number }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
+
+      - name: Restore webpack build policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/webpack/build
+          key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+
+      - name: Update LavaMoat webpack MV3 policy
+        run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv3
+
+      - name: Cache webpack MV3 policy
+        uses: actions/cache/save@v4
+        with:
+          path: lavamoat/webpack/mv3
+          key: cache-webpack-mv3-${{ needs.prepare.outputs.COMMIT_SHA }}
+
+  commit-updated-policies:
+    name: Commit the updated LavaMoat policies
+    needs:
+      - prepare
+      - update-lavamoat-build-policy
+      - update-lavamoat-webapp-policy
+      - update-lavamoat-webpack-policy-build
+      - update-lavamoat-webpack-policy-mv2
+      - update-lavamoat-webpack-policy-mv3
+    if: ${{ always() && needs.prepare.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      REPO: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.issue.number }}
+      ACTION_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      UPSTREAM_SUCCESS: ${{ needs.prepare.result == 'success' && needs.update-lavamoat-build-policy.result == 'success' && needs.update-lavamoat-webapp-policy.result == 'success' && needs.update-lavamoat-webpack-policy-build.result == 'success' && needs.update-lavamoat-webpack-policy-mv2.result == 'success' && needs.update-lavamoat-webpack-policy-mv3.result == 'success' }}
+    steps:
+      - name: Checkout repository
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
+        uses: actions/checkout@v4
+        with:
+          # Use PAT to ensure that the commit later can trigger status check workflows
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+
+      - name: Checkout pull request
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
+        run: gh pr checkout "${PR_NUMBER}"
+
+      - name: Restore browserify build policy
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/build-system
+          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+
+      - name: Restore browserify webapp policy
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/browserify
+          key: cache-webapp-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+
+      - name: Restore webpack build policy
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/webpack/build
+          key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+
+      - name: Restore webpack MV2 policy
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/webpack/mv2
+          key: cache-webpack-mv2-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+
+      - name: Restore webpack MV3 policy
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/webpack/mv3
+          key: cache-webpack-mv3-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+
       - name: Check whether there are policy changes
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' }}
         id: policy-changes
         run: |
           if git diff --exit-code
@@ -644,7 +340,7 @@ jobs:
           fi
 
       - name: Commit the updated policies
-        if: steps.policy-changes.outputs.HAS_CHANGES == 'true'
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' && steps.policy-changes.outputs.HAS_CHANGES == 'true' }}
         run: |
           git config --global user.name 'MetaMask Bot'
           git config --global user.email 'metamaskbot@users.noreply.github.com'
@@ -653,73 +349,69 @@ jobs:
 
       ## Yes, it would be nice to use the local diff before the commit is made, but we need to include potential multiple updates in the history of the PR
       - name: Compare policy changes
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' && steps.policy-changes.outputs.HAS_CHANGES == 'true' }}
         run: |
-          if [[ $HAS_CHANGES == 'true' ]]
-          then
-            git fetch origin ${{ github.base_ref }}
-            main_diff=$(git diff origin/${{ github.base_ref }} lavamoat/browserify/main/policy.json | md5sum | cut -d' ' -f1)
-            for folder in lavamoat/browserify/*/; do
-              if [ "$folder" != "lavamoat/browserify/main/" ]; then
-                file="${folder}policy.json"
-                if [ -f "$file" ]; then
-                  diff=$(git diff origin/${{ github.base_ref }} "$file" | md5sum | cut -d' ' -f1)
-                  if [ "$diff" = "$main_diff" ]; then
-                    echo "✅ ${folder}policy.json changes match main/policy.json policy changes"
-                  else
-                    echo "👀 ${folder}policy.json changes **differ from** main/policy.json policy changes"
-                  fi
+          BASE_REF=$(gh pr view "${PR_NUMBER}" --json baseRefName --jq .baseRefName)
+          git fetch origin "${BASE_REF}"
+
+          browserify_main_diff=$(git diff "origin/${BASE_REF}" -- lavamoat/browserify/main/policy.json | md5sum | cut -d' ' -f1)
+          {
+          for folder in lavamoat/browserify/*/; do
+            if [ "$folder" != "lavamoat/browserify/main/" ]; then
+              file="${folder}policy.json"
+              if [ -f "$file" ]; then
+                diff=$(git diff "origin/${BASE_REF}" -- "$file" | md5sum | cut -d' ' -f1)
+                if [ "$diff" = "$browserify_main_diff" ]; then
+                  echo "✅ ${folder}policy.json changes match main/policy.json policy changes"
+                else
+                  echo "👀 ${folder}policy.json changes **differ from** main/policy.json policy changes"
                 fi
               fi
-            done > does_diff_diff.txt
-          fi
+            fi
+          done
 
-      ## Note the use of `cat -` to include the file contents and the echo in the comment
-      - name: Post comment
+          mv2_main_diff=$(git diff "origin/${BASE_REF}" -- lavamoat/webpack/mv2/main/policy.json | md5sum | cut -d' ' -f1)
+          for folder in lavamoat/webpack/mv2/*/; do
+            if [ "$folder" != "lavamoat/webpack/mv2/main/" ]; then
+              file="${folder}policy.json"
+              if [ -f "$file" ]; then
+                diff=$(git diff "origin/${BASE_REF}" -- "$file" | md5sum | cut -d' ' -f1)
+                if [ "$diff" = "$mv2_main_diff" ]; then
+                  echo "✅ ${folder}policy.json changes match mv2/main/policy.json policy changes"
+                else
+                  echo "👀 ${folder}policy.json changes **differ from** mv2/main/policy.json policy changes"
+                fi
+              fi
+            fi
+          done
+
+          mv3_main_diff=$(git diff "origin/${BASE_REF}" -- lavamoat/webpack/mv3/main/policy.json | md5sum | cut -d' ' -f1)
+          for folder in lavamoat/webpack/mv3/*/; do
+            if [ "$folder" != "lavamoat/webpack/mv3/main/" ]; then
+              file="${folder}policy.json"
+              if [ -f "$file" ]; then
+                diff=$(git diff "origin/${BASE_REF}" -- "$file" | md5sum | cut -d' ' -f1)
+                if [ "$diff" = "$mv3_main_diff" ]; then
+                  echo "✅ ${folder}policy.json changes match mv3/main/policy.json policy changes"
+                else
+                  echo "👀 ${folder}policy.json changes **differ from** mv3/main/policy.json policy changes"
+                fi
+              fi
+            fi
+          done
+          } > does_diff_diff.txt
+
+      - name: Post comment (policies updated)
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' && steps.policy-changes.outputs.HAS_CHANGES == 'true' }}
         run: |
-          if [[ $HAS_CHANGES == 'true' ]]
-          then
-            echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt |  gh pr comment "${PR_NUMBER}" --body-file -
-          else
-            gh pr comment "${PR_NUMBER}" --body 'No policy changes'
-          fi
-        env:
-          HAS_CHANGES: ${{ steps.policy-changes.outputs.HAS_CHANGES }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          echo -e 'Policies updated.  \n👀 Please review the diff for suspicious new powers.  \n\n🧠 Learn how: https://lavamoat.github.io/guides/policy-diff/#what-to-look-for-when-reviewing-a-policy-diff \n\n' | cat - does_diff_diff.txt | gh pr comment "${PR_NUMBER}" --body-file -
 
-  check-status:
-    name: Check whether the policy update succeeded
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - commit-updated-policies
-    outputs:
-      PASSED: ${{ steps.set-output.outputs.PASSED }}
-    steps:
-      - name: Set PASSED output
-        id: set-output
-        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
-
-  failure-comment:
-    name: Comment about the policy update failure
-    if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs:
-      - is-fork-pull-request
-      - check-status
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      - name: Post comment (no policy changes)
+        if: ${{ env.UPSTREAM_SUCCESS == 'true' && steps.policy-changes.outputs.HAS_CHANGES == 'false' }}
+        run: |
+          gh pr comment "${PR_NUMBER}" --body "No policy changes"
 
       - name: Post comment if the update failed
+        if: ${{ env.UPSTREAM_SUCCESS != 'true' || failure() }}
         run: |
-          passed="${{ needs.check-status.outputs.PASSED }}"
-          if [[ $passed != "true" ]]; then
-            gh pr comment "${PR_NUMBER}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-          ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          gh pr comment "${PR_NUMBER}" --repo "${REPO}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
