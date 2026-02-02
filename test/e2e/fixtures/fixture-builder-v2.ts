@@ -215,7 +215,8 @@ export class FixtureBuilderV2 {
   }
 
   withNetworkEnablementController(data: Record<string, unknown>) {
-    merge(this.fixture.data.NetworkEnablementController, data);
+    this.fixture.data.NetworkEnablementController =
+      data as typeof this.fixture.data.NetworkEnablementController;
     return this;
   }
 
