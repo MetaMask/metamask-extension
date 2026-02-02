@@ -263,5 +263,54 @@ describe('HardwareWalletErrorProvider', () => {
         isOpen: true,
       });
     });
+
+    it('resets pending hardware signing state on unmount when modal is open', () => {
+      const store = mockStore(createMockState());
+      const { result, unmount } = renderHardwareWalletErrorHook(store);
+
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      // Show a modal
+      act(() => {
+        result.current.showErrorModal(error);
+      });
+
+      expect(mockShowModal).toHaveBeenCalled();
+
+      // Clear mock calls before unmount
+      mockHideModal.mockClear();
+      mocksetPendingHardwareWalletSigning.mockClear();
+
+      // Unmount the component
+      act(() => {
+        unmount();
+      });
+
+      // Verify that both hideModal and setPendingHardwareWalletSigning(false) were called
+      expect(mockHideModal).toHaveBeenCalled();
+      expect(mocksetPendingHardwareWalletSigning).toHaveBeenCalledWith(false);
+    });
+
+    it('does not reset pending hardware signing state on unmount when modal is not open', () => {
+      const store = mockStore(createMockState());
+      const { unmount } = renderHardwareWalletErrorHook(store);
+
+      // Clear mock calls before unmount
+      mockHideModal.mockClear();
+      mocksetPendingHardwareWalletSigning.mockClear();
+
+      // Unmount the component without showing a modal
+      act(() => {
+        unmount();
+      });
+
+      // Verify that neither hideModal nor setPendingHardwareWalletSigning were called
+      expect(mockHideModal).not.toHaveBeenCalled();
+      expect(mocksetPendingHardwareWalletSigning).not.toHaveBeenCalled();
+    });
   });
 });

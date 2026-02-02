@@ -270,6 +270,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     return () => {
       if (isModalOpenRef.current) {
         dispatch(hideModal());
+        dispatch(setPendingHardwareWalletSigning(false));
         isModalOpenRef.current = false;
         setDisplayedError(null);
       }
