@@ -491,7 +491,6 @@ export default class MetamaskController extends EventEmitter {
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
     const version = process.env.METAMASK_VERSION;
-    this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
 
     // this keeps track of how many "controllerStream" connections are open
@@ -796,6 +795,10 @@ export default class MetamaskController extends EventEmitter {
         'MetaMetricsController:trackEvent',
       ),
     });
+
+    // Record installation info if this is the first time the extension is running.
+    // This captures the version and date when MetaMask was first installed.
+    this.appMetadataController.maybeRecordFirstTimeInfo(version);
 
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
@@ -3704,14 +3707,32 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  async resetWallet() {
+  /**
+   * Reset the wallet, restart the from the onboarding flow
+   *
+   * @param {boolean} restoreOnly - Whether to only restore the vault, without resetting the onboarding.
+   * @returns void
+   */
+  async resetWallet(restoreOnly = false) {
+    // sign out from Authentication service and clear the Session Data
+    this.authenticationController.performSignOut();
+
     // clear SeedlessOnboardingController state
     this.seedlessOnboardingController.clearState();
 
-    // reset onboarding state
-    this.onboardingController.resetOnboarding();
+    // stop subscription polling
+    this.subscriptionController.stopAllPolling();
 
-    this.appStateController.setIsWalletResetInProgress(true);
+    // clear States
+    this.subscriptionController.clearState();
+    this.shieldController.clearState();
+    this.claimsController.clearState();
+
+    if (!restoreOnly) {
+      // reset onboarding state
+      this.onboardingController.resetOnboarding();
+      this.appStateController.setIsWalletResetInProgress(true);
+    }
   }
 
   async exportAccount(address, password) {
@@ -8369,7 +8390,6 @@ export default class MetamaskController extends EventEmitter {
 
   toggleExternalServices(useExternal) {
     this.preferencesController.toggleExternalServices(useExternal);
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!useExternal);
     const subscriptionState = this.controllerMessenger.call(
       'SubscriptionController:getState',
     );
@@ -8416,22 +8436,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return undefined;
-  }
-
-  /**
-   * A method for initializing storage the first time.
-   *
-   * @param {object} initState - The default state to initialize with.
-   * @private
-   */
-  recordFirstTimeInfo(initState) {
-    if (!('firstTimeInfo' in initState)) {
-      const version = process.env.METAMASK_VERSION;
-      initState.firstTimeInfo = {
-        version,
-        date: Date.now(),
-      };
-    }
   }
 
   // TODO: Replace isClientOpen methods with `controllerConnectionChanged` events.
@@ -8580,6 +8584,14 @@ export default class MetamaskController extends EventEmitter {
 
       // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
       this.subscriptionController.stopAllPolling();
+
+      // sign out from Authentication service and clear the Session Data if user is signed in
+      // this check is to make sure that the user sensitive data is cleared when the wallet is locked.
+      // We have `useAutoSignOut` hook that should handle the automatic sign out, however, it's not always triggered.
+      const { isSignedIn } = this.authenticationController.state;
+      if (isSignedIn) {
+        this.authenticationController.performSignOut();
+      }
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;
