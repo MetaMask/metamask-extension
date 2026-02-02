@@ -401,6 +401,7 @@ import { BridgeControllerInit } from './controller-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './controller-init/preferences-controller-init';
 import { AppStateControllerInit } from './controller-init/app-state-controller-init';
+import { ApplicationStateControllerInit } from './controller-init/application-state-controller-init';
 import { PermissionControllerInit } from './controller-init/permission-controller-init';
 import { SubjectMetadataControllerInit } from './controller-init/subject-metadata-controller-init';
 import { NetworkEnablementControllerInit } from './controller-init/assets/network-enablement-controller-init';
@@ -590,6 +591,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
+      ApplicationStateController: ApplicationStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       NetworkController: NetworkControllerInit,
@@ -707,6 +709,8 @@ export default class MetamaskController extends EventEmitter {
     this.subjectMetadataController =
       controllersByName.SubjectMetadataController;
     this.appStateController = controllersByName.AppStateController;
+    this.applicationStateController =
+      controllersByName.ApplicationStateController;
     this.networkController = controllersByName.NetworkController;
     this.metaMetricsController = controllersByName.MetaMetricsController;
     this.metaMetricsDataDeletionController =
@@ -8443,6 +8447,14 @@ export default class MetamaskController extends EventEmitter {
   set isClientOpen(open) {
     this._isClientOpen = open;
 
+    // Update ApplicationStateController via messenger
+    // Other controllers can subscribe to `ApplicationStateController:stateChange`
+    // to react to client open/close state changes.
+    this.controllerMessenger.call(
+      'ApplicationStateController:setClientOpen',
+      open,
+    );
+
     const { isUnlocked } = this.controllerMessenger.call(
       'KeyringController:getState',
     );
@@ -8450,9 +8462,11 @@ export default class MetamaskController extends EventEmitter {
     if (isUnlocked) {
       // Notify Snaps that the client is open or closed when the client is
       // unlocked.
+      // TODO: SnapController should subscribe to ApplicationStateController events
       this.controllerMessenger.call('SnapController:setClientActive', open);
     }
 
+    // TODO: BackendWebSocketService should subscribe to ApplicationStateController events
     if (open) {
       this.controllerMessenger.call('BackendWebSocketService:connect');
     } else {
