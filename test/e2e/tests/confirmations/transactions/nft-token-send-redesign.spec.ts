@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { Browser } from 'selenium-webdriver';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { veryLargeDelayMs } from '../../../helpers';
@@ -13,16 +12,15 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
-import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import SendPage from '../../../page-objects/pages/send/send-page';
 import { Driver } from '../../../webdriver/driver';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
-const isChrome = process.env.SELENIUM_BROWSER === Browser.CHROME;
 const TOKEN_RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
 describe('Confirmation Redesign Token Send', function () {
@@ -272,10 +270,9 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
   const nftDetailsPage = new NFTDetailsPage(driver);
   await nftDetailsPage.clickNFTSendButton();
 
-  const sendToPage = new SendTokenPage(driver);
-  await sendToPage.checkPageIsLoaded();
+  const sendToPage = new SendPage(driver);
   await sendToPage.fillRecipient(TOKEN_RECIPIENT_ADDRESS);
-  await sendToPage.goToNextScreen();
+  await sendToPage.pressContinueButton();
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);
@@ -332,11 +329,6 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
 
   const homePage = new HomePage(driver);
 
-  // Don't check Account Syncing on FF due to timing issues
-  if (isChrome) {
-    await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
-  }
-
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.ERC1155);
@@ -368,11 +360,10 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   const nftDetailsPage = new NFTDetailsPage(driver);
   await nftDetailsPage.clickNFTSendButton();
 
-  const sendToPage = new SendTokenPage(driver);
-  await sendToPage.checkPageIsLoaded();
+  const sendToPage = new SendPage(driver);
   await sendToPage.fillRecipient(TOKEN_RECIPIENT_ADDRESS);
-  await sendToPage.fillNFTAmount('1');
-  await sendToPage.goToNextScreen();
+  await sendToPage.fillAmount('1');
+  await sendToPage.pressContinueButton();
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);

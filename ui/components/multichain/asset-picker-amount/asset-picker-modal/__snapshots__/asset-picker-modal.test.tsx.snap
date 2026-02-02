@@ -21,7 +21,6 @@ exports[`AssetPickerModal token filtering should fetch metadata for unlisted tok
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -50,7 +49,6 @@ exports[`AssetPickerModal token filtering should filter tokens by address 1`] = 
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -81,7 +79,6 @@ exports[`AssetPickerModal token filtering should filter tokens by address 2`] = 
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -112,7 +109,6 @@ exports[`AssetPickerModal token filtering should filter tokens by chain when mul
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
@@ -154,7 +150,6 @@ exports[`AssetPickerModal token filtering should filter tokens by symbol 1`] = `
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -185,7 +180,6 @@ exports[`AssetPickerModal token filtering should handle case-insensitive search 
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -216,7 +210,6 @@ exports[`AssetPickerModal token filtering should handle case-insensitive search 
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -247,7 +240,6 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -289,7 +281,6 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -331,7 +322,6 @@ exports[`AssetPickerModal token filtering should render all tokens from multiple
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -402,7 +392,6 @@ exports[`AssetPickerModal token filtering should render all tokens from single c
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0x1",
@@ -444,7 +433,6 @@ exports[`AssetPickerModal token filtering should respect MAX_UNOWNED_TOKENS_REND
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -515,7 +503,6 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -546,7 +533,6 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -623,7 +609,6 @@ exports[`AssetPickerModal token filtering should show selected token first when 
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "0xa",
@@ -700,7 +685,6 @@ exports[`AssetPickerModal token filtering should show selected token first when 
     },
     "handleAssetChange": [Function],
     "isDestinationToken": false,
-    "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
       "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",

@@ -11,6 +11,7 @@ import { validateTransaction } from '../../page-objects/flows/send-transaction.f
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
+import SendPage from '../../page-objects/pages/send/send-page';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -45,7 +46,7 @@ describe('Sending with max amount', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await createInternalTransactionWithMaxAmount(driver);
+        await createInternalTransactionWithMaxAmount({ driver });
         await reviewTransaction(driver);
 
         await driver.clickElementAndWaitToDisappear({
@@ -79,7 +80,7 @@ describe('Sending with max amount', function () {
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
 
-          await createInternalTransactionWithMaxAmount(driver);
+          await createInternalTransactionWithMaxAmount({ driver });
           await reviewTransaction(driver);
 
           const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
@@ -135,7 +136,7 @@ describe('Sending with max amount', function () {
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
 
-          await createInternalTransactionWithMaxAmount(driver);
+          await createInternalTransactionWithMaxAmount({ driver });
           await reviewTransaction(driver);
 
           const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
@@ -162,7 +163,7 @@ describe('Sending with max amount', function () {
             tag: 'button',
           });
 
-          await validateTransaction(driver, '-24.99957067');
+          await validateTransaction(driver, '-24.99957065');
         },
       );
     });
@@ -190,7 +191,7 @@ describe('Sending with max amount', function () {
       async ({ driver, mockServer }) => {
         await loginWithBalanceValidation(driver);
 
-        await createInternalTransactionWithMaxAmount(driver);
+        await createInternalTransactionWithMaxAmount({ driver });
 
         mockServer
           .forGet(`${GAS_API_BASE_URL}/networks/1337/suggestedGasFees`)
@@ -243,12 +244,14 @@ describe('Sending with max amount', function () {
           text: 'Confirm',
           tag: 'button',
         });
-        await validateTransaction(driver, '-24.99893308');
+        await validateTransaction(driver, '-24.99893303');
       },
     );
   });
 
-  it('does update transaction value when navigating back to edit, updating the value and navigating confirmation again', async function () {
+  // https://github.com/MetaMask/MetaMask-planning/issues/6679
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('does update transaction value when navigating back to edit, updating the value and navigating confirmation again', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -269,24 +272,21 @@ describe('Sending with max amount', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await createInternalTransactionWithMaxAmount(driver);
+        await createInternalTransactionWithMaxAmount({ driver });
         await reviewTransaction(driver);
         // navigate back to edit
         await driver.clickElement(
           '[data-testid="wallet-initiated-header-back-button"]',
         );
 
-        // update the value
-        await driver.fill('[data-testid="currency-input"]', '10');
+        const sendPage = new SendPage(driver);
+        await sendPage.fillAmount('10'); // update the value
+        await sendPage.pressContinueButton();
 
-        // navigate forward
-        await driver.clickElement({ text: 'Continue', css: 'button' });
+        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
 
-        // confirms the transaction
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await sendTokenConfirmationPage.checkPageIsLoaded();
+        await sendTokenConfirmationPage.clickOnConfirm();
 
         await validateTransaction(driver, '-10');
       },

@@ -209,6 +209,11 @@ class AssetListPage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async clickMultichainTokenListButton(): Promise<void> {
+    console.log('Clicking on multichain token list button');
+    await this.driver.clickElement(this.multichainTokenListButton);
+  }
+
   /**
    * Dismisses the "Token imported" success message by clicking the close button
    */
@@ -371,7 +376,7 @@ class AssetListPage {
     await this.driver.waitForSelector(this.importTokenModalTitle);
 
     for (const name of tokenNames) {
-      await this.driver.fill(this.tokenSearchInput, name);
+      await this.driver.pasteIntoField(this.tokenSearchInput, name);
       await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
       await this.driver.waitForSelector(this.tokenSearchSelected);

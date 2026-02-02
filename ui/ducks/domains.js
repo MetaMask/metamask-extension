@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
 
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   getChainIdsCaveat,
   getLookupMatchersCaveat,
@@ -13,7 +14,7 @@ import {
 } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { handleSnapRequest } from '../store/actions';
-import { NO_RESOLUTION_FOR_DOMAIN } from '../pages/confirmations/send-legacy/send.constants';
+import { NO_RESOLUTION_FOR_DOMAIN } from '../pages/confirmations/send-utils/send.constants';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import { BURN_ADDRESS } from '../../shared/modules/hexstring-utils';
 
@@ -98,10 +99,56 @@ export function initializeDomainSlice() {
   };
 }
 
-export async function fetchResolutions({ domain, chainId, state }) {
+const resolutionCache = new Map();
+const CACHE_TTL_MS = 60000;
+const MAX_CACHE_SIZE = 100;
+
+function enrichResolutionsWithAddressBook(resolutions, state) {
+  return resolutions.map((resolution) => ({
+    ...resolution,
+    addressBookEntryName: getAddressBookEntry(state, resolution.resolvedAddress)
+      ?.name,
+  }));
+}
+
+/**
+ * Removes expired entries from the cache to prevent unbounded memory growth.
+ * Called periodically during cache operations.
+ */
+function pruneExpiredCacheEntries() {
+  const now = Date.now();
+  for (const [key, value] of resolutionCache.entries()) {
+    if (now - value.timestamp >= CACHE_TTL_MS) {
+      resolutionCache.delete(key);
+    }
+  }
+}
+
+export async function fetchResolutions({ domain, chainId, state, signal }) {
+  const cacheKey = `${domain}:${chainId}`;
+  const cached = resolutionCache.get(cacheKey);
+
+  if (signal?.aborted) {
+    return [];
+  }
+
+  // Only use cache if we have completed results that haven't expired
+  if (cached?.result && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return enrichResolutionsWithAddressBook(cached.result, state);
+  }
+
+  // Delete expired entry if it exists
+  if (cached) {
+    resolutionCache.delete(cacheKey);
+  }
+
   const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
   const subjects = getPermissionSubjects(state);
   const nameLookupSnaps = getNameLookupSnapsIds(state);
+
+  if (signal?.aborted) {
+    return [];
+  }
 
   const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
     const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
@@ -123,11 +170,6 @@ export async function fetchResolutions({ domain, chainId, state }) {
     return true;
   });
 
-  // previous logic would switch request args based on the domain property to determine
-  // if this should have been a domain request or a reverse resolution request
-  // since reverse resolution is not supported in the send screen flow,
-  // the logic was changed to cancel the request, because otherwise a snap can erroneously
-  // check for the domain property without checking domain length and return faulty results.
   if (domain.length === 0) {
     return [];
   }
@@ -150,6 +192,10 @@ export async function fetchResolutions({ domain, chainId, state }) {
     }),
   );
 
+  if (signal?.aborted) {
+    return [];
+  }
+
   const filteredResults = results.reduce(
     (successfulResolutions, result, idx) => {
       if (result.status !== 'rejected' && result.value !== null) {
@@ -160,10 +206,6 @@ export async function fetchResolutions({ domain, chainId, state }) {
               state,
               filteredNameLookupSnapsIds[idx],
             )?.name,
-            addressBookEntryName: getAddressBookEntry(
-              state,
-              resolution.resolvedAddress,
-            )?.name,
           }),
         );
         return successfulResolutions.concat(resolutions);
@@ -173,10 +215,26 @@ export async function fetchResolutions({ domain, chainId, state }) {
     [],
   );
 
-  return filteredResults;
+  // Prune expired entries and enforce max cache size before adding new entry
+  if (resolutionCache.size >= MAX_CACHE_SIZE) {
+    pruneExpiredCacheEntries();
+    // If still at max after pruning, remove oldest entry
+    if (resolutionCache.size >= MAX_CACHE_SIZE) {
+      const oldestKey = resolutionCache.keys().next().value;
+      resolutionCache.delete(oldestKey);
+    }
+  }
+
+  // Cache only completed results with current timestamp
+  resolutionCache.set(cacheKey, {
+    timestamp: Date.now(),
+    result: filteredResults,
+  });
+
+  return enrichResolutionsWithAddressBook(filteredResults, state);
 }
 
-export function lookupDomainName(domainName, chainId) {
+export function lookupDomainName(domainName, chainId, signal) {
   return async (dispatch, getState) => {
     const trimmedDomainName = domainName.trim();
     let state = getState();
@@ -187,28 +245,30 @@ export function lookupDomainName(domainName, chainId) {
     state = getState();
     log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
     const finalChainId = chainId || getCurrentChainId(state);
-    const chainIdInt = parseInt(finalChainId, 16);
+    const caipChainId = formatChainIdToCaip(finalChainId);
     const resolutions = await fetchResolutions({
       domain: trimmedDomainName,
-      chainId: `eip155:${chainIdInt}`,
+      chainId: caipChainId,
       state,
+      signal,
     });
 
     // Due to the asynchronous nature of looking up domains, we could reach this point
-    // while a new lookup has started, if so we don't use the found result.
+    // while a new lookup has started, if so we discard the stale result.
     state = getState();
     if (trimmedDomainName !== state[name].domainName) {
-      return;
+      return [];
     }
 
     await dispatch(
       lookupEnd({
         resolutions,
-        chainId,
-        network: chainIdInt,
+        chainId: caipChainId,
         domainName: trimmedDomainName,
       }),
     );
+
+    return resolutions;
   };
 }
 

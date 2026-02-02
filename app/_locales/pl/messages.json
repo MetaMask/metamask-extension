@@ -382,9 +382,6 @@
     "message": "Musisz wybrać plik do zaimportowania.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nie można wysłać ujemnych ilości ETH."
-  },
   "networkName": {
     "message": "Nazwa sieci"
   },

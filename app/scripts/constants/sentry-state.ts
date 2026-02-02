@@ -362,7 +362,6 @@ export const SENTRY_BACKGROUND_STATE = {
     [AllProperties]: false,
   },
   TokenListController: {
-    preventPollingOnNetworkRestart: true,
     tokensChainsCache: {
       [AllProperties]: false,
     },
@@ -420,7 +419,6 @@ export const SENTRY_UI_STATE = {
   history: true,
   appState: {
     customNonceValue: true,
-    isAccountMenuOpen: true,
     isNetworkMenuOpen: true,
     nextNonce: true,
     pendingTokens: false,

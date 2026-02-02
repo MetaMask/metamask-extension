@@ -11,6 +11,7 @@ import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
+  BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
@@ -79,7 +80,9 @@ export const MultichainHoveredAddressRowsList = ({
   onViewAllClick,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
-  const [, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const navigate = useNavigate();
   const [isHoverOpen, setIsHoverOpen] = useState(false);
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
@@ -290,6 +293,9 @@ export const MultichainHoveredAddressRowsList = ({
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
       >
         {children}
       </Box>

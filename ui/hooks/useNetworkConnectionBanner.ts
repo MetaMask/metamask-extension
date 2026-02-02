@@ -6,17 +6,17 @@ import {
   getNetworkConnectionBanner,
   getIsDeviceOffline,
 } from '../selectors/selectors';
-import { updateNetworkConnectionBanner } from '../store/actions';
+import { updateNetworkConnectionBanner, updateNetwork } from '../store/actions';
 import { MetaMetricsContext } from '../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import { infuraProjectId } from '../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { onlyKeepHost } from '../../shared/lib/only-keep-host';
-import { isPublicEndpointUrl } from '../../shared/lib/network-utils';
+import { submitRequestToBackground } from '../store/background-connection';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
+import { setShowInfuraSwitchToast } from '../components/app/toast-master/utils';
 
 type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
   trackNetworkBannerEvent: (event: {
@@ -24,6 +24,12 @@ type UseNetworkConnectionBannerResult = NetworkConnectionBanner & {
     eventName: string;
     networkClientId: string;
   }) => void;
+  /**
+   * Switch the default RPC endpoint to Infura for the current unavailable network.
+   * Only available when the network has an Infura endpoint to switch to.
+   * Returns a promise that resolves when the switch is complete (or rejects on error).
+   */
+  switchToInfura: () => Promise<void>;
 };
 
 const DEGRADED_BANNER_TIMEOUT = 5 * 1000;
@@ -69,7 +75,7 @@ export const useNetworkConnectionBanner =
     }, [clearDegradedTimer, clearUnavailableTimer]);
 
     const trackNetworkBannerEvent = useCallback(
-      ({
+      async ({
         bannerType,
         eventName,
         networkClientId,
@@ -78,54 +84,54 @@ export const useNetworkConnectionBanner =
         eventName: string;
         networkClientId: string;
       }) => {
-        if (!infuraProjectId) {
-          console.warn(
-            'Infura project ID not found, cannot track network banner event',
-          );
-          return;
-        }
-
-        let foundNetwork: { chainId: Hex; url: string } | undefined;
-        for (const networkConfiguration of Object.values(
-          networkConfigurationsByChainId,
-        )) {
-          const rpcEndpoint = networkConfiguration.rpcEndpoints.find(
-            (endpoint) => endpoint.networkClientId === networkClientId,
-          );
-          if (rpcEndpoint) {
-            foundNetwork = {
-              chainId: networkConfiguration.chainId,
-              url: rpcEndpoint.url,
-            };
-            break;
+        try {
+          let foundNetwork: { chainId: Hex; url: string } | undefined;
+          for (const networkConfiguration of Object.values(
+            networkConfigurationsByChainId,
+          )) {
+            const rpcEndpoint = networkConfiguration.rpcEndpoints.find(
+              (endpoint) => endpoint.networkClientId === networkClientId,
+            );
+            if (rpcEndpoint) {
+              foundNetwork = {
+                chainId: networkConfiguration.chainId,
+                url: rpcEndpoint.url,
+              };
+              break;
+            }
           }
-        }
-        if (!foundNetwork) {
-          console.warn(
-            `RPC endpoint not found for network client ID: ${networkClientId}`,
+          if (!foundNetwork) {
+            console.warn(
+              `RPC endpoint not found for network client ID: ${networkClientId}`,
+            );
+            return;
+          }
+
+          const rpcUrl = foundNetwork.url;
+          const chainIdAsDecimal = hexToNumber(foundNetwork.chainId);
+          const isPublic = await submitRequestToBackground<boolean>(
+            'isPublicEndpointUrl',
+            [rpcUrl],
           );
-          return;
+          const sanitizedRpcUrl = isPublic ? onlyKeepHost(rpcUrl) : 'custom';
+
+          trackEvent({
+            category: MetaMetricsEventCategory.Network,
+            event: eventName,
+            // The names of Segment properties have a particular case.
+            /* eslint-disable @typescript-eslint/naming-convention */
+            properties: {
+              banner_type: bannerType,
+              chain_id_caip: `eip155:${chainIdAsDecimal}`,
+              rpc_domain: sanitizedRpcUrl,
+              rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
+            },
+            /* eslint-enable @typescript-eslint/naming-convention */
+          });
+        } catch (error) {
+          // Analytics tracking failed - don't surface this error since it's non-critical
+          console.error('Failed to track network banner event:', error);
         }
-
-        const rpcUrl = foundNetwork.url;
-        const chainIdAsDecimal = hexToNumber(foundNetwork.chainId);
-        const sanitizedRpcUrl = isPublicEndpointUrl(rpcUrl, infuraProjectId)
-          ? onlyKeepHost(rpcUrl)
-          : 'custom';
-
-        trackEvent({
-          category: MetaMetricsEventCategory.Network,
-          event: eventName,
-          // The names of Segment properties have a particular case.
-          /* eslint-disable @typescript-eslint/naming-convention */
-          properties: {
-            banner_type: bannerType,
-            chain_id_caip: `eip155:${chainIdAsDecimal}`,
-            rpc_domain: sanitizedRpcUrl,
-            rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
-          },
-          /* eslint-enable @typescript-eslint/naming-convention */
-        });
       },
       [networkConfigurationsByChainId, trackEvent],
     );
@@ -147,6 +153,8 @@ export const useNetworkConnectionBanner =
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
               isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
+              infuraEndpointIndex:
+                firstUnavailableEvmNetwork.infuraEndpointIndex,
             }),
           );
         }
@@ -175,6 +183,8 @@ export const useNetworkConnectionBanner =
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
               isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
+              infuraEndpointIndex:
+                firstUnavailableEvmNetwork.infuraEndpointIndex,
             }),
           );
 
@@ -192,7 +202,6 @@ export const useNetworkConnectionBanner =
     // If the first unavailable network does not change but the status changes, start the degraded or unavailable timer
     // If the first unavailable network changes, reset all timers and change the status
     // If the device is offline, don't show network banners - the issue is device connectivity, not the network
-
     useEffect(() => {
       // When device is offline, clear timers and reset banner state
       // We don't want to show network degraded/unavailable banners when the real issue
@@ -231,8 +240,76 @@ export const useNetworkConnectionBanner =
       startUnavailableTimer,
     ]);
 
+    const switchToInfura = useCallback(async () => {
+      if (
+        networkConnectionBannerState.status !== 'degraded' &&
+        networkConnectionBannerState.status !== 'unavailable'
+      ) {
+        return;
+      }
+
+      const { chainId, infuraEndpointIndex } = networkConnectionBannerState;
+      if (infuraEndpointIndex === undefined) {
+        return;
+      }
+
+      const networkConfiguration = networkConfigurationsByChainId[chainId];
+      if (!networkConfiguration) {
+        return;
+      }
+
+      // Update the network configuration to use the Infura endpoint as default
+      // Only show success toast if the update completes without error
+      try {
+        await dispatch(
+          updateNetwork(
+            {
+              chainId,
+              name: networkConfiguration.name,
+              nativeCurrency: networkConfiguration.nativeCurrency,
+              rpcEndpoints: networkConfiguration.rpcEndpoints,
+              blockExplorerUrls: networkConfiguration.blockExplorerUrls,
+              defaultBlockExplorerUrlIndex:
+                networkConfiguration.defaultBlockExplorerUrlIndex,
+              defaultRpcEndpointIndex: infuraEndpointIndex,
+            },
+            { replacementSelectedRpcEndpointIndex: infuraEndpointIndex },
+          ),
+        );
+        dispatch(setShowInfuraSwitchToast(true));
+      } catch {
+        // Error is already handled by updateNetwork which shows a warning
+        // Do not show success toast on failure
+      }
+    }, [
+      networkConnectionBannerState,
+      networkConfigurationsByChainId,
+      dispatch,
+    ]);
+
+    // When in degraded/unavailable status, use fresh selector data for network details
+    // to prevent stale "Switch to MetaMask default RPC" button after switching endpoints
+    if (
+      (networkConnectionBannerState.status === 'degraded' ||
+        networkConnectionBannerState.status === 'unavailable') &&
+      firstUnavailableEvmNetwork
+    ) {
+      return {
+        ...networkConnectionBannerState,
+        // Override with fresh data from selector
+        networkClientId: firstUnavailableEvmNetwork.networkClientId,
+        networkName: firstUnavailableEvmNetwork.networkName,
+        chainId: firstUnavailableEvmNetwork.chainId,
+        isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
+        infuraEndpointIndex: firstUnavailableEvmNetwork.infuraEndpointIndex,
+        trackNetworkBannerEvent,
+        switchToInfura,
+      };
+    }
+
     return {
       ...networkConnectionBannerState,
       trackNetworkBannerEvent,
+      switchToInfura,
     };
   };

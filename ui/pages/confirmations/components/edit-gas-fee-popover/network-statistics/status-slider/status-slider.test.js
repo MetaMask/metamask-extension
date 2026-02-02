@@ -82,8 +82,8 @@ describe('StatusSlider', () => {
   it('should color the arrow and label for the middle position if networkCongestion has not been set yet', () => {
     const { getByTestId } = renderComponent({});
     expect(getByTestId('status-slider-arrow')).toHaveStyle(
-      'border-top-color: #6A5D92',
+      'border-top-color: #6D5C90',
     );
-    expect(getByTestId('status-slider-label')).toHaveStyle('color: #6A5D92');
+    expect(getByTestId('status-slider-label')).toHaveStyle('color: #6D5C90');
   });
 });

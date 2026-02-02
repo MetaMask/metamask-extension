@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
+import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { PAGES, type Driver } from '../../webdriver/driver';
+import LoginPage from '../../page-objects/pages/login-page';
 
 type DataStorage = {
   meta: {
@@ -181,6 +183,9 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
     if (MIGRATION_OVERRIDE_KEYS.includes(key)) {
       continue; // these are testing-only keys
     }
+    if (key.startsWith(STORAGE_KEY_PREFIX)) {
+      continue; // StorageService keys are managed independently
+    }
     assert.ok(
       key === 'manifest' || storage.manifest.includes(key),
       `storage key ${key} should be present in manifest`,
@@ -312,9 +317,9 @@ const reloadExtension = async (driver: Driver) => {
  */
 const reloadAndUnlock = async (driver: Driver) => {
   await reloadExtension(driver);
-  await unlockWallet(driver, {
-    password: WALLET_PASSWORD,
-  });
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPageIsLoaded();
+  await loginPage.loginToHomepage(WALLET_PASSWORD);
   await ensureHomeReady(driver);
 };
 

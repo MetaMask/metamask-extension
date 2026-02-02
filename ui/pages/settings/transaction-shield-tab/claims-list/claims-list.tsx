@@ -38,7 +38,7 @@ const ClaimsList = () => {
     useClaims();
   const { drafts } = useClaimDraft();
 
-  const [defaultTab] = useState(() => {
+  const [activeTab, setActiveTab] = useState(() => {
     const tabParam = searchParams.get('tab');
     if (
       tabParam === CLAIMS_TAB_KEYS.PENDING ||
@@ -46,7 +46,7 @@ const ClaimsList = () => {
     ) {
       return tabParam;
     }
-    return undefined;
+    return CLAIMS_TAB_KEYS.PENDING;
   });
 
   // Clear the tab param from the URL after reading it
@@ -232,7 +232,8 @@ const ClaimsList = () => {
   return (
     <Tabs
       data-testid="claims-list-page"
-      defaultActiveTabKey={defaultTab}
+      activeTab={activeTab}
+      onTabClick={setActiveTab}
       className="h-full flex flex-col overflow-y-hidden"
       tabListProps={{
         className: 'px-4',

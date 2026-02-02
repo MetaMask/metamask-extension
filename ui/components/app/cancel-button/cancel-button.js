@@ -8,7 +8,7 @@ import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIncrementedGasFees } from '../../../pages/confirmations/hooks/useIncrementedGasFees';
-import { isBalanceSufficient } from '../../../pages/confirmations/send-legacy/send.utils';
+import { isBalanceSufficient } from '../../../pages/confirmations/send-utils/send.utils';
 import { getSelectedAccount } from '../../../selectors';
 
 export default function CancelButton({
