@@ -295,7 +295,6 @@
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
       "useSidePanelAsDefault": "boolean"
     },
-    "preventPollingOnNetworkRestart": false,
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "productTour": "accountIcon",
