@@ -27,7 +27,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
-import { isPublicEndpointUrl } from '../../../../../shared/lib/network-utils';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
@@ -314,37 +314,52 @@ export const NetworksForm = ({
           }
 
           // Track RPC update from network connection banner
+          // Wrapped in try-catch to prevent analytics failures from affecting the UI
+          // since the network update has already succeeded at this point
           if (trackRpcUpdateFromBanner) {
-            const newRpcEndpoint =
-              networkPayload.rpcEndpoints[
-                networkPayload.defaultRpcEndpointIndex
-              ];
-            const oldRpcEndpoint =
-              existingNetwork.rpcEndpoints?.[
-                existingNetwork.defaultRpcEndpointIndex ?? 0
-              ];
+            try {
+              const newRpcEndpoint =
+                networkPayload.rpcEndpoints[
+                  networkPayload.defaultRpcEndpointIndex
+                ];
+              const oldRpcEndpoint =
+                existingNetwork.rpcEndpoints?.[
+                  existingNetwork.defaultRpcEndpointIndex ?? 0
+                ];
 
-            const chainIdAsDecimal = hexToNumber(chainIdHex);
+              const chainIdAsDecimal = hexToNumber(chainIdHex);
 
-            const sanitizeRpcUrl = (url: string) =>
-              isPublicEndpointUrl(url, infuraProjectId ?? '')
-                ? onlyKeepHost(url)
-                : 'custom';
+              const sanitizeRpcUrl = async (url: string) => {
+                const isPublic = await submitRequestToBackground<boolean>(
+                  'isPublicEndpointUrl',
+                  [url],
+                );
+                return isPublic ? onlyKeepHost(url) : 'custom';
+              };
 
-            trackEvent({
-              category: MetaMetricsEventCategory.Network,
-              event: MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
-              // The names of Segment properties have a particular case.
-              /* eslint-disable @typescript-eslint/naming-convention */
-              properties: {
-                chain_id_caip: `eip155:${chainIdAsDecimal}`,
-                from_rpc_domain: oldRpcEndpoint?.url
+              const [fromRpcDomain, toRpcDomain] = await Promise.all([
+                oldRpcEndpoint?.url
                   ? sanitizeRpcUrl(oldRpcEndpoint.url)
-                  : 'unknown',
-                to_rpc_domain: sanitizeRpcUrl(newRpcEndpoint.url),
-              },
-              /* eslint-enable @typescript-eslint/naming-convention */
-            });
+                  : Promise.resolve('unknown'),
+                sanitizeRpcUrl(newRpcEndpoint.url),
+              ]);
+
+              trackEvent({
+                category: MetaMetricsEventCategory.Network,
+                event: MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
+                // The names of Segment properties have a particular case.
+                /* eslint-disable @typescript-eslint/naming-convention */
+                properties: {
+                  chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                  from_rpc_domain: fromRpcDomain,
+                  to_rpc_domain: toRpcDomain,
+                },
+                /* eslint-enable @typescript-eslint/naming-convention */
+              });
+            } catch (error) {
+              // Analytics tracking failed, but network update succeeded - don't surface this error
+              console.error('Failed to track RPC update analytics:', error);
+            }
           }
         } else {
           await dispatch(addNetwork(networkPayload));
