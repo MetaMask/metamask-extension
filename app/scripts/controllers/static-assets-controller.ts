@@ -34,8 +34,6 @@ const TOKEN_API_BASE_URL = 'https://tokens.api.cx.metamask.io';
 export type StaticAssetsPollingFeatureFlagOptions = {
   /** The supported chains for the controller. */
   supportedChains?: Hex[];
-  /** The interval for the polling. */
-  interval?: number;
   /** The cache expiration time for the top assets API in milliseconds. */
   cacheExpirationTime?: number;
   /** The top X assets to fetch. */
@@ -77,6 +75,8 @@ export type StaticAssetsControllerMessenger = Messenger<
 
 export type StaticAssetsControllerOptions = {
   messenger: StaticAssetsControllerMessenger;
+  /** The interval for the polling. */
+  interval?: number;
   /** The supported chains for the controller. */
   getSupportedChains: () => Set<Hex>;
   /** The cache expiration time for the top assets API in milliseconds. */
@@ -85,8 +85,6 @@ export type StaticAssetsControllerOptions = {
   getTopX: () => number;
   /** The occurrence floor for the top assets. */
   getOccurrenceFloor: (chainId: string) => number;
-  /** The interval for the polling. */
-  getInterval: () => number;
 };
 
 /**
@@ -131,7 +129,6 @@ async function fetchTopAssets({
     if (!isStrictHexString(chainId)) {
       return [];
     }
-
     const caip2ChainId = toEvmCaipChainId(chainId);
     const url = new URL(
       `${TOKEN_API_BASE_URL}/v3/chains/${caip2ChainId}/assets`,
@@ -187,8 +184,8 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
 
   constructor({
     messenger,
+    interval = DEFAULT_INTERVAL_MS,
     getSupportedChains,
-    getInterval,
     getCacheExpirationTime,
     getTopX,
     getOccurrenceFloor,
@@ -201,7 +198,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     });
     this.#getSupportedChains = getSupportedChains;
 
-    this.setIntervalLength(getInterval() ?? DEFAULT_INTERVAL_MS);
+    this.setIntervalLength(interval);
 
     this.#getCacheExpirationTime = getCacheExpirationTime;
 

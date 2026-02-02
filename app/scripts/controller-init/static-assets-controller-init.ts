@@ -34,10 +34,6 @@ export const StaticAssetsControllerInit: ControllerInitFunction<
       const cacheExpirationTime = getRemoteFeatureFlagControllerState(initMessenger)?.cacheExpirationTime;
       return cacheExpirationTime ? Number(cacheExpirationTime) : DEFAULT_CACHE_EXPIRATION_MS
     },
-    getInterval: (): number => {
-      const interval = getRemoteFeatureFlagControllerState(initMessenger)?.interval;
-      return Number(interval) ?? DEFAULT_INTERVAL_MS
-    },
     getTopX: (): number => {
       const topX = getRemoteFeatureFlagControllerState(initMessenger)?.topX;
       return Number(topX) ?? DEFAULT_TOP_X
