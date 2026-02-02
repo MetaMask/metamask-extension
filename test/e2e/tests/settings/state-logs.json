@@ -540,6 +540,10 @@
     "featureFlags": {},
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
+    "firstTimeInfo": {
+      "date": "number",
+      "version": "string"
+    },
     "forgottenPassword": "boolean",
     "fragments": {},
     "fullScreenGasPollTokens": ["string"],
