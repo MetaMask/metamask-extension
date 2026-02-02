@@ -17,9 +17,6 @@ yarn test:e2e:benchmark
 # Run with custom iterations and retries
 yarn test:e2e:benchmark --preset userActions --iterations 5 --retries 3
 
-# Run multiple presets
-yarn test:e2e:benchmark --preset performanceAssets --preset performanceLogin
-
 # Save results to file
 yarn test:e2e:benchmark --preset performanceOnboardingImport --out results.json
 ```
