@@ -136,7 +136,7 @@ describe('getAssetDetails', () => {
     getTokenStandardAndDetails.mockReturnValue({
       name: 'myToken',
       symbol: 'MTK',
-      standard: TokenStandard.ERC721,
+      standard: ERC721,
     });
     const result = await getAssetDetails(
       erc721Params.tokenAddress,
