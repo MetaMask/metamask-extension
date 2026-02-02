@@ -471,10 +471,9 @@ export default class OAuthService {
     hasEmailMarketingConsent: boolean,
   ): Promise<boolean> {
     try {
-      const state = this.#messenger.call(
-        'SeedlessOnboardingController:getState',
+      const accessToken = await this.#messenger.call(
+        'SeedlessOnboardingController:getAccessToken',
       );
-      const { accessToken } = state;
       if (!accessToken) {
         throw new Error('No access token found');
       }
@@ -518,10 +517,9 @@ export default class OAuthService {
 
   async getMarketingConsent(): Promise<boolean> {
     try {
-      const state = this.#messenger.call(
-        'SeedlessOnboardingController:getState',
+      const accessToken = await this.#messenger.call(
+        'SeedlessOnboardingController:getAccessToken',
       );
-      const { accessToken } = state;
       if (!accessToken) {
         throw new Error('No access token found');
       }
