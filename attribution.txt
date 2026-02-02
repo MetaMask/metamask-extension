@@ -19017,7 +19017,7 @@ SOFTWARE.
 ******************************
 
 fast-xml-parser
-4.4.1 <https://github.com/NaturalIntelligence/fast-xml-parser>
+5.3.4 <https://github.com/NaturalIntelligence/fast-xml-parser>
 MIT License
 
 Copyright (c) 2017 Amit Kumar Gupta
@@ -45986,7 +45986,7 @@ THE SOFTWARE.
 ******************************
 
 strnum
-1.0.5 <https://github.com/NaturalIntelligence/strnum>
+2.1.2 <https://github.com/NaturalIntelligence/strnum>
 MIT License
 
 Copyright (c) 2021 Natural Intelligence
