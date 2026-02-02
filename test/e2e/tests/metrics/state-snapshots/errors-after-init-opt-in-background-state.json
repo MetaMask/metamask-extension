@@ -402,7 +402,6 @@
   },
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
-    "preventPollingOnNetworkRestart": false,
     "tokensChainsCache": { "0x539": "object" }
   },
   "TokenRatesController": { "marketData": "object" },
