@@ -82,8 +82,11 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
 
   const controller = new StaticAssetsController({
     messenger: staticAssetsControllerMessenger,
-    supportedChains: () => new Set(supportedChains),
-    interval: 1000,
+    getSupportedChains: () => new Set(supportedChains),
+    getCacheExpirationTime: () => 1000,
+    getInterval: () => 1000,
+    getTopX: () => 10,
+    getOccurrenceFloor: () => 2,
   });
 
   return {

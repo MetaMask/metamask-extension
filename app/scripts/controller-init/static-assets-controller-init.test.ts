@@ -41,8 +41,11 @@ describe('StaticAssetsControllerInit', () => {
     const controllerMock = jest.mocked(StaticAssetsController);
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
-      interval: 3 * 60 * 60 * 1000,
-      supportedChains: expect.any(Function),
+      getSupportedChains: expect.any(Function),
+      getCacheExpirationTime: expect.any(Function),
+      getInterval: expect.any(Function),
+      getTopX: expect.any(Function),
+      getOccurrenceFloor: expect.any(Function),
     });
   });
 });
