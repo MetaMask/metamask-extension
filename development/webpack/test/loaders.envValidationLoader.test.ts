@@ -144,6 +144,32 @@ describe('envValidationLoader', () => {
       assert.strictEqual(result, source);
       assert.strictEqual(emittedErrors.length, 0);
     });
+
+    it('ignores rest element (spread operator) in destructuring', () => {
+      const source = 'const { NODE_ENV, ...rest } = process.env;';
+      const { context, emittedErrors } = createMockContext(
+        new Set(['NODE_ENV']),
+      );
+
+      const result = envValidationLoader.call(context, source);
+
+      assert.strictEqual(result, source);
+      assert.strictEqual(emittedErrors.length, 0);
+    });
+
+    it('validates named vars while ignoring rest element', () => {
+      const source = 'const { DECLARED, UNDECLARED, ...rest } = process.env;';
+      const { context, emittedErrors } = createMockContext(
+        new Set(['DECLARED']),
+      );
+
+      const result = envValidationLoader.call(context, source);
+
+      assert.strictEqual(result, source);
+      assert.strictEqual(emittedErrors.length, 1);
+      assert.match(emittedErrors[0].message, /UNDECLARED/u);
+      assert.doesNotMatch(emittedErrors[0].message, /rest/u);
+    });
   });
 
   describe('mixed patterns', () => {
