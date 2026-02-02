@@ -1,5 +1,5 @@
 {
-  "description": "Beta build type description",
+  "base_property": "overridden_by_beta",
   "beta_property": "from_beta_base",
-  "base_property": "overridden_by_beta"
+  "description": "Beta build type description"
 }
