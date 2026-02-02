@@ -85,8 +85,7 @@ export function createDefiReferralMiddleware(
         if (isWalletRequestPermissions) {
           // wallet_requestPermissions returns permission objects with parentCapability key
           arePermissionsGranted = res.result.some(
-            (permission) =>
-              permission?.parentCapability === 'eth_accounts',
+            (permission) => permission?.parentCapability === 'eth_accounts',
           );
         } else if (isEthRequestAccounts) {
           // eth_requestAccounts returns an array of address strings

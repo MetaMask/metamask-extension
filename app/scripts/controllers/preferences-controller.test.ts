@@ -1414,7 +1414,8 @@ describe('preferences controller', () => {
         };
 
         const { controller } = setupController({
-          state: existingUserState as unknown as Partial<PreferencesControllerState>,
+          state:
+            existingUserState as unknown as Partial<PreferencesControllerState>,
         });
 
         // All partners from the enum should be present and correctly initialized
