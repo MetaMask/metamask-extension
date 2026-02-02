@@ -3196,11 +3196,10 @@
     "ui/pages/routes/routes.component.test.js": {
       "MetaMask: Background connection not initialized": 10,
       "MetaMask: Balance not found warnings": 18,
-      "MetaMask: Invalid theme warnings": 10,
-      "React: Act warnings (component updates not wrapped)": 24,
+      "React: Act warnings (component updates not wrapped)": 22,
       "React: PropTypes validation failures": 2,
-      "Reselect: Identity function warnings": 7,
-      "Reselect: Input stability warnings": 6,
+      "Reselect: Identity function warnings": 4,
+      "Reselect: Input stability warnings": 4,
       "warn: Could not find asset type": 9,
       "warn: ⚠️ React Router Future Flag": 2
     },
