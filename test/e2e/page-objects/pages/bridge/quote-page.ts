@@ -102,8 +102,6 @@ class BridgeQuotePage {
         });
       }
     }
-    // QTY
-    await this.driver.fill(this.sourceAmount, quote.amount);
 
     // Destination
     if (quote.tokenTo || quote.toChain) {
@@ -132,6 +130,9 @@ class BridgeQuotePage {
         });
       }
     }
+
+    // QTY
+    await this.driver.fill(this.sourceAmount, quote.amount);
     await this.driver.assertElementNotPresent(
       {
         tag: 'p',
