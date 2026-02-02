@@ -67,6 +67,7 @@
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
     "openMetaMaskTabs": {},
+    "pendingHardwareWalletSigning": "boolean",
     "pendingTokens": {},
     "qrCodeData": "null",
     "removeNftMessage": "string",
