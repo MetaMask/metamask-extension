@@ -54,7 +54,7 @@ mockHideModal.mockImplementation(() => ({
 }));
 
 mocksetPendingHardwareWalletSigning.mockImplementation((payload) => ({
-  type: 'SET_PENDING_HARDWARE_SIGNING',
+  type: 'SET_PENDING_HARDWARE_WALLET_SIGNING',
   payload,
 }));
 
