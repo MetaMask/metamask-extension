@@ -11,7 +11,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { Driver } from '../../../webdriver/driver';
 import type { BenchmarkRunResult } from '../../utils/types';
 
-export const testTitle = 'benchmark-userActions-loadNewAccount';
+export const testTitle = 'benchmark-user-actions-load-new-account';
 export const persona = 'standard';
 
 export async function run(): Promise<BenchmarkRunResult> {

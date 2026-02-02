@@ -10,7 +10,7 @@ import { createInternalTransaction } from '../../../page-objects/flows/transacti
 import { Driver } from '../../../webdriver/driver';
 import type { BenchmarkRunResult } from '../../utils/types';
 
-export const testTitle = 'benchmark-userActions-confirmTx';
+export const testTitle = 'benchmark-user-actions-confirm-tx';
 export const persona = 'standard';
 
 export async function run(): Promise<BenchmarkRunResult> {

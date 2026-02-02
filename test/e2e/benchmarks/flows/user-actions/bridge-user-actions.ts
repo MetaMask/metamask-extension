@@ -16,7 +16,7 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import type { BenchmarkRunResult } from '../../utils/types';
 
-export const testTitle = 'benchmark-userActions-bridgeUserActions';
+export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = 'standard';
 
 async function mockTokensEthereum(mockServer: Mockttp) {

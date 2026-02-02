@@ -306,22 +306,20 @@ async function main(): Promise<void> {
 
   for (const filePath of filesToRun) {
     const fileName = path.basename(filePath, path.extname(filePath));
+    const resultKey = fileName.replace(/-([a-z])/g, (_, letter) =>
+      letter.toUpperCase(),
+    );
+
     try {
       const result = await runBenchmarkFile(filePath, options);
       // Playwright benchmarks write their own output file, skip storing
       if (filePath.includes('/playwright/')) {
         continue;
       }
-      // Page-load benchmarks return { pageName: {...} }, spread directly
-      // Other benchmarks (performance, user-actions) use filename as key
-      if (filePath.includes('/page-load/') && typeof result === 'object') {
-        Object.assign(allResults, result);
-      } else {
-        allResults[fileName] = result;
-      }
+      allResults[resultKey] = result;
     } catch (error) {
       console.error(`❌ Error running ${fileName}:`, error);
-      allResults[fileName] = { error: String(error) };
+      allResults[resultKey] = { error: String(error) };
     }
   }
 

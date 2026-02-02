@@ -101,12 +101,15 @@ Benchmark results are output as JSON, either to stdout or to a file via `--out`:
 
 ```json
 {
-  "onboarding-import-wallet": {
-    "timers": [
-      { "id": "importWalletToSocialScreen", "duration": 209 },
-      { "id": "srpButtonToForm", "duration": 53 }
-    ],
-    "success": true
+  "onboardingImportWallet": {
+    "testTitle": "benchmark-onboarding-import-wallet",
+    "persona": "standard",
+    "mean": {
+      "importWalletToSocialScreen": 209,
+      "srpButtonToForm": 53
+    },
+    "p75": { ... },
+    "p95": { ... }
   }
 }
 ```

@@ -90,14 +90,13 @@ export async function run(options: {
   browserLoads?: number;
   pageLoads?: number;
   retries?: number;
-}): Promise<Record<string, BenchmarkResults>> {
+}): Promise<BenchmarkResults> {
   const {
     browserLoads = DEFAULT_NUM_BROWSER_LOADS,
     pageLoads = DEFAULT_NUM_PAGE_LOADS,
     retries = 0,
   } = options;
 
-  const results: Record<string, BenchmarkResults> = {};
   const pageName = 'home';
   let runResults: Metrics[] = [];
   let testTitle = '';
@@ -133,8 +132,7 @@ export async function run(options: {
       .sort((a, b) => a - b);
   }
 
-  const reportingPageName = `${resultPersona}${capitalize(pageName)}`;
-  results[reportingPageName] = {
+  return {
     testTitle,
     persona: resultPersona,
     mean: calcMeanResult(result),
@@ -144,6 +142,4 @@ export async function run(options: {
     p75: calcPResult(result, 75),
     p95: calcPResult(result, 95),
   };
-
-  return results;
 }
