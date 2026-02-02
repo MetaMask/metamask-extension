@@ -1,5 +1,5 @@
 import type { LoaderContext } from 'webpack';
-import { parseSync, type ParseOptions } from '@swc/core';
+import { parse, type ParseOptions } from '@swc/core';
 import type {
   Node,
   MemberExpression,
@@ -163,10 +163,10 @@ function walkAst(node: Node, envVars: Set<string>): void {
 }
 
 /**
- * A webpack loader that validates environment variable usage against declared variables.
+ * An async webpack loader that validates environment variable usage against declared variables.
  *
- * Uses SWC to parse source files into an AST and walks the tree to find `process.env`
- * access patterns. Detects the following patterns:
+ * Uses SWC's async parser to parse source files into an AST and walks the tree to find
+ * `process.env` access patterns. Detects the following patterns:
  *
  * 1. `process.env.VARIABLE_NAME` - dot notation
  * 2. `process.env["VARIABLE_NAME"]` - bracket notation
@@ -181,8 +181,9 @@ function walkAst(node: Node, envVars: Set<string>): void {
  *   loader: 'envValidationLoader',
  *   options: { declarations: new Set(['NODE_ENV', 'API_URL']) }
  * }
+ * This is a validation-only loader; the source code is passed through unmodified.
+ *
  * @param source - The source code content of the file being processed.
- * @returns The unmodified source code (this loader only validates, doesn't transform).
  * @throws Emits a webpack error if any `process.env.*` references
  * are found that aren't included in the `declarations` set.
  */
@@ -190,37 +191,39 @@ export default function envValidationLoader(
   this: LoaderContext<EnvValidationLoaderOptions>,
   source: string,
 ) {
+  const callback = this.async();
   const { declarations } = this.getOptions();
   const parseOptions = getParseOptions(this.resourcePath);
 
-  let ast;
-  try {
-    ast = parseSync(source, parseOptions);
-  } catch (error) {
-    this.emitError(
-      new Error(
-        `Environment variable validation error encountered while trying to parse ${this.resourcePath}. {${error instanceof Error ? error.message : String(error)}}`,
-      ),
-    );
-    return source;
-  }
+  (async () => {
+    try {
+      const ast = await parse(source, parseOptions);
 
-  const foundEnvVars = new Set<string>();
-  walkAst(ast, foundEnvVars);
+      const foundEnvVars = new Set<string>();
+      walkAst(ast, foundEnvVars);
 
-  const undeclaredVars = [...foundEnvVars].filter(
-    (varName) => !declarations.has(varName),
-  );
+      const undeclaredVars = [...foundEnvVars].filter(
+        (varName) => !declarations.has(varName),
+      );
 
-  if (undeclaredVars.length > 0) {
-    this.emitError(
-      new Error(
-        `Undeclared environment variables in ${this.resourcePath}:\n${undeclaredVars
-          .map((v) => `  - ${v}`)
-          .join('\n')}\n\nAdd these to builds.yml under "env" to fix this.`,
-      ),
-    );
-  }
+      if (undeclaredVars.length > 0) {
+        this.emitError(
+          new Error(
+            `Undeclared environment variables in ${this.resourcePath}:\n${undeclaredVars
+              .map((v) => `  - ${v}`)
+              .join('\n')}\n\nAdd these to builds.yml under "env" to fix this.`,
+          ),
+        );
+      }
 
-  return source;
+      callback(null, source);
+    } catch (error) {
+      this.emitError(
+        new Error(
+          `Environment variable validation error encountered while trying to parse ${this.resourcePath}. {${error instanceof Error ? error.message : String(error)}}`,
+        ),
+      );
+      callback(null, source);
+    }
+  })();
 }
