@@ -56,7 +56,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // Version that changes on every release
-  'data.AppStateController.currentAppVersion',
+  'data.AppMetadataController.currentAppVersion',
 ];
 
 /**
