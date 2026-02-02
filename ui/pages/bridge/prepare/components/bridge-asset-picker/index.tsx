@@ -104,7 +104,7 @@ export const BridgeAssetPicker = ({
   const assetsToInclude = useMemo(
     () =>
       uniqBy(
-        assetsWithBalance.concat(selectedAsset).filter((token) => {
+        [selectedAsset, ...assetsWithBalance].filter((token) => {
           const matchesChainIdFilter = chainIdsSet.has(token.chainId);
 
           return matchesChainIdFilter;
@@ -112,7 +112,7 @@ export const BridgeAssetPicker = ({
         (a) => a.assetId?.toLowerCase(),
       ).map((token) => toBridgeToken(token)),
     // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
-    [chainIdsSet, selectedAsset],
+    [chainIdsSet, selectedAsset.assetId, accountGroup.id, accountAddress],
   );
 
   const { popularTokensList, isLoading: isPopularTokensLoading } =
