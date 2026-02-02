@@ -446,7 +446,16 @@ class ActivityListPage {
     );
   }
 
-  async checkWaitForTransactionStatus(status: 'confirmed' | 'cancelled') {
+  /**
+   * Waits for a transaction to reach the given status in the activity list.
+   *
+   * @param status - The expected transaction status: 'confirmed' (on-chain),
+   * 'cancelled', or 'pending'. 'pending' is only for snap networks (e.g. BTC)
+   * where updates are slow; these transactions come from the snap.
+   */
+  async checkWaitForTransactionStatus(
+    status: 'confirmed' | 'cancelled' | 'pending',
+  ) {
     await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
       timeout: 5000,
     });
