@@ -87,10 +87,10 @@ export async function run(): Promise<BenchmarkRunResult> {
           text: tokenToSearch,
           css: quotePage.tokenButton,
         });
-        const timestampAferTokenSearch = new Date();
+        const timestampAfterTokenSearch = new Date();
 
         searchToken =
-          timestampAferTokenSearch.getTime() -
+          timestampAfterTokenSearch.getTime() -
           timestampBeforeTokenSearch.getTime();
       },
     );

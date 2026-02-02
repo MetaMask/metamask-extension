@@ -150,7 +150,7 @@ export async function runBenchmarkWithIterations(
  *   setupPerformanceReporting();
  *
  *   it('measures something', async function () {
- *     const timer = new TimerHelper('My timer', 5000); // 5 second threshold
+ *     const timer = new TimerHelper('myTimer'); // Thresholds configured in utils/constants.ts
  *     await timer.measure(async () => {
  *       // actions to measure
  *     });
