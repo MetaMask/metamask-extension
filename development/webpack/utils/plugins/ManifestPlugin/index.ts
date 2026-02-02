@@ -272,13 +272,12 @@ export class ManifestPlugin<Z extends boolean> {
     const { version } = this.options;
 
     this.options.browsers.forEach((browser) => {
-      // @ts-expect-error - TS can't correctly handle the type here.
-      let manifest: Manifest = {
+      let manifest = {
         ...baseManifest,
         ...buildTypeBaseManifest,
         description,
         version,
-      };
+      } as Manifest;
 
       if (browser !== 'firefox') {
         // version_name isn't used by FireFox, but is by Chrome, et al.
