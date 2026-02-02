@@ -447,6 +447,10 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
         1000,
       ),
     ).rejects.toThrow(SHIELD_ERROR.subscriptionPollingTimedOut);
+
+    expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
+      PRODUCT_TYPES.SHIELD,
+    );
   });
 });
 
