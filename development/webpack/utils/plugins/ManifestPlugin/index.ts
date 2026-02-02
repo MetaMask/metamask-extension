@@ -1,5 +1,5 @@
 import { extname, join } from 'node:path/posix';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import {
   sources,
   ProgressPlugin,
@@ -248,30 +248,62 @@ export class ManifestPlugin<Z extends boolean> {
     const basePath = join(manifestPath, `_base.json`);
     const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf8'));
 
+    const buildTypeManifestPath = join(
+      context,
+      'build-types',
+      this.options.buildType,
+      'manifest',
+    );
+    // Load the build type base manifest if it exists for the specific build type
+    const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
+    const buildTypeBaseManifest: Partial<Manifest> = existsSync(
+      buildTypeBasePath,
+    )
+      ? JSON.parse(readFileSync(buildTypeBasePath, 'utf8'))
+      : {};
+
     const { transform } = this.options;
     const resources = this.options.web_accessible_resources;
+    const baseDescription =
+      buildTypeBaseManifest?.description ?? baseManifest?.description;
     const description = this.options.description
-      ? `${baseManifest.description} – ${this.options.description}`
-      : baseManifest.description;
+      ? `${baseDescription} – ${this.options.description}`
+      : baseDescription;
     const { version } = this.options;
 
     this.options.browsers.forEach((browser) => {
-      let manifest: Manifest = { ...baseManifest, description, version };
+      // @ts-expect-error - TS can't correctly handle the type here.
+      let manifest: Manifest = {
+        ...baseManifest,
+        ...buildTypeBaseManifest,
+        description,
+        version,
+      };
 
       if (browser !== 'firefox') {
         // version_name isn't used by FireFox, but is by Chrome, et al.
         manifest.version_name = this.options.versionName;
       }
 
-      try {
-        const browserManifestPath = join(manifestPath, `${browser}.json`);
+      const browserManifestPath = join(manifestPath, `${browser}.json`);
+      if (existsSync(browserManifestPath)) {
         // merge browser-specific overrides into the browser manifest
         manifest = {
           ...manifest,
           ...require(browserManifestPath),
         };
-      } catch {
-        // ignore if the file doesn't exist, as some browsers might not need overrides
+      }
+
+      const buildTypeBrowserManifestPath = join(
+        buildTypeManifestPath,
+        `${browser}.json`,
+      );
+      if (existsSync(buildTypeBrowserManifestPath)) {
+        // merge browser-specific build type overrides into the browser manifest
+        manifest = {
+          ...manifest,
+          ...require(buildTypeBrowserManifestPath),
+        };
       }
 
       // merge provided `web_accessible_resources`

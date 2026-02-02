@@ -9,7 +9,7 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "webpack:tsc": "tsc -p ./development/webpack/tsconfig.json --noCheck",
+    "webpack:tsc": "tsc -p ./development/webpack/tsconfig.webpack.json",
     "webpack:lavamoat": "NODE_OPTIONS=--no-deprecation lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
     "webpack:lavamoat:build": "yarn webpack:lavamoat -- --env production --no-cache",
     "webpack:lavamoat:policy:build": "yarn webpack:lavamoat --writeAutoPolicy -- --env production --no-cache",
