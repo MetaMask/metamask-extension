@@ -56,7 +56,7 @@ const EditGasFeePopoverWrapped = () => {
   }
 
   return (
-    <Modal isOpen onClose={closeAllModals} className="h-[500px]">
+    <Modal isOpen onClose={closeAllModals}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
