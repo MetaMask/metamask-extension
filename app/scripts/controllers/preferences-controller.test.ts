@@ -987,8 +987,8 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
-            "hyperliquid": {},
             "gmx": {},
+            "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
@@ -1072,8 +1072,8 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
-            "hyperliquid": {},
             "gmx": {},
+            "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
@@ -1157,8 +1157,8 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
-            "hyperliquid": {},
             "gmx": {},
+            "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
