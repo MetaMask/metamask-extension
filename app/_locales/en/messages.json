@@ -4310,7 +4310,7 @@
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
   },
   "noMMFeeSwapping": {
-    "message": "No MM fee swapping into $1."
+    "message": "No MetaMask fee"
   },
   "noNetworkFee": {
     "message": "No network fee"

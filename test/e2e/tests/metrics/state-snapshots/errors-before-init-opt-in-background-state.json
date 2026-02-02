@@ -13,6 +13,13 @@
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
+    "AppMetadataController": {
+      "currentAppVersion": "string",
+      "currentMigrationVersion": "number",
+      "firstTimeInfo": "object",
+      "previousAppVersion": "",
+      "previousMigrationVersion": 0
+    },
     "AppStateController": {
       "appActiveTab": "object",
       "browserEnvironment": {},
@@ -164,7 +171,6 @@
       "allTokens": {}
     },
     "TransactionController": { "transactions": "object" },
-    "config": "object",
-    "firstTimeInfo": "object"
+    "config": "object"
   }
 }

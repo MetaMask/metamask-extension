@@ -293,7 +293,6 @@
       "sortCallback": "stringNumeric"
     }
   },
-  "preventPollingOnNetworkRestart": false,
   "previousAppVersion": "",
   "previousMigrationVersion": 0,
   "providerConfig": {
