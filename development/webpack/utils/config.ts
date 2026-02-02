@@ -216,7 +216,6 @@ export function getVariables(
     const requiredVars = Object.keys(activeBuild.env ?? {});
     const undefinedVariables = requiredVars.filter(
       (variable) =>
-        !variables.has(variable) ||
         variables.get(variable) === null ||
         variables.get(variable) === undefined,
     );
