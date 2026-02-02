@@ -130,12 +130,11 @@ const ConfirmButton = ({
 
   const {
     alerts,
+    hasDangerAlerts,
     hasUnconfirmedDangerAlerts,
     hasUnconfirmedFieldDangerAlerts,
     unconfirmedFieldDangerAlerts,
   } = useAlerts(alertOwnerId);
-
-  const shouldShowReviewAlerts = false;
 
   const hasDangerBlockingAlerts = alerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
@@ -162,7 +161,7 @@ const ConfirmButton = ({
           onSubmit={onSubmit}
         />
       )}
-      {shouldShowReviewAlerts ? (
+      {hasDangerAlerts ? (
         <Button
           block
           danger
