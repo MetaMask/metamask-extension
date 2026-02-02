@@ -5144,11 +5144,29 @@
   "perpsBuy": {
     "message": "buy"
   },
+  "perpsClose": {
+    "message": "Close"
+  },
   "perpsCloseAll": {
     "message": "Close all"
   },
+  "perpsCloseAmount": {
+    "message": "Close Amount"
+  },
+  "perpsCloseLong": {
+    "message": "Close Long"
+  },
+  "perpsCloseShort": {
+    "message": "Close Short"
+  },
   "perpsClosedShort": {
     "message": "Closed short"
+  },
+  "perpsConfirmCloseLong": {
+    "message": "Close Long"
+  },
+  "perpsConfirmCloseShort": {
+    "message": "Close Short"
   },
   "perpsContactSupport": {
     "message": "Contact support"
@@ -5180,6 +5198,9 @@
   "perpsExploreStocksAndCommodities": {
     "message": "Explore stocks and commodities"
   },
+  "perpsFees": {
+    "message": "Fees"
+  },
   "perpsFilterAll": {
     "message": "All"
   },
@@ -5210,11 +5231,17 @@
   "perpsLearnMore": {
     "message": "Learn more"
   },
+  "perpsLeverage": {
+    "message": "Leverage"
+  },
   "perpsLimit": {
     "message": "Limit"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
+  },
+  "perpsLiquidationPriceEst": {
+    "message": "Liquidation Price Est."
   },
   "perpsLong": {
     "message": "Long"
@@ -5235,6 +5262,12 @@
   "perpsMarkets": {
     "message": "Markets"
   },
+  "perpsModify": {
+    "message": "Modify"
+  },
+  "perpsModifyPosition": {
+    "message": "Modify Position"
+  },
   "perpsMore": {
     "message": "More"
   },
@@ -5244,11 +5277,22 @@
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
+  "perpsOpenLong": {
+    "message": "Open Long $1",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
+  },
   "perpsOpenOrders": {
     "message": "Open Orders"
   },
+  "perpsOpenShort": {
+    "message": "Open Short $1",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
+  },
   "perpsOpenedLong": {
     "message": "Opened long"
+  },
+  "perpsOrderAmount": {
+    "message": "Order Amount"
   },
   "perpsOrders": {
     "message": "Orders"
@@ -5258,6 +5302,9 @@
   },
   "perpsPosition": {
     "message": "Position"
+  },
+  "perpsPositionSize": {
+    "message": "Position Size"
   },
   "perpsPositions": {
     "message": "Positions"

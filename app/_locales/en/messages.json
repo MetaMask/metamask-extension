@@ -5141,9 +5141,6 @@
     "message": "available",
     "description": "is the available balance amount"
   },
-  "perpsAvailableToTrade": {
-    "message": "Available to Trade"
-  },
   "perpsBuy": {
     "message": "buy"
   },
@@ -5225,9 +5222,6 @@
   "perpsFundingRate": {
     "message": "Funding Rate"
   },
-  "perpsGain": {
-    "message": "Gain"
-  },
   "perpsIncreasedPosition": {
     "message": "Increased position"
   },
@@ -5243,9 +5237,6 @@
   "perpsLimit": {
     "message": "Limit"
   },
-  "perpsLimitPrice": {
-    "message": "Limit Price"
-  },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
@@ -5254,9 +5245,6 @@
   },
   "perpsLong": {
     "message": "Long"
-  },
-  "perpsLoss": {
-    "message": "Loss"
   },
   "perpsMargin": {
     "message": "Margin"
@@ -5306,12 +5294,6 @@
   "perpsOrderAmount": {
     "message": "Order Amount"
   },
-  "perpsOrderType": {
-    "message": "Order Type"
-  },
-  "perpsOrderValue": {
-    "message": "Order Value"
-  },
   "perpsOrders": {
     "message": "Orders"
   },
@@ -5345,9 +5327,6 @@
   "perpsSize": {
     "message": "Size"
   },
-  "perpsSlPrice": {
-    "message": "SL Price"
-  },
   "perpsSortFundingRate": {
     "message": "Funding rate"
   },
@@ -5374,9 +5353,6 @@
   },
   "perpsTotalBalance": {
     "message": "Total Balance"
-  },
-  "perpsTpPrice": {
-    "message": "TP Price"
   },
   "perpsTradePerps": {
     "message": "Trade perps"
