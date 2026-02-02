@@ -72,8 +72,15 @@ export const calculatePercentile = (
   if (sortedValues.length === 0) {
     return 0;
   }
-  const index = Math.floor((percentile / 100) * sortedValues.length);
-  return sortedValues[Math.min(index, sortedValues.length - 1)];
+  if (percentile <= 0) {
+    return sortedValues[0];
+  }
+  if (percentile >= 100) {
+    return sortedValues[sortedValues.length - 1];
+  }
+  const rank = Math.ceil((percentile / 100) * sortedValues.length);
+  const index = Math.min(Math.max(rank - 1, 0), sortedValues.length - 1);
+  return sortedValues[index];
 };
 
 /**
