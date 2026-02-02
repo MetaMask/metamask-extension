@@ -1040,17 +1040,40 @@ export async function loadStateFromPersistence(backup) {
 
   /**
    * Creates an Error with sentryTags for migration failures.
-   * Tags help identify if user should have had a backup (v12.20.0+, migration 157+).
+   * Tags help identify if user should have had a backup (v12.20.0+, migration 157+),
+   * and include installation info for diagnostics.
    * These are captured via the critical error page's "Send error report" checkbox
    * flow (see ui/helpers/utils/display-critical-error.ts).
    *
    * @param {string} message - The error message
-   * @returns {Error} Error object with sentryTags property
+   * @returns {Promise<Error>} Error object with sentryTags property
    */
-  const createMigrationError = (message) => {
+  const createMigrationError = async (message) => {
     const preMigrationVersion = preMigrationVersionedData?.meta?.version;
     const backupShouldExist =
       typeof preMigrationVersion === 'number' && preMigrationVersion >= 157;
+
+    // Try to get firstTimeInfo for Sentry tags (installation version and date)
+    // Check in-memory sources first (fast, synchronous checks)
+    // Check both new location (AppMetadataController) and old location (top-level)
+    // for compatibility with pre-migration-190 state
+    let firstTimeInfo =
+      backup?.AppMetadataController?.firstTimeInfo ??
+      versionedData?.data?.AppMetadataController?.firstTimeInfo ??
+      versionedData?.data?.firstTimeInfo ??
+      preMigrationVersionedData?.data?.AppMetadataController?.firstTimeInfo ??
+      preMigrationVersionedData?.data?.firstTimeInfo;
+
+    // Fallback to IndexedDB backup if in-memory sources don't have it
+    // (handles corruption scenarios where storage.local is damaged)
+    if (!firstTimeInfo) {
+      try {
+        const indexedDbBackup = await persistenceManager.getBackup();
+        firstTimeInfo = indexedDbBackup?.AppMetadataController?.firstTimeInfo;
+      } catch {
+        // Ignore backup fetch errors - we still want to report the migration error
+      }
+    }
 
     const error = new Error(message);
 
@@ -1061,29 +1084,31 @@ export async function loadStateFromPersistence(backup) {
         preMigrationVersion ?? 'unknown',
       ),
       'corruption.backupShouldExist': String(backupShouldExist),
+      'corruption.installVersion': String(firstTimeInfo?.version ?? 'unknown'),
+      'corruption.installDate': String(firstTimeInfo?.date ?? 'unknown'),
     };
 
     return error;
   };
 
   if (!versionedData) {
-    throw createMigrationError('MetaMask - migrator returned undefined');
+    throw await createMigrationError('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
-    throw createMigrationError(
+    throw await createMigrationError(
       `MetaMask - migrator metadata has invalid type '${typeof versionedData.meta}'`,
     );
   } else if (typeof versionedData.meta.version !== 'number') {
-    throw createMigrationError(
+    throw await createMigrationError(
       `MetaMask - migrator metadata version has invalid type '${typeof versionedData.meta.version}'`,
     );
   } else if (
     !['data', 'split', undefined].includes(versionedData.meta.storageKind)
   ) {
-    throw createMigrationError(
+    throw await createMigrationError(
       `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
     );
   } else if (!isObject(versionedData.data)) {
-    throw createMigrationError(
+    throw await createMigrationError(
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
     );
   }
