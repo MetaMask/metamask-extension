@@ -40,8 +40,9 @@ jest.mock('react-router-dom', () => ({
 const VALID_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
+// Uses valid BIP39 words but invalid checksum to test isValidMnemonic validation
 const INVALID_SEED =
-  'brocoli brocoli brocoli brocoli brocoli brocoli brocoli brocoli brocoli brocoli brocoli brocoli';
+  'broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli broccoli';
 
 describe('ImportSrp', () => {
   const store = configureMockStore([thunk])(mockState);
@@ -102,26 +103,46 @@ describe('ImportSrp', () => {
   });
 
   describe('mnemonic validation', () => {
-    it('does not proceed with import when an invalid mnemonic is entered', async () => {
+    it('displays error and does not proceed when mnemonic has invalid checksum', async () => {
       const mockStore = configureMockStore([thunk])(mockState);
-      const { queryByTestId } = renderWithProvider(<ImportSrp />, mockStore);
+      const { queryByTestId, getByText } = renderWithProvider(
+        <ImportSrp />,
+        mockStore,
+      );
 
       const srpNote = queryByTestId('srp-input-import__srp-note');
       if (srpNote) {
+        // "broccoli" is a valid BIP39 word, so it passes wordlist validation
+        // but repeating it 12 times creates an invalid checksum
         await userEvent.type(srpNote, INVALID_SEED);
       }
 
       const confirmSrpButton = queryByTestId('import-srp-confirm');
 
+      // Button is enabled because all words are valid BIP39 words
+      await waitFor(() => {
+        expect(confirmSrpButton).not.toBeDisabled();
+      });
+
       if (confirmSrpButton) {
         fireEvent.click(confirmSrpButton);
       }
 
+      // isValidMnemonic returns false due to invalid checksum,
+      // error message should be displayed
       await waitFor(() => {
-        expect(importMnemonicToVault).not.toHaveBeenCalled();
-        expect(mockNavigate).not.toHaveBeenCalled();
-        expect(setShowNewSrpAddedToast).not.toHaveBeenCalled();
+        expect(
+          getByText(messages.invalidSeedPhraseNotFound.message),
+        ).toBeInTheDocument();
       });
+
+      // Button should be disabled due to error
+      expect(confirmSrpButton).toBeDisabled();
+
+      // importMnemonicToVault should not be called
+      expect(importMnemonicToVault).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(setShowNewSrpAddedToast).not.toHaveBeenCalled();
     });
   });
 

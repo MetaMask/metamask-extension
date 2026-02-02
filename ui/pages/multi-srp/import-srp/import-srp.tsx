@@ -56,7 +56,12 @@ export const ImportSrp = () => {
 
   async function importWallet() {
     try {
-      if (!secretRecoveryPhrase || !isValidMnemonic(secretRecoveryPhrase)) {
+      if (!secretRecoveryPhrase) {
+        return;
+      }
+
+      if (!isValidMnemonic(secretRecoveryPhrase)) {
+        setSrpError(t('invalidSeedPhraseNotFound'));
         return;
       }
 
