@@ -368,6 +368,32 @@ describe('Delegation 7702 Publish Hook', () => {
     );
   });
 
+  it('does not call updateTransaction when nonce is undefined', async () => {
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    const transactionWithoutNonce = {
+      ...TRANSACTION_META_MOCK,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        nonce: undefined,
+      },
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    };
+
+    await hookClass.getHook()(transactionWithoutNonce, SIGNED_TX_MOCK);
+
+    // Verify that updateTransaction was NOT called when nonce is undefined
+    expect(updateTransactionMock).not.toHaveBeenCalled();
+  });
+
   it('throws if relay status is not success', async () => {
     waitForRelayResultMock.mockResolvedValueOnce({
       status: 'TEST_STATUS',
