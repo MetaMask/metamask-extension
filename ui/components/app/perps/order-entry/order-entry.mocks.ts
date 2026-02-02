@@ -56,7 +56,7 @@ export const BALANCE_PERCENT_PRESETS = [25, 50, 75, 100] as const;
 /**
  * Leverage slider step markers
  */
-export const LEVERAGE_PRESETS = [1, 5, 10, 25, 50] as const;
+export const LEVERAGE_PRESETS = [5, 10, 25, 50] as const;
 
 /**
  * Calculate position size from USD amount and price

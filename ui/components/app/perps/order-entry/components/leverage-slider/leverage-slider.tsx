@@ -13,11 +13,7 @@ import {
 import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { LeverageSliderProps } from '../../order-entry.types';
-
-/**
- * Preset leverage values for quick selection
- */
-const LEVERAGE_PRESETS = [5, 10, 15, 20] as const;
+import { LEVERAGE_PRESETS } from '../../order-entry.mocks';
 
 /**
  * LeverageSlider - Slider for selecting leverage multiplier
