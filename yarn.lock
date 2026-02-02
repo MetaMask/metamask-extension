@@ -6233,15 +6233,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/claims-controller@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "@metamask/claims-controller@npm:0.4.1"
+"@metamask/claims-controller@npm:^0.4.2":
+  version: 0.4.2
+  resolution: "@metamask/claims-controller@npm:0.4.2"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.17.0"
+    "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/3f6e49f4806dad0380ea5efeb4facc6882e579f3b2f0b9369e190bed19de994bca16092974c1c60852aa9c5d8b2b8a1b883dfb24423e7531550af16ff84c6837
+  checksum: 10/3e512f43c581e48c7f5b67d4eab5f0fecb69eb17a1e9e16e236f0798c0e420dc62bd62d1a9755c385ea7f2c28eb4796963184ed4c2832dfe9ed0c97a8cb31764
   languageName: node
   linkType: hard
 
@@ -8292,22 +8292,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/shield-controller@npm:5.0.0"
+"@metamask/shield-controller@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/shield-controller@npm:5.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/signature-controller": "npm:^39.0.0"
-    "@metamask/transaction-controller": "npm:^62.9.1"
+    "@metamask/signature-controller": "npm:^39.0.1"
+    "@metamask/transaction-controller": "npm:^62.12.0"
     "@metamask/utils": "npm:^11.9.0"
     cockatiel: "npm:^3.1.2"
-  checksum: 10/7393fb2d9ac3692f00c462311cb826aeb036f44d995266cf87b2b39a0063967ced02318e436293f51993de6046313edd7cee6cf14facf361f5510fede03bf055
+  checksum: 10/6bb41aa452b9ba2a7dc4b22a904fadec8df4ca9d6a1ca5eb7af19a1747facfaf4724d82d98cf581db4df6a8f4dfc7a837fb47a5000cd55c4f014ff45ecdba3d8
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^39.0.0, @metamask/signature-controller@npm:^39.0.1":
+"@metamask/signature-controller@npm:^39.0.1":
   version: 39.0.1
   resolution: "@metamask/signature-controller@npm:39.0.1"
   dependencies:
@@ -8739,19 +8739,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "@metamask/subscription-controller@npm:5.4.1"
+"@metamask/subscription-controller@npm:^5.4.2":
+  version: 5.4.2
+  resolution: "@metamask/subscription-controller@npm:5.4.2"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^16.0.2"
     "@metamask/profile-sync-controller": "npm:^27.0.0"
-    "@metamask/transaction-controller": "npm:^62.9.2"
+    "@metamask/transaction-controller": "npm:^62.12.0"
     "@metamask/utils": "npm:^11.9.0"
     bignumber.js: "npm:^9.1.2"
-  checksum: 10/a44b012489ac01f5ae2f2b3a6ad492374f0a45b1b27e6ff64607005b1511162fd841e0b3e97dd088781ab42921c5bbabba828c714e71d54321e6f0f61eaeda74
+  checksum: 10/ac7971db705f2348445ab00ea45db60c1beaca9b71b5f225b0bcc5810dbaad1e625c7efe72c7d1dc546de01f199c33d3d9b5179f62a6220b8e794a9b06884279
   languageName: node
   linkType: hard
 
@@ -8851,7 +8851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.8.0, @metamask/transaction-controller@npm:^62.9.1, @metamask/transaction-controller@npm:^62.9.2":
+"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.8.0, @metamask/transaction-controller@npm:^62.9.1, @metamask/transaction-controller@npm:^62.9.2":
   version: 62.12.0
   resolution: "@metamask/transaction-controller@npm:62.12.0"
   dependencies:
@@ -33623,7 +33623,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.3.0"
-    "@metamask/claims-controller": "npm:^0.4.1"
+    "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/connectivity-controller": "npm:^0.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.18.0"
@@ -33712,7 +33712,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^7.1.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
-    "@metamask/shield-controller": "npm:^5.0.0"
+    "@metamask/shield-controller": "npm:^5.0.1"
     "@metamask/signature-controller": "npm:^39.0.1"
     "@metamask/smart-transactions-controller": "npm:^22.3.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
@@ -33726,7 +33726,7 @@ __metadata:
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/storage-service": "npm:^0.0.1"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^5.4.1"
+    "@metamask/subscription-controller": "npm:^5.4.2"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
