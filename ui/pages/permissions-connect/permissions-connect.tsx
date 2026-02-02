@@ -65,12 +65,10 @@ import {
   getRequestType,
   getTargetSubjectMetadata,
 } from '../../selectors';
-import { getNativeCurrency } from '../../ducks/metamask/metamask';
-import { formatDate, getURLHostName } from '../../helpers/utils/util';
+import { getURLHostName } from '../../helpers/utils/util';
 import {
   approvePermissionsRequest as approvePermissionsRequestAction,
   rejectPermissionsRequest as rejectPermissionsRequestAction,
-  showModal,
   getRequestAccountTabIds as getRequestAccountTabIdsAction,
   resolvePendingApproval,
   rejectPendingApproval as rejectPendingApprovalAction,
@@ -223,7 +221,6 @@ function PermissionsConnect() {
     string,
     string
   >;
-  const nativeCurrency = useSelector(getNativeCurrency);
 
   const isRequestApprovalPermittedChains = Boolean(
     (diff as Record<string, unknown>)?.permissionDiffMap,
@@ -285,15 +282,6 @@ function PermissionsConnect() {
     [lastConnectedInfoRaw],
   );
 
-  const addressLastConnectedMap = useMemo(() => {
-    const map = lastConnectedInfo[originFromRequest]?.accounts || {};
-    const formattedMap: Record<string, string> = {};
-    Object.keys(map).forEach((key) => {
-      formattedMap[key] = formatDate(map[key], 'yyyy-MM-dd');
-    });
-    return formattedMap;
-  }, [lastConnectedInfo, originFromRequest]);
-
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
   const confirmPermissionPath = `${connectPath}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
   const snapsConnectPath = `${connectPath}${CONNECT_SNAPS_CONNECT_ROUTE}`;
@@ -310,8 +298,6 @@ function PermissionsConnect() {
   const snapsInstallPrivacyWarningShownProp = useSelector(
     getSnapsInstallPrivacyWarningShown,
   );
-
-  const newAccountNumber = accountsWithLabels.length + 1;
 
   // Local state
   const [redirecting, setRedirecting] = useState(false);
@@ -503,25 +489,6 @@ function PermissionsConnect() {
       redirect(true);
     },
     [dispatch, redirect],
-  );
-
-  const showNewAccountModal = useCallback(
-    ({
-      onCreateNewAccount,
-      newAccountNumber: accountNumber,
-    }: {
-      onCreateNewAccount: (address: string) => void;
-      newAccountNumber: number;
-    }) => {
-      return dispatch(
-        showModal({
-          name: 'NEW_ACCOUNT',
-          onCreateNewAccount,
-          newAccountNumber: accountNumber,
-        }),
-      );
-    },
-    [dispatch],
   );
 
   const setSnapsInstallPrivacyWarningShownStatus = useCallback(
