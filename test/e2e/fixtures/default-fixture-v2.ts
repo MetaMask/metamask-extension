@@ -1,7 +1,12 @@
 import { cloneDeep } from 'lodash';
-import { RpcEndpointType } from '@metamask/network-controller';
+import { RpcEndpointType, NetworkStatus } from '@metamask/network-controller';
+import { SubjectType } from '@metamask/permission-controller';
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
+import { ThemeType } from '../../../shared/constants/preferences';
 import onboardingFixtureJson from './onboarding-fixture.json';
 
 /**
@@ -56,7 +61,7 @@ const DEFAULT_ACCOUNT = {
     name: 'Account 1',
     lastSelected: 1665507600000,
     keyring: {
-      type: 'HD Key Tree',
+      type: 'HD Key Tree' as const,
     },
   },
   options: {},
@@ -67,9 +72,9 @@ const DEFAULT_ACCOUNT = {
     'eth_signTypedData_v3',
     'eth_signTypedData_v4',
   ],
-  type: 'eip155:eoa',
+  type: 'eip155:eoa' as const,
   scopes: ['eip155:0'],
-};
+} as const;
 
 /**
  * Returns the raw onboarding fixture (fresh clone).
@@ -131,7 +136,7 @@ export const defaultFixture = {
     useExternalServices: true,
     overrideContentSecurityPolicyHeader: true,
     ipfsGateway: 'dweb.link',
-    ledgerTransportType: 'webhid',
+    ledgerTransportType: LedgerTransportTypes.webhid,
     openSeaEnabled: false,
     useBlockie: false,
     useNftDetection: false,
@@ -140,7 +145,7 @@ export const defaultFixture = {
     useCurrencyRateCheck: true,
     useMultiAccountBalanceChecker: true,
     isMultiAccountBalancesEnabled: true,
-    theme: 'light',
+    theme: ThemeType.light,
     preferences: {
       hideZeroBalanceTokens: false,
       showExtensionInFullSizeView: false,
@@ -167,10 +172,12 @@ export const defaultFixture = {
 
   AppStateController: {
     connectedStatusPopoverHasBeenShown: true,
-    termsOfUseLastAgreed: '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
+    // Note: These are placeholder strings that get replaced at runtime with actual timestamps
+    termsOfUseLastAgreed:
+      '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds' as unknown as number,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown:
-      '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
+      '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds' as unknown as number,
     newPrivacyPolicyToastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     hasShownMultichainAccountsIntroModal: true,
@@ -217,7 +224,7 @@ export const defaultFixture = {
 
   GasFeeController: {
     estimatedGasFeeTimeBounds: {},
-    gasEstimateType: 'none',
+    gasEstimateType: GasEstimateTypes.none,
     gasFeeEstimates: {},
   },
 
@@ -228,7 +235,7 @@ export const defaultFixture = {
   },
 
   TransactionController: {
-    transactions: {},
+    transactions: [],
   },
 
   SmartTransactionsController: {
@@ -250,7 +257,7 @@ export const defaultFixture = {
         iconUrl: null,
         name: 'MetaMask < = > Ledger Bridge',
         origin: 'https://metamask.github.io',
-        subjectType: 'website',
+        subjectType: SubjectType.Website,
       },
     },
   },
@@ -281,7 +288,7 @@ export const defaultFixture = {
     metamaskNotificationsList: [],
     metamaskNotificationsReadList: [],
   },
-};
+} as const;
 
 // ============================================================
 // Chain-dependent data builders
@@ -309,17 +316,17 @@ export function buildAccountTrackerData(inputChainId: string) {
  */
 export function buildLocalhostNetworkConfig(inputChainId: string) {
   return {
-    blockExplorerUrls: [],
-    chainId: inputChainId,
+    blockExplorerUrls: [] as string[],
+    chainId: inputChainId as Hex,
     defaultBlockExplorerUrlIndex: undefined,
     defaultRpcEndpointIndex: 0,
     name: 'Localhost 8545',
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {
-        failoverUrls: [],
+        failoverUrls: [] as string[],
         networkClientId: LOCALHOST_NETWORK_CLIENT_ID,
-        type: RpcEndpointType.Custom,
+        type: RpcEndpointType.Custom as const,
         url: 'http://localhost:8545',
       },
     ],
@@ -353,25 +360,19 @@ export function buildNetworkEnablementControllerData(inputChainId: string) {
 /**
  * Builds NetworkOrderController data for a specific chain ID
  *
- * @param inputChainId - The chain ID to include in the network order
+ * @param inputChainId - The chain ID to include in the network order (hex format like '0x539')
  */
 export function buildNetworkOrderControllerData(inputChainId: string) {
+  // Convert hex chain IDs to CAIP-2 format (eip155:chainId)
+  const hexToDecimal = (hex: string) => parseInt(hex, 16).toString();
+  const toCaipChainId = (hex: string) =>
+    `eip155:${hexToDecimal(hex)}` as `${string}:${string}`;
+
   return {
     orderedNetworkList: [
-      {
-        networkId: '0x1',
-        networkRpcUrl:
-          'https://mainnet.infura.io/v3/00000000000000000000000000000000',
-      },
-      {
-        networkId: '0xe708',
-        networkRpcUrl:
-          'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
-      },
-      {
-        networkId: inputChainId,
-        networkRpcUrl: 'http://localhost:8545',
-      },
+      { networkId: toCaipChainId('0x1') }, // Mainnet
+      { networkId: toCaipChainId('0xe708') }, // Linea
+      { networkId: toCaipChainId(inputChainId) }, // Localhost
     ],
   };
 }

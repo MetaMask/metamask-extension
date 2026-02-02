@@ -1,4 +1,6 @@
 import { merge, mergeWith } from 'lodash';
+import { NetworkStatus } from '@metamask/network-controller';
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   FixtureData,
@@ -46,8 +48,17 @@ import type {
   TokensControllerState,
   TransactionControllerState,
   UserStorageController,
-  FixturePartial,
+  DeepPartial,
+  Mutable,
 } from './fixture-types';
+
+/**
+ * Helper to convert readonly data (from `as const`) to mutable type.
+ * This is needed because defaultFixture uses `as const` for literal type preservation.
+ */
+function asMutable<T>(data: T): Mutable<T> {
+  return data as Mutable<T>;
+}
 
 // Re-export constants for convenience
 export {
@@ -99,29 +110,29 @@ export class FixtureBuilderV2 {
    */
   #applyDefaultFixture(inputChainId: string) {
     // Core account/wallet controllers
-    this.withOnboardingController(defaultFixture.OnboardingController);
-    this.withKeyringController(defaultFixture.KeyringController);
-    this.withAccountsController(defaultFixture.AccountsController);
-    this.withAuthenticationController(defaultFixture.AuthenticationController);
+    this.withOnboardingController(asMutable(defaultFixture.OnboardingController));
+    this.withKeyringController(asMutable(defaultFixture.KeyringController));
+    this.withAccountsController(asMutable(defaultFixture.AccountsController));
+    this.withAuthenticationController(asMutable(defaultFixture.AuthenticationController));
 
     // User preferences and app state
-    this.withPreferencesController(defaultFixture.PreferencesController);
-    this.withAppStateController(defaultFixture.AppStateController);
+    this.withPreferencesController(asMutable(defaultFixture.PreferencesController));
+    this.withAppStateController(asMutable(defaultFixture.AppStateController));
 
     // Metrics and currency
-    this.withMetaMetricsController(defaultFixture.MetaMetricsController);
-    this.withCurrencyController(defaultFixture.CurrencyController);
+    this.withMetaMetricsController(asMutable(defaultFixture.MetaMetricsController));
+    this.withCurrencyController(asMutable(defaultFixture.CurrencyController));
 
     // Network configuration (chain-dependent)
     this.withAccountTracker(buildAccountTrackerData(inputChainId));
     this.withNetworkController({
       networkConfigurationsByChainId: {
-        [inputChainId]: buildLocalhostNetworkConfig(inputChainId),
+        [inputChainId as Hex]: buildLocalhostNetworkConfig(inputChainId),
       },
       networksMetadata: {
         [LOCALHOST_NETWORK_CLIENT_ID]: {
           EIPS: {},
-          status: 'available',
+          status: NetworkStatus.Available,
         },
       },
       selectedNetworkClientId: LOCALHOST_NETWORK_CLIENT_ID,
@@ -134,27 +145,27 @@ export class FixtureBuilderV2 {
     );
 
     // Transaction-related controllers
-    this.withGasFeeController(defaultFixture.GasFeeController);
-    this.withTokensController(defaultFixture.TokensController);
-    this.withTransactionController(defaultFixture.TransactionController);
+    this.withGasFeeController(asMutable(defaultFixture.GasFeeController));
+    this.withTokensController(asMutable(defaultFixture.TokensController));
+    this.withTransactionController(asMutable(defaultFixture.TransactionController));
     this.withSmartTransactionsController(
-      defaultFixture.SmartTransactionsController,
+      asMutable(defaultFixture.SmartTransactionsController),
     );
 
     // Permissions and metadata
     this.withSubjectMetadataController(
-      defaultFixture.SubjectMetadataController,
+      asMutable(defaultFixture.SubjectMetadataController),
     );
-    this.withPermissionController(defaultFixture.PermissionController, true);
+    this.withPermissionController(asMutable(defaultFixture.PermissionController), true);
     this.withSelectedNetworkController(
-      defaultFixture.SelectedNetworkController,
+      asMutable(defaultFixture.SelectedNetworkController),
       true,
     );
 
     // UI state
-    this.withAnnouncementController(defaultFixture.AnnouncementController);
+    this.withAnnouncementController(asMutable(defaultFixture.AnnouncementController));
     this.withNotificationServicesController(
-      defaultFixture.NotificationServicesController,
+      asMutable(defaultFixture.NotificationServicesController),
     );
   }
 
@@ -162,7 +173,7 @@ export class FixtureBuilderV2 {
   // Generic Controller Methods
   // ============================================================
 
-  withAccountTracker(data: FixturePartial<AccountTrackerControllerState>) {
+  withAccountTracker(data: DeepPartial<AccountTrackerControllerState>) {
     this.fixture.data.AccountTracker = merge(
       this.fixture.data.AccountTracker ?? {},
       data,
@@ -170,7 +181,7 @@ export class FixtureBuilderV2 {
     return this;
   }
 
-  withAddressBookController(data: FixturePartial<AddressBookControllerState>) {
+  withAddressBookController(data: DeepPartial<AddressBookControllerState>) {
     this.fixture.data.AddressBookController = merge(
       this.fixture.data.AddressBookController ?? {},
       data,
@@ -178,82 +189,82 @@ export class FixtureBuilderV2 {
     return this;
   }
 
-  withAlertController(data: FixturePartial<AlertControllerState>) {
+  withAlertController(data: DeepPartial<AlertControllerState>) {
     merge(this.fixture.data.AlertController, data);
     return this;
   }
 
-  withAnnouncementController(data: FixturePartial<AnnouncementControllerState>) {
+  withAnnouncementController(data: DeepPartial<AnnouncementControllerState>) {
     merge(this.fixture.data.AnnouncementController, data);
     return this;
   }
 
-  withAppStateController(data: FixturePartial<AppStateControllerState>) {
+  withAppStateController(data: DeepPartial<AppStateControllerState>) {
     merge(this.fixture.data.AppStateController, data);
     return this;
   }
 
   withAuthenticationController(
-    data: FixturePartial<AuthenticationController.AuthenticationControllerState>,
+    data: DeepPartial<AuthenticationController.AuthenticationControllerState>,
   ) {
     merge(this.fixture.data.AuthenticationController, data);
     return this;
   }
 
-  withAccountOrderController(data: FixturePartial<AccountOrderControllerState>) {
+  withAccountOrderController(data: DeepPartial<AccountOrderControllerState>) {
     merge(this.fixture.data.AccountOrderController, data);
     return this;
   }
 
-  withAccountsController(data: FixturePartial<AccountsControllerState>) {
+  withAccountsController(data: DeepPartial<AccountsControllerState>) {
     merge(this.fixture.data.AccountsController, data);
     return this;
   }
 
-  withCurrencyController(data: FixturePartial<CurrencyRateState>) {
+  withCurrencyController(data: DeepPartial<CurrencyRateState>) {
     merge(this.fixture.data.CurrencyController, data);
     return this;
   }
 
-  withGasFeeController(data: FixturePartial<GasFeeState>) {
+  withGasFeeController(data: DeepPartial<GasFeeState>) {
     merge(this.fixture.data.GasFeeController, data);
     return this;
   }
 
-  withKeyringController(data: FixturePartial<KeyringControllerState>) {
+  withKeyringController(data: DeepPartial<KeyringControllerState>) {
     merge(this.fixture.data.KeyringController, data);
     return this;
   }
 
-  withMetaMetricsController(data: FixturePartial<MetaMetricsControllerState>) {
+  withMetaMetricsController(data: DeepPartial<MetaMetricsControllerState>) {
     merge(this.fixture.data.MetaMetricsController, data);
     return this;
   }
 
-  withNameController(data: FixturePartial<NameControllerState>) {
+  withNameController(data: DeepPartial<NameControllerState>) {
     merge(this.fixture.data.NameController, data);
     return this;
   }
 
-  withNetworkController(data: FixturePartial<NetworkState>) {
+  withNetworkController(data: DeepPartial<NetworkState>) {
     merge(this.fixture.data.NetworkController, data);
     return this;
   }
 
   withNetworkEnablementController(
-    data: FixturePartial<NetworkEnablementControllerState>,
+    data: DeepPartial<NetworkEnablementControllerState>,
   ) {
     this.fixture.data.NetworkEnablementController =
       data as typeof this.fixture.data.NetworkEnablementController;
     return this;
   }
 
-  withNetworkOrderController(data: FixturePartial<NetworkOrderControllerState>) {
+  withNetworkOrderController(data: DeepPartial<NetworkOrderControllerState>) {
     merge(this.fixture.data.NetworkOrderController, data);
     return this;
   }
 
-  withNftController(data: FixturePartial<NftControllerState>) {
+  withNftController(data: DeepPartial<NftControllerState>) {
     this.fixture.data.NftController = merge(
       this.fixture.data.NftController ?? {},
       data,
@@ -262,7 +273,7 @@ export class FixtureBuilderV2 {
   }
 
   withNotificationServicesController(
-    data: FixturePartial<NotificationServicesController.NotificationServicesControllerState>,
+    data: DeepPartial<NotificationServicesController.NotificationServicesControllerState>,
   ) {
     mergeWith(
       this.fixture.data.NotificationServicesController,
@@ -277,15 +288,13 @@ export class FixtureBuilderV2 {
     return this;
   }
 
-  withOnboardingController(data: FixturePartial<OnboardingControllerState>) {
+  withOnboardingController(data: DeepPartial<OnboardingControllerState>) {
     merge(this.fixture.data.OnboardingController, data);
     return this;
   }
 
-  withPermissionController(
-    data: FixturePartial<Record<string, unknown>>,
-    replace = false,
-  ) {
+  // Note: PermissionControllerState is a complex generic type, using Record<string, unknown> for flexibility
+  withPermissionController(data: Record<string, unknown>, replace = false) {
     if (replace) {
       this.fixture.data.PermissionController =
         data as typeof this.fixture.data.PermissionController;
@@ -295,7 +304,7 @@ export class FixtureBuilderV2 {
     return this;
   }
 
-  withPermissionLogController(data: FixturePartial<PermissionLogControllerState>) {
+  withPermissionLogController(data: DeepPartial<PermissionLogControllerState>) {
     this.fixture.data.PermissionLogController = merge(
       this.fixture.data.PermissionLogController ?? {},
       data,
@@ -303,20 +312,20 @@ export class FixtureBuilderV2 {
     return this;
   }
 
-  withPreferencesController(data: FixturePartial<PreferencesControllerState>) {
+  withPreferencesController(data: DeepPartial<PreferencesControllerState>) {
     merge(this.fixture.data.PreferencesController, data);
     return this;
   }
 
   withRemoteFeatureFlagController(
-    data: FixturePartial<RemoteFeatureFlagControllerState>,
+    data: DeepPartial<RemoteFeatureFlagControllerState>,
   ) {
     merge(this.fixture.data.RemoteFeatureFlagController, data);
     return this;
   }
 
   withSelectedNetworkController(
-    data: FixturePartial<SelectedNetworkControllerState>,
+    data: DeepPartial<SelectedNetworkControllerState>,
     replace = false,
   ) {
     if (replace) {
@@ -329,7 +338,7 @@ export class FixtureBuilderV2 {
   }
 
   withSmartTransactionsController(
-    data: FixturePartial<SmartTransactionsControllerState>,
+    data: DeepPartial<SmartTransactionsControllerState>,
   ) {
     (this.fixture.data as Record<string, unknown>).SmartTransactionsController =
       merge(
@@ -340,26 +349,26 @@ export class FixtureBuilderV2 {
     return this;
   }
 
-  withSnapController(data: FixturePartial<SnapControllerState>) {
+  withSnapController(data: DeepPartial<SnapControllerState>) {
     merge(this.fixture.data.SnapController, data);
     return this;
   }
 
   withSubjectMetadataController(
-    data: FixturePartial<SubjectMetadataControllerState>,
+    data: DeepPartial<SubjectMetadataControllerState>,
   ) {
     merge(this.fixture.data.SubjectMetadataController, data);
     return this;
   }
 
   withTokenBalancesController(
-    data: FixturePartial<TokenBalancesControllerState>,
+    data: DeepPartial<TokenBalancesControllerState>,
   ) {
     merge(this.fixture.data.TokenBalancesController, data);
     return this;
   }
 
-  withTokenListController(data: FixturePartial<TokenListState>) {
+  withTokenListController(data: DeepPartial<TokenListState>) {
     (this.fixture.data as Record<string, unknown>).TokenListController = merge(
       (this.fixture.data as Record<string, unknown>).TokenListController ?? {},
       data,
@@ -367,18 +376,18 @@ export class FixtureBuilderV2 {
     return this;
   }
 
-  withTokensController(data: FixturePartial<TokensControllerState>) {
+  withTokensController(data: DeepPartial<TokensControllerState>) {
     merge(this.fixture.data.TokensController, data);
     return this;
   }
 
-  withTransactionController(data: FixturePartial<TransactionControllerState>) {
+  withTransactionController(data: DeepPartial<TransactionControllerState>) {
     merge(this.fixture.data.TransactionController, data);
     return this;
   }
 
   withUserStorageController(
-    data: FixturePartial<UserStorageController.UserStorageControllerState>,
+    data: DeepPartial<UserStorageController.UserStorageControllerState>,
   ) {
     merge(this.fixture.data.UserStorageController, data);
     return this;

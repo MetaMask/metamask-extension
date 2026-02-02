@@ -21,10 +21,8 @@ export type { AnnouncementControllerState } from '@metamask/announcement-control
 export type { NetworkState } from '@metamask/network-controller';
 export type { GasFeeState } from '@metamask/gas-fee-controller';
 export type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
-export type {
-  PermissionControllerState,
-  SubjectMetadataControllerState,
-} from '@metamask/permission-controller';
+// Note: PermissionControllerState is a complex generic type, not exported here
+export type { SubjectMetadataControllerState } from '@metamask/permission-controller';
 export type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 export type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 export type { PermissionLogControllerState } from '@metamask/permission-log-controller';
@@ -49,22 +47,23 @@ export type { OnboardingControllerState } from '../../../app/scripts/controllers
 export type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 
 /**
- * DeepPartial utility type for deeply nested partial updates.
- * Use this when you need to update nested properties without providing the full object.
+ * Mutable utility type - removes readonly from all properties recursively.
+ * Use this when you have `as const` data that needs to be passed to mutable types.
  */
-export type DeepPartial<T> = T extends object
-  ? {
-      [P in keyof T]?: DeepPartial<T[P]>;
-    }
-  : T;
+export type Mutable<T> = T extends readonly (infer U)[]
+  ? Mutable<U>[]
+  : T extends object
+    ? { -readonly [P in keyof T]: Mutable<T[P]> }
+    : T;
 
 /**
- * FixturePartial utility type for fixture data.
- * This type validates that top-level keys exist in the controller state type,
- * but accepts any values (including placeholder strings like "__FIXTURE_SUBSTITUTION__").
- *
- * Use this for fixture builder methods where data may not match exact controller types.
+ * DeepPartial utility type for deeply nested partial updates.
+ * This version:
+ * - Preserves arrays as-is (doesn't make elements optional)
+ * - Handles primitives correctly
  */
-export type FixturePartial<T> = {
-  [K in keyof T]?: unknown;
-};
+export type DeepPartial<T> = T extends (infer U)[]
+  ? T
+  : T extends object
+    ? { [P in keyof T]?: DeepPartial<T[P]> }
+    : T;
