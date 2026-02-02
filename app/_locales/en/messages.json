@@ -1350,6 +1350,22 @@
   "closeWindowAnytime": {
     "message": "You may close this window anytime."
   },
+  "slideBridgeDescription": {
+    "message": "Move your crypto across chains quickly and securely with MetaMask Bridge.",
+    "description": "Description for the bridge promotional carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Bridge your assets",
+    "description": "Title for the bridge promotional carousel slide"
+  },
+  "slideDebitCardDescription": {
+    "message": "Spend your crypto anywhere with a MetaMask debit card.",
+    "description": "Description for the debit card promotional carousel slide"
+  },
+  "slideDebitCardTitle": {
+    "message": "Get a MetaMask Card",
+    "description": "Title for the debit card promotional carousel slide"
+  },
   "coingecko": {
     "message": "CoinGecko"
   },
