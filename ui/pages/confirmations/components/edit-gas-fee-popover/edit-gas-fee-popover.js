@@ -79,10 +79,7 @@ const EditGasFeePopoverWrapped = () => {
                 marginBottom={1}
               />
             )}
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              marginHorizontal={3}
-            >
+            <Box flexDirection={BoxFlexDirection.Row} marginHorizontal={3}>
               <Text
                 variant={TextVariant.BodyXs}
                 fontWeight={FontWeight.Bold}
