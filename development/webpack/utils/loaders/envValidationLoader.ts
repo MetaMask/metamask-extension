@@ -201,9 +201,10 @@ export default function envValidationLoader(
   try {
     ast = parseSync(source, parseOptions);
   } catch (error) {
-    console.error(
-      `Environment variable validation error encountered while trying to parse ${this.resourcePath}`,
-      error,
+    this.emitError(
+      new Error(
+        `Environment variable validation error encountered while trying to parse ${this.resourcePath}. {${error}}`,
+      ),
     );
     return source;
   }
