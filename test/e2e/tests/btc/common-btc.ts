@@ -77,7 +77,7 @@ export async function withBtcAccountSnap(
       await completeImportSRPOnboardingFlow({ driver });
 
       // Wait for fullScan to complete
-      await driver.delay(10000);
+      await driver.delay(5000);
 
       // Switch to Bitcoin network
       const networkManager = new NetworkManager(driver);
