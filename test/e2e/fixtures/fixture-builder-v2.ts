@@ -30,17 +30,6 @@ export {
  * account, and other necessary configurations. Use `onboarding: true` to
  * get the raw onboarding fixture without account/vault.
  *
- * @example
- * // Default fixture - completed onboarding state
- * const fixture = new FixtureBuilderV2().build();
- * @example
- * // Raw onboarding fixture (no account/vault)
- * const fixture = new FixtureBuilderV2({ onboarding: true }).build();
- * @example
- * // Default fixture with customizations
- * const fixture = new FixtureBuilderV2()
- *   .withPreferencesController({ theme: 'dark' })
- *   .build();
  */
 export class FixtureBuilderV2 {
   private fixture: FixtureData;
