@@ -285,12 +285,7 @@ const ShieldPlan = () => {
       // to prevent switching to a plan without available tokens leaves selectedPaymentMethod as byCrypto with no tokens
       setSelectedPaymentMethod(PAYMENT_TYPES.byCard);
     }
-  }, [
-    selectedTokenAddress,
-    setSelectedPaymentMethod,
-    lastUsedPaymentDetails,
-    pendingAvailableTokenBalances,
-  ]);
+  }, [selectedTokenAddress, setSelectedPaymentMethod, lastUsedPaymentDetails]);
 
   const tokensSupported = useMemo(() => {
     const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
