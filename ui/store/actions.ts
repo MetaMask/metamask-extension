@@ -3426,11 +3426,13 @@ export function createCancelTransaction(
   return async (dispatch: MetaMaskReduxDispatch) => {
     const actionId = generateActionId();
     try {
-      const newState =
-        await submitRequestToBackground<MetaMaskReduxState['metamask']>(
-          'createCancelTransaction',
-          [txId, customGasSettings, { ...options, actionId }],
-        );
+      const newState = await submitRequestToBackground<
+        MetaMaskReduxState['metamask']
+      >('createCancelTransaction', [
+        txId,
+        customGasSettings,
+        { ...options, actionId },
+      ]);
       const currentNetworkTxList = getCurrentNetworkTransactions({
         metamask: newState,
       });
@@ -3438,9 +3440,7 @@ export function createCancelTransaction(
       await forceUpdateMetamaskState(dispatch);
       return id;
     } catch (err) {
-      if (
-        err?.message?.includes('Previous transaction is already confirmed')
-      ) {
+      if (err?.message?.includes('Previous transaction is already confirmed')) {
         dispatch(
           showModal({
             name: 'TRANSACTION_ALREADY_CONFIRMED',
@@ -3467,11 +3467,13 @@ export function createSpeedUpTransaction(
   return async (dispatch: MetaMaskReduxDispatch) => {
     const actionId = generateActionId();
     try {
-      const newState =
-        await submitRequestToBackground<MetaMaskReduxState['metamask']>(
-          'createSpeedUpTransaction',
-          [txId, customGasSettings, { ...options, actionId }],
-        );
+      const newState = await submitRequestToBackground<
+        MetaMaskReduxState['metamask']
+      >('createSpeedUpTransaction', [
+        txId,
+        customGasSettings,
+        { ...options, actionId },
+      ]);
       const currentNetworkTxList = getCurrentNetworkTransactions(newState);
       const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
@@ -3494,11 +3496,9 @@ export function createRetryTransaction(
   return async (dispatch: MetaMaskReduxDispatch) => {
     const actionId = generateActionId();
     try {
-      const newState =
-        await submitRequestToBackground<MetaMaskReduxState['metamask']>(
-          'createSpeedUpTransaction',
-          [txId, customGasSettings, { actionId }],
-        );
+      const newState = await submitRequestToBackground<
+        MetaMaskReduxState['metamask']
+      >('createSpeedUpTransaction', [txId, customGasSettings, { actionId }]);
       const currentNetworkTxList = getCurrentNetworkTransactions(newState);
       const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
@@ -4105,9 +4105,9 @@ export function setFeatureFlag(
           [feature, activated],
         );
 
-        if(notificationType) {
-          dispatch(showModal({ name: notificationType }));
-        }
+      if (notificationType) {
+        dispatch(showModal({ name: notificationType }));
+      }
 
       return updatedFeatureFlags;
     } catch (err) {
