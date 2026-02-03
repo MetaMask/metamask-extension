@@ -19,6 +19,7 @@ describe('AppMetadataController', () => {
         previousAppVersion: '1',
         previousMigrationVersion: 1,
         currentMigrationVersion: 1,
+        firstTimeInfo: undefined,
       };
       withController(
         {
@@ -126,6 +127,45 @@ describe('AppMetadataController', () => {
     });
   });
 
+  describe('maybeRecordFirstTimeInfo', () => {
+    it('records firstTimeInfo when it does not exist', () => {
+      jest.useFakeTimers().setSystemTime(new Date('2024-01-15T12:00:00Z'));
+
+      withController({ state: {} }, ({ controller }) => {
+        controller.maybeRecordFirstTimeInfo('10.0.0');
+
+        expect(controller.state.firstTimeInfo).toStrictEqual({
+          version: '10.0.0',
+          date: Date.now(),
+        });
+      });
+
+      jest.useRealTimers();
+    });
+
+    it('does not overwrite existing firstTimeInfo', () => {
+      const existingFirstTimeInfo = {
+        version: '9.0.0',
+        date: 1600000000000,
+      };
+
+      withController(
+        {
+          state: {
+            firstTimeInfo: existingFirstTimeInfo,
+          },
+        },
+        ({ controller }) => {
+          controller.maybeRecordFirstTimeInfo('10.0.0');
+
+          expect(controller.state.firstTimeInfo).toStrictEqual(
+            existingFirstTimeInfo,
+          );
+        },
+      );
+    });
+  });
+
   describe('metadata', () => {
     it('includes expected state in debug snapshots', () => {
       withController(({ controller }) => {
@@ -139,6 +179,7 @@ describe('AppMetadataController', () => {
           {
             "currentAppVersion": "",
             "currentMigrationVersion": 0,
+            "firstTimeInfo": undefined,
             "previousAppVersion": "",
             "previousMigrationVersion": 0,
           }
@@ -158,6 +199,7 @@ describe('AppMetadataController', () => {
           {
             "currentAppVersion": "",
             "currentMigrationVersion": 0,
+            "firstTimeInfo": undefined,
             "previousAppVersion": "",
             "previousMigrationVersion": 0,
           }
@@ -177,6 +219,7 @@ describe('AppMetadataController', () => {
           {
             "currentAppVersion": "",
             "currentMigrationVersion": 0,
+            "firstTimeInfo": undefined,
             "previousAppVersion": "",
             "previousMigrationVersion": 0,
           }
