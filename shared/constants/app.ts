@@ -26,6 +26,39 @@ export const PLATFORM_EDGE = 'Edge';
 export const PLATFORM_FIREFOX = 'Firefox';
 export const PLATFORM_OPERA = 'Opera';
 
+/**
+ * Object containing all platform constants for type-safe usage.
+ */
+export const PLATFORM = {
+  BRAVE: PLATFORM_BRAVE,
+  CHROME: PLATFORM_CHROME,
+  EDGE: PLATFORM_EDGE,
+  FIREFOX: PLATFORM_FIREFOX,
+  OPERA: PLATFORM_OPERA,
+} as const;
+
+export type Platform = (typeof PLATFORM)[keyof typeof PLATFORM];
+
+/**
+ * The type of installation of the extension.
+ * - 'normal' means installed from official store (Chrome Web Store, Firefox Add-ons, etc.)
+ * - 'development' means loaded unpacked in developer mode
+ * - 'sideload' means installed by other software
+ * - 'admin' means installed by admin policy (enterprise)
+ * - 'other' means other installation type
+ * - 'unknown' means the value hasn't been fetched yet or fetch failed
+ */
+export const INSTALL_TYPE = {
+  ADMIN: 'admin',
+  DEVELOPMENT: 'development',
+  NORMAL: 'normal',
+  SIDELOAD: 'sideload',
+  OTHER: 'other',
+  UNKNOWN: 'unknown',
+} as const;
+
+export type InstallType = (typeof INSTALL_TYPE)[keyof typeof INSTALL_TYPE];
+
 export const MESSAGE_TYPE = {
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
   ETH_ACCOUNTS: RestrictedMethods.eth_accounts,
