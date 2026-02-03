@@ -1182,6 +1182,7 @@ export function createNewVault(password: string): Promise<KeyringObject> {
 
 export async function verifyPassword(password: string): Promise<boolean> {
   await submitRequestToBackground('verifyPassword', [password]);
+  // If verifying the password fails, we would throw before returning.
   return true;
 }
 
@@ -1241,13 +1242,16 @@ export function resetAccount(): ThunkAction<
         'resetAccount',
         [],
       );
+
       log.info(`Transaction history reset for ${account}`);
       dispatch(showAccountsPage());
+
       return account;
     } catch (err) {
       if (isErrorWithMessage(err)) {
         dispatch(displayWarning(err));
       }
+
       throw err;
     } finally {
       dispatch(hideLoadingIndication());
@@ -2315,10 +2319,13 @@ export function cancelTx(
         String(txMeta.id),
         providerErrors.userRejectedRequest().serialize(),
       ]);
+
       await forceUpdateMetamaskState(dispatch);
+
       dispatch(completedTx(txMeta.id));
       dispatch(hideLoadingIndication());
       dispatch(closeCurrentNotificationWindow());
+
       return txMeta;
     } catch (error) {
       dispatch(hideLoadingIndication());
@@ -3433,11 +3440,13 @@ export function createCancelTransaction(
         customGasSettings,
         { ...options, actionId },
       ]);
+
+      await forceUpdateMetamaskState(dispatch);
+
       const currentNetworkTxList = getCurrentNetworkTransactions({
         metamask: newState,
       });
       const { id } = currentNetworkTxList[currentNetworkTxList.length - 1];
-      await forceUpdateMetamaskState(dispatch);
       return id;
     } catch (err) {
       if (err?.message?.includes('Previous transaction is already confirmed')) {
@@ -3474,10 +3483,11 @@ export function createSpeedUpTransaction(
         customGasSettings,
         { ...options, actionId },
       ]);
-      const currentNetworkTxList = getCurrentNetworkTransactions(newState);
-      const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
       await forceUpdateMetamaskState(dispatch);
+
+      const currentNetworkTxList = getCurrentNetworkTransactions(newState);
+      const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
       return newTx;
     } catch (err) {
@@ -3499,10 +3509,11 @@ export function createRetryTransaction(
       const newState = await submitRequestToBackground<
         MetaMaskReduxState['metamask']
       >('createSpeedUpTransaction', [txId, customGasSettings, { actionId }]);
-      const currentNetworkTxList = getCurrentNetworkTransactions(newState);
-      const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
       await forceUpdateMetamaskState(dispatch);
+
+      const currentNetworkTxList = getCurrentNetworkTransactions(newState);
+      const newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
 
       return newTx;
     } catch (err) {
@@ -4029,21 +4040,22 @@ export function exportAccounts(
   password: string,
   addresses: string[],
 ): ThunkAction<Promise<string[]>, MetaMaskReduxState, unknown, AnyAction> {
-  return async function (dispatch) {
+  return function (dispatch) {
     log.debug(`background.exportAccounts`);
-    const accountPromises = addresses.map(async (address) => {
-      try {
-        return await submitRequestToBackground<string>('exportAccount', [
-          address,
-          password,
-        ]);
-      } catch (err) {
-        logErrorWithMessage(err);
-        dispatch(displayWarning('Had a problem exporting the account.'));
-        throw err;
-      }
-    });
-    return Promise.all(accountPromises);
+    return Promise.all(
+      addresses.map(async (address) => {
+        try {
+          return await submitRequestToBackground<string>('exportAccount', [
+            address,
+            password,
+          ]);
+        } catch (err) {
+          logErrorWithMessage(err);
+          dispatch(displayWarning('Had a problem exporting the account.'));
+          throw err;
+        }
+      }),
+    );
   };
 }
 
@@ -4064,10 +4076,12 @@ export function setAccountLabel(
 
     try {
       await submitRequestToBackground('setAccountLabel', [account, label]);
+
       dispatch({
         type: actionConstants.SET_ACCOUNT_LABEL,
         value: { account, label },
       });
+
       return account;
     } catch (err) {
       dispatch(displayWarning(err));
@@ -4144,12 +4158,10 @@ export function setPreference(
   return async (dispatch: MetaMaskReduxDispatch) => {
     showLoading && dispatch(showLoadingIndication());
     try {
-      const updatedPreferences =
-        await submitRequestToBackground<TemporaryPreferenceFlagDef>(
-          'setPreference',
-          [preference, value],
-        );
-      return updatedPreferences;
+      return await submitRequestToBackground<TemporaryPreferenceFlagDef>(
+        'setPreference',
+        [preference, value],
+      );
     } catch (err) {
       dispatch(displayWarning(err));
       throw err;
