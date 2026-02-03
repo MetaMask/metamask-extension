@@ -75,7 +75,7 @@ describe('Ducks - Bridge', () => {
           "balance": "0",
           "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
           "decimals": 9,
-          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/So11111111111111111111111111111111111111112.png",
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/So11111111111111111111111111111111111111112.png",
           "name": "SYMBOL",
           "rwaData": undefined,
           "symbol": "SYMBOL",
@@ -109,7 +109,7 @@ describe('Ducks - Bridge', () => {
         balance: '0',
         chainId: 'eip155:10',
         rwaData: undefined,
-        image:
+        iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
       });
     });
