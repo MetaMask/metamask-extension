@@ -76,7 +76,7 @@ const SerializedHardwareWalletErrorCauseStruct = refine(
     );
 
     // Accept either shape; superstruct `union` handles the structural check.
-    return matchesLegacy ?? matchesExtended;
+    return matchesLegacy || matchesExtended;
   },
 );
 
