@@ -6,6 +6,7 @@
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { pathToFileURL } from 'url';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { exitWithError } from '../../../development/lib/exit-with-error';
@@ -145,7 +146,7 @@ async function runBenchmarkFile(
     pageLoads: number;
   },
 ): Promise<unknown> {
-  const absolutePath = path.resolve(filePath);
+  const absolutePath = pathToFileURL(path.resolve(filePath)).href;
   const fileName = path.basename(filePath, path.extname(filePath));
 
   // Playwright benchmarks run via yarn playwright

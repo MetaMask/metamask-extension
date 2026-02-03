@@ -14,9 +14,7 @@ import {
   validateTimerThreshold,
   validateThresholds,
   getEffectiveThreshold,
-  CV_THRESHOLDS,
   MAX_METRIC_DURATION_MS,
-  MIN_METRIC_DURATION_MS,
 } from './statistics';
 import type { ThresholdConfig, TimerStatistics } from './types';
 
