@@ -139,7 +139,9 @@ const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
     await userEvent.keyboard(searchQuery);
   });
   await waitFor(() => {
-    expect(screen.getByTestId('bridge-asset-picker-search-input')).toHaveValue(expectedValue ?? searchQuery);
+    expect(screen.getByTestId('bridge-asset-picker-search-input')).toHaveValue(
+      expectedValue ?? searchQuery,
+    );
   });
 };
 
