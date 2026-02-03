@@ -60,7 +60,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const switchEthereumChainRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x53a' }], // chain 1338
+          params: [{ chainId: '0x53a' }],
         });
 
         // Initiate switchEthereumChain on Dapp one
@@ -79,14 +79,14 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         const switchEthereumChainRequestDappOne = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x3e8' }], // chain 1000
+          params: [{ chainId: '0x3e8' }],
         });
 
         // Initiate switchEthereumChain on Dapp one
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequestDappOne})`,
         );
-        await testDappOne.checkNetworkIsConnected('0x3e8'); // chain 1000 7777
+        await testDappOne.checkNetworkIsConnected('0x3e8');
         // Should auto switch without prompt since already approved via connect
 
         await driver.switchToWindowWithUrl(DAPP_URL);
