@@ -74,6 +74,7 @@
     "showPermissionsTour": true,
     "showShieldEntryModalOnce": "boolean",
     "showStorageErrorToast": false,
+    "storageWriteErrorType": null,
     "showTestnetMessageInDropdown": true,
     "sidePanelGasPollTokens": [],
     "signatureSecurityAlertResponses": "object",

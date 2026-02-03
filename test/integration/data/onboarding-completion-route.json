@@ -329,6 +329,7 @@
   "showNetworkBanner": true,
   "showPermissionsTour": true,
   "showStorageErrorToast": false,
+  "storageWriteErrorType": null,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
   "slides": [],
