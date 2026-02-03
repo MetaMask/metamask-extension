@@ -244,6 +244,12 @@ export class SubscriptionService {
         },
       );
 
+      // Clear cached payment method after failed/cancelled payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
+      );
+
       // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
       if (errorMessage.toLocaleLowerCase().includes('already exists')) {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
@@ -524,6 +530,12 @@ export class SubscriptionService {
           },
         );
       }
+
+      // Clear cached payment method after failed crypto payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
+      );
 
       this.#captureException(
         createSentryError(
