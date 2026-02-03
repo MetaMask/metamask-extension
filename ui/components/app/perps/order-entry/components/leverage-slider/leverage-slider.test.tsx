@@ -46,18 +46,20 @@ describe('LeverageSlider', () => {
     });
 
     it('renders preset buttons within allowed range', () => {
+      // LEVERAGE_PRESETS = [5, 10, 25, 50], so with maxLeverage=50, all should render
       renderWithProvider(
-        <LeverageSlider {...defaultProps} maxLeverage={20} />,
+        <LeverageSlider {...defaultProps} maxLeverage={50} />,
         mockStore,
       );
 
       expect(screen.getByTestId('leverage-preset-5')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-preset-10')).toBeInTheDocument();
-      expect(screen.getByTestId('leverage-preset-15')).toBeInTheDocument();
-      expect(screen.getByTestId('leverage-preset-20')).toBeInTheDocument();
+      expect(screen.getByTestId('leverage-preset-25')).toBeInTheDocument();
+      expect(screen.getByTestId('leverage-preset-50')).toBeInTheDocument();
     });
 
     it('filters preset buttons based on maxLeverage', () => {
+      // LEVERAGE_PRESETS = [5, 10, 25, 50], so with maxLeverage=10, only 5 and 10 should render
       renderWithProvider(
         <LeverageSlider {...defaultProps} maxLeverage={10} />,
         mockStore,
@@ -66,23 +68,25 @@ describe('LeverageSlider', () => {
       expect(screen.getByTestId('leverage-preset-5')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-preset-10')).toBeInTheDocument();
       expect(
-        screen.queryByTestId('leverage-preset-15'),
+        screen.queryByTestId('leverage-preset-25'),
       ).not.toBeInTheDocument();
       expect(
-        screen.queryByTestId('leverage-preset-20'),
+        screen.queryByTestId('leverage-preset-50'),
       ).not.toBeInTheDocument();
     });
 
     it('filters preset buttons based on minLeverage', () => {
+      // LEVERAGE_PRESETS = [5, 10, 25, 50], so with minLeverage=10 and maxLeverage=50,
+      // presets 10, 25, and 50 should render (5 is below minLeverage)
       renderWithProvider(
-        <LeverageSlider {...defaultProps} minLeverage={10} maxLeverage={20} />,
+        <LeverageSlider {...defaultProps} minLeverage={10} maxLeverage={50} />,
         mockStore,
       );
 
       expect(screen.queryByTestId('leverage-preset-5')).not.toBeInTheDocument();
       expect(screen.getByTestId('leverage-preset-10')).toBeInTheDocument();
-      expect(screen.getByTestId('leverage-preset-15')).toBeInTheDocument();
-      expect(screen.getByTestId('leverage-preset-20')).toBeInTheDocument();
+      expect(screen.getByTestId('leverage-preset-25')).toBeInTheDocument();
+      expect(screen.getByTestId('leverage-preset-50')).toBeInTheDocument();
     });
   });
 
@@ -104,9 +108,11 @@ describe('LeverageSlider', () => {
 
     it('calls onLeverageChange for each preset button', () => {
       const onLeverageChange = jest.fn();
+      // LEVERAGE_PRESETS = [5, 10, 25, 50], use maxLeverage=50 to render all presets
       renderWithProvider(
         <LeverageSlider
           {...defaultProps}
+          maxLeverage={50}
           onLeverageChange={onLeverageChange}
         />,
         mockStore,
@@ -115,11 +121,11 @@ describe('LeverageSlider', () => {
       fireEvent.click(screen.getByTestId('leverage-preset-5'));
       expect(onLeverageChange).toHaveBeenLastCalledWith(5);
 
-      fireEvent.click(screen.getByTestId('leverage-preset-15'));
-      expect(onLeverageChange).toHaveBeenLastCalledWith(15);
+      fireEvent.click(screen.getByTestId('leverage-preset-25'));
+      expect(onLeverageChange).toHaveBeenLastCalledWith(25);
 
-      fireEvent.click(screen.getByTestId('leverage-preset-20'));
-      expect(onLeverageChange).toHaveBeenLastCalledWith(20);
+      fireEvent.click(screen.getByTestId('leverage-preset-50'));
+      expect(onLeverageChange).toHaveBeenLastCalledWith(50);
     });
 
     it('applies active style to selected preset', () => {
