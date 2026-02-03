@@ -8916,10 +8916,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.19.2":
-  version: 1.19.2
-  resolution: "@metamask/tron-wallet-snap@npm:1.19.2"
-  checksum: 10/4782467263af36473ae41c145b198bdb0ce3f58f3d2eb96f90e32dcd939d4090b8bd9387c4496f322a51048bde262a913e9eec83f080a1825b8c11561895c105
+"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@1.20.0-preview-2ec3255":
+  version: 1.20.0-preview-2ec3255
+  resolution: "@metamask-previews/tron-wallet-snap@npm:1.20.0-preview-2ec3255"
+  checksum: 10/a7ab7c49569c30b305097c9e9253a0d43d41aa0236ac2b8f5c2327b47210f4a0a8e374fdfeb15538aa8ac09f6a2342d12c3f955dd5a9c265cbced84b26bf77c6
   languageName: node
   linkType: hard
 
