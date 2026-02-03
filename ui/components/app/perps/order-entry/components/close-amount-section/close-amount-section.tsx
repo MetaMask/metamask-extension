@@ -11,7 +11,7 @@ import {
   BoxAlignItems,
   ButtonBase,
 } from '@metamask/design-system-react';
-import Slider from '../../../../../ui/slider';
+import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import type { CloseAmountSectionProps } from '../../order-entry.types';
@@ -134,7 +134,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
       {/* Percentage Slider */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Box className="px-3" data-testid="close-amount-slider">
-          <Slider
+          <PerpsSlider
             min={0}
             max={100}
             step={1}
