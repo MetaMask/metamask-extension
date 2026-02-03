@@ -113,6 +113,8 @@ export type GlobalMenuItem = GlobalMenuRouteItem | GlobalMenuActionItem;
 
 /**
  * Type guard to check if item is a route item
+ *
+ * @param item
  */
 export const isRouteItem = (
   item: GlobalMenuItem,

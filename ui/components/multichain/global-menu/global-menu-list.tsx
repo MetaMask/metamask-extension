@@ -12,8 +12,8 @@ import {
   AlignItems,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { GlobalMenuSection, isRouteItem } from './global-menu-list.types';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
+import { GlobalMenuSection, isRouteItem } from './global-menu-list.types';
 
 type GlobalMenuListProps = {
   /**
@@ -29,6 +29,10 @@ type GlobalMenuListProps = {
 /**
  * GlobalMenuList component that displays menu items organized into sections
  * Uses MenuItem component directly, matching the pattern from global-menu.tsx
+ *
+ * @param options0
+ * @param options0.sections
+ * @param options0.className
  */
 export const GlobalMenuList = ({
   sections,
