@@ -144,7 +144,6 @@ export const MultichainAddressRowsList = ({
           networkName={item.networkName}
           address={item.normalizedAddress}
           copyActionParams={{
-            message: t('multichainAccountAddressCopied'),
             callback: handleCopyClick,
           }}
           qrActionParams={{

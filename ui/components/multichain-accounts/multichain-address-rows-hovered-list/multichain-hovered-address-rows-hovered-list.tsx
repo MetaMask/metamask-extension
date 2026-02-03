@@ -258,7 +258,6 @@ export const MultichainHoveredAddressRowsList = ({
           chainIds={item.scopes.slice(0, MAX_NETWORK_AVATARS)}
           address={item.account.address}
           copyActionParams={{
-            message: t('multichainAccountAddressCopied'),
             callback: handleCopyClick,
           }}
         />

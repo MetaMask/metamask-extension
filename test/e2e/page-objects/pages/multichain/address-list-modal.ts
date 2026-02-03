@@ -21,8 +21,8 @@ class AddressListModal {
   private readonly shortenedAddress =
     '[data-testid="multichain-address-row-address"]';
 
-  private readonly addressCopiedMessage = {
-    css: '[data-testid="multichain-address-row-address"]',
+  private readonly addressCopiedToast = {
+    css: '[data-testid="copy-address-toast"]',
     text: 'Address copied',
   };
 
@@ -66,8 +66,8 @@ class AddressListModal {
   }
 
   async verifyCopyButtonFeedback(): Promise<void> {
-    console.log(`Look for "Address copied'!" state change`);
-    await this.driver.waitForSelector(this.addressCopiedMessage);
+    console.log(`Look for "Address copied" toast notification`);
+    await this.driver.waitForSelector(this.addressCopiedToast);
   }
 
   async clickQRbutton(addressIndex: number = 0): Promise<void> {
