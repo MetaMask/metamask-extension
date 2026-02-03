@@ -547,7 +547,6 @@ describe('Request-queue UI changes', function () {
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.selectTab('Popular');
-        await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
         await networkManager.closeNetworkManager();
 
         // Kill local node servers

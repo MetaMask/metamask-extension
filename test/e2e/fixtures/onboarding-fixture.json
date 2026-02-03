@@ -36,8 +36,11 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentAppVersion": "13.17.0",
-      "currentMigrationVersion": 189,
+      "currentMigrationVersion": 192,
+      "firstTimeInfo": {
+        "date": 0,
+        "version": "13.17.0"
+      },
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -544,6 +547,19 @@
           "tron:3448148188": false,
           "tron:728126428": true
         }
+      },
+      "nativeAssetIdentifiers": {
+        "eip155:1": "eip155:1/slip44:60",
+        "eip155:10": "eip155:10/slip44:60",
+        "eip155:10143": "eip155:10143/slip44:60",
+        "eip155:11155111": "eip155:11155111/slip44:60",
+        "eip155:137": "eip155:137/slip44:60",
+        "eip155:42161": "eip155:42161/slip44:60",
+        "eip155:56": "eip155:56/slip44:60",
+        "eip155:59141": "eip155:59141/slip44:1",
+        "eip155:59144": "eip155:59144/slip44:60",
+        "eip155:6343": "eip155:6343/slip44:1",
+        "eip155:8453": "eip155:8453/slip44:60"
       }
     },
     "NetworkOrderController": {
@@ -1957,7 +1973,8 @@
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
-      "rewardsSubscriptions": {}
+      "rewardsSubscriptions": {},
+      "rewardsPointsEstimateHistory": []
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
@@ -2105,10 +2122,6 @@
     "TokenBalancesController": {
       "tokenBalances": {}
     },
-    "TokenListController": {
-      "preventPollingOnNetworkRestart": false,
-      "tokensChainsCache": {}
-    },
     "TokenRatesController": {
       "marketData": {}
     },
@@ -2136,6 +2149,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 189
+    "version": 192
   }
 }

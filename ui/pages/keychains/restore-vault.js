@@ -5,6 +5,7 @@ import { compose } from 'redux';
 import {
   createNewVaultAndRestore,
   resetOAuthLoginState,
+  resetWallet,
   setFirstTimeFlowType,
   unMarkPasswordForgotten,
 } from '../../store/actions';
@@ -55,6 +56,7 @@ class RestoreVaultPage extends Component {
     resetOAuthLoginState: PropTypes.func,
     navigate: PropTypes.func,
     isSocialLoginFlow: PropTypes.bool,
+    resetWallet: PropTypes.func,
   };
 
   state = {
@@ -70,6 +72,7 @@ class RestoreVaultPage extends Component {
       createNewVaultAndRestore: propsCreateNewVaultAndRestore,
       setFirstTimeFlowType: propsSetFirstTimeFlowType,
       resetOAuthLoginState: propsResetOAuthLoginState,
+      resetWallet: propsResetWallet,
       navigate,
       isSocialLoginFlow: propsIsSocialLoginFlow,
     } = this.props;
@@ -86,6 +89,8 @@ class RestoreVaultPage extends Component {
       if (propsIsSocialLoginFlow) {
         await propsResetOAuthLoginState();
       }
+
+      await propsResetWallet(true); // we only want to restore the vault, without resetting the onboarding
 
       await propsSetFirstTimeFlowType(FirstTimeFlowType.restore);
 
@@ -240,6 +245,7 @@ export default compose(
         dispatch(createNewVaultAndRestore(pw, seed)),
       setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
       resetOAuthLoginState: () => dispatch(resetOAuthLoginState()),
+      resetWallet: (restoreOnly) => dispatch(resetWallet(restoreOnly)),
     }),
   ),
 )(RestoreVaultPage);
