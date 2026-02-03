@@ -241,11 +241,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
           </ModalBody>
 
           <ModalFooter>
-            {/* Debug: Log retry check result */}
-            {(() => {
-              const isRetryable = isRetryableHardwareWalletError(error);
-              return null;
-            })()}
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
