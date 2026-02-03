@@ -125,6 +125,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'Sourcify',
   },
+  setPreference: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -334,12 +335,6 @@ describe('Contract Interaction Confirmation', () => {
   });
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
-    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      createMockImplementation({ setPreference: {} }),
-    );
-
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -374,12 +369,6 @@ describe('Contract Interaction Confirmation', () => {
   });
 
   it('displays the advanced transaction details section', async () => {
-    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      createMockImplementation({ setPreference: {} }),
-    );
-
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -402,7 +391,7 @@ describe('Contract Interaction Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('getNextNonce');
+      ).toHaveBeenCalledWith('getNextNonce', expect.anything());
     });
 
     await waitFor(() => {

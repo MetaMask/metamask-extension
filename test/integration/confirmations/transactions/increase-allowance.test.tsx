@@ -99,6 +99,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
+  addKnownMethodData: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -109,12 +110,6 @@ const setupSubmitRequestToBackgroundMocks = (
       ...advancedDetailsMockedRequests,
       ...mockRequests,
     }),
-  );
-
-  mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    createMockImplementation({ addKnownMethodData: {} }),
   );
 };
 
