@@ -1438,6 +1438,10 @@ export function setupController(
   for (const key of Object.keys(currentState)) {
     const initialControllerState = initState[key] || {};
     const newControllerState = currentState[key];
+    // Skip validation for undefined states (controllers that don't manage state in the store)
+    if (newControllerState === undefined) {
+      continue;
+    }
     if (newControllerState === null || typeof newControllerState !== 'object') {
       captureException(
         new Error(
