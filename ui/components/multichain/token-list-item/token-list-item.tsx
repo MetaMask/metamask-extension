@@ -18,7 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
+import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -126,7 +126,6 @@ export const TokenListItemComponent = ({
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const navigate = useNavigate();
-  const [showTokenInsights, setShowTokenInsights] = useState(false);
 
   const getTokenTitle = () => {
     if (isTitleNetworkName) {
@@ -386,7 +385,22 @@ export const TokenListItemComponent = ({
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               e.preventDefault();
-              setShowTokenInsights(true);
+              const tokenAddress = address ?? '';
+              navigate(
+                `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(tokenAddress)}`,
+                {
+                  state: {
+                    token: {
+                      address: tokenAddress,
+                      symbol: tokenSymbol || title,
+                      name: title,
+                      chainId,
+                      image: tokenImage,
+                      isNative: isNativeCurrency,
+                    },
+                  },
+                },
+              );
             }}
             className="multichain-token-list-item__info-icon"
             color={IconColor.iconAlternative}
@@ -424,20 +438,6 @@ export const TokenListItemComponent = ({
           </ModalContent>
         </Modal>
       ) : null}
-
-      {showTokenInsights && (
-        <TokenInsightsModal
-          isOpen={showTokenInsights}
-          onClose={() => setShowTokenInsights(false)}
-          token={{
-            address,
-            symbol: tokenSymbol || title,
-            name: title,
-            chainId,
-            iconUrl: tokenImage,
-          }}
-        />
-      )}
     </Box>
   );
 };

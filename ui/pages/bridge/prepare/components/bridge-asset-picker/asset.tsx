@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   AvatarNetwork,
   AvatarToken,
@@ -11,10 +12,20 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  formatChainIdToHex,
+  formatAddressToCaipReference,
+  isNativeAddress,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
+import { parseCaipAssetType } from '@metamask/utils';
 import {
   PolymorphicRef,
   Tag,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
 } from '../../../../../components/component-library';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
@@ -28,9 +39,11 @@ import {
   BackgroundColor,
   BlockSize,
   BorderRadius,
+  IconColor,
 } from '../../../../../helpers/constants/design-system';
 import { ACCOUNT_TYPE_LABELS } from '../../../../../components/app/assets/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import { Column, Row } from '../../../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../../../utils/quote';
 
@@ -53,6 +66,7 @@ export const BridgeAsset = React.forwardRef(
     const currency = useSelector(getCurrentCurrency);
     const locale = useSelector(getIntlLocale);
     const t = useI18nContext();
+    const navigate = useNavigate();
 
     return (
       <Row
@@ -152,6 +166,51 @@ export const BridgeAsset = React.forwardRef(
             </Text>
           </Row>
         </Column>
+
+        {isDestination && (
+          <ButtonIcon
+            iconName={IconName.Info}
+            size={ButtonIconSize.Sm}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              e.preventDefault();
+              // Parse the CAIP assetId to get the address
+              const { assetReference } = parseCaipAssetType(asset.assetId);
+              const isNonEvm = isNonEvmChainId(asset.chainId);
+              // For EVM: convert CAIP chainId to hex format; for non-EVM: keep CAIP format
+              const routeChainId = isNonEvm
+                ? asset.chainId
+                : formatChainIdToHex(asset.chainId);
+              // For EVM: convert assetReference to address; for non-EVM: use CAIP assetId
+              const tokenAddress = isNonEvm
+                ? asset.assetId
+                : formatAddressToCaipReference(assetReference);
+              const isNative = isNativeAddress(
+                isNonEvm ? assetReference : tokenAddress,
+              );
+
+              navigate(
+                `${ASSET_ROUTE}/${routeChainId}/${encodeURIComponent(tokenAddress)}`,
+                {
+                  state: {
+                    token: {
+                      address: tokenAddress,
+                      symbol: asset.symbol,
+                      name: asset.name ?? asset.symbol,
+                      chainId: routeChainId,
+                      image: asset.iconUrl,
+                      isNative,
+                      decimals: asset.decimals,
+                    },
+                  },
+                },
+              );
+            }}
+            color={IconColor.iconAlternative}
+            ariaLabel={t('viewTokenDetails')}
+            style={{ alignSelf: 'center' }}
+          />
+        )}
       </Row>
     );
   },

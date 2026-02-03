@@ -2,7 +2,7 @@ import { Nft } from '@metamask/assets-controllers';
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useParams, useLocation } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { ScrollContainer } from '../../contexts/scroll-container';
@@ -12,19 +12,33 @@ import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 
+type LocationState = {
+  token?: {
+    address: string;
+    symbol: string;
+    name: string;
+    chainId: string;
+    image?: string;
+    isNative?: boolean;
+    decimals?: number;
+  };
+};
+
 const Asset = () => {
   const params = useParams<{
     chainId: Hex;
     asset: string;
     id: string;
   }>();
+  const location = useLocation();
+  const locationState = location.state as LocationState | undefined;
 
   const { chainId, asset, id } = params;
   const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
 
-  const token = useSelector((state) =>
+  const ownedToken = useSelector((state) =>
     getTokenByAccountAndAddressAndChainId(
       state,
       undefined, // Defaults to the selected account
@@ -32,6 +46,20 @@ const Asset = () => {
       chainId as Hex | CaipChainId,
     ),
   );
+
+  // Use token from location state as fallback when user doesn't own the token
+  const token =
+    ownedToken ??
+    (locationState?.token
+      ? {
+          address: locationState.token.address as Hex,
+          symbol: locationState.token.symbol,
+          decimals: locationState.token.decimals ?? 18,
+          image: locationState.token.image,
+          isNative: locationState.token.isNative ?? false,
+          name: locationState.token.name,
+        }
+      : null);
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>
