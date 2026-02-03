@@ -105,6 +105,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
           event: {
             type: event,
             ...(name === undefined ? {} : { name }),
+            // Ensure `value` is always stripped for button clicks as buttons do not have a value (null is also disallowed).
             ...(event === UserInputEventType.ButtonClickEvent ||
             value === undefined
               ? {}
