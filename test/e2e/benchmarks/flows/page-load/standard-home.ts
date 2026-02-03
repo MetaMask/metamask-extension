@@ -3,7 +3,6 @@
  * Measures home page load time with standard wallet state
  */
 
-import { capitalize } from 'lodash';
 import get from 'lodash/get';
 import { retry } from '../../../../../development/lib/retry';
 import FixtureBuilder from '../../../fixtures/fixture-builder';

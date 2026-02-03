@@ -306,7 +306,7 @@ async function main(): Promise<void> {
 
   for (const filePath of filesToRun) {
     const fileName = path.basename(filePath, path.extname(filePath));
-    const resultKey = fileName.replace(/-([a-z])/g, (_, letter) =>
+    const resultKey = fileName.replace(/-([a-z])/gu, (_, letter) =>
       letter.toUpperCase(),
     );
 

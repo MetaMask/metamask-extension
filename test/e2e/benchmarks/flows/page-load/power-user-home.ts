@@ -3,7 +3,6 @@
  * Measures home page load time with power user state (30 accounts, transactions, etc.)
  */
 
-import { capitalize } from 'lodash';
 import get from 'lodash/get';
 import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
