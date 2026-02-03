@@ -915,12 +915,6 @@ export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
 }
 
-export function getShowCopyAddressToast(
-  state: AppSliceState,
-): 'address' | 'privateKey' | false {
-  return state.appState.showCopyAddressToast;
-}
-
 export function openDeleteMetaMetricsDataModal(): Action {
   return {
     type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
