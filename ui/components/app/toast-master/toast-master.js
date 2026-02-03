@@ -54,6 +54,7 @@ import { SurveyToast } from '../../ui/survey-toast';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
@@ -101,6 +102,7 @@ import {
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
+  selectStorageWriteErrorType,
   selectShowInfuraSwitchToast,
 } from './selectors';
 import {
@@ -883,9 +885,16 @@ function StorageErrorToast() {
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
+  const storageWriteErrorType = useSelector(selectStorageWriteErrorType);
 
   // Only show toast if selector returns true and user hasn't dismissed it
   const shouldShow = showStorageErrorToast && !isDismissed;
+
+  // Show disk space-specific message when error is due to no space
+  const description =
+    storageWriteErrorType === StorageWriteErrorType.FileErrorNoSpace
+      ? t('storageErrorDescriptionNoSpace')
+      : t('storageErrorDescriptionDefault');
 
   // Track "Viewed" event when toast becomes visible
   useEffect(() => {
@@ -928,7 +937,7 @@ function StorageErrorToast() {
           />
         }
         text={t('storageErrorTitle')}
-        description={t('storageErrorDescription')}
+        description={description}
         actionText={t('storageErrorAction')}
         onActionClick={handleRevealSrpClick}
         borderRadius={BorderRadius.LG}

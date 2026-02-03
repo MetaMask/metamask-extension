@@ -21,6 +21,7 @@ import { MetaMaskReduxState } from '../../../store/store';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
@@ -53,6 +54,7 @@ type State = {
       | 'pna25Acknowledged'
       | 'completedOnboarding'
       | 'showStorageErrorToast'
+      | 'storageWriteErrorType'
       | 'isUnlocked'
     >
   >;
@@ -271,6 +273,19 @@ export function selectShowStorageErrorToast(
     state.metamask || {};
 
   return Boolean(showStorageErrorToast && completedOnboarding && isUnlocked);
+}
+
+/**
+ * Returns the type of storage write error that occurred.
+ * Used to show specific error messages (e.g., disk space vs default error).
+ *
+ * @param state - Redux state object.
+ * @returns The storage write error type or null if no error
+ */
+export function selectStorageWriteErrorType(
+  state: Pick<State, 'metamask'>,
+): StorageWriteErrorType | null {
+  return state.metamask?.storageWriteErrorType ?? null;
 }
 
 /**

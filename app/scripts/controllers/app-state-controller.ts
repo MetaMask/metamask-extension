@@ -46,6 +46,7 @@ import {
   AccountOverviewTabKey,
   CarouselSlide,
   NetworkConnectionBanner,
+  StorageWriteErrorType,
 } from '../../../shared/constants/app-state';
 import type {
   ThrottledOrigins,
@@ -173,6 +174,12 @@ export type AppStateControllerState = {
    * This is set to true when set operations fail (storage.local or IndexedDB).
    */
   showStorageErrorToast: boolean;
+
+  /**
+   * The type of storage write error that occurred.
+   * Used to show specific error messages (e.g., disk space vs general error).
+   */
+  storageWriteErrorType: StorageWriteErrorType | null;
 };
 
 const controllerName = 'AppStateController';
@@ -335,6 +342,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
   showStorageErrorToast: false,
+  storageWriteErrorType: null,
   ...getInitialStateOverrides(),
 });
 
@@ -726,6 +734,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  storageWriteErrorType: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
 };
 
 export class AppStateController extends BaseController<
@@ -961,10 +975,15 @@ export class AppStateController extends BaseController<
    * This is called when set operations fail (storage.local or IndexedDB).
    *
    * @param show - Whether to show the toast
+   * @param errorType - The type of storage write error (defaults to 'general')
    */
-  setShowStorageErrorToast(show: boolean): void {
+  setShowStorageErrorToast(
+    show: boolean,
+    errorType: StorageWriteErrorType = StorageWriteErrorType.Default,
+  ): void {
     this.update((state) => {
       state.showStorageErrorToast = show;
+      state.storageWriteErrorType = show ? errorType : null;
     });
   }
 
