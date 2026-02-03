@@ -329,7 +329,6 @@
   "showNetworkBanner": true,
   "showPermissionsTour": true,
   "showStorageErrorToast": false,
-  "storageWriteErrorType": null,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
   "slides": [],
@@ -388,6 +387,7 @@
   },
   "snapsAddSnapAccountModalDismissed": false,
   "storageMetadata": [],
+  "storageWriteErrorType": null,
   "subjectMetadata": {
     "npm:@metamask/message-signing-snap": {
       "subjectType": "snap",
