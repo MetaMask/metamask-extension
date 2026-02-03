@@ -463,6 +463,10 @@
     "ui/components/app/perps/order-entry/components/order-summary/order-summary.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/order-entry/order-entry.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/perps-empty-state/perps-empty-state.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1359,6 +1363,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/multi-srp/useHdKeyringsWithSnapAccounts.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/hooks/perps/usePerpsOrderForm.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/hooks/rewards/useCandidateSubscriptionId.test.ts": {
