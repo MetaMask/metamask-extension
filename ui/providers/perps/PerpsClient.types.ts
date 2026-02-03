@@ -1,4 +1,3 @@
-/* eslint-disable import/no-restricted-paths */
 /**
  * PerpsClient Type Definitions
  *
@@ -32,7 +31,7 @@ import type {
   CandlePeriod,
   TimeDuration,
   WebSocketConnectionState,
-} from '../../../app/scripts/controllers/perps/types';
+} from '@metamask/perps-controller';
 
 // Re-export commonly used types for consumers
 export type {

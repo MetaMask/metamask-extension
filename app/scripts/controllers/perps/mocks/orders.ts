@@ -1,4 +1,4 @@
-import type { Order, OrderFill, Funding } from '../types';
+import type { Order, OrderFill, Funding } from '@metamask/perps-controller';
 
 /**
  * Mock open orders for development and testing

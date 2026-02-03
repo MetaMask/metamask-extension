@@ -1,4 +1,3 @@
-/* eslint-disable import/no-restricted-paths */
 /**
  * MockPerpsClient - Mock implementation of PerpsClient for development and testing
  *
@@ -37,7 +36,7 @@ import type {
   CandlePeriod,
   TimeDuration,
   WebSocketConnectionState,
-} from '../../../app/scripts/controllers/perps/types';
+} from '@metamask/perps-controller';
 
 import {
   MOCK_ACCOUNT,

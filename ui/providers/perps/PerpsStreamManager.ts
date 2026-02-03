@@ -27,7 +27,7 @@ import type {
   PriceUpdate,
   CandlePeriod,
   TimeDuration,
-} from '../../../app/scripts/controllers/perps/types';
+} from '@metamask/perps-controller';
 
 import {
   MOCK_ACCOUNT,

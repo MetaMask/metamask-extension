@@ -1,4 +1,4 @@
-import type { Position } from '../types';
+import type { Position } from '@metamask/perps-controller';
 
 /**
  * Mock positions for development and testing

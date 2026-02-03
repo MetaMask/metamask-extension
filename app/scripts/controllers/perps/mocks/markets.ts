@@ -1,4 +1,4 @@
-import type { MarketInfo, PerpsMarketData } from '../types';
+import type { MarketInfo, PerpsMarketData } from '@metamask/perps-controller';
 
 /**
  * Mock market info for protocol metadata

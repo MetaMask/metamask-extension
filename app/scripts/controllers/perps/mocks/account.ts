@@ -1,4 +1,4 @@
-import type { AccountState } from '../types';
+import type { AccountState } from '@metamask/perps-controller';
 
 /**
  * Mock account state for development and testing
