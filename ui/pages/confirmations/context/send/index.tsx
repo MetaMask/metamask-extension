@@ -74,25 +74,18 @@ export const SendContextProvider: React.FC<{
   const [fromAccount, updateFromAccount] = useState<InternalAccount>();
   const [hexData, updateHexData] = useState<Hex>();
   const [maxValueMode, updateMaxValueMode] = useState<boolean>();
-  const [submitError, setSubmitError] = useState<string>();
+  const [submitError, updateSubmitError] = useState<string>();
   const [to, setTo] = useState<string>();
-  const [toResolved, setToResolved] = useState<string>();
+  const [toResolved, updateToResolved] = useState<string>();
   const [value, setValue] = useState<string>();
   const [currentPage, updateCurrentPage] = useState<SendPages>();
-
-  const updateSubmitError = useCallback(
-    (error: string | undefined) => {
-      setSubmitError(error);
-    },
-    [setSubmitError],
-  );
 
   const updateValue = useCallback(
     (val: string, maxMode?: boolean) => {
       updateMaxValueMode(maxMode ?? false);
       setValue(val);
       // Clear submit error when user changes amount
-      setSubmitError(undefined);
+      updateSubmitError(undefined);
     },
     [setValue, updateMaxValueMode],
   );
@@ -101,16 +94,9 @@ export const SendContextProvider: React.FC<{
     (newTo: string) => {
       setTo(newTo);
       // Clear submit error when user changes recipient
-      setSubmitError(undefined);
+      updateSubmitError(undefined);
     },
     [setTo],
-  );
-
-  const updateToResolved = useCallback(
-    (newToResolved: string | undefined) => {
-      setToResolved(newToResolved);
-    },
-    [setToResolved],
   );
 
   const updateAsset = useCallback(

@@ -136,6 +136,35 @@ describe('useSendQueryParams', () => {
     });
   });
 
+  it('handleSubmit handles valid: false without errors array for non-evm send', async () => {
+    const mockUpdateSubmitError = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: SOLANA_ASSET,
+      from: MOCK_ADDRESS_3,
+      to: MOCK_ADDRESS_4,
+      value: '10',
+      updateSubmitError: mockUpdateSubmitError,
+    } as unknown as SendContext.SendContextType);
+
+    jest
+      .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
+      .mockImplementation(() =>
+        Promise.resolve({
+          valid: false,
+          // No errors array - should still show generic error
+        }),
+      );
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_4);
+
+    await waitFor(() => {
+      // Should show generic error message when valid: false but no errors array
+      expect(mockUpdateSubmitError).toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+    });
+  });
+
   it('handleSubmit handles user rejection for non-evm send', async () => {
     const mockUpdateSubmitError = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({

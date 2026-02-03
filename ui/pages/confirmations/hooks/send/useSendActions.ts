@@ -79,11 +79,10 @@ export const useSendActions = () => {
         )) as SnapConfirmSendResult;
 
         // Check if the snap returned a validation error
-        if (result?.valid === false && result?.errors?.length) {
-          const errorMessage = mapSnapErrorCodeIntoTranslation(
-            result.errors[0].code,
-            t,
-          );
+        if (result?.valid === false) {
+          const errorMessage = result?.errors?.length
+            ? mapSnapErrorCodeIntoTranslation(result.errors[0].code, t)
+            : t('transactionError');
           updateSubmitError(errorMessage);
           navigate(-1);
           return;
