@@ -572,6 +572,9 @@
   "alertReasonGasFeeLow": {
     "message": "Slow speed"
   },
+  "alertReasonGasSponsorshipUnavailable": {
+    "message": "Gas sponsorship unavailable"
+  },
   "alertReasonGasTooLow": {
     "message": "Low gas limit"
   },

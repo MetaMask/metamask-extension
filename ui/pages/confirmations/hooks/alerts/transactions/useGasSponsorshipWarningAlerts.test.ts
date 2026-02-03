@@ -9,7 +9,12 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useGasSponsorshipWarningAlerts } from './useGasSponsorshipWarningAlerts';
+
+jest.mock('../../gas/useIsGaslessSupported');
+
+const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
 
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
   chainId: CHAIN_IDS.MONAD,
@@ -25,6 +30,16 @@ function runHook(state: Record<string, unknown>) {
 }
 
 describe('useGasSponsorshipWarningAlerts', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+      pending: false,
+    });
+  });
+
   it('returns no alerts if no confirmation', () => {
     expect(runHook(getMockConfirmState())).toEqual([]);
   });
@@ -49,6 +64,50 @@ describe('useGasSponsorshipWarningAlerts', () => {
           {
             ...CONFIRMATION_MOCK,
             isGasFeeSponsored: true,
+            simulationData: {
+              callTraceErrors: ['reserve balance violation'],
+              tokenBalanceChanges: [],
+            },
+          },
+          {
+            metamask: {
+              networkConfigurationsByChainId: {
+                [CHAIN_IDS.MONAD]: {
+                  chainId: CHAIN_IDS.MONAD,
+                  name: 'Monad',
+                  nativeCurrency: 'MON',
+                  defaultRpcEndpointIndex: 0,
+                  ticker: 'MON',
+                  rpcEndpoints: [
+                    {
+                      type: 'custom',
+                      url: 'https://testnet-rpc.monad.xyz',
+                      networkClientId: 'monad',
+                    },
+                  ],
+                  blockExplorerUrls: [],
+                },
+              },
+            },
+          },
+        ),
+      ),
+    ).toEqual([]);
+  });
+
+  it('returns no alerts if gasless is not supported', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
+      pending: false,
+    });
+
+    expect(
+      runHook(
+        getMockConfirmStateForTransaction(
+          {
+            ...CONFIRMATION_MOCK,
+            isGasFeeSponsored: false,
             simulationData: {
               callTraceErrors: ['reserve balance violation'],
               tokenBalanceChanges: [],
@@ -124,6 +183,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
         key: 'gasSponsorshipReserveBalanceWarning',
         message:
           'Gas sponsorship isn’t available for this transaction. You’ll need to keep at least 10 MON in your account.',
+        reason: 'Gas sponsorship unavailable',
         severity: Severity.Warning,
         showArrow: false,
       },
