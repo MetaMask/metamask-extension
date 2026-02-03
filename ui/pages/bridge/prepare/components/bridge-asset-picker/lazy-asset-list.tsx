@@ -138,6 +138,7 @@ export const BridgeAssetList = ({
               selected={
                 selectedAssetId.toLowerCase() === token?.assetId?.toLowerCase()
               }
+              isDestination={isDestination}
             />
           );
         }
