@@ -18,7 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import { ASSET_ROUTE, NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -53,7 +53,6 @@ import {
   CURRENCY_SYMBOLS,
   NON_EVM_CURRENCY_SYMBOLS,
 } from '../../../../shared/constants/network';
-import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
