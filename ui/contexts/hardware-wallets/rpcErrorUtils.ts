@@ -80,23 +80,9 @@ const SerializedHardwareWalletErrorCauseStruct = refine(
   },
 );
 
-const HardwareWalletSeverityStruct = enums([
-  Severity.Info,
-  Severity.Err,
-  Severity.Warning,
-  Severity.Critical,
-]);
+const HardwareWalletSeverityStruct = enums(Object.values(Severity));
 
-const HardwareWalletCategoryStruct = enums([
-  Category.Success,
-  Category.Authentication,
-  Category.Protocol,
-  Category.Connection,
-  Category.UserAction,
-  Category.DeviceState,
-  Category.Unknown,
-  Category.Configuration,
-]);
+const HardwareWalletCategoryStruct = enums(Object.values(Category));
 
 /**
  * Struct for a serialized RPC error containing a HardwareWalletError.
@@ -309,9 +295,13 @@ function convertDataToHardwareWalletError(
     }
   }
 
-  const hwError = new HardwareWalletError(
-    message ?? data.userMessage ?? 'Hardware wallet error',
-    {
+  // Preserve legacy behavior: empty RPC messages should fall back to userMessage.
+  const resolvedMessage =
+    message && message.length > 0
+      ? message
+      : data.userMessage ?? 'Hardware wallet error';
+
+  const hwError = new HardwareWalletError(resolvedMessage, {
       code: errorCode,
       severity: data.severity as Severity,
       category: data.category as Category,
