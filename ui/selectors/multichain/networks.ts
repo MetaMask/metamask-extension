@@ -15,6 +15,7 @@ import {
   type Hex,
   KnownCaipNamespace,
   parseCaipChainId,
+  isCaipChainId,
 } from '@metamask/utils';
 
 import { createSelector } from 'reselect';
@@ -303,7 +304,16 @@ export const getSelectedMultichainNetworkChainId = (
     const evmNetworkConfig = getProviderConfig(state);
     return toEvmCaipChainId(evmNetworkConfig.chainId);
   }
-  return state.metamask.selectedMultichainNetworkChainId;
+  
+  const selectedChainId = state.metamask.selectedMultichainNetworkChainId;
+  
+  // Validate the chain ID and fall back to EVM chain if invalid
+  if (!selectedChainId || !isCaipChainId(selectedChainId)) {
+    const evmNetworkConfig = getProviderConfig(state);
+    return toEvmCaipChainId(evmNetworkConfig.chainId);
+  }
+  
+  return selectedChainId;
 };
 
 export const getSelectedMultichainNetworkConfiguration = createSelector(

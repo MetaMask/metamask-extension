@@ -561,6 +561,62 @@ describe('Multichain network selectors', () => {
         SolScope.Mainnet,
       );
     });
+
+    it('returns EVM chain ID when selectedMultichainNetworkChainId is null and isEvmSelected is false', () => {
+      const stateWithNullChainId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedMultichainNetworkChainId: null,
+          isEvmSelected: false,
+        },
+      };
+      expect(getSelectedMultichainNetworkChainId(stateWithNullChainId)).toStrictEqual(
+        'eip155:1',
+      );
+    });
+
+    it('returns EVM chain ID when selectedMultichainNetworkChainId is undefined and isEvmSelected is false', () => {
+      const stateWithUndefinedChainId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedMultichainNetworkChainId: undefined,
+          isEvmSelected: false,
+        },
+      };
+      expect(getSelectedMultichainNetworkChainId(stateWithUndefinedChainId)).toStrictEqual(
+        'eip155:1',
+      );
+    });
+
+    it('returns EVM chain ID when selectedMultichainNetworkChainId is an invalid CAIP chain ID', () => {
+      const stateWithInvalidChainId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedMultichainNetworkChainId: 'invalid-chain-id',
+          isEvmSelected: false,
+        },
+      };
+      expect(getSelectedMultichainNetworkChainId(stateWithInvalidChainId)).toStrictEqual(
+        'eip155:1',
+      );
+    });
+
+    it('returns EVM chain ID when selectedMultichainNetworkChainId is an empty string', () => {
+      const stateWithEmptyChainId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          selectedMultichainNetworkChainId: '',
+          isEvmSelected: false,
+        },
+      };
+      expect(getSelectedMultichainNetworkChainId(stateWithEmptyChainId)).toStrictEqual(
+        'eip155:1',
+      );
+    });
   });
 
   describe('getIsEvmMultichainNetworkSelected', () => {
