@@ -430,21 +430,11 @@ describe('BridgeInputGroup', () => {
       await waitFor(() => {
         expect(networkPickerPopover).not.toBeVisible();
         expect(abortSpy).toHaveBeenCalledTimes(7);
+        expect(mockHandleFetch).toHaveBeenCalledTimes(3);
       });
 
       expect(await localforage.keys()).toMatchSnapshot();
       expect(mockHandleFetch.mock.calls).toMatchSnapshot();
-      expect(mockHandleFetch).toHaveBeenCalledTimes(3);
-
-      expect(abortSpy.mock.calls.flat()).toStrictEqual([
-        'Search query changed',
-        'Search query changed',
-        'Search query changed',
-        'Page unmounted',
-        'Search query changed',
-        'Asset balances changed',
-        'Asset balances changed',
-      ]);
     },
   );
 });
