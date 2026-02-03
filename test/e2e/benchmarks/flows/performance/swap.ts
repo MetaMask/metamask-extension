@@ -57,7 +57,6 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
 
         // Measure: Open swap page
-        await homePage.startSwapFlow();
         await timerOpenSwapPage.measure(async () => {
           await homePage.startSwapFlow();
           const swapPage = new SwapPage(driver);
