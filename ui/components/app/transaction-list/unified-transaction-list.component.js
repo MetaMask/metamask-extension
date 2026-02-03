@@ -845,10 +845,7 @@ export default function UnifiedTransactionList({
 
       <Box className="transaction-list" {...boxProps}>
         {processedUnifiedActivityItems.length === 0 ? (
-          <TransactionActivityEmptyState
-            className="mx-auto mt-5 mb-6"
-            account={selectedAccount}
-          />
+          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
         ) : (
           <div
             className="transaction-list__transactions relative w-full"

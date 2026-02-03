@@ -30,6 +30,18 @@ jest.mock('../../../../../ui/store/actions', () => ({
     .mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
+jest.mock('../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn().mockImplementation((method, args) => {
+    if (method === 'isPublicEndpointUrl') {
+      const url = args[0];
+      // Return true for Infura URLs, false for everything else
+      return Promise.resolve(url?.includes('infura.io') ?? false);
+    }
+    return Promise.resolve();
+  }),
+}));
+
 const renderComponent = (props) => {
   const store = configureMockStore([thunk])({
     metamask: {
