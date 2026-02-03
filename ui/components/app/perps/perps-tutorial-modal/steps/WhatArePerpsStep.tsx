@@ -45,24 +45,30 @@ const WhatArePerpsStep: React.FC = () => {
 
       <Box className="flex-1 flex flex-col items-center justify-center px-6 py-8">
         <Box
-          className="w-48 h-48 mb-6 flex items-center justify-center"
+          className="flex-1 min-h-0 w-full mb-6 flex items-center justify-center"
           data-testid="perps-tutorial-step-image"
         >
           <img
             src="./images/perps-character.png"
             alt=""
-            className="w-full h-full object-contain"
+            className="h-full w-full object-contain"
           />
         </Box>
 
-        <Text variant={TextVariant.HeadingLg} className="text-center mb-2">
+        <Text variant={TextVariant.HeadingLg} className="text-left mb-2 w-full">
           {t('perpsTutorialWhatArePerpsTitle')}
         </Text>
         <Text
           variant={TextVariant.BodyMd}
-          className="text-center text-alternative"
+          className="text-left text-alternative w-full"
         >
           {t('perpsTutorialWhatArePerpsDescription')}
+        </Text>
+        <Text
+          variant={TextVariant.BodyMd}
+          className="text-left text-alternative w-full mt-4"
+        >
+          {t('perpsTutorialWhatArePerpsSubtitle')}
         </Text>
       </Box>
 

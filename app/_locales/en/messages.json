@@ -5339,13 +5339,13 @@
     "message": "Leverage"
   },
   "perpsTutorialChooseLeverageDescription": {
-    "message": "Leverage amplifies your position size. Use 2x leverage to control $200 worth of an asset with just $100. Higher leverage means higher potential returns—but also higher risk."
+    "message": "Leverage amplifies both gains and losses. With 40x leverage, a 1% price move equals a 40% gain or loss on your margin."
   },
   "perpsTutorialChooseLeverageTitle": {
     "message": "Choose your leverage"
   },
   "perpsTutorialCloseAnytimeDescription": {
-    "message": "Close your position whenever you want. Take profit when you're winning, or cut losses if the market moves against you. You're always in control."
+    "message": "Exit whenever you want. You’ll get back your margin, plus profits or minus losses."
   },
   "perpsTutorialCloseAnytimeTitle": {
     "message": "Close any time"
@@ -5354,16 +5354,19 @@
     "message": "Continue"
   },
   "perpsTutorialGoLongShortDescription": {
-    "message": "Think the price will go up? Go long. Think it'll go down? Go short. Perps let you profit from price movements in either direction."
+    "message": "Pick a token to long or short, then set your order size."
+  },
+  "perpsTutorialGoLongShortSubtitle": {
+    "message": "Go long to profit if the price goes up. Go short to profit if the price goes down."
   },
   "perpsTutorialGoLongShortTitle": {
-    "message": "Go long or short"
+    "message": "Go long or short on a token"
   },
   "perpsTutorialLetsGo": {
     "message": "Let's go"
   },
   "perpsTutorialReadyToTradeDescription": {
-    "message": "You've learned the basics of perps trading. Remember to start small, manage your risk, and never trade more than you can afford to lose."
+    "message": "Fund your perps account with any token and make your first trade in seconds."
   },
   "perpsTutorialReadyToTradeTitle": {
     "message": "Ready to trade?"
@@ -5372,13 +5375,16 @@
     "message": "Skip"
   },
   "perpsTutorialWatchLiquidationDescription": {
-    "message": "If the market moves too far against your position, you could get liquidated—losing your margin. Keep an eye on your liquidation price and manage your risk."
+    "message": "You’ll lose your entire margin if the token hits your liquidation price. Higher leverage means less room to liquidation."
   },
   "perpsTutorialWatchLiquidationTitle": {
     "message": "Watch out for liquidation"
   },
   "perpsTutorialWhatArePerpsDescription": {
-    "message": "Perpetual futures (perps) are contracts that let you speculate on asset prices without owning the underlying asset. They never expire, so you can hold them as long as you want."
+    "message": "MetaMask now supports perpetual futures—aka perps—letting you trade on a token's price movement without buying it."
+  },
+  "perpsTutorialWhatArePerpsSubtitle": {
+    "message": "Here's how it works."
   },
   "perpsTutorialWhatArePerpsTitle": {
     "message": "What are perps?"

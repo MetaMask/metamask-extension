@@ -16,12 +16,18 @@ import { ThemeType } from '../../../../../shared/constants/preferences';
 
 type PerpsTutorialAnimationProps = {
   artboardName: string;
+  className?: string;
+  fit?: Fit;
+  alignment?: Alignment;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function PerpsTutorialAnimation({
   artboardName,
+  className = 'w-full h-[240px]',
+  fit = Fit.FitWidth,
+  alignment = Alignment.Center,
 }: PerpsTutorialAnimationProps) {
   const theme = useTheme();
   const isDarkTheme = theme === ThemeType.dark;
@@ -62,8 +68,8 @@ export default function PerpsTutorialAnimation({
     artboard: riveFile ? artboardName : undefined,
     autoplay: false,
     layout: new Layout({
-      fit: Fit.FitWidth,
-      alignment: Alignment.Center,
+      fit,
+      alignment,
     }),
   });
 
@@ -82,15 +88,18 @@ export default function PerpsTutorialAnimation({
   ) {
     return (
       <Box
-        className="w-full h-[240px] flex items-center justify-center"
+        className={`${className} flex items-center justify-center`}
         data-testid="perps-tutorial-animation-loading"
       />
     );
   }
 
   return (
-    <Box className="w-full h-[240px]" data-testid="perps-tutorial-animation">
-      <RiveComponent className="w-full h-full" />
+    <Box className={className} data-testid="perps-tutorial-animation">
+      <RiveComponent
+        className="w-full h-full"
+        style={{ width: '100%', height: '100%', display: 'block' }}
+      />
     </Box>
   );
 }

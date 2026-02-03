@@ -80,7 +80,7 @@ export default function PerpsTutorialModal({
           paddingTop: 0,
           paddingBottom: 0,
           style: {
-            height: '600px',
+            height: '675px',
             alignItems: 'center',
             justifyContent: 'center',
           },
