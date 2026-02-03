@@ -600,6 +600,34 @@ describe('Multichain Accounts Selectors', () => {
 
       expect(result).toBeNull();
     });
+
+    it('returns null if the address parameter is undefined', () => {
+      const result = getWalletIdAndNameByAccountAddress(
+        typedMockState,
+        undefined as unknown as string,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('returns null if the address parameter is an empty string', () => {
+      const result = getWalletIdAndNameByAccountAddress(typedMockState, '');
+
+      expect(result).toBeNull();
+    });
+
+    it('handles case-insensitive address matching', () => {
+      const uppercaseAddress = ACCOUNT_1_ADDRESS.toUpperCase();
+      const result = getWalletIdAndNameByAccountAddress(
+        typedMockState,
+        uppercaseAddress,
+      );
+
+      expect(result).toStrictEqual({
+        id: ENTROPY_WALLET_1_ID,
+        name: 'Wallet 1',
+      });
+    });
   });
 
   describe('getInternalAccountByGroupAndCaip', () => {
