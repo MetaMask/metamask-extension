@@ -3,7 +3,7 @@
  *
  * This module exports the React context provider for Perps UI.
  *
- * Preferred imports for new code:
+ * Usage:
  * - `usePerpsController()` - Hook to access PerpsController directly
  * - `PerpsControllerProvider` - React provider for controller context
  * - Types from `@metamask/perps-controller`
@@ -15,10 +15,6 @@ export {
   resetPerpsController,
   type PerpsControllerState,
 } from './getPerpsController';
-
-// ============================================================================
-// PREFERRED EXPORTS - Use these for new code
-// ============================================================================
 
 // React Provider & Hook for direct controller access
 export {
@@ -55,38 +51,3 @@ export type {
   SubscribeCandlesParams,
   SubscribeOrderBookParams,
 } from '@metamask/perps-controller';
-
-// ============================================================================
-// DEPRECATED EXPORTS - Keep for backward compatibility during migration
-// ============================================================================
-
-/**
- * @deprecated Use `PerpsControllerProvider` and `usePerpsController()` instead.
- */
-export {
-  PerpsStreamProvider,
-  usePerpsClient,
-  PerpsClientContext,
-  usePerpsStream,
-  type PerpsStreamProviderProps,
-} from './PerpsStreamProvider';
-
-/**
- * @deprecated Use direct controller access instead.
- */
-export { createMockPerpsClient } from './MockPerpsClient';
-
-/**
- * @deprecated Use direct controller access instead.
- */
-export type { PerpsClient } from './PerpsClient.types';
-
-/**
- * @deprecated Use `PerpsStreamManager` from PerpsStreamManager.ts instead.
- */
-export {
-  PerpsStreamManager,
-  getStreamManagerInstance,
-  type StreamSubscriptionParams,
-  type TopOfBookData,
-} from './PerpsStreamManager';
