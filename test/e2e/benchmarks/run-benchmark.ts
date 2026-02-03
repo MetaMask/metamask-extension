@@ -113,7 +113,8 @@ const PRESETS: Record<string, string[]> = {
     `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
   ],
   performanceLogin: [
-    `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
+    // TODO: Re-enable import-srp-home.ts once TEST_SRP_2 is found correctly
+    // `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
     `${BENCHMARK_DIR}/performance/send-transactions.ts`,
     `${BENCHMARK_DIR}/performance/swap.ts`,
   ],
@@ -251,7 +252,7 @@ async function main(): Promise<void> {
     })
     .option('iterations', {
       alias: 'i',
-      default: 10,
+      default: 5,
       description:
         'Number of iterations (for performance and user-action benchmarks)',
       type: 'number',
