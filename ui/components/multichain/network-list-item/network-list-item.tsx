@@ -13,7 +13,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   JustifyContent,
   TextColor,
@@ -224,7 +223,7 @@ export const NetworkListItem = ({
       paddingBottom={rpcEndpoint ? 2 : 4}
       gap={4}
       backgroundColor={
-        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
+        selected ? BackgroundColor.backgroundMuted : BackgroundColor.transparent
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
@@ -239,19 +238,16 @@ export const NetworkListItem = ({
       onClick={disabled ? undefined : onClick}
     >
       {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
-      {selected && (
-        <Box
-          className="multichain-network-list-item__selected-indicator"
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
-        />
-      )}
       {isIconSrc(iconSrc) ? (
         <Icon name={iconSrc} size={iconSize as IconSize} />
       ) : (
         <AvatarNetwork
           borderColor={BorderColor.backgroundDefault}
-          backgroundColor={getAvatarNetworkColor(name)}
+          backgroundColor={
+            selected
+              ? BackgroundColor.primaryDefault
+              : getAvatarNetworkColor(name)
+          }
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
