@@ -31,7 +31,6 @@ import {
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
-  SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
@@ -219,9 +218,6 @@ const SendPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import('../confirmations/send/index.ts')) as unknown as DynamicImportType,
-);
-const Swaps = mmLazy(
-  (() => import('../swaps/index.js')) as unknown as DynamicImportType,
 );
 const CrossChainSwap = mmLazy(
   (() => import('../bridge/index.tsx')) as unknown as DynamicImportType,
@@ -612,12 +608,6 @@ export default function Routes() {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         component: Confirm,
         layout: RootLayout,
-        authenticated: true,
-      }),
-      createRouteWithLayout({
-        path: `${SWAPS_ROUTE}/*`,
-        component: Swaps,
-        layout: LegacyLayout,
         authenticated: true,
       }),
       createRouteWithLayout({

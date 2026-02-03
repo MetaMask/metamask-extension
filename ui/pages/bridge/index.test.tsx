@@ -3,7 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import { PREPARE_SWAP_ROUTE } from '../../helpers/constants/routes';
+import {
+  CROSS_CHAIN_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../store/background-connection';
 import CrossChainSwap from '.';
 
@@ -37,7 +40,7 @@ jest.mock('react-router-dom', () => {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => ({
-      pathname: '/cross-chain/swaps/prepare-swap-page',
+      pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
       search: '',
       hash: '',
       state: null,
