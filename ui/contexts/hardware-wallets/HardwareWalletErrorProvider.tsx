@@ -257,6 +257,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     showErrorModalInternal,
     dispatch,
     displayedError,
+    resetModalState,
   ]);
 
   /**

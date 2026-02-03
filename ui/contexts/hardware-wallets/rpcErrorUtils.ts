@@ -30,6 +30,9 @@ import { createHardwareWalletError } from './errors';
 /**
  * Structs for serialized HardwareWalletError cause objects.
  * This supports both legacy and extended shapes across the RPC boundary.
+ *
+ * We use exact `object()` structs so legacy and extended remain mutually
+ * exclusive (extended includes extra fields that legacy does not accept).
  */
 const LegacySerializedHardwareWalletErrorCauseStruct = object({
   name: literal('HardwareWalletError'),
@@ -39,11 +42,13 @@ const LegacySerializedHardwareWalletErrorCauseStruct = object({
 });
 
 const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
+  // Extended fields added by HardwareWalletError serialization.
   category: string(),
   severity: string(),
   id: string(),
   userMessage: string(),
   timestamp: string(),
+  // Legacy-compatible fields preserved for transport.
   name: literal('HardwareWalletError'),
   message: string(),
   stack: optional(string()),
@@ -51,12 +56,14 @@ const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
 });
 
 const SerializedHardwareWalletErrorCauseStruct = refine(
+  // Support both legacy and extended shapes across the RPC boundary.
   union([
     LegacySerializedHardwareWalletErrorCauseStruct,
     ExtendedSerializedHardwareWalletErrorCauseStruct,
   ]),
   'SerializedHardwareWalletErrorCauseStruct',
   (value) => {
+    // Validate against each shape explicitly for clarity and future changes.
     const matchesLegacy = is(
       value,
       LegacySerializedHardwareWalletErrorCauseStruct,
@@ -66,6 +73,7 @@ const SerializedHardwareWalletErrorCauseStruct = refine(
       ExtendedSerializedHardwareWalletErrorCauseStruct,
     );
 
+    // Accept either shape; superstruct `union` handles the structural check.
     return matchesLegacy || matchesExtended;
   },
 );
