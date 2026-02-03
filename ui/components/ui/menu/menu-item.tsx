@@ -27,6 +27,7 @@ type MenuItemProps = {
   'data-testid'?: string;
   iconName: IconName;
   iconColor?: IconColor;
+  iconSize?: IconSize;
   to?: string;
   onClick?: () => void;
   subtitle?: string;
@@ -46,6 +47,7 @@ const MenuItem = React.forwardRef<
       'data-testid': dataTestId,
       iconName,
       iconColor,
+      iconSize = IconSize.Sm,
       onClick,
       subtitle,
       disabled,
@@ -71,13 +73,13 @@ const MenuItem = React.forwardRef<
               />
             }
           >
-            <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
+            <Icon name={iconName} size={iconSize} marginRight={2} />
           </BadgeWrapper>
         )}
         {iconName && !showInfoDot && (
           <Icon
             name={iconName}
-            size={IconSize.Sm}
+            size={iconSize}
             marginRight={3}
             color={iconColor}
           />
