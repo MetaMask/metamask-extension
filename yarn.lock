@@ -8772,13 +8772,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/storage-service@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "@metamask/storage-service@npm:0.0.1"
+"@metamask/storage-service@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/storage-service@npm:1.0.0"
   dependencies:
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.8.1"
-  checksum: 10/ba2443e4bab7a4ef64bf3e0a10403ef94d50225e5ae5931a6fd32a21bfa8e276916ab6dc377d2db30c15c50acaeaee74a3c0b418a563311da9f98b9172fba300
+    "@metamask/utils": "npm:^11.9.0"
+  checksum: 10/506b681f9f678102f8dd700d3c0531a35894d2a810431bdbcaaf1089d6dcfdb869ee3118b0375012498ba20e4fe8d2682d2695082268bb1dab3b774c9044d329
   languageName: node
   linkType: hard
 
