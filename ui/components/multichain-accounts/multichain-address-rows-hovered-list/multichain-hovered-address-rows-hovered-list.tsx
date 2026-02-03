@@ -259,11 +259,12 @@ export const MultichainHoveredAddressRowsList = ({
           address={item.account.address}
           copyActionParams={{
             callback: handleCopyClick,
+            toastType: 'address',
           }}
         />
       );
     },
-    [handleCopy, t],
+    [handleCopy],
   );
 
   const handleViewAllClick = useCallback(

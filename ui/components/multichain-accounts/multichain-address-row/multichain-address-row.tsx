@@ -34,6 +34,10 @@ export type CopyParams = {
    * Callback function to execute when the copy action is triggered
    */
   callback: () => void;
+  /**
+   * Type of toast to show after copying
+   */
+  toastType: 'address' | 'privateKey';
 };
 
 type QrParams = {
@@ -118,7 +122,7 @@ export const MultichainAddressRow = ({
     copyActionParams.callback();
 
     // Show toast notification
-    dispatch(setShowCopyAddressToast('address'));
+    dispatch(setShowCopyAddressToast(copyActionParams.toastType));
 
     // Update icon to success state
     setCopyIcon(IconName.CopySuccess);

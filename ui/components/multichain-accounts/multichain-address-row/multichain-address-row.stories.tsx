@@ -53,6 +53,7 @@ export const Default: Story = {
     address: '0x1234567890123456789012345678901234567890',
     copyActionParams: {
       callback: () => {},
+      toastType: 'address',
     },
     className: '',
   },
@@ -65,6 +66,7 @@ export const WithLongNetworkName: Story = {
     address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
     copyActionParams: {
       callback: () => {},
+      toastType: 'address',
     },
     className: '',
   },
@@ -77,6 +79,7 @@ export const ArbitrumNetwork: Story = {
     address: '0x0123456789abcdef0123456789abcdef01234567',
     copyActionParams: {
       callback: () => {},
+      toastType: 'address',
     },
     className: '',
   },
@@ -89,6 +92,7 @@ export const OptimismNetwork: Story = {
     address: '0x9876543210987654321098765432109876543210',
     copyActionParams: {
       callback: () => {},
+      toastType: 'address',
     },
     className: '',
   },
@@ -101,6 +105,7 @@ export const PolygonNetwork: Story = {
     address: '0xfedcba0987654321fedcba0987654321fedcba09',
     copyActionParams: {
       callback: () => {},
+      toastType: 'address',
     },
     className: '',
   },
@@ -113,6 +118,7 @@ export const CustomNetwork: Story = {
     address: '0x1111222233334444555566667777888899990000',
     copyActionParams: {
       callback: () => {},
+      toastType: 'address',
     },
     className: '',
   },

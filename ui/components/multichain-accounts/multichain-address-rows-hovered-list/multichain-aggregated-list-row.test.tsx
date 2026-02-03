@@ -74,7 +74,7 @@ const createTestProps = (
   address: TEST_STRINGS.FULL_ADDRESS,
   copyActionParams: {
     callback: jest.fn(),
-    message: TEST_STRINGS.COPY_MESSAGE,
+    toastType: 'address' as const,
   },
   ...overrides,
 });
@@ -276,7 +276,7 @@ describe('MultichainAggregatedAddressListRow', () => {
       const props = createTestProps({
         copyActionParams: {
           callback: mockCallback,
-          message: TEST_STRINGS.COPY_MESSAGE,
+          toastType: 'address' as const,
         },
       });
 
@@ -292,7 +292,7 @@ describe('MultichainAggregatedAddressListRow', () => {
       expect(mockCallback).toHaveBeenCalled();
     });
 
-    it('shows copy message after clicking row', () => {
+    it('executes copy callback after clicking row', () => {
       const props = createTestProps();
 
       render(
@@ -311,8 +311,7 @@ describe('MultichainAggregatedAddressListRow', () => {
       // Click row
       fireEvent.click(row);
 
-      // Should show the copy message
-      expect(screen.getByText(TEST_STRINGS.COPY_MESSAGE)).toBeInTheDocument();
+      // Should call the copy callback
       expect(props.copyActionParams.callback).toHaveBeenCalled();
     });
 

@@ -152,7 +152,7 @@ const meta: Meta<typeof MultichainAggregatedAddressListRow> = {
     copyActionParams: {
       control: 'object',
       description:
-        'Copy parameters for the address, including message and callback function',
+        'Copy parameters for the address, including toastType and callback function',
     },
     className: {
       control: 'text',
@@ -178,7 +178,7 @@ export const DefaultEthereum: Story = {
     chainIds: ['0x1'],
     address: '0x1234567890abcdef1234567890abcdef12345678',
     copyActionParams: {
-      message: 'Address copied!',
+      toastType: 'address',
       callback: () => {
         navigator.clipboard.writeText(
           '0x1234567890abcdef1234567890abcdef12345678',
@@ -194,7 +194,7 @@ export const ManyNetworks: Story = {
     chainIds: ['0x1', '0x89', '0xa4b1', '0xa', '0x2105', '0x8274f'],
     address: '0x1234567890abcdef1234567890abcdef12345678',
     copyActionParams: {
-      message: 'Address copied!',
+      toastType: 'address',
       callback: () => {
         navigator.clipboard.writeText(
           '0x1234567890abcdef1234567890abcdef12345678',
@@ -210,7 +210,7 @@ export const NonEvmNetwork: Story = {
     chainIds: [MultichainNetworks.SOLANA],
     address: 'DfGj1XfVTbfM7VZvqLkVNvDhFb4Nt8xBpGpH5f2r3Dqq',
     copyActionParams: {
-      message: 'Address copied!',
+      toastType: 'address',
       callback: () => {
         navigator.clipboard.writeText(
           'DfGj1XfVTbfM7VZvqLkVNvDhFb4Nt8xBpGpH5f2r3Dqq',

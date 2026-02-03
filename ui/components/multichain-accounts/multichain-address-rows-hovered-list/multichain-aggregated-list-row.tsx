@@ -117,7 +117,7 @@ export const MultichainAggregatedAddressListRow = ({
     copyActionParams.callback();
 
     // Show toast notification
-    dispatch(setShowCopyAddressToast('address'));
+    dispatch(setShowCopyAddressToast(copyActionParams.toastType));
 
     // Update icon to success state
     setCopyIcon(IconName.CopySuccess);

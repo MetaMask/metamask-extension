@@ -859,8 +859,8 @@ export function setOnBoardedInThisUISession(
 }
 
 export function setShowCopyAddressToast(
-  payload: boolean,
-): PayloadAction<boolean> {
+  payload: 'address' | 'privateKey' | false,
+): PayloadAction<'address' | 'privateKey' | false> {
   return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
 }
 
@@ -915,7 +915,9 @@ export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
 }
 
-export function getShowCopyAddressToast(state: AppSliceState): boolean {
+export function getShowCopyAddressToast(
+  state: AppSliceState,
+): 'address' | 'privateKey' | false {
   return state.appState.showCopyAddressToast;
 }
 

@@ -34,7 +34,7 @@ const createMockPrivacyPolicyState = (
 
 const createMockAppState = (
   showNewSrpAddedToast?: boolean,
-  showCopyAddressToast?: boolean,
+  showCopyAddressToast?: 'address' | 'privateKey' | false,
 ) => ({
   appState: {
     ...mockState.appState,
@@ -244,10 +244,16 @@ describe('#getShowNewSrpAddedToast', () => {
 });
 
 describe('#selectShowCopyAddressToast', () => {
-  it('returns true when showCopyAddressToast is true', () => {
-    const mockStateData = createMockAppState(undefined, true);
+  it('returns "address" when showCopyAddressToast is "address"', () => {
+    const mockStateData = createMockAppState(undefined, 'address');
     const result = selectShowCopyAddressToast(mockStateData);
-    expect(result).toBe(true);
+    expect(result).toBe('address');
+  });
+
+  it('returns "privateKey" when showCopyAddressToast is "privateKey"', () => {
+    const mockStateData = createMockAppState(undefined, 'privateKey');
+    const result = selectShowCopyAddressToast(mockStateData);
+    expect(result).toBe('privateKey');
   });
 
   it('returns false when showCopyAddressToast is false', () => {

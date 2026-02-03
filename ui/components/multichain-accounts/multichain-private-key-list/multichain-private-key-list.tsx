@@ -35,11 +35,7 @@ import {
   TraceName,
   TraceOperation,
 } from '../../../../shared/lib/trace';
-<<<<<<< HEAD
 import { MINUTE } from '../../../../shared/constants/time';
-=======
-import { setShowCopyAddressToast } from '../../app/toast-master/utils';
->>>>>>> 9a7fee6e5c (feat: making copy address feedback a toast in account menu)
 
 /**
  * Check if the account has the private key available according to its keyring type.
@@ -228,7 +224,6 @@ const MultichainPrivateKeyList = ({
 
       const handleCopyClick = () => {
         handleCopy(privateKey);
-        dispatch(setShowCopyAddressToast('privateKey'));
       };
 
       return (
@@ -239,11 +234,12 @@ const MultichainPrivateKeyList = ({
           address={item.account.address}
           copyActionParams={{
             callback: handleCopyClick,
+            toastType: 'privateKey',
           }}
         />
       );
     },
-    [handleCopy, privateKeys, t],
+    [handleCopy, privateKeys],
   );
 
   const renderedRows = useMemo(() => {

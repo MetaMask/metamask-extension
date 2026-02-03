@@ -145,6 +145,7 @@ export const MultichainAddressRowsList = ({
           address={item.normalizedAddress}
           copyActionParams={{
             callback: handleCopyClick,
+            toastType: 'address',
           }}
           qrActionParams={{
             callback: onQrClick,
@@ -152,7 +153,7 @@ export const MultichainAddressRowsList = ({
         />
       );
     },
-    [handleCopy, onQrClick, t],
+    [handleCopy, onQrClick],
   );
 
   const renderedRows = useMemo(() => {

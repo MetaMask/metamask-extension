@@ -29,6 +29,7 @@ const defaultProps = {
   address: '0x1234567890123456789012345678901234567890',
   copyActionParams: {
     callback: mockCopyCallback,
+    toastType: 'address' as const,
   },
 };
 
@@ -38,6 +39,7 @@ const propsWithQrCode = {
   address: '0x1234567890123456789012345678901234567890',
   copyActionParams: {
     callback: mockCopyCallback,
+    toastType: 'address' as const,
   },
   qrActionParams: {
     callback: mockQrCallback,
