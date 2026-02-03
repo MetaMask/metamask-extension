@@ -351,13 +351,13 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, envValidationLoader, codeFenceLoader].filter(Boolean),
+        use: [tsxLoader, envValidationLoader, codeFenceLoader],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, envValidationLoader, codeFenceLoader].filter(Boolean),
+        use: [jsxLoader, envValidationLoader, codeFenceLoader],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
