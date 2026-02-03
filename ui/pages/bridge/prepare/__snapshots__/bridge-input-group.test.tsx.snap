@@ -648,6 +648,7 @@ exports[`BridgeInputGroup should render source networks 3`] = `
 [
   "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:503dca807bc28c124ddd2340e17a335eb411cc81363589c7a73716053f469fd3",
   "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/popular:52d1392eaabba42428cc7ee8801c662237b8afbc5861e76be9fcfe81f7c0366f",
+  "bridgeCache:https://bridge.api.cx.metamask.io/getTokens/search:f2b6768c8767172e7655a5129095d585b1cb3107c3a77a72b3f7285b8b51ccf5",
 ]
 `;
 
