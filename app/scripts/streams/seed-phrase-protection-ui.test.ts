@@ -3,24 +3,56 @@ import {
   showWarningModal,
   removeWarningModal,
   isWarningDismissed,
+  loadWarningDismissedState,
 } from './seed-phrase-protection-ui';
 
+// Mock webextension-polyfill
+const mockStorage: Record<string, unknown> = {};
+jest.mock('webextension-polyfill', () => ({
+  storage: {
+    local: {
+      get: jest.fn((key: string) =>
+        Promise.resolve({ [key]: mockStorage[key] }),
+      ),
+      set: jest.fn((data: Record<string, unknown>) => {
+        Object.assign(mockStorage, data);
+        return Promise.resolve();
+      }),
+    },
+  },
+}));
+
 describe('Seed Phrase Protection UI', () => {
+  beforeEach(() => {
+    // Clear mock storage
+    Object.keys(mockStorage).forEach((key) => delete mockStorage[key]);
+  });
+
   afterEach(() => {
     // Clean up any modals
     removeWarningModal();
-    // Clear localStorage
-    localStorage.clear();
   });
 
   describe('isWarningDismissed', () => {
-    it('should return false when not dismissed', () => {
+    it('should return false when not dismissed', async () => {
+      await loadWarningDismissedState();
       expect(isWarningDismissed()).toBe(false);
     });
 
-    it('should return true when dismissed', () => {
-      localStorage.setItem('metamask-srp-warning-dismissed', 'true');
+    it('should return true when dismissed in extension storage', async () => {
+      mockStorage['metamask-srp-warning-dismissed'] = true;
+      await loadWarningDismissedState();
       expect(isWarningDismissed()).toBe(true);
+    });
+
+    it('should NOT be affected by localStorage (security test)', async () => {
+      // This test verifies the fix for the localStorage bypass vulnerability.
+      // A malicious site setting localStorage should NOT bypass the protection.
+      localStorage.setItem('metamask-srp-warning-dismissed', 'true');
+      await loadWarningDismissedState();
+      // Should still return false because we use browser.storage.local, not localStorage
+      expect(isWarningDismissed()).toBe(false);
+      localStorage.clear();
     });
   });
 
@@ -83,8 +115,9 @@ describe('Seed Phrase Protection UI', () => {
     });
 
     it('should resolve immediately with ignore when warning is dismissed', async () => {
-      // Set the dismissed flag
-      localStorage.setItem('metamask-srp-warning-dismissed', 'true');
+      // Set the dismissed flag in extension storage and load it
+      mockStorage['metamask-srp-warning-dismissed'] = true;
+      await loadWarningDismissedState();
 
       // Show modal - should resolve immediately
       const result = await showWarningModal();

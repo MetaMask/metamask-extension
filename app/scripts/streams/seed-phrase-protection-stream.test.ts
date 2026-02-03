@@ -10,6 +10,12 @@ jest.mock('webextension-polyfill', () => ({
   runtime: {
     sendMessage: jest.fn().mockResolvedValue(undefined),
   },
+  storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
+    },
+  },
 }));
 
 describe('Seed Phrase Protection Stream', () => {

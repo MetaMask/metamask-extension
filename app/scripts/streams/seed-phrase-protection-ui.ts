@@ -9,6 +9,8 @@
  */
 /* eslint-disable @metamask/design-tokens/color-no-hex */
 
+import browser from 'webextension-polyfill';
+
 /**
  * MetaMask Fox SVG logo (inline for content script usage)
  */
@@ -360,31 +362,63 @@ const MODAL_HTML_CONFIRM = `
 /** Unique ID for the warning modal host element */
 const MODAL_HOST_ID = 'metamask-seed-phrase-warning';
 
-/** Storage key for "don't show again" preference */
+/**
+ * Storage key for "don't show again" preference.
+ * IMPORTANT: This is stored in browser.storage.local (extension-only storage),
+ * NOT localStorage, because localStorage is shared with the host page and
+ * could be manipulated by malicious sites to bypass protection.
+ */
 const STORAGE_KEY = 'metamask-srp-warning-dismissed';
 
 /**
- * Checks if the user has previously dismissed the warning permanently.
+ * Cached value of the warning dismissed state.
+ * This is loaded from browser.storage.local on initialization and updated
+ * when the user dismisses the warning. Using a cache allows synchronous
+ * checks in event handlers while maintaining security.
  *
- * @returns True if user chose "don't show again"
+ * Note: The host page cannot modify browser.storage.local, so this cache
+ * can only be set by trusted extension code.
  */
-export function isWarningDismissed(): boolean {
+let warningDismissedCache: boolean = false;
+
+/**
+ * Loads the dismissed state from extension storage into the cache.
+ * This should be called during content script initialization.
+ *
+ * @returns Promise that resolves when the cache is loaded
+ */
+export async function loadWarningDismissedState(): Promise<void> {
   try {
-    return localStorage.getItem(STORAGE_KEY) === 'true';
+    const result = await browser.storage.local.get(STORAGE_KEY);
+    warningDismissedCache = result[STORAGE_KEY] === true;
   } catch {
-    // localStorage may not be available in some contexts
-    return false;
+    // If storage is not available, default to showing warnings
+    warningDismissedCache = false;
   }
 }
 
 /**
- * Saves the user's preference to not show the warning again.
+ * Checks if the user has previously dismissed the warning permanently.
+ * This uses a cached value that is loaded from secure extension storage
+ * on initialization, preventing malicious sites from bypassing protection.
+ *
+ * @returns True if user chose "don't show again"
  */
-function setWarningDismissed(): void {
+export function isWarningDismissed(): boolean {
+  return warningDismissedCache;
+}
+
+/**
+ * Saves the user's preference to not show the warning again.
+ * Stores in browser.storage.local (extension-only, not accessible to host page).
+ */
+async function setWarningDismissed(): Promise<void> {
   try {
-    localStorage.setItem(STORAGE_KEY, 'true');
+    await browser.storage.local.set({ [STORAGE_KEY]: true });
+    warningDismissedCache = true;
   } catch {
-    // localStorage may not be available in some contexts
+    // If storage is not available, at least update the cache for this session
+    warningDismissedCache = true;
   }
 }
 
@@ -441,10 +475,29 @@ export function createWarningModal(
   // Track checkbox state
   let isChecked = false;
 
+  // Close on Escape key
+  const handleEscape = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      // If on warning modal (confirm modal is hidden), close and ignore
+      if (confirmModal.classList.contains('hidden')) {
+        document.removeEventListener('keydown', handleEscape);
+        host.remove();
+        onIgnore(false);
+      } else {
+        // If on confirm modal, go back to warning modal
+        confirmModal.classList.add('hidden');
+        warningModal.classList.remove('hidden');
+        isChecked = false;
+        checkbox.classList.remove('checked');
+      }
+    }
+  };
+
   // Exit site handler
   exitBtn?.addEventListener('click', () => {
-    onExitSite();
+    document.removeEventListener('keydown', handleEscape);
     host.remove();
+    onExitSite();
   });
 
   // Continue anyway -> show confirmation modal
@@ -469,32 +522,20 @@ export function createWarningModal(
   });
 
   // Confirm handler
-  confirmBtn?.addEventListener('click', () => {
+  confirmBtn?.addEventListener('click', async () => {
     if (isChecked) {
-      setWarningDismissed();
+      await setWarningDismissed();
     }
-    onIgnore(isChecked);
+    document.removeEventListener('keydown', handleEscape);
     host.remove();
+    onIgnore(isChecked);
   });
 
-  // Close on Escape key
-  const handleEscape = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      // If on confirm modal, go back to warning modal
-      if (!confirmModal.classList.contains('hidden')) {
-        confirmModal.classList.add('hidden');
-        warningModal.classList.remove('hidden');
-        isChecked = false;
-        checkbox.classList.remove('checked');
-      } else {
-        // If on warning modal, close and ignore
-        onIgnore(false);
-        host.remove();
-        document.removeEventListener('keydown', handleEscape);
-      }
-    }
-  };
+  // Register escape key handler
   document.addEventListener('keydown', handleEscape);
+
+  // Focus the exit button for accessibility
+  (exitBtn as HTMLButtonElement)?.focus();
 
   return host;
 }
@@ -562,13 +603,7 @@ export function showWarningModal(): Promise<WarningModalResult> {
     );
 
     document.body.appendChild(modal);
-
-    // Focus the exit button for accessibility
-    const shadow = modal.shadowRoot;
-    if (shadow) {
-      const exitBtn = shadow.querySelector('#exit-btn') as HTMLButtonElement;
-      exitBtn?.focus();
-    }
+    // Note: Focus is handled inside createWarningModal since shadow DOM is closed
   });
 }
 

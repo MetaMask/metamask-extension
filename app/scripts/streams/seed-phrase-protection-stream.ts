@@ -14,6 +14,7 @@ import { isSeedPhrase } from '../../../shared/modules/seed-phrase-detection';
 import {
   showWarningModal,
   isWarningDismissed,
+  loadWarningDismissedState,
 } from './seed-phrase-protection-ui';
 
 /**
@@ -176,11 +177,18 @@ function handlePaste(event: ClipboardEvent): void {
  * - Extension pages (chrome-extension://, moz-extension://)
  * - These are trusted contexts where seed phrase entry is legitimate
  */
-export function initSeedPhraseProtection(): void {
+export async function initSeedPhraseProtection(): Promise<void> {
   // Skip protection on extension pages - these are trusted contexts
   if (isExtensionPage()) {
     return;
   }
+
+  // Load the "don't show again" preference from secure extension storage.
+  // This must be done before adding the paste listener to ensure the cache
+  // is populated. The preference is stored in browser.storage.local (not
+  // localStorage) because localStorage is shared with the host page and
+  // could be manipulated by malicious sites to bypass protection.
+  await loadWarningDismissedState();
 
   // Add paste event listener to the document
   // Use capture phase to intercept before the target receives it
