@@ -3448,10 +3448,6 @@
   "moreQuotes": {
     "message": "Tuilleadh luachana"
   },
-  "multichainAccountAddressCopied": {
-    "message": "Seoladh cóipeáilte",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "Foghlaim níos mó",
     "description": "Button text to learn more about multichain accounts"

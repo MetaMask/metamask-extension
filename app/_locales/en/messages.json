@@ -3866,10 +3866,6 @@
   "moreQuotes": {
     "message": "More quotes"
   },
-  "multichainAccountAddressCopied": {
-    "message": "Address copied",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "Learn more",
     "description": "Button text to learn more about multichain accounts"

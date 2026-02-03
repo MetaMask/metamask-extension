@@ -3681,10 +3681,6 @@
   "moreQuotes": {
     "message": "Thêm báo giá"
   },
-  "multichainAccountAddressCopied": {
-    "message": "Đã sao chép địa chỉ",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "Tìm hiểu thêm",
     "description": "Button text to learn more about multichain accounts"

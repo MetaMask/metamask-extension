@@ -3675,10 +3675,6 @@
   "moreQuotes": {
     "message": "अधिक कोट्स"
   },
-  "multichainAccountAddressCopied": {
-    "message": "एड्रेस कॉपी किया गया",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "ज़्यादा जानें",
     "description": "Button text to learn more about multichain accounts"

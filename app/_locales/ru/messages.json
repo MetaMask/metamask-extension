@@ -3681,10 +3681,6 @@
   "moreQuotes": {
     "message": "Больше котировок"
   },
-  "multichainAccountAddressCopied": {
-    "message": "Адрес скопирован",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "Узнайте подробнее",
     "description": "Button text to learn more about multichain accounts"

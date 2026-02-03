@@ -3681,10 +3681,6 @@
   "moreQuotes": {
     "message": "Kuotasi lainnya"
   },
-  "multichainAccountAddressCopied": {
-    "message": "Alamat disalin",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "Selengkapnya",
     "description": "Button text to learn more about multichain accounts"

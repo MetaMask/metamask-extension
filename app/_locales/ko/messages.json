@@ -3678,10 +3678,6 @@
   "moreQuotes": {
     "message": "더 많은 견적"
   },
-  "multichainAccountAddressCopied": {
-    "message": "주소 복사 완료",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "더 보기",
     "description": "Button text to learn more about multichain accounts"

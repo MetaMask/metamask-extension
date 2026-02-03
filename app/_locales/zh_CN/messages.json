@@ -3675,10 +3675,6 @@
   "moreQuotes": {
     "message": "更多报价"
   },
-  "multichainAccountAddressCopied": {
-    "message": "地址已复制",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "了解详情",
     "description": "Button text to learn more about multichain accounts"

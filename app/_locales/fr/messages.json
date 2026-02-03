@@ -3675,10 +3675,6 @@
   "moreQuotes": {
     "message": "Plus de cotations"
   },
-  "multichainAccountAddressCopied": {
-    "message": "Adresse copiée",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "En savoir plus",
     "description": "Button text to learn more about multichain accounts"

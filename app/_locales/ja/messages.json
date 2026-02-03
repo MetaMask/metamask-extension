@@ -3675,10 +3675,6 @@
   "moreQuotes": {
     "message": "他のクォート"
   },
-  "multichainAccountAddressCopied": {
-    "message": "アドレスをコピーしました",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "詳細",
     "description": "Button text to learn more about multichain accounts"

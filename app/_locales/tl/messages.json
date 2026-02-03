@@ -3681,10 +3681,6 @@
   "moreQuotes": {
     "message": "Higit pang quote"
   },
-  "multichainAccountAddressCopied": {
-    "message": "Kinopya ang address",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "Matuto pa",
     "description": "Button text to learn more about multichain accounts"

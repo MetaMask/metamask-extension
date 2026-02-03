@@ -3681,10 +3681,6 @@
   "moreQuotes": {
     "message": "Mehr Angebote"
   },
-  "multichainAccountAddressCopied": {
-    "message": "Adresse kopiert",
-    "description": "Message displayed when the multichain account address is copied to clipboard"
-  },
   "multichainAccountIntroLearnMore": {
     "message": "Mehr erfahren",
     "description": "Button text to learn more about multichain accounts"
