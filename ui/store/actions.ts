@@ -3995,18 +3995,30 @@ export function exportAccount(
     try {
       log.debug(`background.verifyPassword`);
       await submitRequestToBackground('verifyPassword', [password]);
+    } catch (error) {
+      log.error('Error in verifying password.');
+
+      dispatch(hideLoadingIndication());
+      dispatch(displayWarning('Incorrect Password.'));
+      throw error;
+    }
+
+    try {
       log.debug(`background.exportAccount`);
       const result = await submitRequestToBackground<string>('exportAccount', [
         address,
         password,
       ]);
+
       setPrivateKey(result);
       setShowHoldToReveal(true);
+
       return result;
-    } catch (err) {
-      log.error('Error in verifying password or exporting account.');
-      dispatch(displayWarning('Incorrect Password.'));
-      throw err;
+    } catch (error) {
+      logErrorWithMessage(error);
+      dispatch(displayWarning('Had a problem exporting the account.'));
+
+      throw error;
     } finally {
       dispatch(hideLoadingIndication());
     }
