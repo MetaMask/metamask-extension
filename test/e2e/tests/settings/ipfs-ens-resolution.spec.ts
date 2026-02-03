@@ -42,6 +42,7 @@ describe('Settings', function () {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
+        await driver.delay(5000);
 
         // The setting defaults to "on" so we can simply enter an ENS address
         // into the address bar and listen for address change
