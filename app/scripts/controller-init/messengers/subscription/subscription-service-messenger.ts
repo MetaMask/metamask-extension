@@ -42,6 +42,7 @@ export function getSubscriptionServiceMessenger(
       'SubscriptionController:getState',
       'SubscriptionController:submitShieldSubscriptionCryptoApproval',
       'SubscriptionController:linkRewards',
+      'SubscriptionController:clearLastSelectedPaymentMethod',
       'AppStateController:getState',
       'AppStateController:setPendingShieldCohort',
       'AuthenticationController:getBearerToken',
