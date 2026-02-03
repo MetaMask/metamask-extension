@@ -75,7 +75,7 @@ const SerializedHardwareWalletErrorCauseStruct = refine(
     );
 
     // Accept either shape; superstruct `union` handles the structural check.
-    return matchesLegacy || matchesExtended;
+    return matchesLegacy ?? matchesExtended;
   },
 );
 
@@ -276,10 +276,7 @@ function convertDataToHardwareWalletError(
   stack?: string,
 ): HardwareWalletError {
   // Handle both string and numeric error codes
-  let errorCode =
-    typeof data.code === 'number'
-      ? mapNumericCodeToErrorCode(data.code)
-      : mapStringCodeToErrorCode(data.code);
+  let errorCode = mapCodeToErrorCode(data.code);
 
   if (
     errorCode === ErrorCode.Unknown &&
@@ -294,7 +291,7 @@ function convertDataToHardwareWalletError(
   }
 
   const hwError = new HardwareWalletError(
-    message || data.userMessage || 'Hardware wallet error',
+    message ?? data.userMessage ?? 'Hardware wallet error',
     {
       code: errorCode,
       severity: data.severity as Severity,
@@ -480,7 +477,7 @@ export function toHardwareWalletError(
   if (isJsonRpcHardwareWalletError(error)) {
     const hwError = convertDataToHardwareWalletError(
       error.data,
-      error.message || '',
+      error.message ?? '',
       walletType,
       error.stack,
     );

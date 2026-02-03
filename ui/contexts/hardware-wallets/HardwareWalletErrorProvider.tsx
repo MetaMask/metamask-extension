@@ -136,18 +136,9 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
 
     // Also check by code directly for errors that lost their class type
     const errorCode = getHardwareWalletErrorCode(error);
-    if (
+    return (
       errorCode === ErrorCode.UserRejected ||
       errorCode === ErrorCode.UserCancelled
-    ) {
-      return true;
-    }
-
-    // Check for RPC error format with data.code
-    const rpcErrorCode = getHardwareWalletErrorCode(error);
-    return (
-      rpcErrorCode === ErrorCode.UserRejected ||
-      rpcErrorCode === ErrorCode.UserCancelled
     );
   }, []);
 
@@ -158,7 +149,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     (error: unknown, skipFilters = false) => {
       // For user rejections/cancellations: dismiss any open modal and close the popup
       // unless explicitly forced (manual calls can show these errors)
-      if (isUserRejection(error) && !skipFilters) {
+      if (!skipFilters && isUserRejection(error)) {
         if (isModalOpenRef.current) {
           isModalOpenRef.current = false;
           isManuallyShownRef.current = false;
