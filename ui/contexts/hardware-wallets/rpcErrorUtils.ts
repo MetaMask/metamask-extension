@@ -16,6 +16,7 @@ import {
   string,
   number,
   literal,
+  enums,
   optional,
   record,
   unknown,
@@ -79,6 +80,24 @@ const SerializedHardwareWalletErrorCauseStruct = refine(
   },
 );
 
+const HardwareWalletSeverityStruct = enums([
+  Severity.Info,
+  Severity.Err,
+  Severity.Warning,
+  Severity.Critical,
+]);
+
+const HardwareWalletCategoryStruct = enums([
+  Category.Success,
+  Category.Authentication,
+  Category.Protocol,
+  Category.Connection,
+  Category.UserAction,
+  Category.DeviceState,
+  Category.Unknown,
+  Category.Configuration,
+]);
+
 /**
  * Struct for a serialized RPC error containing a HardwareWalletError.
  * The error is wrapped in data.cause after crossing the RPC boundary.
@@ -106,8 +125,8 @@ const SerializedRpcHardwareWalletErrorStruct = superstructType({
  */
 const HardwareWalletErrorDataStruct = superstructType({
   code: union([string(), number()]),
-  severity: optional(string()),
-  category: optional(string()),
+  severity: optional(HardwareWalletSeverityStruct),
+  category: optional(HardwareWalletCategoryStruct),
   userMessage: optional(string()),
   metadata: optional(record(string(), unknown())),
 });
