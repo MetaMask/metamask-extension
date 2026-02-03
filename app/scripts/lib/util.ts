@@ -23,7 +23,10 @@ import {
   PLATFORM_COCCOC,
   PLATFORM_EDGE,
   PLATFORM_FIREFOX,
+  PLATFORM_KIWI,
+  PLATFORM_LEMUR,
   PLATFORM_MAXTHON,
+  PLATFORM_MISES,
   PLATFORM_OPERA,
   PLATFORM_OTHER,
   PLATFORM_PUFFIN,
@@ -143,6 +146,15 @@ const getPlatform = (): Platform => {
   }
   if (userAgent.includes('QQBrowser/') || userAgent.includes('MQQBrowser/')) {
     return PLATFORM_QQBROWSER;
+  }
+  if (userAgent.includes('Kiwi')) {
+    return PLATFORM_KIWI;
+  }
+  if (userAgent.includes('Lemur')) {
+    return PLATFORM_LEMUR;
+  }
+  if (userAgent.includes('Mises')) {
+    return PLATFORM_MISES;
   }
   if (userAgent.includes('Chromium/')) {
     return PLATFORM_CHROMIUM;

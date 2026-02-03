@@ -26,7 +26,10 @@ export const PLATFORM_CHROMIUM = 'Chromium';
 export const PLATFORM_COCCOC = 'CocCoc';
 export const PLATFORM_EDGE = 'Edge';
 export const PLATFORM_FIREFOX = 'Firefox';
+export const PLATFORM_KIWI = 'Kiwi';
+export const PLATFORM_LEMUR = 'Lemur';
 export const PLATFORM_MAXTHON = 'Maxthon';
+export const PLATFORM_MISES = 'Mises';
 export const PLATFORM_OPERA = 'Opera';
 export const PLATFORM_OTHER = 'Other';
 export const PLATFORM_PUFFIN = 'Puffin';
@@ -48,7 +51,10 @@ export const PLATFORM = {
   COCCOC: PLATFORM_COCCOC,
   EDGE: PLATFORM_EDGE,
   FIREFOX: PLATFORM_FIREFOX,
+  KIWI: PLATFORM_KIWI,
+  LEMUR: PLATFORM_LEMUR,
   MAXTHON: PLATFORM_MAXTHON,
+  MISES: PLATFORM_MISES,
   OPERA: PLATFORM_OPERA,
   OTHER: PLATFORM_OTHER,
   PUFFIN: PLATFORM_PUFFIN,

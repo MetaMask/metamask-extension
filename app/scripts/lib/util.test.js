@@ -12,6 +12,9 @@ import {
   PLATFORM_COCCOC,
   PLATFORM_EDGE,
   PLATFORM_FIREFOX,
+  PLATFORM_KIWI,
+  PLATFORM_LEMUR,
+  PLATFORM_MISES,
   PLATFORM_OPERA,
   PLATFORM_OTHER,
   PLATFORM_QQBROWSER,
@@ -300,6 +303,33 @@ describe('app utils', () => {
           'Mozilla/5.0 (Linux; U; Android 13; zh-cn) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/109.0.5414.86 MQQBrowser/16.2 Mobile Safari/537.36',
         );
       expect(getPlatform()).toStrictEqual(PLATFORM_QQBROWSER);
+    });
+
+    it('detects Kiwi Browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36 Kiwi Chrome/116.0.0.0',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_KIWI);
+    });
+
+    it('detects Lemur Browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; Android 12; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36 Lemur',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_LEMUR);
+    });
+
+    it('detects Mises Browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Mobile Safari/537.36 Mises/1.0.0',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_MISES);
     });
 
     it('returns Other for unknown browsers without Chrome identifier', () => {
