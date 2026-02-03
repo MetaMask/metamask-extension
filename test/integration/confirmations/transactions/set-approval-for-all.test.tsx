@@ -1,8 +1,7 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, ERC721 } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
-import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -133,7 +132,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
       getTokenStandardAndDetails: {
-        standard: TokenStandard.ERC721,
+        standard: ERC721,
       },
     });
     const INCREASE_SET_APPROVAL_FOR_ALL_HEX_SIG = '0xa22cb465';

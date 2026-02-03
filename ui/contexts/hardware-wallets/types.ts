@@ -7,6 +7,7 @@ export enum HardwareWalletType {
   OneKey = 'oneKey',
   Lattice = 'lattice',
   Qr = 'qr',
+  Unknown = 'unknown', // use for connection errors when wallet type is unknown
 }
 
 /**
@@ -53,8 +54,8 @@ export type HardwareWalletConnectionState =
   | { status: ConnectionStatus.Connected }
   | { status: ConnectionStatus.Ready }
   | { status: ConnectionStatus.AwaitingConfirmation }
-  | { status: ConnectionStatus.AwaitingApp; reason: string; appName?: string }
-  | { status: ConnectionStatus.ErrorState; reason: string; error: Error };
+  | { status: ConnectionStatus.AwaitingApp; appName?: string }
+  | { status: ConnectionStatus.ErrorState; error: Error };
 
 /**
  * Device event payload

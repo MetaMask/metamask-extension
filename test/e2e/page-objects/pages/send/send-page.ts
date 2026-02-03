@@ -70,6 +70,17 @@ class SendPage {
     await this.driver.findElement(this.invalidAddressError);
   }
 
+  async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.networkPicker);
+  }
+
+  async checkSendFormIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.amountInput,
+      this.inputRecipient,
+    ]);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     console.log('Checking if send page is loaded');
     try {
