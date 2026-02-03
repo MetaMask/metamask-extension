@@ -34,6 +34,21 @@ function getParseOptions(resourcePath: string): ParseOptions {
 }
 
 /**
+ * Type guard to check if a value is an AST Node.
+ *
+ * @param value - The value to check.
+ * @returns True if the value is an AST Node.
+ */
+function isNode(value: unknown): value is Node {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    'type' in value &&
+    typeof value.type === 'string'
+  );
+}
+
+/**
  * Checks if an expression is the `process.env` MemberExpression.
  *
  * @param expr - The expression to check.
@@ -151,12 +166,12 @@ function walkAst(node: Node, envVars: Set<string>): void {
   for (const value of Object.values(node)) {
     if (Array.isArray(value)) {
       for (const item of value) {
-        if (item && typeof item === 'object') {
-          walkAst(item as Node, envVars);
+        if (isNode(item)) {
+          walkAst(item, envVars);
         }
       }
-    } else if (value && typeof value === 'object') {
-      walkAst(value as Node, envVars);
+    } else if (isNode(value)) {
+      walkAst(value, envVars);
     }
   }
 }
