@@ -67,7 +67,7 @@ export default function ImportSRP({
       navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
   }, [currentKeyring, navigate, isWalletResetInProgress]);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

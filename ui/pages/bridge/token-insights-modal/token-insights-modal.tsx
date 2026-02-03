@@ -77,7 +77,7 @@ export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
   token,
 }) => {
   const t = useI18nContext();
-  const trackEvent = React.useContext(MetaMetricsContext);
+  const { trackEvent } = React.useContext(MetaMetricsContext);
   const dialogRef = React.useRef<HTMLElement | null>(null);
   const hasTrackedOpen = React.useRef(false);
 
