@@ -972,14 +972,25 @@ export class AppStateController extends BaseController<
    * Replaces slides in state with new slides. If a slide with the same id
    * already exists, it will be merged with the new slide.
    *
+   * This method also filters out any deprecated slides (non-Contentful slides)
+   * that may exist in the persisted state to prevent i18n errors.
+   *
    * @param slides - Array of new slides
    */
   updateSlides(slides: CarouselSlide[]): void {
     this.update((state) => {
       const currentSlides = state.slides || [];
 
+      // Filter out deprecated slides that don't have Contentful IDs
+      // This prevents old slides with missing i18n keys from causing errors
+      const validCurrentSlides = currentSlides.filter(
+        (slide) =>
+          slide.id.startsWith('contentful-') ||
+          slides.some((s) => s.id === slide.id),
+      );
+
       const newSlides = slides.map((slide) => {
-        const existingSlide = currentSlides.find((s) => s.id === slide.id);
+        const existingSlide = validCurrentSlides.find((s) => s.id === slide.id);
         if (existingSlide) {
           return {
             ...existingSlide,
