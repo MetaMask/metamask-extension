@@ -92,7 +92,9 @@ export const useSendActions = () => {
         // Success - navigate to activity tab
         navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } catch (error) {
-        // intentional empty catch
+        // User rejected or other error - clear any error state and navigate back
+        updateSubmitError(undefined);
+        navigate(-1);
       }
     }
   }, [
