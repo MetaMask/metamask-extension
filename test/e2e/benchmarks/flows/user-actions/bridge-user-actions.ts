@@ -15,6 +15,7 @@ import {
 } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
 import type { BenchmarkRunResult } from '../../utils/types';
+import { runUserActionBenchmark } from '../../utils/runner';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = 'standard';
@@ -39,15 +40,15 @@ async function mockTokensEthereum(mockServer: Mockttp) {
 }
 
 export async function run(): Promise<BenchmarkRunResult> {
-  let loadPage: number = 0;
-  let loadAssetPicker: number = 0;
-  let searchToken: number = 0;
+  return runUserActionBenchmark(async () => {
+    let loadPage: number = 0;
+    let loadAssetPicker: number = 0;
+    let searchToken: number = 0;
 
-  const fixtureBuilder = new FixtureBuilder()
-    .withNetworkControllerOnMainnet()
-    .withEnabledNetworks({ eip155: { '0x1': true } });
+    const fixtureBuilder = new FixtureBuilder()
+      .withNetworkControllerOnMainnet()
+      .withEnabledNetworks({ eip155: { '0x1': true } });
 
-  try {
     await withFixtures(
       {
         fixtures: fixtureBuilder.build(),
@@ -95,23 +96,10 @@ export async function run(): Promise<BenchmarkRunResult> {
       },
     );
 
-    return {
-      timers: [
-        { id: 'bridge_load_page', duration: loadPage },
-        { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
-        { id: 'bridge_search_token', duration: searchToken },
-      ],
-      success: true,
-    };
-  } catch (error) {
-    return {
-      timers: [
-        { id: 'bridge_load_page', duration: loadPage },
-        { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
-        { id: 'bridge_search_token', duration: searchToken },
-      ],
-      success: false,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
+    return [
+      { id: 'bridge_load_page', duration: loadPage },
+      { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
+      { id: 'bridge_search_token', duration: searchToken },
+    ];
+  });
 }

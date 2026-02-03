@@ -1,5 +1,12 @@
+import get from 'lodash/get';
 import { retry } from '../../../../development/lib/retry';
+import { ALL_METRICS, DEFAULT_NUM_BROWSER_LOADS, DEFAULT_NUM_PAGE_LOADS } from './constants';
 import {
+  calcMaxResult,
+  calcMeanResult,
+  calcMinResult,
+  calcPResult,
+  calcStdDevResult,
   calculateTimerStatistics,
   checkExclusionRate,
   MAX_EXCLUSION_RATE,
@@ -7,9 +14,12 @@ import {
 } from './statistics';
 import type {
   BenchmarkFunction,
+  BenchmarkResults,
   BenchmarkRunResult,
   BenchmarkSummary,
+  Metrics,
   ThresholdConfig,
+  TimerResult,
   TimerStatistics,
 } from './types';
 import { performanceTracker } from './performance-tracker';
@@ -85,7 +95,6 @@ export async function runBenchmarkWithIterations(
     }
   }
 
-  // Calculate statistics for each timer
   const timerStats: TimerStatistics[] = [];
   let excludedDueToQuality = 0;
 
@@ -140,25 +149,6 @@ export async function runBenchmarkWithIterations(
   };
 }
 
-/**
- * Setup function that configures automatic performance tracking for test suites.
- * Call this at the beginning of your describe block.
- *
- * Usage:
- * ```typescript
- * describe('My Performance Test', function () {
- *   setupPerformanceReporting();
- *
- *   it('measures something', async function () {
- *     const timer = new TimerHelper('myTimer'); // Thresholds configured in utils/constants.ts
- *     await timer.measure(async () => {
- *       // actions to measure
- *     });
- *     performanceTracker.addTimer(timer);
- *   });
- * });
- * ```
- */
 export function setupPerformanceReporting(): void {
   // Reset the tracker before each test
   beforeEach(function () {
@@ -183,4 +173,89 @@ export function setupPerformanceReporting(): void {
       );
     }
   });
+}
+
+export type MeasurePageResult = {
+  metrics: Metrics[];
+  title: string;
+  persona: string;
+};
+
+export async function runPageLoadBenchmark(
+  measurePageFn: (
+    pageName: string,
+    pageLoads: number,
+  ) => Promise<MeasurePageResult>,
+  options: {
+    browserLoads?: number;
+    pageLoads?: number;
+    retries?: number;
+  },
+): Promise<BenchmarkResults> {
+  const {
+    browserLoads = DEFAULT_NUM_BROWSER_LOADS,
+    pageLoads = DEFAULT_NUM_PAGE_LOADS,
+    retries = 0,
+  } = options;
+
+  const pageName = 'home';
+  let runResults: Metrics[] = [];
+  let testTitle = '';
+  let resultPersona = '';
+
+  for (let i = 0; i < browserLoads; i += 1) {
+    console.log('Starting browser load', i + 1, 'of', browserLoads);
+    const { metrics, title, persona } = await retry({ retries }, () =>
+      measurePageFn(pageName, pageLoads),
+    );
+    runResults = runResults.concat(metrics);
+    testTitle = title;
+    resultPersona = persona;
+  }
+
+  if (runResults.some((result) => result.navigation.length > 1)) {
+    throw new Error(`Multiple navigations not supported`);
+  } else if (
+    runResults.some((result) => result.navigation[0].type !== 'navigate')
+  ) {
+    throw new Error(
+      `Navigation type ${
+        runResults.find((result) => result.navigation[0].type !== 'navigate')
+          ?.navigation[0].type
+      } not supported`,
+    );
+  }
+
+  const result: Record<string, number[]> = {};
+  for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
+    result[key] = runResults
+      .map((m) => get(m, tracePath) as number)
+      .sort((a, b) => a - b);
+  }
+
+  return {
+    testTitle,
+    persona: resultPersona,
+    mean: calcMeanResult(result),
+    min: calcMinResult(result),
+    max: calcMaxResult(result),
+    stdDev: calcStdDevResult(result),
+    p75: calcPResult(result, 75),
+    p95: calcPResult(result, 95),
+  };
+}
+
+export async function runUserActionBenchmark(
+  measureFn: () => Promise<TimerResult[]>,
+): Promise<BenchmarkRunResult> {
+  try {
+    const timers = await measureFn();
+    return { timers, success: true };
+  } catch (error) {
+    return {
+      timers: [],
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
 }

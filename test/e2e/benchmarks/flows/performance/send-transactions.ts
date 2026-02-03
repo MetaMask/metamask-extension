@@ -72,7 +72,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         const sendPage = new SendPage(driver);
         await timerAssetPicker.measure(async () => {
           await sendPage.selectToken(
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqsZKvdp',
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
             'SOL',
           );
           await sendPage.checkSendFormIsLoaded();

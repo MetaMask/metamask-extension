@@ -9,14 +9,15 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
 import type { BenchmarkRunResult } from '../../utils/types';
+import { runUserActionBenchmark } from '../../utils/runner';
 
 export const testTitle = 'benchmark-user-actions-confirm-tx';
 export const persona = 'standard';
 
 export async function run(): Promise<BenchmarkRunResult> {
-  let loadingTimes: number = 0;
+  return runUserActionBenchmark(async () => {
+    let loadingTimes: number = 0;
 
-  try {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -53,15 +54,6 @@ export async function run(): Promise<BenchmarkRunResult> {
       },
     );
 
-    return {
-      timers: [{ id: 'confirm_tx', duration: loadingTimes }],
-      success: true,
-    };
-  } catch (error) {
-    return {
-      timers: [{ id: 'confirm_tx', duration: loadingTimes }],
-      success: false,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
+    return [{ id: 'confirm_tx', duration: loadingTimes }];
+  });
 }

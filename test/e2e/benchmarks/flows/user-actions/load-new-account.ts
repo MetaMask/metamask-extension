@@ -10,14 +10,15 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { Driver } from '../../../webdriver/driver';
 import type { BenchmarkRunResult } from '../../utils/types';
+import { runUserActionBenchmark } from '../../utils/runner';
 
 export const testTitle = 'benchmark-user-actions-load-new-account';
 export const persona = 'standard';
 
 export async function run(): Promise<BenchmarkRunResult> {
-  let loadingTimes: number = 0;
+  return runUserActionBenchmark(async () => {
+    let loadingTimes: number = 0;
 
-  try {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -43,15 +44,6 @@ export async function run(): Promise<BenchmarkRunResult> {
       },
     );
 
-    return {
-      timers: [{ id: 'load_new_account', duration: loadingTimes }],
-      success: true,
-    };
-  } catch (error) {
-    return {
-      timers: [{ id: 'load_new_account', duration: loadingTimes }],
-      success: false,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
+    return [{ id: 'load_new_account', duration: loadingTimes }];
+  });
 }

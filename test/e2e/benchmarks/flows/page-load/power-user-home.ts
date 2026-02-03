@@ -3,34 +3,21 @@
  * Measures home page load time with power user state (30 accounts, transactions, etc.)
  */
 
-import get from 'lodash/get';
 import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
-import { retry } from '../../../../../development/lib/retry';
 import { withFixtures } from '../../../helpers';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
 import type { BenchmarkResults, Metrics } from '../../utils/types';
-import {
-  ALL_METRICS,
-  DEFAULT_NUM_BROWSER_LOADS,
-  DEFAULT_NUM_PAGE_LOADS,
-  WITH_STATE_POWER_USER,
-} from '../../utils/constants';
-import {
-  calcMaxResult,
-  calcMeanResult,
-  calcMinResult,
-  calcPResult,
-  calcStdDevResult,
-} from '../../utils/statistics';
+import { WITH_STATE_POWER_USER } from '../../utils/constants';
+import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
 
 async function measurePagePowerUser(
   pageName: string,
   pageLoads: number,
-): Promise<{ metrics: Metrics[]; title: string; persona: string }> {
+): Promise<MeasurePageResult> {
   const metrics: Metrics[] = [];
   const title = 'measurePagePowerUser';
   const persona = 'powerUser';
@@ -90,55 +77,5 @@ export async function run(options: {
   pageLoads?: number;
   retries?: number;
 }): Promise<BenchmarkResults> {
-  const {
-    browserLoads = DEFAULT_NUM_BROWSER_LOADS,
-    pageLoads = DEFAULT_NUM_PAGE_LOADS,
-    retries = 0,
-  } = options;
-
-  const pageName = 'home';
-  let runResults: Metrics[] = [];
-  let testTitle = '';
-  let resultPersona = '';
-
-  for (let i = 0; i < browserLoads; i += 1) {
-    console.log('Starting browser load', i + 1, 'of', browserLoads);
-    const { metrics, title, persona } = await retry({ retries }, () =>
-      measurePagePowerUser(pageName, pageLoads),
-    );
-    runResults = runResults.concat(metrics);
-    testTitle = title;
-    resultPersona = persona;
-  }
-
-  if (runResults.some((result) => result.navigation.length > 1)) {
-    throw new Error(`Multiple navigations not supported`);
-  } else if (
-    runResults.some((result) => result.navigation[0].type !== 'navigate')
-  ) {
-    throw new Error(
-      `Navigation type ${
-        runResults.find((result) => result.navigation[0].type !== 'navigate')
-          ?.navigation[0].type
-      } not supported`,
-    );
-  }
-
-  const result: Record<string, number[]> = {};
-  for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
-    result[key] = runResults
-      .map((m) => get(m, tracePath) as number)
-      .sort((a, b) => a - b);
-  }
-
-  return {
-    testTitle,
-    persona: resultPersona,
-    mean: calcMeanResult(result),
-    min: calcMinResult(result),
-    max: calcMaxResult(result),
-    stdDev: calcStdDevResult(result),
-    p75: calcPResult(result, 75),
-    p95: calcPResult(result, 95),
-  };
+  return runPageLoadBenchmark(measurePagePowerUser, options);
 }
