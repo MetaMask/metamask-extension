@@ -232,6 +232,9 @@ describe('Ledger Offscreen', () => {
       });
 
       it('returns error when no device is permitted', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
         mockOpenConnected.mockResolvedValue(null);
         mockGetDevices.mockResolvedValue([]);
 
@@ -243,6 +246,7 @@ describe('Ledger Offscreen', () => {
             message: expect.stringContaining('No permitted Ledger device'),
           }),
         });
+        consoleSpy.mockRestore();
       });
     });
 
@@ -267,6 +271,10 @@ describe('Ledger Offscreen', () => {
       });
 
       it('returns error when hdPath is missing', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
         const response = await sendAction(LedgerAction.getPublicKey, {});
 
         expect(response.success).toBe(false);
@@ -275,6 +283,7 @@ describe('Ledger Offscreen', () => {
             message: 'Missing hdPath parameter',
           }),
         });
+        consoleSpy.mockRestore();
       });
     });
 
@@ -348,8 +357,46 @@ describe('Ledger Offscreen', () => {
       });
     });
 
+    describe('transport cleanup', () => {
+      const flushPromises = () =>
+        new Promise((resolve) => setTimeout(resolve, 0));
+
+      it('closes transport after a successful action', async () => {
+        mockGetAddress.mockResolvedValue({
+          publicKey: '04abcd1234',
+          address: '0x1234567890abcdef',
+          chainCode: 'chaincode123',
+        });
+
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/0'/0/0",
+        });
+        await flushPromises();
+
+        expect(mockTransportClose).toHaveBeenCalled();
+      });
+
+      it('closes transport after a failed action', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+        mockGetAddress.mockRejectedValue(new Error('Device error'));
+
+        await sendAction(LedgerAction.getPublicKey, {
+          hdPath: "m/44'/60'/0'/0/0",
+        });
+        await flushPromises();
+
+        expect(mockTransportClose).toHaveBeenCalled();
+        consoleSpy.mockRestore();
+      });
+    });
+
     describe('error handling', () => {
       it('preserves statusCode for TransportStatusError', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
         const transportError = new Error('Locked device');
         (transportError as Error & { statusCode: number }).statusCode = 0x6b0c;
         mockGetAddress.mockRejectedValue(transportError);
@@ -366,9 +413,14 @@ describe('Ledger Offscreen', () => {
             statusCode: 0x6b0c,
           },
         });
+        consoleSpy.mockRestore();
       });
 
       it('returns error for unknown action', async () => {
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation(() => undefined);
+
         const response = await sendAction('unknown-action' as LedgerAction);
 
         expect(response.success).toBe(false);
@@ -377,6 +429,7 @@ describe('Ledger Offscreen', () => {
             message: expect.stringContaining('Unknown Ledger action'),
           }),
         });
+        consoleSpy.mockRestore();
       });
     });
   });

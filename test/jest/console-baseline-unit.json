@@ -1,11 +1,5 @@
 {
   "files": {
-    "app/offscreen/ledger.test.ts": {
-      "error: Ledger action ledger-make-app failed: Error:": 1,
-      "error: Ledger action ledger-unlock failed: Error:": 2,
-      "error: Ledger action unknown-action failed: Error:": 1,
-      "error: Ledger makeApp error: Error: No": 1
-    },
     "app/scripts/controller-init/core-backend/backend-websocket-service-init.test.ts": {
       "MetaMask: Backend WebSocket warnings": 1
     },

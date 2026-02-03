@@ -344,6 +344,9 @@ function setupMessageListener(): void {
               error: serializeError(error),
             },
           });
+        })
+        .finally(() => {
+          closeTransport();
         });
 
       // Return true to indicate we will send response asynchronously
