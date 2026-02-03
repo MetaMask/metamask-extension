@@ -140,22 +140,20 @@ function sortGatorPermissionsByStartTime<
  */
 export const getGatorPermissionsMap = createSelector(
   [getMetamask],
-  (metamask) =>
-    {
-      const rawDeserialized = deserializeGatorPermissionsMap(metamask.gatorPermissionsMapSerialized);
+  (metamask) => {
+    const rawDeserialized = deserializeGatorPermissionsMap(
+      metamask.gatorPermissionsMapSerialized,
+    );
 
-      rawDeserialized['erc20-token-revocation'] = undefined;
+    // Ensure all permission-type keys are present in the deserialized map
+    GATOR_PERMISSIONS_MAP_KEYS.forEach((permissionType) => {
+      if (rawDeserialized[permissionType] === undefined) {
+        rawDeserialized[permissionType] = {};
+      }
+    });
 
-      // Ensure all permission-type keys are present in the deserialized map
-      GATOR_PERMISSIONS_MAP_KEYS.forEach(permissionType => {
-        if (rawDeserialized[permissionType] === undefined) {
-          rawDeserialized[permissionType] = {};
-        }
-      });
-
-
-      return rawDeserialized;
-    }
+    return rawDeserialized;
+  },
 );
 
 /**

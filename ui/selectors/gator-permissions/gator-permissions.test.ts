@@ -272,9 +272,7 @@ describe('Gator Permissions Selectors', () => {
       };
       const result = getGatorPermissionsMap(stateWithPartial);
       expect(result['native-token-stream']).toBeDefined();
-      expect(result['native-token-stream'][MOCK_CHAIN_ID_MAINNET]).toEqual(
-        [],
-      );
+      expect(result['native-token-stream'][MOCK_CHAIN_ID_MAINNET]).toEqual([]);
       expect(result['erc20-token-stream']).toEqual({});
       expect(result['native-token-periodic']).toEqual({});
       expect(result['erc20-token-periodic']).toEqual({});
