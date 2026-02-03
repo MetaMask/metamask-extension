@@ -131,7 +131,7 @@ describe('SnapUIForm', () => {
               label: 'Checkbox',
               children: Checkbox({ name: 'checkbox' }),
             }),
-            Button({ type: 'submit', name: 'submit', children: 'Submit' }),
+            Button({ type: 'submit', children: 'Submit' }),
           ],
         }),
       }),
@@ -213,7 +213,7 @@ describe('SnapUIForm', () => {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              event: { name: 'submit', type: 'ButtonClickEvent' },
+              event: { type: 'ButtonClickEvent' },
               id: MOCK_INTERFACE_ID,
             },
           },

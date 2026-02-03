@@ -105,7 +105,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
           event: {
             type: event,
             ...(name === undefined ? {} : { name }),
-            ...(value === undefined ? {} : { value }),
+            ...(value === undefined || event === UserInputEventType.ButtonClickEvent ? {} : { value }),
           },
           id: interfaceId,
         },

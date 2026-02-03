@@ -116,7 +116,6 @@ exports[`SnapUIForm will render with fields 1`] = `
           </div>
           <button
             class="mm-box mm-text snap-ui-renderer__button mm-text--body-md mm-text--font-weight-medium mm-box--color-info-default"
-            id="submit"
             type="submit"
           >
             Submit
