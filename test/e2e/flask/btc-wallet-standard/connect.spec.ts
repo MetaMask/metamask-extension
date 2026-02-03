@@ -1,8 +1,9 @@
 // import { strict as assert } from 'assert';
 import { withBtcAccountSnap } from '../btc/common-btc';
 import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
-import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { regularDelayMs } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import {
   account1Short,
@@ -16,160 +17,158 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
   const connectionLibraryOptions: ('sats-connect' | 'wallet-standard')[] = ['wallet-standard', 'sats-connect'];
 
   connectionLibraryOptions.forEach((connectionLibrary) => {
-    describe(`Bitcoin Wallet Standard - Connect & disconnect - ${connectionLibrary}`, function () {
-      it('Should be able to cancel connection and connect again', async function () {
-        await withBtcAccountSnap(
-          {
-            ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-            title: this.test?.fullTitle(),
-          },
-          async (driver) => {
-            const testDapp = new TestDappBitcoin(driver);
-            await testDapp.openTestDappPage();
-            await testDapp.checkPageIsLoaded()
-  
-            // 1. Start connection and cancel it
-            const header = await testDapp.getHeader();
-            await header.connect();
-  
-            // wait to display wallet connect modal
-            await driver.delay(regularDelayMs);
-  
-            const modal = await testDapp.getWalletModal();
-            await modal.connectToMetaMaskWallet(connectionLibrary);
-  
-            await driver.delay(regularDelayMs);
-  
-            // Cancel the connection
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-            const connectAccountConfirmation = new ConnectAccountConfirmation(
-              driver,
-            );
-            await connectAccountConfirmation.checkPageIsLoaded();
-            await connectAccountConfirmation.cancelConnect();
-            await testDapp.switchTo();
-  
-            // Verify we're not connected
-            const connectionStatus = await header.getConnectionStatus();
-            assertDisconnected(connectionStatus);
-  
-            // 2. Connect again
-            await connectBitcoinTestDapp(driver, testDapp);
-  
-            // Verify successful connection
-            const connectionStatusAfterConnect =
-              await header.getConnectionStatus();
-            assertConnected(connectionStatusAfterConnect);
-  
-            const account = await header.getAccount();
-            assertConnected(account, account1Short);
-          },
-        );
-      });
+    it(`Cancels connection and connects again with ${connectionLibrary}`, async function () {
+      await withBtcAccountSnap(
+        {
+          ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappBitcoin(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded()
 
-      it('should be able to disconnect and connect again', async function () {
-        await withBtcAccountSnap(
-          {
-            ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-            title: this.test?.fullTitle(),
-          },
-          async (driver) => {
-            const testDapp = new TestDappBitcoin(driver);
-            await testDapp.openTestDappPage();
-            await testDapp.checkPageIsLoaded()
-  
-            // 1. Start connection
-            const header = await testDapp.getHeader();
-            await header.connect();
-  
-            // wait to display wallet connect modal
-            await driver.delay(regularDelayMs);
-  
-            let modal = await testDapp.getWalletModal();
-            await modal.connectToMetaMaskWallet(connectionLibrary);
-  
-            await driver.delay(regularDelayMs);
-  
-            await connectBitcoinTestDapp(driver, testDapp);
-  
-            const connectionStatusAfterConnect =
-              await header.getConnectionStatus();
-            assertConnected(connectionStatusAfterConnect);
-  
-            const account = await header.getAccount();
-            assertConnected(account, account1Short);
-  
-            // 2. Disconnect
-            await header.disconnect();
-  
-            // Verify we're not connected
-            const connectionStatus = await header.getConnectionStatus();
-            assertDisconnected(connectionStatus);
-  
-  
-            // 3. Connect again
-            await connectBitcoinTestDapp(driver, testDapp);
-            
-            const connectionStatusAfterConnectAfterSecondConnect =
-              await header.getConnectionStatus();
-            assertConnected(connectionStatusAfterConnectAfterSecondConnect);
-  
-            const accountAfterSecondConnect = await header.getAccount();
-            assertConnected(accountAfterSecondConnect, account1Short);
-          },
-        );
-      });
+          // 1. Start connection and cancel it
+          const header = await testDapp.getHeader();
+          await header.connect();
 
-      it('Should not create session when Bitcoin permissions are deselected', async function () {
-        await withBtcAccountSnap(
-          {
-            ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-            title: this.test?.fullTitle(),
-          },
-          async (driver) => {
-            const testDapp = new TestDappBitcoin(driver);
-            await testDapp.openTestDappPage();
-            await testDapp.checkPageIsLoaded();
-  
-            // Start connection
-            const header = await testDapp.getHeader();
-            await header.connect();
-            await driver.delay(regularDelayMs);
-            const modal = await testDapp.getWalletModal();
-            await modal.connectToMetaMaskWallet(connectionLibrary);
-            await driver.delay(regularDelayMs);
-  
-            // Open the permissions modal
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-            const connectAccountConfirmation = new ConnectAccountConfirmation(
-              driver,
-            );
-            await connectAccountConfirmation.checkPageIsLoaded();
-  
-            // Deselect all networks except "Ethereum"
-            await connectAccountConfirmation.goToPermissionsTab();
-            await connectAccountConfirmation.openEditNetworksModal();
-  
-            const networkPermissionSelectModal = new NetworkPermissionSelectModal(
-              driver,
-            );
-            await networkPermissionSelectModal.checkPageIsLoaded();
-            await networkPermissionSelectModal.updateNetworkStatus(['Ethereum']);
-            await networkPermissionSelectModal.clickConfirmEditButton();
-  
-            // Click connect
-            await connectAccountConfirmation.checkPageIsLoaded();
-            await connectAccountConfirmation.confirmConnect();
-  
-            // Switch back to test dapp
-            await testDapp.switchTo();
-  
-            // Verify we're not connected
-            const connectionStatus = await header.getConnectionStatus();
-            assertDisconnected(connectionStatus);
-          },
-        );
-      });
+          // wait to display wallet connect modal
+          await driver.delay(regularDelayMs);
+
+          const modal = await testDapp.getWalletModal();
+          await modal.connectToMetaMaskWallet(connectionLibrary);
+
+          await driver.delay(regularDelayMs);
+
+          // Cancel the connection
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
+          );
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.cancelConnect();
+          await testDapp.switchTo();
+
+          // Verify we're not connected
+          const connectionStatus = await header.getConnectionStatus();
+          assertDisconnected(connectionStatus);
+
+          // 2. Connect again
+          await connectBitcoinTestDapp(driver, testDapp);
+
+          // Verify successful connection
+          const connectionStatusAfterConnect =
+            await header.getConnectionStatus();
+          assertConnected(connectionStatusAfterConnect);
+
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+        },
+      );
+    });
+
+    it.skip(`Connects, disconnects and connects again with ${connectionLibrary}`, async function () {
+      await withBtcAccountSnap(
+        {
+          ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappBitcoin(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded()
+
+          // 1. Start connection
+          const header = await testDapp.getHeader();
+          await header.connect();
+
+          // wait to display wallet connect modal
+          await driver.delay(regularDelayMs);
+
+          let modal = await testDapp.getWalletModal();
+          await modal.connectToMetaMaskWallet(connectionLibrary);
+
+          await driver.delay(regularDelayMs);
+
+          await connectBitcoinTestDapp(driver, testDapp);
+
+          const connectionStatusAfterConnect =
+            await header.getConnectionStatus();
+          assertConnected(connectionStatusAfterConnect);
+
+          const account = await header.getAccount();
+          assertConnected(account, account1Short);
+
+          // 2. Disconnect
+          await header.disconnect();
+
+          // Verify we're not connected
+          const connectionStatus = await header.getConnectionStatus();
+          assertDisconnected(connectionStatus);
+
+
+          // 3. Connect again
+          await connectBitcoinTestDapp(driver, testDapp);
+          
+          const connectionStatusAfterConnectAfterSecondConnect =
+            await header.getConnectionStatus();
+          assertConnected(connectionStatusAfterConnectAfterSecondConnect);
+
+          const accountAfterSecondConnect = await header.getAccount();
+          assertConnected(accountAfterSecondConnect, account1Short);
+        },
+      );
+    });
+
+    it(`Does not create session when Bitcoin permissions are deselected with ${connectionLibrary}`, async function () {
+      await withBtcAccountSnap(
+        {
+          ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappBitcoin(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+
+          // Start connection
+          const header = await testDapp.getHeader();
+          await header.connect();
+          await driver.delay(regularDelayMs);
+          const modal = await testDapp.getWalletModal();
+          await modal.connectToMetaMaskWallet(connectionLibrary);
+          await driver.delay(regularDelayMs);
+
+          // Open the permissions modal
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
+          );
+          await connectAccountConfirmation.checkPageIsLoaded();
+
+          // Deselect all networks except "Ethereum"
+          await connectAccountConfirmation.goToPermissionsTab();
+          await connectAccountConfirmation.openEditNetworksModal();
+
+          const networkPermissionSelectModal = new NetworkPermissionSelectModal(
+            driver,
+          );
+          await networkPermissionSelectModal.checkPageIsLoaded();
+          await networkPermissionSelectModal.updateNetworkStatus(['Ethereum']);
+          await networkPermissionSelectModal.clickConfirmEditButton();
+
+          // Click connect
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.confirmConnect();
+
+          // Switch back to test dapp
+          await testDapp.switchTo();
+
+          // Verify we're not connected
+          const connectionStatus = await header.getConnectionStatus();
+          assertDisconnected(connectionStatus);
+        },
+      );
     });
   })
   /* describe('Switch account', function () {

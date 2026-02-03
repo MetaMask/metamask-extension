@@ -1,12 +1,13 @@
 import * as path from 'path';
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
-import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { largeDelayMs, regularDelayMs } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
 import { withBtcAccountSnap } from '../btc/common-btc';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { DEFAULT_BTC_ADDRESS } from '../../constants';
 

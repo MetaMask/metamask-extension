@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { withBtcAccountSnap } from '../btc/common-btc';
 import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 import {
   assertConnected,
   connectBitcoinTestDapp,
@@ -14,44 +14,42 @@ describe('Bitcoin Wallet Standard - Sign psbt - e2e tests', function () {
   const connectionLibraryOptions: ('sats-connect' | 'wallet-standard')[] = ['sats-connect', 'wallet-standard'];
 
   connectionLibraryOptions.forEach((connectionLibrary) => {
-    describe(`Bitcoin Wallet Standard - Sign psbt - ${connectionLibrary}`, function () {
-      it('Should sign a psbt', async function () {
-        await withBtcAccountSnap(
-          {
-            ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-            title: this.test?.fullTitle(),
-          },
-          async (driver) => {
-            const testDapp = new TestDappBitcoin(driver);
-            await testDapp.openTestDappPage();
-            await testDapp.checkPageIsLoaded()
-  
-            // 1. Connect
-            const header = await testDapp.getHeader();
-            await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
+    it(`Signs a psbt with ${connectionLibrary}`, async function () {
+      await withBtcAccountSnap(
+        {
+          ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
+          title: this.test?.fullTitle(),
+        },
+        async (driver) => {
+          const testDapp = new TestDappBitcoin(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded()
+
+          // 1. Connect
+          const header = await testDapp.getHeader();
+          await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
 
 
-            await testDapp.switchToMainnet();
-  
-            // Verify successful connection
-            const connectionStatusAfterConnect =
-              await header.getConnectionStatus();
-            assertConnected(connectionStatusAfterConnect);
-  
+          await testDapp.switchToMainnet();
 
-            // 2. Send transaction
-            const signPsbtTest = await testDapp.getSignPsbtTest()
-            await signPsbtTest.setPsbt(psbt);
-            await signPsbtTest.signPsbt();
+          // Verify successful connection
+          const connectionStatusAfterConnect =
+            await header.getConnectionStatus();
+          assertConnected(connectionStatusAfterConnect);
 
 
-              await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
-              const signedPsbtResult = await signPsbtTest.getSignedPsbt();
+          // 2. Send transaction
+          const signPsbtTest = await testDapp.getSignPsbtTest()
+          await signPsbtTest.setPsbt(psbt);
+          await signPsbtTest.signPsbt();
 
-              assert.strictEqual(signedPsbtResult, signedPsbt);
-          },
-        );
-      });
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
+            const signedPsbtResult = await signPsbtTest.getSignedPsbt();
+
+            assert.strictEqual(signedPsbtResult, signedPsbt);
+        },
+      );
     });
   })
 });
