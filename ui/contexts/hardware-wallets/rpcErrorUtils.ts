@@ -16,6 +16,7 @@ import {
   string,
   number,
   literal,
+  enums,
   optional,
   record,
   unknown,
@@ -30,6 +31,9 @@ import { createHardwareWalletError } from './errors';
 /**
  * Structs for serialized HardwareWalletError cause objects.
  * This supports both legacy and extended shapes across the RPC boundary.
+ *
+ * We use exact `object()` structs so legacy and extended remain mutually
+ * exclusive (extended includes extra fields that legacy does not accept).
  */
 const LegacySerializedHardwareWalletErrorCauseStruct = object({
   name: literal('HardwareWalletError'),
@@ -39,11 +43,14 @@ const LegacySerializedHardwareWalletErrorCauseStruct = object({
 });
 
 const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
+  // Extended fields added by HardwareWalletError serialization.
   category: string(),
   severity: string(),
   id: string(),
   userMessage: string(),
+  // Preserve original error time for ordering/logging across the RPC boundary.
   timestamp: string(),
+  // Legacy-compatible fields preserved for transport.
   name: literal('HardwareWalletError'),
   message: string(),
   stack: optional(string()),
@@ -51,12 +58,14 @@ const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
 });
 
 const SerializedHardwareWalletErrorCauseStruct = refine(
+  // Support both legacy and extended shapes, including the timestamp field.
   union([
     LegacySerializedHardwareWalletErrorCauseStruct,
     ExtendedSerializedHardwareWalletErrorCauseStruct,
   ]),
   'SerializedHardwareWalletErrorCauseStruct',
   (value) => {
+    // Validate against each shape explicitly for clarity and future changes.
     const matchesLegacy = is(
       value,
       LegacySerializedHardwareWalletErrorCauseStruct,
@@ -66,11 +75,14 @@ const SerializedHardwareWalletErrorCauseStruct = refine(
       ExtendedSerializedHardwareWalletErrorCauseStruct,
     );
 
-    return (
-      (matchesLegacy || matchesExtended) && matchesLegacy !== matchesExtended
-    );
+    // Accept either shape; superstruct `union` handles the structural check.
+    return matchesLegacy || matchesExtended;
   },
 );
+
+const HardwareWalletSeverityStruct = enums(Object.values(Severity));
+
+const HardwareWalletCategoryStruct = enums(Object.values(Category));
 
 /**
  * Struct for a serialized RPC error containing a HardwareWalletError.
@@ -99,8 +111,8 @@ const SerializedRpcHardwareWalletErrorStruct = superstructType({
  */
 const HardwareWalletErrorDataStruct = superstructType({
   code: union([string(), number()]),
-  severity: optional(string()),
-  category: optional(string()),
+  severity: optional(HardwareWalletSeverityStruct),
+  category: optional(HardwareWalletCategoryStruct),
   userMessage: optional(string()),
   metadata: optional(record(string(), unknown())),
 });
@@ -269,10 +281,7 @@ function convertDataToHardwareWalletError(
   stack?: string,
 ): HardwareWalletError {
   // Handle both string and numeric error codes
-  let errorCode =
-    typeof data.code === 'number'
-      ? mapNumericCodeToErrorCode(data.code)
-      : mapStringCodeToErrorCode(data.code);
+  let errorCode = mapCodeToErrorCode(data.code);
 
   if (
     errorCode === ErrorCode.Unknown &&
@@ -286,9 +295,13 @@ function convertDataToHardwareWalletError(
     }
   }
 
-  const hwError = new HardwareWalletError(
-    message || data.userMessage || 'Hardware wallet error',
-    {
+  // Preserve legacy behavior: empty RPC messages should fall back to userMessage.
+  const resolvedMessage =
+    message && message.length > 0
+      ? message
+      : data.userMessage ?? 'Hardware wallet error';
+
+  const hwError = new HardwareWalletError(resolvedMessage, {
       code: errorCode,
       severity: data.severity as Severity,
       category: data.category as Category,
@@ -473,7 +486,7 @@ export function toHardwareWalletError(
   if (isJsonRpcHardwareWalletError(error)) {
     const hwError = convertDataToHardwareWalletError(
       error.data,
-      error.message || '',
+      error.message ?? '',
       walletType,
       error.stack,
     );
@@ -504,5 +517,3 @@ export function toHardwareWalletError(
     fallbackMessage,
   );
 }
-
-// #endregion

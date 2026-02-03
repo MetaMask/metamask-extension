@@ -205,6 +205,12 @@ export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
 
+/**
+ * Used to prevent the popup from closing while a hardware wallet is signing.
+ *
+ * @param state - Redux state
+ * @returns true when hardware wallet signing is pending
+ */
 export function getPendingHardwareWalletSigning(state) {
   return state.appState.pendingHardwareWalletSigning;
 }

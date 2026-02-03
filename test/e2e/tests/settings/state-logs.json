@@ -67,6 +67,7 @@
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
     "openMetaMaskTabs": {},
+    "pendingHardwareWalletSigning": "boolean",
     "pendingTokens": {},
     "qrCodeData": "null",
     "removeNftMessage": "string",
@@ -540,6 +541,10 @@
     "featureFlags": {},
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
+    "firstTimeInfo": {
+      "date": "number",
+      "version": "string"
+    },
     "forgottenPassword": "boolean",
     "fragments": {},
     "fullScreenGasPollTokens": ["string"],
