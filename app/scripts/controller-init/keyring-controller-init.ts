@@ -26,7 +26,11 @@ import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
-import { getJwtSecretKey } from '../../../shared/modules/environment';
+import {
+  getJwtSecretKey,
+  getMfaRelayerUrl,
+  getMfaCloudSignerUrl,
+} from '../../../shared/modules/environment';
 import { ControllerInitFunction } from './types';
 import {
   KeyringControllerMessenger,
@@ -226,17 +230,19 @@ export const KeyringControllerInit: ControllerInitFunction<
 
   // MPC Keyring
   {
+    const cloudURL = getMfaCloudSignerUrl();
+    const relayerURL = getMfaRelayerUrl();
+    if (!cloudURL || !relayerURL) {
+      throw new Error('MFA cloud signer or relayer URL is not set');
+    }
     const dkls19Lib = Dkls19TssLib.loadSync();
     const jwtSecretKey = getJwtSecretKey();
     const opts: MPCKeyringOpts = {
       getRandomBytes: (length: number) =>
         crypto.getRandomValues(new Uint8Array(length)),
       dkls19Lib,
-      // cloudURL: 'https://mpc-service.dev-api.cx.metamask.io/api/v1',
-      // relayerURL:
-      //   'wss://mfa-relayer.dev-api.cx.metamask.io/connection/websocket',
-      cloudURL: 'http://localhost:3000/v1/mpc',
-      relayerURL: 'ws://localhost:8000/connection/websocket',
+      cloudURL,
+      relayerURL,
       initRole: 'initiator',
       webSocket: WebSocket,
       getToken: jwtSecretKey

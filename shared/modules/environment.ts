@@ -54,6 +54,24 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
   );
 };
 
+/**
+ * Returns the MFA Cloud Signer URL for MPC account operations.
+ *
+ * @returns The cloud signer URL, or undefined if not set.
+ */
+export const getMfaCloudSignerUrl = (): string | undefined => {
+  return process.env.MFA_CLOUD_SIGNER_URL ?? undefined;
+};
+
+/**
+ * Returns the MFA Relayer URL for MPC account operations.
+ *
+ * @returns The relayer URL, or undefined if not set.
+ */
+export const getMfaRelayerUrl = (): string | undefined => {
+  return process.env.MFA_RELAYER_URL ?? undefined;
+};
+
 export const getIsSidePanelFeatureEnabled = (): boolean => {
   // First check if build supports sidepanel
   if (process.env.IS_SIDEPANEL?.toString() !== 'true') {

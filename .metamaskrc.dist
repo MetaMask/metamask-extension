@@ -22,6 +22,10 @@ APPLE_CLIENT_ID=
 ; To encode your PEM key: cat key.pem | base64 | tr -d '\n'
 ;JWT_SECRET_KEY=
 
+; MFA/MPC account service URLs
+;MFA_CLOUD_SIGNER_URL=
+;MFA_RELAYER_URL=
+
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=

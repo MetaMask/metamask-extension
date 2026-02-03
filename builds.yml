@@ -471,3 +471,7 @@ env:
 
   # JWT secret key for MPC account authentication
   - JWT_SECRET_KEY: null
+
+  # MFA/MPC account services
+  - MFA_CLOUD_SIGNER_URL: null
+  - MFA_RELAYER_URL: null
