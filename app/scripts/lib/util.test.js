@@ -9,17 +9,23 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_CHROME,
+  PLATFORM_CHROMIUM,
   PLATFORM_COCCOC,
   PLATFORM_EDGE,
   PLATFORM_FIREFOX,
   PLATFORM_KIWI,
   PLATFORM_LEMUR,
+  PLATFORM_MAXTHON,
   PLATFORM_MISES,
   PLATFORM_OPERA,
   PLATFORM_OTHER,
+  PLATFORM_PUFFIN,
   PLATFORM_QQBROWSER,
   PLATFORM_SAMSUNG,
+  PLATFORM_SILK,
+  PLATFORM_UCBROWSER,
   PLATFORM_VIVALDI,
+  PLATFORM_WHALE,
   PLATFORM_YANDEX,
 } from '../../../shared/constants/app';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
@@ -276,6 +282,60 @@ describe('app utils', () => {
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 YaBrowser/23.7.0 Safari/537.36',
         );
       expect(getPlatform()).toStrictEqual(PLATFORM_YANDEX);
+    });
+
+    it('detects Whale browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Whale/3.21.192.18 Safari/537.36',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_WHALE);
+    });
+
+    it('detects Puffin browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36 Puffin/9.7.0.51573AP',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_PUFFIN);
+    });
+
+    it('detects Silk browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; Android 9; KFMAWI) AppleWebKit/537.36 (KHTML, like Gecko) Silk/112.4.2 like Chrome/112.0.5615.136 Safari/537.36',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_SILK);
+    });
+
+    it('detects UC Browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; U; Android 10; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.108 UCBrowser/13.4.0.1306 Mobile Safari/537.36',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_UCBROWSER);
+    });
+
+    it('detects Maxthon browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36 Maxthon/5.2.7.5000',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_MAXTHON);
+    });
+
+    it('detects Chromium browser', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chromium/116.0.5845.96 Safari/537.36',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_CHROMIUM);
     });
 
     it('detects Cốc Cốc browser', () => {
