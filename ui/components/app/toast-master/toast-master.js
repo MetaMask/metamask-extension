@@ -88,6 +88,7 @@ import {
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
+import { setShowCopyAddressToast } from '../../../ducks/app/app';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
@@ -110,7 +111,6 @@ import {
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
   setShowPasswordChangeToast,
-  setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
@@ -169,14 +169,20 @@ export function ToastMaster() {
     );
   }
 
-  // On other screens, render storage error toast and copy address toast
+  // On other screens, render storage error toast and copy address toast only if needed
   // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
-  return (
-    <ToastContainer>
-      {shouldShowStorageErrorToast && storageErrorToast}
-      <CopyAddressToast />
-    </ToastContainer>
-  );
+  const showCopyAddressToast = useSelector(selectShowCopyAddressToast);
+
+  if (shouldShowStorageErrorToast || showCopyAddressToast) {
+    return (
+      <ToastContainer>
+        {shouldShowStorageErrorToast && storageErrorToast}
+        <CopyAddressToast />
+      </ToastContainer>
+    );
+  }
+
+  return null;
 }
 
 function ConnectAccountToast() {
