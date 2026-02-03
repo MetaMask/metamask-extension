@@ -57,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed an issue where cancelling a Shield subscription payment on Stripe's checkout page was incorrectly treated as an error (#39513)
 - Purge profile service on resetting wallet (#39665)
 - Prevented Snap crashing when clicking buttons without names (#39727)
+- Fixed details of the gas fee token (#39706)
 
 ## [13.16.0]
 
