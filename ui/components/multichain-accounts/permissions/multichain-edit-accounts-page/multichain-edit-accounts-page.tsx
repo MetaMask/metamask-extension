@@ -170,7 +170,7 @@ export const MultichainEditAccountsPage: React.FC<
           {title ?? t('editAccounts')}
         </Header>
       )}
-      <ScrollContainer className="px-4 overflow-y-auto">
+      <ScrollContainer className="flex-1 px-4 overflow-y-auto">
         <MultichainAccountList
           wallets={walletsWithSupportedAccountGroups}
           selectedAccountGroups={selectedAccountGroups}
