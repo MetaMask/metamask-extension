@@ -1,4 +1,4 @@
-import { join, sep } from 'path';
+import { join, sep } from 'node:path';
 import {
   reactCompilerLoader,
   type ReactCompilerLoaderOption,

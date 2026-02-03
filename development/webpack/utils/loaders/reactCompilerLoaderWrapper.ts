@@ -2,8 +2,6 @@
  * Wrapper loader for react-compiler-webpack that stores compilation status
  * in module.buildMeta for collection by ReactCompilerPlugin.
  *
- * NOTE: Must be CommonJS (.cjs) - thread-loader workers need native require().
- *
  * LIMITATION: Stats collection via buildMeta does NOT work with thread-loader
  * because `this._module` is null in worker contexts. The webpack config
  * automatically disables thread-loader when --reactCompilerVerbose is used.
@@ -12,21 +10,12 @@
  */
 'use strict';
 
-/**
- * @typedef {'compiled' | 'skipped' | 'error' | 'unsupported'} ReactCompilerStatus
- *
- * @typedef {object} LoaderOptions
- * @property {boolean} [__verbose] - Enable verbose logging
- * @property {string} [target] - React compiler target
- * @property {string} [panicThreshold] - Error threshold
- *
- * @typedef {object} CompilerEvent
- * @property {'CompileSuccess' | 'CompileSkip' | 'CompileError'} kind
- * @property {{ options?: { category?: string }, category?: string }} [detail]
- *
- * @typedef {object} CompilerLogger
- * @property {(filename: string | null, event: CompilerEvent) => void} logEvent
- */
+let actualLoader;
+import(
+  'react-compiler-webpack/dist/react-compiler-loader.js'
+).then((module) => {
+  actualLoader = module.default;
+});
 
 const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
 
@@ -35,12 +24,11 @@ const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
  * @param {string} source
  * @param {string} [sourceMap]
  */
-module.exports = function reactCompilerLoaderWrapper(source, sourceMap) {
+export default function reactCompilerLoaderWrapper(source, sourceMap) {
   const options = this.getOptions();
   const { __verbose: verbose, ...loaderOptions } = options;
-  const buildMeta = /** @type {Record<string, unknown> | undefined} */ (
-    this._module?.buildMeta
-  );
+  const buildMeta =
+    /** @type {Record<string, unknown> | undefined} */ this._module?.buildMeta;
 
   /** @type {CompilerLogger | undefined} */
   const logger = buildMeta && {
@@ -71,13 +59,13 @@ module.exports = function reactCompilerLoaderWrapper(source, sourceMap) {
     },
   };
 
-  const actualLoader = require('react-compiler-webpack/dist/react-compiler-loader');
   const originalGetOptions = this.getOptions.bind(this);
-  this.getOptions = () => (logger ? { ...loaderOptions, logger } : loaderOptions);
+  this.getOptions = () =>
+    logger ? { ...loaderOptions, logger } : loaderOptions;
 
   try {
     return actualLoader.call(this, source, sourceMap);
   } finally {
     this.getOptions = originalGetOptions;
   }
-};
+}
