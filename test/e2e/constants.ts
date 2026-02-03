@@ -90,7 +90,7 @@ export const DAPP_PATH = Object.freeze({
   SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
 } as const);
 
-/* Default BTC address created using test SRP */
+/* Default BTC address created using test SRP (E2E_SRP) with BIP84 derivation */
 export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 
 /* Default BTC Account name */
