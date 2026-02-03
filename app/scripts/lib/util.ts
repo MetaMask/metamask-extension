@@ -22,6 +22,7 @@ import {
   PLATFORM_EDGE,
   PLATFORM_FIREFOX,
   PLATFORM_OPERA,
+  type Platform,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
@@ -32,6 +33,9 @@ import {
   getIsQuicknodeEndpointUrl,
   KNOWN_CUSTOM_ENDPOINT_URLS,
 } from '../../../shared/lib/network-utils';
+// Re-export install type utilities from dedicated module to avoid circular dependencies
+// and keep the sentry bundle lightweight
+export { getInstallType, initInstallType } from './install-type';
 
 /**
  * @see {@link getEnvironmentType}
@@ -71,7 +75,7 @@ const getEnvironmentType = (url = window.location.href) =>
  *
  * @returns the platform ENUM
  */
-const getPlatform = () => {
+const getPlatform = (): Platform => {
   const { navigator } = window;
   const { userAgent } = navigator;
 
