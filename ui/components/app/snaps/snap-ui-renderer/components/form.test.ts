@@ -253,7 +253,7 @@ describe('SnapUIForm', () => {
   });
 
   it('submits correctly when button has no name', () => {
-    const { container, getByRole } = renderInterface(
+    const { getByRole } = renderInterface(
       Box({
         children: Form({
           name: 'form',
