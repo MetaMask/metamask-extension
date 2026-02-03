@@ -1,5 +1,4 @@
 import { extname, join } from 'node:path/posix';
-import { readFileSync, existsSync } from 'node:fs';
 import {
   sources,
   ProgressPlugin,
@@ -246,7 +245,7 @@ export class ManifestPlugin<Z extends boolean> {
     );
     // Load the base manifest
     const basePath = join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf8'));
+    const baseManifest: Manifest = require(basePath);
 
     const buildTypeManifestPath = join(
       context,
@@ -256,11 +255,12 @@ export class ManifestPlugin<Z extends boolean> {
     );
     // Load the build type base manifest if it exists for the specific build type
     const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
-    const buildTypeBaseManifest: Partial<Manifest> = existsSync(
-      buildTypeBasePath,
-    )
-      ? JSON.parse(readFileSync(buildTypeBasePath, 'utf8'))
-      : {};
+    let buildTypeBaseManifest: Partial<Manifest> = {};
+    try {
+      buildTypeBaseManifest = require(buildTypeBasePath);
+    } catch {
+      // File doesn't exist or is invalid, use empty object
+    }
 
     const { transform } = this.options;
     const resources = this.options.web_accessible_resources;
@@ -285,24 +285,28 @@ export class ManifestPlugin<Z extends boolean> {
       }
 
       const browserManifestPath = join(manifestPath, `${browser}.json`);
-      if (existsSync(browserManifestPath)) {
+      try {
         // merge browser-specific overrides into the browser manifest
         manifest = {
           ...manifest,
           ...require(browserManifestPath),
         };
+      } catch {
+        // File doesn't exist or is invalid, skip merging
       }
 
       const buildTypeBrowserManifestPath = join(
         buildTypeManifestPath,
         `${browser}.json`,
       );
-      if (existsSync(buildTypeBrowserManifestPath)) {
+      try {
         // merge browser-specific build type overrides into the browser manifest
         manifest = {
           ...manifest,
           ...require(buildTypeBrowserManifestPath),
         };
+      } catch {
+        // File doesn't exist or is invalid, skip merging
       }
 
       // merge provided `web_accessible_resources`
