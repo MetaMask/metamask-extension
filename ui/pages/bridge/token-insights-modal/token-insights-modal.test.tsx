@@ -39,6 +39,12 @@ jest.mock('../../../helpers/utils/token-insights', () => ({
 }));
 
 const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 const mockT = (key: string) => key;
 
 const defaultToken = {
@@ -86,7 +92,7 @@ describe('TokenInsightsModal', () => {
     };
 
     return render(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <TokenInsightsModal {...defaultProps} />
       </MetaMetricsContext.Provider>,
     );
