@@ -67,6 +67,7 @@ describe('Restore vault Component', () => {
     const mockCreateNewVaultAndRestore = sinon.stub().resolves();
     const mockSetFirstTimeFlowType = sinon.stub().resolves();
     const mockUnMarkPasswordForgotten = sinon.stub().returns({ type: 'MOCK' });
+    const mockResetWallet = sinon.stub().resolves();
 
     const testStore = mockStore({
       metamask: { currentLocale: 'en' },
@@ -86,6 +87,12 @@ describe('Restore vault Component', () => {
     sinon.stub(actions, 'setFirstTimeFlowType').callsFake((type) => {
       return (_dispatch) => {
         mockSetFirstTimeFlowType(type);
+        return Promise.resolve();
+      };
+    });
+    sinon.stub(actions, 'resetWallet').callsFake((restoreOnly) => {
+      return (_dispatch) => {
+        mockResetWallet(restoreOnly);
         return Promise.resolve();
       };
     });
@@ -151,6 +158,8 @@ describe('Restore vault Component', () => {
 
     // Wait for the async action to be called
     await waitFor(() => {
+      const restoreOnly = true;
+      expect(mockResetWallet.calledWith(restoreOnly)).toBe(true);
       expect(mockCreateNewVaultAndRestore.calledOnce).toBe(true);
     });
 
@@ -162,6 +171,7 @@ describe('Restore vault Component', () => {
     actions.unMarkPasswordForgotten.restore();
     actions.createNewVaultAndRestore.restore();
     actions.setFirstTimeFlowType.restore();
+    actions.resetWallet.restore();
 
     // Verify navigation to default route - component uses navigate, not history.push
     expect(props.navigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
