@@ -145,7 +145,12 @@ describe('useSimulationMetrics', () => {
     ]) as any);
 
     useEffectMock.mockImplementation((fn) => fn());
-    useContextMock.mockReturnValue(trackEventMock);
+    useContextMock.mockReturnValue({
+      trackEvent: trackEventMock,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    });
     useDisplayNamesMock.mockReturnValue([DISPLAY_NAME_UNKNOWN_MOCK]);
     useLoadingTimeMock.mockReturnValue({
       loadingTime: LOADING_TIME_MOCK,
