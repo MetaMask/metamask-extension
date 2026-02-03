@@ -44,7 +44,6 @@ describe('StaticAssetsControllerInit', () => {
       getSupportedChains: expect.any(Function),
       getCacheExpirationTime: expect.any(Function),
       getTopX: expect.any(Function),
-      getOccurrenceFloor: expect.any(Function),
     });
   });
 });
