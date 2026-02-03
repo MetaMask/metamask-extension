@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import {
   Button,
   ButtonSize,
@@ -25,7 +26,11 @@ export const ToastContainer = ({
   children,
 }: {
   children: React.ReactNode | string;
-}) => <Box className="toasts-container">{children}</Box>;
+}) =>
+  ReactDOM.createPortal(
+    <Box className="toasts-container">{children}</Box>,
+    document.body,
+  );
 
 export const Toast = ({
   startAdornment,
