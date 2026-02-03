@@ -33,7 +33,6 @@ jest.setTimeout(30_000);
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -335,7 +334,7 @@ describe('Contract Interaction Confirmation', () => {
   });
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
-    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       createMockImplementation({ setPreference: {} }),
@@ -366,17 +365,16 @@ describe('Contract Interaction Confirmation', () => {
 
     await waitFor(() => {
       expect(
-        mockedBackgroundConnection.callBackgroundMethod,
+        mockedBackgroundConnection.submitRequestToBackground,
       ).toHaveBeenCalledWith(
         'setPreference',
         ['showConfirmationAdvancedDetails', true],
-        expect.anything(),
       );
     });
   });
 
   it('displays the advanced transaction details section', async () => {
-    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+    mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       createMockImplementation({ setPreference: {} }),
@@ -404,7 +402,7 @@ describe('Contract Interaction Confirmation', () => {
     await waitFor(() => {
       expect(
         mockedBackgroundConnection.submitRequestToBackground,
-      ).toHaveBeenCalledWith('getNextNonce', expect.anything());
+      ).toHaveBeenCalledWith('getNextNonce');
     });
 
     await waitFor(() => {
