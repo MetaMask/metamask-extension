@@ -1,3 +1,11 @@
+/**
+ * Send - Edit Transaction Tests
+ *
+ * Tests for editing a send transaction:
+ * - Going back from confirm page to edit amount and gas values
+ * - Legacy and EIP1559 gas editing
+ */
+
 import { strict as assert } from 'assert';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
@@ -15,8 +23,8 @@ const PREFERENCES_STATE_MOCK = {
   useNonceField: true,
 };
 
-describe('Editing Confirm Transaction', function () {
-  it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
+describe('Send - Edit Transaction', function () {
+  it('edits ETH value and legacy gas from confirm page', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -89,7 +97,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
+  it('edits ETH value and EIP1559 gas from confirm page', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

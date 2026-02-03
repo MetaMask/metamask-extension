@@ -55,9 +55,13 @@ describe('Send ERC20', function () {
         }) => {
           await loginWithBalanceValidation(driver, localNodes?.[0]);
 
-          const tokenAddress = await contractRegistry?.getContractAddress(smartContract);
+          const tokenAddress =
+            await contractRegistry?.getContractAddress(smartContract);
           const assetListPage = new AssetListPage(driver);
-          await assetListPage.importCustomTokenByChain('0x539', tokenAddress as string);
+          await assetListPage.importCustomTokenByChain(
+            '0x539',
+            tokenAddress as string,
+          );
 
           const homePage = new HomePage(driver);
           const sendPage = new SendPage(driver);
@@ -98,7 +102,8 @@ describe('Send ERC20', function () {
         }) => {
           await loginWithBalanceValidation(driver, localNodes?.[0]);
 
-          const contractAddress = await contractRegistry?.getContractAddress(smartContract);
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
           const activityListPage = new ActivityListPage(driver);
@@ -121,11 +126,14 @@ describe('Send ERC20', function () {
           await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          const tokenTransferConfirmation = new TokenTransferTransactionConfirmation(driver);
+          const tokenTransferConfirmation =
+            new TokenTransferTransactionConfirmation(driver);
           await tokenTransferConfirmation.checkDappInitiatedHeadingTitle();
           await tokenTransferConfirmation.clickFooterConfirmButton();
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
           await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
         },

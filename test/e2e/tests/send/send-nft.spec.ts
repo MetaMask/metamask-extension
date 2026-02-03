@@ -36,6 +36,7 @@ async function erc721Mocks(server: Mockttp) {
   return [
     await server
       .forGet('https://www.4byte.directory/api/v1/signatures/')
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       .withQuery({ hex_signature: '0x23b872dd' })
       .always()
       .thenCallback(() => ({
@@ -46,10 +47,14 @@ async function erc721Mocks(server: Mockttp) {
           previous: null,
           results: [
             {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               bytes_signature: '#rÝ',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               created_at: '2016-07-09T03:58:28.927638Z',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hex_signature: '0x23b872dd',
               id: 147,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               text_signature: 'transferFrom(address,address,uint256)',
             },
           ],
@@ -63,6 +68,7 @@ async function erc1155Mocks(server: Mockttp) {
   return [
     await server
       .forGet('https://www.4byte.directory/api/v1/signatures/')
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       .withQuery({ hex_signature: '0xf242432a' })
       .always()
       .thenCallback(() => ({
@@ -73,11 +79,16 @@ async function erc1155Mocks(server: Mockttp) {
           previous: null,
           results: [
             {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               bytes_signature: 'òBC*',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               created_at: '2018-08-29T20:16:41.650553Z',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hex_signature: '0xf242432a',
               id: 93843,
-              text_signature: 'safeTransferFrom(address,address,uint256,uint256,bytes)',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              text_signature:
+                'safeTransferFrom(address,address,uint256,uint256,bytes)',
             },
           ],
         },
@@ -107,7 +118,8 @@ describe('Send NFT', function () {
           }) => {
             await loginWithBalanceValidation(driver, localNodes?.[0]);
 
-            const contractAddress = await contractRegistry?.getContractAddress(smartContract);
+            const contractAddress =
+              await contractRegistry?.getContractAddress(smartContract);
             const testDapp = new TestDapp(driver);
             const homePage = new HomePage(driver);
             const activityListPage = new ActivityListPage(driver);
@@ -122,7 +134,9 @@ describe('Send NFT', function () {
             await mintConfirmation.clickFooterConfirmButton();
 
             // Wait for mint and navigate to NFT
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
             await homePage.goToActivityList();
             await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
 
@@ -137,7 +151,8 @@ describe('Send NFT', function () {
             await sendPage.fillRecipient(DEFAULT_RECIPIENT);
             await sendPage.pressContinueButton();
 
-            const tokenTransferConfirmation = new TokenTransferTransactionConfirmation(driver);
+            const tokenTransferConfirmation =
+              new TokenTransferTransactionConfirmation(driver);
             await tokenTransferConfirmation.checkWalletInitiatedHeadingTitle();
             await tokenTransferConfirmation.clickScrollToBottomButton();
             await tokenTransferConfirmation.clickFooterConfirmButton();
@@ -166,7 +181,8 @@ describe('Send NFT', function () {
           }) => {
             await loginWithBalanceValidation(driver, localNodes?.[0]);
 
-            const contractAddress = await contractRegistry?.getContractAddress(smartContract);
+            const contractAddress =
+              await contractRegistry?.getContractAddress(smartContract);
             const testDapp = new TestDapp(driver);
             const homePage = new HomePage(driver);
             const activityListPage = new ActivityListPage(driver);
@@ -187,12 +203,15 @@ describe('Send NFT', function () {
             await driver.delay(veryLargeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            const tokenTransferConfirmation = new TokenTransferTransactionConfirmation(driver);
+            const tokenTransferConfirmation =
+              new TokenTransferTransactionConfirmation(driver);
             await tokenTransferConfirmation.checkDappInitiatedHeadingTitle();
             await tokenTransferConfirmation.clickScrollToBottomButton();
             await tokenTransferConfirmation.clickFooterConfirmButton();
 
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
             await homePage.goToActivityList();
             await activityListPage.checkConfirmedTxNumberDisplayedInActivity(2);
           },
@@ -222,7 +241,8 @@ describe('Send NFT', function () {
           }) => {
             await loginWithBalanceValidation(driver, localNodes?.[0]);
 
-            const contractAddress = await contractRegistry?.getContractAddress(smartContract);
+            const contractAddress =
+              await contractRegistry?.getContractAddress(smartContract);
             const testDapp = new TestDapp(driver);
             const homePage = new HomePage(driver);
             const activityListPage = new ActivityListPage(driver);
@@ -248,7 +268,9 @@ describe('Send NFT', function () {
             await watchAssetConfirmation.clickFooterConfirmButton();
 
             // Navigate to NFT and send
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
             await homePage.goToNftTab();
             await new NFTListPage(driver).clickNFTIconOnActivityList();
 
@@ -260,7 +282,8 @@ describe('Send NFT', function () {
             await sendPage.fillAmount('1');
             await sendPage.pressContinueButton();
 
-            const tokenTransferConfirmation = new TokenTransferTransactionConfirmation(driver);
+            const tokenTransferConfirmation =
+              new TokenTransferTransactionConfirmation(driver);
             await tokenTransferConfirmation.checkWalletInitiatedHeadingTitle();
             await tokenTransferConfirmation.clickScrollToBottomButton();
             await tokenTransferConfirmation.clickFooterConfirmButton();

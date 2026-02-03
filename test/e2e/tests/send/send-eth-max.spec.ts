@@ -1,3 +1,12 @@
+/**
+ * Send ETH - Max Amount Tests
+ *
+ * Tests for sending the maximum available ETH balance:
+ * - Max amount calculation
+ * - Gas fee changes affecting max amount
+ * - Custom gas values with max amount
+ */
+
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import {
@@ -21,10 +30,10 @@ const PREFERENCES_STATE_MOCK = {
   useNonceField: true,
 };
 
-describe('Sending with max amount', function () {
+describe('Send ETH - Max Amount', function () {
   // This test is flaky in FF - so we are skipping it for now
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('with correct amount', async function () {
+  it.skip('sends with correct amount', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -58,7 +67,7 @@ describe('Sending with max amount', function () {
     );
   });
 
-  describe('gas modal changes', function () {
+  describe('Gas modal changes', function () {
     it('handles custom gas fee changes', async function () {
       await withFixtures(
         {
@@ -169,7 +178,7 @@ describe('Sending with max amount', function () {
     });
   });
 
-  it('adjust max amount when gas estimations changed', async function () {
+  it('adjusts max amount when gas estimations change', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -251,7 +260,7 @@ describe('Sending with max amount', function () {
 
   // https://github.com/MetaMask/MetaMask-planning/issues/6679
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('does update transaction value when navigating back to edit, updating the value and navigating confirmation again', async function () {
+  it.skip('updates transaction value when navigating back to edit', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

@@ -1,3 +1,10 @@
+/**
+ * Send - Hex Address Prefix Normalization Tests
+ *
+ * Tests that addresses without 0x prefix are properly normalized
+ * when pasted or typed in the send flow.
+ */
+
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
 import SendPage from '../../page-objects/pages/send/send-page';
 import { withFixtures } from '../../helpers';
@@ -16,9 +23,9 @@ const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const hexAbbreviatedAddress = '0x2f318...5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
 
-describe('Hexadecimal address prefix normalization', function () {
-  describe('Send ETH', function () {
-    it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
+describe('Send - Hex Address Normalization', function () {
+  describe('ETH', function () {
+    it('normalizes address without 0x prefix and sends ETH', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -53,10 +60,10 @@ describe('Hexadecimal address prefix normalization', function () {
     });
   });
 
-  describe('Send ERC20', function () {
+  describe('ERC20', function () {
     const smartContract = SMART_CONTRACTS.HST;
 
-    it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
+    it('normalizes pasted address without 0x prefix', async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
@@ -93,7 +100,7 @@ describe('Hexadecimal address prefix normalization', function () {
       );
     });
 
-    it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
+    it('normalizes typed address without 0x prefix and sends TST', async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },

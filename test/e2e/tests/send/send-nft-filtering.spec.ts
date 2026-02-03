@@ -1,18 +1,25 @@
-import { withFixtures } from '../../../helpers';
-import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { Driver } from '../../../webdriver/driver';
-import { Anvil } from '../../../seeder/anvil';
+/**
+ * Send NFT - Network Filtering Tests
+ *
+ * Tests that the send flow correctly filters NFTs by network.
+ * This ensures users only see NFTs that belong to the currently selected network.
+ */
 
-import Homepage from '../../../page-objects/pages/home/homepage';
-import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import SendPage from '../../../page-objects/pages/send/send-page';
+import { withFixtures } from '../../helpers';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { Driver } from '../../webdriver/driver';
+import { Anvil } from '../../seeder/anvil';
 
-describe('Send NFTs', function () {
+import Homepage from '../../page-objects/pages/home/homepage';
+import NftListPage from '../../page-objects/pages/home/nft-list';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import SendPage from '../../page-objects/pages/send/send-page';
+
+describe('Send NFT - Filtering', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
-  it('user should only be able to view ERC721 NFTs on send flow that belong on selected network', async function () {
+  it('only shows NFTs belonging to selected network', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },

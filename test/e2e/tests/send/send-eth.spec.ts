@@ -39,7 +39,13 @@ describe('Send ETH', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, localNodes }: { driver: Driver; localNodes?: Anvil[] }) => {
+        async ({
+          driver,
+          localNodes,
+        }: {
+          driver: Driver;
+          localNodes?: Anvil[];
+        }) => {
           await loginWithBalanceValidation(driver, localNodes?.[0]);
 
           const homePage = new HomePage(driver);
@@ -68,26 +74,38 @@ describe('Send ETH', function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
-        async ({ driver, localNodes }: { driver: Driver; localNodes?: Anvil[] }) => {
+        async ({
+          driver,
+          localNodes,
+        }: {
+          driver: Driver;
+          localNodes?: Anvil[];
+        }) => {
           await loginWithBalanceValidation(driver, localNodes?.[0]);
 
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
           const activityListPage = new ActivityListPage(driver);
 
-          await testDapp.openTestDappPage({ contractAddress: null, url: DAPP_URL });
+          await testDapp.openTestDappPage({
+            contractAddress: null,
+            url: DAPP_URL,
+          });
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.clickSimpleSendButton();
 
           await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-          const tokenTransferConfirmation = new TokenTransferTransactionConfirmation(driver);
+          const tokenTransferConfirmation =
+            new TokenTransferTransactionConfirmation(driver);
           await tokenTransferConfirmation.checkDappInitiatedHeadingTitle();
           await tokenTransferConfirmation.clickScrollToBottomButton();
           await tokenTransferConfirmation.clickFooterConfirmButton();
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
           await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
         },
@@ -157,8 +175,13 @@ describe('Send ETH', function () {
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
 
-          await openTestSnapClickButtonAndInstall(driver, 'connectNameLookUpButton');
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+          await openTestSnapClickButtonAndInstall(
+            driver,
+            'connectNameLookUpButton',
+          );
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
 
           const homePage = new HomePage(driver);
           const sendPage = new SendPage(driver);
