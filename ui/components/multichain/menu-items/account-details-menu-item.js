@@ -20,7 +20,7 @@ export const AccountDetailsMenuItem = ({
   textProps,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const navigate = useNavigate();

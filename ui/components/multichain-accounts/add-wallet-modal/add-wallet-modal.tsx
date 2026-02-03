@@ -88,7 +88,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   const institutionalWalletsEnabled = useSelector(
     getManageInstitutionalWallets,
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const isAddWatchEthereumAccountEnabled = useSelector(

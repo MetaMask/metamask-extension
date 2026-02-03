@@ -104,12 +104,14 @@ export class SubscriptionService {
       }
 
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
+      const cancelUrl = this.#getCancelUrl(redirectUrl);
 
       const { redirectUrl: checkoutSessionUrl } = (await this.#messenger.call(
         'SubscriptionController:updatePaymentMethod',
         {
           ...params,
           successUrl: redirectUrl,
+          cancelUrl,
         },
       )) as { redirectUrl: string };
 
@@ -118,6 +120,7 @@ export class SubscriptionService {
         await this.#openAndWaitForTabToClose({
           url: checkoutSessionUrl,
           successUrl: redirectUrl,
+          cancelUrl,
         });
 
         if (!currentTabId) {
@@ -182,6 +185,7 @@ export class SubscriptionService {
       await this.#getCurrentShieldSubscription();
     try {
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
+      const cancelUrl = this.#getCancelUrl(redirectUrl);
 
       // check if the account is opted in to rewards
       const rewardAccountId = await this.#getRewardCaipAccountId();
@@ -191,6 +195,7 @@ export class SubscriptionService {
         {
           ...params,
           successUrl: redirectUrl,
+          cancelUrl,
           rewardAccountId,
         },
       );
@@ -200,6 +205,7 @@ export class SubscriptionService {
         await this.#openAndWaitForTabToClose({
           url: checkoutSessionUrl,
           successUrl: redirectUrl,
+          cancelUrl,
         });
 
         if (!currentTabId) {
@@ -236,6 +242,12 @@ export class SubscriptionService {
         {
           error: errorMessage,
         },
+      );
+
+      // Clear cached payment method after failed/cancelled payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
       );
 
       // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
@@ -354,28 +366,35 @@ export class SubscriptionService {
     }
   }
 
-  async #openAndWaitForTabToClose(params: { url: string; successUrl: string }) {
+  async #openAndWaitForTabToClose(params: {
+    url: string;
+    successUrl: string;
+    cancelUrl: string;
+  }) {
     const openedTab = await this.#platform.openTab({ url: params.url });
 
     await new Promise<void>((resolve, reject) => {
       let succeeded = false;
+      let cancelled = false;
       // Set up a listener to watch for navigation on that specific tab
       const onTabUpdatedListener = (
         tabId: number,
         changeInfo: { url: string },
       ) => {
         // We only care about updates to our specific checkout tab
-        if (
-          tabId === openedTab.id &&
-          changeInfo.url?.startsWith(params.successUrl)
-        ) {
-          // Payment was successful!
-          succeeded = true;
-
-          // Clean up: close the tab
-          this.#platform.closeTab(tabId);
+        if (tabId === openedTab.id) {
+          if (changeInfo.url?.startsWith(params.cancelUrl)) {
+            // Payment was cancelled!
+            cancelled = true;
+            // Clean up: close the tab
+            this.#platform.closeTab(tabId);
+          } else if (changeInfo.url?.startsWith(params.successUrl)) {
+            // Payment was successful!
+            succeeded = true;
+            // Clean up: close the tab
+            this.#platform.closeTab(tabId);
+          }
         }
-        // TODO: handle cancel url ?
       };
       this.#platform.addTabUpdatedListener(onTabUpdatedListener);
 
@@ -389,6 +408,8 @@ export class SubscriptionService {
           cleanupListeners();
           if (succeeded) {
             resolve();
+          } else if (cancelled) {
+            reject(new Error(SHIELD_ERROR.stripePaymentCancelled));
           } else {
             reject(new Error(SHIELD_ERROR.tabActionFailed));
           }
@@ -509,6 +530,12 @@ export class SubscriptionService {
           },
         );
       }
+
+      // Clear cached payment method after failed crypto payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
+      );
 
       this.#captureException(
         createSentryError(
@@ -867,5 +894,15 @@ export class SubscriptionService {
       'SubscriptionController:getSubscriptions',
     );
     return getShieldSubscription(subscriptions);
+  }
+
+  /**
+   * Get the cancel URL for stripe checkout session (when user press back/cancel button) not to confuse with cancel subscription request.
+   *
+   * @param redirectUrl - The redirect URL.
+   * @returns The cancel URL.
+   */
+  #getCancelUrl(redirectUrl: string): string {
+    return `${redirectUrl}?cancel=true`;
   }
 }
