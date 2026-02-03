@@ -22,6 +22,7 @@ import {
   PLATFORM_CHROMIUM,
   PLATFORM_COCCOC,
   PLATFORM_EDGE,
+  PLATFORM_EDGE_ANDROID,
   PLATFORM_FIREFOX,
   PLATFORM_KIWI,
   PLATFORM_LEMUR,
@@ -105,7 +106,10 @@ const getPlatform = (): Platform => {
     return PLATFORM_BRAVE;
   }
 
-  // Edge - identified by "Edg/" in user agent
+  // Edge - identified by "Edg/" in user agent (desktop) or "EdgA/" (Android)
+  if (userAgent.includes('EdgA/')) {
+    return PLATFORM_EDGE_ANDROID;
+  }
   if (userAgent.includes('Edg/')) {
     return PLATFORM_EDGE;
   }

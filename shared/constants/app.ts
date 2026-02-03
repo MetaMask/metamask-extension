@@ -25,6 +25,7 @@ export const PLATFORM_CHROME = 'Chrome';
 export const PLATFORM_CHROMIUM = 'Chromium';
 export const PLATFORM_COCCOC = 'CocCoc';
 export const PLATFORM_EDGE = 'Edge';
+export const PLATFORM_EDGE_ANDROID = 'EdgeAndroid';
 export const PLATFORM_FIREFOX = 'Firefox';
 export const PLATFORM_KIWI = 'Kiwi';
 export const PLATFORM_LEMUR = 'Lemur';
@@ -50,6 +51,7 @@ export const PLATFORM = {
   CHROMIUM: PLATFORM_CHROMIUM,
   COCCOC: PLATFORM_COCCOC,
   EDGE: PLATFORM_EDGE,
+  EDGE_ANDROID: PLATFORM_EDGE_ANDROID,
   FIREFOX: PLATFORM_FIREFOX,
   KIWI: PLATFORM_KIWI,
   LEMUR: PLATFORM_LEMUR,

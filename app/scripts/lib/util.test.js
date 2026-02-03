@@ -12,6 +12,7 @@ import {
   PLATFORM_CHROMIUM,
   PLATFORM_COCCOC,
   PLATFORM_EDGE,
+  PLATFORM_EDGE_ANDROID,
   PLATFORM_FIREFOX,
   PLATFORM_KIWI,
   PLATFORM_LEMUR,
@@ -245,6 +246,15 @@ describe('app utils', () => {
     it('should detect Edge', () => {
       setBrowserSpecificWindow('edge');
       expect(getPlatform()).toStrictEqual(PLATFORM_EDGE);
+    });
+
+    it('detects Edge Android', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36 EdgA/144.0.0.0',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_EDGE_ANDROID);
     });
 
     it('should detect Opera', () => {
