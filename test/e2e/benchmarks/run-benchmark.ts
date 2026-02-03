@@ -102,10 +102,10 @@ const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
 const PRESETS: Record<string, string[]> = {
   // Performance benchmarks
-  performanceOnboardingImport: [
-    // TODO: Re-enable once account list loading is fixed (timeout on add-multichain-account-button)
-    // `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
-  ],
+//   performanceOnboardingImport: [
+//     TODO: Re-enable once account list loading is fixed (timeout on add-multichain-account-button)
+//     `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
+//   ],
   performanceOnboardingNew: [
     `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
   ],
@@ -290,9 +290,13 @@ async function main(): Promise<void> {
   if (fileArg) {
     filesToRun = [fileArg];
   } else if (argv.preset) {
-    filesToRun = PRESETS[argv.preset] || [];
-    if (filesToRun.length === 0) {
+    if (!(argv.preset in PRESETS)) {
       throw new Error(`Unknown preset: ${argv.preset}`);
+    }
+    filesToRun = PRESETS[argv.preset];
+    if (filesToRun.length === 0) {
+      console.log(`⚠️Preset '${argv.preset}' is currently disabled (empty). Skipping.`);
+      return;
     }
   } else {
     filesToRun = PRESETS.all;
