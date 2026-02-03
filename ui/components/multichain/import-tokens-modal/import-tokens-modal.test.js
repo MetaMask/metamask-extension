@@ -35,7 +35,7 @@ jest.mock('../../../store/actions', () => ({
   // Actions used in tests
   getTokenStandardAndDetailsByChain: jest
     .fn()
-    .mockImplementation(() => Promise.resolve({ standard: ERC20 })),
+    .mockImplementation(() => Promise.resolve({ standard: 'ERC20' })),
   setPendingTokens: jest
     .fn()
     .mockImplementation(() => ({ type: 'SET_PENDING_TOKENS' })),
