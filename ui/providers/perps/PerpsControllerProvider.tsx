@@ -5,8 +5,10 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
+import { useSelector } from 'react-redux';
 import type { PerpsController } from '@metamask/perps-controller';
 import { getPerpsController } from './getPerpsController';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 
 /**
  * Context for the PerpsController instance.
@@ -48,6 +50,10 @@ export function PerpsControllerProvider({
   );
   const [error, setError] = useState<Error | null>(null);
 
+  // Get the selected account address from Redux
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = selectedAccount?.address;
+
   useEffect(() => {
     // If a controller was provided, skip initialization
     if (providedController) {
@@ -55,9 +61,14 @@ export function PerpsControllerProvider({
       return;
     }
 
+    // Wait for a selected address before initializing
+    if (!selectedAddress) {
+      return;
+    }
+
     let isMounted = true;
 
-    getPerpsController()
+    getPerpsController(selectedAddress)
       .then((ctrl) => {
         if (isMounted) {
           setController(ctrl);
@@ -73,7 +84,7 @@ export function PerpsControllerProvider({
     return () => {
       isMounted = false;
     };
-  }, [providedController]);
+  }, [providedController, selectedAddress]);
 
   // Show error state
   if (error) {

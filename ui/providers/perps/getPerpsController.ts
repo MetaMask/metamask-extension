@@ -46,25 +46,34 @@ function createPerpsMessenger(): PerpsControllerMessenger {
  * Get the PerpsController instance.
  * Returns a singleton PerpsController that is initialized on first access.
  *
+ * @param selectedAddress - The currently selected account address
  * @returns Promise resolving to the PerpsController instance
  *
  * @example
  * ```typescript
- * const controller = await getPerpsController();
+ * const controller = await getPerpsController(selectedAccount.address);
  * const account = await controller.getAccountState();
  * console.log('Balance:', account.totalBalance);
  * ```
  */
-export async function getPerpsController(): Promise<PerpsController> {
+export async function getPerpsController(
+  selectedAddress: string,
+): Promise<PerpsController> {
   if (controllerInstance) {
     return controllerInstance;
+  }
+
+  if (!selectedAddress) {
+    throw new Error(
+      'No account selected. Please select an account before using Perps.',
+    );
   }
 
   // Prevent race conditions during initialization
   if (!initPromise) {
     initPromise = (async () => {
       const messenger = createPerpsMessenger();
-      const infrastructure = createPerpsInfrastructure();
+      const infrastructure = createPerpsInfrastructure(selectedAddress);
 
       const controller = new PerpsController({
         messenger,

@@ -128,14 +128,15 @@ function createStreamManager(): PerpsStreamManager {
 /**
  * Create stubbed controller access.
  * These should be wired to real extension controllers for trading operations.
- * For the PoC, we hardcode the address to demonstrate balance fetching.
+ *
+ * @param selectedAddress - The currently selected account address from the UI
  */
-function createControllerAccess(): PerpsControllerAccess {
+function createControllerAccess(selectedAddress: string): PerpsControllerAccess {
   return {
     accounts: {
       getSelectedEvmAccount: () => {
-        // Hardcoded for PoC - wire to AccountsController in production
-        return { address: '0x316BDE155acd07609872a56Bc32CcfB0B13201fA' };
+        // Address passed from UI via selector - wire to AccountsController in production
+        return { address: selectedAddress };
       },
       formatAccountToCaipId: (address: string, chainId: string) => {
         return `eip155:${chainId}:${address}`;
@@ -186,21 +187,28 @@ function createControllerAccess(): PerpsControllerAccess {
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
+ * @param selectedAddress - The currently selected account address from the UI
  * @returns PerpsPlatformDependencies object ready for PerpsController
  *
  * @example
  * ```typescript
  * import { PerpsController } from '@metamask/perps-controller';
  * import { createPerpsInfrastructure } from './infrastructure';
+ * import { getSelectedInternalAccount } from '../../selectors/accounts';
+ * import { store } from '../../store/store';
  *
- * const infrastructure = createPerpsInfrastructure();
+ * const state = store.getState();
+ * const selectedAccount = getSelectedInternalAccount(state);
+ * const infrastructure = createPerpsInfrastructure(selectedAccount.address);
  * const controller = new PerpsController({
  *   messenger,
  *   infrastructure,
  * });
  * ```
  */
-export function createPerpsInfrastructure(): PerpsPlatformDependencies {
+export function createPerpsInfrastructure(
+  selectedAddress: string,
+): PerpsPlatformDependencies {
   return {
     logger: createLogger(),
     debugLogger: createDebugLogger(),
@@ -208,6 +216,6 @@ export function createPerpsInfrastructure(): PerpsPlatformDependencies {
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),
-    controllers: createControllerAccess(),
+    controllers: createControllerAccess(selectedAddress),
   };
 }
