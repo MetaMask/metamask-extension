@@ -3,7 +3,7 @@
 // The structure of this test includes nested tests and multiple global tests, which violate our linting rules.
 
 import { test } from '@playwright/test';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withPlaywrightFixtures } from '../../shared/fixtures/with-fixtures';
 import packageJson from '../../../../../package.json';
 import { loginWithBalanceValidation } from '../../shared/flows/login.flow';
