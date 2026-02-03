@@ -589,53 +589,68 @@ const PasswordChangeToast = () => {
   );
 };
 
-function CopyAddressToast() {
+/**
+ * Reusable toast component for copy success notifications
+ *
+ * @param {object} props - Component props
+ * @param {Function} props.selector - Redux selector to get show state
+ * @param {string} props.messageKey - Translation key for the toast message
+ * @param {Function} props.setAction - Redux action creator to update state
+ * @param {string} props.toastKey - Unique key for the toast component
+ * @param {string} props.dataTestId - Test ID for the toast
+ * @returns {JSX.Element|null} Toast component or null
+ */
+function CopySuccessToast({
+  selector,
+  messageKey,
+  setAction,
+  toastKey,
+  dataTestId,
+}) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const showCopyAddressToast = useSelector(selectShowCopyAddressToast);
+  const shouldShow = useSelector(selector);
   const autoHideToastDelay = 2 * SECOND;
 
   return (
-    showCopyAddressToast && (
+    shouldShow && (
       <Toast
-        key="copy-address-toast"
-        text={t('addressCopied')}
+        key={toastKey}
+        text={t(messageKey)}
         startAdornment={
           <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
         }
-        onClose={() => dispatch(setShowCopyAddressToast(false))}
+        onClose={() => dispatch(setAction(false))}
         autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => dispatch(setShowCopyAddressToast(false))}
-        dataTestId="copy-address-toast"
+        onAutoHideToast={() => dispatch(setAction(false))}
+        dataTestId={dataTestId}
       />
     )
   );
 }
 
-function CopyTransactionIdToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showCopyTransactionIdToast = useSelector(
-    selectShowCopyTransactionIdToast,
-  );
-  const autoHideToastDelay = 2 * SECOND;
-
+function CopyAddressToast() {
   return (
-    showCopyTransactionIdToast && (
-      <Toast
-        key="copy-transaction-id-toast"
-        text={t('copiedTransactionId')}
-        startAdornment={
-          <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
-        }
-        onClose={() => dispatch(setShowCopyTransactionIdToast(false))}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => dispatch(setShowCopyTransactionIdToast(false))}
-        dataTestId="copy-transaction-id-toast"
-      />
-    )
+    <CopySuccessToast
+      selector={selectShowCopyAddressToast}
+      messageKey="addressCopied"
+      setAction={setShowCopyAddressToast}
+      toastKey="copy-address-toast"
+      dataTestId="copy-address-toast"
+    />
+  );
+}
+
+function CopyTransactionIdToast() {
+  return (
+    <CopySuccessToast
+      selector={selectShowCopyTransactionIdToast}
+      messageKey="copiedTransactionId"
+      setAction={setShowCopyTransactionIdToast}
+      toastKey="copy-transaction-id-toast"
+      dataTestId="copy-transaction-id-toast"
+    />
   );
 }
 
