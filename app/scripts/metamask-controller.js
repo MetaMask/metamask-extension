@@ -302,6 +302,7 @@ import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { PreferencesController } from './controllers/preferences-controller';
 import { AppStateController } from './controllers/app-state-controller';
+import { AgentController } from './controllers/agent-controller';
 import { AlertController } from './controllers/alert-controller';
 import OnboardingController from './controllers/onboarding';
 import Backup from './lib/backup';
@@ -870,6 +871,17 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       extension: this.extension,
+    });
+
+    // Agent Controller - for AI agent automation support
+    const agentControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AgentController',
+      allowedActions: [],
+      allowedEvents: [],
+    });
+    this.agentController = new AgentController({
+      messenger: agentControllerMessenger,
+      state: initState.AgentController,
     });
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
