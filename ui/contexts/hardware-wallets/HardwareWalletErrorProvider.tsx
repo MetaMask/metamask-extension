@@ -24,6 +24,7 @@ import {
 } from './HardwareWalletContext';
 import { ConnectionStatus } from './types';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
+import { getHardwareWalletErrorCode } from './rpcErrorUtils';
 
 type HardwareWalletErrorContextType = {
   /**
@@ -134,7 +135,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     }
 
     // Also check by code directly for errors that lost their class type
-    const errorCode = (error as { code?: number })?.code;
+    const errorCode = getHardwareWalletErrorCode(error);
     if (
       errorCode === ErrorCode.UserRejected ||
       errorCode === ErrorCode.UserCancelled
@@ -143,7 +144,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     }
 
     // Check for RPC error format with data.code
-    const rpcErrorCode = (error as { data?: { code?: number } })?.data?.code;
+    const rpcErrorCode = getHardwareWalletErrorCode(error);
     return (
       rpcErrorCode === ErrorCode.UserRejected ||
       rpcErrorCode === ErrorCode.UserCancelled
@@ -240,8 +241,8 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       // Check if this is actually a different error by comparing error codes
       // Object reference equality (error !== displayedError) doesn't work reliably
       // because new error objects are created each time connection state changes
-      const errorCode = (error as { code?: number })?.code;
-      const displayedErrorCode = (displayedError as { code?: number })?.code;
+      const errorCode = getHardwareWalletErrorCode(error);
+      const displayedErrorCode = getHardwareWalletErrorCode(displayedError);
 
       // Only show modal if the error code has changed
       // OR if we haven't shown an error yet (displayedError is null)
