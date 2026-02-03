@@ -52,6 +52,7 @@
     "showBasicFunctionalityModal": "boolean",
     "showClaimSubmitToast": null,
     "showCopyAddressToast": "boolean",
+    "showCopyTransactionIdToast": "boolean",
     "showDataDeletionErrorModal": "boolean",
     "showDeleteMetaMetricsDataModal": "boolean",
     "showInfuraSwitchToast": "boolean",
