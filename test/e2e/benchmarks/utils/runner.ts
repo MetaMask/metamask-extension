@@ -1,6 +1,10 @@
 import get from 'lodash/get';
 import { retry } from '../../../../development/lib/retry';
-import { ALL_METRICS, DEFAULT_NUM_BROWSER_LOADS, DEFAULT_NUM_PAGE_LOADS } from './constants';
+import {
+  ALL_METRICS,
+  DEFAULT_NUM_BROWSER_LOADS,
+  DEFAULT_NUM_PAGE_LOADS,
+} from './constants';
 import {
   calcMaxResult,
   calcMeanResult,
