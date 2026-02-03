@@ -28,18 +28,13 @@ import {
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  DEFAULT_ROUTE,
-  SIGNATURE_REQUEST_PATH,
-} from '../../../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getPendingHardwareSigning } from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import {
   resolvePendingApproval,
-  setPendingHardwareSigning,
   closeCurrentNotificationWindow,
 } from '../../../../../store/actions';
 // TODO: Remove restricted import
@@ -65,8 +60,6 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
   useHardwareWalletError,
-  isUserRejectedHardwareWalletError,
-  isRetryableHardwareWalletError,
   isHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
 import OriginThrottleModal from './origin-throttle-modal';
@@ -276,27 +269,12 @@ const Footer = () => {
       return true;
     }
 
-    console.log(
-      '[Hardware debug Footer] Verifying hardware wallet device is ready',
-      {
-        deviceId,
-        isHardwareWalletAccount,
-      },
-    );
     const isDeviceReady = await ensureDeviceReady(deviceId || '');
-    console.log('[Hardware debug Footer] ensureDeviceReady result:', {
-      isDeviceReady,
-      deviceId,
-    });
 
     if (!isDeviceReady) {
-      console.log(
-        '[Hardware debug Footer] Device not ready - HardwareWalletErrorMonitor will show error modal automatically',
-      );
       return false;
     }
 
-    console.log('[Hardware debug Footer] Device is ready');
     return true;
   }, [isHardwareWalletAccount, deviceId, ensureDeviceReady]);
 
@@ -347,19 +325,6 @@ const Footer = () => {
       isTransactionConfirmation ||
       (!isSignature && isHardwareWalletAccount)
     ) {
-      // Use the transaction confirm hook for:
-      // 1. Redesign transaction types (any account type)
-      // 2. Non-signature transactions on hardware wallet accounts
-      //
-      // Hardware wallet TRANSACTIONS must use this path to ensure proper
-      // signing and error handling via approveHardwareTransaction.
-      // Hardware wallet SIGNATURES use resolvePendingApproval since signature
-      // signing is handled at the keyring level.
-      console.log('[Footer onSubmit] Using onTransactionConfirm:', {
-        isTransactionConfirmation,
-        isSignature,
-        isHardwareWalletAccount,
-      });
       await onTransactionConfirm();
     } else {
       // Signatures and other non-transaction approvals
@@ -377,86 +342,12 @@ const Footer = () => {
         resetTransactionState();
         handleSignatureCompletion();
       } catch (error) {
-        // Handle hardware wallet errors from resolveHardwareApproval
-        console.log(
-          '[Footer onSubmit] Error from resolvePendingApproval:',
-          error,
-        );
-
         // Use isHardwareWalletError which handles duck typing for errors
         // that lost their class type over the RPC boundary
         if (!isHardwareWalletError(error)) {
           // Non-hardware wallet error - rethrow
           throw error;
         }
-
-        // User rejection: The user deliberately rejected on the hardware wallet device.
-        // The approval has already been processed (and removed) by the signature controller
-        // via `accept`, so we don't need to call rejectPendingApproval.
-        // We just need to:
-        // 1. Clear pendingHardwareSigning so closeCurrentNotificationWindow isn't blocked
-        // 2. Close the popup directly
-        if (isUserRejectedHardwareWalletError(error)) {
-          console.log(
-            '[Footer onSubmit] User rejection - clearing flag and routing',
-          );
-
-          // Clear pendingHardwareSigning before any navigation/close logic.
-          // The approval is already gone (processed by accept with an error result),
-          // so rejectPendingApproval would do nothing useful.
-          dispatch(setPendingHardwareSigning(false));
-          handleSignatureCompletion();
-          return;
-        }
-
-        // Retryable errors (device locked, app closed): Show modal for retry
-        if (isRetryableHardwareWalletError(error)) {
-          // Extract metadata using duck typing to handle different error structures:
-          // 1. HardwareWalletError instance: error.metadata.recreatedSignatureId
-          // 2. RPC error: error.data.metadata.recreatedSignatureId
-          const errorObj = error as {
-            metadata?: Record<string, unknown>;
-            data?: { metadata?: Record<string, unknown> };
-          };
-          const errorMetadata = errorObj?.metadata ?? errorObj?.data?.metadata;
-          const recreatedSignatureId = errorMetadata?.recreatedSignatureId as
-            | string
-            | undefined;
-
-          console.log(
-            '[Footer onSubmit] Retryable error - showing modal for retry',
-            {
-              error,
-              errorMetadata,
-              recreatedSignatureId,
-            },
-          );
-
-          // Clear pendingHardwareSigning so the confirm button is enabled for retry
-          dispatch(setPendingHardwareSigning(false));
-
-          // Show the error modal first
-          showErrorModal(error);
-
-          // If a new signature request was created, navigate to it
-          if (recreatedSignatureId) {
-            console.log(
-              '[Footer onSubmit] Navigating to recreated signature:',
-              recreatedSignatureId,
-            );
-            // Note: SIGNATURE_REQUEST_PATH already starts with '/', so no extra slash needed
-            navigate(
-              `${CONFIRM_TRANSACTION_ROUTE}/${recreatedSignatureId}${SIGNATURE_REQUEST_PATH}`,
-              {
-                replace: true,
-              },
-            );
-          }
-          return;
-        }
-
-        // Other non-retryable hardware wallet errors: Show modal
-        console.log('[Footer onSubmit] Non-retryable error - showing modal');
         showErrorModal(error);
       }
     }
@@ -489,13 +380,8 @@ const Footer = () => {
     // After rejection, navigate to the next confirmation or home
     // confirmationsCount includes the current one, so if it's 1 or less, go home
     if (isAddEthereumChain || confirmationsCount <= 1) {
-      console.log('[Footer handleFooterCancel] Navigating to DEFAULT_ROUTE');
       navigate(DEFAULT_ROUTE);
     } else if (currentConfirmation?.id) {
-      // Navigate to the next pending confirmation
-      console.log(
-        '[Footer handleFooterCancel] Navigating to next confirmation',
-      );
       navigateNext(currentConfirmation.id);
     } else {
       navigate(DEFAULT_ROUTE);

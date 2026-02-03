@@ -4308,12 +4308,6 @@ export function hideLoadingIndication(): Action {
 export function setPendingHardwareSigning(
   isPending: boolean,
 ): PayloadAction<boolean> {
-  // Trace all calls to this function to debug race conditions
-  console.log(
-    '[HW_DEBUG FLAG] setPendingHardwareSigning called:',
-    isPending,
-    new Error().stack,
-  );
   return {
     type: actionConstants.SET_PENDING_HARDWARE_SIGNING,
     payload: isPending,
@@ -5925,26 +5919,11 @@ export function rejectPendingApproval(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
-    console.log(
-      '[HW_DEBUG rejectPendingApproval] Rejecting approval:',
-      id,
-      new Error().stack,
-    );
     await submitRequestToBackground('rejectPendingApproval', [id, error]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being rejected
-    console.log(
-      '[HW_DEBUG rejectPendingApproval] Background call complete, updating state',
-    );
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
-    console.log(
-      '[HW_DEBUG rejectPendingApproval] Checking pending approvals:',
-      Object.keys(pendingApprovals).length,
-    );
     if (Object.values(pendingApprovals).length === 0) {
-      console.log(
-        '[HW_DEBUG rejectPendingApproval] No pending approvals, calling closeCurrentNotificationWindow',
-      );
       dispatch(closeCurrentNotificationWindow());
     }
   };
@@ -8454,10 +8433,6 @@ export async function getTrezorFeatures(): Promise<TrezorFeaturesResponse> {
     'getTrezorFeatures',
     [],
   );
-}
-
-export async function clearLedgerCallbacks() {
-  return await submitRequestToBackground<void>('clearLedgerCallbacks', []);
 }
 
 /**

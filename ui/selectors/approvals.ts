@@ -59,11 +59,8 @@ export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
   return (state.metamask.approvalFlows?.length ?? 0) > 0;
 }
 
-const getPendingApprovalsObject = (state: ApprovalsMetaMaskState) => {
-  const result = state.metamask.pendingApprovals ?? EMPTY_OBJECT;
-  // console.log('getPendingApprovalsObject', result);
-  return result;
-};
+const getPendingApprovalsObject = (state: ApprovalsMetaMaskState) =>
+  state.metamask.pendingApprovals ?? EMPTY_OBJECT;
 
 export const getPendingApprovals = createSelector(
   getPendingApprovalsObject,

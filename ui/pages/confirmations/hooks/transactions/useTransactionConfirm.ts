@@ -143,21 +143,8 @@ export function useTransactionConfirm() {
       // - Throws HardwareWalletError with recreatedTxId if user rejected on hardware device
       // - Throws other errors for actual failures
       await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
-
-      // Transaction was successfully approved and submitted
-      // navigateNext(transactionMeta.id);
-      // resetTransactionState();
     } catch (error) {
       const isHwError = isHardwareWalletError(error);
-
-      // Extract error details using duck typing for serialized errors
-      const errorObj = error as {
-        code?: number;
-        metadata?: Record<string, unknown>;
-        data?: { code?: number; metadata?: Record<string, unknown> };
-      };
-      const errorMetadata = errorObj?.metadata ?? errorObj?.data?.metadata;
-      const recreatedTxId = errorMetadata?.recreatedTxId as string | undefined;
 
       if (!isHwError) {
         // Non-hardware wallet errors - just rethrow
@@ -165,7 +152,6 @@ export function useTransactionConfirm() {
         throw error;
       }
 
-      // Handle shield subscription navigation cleanup for any error
       handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
         newTransactionMeta,
       );
@@ -190,38 +176,6 @@ export function useTransactionConfirm() {
         // so rejectPendingApproval would do nothing useful.
         dispatch(setPendingHardwareSigning(false));
         dispatch(closeCurrentNotificationWindow());
-        return;
-      }
-
-      if (isRetryableHardwareWalletError(error)) {
-        // Clear pendingHardwareSigning so the confirm button is enabled for retry
-        dispatch(setPendingHardwareSigning(false));
-
-        // IMPORTANT: Always show the modal FIRST, before any navigation.
-        // This ensures isHardwareWalletErrorModalVisible is true before React
-        // processes any re-renders from navigation, which prevents the popup
-        // from closing due to the navigation guards checking modal visibility.
-        console.log('[HW_DEBUG 16] Calling showErrorModal NOW');
-        showErrorModal(error);
-        console.log(
-          '[HW_DEBUG 17] showErrorModal called - modal should be visible',
-        );
-
-        if (recreatedTxId) {
-          // Navigate to the recreated transaction after modal is shown
-          console.log(
-            '[HW_DEBUG 18] Navigating to recreated tx:',
-            recreatedTxId,
-          );
-          navigate(`${CONFIRM_TRANSACTION_ROUTE}/${recreatedTxId}`, {
-            replace: true,
-          });
-          console.log('[HW_DEBUG 19] Navigation dispatched, returning');
-          return;
-        }
-
-        // Retryable error without recreatedTxId - modal already shown, stay on current page
-        // This allows the user to retry the signing from the same confirmation
         return;
       }
 
