@@ -1,6 +1,7 @@
-jest.unmock('../lib/stores/browser-storage-adapter');
 import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
 import { migrate, version } from './189';
+
+jest.unmock('../lib/stores/browser-storage-adapter');
 
 const VERSION = version;
 const oldVersion = VERSION - 1;

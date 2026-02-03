@@ -1,8 +1,6 @@
 import browser from 'webextension-polyfill';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 
-// Unmock to get the real BrowserStorageAdapter implementation for this test
-jest.unmock('./browser-storage-adapter');
 const { BrowserStorageAdapter } = jest.requireActual(
   './browser-storage-adapter',
 );
