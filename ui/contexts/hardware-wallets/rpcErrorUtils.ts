@@ -66,9 +66,7 @@ const SerializedHardwareWalletErrorCauseStruct = refine(
       ExtendedSerializedHardwareWalletErrorCauseStruct,
     );
 
-    return (
-      (matchesLegacy || matchesExtended) && matchesLegacy !== matchesExtended
-    );
+    return matchesLegacy || matchesExtended;
   },
 );
 
@@ -504,5 +502,3 @@ export function toHardwareWalletError(
     fallbackMessage,
   );
 }
-
-// #endregion
