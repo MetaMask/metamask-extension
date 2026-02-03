@@ -47,6 +47,7 @@ const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
   severity: string(),
   id: string(),
   userMessage: string(),
+  // Preserve original error time for ordering/logging across the RPC boundary.
   timestamp: string(),
   // Legacy-compatible fields preserved for transport.
   name: literal('HardwareWalletError'),
@@ -56,7 +57,7 @@ const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
 });
 
 const SerializedHardwareWalletErrorCauseStruct = refine(
-  // Support both legacy and extended shapes across the RPC boundary.
+  // Support both legacy and extended shapes, including the timestamp field.
   union([
     LegacySerializedHardwareWalletErrorCauseStruct,
     ExtendedSerializedHardwareWalletErrorCauseStruct,
