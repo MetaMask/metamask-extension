@@ -3,6 +3,7 @@ import { devices } from '@playwright/test';
 import { isHeadless } from './test/helpers/env';
 
 const logOutputFolder = './public/playwright/playwright-reports';
+const browserFolder = process.env.PW_BROWSER || 'chrome';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -29,11 +30,11 @@ const config: PlaywrightTestConfig = {
       'html',
       {
         open: 'on-failure',
-        outputFolder: `${logOutputFolder}/html/`,
+        outputFolder: `${logOutputFolder}/html/${browserFolder}/`,
       },
     ],
-    ['junit', { outputFile: `${logOutputFolder}/junit/test-results.xml` }],
-    ['json', { outputFile: `${logOutputFolder}/json/test-results.json` }],
+    ['junit', { outputFile: `./test-results/${browserFolder}/junit.xml` }],
+    ['json', { outputFile: `${logOutputFolder}/json/${browserFolder}/test-results.json` }],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
