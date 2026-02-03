@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { Fit } from '@rive-app/react-canvas';
+import { Fit, Alignment } from '@rive-app/react-canvas';
 import {
   Box,
   Button,
@@ -51,24 +51,25 @@ const GoLongShortStep: React.FC = () => {
         </Text>
         <Text
           variant={TextVariant.BodyMd}
-          className="text-left text-alternative mb-4 w-full"
+          className="text-left text-alternative mb-2 w-full"
         >
           {t('perpsTutorialGoLongShortDescription')}
         </Text>
         <Text
           variant={TextVariant.BodyMd}
-          className="text-left text-alternative mb-4 w-full"
+          className="text-left text-alternative mb-2 w-full"
         >
           {t('perpsTutorialGoLongShortSubtitle')}
         </Text>
         <Box
-          className="flex-1 min-h-0 w-full mt-4"
+          className="flex-1 min-h-0 w-full mt-2"
           data-testid="perps-tutorial-step-image"
         >
           <PerpsTutorialAnimation
             artboardName="01_Short_Long"
             className="w-full h-full"
-            fit={Fit.FitWidth}
+            fit={Fit.Cover}
+            alignment={Alignment.Center}
           />
         </Box>
       </Box>
