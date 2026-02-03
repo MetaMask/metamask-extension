@@ -154,6 +154,14 @@ const getTransactionGroupRecipientAddressFilter = (
       ) {
         return true;
       }
+
+      // For native token swaps: many swap functions don't encode the native address in calldata
+      // because it's implicit. Accept these swaps as they involve the native token.
+      if (isEqualCaseInsensitive(recipientAddress, NATIVE_TOKEN_ADDRESS)) {
+        return true;
+      }
+
+      return false;
     }
 
     return false;
