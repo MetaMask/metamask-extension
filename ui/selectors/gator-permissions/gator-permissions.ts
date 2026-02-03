@@ -149,6 +149,11 @@ function getGatorPermissionsCountAcrossAllChainsByPermissionType(
   gatorPermissionsMap: GatorPermissionsMap,
   permissionType: SupportedGatorPermissionType,
 ): number {
+  // Return 0 if permission type doesn't exist in map
+  if (!gatorPermissionsMap[permissionType]) {
+    return 0;
+  }
+
   // check if any undefined values are present
   const allPermissionsAcrossAllChains = Object.values(
     gatorPermissionsMap[permissionType],
@@ -229,6 +234,11 @@ function mergePermissionsGroupMetaDataByChainId(
 function getTotalCountOfGatorPermissionsPerChainId(
   permissionsMapByPermissionType: GatorPermissionsMapByPermissionType<SupportedGatorPermissionType>,
 ): PermissionsGroupMetaDataByChainId {
+  // Return empty object if permissionsMapByPermissionType is undefined or null
+  if (!permissionsMapByPermissionType) {
+    return {};
+  }
+
   const flattenedGatorPermissionsAcrossAllChains: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[] =
     Object.values(permissionsMapByPermissionType).flat();
 

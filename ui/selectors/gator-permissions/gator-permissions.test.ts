@@ -375,6 +375,61 @@ describe('Gator Permissions Selectors', () => {
       });
     });
 
+    describe('missing permission types handling', () => {
+      it('should return 0 when a permission type is missing from the map', () => {
+        const mockGatorPermissionsMapMissingType = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          // Missing 'erc20-token-revocation' - this should not throw
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithMissingPermissionType = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapMissingType,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        // Should not throw and should return 0 since erc20-token-revocation is missing
+        expect(() => {
+          getAggregatedGatorPermissionsCountAcrossAllChains(
+            stateWithMissingPermissionType,
+            'token-transfer',
+          );
+        }).not.toThrow();
+
+        const result = getAggregatedGatorPermissionsCountAcrossAllChains(
+          stateWithMissingPermissionType,
+          'token-transfer',
+        );
+        expect(result).toBe(0);
+      });
+    });
+
     describe('undefined values handling', () => {
       it('should throw error when undefined values are present in native-token-stream permissions', () => {
         const mockGatorPermissionsMapWithUndefined = {
