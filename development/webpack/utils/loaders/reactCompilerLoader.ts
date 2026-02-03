@@ -1,4 +1,6 @@
+import { availableParallelism } from 'node:os';
 import { join, sep } from 'node:path';
+import type { RuleSetUseItem } from 'webpack';
 import {
   reactCompilerLoader,
   type ReactCompilerLoaderOption,
@@ -21,7 +23,7 @@ const getWrapperPath = (() => {
           `${sep}development${sep}.webpack${sep}`,
           `${sep}development${sep}webpack${sep}`,
         ),
-        'reactCompilerLoaderWrapper.cjs',
+        'reactCompilerLoaderWrapper.ts',
       );
     }
     return cachedPath;
@@ -58,46 +60,69 @@ export type ReactCompilerStats = {
   unsupportedFiles: string[];
 };
 
+export type ReactCompilerLoaderConfig = {
+  target: ReactCompilerLoaderOption['target'];
+  verbose: boolean;
+  debug: 'all' | 'critical' | 'none';
+  /**
+   * Disable thread-loader parallelization.
+   * Required when:
+   * - Generating LavaMoat policies (static analysis needs full module graph)
+   * - Using --reactCompilerVerbose (stats collection requires _module.buildMeta
+   *   which is null in thread-loader workers)
+   */
+  disableThreadLoader: boolean;
+};
+
 /**
- * Get the React Compiler loader configuration.
+ * Get the React Compiler loader configuration as an array of loaders.
+ * Includes thread-loader for parallelization when enabled.
  *
- * @param target - The target version of the React Compiler.
- * @param verbose - Whether to enable verbose mode (per-file logging).
- * @param debug - The debug level to use.
- * - 'all': Fail build on all compilation errors.
- * - 'critical': Fail build on critical compilation errors only.
- * - 'none': Don't fail the build on errors.
- * @param useWrapper - Whether to use the wrapper loader for buildMeta tracking.
- * Set to false when generating LavaMoat policies (thread-loader is disabled anyway).
- * @returns The React Compiler loader object with the loader and configured options.
+ * @param config - Configuration options for the React Compiler loader.
+ * @returns Array of loader configurations (thread-loader + react compiler loader).
  */
 export const getReactCompilerLoader = (
-  target: ReactCompilerLoaderOption['target'],
-  verbose: boolean,
-  debug: 'all' | 'critical' | 'none',
-  useWrapper = true,
-) => {
+  config: ReactCompilerLoaderConfig,
+): RuleSetUseItem[] => {
+  const { target, verbose, debug, disableThreadLoader } = config;
+
   const reactCompilerOptions = {
     target,
     panicThreshold: debug === 'none' ? undefined : `${debug}_errors`,
   } as const satisfies ReactCompilerLoaderOption;
 
-  // Use wrapper for buildMeta tracking (needed for thread-loader stats collection)
-  // Skip wrapper during policy generation (thread-loader disabled, wrapper not resolvable under LavaMoat)
-  if (useWrapper) {
-    return {
+  const loaders: RuleSetUseItem[] = [];
+
+  // Add thread-loader for parallelization when enabled
+  if (!disableThreadLoader) {
+    loaders.push({
+      loader: 'thread-loader',
+      options: {
+        // Leave one core for system processes; availableParallelism respects cgroups/container limits
+        workers: availableParallelism() - 1 || 1,
+        workerParallelJobs: 50,
+      },
+    });
+  }
+
+  // Use wrapper for buildMeta tracking when thread-loader is active
+  // Skip wrapper when thread-loader is disabled (wrapper not needed, also not resolvable under LavaMoat)
+  if (!disableThreadLoader) {
+    loaders.push({
       loader: getWrapperPath(),
       options: {
         ...defineReactCompilerLoaderOption(reactCompilerOptions),
         // eslint-disable-next-line @typescript-eslint/naming-convention
         __verbose: verbose,
       },
-    };
+    });
+  } else {
+    // Direct loader without wrapper (for policy generation or verbose mode)
+    loaders.push({
+      loader: reactCompilerLoader,
+      options: defineReactCompilerLoaderOption(reactCompilerOptions),
+    });
   }
 
-  // Direct loader without wrapper (for policy generation)
-  return {
-    loader: reactCompilerLoader,
-    options: defineReactCompilerLoaderOption(reactCompilerOptions),
-  };
+  return loaders;
 };
