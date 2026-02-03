@@ -5,6 +5,7 @@ import {
   BridgeUserAction,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
+  formatAddressToCaipReference,
   formatChainIdToHex,
   isNativeAddress,
   isNonEvmChainId,
@@ -143,6 +144,7 @@ export const setEvmBalances = (assetId: CaipAssetType) => {
       return;
     }
     const { chainId, assetReference } = parseCaipAssetType(assetId);
+    const tokenAddress = formatAddressToCaipReference(assetReference);
     if (isNonEvmChainId(chainId)) {
       return;
     }
@@ -150,7 +152,7 @@ export const setEvmBalances = (assetId: CaipAssetType) => {
     const isNative = isNativeAddress(assetReference);
 
     const balance = await dispatch(
-      getBalanceAmount(isNative, hexChainId, selectedAddress, assetReference),
+      getBalanceAmount(isNative, hexChainId, selectedAddress, tokenAddress),
     );
     dispatch(
       setEVMSrcTokenBalance({
