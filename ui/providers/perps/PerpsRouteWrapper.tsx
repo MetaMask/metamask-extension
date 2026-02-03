@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { PerpsStreamProvider } from './PerpsStreamProvider';
+import { PerpsControllerProvider } from './PerpsControllerProvider';
 
 /**
  * Props for PerpsRouteWrapper
@@ -11,8 +11,8 @@ export interface PerpsRouteWrapperProps {
 /**
  * Route-level wrapper for Perps pages
  *
- * Provides the PerpsStreamManager context to all Perps routes.
- * The stream manager persists across page navigation within Perps,
+ * Provides the PerpsController context to all Perps routes.
+ * The controller persists across page navigation within Perps,
  * avoiding recreation when switching between home, detail, and list pages.
  *
  * @example
@@ -33,5 +33,5 @@ export interface PerpsRouteWrapperProps {
 export const PerpsRouteWrapper: React.FC<PerpsRouteWrapperProps> = ({
   children,
 }) => {
-  return <PerpsStreamProvider>{children}</PerpsStreamProvider>;
+  return <PerpsControllerProvider>{children}</PerpsControllerProvider>;
 };

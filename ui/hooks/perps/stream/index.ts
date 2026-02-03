@@ -2,22 +2,22 @@
  * Perps Stream Hooks
  *
  * Real-time data subscription hooks for Perps UI components.
- * These hooks use the PerpsStreamManager via React context.
+ * These hooks use the PerpsController directly via React context.
  *
  * Usage:
- * 1. Wrap your component tree with <PerpsStreamProvider>
+ * 1. Wrap your component tree with <PerpsControllerProvider>
  * 2. Use these hooks in child components
  *
  * @example
  * ```tsx
- * import { PerpsStreamProvider } from '../providers/perps';
+ * import { PerpsControllerProvider } from '../providers/perps';
  * import { usePerpsLivePositions } from '../hooks/perps/stream';
  *
  * function App() {
  *   return (
- *     <PerpsStreamProvider>
+ *     <PerpsControllerProvider>
  *       <PositionsList />
- *     </PerpsStreamProvider>
+ *     </PerpsControllerProvider>
  *   );
  * }
  *
@@ -92,7 +92,7 @@ export {
   type UsePerpsLiveMarketDataReturn,
 } from './usePerpsLiveMarketData';
 
-// Re-export types from controller for convenience
+// Re-export types from @metamask/perps-controller for convenience
 export type {
   PriceUpdate,
   Position,
@@ -104,4 +104,4 @@ export type {
   CandlePeriod,
   TimeDuration,
   PerpsMarketData,
-} from '../../../../app/scripts/controllers/perps/types';
+} from '@metamask/perps-controller';

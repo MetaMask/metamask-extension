@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsClient } from '../../../providers/perps';
-import type { OrderBookData } from '../../../providers/perps';
+import { usePerpsController } from '../../../providers/perps';
+import type { OrderBookData } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLiveOrderBook hook
@@ -31,6 +31,8 @@ export interface UsePerpsLiveOrderBookReturn {
 /**
  * Hook for real-time order book data via stream subscription
  *
+ * Uses the PerpsController directly for WebSocket subscriptions.
+ *
  * @param options - Configuration options
  * @returns Object containing order book data and loading state
  *
@@ -59,7 +61,7 @@ export function usePerpsLiveOrderBook(
   options: UsePerpsLiveOrderBookOptions,
 ): UsePerpsLiveOrderBookReturn {
   const { symbol, levels, nSigFigs, mantissa, onError } = options;
-  const client = usePerpsClient();
+  const controller = usePerpsController();
   const [orderBook, setOrderBook] = useState<OrderBookData | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
@@ -71,7 +73,7 @@ export function usePerpsLiveOrderBook(
       return undefined;
     }
 
-    const unsubscribe = client.streams.orderBook.subscribe({
+    const unsubscribe = controller.subscribeToOrderBook({
       symbol,
       levels,
       nSigFigs,
@@ -89,7 +91,7 @@ export function usePerpsLiveOrderBook(
     return () => {
       unsubscribe();
     };
-  }, [client, symbol, levels, nSigFigs, mantissa, onError]);
+  }, [controller, symbol, levels, nSigFigs, mantissa, onError]);
 
   return { orderBook, isInitialLoading };
 }

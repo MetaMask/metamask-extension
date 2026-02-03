@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsClient } from '../../../providers/perps';
-import type { PriceUpdate } from '../../../providers/perps';
+import { usePerpsController } from '../../../providers/perps';
+import type { PriceUpdate } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLivePrices hook
@@ -28,6 +28,8 @@ const EMPTY_PRICES: Record<string, PriceUpdate> = {};
 /**
  * Hook for real-time price updates via stream subscription
  *
+ * Uses the PerpsController directly for WebSocket subscriptions.
+ *
  * @param options - Configuration options
  * @returns Object containing prices map and loading state
  *
@@ -53,7 +55,7 @@ export function usePerpsLivePrices(
   options: UsePerpsLivePricesOptions,
 ): UsePerpsLivePricesReturn {
   const { symbols, throttleMs = 0 } = options;
-  const client = usePerpsClient();
+  const controller = usePerpsController();
   const [prices, setPrices] = useState<Record<string, PriceUpdate>>(EMPTY_PRICES);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
@@ -65,7 +67,7 @@ export function usePerpsLivePrices(
       return undefined;
     }
 
-    const unsubscribe = client.streams.prices.subscribe({
+    const unsubscribe = controller.subscribeToPrices({
       symbols,
       callback: (priceUpdates) => {
         if (!hasReceivedFirstUpdate.current) {
@@ -86,7 +88,7 @@ export function usePerpsLivePrices(
     return () => {
       unsubscribe();
     };
-  }, [client, symbols.join(','), throttleMs]);
+  }, [controller, symbols.join(','), throttleMs]);
 
   return { prices, isInitialLoading };
 }

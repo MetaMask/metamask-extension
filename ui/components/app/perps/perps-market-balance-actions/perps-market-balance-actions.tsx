@@ -40,8 +40,13 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
 
   // Use account data or defaults
   const totalBalance = account?.totalBalance ?? '0';
+  const unrealizedPnl = account?.unrealizedPnl ?? '0';
   const availableBalance = account?.availableBalance ?? '0';
-  const isBalanceEmpty = parseFloat(totalBalance) === 0;
+
+  // Account value = totalBalance + unrealizedPnl (includes open position PnL)
+  const accountValue =
+    parseFloat(totalBalance) + parseFloat(unrealizedPnl);
+  const isBalanceEmpty = accountValue === 0;
 
   const handleAddFunds = useCallback(() => {
     onAddFunds?.();
@@ -135,13 +140,13 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
       flexDirection={BoxFlexDirection.Column}
       data-testid="perps-balance-actions"
     >
-      {/* Total Balance */}
+      {/* Account Value (includes unrealized PnL) */}
       <Text
         variant={TextVariant.DisplayMd}
         fontWeight={FontWeight.Medium}
         data-testid="perps-balance-actions-total"
       >
-        {formatCurrency(parseFloat(totalBalance), 'USD')}
+        {formatCurrency(accountValue, 'USD')}
       </Text>
 
       {/* Available Balance */}

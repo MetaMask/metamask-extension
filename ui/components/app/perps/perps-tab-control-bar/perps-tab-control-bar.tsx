@@ -48,6 +48,10 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
   const unrealizedPnl = account?.unrealizedPnl ?? '0';
   const returnOnEquity = account?.returnOnEquity ?? '0';
 
+  // Account value = totalBalance + unrealizedPnl (includes open position PnL)
+  const accountValue =
+    parseFloat(totalBalance) + parseFloat(unrealizedPnl);
+
   const pnlNum = parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
   const pnlPrefix = isProfit ? '+' : '-';
@@ -96,7 +100,7 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
             gap={2}
           >
             <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-              {formatCurrencyWithMinThreshold(parseFloat(totalBalance), 'USD')}
+              {formatCurrencyWithMinThreshold(accountValue, 'USD')}
             </Text>
             <Icon
               name={IconName.ArrowRight}

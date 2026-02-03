@@ -1,13 +1,13 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { usePerpsClient } from '../../../providers/perps';
-import type { PerpsMarketData } from '../../../providers/perps';
+import { useState, useEffect, useCallback } from 'react';
+import { usePerpsController } from '../../../providers/perps';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLiveMarketData hook
  */
 export interface UsePerpsLiveMarketDataOptions {
   /**
-   * Whether to auto-subscribe on mount
+   * Whether to auto-fetch on mount
    * @default true
    */
   autoSubscribe?: boolean;
@@ -18,7 +18,7 @@ export interface UsePerpsLiveMarketDataOptions {
  */
 export interface UsePerpsLiveMarketDataReturn {
   /**
-   * All market data from the stream
+   * All market data
    */
   markets: PerpsMarketData[];
 
@@ -38,22 +38,25 @@ export interface UsePerpsLiveMarketDataReturn {
   isInitialLoading: boolean;
 
   /**
-   * Error if subscription failed
+   * Error if fetch failed
    */
   error: Error | null;
 
   /**
    * Manually refresh market data
-   * Note: In mock mode, this is a no-op as data comes from static mocks
    */
   refresh: () => void;
 }
 
 /**
- * Hook for subscribing to real-time market data
+ * Hook for fetching market data with prices
+ *
+ * Uses the PerpsController's getMarketDataWithPrices() HTTP method.
+ * Note: This is not a subscription - it fetches data on mount and
+ * can be manually refreshed.
  *
  * @param options - Hook options
- * @returns Market data and subscription state
+ * @returns Market data and loading state
  *
  * @example
  * ```tsx
@@ -75,35 +78,39 @@ export function usePerpsLiveMarketData(
   options: UsePerpsLiveMarketDataOptions = {},
 ): UsePerpsLiveMarketDataReturn {
   const { autoSubscribe = true } = options;
-  const client = usePerpsClient();
+  const controller = usePerpsController();
 
   const [markets, setMarkets] = useState<PerpsMarketData[]>([]);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   // Derive crypto and HIP-3 markets
   const cryptoMarkets = markets.filter((m) => !m.marketSource);
   const hip3Markets = markets.filter((m) => m.marketSource);
 
-  const refresh = useCallback(() => {
-    // Unsubscribe and resubscribe to trigger new data
-    if (unsubscribeRef.current) {
-      unsubscribeRef.current();
-    }
-
+  const fetchMarketData = useCallback(async () => {
     try {
-      unsubscribeRef.current = client.streams.marketData.subscribe({
-        callback: (data) => {
-          setMarkets(data);
-          setIsInitialLoading(false);
-          setError(null);
-        },
-      });
+      // Get active provider to fetch market data
+      const provider = controller.getActiveProviderOrNull();
+      if (!provider) {
+        setError(new Error('Provider not initialized'));
+        setIsInitialLoading(false);
+        return;
+      }
+
+      const data = await provider.getMarketDataWithPrices();
+      setMarkets(data);
+      setIsInitialLoading(false);
+      setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Refresh failed'));
+      setError(err instanceof Error ? err : new Error('Failed to fetch market data'));
+      setIsInitialLoading(false);
     }
-  }, [client]);
+  }, [controller]);
+
+  const refresh = useCallback(() => {
+    fetchMarketData();
+  }, [fetchMarketData]);
 
   useEffect(() => {
     if (!autoSubscribe) {
@@ -111,27 +118,8 @@ export function usePerpsLiveMarketData(
       return;
     }
 
-    try {
-      unsubscribeRef.current = client.streams.marketData.subscribe({
-        callback: (data) => {
-          setMarkets(data);
-          setIsInitialLoading(false);
-          setError(null);
-        },
-      });
-
-      return () => {
-        if (unsubscribeRef.current) {
-          unsubscribeRef.current();
-          unsubscribeRef.current = null;
-        }
-      };
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Subscription failed'));
-      setIsInitialLoading(false);
-      return undefined;
-    }
-  }, [client, autoSubscribe]);
+    fetchMarketData();
+  }, [autoSubscribe, fetchMarketData]);
 
   return {
     markets,

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsClient } from '../../../providers/perps';
-import type { OrderFill } from '../../../providers/perps';
+import { usePerpsController } from '../../../providers/perps';
+import type { OrderFill } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLiveFills hook
@@ -25,6 +25,8 @@ const EMPTY_FILLS: OrderFill[] = [];
 
 /**
  * Hook for real-time order fill updates via stream subscription
+ *
+ * Uses the PerpsController directly for WebSocket subscriptions.
  *
  * @param options - Configuration options
  * @returns Object containing fills array and loading state
@@ -53,13 +55,13 @@ export function usePerpsLiveFills(
 ): UsePerpsLiveFillsReturn {
   // Note: throttleMs is accepted for API compatibility but not used by controller
   const { throttleMs: _throttleMs = 0 } = options;
-  const client = usePerpsClient();
+  const controller = usePerpsController();
   const [fills, setFills] = useState<OrderFill[]>(EMPTY_FILLS);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
-    const unsubscribe = client.streams.orderFills.subscribe({
+    const unsubscribe = controller.subscribeToOrderFills({
       callback: (newFills) => {
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
@@ -73,7 +75,7 @@ export function usePerpsLiveFills(
     return () => {
       unsubscribe();
     };
-  }, [client]);
+  }, [controller]);
 
   return { fills, isInitialLoading };
 }

@@ -1,32 +1,80 @@
 /**
  * Perps Controller
  *
- * This module exports the MockPerpsController for UI development.
- * When the real @metamask/perps-controller is ready, update this export:
+ * This module exports the real PerpsController from @metamask/perps-controller.
  *
- * ```typescript
- * export { PerpsController } from '@metamask/perps-controller';
- * ```
- *
- * All types, constants, and utilities are aligned with the core controller
- * to ensure a smooth migration path.
+ * The controller provides:
+ * - Real-time balance/position streaming via WebSocket
+ * - HTTP methods for fetching account state, positions, orders
+ * - Trading operations (place order, close position, etc.)
  */
 
-// Export the mock controller (will be replaced with real controller)
+// Export the real controller and state types
 export {
-  MockPerpsController,
+  PerpsController,
   getDefaultPerpsControllerState,
   type PerpsControllerState,
-} from './MockPerpsController';
+  type PerpsControllerOptions,
+  type PerpsControllerMessenger,
+  type PerpsControllerActions,
+  type PerpsControllerEvents,
+  InitializationState,
+} from '@metamask/perps-controller';
 
-// Export all types
-export * from './types';
+// Export all types from the package
+export type {
+  AccountState,
+  Position,
+  Order,
+  OrderFill,
+  PriceUpdate,
+  PerpsMarketData,
+  MarketInfo,
+  CandleData,
+  OrderBookData,
+  OrderBookLevel,
+  Funding,
+  // Subscription params
+  SubscribeAccountParams,
+  SubscribePositionsParams,
+  SubscribeOrdersParams,
+  SubscribeOrderFillsParams,
+  SubscribePricesParams,
+  SubscribeCandlesParams,
+  SubscribeOrderBookParams,
+  SubscribeOICapsParams,
+  // Action params
+  OrderParams,
+  OrderResult,
+  ClosePositionParams,
+  WithdrawParams,
+  WithdrawResult,
+  CancelOrderParams,
+  CancelOrderResult,
+  GetAccountStateParams,
+  GetPositionsParams,
+  GetOrdersParams,
+  GetOrderFillsParams,
+  // Other types
+  WebSocketConnectionState,
+  CandlePeriod,
+  TimeDuration,
+  PerpsPlatformDependencies,
+  PerpsProviderType,
+  PerpsActiveProviderMode,
+} from '@metamask/perps-controller';
 
-// Export all constants
+// Export infrastructure for creating the controller
+export { createPerpsInfrastructure } from './infrastructure';
+
+// Export local constants (market configs, etc.)
 export * from './constants';
 
-// Export all utilities
+// Export local utilities
 export * from './utils';
 
-// Export mock data (useful for testing and Storybook)
+// Keep mock exports for testing and Storybook
 export * from './mocks';
+
+// Keep MockPerpsController for fallback/testing
+export { MockPerpsController } from './MockPerpsController';

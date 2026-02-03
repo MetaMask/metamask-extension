@@ -12,7 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PERPS_HOME_ROUTE } from '../../../helpers/constants/routes';
-import { PerpsStreamProvider } from '../../../providers/perps';
+import { PerpsControllerProvider } from '../../../providers/perps';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -24,8 +24,8 @@ import { StartTradeCta } from './start-trade-cta';
 import { PerpsEmptyState } from './perps-empty-state';
 
 /**
- * Inner component that consumes stream hooks
- * Must be rendered within PerpsStreamProvider
+ * Inner component that consumes controller hooks
+ * Must be rendered within PerpsControllerProvider
  */
 const PerpsTabViewContent: React.FC = () => {
   const t = useI18nContext();
@@ -155,13 +155,13 @@ const PerpsTabViewContent: React.FC = () => {
  * PerpsTabView component displays the perpetuals trading tab
  * with positions and orders sections using stream data
  *
- * Wraps content with PerpsStreamProvider to enable stream hooks
+ * Wraps content with PerpsControllerProvider to enable controller hooks
  */
 export const PerpsTabView: React.FC = () => {
   return (
-    <PerpsStreamProvider>
+    <PerpsControllerProvider>
       <PerpsTabViewContent />
-    </PerpsStreamProvider>
+    </PerpsControllerProvider>
   );
 };
 

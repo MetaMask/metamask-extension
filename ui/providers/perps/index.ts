@@ -1,17 +1,12 @@
 /**
  * Perps Providers
  *
- * This module exports the React context provider and utilities for Perps UI.
+ * This module exports the React context provider for Perps UI.
  *
  * Preferred imports for new code:
- * - `usePerpsClient()` - Hook to access PerpsClient in React components
- * - `PerpsClient` type - Interface for perps functionality
- * - `createMockPerpsClient()` - Factory for mock client
- *
- * Legacy/deprecated exports:
- * - `PerpsStreamManager` - Use `createMockPerpsClient()`
- * - `getStreamManagerInstance` - Use `createMockPerpsClient()`
- * - `usePerpsStream` - Use `usePerpsClient()`
+ * - `usePerpsController()` - Hook to access PerpsController directly
+ * - `PerpsControllerProvider` - React provider for controller context
+ * - Types from `@metamask/perps-controller`
  */
 
 // Controller access
@@ -25,14 +20,13 @@ export {
 // PREFERRED EXPORTS - Use these for new code
 // ============================================================================
 
-// React Provider & Client
+// React Provider & Hook for direct controller access
 export {
-  PerpsStreamProvider,
-  usePerpsClient,
-  PerpsClientContext,
-  type PerpsStreamProviderProps,
-  type PerpsClient,
-} from './PerpsStreamProvider';
+  PerpsControllerProvider,
+  usePerpsController,
+  PerpsControllerContext,
+  type PerpsControllerProviderProps,
+} from './PerpsControllerProvider';
 
 // Route Wrapper
 export {
@@ -40,29 +34,12 @@ export {
   type PerpsRouteWrapperProps,
 } from './PerpsRouteWrapper';
 
-// Client factory
-export { createMockPerpsClient } from './MockPerpsClient';
-
-// Client types (for consumers who need type-only imports)
+// Re-export commonly used types from the controller package
 export type {
-  PerpsClientStreams,
-  PerpsClientActions,
-  PerpsClientConnection,
-  // Subscription param types
-  PricesSubscribeParams,
-  PositionsSubscribeParams,
-  OrdersSubscribeParams,
-  AccountSubscribeParams,
-  OrderFillsSubscribeParams,
-  OrderBookSubscribeParams,
-  CandlesSubscribeParams,
-  MarketDataSubscribeParams,
-  OICapsSubscribeParams,
-  // Re-exported data types
+  AccountState,
   Position,
   Order,
   OrderFill,
-  AccountState,
   PriceUpdate,
   PerpsMarketData,
   CandleData,
@@ -70,14 +47,42 @@ export type {
   CandlePeriod,
   TimeDuration,
   WebSocketConnectionState,
-} from './PerpsClient.types';
+  SubscribeAccountParams,
+  SubscribePositionsParams,
+  SubscribeOrdersParams,
+  SubscribeOrderFillsParams,
+  SubscribePricesParams,
+  SubscribeCandlesParams,
+  SubscribeOrderBookParams,
+} from '@metamask/perps-controller';
 
 // ============================================================================
-// DEPRECATED EXPORTS - Keep for backward compatibility
+// DEPRECATED EXPORTS - Keep for backward compatibility during migration
 // ============================================================================
 
 /**
- * @deprecated Use `createMockPerpsClient()` instead.
+ * @deprecated Use `PerpsControllerProvider` and `usePerpsController()` instead.
+ */
+export {
+  PerpsStreamProvider,
+  usePerpsClient,
+  PerpsClientContext,
+  usePerpsStream,
+  type PerpsStreamProviderProps,
+} from './PerpsStreamProvider';
+
+/**
+ * @deprecated Use direct controller access instead.
+ */
+export { createMockPerpsClient } from './MockPerpsClient';
+
+/**
+ * @deprecated Use direct controller access instead.
+ */
+export type { PerpsClient } from './PerpsClient.types';
+
+/**
+ * @deprecated Use `PerpsStreamManager` from PerpsStreamManager.ts instead.
  */
 export {
   PerpsStreamManager,
@@ -85,13 +90,3 @@ export {
   type StreamSubscriptionParams,
   type TopOfBookData,
 } from './PerpsStreamManager';
-
-/**
- * @deprecated Use `usePerpsClient()` instead.
- */
-export { usePerpsStream } from './PerpsStreamProvider';
-
-/**
- * @deprecated Use `PerpsClientContext` instead.
- */
-export { PerpsClientContext as PerpsStreamContext } from './PerpsStreamProvider';

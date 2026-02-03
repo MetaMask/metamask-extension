@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsClient } from '../../../providers/perps';
-import type { CandleData, CandlePeriod, TimeDuration } from '../../../providers/perps';
+import { usePerpsController } from '../../../providers/perps';
+import type { CandleData, CandlePeriod, TimeDuration } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLiveCandles hook
@@ -29,12 +29,14 @@ export interface UsePerpsLiveCandlesReturn {
 /**
  * Hook for real-time candlestick data via stream subscription
  *
+ * Uses the PerpsController directly for WebSocket subscriptions.
+ *
  * @param options - Configuration options
  * @returns Object containing candle data and loading state
  *
  * @example
  * ```tsx
- * import { CandlePeriod } from '../../providers/perps';
+ * import { CandlePeriod } from '@metamask/perps-controller';
  *
  * function CandleChart() {
  *   const { candleData, isInitialLoading } = usePerpsLiveCandles({
@@ -53,7 +55,7 @@ export function usePerpsLiveCandles(
   options: UsePerpsLiveCandlesOptions,
 ): UsePerpsLiveCandlesReturn {
   const { symbol, interval, duration, onError } = options;
-  const client = usePerpsClient();
+  const controller = usePerpsController();
   const [candleData, setCandleData] = useState<CandleData | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
@@ -65,7 +67,7 @@ export function usePerpsLiveCandles(
       return undefined;
     }
 
-    const unsubscribe = client.streams.candles.subscribe({
+    const unsubscribe = controller.subscribeToCandles({
       symbol,
       interval,
       duration,
@@ -82,7 +84,7 @@ export function usePerpsLiveCandles(
     return () => {
       unsubscribe();
     };
-  }, [client, symbol, interval, duration, onError]);
+  }, [controller, symbol, interval, duration, onError]);
 
   return { candleData, isInitialLoading };
 }

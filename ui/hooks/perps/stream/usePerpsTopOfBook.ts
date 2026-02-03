@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsClient } from '../../../providers/perps';
+import { usePerpsController } from '../../../providers/perps';
 
 /**
  * Top of book data (best bid/ask)
@@ -42,6 +42,7 @@ export interface UsePerpsTopOfBookReturn {
 /**
  * Hook for real-time top of book (best bid/ask) data via stream subscription
  *
+ * Uses the PerpsController directly for WebSocket subscriptions.
  * This is a lightweight alternative to usePerpsLiveOrderBook when you only
  * need the best bid and ask prices. Internally, it subscribes to the order book
  * stream and extracts the top level.
@@ -73,7 +74,7 @@ export function usePerpsTopOfBook(
   options: UsePerpsTopOfBookOptions,
 ): UsePerpsTopOfBookReturn {
   const { symbol } = options;
-  const client = usePerpsClient();
+  const controller = usePerpsController();
   const [topOfBook, setTopOfBook] = useState<TopOfBookData | undefined>(
     undefined,
   );
@@ -88,7 +89,7 @@ export function usePerpsTopOfBook(
     }
 
     // Subscribe to order book and extract top of book data
-    const unsubscribe = client.streams.orderBook.subscribe({
+    const unsubscribe = controller.subscribeToOrderBook({
       symbol,
       levels: 1, // Only need top level
       callback: (orderBook) => {
@@ -120,7 +121,7 @@ export function usePerpsTopOfBook(
     return () => {
       unsubscribe();
     };
-  }, [client, symbol]);
+  }, [controller, symbol]);
 
   return { topOfBook, isInitialLoading };
 }

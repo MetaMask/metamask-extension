@@ -344,7 +344,7 @@ const MarketListView = mmLazy(
     import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
 );
 
-// Perps pages wrapped with PerpsStreamProvider
+// Perps pages wrapped with PerpsControllerProvider
 const WrappedPerpsHomePage = () => (
   <PerpsRouteWrapper>
     <PerpsHomePage />

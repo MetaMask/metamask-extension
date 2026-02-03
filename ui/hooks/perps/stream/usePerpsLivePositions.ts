@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsClient } from '../../../providers/perps';
-import type { Position } from '../../../providers/perps';
+import { usePerpsController } from '../../../providers/perps';
+import type { Position } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLivePositions hook
@@ -25,6 +25,8 @@ const EMPTY_POSITIONS: Position[] = [];
 
 /**
  * Hook for real-time position updates via stream subscription
+ *
+ * Uses the PerpsController directly for WebSocket subscriptions.
  *
  * @param options - Configuration options
  * @returns Object containing positions array and loading state
@@ -53,13 +55,13 @@ export function usePerpsLivePositions(
 ): UsePerpsLivePositionsReturn {
   // Note: throttleMs is accepted for API compatibility but not used by controller
   const { throttleMs: _throttleMs = 0 } = options;
-  const client = usePerpsClient();
+  const controller = usePerpsController();
   const [positions, setPositions] = useState<Position[]>(EMPTY_POSITIONS);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
-    const unsubscribe = client.streams.positions.subscribe({
+    const unsubscribe = controller.subscribeToPositions({
       callback: (newPositions) => {
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
@@ -73,7 +75,7 @@ export function usePerpsLivePositions(
     return () => {
       unsubscribe();
     };
-  }, [client]);
+  }, [controller]);
 
   return { positions, isInitialLoading };
 }
