@@ -26,7 +26,7 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 import { Driver } from '../../../webdriver/driver';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import Timers from '../../utils/timers';
-import { getCommonMocks } from '../../utils/common-mocks';
+import { mockPowerUserPrices } from '../../utils/performance-mocks';
 import { performanceTracker } from '../../utils/performance-tracker';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -53,7 +53,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         testSpecificMock: async (server: Mockttp) => {
-          return [...getCommonMocks(server)];
+          return mockPowerUserPrices(server);
         },
       },
       async ({ driver }: { driver: Driver }) => {
