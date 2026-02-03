@@ -4,6 +4,7 @@ import {
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
 import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
+import { LedgerOffscreenHandler } from './ledger';
 
 // Mock functions - defined before jest.mock calls
 const mockTransportClose = jest.fn();
@@ -73,7 +74,6 @@ describe('Ledger Offscreen', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.resetModules();
 
     // Set up navigator.hid mock
     mockAddEventListener = jest.fn((event, callback) => {
@@ -122,9 +122,8 @@ describe('Ledger Offscreen', () => {
 
   describe('init', () => {
     it('sets up device and message listeners', async () => {
-      // @ts-expect-error - TypeScript requires .js extension for ESM but Jest cannot resolve it
-      const { default: init } = await import('./ledger');
-      await init();
+      const handler = new LedgerOffscreenHandler();
+      await handler.init();
 
       expect(mockAddEventListener).toHaveBeenCalledWith(
         'connect',
@@ -138,9 +137,8 @@ describe('Ledger Offscreen', () => {
     });
 
     it('notifies extension when Ledger device is already connected', async () => {
-      // @ts-expect-error - TypeScript requires .js extension for ESM but Jest cannot resolve it
-      const { default: init } = await import('./ledger');
-      await init();
+      const handler = new LedgerOffscreenHandler();
+      await handler.init();
 
       expect(mockSendMessage).toHaveBeenCalledWith({
         target: OffscreenCommunicationTarget.extension,
@@ -152,9 +150,8 @@ describe('Ledger Offscreen', () => {
 
   describe('device events', () => {
     beforeEach(async () => {
-      // @ts-expect-error - TypeScript requires .js extension for ESM but Jest cannot resolve it
-      const { default: init } = await import('./ledger');
-      await init();
+      const handler = new LedgerOffscreenHandler();
+      await handler.init();
       mockSendMessage.mockClear();
     });
 
@@ -188,9 +185,8 @@ describe('Ledger Offscreen', () => {
 
   describe('message handling', () => {
     beforeEach(async () => {
-      // @ts-expect-error - TypeScript requires .js extension for ESM but Jest cannot resolve it
-      const { default: init } = await import('./ledger');
-      await init();
+      const handler = new LedgerOffscreenHandler();
+      await handler.init();
       mockSendMessage.mockClear();
     });
 
