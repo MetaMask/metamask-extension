@@ -48,6 +48,8 @@ async function runWithRetries(
 
   try {
     return await retry({ retries, delay: 1000 }, async () => {
+      performanceTracker.reset();
+
       const result = await benchmarkFn();
       lastResult = result;
 
@@ -78,6 +80,11 @@ export async function runBenchmarkWithIterations(
 
     if (result.success) {
       successfulRuns += 1;
+      // Generate report after each successful run (like Mocha's afterEach)
+      const timerCount = performanceTracker.getTimerCount();
+      if (timerCount > 0) {
+        performanceTracker.generateReport(`${name} - iteration ${i + 1}`, name);
+      }
     } else {
       failedRuns += 1;
     }

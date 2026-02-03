@@ -158,8 +158,8 @@ export const SEND_TRANSACTIONS_THRESHOLDS: ThresholdConfig = {
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   selectTokenToSendFormLoaded: {
-    p75: { warn: 1800, fail: 2400 },
-    p95: { warn: 2800, fail: 3500 },
+    p75: { warn: 6000, fail: 7500 },
+    p95: { warn: 8000, fail: 10000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
   reviewTransactionToConfirmationPage: {
@@ -174,8 +174,8 @@ export const SEND_TRANSACTIONS_THRESHOLDS: ThresholdConfig = {
  */
 export const ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
-    p75: { warn: 4500, fail: 5800 },
-    p95: { warn: 7000, fail: 8700 },
+    p75: { warn: 5500, fail: 7000 },
+    p95: { warn: 8000, fail: 10000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
@@ -185,8 +185,8 @@ export const ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
  */
 export const SOLANA_ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
-    p75: { warn: 4500, fail: 5800 },
-    p95: { warn: 7000, fail: 8700 },
+    p75: { warn: 5500, fail: 7000 },
+    p95: { warn: 8000, fail: 10000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };

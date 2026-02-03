@@ -24,18 +24,15 @@ import OnboardingPasswordPage from '../../../page-objects/pages/onboarding/onboa
 import OnboardingSrpPage from '../../../page-objects/pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
 import { Driver } from '../../../webdriver/driver';
-import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import Timers from '../../utils/timers';
-import { getCommonMocks } from '../../utils/common-mocks';
 import { performanceTracker } from '../../utils/performance-tracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { getCommonMocks } from '../../utils/common-mocks';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
 export const persona = 'standard';
 
 export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRunResult> {
-  Timers.resetTimers();
-
   try {
     await withFixtures(
       {

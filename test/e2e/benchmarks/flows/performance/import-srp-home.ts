@@ -12,9 +12,8 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import LoginPage from '../../../page-objects/pages/login-page';
 import { Driver } from '../../../webdriver/driver';
-import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import Timers from '../../utils/timers';
 import { performanceTracker } from '../../utils/performance-tracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -24,8 +23,6 @@ export const testTitle = 'benchmark-import-srp-home-power-user';
 export const persona = 'powerUser';
 
 export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
-  Timers.resetTimers();
-
   try {
     // Validate required environment variable
     if (!SECOND_SRP) {
@@ -87,6 +84,7 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);
           await assetListPage.checkTokenListIsDisplayed();
+          await assetListPage.checkConversionRateDisplayed();
           await assetListPage.checkTokenExistsInList('Ethereum');
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
