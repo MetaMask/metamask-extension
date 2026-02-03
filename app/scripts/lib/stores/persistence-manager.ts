@@ -8,8 +8,12 @@ import {
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
+import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -242,6 +246,10 @@ export class PersistenceManager {
     }
   }
 
+  #normalizePersistError(error: unknown): Error {
+    return error instanceof Error ? error : new Error(String(error));
+  }
+
   async open() {
     if (!this.#open) {
       try {
@@ -379,12 +387,11 @@ export class PersistenceManager {
    *
    * @param state - The state to set in the local store. This should be an object
    * containing the state data to be stored.
+   * @returns Tuple containing success status and error (if any).
    * @throws Error if the state is missing or if the metadata is not set before
    * calling this method.
-   * @throws Error if the local store is not open.
-   * @throws Error if the data persistence fails during the write operation.
    */
-  async set(state: MetaMaskStateType) {
+  async set(state: MetaMaskStateType): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'data') {
       throw new Error(
         'MetaMask - cannot set full state when storageKind is not "data"',
@@ -414,7 +421,7 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
@@ -459,6 +466,8 @@ export class PersistenceManager {
               },
             );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
@@ -475,6 +484,7 @@ export class PersistenceManager {
           }
           this.#notifySetFailed();
           log.error('error setting state in local store:', err);
+          return [false, this.#normalizePersistError(err)];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -499,7 +509,7 @@ export class PersistenceManager {
     this.#pendingPairs.set(key, value);
   }
 
-  async persist() {
+  async persist(): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'split') {
       throw new Error(
         'MetaMask - cannot use `persist` when storageKind is not "split"',
@@ -528,7 +538,7 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
@@ -586,6 +596,8 @@ export class PersistenceManager {
               },
             );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
@@ -604,6 +616,7 @@ export class PersistenceManager {
           }
           this.#notifySetFailed();
           log.error('error setting state in local store:', err);
+          return [false, this.#normalizePersistError(err)];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -840,33 +853,68 @@ export class PersistenceManager {
    * occur.
    */
   async migrateToSplitState(state: MetaMaskStateType) {
-    return runTrackedTask('migrateToSplitState', async () => {
-      if (this.storageKind === 'split') {
-        log.debug(
-          '[Split State]: Storage is already split, skipping migration',
-        );
-        return;
+    try {
+      type MigrationStatus = 'skipped' | 'succeeded';
+
+      const migrationStatus = await runTrackedTask<MigrationStatus>(
+        'migrateToSplitState',
+        async () => {
+          if (this.storageKind === 'split') {
+            log.debug(
+              '[Split State]: Storage is already split, skipping migration',
+            );
+            return 'skipped';
+          }
+
+          if (!this.#metadata) {
+            throw new Error(
+              'MetaMask - metadata must be set before calling "migrateToSplitState"',
+            );
+          }
+
+          this.storageKind = 'split';
+          const metadata = structuredClone(this.#metadata);
+          metadata.storageKind = 'split';
+          this.setMetadata(metadata);
+          for (const [key, value] of Object.entries(state)) {
+            this.update(key, value);
+          }
+
+          // mark data key for deletion
+          this.update('data', undefined);
+
+          log.debug('[Split State]: Migrating to split state storage');
+          // persist doesn't throw when it fails, so we need to check the return
+          // value for an error condition and throw it in that case.
+          const [didPersist, persistError] = await this.persist();
+          if (!didPersist) {
+            throw (
+              persistError ??
+              new Error(
+                'MetaMask - persist failed during "migrateToSplitState"',
+              )
+            );
+          }
+
+          return 'succeeded';
+        },
+      );
+
+      if (migrationStatus === 'succeeded') {
+        trackEarlySegmentEvent({
+          state,
+          event: MetaMetricsEventName.StateMigrationSucceeded,
+          category: MetaMetricsEventCategory.StateMigration,
+        });
       }
+    } catch (error) {
+      trackEarlySegmentEvent({
+        state,
+        event: MetaMetricsEventName.StateMigrationFailed,
+        category: MetaMetricsEventCategory.StateMigration,
+      });
 
-      if (!this.#metadata) {
-        throw new Error(
-          'MetaMask - metadata must be set before calling "migrateToSplitState"',
-        );
-      }
-
-      this.storageKind = 'split';
-      const metadata = structuredClone(this.#metadata);
-      metadata.storageKind = 'split';
-      this.setMetadata(metadata);
-      for (const [key, value] of Object.entries(state)) {
-        this.update(key, value);
-      }
-
-      // mark data key for deletion
-      this.update('data', undefined);
-
-      log.debug('[Split State]: Migrating to split state storage');
-      await this.persist();
-    });
+      throw error;
+    }
   }
 }
