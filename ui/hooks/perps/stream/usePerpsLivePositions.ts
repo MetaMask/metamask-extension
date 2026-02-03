@@ -63,6 +63,9 @@ export function usePerpsLivePositions(
   useEffect(() => {
     const unsubscribe = controller.subscribeToPositions({
       callback: (newPositions) => {
+        // Debug: Log all positions received from controller
+        console.log('[Perps] Positions received:', newPositions.length, newPositions.map(p => ({ symbol: p.symbol, size: p.size, positionValue: p.positionValue })));
+
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
           setIsInitialLoading(false);

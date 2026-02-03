@@ -25,7 +25,7 @@ export type PositionCardProps = {
 
 /**
  * PositionCard component displays individual position information
- * Two rows: coin/leverage/direction + size on left, entry price + P&L on right
+ * Two rows: coin/leverage/direction + size on left, position value + P&L on right
  * Clicking the card navigates to the market detail page for that symbol
  *
  * @param options0 - Component props
@@ -100,7 +100,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({
         </Text>
       </Box>
 
-      {/* Right side: Entry price and P&L */}
+      {/* Right side: Position value and P&L */}
       <Box
         className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
@@ -108,7 +108,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({
         gap={1}
       >
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          ${position.entryPrice}
+          {formatCurrencyWithMinThreshold(parseFloat(position.positionValue), 'USD')}
         </Text>
         <Text
           variant={TextVariant.BodySm}

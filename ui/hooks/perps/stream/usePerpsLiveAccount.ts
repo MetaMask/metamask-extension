@@ -59,6 +59,13 @@ export function usePerpsLiveAccount(
   useEffect(() => {
     const unsubscribe = controller.subscribeToAccount({
       callback: (newAccount) => {
+        // Debug: Log account state including subAccountBreakdown for HIP-3
+        console.log('[Perps] Account received:', {
+          totalBalance: newAccount.totalBalance,
+          unrealizedPnl: newAccount.unrealizedPnl,
+          subAccountBreakdown: newAccount.subAccountBreakdown,
+        });
+
         if (!hasReceivedFirstUpdate.current) {
           hasReceivedFirstUpdate.current = true;
           setIsInitialLoading(false);

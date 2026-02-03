@@ -99,11 +99,11 @@ describe('PositionCard', () => {
     expect(screen.getByText('50 SOL')).toBeInTheDocument();
   });
 
-  it('displays the entry price', () => {
-    const position = createMockPosition({ entryPrice: '45000.00' });
+  it('displays the position value', () => {
+    const position = createMockPosition({ positionValue: '7125.00' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
-    expect(screen.getByText('$45000.00')).toBeInTheDocument();
+    expect(screen.getByText('$7,125.00')).toBeInTheDocument();
   });
 
   it('displays positive P&L with + prefix', () => {
