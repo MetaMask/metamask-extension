@@ -148,8 +148,7 @@ function walkAst(node: Node, envVars: Set<string>): void {
   }
 
   // Recursively walk all child nodes
-  for (const key of Object.keys(node)) {
-    const value = (node as unknown as Record<string, unknown>)[key];
+  for (const value of Object.values(node)) {
     if (Array.isArray(value)) {
       for (const item of value) {
         if (item && typeof item === 'object') {
