@@ -180,7 +180,8 @@ async function getPublicKey(hdPath: string): Promise<{
 }
 
 /**
- * Signs a transaction.
+ * Signs a transaction using clear signing, which displays human-readable
+ * token/NFT information on the Ledger device screen.
  *
  * @param hdPath - The HD derivation path.
  * @param tx - The raw transaction hex string.
@@ -195,7 +196,11 @@ async function signTransaction(
   s: string;
 }> {
   const app = await ensureApp();
-  const result = await app.signTransaction(hdPath, tx);
+  const result = await app.clearSignTransaction(hdPath, tx, {
+    nft: true,
+    externalPlugins: true,
+    erc20: true,
+  });
   return {
     v: result.v,
     r: result.r,

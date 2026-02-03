@@ -12,7 +12,7 @@ const mockOpenConnected = jest.fn();
 const mockCreate = jest.fn();
 const mockGetAppConfiguration = jest.fn();
 const mockGetAddress = jest.fn();
-const mockSignTransaction = jest.fn();
+const mockClearSignTransaction = jest.fn();
 const mockSignPersonalMessage = jest.fn();
 const mockSignEIP712Message = jest.fn();
 
@@ -37,7 +37,7 @@ jest.mock('@ledgerhq/hw-app-eth', () => {
     default: jest.fn().mockImplementation(() => ({
       getAppConfiguration: mockGetAppConfiguration,
       getAddress: mockGetAddress,
-      signTransaction: mockSignTransaction,
+      clearSignTransaction: mockClearSignTransaction,
       signPersonalMessage: mockSignPersonalMessage,
       signEIP712Message: mockSignEIP712Message,
     })),
@@ -280,7 +280,7 @@ describe('Ledger Offscreen', () => {
 
     describe('signTransaction', () => {
       it('signs transaction and returns signature', async () => {
-        mockSignTransaction.mockResolvedValue({
+        mockClearSignTransaction.mockResolvedValue({
           v: '1b',
           r: 'abcd1234',
           s: 'efgh5678',
