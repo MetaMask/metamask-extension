@@ -62,6 +62,9 @@ jobs:
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      # GITHUB_REF_NAME is used by mock-config.ts to determine if mocks should be used
+      # For PRs: use head_ref (source branch), for pushes: use ref_name (target branch)
+      GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
     continue-on-error: true
     steps:
       - name: Checkout and setup environment

@@ -14,6 +14,7 @@ import SnapTransactionConfirmation from '../../../page-objects/pages/confirmatio
 import { Driver } from '../../../webdriver/driver';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import Timers from '../../utils/timers';
+import { getTestSpecificMock } from '../../utils/mock-config';
 import { performanceTracker } from '../../utils/performance-tracker';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
@@ -42,6 +43,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSendPage = new TimerHelper('openSendPageFromHome');

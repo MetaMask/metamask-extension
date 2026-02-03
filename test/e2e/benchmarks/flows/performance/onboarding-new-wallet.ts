@@ -3,7 +3,6 @@
  * Measures time for creating a new wallet during onboarding
  */
 
-import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
@@ -23,7 +22,7 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 import { Driver } from '../../../webdriver/driver';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import Timers from '../../utils/timers';
-import { mockPowerUserPrices } from '../../utils/performance-mocks';
+import { getTestSpecificMock } from '../../utils/mock-config';
 import { performanceTracker } from '../../utils/performance-tracker';
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -49,9 +48,7 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         fixtures: new FixtureBuilder({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
-        testSpecificMock: async (server: Mockttp) => {
-          return mockPowerUserPrices(server);
-        },
+        testSpecificMock: getTestSpecificMock(),
       },
       async ({ driver }: { driver: Driver }) => {
         const timerCreateWalletToSocial = new TimerHelper(
