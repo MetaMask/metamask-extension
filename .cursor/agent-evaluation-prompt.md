@@ -49,27 +49,27 @@ Create a test controller in this repo:
 2. **Validate by reading the controller and test files** and score each criterion as P (1) or F (0):
    The criteria below are derived from the project's controller guidelines (see AGENTS.md → controller-guidelines). They measure whether the agent followed the canonical rules without being given implementation details in the prompt.
 
-   | # | Criterion | How to verify |
-   |---|-----------|----------------|
-   | 1 | Extends BaseController | In controller file: `extends BaseController<...>` |
-   | 2 | State has only `enabled: boolean` | State type has single property `enabled: boolean` |
-   | 3 | State metadata defined | Object passed to `super({ metadata: ... })` with entry for `enabled` |
-   | 4 | Full metadata per property | Each state property has `persist` and `anonymous` |
-   | 5 | Default state function exported | Exported function `getDefaultFeatureFlagsControllerState()` returns `{ enabled: boolean }` (e.g. `enabled: false`) |
-   | 6 | Default state is function, not object | No exported constant object as default state; a function returns a new object |
-   | 7 | Constructor with single options bag | Constructor takes one parameter of the form `{ messenger, state? }` (no extra positional args) |
-   | 8 | Initial state: merge with defaults | In `super()` uses `state: { ...getDefault..., ...state }` (or equivalent) |
-   | 9 | State changes via `this.update()` | No direct assignment to `this.state`; mutations happen inside `this.update(...)` |
-   | 10 | Test colocated with controller | File `feature-flags-controller.test.ts` (or `.test.ts`) exists in the same folder |
-   | 11 | Tests cover state and behavior | Tests for default state, updating `enabled`, and/or partial initial state |
-   | 12 | Not registered in MetaMaskController | `app/scripts/metamask-controller.js` does not reference FeatureFlagsController or `agent-eval-feature-flags-controller` |
-   | 13 | Everything under eval folder | Only files under `app/scripts/controllers/agent-eval-feature-flags-controller/` |
-   | 14 | TypeScript | Controller and test are TypeScript (no new JS) |
-   | 15 | No lint/TS errors in folder | Files in that folder pass lint and `yarn lint:tsc` with no errors of their own |
+   | #   | Criterion                             | How to verify                                                                                                           |
+   | --- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+   | 1   | Extends BaseController                | In controller file: `extends BaseController<...>`                                                                       |
+   | 2   | State has only `enabled: boolean`     | State type has single property `enabled: boolean`                                                                       |
+   | 3   | State metadata defined                | Object passed to `super({ metadata: ... })` with entry for `enabled`                                                    |
+   | 4   | Full metadata per property            | Each state property has `persist` and `anonymous`                                                                       |
+   | 5   | Default state function exported       | Exported function `getDefaultFeatureFlagsControllerState()` returns `{ enabled: boolean }` (e.g. `enabled: false`)      |
+   | 6   | Default state is function, not object | No exported constant object as default state; a function returns a new object                                           |
+   | 7   | Constructor with single options bag   | Constructor takes one parameter of the form `{ messenger, state? }` (no extra positional args)                          |
+   | 8   | Initial state: merge with defaults    | In `super()` uses `state: { ...getDefault..., ...state }` (or equivalent)                                               |
+   | 9   | State changes via `this.update()`     | No direct assignment to `this.state`; mutations happen inside `this.update(...)`                                        |
+   | 10  | Test colocated with controller        | File `feature-flags-controller.test.ts` (or `.test.ts`) exists in the same folder                                       |
+   | 11  | Tests cover state and behavior        | Tests for default state, updating `enabled`, and/or partial initial state                                               |
+   | 12  | Not registered in MetaMaskController  | `app/scripts/metamask-controller.js` does not reference FeatureFlagsController or `agent-eval-feature-flags-controller` |
+   | 13  | Everything under eval folder          | Only files under `app/scripts/controllers/agent-eval-feature-flags-controller/`                                         |
+   | 14  | TypeScript                            | Controller and test are TypeScript (no new JS)                                                                          |
+   | 15  | No lint/TS errors in folder           | Files in that folder pass lint and `yarn lint:tsc` with no errors of their own                                          |
 
 3. **Score:**
    - Points = sum of P (1) for each of the 15 items (max 15).
-   - Score = (points / 15) * 10, rounded to 1 decimal (out of 10).
+   - Score = (points / 15) \* 10, rounded to 1 decimal (out of 10).
    - Pass = all three commands succeed and score ≥ 6.0.
 
 4. **Report the evaluation result:** list each criterion 1–15 with P or F, total points (e.g. 14/15), score out of 10 (e.g. 9.3), and Pass or Fail.
@@ -78,5 +78,7 @@ Create a test controller in this repo:
    - **Inconsistencies between documents** (e.g. AGENTS.md vs controller-guidelines vs actual code patterns).
    - **Ambiguities or outdated guidance** (e.g. metadata fields — names, requirements, or examples that don't match the codebase).
    - **Other gaps** that made the task harder or led to wrong assumptions (missing examples, unclear wording, conflicting rules).
+
 ---
+
 Report the evaluation result as above, then add the suggestions list.

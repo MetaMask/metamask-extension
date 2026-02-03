@@ -29,15 +29,15 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 
 Read these files for detailed coding standards and examples—do not duplicate their content here.
 
-| Topic | Canonical file |
-| ----- | ----------------- |
-| Controller patterns | `.cursor/rules/controller-guidelines/RULE.md` |
-| Unit testing | `.cursor/rules/unit-testing-guidelines/RULE.md` |
-| E2E testing | `.cursor/rules/e2e-testing-guidelines/RULE.md` |
+| Topic                                                           | Canonical file                                                                          |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Controller patterns                                             | `.cursor/rules/controller-guidelines/RULE.md`                                           |
+| Unit testing                                                    | `.cursor/rules/unit-testing-guidelines/RULE.md`                                         |
+| E2E testing                                                     | `.cursor/rules/e2e-testing-guidelines/RULE.md`                                          |
 | Front-end performance (rendering, hooks, React Compiler, Redux) | `.cursor/rules/front-end-performance-rendering/RULE.md` and related in `.cursor/rules/` |
-| PR workflow | `.cursor/rules/pull-request-guidelines/RULE.md` |
-| Code style & React | `.cursor/rules/coding-guidelines/RULE.md` |
-| Official guidelines | `.github/guidelines/CODING_GUIDELINES.md` |
+| PR workflow                                                     | `.cursor/rules/pull-request-guidelines/RULE.md`                                         |
+| Code style & React                                              | `.cursor/rules/coding-guidelines/RULE.md`                                               |
+| Official guidelines                                             | `.github/guidelines/CODING_GUIDELINES.md`                                               |
 
 E2E deprecated patterns: `.cursor/BUGBOT.md`
 
@@ -115,14 +115,14 @@ All patterns and code examples for controllers, unit tests, E2E, React performan
 
 **Quick reference:**
 
-| Problem | Action |
-| -------- | ------ |
-| Module not found | `yarn install` |
-| Out of memory | `NODE_OPTIONS=--max-old-space-size=4096` |
-| LavaMoat errors | `yarn lavamoat:auto` |
-| E2E won’t start | `yarn build:test` first |
-| Snapshot fails | Review diff; `yarn test:unit -u` only if intentional |
-| Port in use | `lsof -ti:PORT \| xargs kill -9` |
+| Problem          | Action                                               |
+| ---------------- | ---------------------------------------------------- |
+| Module not found | `yarn install`                                       |
+| Out of memory    | `NODE_OPTIONS=--max-old-space-size=4096`             |
+| LavaMoat errors  | `yarn lavamoat:auto`                                 |
+| E2E won’t start  | `yarn build:test` first                              |
+| Snapshot fails   | Review diff; `yarn test:unit -u` only if intentional |
+| Port in use      | `lsof -ti:PORT \| xargs kill -9`                     |
 
 ---
 
