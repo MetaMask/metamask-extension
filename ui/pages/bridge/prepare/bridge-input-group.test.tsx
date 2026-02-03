@@ -132,11 +132,14 @@ const openAssetPicker = async () => {
   });
 };
 
-const fillSearchInput = async (searchQuery: string) => {
+const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
   const searchInput = screen.getByTestId('bridge-asset-picker-search-input');
   await act(async () => {
     await searchInput.focus();
     await userEvent.keyboard(searchQuery);
+  });
+  await waitFor(() => {
+    expect(screen.getByTestId('bridge-asset-picker-search-input')).toHaveValue(expectedValue ?? searchQuery);
   });
 };
 
@@ -193,7 +196,7 @@ describe('BridgeInputGroup', () => {
       );
     });
 
-    await fillSearchInput('SD');
+    await fillSearchInput('SD', 'USD');
     await waitFor(() => {
       expectAssetListToMatch(
         `
