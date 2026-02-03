@@ -10,7 +10,11 @@ import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
-import type { BenchmarkResults, Metrics } from '../../utils/types';
+import type {
+  BenchmarkResults,
+  Metrics,
+  PageLoadBenchmarkOptions,
+} from '../../utils/types';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
 
@@ -72,10 +76,8 @@ async function measurePagePowerUser(
   return { metrics, title, persona };
 }
 
-export async function run(options: {
-  browserLoads?: number;
-  pageLoads?: number;
-  retries?: number;
-}): Promise<BenchmarkResults> {
+export async function run(
+  options: PageLoadBenchmarkOptions,
+): Promise<BenchmarkResults> {
   return runPageLoadBenchmark(measurePagePowerUser, options);
 }

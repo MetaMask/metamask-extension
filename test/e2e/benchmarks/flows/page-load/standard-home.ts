@@ -6,7 +6,11 @@
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
-import type { BenchmarkResults, Metrics } from '../../utils/types';
+import type {
+  BenchmarkResults,
+  Metrics,
+  PageLoadBenchmarkOptions,
+} from '../../utils/types';
 import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
 
 async function measurePageStandard(
@@ -39,10 +43,8 @@ async function measurePageStandard(
   return { metrics, title, persona };
 }
 
-export async function run(options: {
-  browserLoads?: number;
-  pageLoads?: number;
-  retries?: number;
-}): Promise<BenchmarkResults> {
+export async function run(
+  options: PageLoadBenchmarkOptions,
+): Promise<BenchmarkResults> {
   return runPageLoadBenchmark(measurePageStandard, options);
 }

@@ -3,6 +3,12 @@ export type TimerResult = {
   duration: number;
 };
 
+export type PageLoadBenchmarkOptions = {
+  browserLoads?: number;
+  pageLoads?: number;
+  retries?: number;
+};
+
 type NavigationMetric = {
   load: number;
   domContentLoaded: number;
