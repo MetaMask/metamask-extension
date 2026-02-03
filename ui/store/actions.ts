@@ -4647,17 +4647,20 @@ export function resetOnboardingAction() {
 }
 
 /**
- * Reset the wallet
+ * Reset the wallet.
  *
+ * @param restoreOnly - Whether to only restore the vault, without resetting the onboarding. @default false
  * @returns void
  */
-export function resetWallet() {
+export function resetWallet(restoreOnly = false) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      // reset onboarding
-      await dispatch(resetOnboarding());
+      if (!restoreOnly) {
+        // reset onboarding
+        await dispatch(resetOnboarding());
+      }
 
-      await submitRequestToBackground('resetWallet');
+      await submitRequestToBackground('resetWallet', [restoreOnly]);
 
       // force update metamask state
       await forceUpdateMetamaskState(dispatch);
