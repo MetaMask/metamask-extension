@@ -202,6 +202,10 @@ One way to go about this is to define and automate [fitness functions](https://w
 
 We use shareable git hooks using Husky to drive these incremental changes. Fitness functions are then version controlled, reviewed as part of the standard software development workflow, and permanently prevent regressions and encourage progress.
 
+## Agent Evaluation
+
+To evaluate how well AI coding agents follow the project's guidelines, see [`.cursor/agent-evaluation-prompt.md`](../.cursor/agent-evaluation-prompt.md). The prompt asks an agent to create a minimal controller and then self-evaluate against a rubric derived from the controller guidelines.
+
 ## References and further reading
 
 https://github.com/MetaMask/core/issues/413
