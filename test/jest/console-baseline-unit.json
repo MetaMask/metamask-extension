@@ -457,6 +457,9 @@
       "Material-UI: JSS warnings": 15,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/order-entry/components/order-summary/order-summary.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/perps-empty-state/perps-empty-state.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
