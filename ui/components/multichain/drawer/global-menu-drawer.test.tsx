@@ -1,6 +1,6 @@
 import React from 'react';
-import { fireEvent } from '../../../../test/jest';
 import { render } from '@testing-library/react';
+import { fireEvent } from '../../../../test/jest';
 import { GlobalMenuDrawer } from '.';
 
 const mockCloseMenu = jest.fn();

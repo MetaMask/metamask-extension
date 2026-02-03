@@ -11,10 +11,10 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import type { GlobalMenuDrawerProps } from './global-menu-drawer.types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 /**
  * GlobalMenuDrawer component
@@ -27,6 +27,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
  * @param props.isOpen - Whether the drawer is open
  * @param props.closeMenu - Callback to close the drawer
  * @param props.anchorElement - Anchor element (hamburger button) to help find the correct container
+ * @param props.children
  */
 export const GlobalMenuDrawer = ({
   isOpen,
@@ -104,14 +105,18 @@ export const GlobalMenuDrawer = ({
         left: `${rootLayoutRect.left - appRect.left}px`,
         width: `${rootLayoutRect.width}px`,
         bottom: 0,
+        height: 'auto',
       });
 
       setContainerElement(appContainer);
     };
 
-    requestAnimationFrame(updatePosition);
+    const frameId = requestAnimationFrame(updatePosition);
     window.addEventListener('resize', updatePosition);
-    return () => window.removeEventListener('resize', updatePosition);
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', updatePosition);
+    };
   }, [isFullscreen, anchorElement]);
 
   // Handle ESC key press to close drawer
