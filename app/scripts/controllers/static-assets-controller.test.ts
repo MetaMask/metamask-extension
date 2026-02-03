@@ -17,21 +17,16 @@ import { StaticAssetsController } from './static-assets-controller';
 
 const mockTopAssets = [
   {
-    assetId: 'eip155:1/erc20:0x111111111117dc0aa78b770fa6a738034120c302',
-    symbol: '1INCH',
+    assetId: 'eip155:1/erc20:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
     decimals: 18,
-    name: '1INCH Token',
-    aggregators: [],
-    iconUrl:
-      'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/icons/eip155:1/erc20:0x111111111117dC0aa78b770fA6A738034120C302.svg',
   },
   {
-    assetId: 'eip155:1/erc20:0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-    symbol: 'AAVE',
-    decimals: 18,
-    name: 'Aave',
-    aggregators: [],
-    iconUrl: '',
+    assetId: 'eip155:1/erc20:0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+    name: 'Wrapped Bitcoin',
+    symbol: 'WBTC',
+    decimals: 8,
   },
 ];
 
@@ -85,7 +80,6 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
     getSupportedChains: () => new Set(supportedChains),
     getCacheExpirationTime: () => 1000,
     getTopX: () => 10,
-    getOccurrenceFloor: () => 2,
   });
 
   return {
@@ -126,19 +120,23 @@ describe('StaticAssetsController', () => {
         allIgnoredTokens: {},
       });
       tokensControllerAddTokensSpy.mockReturnThis();
-      fetchWithCacheSpy.mockResolvedValue({
-        data: [...mockTopAssets],
-      });
+      fetchWithCacheSpy.mockResolvedValue(mockTopAssets);
 
       await controller._executePoll({
         chainIds: [CHAIN_IDS.MAINNET],
         selectedAccountAddress: '0x123',
       });
 
+      const url = new URL(
+        `https://token.api.cx.metamask.io/v3/tokens/trending`,
+      );
+      url.searchParams.set('chainIds', 'eip155:1');
+      // Set the minimum volume, liquidity and market cap to 1 to fetch all tokens.
+      url.searchParams.set('minVolume24hUsd', '1');
+      url.searchParams.set('minLiquidity', '1');
+      url.searchParams.set('minMarketCap', '1');
       expect(fetchWithCacheSpy).toHaveBeenCalledWith({
-        url: expect.stringContaining(
-          'https://tokens.api.cx.metamask.io/v3/chains/eip155:1/assets',
-        ),
+        url: url.toString(),
         fetchOptions: { method: 'GET' },
         cacheOptions: { cacheRefreshTime: expect.any(Number) },
         functionName: 'fetchTopAssets',
@@ -150,21 +148,22 @@ describe('StaticAssetsController', () => {
       expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
         [
           {
-            address: '0x111111111117dc0aa78b770fa6a738034120c302',
-            symbol: '1INCH',
+            address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            symbol: 'WETH',
             decimals: 18,
-            name: '1INCH Token',
+            name: 'Wrapped Ether',
             aggregators: [],
             image:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x111111111117dc0aa78b770fa6a738034120c302.svg',
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
           },
           {
-            address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-            symbol: 'AAVE',
-            decimals: 18,
-            name: 'Aave',
+            address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+            symbol: 'WBTC',
+            decimals: 8,
+            name: 'Wrapped Bitcoin',
             aggregators: [],
-            image: '',
+            image:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
           },
         ],
         'mainnet',
@@ -286,81 +285,111 @@ describe('StaticAssetsController', () => {
         expect(tokensControllerAddTokensSpy).not.toHaveBeenCalled();
       });
 
-      it('ignores the slip44 token and the token that fails to transform', async () => {
-        const {
-          controller,
-          spies: {
-            tokensControllerAddTokensSpy,
-            networkControllerFindNetworkClientIdByChainIdSpy,
-            tokensControllerGetStateSpy,
-            fetchWithCacheSpy,
+      // @ts-expect-error This function is missing from the Mocha type definitions
+      it.each([
+        {
+          testCase: 'it has no assetId',
+          token: {
+            symbol: 'ETH',
+            decimals: 18,
+            name: 'Ether',
           },
-        } = setupController({
-          supportedChains: [CHAIN_IDS.MAINNET],
-        });
-        networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
-          'mainnet',
-        );
-        tokensControllerGetStateSpy.mockResolvedValue({
-          allIgnoredTokens: {},
-        });
-        tokensControllerAddTokensSpy.mockReturnThis();
-        fetchWithCacheSpy.mockResolvedValue({
-          data: [
-            ...mockTopAssets,
-            {
-              assetId: 'slip44:60',
-              symbol: 'ETH',
-              decimals: 18,
-              name: 'ETH',
-              aggregators: [],
-              iconUrl:
-                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x111111111117dc0aa78b770fa6a738034120c302.svg',
+        },
+        {
+          testCase: 'it is a slip44 token',
+          token: {
+            assetId: 'slip44:60',
+            symbol: 'SLIP44',
+            decimals: null,
+            name: 'SLIP44',
+          },
+        },
+        {
+          testCase: 'it is a zero address token',
+          token: {
+            assetId:
+              'eip155:1/erc20:0x0000000000000000000000000000000000000000',
+            symbol: 'ZERO',
+            decimals: null,
+            name: 'Zero',
+          },
+        },
+        {
+          testCase: 'it has no decimals',
+          token: {
+            assetId:
+              'eip155:1/erc20:0x1234567890123456789012345678901234567890',
+            symbol: 'NO_DECIMALS',
+            decimals: null,
+            name: 'No Decimals',
+          },
+        },
+      ])(
+        'ignores the token if $testCase',
+        async ({
+          token,
+        }: {
+          token: {
+            assetId: string;
+            symbol: string;
+            decimals: number;
+            name: string;
+          };
+        }) => {
+          const {
+            controller,
+            spies: {
+              tokensControllerAddTokensSpy,
+              networkControllerFindNetworkClientIdByChainIdSpy,
+              tokensControllerGetStateSpy,
+              fetchWithCacheSpy,
             },
-            {
-              // omit the assetId to let the transformTopAsset function fail
-              symbol: 'AMP',
-              decimals: 18,
-              name: 'Amp',
-              aggregators: [],
-              iconUrl:
-                'https://tokens.1inch.io/0xff20817765cb7f73d4bde2e66e067e58d11095c2.png',
-            },
-          ],
-        });
+          } = setupController({
+            supportedChains: [CHAIN_IDS.MAINNET],
+          });
+          networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
+            'mainnet',
+          );
+          tokensControllerGetStateSpy.mockResolvedValue({
+            allIgnoredTokens: {},
+          });
+          tokensControllerAddTokensSpy.mockReturnThis();
+          fetchWithCacheSpy.mockResolvedValue([...mockTopAssets, token]);
 
-        await controller._executePoll({
-          chainIds: [CHAIN_IDS.MAINNET],
-          selectedAccountAddress: '0x123',
-        });
+          await controller._executePoll({
+            chainIds: [CHAIN_IDS.MAINNET],
+            selectedAccountAddress: '0x123',
+          });
 
-        expect(
-          networkControllerFindNetworkClientIdByChainIdSpy,
-        ).toHaveBeenCalledWith(CHAIN_IDS.MAINNET);
-        expect(tokensControllerGetStateSpy).toHaveBeenCalled();
-        expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
-          [
-            {
-              address: '0x111111111117dc0aa78b770fa6a738034120c302',
-              symbol: '1INCH',
-              decimals: 18,
-              name: '1INCH Token',
-              aggregators: [],
-              image:
-                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x111111111117dc0aa78b770fa6a738034120c302.svg',
-            },
-            {
-              address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-              symbol: 'AAVE',
-              decimals: 18,
-              name: 'Aave',
-              aggregators: [],
-              image: '',
-            },
-          ],
-          'mainnet',
-        );
-      });
+          expect(
+            networkControllerFindNetworkClientIdByChainIdSpy,
+          ).toHaveBeenCalledWith(CHAIN_IDS.MAINNET);
+          expect(tokensControllerGetStateSpy).toHaveBeenCalled();
+          expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
+            [
+              {
+                address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                symbol: 'WETH',
+                decimals: 18,
+                name: 'Wrapped Ether',
+                aggregators: [],
+                image:
+                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
+              },
+              {
+                address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+                symbol: 'WBTC',
+                decimals: 8,
+                name: 'Wrapped Bitcoin',
+                aggregators: [],
+                image:
+                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
+              },
+            ],
+            'mainnet',
+          );
+        },
+      );
     });
 
     describe('filterIgnoredTokens', () => {
@@ -381,9 +410,6 @@ describe('StaticAssetsController', () => {
           symbol: 'AMP',
           decimals: 18,
           name: 'Amp',
-          aggregators: [],
-          iconUrl:
-            'https://tokens.1inch.io/0xff20817765cb7f73d4bde2e66e067e58d11095c2.png',
         };
         networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
           'mainnet',
@@ -396,9 +422,7 @@ describe('StaticAssetsController', () => {
           },
         });
         tokensControllerAddTokensSpy.mockReturnThis();
-        fetchWithCacheSpy.mockResolvedValue({
-          data: [...mockTopAssets, ignoredTokens],
-        });
+        fetchWithCacheSpy.mockResolvedValue([...mockTopAssets, ignoredTokens]);
 
         await controller._executePoll({
           chainIds: [CHAIN_IDS.MAINNET],
@@ -412,21 +436,22 @@ describe('StaticAssetsController', () => {
         expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
           [
             {
-              address: '0x111111111117dc0aa78b770fa6a738034120c302',
-              symbol: '1INCH',
+              address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+              symbol: 'WETH',
               decimals: 18,
-              name: '1INCH Token',
+              name: 'Wrapped Ether',
               aggregators: [],
               image:
-                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x111111111117dc0aa78b770fa6a738034120c302.svg',
+                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
             },
             {
-              address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-              symbol: 'AAVE',
-              decimals: 18,
-              name: 'Aave',
+              address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+              symbol: 'WBTC',
+              decimals: 8,
+              name: 'Wrapped Bitcoin',
               aggregators: [],
-              image: '',
+              image:
+                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
             },
           ],
           'mainnet',
@@ -474,9 +499,7 @@ describe('StaticAssetsController', () => {
             allIgnoredTokens,
           });
           tokensControllerAddTokensSpy.mockReturnThis();
-          fetchWithCacheSpy.mockResolvedValue({
-            data: [...mockTopAssets],
-          });
+          fetchWithCacheSpy.mockResolvedValue(mockTopAssets);
 
           await controller._executePoll({
             chainIds: [CHAIN_IDS.MAINNET],
@@ -486,21 +509,22 @@ describe('StaticAssetsController', () => {
           expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
             [
               {
-                address: '0x111111111117dc0aa78b770fa6a738034120c302',
-                symbol: '1INCH',
+                address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+                symbol: 'WETH',
                 decimals: 18,
-                name: '1INCH Token',
+                name: 'Wrapped Ether',
                 aggregators: [],
                 image:
-                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x111111111117dc0aa78b770fa6a738034120c302.svg',
+                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
               },
               {
-                address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-                symbol: 'AAVE',
-                decimals: 18,
-                name: 'Aave',
+                address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+                symbol: 'WBTC',
+                decimals: 8,
+                name: 'Wrapped Bitcoin',
                 aggregators: [],
-                image: '',
+                image:
+                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
               },
             ],
             'mainnet',

@@ -24,11 +24,9 @@ export const DEFAULT_CACHE_EXPIRATION_MS = 1 * 60 * 60 * 1000; // 1 hour
 
 export const DEFAULT_TOP_X = 10;
 
-export const DEFAULT_OCCURRENCE_FLOOR = 2;
-
 const STATIC_ASSETS_URL = 'https://static.cx.metamask.io';
 
-const TOKEN_API_BASE_URL = 'https://tokens.api.cx.metamask.io';
+const TOKEN_API_BASE_URL = 'https://token.api.cx.metamask.io';
 
 export type StaticAssetsPollingFeatureFlagOptions = {
   /** The supported chains for the controller. */
@@ -81,25 +79,21 @@ export type StaticAssetsControllerOptions = {
   getCacheExpirationTime: () => number;
   /** The top X assets to fetch. */
   getTopX: () => number;
-  /** The occurrence floor for the top assets. */
-  getOccurrenceFloor: (chainId: string) => number;
 };
 
 /**
  * The top asset type.
  *
- * @see https://tokens.api.cx.metamask.io/v3/chains/eip155:999/assets?first=10&occurrenceFloor=2&includeAggregators=true&includeIconUrl=true
+ * @see https://token.api.cx.metamask.io/v3/tokens/trending?chainIds=eip155%3A56&minVolume24hUsd=1&minLiquidity=1&minMarketCap=1
  *
  * This is the type of the top assets that are fetched from the API.
  * It is used to transform the top assets to tokens.
  */
 type TopAsset = {
-  iconUrl: string;
   assetId: CaipAssetType;
   symbol: string;
   decimals: number;
   name: string;
-  aggregators: string[];
 };
 
 /**
@@ -107,20 +101,14 @@ type TopAsset = {
  *
  * @param params - The parameters for the fetch.
  * @param params.chainId - The chain ID.
- * @param params.topX - The number of top assets to fetch.
- * @param params.occurrenceFloor - The occurrence floor.
  * @param params.cacheExpirationTime - The cache expiration time in milliseconds.
  * @returns The top assets.
  */
 async function fetchTopAssets({
   chainId,
-  topX,
-  occurrenceFloor,
   cacheExpirationTime,
 }: {
   chainId: string;
-  topX: number;
-  occurrenceFloor: number;
   cacheExpirationTime: number;
 }): Promise<TopAsset[]> {
   try {
@@ -128,13 +116,12 @@ async function fetchTopAssets({
       return [];
     }
     const caip2ChainId = toEvmCaipChainId(chainId);
-    const url = new URL(
-      `${TOKEN_API_BASE_URL}/v3/chains/${caip2ChainId}/assets`,
-    );
-    url.searchParams.set('first', topX.toString());
-    url.searchParams.set('occurrenceFloor', occurrenceFloor.toString());
-    url.searchParams.set('includeAggregators', 'true');
-    url.searchParams.set('includeIconUrl', 'true');
+    const url = new URL(`${TOKEN_API_BASE_URL}/v3/tokens/trending`);
+    url.searchParams.set('chainIds', caip2ChainId);
+    // Set the minimum volume, liquidity and market cap to 1 to fetch all tokens.
+    url.searchParams.set('minVolume24hUsd', '1');
+    url.searchParams.set('minLiquidity', '1');
+    url.searchParams.set('minMarketCap', '1');
 
     const response = await fetchWithCache({
       url: url.toString(),
@@ -142,7 +129,7 @@ async function fetchTopAssets({
       cacheOptions: { cacheRefreshTime: cacheExpirationTime },
       functionName: 'fetchTopAssets',
     });
-    return response.data;
+    return response;
   } catch (error) {
     // we return an empty array if the fetch top assets fails
     return [];
@@ -177,16 +164,12 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
   /** The top X assets to fetch. */
   readonly #getTopX: () => number;
 
-  /** The occurrence floor for the top assets by chain ID. */
-  readonly #getOccurrenceFloor: (chainId: string) => number;
-
   constructor({
     messenger,
     interval = DEFAULT_INTERVAL_MS,
     getSupportedChains,
     getCacheExpirationTime,
     getTopX,
-    getOccurrenceFloor,
   }: StaticAssetsControllerOptions) {
     super({
       name: CONTROLLER,
@@ -201,8 +184,6 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     this.#getCacheExpirationTime = getCacheExpirationTime;
 
     this.#getTopX = getTopX;
-
-    this.#getOccurrenceFloor = getOccurrenceFloor;
   }
 
   /**
@@ -238,18 +219,14 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    * @returns The transformed token.
    */
   #transformTopAsset(topAsset: TopAsset): Token {
-    let { iconUrl } = topAsset;
-    if (iconUrl) {
-      const imgExtension = iconUrl.split('.').pop();
-      iconUrl = buildImageUrl(topAsset.assetId, imgExtension ?? 'png');
-    }
-
     return {
       address: parseCaipAssetType(topAsset.assetId).assetReference,
       decimals: topAsset.decimals,
       symbol: topAsset.symbol,
-      aggregators: topAsset.aggregators ?? [],
-      image: iconUrl,
+      aggregators: [],
+      // Backend Token Processor will always convert the image extension to png.
+      // We can assume that the token icon is always using .png extension.
+      image: buildImageUrl(topAsset.assetId, 'png'),
       name: topAsset.name,
     };
   }
@@ -267,8 +244,8 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     if (!(await this.#isValidChainId(chainId))) {
       return;
     }
-    const tokens = await this.#fetchTopAssets(chainId);
 
+    const tokens = await this.#fetchTopAssets(chainId);
     if (tokens.length > 0) {
       await this.#addTokensToTokensController(
         tokens,
@@ -375,29 +352,39 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    */
   async #fetchTopAssets(chainId: string): Promise<Token[]> {
     const tokens: Token[] = [];
-
+    const topX = this.#getTopX();
     const topAssets = await fetchTopAssets({
       chainId,
-      topX: this.#getTopX() ?? DEFAULT_TOP_X,
-      occurrenceFloor:
-        this.#getOccurrenceFloor(chainId) ?? DEFAULT_OCCURRENCE_FLOOR,
       cacheExpirationTime:
         this.#getCacheExpirationTime() ?? DEFAULT_CACHE_EXPIRATION_MS,
     });
 
-    topAssets.forEach((topAsset) => {
-      try {
-        // skip slip44 tokens.
-        if (parseCaipAssetType(topAsset.assetId).assetNamespace === 'slip44') {
-          return;
+    if (topAssets.length > 0) {
+      for (const topAsset of topAssets) {
+        try {
+          const asset = parseCaipAssetType(topAsset.assetId);
+          if (
+            // skip slip44 tokens.
+            asset.assetNamespace === 'slip44' ||
+            // skip zero address tokens.
+            asset.assetReference ===
+              '0x0000000000000000000000000000000000000000' ||
+            topAsset.decimals === null // skip tokens with no decimals
+          ) {
+            continue;
+          }
+          const formattedToken = this.#transformTopAsset(topAsset);
+          // in case of error, the token is not added to the tokens array.
+          tokens.push(formattedToken);
+
+          if (tokens.length >= topX) {
+            break;
+          }
+        } catch (error) {
+          // we skip the token if the transformTopAsset function fails
         }
-        const formattedToken = this.#transformTopAsset(topAsset);
-        // in case of error, the token is not added to the tokens array.
-        tokens.push(formattedToken);
-      } catch (error) {
-        // we skip the token if the transformTopAsset function fails
       }
-    });
+    }
 
     return tokens;
   }

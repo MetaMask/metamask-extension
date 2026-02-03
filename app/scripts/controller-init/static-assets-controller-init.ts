@@ -1,7 +1,6 @@
 import { Hex } from '@metamask/utils';
 import {
   DEFAULT_TOP_X,
-  DEFAULT_OCCURRENCE_FLOOR,
   DEFAULT_CACHE_EXPIRATION_MS,
   StaticAssetsController,
   StaticAssetsPollingFeatureFlagOptions,
@@ -42,11 +41,6 @@ export const StaticAssetsControllerInit: ControllerInitFunction<
     getTopX: (): number => {
       const topX = getRemoteFeatureFlagControllerState(initMessenger)?.topX;
       return topX ? Number(topX) : DEFAULT_TOP_X;
-    },
-    getOccurrenceFloor: (chainId: string): number => {
-      const occurrenceFloor =
-        getRemoteFeatureFlagControllerState(initMessenger)?.occurrenceFloor;
-      return occurrenceFloor?.[chainId] ?? DEFAULT_OCCURRENCE_FLOOR;
     },
   });
   return {
