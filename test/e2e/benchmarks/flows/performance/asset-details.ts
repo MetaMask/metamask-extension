@@ -80,8 +80,8 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         await assetListPage.checkTokenListIsDisplayed();
 
         // Measure: Asset click to price chart loaded
-        await assetListPage.clickOnAsset('USDC');
         await timer.measure(async () => {
+          await assetListPage.clickOnAsset('USDC');
           await assetListPage.checkPriceChartIsShown();
           await assetListPage.checkPriceChartLoaded(USDC_TOKEN_ADDRESS);
         });
