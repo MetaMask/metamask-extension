@@ -76,24 +76,9 @@ export const MultichainAccountCell = ({
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
       backgroundColor={
-        selected ? BackgroundColor.infoMuted : BackgroundColor.transparent
+        selected ? BackgroundColor.backgroundMuted : BackgroundColor.transparent
       }
     >
-      {selected && !startAccessory && (
-        <Box
-          className="multichain-account-cell__selected-indicator"
-          style={{
-            width: '4px',
-            position: 'absolute',
-            left: '4px',
-            top: '4px',
-            bottom: '4px',
-          }}
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
-          data-testid={`multichain-account-cell-${accountId}-selected-indicator`}
-        />
-      )}
       {startAccessory}
       <Box
         display={Display.Flex}
