@@ -7734,7 +7734,7 @@
     "message": "Back up your Secret Recovery Phrase and reinstall MetaMask if the problem continues."
   },
   "storageErrorDescriptionNoSpace": {
-    "message": "Your device is out of disk space. Back up your Secret Recovery Phrase and free up space urgently to avoid losing your wallet data. Reinstall MetaMask if the problem continues."
+    "message": "Your device is out of disk space. Free up space urgently to avoid losing your wallet data."
   },
   "storageErrorTitle": {
     "message": "We couldn't save your data"

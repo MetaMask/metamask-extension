@@ -891,10 +891,11 @@ function StorageErrorToast() {
   const shouldShow = showStorageErrorToast && !isDismissed;
 
   // Show disk space-specific message when error is due to no space
-  const description =
-    storageWriteErrorType === StorageWriteErrorType.FileErrorNoSpace
-      ? t('storageErrorDescriptionNoSpace')
-      : t('storageErrorDescriptionDefault');
+  const isNoSpaceError =
+    storageWriteErrorType === StorageWriteErrorType.FileErrorNoSpace;
+  const description = isNoSpaceError
+    ? t('storageErrorDescriptionNoSpace')
+    : t('storageErrorDescriptionDefault');
 
   // Track "Viewed" event when toast becomes visible
   useEffect(() => {
@@ -924,6 +925,14 @@ function StorageErrorToast() {
     setIsDismissed(true);
   };
 
+  // Only show action button for default errors (not for no-space errors)
+  const actionProps = isNoSpaceError
+    ? {}
+    : {
+        actionText: t('storageErrorAction'),
+        onActionClick: handleRevealSrpClick,
+      };
+
   return (
     shouldShow && (
       <Toast
@@ -938,8 +947,7 @@ function StorageErrorToast() {
         }
         text={t('storageErrorTitle')}
         description={description}
-        actionText={t('storageErrorAction')}
-        onActionClick={handleRevealSrpClick}
+        {...actionProps}
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}
         onClose={handleClose}
