@@ -13,6 +13,11 @@ import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
 import { isHardwareAccount } from '../../../../shared/lib/accounts';
 import {
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+  isTronAddress,
+} from '../../../../shared/lib/multichain/accounts';
+import {
   EstimatedPointsDto,
   EstimatePointsDto,
   SeasonDtoState,
@@ -29,6 +34,7 @@ import {
   type SeasonTierDto,
   type SeasonStatusDto,
   type SubscriptionDto,
+  type PointsEstimateHistoryEntry,
   SeasonStateDto,
   SeasonMetadataDto,
   DiscoverSeasonsDto,
@@ -40,6 +46,8 @@ import {
   SeasonNotFoundError,
 } from './rewards-data-service';
 import { signSolanaRewardsMessage } from './utils/solana-snap';
+import { signBitcoinRewardsMessage } from './utils/bitcoin-snap';
+import { signTronRewardsMessage } from './utils/tron-snap';
 import { sortAccounts } from './utils/sortAccounts';
 
 export const DEFAULT_BLOCKED_REGIONS = ['UK'];
@@ -54,6 +62,9 @@ const SEASON_METADATA_CACHE_THRESHOLD_MS = 1000 * 60 * 10; // 10 minutes
 
 // Opt-in status stale threshold for not opted-in accounts to force a fresh check (less strict than in mobile for now)
 const NOT_OPTED_IN_OIS_STALE_CACHE_THRESHOLD_MS = 1000 * 60 * 60; // 1 hour
+
+// Maximum number of points estimate history entries to keep for Customer Support diagnostics
+const MAX_POINTS_ESTIMATE_HISTORY_ENTRIES = 50;
 
 /**
  * State metadata for the RewardsController
@@ -101,6 +112,12 @@ const metadata = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  rewardsPointsEstimateHistory: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
 };
 
 /**
@@ -113,6 +130,7 @@ export const getRewardsControllerDefaultState = (): RewardsControllerState => ({
   rewardsSeasons: {},
   rewardsSeasonStatuses: {},
   rewardsSubscriptionTokens: {},
+  rewardsPointsEstimateHistory: [],
 });
 
 export const defaultRewardsControllerState = getRewardsControllerDefaultState();
@@ -219,6 +237,10 @@ export class RewardsController extends BaseController<
 
   #isDisabled: () => boolean;
 
+  #isBitcoinDisabled: () => boolean;
+
+  #isTronDisabled: () => boolean;
+
   /**
    * Calculate tier status and next tier information
    */
@@ -324,10 +346,14 @@ export class RewardsController extends BaseController<
     messenger,
     state,
     isDisabled,
+    isBitcoinDisabled,
+    isTronDisabled,
   }: {
     messenger: RewardsControllerMessenger;
     state?: Partial<RewardsControllerState>;
     isDisabled: () => boolean;
+    isBitcoinDisabled: () => boolean;
+    isTronDisabled: () => boolean;
   }) {
     super({
       name: controllerName,
@@ -342,6 +368,8 @@ export class RewardsController extends BaseController<
     this.#registerActionHandlers();
     this.#initializeEventSubscriptions();
     this.#isDisabled = isDisabled;
+    this.#isBitcoinDisabled = isBitcoinDisabled;
+    this.#isTronDisabled = isTronDisabled;
   }
 
   /**
@@ -488,6 +516,41 @@ export class RewardsController extends BaseController<
       return `0x${Buffer.from(base58.decode(result.signature)).toString(
         'hex',
       )}`;
+    } else if (
+      isBtcMainnetAddress(account.address) ||
+      isBtcTestnetAddress(account.address)
+    ) {
+      if (this.#isBitcoinDisabled()) {
+        throw new Error('Unsupported account type for signing rewards message');
+      }
+      const result = await signBitcoinRewardsMessage(
+        this.messenger.call.bind(
+          this.messenger,
+          'SnapController:handleRequest',
+        ) as unknown as HandleSnapRequest['handler'],
+        account.id,
+        Buffer.from(message, 'utf8').toString('base64'),
+      );
+      // Bitcoin signatures are typically hex-encoded, return as-is or convert if needed
+      return result.signature.startsWith('0x')
+        ? result.signature
+        : `0x${result.signature}`;
+    } else if (isTronAddress(account.address)) {
+      if (this.#isTronDisabled()) {
+        throw new Error('Unsupported account type for signing rewards message');
+      }
+      const result = await signTronRewardsMessage(
+        this.messenger.call.bind(
+          this.messenger,
+          'SnapController:handleRequest',
+        ) as unknown as HandleSnapRequest['handler'],
+        account.id,
+        Buffer.from(message, 'utf8').toString('base64'),
+      );
+      // Tron signatures are typically hex-encoded, return as-is or convert if needed
+      return result.signature.startsWith('0x')
+        ? result.signature
+        : `0x${result.signature}`;
     } else if (isEvmAddress(account.address)) {
       const result = await this.#signEvmMessage(account, message);
       return result;
@@ -644,7 +707,20 @@ export class RewardsController extends BaseController<
         return true;
       }
 
-      // If it's neither Solana nor EVM, opt-in is not supported
+      // Check if it's a Bitcoin address (gated by feature flag)
+      if (
+        isBtcMainnetAddress(account.address) ||
+        isBtcTestnetAddress(account.address)
+      ) {
+        return !this.#isBitcoinDisabled();
+      }
+
+      // Check if it's a Tron address (gated by feature flag)
+      if (isTronAddress(account.address)) {
+        return !this.#isTronDisabled();
+      }
+
+      // If it's none of the supported types, opt-in is not supported
       return false;
     } catch (error) {
       // If there's an exception (e.g., checking hardware wallet status fails),
@@ -1109,6 +1185,19 @@ export class RewardsController extends BaseController<
         request,
       );
 
+      // Track successful estimate in history for Customer Support diagnostics
+      // Wrapped in its own try-catch so history tracking failures don't affect the main functionality
+      try {
+        this.addPointsEstimateToHistory(request, estimatedPoints);
+      } catch (historyError) {
+        log.error(
+          'RewardsController: Failed to add points estimate to history:',
+          historyError instanceof Error
+            ? historyError.message
+            : String(historyError),
+        );
+      }
+
       return estimatedPoints;
     } catch (error) {
       log.error(
@@ -1117,6 +1206,74 @@ export class RewardsController extends BaseController<
       );
       throw error;
     }
+  }
+
+  /**
+   * Add a successful points estimate to the history for Customer Support diagnostics.
+   * Maintains a bounded history of the last N estimates.
+   *
+   * @param request - The estimate request containing activity details
+   * @param response - The estimated points response
+   */
+  addPointsEstimateToHistory(
+    request: EstimatePointsDto,
+    response: EstimatedPointsDto,
+  ): void {
+    const { activityContext } = request;
+
+    const entry: PointsEstimateHistoryEntry = {
+      timestamp: Date.now(),
+      requestActivityType: request.activityType,
+      requestAccount: request.account,
+      // Swap context fields (if applicable) - flattened for easier diagnostics
+      ...(activityContext.swapContext && {
+        requestSwapSrcAssetId: activityContext.swapContext.srcAsset.id,
+        requestSwapSrcAssetAmount: activityContext.swapContext.srcAsset.amount,
+        requestSwapSrcAssetUsdPrice:
+          activityContext.swapContext.srcAsset.usdPrice,
+        requestSwapDestAssetId: activityContext.swapContext.destAsset.id,
+        requestSwapDestAssetAmount:
+          activityContext.swapContext.destAsset.amount,
+        requestSwapDestAssetUsdPrice:
+          activityContext.swapContext.destAsset.usdPrice,
+        requestSwapFeeAssetId: activityContext.swapContext.feeAsset.id,
+        requestSwapFeeAssetAmount: activityContext.swapContext.feeAsset.amount,
+        requestSwapFeeAssetUsdPrice:
+          activityContext.swapContext.feeAsset.usdPrice,
+      }),
+      // Perps context fields (if applicable)
+      ...(activityContext.perpsContext &&
+        !Array.isArray(activityContext.perpsContext) && {
+          requestPerpsType: activityContext.perpsContext.type,
+          requestPerpsUsdFeeValue: activityContext.perpsContext.usdFeeValue,
+          requestPerpsCoin: activityContext.perpsContext.coin,
+        }),
+      // Shield context fields (if applicable)
+      ...(activityContext.shieldContext && {
+        requestShieldRecurringInterval:
+          activityContext.shieldContext.recurringInterval,
+      }),
+      // Response fields
+      responsePointsEstimate: response.pointsEstimate,
+      responseBonusBips: response.bonusBips,
+    };
+
+    this.update((state: RewardsControllerState) => {
+      // Add new entry at the beginning (most recent first)
+      state.rewardsPointsEstimateHistory.unshift(entry);
+
+      // Keep only the last N entries
+      if (
+        state.rewardsPointsEstimateHistory.length >
+        MAX_POINTS_ESTIMATE_HISTORY_ENTRIES
+      ) {
+        state.rewardsPointsEstimateHistory =
+          state.rewardsPointsEstimateHistory.slice(
+            0,
+            MAX_POINTS_ESTIMATE_HISTORY_ENTRIES,
+          );
+      }
+    });
   }
 
   /**

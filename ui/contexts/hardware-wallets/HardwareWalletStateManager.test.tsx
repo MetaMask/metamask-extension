@@ -92,6 +92,11 @@ describe('HardwareWalletStateManager', () => {
         typeof result.current.setters.setHardwareConnectionPermissionState,
       ).toBe('function');
       expect(typeof result.current.setters.setConnectionState).toBe('function');
+      expect(typeof result.current.setters.resetAutoConnectState).toBe(
+        'function',
+      );
+      expect(typeof result.current.setters.setAutoConnected).toBe('function');
+      expect(typeof result.current.setters.setDeviceIdRef).toBe('function');
     });
 
     it('provides all required refs', () => {
@@ -178,6 +183,130 @@ describe('HardwareWalletStateManager', () => {
 
       expect(result.current.state.walletType).toBe(null);
       expect(result.current.state.isHardwareWalletAccount).toBe(false);
+    });
+
+    describe('resetAutoConnectState', () => {
+      it('resets hasAutoConnectedRef and lastConnectedAccountRef', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Set up initial state
+        result.current.refs.hasAutoConnectedRef.current = true;
+        result.current.refs.lastConnectedAccountRef.current = '0x123';
+
+        // Call resetAutoConnectState
+        act(() => {
+          result.current.setters.resetAutoConnectState();
+        });
+
+        // Verify refs are reset
+        expect(result.current.refs.hasAutoConnectedRef.current).toBe(false);
+        expect(result.current.refs.lastConnectedAccountRef.current).toBe(null);
+      });
+    });
+
+    describe('setAutoConnected', () => {
+      it('marks auto-connect as completed with account and device info', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Initially not auto-connected
+        expect(result.current.refs.hasAutoConnectedRef.current).toBe(false);
+        expect(result.current.refs.lastConnectedAccountRef.current).toBe(null);
+
+        // Call setAutoConnected
+        act(() => {
+          result.current.setters.setAutoConnected('0xabc', 'device-456');
+        });
+
+        // Verify refs are updated
+        expect(result.current.refs.hasAutoConnectedRef.current).toBe(true);
+        expect(result.current.refs.lastConnectedAccountRef.current).toBe(
+          '0xabc',
+        );
+        expect(result.current.refs.deviceIdRef.current).toBe('device-456');
+      });
+
+      it('handles null account address', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Call setAutoConnected with null account
+        act(() => {
+          result.current.setters.setAutoConnected(null, 'device-789');
+        });
+
+        // Verify refs are updated
+        expect(result.current.refs.hasAutoConnectedRef.current).toBe(true);
+        expect(result.current.refs.lastConnectedAccountRef.current).toBe(null);
+        expect(result.current.refs.deviceIdRef.current).toBe('device-789');
+      });
+    });
+
+    describe('setDeviceIdRef', () => {
+      it('updates deviceIdRef directly', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Initially null
+        expect(result.current.refs.deviceIdRef.current).toBe(null);
+
+        // Call setDeviceIdRef
+        act(() => {
+          result.current.setters.setDeviceIdRef('new-device-id');
+        });
+
+        // Verify ref is updated
+        expect(result.current.refs.deviceIdRef.current).toBe('new-device-id');
+      });
+    });
+
+    describe('ref synchronization during render', () => {
+      it('syncs walletTypeRef with current wallet type on initial render', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // walletTypeRef should match the current wallet type
+        expect(result.current.refs.walletTypeRef.current).toBe(
+          HardwareWalletType.Ledger,
+        );
+        // previousWalletTypeRef should be null on first render
+        expect(result.current.refs.previousWalletTypeRef.current).toBe(null);
+      });
+
+      it('deviceIdRef is synced immediately when deviceId state changes', () => {
+        const store = mockStore(createMockState(KeyringTypes.ledger));
+
+        const { result } = renderHook(() => useHardwareWalletStateManager(), {
+          wrapper: createWrapper(store),
+        });
+
+        // Set deviceId via state setter
+        act(() => {
+          result.current.setters.setDeviceId('synced-device-id');
+        });
+
+        // Ref should be synced immediately (not via useEffect)
+        expect(result.current.refs.deviceIdRef.current).toBe(
+          'synced-device-id',
+        );
+        expect(result.current.state.deviceId).toBe('synced-device-id');
+      });
     });
   });
 });
