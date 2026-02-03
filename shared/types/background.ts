@@ -129,6 +129,7 @@ export type ControllerStatePropertiesEnumerated = {
   shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
   shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
   showStorageErrorToast: AppStateControllerState['showStorageErrorToast'];
+  storageWriteErrorType: AppStateControllerState['storageWriteErrorType'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
