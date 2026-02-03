@@ -274,7 +274,7 @@ describe('HardwareWalletContext', () => {
         wrapper: createWrapper(store),
       });
 
-      expect(result.current.deviceId).toBe(null);
+      expect(result.current.deviceId).toBeNull();
     });
   });
 
