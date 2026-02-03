@@ -157,6 +157,11 @@ const getTransactionGroupRecipientAddressFilter = (
 
       // For native token swaps: many swap functions don't encode the native address in calldata
       // because it's implicit. Accept these swaps as they involve the native token.
+      // This is necessary because:
+      // 1. Swaps sending ETH: ETH sent via msg.value (not in calldata)
+      // 2. Swaps receiving ETH: ETH received via internal transfers (not detectable from txParams)
+      // Trade-off: May show some token-to-token swaps that route through ETH as an intermediate step,
+      // but this is acceptable since they technically do involve the native token in the swap path.
       if (isEqualCaseInsensitive(recipientAddress, NATIVE_TOKEN_ADDRESS)) {
         return true;
       }
