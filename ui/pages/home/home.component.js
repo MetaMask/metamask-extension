@@ -60,8 +60,6 @@ import {
   CONNECT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -165,11 +163,8 @@ export default class Home extends PureComponent {
     defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     onTabClick: PropTypes.func.isRequired,
-    haveSwapsQuotes: PropTypes.bool.isRequired,
-    showAwaitingSwapScreen: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
-    swapsFetchParams: PropTypes.object,
     location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
@@ -230,12 +225,9 @@ export default class Home extends PureComponent {
     const {
       closeNotificationPopup,
       firstPermissionsRequestId,
-      haveSwapsQuotes,
       isNotification,
-      showAwaitingSwapScreen,
       hasWatchTokenPendingApprovals,
       hasWatchNftPendingApprovals,
-      swapsFetchParams,
       hasTransactionPendingApprovals,
       location,
     } = this.props;
@@ -248,10 +240,7 @@ export default class Home extends PureComponent {
       firstPermissionsRequestId ||
       hasTransactionPendingApprovals ||
       hasWatchTokenPendingApprovals ||
-      hasWatchNftPendingApprovals ||
-      (!isNotification &&
-        !stayOnHomePage &&
-        (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
+      hasWatchNftPendingApprovals
     ) {
       this.state.redirecting = true;
     }
@@ -308,9 +297,6 @@ export default class Home extends PureComponent {
       hasTransactionPendingApprovals,
       hasWatchTokenPendingApprovals,
       hasWatchNftPendingApprovals,
-      haveSwapsQuotes,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
       location,
       pendingConfirmations,
       pendingConfirmationsPrioritized,
@@ -323,11 +309,7 @@ export default class Home extends PureComponent {
     ///: END:ONLY_INCLUDE_IF
 
     const canRedirect = !isNotification && !stayOnHomePage;
-    if (canRedirect && showAwaitingSwapScreen) {
-      history.push(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      history.push(PREPARE_SWAP_ROUTE);
-    } else if (firstPermissionsRequestId) {
+    if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
     } else if (pendingConfirmationsPrioritized.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);

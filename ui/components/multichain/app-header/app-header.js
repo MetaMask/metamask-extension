@@ -8,10 +8,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  SWAPS_ROUTE,
-} from '../../../helpers/constants/routes';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 
 import {
   AlignItems,
@@ -62,19 +59,14 @@ export const AppHeader = ({ location }) => {
       exact: false,
     }),
   );
-  const isSwapsPage = Boolean(
-    matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
-  );
-
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
 
-  const disableAccountPicker = isConfirmationPage || isSwapsPage;
+  const disableAccountPicker = isConfirmationPage;
 
   const disableNetworkPicker =
-    isSwapsPage ||
     isTransactionEditPage ||
     isConfirmationPage ||
     hasUnapprovedTransactions ||

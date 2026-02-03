@@ -38,7 +38,6 @@ import {
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
-  PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   fetchSwapsFeatureFlags,
@@ -469,7 +468,6 @@ export const getSwapsNetworkConfig = (state) => {
 
 const {
   clearSwapsState,
-  navigatedBackToBuildQuote,
   retriedGetQuotes,
   swapGasPriceEstimatesFetchCompleted,
   swapGasPriceEstimatesFetchStarted,
@@ -516,15 +514,6 @@ export {
   swapCustomGasModalClosed,
   setTransactionSettingsOpened,
   slice as swapsSlice,
-};
-
-export const navigateBackToPrepareSwap = (history) => {
-  return async (dispatch) => {
-    // TODO: Ensure any fetch in progress is cancelled
-    await dispatch(setBackgroundSwapRouteState(''));
-    dispatch(navigatedBackToBuildQuote());
-    history.push(PREPARE_SWAP_ROUTE);
-  };
 };
 
 export const prepareForRetryGetQuotes = () => {

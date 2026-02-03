@@ -803,7 +803,6 @@ export enum MetaMetricsEventName {
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
-  PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
   QuotesRequested = 'Quotes Requested',
   QuotesReceived = 'Quotes Received',
   BestQuoteReviewed = 'Best Quote Reviewed',

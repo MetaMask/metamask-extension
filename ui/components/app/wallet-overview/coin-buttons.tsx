@@ -42,6 +42,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -368,10 +369,12 @@ const CoinButtons = ({
       dispatch(setSwapsFromToken(defaultSwapsToken));
       if (usingHardwareWallet) {
         if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
+          global.platform.openExtensionInBrowser(
+            CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
+          );
         }
       } else {
-        history.push(PREPARE_SWAP_ROUTE);
+        history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
       }
     }
     ///: END:ONLY_INCLUDE_IF

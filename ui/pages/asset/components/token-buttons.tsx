@@ -7,6 +7,7 @@ import {
   SEND_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -277,12 +278,12 @@ const TokenButtons = ({
             );
             if (usingHardwareWallet) {
               global.platform.openExtensionInBrowser?.(
-                PREPARE_SWAP_ROUTE,
+                CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
                 undefined,
                 false,
               );
             } else {
-              history.push(PREPARE_SWAP_ROUTE);
+              history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
             }
             ///: END:ONLY_INCLUDE_IF
           }}

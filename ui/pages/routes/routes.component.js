@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { matchPath, Route, Switch } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
-import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
 import Home from '../home';
 import {
@@ -63,7 +62,6 @@ import {
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
-  SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
@@ -292,7 +290,6 @@ export default class Routes extends Component {
           component={ConfirmTransaction}
         />
         <Authenticated path={SEND_ROUTE} component={SendPage} exact />
-        <Authenticated path={SWAPS_ROUTE} component={Swaps} />
         <Authenticated
           path={CROSS_CHAIN_SWAP_ROUTE}
           component={CrossChainSwap}

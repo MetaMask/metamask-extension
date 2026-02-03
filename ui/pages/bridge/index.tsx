@@ -5,7 +5,6 @@ import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   DEFAULT_ROUTE,
-  SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
@@ -86,7 +85,7 @@ const CrossChainSwap = () => {
         <Content className="bridge__content">
           <Switch>
             <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
+              redirectRoute={DEFAULT_ROUTE}
               flag={isBridgeEnabled}
               path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
               render={() => {

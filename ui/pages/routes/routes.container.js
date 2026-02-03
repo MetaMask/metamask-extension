@@ -42,7 +42,6 @@ import {
   setEditedNetwork,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
-import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
 import {
   getIsUnlocked,
@@ -128,7 +127,6 @@ function mapDispatchToProps(dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('usd')),
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
-    prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
     toggleAccountMenu: () => dispatch(toggleAccountMenu()),
     toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
     hideImportNftsModal: () => dispatch(hideImportNftsModal()),

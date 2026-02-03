@@ -123,19 +123,19 @@ describe('useBridging', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        '/cross-chain/swaps/prepare-bridge-page',
         ETH_SWAPS_TOKEN_OBJECT,
         'Home',
         undefined,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        '/cross-chain/swaps/prepare-bridge-page',
         ETH_SWAPS_TOKEN_OBJECT,
         MetaMetricsSwapsEventSource.TokenView,
         '&token=native',
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page',
+        '/cross-chain/swaps/prepare-bridge-page',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',

@@ -233,10 +233,8 @@ PATH_NAME_MAP[
 
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 
-export const SWAPS_ROUTE = '/swaps';
-
-export const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
-PATH_NAME_MAP[PREPARE_SWAP_ROUTE] = 'Prepare Swap Page';
+export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
+PATH_NAME_MAP[PREPARE_SWAP_ROUTE] = 'Prepare Bridge Page';
 
 export const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
 PATH_NAME_MAP[SWAPS_NOTIFICATION_ROUTE] = 'Swaps Notification Page';

@@ -19,11 +19,8 @@ import {
   GANACHE_ACCOUNT,
   VERIFYING_PAYMASTER,
 } from '../constants';
-import { buildQuote, reviewQuote } from '../tests/swaps/shared';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
-import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
-import { Mockttp } from '../mock-e2e';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -110,22 +107,6 @@ async function setSnapConfig(
   await driver.clickElement({ text: 'Set Chain Config', tag: 'button' });
 }
 
-async function createSwap(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await buildQuote(driver, {
-    amount: 0.001,
-    swapTo: 'USDC',
-  });
-  await reviewQuote(driver, {
-    amount: 0.001,
-    swapFrom: 'TESTETH',
-    swapTo: 'USDC',
-  });
-
-  await driver.clickElement({ text: 'Swap', tag: 'button' });
-  await driver.clickElement({ text: 'Close', tag: 'button' });
-}
-
 async function confirmTransaction(driver: Driver) {
   await switchToNotificationWindow(driver);
   await driver.clickElement({ text: 'Confirm' });
@@ -187,17 +168,6 @@ async function expectTransactionDetailsMatchReceipt(
   );
 }
 
-async function mockSwapsTransactionQuote(mockServer: Mockttp) {
-  return [
-    await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: SWAP_TEST_ETH_USDC_TRADES_MOCK,
-      })),
-  ];
-}
-
 async function withAccountSnap(
   { title, paymaster }: { title?: string; paymaster?: string },
   test: (driver: Driver, bundlerServer: Bundler) => Promise<void>,
@@ -214,7 +184,6 @@ async function withAccountSnap(
       ganacheOptions: {
         hardfork: 'london',
       },
-      testSpecificMock: mockSwapsTransactionQuote,
     },
     async ({
       driver,
@@ -270,17 +239,6 @@ describe('User Operations', function () {
       async (driver, bundlerServer) => {
         await sendTransaction(driver, GANACHE_ACCOUNT, 1, true);
 
-        await openConfirmedTransaction(driver);
-        await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
-      },
-    );
-  });
-
-  it('from swap', async function (this: Mocha.Context) {
-    await withAccountSnap(
-      { title: this.test?.fullTitle() },
-      async (driver, bundlerServer) => {
-        await createSwap(driver);
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
       },
