@@ -283,6 +283,7 @@ export const SENTRY_BACKGROUND_STATE = {
     rewardsSeasons: false,
     rewardsSeasonStatuses: false,
     rewardsSubscriptionTokens: false,
+    rewardsPointsEstimateHistory: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
