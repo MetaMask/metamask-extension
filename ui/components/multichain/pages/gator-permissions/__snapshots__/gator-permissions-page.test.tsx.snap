@@ -37,7 +37,7 @@ exports[`Gator Permissions Page render renders correctly 1`] = `
               class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--color-text-default"
               data-testid="gator-permissions-page-title"
             >
-              Permissions
+              Dapp Connections
             </span>
           </p>
         </div>
