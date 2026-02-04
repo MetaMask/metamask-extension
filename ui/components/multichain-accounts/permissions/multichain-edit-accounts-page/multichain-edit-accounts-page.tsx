@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  Box,
   IconName,
   ButtonIcon,
   ButtonIconSize,
@@ -14,8 +13,6 @@ import {
 
 import {
   BackgroundColor,
-  Display,
-  FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -26,8 +23,9 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MultichainAccountList } from '../../multichain-account-list';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
-import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
+import { Footer, Header, Page } from '../../../multichain/pages/page';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
+import { ScrollContainer } from '../../../../contexts/scroll-container';
 
 /**
  * Represents the type of Snaps permission request:
@@ -172,20 +170,14 @@ export const MultichainEditAccountsPage: React.FC<
           {title ?? t('editAccounts')}
         </Header>
       )}
-      <Content
-        paddingLeft={4}
-        paddingRight={4}
-        backgroundColor={BackgroundColor.transparent}
-      >
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <MultichainAccountList
-            wallets={walletsWithSupportedAccountGroups}
-            selectedAccountGroups={selectedAccountGroups}
-            handleAccountClick={handleAccountClick}
-            showAccountCheckbox={true}
-          />
-        </Box>
-      </Content>
+      <ScrollContainer className="flex-1 px-4 overflow-y-auto">
+        <MultichainAccountList
+          wallets={walletsWithSupportedAccountGroups}
+          selectedAccountGroups={selectedAccountGroups}
+          handleAccountClick={handleAccountClick}
+          showAccountCheckbox={true}
+        />
+      </ScrollContainer>
       <Footer className="multichain-edit-accounts-page__footer">
         <ButtonSecondary
           data-testid="connect-more-accounts-button"
