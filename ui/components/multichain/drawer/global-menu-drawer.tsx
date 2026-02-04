@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import classnames from 'classnames';
 import {
   Box,
   BoxAlignItems,
@@ -42,15 +41,28 @@ export const GlobalMenuDrawer = ({
   );
   const [drawerStyle, setDrawerStyle] = useState<React.CSSProperties>({});
 
+  // Cache rootLayout element to avoid repeated DOM traversal
+  const rootLayoutRef = React.useRef<HTMLElement | null>(null);
+  const appContainerRef = React.useRef<HTMLElement | null>(null);
+
   // Find RootLayout and calculate positioning in fullscreen
   useEffect(() => {
     if (!isFullscreen) {
       setContainerElement(document.body);
       setDrawerStyle({});
+      rootLayoutRef.current = null;
+      appContainerRef.current = null;
       return;
     }
 
     const findRootLayout = (): HTMLElement | null => {
+      // Return cached element if available and still in DOM
+      if (rootLayoutRef.current && document.body.contains(rootLayoutRef.current)) {
+        return rootLayoutRef.current;
+      }
+
+      let found: HTMLElement | null = null;
+
       if (anchorElement) {
         let current: HTMLElement | null = anchorElement;
         while (current && current !== document.body) {
@@ -61,26 +73,35 @@ export const GlobalMenuDrawer = ({
             parent.classList.contains('flex') &&
             parent.classList.contains('flex-col')
           ) {
-            return parent;
+            found = parent;
+            break;
           }
           current = parent;
         }
       }
 
-      const appContainer = document.querySelector('.app') as HTMLElement;
-      if (!appContainer) {
-        return null;
+      // Fallback: search in app container
+      if (!found) {
+        const appContainer = document.querySelector('.app') as HTMLElement;
+        if (appContainer) {
+          appContainerRef.current = appContainer;
+          found =
+            (Array.from(appContainer.children).find(
+              (child) =>
+                child instanceof HTMLElement &&
+                child.className.includes('max-w-[') &&
+                child.classList.contains('flex') &&
+                child.classList.contains('flex-col'),
+            ) as HTMLElement) || null;
+        }
       }
 
-      return (
-        (Array.from(appContainer.children).find(
-          (child) =>
-            child instanceof HTMLElement &&
-            child.className.includes('max-w-[') &&
-            child.classList.contains('flex') &&
-            child.classList.contains('flex-col'),
-        ) as HTMLElement) || null
-      );
+      // Cache the found element
+      if (found) {
+        rootLayoutRef.current = found;
+      }
+
+      return found;
     };
 
     const updatePosition = () => {
@@ -89,7 +110,12 @@ export const GlobalMenuDrawer = ({
         return;
       }
 
-      const appContainer = document.querySelector('.app') as HTMLElement;
+      // Cache app container if not already cached
+      if (!appContainerRef.current) {
+        appContainerRef.current = document.querySelector('.app') as HTMLElement;
+      }
+
+      const appContainer = appContainerRef.current;
       if (!appContainer) {
         return;
       }
@@ -112,10 +138,21 @@ export const GlobalMenuDrawer = ({
     };
 
     const frameId = requestAnimationFrame(updatePosition);
-    window.addEventListener('resize', updatePosition);
+
+    // Debounce resize handler to avoid excessive calls
+    let resizeTimeout: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        updatePosition();
+      }, 100); // 100ms debounce
+    };
+
+    window.addEventListener('resize', handleResize);
     return () => {
       cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', updatePosition);
+      clearTimeout(resizeTimeout);
+      window.removeEventListener('resize', handleResize);
     };
   }, [isFullscreen, anchorElement]);
 
@@ -151,26 +188,38 @@ export const GlobalMenuDrawer = ({
 
   const drawerContent = (
     <Box
-      className={classnames('global-menu-drawer', {
-        'global-menu-drawer--open': isOpen,
-        'global-menu-drawer--fullscreen': isFullscreen,
-      })}
+      className={`fixed top-0 right-0 w-full h-full z-[1050] ${
+        isOpen ? 'pointer-events-auto' : 'pointer-events-none'
+      }`}
       style={isFullscreen ? drawerStyle : undefined}
       data-testid="global-menu-drawer"
     >
       {/* Overlay backdrop */}
       <Box
-        className="global-menu-drawer__overlay"
+        className={`absolute inset-0 transition-opacity duration-[250ms] ease-in-out ${
+          isOpen ? 'opacity-100' : 'opacity-0'
+        } motion-reduce:transition-none`}
+        style={{
+          backgroundColor: 'var(--color-overlay-default)',
+        }}
         onClick={closeMenu}
         data-testid="global-menu-drawer-overlay"
       />
       {/* Drawer content */}
-      <Box className="global-menu-drawer__content">
+      <Box
+        className={`absolute top-0 right-0 w-[400px] max-w-full h-full flex flex-col overflow-hidden transition-transform duration-[250ms] ease-in-out motion-reduce:transition-none ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        style={{
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+        }}
+      >
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Stretch}
           backgroundColor={BoxBackgroundColor.BackgroundDefault}
-          className="global-menu-drawer__inner"
+          className="w-full max-w-[400px] h-full overflow-y-auto overflow-x-hidden flex flex-col"
         >
           {/* Header with close button */}
           <Box className="flex flex-row items-center justify-start p-4 w-full overflow-hidden">
