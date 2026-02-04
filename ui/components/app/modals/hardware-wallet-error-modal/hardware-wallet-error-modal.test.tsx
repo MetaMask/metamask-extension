@@ -78,7 +78,9 @@ describe('HardwareWalletErrorModal', () => {
 
     it('renders nothing when error is not provided', () => {
       const onClose = jest.fn();
-      const { container } = render(<HardwareWalletErrorModal onClose={onClose} />);
+      const { container } = render(
+        <HardwareWalletErrorModal onClose={onClose} />,
+      );
 
       expect(container.firstChild).toBeNull();
       expect(onClose).toHaveBeenCalledTimes(1);
