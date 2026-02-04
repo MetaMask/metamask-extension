@@ -125,7 +125,7 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith('/');
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
 
     it('displays market price change', () => {
@@ -139,18 +139,16 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByTestId('perps-market-detail-change')).toBeInTheDocument();
     });
 
-    it('displays chart placeholder', () => {
+    it('displays candlestick chart', () => {
       const store = mockStore(createMockState(true));
 
-      const { getByTestId, getByText } = renderWithProvider(
+      const { getByTestId } = renderWithProvider(
         <PerpsMarketDetailPage />,
         store,
       );
 
-      expect(
-        getByTestId('perps-market-detail-chart-placeholder'),
-      ).toBeInTheDocument();
-      expect(getByText('Chart coming soon')).toBeInTheDocument();
+      expect(getByTestId('perps-market-detail-chart')).toBeInTheDocument();
+      expect(getByTestId('perps-candlestick-chart')).toBeInTheDocument();
     });
 
     it('displays favorite button', () => {

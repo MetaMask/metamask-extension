@@ -4,25 +4,17 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
+import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
+jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
 jest.mock('../../../../../hooks/useFiatFormatter');
-
-jest.mock('../../confirm/info/shared/gas-fee-token-icon', () => ({
-  GasFeeTokenIcon: ({ tokenAddress }: { tokenAddress: string }) => (
-    <div data-testid="gas-fee-token-icon">{tokenAddress}</div>
-  ),
-  GasFeeTokenIconSize: {
-    Sm: 'sm',
-    Md: 'md',
-  },
-}));
 
 jest.mock('../../modals/pay-with-modal', () => ({
   PayWithModal: ({
@@ -73,11 +65,28 @@ const getMockState = () => ({
       },
     ],
     completedOnboarding: true,
+    networkConfigurationsByChainId: {
+      [CHAIN_ID_MOCK]: {
+        chainId: CHAIN_ID_MOCK,
+        name: 'Ethereum Mainnet',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            url: 'https://mainnet.infura.io/v3/',
+            type: 'infura',
+            networkClientId: 'mainnet',
+          },
+        ],
+        defaultRpcEndpointIndex: 0,
+      },
+    },
+    multichainNetworkConfigurationsByChainId: {},
   },
 });
 
 describe('PayWithRow', () => {
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
+  const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
   const useFiatFormatterMock = jest.mocked(useFiatFormatter);
@@ -88,6 +97,8 @@ describe('PayWithRow', () => {
     useFiatFormatterMock.mockReturnValue(
       (value: number) => `$${value.toFixed(2)}`,
     );
+
+    useSendTokensMock.mockReturnValue([]);
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {
@@ -124,9 +135,6 @@ describe('PayWithRow', () => {
       'Pay with ETH',
     );
     expect(screen.getByTestId('pay-with-balance')).toBeInTheDocument();
-    expect(screen.getByTestId('gas-fee-token-icon')).toHaveTextContent(
-      ADDRESS_MOCK,
-    );
   });
 
   it('opens modal when clicked', () => {

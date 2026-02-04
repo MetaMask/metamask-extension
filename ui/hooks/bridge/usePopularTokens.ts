@@ -1,0 +1,83 @@
+import { useEffect, useMemo, useRef } from 'react';
+import { type CaipChainId } from '@metamask/utils';
+import { BridgeClientId } from '@metamask/bridge-controller';
+import { useSelector } from 'react-redux';
+import { useAsyncResult } from '../useAsync';
+import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import { BridgeToken } from '../../ducks/bridge/types';
+import { toBridgeToken } from '../../ducks/bridge/utils';
+import { type BridgeAppState } from '../../ducks/bridge/selectors';
+import { getBridgeAssetsByAssetId } from '../../ducks/bridge/asset-selectors';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
+
+/**
+ * Returns a sorted token list from the bridge api
+ * - tokens with highest to lowest balance in selected currency
+ * - selected asset
+ * - popularity
+ * - all other tokens
+ *
+ * @param params
+ * @param params.chainIds - enabled src/dest chainIds to return tokens for
+ * @param params.accountAddress - the account address used for balances
+ * @param params.assetsToInclude - the assets to show at the top of the list
+ */
+export const usePopularTokens = ({
+  assetsToInclude,
+  accountAddress,
+  chainIds,
+}: {
+  chainIds: Set<CaipChainId>;
+  assetsToInclude: BridgeToken[];
+  accountAddress: string;
+}) => {
+  const [accountGroup] = useSelector((state: BridgeAppState) =>
+    getAccountGroupsByAddress(state, [accountAddress]),
+  );
+  const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
+    getBridgeAssetsByAssetId(state, accountGroup.id),
+  );
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const { value: tokenList, pending: isTokenListLoading } =
+    useAsyncResult(async () => {
+      abortControllerRef.current?.abort('Asset balances changed');
+      abortControllerRef.current = new AbortController();
+      const response = await fetchPopularTokens({
+        chainIds: Array.from(chainIds),
+        assetsWithBalances: assetsToInclude,
+        clientId: BridgeClientId.EXTENSION,
+        signal: abortControllerRef.current?.signal,
+        bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      });
+      return response;
+    }, [assetsToInclude]);
+
+  const tokenListWithBalance = useMemo(() => {
+    return tokenList?.map((token) =>
+      toBridgeToken(
+        token,
+        ownedAssetsByAssetId?.[
+          // Balance keys are lowercased for easier lookup
+          token.assetId.toLowerCase() as keyof typeof ownedAssetsByAssetId
+        ],
+      ),
+    );
+  }, [tokenList, assetsToInclude, ownedAssetsByAssetId]);
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort('Page unmounted');
+    };
+  }, []);
+
+  return {
+    popularTokensList:
+      tokenListWithBalance && tokenListWithBalance.length > 0
+        ? tokenListWithBalance
+        : assetsToInclude,
+    isLoading: isTokenListLoading || tokenListWithBalance?.length === 0,
+  };
+};

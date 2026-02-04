@@ -825,7 +825,7 @@ export default class SelectHardware extends Component {
         message: (
           <>
             <p className="hw-connect__QR-subtitle">
-              {this.context.t('onekey')}
+              {this.context.t('oneKey')}
             </p>
             <Button
               className="hw-connect__external-btn-first"

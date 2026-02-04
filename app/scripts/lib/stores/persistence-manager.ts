@@ -7,6 +7,13 @@ import {
 } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
+import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
+import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -45,7 +52,14 @@ export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
  * a reference to the original error that caused the persistence failure.
  */
 export class PersistenceError extends Error {
-  backup: object | null;
+  getBackup: () => object | null;
+
+  /**
+   * The type of vault corruption that occurred.
+   * - InaccessibleDatabase: The storage system threw an error (e.g., Firefox's "An unexpected error occurred")
+   * - MissingVaultInDatabase: The database was accessible but the vault was missing
+   */
+  corruptionType: VaultCorruptionType;
 
   /**
    * The original error that caused the persistence failure, if any.
@@ -54,10 +68,18 @@ export class PersistenceError extends Error {
    */
   override cause?: Error;
 
-  constructor(message: string, backup: object | null, cause?: Error) {
+  constructor(
+    message: string,
+    backup: object | null,
+    corruptionType: VaultCorruptionType,
+    cause?: Error,
+  ) {
     super(message);
     this.name = 'PersistenceError';
-    this.backup = backup;
+    // closure around `backup` to prevent it from being serialized with the
+    // error in debug logs, error reporting, etc.
+    this.getBackup = () => backup;
+    this.corruptionType = corruptionType;
     this.cause = cause;
   }
 }
@@ -226,6 +248,10 @@ export class PersistenceManager {
     }
   }
 
+  #normalizePersistError(error: unknown): Error {
+    return error instanceof Error ? error : new Error(String(error));
+  }
+
   async open() {
     if (!this.#open) {
       try {
@@ -295,16 +321,79 @@ export class PersistenceManager {
   storageKind: StorageKind = PersistenceManager.defaultStorageKind;
 
   /**
+   * Retrieves state from the local store, with optional test simulation.
+   * In test mode with simulateStorageGetFailure flag, simulates a storage
+   * failure after onboarding (when backup exists) to test vault recovery.
+   *
+   * @returns The current state from the local store
+   * @throws Error if simulating storage failure for testing
+   */
+  async #getFromLocalStore(): Promise<MetaMaskStorageStructure | null> {
+    if (
+      process.env.IN_TEST &&
+      getManifestFlags().testing?.simulateStorageGetFailure
+    ) {
+      const backup = await this.getBackup().catch(() => null);
+      if (backup?.KeyringController) {
+        throw new Error('Simulated storage.local.get failure for testing');
+      }
+    }
+    return this.#localStore.get();
+  }
+
+  /**
+   * Checks if storage set operations should be simulated as failing.
+   * When enabled, all set operations will fail immediately.
+   *
+   * @throws Error if simulating storage failure for testing
+   */
+  #maybeSimulateSetFailure(): void {
+    if (
+      process.env.IN_TEST &&
+      getManifestFlags().testing?.simulateStorageSetFailure
+    ) {
+      throw new Error('Simulated storage.local.set failure for testing');
+    }
+  }
+
+  /**
+   * Sets state in the local store, with optional test simulation.
+   * In test mode with simulateStorageSetFailure flag, all set operations
+   * will fail immediately.
+   *
+   * @param data - The data to set in the local store
+   * @throws Error if simulating storage failure for testing
+   */
+  async #setInLocalStore(
+    data: Required<MetaMaskStorageStructure>,
+  ): Promise<void> {
+    this.#maybeSimulateSetFailure();
+    await this.#localStore.set(data);
+  }
+
+  /**
+   * Sets key-value pairs in the local store, with optional test simulation.
+   * In test mode with simulateStorageSetFailure flag, all set operations
+   * will fail immediately.
+   *
+   * @param pairs - The key-value pairs to set in the local store
+   * @throws Error if simulating storage failure for testing
+   */
+  async #setKeyValuesInLocalStore(pairs: Map<string, unknown>): Promise<void> {
+    this.#maybeSimulateSetFailure();
+    await this.#localStore.setKeyValues(pairs);
+  }
+
+  /**
    * Sets the state in the local store.
    *
    * @param state - The state to set in the local store. This should be an object
    * containing the state data to be stored.
+   * @returns Tuple containing success status and error (if any).
    * @throws Error if the state is missing or if the metadata is not set before
    * calling this method.
-   * @throws Error if the local store is not open.
-   * @throws Error if the data persistence fails during the write operation.
    */
-  async set(state: MetaMaskStateType) {
+  async set(state: MetaMaskStateType): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'data') {
       throw new Error(
         'MetaMask - cannot set full state when storageKind is not "data"',
@@ -334,7 +423,7 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
@@ -342,8 +431,8 @@ export class PersistenceManager {
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
         try {
-          // atomically set all the keys
-          await this.#localStore.set({
+          // atomically set all the keys (includes test simulation check)
+          await this.#setInLocalStore({
             data: state,
             meta,
           });
@@ -379,6 +468,8 @@ export class PersistenceManager {
               },
             );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
@@ -395,6 +486,7 @@ export class PersistenceManager {
           }
           this.#notifySetFailed();
           log.error('error setting state in local store:', err);
+          return [false, this.#normalizePersistError(err)];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -419,7 +511,7 @@ export class PersistenceManager {
     this.#pendingPairs.set(key, value);
   }
 
-  async persist() {
+  async persist(): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'split') {
       throw new Error(
         'MetaMask - cannot use `persist` when storageKind is not "split"',
@@ -448,7 +540,7 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
@@ -460,8 +552,8 @@ export class PersistenceManager {
           // reset the pendingPairs
           this.#pendingPairs.clear();
           try {
-            // save the pairs
-            await this.#localStore.setKeyValues(clone);
+            // save the pairs (includes test simulation check)
+            await this.#setKeyValuesInLocalStore(clone);
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -506,6 +598,8 @@ export class PersistenceManager {
               },
             );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
@@ -524,6 +618,7 @@ export class PersistenceManager {
           }
           this.#notifySetFailed();
           log.error('error setting state in local store:', err);
+          return [false, this.#normalizePersistError(err)];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -554,8 +649,7 @@ export class PersistenceManager {
       async () => {
         // Capture both error and result to handle them in a unified way
         // This allows us to respect the validateVault flag consistently
-        const [localStoreError, result] = await this.#localStore
-          .get()
+        const [localStoreError, result] = await this.#getFromLocalStore()
           .then((res): [undefined, MetaMaskStorageStructure | null] => [
             undefined,
             res,
@@ -603,12 +697,26 @@ export class PersistenceManager {
               Object.values(backup).some((value) => value !== undefined)
             ) {
               log.info('Backup vault found in IndexedDB, triggering recovery');
+
+              // Track vault corruption detected event directly to Segment.
+              // We do this here (before throwing) because MetaMetricsController
+              // is not initialized yet, so we use the backup state for consent/ID.
+              const corruptionType = localStoreError
+                ? VaultCorruptionType.InaccessibleDatabase
+                : VaultCorruptionType.MissingVaultInDatabase;
+              trackVaultCorruptionEvent(
+                backup,
+                MetaMetricsEventName.VaultCorruptionDetected,
+                corruptionType,
+              );
+
               // We've got some data (we haven't checked for a vault, as the
               // background+UI are responsible for determining what happens now).
               // Include the original error as cause for debugging purposes.
               throw new PersistenceError(
                 MISSING_VAULT_ERROR,
                 backup,
+                corruptionType,
                 localStoreError,
               );
             } else if (localStoreError) {
@@ -747,33 +855,68 @@ export class PersistenceManager {
    * occur.
    */
   async migrateToSplitState(state: MetaMaskStateType) {
-    return runTrackedTask('migrateToSplitState', async () => {
-      if (this.storageKind === 'split') {
-        log.debug(
-          '[Split State]: Storage is already split, skipping migration',
-        );
-        return;
+    try {
+      type MigrationStatus = 'skipped' | 'succeeded';
+
+      const migrationStatus = await runTrackedTask<MigrationStatus>(
+        'migrateToSplitState',
+        async () => {
+          if (this.storageKind === 'split') {
+            log.debug(
+              '[Split State]: Storage is already split, skipping migration',
+            );
+            return 'skipped';
+          }
+
+          if (!this.#metadata) {
+            throw new Error(
+              'MetaMask - metadata must be set before calling "migrateToSplitState"',
+            );
+          }
+
+          this.storageKind = 'split';
+          const metadata = structuredClone(this.#metadata);
+          metadata.storageKind = 'split';
+          this.setMetadata(metadata);
+          for (const [key, value] of Object.entries(state)) {
+            this.update(key, value);
+          }
+
+          // mark data key for deletion
+          this.update('data', undefined);
+
+          log.debug('[Split State]: Migrating to split state storage');
+          // persist doesn't throw when it fails, so we need to check the return
+          // value for an error condition and throw it in that case.
+          const [didPersist, persistError] = await this.persist();
+          if (!didPersist) {
+            throw (
+              persistError ??
+              new Error(
+                'MetaMask - persist failed during "migrateToSplitState"',
+              )
+            );
+          }
+
+          return 'succeeded';
+        },
+      );
+
+      if (migrationStatus === 'succeeded') {
+        trackEarlySegmentEvent({
+          state,
+          event: MetaMetricsEventName.StateMigrationSucceeded,
+          category: MetaMetricsEventCategory.StateMigration,
+        });
       }
+    } catch (error) {
+      trackEarlySegmentEvent({
+        state,
+        event: MetaMetricsEventName.StateMigrationFailed,
+        category: MetaMetricsEventCategory.StateMigration,
+      });
 
-      if (!this.#metadata) {
-        throw new Error(
-          'MetaMask - metadata must be set before calling "migrateToSplitState"',
-        );
-      }
-
-      this.storageKind = 'split';
-      const metadata = structuredClone(this.#metadata);
-      metadata.storageKind = 'split';
-      this.setMetadata(metadata);
-      for (const [key, value] of Object.entries(state)) {
-        this.update(key, value);
-      }
-
-      // mark data key for deletion
-      this.update('data', undefined);
-
-      log.debug('[Split State]: Migrating to split state storage');
-      await this.persist();
-    });
+      throw error;
+    }
   }
 }

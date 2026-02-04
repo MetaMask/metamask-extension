@@ -9,6 +9,7 @@ import {
 } from '../../../../store/actions';
 import {
   HYPERLIQUID_APPROVAL_TYPE,
+  ASTERDEX_APPROVAL_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -19,7 +20,6 @@ import smartTransactionStatusPage from './smart-transaction-status-page';
 import createSnapAccount from './create-snap-account';
 import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
-import createNamedSnapAccount from './create-named-snap-account';
 ///: END:ONLY_INCLUDE_IF
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
@@ -28,7 +28,7 @@ import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
 import snapDefault from './snaps/snap-default/snap-default';
-import hyperliquidReferralConsent from './hyperliquid-referral-consent';
+import defiReferralConsent from './defi-referral-consent';
 
 const APPROVAL_TEMPLATES = {
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
@@ -46,12 +46,11 @@ const APPROVAL_TEMPLATES = {
     createSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval]:
     removeSnapAccount,
-  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount]:
-    createNamedSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
     snapAccountRedirect,
   ///: END:ONLY_INCLUDE_IF
-  [HYPERLIQUID_APPROVAL_TYPE]: hyperliquidReferralConsent,
+  [HYPERLIQUID_APPROVAL_TYPE]: defiReferralConsent,
+  [ASTERDEX_APPROVAL_TYPE]: defiReferralConsent,
 };
 
 export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =

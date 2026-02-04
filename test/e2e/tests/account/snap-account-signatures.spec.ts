@@ -11,6 +11,7 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import {
   personalSignWithSnapAccount,
   signPermitWithSnapAccount,
@@ -74,7 +75,9 @@ describe('Snap Account Signatures', function (this: Suite) {
           // Connect the SSK account
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
-          await testDapp.connectAccount({ publicAddress: newPublicKey });
+          await connectAccountToTestDapp(driver, {
+            publicAddress: newPublicKey,
+          });
 
           // Run all 5 signature types
           await personalSignWithSnapAccount(

@@ -9,6 +9,11 @@ class TransactionDetailsPage {
     this.driver = driver;
   }
 
+  private readonly addressInActivityLog = (address: string) => ({
+    css: '.name__value',
+    text: address,
+  });
+
   private readonly amount = (amount: string) => ({
     testId: 'transaction-list-item-primary-currency',
     text: amount,
@@ -57,6 +62,11 @@ class TransactionDetailsPage {
 
   async checkTransactionViewDetailsLink(): Promise<void> {
     await this.driver.waitForSelector(this.viewDetailsLink);
+  }
+
+  async checkAddressInActivityLog(address: string): Promise<void> {
+    console.log(`Checking address ${address} in activity log`);
+    await this.driver.waitForSelector(this.addressInActivityLog(address));
   }
 }
 

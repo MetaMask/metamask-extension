@@ -11,13 +11,19 @@ import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
+  IconColor as IconColorDeprecated,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -28,8 +34,8 @@ import {
   ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
-  IconName,
-  IconSize,
+  IconName as IconNameDeprecated,
+  IconSize as IconSizeDeprecated,
   Text,
 } from '../../component-library';
 import { MultichainHoveredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-hovered-list';
@@ -38,10 +44,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  setShowSupportDataConsentModal,
-  toggleAccountMenu,
-} from '../../../store/actions';
+import { setShowSupportDataConsentModal } from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
@@ -92,7 +95,7 @@ export const AppHeaderUnlockedContent = ({
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -122,8 +125,10 @@ export const AppHeaderUnlockedContent = ({
 
   // Passing non-evm address to checksum function will throw an error
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
-  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(2000, {
-    expireClipboard: false,
+
+  // useCopyToClipboard analysis: Copies a public address
+  const [copied, handleCopy, resetCopyState] = useCopyToClipboard({
+    clearDelayMs: null,
   });
 
   const showSupportDataConsentModal = useSelector(
@@ -183,10 +188,12 @@ export const AppHeaderUnlockedContent = ({
         size={ButtonBaseSize.Sm}
         backgroundColor={BackgroundColor.transparent}
         borderRadius={BorderRadius.LG}
-        endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+        endIconName={
+          copied ? IconNameDeprecated.CopySuccess : IconNameDeprecated.Copy
+        }
         endIconProps={{
-          color: IconColor.iconAlternative,
-          size: IconSize.Sm,
+          color: IconColorDeprecated.iconAlternative,
+          size: IconSizeDeprecated.Sm,
         }}
         paddingLeft={2}
         paddingRight={2}
@@ -258,9 +265,11 @@ export const AppHeaderUnlockedContent = ({
         </Text>
         {selectedMultichainAccountId && (
           <Box
-            paddingLeft={2}
-            paddingTop={1}
-            paddingBottom={1}
+            marginTop={1}
+            marginLeft={2}
+            padding={1}
+            borderRadius={BorderRadius.LG}
+            backgroundColor={BackgroundColor.backgroundMuted}
             style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
           >
@@ -277,6 +286,11 @@ export const AppHeaderUnlockedContent = ({
               <MultichainAccountNetworkGroup
                 groupId={selectedMultichainAccountId}
                 limit={4}
+              />
+              <Icon
+                name={IconName.Copy}
+                size={IconSize.Sm}
+                color={IconColor.IconAlternative}
               />
             </MultichainHoveredAddressRowsList>
           </Box>
@@ -297,15 +311,11 @@ export const AppHeaderUnlockedContent = ({
   // TODO: [Multichain-Accounts-MUL-849] Delete this method once multichain accounts is released
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
-      if (isMultichainAccountsState2Enabled) {
-        trace({
-          name: TraceName.ShowAccountList,
-          op: TraceOperation.AccountUi,
-        });
-        navigate(ACCOUNT_LIST_PAGE_ROUTE);
-      } else {
-        dispatch(toggleAccountMenu());
-      }
+      trace({
+        name: TraceName.ShowAccountList,
+        op: TraceOperation.AccountUi,
+      });
+      navigate(ACCOUNT_LIST_PAGE_ROUTE);
     };
 
     return (
@@ -362,9 +372,7 @@ export const AppHeaderUnlockedContent = ({
     accountName,
     disableAccountPicker,
     CopyButton,
-    isMultichainAccountsState2Enabled,
     navigate,
-    dispatch,
     trackEvent,
     accountListStats,
   ]);
@@ -409,7 +417,7 @@ export const AppHeaderUnlockedContent = ({
               </Box>
             )}
             <ButtonIcon
-              iconName={IconName.Menu}
+              iconName={IconNameDeprecated.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
               onClick={handleMainMenuToggle}

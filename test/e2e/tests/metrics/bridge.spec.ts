@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   assertInAnyOrder,
   getEventPayloads,
@@ -72,12 +71,6 @@ describe('Bridge tests', function (this: Suite) {
             `Missing expected event types: ${missingEventTypes.join(', ')}`,
           );
         }
-
-        const bridgeLinkClicked = findEventsByName(
-          EventTypes.BridgeLinkClicked,
-        );
-        // The flow above navigates twice to the bridge page, so we expect 2 events
-        assert.ok(bridgeLinkClicked.length === 2);
 
         const swapBridgeButtonClicked = findEventsByName(
           EventTypes.SwapBridgeButtonClicked,
@@ -155,7 +148,7 @@ describe('Bridge tests', function (this: Suite) {
             event.properties.chain_id_source === 'eip155:1' &&
             event.properties.chain_id_destination === 'eip155:59144' &&
             event.properties.token_address_source ===
-              `eip155:1/erc20:${toChecksumHexAddress('0x6b175474e89094c44da98b954eedeac495271d0f')}` &&
+              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' &&
             event.properties.token_address_destination ===
               'eip155:59144/slip44:60' &&
             event.properties.swap_type === 'crosschain' &&
@@ -176,7 +169,7 @@ describe('Bridge tests', function (this: Suite) {
             crossChainQuotesReceived[0].properties.chain_id_destination ===
               'eip155:59144' &&
             crossChainQuotesReceived[0].properties.token_address_source ===
-              `eip155:1/erc20:${toChecksumHexAddress('0x6b175474e89094c44da98b954eedeac495271d0f')}` &&
+              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' &&
             crossChainQuotesReceived[0].properties.token_address_destination ===
               'eip155:59144/slip44:60' &&
             crossChainQuotesReceived[0].properties.swap_type === 'crosschain',

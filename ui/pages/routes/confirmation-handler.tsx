@@ -21,6 +21,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
@@ -55,7 +56,6 @@ const SNAP_APPROVAL_TYPES = [
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
   ///: END:ONLY_INCLUDE_IF
 ];
@@ -69,6 +69,7 @@ export const ConfirmationHandler = () => {
   const envType = getEnvironmentType();
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
 
   const showAwaitingSwapScreen = useSelector(selectShowAwaitingSwapScreen);
   const hasSwapsQuotes = useSelector(selectHasSwapsQuotes);
@@ -85,10 +86,7 @@ export const ConfirmationHandler = () => {
     if (canRedirect && showAwaitingSwapScreen) {
       closeModals();
       navigate(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && (hasSwapsQuotes || swapsFetchParams)) {
-      closeModals();
-      navigate(PREPARE_SWAP_ROUTE);
-    } else if (canRedirect && hasBridgeQuotes) {
+    } else if (canRedirect && hasBridgeQuotes && isPopup) {
       closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
@@ -114,6 +112,7 @@ export const ConfirmationHandler = () => {
     pendingApprovals,
     showAwaitingSwapScreen,
     swapsFetchParams,
+    isPopup,
   ]);
 
   // Runs on all routes (not just home), so skip navigation on exempted routes

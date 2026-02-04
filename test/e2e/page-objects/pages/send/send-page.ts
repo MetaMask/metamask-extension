@@ -3,17 +3,23 @@ import { Driver } from '../../../webdriver/driver';
 class SendPage {
   private readonly driver: Driver;
 
-  private readonly amountInput = '[data-testid="send-amount-input"]';
+  private readonly amountInput = { testId: 'send-amount-input' };
 
   private readonly continueButton = {
     text: 'Continue',
     tag: 'button',
   };
 
+  private readonly header = {
+    tag: 'h4',
+    text: 'Send',
+  };
+
   private readonly hexDataInput = '[placeholder="Enter hex data (optional)"]';
 
-  private readonly inputRecipient =
-    'input[placeholder="Enter or paste an address or name"]';
+  private readonly inputRecipient = {
+    testId: 'recipient-address-input',
+  };
 
   private readonly insufficientFundsError = {
     text: 'Insufficient funds',
@@ -32,15 +38,23 @@ class SendPage {
     tag: 'button',
   };
 
-  private readonly recipientModalButton =
-    '[data-testid="open-recipient-modal-btn"]';
+  private readonly networkPicker = {
+    testId: 'send-network-filter-toggle',
+  };
+
+  private readonly recipientModalButton = {
+    testId: 'open-recipient-modal-btn',
+  };
 
   private readonly solanaNetwork = {
     text: 'Solana',
   };
 
-  private readonly tokenAsset = (chainId: string, symbol: string) =>
-    `[data-testid="token-asset-${chainId}-${symbol}"]`;
+  private readonly tokenAsset = (chainId: string, symbol: string) => {
+    return {
+      testId: `token-asset-${chainId}-${symbol}`,
+    };
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -59,6 +73,31 @@ class SendPage {
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
     await this.driver.findElement(this.invalidAddressError);
+  }
+
+  async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.networkPicker);
+  }
+
+  async checkSendFormIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.amountInput,
+      this.inputRecipient,
+    ]);
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    console.log('Checking if send page is loaded');
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.header,
+        this.networkPicker,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for send page to be loaded', e);
+      throw e;
+    }
+    console.log('Send page is loaded');
   }
 
   async checkSolanaNetworkIsPresent(): Promise<void> {
@@ -182,6 +221,7 @@ class SendPage {
 
   async selectNft(nftName: string): Promise<void> {
     console.log(`Selecting nft ${nftName}`);
+    await this.driver.waitForElementToStopMoving({ text: nftName });
     await this.driver.clickElement({ text: nftName });
   }
 
