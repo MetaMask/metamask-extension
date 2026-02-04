@@ -102,8 +102,8 @@ const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
 const PRESETS: Record<string, string[]> = {
   // Performance benchmarks
-//   performanceOnboardingImport: [
-    // TODO: Re-enable once account list loading is fixed (timeout on add-multichain-account-button)
+  performanceOnboardingImport: [
+    //   TODO: Re-enable once account list loading is fixed (timeout on add-multichain-account-button)
     `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
   ],
   performanceOnboardingNew: [
@@ -115,10 +115,10 @@ const PRESETS: Record<string, string[]> = {
   ],
   performanceLogin: [
     // TODO: Re-enable import-srp-home.ts once TEST_SRP_2 is found correctly
-    // `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
+    `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
     `${BENCHMARK_DIR}/performance/send-transactions.ts`,
     // TODO: Re-enable swap.ts once network-fees element is stable
-    // `${BENCHMARK_DIR}/performance/swap.ts`,
+    `${BENCHMARK_DIR}/performance/swap.ts`,
   ],
 
   // Page load benchmarks
