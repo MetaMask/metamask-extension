@@ -84,20 +84,31 @@ export const ExternalLinkButton = (props: {
   }
 
   let href: string | undefined = notification.data.externalLink.externalLinkUrl;
+  let isExternal = true;
   const isShieldAnnouncementNotification =
     notification.id === SHIELD_ANNOUNCEMENT_NOTIFICATION_ID;
   // use native navigation for shield announcement instead of opening new tab
   // TODO: clean this when we have better control of how deeplink are opened
   if (isShieldAnnouncementNotification) {
+    // don't open new tab with href
     href = undefined;
+    // don't show external arrow icon
+    isExternal = false;
   }
   const onClick = () => {
     analyticCallback();
     if (isShieldAnnouncementNotification && notification.data.externalLink) {
-      const path = getShieldInAppNavigationFromExternalLink(
-        notification.data.externalLink.externalLinkUrl,
-      );
-      navigate(path);
+      try {
+        const path = getShieldInAppNavigationFromExternalLink(
+          notification.data.externalLink.externalLinkUrl,
+        );
+        navigate(path);
+      } catch (error) {
+        console.error(
+          '[ExternalLinkButton] error parsing external link',
+          error,
+        );
+      }
     }
   };
 
@@ -106,7 +117,7 @@ export const ExternalLinkButton = (props: {
       variant={ButtonVariant.Secondary}
       text={notification.data.externalLink.externalLinkText}
       href={href}
-      isExternal={true}
+      isExternal={isExternal}
       onClick={onClick}
     />
   );
