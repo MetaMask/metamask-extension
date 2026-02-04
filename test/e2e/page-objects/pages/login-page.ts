@@ -4,34 +4,34 @@ import { WALLET_PASSWORD } from '../../constants';
 class LoginPage {
   private driver: Driver;
 
-  private readonly connectionsRemovedModal = {
+  private readonly connectionsRemovedModal: object = {
     testId: 'connections-removed-modal',
   };
 
-  private readonly connectionsRemovedModalButton = {
+  private readonly connectionsRemovedModalButton: object = {
     testId: 'connections-removed-modal-button',
   };
 
-  private readonly forgotPasswordButton = {
+  private readonly forgotPasswordButton: object = {
     testId: 'unlock-forgot-password-button',
   };
 
-  private readonly incorrectPasswordMessage = {
+  private readonly incorrectPasswordMessage: object = {
     testId: 'unlock-page-help-text',
     text: 'Password is incorrect. Please try again.',
   };
 
-  private readonly metamaskAnimation = '.riv-animation__canvas';
+  private readonly metamaskAnimation: string = '.riv-animation__canvas';
 
-  private readonly passwordInput = { testId: 'unlock-password' };
+  private readonly passwordInput: object = { testId: 'unlock-password' };
 
-  private readonly resetPasswordModalButton = {
+  private readonly resetPasswordModalButton: object = {
     testId: 'reset-password-modal-button',
   };
 
-  private readonly resetWalletButton = { testId: 'login-error-modal-button' };
+  private readonly resetWalletButton: object = { testId: 'login-error-modal-button' };
 
-  private readonly unlockButton = { testId: 'unlock-submit' };
+  private readonly unlockButton: object = { testId: 'unlock-submit' };
 
   constructor(driver: Driver) {
     this.driver = driver;
