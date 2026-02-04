@@ -470,6 +470,9 @@
     "ui/components/app/perps/perps-empty-state/perps-empty-state.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/perps-recent-activity/perps-recent-activity.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/perps-tab-control-bar/perps-tab-control-bar.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -483,6 +486,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/start-trade-cta/start-trade-cta.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/transaction-card/transaction-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/qr-hardware-popover/base-reader.test.js": {
@@ -3210,6 +3216,9 @@
     "ui/pages/perps/market-list/index.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/perps/perps-activity-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3588,6 +3597,6 @@
       "Reselect: Identity function warnings": 4
     }
   },
-  "generated": "2026-01-29T10:30:07.782Z",
+  "generated": "2026-01-30T20:01:38.851Z",
   "nodeVersion": "v24.13.0"
 }

@@ -3,7 +3,13 @@
  * Used for building UI while PerpsController is being migrated to core
  */
 
-import { AccountState, Order, PerpsMarketData, Position } from './types';
+import {
+  AccountState,
+  Order,
+  PerpsMarketData,
+  PerpsTransaction,
+  Position,
+} from './types';
 
 /**
  * Mock account state data
@@ -664,5 +670,241 @@ export const mockHip3Markets: PerpsMarketData[] = [
     fundingRate: 0.0001,
     marketSource: 'xyz',
     marketType: 'commodity',
+  },
+];
+
+/**
+ * Mock transactions data
+ * Includes trades, orders, funding payments, and deposits/withdrawals
+ */
+export const mockTransactions: PerpsTransaction[] = [
+  // Recent trades
+  {
+    id: 'tx-001',
+    type: 'trade',
+    symbol: 'ETH',
+    title: 'Opened long',
+    subtitle: '2.5 ETH @ $2,850.00',
+    timestamp: Date.now() - 3600000, // 1 hour ago
+    status: 'confirmed',
+    fill: {
+      size: '2.5',
+      price: '2850.00',
+      fee: '7.13',
+      side: 'buy',
+    },
+  },
+  {
+    id: 'tx-002',
+    type: 'trade',
+    symbol: 'BTC',
+    title: 'Closed short',
+    subtitle: '0.5 BTC @ $45,250.00',
+    timestamp: Date.now() - 7200000, // 2 hours ago
+    status: 'confirmed',
+    fill: {
+      size: '0.5',
+      price: '45250.00',
+      fee: '22.63',
+      side: 'buy',
+      realizedPnl: '+125.00',
+    },
+  },
+  {
+    id: 'tx-002b',
+    type: 'trade',
+    symbol: 'SOL',
+    title: 'Closed long',
+    subtitle: '15 SOL @ $92.50',
+    timestamp: Date.now() - 9000000, // 2.5 hours ago
+    status: 'confirmed',
+    fill: {
+      size: '15',
+      price: '92.50',
+      fee: '1.39',
+      side: 'sell',
+      realizedPnl: '-45.50',
+    },
+  },
+  {
+    id: 'tx-003',
+    type: 'funding',
+    symbol: 'ETH',
+    title: 'Received funding fee',
+    subtitle: 'ETH',
+    timestamp: Date.now() - 10800000, // 3 hours ago
+    status: 'confirmed',
+    funding: {
+      amount: '8.30',
+      rate: '0.0001',
+    },
+  },
+  {
+    id: 'tx-004',
+    type: 'order',
+    symbol: 'SOL',
+    title: 'Limit long',
+    subtitle: '25 SOL @ $95.00',
+    timestamp: Date.now() - 14400000, // 4 hours ago
+    status: 'pending',
+    order: {
+      orderId: 'order-003',
+      orderType: 'limit',
+      status: 'open',
+    },
+  },
+  {
+    id: 'tx-004b',
+    type: 'order',
+    symbol: 'BTC',
+    title: 'Market close short',
+    subtitle: '0.1 BTC @ $45,000.00',
+    timestamp: Date.now() - 16200000, // 4.5 hours ago
+    status: 'confirmed',
+    order: {
+      orderId: 'order-004b',
+      orderType: 'market',
+      status: 'filled',
+    },
+  },
+  {
+    id: 'tx-004c',
+    type: 'order',
+    symbol: 'ARB',
+    title: 'Stop market close long',
+    subtitle: '500 ARB @ $1.10',
+    timestamp: Date.now() - 18000000, // 5 hours ago
+    status: 'pending',
+    order: {
+      orderId: 'order-004c',
+      orderType: 'market',
+      status: 'canceled',
+    },
+  },
+  {
+    id: 'tx-004d',
+    type: 'order',
+    symbol: 'ETH',
+    title: 'Market long',
+    subtitle: '1.5 ETH @ $2,900.00',
+    timestamp: Date.now() - 19800000, // 5.5 hours ago
+    status: 'pending',
+    order: {
+      orderId: 'order-004d',
+      orderType: 'market',
+      status: 'queued',
+    },
+  },
+  {
+    id: 'tx-005',
+    type: 'deposit',
+    symbol: 'USDC',
+    title: 'Deposited 5000 USDC',
+    subtitle: 'Completed',
+    timestamp: Date.now() - 86400000, // 1 day ago
+    status: 'confirmed',
+    depositWithdrawal: {
+      amount: '5000.00',
+      txHash: '0x1234567890abcdef1234567890abcdef12345678',
+    },
+  },
+  {
+    id: 'tx-006',
+    type: 'trade',
+    symbol: 'ARB',
+    title: 'Opened long',
+    subtitle: '1000 ARB @ $1.20',
+    timestamp: Date.now() - 90000000, // ~1 day ago
+    status: 'confirmed',
+    fill: {
+      size: '1000',
+      price: '1.20',
+      fee: '1.20',
+      side: 'buy',
+    },
+  },
+  {
+    id: 'tx-007',
+    type: 'funding',
+    symbol: 'BTC',
+    title: 'Paid funding fee',
+    subtitle: 'BTC',
+    timestamp: Date.now() - 97200000, // ~1 day ago
+    status: 'confirmed',
+    funding: {
+      amount: '-3.10',
+      rate: '-0.00005',
+    },
+  },
+  {
+    id: 'tx-008',
+    type: 'trade',
+    symbol: 'POL',
+    title: 'Opened short',
+    subtitle: '5000 POL @ $0.75',
+    timestamp: Date.now() - 172800000, // 2 days ago
+    status: 'confirmed',
+    fill: {
+      size: '5000',
+      price: '0.75',
+      fee: '3.75',
+      side: 'sell',
+    },
+  },
+  {
+    id: 'tx-009',
+    type: 'withdrawal',
+    symbol: 'USDC',
+    title: 'Withdrew 2000 USDC',
+    subtitle: 'Completed',
+    timestamp: Date.now() - 259200000, // 3 days ago
+    status: 'confirmed',
+    depositWithdrawal: {
+      amount: '2000.00',
+      txHash: '0xabcdef1234567890abcdef1234567890abcdef12',
+    },
+  },
+  {
+    id: 'tx-010',
+    type: 'order',
+    symbol: 'ETH',
+    title: 'Limit close long',
+    subtitle: '1.0 ETH @ $3,000.00',
+    timestamp: Date.now() - 345600000, // 4 days ago
+    status: 'confirmed',
+    order: {
+      orderId: 'order-006',
+      orderType: 'limit',
+      status: 'filled',
+    },
+  },
+  // HIP-3 transactions
+  {
+    id: 'tx-011',
+    type: 'trade',
+    symbol: 'xyz:TSLA',
+    title: 'Opened long',
+    subtitle: '10 TSLA @ $240.00',
+    timestamp: Date.now() - 432000000, // 5 days ago
+    status: 'confirmed',
+    fill: {
+      size: '10',
+      price: '240.00',
+      fee: '2.40',
+      side: 'buy',
+    },
+  },
+  {
+    id: 'tx-012',
+    type: 'funding',
+    symbol: 'xyz:GOLD',
+    title: 'Received funding fee',
+    subtitle: 'Gold',
+    timestamp: Date.now() - 518400000, // 6 days ago
+    status: 'confirmed',
+    funding: {
+      amount: '0.80',
+      rate: '0.00008',
+    },
   },
 ];
