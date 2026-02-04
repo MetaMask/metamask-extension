@@ -154,6 +154,9 @@
   "accountSmallCase": {
     "message": "account"
   },
+  "actionUnavailable": {
+    "message": "Action unavailable"
+  },
   "accountTypeNotSupported": {
     "message": "Account type not supported"
   },

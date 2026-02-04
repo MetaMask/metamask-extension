@@ -169,6 +169,9 @@
   "accountsSmallCase": {
     "message": "accounts"
   },
+  "actionUnavailable": {
+    "message": "Action unavailable"
+  },
   "active": {
     "message": "Active"
   },

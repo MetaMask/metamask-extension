@@ -72,7 +72,9 @@ export default function CancelMembershipModal({
     >
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.flexStart}>
-        <ModalHeader onClose={onClose}>{t('areYouSure')}</ModalHeader>
+        <ModalHeader onClose={onClose}>
+          {isCancelAllowed ? t('areYouSure') : t('actionUnavailable')}
+        </ModalHeader>
         <ModalBody>
           <Text variant={TextVariant.BodyMd}>{getModalContent()}</Text>
         </ModalBody>
