@@ -6,6 +6,12 @@
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
   },
+  "previewBuilds": {
+    "@metamask/perps-controller": {
+      "type": "breaking",
+      "previewVersion": "0.0.0-preview-e4aa1532"
+    }
+  },
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
@@ -370,7 +376,7 @@
     "@metamask/permission-controller": "^12.1.0",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.0.0",
-    "@metamask/perps-controller": "file:.yalc/@metamask/perps-controller",
+    "@metamask/perps-controller": "^0.0.0",
     "@metamask/phishing-controller": "^15.0.0",
     "@metamask/polling-controller": "^16.0.2",
     "@metamask/post-message-stream": "^10.0.0",
@@ -405,7 +411,6 @@
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.4.2",
     "@ngraveio/bc-ur": "^1.1.13",
-    "@nktkas/hyperliquid": "^0.30.2",
     "@noble/hashes": "^1.3.3",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch",
