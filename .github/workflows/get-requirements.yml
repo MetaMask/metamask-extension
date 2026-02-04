@@ -136,7 +136,7 @@ jobs:
       - name: Compute needs-releases flag
         id: set-needs-releases
         # Do not do releases on a fork
-        if: ${{ env.IS_FORK == 'false' && steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        if: ${{ env.IS_FORK == 'false' && env.EVENT_NAME != 'merge_group' && steps.set-skip-everything.outputs.skip-everything != 'true' }}
         run: echo "needs-releases=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now, but is built to have future complexity

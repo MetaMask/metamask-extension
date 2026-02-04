@@ -545,7 +545,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.needs-releases == 'true' }} # Skip this job for the Merge Queue
+    if: ${{ needs.get-requirements.outputs.needs-releases == 'true' }}
     needs:
       - get-requirements
       - build-dist-browserify
