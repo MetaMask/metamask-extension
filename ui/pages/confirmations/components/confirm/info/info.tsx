@@ -10,7 +10,13 @@ import { SignatureRequestType } from '../../../types/confirm';
 import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
-import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../../../../../shared/constants/transaction';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigationOptions,
+} from '../../../hooks/useConfirmationNavigation';
+import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
+import { MusdConversionInfo } from './musd-conversion-info';
+import { PerpsDepositInfo } from './perps-deposit-info';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -34,8 +40,8 @@ export const InfoSkeleton = () => (
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
+  const { loader } = useConfirmationNavigationOptions();
 
-  // TODO: Create TransactionInfo and SignatureInfo components.
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
 
@@ -77,16 +83,17 @@ const Info = () => {
 
       [ApprovalType.AddEthereumChain]: () => AddEthereumChain,
 
-      [EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE]: () =>
-        // Dynamically import to avoid loading hooks at module initialization
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-        require('../../developer/example-custom-amount-confirmation')
-          .ExampleCustomAmountConfirmation,
+      [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
+      [TransactionType.musdConversion]: () => MusdConversionInfo,
     }),
     [currentConfirmation],
   );
 
   if (!currentConfirmation?.type) {
+    if (loader === ConfirmationLoader.CustomAmount) {
+      return <CustomAmountInfoSkeleton />;
+    }
+
     return <InfoSkeleton />;
   }
 

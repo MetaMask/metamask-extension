@@ -10,6 +10,7 @@ import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import PrepareBridgePage from './prepare-bridge-page';
 
 // Mock the bridge hooks
@@ -20,6 +21,12 @@ jest.mock('../hooks/useGasIncluded7702', () => ({
 jest.mock('../hooks/useIsSendBundleSupported', () => ({
   useIsSendBundleSupported: jest.fn().mockReturnValue(false),
 }));
+
+setBackgroundConnection({
+  resetState: async () => jest.fn(),
+  getStatePatches: async () => jest.fn(),
+  updateBridgeQuoteRequestParams: async () => jest.fn(),
+} as never);
 
 describe('PrepareBridgePage', () => {
   beforeAll(() => {

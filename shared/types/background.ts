@@ -215,6 +215,7 @@ export type ControllerStatePropertiesEnumerated = {
   selectedNetworkClientId: NetworkState['selectedNetworkClientId'];
   orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
   enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'];
+  nativeAssetIdentifiers: NetworkEnablementControllerState['nativeAssetIdentifiers'];
   allNftContracts: NftControllerState['allNftContracts'];
   allNfts: NftControllerState['allNfts'];
   ignoredNfts: NftControllerState['ignoredNfts'];
@@ -308,7 +309,6 @@ export type ControllerStatePropertiesEnumerated = {
   allDetectedTokens: TokensControllerState['allDetectedTokens'];
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
-  preventPollingOnNetworkRestart: TokenListState['preventPollingOnNetworkRestart'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
   marketData: TokenRatesControllerState['marketData'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
@@ -328,6 +328,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSeasons: RewardsControllerState['rewardsSeasons'];
   rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
+  rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
