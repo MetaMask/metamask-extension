@@ -6,6 +6,7 @@ import {
   createScaffoldMiddleware,
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
+import { asLegacyMiddleware } from '@metamask/json-rpc-engine/v2';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -26,6 +27,12 @@ import { nanoid } from 'nanoid';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/messenger';
 import {
+  createWalletSnapPermissionMiddleware,
+  createPreinstalledSnapsMiddleware,
+  createSnapsMethodMiddleware,
+  SnapEndowments,
+} from '@metamask/snaps-rpc-methods';
+import {
   MethodNames,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
@@ -36,11 +43,6 @@ import {
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
 
-import {
-  createPreinstalledSnapsMiddleware,
-  createSnapsMethodMiddleware,
-  SnapEndowments,
-} from '@metamask/snaps-rpc-methods';
 import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
@@ -7368,6 +7370,8 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
+
+    engine.push(asLegacyMiddleware(createWalletSnapPermissionMiddleware()));
 
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
