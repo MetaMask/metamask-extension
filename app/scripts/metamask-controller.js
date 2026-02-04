@@ -801,7 +801,7 @@ export default class MetamaskController extends EventEmitter {
         isRevoked: false,
       })
       .catch((error) => {
-        console.error('Error fetching gator permissions:', error);
+        log.error('Error fetching gator permissions:', error);
       });
 
     // Record installation info if this is the first time the extension is running.

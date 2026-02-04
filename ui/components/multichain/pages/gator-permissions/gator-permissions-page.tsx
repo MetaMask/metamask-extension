@@ -37,6 +37,7 @@ import {
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionListItem } from './components/permission-list-item';
 import { fetchAndUpdateGatorPermissions } from '../../../../store/controller-actions/gator-permissions-controller';
+import log from 'loglevel';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
@@ -60,7 +61,7 @@ export const GatorPermissionsPage = () => {
     fetchAndUpdateGatorPermissions({
       isRevoked: false,
     }).catch((error) => {
-      console.error('Error fetching gator permissions:', error);
+      log.error('Error fetching gator permissions:', error);
     });
   }, []);
 
