@@ -109,7 +109,7 @@ export const TokenListItemComponent = ({
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currencyRates = useSelector(getCurrencyRates);
   const noFeeAssets = useSelector((state) => selectNoFeeAssets(state, chainId));
 
