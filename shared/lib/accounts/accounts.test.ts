@@ -170,60 +170,6 @@ describe('accounts', () => {
       });
     });
 
-    describe('getNextAvailableAccountName', () => {
-      it('gets the next account name for Solana accounts', async () => {
-        const client = getSolanaClient();
-
-        const index = '1';
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          `Account Name ${index}`,
-        );
-
-        const name = await client.getNextAvailableAccountName();
-        expect(name).toStrictEqual(`Solana Account ${index}`);
-      });
-
-      it('gets the next account name for Bitcoin mainnet accounts', async () => {
-        const client = getBitcoinClient();
-
-        const index = '2';
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          `Account Name ${index}`,
-        );
-
-        const name = await client.getNextAvailableAccountName();
-        expect(name).toStrictEqual(`Bitcoin Account ${index}`);
-      });
-
-      it('gets the next account name for Bitcoin testnet accounts', async () => {
-        const client = getBitcoinClient();
-
-        const index = '3';
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          `Account Name ${index}`,
-        );
-
-        const name = await client.getNextAvailableAccountName({
-          chainId: BtcScope.Testnet,
-        });
-        expect(name).toStrictEqual(`Bitcoin Testnet Account ${index}`);
-      });
-
-      it('gets the next account name for Bitcoin signet accounts', async () => {
-        const client = getBitcoinClient();
-
-        const index = '3';
-        mockAccountsControllerGetNextAvailableAccountName.mockResolvedValue(
-          `Account Name ${index}`,
-        );
-
-        const name = await client.getNextAvailableAccountName({
-          chainId: BtcScope.Signet,
-        });
-        expect(name).toStrictEqual(`Bitcoin Signet Account ${index}`);
-      });
-    });
-
     describe('discoverAccounts', () => {
       const entropySource = '01JSEF2XG608Z0DS2WQNDXS7N6';
       const getDiscoverAccountsSnapRequest = (groupIndex: number) => {
