@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import log from 'loglevel';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Content, Header, Page } from '../page';
@@ -35,9 +36,8 @@ import {
   getAggregatedGatorPermissionsCountAcrossAllChains,
   getTotalUniqueSitesCount,
 } from '../../../../selectors/gator-permissions/gator-permissions';
-import { PermissionListItem } from './components/permission-list-item';
 import { fetchAndUpdateGatorPermissions } from '../../../../store/controller-actions/gator-permissions-controller';
-import log from 'loglevel';
+import { PermissionListItem } from './components/permission-list-item';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
