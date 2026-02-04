@@ -17,7 +17,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/modules/selectors/networks';
-import { toMultiChainAccountId } from '../../../../../shared/lib/asset-utils';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import {
   getAllPermittedAccountsForSelectedTab,
   getAllPermittedChainsForSelectedTab,
@@ -182,7 +182,7 @@ export const ReviewPermissions = () => {
         chain: { namespace },
       } = parseCaipAccountId(caipAccountId);
       if (namespace === KnownCaipNamespace.Eip155) {
-        return toMultiChainAccountId(address);
+        return toEvmCaipAccountId(address);
       }
       return caipAccountId;
     }),

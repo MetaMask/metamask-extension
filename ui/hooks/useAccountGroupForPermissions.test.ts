@@ -5,7 +5,7 @@ import { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { CaipAccountId, CaipChainId, CaipNamespace } from '@metamask/utils';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
-import { toMultiChainAccountId } from '../../shared/lib/asset-utils';
+import { toEvmCaipAccountId } from '../../shared/lib/multichain/scope-utils';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
@@ -584,7 +584,7 @@ describe('useAccountGroupsForPermissions', () => {
     it('shows second group first when it has higher priority', () => {
       const emptyPermission = createEmptyPermission();
       const requestedCaipAccountIds: CaipAccountId[] = [
-        toMultiChainAccountId(mockEvmAccount2.address), // Group 2 account
+        toEvmCaipAccountId(mockEvmAccount2.address), // Group 2 account
       ];
       const requestedChainIds: CaipChainId[] = ['eip155:0' as CaipChainId];
       const requestedNamespaces: CaipNamespace[] = [];

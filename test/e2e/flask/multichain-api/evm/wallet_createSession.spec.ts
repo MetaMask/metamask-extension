@@ -3,7 +3,7 @@ import { isObject } from 'lodash';
 import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { toMultiChainAccountId } from '../../../../../shared/lib/asset-utils';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -468,7 +468,7 @@ describe('Multichain API', function () {
               await driver.clickElement(`input[name="${scope}"]`),
           );
           await testDapp.initCreateSessionScopes(NEW_SCOPES, [
-            toMultiChainAccountId(TREZOR_ACCOUNT),
+            toEvmCaipAccountId(TREZOR_ACCOUNT),
           ]);
 
           const connectAccountConfirmation = new ConnectAccountConfirmation(

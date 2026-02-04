@@ -17,7 +17,7 @@ import {
   isBtcTestnetAddress,
   isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
-import { toMultiChainAccountId } from '../../../../shared/lib/asset-utils';
+import { toEvmCaipAccountId } from '../../../../shared/lib/multichain/scope-utils';
 import {
   EstimatedPointsDto,
   EstimatePointsDto,
@@ -454,7 +454,10 @@ export class RewardsController extends BaseController<
     let accState = null;
     if (account?.startsWith('eip155')) {
       const address = account.split(':')[2];
-      accState = this.state.rewardsAccounts[toMultiChainAccountId(address)];
+      accState =
+        this.state.rewardsAccounts[
+          toEvmCaipAccountId(address?.toLowerCase())
+        ] || this.state.rewardsAccounts[toEvmCaipAccountId(address)];
     }
     if (!accState) {
       accState = this.state.rewardsAccounts[account];
