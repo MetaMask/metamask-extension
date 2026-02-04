@@ -2,6 +2,7 @@ import React, { useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
+import { IconName } from '@metamask/design-system-react';
 import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,
@@ -32,13 +33,7 @@ import {
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import {
-  Box,
-  IconName,
-  Popover,
-  PopoverPosition,
-  Tag,
-} from '../../component-library';
+import { Box, Popover, PopoverPosition, Tag } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
 // TODO: Remove restricted import
@@ -458,7 +453,7 @@ export const GlobalMenu = ({
         isSidePanelEnabled &&
         (isPopup || isSidepanel) && (
           <MenuItem
-            iconName={isSidepanel ? IconName.Popup : IconName.Sidepanel}
+            iconName={isSidepanel ? IconName.PopUp : IconName.Sidepanel}
             onClick={async () => {
               await toggleDefaultView();
               trackEvent({

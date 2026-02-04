@@ -1,38 +1,80 @@
 import React from 'react';
 import { MenuItem } from '../../ui/menu';
-import { Box, Text, Icon, IconName, IconSize } from '../../component-library';
 import {
-  Display,
-  FlexDirection,
-  BlockSize,
-  BorderColor,
-  TextVariant,
-  TextColor,
+  Box,
+  Text,
+  Icon,
+  IconName,
+  IconSize,
   IconColor,
-  AlignItems,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+  TextColor,
+  TextVariant,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxBorderColor,
+} from '@metamask/design-system-react';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import { GlobalMenuSection, isRouteItem } from './global-menu-list.types';
+import {
+  GlobalMenuListProps,
+  MenuItemContentProps,
+  isRouteItem,
+} from './global-menu-list.types';
 
-type GlobalMenuListProps = {
-  /**
-   * Sections to display in the menu
-   */
-  sections: GlobalMenuSection[];
-  /**
-   * Optional className for styling
-   */
-  className?: string;
+/**
+ * Component that renders the content inside a menu item
+ * Handles displaying the label, badge, and chevron icon
+ */
+const MenuItemContent = ({
+  label,
+  badge,
+  showChevron,
+  textColor,
+}: MenuItemContentProps) => {
+  const hasBadge = Boolean(badge);
+  const needsWrapper = hasBadge || showChevron;
+
+  if (!needsWrapper) {
+    return <Text color={textColor}>{label}</Text>;
+  }
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
+    >
+      <Text color={textColor}>{label}</Text>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={2}
+      >
+        {hasBadge &&
+          (typeof badge === 'number' ? (
+            <NotificationsTagCounter />
+          ) : (
+            badge
+          ))}
+        {showChevron && (
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+          />
+        )}
+      </Box>
+    </Box>
+  );
 };
 
 /**
  * GlobalMenuList component that displays menu items organized into sections
  * Uses MenuItem component directly, matching the pattern from global-menu.tsx
  *
- * @param options0
- * @param options0.sections
- * @param options0.className
+ * @param props - The component props
+ * @param props.sections - Sections to display in the menu
+ * @param props.className - Optional className for styling
  */
 export const GlobalMenuList = ({
   sections,
@@ -41,20 +83,18 @@ export const GlobalMenuList = ({
   return (
     <Box
       className={`global-menu-list ${className}`}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
     >
       {sections.map((section, sectionIndex) => (
         <Box
-          key={sectionIndex}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          key={section.id}
+          flexDirection={BoxFlexDirection.Column}
         >
           {/* Section Separator - Show before section if it's not the first section */}
           {sectionIndex > 0 && (
             <Box
-              borderColor={BorderColor.borderMuted}
-              width={BlockSize.Full}
+              borderColor={BoxBorderColor.BorderMuted}
+              className="w-full"
               style={{ height: '1px', borderBottomWidth: 0 }}
             />
           )}
@@ -68,8 +108,8 @@ export const GlobalMenuList = ({
               paddingBottom={2}
             >
               <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
                 style={{ textTransform: 'uppercase' }}
               >
                 {section.title}
@@ -80,57 +120,15 @@ export const GlobalMenuList = ({
           {/* Section Items */}
           {section.items.map((item) => {
             const showChevron = item.showChevron !== false;
-            const hasBadge = Boolean(item.badge);
-            const iconColor = item.iconColor ?? IconColor.iconAlternative;
-            const textColor = item.textColor ?? TextColor.textDefault;
-
-            // Render content with badge/chevron on right
-            const renderContent = () => {
-              // If there's a badge or chevron, wrap in Box for flex layout
-              if (hasBadge || showChevron) {
-                return (
-                  <Box
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Row}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.spaceBetween}
-                  >
-                    <Text color={textColor}>{item.label}</Text>
-                    <Box
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Row}
-                      alignItems={AlignItems.center}
-                      gap={2}
-                    >
-                      {hasBadge &&
-                        (typeof item.badge === 'number' ? (
-                          <NotificationsTagCounter />
-                        ) : (
-                          item.badge
-                        ))}
-                      {showChevron && (
-                        <Icon
-                          name={IconName.ArrowRight}
-                          size={IconSize.Sm}
-                          color={IconColor.iconAlternative}
-                        />
-                      )}
-                    </Box>
-                  </Box>
-                );
-              }
-
-              // Otherwise just render the label
-              return <Text color={textColor}>{item.label}</Text>;
-            };
+            const textColor = item.textColor || TextColor.TextDefault;
 
             return (
               <MenuItem
                 key={item.id}
                 iconName={item.iconName}
-                iconColor={iconColor}
+                iconColor={item.iconColor}
                 iconSize={IconSize.Lg}
-                textVariant={TextVariant.bodyMd}
+                textVariant={TextVariant.BodyMd}
                 to={isRouteItem(item) ? item.to : undefined}
                 onClick={item.onClick}
                 disabled={item.disabled}
@@ -138,7 +136,12 @@ export const GlobalMenuList = ({
                 subtitle={item.subtitle}
                 data-testid={`global-menu-item-${item.id}`}
               >
-                {renderContent()}
+                <MenuItemContent
+                  label={item.label}
+                  badge={item.badge}
+                  showChevron={showChevron}
+                  textColor={textColor}
+                />
               </MenuItem>
             );
           })}

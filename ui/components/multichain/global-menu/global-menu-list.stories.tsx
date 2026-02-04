@@ -3,14 +3,18 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import { GlobalMenuList } from './global-menu-list';
-import type { GlobalMenuSection } from './global-menu-list.types';
-import { IconName } from '../../component-library';
-import { IconColor, TextColor } from '../../../helpers/constants/design-system';
+import { GlobalMenuSection } from './global-menu-list.types';
+import {
+  IconName,
+  IconColor,
+  TextColor,
+} from '@metamask/design-system-react';
 
 const store = configureStore(testData);
 
 const defaultSections: GlobalMenuSection[] = [
   {
+    id: 'notifications-section',
     items: [
       {
         id: 'notifications',
@@ -38,17 +42,10 @@ const defaultSections: GlobalMenuSection[] = [
           console.log('Open full screen clicked');
         },
       },
-      {
-        id: 'switch-to-side-panel',
-        iconName: IconName.Sidepanel,
-        label: 'Switch to side panel',
-        onClick: () => {
-          console.log('Switch to side panel clicked');
-        },
-      },
     ],
   },
   {
+    id: 'manage-section',
     title: 'MANAGE',
     items: [
       {
@@ -80,6 +77,7 @@ const defaultSections: GlobalMenuSection[] = [
     ],
   },
   {
+    id: 'help-settings-section',
     title: 'HELP AND SETTINGS',
     items: [
       {
@@ -102,6 +100,7 @@ const defaultSections: GlobalMenuSection[] = [
     ],
   },
   {
+    id: 'logout-section',
     items: [
       {
         id: 'lock',
@@ -109,8 +108,8 @@ const defaultSections: GlobalMenuSection[] = [
         label: 'Log Out',
         to: '/',
         showChevron: false,
-        iconColor: IconColor.errorDefault,
-        textColor: TextColor.errorDefault,
+        iconColor: IconColor.ErrorDefault,
+        textColor: TextColor.ErrorDefault,
         onClick: () => {
           console.log('Log Out clicked');
         },

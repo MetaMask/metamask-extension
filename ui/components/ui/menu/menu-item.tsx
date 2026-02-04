@@ -3,11 +3,15 @@ import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import {
+  IconName as IconNameNew,
+  IconColor as IconColorNew,
+} from '@metamask/design-system-react';
+import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   BadgeWrapperPosition,
   Icon,
-  IconName,
+  IconName as IconNameDeprecated,
   IconSize,
   Text,
   Box,
@@ -16,24 +20,36 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
-  IconColor,
-  TextColor,
-  TextVariant,
+  IconColor as IconColorDeprecated,
+  TextColor as TextColorDeprecated,
+  TextVariant as TextVariantDeprecated,
 } from '../../../helpers/constants/design-system';
 
 type MenuItemProps = {
   children: React.ReactNode;
   className?: string;
   'data-testid'?: string;
-  iconName: IconName;
-  iconColor?: IconColor;
+  /**
+   * Accepts both deprecated IconName from component-library and new IconName from @metamask/design-system-react
+   * Using string to allow both enum types without TypeScript strictness issues
+   */
+  iconName: IconNameDeprecated | IconNameNew | string;
+  /**
+   * Accepts both deprecated IconColor from design-system and new IconColor from @metamask/design-system-react
+   * Using string to allow both enum types without TypeScript strictness issues
+   */
+  iconColor?: IconColorDeprecated | IconColorNew | string;
   iconSize?: IconSize;
   to?: string;
   onClick?: () => void;
   subtitle?: string;
   disabled?: boolean;
   showInfoDot?: boolean;
-  textVariant?: TextVariant;
+  /**
+   * Accepts both deprecated TextVariant from design-system and new TextVariant from @metamask/design-system-react
+   * Using string to allow both enum types without TypeScript strictness issues
+   */
+  textVariant?: string;
 };
 
 const MenuItem = React.forwardRef<
@@ -73,25 +89,32 @@ const MenuItem = React.forwardRef<
               />
             }
           >
-            <Icon name={iconName} size={iconSize} marginRight={2} />
+            <Icon
+              name={iconName as unknown as IconNameDeprecated}
+              size={iconSize}
+              marginRight={2}
+            />
           </BadgeWrapper>
         )}
         {iconName && !showInfoDot && (
           <Icon
-            name={iconName}
+            name={iconName as unknown as IconNameDeprecated}
             size={iconSize}
             marginRight={3}
-            color={iconColor}
+            color={iconColor as unknown as IconColorDeprecated}
           />
         )}
         <div>
-          <Text variant={textVariant} as="div">
+          <Text
+            variant={textVariant as unknown as TextVariantDeprecated}
+            as="div"
+          >
             {children}
           </Text>
           {subtitle ? (
             <Text
-              variant={TextVariant.bodyXs}
-              color={TextColor.textAlternative}
+              variant={TextVariantDeprecated.bodyXs}
+              color={TextColorDeprecated.textAlternative}
             >
               {subtitle}
             </Text>
