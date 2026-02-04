@@ -31,10 +31,7 @@ type PerpsTutorialModalProps = {
   onClose?: () => void;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export default function PerpsTutorialModal({
-  onClose,
-}: PerpsTutorialModalProps) {
+const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   const isOpen = useSelector(selectTutorialModalOpen);
   const activeStep = useSelector(selectTutorialActiveStep);
   const dispatch = useDispatch();
@@ -103,4 +100,6 @@ export default function PerpsTutorialModal({
       </ModalContent>
     </Modal>
   );
-}
+};
+
+export default PerpsTutorialModal;

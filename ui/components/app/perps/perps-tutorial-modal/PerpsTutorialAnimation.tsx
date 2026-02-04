@@ -32,6 +32,8 @@ type PerpsTutorialAnimationProps = {
  * New RIV files have 280px artboard height.
  * Side panel uses Fit.Contain to prevent horizontal cutoff on wider animations.
  * Wider viewports use Fit.Cover with max-width constraints.
+ *
+ * @param environmentType
  */
 const getContainerStyle = (
   environmentType: string,
@@ -64,14 +66,12 @@ const getContainerStyle = (
   };
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export default function PerpsTutorialAnimation({
+const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
   artboardName,
   className,
   fit: fitProp,
   alignment = Alignment.Center,
-}: PerpsTutorialAnimationProps) {
+}) => {
   const theme = useTheme();
   const isDarkTheme = theme === ThemeType.dark;
 
@@ -155,4 +155,6 @@ export default function PerpsTutorialAnimation({
       <RiveComponent style={{ width: '100%', height: '100%' }} />
     </Box>
   );
-}
+};
+
+export default PerpsTutorialAnimation;
