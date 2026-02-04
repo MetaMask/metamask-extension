@@ -42,6 +42,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.SnapController.snaps',
   'data.SnapController.snapStates',
   'data.SnapController.unencryptedSnapStates',
+  'data.SnapsRegistry',
   // Subject Metadata
   'data.SubjectMetadataController.subjectMetadata',
   // Locale-related keys

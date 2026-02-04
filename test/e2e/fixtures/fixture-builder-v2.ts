@@ -20,7 +20,7 @@ class FixtureBuilderV2 {
    * @param {object} [options] - The options for the constructor.
    * @param {boolean} [options.onboarding] - Indicates if onboarding is enabled.
    */
-  constructor({ onboarding = false } = {}) {
+  constructor({ onboarding = false }: { onboarding?: boolean; } = {}) {
     this.fixture =
       onboarding === true ? onboardingFixture() : defaultFixture();
   }
