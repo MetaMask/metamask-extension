@@ -102,10 +102,10 @@ const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
 const PRESETS: Record<string, string[]> = {
   // Performance benchmarks
-//   performanceOnboardingImport: [
-//     TODO: Re-enable once account list loading is fixed (timeout on add-multichain-account-button)
-//     `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
-//   ],
+  performanceOnboardingImport: [
+    //TODO: Re-enable once account list loading is fixed (timeout on add-multichain-account-button)
+    `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
+  ],
   performanceOnboardingNew: [
     `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
   ],
