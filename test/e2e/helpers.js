@@ -383,6 +383,8 @@ async function withFixtures(options, testSuite) {
 
     console.log(`\nExecuting testcase: '${title}'\n`);
 
+    console.log('mockedEndpoint', mockedEndpoint);
+
     await testSuite({
       bundlerServer,
       contractRegistry,
