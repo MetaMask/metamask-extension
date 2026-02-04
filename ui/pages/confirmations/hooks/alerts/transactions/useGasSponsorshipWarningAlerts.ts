@@ -13,11 +13,11 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
-import { useTransactionNativeTicker } from '../../transactions/useTransactionNativeTicker';
 
 type SponsorshipWarningRule = {
   messageKey: string;
   minBalance: string;
+  nativeCurrency: string;
   matchers: string[];
 };
 
@@ -31,6 +31,7 @@ const GAS_SPONSORSHIP_WARNING_RULES: Partial<
   [CHAIN_IDS.MONAD]: {
     messageKey: 'gasSponsorshipReserveBalanceWarning',
     minBalance: '10',
+    nativeCurrency: 'MON',
     matchers: ['reserve balance violation'],
   },
 };
@@ -77,7 +78,6 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId, isGasFeeSponsored, simulationData } =
     currentConfirmation ?? {};
-  const nativeTokenSymbol = useTransactionNativeTicker() ?? '';
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
 
   const callTraceErrors = (
@@ -107,7 +107,7 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
       return [];
     }
 
-    const message = t(rule.messageKey, [rule.minBalance, nativeTokenSymbol]);
+    const message = t(rule.messageKey, [rule.minBalance, rule.nativeCurrency]);
 
     return [
       {
@@ -121,5 +121,5 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
         showArrow: false,
       },
     ];
-  }, [shouldShow, chainId, nativeTokenSymbol, t]);
+  }, [shouldShow, chainId, t]);
 }
