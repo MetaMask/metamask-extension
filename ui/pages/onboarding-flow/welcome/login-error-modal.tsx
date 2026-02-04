@@ -45,7 +45,7 @@ export default function LoginErrorModal({
   loginError,
 }: LoginErrorModalProps) {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const socialLoginType = useSelector(getSocialLoginType);
 
   const getTitle = () => {
