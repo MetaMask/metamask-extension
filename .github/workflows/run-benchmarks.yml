@@ -40,9 +40,9 @@ jobs:
         pageType: [standardHome, powerUserHome, userActions]
         # New added performance benchmarks only run on Chrome + Browserify to reduce CI runtime
         include:
-          - browser: chrome
-            buildType: browserify
-            pageType: performanceOnboardingImport
+#          - browser: chrome
+#            buildType: browserify
+#            pageType: performanceOnboardingImport
           - browser: chrome
             buildType: browserify
             pageType: performanceOnboardingNew

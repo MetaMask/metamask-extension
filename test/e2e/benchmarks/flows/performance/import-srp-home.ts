@@ -69,8 +69,8 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
 
         // Measure: Open account menu
         const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
         await timerOpenAccountMenu.measure(async () => {
-          await headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
         });
@@ -78,8 +78,8 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
 
         // Measure: Import SRP and return to home
         const accountListPage = new AccountListPage(driver);
+        await accountListPage.startImportSecretPhrase(SECOND_SRP);
         await timerHomeAfterImport.measure(async () => {
-          await accountListPage.startImportSecretPhrase(SECOND_SRP);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);

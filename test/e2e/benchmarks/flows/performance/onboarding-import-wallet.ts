@@ -86,15 +86,15 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         // Measure: Import wallet button to Social screen
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
+        await startOnboardingPage.importWallet(false);
         await timerImportWalletToSocial.measure(async () => {
-          await startOnboardingPage.importWallet(false);
           await startOnboardingPage.checkUserSrpButtonIsVisible();
         });
         performanceTracker.addTimer(timerImportWalletToSocial);
 
         // Measure: SRP button to form
+        await startOnboardingPage.clickImportWithSrpButton();
         await timerSrpButtonToForm.measure(async () => {
-          await startOnboardingPage.clickImportWithSrpButton();
           const onboardingSrpPage = new OnboardingSrpPage(driver);
           await onboardingSrpPage.checkPageIsLoaded();
         });
@@ -103,8 +103,8 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         // Measure: Confirm to Password form
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.fillSrp(srp);
+        await onboardingSrpPage.clickConfirmButton();
         await timerConfirmToPassword.measure(async () => {
-          await onboardingSrpPage.clickConfirmButton();
           const onboardingPasswordPage = new OnboardingPasswordPage(driver);
           await onboardingPasswordPage.checkPageIsLoaded();
         });
@@ -134,9 +134,9 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
 
         // Measure: Done to Home
         const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.completeOnboarding();
+        await handleSidepanelPostOnboarding(driver);
         await timerDoneToHome.measure(async () => {
-          await onboardingCompletePage.completeOnboarding();
-          await handleSidepanelPostOnboarding(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);
@@ -148,8 +148,8 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
 
         // Measure: Account list load
         const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
         await timerAccountListLoad.measure(async () => {
-          await headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded(50000);
         });
