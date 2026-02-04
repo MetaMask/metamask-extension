@@ -27,12 +27,6 @@ import { nanoid } from 'nanoid';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/messenger';
 import {
-  createWalletSnapPermissionMiddleware,
-  createPreinstalledSnapsMiddleware,
-  createSnapsMethodMiddleware,
-  SnapEndowments,
-} from '@metamask/snaps-rpc-methods';
-import {
   MethodNames,
   PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
@@ -43,6 +37,12 @@ import {
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
 
+import {
+  createWalletSnapPermissionMiddleware,
+  createPreinstalledSnapsMiddleware,
+  createSnapsMethodMiddleware,
+  SnapEndowments,
+} from '@metamask/snaps-rpc-methods';
 import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
