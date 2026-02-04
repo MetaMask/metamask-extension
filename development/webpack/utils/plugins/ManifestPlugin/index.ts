@@ -275,12 +275,12 @@ export class ManifestPlugin<Z extends boolean> {
     const { version } = this.options;
 
     this.options.browsers.forEach((browser) => {
-      let manifest = {
+      let manifest = structuredClone({
         ...baseManifest,
         ...buildTypeBaseManifest,
         description,
         version,
-      } as Manifest;
+      }) as Manifest;
 
       if (browser !== 'firefox') {
         // version_name isn't used by FireFox, but is by Chrome, et al.
@@ -359,7 +359,7 @@ export class ManifestPlugin<Z extends boolean> {
       // allow the user to `transform` the manifest. Use a copy of the manifest
       // so modifications for one browser don't affect other browsers.
       if (transform) {
-        manifest = transform?.(JSON.parse(JSON.stringify(manifest)), browser);
+        manifest = transform?.(structuredClone(manifest), browser);
       }
 
       // Add the manifest file to the assets
