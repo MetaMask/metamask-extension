@@ -83,7 +83,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     // as a fallback since most hardware wallet users are Ledger users.
     // This ensures the modal always shows rather than silently closing.
     const displayWalletType =
-      errorWalletType || selectedAccountWalletType || HardwareWalletType.Ledger;
+      errorWalletType ?? selectedAccountWalletType ?? HardwareWalletType.Ledger;
 
     const errorContent = buildErrorContent(
       error,
