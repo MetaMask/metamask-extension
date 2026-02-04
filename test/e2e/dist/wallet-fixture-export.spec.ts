@@ -20,6 +20,10 @@ import OnboardingCompletePage from '../page-objects/pages/onboarding/onboarding-
 import { handleSidepanelPostOnboarding } from '../page-objects/flows/onboarding.flow';
 import HomePage from '../page-objects/pages/home/homepage';
 import OnboardingPrivacySettingsPage from '../page-objects/pages/onboarding/onboarding-privacy-settings-page';
+import SettingsPage from '../page-objects/pages/settings/settings-page';
+import GeneralSettings from '../page-objects/pages/settings/general-settings';
+import AdvancedSettings from '../page-objects/pages/settings/advanced-settings';
+import { switchToNetworkFromNetworkSelect } from '../page-objects/flows/network.flow';
 
 type JsonLike = Record<string, unknown>;
 
@@ -180,12 +184,14 @@ describe('Wallet State', function () {
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
           driver,
         );
+
         await onboardingPrivacySettingsPage.addCustomNetwork(
           networkName,
           chainId,
           currencySymbol,
           networkUrl,
         );
+
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         await onboardingCompletePage.checkPageIsLoaded();
@@ -196,6 +202,27 @@ describe('Wallet State', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.headerNavbar.openSettingsPage();
+
+        const generalSettings = new GeneralSettings(driver);
+        await generalSettings.checkPageIsLoaded();
+        await generalSettings.toggleShowNativeTokenAsMainBalance();
+
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.clickAdvancedTab();
+
+        const advancedSettings = new AdvancedSettings(driver);
+        await advancedSettings.checkPageIsLoaded();
+        await advancedSettings.toggleShowTestnets();
+        await settingsPage.closeSettingsPage();
+
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8545',
+        );
 
         // Fiat value should be displayed as we mock the price and that is not a 'test network'
         await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
