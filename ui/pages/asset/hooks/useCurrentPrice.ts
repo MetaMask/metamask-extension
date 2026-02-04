@@ -43,6 +43,7 @@ export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
     return { currentPrice };
   }
 
+  // Format normalization in isEvmChainId should prevent most errors, but using safe wrapper as defensive fallback
   const assetId =
     type === AssetType.token
       ? asset.address
