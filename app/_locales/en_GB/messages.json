@@ -4739,9 +4739,6 @@
     "message": "OneKey",
     "description": "Hardware device name"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "only": {
     "message": "only"
   },
