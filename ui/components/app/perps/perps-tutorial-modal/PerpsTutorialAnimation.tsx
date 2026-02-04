@@ -29,14 +29,15 @@ type PerpsTutorialAnimationProps = {
 
 /**
  * Get container styles based on viewport type.
- * Side panel (~320px) works perfectly with Fit.Cover.
- * For wider viewports, we constrain max-width to prevent over-scaling.
+ * New RIV files have 280px artboard height.
+ * Side panel uses Fit.Contain to prevent horizontal cutoff on wider animations.
+ * Wider viewports use Fit.Cover with max-width constraints.
  */
 const getContainerStyle = (
   environmentType: string,
 ): { style: React.CSSProperties; fit: Fit } => {
   const baseStyle: React.CSSProperties = {
-    height: '300px',
+    height: '280px',
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
@@ -44,8 +45,8 @@ const getContainerStyle = (
   };
 
   if (environmentType === ENVIRONMENT_TYPE_SIDEPANEL) {
-    // Side panel: Fit.Cover works perfectly at this width
-    return { style: baseStyle, fit: Fit.Cover };
+    // Side panel: Use Fit.Contain to prevent horizontal cutoff on steps 3 & 4
+    return { style: baseStyle, fit: Fit.Contain };
   }
 
   if (environmentType === ENVIRONMENT_TYPE_POPUP) {
@@ -83,8 +84,8 @@ export default function PerpsTutorialAnimation({
   const fit = fitProp ?? defaultFit;
 
   const riveUrl = isDarkTheme
-    ? './images/riv_animations/perps_tutorial_dark.riv'
-    : './images/riv_animations/perps_tutorial_light.riv';
+    ? './images/riv_animations/perps-onboarding-carousel-dark.riv'
+    : './images/riv_animations/perps-onboarding-carousel-light.riv';
 
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
