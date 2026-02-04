@@ -1256,6 +1256,7 @@
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth": true,
         "@metamask/eth-ledger-bridge-keyring>@ledgerhq/hw-app-eth>@ledgerhq/hw-transport": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/keyring-api": true,
         "@metamask/utils": true,
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true
