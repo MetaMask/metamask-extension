@@ -243,11 +243,7 @@ export const NetworkListItem = ({
       ) : (
         <AvatarNetwork
           borderColor={BorderColor.backgroundDefault}
-          backgroundColor={
-            selected
-              ? BackgroundColor.primaryDefault
-              : getAvatarNetworkColor(name)
-          }
+          backgroundColor={getAvatarNetworkColor(name)}
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
