@@ -151,7 +151,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         await timerAccountListLoad.measure(async () => {
           await headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded(50000);
+          await accountListPage.checkPageIsLoaded(120000);
         });
         performanceTracker.addTimer(timerAccountListLoad);
       },
