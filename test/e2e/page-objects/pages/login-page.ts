@@ -4,51 +4,46 @@ import { WALLET_PASSWORD } from '../../constants';
 class LoginPage {
   private driver: Driver;
 
-  private passwordInput: string;
+  private readonly connectionsRemovedModal = {
+    testId: 'connections-removed-modal',
+  };
 
-  private unlockButton: string;
+  private readonly connectionsRemovedModalButton = {
+    testId: 'connections-removed-modal-button',
+  };
 
-  private welcomeBackMessage: object;
+  private readonly forgotPasswordButton = {
+    testId: 'unlock-forgot-password-button',
+  };
 
-  private forgotPasswordButton: string;
+  private readonly incorrectPasswordMessage = {
+    testId: 'unlock-page-help-text',
+    text: 'Password is incorrect. Please try again.',
+  };
 
-  private resetPasswordModalButton: string;
+  private readonly metamaskAnimation = {
+    css: 'riv-animation__canvas',
+  };
 
-  private resetWalletButton: string;
+  private readonly passwordInput = { testId: 'unlock-password' };
 
-  private connectionsRemovedModal: string;
+  private readonly resetPasswordModalButton = {
+    testId: 'reset-password-modal-button',
+  };
 
-  private connectionsRemovedModalButton: string;
+  private readonly resetWalletButton = { testId: 'login-error-modal-button' };
 
-  private incorrectPasswordMessage: { css: string; text: string };
+  private readonly unlockButton = { testId: 'unlock-submit' };
 
   constructor(driver: Driver) {
     this.driver = driver;
-    this.passwordInput = '[data-testid="unlock-password"]';
-    this.unlockButton = '[data-testid="unlock-submit"]';
-    this.welcomeBackMessage = {
-      css: '[data-testid="unlock-page-title"]',
-      text: 'Welcome back',
-    };
-    this.forgotPasswordButton = '[data-testid="unlock-forgot-password-button"]';
-
-    this.resetPasswordModalButton =
-      '[data-testid="reset-password-modal-button"]';
-
-    this.incorrectPasswordMessage = {
-      css: '[data-testid="unlock-page-help-text"]',
-      text: 'Password is incorrect. Please try again.',
-    };
-
-    this.resetWalletButton = '[data-testid="login-error-modal-button"]';
-    this.connectionsRemovedModal = '[data-testid="connections-removed-modal"]';
-    this.connectionsRemovedModalButton =
-      '[data-testid="connections-removed-modal-button"]';
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.forgotPasswordButton,
+        this.metamaskAnimation,
         this.passwordInput,
         this.unlockButton,
       ]);

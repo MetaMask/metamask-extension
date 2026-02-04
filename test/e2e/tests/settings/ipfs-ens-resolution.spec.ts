@@ -12,7 +12,7 @@ describe('Settings', function () {
   const ENS_NAME_URL = `https://${ENS_NAME}/`;
   const ENS_DESTINATION_URL = `https://app.ens.domains/name/${ENS_NAME}`;
 
-  it('Redirects to ENS domains when user inputs ENS into address bar', async function () {
+  it('Redirects to ENS domains when user inputs ENS into address bar TEST', async function () {
     async function mockMetaMaskDotEth(mockServer: MockttpServer) {
       return await mockServer.forGet(ENS_NAME_URL).thenResetConnection();
     }
@@ -42,7 +42,6 @@ describe('Settings', function () {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
-        await driver.delay(5000);
 
         // The setting defaults to "on" so we can simply enter an ENS address
         // into the address bar and listen for address change
