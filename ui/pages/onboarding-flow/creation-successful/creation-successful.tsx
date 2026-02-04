@@ -44,6 +44,7 @@ import {
 import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
+  getParticipateInMetaMetrics,
   getPreferences,
   getDeferredDeepLink,
 } from '../../../selectors';
@@ -86,12 +87,13 @@ export default function CreationSuccessful() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const preferences = useSelector(getPreferences);
   const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink) as DeferredDeepLink;
 
   const learnMoreLink =
@@ -276,6 +278,26 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
+    // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
+    // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
+    // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
+    if (!isOnboardingCompleted) {
+      // before onboarding completion, we track the MetricsOptIn/Out event
+
+      trackEvent(
+        {
+          category: MetaMetricsEventCategory.Onboarding,
+          event: participateInMetaMetrics
+            ? MetaMetricsEventName.MetricsOptIn
+            : MetaMetricsEventName.MetricsOptOut,
+          properties: {},
+        },
+        {
+          isOptIn: !participateInMetaMetrics, // Force the event to be tracked even if participateInMetaMetrics is false
+        },
+      );
+    }
+
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
       // If useSidePanelAsDefault is already true, side panel is already set up
@@ -323,6 +345,8 @@ export default function CreationSuccessful() {
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
 
+    navigate(DEFAULT_ROUTE);
+
     handleOnDoneNavigation(deferredDeepLinkResult, Boolean(deferredDeepLink));
   }, [
     isFromReminder,
@@ -336,6 +360,7 @@ export default function CreationSuccessful() {
     firstTimeFlowType,
     trackEvent,
     isSidePanelSetAsDefault,
+    participateInMetaMetrics,
     handleOnDoneNavigationWithSidepanelOpen,
     handleOnDoneNavigation,
   ]);

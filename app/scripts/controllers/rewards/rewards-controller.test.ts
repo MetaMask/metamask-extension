@@ -191,6 +191,8 @@ type WithControllerArgs<ReturnValue> = [
   {
     state?: Partial<RewardsControllerState>;
     isDisabled?: boolean;
+    isBitcoinDisabled?: boolean;
+    isTronDisabled?: boolean;
   },
   WithControllerCallback<ReturnValue>,
 ];
@@ -199,7 +201,12 @@ async function withController<ReturnValue>(
   ...args: WithControllerArgs<ReturnValue>
 ): Promise<ReturnValue> {
   const [options, fn] = args;
-  const { state, isDisabled = false } = options;
+  const {
+    state,
+    isDisabled = false,
+    isBitcoinDisabled = false,
+    isTronDisabled = false,
+  } = options;
 
   type TestAllowedActions =
     | AccountsControllerGetSelectedMultichainAccountAction
@@ -271,6 +278,8 @@ async function withController<ReturnValue>(
     messenger: controllerMessenger,
     state,
     isDisabled: () => isDisabled,
+    isBitcoinDisabled: () => isBitcoinDisabled,
+    isTronDisabled: () => isTronDisabled,
   });
 
   return await fn({
@@ -343,6 +352,7 @@ describe('RewardsController', () => {
         rewardsSeasons: {},
         rewardsSeasonStatuses: {},
         rewardsSubscriptionTokens: {},
+        rewardsPointsEstimateHistory: [],
       });
     });
   });
@@ -546,6 +556,106 @@ describe('RewardsController', () => {
         expect(result).toBe(false);
       });
     });
+
+    it('should return true for Bitcoin mainnet addresses', async () => {
+      await withController({ isDisabled: false }, ({ controller }) => {
+        const bitcoinAccount: InternalAccount = {
+          ...MOCK_INTERNAL_ACCOUNT,
+          address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        };
+
+        const result = controller.isOptInSupported(bitcoinAccount);
+
+        expect(result).toBe(true);
+      });
+    });
+
+    it('should return true for Bitcoin testnet addresses', async () => {
+      await withController({ isDisabled: false }, ({ controller }) => {
+        const bitcoinAccount: InternalAccount = {
+          ...MOCK_INTERNAL_ACCOUNT,
+          address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
+        };
+
+        const result = controller.isOptInSupported(bitcoinAccount);
+
+        expect(result).toBe(true);
+      });
+    });
+
+    it('should return true for Bitcoin addresses', async () => {
+      await withController({ isDisabled: false }, ({ controller }) => {
+        const bitcoinAccount: InternalAccount = {
+          ...MOCK_INTERNAL_ACCOUNT,
+          address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        };
+
+        const result = controller.isOptInSupported(bitcoinAccount);
+
+        expect(result).toBe(true);
+      });
+    });
+
+    it('should return true for Tron addresses', async () => {
+      await withController({ isDisabled: false }, ({ controller }) => {
+        const tronAccount: InternalAccount = {
+          ...MOCK_INTERNAL_ACCOUNT,
+          address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        };
+
+        const result = controller.isOptInSupported(tronAccount);
+
+        expect(result).toBe(true);
+      });
+    });
+
+    it('should return false for Bitcoin addresses when Bitcoin feature flag is disabled', async () => {
+      await withController(
+        { isDisabled: false, isBitcoinDisabled: true },
+        ({ controller }) => {
+          const bitcoinAccount: InternalAccount = {
+            ...MOCK_INTERNAL_ACCOUNT,
+            address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+          };
+
+          const result = controller.isOptInSupported(bitcoinAccount);
+
+          expect(result).toBe(false);
+        },
+      );
+    });
+
+    it('should return false for Bitcoin testnet addresses when Bitcoin feature flag is disabled', async () => {
+      await withController(
+        { isDisabled: false, isBitcoinDisabled: true },
+        ({ controller }) => {
+          const bitcoinAccount: InternalAccount = {
+            ...MOCK_INTERNAL_ACCOUNT,
+            address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
+          };
+
+          const result = controller.isOptInSupported(bitcoinAccount);
+
+          expect(result).toBe(false);
+        },
+      );
+    });
+
+    it('should return false for Tron addresses when Tron feature flag is disabled', async () => {
+      await withController(
+        { isDisabled: false, isTronDisabled: true },
+        ({ controller }) => {
+          const tronAccount: InternalAccount = {
+            ...MOCK_INTERNAL_ACCOUNT,
+            address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+          };
+
+          const result = controller.isOptInSupported(tronAccount);
+
+          expect(result).toBe(false);
+        },
+      );
+    });
   });
 
   describe('getActualSubscriptionId', () => {
@@ -645,6 +755,332 @@ describe('RewardsController', () => {
             hasOptedIn: true,
             subscriptionId: MOCK_SUBSCRIPTION_ID,
           });
+        },
+      );
+    });
+
+    it('should successfully perform silent auth for Bitcoin mainnet account when Bitcoin rewards are enabled', async () => {
+      const bitcoinAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'bitcoin-account-1',
+        address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        scopes: ['bip122:000000000019d6689c085ae165831e93'],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: '0xbitcoinSignature123',
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            bitcoinAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.objectContaining({
+              snapId: 'npm:@metamask/bitcoin-wallet-snap',
+              request: expect.objectContaining({
+                method: 'signRewardsMessage',
+              }),
+            }),
+          );
+        },
+      );
+    });
+
+    it('should successfully perform silent auth for Bitcoin testnet account when Bitcoin rewards are enabled', async () => {
+      const bitcoinAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'bitcoin-account-1',
+        address: 'tb1q6rmsq3vlfdhjdhtkxlqtuhhlr6pmj09y6w43g8',
+        scopes: [
+          'bip122:000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943',
+        ],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: '0xbitcoinSignature123',
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            bitcoinAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.objectContaining({
+              snapId: 'npm:@metamask/bitcoin-wallet-snap',
+              request: expect.objectContaining({
+                method: 'signRewardsMessage',
+              }),
+            }),
+          );
+        },
+      );
+    });
+
+    it('should successfully perform silent auth for Tron account when Tron rewards are enabled', async () => {
+      const tronAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'tron-account-1',
+        address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        scopes: ['tron:728126428'],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: '0xtronSignature123',
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            tronAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.objectContaining({
+              snapId: 'npm:@metamask/tron-wallet-snap',
+              request: expect.objectContaining({
+                method: 'signRewardsMessage',
+              }),
+            }),
+          );
+        },
+      );
+    });
+
+    it('should handle Bitcoin signature without 0x prefix', async () => {
+      const bitcoinAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'bitcoin-account-1',
+        address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        scopes: ['bip122:000000000019d6689c085ae165831e93'],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: 'bitcoinSignature123', // No 0x prefix
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            bitcoinAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+
+    it('should handle Tron signature without 0x prefix', async () => {
+      const tronAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'tron-account-1',
+        address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        scopes: ['tron:728126428'],
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'SnapController:handleRequest') {
+              return Promise.resolve({
+                signature: 'tronSignature123', // No 0x prefix
+                signedMessage: 'mockSignedMessage',
+                signatureType: 'ecdsa',
+              });
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            tronAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+
+    it('should throw error when signing with Bitcoin account while Bitcoin is disabled', async () => {
+      const bitcoinAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'bitcoin-account-1',
+        address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
+        scopes: ['bip122:000000000019d6689c085ae165831e93'],
+      };
+
+      await withController(
+        { isDisabled: false, isBitcoinDisabled: true },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            bitcoinAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBeNull();
+          expect(mockMessengerCall).not.toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.anything(),
+          );
+        },
+      );
+    });
+
+    it('should throw error when signing with Tron account while Tron is disabled', async () => {
+      const tronAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'tron-account-1',
+        address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        scopes: ['tron:728126428'],
+      };
+
+      await withController(
+        { isDisabled: false, isTronDisabled: true },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            tronAccount,
+            true,
+            false,
+          );
+
+          expect(result).toBeNull();
+          expect(mockMessengerCall).not.toHaveBeenCalledWith(
+            'SnapController:handleRequest',
+            expect.anything(),
+          );
         },
       );
     });
@@ -1145,6 +1581,556 @@ describe('RewardsController', () => {
           expect(result).toEqual(mockEstimatedPoints);
         },
       );
+    });
+
+    it('should add successful estimate to history', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const mockEstimatedPoints: EstimatedPointsDto = {
+            pointsEstimate: 150,
+            bonusBips: 300,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:estimatePoints') {
+              return Promise.resolve(mockEstimatedPoints);
+            }
+            return undefined;
+          });
+
+          const request: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: MOCK_CAIP_ACCOUNT,
+            activityContext: {
+              swapContext: {
+                srcAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '1000000000000000000',
+                },
+                destAsset: {
+                  id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                  amount: '4500000000',
+                },
+                feeAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '5000000000000000',
+                },
+              },
+            },
+          };
+
+          // History should be empty initially
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(0);
+
+          await controller.estimatePoints(request);
+
+          // History should now have one entry
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+          const historyEntry = controller.state.rewardsPointsEstimateHistory[0];
+          // Verify flattened request fields
+          expect(historyEntry.requestActivityType).toBe(request.activityType);
+          expect(historyEntry.requestAccount).toBe(request.account);
+          // Verify flattened swap source asset fields
+          expect(historyEntry.requestSwapSrcAssetId).toBe(
+            request.activityContext.swapContext?.srcAsset.id,
+          );
+          expect(historyEntry.requestSwapSrcAssetAmount).toBe(
+            request.activityContext.swapContext?.srcAsset.amount,
+          );
+          expect(historyEntry.requestSwapSrcAssetUsdPrice).toBe(
+            request.activityContext.swapContext?.srcAsset.usdPrice,
+          );
+          // Verify flattened swap destination asset fields
+          expect(historyEntry.requestSwapDestAssetId).toBe(
+            request.activityContext.swapContext?.destAsset.id,
+          );
+          expect(historyEntry.requestSwapDestAssetAmount).toBe(
+            request.activityContext.swapContext?.destAsset.amount,
+          );
+          expect(historyEntry.requestSwapDestAssetUsdPrice).toBe(
+            request.activityContext.swapContext?.destAsset.usdPrice,
+          );
+          // Verify flattened swap fee asset fields
+          expect(historyEntry.requestSwapFeeAssetId).toBe(
+            request.activityContext.swapContext?.feeAsset.id,
+          );
+          expect(historyEntry.requestSwapFeeAssetAmount).toBe(
+            request.activityContext.swapContext?.feeAsset.amount,
+          );
+          expect(historyEntry.requestSwapFeeAssetUsdPrice).toBe(
+            request.activityContext.swapContext?.feeAsset.usdPrice,
+          );
+          // Verify flattened response fields
+          expect(historyEntry.responsePointsEstimate).toBe(
+            mockEstimatedPoints.pointsEstimate,
+          );
+          expect(historyEntry.responseBonusBips).toBe(
+            mockEstimatedPoints.bonusBips,
+          );
+          expect(historyEntry.timestamp).toBeGreaterThan(0);
+        },
+      );
+    });
+
+    it('should not add to history when rewards are disabled', async () => {
+      await withController({ isDisabled: true }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            swapContext: {
+              srcAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '1000000000000000000',
+              },
+              destAsset: {
+                id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                amount: '4500000000',
+              },
+              feeAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '5000000000000000',
+              },
+            },
+          },
+        };
+
+        await controller.estimatePoints(request);
+
+        // History should remain empty when disabled
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(0);
+      });
+    });
+
+    it('should limit history to 50 entries', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:estimatePoints') {
+              return Promise.resolve({ pointsEstimate: 100, bonusBips: 0 });
+            }
+            return undefined;
+          });
+
+          const request: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: MOCK_CAIP_ACCOUNT,
+            activityContext: {
+              swapContext: {
+                srcAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '1000000000000000000',
+                },
+                destAsset: {
+                  id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                  amount: '4500000000',
+                },
+                feeAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '5000000000000000',
+                },
+              },
+            },
+          };
+
+          // Make 55 calls - should only keep last 50
+          for (let i = 0; i < 55; i++) {
+            await controller.estimatePoints(request);
+          }
+
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(
+            50,
+          );
+        },
+      );
+    });
+
+    it('should store most recent estimates first in history', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let callCount = 0;
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:estimatePoints') {
+              callCount += 1;
+              return Promise.resolve({
+                pointsEstimate: callCount * 100,
+                bonusBips: 0,
+              });
+            }
+            return undefined;
+          });
+
+          const request: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: MOCK_CAIP_ACCOUNT,
+            activityContext: {
+              swapContext: {
+                srcAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '1000000000000000000',
+                },
+                destAsset: {
+                  id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                  amount: '4500000000',
+                },
+                feeAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '5000000000000000',
+                },
+              },
+            },
+          };
+
+          await controller.estimatePoints(request);
+          await controller.estimatePoints(request);
+          await controller.estimatePoints(request);
+
+          // Most recent (300 points) should be first
+          expect(
+            controller.state.rewardsPointsEstimateHistory[0]
+              .responsePointsEstimate,
+          ).toBe(300);
+          expect(
+            controller.state.rewardsPointsEstimateHistory[1]
+              .responsePointsEstimate,
+          ).toBe(200);
+          expect(
+            controller.state.rewardsPointsEstimateHistory[2]
+              .responsePointsEstimate,
+          ).toBe(100);
+        },
+      );
+    });
+
+    it('returns estimated points even when history tracking fails', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const mockEstimatedPoints: EstimatedPointsDto = {
+            pointsEstimate: 250,
+            bonusBips: 100,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:estimatePoints') {
+              return Promise.resolve(mockEstimatedPoints);
+            }
+            return undefined;
+          });
+
+          // Mock addPointsEstimateToHistory to throw an error
+          const originalAddToHistory =
+            controller.addPointsEstimateToHistory.bind(controller);
+          jest
+            .spyOn(controller, 'addPointsEstimateToHistory')
+            .mockImplementation(() => {
+              throw new Error('State update failed');
+            });
+
+          const request: EstimatePointsDto = {
+            activityType: 'SWAP',
+            account: MOCK_CAIP_ACCOUNT,
+            activityContext: {
+              swapContext: {
+                srcAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '1000000000000000000',
+                },
+                destAsset: {
+                  id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                  amount: '4500000000',
+                },
+                feeAsset: {
+                  id: 'eip155:1/slip44:60',
+                  amount: '5000000000000000',
+                },
+              },
+            },
+          };
+
+          // Should still return successful estimate despite history tracking failure
+          const result = await controller.estimatePoints(request);
+
+          expect(result).toEqual(mockEstimatedPoints);
+
+          // Restore original implementation
+          jest.restoreAllMocks();
+
+          // Verify history was not updated (since it threw)
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(0);
+
+          // Call again with working history to verify it works after restore
+          originalAddToHistory(request, mockEstimatedPoints);
+          expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        },
+      );
+    });
+  });
+
+  describe('addPointsEstimateToHistory', () => {
+    it('adds a swap activity entry to history', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            swapContext: {
+              srcAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '1000000000000000000',
+                usdPrice: '2500',
+              },
+              destAsset: {
+                id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                amount: '4500000000',
+                usdPrice: '1',
+              },
+              feeAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '5000000000000000',
+                usdPrice: '2500',
+              },
+            },
+          },
+        };
+
+        const response: EstimatedPointsDto = {
+          pointsEstimate: 250,
+          bonusBips: 100,
+        };
+
+        controller.addPointsEstimateToHistory(request, response);
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.requestActivityType).toBe('SWAP');
+        expect(entry.requestAccount).toBe(MOCK_CAIP_ACCOUNT);
+        expect(entry.requestSwapSrcAssetId).toBe('eip155:1/slip44:60');
+        expect(entry.requestSwapSrcAssetAmount).toBe('1000000000000000000');
+        expect(entry.requestSwapSrcAssetUsdPrice).toBe('2500');
+        expect(entry.requestSwapDestAssetId).toBe(
+          'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        );
+        expect(entry.requestSwapDestAssetAmount).toBe('4500000000');
+        expect(entry.requestSwapDestAssetUsdPrice).toBe('1');
+        expect(entry.requestSwapFeeAssetId).toBe('eip155:1/slip44:60');
+        expect(entry.requestSwapFeeAssetAmount).toBe('5000000000000000');
+        expect(entry.requestSwapFeeAssetUsdPrice).toBe('2500');
+        expect(entry.responsePointsEstimate).toBe(250);
+        expect(entry.responseBonusBips).toBe(100);
+        expect(entry.timestamp).toBeGreaterThan(0);
+      });
+    });
+
+    it('adds a perps activity entry to history', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'PERPS',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            perpsContext: {
+              type: 'OPEN_POSITION',
+              usdFeeValue: '25.5',
+              coin: 'ETH',
+            },
+          },
+        };
+
+        const response: EstimatedPointsDto = {
+          pointsEstimate: 500,
+          bonusBips: 200,
+        };
+
+        controller.addPointsEstimateToHistory(request, response);
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.requestActivityType).toBe('PERPS');
+        expect(entry.requestAccount).toBe(MOCK_CAIP_ACCOUNT);
+        expect(entry.requestPerpsType).toBe('OPEN_POSITION');
+        expect(entry.requestPerpsUsdFeeValue).toBe('25.5');
+        expect(entry.requestPerpsCoin).toBe('ETH');
+        expect(entry.responsePointsEstimate).toBe(500);
+        expect(entry.responseBonusBips).toBe(200);
+        // Swap fields should be undefined for perps
+        expect(entry.requestSwapSrcAssetId).toBeUndefined();
+      });
+    });
+
+    it('adds a shield activity entry to history', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SHIELD',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            shieldContext: {
+              recurringInterval: 'month',
+            },
+          },
+        };
+
+        const response: EstimatedPointsDto = {
+          pointsEstimate: 1000,
+          bonusBips: 0,
+        };
+
+        controller.addPointsEstimateToHistory(request, response);
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.requestActivityType).toBe('SHIELD');
+        expect(entry.requestAccount).toBe(MOCK_CAIP_ACCOUNT);
+        expect(entry.requestShieldRecurringInterval).toBe('month');
+        expect(entry.responsePointsEstimate).toBe(1000);
+        expect(entry.responseBonusBips).toBe(0);
+        // Swap and perps fields should be undefined
+        expect(entry.requestSwapSrcAssetId).toBeUndefined();
+        expect(entry.requestPerpsType).toBeUndefined();
+      });
+    });
+
+    it('limits history to 50 entries', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            swapContext: {
+              srcAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '1000000000000000000',
+              },
+              destAsset: {
+                id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                amount: '4500000000',
+              },
+              feeAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '5000000000000000',
+              },
+            },
+          },
+        };
+
+        // Add 55 entries directly
+        for (let i = 0; i < 55; i++) {
+          controller.addPointsEstimateToHistory(request, {
+            pointsEstimate: i * 10,
+            bonusBips: 0,
+          });
+        }
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(50);
+      });
+    });
+
+    it('stores most recent entries first', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {
+            swapContext: {
+              srcAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '1000000000000000000',
+              },
+              destAsset: {
+                id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                amount: '4500000000',
+              },
+              feeAsset: {
+                id: 'eip155:1/slip44:60',
+                amount: '5000000000000000',
+              },
+            },
+          },
+        };
+
+        controller.addPointsEstimateToHistory(request, {
+          pointsEstimate: 100,
+          bonusBips: 0,
+        });
+        controller.addPointsEstimateToHistory(request, {
+          pointsEstimate: 200,
+          bonusBips: 0,
+        });
+        controller.addPointsEstimateToHistory(request, {
+          pointsEstimate: 300,
+          bonusBips: 0,
+        });
+
+        // Most recent (300 points) should be first
+        expect(
+          controller.state.rewardsPointsEstimateHistory[0]
+            .responsePointsEstimate,
+        ).toBe(300);
+        expect(
+          controller.state.rewardsPointsEstimateHistory[1]
+            .responsePointsEstimate,
+        ).toBe(200);
+        expect(
+          controller.state.rewardsPointsEstimateHistory[2]
+            .responsePointsEstimate,
+        ).toBe(100);
+      });
+    });
+
+    it('handles activity with empty context gracefully', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {},
+        };
+
+        const response: EstimatedPointsDto = {
+          pointsEstimate: 50,
+          bonusBips: 0,
+        };
+
+        controller.addPointsEstimateToHistory(request, response);
+
+        expect(controller.state.rewardsPointsEstimateHistory).toHaveLength(1);
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.requestActivityType).toBe('SWAP');
+        expect(entry.requestAccount).toBe(MOCK_CAIP_ACCOUNT);
+        expect(entry.responsePointsEstimate).toBe(50);
+        // All context-specific fields should be undefined
+        expect(entry.requestSwapSrcAssetId).toBeUndefined();
+        expect(entry.requestPerpsType).toBeUndefined();
+        expect(entry.requestShieldRecurringInterval).toBeUndefined();
+      });
+    });
+
+    it('records timestamp at the time of adding entry', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const beforeTimestamp = Date.now();
+
+        const request: EstimatePointsDto = {
+          activityType: 'SWAP',
+          account: MOCK_CAIP_ACCOUNT,
+          activityContext: {},
+        };
+
+        controller.addPointsEstimateToHistory(request, {
+          pointsEstimate: 100,
+          bonusBips: 0,
+        });
+
+        const afterTimestamp = Date.now();
+        const entry = controller.state.rewardsPointsEstimateHistory[0];
+
+        expect(entry.timestamp).toBeGreaterThanOrEqual(beforeTimestamp);
+        expect(entry.timestamp).toBeLessThanOrEqual(afterTimestamp);
+      });
     });
   });
 
