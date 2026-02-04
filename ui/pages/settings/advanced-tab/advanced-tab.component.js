@@ -436,7 +436,7 @@ export default class AdvancedTab extends PureComponent {
       <Box
         ref={this.settingsRefs[5]}
         className="settings-page__content-row"
-        data-testid="advanced-setting-show-testnet-conversion"
+        data-testid="advanced-setting-show-testnets"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
