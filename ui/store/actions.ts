@@ -4161,20 +4161,10 @@ export function closeCurrentNotificationWindow(): ThunkAction<
     const isPendingHardwareSigning = getPendingHardwareSigning(state);
     const isHwErrorModalVisible = getIsHardwareWalletErrorModalVisible(state);
 
-    console.log('[HW_DEBUG CLOSE] closeCurrentNotificationWindow called:', {
-      isPendingHardwareSigning,
-      isHwErrorModalVisible,
-      environmentType: getEnvironmentType(),
-      hasPendingApprovals: hasTransactionPendingApprovals(state),
-      isSigningQR: getIsSigningQRHardwareTransaction(state),
-      approvalFlowsLength: approvalFlows.length,
-    });
-
     // Don't close the popup if:
     // - Hardware wallet signing is in progress (error being handled)
     // - Hardware wallet error modal is visible (for retry functionality)
     if (isPendingHardwareSigning || isHwErrorModalVisible) {
-      console.log('[HW_DEBUG CLOSE] BLOCKED by hardware wallet state');
       return;
     }
 
@@ -4187,12 +4177,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
       !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
     ) {
-      console.log(
-        '[HW_DEBUG CLOSE] CONDITIONS MET - calling attemptCloseNotificationPopup',
-      );
       attemptCloseNotificationPopup();
-    } else {
-      console.log('[HW_DEBUG CLOSE] CONDITIONS NOT MET - not closing');
     }
   };
 }

@@ -14,17 +14,13 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../shared/constants/app';
-import {
-  CONFIRM_TRANSACTION_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import {
   updateAndApproveTx,
-  setPendingHardwareSigning,
   closeCurrentNotificationWindow,
   attemptCloseNotificationPopup,
 } from '../../../../store/actions';
@@ -32,7 +28,6 @@ import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import {
   isHardwareWalletError,
-  isRetryableHardwareWalletError,
   isUserRejectedHardwareWalletError,
   useHardwareWalletError,
 } from '../../../../contexts/hardware-wallets';

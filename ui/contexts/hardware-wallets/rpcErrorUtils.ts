@@ -516,5 +516,3 @@ export function toHardwareWalletError(
     fallbackMessage,
   );
 }
-
-// #endregion

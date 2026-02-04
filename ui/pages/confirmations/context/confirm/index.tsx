@@ -11,10 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import {
-  getPendingHardwareSigning,
-  getIsHardwareWalletErrorModalVisible,
-} from '../../../../selectors';
+import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -56,23 +53,8 @@ export const ConfirmContextProvider: React.FC<{
     const isBlocked =
       isPendingHardwareSigning || isHardwareWalletErrorModalVisible;
 
-    // Always log when this effect runs to trace timing
-    console.log('[HW_DEBUG NAV ConfirmContext] useEffect triggered:', {
-      hasPreviousConfirmation: Boolean(previousConfirmation),
-      hasCurrentConfirmation: Boolean(currentConfirmation),
-      previousConfirmationId: (previousConfirmation as any)?.id,
-      isPendingHardwareSigning,
-      isHardwareWalletErrorModalVisible,
-      wouldNavigate,
-      isBlocked,
-      willNavigate: wouldNavigate && !isBlocked,
-    });
-
     if (wouldNavigate && !isBlocked) {
-      console.log('[HW_DEBUG NAV ConfirmContext] NAVIGATING TO HOME');
       navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
-    } else if (wouldNavigate && isBlocked) {
-      console.log('[HW_DEBUG NAV ConfirmContext] BLOCKED - not navigating');
     }
   }, [
     previousConfirmation,

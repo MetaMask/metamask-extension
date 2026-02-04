@@ -393,28 +393,12 @@ export default function ConfirmationPage({
     const isBlocked =
       isHardwareWalletErrorModalVisible || isPendingHardwareSigning;
 
-    // Always log when this effect runs to trace timing
-    console.log('[HW_DEBUG NAV confirmation.js] useEffect triggered:', {
-      pendingConfirmationsLength: pendingConfirmations.length,
-      approvalFlowsLength: approvalFlows.length,
-      totalUnapprovedCount,
-      redirectToHomeOnZeroConfirmations,
-      isHardwareWalletErrorModalVisible,
-      isPendingHardwareSigning,
-      wouldNavigate,
-      isBlocked,
-      willNavigate: wouldNavigate && !isBlocked,
-    });
-
     if (wouldNavigate && !isBlocked) {
-      console.log('[HW_DEBUG NAV confirmation.js] NAVIGATING TO HOME');
       const to = shouldShowActivity
         ? `${DEFAULT_ROUTE}?tab=activity`
         : DEFAULT_ROUTE;
 
       navigate(to);
-    } else if (wouldNavigate && isBlocked) {
-      console.log('[HW_DEBUG NAV confirmation.js] BLOCKED - not navigating');
     }
   }, [
     pendingConfirmations,

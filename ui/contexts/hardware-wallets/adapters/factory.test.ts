@@ -1,8 +1,11 @@
+import {
+  HardwareWalletType,
+  type HardwareWalletAdapterOptions,
+} from '../types';
 import { createAdapterForHardwareWalletType } from './factory';
 import { LedgerAdapter } from './LedgerAdapter';
 import { NonHardwareAdapter } from './NonHardwareAdapter';
 import { TrezorAdapter } from './TrezorAdapter';
-import { HardwareWalletType, type HardwareWalletAdapterOptions } from '../types';
 
 describe('createAdapterForHardwareWalletType', () => {
   const mockOptions: HardwareWalletAdapterOptions = {
@@ -51,7 +54,10 @@ describe('createAdapterForHardwareWalletType', () => {
     });
 
     it('creates NonHardwareAdapter when walletType is undefined', () => {
-      const adapter = createAdapterForHardwareWalletType(undefined, mockOptions);
+      const adapter = createAdapterForHardwareWalletType(
+        undefined,
+        mockOptions,
+      );
       expect(adapter).toBeInstanceOf(NonHardwareAdapter);
     });
 
@@ -66,4 +72,3 @@ describe('createAdapterForHardwareWalletType', () => {
     });
   });
 });
-
