@@ -909,6 +909,7 @@
     },
     "rewardsAccounts": {},
     "rewardsActiveAccount": "null",
+    "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
     "rewardsSubscriptions": {},

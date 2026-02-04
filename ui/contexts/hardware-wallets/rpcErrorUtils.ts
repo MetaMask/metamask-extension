@@ -299,19 +299,18 @@ function convertDataToHardwareWalletError(
   const resolvedMessage =
     message && message.length > 0
       ? message
-      : data.userMessage ?? 'Hardware wallet error';
+      : (data.userMessage ?? 'Hardware wallet error');
 
   const hwError = new HardwareWalletError(resolvedMessage, {
-      code: errorCode,
-      severity: data.severity as Severity,
-      category: data.category as Category,
-      userMessage: data.userMessage ?? '',
-      metadata: {
-        ...(data.metadata as Record<string, unknown>),
-        walletType,
-      },
+    code: errorCode,
+    severity: data.severity as Severity,
+    category: data.category as Category,
+    userMessage: data.userMessage ?? '',
+    metadata: {
+      ...(data.metadata as Record<string, unknown>),
+      walletType,
     },
-  );
+  });
 
   if (stack) {
     hwError.stack = stack;
