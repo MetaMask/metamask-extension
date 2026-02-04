@@ -627,7 +627,7 @@
     "message": "All networks"
   },
   "allPermissions": {
-    "message": "All permissions"
+    "message": "Dapp connections"
   },
   "allPopularNetworks": {
     "message": "All popular networks"
@@ -1928,6 +1928,9 @@
   },
   "customizeYourNotificationsText": {
     "message": "Turn on the types of notifications you want to receive:"
+  },
+  "dappConnections": {
+    "message": "Dapp Connections"
   },
   "dappSuggested": {
     "message": "Site suggested"
