@@ -12,7 +12,7 @@ describe('Settings', function () {
   const ENS_NAME_URL = `https://${ENS_NAME}/`;
   const ENS_DESTINATION_URL = `https://app.ens.domains/name/${ENS_NAME}`;
 
-  it('Redirects to ENS domains when user inputs ENS into address bar TEST', async function () {
+  it('Redirects to ENS domains when user inputs ENS into address bar', async function () {
     async function mockMetaMaskDotEth(mockServer: MockttpServer) {
       return await mockServer.forGet(ENS_NAME_URL).thenResetConnection();
     }

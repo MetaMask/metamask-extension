@@ -29,7 +29,9 @@ class LoginPage {
     testId: 'reset-password-modal-button',
   };
 
-  private readonly resetWalletButton: object = { testId: 'login-error-modal-button' };
+  private readonly resetWalletButton: object = {
+    testId: 'login-error-modal-button',
+  };
 
   private readonly unlockButton: object = { testId: 'unlock-submit' };
 
