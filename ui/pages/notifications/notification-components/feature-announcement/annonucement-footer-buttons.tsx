@@ -9,7 +9,7 @@ import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
 import {
   getShieldInAppNavigationFromExternalLink,
-  SHIELD_ANNOUNCEMENT_NOFICATION_ID,
+  SHIELD_ANNOUNCEMENT_NOTIFICATION_ID,
 } from '../../../../../shared/modules/shield';
 import { FeatureAnnouncementNotification } from './types';
 
@@ -85,7 +85,7 @@ export const ExternalLinkButton = (props: {
 
   let href: string | undefined = notification.data.externalLink.externalLinkUrl;
   const isShieldAnnouncementNotification =
-    notification.id === SHIELD_ANNOUNCEMENT_NOFICATION_ID;
+    notification.id === SHIELD_ANNOUNCEMENT_NOTIFICATION_ID;
   // use native navigation for shield announcement instead of opening new tab
   // TODO: clean this when we have better control of how deeplink are opened
   if (isShieldAnnouncementNotification) {

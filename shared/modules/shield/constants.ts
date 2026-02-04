@@ -23,5 +23,5 @@ export function isNonUISubscriptionError(error: Error | undefined): boolean {
 
 export const SHIELD_CAROUSEL_ID = 'contentful-1MftLVfZkCqPH1EA8jtSOm';
 
-export const SHIELD_ANNOUNCEMENT_NOFICATION_ID =
+export const SHIELD_ANNOUNCEMENT_NOTIFICATION_ID =
   'get-transaction-shield-and-earn-metamask-rewards-extension';
