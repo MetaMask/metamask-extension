@@ -38,23 +38,12 @@ const WhatArePerpsStep: React.FC = () => {
 
   return (
     <ModalBody
-      className="w-full h-full pt-8 pb-4 flex flex-col"
+      className="w-full h-full pt-6 pb-4 flex flex-col"
       data-testid="perps-tutorial-what-are-perps"
     >
       <ProgressIndicator totalSteps={TOTAL_STEPS} currentStep={CURRENT_STEP} />
 
-      <Box className="flex-1 flex flex-col items-center justify-center px-6 pt-4 pb-2">
-        <Box
-          className="perps-tutorial-character__container mb-2"
-          data-testid="perps-tutorial-step-image"
-        >
-          <img
-            src="./images/perps-character.png"
-            alt=""
-            className="perps-tutorial-character__image"
-          />
-        </Box>
-
+      <Box className="flex-1 flex flex-col items-center px-6 pt-6">
         <Text variant={TextVariant.HeadingLg} className="text-left mb-2 w-full">
           {t('perpsTutorialWhatArePerpsTitle')}
         </Text>
@@ -70,6 +59,17 @@ const WhatArePerpsStep: React.FC = () => {
         >
           {t('perpsTutorialWhatArePerpsSubtitle')}
         </Text>
+
+        <Box
+          className="flex-1 flex items-center justify-center"
+          data-testid="perps-tutorial-step-image"
+        >
+          <img
+            src="./images/perps-character.png"
+            alt=""
+            className="perps-tutorial-character__image"
+          />
+        </Box>
       </Box>
 
       <Box className="flex flex-col gap-2 px-4">
