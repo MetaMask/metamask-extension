@@ -141,7 +141,6 @@ import {
   isMultichainAccountsFeatureEnabled,
 } from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
-import { TokenStandard } from '../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
@@ -3773,14 +3772,14 @@ export default class MetamaskController extends EventEmitter {
 
     // boolean to check if the token is an ERC20
     const tokenDetailsStandardIsERC20 =
-      isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
+      isEqualCaseInsensitive(tokenDetails.standard, ERC20) ||
       tokenDetails.erc20 === true;
 
     // boolean to check if the token is an NFT
     const noEvidenceThatTokenIsAnNFT =
       !tokenId &&
-      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
-      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, ERC721) &&
       !tokenDetails.erc721;
 
     // boolean to check if the token is an ERC20 like
@@ -3802,7 +3801,7 @@ export default class MetamaskController extends EventEmitter {
         details = {
           address,
           balance,
-          standard: TokenStandard.ERC20,
+          standard: ERC20,
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
@@ -3832,7 +3831,7 @@ export default class MetamaskController extends EventEmitter {
     if (details) {
       const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
         details.standard,
-        TokenStandard.ERC1155,
+        ERC1155,
       );
 
       if (tokenDetailsStandardIsERC1155) {
@@ -3898,13 +3897,13 @@ export default class MetamaskController extends EventEmitter {
     };
 
     const tokenDetailsStandardIsERC20 =
-      isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
+      isEqualCaseInsensitive(tokenDetails.standard, ERC20) ||
       tokenDetails.erc20 === true;
 
     const noEvidenceThatTokenIsAnNFT =
       !tokenId &&
-      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
-      !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC721) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, ERC1155) &&
+      !isEqualCaseInsensitive(tokenDetails.standard, ERC721) &&
       !tokenDetails.erc721;
 
     const otherDetailsAreERC20Like =
@@ -3930,7 +3929,7 @@ export default class MetamaskController extends EventEmitter {
         details = {
           address,
           balance,
-          standard: TokenStandard.ERC20,
+          standard: ERC20,
           decimals: tokenDetails.decimals,
           symbol: tokenDetails.symbol,
         };
@@ -3970,7 +3969,7 @@ export default class MetamaskController extends EventEmitter {
     if (details) {
       const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
         details.standard,
-        TokenStandard.ERC1155,
+        ERC1155,
       );
 
       if (tokenDetailsStandardIsERC1155) {

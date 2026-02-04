@@ -55,8 +55,8 @@ async function requestRepair(
 }
 
 /**
- * Attempts to get a backup from the database. If the error passed in has a
- * `backup` property, it will use that instead of reading from the database.
+ * Attempts to get a backup from the database. If the error passed in exposes a
+ * `getBackup` function, it will use that instead of reading from the database.
  * This is useful for errors that are thrown during the backup process, as
  * they may already have a backup object on them.
  *
@@ -68,12 +68,14 @@ async function maybeGetBackup(
   database: PersistenceManager,
 ): Promise<Backup | null> {
   /**
-   * A STATE_CORRUPTION_ERROR may have a `backup` property already on it,
-   * if it does, we can use it without reading from the DB again.
+   * A STATE_CORRUPTION_ERROR may expose a `getBackup` function already on it.
+   * If it does, we can use it without reading from the DB again.
    */
   let backup =
-    isObject(error) && hasProperty(error, 'backup') && error.backup !== null
-      ? (error.backup as Backup)
+    isObject(error) &&
+    hasProperty(error, 'getBackup') &&
+    typeof error.getBackup === 'function'
+      ? ((error.getBackup() as Backup) ?? null)
       : null;
   if (!backup) {
     try {

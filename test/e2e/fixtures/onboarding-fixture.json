@@ -1973,7 +1973,8 @@
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
-      "rewardsSubscriptions": {}
+      "rewardsSubscriptions": {},
+      "rewardsPointsEstimateHistory": []
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
