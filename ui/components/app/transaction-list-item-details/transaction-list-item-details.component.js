@@ -276,6 +276,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   <Disclosure
                     title={t('activityLog')}
                     size="small"
+                    variant="arrow"
                     isScrollToBottomOnOpen
                   >
                     <TransactionActivityLog
