@@ -108,6 +108,11 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainAssetsRatesController: {
     assetsRates: false,
   },
+  AssetsController: {
+    assetsBalance: false,
+    assetsMetadata: false,
+    customAssets: false,
+  },
   BridgeController: {
     assetExchangeRates: false,
     minimumBalanceForRentExemptionInLamports: false,

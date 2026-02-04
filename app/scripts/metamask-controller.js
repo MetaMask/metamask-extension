@@ -619,7 +619,6 @@ export default class MetamaskController extends EventEmitter {
       BridgeStatusController: BridgeStatusControllerInit,
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
-      AssetsController: AssetsControllerInit,
       NftDetectionController: NftDetectionControllerInit,
       CurrencyRateController: CurrencyRateControllerInit,
       RatesController: RatesControllerInit,
@@ -631,6 +630,7 @@ export default class MetamaskController extends EventEmitter {
       // because TokenRatesController depends on NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
+      AssetsController: AssetsControllerInit,
       TokenRatesController: TokenRatesControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,

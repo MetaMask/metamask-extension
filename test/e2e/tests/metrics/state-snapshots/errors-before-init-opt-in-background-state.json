@@ -170,6 +170,11 @@
       "allIgnoredTokens": {},
       "allTokens": {}
     },
+    "AssetsController": {
+      "assetsBalance": "object",
+      "assetsMetadata": "object",
+      "customAssets": "object"
+    },
     "TransactionController": { "transactions": "object" },
     "config": "object"
   }

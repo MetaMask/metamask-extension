@@ -126,6 +126,11 @@
       "assetsMetadata": "object"
     },
     "MultichainAssetsRatesController": { "conversionRates": "object" },
+    "AssetsController": {
+      "assetsBalance": "object",
+      "assetsMetadata": "object",
+      "customAssets": "object"
+    },
     "MultichainBalancesController": { "balances": "object" },
     "MultichainNetworkController": "object",
     "MultichainRatesController": {

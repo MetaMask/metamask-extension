@@ -118,8 +118,6 @@ export type AssetsControllerInitMessenger = ReturnType<
 export function getAssetsControllerMessenger(
   messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ): AssetsControllerMessenger {
-  console.log('[AssetsController] Creating AssetsController messenger...');
-
   const controllerMessenger = new Messenger<
     'AssetsController',
     AllowedActions,
@@ -163,7 +161,6 @@ export function getAssetsControllerMessenger(
     ],
   });
 
-  console.log('[AssetsController] AssetsController messenger created');
   return controllerMessenger as unknown as AssetsControllerMessenger;
 }
 

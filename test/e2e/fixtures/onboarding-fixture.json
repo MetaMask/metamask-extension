@@ -217,6 +217,11 @@
     "MultichainAssetsRatesController": {
       "conversionRates": {}
     },
+    "AssetsController": {
+      "assetsBalance": {},
+      "assetsMetadata": {},
+      "customAssets": {}
+    },
     "MultichainBalancesController": {
       "balances": {}
     },

@@ -9,6 +9,11 @@ import {
   createApiPlatformClient,
   type ApiPlatformClient,
 } from '@metamask/core-backend';
+import {
+  isAssetsUnifyStateFeatureEnabled,
+  ASSETS_UNIFY_STATE_VERSION_1,
+  type AssetsUnifyStateFeatureFlag,
+} from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { type ControllerInitFunction } from '../types';
 import {
   type AssetsControllerMessenger,
@@ -16,6 +21,7 @@ import {
 } from '../messengers/assets/assets-controller-messenger';
 
 const LOG_PREFIX = '[AssetsController]';
+const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
 
 /**
  * Result of initializing data sources for the AssetsController.
@@ -77,11 +83,13 @@ async function safeGetTokenDetectionEnabled(
  *
  * @param controllerMessenger - The controller messenger for data source communication.
  * @param initMessenger - The initialization messenger for controller actions.
+ * @param isEnabled - Function to check if the feature is enabled.
  * @returns The initialized data sources, messengers, and API client.
  */
 async function initializeDataSourcesOnce(
   controllerMessenger: AssetsControllerMessenger,
   initMessenger: AssetsControllerInitMessenger,
+  isEnabled: () => boolean,
 ): Promise<DataSourcesInitResult> {
   if (dataSourcesInitPromise) {
     return dataSourcesInitPromise;
@@ -104,7 +112,7 @@ async function initializeDataSourcesOnce(
     const dataSourceMessengers = initMessengers({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: rootMessenger as any,
-      isEnabled: () => true,
+      isEnabled,
     });
 
     if (!dataSourceMessengers) {
@@ -125,7 +133,7 @@ async function initializeDataSourcesOnce(
       messengers: dataSourceMessengers,
       queryApiClient: apiClient,
       rpcDataSourceConfig: { tokenDetectionEnabled },
-      isEnabled: () => true,
+      isEnabled,
     });
 
     if (!dataSources) {
@@ -157,19 +165,49 @@ async function initializeDataSourcesOnce(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.initMessenger - The init messenger to use for the controller.
+ * @param request.getController - Function to get a controller by name.
  * @returns The initialized controller.
  */
 export const AssetsControllerInit: ControllerInitFunction<
   AssetsController,
   AssetsControllerMessenger,
   AssetsControllerInitMessenger
-> = ({ controllerMessenger, persistedState, initMessenger }) => {
+> = ({ controllerMessenger, persistedState, initMessenger, getController }) => {
   console.log(`${LOG_PREFIX} Initializing...`);
+
+  /**
+   * Check if the AssetsController feature is enabled based on the remote feature flag.
+   * This function is called by the AssetsController to determine if it should be active.
+   *
+   * @returns True if the feature is enabled, false otherwise.
+   */
+  const isEnabled = (): boolean => {
+    return true;
+    try {
+      const remoteFeatureFlagController = getController(
+        'RemoteFeatureFlagController',
+      );
+      const featureFlag = remoteFeatureFlagController.state.remoteFeatureFlags[
+        ASSETS_UNIFY_STATE_FLAG
+      ] as AssetsUnifyStateFeatureFlag | undefined;
+
+      return isAssetsUnifyStateFeatureEnabled(
+        featureFlag,
+        ASSETS_UNIFY_STATE_VERSION_1,
+      );
+    } catch (error) {
+      console.warn(
+        `${LOG_PREFIX} Failed to check feature flag, defaulting to disabled`,
+        error,
+      );
+      return false;
+    }
+  };
 
   const controller = new AssetsController({
     messenger: controllerMessenger,
     state: persistedState.AssetsController,
-    isEnabled: () => true,
+    isEnabled,
   });
 
   // Register data sources by name with the controller.
@@ -189,7 +227,7 @@ export const AssetsControllerInit: ControllerInitFunction<
   // Initialize data sources (creates instances and registers action handlers).
   // This is fire-and-forget - the controller will work with cached state
   // until data sources are ready, then start receiving live updates.
-  initializeDataSourcesOnce(controllerMessenger, initMessenger)
+  initializeDataSourcesOnce(controllerMessenger, initMessenger, isEnabled)
     .then(() => {
       console.log(`${LOG_PREFIX} Data sources initialized and ready`);
     })
