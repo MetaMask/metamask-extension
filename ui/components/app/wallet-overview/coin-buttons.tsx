@@ -338,12 +338,17 @@ const CoinButtons = ({
       : hexChainOrAssetId;
 
     // Handle clicking from the wallet or native asset overview page
-    openBridgeExperience(
-      MetaMetricsSwapsEventSource.MainView,
-      chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-        ? getNativeAssetForChainId(chainIdToUse)
-        : undefined,
-    );
+    let nativeAsset;
+    try {
+      nativeAsset =
+        chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
+          ? getNativeAssetForChainId(chainIdToUse)
+          : undefined;
+    } catch (error) {
+      // Chain ID not supported in XChain Swaps map
+      nativeAsset = undefined;
+    }
+    openBridgeExperience(MetaMetricsSwapsEventSource.MainView, nativeAsset);
   }, [location, openBridgeExperience]);
 
   const handleReceiveOnClick = useCallback(() => {

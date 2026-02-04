@@ -43,10 +43,16 @@ export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
     return { currentPrice };
   }
 
-  const assetId =
-    type === AssetType.token
-      ? asset.address
-      : getNativeAssetForChainId(chainId).assetId;
+  let assetId;
+  try {
+    assetId =
+      type === AssetType.token
+        ? asset.address
+        : getNativeAssetForChainId(chainId).assetId;
+  } catch (error) {
+    // Chain ID not supported in XChain Swaps map
+    return { currentPrice: undefined };
+  }
   const currentPriceAsString =
     nonEvmConversionRates?.[assetId as CaipAssetType]?.rate;
 

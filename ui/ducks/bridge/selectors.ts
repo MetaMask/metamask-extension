@@ -273,7 +273,12 @@ export const getFromToken = createSelector(
     // If the user has not selected a token, return the native token for the selected network as default
     // If selected network is not supported by swap/bridge, return ETH (edge case)
     const fromChainId = fromChain?.chainId ?? FALLBACK_CHAIN_ID;
-    return toBridgeToken(getNativeAssetForChainId(fromChainId));
+    try {
+      return toBridgeToken(getNativeAssetForChainId(fromChainId));
+    } catch (error) {
+      // Chain ID not supported in XChain Swaps map
+      return undefined;
+    }
   },
 );
 
@@ -421,7 +426,15 @@ const _getFromNativeBalance = createSelector(
     }
 
     const { chainId } = fromChain;
-    const { decimals, assetId } = getNativeAssetForChainId(chainId);
+    let decimals, assetId;
+    try {
+      const nativeAsset = getNativeAssetForChainId(chainId);
+      decimals = nativeAsset.decimals;
+      assetId = nativeAsset.assetId;
+    } catch (error) {
+      // Chain ID not supported in XChain Swaps map
+      return null;
+    }
 
     // Use the balance provided by the multichain balances controller for non-EVM chains
     if (isNonEvmChain(chainId)) {

@@ -240,5 +240,10 @@ export const getDefaultToToken = (
   }
 
   // Last resort: native token
-  return toBridgeToken(getNativeAssetForChainId(toChainId));
+  try {
+    return toBridgeToken(getNativeAssetForChainId(toChainId));
+  } catch (error) {
+    // Chain ID not supported in XChain Swaps map
+    return undefined;
+  }
 };

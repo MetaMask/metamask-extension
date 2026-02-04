@@ -51,7 +51,12 @@ export const toAssetId = (
   }
 
   if (isNativeAddress(addressToUse)) {
-    return getNativeAssetForChainId(chainIdToUse)?.assetId;
+    try {
+      return getNativeAssetForChainId(chainIdToUse)?.assetId;
+    } catch (error) {
+      // Chain ID not supported in XChain Swaps map, return undefined
+      return undefined;
+    }
   }
   if (chainIdToUse === MultichainNetworks.SOLANA) {
     return CaipAssetTypeStruct.create(`${chainIdToUse}/token:${addressToUse}`);

@@ -74,9 +74,8 @@ describe('asset-utils', () => {
       const nativeAddress = '0x0000000000000000000000000000000000000000';
       const chainId = 'eip155:1231' as CaipChainId;
 
-      expect(() => toAssetId(nativeAddress, chainId)).toThrow(
-        'No XChain Swaps native asset found for chainId: eip155:1231',
-      );
+      const result = toAssetId(nativeAddress, chainId);
+      expect(result).toBeUndefined();
     });
 
     it('should create Solana token asset ID correctly', () => {

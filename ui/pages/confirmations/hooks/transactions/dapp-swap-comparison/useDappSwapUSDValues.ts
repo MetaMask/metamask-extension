@@ -42,9 +42,13 @@ export function useDappSwapUSDValues({
     );
 
     if (chainId === CHAIN_IDS.POLYGON) {
-      const nativeAddress = getNativeAssetForChainId(chainId).address;
-      exchangeRates[nativeAddress] =
-        exchangeRates[POLYGON_NATIVE_TOKEN_ADDRESS];
+      try {
+        const nativeAddress = getNativeAssetForChainId(chainId).address;
+        exchangeRates[nativeAddress] =
+          exchangeRates[POLYGON_NATIVE_TOKEN_ADDRESS];
+      } catch (error) {
+        // Chain ID not supported in XChain Swaps map, skip
+      }
     }
 
     return exchangeRates;
@@ -56,10 +60,14 @@ export function useDappSwapUSDValues({
     let result = await fetchAllTokenDetails(tokenAddresses as Hex[], chainId);
     tokenAddresses.forEach((tokenAddress) => {
       if (isNativeAddress(tokenAddress)) {
-        result = {
-          ...result,
-          [tokenAddress as Hex]: getNativeAssetForChainId(chainId),
-        };
+        try {
+          result = {
+            ...result,
+            [tokenAddress as Hex]: getNativeAssetForChainId(chainId),
+          };
+        } catch (error) {
+          // Chain ID not supported in XChain Swaps map, skip this token
+        }
       }
     });
     return result;

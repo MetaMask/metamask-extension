@@ -210,7 +210,13 @@ const getEvmExchangeRates = createSelector(
       if (!isStrictHexString(address)) {
         return;
       }
-      const { assetId: nativeAssetId } = getNativeAssetForChainId(chainId);
+      let nativeAssetId;
+      try {
+        nativeAssetId = getNativeAssetForChainId(chainId).assetId;
+      } catch (error) {
+        // Chain ID not supported in XChain Swaps map, skip this asset
+        return;
+      }
 
       const nativeToCurrencyRate = exchangeRatesByAssetId[nativeAssetId] ?? 0;
       const hexChainId = formatChainIdToHex(chainId);
