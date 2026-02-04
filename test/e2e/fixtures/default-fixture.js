@@ -212,6 +212,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       PermissionController: {
         subjects: {},
       },
+      GatorPermissionsController: {
+        gatorPermissionsMapSerialized:
+          '{"erc20-token-revocation":{},"native-token-stream":{},"native-token-periodic":{},"erc20-token-stream":{},"erc20-token-periodic":{},"other":{}}',
+        isGatorPermissionsEnabled: true,
+      },
       PreferencesController: {
         advancedGasFee: null,
         currentLocale: 'en',
