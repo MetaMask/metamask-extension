@@ -18,6 +18,12 @@ import { useSendAssets } from '../useSendAssets';
 import { useAssetSelectionMetrics } from './useAssetSelectionMetrics';
 
 const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 const mockSetAssetFilterMethod = jest.fn();
 const mockUseSendMetricsContext = jest.mocked(useSendMetricsContext);
 const mockUseSendAssets = jest.mocked(useSendAssets);
@@ -31,7 +37,7 @@ jest.mock('../useSendAssets');
 jest.mock('../useSendType');
 
 const Container = ({ children }: { children: ReactChildren }) => (
-  <MetaMetricsContext.Provider value={mockTrackEvent}>
+  <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
     {children}
   </MetaMetricsContext.Provider>
 );

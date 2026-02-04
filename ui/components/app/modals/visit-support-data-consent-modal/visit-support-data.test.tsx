@@ -30,6 +30,12 @@ jest.mock('../../../../helpers/utils/window', () => ({
 describe('VisitSupportDataConsentModal', () => {
   const store = configureMockState([thunk])(mockState);
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
   const mockOnClose = jest.fn();
   const mockProfileId = 'test-profile-id';
   const mockMetaMetricsId = 'test-metrics-id';
@@ -67,7 +73,7 @@ describe('VisitSupportDataConsentModal', () => {
     };
 
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <VisitSupportDataConsentModal {...defaultProps} />
       </MetaMetricsContext.Provider>,
       store,
