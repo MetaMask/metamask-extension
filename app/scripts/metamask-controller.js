@@ -61,12 +61,7 @@ import {
   isEvmAccountType,
   SolAccountType,
   EthScope,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  BtcScope,
-  ///: END:ONLY_INCLUDE_IF
-  SolScope,
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  TrxScope,
   TrxAccountType,
   ///: END:ONLY_INCLUDE_IF
   BtcAccountType,
@@ -136,10 +131,6 @@ import {
   checkEip7702Support,
 } from '../../shared/lib/eip7702-support-utils';
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
-import {
-  FEATURE_VERSION_2,
-  isMultichainAccountsFeatureEnabled,
-} from '../../shared/lib/multichain-accounts/remote-feature-flag';
 import { captureException } from '../../shared/lib/sentry';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -201,16 +192,6 @@ import {
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
-///: END:ONLY_INCLUDE_IF
-import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
-///: BEGIN:ONLY_INCLUDE_IF(tron)
-import { TRON_WALLET_SNAP_ID } from '../../shared/lib/accounts/tron-wallet-snap';
-///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -4925,15 +4906,6 @@ export default class MetamaskController extends EventEmitter {
       releaseLock();
     }
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  async _getMultichainWalletSnapClient(snapId) {
-    const keyring = await this.getSnapKeyring();
-    const messenger = this.controllerMessenger;
-
-    return new MultichainWalletSnapClient(snapId, keyring, messenger);
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
