@@ -386,7 +386,7 @@ class ConsoleBaselineReporter {
   #enforceBaseline() {
     // Compare against baseline (per file)
     const results = this.#compareWithBaseline();
-    const { violations, newFiles } = results;
+    const { violations, newFiles, removedFiles } = results;
 
     // Print results
     this.#printResults(results);
@@ -396,6 +396,7 @@ class ConsoleBaselineReporter {
     if (this.#options.failOnViolation) {
       const hasViolations = violations.length > 0;
       const hasNewFilesWithWarnings = newFiles.length > 0;
+      const hasRemovedFiles = removedFiles.length > 0;
 
       if (hasViolations || hasNewFilesWithWarnings) {
         const parts = [];
@@ -404,6 +405,11 @@ class ConsoleBaselineReporter {
         }
         if (hasNewFilesWithWarnings) {
           parts.push(`${newFiles.length} new file(s) with warnings`);
+        }
+        if (hasRemovedFiles) {
+          parts.push(
+            `${removedFiles.length} removed files still referenced in baseline`,
+          );
         }
         this.#error = new Error(
           `Console baseline violated: ${parts.join(', ')}. ` +
@@ -481,7 +487,16 @@ class ConsoleBaselineReporter {
       }
     }
 
-    return { violations, improvements, newFiles };
+    // Full run: clean up entries for deleted/renamed test files
+    const isFullRun = !this.#globalConfig.testPathPattern;
+    let removedFiles = [];
+    if (isFullRun) {
+      removedFiles = Object.keys(baselineFiles).filter(
+        (filePath) => !this.warningsByFile[filePath],
+      );
+    }
+
+    return { violations, improvements, newFiles, removedFiles };
   }
 
   /**
@@ -491,13 +506,16 @@ class ConsoleBaselineReporter {
    * @param {Array} results.violations - Baseline violations
    * @param {Array} results.improvements - Console improvements
    * @param {Array} results.newFiles - New files not in baseline
+   * @param {Array} results.removedFiles - Removed files still in baseline
    */
-  #printResults({ violations, improvements, newFiles }) {
+  #printResults({ violations, improvements, newFiles, removedFiles }) {
     const hasViolations = violations.length > 0;
     const hasNewFiles = newFiles.length > 0;
+    const hasRemovedFiles = removedFiles.length > 0;
     const hasImprovements =
       this.#options.showImprovements && improvements.length > 0;
-    const isClean = !hasViolations && !hasImprovements && !hasNewFiles;
+    const isClean =
+      !hasViolations && !hasImprovements && !hasNewFiles && !hasRemovedFiles;
 
     if (isClean) {
       console.log('\n✅ No console baseline violations.\n');
@@ -517,11 +535,15 @@ class ConsoleBaselineReporter {
       this.#printNewFiles(newFiles);
     }
 
+    if (hasRemovedFiles) {
+      this.#printRemovedFiles(removedFiles);
+    }
+
     if (hasImprovements) {
       this.#printImprovements(improvements);
     }
 
-    this.#printSummary({ violations, improvements, newFiles });
+    this.#printSummary({ violations, improvements, newFiles, removedFiles });
 
     console.log('═'.repeat(80));
     console.log('\n');
@@ -588,6 +610,27 @@ class ConsoleBaselineReporter {
   }
 
   /**
+   * Print removed files section.
+   *
+   * @param {Array} removedFiles - Removed files still in baseline
+   */
+  #printRemovedFiles(removedFiles) {
+    console.log('\n📋 REMOVED FILES (still in baseline)\n');
+    console.log(
+      '  The following test files have been removed, but are still referenced in the baseline:\n',
+    );
+
+    for (const filePath of removedFiles) {
+      console.log(`  📁 ${filePath}`);
+    }
+
+    const updateCmd = `yarn test:${this.#options.testType}:update-baseline`;
+    console.log(
+      `  💡 Run "${updateCmd}" to remove these files from the baseline.\n`,
+    );
+  }
+
+  /**
    * Print improvements section.
    *
    * @param {Array} improvements - Console improvements
@@ -650,11 +693,13 @@ class ConsoleBaselineReporter {
    * @param {Array} results.violations - Baseline violations
    * @param {Array} results.improvements - Console improvements
    * @param {Array} results.newFiles - New files not in baseline
+   * @param {Array} results.removedFiles - Removed files still in baseline
    */
-  #printSummary({ violations, improvements, newFiles }) {
+  #printSummary({ violations, improvements, newFiles, removedFiles }) {
     const totalViolations = violations.length;
     const totalImprovements = improvements.length;
     const totalNewFiles = newFiles.length;
+    const totalRemovedFiles = removedFiles.length;
     const filesRun = Object.keys(this.warningsByFile).length;
 
     console.log('═'.repeat(80));
@@ -663,6 +708,7 @@ class ConsoleBaselineReporter {
     console.log(`    Violations: ${totalViolations}`);
     console.log(`    Improvements: ${totalImprovements}`);
     console.log(`    New files: ${totalNewFiles}`);
+    console.log(`    Removed files: ${totalRemovedFiles}`);
   }
 }
 
