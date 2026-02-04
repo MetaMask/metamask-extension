@@ -19,6 +19,63 @@ describe('getAssetsControllerMessenger', () => {
     // The messenger should have the namespace property accessible
     expect(assetsControllerMessenger).toBeDefined();
   });
+
+  it('delegates required actions for AssetsController', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          // Core dependencies
+          'AccountTreeController:getAccountsFromSelectedAccountGroup',
+          'NetworkEnablementController:getState',
+          // Network dependencies
+          'NetworkController:getState',
+          'NetworkController:getNetworkClientById',
+          // Token list dependencies
+          'TokenListController:getState',
+          // Backend WebSocket dependencies
+          'BackendWebSocketService:subscribe',
+          'BackendWebSocketService:getConnectionInfo',
+          'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+          // SnapDataSource dependencies
+          'SnapController:handleRequest',
+          'SnapController:getRunnableSnaps',
+          'PermissionController:getPermissions',
+        ]),
+      }),
+    );
+  });
+
+  it('delegates required events for AssetsController', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        events: expect.arrayContaining([
+          // Core events
+          'AccountTreeController:selectedAccountGroupChange',
+          'NetworkEnablementController:stateChange',
+          'KeyringController:lock',
+          'KeyringController:unlock',
+          'AppStateController:appOpened',
+          'AppStateController:appClosed',
+          // Data source events
+          'NetworkController:stateChange',
+          'BackendWebSocketService:connectionStateChanged',
+          // SnapDataSource events
+          'AccountsController:accountBalancesUpdated',
+          'PermissionController:stateChange',
+        ]),
+      }),
+    );
+  });
 });
 
 describe('getAssetsControllerInitMessenger', () => {
@@ -36,5 +93,22 @@ describe('getAssetsControllerInitMessenger', () => {
 
     // The messenger should have the namespace property accessible
     expect(assetsControllerInitMessenger).toBeDefined();
+  });
+
+  it('delegates required actions for initialization', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAssetsControllerInitMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'AuthenticationController:getBearerToken',
+          'SnapController:handleRequest',
+          'PreferencesController:getState',
+        ]),
+      }),
+    );
   });
 });

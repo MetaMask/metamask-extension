@@ -17,6 +17,14 @@ import type {
   BackendWebSocketServiceActions,
   BackendWebSocketServiceEvents,
 } from '@metamask/core-backend';
+import type {
+  GetPermissions,
+  PermissionControllerStateChange,
+} from '@metamask/permission-controller';
+import type {
+  GetRunnableSnaps,
+  HandleSnapRequest,
+} from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import { RootMessenger } from '../../../lib/messenger';
 
@@ -64,16 +72,23 @@ type TokenListControllerGetStateAction = {
 };
 
 /**
- * SnapController:handleRequest action for SnapDataSource
+ * AccountsController:accountBalancesUpdated event for SnapDataSource.
+ * Re-published from SnapKeyring:accountBalancesUpdated.
  */
-type SnapControllerHandleRequestAction = {
-  type: 'SnapController:handleRequest';
-  handler: (args: {
-    snapId: string;
-    origin: string;
-    handler: string;
-    request: unknown;
-  }) => Promise<unknown>;
+type AccountsControllerAccountBalancesUpdatedEvent = {
+  type: 'AccountsController:accountBalancesUpdated';
+  payload: [
+    {
+      balances: {
+        [accountId: string]: {
+          [assetId: string]: {
+            amount: string;
+            unit: string;
+          };
+        };
+      };
+    },
+  ];
 };
 
 /**
@@ -87,7 +102,10 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | TokenListControllerGetStateAction
   | BackendWebSocketServiceActions
-  | SnapControllerHandleRequestAction;
+  // SnapDataSource dependencies
+  | GetRunnableSnaps
+  | HandleSnapRequest
+  | GetPermissions;
 
 /**
  * Events that the AssetsController subscribes to
@@ -101,7 +119,10 @@ type AllowedEvents =
   | AppStateControllerAppClosedEvent
   // Data source dependencies
   | NetworkControllerStateChangeEvent
-  | BackendWebSocketServiceEvents;
+  | BackendWebSocketServiceEvents
+  // SnapDataSource dependencies
+  | AccountsControllerAccountBalancesUpdatedEvent
+  | PermissionControllerStateChange;
 
 export type AssetsControllerInitMessenger = ReturnType<
   typeof getAssetsControllerInitMessenger
@@ -144,8 +165,10 @@ export function getAssetsControllerMessenger(
       'BackendWebSocketService:subscribe',
       'BackendWebSocketService:getConnectionInfo',
       'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-      // Data source dependencies - SnapController
+      // SnapDataSource dependencies
       'SnapController:handleRequest',
+      'SnapController:getRunnableSnaps',
+      'PermissionController:getPermissions',
     ],
     events: [
       // Core AssetsController events
@@ -158,6 +181,9 @@ export function getAssetsControllerMessenger(
       // Data source events
       'NetworkController:stateChange',
       'BackendWebSocketService:connectionStateChanged',
+      // SnapDataSource events
+      'AccountsController:accountBalancesUpdated',
+      'PermissionController:stateChange',
     ],
   });
 
@@ -177,7 +203,7 @@ type PreferencesControllerGetStateAction = {
  */
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerToken
-  | SnapControllerHandleRequestAction
+  | HandleSnapRequest
   | PreferencesControllerGetStateAction;
 
 /**

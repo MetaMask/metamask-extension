@@ -182,7 +182,6 @@ export const AssetsControllerInit: ControllerInitFunction<
    * @returns True if the feature is enabled, false otherwise.
    */
   const isEnabled = (): boolean => {
-    return true;
     try {
       const remoteFeatureFlagController = getController(
         'RemoteFeatureFlagController',
