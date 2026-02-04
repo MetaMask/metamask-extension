@@ -3,6 +3,14 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import {
+  mockPositions,
+  mockOrders,
+  mockAccountState,
+  mockCryptoMarkets,
+  mockHip3Markets,
+  mockTransactions,
+} from '../../components/app/perps/mocks';
 
 // Mock semver to control version comparison in tests
 jest.mock('semver', () => ({
@@ -23,6 +31,42 @@ jest.mock('loglevel', () => ({
   error: jest.fn(),
   debug: jest.fn(),
   trace: jest.fn(),
+}));
+
+// Mock the PerpsControllerProvider to render children directly
+jest.mock('../../providers/perps', () => ({
+  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
+}));
+
+// Mock the perps stream hooks
+jest.mock('../../hooks/perps/stream', () => ({
+  usePerpsLivePositions: () => ({
+    positions: mockPositions,
+    isInitialLoading: false,
+  }),
+  usePerpsLiveOrders: () => ({
+    orders: mockOrders,
+    isInitialLoading: false,
+  }),
+  usePerpsLiveAccount: () => ({
+    account: mockAccountState,
+    isInitialLoading: false,
+  }),
+  usePerpsLiveMarketData: () => ({
+    markets: [...mockCryptoMarkets, ...mockHip3Markets],
+    isInitialLoading: false,
+  }),
+}));
+
+// Mock usePerpsTransactionHistory hook to avoid controller dependency
+jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
+  usePerpsTransactionHistory: () => ({
+    transactions: mockTransactions,
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
 }));
 
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
