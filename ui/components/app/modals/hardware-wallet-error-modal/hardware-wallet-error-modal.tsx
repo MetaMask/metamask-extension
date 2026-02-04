@@ -65,9 +65,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
     // If no error, don't render anything
     if (!error) {
-      console.log(
-        '[HardwareWalletErrorModal] No error provided, closing modal',
-      );
       onClose?.();
       return null;
     }
