@@ -109,11 +109,14 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
     const handleRetry = async () => {
       setIsLoading(true);
-      const result = await ensureDeviceReady(deviceId ?? '');
-      if (result) {
-        setRecovered(true);
+      try {
+        const result = await ensureDeviceReady(deviceId ?? '');
+        if (result) {
+          setRecovered(true);
+        }
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     const handleClose = () => {
