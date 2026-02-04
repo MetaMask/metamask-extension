@@ -36,8 +36,8 @@ const sliderStyles = {
     width: 20,
     marginTop: -7,
     marginLeft: -7,
-    backgroundColor: '#FFFFFF',
-    border: '2px solid #FFFFFF',
+    backgroundColor: 'var(--color-primary-inverse)',
+    border: '2px solid var(--color-primary-inverse)',
     boxSizing: 'border-box' as const,
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     '&:focus, &$active': {
@@ -52,8 +52,8 @@ const sliderStyles = {
       width: 22,
       marginTop: -8,
       marginLeft: -8,
-      backgroundColor: '#FFFFFF',
-      border: '2px solid #FFFFFF',
+      backgroundColor: 'var(--color-primary-inverse)',
+      border: '2px solid var(--color-primary-inverse)',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
   },
@@ -72,7 +72,10 @@ export type PerpsSliderProps = {
   /** Current value */
   value: number;
   /** Change handler */
-  onChange: (event: React.ChangeEvent<unknown>, value: number | number[]) => void;
+  onChange: (
+    event: React.ChangeEvent<unknown>,
+    value: number | number[],
+  ) => void;
   /** Show edit text */
   editText?: string | React.ReactNode;
   /** Show info text */
@@ -91,11 +94,6 @@ export type PerpsSliderProps = {
   'data-testid'?: string;
 };
 
-/**
- * PerpsSlider - A slider component for the perps trading interface
- *
- * Includes optional header with title/tooltip/value and footer with info/edit button.
- */
 export const PerpsSlider: React.FC<PerpsSliderProps> = ({
   min,
   max,
@@ -137,13 +135,19 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
               <InfoTooltip position="top" contentText={tooltipText} />
             )}
             {valueText && (
-              <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
                 {valueText}
               </Text>
             )}
           </Box>
           {titleDetail && (
-            <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
               {titleDetail}
             </Text>
           )}
@@ -167,9 +171,15 @@ export const PerpsSlider: React.FC<PerpsSliderProps> = ({
           justifyContent={BoxJustifyContent.Between}
           alignItems={BoxAlignItems.Center}
         >
-          <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center}>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+          >
             {infoText && (
-              <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
                 {infoText}
               </Text>
             )}

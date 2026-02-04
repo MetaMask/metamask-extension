@@ -210,7 +210,7 @@ export const GatorPermissionsPage = () => {
           textAlign={TextAlign.Center}
           data-testid="gator-permissions-page-title"
         >
-          {t('permissions')}
+          {t('dappConnections')}
         </Text>
       </Header>
       <Content padding={0}>

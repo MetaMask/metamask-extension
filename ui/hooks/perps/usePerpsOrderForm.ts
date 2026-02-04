@@ -9,7 +9,6 @@ import type { OrderType } from '../../components/app/perps/types';
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
-  calculateMarginRequired,
   estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
 
@@ -176,8 +175,8 @@ export function usePerpsOrderForm({
 
     // For new/modify modes, calculate based on form amount
     // Remove commas from formatted amount for parsing
-    const cleanAmount = formState.amount.replace(/,/g, '');
-    const amount = parseFloat(cleanAmount) || 0;
+    const cleanAmount = formState.amount.replace(/,/gu, '');
+    const amount = parseFloat(cleanAmount.replace(/,/gu, '')) || 0;
 
     if (amount === 0) {
       return {

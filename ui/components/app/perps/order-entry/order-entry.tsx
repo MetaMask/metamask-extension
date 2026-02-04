@@ -1,10 +1,16 @@
 import React, { useMemo } from 'react';
-import { twMerge, Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { Button, ButtonVariant, ButtonSize } from '../../../component-library';
+import {
+  twMerge,
+  Box,
+  BoxFlexDirection,
+  Button,
+  ButtonVariant,
+  ButtonSize,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import type { OrderEntryProps } from './order-entry.types';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
+import type { OrderEntryProps } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
 import { LeverageSlider } from './components/leverage-slider';
@@ -37,6 +43,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.showSubmitButton - Whether to show the internal submit button
  * @param props.mode - Order mode: 'new', 'modify', or 'close' (defaults to 'new')
  * @param props.existingPosition - Existing position data for pre-population
+ * @param props.orderType
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -85,9 +92,13 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
       case 'modify':
         return t('perpsModifyPosition');
       case 'close':
-        return isLong ? t('perpsConfirmCloseLong') : t('perpsConfirmCloseShort');
+        return isLong
+          ? t('perpsConfirmCloseLong')
+          : t('perpsConfirmCloseShort');
       default:
-        return isLong ? t('perpsOpenLong', [asset]) : t('perpsOpenShort', [asset]);
+        return isLong
+          ? t('perpsOpenLong', [asset])
+          : t('perpsOpenShort', [asset]);
     }
   }, [mode, isLong, asset, t]);
 

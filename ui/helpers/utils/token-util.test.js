@@ -1,4 +1,4 @@
-import { TokenStandard } from '../../../shared/constants/transaction';
+import { ERC20, ERC721 } from '@metamask/controller-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import {
   getTokenStandardAndDetails,
@@ -39,7 +39,7 @@ describe('getAssetDetails', () => {
     getTokenStandardAndDetailsByChain.mockResolvedValue({
       name: 'myERC20Token',
       symbol: 'MTK',
-      standard: TokenStandard.ERC20,
+      standard: ERC20,
     });
 
     const result = await getAssetDetails(
@@ -61,7 +61,7 @@ describe('getAssetDetails', () => {
     // Verify the result
     expect(result.name).toStrictEqual('myERC20Token');
     expect(result.symbol).toStrictEqual('MTK');
-    expect(result.standard).toStrictEqual(TokenStandard.ERC20);
+    expect(result.standard).toStrictEqual(ERC20);
   });
 
   it('calls getTokenStandardAndDetails when chainId is not passed', async () => {
@@ -78,7 +78,7 @@ describe('getAssetDetails', () => {
     getTokenStandardAndDetails.mockResolvedValue({
       name: 'myERC20Token',
       symbol: 'MTK',
-      standard: TokenStandard.ERC20,
+      standard: ERC20,
     });
 
     const result = await getAssetDetails(
@@ -98,7 +98,7 @@ describe('getAssetDetails', () => {
     // Verify the result
     expect(result.name).toStrictEqual('myERC20Token');
     expect(result.symbol).toStrictEqual('MTK');
-    expect(result.standard).toStrictEqual(TokenStandard.ERC20);
+    expect(result.standard).toStrictEqual(ERC20);
   });
 
   it('throws an error with the token address if token data cannot be parsed', async () => {
@@ -136,7 +136,7 @@ describe('getAssetDetails', () => {
     getTokenStandardAndDetails.mockReturnValue({
       name: 'myToken',
       symbol: 'MTK',
-      standard: TokenStandard.ERC721,
+      standard: ERC721,
     });
     const result = await getAssetDetails(
       erc721Params.tokenAddress,
@@ -149,7 +149,7 @@ describe('getAssetDetails', () => {
     expect(getTokenStandardAndDetails).toHaveBeenCalled();
     expect(result.name).toStrictEqual('myToken');
     expect(result.symbol).toStrictEqual('MTK');
-    expect(result.standard).toStrictEqual(TokenStandard.ERC721);
+    expect(result.standard).toStrictEqual(ERC721);
   });
 
   it('returns asset details for an erc721 token transaction without calling api if name is not null', async () => {
@@ -174,7 +174,7 @@ describe('getAssetDetails', () => {
     getTokenStandardAndDetails.mockReturnValue({
       name: 'myToken',
       symbol: 'MTK',
-      standard: TokenStandard.ERC721,
+      standard: ERC721,
     });
     const result = await getAssetDetails(
       erc721ParamsWithName.tokenAddress,
@@ -187,7 +187,7 @@ describe('getAssetDetails', () => {
     expect(getTokenStandardAndDetails).not.toHaveBeenCalled();
     expect(result.name).toStrictEqual('myToken');
     expect(result.symbol).toStrictEqual('MTK');
-    expect(result.standard).toStrictEqual(TokenStandard.ERC721);
+    expect(result.standard).toStrictEqual(ERC721);
   });
 });
 

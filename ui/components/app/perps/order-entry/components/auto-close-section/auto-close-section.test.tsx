@@ -5,30 +5,6 @@ import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AutoCloseSection } from './auto-close-section';
 
-// Mock ToggleButton component (keeps tests simpler for toggle interaction)
-// Note: The real ToggleButton passes the current value to onToggle,
-// and the component's handleToggle does the inversion
-jest.mock('../../../../../ui/toggle-button', () => ({
-  __esModule: true,
-  default: ({
-    value,
-    onToggle,
-    dataTestId,
-  }: {
-    value: boolean;
-    onToggle: (v: boolean) => void;
-    dataTestId: string;
-  }) => (
-    <button
-      data-testid={dataTestId}
-      onClick={() => onToggle(value)}
-      aria-pressed={value}
-    >
-      {value ? 'On' : 'Off'}
-    </button>
-  ),
-}));
-
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -117,7 +93,8 @@ describe('AutoCloseSection', () => {
         mockStore,
       );
 
-      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+      const toggleInput = screen.getByTestId('auto-close-toggle');
+      fireEvent.click(toggleInput);
 
       expect(onEnabledChange).toHaveBeenCalledWith(true);
     });
@@ -153,7 +130,10 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('tp-price-input');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: '50000' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '50000' },
+      });
 
       expect(onTakeProfitPriceChange).toHaveBeenCalledWith('50000');
     });
@@ -171,7 +151,8 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('tp-price-input');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: 'abc' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, { target: { value: 'abc' } });
 
       expect(onTakeProfitPriceChange).not.toHaveBeenCalled();
     });
@@ -206,7 +187,10 @@ describe('AutoCloseSection', () => {
 
       const container = screen.getByTestId('sl-price-input');
       const input = container.querySelector('input');
-      fireEvent.change(input!, { target: { value: '40000' } });
+      expect(input).not.toBeNull();
+      fireEvent.change(input as HTMLInputElement, {
+        target: { value: '40000' },
+      });
 
       expect(onStopLossPriceChange).toHaveBeenCalledWith('40000');
     });

@@ -38,10 +38,7 @@ export type MarketRowProps = {
 const getMetricValue = (
   market: PerpsMarketData,
   metric: SortField,
-  formatNumber: (
-    value: number,
-    options?: Intl.NumberFormatOptions,
-  ) => string,
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
 ): string => {
   switch (metric) {
     case 'volume':

@@ -56,10 +56,11 @@ export const BALANCE_PERCENT_PRESETS = [25, 50, 75, 100] as const;
 /**
  * Leverage slider step markers
  */
-export const LEVERAGE_PRESETS = [1, 5, 10, 25, 50] as const;
+export const LEVERAGE_PRESETS = [5, 10, 25, 50] as const;
 
 /**
  * Calculate position size from USD amount and price
+ *
  * @param usdAmount - Amount in USD
  * @param assetPrice - Current asset price
  * @returns Position size in asset units
@@ -76,6 +77,7 @@ export function calculatePositionSize(
 
 /**
  * Calculate margin required for a position
+ *
  * @param usdAmount - Amount in USD
  * @param leverage - Leverage multiplier
  * @returns Margin required in USD
@@ -92,6 +94,7 @@ export function calculateMarginRequired(
 
 /**
  * Calculate maximum possible order amount
+ *
  * @param availableBalance - Available balance in USD
  * @param leverage - Leverage multiplier
  * @returns Maximum order amount in USD
@@ -106,6 +109,7 @@ export function calculateMaxAmount(
 /**
  * Estimate liquidation price for a position
  * This is a simplified calculation for mock purposes
+ *
  * @param entryPrice - Entry price
  * @param leverage - Leverage multiplier
  * @param isLong - Whether position is long

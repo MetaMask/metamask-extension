@@ -48,7 +48,7 @@ function QrCodeView({
   accountName?: string;
   location?: string;
 }) {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // useCopyToClipboard analysis: As of writing this, this is only used for public addresses
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });

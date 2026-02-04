@@ -55,7 +55,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   // Calculate token conversion based on leveraged position size
   const tokenAmount = useMemo(() => {
     // Remove commas from formatted amount for parsing
-    const cleanAmount = amount.replace(/,/g, '');
+    const cleanAmount = amount.replace(/,/gu, '');
     const numAmount = parseFloat(cleanAmount) || 0;
     if (numAmount === 0 || currentPrice === 0) {
       return null;
@@ -68,14 +68,14 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   // Handle direct amount input
   const handleAmountChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
+      const { value } = event.target;
       // Allow empty string, valid numbers, or numbers with commas (for formatted input)
-      if (value === '' || /^[\d,]*\.?\d*$/.test(value)) {
+      if (value === '' || /^[\d,]*\.?\d*$/u.test(value)) {
         onAmountChange(value);
 
         // Update percentage based on amount relative to available balance
         // Remove commas for parsing
-        const cleanValue = value.replace(/,/g, '');
+        const cleanValue = value.replace(/,/gu, '');
         if (cleanValue && availableBalance > 0) {
           const numValue = parseFloat(cleanValue);
           // Guard against NaN (e.g., lone decimal point ".")
@@ -125,7 +125,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   // Handle blur - format the amount when user finishes typing
   const handleAmountBlur = useCallback(() => {
     if (amount) {
-      const numValue = parseFloat(amount.replace(/,/g, ''));
+      const numValue = parseFloat(amount.replace(/,/gu, ''));
       if (!isNaN(numValue) && numValue > 0) {
         onAmountChange(formatAmount(numValue));
       }
@@ -224,9 +224,13 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             <Box paddingLeft={4}>
               <Text
                 variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
+                color={
+                  tokenAmount !== null && tokenAmount !== 0
+                    ? TextColor.TextAlternative
+                    : TextColor.TextMuted
+                }
               >
-                {tokenAmount !== null
+                {tokenAmount !== null && tokenAmount !== 0
                   ? `≈ ${formatTokenQuantity(tokenAmount, asset)}`
                   : `0 ${asset}`}
               </Text>
@@ -261,7 +265,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
               className={twMerge(
                 'px-3 py-1 rounded-md text-sm',
                 balancePercent === preset
-                  ? 'bg-muted text-[#FFFFFF]'
+                  ? 'bg-muted text-primary-inverse'
                   : 'bg-transparent text-muted hover:bg-hover',
               )}
               data-testid={`percent-preset-${preset}`}

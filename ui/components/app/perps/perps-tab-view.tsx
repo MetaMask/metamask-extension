@@ -22,6 +22,7 @@ import { OrderCard } from './order-card';
 import { PerpsTabControlBar } from './perps-tab-control-bar';
 import { StartTradeCta } from './start-trade-cta';
 import { PerpsEmptyState } from './perps-empty-state';
+import { PerpsRecentActivity } from './perps-recent-activity';
 
 /**
  * Inner component that consumes controller hooks
@@ -147,6 +148,9 @@ const PerpsTabViewContent: React.FC = () => {
           </Box>
         </Box>
       )}
+
+      {/* Recent Activity Section */}
+      <PerpsRecentActivity />
     </Box>
   );
 };

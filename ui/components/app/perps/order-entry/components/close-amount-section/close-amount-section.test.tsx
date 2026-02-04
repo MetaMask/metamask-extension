@@ -45,8 +45,10 @@ describe('CloseAmountSection', () => {
 
       // Use 50% to avoid collision between position size and close amount
       // Position size: 2.5 BTC, Close amount at 50%: 1.25 BTC
-      expect(screen.getByText(/2\.5.*BTC/)).toBeInTheDocument();
-      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(/1\.25.*BTC/);
+      expect(screen.getByText(/2\.5.*BTC/u)).toBeInTheDocument();
+      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(
+        /1\.25.*BTC/u,
+      );
     });
 
     it('displays close amount based on percentage', () => {
@@ -56,7 +58,9 @@ describe('CloseAmountSection', () => {
       );
 
       // 75% of 2.5 BTC = 1.875 BTC
-      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(/1\.875.*BTC/);
+      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(
+        /1\.875.*BTC/u,
+      );
     });
 
     it('displays close percentage', () => {
@@ -66,7 +70,7 @@ describe('CloseAmountSection', () => {
       );
 
       // Multiple elements may show 100% (display and preset button)
-      const percentElements = screen.getAllByText(/100.*%/);
+      const percentElements = screen.getAllByText(/100.*%/u);
       expect(percentElements.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -77,7 +81,7 @@ describe('CloseAmountSection', () => {
       );
 
       // 2.5 BTC * $45000 = $112,500
-      expect(screen.getByText(/≈.*\$112,500/)).toBeInTheDocument();
+      expect(screen.getByText(/≈.*\$112,500/u)).toBeInTheDocument();
     });
 
     it('renders the slider', () => {
@@ -105,9 +109,11 @@ describe('CloseAmountSection', () => {
         mockStore,
       );
 
-      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(/1\.25.*BTC/);
+      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(
+        /1\.25.*BTC/u,
+      );
       // Multiple elements show 50% (display and preset button)
-      const percentElements = screen.getAllByText(/50.*%/);
+      const percentElements = screen.getAllByText(/50.*%/u);
       expect(percentElements.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -117,7 +123,9 @@ describe('CloseAmountSection', () => {
         mockStore,
       );
 
-      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(/0\.625.*BTC/);
+      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(
+        /0\.625.*BTC/u,
+      );
     });
 
     it('handles negative position size (short)', () => {
@@ -127,7 +135,7 @@ describe('CloseAmountSection', () => {
       );
 
       // Should use absolute value - position size and close amount both show 2.5 BTC
-      const btcElements = screen.getAllByText(/2\.5.*BTC/);
+      const btcElements = screen.getAllByText(/2\.5.*BTC/u);
       expect(btcElements.length).toBeGreaterThanOrEqual(1);
     });
   });
@@ -167,7 +175,7 @@ describe('CloseAmountSection', () => {
       );
 
       // Both position size and close amount show 0 BTC
-      const btcElements = screen.getAllByText(/0.*BTC/);
+      const btcElements = screen.getAllByText(/0.*BTC/u);
       expect(btcElements.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -178,7 +186,7 @@ describe('CloseAmountSection', () => {
       );
 
       // Both position size and close amount show 0 BTC
-      const btcElements = screen.getAllByText(/0.*BTC/);
+      const btcElements = screen.getAllByText(/0.*BTC/u);
       expect(btcElements.length).toBeGreaterThanOrEqual(1);
     });
   });

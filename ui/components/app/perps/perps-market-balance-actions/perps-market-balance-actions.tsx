@@ -44,8 +44,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   const availableBalance = account?.availableBalance ?? '0';
 
   // Account value = totalBalance + unrealizedPnl (includes open position PnL)
-  const accountValue =
-    parseFloat(totalBalance) + parseFloat(unrealizedPnl);
+  const accountValue = parseFloat(totalBalance) + parseFloat(unrealizedPnl);
   const isBalanceEmpty = accountValue === 0;
 
   const handleAddFunds = useCallback(() => {
@@ -156,9 +155,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           color={TextColor.TextAlternative}
           data-testid="perps-balance-actions-available"
         >
-          {t('perpsAvailable', [
-            formatCurrency(parseFloat(availableBalance), 'USD'),
-          ])}
+          {t('perpsAvailable')}
         </Text>
       </Box>
 

@@ -5,6 +5,10 @@ export const LOCAL_NODE_ACCOUNT = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
 export const LOCAL_NODE_PRIVATE_KEY =
   '0x4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
 
+/** Mnemonic for the local node default account. */
+export const LOCAL_NODE_MNEMONIC =
+  'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
+
 /** Address of the account derived from the default onboarding fixture. */
 export const DEFAULT_FIXTURE_ACCOUNT =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
@@ -90,7 +94,7 @@ export const DAPP_PATH = Object.freeze({
   SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
 } as const);
 
-/* Default BTC address created using test SRP */
+/* Default BTC address created using test SRP (E2E_SRP) with BIP84 derivation */
 export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 
 /* Default BTC Account name */

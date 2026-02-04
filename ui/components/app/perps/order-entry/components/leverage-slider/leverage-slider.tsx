@@ -4,7 +4,6 @@ import {
   Box,
   Text,
   TextVariant,
-  TextColor,
   FontWeight,
   BoxFlexDirection,
   BoxJustifyContent,
@@ -14,11 +13,7 @@ import {
 import { PerpsSlider } from '../../../perps-slider';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { LeverageSliderProps } from '../../order-entry.types';
-
-/**
- * Preset leverage values for quick selection
- */
-const LEVERAGE_PRESETS = [5, 10, 15, 20] as const;
+import { LEVERAGE_PRESETS } from '../../order-entry.mocks';
 
 /**
  * LeverageSlider - Slider for selecting leverage multiplier
@@ -39,7 +34,10 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
 
   // Filter presets to only show values within the allowed range
   const availablePresets = useMemo(
-    () => LEVERAGE_PRESETS.filter((preset) => preset >= minLeverage && preset <= maxLeverage),
+    () =>
+      LEVERAGE_PRESETS.filter(
+        (preset) => preset >= minLeverage && preset <= maxLeverage,
+      ),
     [minLeverage, maxLeverage],
   );
 
@@ -103,7 +101,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
             className={twMerge(
               'px-3 py-1 rounded-md text-sm',
               leverage === preset
-                ? 'bg-muted text-[#FFFFFF]'
+                ? 'bg-muted text-primary-inverse'
                 : 'bg-transparent text-muted hover:bg-hover',
             )}
             data-testid={`leverage-preset-${preset}`}
