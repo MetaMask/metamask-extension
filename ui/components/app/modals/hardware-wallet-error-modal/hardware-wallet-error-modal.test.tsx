@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
-import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
@@ -15,14 +15,13 @@ jest.mock('../../../../hooks/useModalProps', () => ({
 
 const mockEnsureDeviceReady = jest.fn();
 const mockClearError = jest.fn();
+const mockUseHardwareWalletConfig = jest.fn();
 jest.mock('../../../../contexts/hardware-wallets', () => {
   const actual = jest.requireActual('../../../../contexts/hardware-wallets');
+
   return {
     ...actual,
-    useHardwareWalletConfig: () => ({
-      deviceId: 'test-device-id',
-      walletType: 'ledger',
-    }),
+    useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
     useHardwareWalletActions: () => ({
       ensureDeviceReady: mockEnsureDeviceReady,
       clearError: mockClearError,
@@ -47,10 +46,14 @@ describe('HardwareWalletErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockEnsureDeviceReady.mockResolvedValue(true);
+    mockUseHardwareWalletConfig.mockReturnValue({
+      deviceId: 'test-device-id',
+      walletType: HardwareWalletType.Ledger,
+    });
   });
 
   describe('Error Display', () => {
-    it('displays error modal with title and error message', () => {
+    it('renders device locked title and recovery instructions', () => {
       const error = createTestError(
         ErrorCode.AuthenticationDeviceLocked,
         'Device is locked',
@@ -62,50 +65,45 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         getByText('[hardwareWalletErrorTitleDeviceLocked]'),
       ).toBeInTheDocument();
-    });
-
-    it('displays device locked title for AuthenticationDeviceLocked', () => {
-      const error = createTestError(
-        ErrorCode.AuthenticationDeviceLocked,
-        'Device is locked',
-        'Your device is locked.',
-      );
-
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
-
       expect(
-        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
+        getByText('[hardwareWalletErrorRecoveryUnlock1]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorRecoveryUnlock2]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorRecoveryUnlock3]'),
       ).toBeInTheDocument();
     });
 
     it('renders nothing when error is not provided', () => {
-      const { container } = render(<HardwareWalletErrorModal />);
+      const onClose = jest.fn();
+      const { container } = render(<HardwareWalletErrorModal onClose={onClose} />);
 
       expect(container.firstChild).toBeNull();
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
 
-    it('renders nothing when wallet type is not available', () => {
+    it('renders with fallback wallet type when not available', () => {
       const error = createTestError(
         ErrorCode.AuthenticationDeviceLocked,
         'Device is locked',
         'Your device is locked.',
       );
 
-      // Mock the hook to return no wallet type
-      jest.doMock('../../../../contexts/hardware-wallets', () => ({
-        useHardwareWalletConfig: () => ({
-          deviceId: null,
-          walletType: null,
-        }),
-        useHardwareWalletActions: () => ({
-          ensureDeviceReady: mockEnsureDeviceReady,
-          clearError: mockClearError,
-        }),
-      }));
+      mockUseHardwareWalletConfig.mockReturnValue({
+        deviceId: null,
+        walletType: null,
+      });
 
-      const { container } = render(<HardwareWalletErrorModal error={error} />);
+      const { container, getByText } = render(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
-      expect(container.firstChild).toBeNull();
+      expect(container.firstChild).not.toBeNull();
+      expect(
+        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -133,6 +131,35 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
+    it('displays blind signing instructions for DeviceStateBlindSignNotSupported', () => {
+      const error = createTestError(
+        ErrorCode.DeviceStateBlindSignNotSupported,
+        'Blind sign not supported',
+        'Blind sign not supported.',
+      );
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      expect(
+        getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          '[hardwareWalletErrorTitleBlindSignNotSupportedInstruction1]',
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          '[hardwareWalletErrorTitleBlindSignNotSupportedInstruction2]',
+        ),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          '[hardwareWalletErrorTitleBlindSignNotSupportedInstruction3]',
+        ),
+      ).toBeInTheDocument();
+    });
+
     it('displays app instructions for DeviceStateEthAppClosed', () => {
       const error = createTestError(
         ErrorCode.DeviceStateEthAppClosed,
@@ -146,13 +173,7 @@ describe('HardwareWalletErrorModal', () => {
         getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
       ).toBeInTheDocument();
       expect(
-        getByText('[hardwareWalletErrorRecoveryApp1]'),
-      ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryApp2]'),
-      ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryApp3]'),
+        getByText('[hardwareWalletEthAppNotOpenDescription]'),
       ).toBeInTheDocument();
     });
 
@@ -174,26 +195,12 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         getByText('[hardwareWalletErrorRecoveryConnection2]'),
       ).toBeInTheDocument();
-    });
-
-    it('displays WebHID instructions for ConnectionTransportMissing', () => {
-      const error = createTestError(
-        ErrorCode.ConnectionTransportMissing,
-        'WebHID permission denied',
-        'Browser permission required.',
-      );
-
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
-
       expect(
-        getByText('[hardwareWalletErrorRecoveryWebHID1]'),
-      ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryWebHID2]'),
+        getByText('[hardwareWalletErrorRecoveryConnection3]'),
       ).toBeInTheDocument();
     });
 
-    it('displays connection instructions for ConnectionClosed', () => {
+    it('displays unlock instructions for ConnectionClosed', () => {
       const error = createTestError(
         ErrorCode.ConnectionClosed,
         'Connection lost',
@@ -203,62 +210,20 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('[hardwareWalletErrorRecoveryConnection1]'),
+        getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
       ).toBeInTheDocument();
       expect(
-        getByText('[hardwareWalletErrorRecoveryConnection2]'),
+        getByText('[hardwareWalletErrorRecoveryUnlock1]'),
       ).toBeInTheDocument();
       expect(
-        getByText('[hardwareWalletErrorRecoveryConnection3]'),
+        getByText('[hardwareWalletErrorRecoveryUnlock2]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorRecoveryUnlock3]'),
       ).toBeInTheDocument();
     });
 
-    it('displays timeout instructions for ConnectionTimeout', () => {
-      const error = createTestError(
-        ErrorCode.ConnectionTimeout,
-        'Connection timeout',
-        'Timeout.',
-      );
-
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
-
-      expect(
-        getByText('[hardwareWalletErrorRecoveryTimeout1]'),
-      ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryTimeout2]'),
-      ).toBeInTheDocument();
-    });
-
-    it('displays cancel message for UserRejected', () => {
-      const error = createTestError(
-        ErrorCode.UserRejected,
-        'User cancelled',
-        'You cancelled.',
-      );
-
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
-
-      expect(
-        getByText('[hardwareWalletErrorRecoveryUserCancel]'),
-      ).toBeInTheDocument();
-    });
-
-    it('displays cancel message for UserCancelled', () => {
-      const error = createTestError(
-        ErrorCode.UserCancelled,
-        'User cancelled',
-        'You cancelled.',
-      );
-
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
-
-      expect(
-        getByText('[hardwareWalletErrorRecoveryUserCancel]'),
-      ).toBeInTheDocument();
-    });
-
-    it('displays default instructions for unknown errors', () => {
+    it('displays description for unknown errors', () => {
       const error = createTestError(
         ErrorCode.Unknown,
         'Unknown error',
@@ -268,16 +233,13 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('[hardwareWalletErrorRecoveryDefault1]'),
-      ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryDefault2]'),
+        getByText('[hardwareWalletErrorUnknownErrorDescription]'),
       ).toBeInTheDocument();
     });
   });
 
   describe('Action Buttons', () => {
-    it('displays Continue button for retryable errors', () => {
+    it('displays Reconnect button for retryable errors', () => {
       const error = createTestError(
         ErrorCode.AuthenticationDeviceLocked,
         'Device is locked',
@@ -295,6 +257,24 @@ describe('HardwareWalletErrorModal', () => {
       );
 
       expect(
+        getByText('[hardwareWalletErrorReconnectButton]'),
+      ).toBeInTheDocument();
+      expect(queryByText('[confirm]')).not.toBeInTheDocument();
+    });
+
+    it('displays Continue button for device disconnected', () => {
+      const error = createTestError(
+        ErrorCode.DeviceDisconnected,
+        'Device disconnected',
+        'Device not found.',
+      );
+      const onCancel = jest.fn();
+
+      const { getByText, queryByText } = render(
+        <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
+      );
+
+      expect(
         getByText('[hardwareWalletErrorContinueButton]'),
       ).toBeInTheDocument();
       expect(queryByText('[confirm]')).not.toBeInTheDocument();
@@ -302,7 +282,7 @@ describe('HardwareWalletErrorModal', () => {
 
     it('displays only Confirm button for non-retryable errors', () => {
       const error = createTestError(
-        ErrorCode.UserRejected,
+        ErrorCode.UserCancelled,
         'User cancelled',
         'You cancelled the operation.',
       );
@@ -314,7 +294,7 @@ describe('HardwareWalletErrorModal', () => {
 
       expect(getByText('[confirm]')).toBeInTheDocument();
       expect(
-        queryByText('[hardwareWalletErrorContinueButton]'),
+        queryByText('[hardwareWalletErrorReconnectButton]'),
       ).not.toBeInTheDocument();
     });
 
@@ -336,7 +316,7 @@ describe('HardwareWalletErrorModal', () => {
       );
 
       await act(async () => {
-        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+        fireEvent.click(getByText('[hardwareWalletErrorReconnectButton]'));
       });
 
       await waitFor(() => {
@@ -346,7 +326,7 @@ describe('HardwareWalletErrorModal', () => {
 
     it('handles Confirm button click for non-retryable errors', async () => {
       const error = createTestError(
-        ErrorCode.UserRejected,
+        ErrorCode.UserCancelled,
         'User cancelled',
         'You cancelled the operation.',
       );
@@ -355,23 +335,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
-
-      await act(async () => {
-        fireEvent.click(getByText('[confirm]'));
-      });
-
-      expect(mockHideModal).toHaveBeenCalledTimes(1);
-      expect(mockClearError).toHaveBeenCalledTimes(1);
-    });
-
-    it('handles undefined onCancel callback gracefully', async () => {
-      const error = createTestError(
-        ErrorCode.UserRejected,
-        'User cancelled',
-        'You cancelled the operation.',
-      );
-
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       await act(async () => {
         fireEvent.click(getByText('[confirm]'));
@@ -397,7 +360,7 @@ describe('HardwareWalletErrorModal', () => {
       );
 
       await act(async () => {
-        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+        fireEvent.click(getByText('[hardwareWalletErrorReconnectButton]'));
       });
 
       rerender(<HardwareWalletErrorModal error={error} />);
@@ -419,7 +382,7 @@ describe('HardwareWalletErrorModal', () => {
       );
 
       await act(async () => {
-        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+        fireEvent.click(getByText('[hardwareWalletErrorReconnectButton]'));
       });
 
       const closeButton = getByLabelText('[close]');
@@ -427,8 +390,8 @@ describe('HardwareWalletErrorModal', () => {
         fireEvent.click(closeButton);
       });
 
-      expect(mockClearError).toHaveBeenCalledTimes(2); // Once for success, once for close
-      expect(mockHideModal).toHaveBeenCalledTimes(1); // Only called on close
+      expect(mockClearError).toHaveBeenCalledTimes(1);
+      expect(mockHideModal).toHaveBeenCalledTimes(1);
     });
   });
 
