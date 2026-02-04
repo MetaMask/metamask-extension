@@ -204,7 +204,7 @@ const PermissionsPage = () => {
                   onClose={() => setShowSuccessToast(false)}
                   autoHideTime={5000}
                   onAutoHideToast={() => setShowSuccessToast(false)}
-                  data-testid="disconnect-all-success-toast"
+                  dataTestId="disconnect-all-success-toast"
                 />
               </ToastContainer>
             )}
@@ -215,7 +215,7 @@ const PermissionsPage = () => {
                   onClose={() => setShowErrorToast(false)}
                   autoHideTime={5000}
                   onAutoHideToast={() => setShowErrorToast(false)}
-                  data-testid="disconnect-all-error-toast"
+                  dataTestId="disconnect-all-error-toast"
                 />
               </ToastContainer>
             )}
