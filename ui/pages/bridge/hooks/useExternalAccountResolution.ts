@@ -14,7 +14,7 @@ import {
   isBtcTestnetAddress,
   isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
-import { getInternalAccountByAddress } from '../../../selectors/selectors';
+import { getInternalAccountByAddress } from '../../../selectors';
 import { shortenString } from '../../../helpers/utils/util';
 
 type UseExternalAccountResolutionProps = {

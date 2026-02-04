@@ -46,7 +46,7 @@ describe('Swap on Solana', function () {
         });
 
         await swapPage.closeQuotes();
-        await swapPage.reviewSolanaQuote({
+        await swapPage.reviewQuote({
           swapToAmount: '167.7',
           swapFrom: 'SOL',
           swapTo: 'USDC',
@@ -87,7 +87,7 @@ describe('Swap on Solana', function () {
           swapTo: 'SOL',
           swapFrom: 'USDC',
         });
-        await swapPage.reviewSolanaQuote({
+        await swapPage.reviewQuote({
           swapToAmount: '0.00589',
           swapFrom: 'USDC',
           swapTo: 'SOL',

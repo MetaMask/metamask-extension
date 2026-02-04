@@ -1,9 +1,19 @@
 import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
-import { captureException } from '../../../../shared/lib/sentry';
+import {
+  captureException,
+  captureMessage,
+} from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
+import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
+import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -22,27 +32,55 @@ export type Backup = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   AppMetadataController?: unknown;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  MetaMetricsController?: unknown;
   meta?: MetaData;
 };
 
 export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
+  'MetaMetricsController',
 ] as const;
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
 
 /**
  * This Error represents an error that occurs during persistence operations.
- * It includes a backup of the state at the time of the error.
+ * It includes a backup of the state at the time of the error and optionally
+ * a reference to the original error that caused the persistence failure.
  */
 export class PersistenceError extends Error {
-  backup: object | null;
+  getBackup: () => object | null;
 
-  constructor(message: string, backup: object | null) {
+  /**
+   * The type of vault corruption that occurred.
+   * - InaccessibleDatabase: The storage system threw an error (e.g., Firefox's "An unexpected error occurred")
+   * - MissingVaultInDatabase: The database was accessible but the vault was missing
+   */
+  corruptionType: VaultCorruptionType;
+
+  /**
+   * The original error that caused the persistence failure, if any.
+   * This is useful for debugging as it preserves the original error message
+   * (e.g., Firefox's "Error: An unexpected error occurred").
+   */
+  override cause?: Error;
+
+  constructor(
+    message: string,
+    backup: object | null,
+    corruptionType: VaultCorruptionType,
+    cause?: Error,
+  ) {
     super(message);
     this.name = 'PersistenceError';
-    this.backup = backup;
+    // closure around `backup` to prevent it from being serialized with the
+    // error in debug logs, error reporting, etc.
+    this.getBackup = () => backup;
+    this.corruptionType = corruptionType;
+    this.cause = cause;
   }
 }
 
@@ -125,11 +163,11 @@ export class PersistenceManager {
    * DefaultStorageKind is a static property that defines the default storage
    * kind to be used by the PersistenceManager. It checks if the code is running
    * in a test environment and retrieves the storage kind from manifest flags
-   * if available; otherwise, it defaults to 'data'.
+   * if available; otherwise, it defaults to 'split'.
    */
   static readonly defaultStorageKind = ((process.env.IN_TEST
     ? getManifestFlags().testing?.storageKind
-    : null) ?? 'data') as StorageKind;
+    : null) ?? 'split') as StorageKind;
 
   /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
@@ -164,8 +202,54 @@ export class PersistenceManager {
 
   #open: boolean = false;
 
+  /**
+   * Callback to be invoked when a set operation fails (storage.local or IndexedDB).
+   * This allows the background script to notify the UI about the failure.
+   */
+  #onSetFailed?: () => void;
+
+  /**
+   * Tracks if a set failure occurred before the callback was registered.
+   * This handles the race condition where failures happen during controller initialization.
+   */
+  #setFailedBeforeCallbackRegistered = false;
+
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
+  }
+
+  /**
+   * Sets the callback to be invoked when a set operation fails.
+   * This is called by the background script to wire up the notification to the UI.
+   * If a failure already occurred before this callback was registered, it will be
+   * called immediately.
+   *
+   * @param callback - The callback to invoke when a set operation fails
+   */
+  setOnSetFailed(callback: () => void) {
+    this.#onSetFailed = callback;
+
+    // If a failure occurred before this callback was registered, call it now
+    if (this.#setFailedBeforeCallbackRegistered) {
+      callback();
+    }
+  }
+
+  /**
+   * Notifies the UI that a set operation has failed (storage.local or IndexedDB).
+   * If the callback is not yet registered, tracks the failure for later notification.
+   */
+  #notifySetFailed() {
+    if (this.#onSetFailed) {
+      this.#onSetFailed();
+    } else {
+      // Callback not yet registered - track the failure for later
+      this.#setFailedBeforeCallbackRegistered = true;
+    }
+  }
+
+  #normalizePersistError(error: unknown): Error {
+    return error instanceof Error ? error : new Error(String(error));
   }
 
   async open() {
@@ -186,7 +270,13 @@ export class PersistenceManager {
           error.message ===
             'A mutation operation was attempted on a database that did not allow mutations.'
         ) {
-          captureException(error);
+          // Custom fingerprint prevents Sentry's deduplication from dropping
+          // this event when other persistence errors with the same underlying
+          // error message (e.g., "An unexpected error occurred") are reported.
+          captureException(error, {
+            tags: { 'persistence.error': 'backup-db-open-failed' },
+            fingerprint: ['persistence-error', 'backup-db-open-failed'],
+          });
           console.warn(
             'Could not open backup database; automatic vault recovery will not be available.',
           );
@@ -231,16 +321,79 @@ export class PersistenceManager {
   storageKind: StorageKind = PersistenceManager.defaultStorageKind;
 
   /**
+   * Retrieves state from the local store, with optional test simulation.
+   * In test mode with simulateStorageGetFailure flag, simulates a storage
+   * failure after onboarding (when backup exists) to test vault recovery.
+   *
+   * @returns The current state from the local store
+   * @throws Error if simulating storage failure for testing
+   */
+  async #getFromLocalStore(): Promise<MetaMaskStorageStructure | null> {
+    if (
+      process.env.IN_TEST &&
+      getManifestFlags().testing?.simulateStorageGetFailure
+    ) {
+      const backup = await this.getBackup().catch(() => null);
+      if (backup?.KeyringController) {
+        throw new Error('Simulated storage.local.get failure for testing');
+      }
+    }
+    return this.#localStore.get();
+  }
+
+  /**
+   * Checks if storage set operations should be simulated as failing.
+   * When enabled, all set operations will fail immediately.
+   *
+   * @throws Error if simulating storage failure for testing
+   */
+  #maybeSimulateSetFailure(): void {
+    if (
+      process.env.IN_TEST &&
+      getManifestFlags().testing?.simulateStorageSetFailure
+    ) {
+      throw new Error('Simulated storage.local.set failure for testing');
+    }
+  }
+
+  /**
+   * Sets state in the local store, with optional test simulation.
+   * In test mode with simulateStorageSetFailure flag, all set operations
+   * will fail immediately.
+   *
+   * @param data - The data to set in the local store
+   * @throws Error if simulating storage failure for testing
+   */
+  async #setInLocalStore(
+    data: Required<MetaMaskStorageStructure>,
+  ): Promise<void> {
+    this.#maybeSimulateSetFailure();
+    await this.#localStore.set(data);
+  }
+
+  /**
+   * Sets key-value pairs in the local store, with optional test simulation.
+   * In test mode with simulateStorageSetFailure flag, all set operations
+   * will fail immediately.
+   *
+   * @param pairs - The key-value pairs to set in the local store
+   * @throws Error if simulating storage failure for testing
+   */
+  async #setKeyValuesInLocalStore(pairs: Map<string, unknown>): Promise<void> {
+    this.#maybeSimulateSetFailure();
+    await this.#localStore.setKeyValues(pairs);
+  }
+
+  /**
    * Sets the state in the local store.
    *
    * @param state - The state to set in the local store. This should be an object
    * containing the state data to be stored.
+   * @returns Tuple containing success status and error (if any).
    * @throws Error if the state is missing or if the metadata is not set before
    * calling this method.
-   * @throws Error if the local store is not open.
-   * @throws Error if the data persistence fails during the write operation.
    */
-  async set(state: MetaMaskStateType) {
+  async set(state: MetaMaskStateType): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'data') {
       throw new Error(
         'MetaMask - cannot set full state when storageKind is not "data"',
@@ -270,14 +423,16 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
         this.#currentLockAbortController = undefined;
+        // Track which operation failed to use the correct Sentry tag
+        let backupFailed = false;
         try {
-          // atomically set all the keys
-          await this.#localStore.set({
+          // atomically set all the keys (includes test simulation check)
+          await this.#setInLocalStore({
             data: state,
             meta,
           });
@@ -288,21 +443,50 @@ export class PersistenceManager {
             const stringifiedBackup = JSON.stringify(backup);
             // and the backup has changed
             if (this.#backup !== stringifiedBackup) {
-              // save it to the backup DB
-              await this.#backupDb?.set(backup);
-              this.#backup = stringifiedBackup;
+              // save it to the backup DB - wrapped in try-catch to differentiate
+              // backup failures from storage.local failures in Sentry
+              try {
+                await this.#backupDb?.set(backup);
+                this.#backup = stringifiedBackup;
+              } catch (backupErr) {
+                backupFailed = true;
+                throw backupErr;
+              }
             }
           }
 
           if (this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = false;
+            // Track recovery to understand how often failures are temporary.
+            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+            captureMessage(
+              'Data persistence recovered after temporary failure',
+              {
+                level: 'info',
+                tags: { 'persistence.event': 'set-recovered' },
+                fingerprint: ['persistence-event', 'set-recovered'],
+              },
+            );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
-            captureException(err);
+            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+            const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
+
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(err, {
+              tags: { 'persistence.error': tag },
+              fingerprint: ['persistence-error', tag],
+            });
           }
+          this.#notifySetFailed();
           log.error('error setting state in local store:', err);
+          return [false, this.#normalizePersistError(err)];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -327,7 +511,7 @@ export class PersistenceManager {
     this.#pendingPairs.set(key, value);
   }
 
-  async persist() {
+  async persist(): Promise<[boolean, Error | undefined]> {
     if (this.storageKind !== 'split') {
       throw new Error(
         'MetaMask - cannot use `persist` when storageKind is not "split"',
@@ -356,18 +540,20 @@ export class PersistenceManager {
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
-    await navigator.locks.request(
+    return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
         this.#currentLockAbortController = undefined;
+        // Track which operation failed to use the correct Sentry tag
+        let backupFailed = false;
         try {
           const clone = structuredClone(this.#pendingPairs);
           // reset the pendingPairs
           this.#pendingPairs.clear();
           try {
-            // save the pairs
-            await this.#localStore.setKeyValues(clone);
+            // save the pairs (includes test simulation check)
+            await this.#setKeyValuesInLocalStore(clone);
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -389,19 +575,50 @@ export class PersistenceManager {
           }
           if (hasVault(partialState)) {
             const backup = makeBackup(partialState, meta);
-            // save it to the backup DB
-            await this.#backupDb?.set(backup);
+            // save it to the backup DB - wrapped in try-catch to differentiate
+            // backup failures from storage.local failures in Sentry
+            try {
+              await this.#backupDb?.set(backup);
+            } catch (backupErr) {
+              backupFailed = true;
+              throw backupErr;
+            }
           }
 
           if (this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = false;
+            // Track recovery to understand how often failures are temporary.
+            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+            captureMessage(
+              'Data persistence recovered after temporary failure',
+              {
+                level: 'info',
+                tags: { 'persistence.event': 'persist-recovered' },
+                fingerprint: ['persistence-event', 'persist-recovered'],
+              },
+            );
           }
+
+          return [true, undefined];
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
-            captureException(err);
+            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+            const tag = backupFailed
+              ? 'persist-backup-failed'
+              : 'persist-failed';
+
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(err, {
+              tags: { 'persistence.error': tag },
+              fingerprint: ['persistence-error', tag],
+            });
           }
+          this.#notifySetFailed();
           log.error('error setting state in local store:', err);
+          return [false, this.#normalizePersistError(err)];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -430,28 +647,93 @@ export class PersistenceManager {
       STATE_LOCK,
       { mode: 'shared' },
       async () => {
-        const result = await this.#localStore.get();
+        // Capture both error and result to handle them in a unified way
+        // This allows us to respect the validateVault flag consistently
+        const [localStoreError, result] = await this.#getFromLocalStore()
+          .then((res): [undefined, MetaMaskStorageStructure | null] => [
+            undefined,
+            res,
+          ])
+          .catch((error: Error): [Error, undefined] => [error, undefined]);
+
+        // Log and capture the error if one occurred, but don't throw yet
+        if (localStoreError) {
+          log.error(
+            'Error retrieving the current state of the local store:',
+            localStoreError,
+          );
+          // Custom fingerprint prevents Sentry's deduplication from dropping
+          // this event when other persistence errors with the same underlying
+          // error message (e.g., "An unexpected error occurred") are reported.
+          captureException(localStoreError, {
+            tags: { 'persistence.error': 'get-failed' },
+            fingerprint: ['persistence-error', 'get-failed'],
+          });
+        }
 
         if (validateVault) {
-          // if we don't have a vault
-          if (!hasVault(result?.data)) {
-            // check if we have a backup in IndexedDB. we need to throw an error
-            // so that the user can be prompted to recover it. if we don't,
-            // carry on as if everything is fine (it might be, or maybe we lost
-            // BOTH the primary and backup vaults -- yikes!)
-            const backup = await this.getBackup();
-            // this check verifies if we have any keys saved in our backup.
-            // we use this as a sigil to determine if we've ever saved a vault
-            // before.
+          // Check if we need to trigger vault recovery:
+          // 1. If localStore.get() failed entirely (e.g., Firefox's "Error: An unexpected error occurred")
+          // 2. If we got a result but the vault is missing
+          const needsVaultRecovery =
+            localStoreError !== undefined || !hasVault(result?.data);
+
+          if (needsVaultRecovery) {
+            // Check if we have a backup in IndexedDB. We need to throw an error
+            // so that the user can be prompted to recover it.
+            // Wrap in try-catch to prevent backup failures from masking the
+            // original storage error (we care more about the error that got us here).
+            let backup: Backup | null = null;
+            try {
+              backup = (await this.getBackup()) ?? null;
+            } catch {
+              // Ignore getBackup errors - we're already in an error state
+            }
+
+            // This check verifies if we have any keys saved in our backup.
+            // We use this as a sigil to determine if we've ever saved a vault before.
             if (
               backup &&
               Object.values(backup).some((value) => value !== undefined)
             ) {
-              // we've got some data (we haven't checked for a vault, as the
-              // background+UI are responsible for determining what happens now)
-              throw new PersistenceError(MISSING_VAULT_ERROR, backup);
+              log.info('Backup vault found in IndexedDB, triggering recovery');
+
+              // Track vault corruption detected event directly to Segment.
+              // We do this here (before throwing) because MetaMetricsController
+              // is not initialized yet, so we use the backup state for consent/ID.
+              const corruptionType = localStoreError
+                ? VaultCorruptionType.InaccessibleDatabase
+                : VaultCorruptionType.MissingVaultInDatabase;
+              trackVaultCorruptionEvent(
+                backup,
+                MetaMetricsEventName.VaultCorruptionDetected,
+                corruptionType,
+              );
+
+              // We've got some data (we haven't checked for a vault, as the
+              // background+UI are responsible for determining what happens now).
+              // Include the original error as cause for debugging purposes.
+              throw new PersistenceError(
+                MISSING_VAULT_ERROR,
+                backup,
+                corruptionType,
+                localStoreError,
+              );
+            } else if (localStoreError) {
+              log.error(
+                'No backup vault available in IndexedDB, cannot recover',
+              );
+            } else {
+              log.info('No backup vault available in IndexedDB');
             }
           }
+        }
+
+        // If there was a storage error and we didn't trigger vault recovery
+        // (either validateVault was false or no backup was available),
+        // re-throw the original error
+        if (localStoreError) {
+          throw localStoreError;
         }
 
         if (isEmpty(result)) {
@@ -503,12 +785,16 @@ export class PersistenceManager {
     if (!backupDb) {
       return undefined;
     }
-    const [KeyringController, AppMetadataController, meta] = await backupDb.get(
-      [...backedUpStateKeys, `meta`],
-    );
+    const [
+      KeyringController,
+      AppMetadataController,
+      MetaMetricsController,
+      meta,
+    ] = await backupDb.get([...backedUpStateKeys, `meta`]);
     return {
       KeyringController,
       AppMetadataController,
+      MetaMetricsController,
       meta: meta as MetaData | undefined,
     };
   }
@@ -569,33 +855,68 @@ export class PersistenceManager {
    * occur.
    */
   async migrateToSplitState(state: MetaMaskStateType) {
-    return runTrackedTask('migrateToSplitState', async () => {
-      if (this.storageKind === 'split') {
-        log.debug(
-          '[Split State]: Storage is already split, skipping migration',
-        );
-        return;
+    try {
+      type MigrationStatus = 'skipped' | 'succeeded';
+
+      const migrationStatus = await runTrackedTask<MigrationStatus>(
+        'migrateToSplitState',
+        async () => {
+          if (this.storageKind === 'split') {
+            log.debug(
+              '[Split State]: Storage is already split, skipping migration',
+            );
+            return 'skipped';
+          }
+
+          if (!this.#metadata) {
+            throw new Error(
+              'MetaMask - metadata must be set before calling "migrateToSplitState"',
+            );
+          }
+
+          this.storageKind = 'split';
+          const metadata = structuredClone(this.#metadata);
+          metadata.storageKind = 'split';
+          this.setMetadata(metadata);
+          for (const [key, value] of Object.entries(state)) {
+            this.update(key, value);
+          }
+
+          // mark data key for deletion
+          this.update('data', undefined);
+
+          log.debug('[Split State]: Migrating to split state storage');
+          // persist doesn't throw when it fails, so we need to check the return
+          // value for an error condition and throw it in that case.
+          const [didPersist, persistError] = await this.persist();
+          if (!didPersist) {
+            throw (
+              persistError ??
+              new Error(
+                'MetaMask - persist failed during "migrateToSplitState"',
+              )
+            );
+          }
+
+          return 'succeeded';
+        },
+      );
+
+      if (migrationStatus === 'succeeded') {
+        trackEarlySegmentEvent({
+          state,
+          event: MetaMetricsEventName.StateMigrationSucceeded,
+          category: MetaMetricsEventCategory.StateMigration,
+        });
       }
+    } catch (error) {
+      trackEarlySegmentEvent({
+        state,
+        event: MetaMetricsEventName.StateMigrationFailed,
+        category: MetaMetricsEventCategory.StateMigration,
+      });
 
-      if (!this.#metadata) {
-        throw new Error(
-          'MetaMask - metadata must be set before calling "migrateToSplitState"',
-        );
-      }
-
-      this.storageKind = 'split';
-      const metadata = structuredClone(this.#metadata);
-      metadata.storageKind = 'split';
-      this.setMetadata(metadata);
-      for (const [key, value] of Object.entries(state)) {
-        this.update(key, value);
-      }
-
-      // mark data key for deletion
-      this.update('data', undefined);
-
-      log.debug('[Split State]: Migrating to split state storage');
-      await this.persist();
-    });
+      throw error;
+    }
   }
 }

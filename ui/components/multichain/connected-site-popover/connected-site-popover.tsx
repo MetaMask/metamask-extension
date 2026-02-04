@@ -44,7 +44,13 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 }) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const siteName = getURLHost(activeTabOrigin);
+
+  // Only show the host for valid web URLs (http/https), otherwise show "URL unknown"
+  const isWebOrigin =
+    activeTabOrigin?.startsWith('http://') ||
+    activeTabOrigin?.startsWith('https://');
+  const siteHost = isWebOrigin ? getURLHost(activeTabOrigin) : '';
+  const siteName = siteHost || t('urlUnknown');
 
   const allDomains = useSelector(getAllDomains);
   const networkConfigurationsByChainId = useSelector(
@@ -99,11 +105,15 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         <Box
-          style={{
-            borderBottomWidth: '1px',
-            borderBottomStyle: 'solid',
-            borderBottomColor: '#858B9A33',
-          }}
+          style={
+            isConnected
+              ? undefined
+              : {
+                  borderBottomWidth: '1px',
+                  borderBottomStyle: 'solid',
+                  borderBottomColor: '#858B9A33',
+                }
+          }
           paddingLeft={4}
           paddingRight={4}
           paddingBottom={2}
@@ -189,7 +199,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
           </Box>
         )}
         {isConnected && (
-          <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
+          <Box padding={4} paddingBottom={0}>
             <ButtonSecondary block onClick={onClick}>
               {t('managePermissions')}
             </ButtonSecondary>

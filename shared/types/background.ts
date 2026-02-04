@@ -57,6 +57,7 @@ import type {
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
+import type { ConnectivityControllerState } from '@metamask/connectivity-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
@@ -127,6 +128,7 @@ export type ControllerStatePropertiesEnumerated = {
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
   shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
   shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
+  showStorageErrorToast: AppStateControllerState['showStorageErrorToast'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
@@ -213,6 +215,7 @@ export type ControllerStatePropertiesEnumerated = {
   selectedNetworkClientId: NetworkState['selectedNetworkClientId'];
   orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
   enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'];
+  nativeAssetIdentifiers: NetworkEnablementControllerState['nativeAssetIdentifiers'];
   allNftContracts: NftControllerState['allNftContracts'];
   allNfts: NftControllerState['allNfts'];
   ignoredNfts: NftControllerState['ignoredNfts'];
@@ -306,7 +309,6 @@ export type ControllerStatePropertiesEnumerated = {
   allDetectedTokens: TokensControllerState['allDetectedTokens'];
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
   allTokens: TokensControllerState['allTokens'];
-  preventPollingOnNetworkRestart: TokenListState['preventPollingOnNetworkRestart'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
   marketData: TokenRatesControllerState['marketData'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
@@ -326,9 +328,11 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSeasons: RewardsControllerState['rewardsSeasons'];
   rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
+  rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
+  connectivityStatus: ConnectivityControllerState['connectivityStatus'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -391,7 +395,8 @@ type ControllerStateTypesMerged = AccountsControllerState &
   TransactionControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
-  RewardsControllerState;
+  RewardsControllerState &
+  ConnectivityControllerState;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

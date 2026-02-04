@@ -42,6 +42,6 @@ describe('SmartAccountTab', () => {
     const { getAllByText } = renderComponent();
 
     expect(getAllByText('Smart Account')).toHaveLength(2);
-    expect(getAllByText('Standard Account')).toHaveLength(2);
+    expect(getAllByText('Standard account')).toHaveLength(2);
   });
 });

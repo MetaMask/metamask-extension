@@ -6,6 +6,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import {
+  CANCEL_TYPES,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -71,6 +72,7 @@ const MOCK_ACTIVE_SHIELD_SUBSCRIPTION: Subscription = {
   currentPeriodStart: new Date().toISOString(),
   currentPeriodEnd: new Date(Date.now() + 30 * DAY).toISOString(),
   isEligibleForSupport: true,
+  cancelType: CANCEL_TYPES.ALLOWED_AT_PERIOD_END,
 };
 
 const getRedirectUrlSpy = jest.fn().mockReturnValue(MOCK_REDIRECT_URI);
@@ -84,6 +86,7 @@ const mockStartShieldSubscriptionWithCard = jest.fn();
 const mockGetSubscriptions = jest.fn();
 const mockGetSwapsControllerState = jest.fn();
 const mockGetNetworkControllerState = jest.fn();
+const mockGetRemoteFeatureFlagState = jest.fn();
 const mockGetAppStateControllerState = jest.fn();
 const mockGetMetaMetricsControllerState = jest.fn();
 const mockGetSubscriptionControllerState = jest.fn();
@@ -92,6 +95,7 @@ const mockGetRewardSeasonMetadata = jest.fn();
 const mockGetHasAccountOptedIn = jest.fn();
 const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
+const mockClearLastSelectedPaymentMethod = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -133,6 +137,10 @@ rootMessenger.registerActionHandler(
   mockGetNetworkControllerState,
 );
 rootMessenger.registerActionHandler(
+  'RemoteFeatureFlagController:getState',
+  mockGetRemoteFeatureFlagState,
+);
+rootMessenger.registerActionHandler(
   'AppStateController:getState',
   mockGetAppStateControllerState,
 );
@@ -164,6 +172,10 @@ rootMessenger.registerActionHandler(
   'SubscriptionController:submitShieldSubscriptionCryptoApproval',
   mockSubmitShieldSubscriptionCryptoApproval,
 );
+rootMessenger.registerActionHandler(
+  'SubscriptionController:clearLastSelectedPaymentMethod',
+  mockClearLastSelectedPaymentMethod,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -177,12 +189,14 @@ rootMessenger.delegate({
     'SubscriptionController:submitSponsorshipIntents',
     'SubscriptionController:linkRewards',
     'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+    'SubscriptionController:clearLastSelectedPaymentMethod',
     'TransactionController:getTransactions',
     'PreferencesController:getState',
     'AccountsController:getState',
     'SmartTransactionsController:getState',
     'SwapsController:getState',
     'NetworkController:getState',
+    'RemoteFeatureFlagController:getState',
     'AppStateController:getState',
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
@@ -294,6 +308,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       isTrialRequested: false,
       recurringInterval: RECURRING_INTERVALS.month,
       successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
     });
 
     expect(mockGetSubscriptions).toHaveBeenCalled();
@@ -337,6 +352,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       isTrialRequested: false,
       recurringInterval: RECURRING_INTERVALS.month,
       successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
       rewardAccountId: 'eip155:0:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     });
 
@@ -367,6 +383,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       isTrialRequested: false,
       recurringInterval: RECURRING_INTERVALS.month,
       successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
       rewardSubscriptionId: undefined,
     });
 
@@ -430,6 +447,10 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
         1000,
       ),
     ).rejects.toThrow(SHIELD_ERROR.subscriptionPollingTimedOut);
+
+    expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
+      PRODUCT_TYPES.SHIELD,
+    );
   });
 });
 
@@ -498,6 +519,9 @@ describe('SubscriptionService - handlePostTransaction', () => {
     mockGetNetworkControllerState.mockReturnValueOnce({
       networkConfigurationsByChainId: MOCK_STATE.networkConfigurationsByChainId,
       networksMetadata: MOCK_STATE.networksMetadata,
+    });
+    mockGetRemoteFeatureFlagState.mockReturnValueOnce({
+      remoteFeatureFlags: MOCK_STATE.remoteFeatureFlags,
     });
     mockGetKeyringControllerState.mockReturnValue({
       keyrings: MOCK_STATE.keyrings,
@@ -692,6 +716,9 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
     mockGetNetworkControllerState.mockReturnValueOnce({
       networkConfigurationsByChainId: MOCK_STATE.networkConfigurationsByChainId,
       networksMetadata: MOCK_STATE.networksMetadata,
+    });
+    mockGetRemoteFeatureFlagState.mockReturnValueOnce({
+      remoteFeatureFlags: MOCK_STATE.remoteFeatureFlags,
     });
   });
 

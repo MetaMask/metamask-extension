@@ -1,3 +1,4 @@
+import { createSelector } from 'reselect';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { SnapId } from '@metamask/snaps-sdk';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -109,7 +110,7 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
   },
 );
 
-export const getSnapAccountsByKeyringId = createDeepEqualSelector(
+export const getSnapAccountsByKeyringId = createSelector(
   getInternalAccounts,
   (_state, keyringId) => keyringId,
   (accounts, keyringId) => {

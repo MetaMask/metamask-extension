@@ -25,6 +25,7 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
+import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -166,6 +167,12 @@ export type AppStateControllerState = {
    * Whether the wallet reset is in progress.
    */
   isWalletResetInProgress: boolean;
+
+  /**
+   * Whether to show the storage error toast.
+   * This is set to true when set operations fail (storage.local or IndexedDB).
+   */
+  showStorageErrorToast: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -215,7 +222,8 @@ export type AllowedActions =
   | AddApprovalRequest
   | AcceptRequest
   | KeyringControllerGetStateAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | ProfileMetricsControllerSkipInitialDelayAction;
 
 /**
  * Event emitted when the state of the {@link AppStateController} changes.
@@ -326,6 +334,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
+  showStorageErrorToast: false,
   ...getInitialStateOverrides(),
 });
 
@@ -711,6 +720,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  showStorageErrorToast: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
 };
 
 export class AppStateController extends BaseController<
@@ -920,10 +935,13 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setPna25Acknowledged(acknowledged: boolean): void {
+  setPna25Acknowledged(acknowledged: boolean, disableDelay = false): void {
     this.update((state) => {
       state.pna25Acknowledged = acknowledged;
     });
+    if (disableDelay && acknowledged) {
+      this.messenger.call('ProfileMetricsController:skipInitialDelay');
+    }
   }
 
   setShieldPausedToastLastClickedOrClosed(time: number): void {
@@ -935,6 +953,18 @@ export class AppStateController extends BaseController<
   setShieldEndingToastLastClickedOrClosed(time: number): void {
     this.update((state) => {
       state.shieldEndingToastLastClickedOrClosed = time;
+    });
+  }
+
+  /**
+   * Sets whether to show the storage error toast.
+   * This is called when set operations fail (storage.local or IndexedDB).
+   *
+   * @param show - Whether to show the toast
+   */
+  setShowStorageErrorToast(show: boolean): void {
+    this.update((state) => {
+      state.showStorageErrorToast = show;
     });
   }
 
@@ -1623,6 +1653,15 @@ export class AppStateController extends BaseController<
   }): void {
     this.update((state) => {
       state.appActiveTab = tabData;
+    });
+  }
+
+  /**
+   * Clears the active tab information by setting appActiveTab to undefined.
+   */
+  clearAppActiveTab(): void {
+    this.update((state) => {
+      state.appActiveTab = undefined;
     });
   }
 

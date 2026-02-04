@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
-import { withFixtures, getCleanAppState, unlockWallet } from '../../../helpers';
+import { withFixtures, getCleanAppState } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
@@ -12,6 +12,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { skipOnFirefox } from '../helpers';
 import { arrangeContactSyncingTestUtils } from './helpers';
 
@@ -38,7 +39,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           const header = new HeaderNavbar(driver);
           await header.checkPageIsLoaded();
@@ -161,7 +162,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           const { getCurrentContacts } = arrangeContactSyncingTestUtils(
             driver,
@@ -210,7 +211,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           const header = new HeaderNavbar(driver);
           await header.checkPageIsLoaded();

@@ -1,11 +1,11 @@
-import { withFixtures, unlockWallet } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Send ERC20 token to contract address', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -18,10 +18,10 @@ describe('Send ERC20 token to contract address', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, localNodes }) => {
         const contractAddress: string =
           await contractRegistry.getContractAddress(smartContract);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const assetListPage = new AssetListPage(driver);
         await assetListPage.importCustomTokenByChain(
@@ -38,14 +38,13 @@ describe('Send ERC20 token to contract address', function () {
         await tokenOverviewPage.checkPageIsLoaded();
         await tokenOverviewPage.clickSend();
 
-        const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.checkPageIsLoaded();
-        await sendTokenPage.fillRecipient(contractAddress);
+        const sendPage = new SendPage(driver);
+        await sendPage.fillRecipient(contractAddress);
 
         // Verify warning
         const warningText =
-          'Warning: you are about to send to a token contract which could result in a loss of funds. Learn more';
-        await sendTokenPage.checkWarningMessage(warningText);
+          "You are sending tokens to the token's contract address. This may result in the loss of these tokens.";
+        await sendPage.checkWarningMessage(warningText);
       },
     );
   });

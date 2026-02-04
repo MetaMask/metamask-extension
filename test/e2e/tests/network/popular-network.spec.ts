@@ -77,7 +77,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.clickAddButtonForPopularNetwork('0xa4b1');
+        await selectNetworkDialog.clickAddButtonForPopularNetwork('0xa86a');
 
         // verify network is switched
         await new Homepage(driver).checkPageIsLoaded();

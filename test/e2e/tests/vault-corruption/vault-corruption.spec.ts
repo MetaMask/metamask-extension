@@ -1,20 +1,25 @@
 import assert from 'node:assert/strict';
-import { until } from 'selenium-webdriver';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { MockedEndpoint, MockttpServer } from 'mockttp';
+import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
+import { WALLET_PASSWORD } from '../../constants';
+import { sentryRegEx, withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
   completeVaultRecoveryOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
-import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import AccountAddressModal from '../../page-objects/pages/multichain/account-address-modal';
-import LoginPage from '../../page-objects/pages/login-page';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
+import {
+  getFirstAddress,
+  onboardThenTriggerCorruptionFlow,
+} from '../../page-objects/flows/vault-corruption.flow';
+import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
+import { getConfig } from './helpers';
 
 describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
+
+  const WAIT_FOR_SENTRY_MS = 10000;
+
   /**
    * Script template to simulate a broken database.
    *
@@ -28,8 +33,8 @@ describe('Vault Corruption', function () {
     // to access the storage API here
     const browser = globalThis.browser ?? globalThis.chrome;
 
-    // corrupt the primary database by deleting the data key
-    browser.storage.local.set({ data: null }, () => {
+    // corrupt the primary database by deleting the KeyringController key
+    browser.storage.local.set({ KeyringController: null }, () => {
       ${code}
     });
 `;
@@ -50,6 +55,47 @@ describe('Vault Corruption', function () {
   const breakPrimaryDatabaseOnlyScript = createCorruptionScript(
     reloadAndCallbackScript,
   );
+
+  /**
+   * Script to retrieve the encrypted vault from the backup database.
+   */
+  const getBackupVaultScript = `
+    const callback = arguments[arguments.length - 1];
+    const request = globalThis.indexedDB.open('metamask-backup', 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains('store')) {
+        db.createObjectStore('store');
+      }
+    };
+    request.onsuccess = () => {
+      const db = request.result;
+      const transaction = db.transaction('store', 'readonly');
+      const store = transaction.objectStore('store');
+      const getRequest = store.get('KeyringController');
+      getRequest.onsuccess = () => {
+        const keyringController = getRequest.result;
+        callback(keyringController?.vault ?? null);
+      };
+      getRequest.onerror = () => callback(null);
+    };
+    request.onerror = () => callback(null);
+  `;
+
+  async function mockSentryMissingVaultError(
+    mockServer: MockttpServer,
+  ): Promise<MockedEndpoint> {
+    return await mockServer
+      .forPost(sentryRegEx)
+      .withBodyIncluding('{"type":"event"')
+      .withBodyIncluding(MISSING_VAULT_ERROR)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {},
+        };
+      });
+  }
 
   /**
    * Script to break both the primary and backup databases.
@@ -79,219 +125,25 @@ describe('Vault Corruption', function () {
       };`);
   };
 
-  /**
-   * Returns the common config for these tests.
-   *
-   * @param title - The title of the test.
-   */
-  function getConfig(title?: string) {
-    return {
-      title,
-      ignoredConsoleErrors: [
-        // expected error caused by breaking the database:
-        'PersistenceError: Data error: storage.local does not contain vault data',
-      ],
-      // This flag ultimately requires that we onboard manually, as we can't use
-      // `fixtures` in this test, as the `ExtensionStore` class doesn't use them.
-      manifestFlags: {
-        testing: {
-          forceExtensionStore: true,
-        },
-      },
-    };
-  }
-
-  /**
-   * Onboard the user.
-   *
-   * @param driver - The WebDriver instance.
-   */
-  async function onboard(driver: Driver) {
-    return await completeCreateNewWalletOnboardingFlow({
-      driver,
-      password: WALLET_PASSWORD,
-      skipSRPBackup: true,
-    });
-  }
-
-  /**
-   * Since reloading the background restarts the extension the UI isn't
-   * available immediately. So we just keep reloading the UI until it is. This
-   * is a bit of a hack, but I can't figure out a better way.
-   *
-   * @param driver - The WebDriver instance.
-   */
-  async function waitForVaultRestorePage(driver: Driver) {
-    await driver.waitUntil(
-      async () => {
-        await driver.navigate(PAGES.HOME, { waitForControllers: false });
-        const title = await driver.driver.getTitle();
-        // the browser will return an error message for our UI's HOME page until
-        // the extension has restarted
-        return title === WINDOW_TITLES.ExtensionInFullScreenView;
-      },
-      // reload and check title as quickly a possible
-      { interval: 100, timeout: 10000 },
-    );
-    await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
-  }
-
-  /**
-   * Breaks the databases and then begins recovery. Only returns once the
-   * background page has reloaded and the UI is available again.
-   *
-   * @param driver - The WebDriver instance.
-   * @param script - The script to break the DB that will be executed in the
-   * background page for MV2 or offscreen page for MV3.
-   * @returns The initial first account's address.
-   */
-  async function onboardThenCorruptVault(driver: Driver, script: string) {
-    const initialWindow = await driver.driver.getWindowHandle();
-
-    // open a spare tab so the browser doesn't exit once we `reload()` the
-    // extension process, as doing so will close all UI tabs we have open when
-    // we do -- and that will close the whole browser 😱
-    await driver.openNewPage('about:blank');
-
-    await onboard(driver);
-
-    const homePage = new HomePage(driver);
-    await homePage.checkPageIsLoaded();
-    await homePage.waitForLoadingOverlayToDisappear();
-
-    const headerNavbar = new HeaderNavbar(driver);
-    const firstAddress = await getFirstAddress(driver, headerNavbar);
-    await headerNavbar.lockMetaMask();
-    const loginPage = new LoginPage(driver);
-    await loginPage.checkPageIsLoaded();
-
-    // use the home page to destroy the vault
-    await driver.executeAsyncScript(script);
-
-    // the previous tab we were using is now closed, so we need to tell Selenium
-    // to switch back to the other page (required for Chrome)
-    await driver.switchToWindow(initialWindow);
-
-    // get a new tab ready to use (required for Firefox)
-    await driver.openNewPage('about:blank');
-
-    // wait for the background page to reload
-    await waitForVaultRestorePage(driver);
-
-    return firstAddress;
-  }
-
-  /**
-   * Click the recovery/reset button then confirm or dismiss the action.
-   *
-   * @param options - The options
-   * @param options.driver - The WebDriver instance.
-   * @param options.confirm - Whether to confirm the action or not.
-   */
-  async function clickRecover({
-    driver,
-    confirm,
-  }: {
-    driver: Driver;
-    confirm: boolean;
-  }) {
-    // click the Recovery/Reset button
-    await driver.waitForSelector('#critical-error-button');
-    await driver.clickElement('#critical-error-button');
-
-    // Wait for the confirmation alert to appear and handle it immediately
-    await driver.driver.wait(until.alertIsPresent(), 20000);
-    const alert = await driver.driver.switchTo().alert();
-    if (confirm) {
-      await alert.accept();
-    } else {
-      await alert.dismiss();
-    }
-
-    if (confirm) {
-      // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
-      await driver.delay(3000);
-      try {
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-      } catch (error) {
-        // to mitigate a race condition where the tab is closed after confirming (issue #36916)
-        await driver.openNewPage('about:blank');
-        await driver.navigate();
-      }
-      // the button should be disabled if the user confirmed the prompt, but given this is a transient state that goes very fast
-      // it can cause a race condition where the element becomes stale, so we check directly that the element is not present as that's a stable state that occurs eventually
-      await driver.assertElementNotPresent('#critical-error-button');
-    } else {
-      // the button should be enabled if the user dismissed the prompt
-      // Wait for UI to settle after dismissing the alert
-      await driver.waitForSelector('#critical-error-button');
-    }
-  }
-
-  /**
-   * Recovers the vault and returns the first account's address.
-   *
-   * @param driver - The WebDriver instance.
-   */
-  async function onboardAfterRecovery(driver: Driver) {
-    // Log back in to the wallet and complete onboarding
-    await completeVaultRecoveryOnboardingFlow({
-      driver,
-      password: WALLET_PASSWORD,
-    });
-
-    // now that we are re-onboarded, get the first account's address
-    return await getFirstAddress(driver);
-  }
-
-  /**
-   * Returns the first (truncated) address from the account list in UI.
-   *
-   * @param driver - The WebDriver instance.
-   * @param headerNavbar
-   */
-  async function getFirstAddress(
-    driver: Driver,
-    headerNavbar: HeaderNavbar = new HeaderNavbar(driver),
-  ) {
-    await headerNavbar.openAccountMenu();
-
-    const accountListPage = new AccountListPage(driver);
-    await accountListPage.checkPageIsLoaded();
-    await accountListPage.openMultichainAccountMenu({
-      accountLabel: 'Account 1',
-    });
-
-    await accountListPage.clickMultichainAccountMenuItem('Addresses');
-
-    const addressListModal = new AddressListModal(driver);
-    await addressListModal.clickQRbutton();
-
-    const accountAddressModal = new AccountAddressModal(driver);
-    const accountAddress = await accountAddressModal.getAccountAddress();
-    await accountAddressModal.goBack();
-    await addressListModal.goBack();
-    await accountListPage.closeMultichainAccountsPage();
-
-    return accountAddress;
-  }
-
   it('recovers metamask vault when primary database is broken but backup is intact', async function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await onboardThenCorruptVault(
+        const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
           breakPrimaryDatabaseOnlyScript,
         );
 
         // start recovery
-        await clickRecover({ driver, confirm: true });
+        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
 
         // onboard again
-        const restoredFirstAddress = await onboardAfterRecovery(driver);
+        await completeVaultRecoveryOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+        });
+        const restoredFirstAddress = await getFirstAddress(driver);
 
         // make sure the address is the same as before
         assert.equal(
@@ -303,20 +155,96 @@ describe('Vault Corruption', function () {
     );
   });
 
+  it('does not serialize backup data in Sentry captureException payload', async function () {
+    const config = getConfig(this.test?.title);
+    await withFixtures(
+      {
+        ...config,
+        manifestFlags: {
+          ...config.manifestFlags,
+          sentry: {
+            ...(config.manifestFlags?.sentry ?? {}),
+            forceEnable: false,
+          },
+        },
+        testSpecificMock: mockSentryMissingVaultError,
+      },
+      async ({
+        driver,
+        mockedEndpoint,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint;
+      }) => {
+        await onboardThenTriggerCorruptionFlow(
+          driver,
+          breakPrimaryDatabaseOnlyScript,
+          {
+            participateInMetaMetrics: true,
+          },
+        );
+
+        const backupVault =
+          await driver.executeAsyncScript(getBackupVaultScript);
+        assert.ok(backupVault, 'Expected backup vault to exist');
+
+        await driver.wait(async () => {
+          const isPending = await mockedEndpoint.isPending();
+          return isPending === false;
+        }, WAIT_FOR_SENTRY_MS);
+
+        const [mockedRequest] = await mockedEndpoint.getSeenRequests();
+        const mockTextBody = ((await mockedRequest.body.getText()) ?? '').split(
+          '\n',
+        );
+        const mockJsonBody = JSON.parse(mockTextBody[2]);
+        const mockPayload = JSON.stringify(mockJsonBody);
+        const escapedBackupVault = JSON.stringify(backupVault).slice(1, -1);
+
+        // check both escaped and unescaped versions of the vault
+        assert.equal(
+          mockPayload.includes(backupVault) ||
+            mockPayload.includes(escapedBackupVault),
+          false,
+          'Expected Sentry payload to exclude backup vault data',
+        );
+
+        // a smell test for bits of the vault structure:
+        assert.equal(
+          mockPayload.includes('keyMetadata'),
+          false,
+          'Expected Sentry payload to exclude vault property',
+        );
+        // make sure `keyMetadata` is a real property and we aren't using it in
+        // our test for no reason
+        assert.equal(
+          backupVault.includes('keyMetadata'),
+          true,
+          'Expected backup vault to include vault property',
+        );
+      },
+    );
+  });
+
   it('resets metamask state when both primary and backup databases are broken', async function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await onboardThenCorruptVault(
+        const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
           breakAllDatabasesScript('KeyringController'),
         );
 
         // start reset
-        await clickRecover({ driver, confirm: true });
+        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
 
         // Now onboard again, like a first-time user :-(
-        await onboard(driver);
+        await completeCreateNewWalletOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+          skipSRPBackup: true,
+        });
 
         // make sure the account is different than the first time we onboarded
         const newFirstAddress = await getFirstAddress(driver);
@@ -337,15 +265,17 @@ describe('Vault Corruption', function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await onboardThenCorruptVault(
+        const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
           breakPrimaryDatabaseOnlyScript,
         );
 
+        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+
         // click recover but dismiss the prompt
-        await clickRecover({ driver, confirm: false });
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
         // make sure the button can be clicked yet again; dismiss again
-        await clickRecover({ driver, confirm: false });
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
 
         // reload to make sure the UI is still in the same Vault Corrupted state
         await driver.navigate(PAGES.HOME, {
@@ -353,13 +283,17 @@ describe('Vault Corruption', function () {
         });
 
         // make sure the button can be clicked yet again; dismiss the prompt
-        await clickRecover({ driver, confirm: false });
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
         // actually recover the vault this time just to make sure
-        // it all still works after dismiss the prompt previously
-        await clickRecover({ driver, confirm: true });
+        // it all still works after dismissing the prompt previously
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
 
         // verify that the UI has completed recovery this time
-        const restoredFirstAddress = await onboardAfterRecovery(driver);
+        await completeVaultRecoveryOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+        });
+        const restoredFirstAddress = await getFirstAddress(driver);
         assert.equal(
           restoredFirstAddress,
           initialFirstAddress,
@@ -374,16 +308,21 @@ describe('Vault Corruption', function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await onboardThenCorruptVault(
+        const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
           breakAllDatabasesScript('meta'),
         );
 
         // start recovery
-        await clickRecover({ driver, confirm: true });
+        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
 
         // onboard again
-        const restoredFirstAddress = await onboardAfterRecovery(driver);
+        await completeVaultRecoveryOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+        });
+        const restoredFirstAddress = await getFirstAddress(driver);
 
         // make sure the address is the same as before
         assert.equal(

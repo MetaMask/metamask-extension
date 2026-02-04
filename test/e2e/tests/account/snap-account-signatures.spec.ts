@@ -1,7 +1,8 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -9,8 +10,8 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import { DAPP_PATH } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import {
   personalSignWithSnapAccount,
   signPermitWithSnapAccount,
@@ -74,7 +75,9 @@ describe('Snap Account Signatures', function (this: Suite) {
           // Connect the SSK account
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
-          await testDapp.connectAccount({ publicAddress: newPublicKey });
+          await connectAccountToTestDapp(driver, {
+            publicAddress: newPublicKey,
+          });
 
           // Run all 5 signature types
           await personalSignWithSnapAccount(

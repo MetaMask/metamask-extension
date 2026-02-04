@@ -36,6 +36,7 @@ type State = {
       | 'showPasswordChangeToast'
       | 'showCopyAddressToast'
       | 'showClaimSubmitToast'
+      | 'showInfuraSwitchToast'
     >
   >;
   metamask: Partial<
@@ -51,6 +52,8 @@ type State = {
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
       | 'completedOnboarding'
+      | 'showStorageErrorToast'
+      | 'isUnlocked'
     >
   >;
 };
@@ -217,6 +220,18 @@ export function selectClaimSubmitToast(
 }
 
 /**
+ * Retrieves user preference to see the "Updated to MetaMask default" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowInfuraSwitchToast(
+  state: Pick<State, 'appState'>,
+): boolean {
+  return Boolean(state.appState.showInfuraSwitchToast);
+}
+
+/**
  * Retrieves user preference to see the "Shield Payment Declined" toast
  *
  * @param state - Redux state object.
@@ -238,6 +253,24 @@ export function selectShowShieldEndingToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
   return !state.metamask.shieldEndingToastLastClickedOrClosed;
+}
+
+/**
+ * Determines if the storage error toast should be shown based on:
+ * - showStorageErrorToast flag is true
+ * - User has completed onboarding
+ * - Wallet is unlocked
+ *
+ * @param state - Redux state object.
+ * @returns Boolean indicating whether to show the toast
+ */
+export function selectShowStorageErrorToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  const { showStorageErrorToast, completedOnboarding, isUnlocked } =
+    state.metamask || {};
+
+  return Boolean(showStorageErrorToast && completedOnboarding && isUnlocked);
 }
 
 /**

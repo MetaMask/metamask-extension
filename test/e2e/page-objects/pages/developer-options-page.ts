@@ -13,7 +13,7 @@ class DevelopOptions {
     '[data-testid="developer-options-generate-page-crash-button"]';
 
   private readonly developOptionsPageTitle: object = {
-    text: 'Developer Options',
+    text: 'Developer options',
     css: 'h4',
   };
 

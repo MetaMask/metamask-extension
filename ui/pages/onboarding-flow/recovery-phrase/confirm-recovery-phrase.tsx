@@ -86,8 +86,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const navigate = useNavigate();
   const { search } = useLocation();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedEndTrace } = trackEvent;
+  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
@@ -283,8 +282,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             </Box>
           </>
         )}
-        <Box marginBottom={6}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+        <Box>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {t('confirmRecoveryPhraseDetails')}
           </Text>
         </Box>

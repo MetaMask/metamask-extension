@@ -8,8 +8,7 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
-
-let installType = 'unknown';
+import { getInstallType, initInstallType } from './install-type';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -50,18 +49,10 @@ export default function setupSentry() {
 
   log('Initializing');
 
-  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
-  // If it's not, we still get the extensionId, but the installType will default to "unknown"
-  browser.management
-    .getSelf()
-    .then((extensionInfo) => {
-      if (extensionInfo.installType) {
-        installType = extensionInfo.installType;
-      }
-    })
-    .catch((error) => {
-      log('Error getting extension installType', error);
-    });
+  // Initialize install type early - fire and forget.
+  // By the time errors are reported, the cache should be populated.
+  initInstallType();
+
   integrateLogging();
   setSentryClient();
 
@@ -205,6 +196,16 @@ function getMetaMetricsEnabledFromPersistedState(persistedState) {
   );
 }
 
+/**
+ * Returns whether MetaMetrics is enabled, given the backup state.
+ *
+ * @param {unknown} backupState - Backup state from IndexedDB
+ * @returns `true` if MetaMetrics is enabled in the backup, `false` otherwise.
+ */
+function getMetaMetricsEnabledFromBackupState(backupState) {
+  return Boolean(backupState?.MetaMetricsController?.participateInMetaMetrics);
+}
+
 function getSentryEnvironment() {
   if (METAMASK_BUILD_TYPE === 'main') {
     return METAMASK_ENVIRONMENT;
@@ -265,8 +266,15 @@ async function getMetaMetricsEnabled() {
     const persistedState = await globalThis.stateHooks.getPersistedState();
     return getMetaMetricsEnabledFromPersistedState(persistedState);
   } catch (error) {
-    log('Error retrieving persisted state', error);
-    return false;
+    log('Error retrieving persisted state, falling back to backup', error);
+    // Primary storage failed (e.g., database corruption) - check the backup
+    try {
+      const backupState = await globalThis.stateHooks.getBackupState();
+      return getMetaMetricsEnabledFromBackupState(backupState);
+    } catch (backupError) {
+      log('Error retrieving backup state', backupError);
+      return false;
+    }
   }
 }
 
@@ -396,6 +404,8 @@ export function rewriteReport(report) {
     if (!report.tags) {
       report.tags = {};
     }
+
+    const installType = getInstallType();
 
     Object.assign(report.extra, {
       appState,

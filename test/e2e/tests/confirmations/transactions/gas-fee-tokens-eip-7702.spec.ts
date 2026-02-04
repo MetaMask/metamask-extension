@@ -6,15 +6,17 @@ import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transact
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
@@ -55,7 +57,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '0');
 
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -127,7 +129,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '0');
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

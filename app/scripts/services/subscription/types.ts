@@ -10,6 +10,7 @@ import {
   SubscriptionControllerGetStateAction,
   SubscriptionControllerLinkRewardsAction,
   SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
+  SubscriptionControllerClearLastSelectedPaymentMethodAction,
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import {
@@ -20,6 +21,7 @@ import { AccountsControllerGetStateAction } from '@metamask/accounts-controller'
 import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-transactions-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
@@ -56,12 +58,14 @@ export type SubscriptionServiceAction =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerLinkRewardsAction
   | SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction
+  | SubscriptionControllerClearLastSelectedPaymentMethodAction
   | TransactionControllerGetTransactionsAction
   | PreferencesControllerGetStateAction
   | AccountsControllerGetStateAction
   | SmartTransactionsControllerGetStateAction
   | SwapsControllerGetStateAction
   | NetworkControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction
   | AuthenticationControllerGetBearerToken
   | AppStateControllerGetStateAction
   | AppStateControllerSetPendingShieldCohortAction

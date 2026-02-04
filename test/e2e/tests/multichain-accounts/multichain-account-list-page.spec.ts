@@ -5,8 +5,7 @@ import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { DAPP_PATH } from '../../constants';
-import { WINDOW_TITLES } from '../../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { AccountType, withMultichainAccountsDesignEnabled } from './common';
 
 describe('Multichain Accounts - Multichain accounts list page', function (this: Suite) {

@@ -1,9 +1,10 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
-import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
-import SwitchNetworkConfirmation from '../page-objects/pages/confirmations/redesign/switch-network-confirmation';
+import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
+import SwitchNetworkConfirmation from '../page-objects/pages/confirmations/switch-network-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
@@ -40,6 +41,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await testDapp.clickPersonalSign();
+        await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -121,6 +123,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await testDapp.clickPersonalSign();
+        await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({

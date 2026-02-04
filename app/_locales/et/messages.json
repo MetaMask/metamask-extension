@@ -379,9 +379,6 @@
     "message": "Peate importimiseks faili valima.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Negatiivset ETHi summat ei saa saata."
-  },
   "networkName": {
     "message": "Võrgu nimi"
   },

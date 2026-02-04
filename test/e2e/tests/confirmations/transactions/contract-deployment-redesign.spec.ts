@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { WINDOW_TITLES } from '../../../constants';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/redesign/deploy-confirmation';
+import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/deploy-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -29,6 +29,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         await testDapp.openTestDappPage();
         // deploy contract
         await testDapp.clickPiggyBankContract();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const deploymentConfirmation = new ContractDeploymentConfirmation(
           driver,
         );
@@ -66,6 +67,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickPiggyBankContract();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const deploymentConfirmation = new ContractDeploymentConfirmation(
           driver,
         );

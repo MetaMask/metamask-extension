@@ -1,35 +1,29 @@
 import React, { useCallback, useState, useMemo } from 'react';
-import classnames from 'classnames';
 import { PAYMENT_TYPES, PaymentType } from '@metamask/subscription-controller';
+import {
+  BadgeWrapper,
+  Box,
+  BoxBackgroundColor,
+  FontWeight,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+  twMerge,
+} from '@metamask/design-system-react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
-  BadgeWrapper,
-  Box,
-  Icon,
-  IconName,
-  IconSize,
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../helpers/constants/design-system';
+import { BorderColor } from '../../helpers/constants/design-system';
 import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
 import { TabName } from '../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -156,162 +150,131 @@ export const ShieldPaymentModal = ({
         <ModalHeader onClose={onClose}>
           {t('shieldPlanPaymentTitle')}
         </ModalHeader>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.Full}
-        >
+        <Box className="flex flex-col w-full">
           <Box
+            asChild
             data-testid="shield-payment-method-token-button"
-            as="button"
-            className={classnames('payment-method-item', {
-              'payment-method-item--selected':
-                selectedPaymentMethod === PAYMENT_TYPES.byCrypto,
-            })}
-            padding={4}
-            gap={4}
+            className={twMerge(
+              'payment-method-item flex items-center justify-between w-full gap-4 p-4',
+              selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+                'payment-method-item--selected',
+            )}
             backgroundColor={
               selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-                ? BackgroundColor.primaryMuted
-                : BackgroundColor.transparent
+                ? BoxBackgroundColor.PrimaryMuted
+                : BoxBackgroundColor.Transparent
             }
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
-            width={BlockSize.Full}
             onClick={() => {
               selectPaymentMethod(PAYMENT_TYPES.byCrypto);
             }}
-            disabled={!hasStableTokenWithBalance}
           >
-            {selectedPaymentMethod === PAYMENT_TYPES.byCrypto && (
-              <Box
-                className="payment-method-item__selected-indicator"
-                borderRadius={BorderRadius.pill}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            )}
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.spaceBetween}
-              width={BlockSize.Full}
-            >
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={4}
-              >
-                {hasStableTokenWithBalance ? (
-                  <BadgeWrapper
-                    badge={
-                      <AvatarNetwork
-                        size={AvatarNetworkSize.Xs}
-                        name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
-                        src={
-                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]
-                        }
+            <button disabled={!hasStableTokenWithBalance}>
+              {selectedPaymentMethod === PAYMENT_TYPES.byCrypto && (
+                <Box
+                  className="payment-method-item__selected-indicator rounded-full"
+                  backgroundColor={BoxBackgroundColor.PrimaryDefault}
+                />
+              )}
+              <Box className="flex items-center justify-between w-full">
+                <Box className="flex items-center gap-4">
+                  {hasStableTokenWithBalance ? (
+                    <BadgeWrapper
+                      badge={
+                        <AvatarNetwork
+                          size={AvatarNetworkSize.Xs}
+                          name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
+                          src={
+                            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]
+                          }
+                          borderColor={BorderColor.borderMuted}
+                        />
+                      }
+                    >
+                      <AvatarToken
+                        name={selectedToken?.symbol}
+                        src={selectedToken?.image}
+                        marginTop={1}
                         borderColor={BorderColor.borderMuted}
                       />
-                    }
-                  >
-                    <AvatarToken
-                      name={selectedToken?.symbol}
-                      src={selectedToken?.image}
-                      marginTop={1}
-                      borderColor={BorderColor.borderMuted}
-                    />
-                  </BadgeWrapper>
-                ) : (
-                  <Icon size={IconSize.Xl} name={IconName.Coin} />
-                )}
+                    </BadgeWrapper>
+                  ) : (
+                    <Icon size={IconSize.Xl} name={IconName.Coin} />
+                  )}
 
-                <Box textAlign={TextAlign.Left}>
-                  <Text variant={TextVariant.bodyMdMedium}>
-                    {t('shieldPlanPayWithToken', [
-                      hasStableTokenWithBalance
-                        ? (selectedToken?.symbol ?? '')
-                        : 'crypto',
-                    ])}
-                  </Text>
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textAlternative}
-                  >
-                    {hasStableTokenWithBalance ? (
-                      `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
-                    ) : (
-                      <Box display={Display.Flex} gap={2}>
-                        {supportedTokens}
-                      </Box>
-                    )}
-                  </Text>
+                  <Box className="text-left">
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {t('shieldPlanPayWithToken', [
+                        hasStableTokenWithBalance
+                          ? (selectedToken?.symbol ?? '')
+                          : 'crypto',
+                      ])}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {hasStableTokenWithBalance ? (
+                        `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
+                      ) : (
+                        <Box className="flex gap-2">{supportedTokens}</Box>
+                      )}
+                    </Text>
+                  </Box>
                 </Box>
+                {hasStableTokenWithBalance && hasMultipleTokenOptions && (
+                  <Icon size={IconSize.Md} name={IconName.ArrowDown} />
+                )}
               </Box>
-              {hasStableTokenWithBalance && hasMultipleTokenOptions && (
-                <Icon size={IconSize.Md} name={IconName.ArrowDown} />
-              )}
-            </Box>
+            </button>
           </Box>
           {!disableCardOption && (
             <Box
+              asChild
               data-testid="shield-payment-method-card-button"
-              as="button"
-              className={classnames('payment-method-item', {
-                'payment-method-item--selected':
-                  selectedPaymentMethod === PAYMENT_TYPES.byCard,
-              })}
-              padding={4}
-              gap={4}
+              className={twMerge(
+                'payment-method-item flex items-center justify-between w-full gap-4 p-4',
+                selectedPaymentMethod === PAYMENT_TYPES.byCard &&
+                  'payment-method-item--selected',
+              )}
               backgroundColor={
                 selectedPaymentMethod === PAYMENT_TYPES.byCard
-                  ? BackgroundColor.primaryMuted
-                  : BackgroundColor.transparent
+                  ? BoxBackgroundColor.PrimaryMuted
+                  : BoxBackgroundColor.Transparent
               }
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.spaceBetween}
-              width={BlockSize.Full}
               onClick={() => selectPaymentMethod(PAYMENT_TYPES.byCard)}
             >
-              {selectedPaymentMethod === PAYMENT_TYPES.byCard && (
-                <Box
-                  className="payment-method-item__selected-indicator"
-                  borderRadius={BorderRadius.pill}
-                  backgroundColor={BackgroundColor.primaryDefault}
-                />
-              )}
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.spaceBetween}
-                width={BlockSize.Full}
-              >
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  gap={4}
-                >
-                  <Icon size={IconSize.Xl} name={IconName.Card} />
-                  <Box textAlign={TextAlign.Left}>
-                    <Text variant={TextVariant.bodyMdMedium}>
-                      {t('shieldPlanPayWithCard')}
-                    </Text>
-                    <Box
-                      display={Display.Flex}
-                      gap={1}
-                      alignItems={AlignItems.center}
-                    >
-                      <img src="./images/card-mc.svg" alt="Mastercard" />
-                      <img src="./images/card-visa.svg" alt="Visa" />
-                      <img
-                        src="./images/card-amex.svg"
-                        alt="American Express"
-                      />
+              <button>
+                {selectedPaymentMethod === PAYMENT_TYPES.byCard && (
+                  <Box
+                    className="payment-method-item__selected-indicator rounded-full"
+                    backgroundColor={BoxBackgroundColor.PrimaryDefault}
+                  />
+                )}
+                <Box className="flex items-center justify-between w-full">
+                  <Box className="flex items-center gap-4">
+                    <Icon size={IconSize.Xl} name={IconName.Card} />
+                    <Box className="text-left">
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {t('shieldPlanPayWithCard')}
+                      </Text>
+                      <Box className="flex items-center gap-1">
+                        <img src="./images/card-mc.svg" alt="Mastercard" />
+                        <img src="./images/card-visa.svg" alt="Visa" />
+                        <img
+                          src="./images/card-amex.svg"
+                          alt="American Express"
+                        />
+                      </Box>
                     </Box>
                   </Box>
                 </Box>
-              </Box>
+              </button>
             </Box>
           )}
         </Box>

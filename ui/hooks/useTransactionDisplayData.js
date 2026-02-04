@@ -35,6 +35,8 @@ import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import { selectBridgeHistoryItemForTxMetaId } from '../ducks/bridge-status/selectors';
+
+import { PAY_TRANSACTION_TYPES } from '../pages/confirmations/constants/pay';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -44,6 +46,7 @@ import { useTokenData } from './useTokenData';
 import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
 import useBridgeChainInfo from './bridge/useBridgeChainInfo';
+import { useFiatFormatter } from './useFiatFormatter';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:
@@ -100,6 +103,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const knownNfts = useSelector(getNfts);
   const allDetectedTokens = useSelector(getAllDetectedTokens);
   const tokenListAllChains = useSelector(selectERC20TokensByChain);
+  const fiatFormatter = useFiatFormatter();
 
   const t = useI18nContext();
 
@@ -247,6 +251,7 @@ export function useTransactionDisplayData(transactionGroup) {
     token?.symbol,
     undefined,
     true,
+    initialTransaction?.chainId,
   );
 
   // used to append to the primary display value. initialized to either token.symbol or undefined
@@ -384,6 +389,30 @@ export function useTransactionDisplayData(transactionGroup) {
       new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
     );
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
+  } else if (PAY_TRANSACTION_TYPES.includes(type)) {
+    title =
+      type === TransactionType.perpsDeposit
+        ? t('perpsDepositActivityTitle')
+        : t('musdConversionActivityTitle');
+
+    prefix = '';
+    const targetTokenAddress = to?.toLowerCase();
+    const { metamaskPay } = initialTransaction;
+
+    const targetToken =
+      targetTokenAddress &&
+      tokenListAllChains?.[initialTransaction.chainId]?.data?.[
+        targetTokenAddress
+      ];
+
+    if (targetToken?.symbol) {
+      primarySuffix = targetToken.symbol;
+    }
+
+    if (metamaskPay?.targetFiat) {
+      primaryDisplayValue = metamaskPay.targetFiat;
+      secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
+    }
   } else {
     dispatch(
       captureSingleException(

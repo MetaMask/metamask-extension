@@ -154,7 +154,7 @@ ${Object.entries(env)
           { js: ['scripts/contentscript.js', 'scripts/inpage.js'] },
         ],
       },
-      'brave',
+      'chrome',
     );
     console.log('transformedManifest', transformedManifest);
     assert.deepStrictEqual(transformedManifest, {

@@ -19,13 +19,6 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { BITCOIN_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/bitcoin-wallet-snap';
 import NonEvmOverview from './non-evm-overview';
 
-// We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
-const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => mockDispatch,
-}));
-
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
 // TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
 jest.mock(
@@ -41,7 +34,6 @@ jest.mock(
 jest.mock('../../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
   sendMultichainTransaction: jest.fn(),
-  setDefaultHomeActiveTabName: jest.fn(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
@@ -370,8 +362,14 @@ describe('NonEvmOverview', () => {
     });
 
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <NonEvmOverview />
       </MetaMetricsContext.Provider>,
       storeWithBtcBuyable,
@@ -427,8 +425,14 @@ describe('NonEvmOverview', () => {
 
   it('sends an event when clicking the Send button', () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <NonEvmOverview />
       </MetaMetricsContext.Provider>,
       getStore(),

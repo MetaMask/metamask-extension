@@ -108,7 +108,7 @@ const AssetListControlBar = ({
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const navigate = useNavigate();
   const popoverRef = useRef<HTMLDivElement>(null);
   const useNftDetection = useSelector(getUseNftDetection);
@@ -417,7 +417,12 @@ const AssetListControlBar = ({
           justifyContent={JustifyContent.flexEnd}
         >
           {showSortControl && (
-            <Tooltip title={t('sortBy')} position="bottom" distance={20}>
+            <Tooltip
+              title={t('sortBy')}
+              position="bottom"
+              distance={20}
+              disabled={isTokenSortPopoverOpen}
+            >
               <ButtonBase
                 data-testid="sort-by-popover-toggle"
                 className="asset-list-control-bar__button"

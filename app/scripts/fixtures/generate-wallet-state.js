@@ -131,14 +131,13 @@ function generateKeyringControllerState(vault) {
 function generateAccountsControllerState(accounts) {
   console.log('Generating AccountsController state');
   const internalAccounts = {
-    selectedAccount: 'account-id',
+    selectedAccount: 'account-id-0',
     accounts: {},
   };
 
   accounts.forEach((account, index) => {
-    internalAccounts.accounts[`acount-id-${index}`] = {
-      selectedAccount: 'account-id',
-      id: 'account-id',
+    internalAccounts.accounts[`account-id-${index}`] = {
+      id: `account-id-${index}`,
       address: account,
       metadata: {
         name: `Account ${index + 1}`,

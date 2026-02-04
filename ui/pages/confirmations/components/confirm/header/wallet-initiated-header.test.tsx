@@ -5,7 +5,6 @@ import { fireEvent } from '@testing-library/react';
 import { getMockTokenTransferConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
-import * as RedesignedSendFlow from '../../../hooks/useRedesignedSendFlow';
 import * as ConfirmActions from '../../../hooks/useConfirmActions';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
@@ -15,10 +14,6 @@ const render = (
   const store = configureStore(state);
   return renderWithConfirmContextProvider(<WalletInitiatedHeader />, store);
 };
-
-jest.mock('../../../hooks/useRedesignedSendFlow', () => ({
-  useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
-}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -38,9 +33,6 @@ describe('<WalletInitiatedHeader />', () => {
       onCancel: mockOnCancel,
       resetTransactionState: jest.fn(),
     }));
-    jest.spyOn(RedesignedSendFlow, 'useRedesignedSendFlow').mockReturnValue({
-      enabled: true,
-    });
     const { getByTestId } = render(
       getMockTokenTransferConfirmState({ isWalletInitiatedConfirmation: true }),
     );

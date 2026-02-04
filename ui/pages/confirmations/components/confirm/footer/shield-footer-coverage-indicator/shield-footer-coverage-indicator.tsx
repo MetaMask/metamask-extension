@@ -53,7 +53,7 @@ const ShieldFooterCoverageIndicator = () => {
       <Box marginTop={2}>
         <ShieldIconAnimation
           severity={animationSeverity}
-          playAnimation={!isPaused}
+          isDisabled={isPaused}
         />
       </Box>
       <ConfirmInfoAlertRow

@@ -1,5 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import {
+  AlignItems,
   BackgroundColor,
   Display,
   IconColor,
@@ -64,7 +65,12 @@ export const AdditionalNetworksInfo = memo(() => {
     >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         {/* Container for the "Additional Networks" text and info icon */}
-        <Box display={Display.InlineFlex} ref={setBoxRef}>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          ref={setBoxRef}
+        >
           {/* Label text - uses translation key "additionalNetworks" */}
           <Text
             color={TextColor.textAlternative}
@@ -74,13 +80,17 @@ export const AdditionalNetworksInfo = memo(() => {
           </Text>
 
           {/* Info icon with hover trigger for popover */}
-          <Box marginTop={1}>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+          >
             <Icon
               onMouseEnter={handleMouseEnter}
               className="add-network__warning-icon"
               name={IconName.Info}
-              color={IconColor.iconMuted}
-              size={IconSize.Sm}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
               marginLeft={2}
             />
             {/* Popover component that shows when user hovers over the info icon */}

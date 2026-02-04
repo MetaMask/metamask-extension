@@ -8,9 +8,9 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../../constants';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/redesign/deploy-confirmation';
+import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/deploy-confirmation';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { assertAdvancedGasDetails } from './shared';
@@ -52,6 +52,7 @@ describe('Metrics', function () {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickPiggyBankContract();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const deploymentConfirmation = new ContractDeploymentConfirmation(
           driver,
         );
@@ -72,6 +73,7 @@ describe('Metrics', function () {
 
         // deposit contract
         await testDapp.createDepositTransaction();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const transactionConfirmation = new TransactionConfirmation(driver);
         // verify UI before clicking advanced details to give time for the Transaction Added event to be emitted without Advanced Details being displayed
         await transactionConfirmation.checkPageIsLoaded();

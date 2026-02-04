@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
+  REVEAL_SEED_ROUTE,
   REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -77,6 +78,11 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/settings/transaction-shield-tab/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
@@ -94,6 +100,8 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
+  selectShowStorageErrorToast,
+  selectShowInfuraSwitchToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -104,6 +112,7 @@ import {
   setShowPasswordChangeToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
+  setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
 } from './utils';
@@ -114,14 +123,22 @@ export function ToastMaster() {
     getIsMultichainAccountsState2Enabled,
   );
 
+  // Check if storage error toast should be shown (needed for conditional rendering on other screens)
+  // The selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const shouldShowStorageErrorToast = useSelector(selectShowStorageErrorToast);
+
   // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
+  // Storage error toast should show on ALL screens
+  const storageErrorToast = <StorageErrorToast />;
+
   if (onHomeScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <SurveyToast />
         {isMultichainAccountsFeatureState2Enabled ? (
           <ConnectAccountGroupToast />
@@ -133,6 +150,7 @@ export function ToastMaster() {
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
+        <InfuraSwitchToast />
         <CopyAddressToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
@@ -143,10 +161,17 @@ export function ToastMaster() {
   if (onSettingsScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
+  }
+
+  // On other screens, only render ToastContainer if storage error toast should show
+  // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
+  if (shouldShowStorageErrorToast) {
+    return <ToastContainer>{storageErrorToast}</ToastContainer>;
   }
 
   return null;
@@ -492,6 +517,30 @@ function NewSrpAddedToast() {
   );
 }
 
+function InfuraSwitchToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showInfuraSwitchToast = useSelector(selectShowInfuraSwitchToast);
+  const autoHideDelay = 5 * SECOND;
+
+  return (
+    showInfuraSwitchToast && (
+      <Toast
+        key="infura-switch-toast"
+        dataTestId="infura-switch-toast"
+        text={t('updatedToMetaMaskDefault')}
+        startAdornment={
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowInfuraSwitchToast(false))}
+        autoHideTime={autoHideDelay}
+        onAutoHideToast={() => dispatch(setShowInfuraSwitchToast(false))}
+      />
+    )
+  );
+}
+
 const PasswordChangeToast = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -820,6 +869,71 @@ function ShieldEndingToast() {
           />
         }
         onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
+      />
+    )
+  );
+}
+
+function StorageErrorToast() {
+  const t = useI18nContext();
+  const navigate = useNavigate();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const [hasTrackedView, setHasTrackedView] = useState(false);
+
+  // Selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
+
+  // Only show toast if selector returns true and user hasn't dismissed it
+  const shouldShow = showStorageErrorToast && !isDismissed;
+
+  // Track "Viewed" event when toast becomes visible
+  useEffect(() => {
+    if (shouldShow && !hasTrackedView) {
+      trackEvent({
+        event: MetaMetricsEventName.StorageErrorToastViewed,
+        category: MetaMetricsEventCategory.Error,
+      });
+      setHasTrackedView(true);
+    }
+  }, [shouldShow, hasTrackedView, trackEvent]);
+
+  const handleRevealSrpClick = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
+      category: MetaMetricsEventCategory.Error,
+    });
+    setIsDismissed(true);
+    navigate(REVEAL_SEED_ROUTE);
+  };
+
+  const handleClose = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastDismissed,
+      category: MetaMetricsEventCategory.Error,
+    });
+    setIsDismissed(true);
+  };
+
+  return (
+    shouldShow && (
+      <Toast
+        key="storage-error-toast"
+        dataTestId="storage-error-toast"
+        startAdornment={
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Lg}
+          />
+        }
+        text={t('storageErrorTitle')}
+        description={t('storageErrorDescription')}
+        actionText={t('storageErrorAction')}
+        onActionClick={handleRevealSrpClick}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        onClose={handleClose}
       />
     )
   );

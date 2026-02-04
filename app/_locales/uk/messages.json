@@ -385,9 +385,6 @@
     "message": "Потрібно вибрати файл для імпорту.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Не можливо наділсати від'ємну кількість ETH."
-  },
   "networkName": {
     "message": "Ім’я мережі"
   },

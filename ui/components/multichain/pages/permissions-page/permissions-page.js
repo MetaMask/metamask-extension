@@ -102,7 +102,7 @@ const PermissionsPage = () => {
         >
           {isGatorPermissionsRevocationFeatureEnabled()
             ? t('sites')
-            : t('permissions')}
+            : t('dappConnections')}
         </Text>
       </Header>
       <Content padding={0}>

@@ -141,13 +141,15 @@ export function validatePositiveNumericString(
   return undefined;
 }
 
-function mapSnapErrorCodeIntoTranslation(
+export function mapSnapErrorCodeIntoTranslation(
   errorCode: string,
   t: ReturnType<typeof useI18nContext>,
 ): string {
   switch (errorCode) {
     case 'InsufficientBalance':
       return t('insufficientFundsSend');
+    case 'InsufficientBalanceToCoverFee':
+      return t('insufficientBalanceToCoverFees');
     case 'Invalid':
     default:
       return t('invalidValue');

@@ -61,8 +61,12 @@ import {
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   REWARDS_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  PERPS_HOME_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -85,7 +89,6 @@ import {
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
-  toggleAccountMenu,
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
@@ -117,7 +120,6 @@ import { BasicConfigurationModal } from '../../components/app/basic-configuratio
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
-import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
@@ -137,9 +139,7 @@ import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccoun
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
-import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
@@ -156,10 +156,10 @@ const OnboardingFlow = mmLazy(
   (() => import('../onboarding-flow/index.ts')) as unknown as DynamicImportType,
 );
 const Lock = mmLazy(
-  (() => import('../lock/index.js')) as unknown as DynamicImportType,
+  (() => import('../lock/index.ts')) as unknown as DynamicImportType,
 );
 const UnlockPage = mmLazy(
-  (() => import('../unlock-page/index.js')) as unknown as DynamicImportType,
+  (() => import('../unlock-page/index.ts')) as unknown as DynamicImportType,
 );
 const RestoreVaultPage = mmLazy(
   (() =>
@@ -327,16 +327,25 @@ const NonEvmBalanceCheck = mmLazy(
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
+const PerpsHomePage = mmLazy(
+  (() =>
+    import('../perps/perps-home-page.tsx')) as unknown as DynamicImportType,
+);
+const PerpsMarketDetailPage = mmLazy(
+  (() =>
+    import(
+      '../perps/perps-market-detail-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+const MarketListView = mmLazy(
+  (() =>
+    import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
+);
+const PerpsActivityPage = mmLazy(
+  (() =>
+    import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
+);
 // End Lazy Routes
-
-const MemoizedReviewPermissionsWrapper = React.memo(() => (
-  <State2Wrapper
-    state1Component={ReviewPermissions as React.ComponentType<unknown>}
-    state2Component={
-      MultichainReviewPermissions as React.ComponentType<unknown>
-    }
-  />
-));
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
@@ -350,7 +359,7 @@ export default function Routes() {
   const loadingMessage = useAppSelector(
     (state) => state.appState.loadingMessage,
   );
-  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT, privacyMode } =
+  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     useAppSelector(getPreferences);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
 
@@ -379,9 +388,6 @@ export default function Routes() {
   const theme = useTheme();
   const showExtensionInFullSizeView = useAppSelector(
     getShowExtensionInFullSizeView,
-  );
-  const isAccountMenuOpen = useAppSelector(
-    (state) => state.appState.isAccountMenuOpen,
   );
 
   const isImportTokensModalOpen = useAppSelector(
@@ -718,7 +724,7 @@ export default function Routes() {
       }),
       createRouteWithLayout({
         path: `${REVIEW_PERMISSIONS}/:origin`,
-        component: MemoizedReviewPermissionsWrapper,
+        component: MultichainReviewPermissions,
         layout: RootLayout,
         authenticated: true,
       }),
@@ -779,6 +785,30 @@ export default function Routes() {
       createRouteWithLayout({
         path: REWARDS_ROUTE,
         component: RewardsPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: PERPS_HOME_ROUTE,
+        component: PerpsHomePage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+        component: PerpsMarketDetailPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: PERPS_ACTIVITY_ROUTE,
+        component: PerpsActivityPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: PERPS_MARKET_LIST_ROUTE,
+        component: MarketListView,
         layout: RootLayout,
         authenticated: true,
       }),
@@ -852,13 +882,6 @@ export default function Routes() {
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  const accountListMenu = (
-    <MultichainAccountListMenu
-      onClose={() => dispatch(toggleAccountMenu())}
-      privacyMode={privacyMode}
-    />
-  );
-
   const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
   return (
@@ -874,8 +897,6 @@ export default function Routes() {
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
-
-      {isAccountMenuOpen ? accountListMenu : null}
 
       <NetworkConfirmationPopover />
       {isImportNftsModalOpen ? (
