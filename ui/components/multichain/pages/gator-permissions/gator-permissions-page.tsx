@@ -76,7 +76,7 @@ export const GatorPermissionsPage = () => {
         navigate(TOKEN_TRANSFER_ROUTE);
         break;
       default:
-        console.error('Invalid permission group name:', permissionGroupName);
+        log.error('Invalid permission group name:', permissionGroupName);
         break;
     }
   };
