@@ -342,6 +342,12 @@ const MarketListView = mmLazy(
   (() =>
     import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
 );
+const PerpsActivityPage = mmLazy(
+  (() =>
+    import(
+      '../perps/perps-activity-page.tsx'
+    )) as unknown as DynamicImportType,
+);
 
 // Perps pages wrapped with PerpsControllerProvider
 const WrappedPerpsHomePage = () => (
@@ -357,6 +363,11 @@ const WrappedPerpsMarketDetailPage = () => (
 const WrappedMarketListView = () => (
   <PerpsRouteWrapper>
     <MarketListView />
+  </PerpsRouteWrapper>
+);
+const WrappedPerpsActivityPage = () => (
+  <PerpsRouteWrapper>
+    <PerpsActivityPage />
   </PerpsRouteWrapper>
 );
 // End Lazy Routes
@@ -816,7 +827,7 @@ export default function Routes() {
       }),
       createRouteWithLayout({
         path: PERPS_ACTIVITY_ROUTE,
-        component: PerpsActivityPage,
+        component: WrappedPerpsActivityPage,
         layout: RootLayout,
         authenticated: true,
       }),

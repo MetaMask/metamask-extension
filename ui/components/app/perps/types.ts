@@ -45,4 +45,21 @@ export type {
   CandleData,
   CandlePeriod,
   TimeDuration,
+
+  // Transaction history types from controller
+  Funding,
+  UserHistoryItem,
 } from '@metamask/perps-controller';
+
+// Re-export transaction history types for UI
+export type {
+  PerpsTransaction,
+  PerpsTransactionFilter,
+  TransactionSection,
+} from './types/transactionHistory';
+
+export {
+  PerpsOrderTransactionStatus,
+  PerpsOrderTransactionStatusType,
+  FillType,
+} from './types/transactionHistory';
