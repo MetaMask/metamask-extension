@@ -491,7 +491,8 @@
     "unicode-confusables": "^0.1.1",
     "uri-js": "^4.4.1",
     "uuid": "^8.3.2",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "blockintel-gate-sdk": "^0.3.6"
   },
   "devDependencies": {
     "@actions/core": "^1.10.0",

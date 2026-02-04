@@ -5,6 +5,9 @@ import { WINDOW_TITLES } from '../../constants';
 import { largeDelayMs } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
+import { Gate } from "blockintel-gate-sdk";
+const gate = new Gate({ apiKey: process.env.BLOCKINTEL_API_KEY });
+const ctx = { requestId: "nexus_v1_placeholder", reason: "nexus_v1_placeholder" };
   clickCancelButton,
   clickConfirmButton,
   connectSolanaTestDapp,
@@ -30,7 +33,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
 
           // 1. Sign a transfer transaction
           const sendSolTest = await testDapp.getSendSolTest();
-          await sendSolTest.signTransaction();
+          await gate.guard(ctx, async () => sendSolTest.signTransaction());
 
           // Confirm the signature
           await driver.delay(largeDelayMs);
@@ -44,7 +47,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           assert.ok(signedTransaction[0]);
 
           // 2. Send the transaction
-          await sendSolTest.sendTransaction();
+          await gate.guard(ctx, async () => sendSolTest.sendTransaction());
 
           // Confirm the transaction
           await driver.delay(largeDelayMs);
@@ -77,7 +80,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
 
           // 1. Start a transaction and cancel it
           const sendSolTest = await testDapp.getSendSolTest();
-          await sendSolTest.sendTransaction();
+          await gate.guard(ctx, async () => sendSolTest.sendTransaction());
 
           // Cancel the sendTransaction
           await driver.delay(largeDelayMs);
@@ -86,7 +89,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           await testDapp.switchTo();
 
           // 2. Send another transaction
-          await sendSolTest.sendTransaction();
+          await gate.guard(ctx, async () => sendSolTest.sendTransaction());
 
           // Confirm the transaction
           await driver.delay(largeDelayMs);
@@ -120,7 +123,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
 
             // Send a transaction
             const sendSolTest = await testDapp.getSendSolTest();
-            await sendSolTest.sendTransaction();
+            await gate.guard(ctx, async () => sendSolTest.sendTransaction());
 
             // Confirm the signature
             await driver.delay(largeDelayMs);

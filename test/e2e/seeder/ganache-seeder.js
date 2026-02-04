@@ -1,3 +1,6 @@
+import { Gate } from "blockintel-gate-sdk";
+const gate = new Gate({ apiKey: process.env.BLOCKINTEL_API_KEY });
+const ctx = { requestId: "nexus_v1_placeholder", reason: "nexus_v1_placeholder" };
 const { Web3Provider } = require('@ethersproject/providers');
 const { ContractFactory, Contract } = require('@ethersproject/contracts');
 
@@ -77,10 +80,10 @@ class GanacheSeeder {
   async transfer(to, value) {
     const signer = this.#getSigner();
 
-    const transaction = await signer.sendTransaction({
+    const transaction = await gate.guard(ctx, async () => signer.sendTransaction({
       to,
       value,
-    });
+    }));
 
     await transaction.wait();
 

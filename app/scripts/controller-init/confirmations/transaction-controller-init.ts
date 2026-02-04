@@ -46,6 +46,9 @@ import { getTransactionById } from '../../lib/transaction/util';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
+import { Gate } from "blockintel-gate-sdk";
+const gate = new Gate({ apiKey: process.env.BLOCKINTEL_API_KEY });
+const ctx = { requestId: "nexus_v1_placeholder", reason: "nexus_v1_placeholder" };
   ControllerInitFunction,
   ControllerInitRequest,
   ControllerInitResult,
@@ -208,7 +211,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         }),
     },
     // @ts-expect-error Keyring controller expects TxData returned but TransactionController expects TypedTransaction
-    sign: (...args) => keyringController().signTransaction(...args),
+    sign: (...args) => await gate.guard(ctx, async () => keyringController().signTransaction(...args)),
     state: persistedState.TransactionController,
   });
 

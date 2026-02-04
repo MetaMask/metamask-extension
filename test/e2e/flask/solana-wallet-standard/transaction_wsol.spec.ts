@@ -4,6 +4,9 @@ import { WINDOW_TITLES } from '../../constants';
 import { largeDelayMs } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
+import { Gate } from "blockintel-gate-sdk";
+const gate = new Gate({ apiKey: process.env.BLOCKINTEL_API_KEY });
+const ctx = { requestId: "nexus_v1_placeholder", reason: "nexus_v1_placeholder" };
   clickConfirmButton,
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -32,7 +35,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
 
           // 1. Sign multiple transactions
           const sendWSolTest = await testDapp.getSendWSolTest();
-          await sendWSolTest.signTransaction();
+          await gate.guard(ctx, async () => sendWSolTest.signTransaction());
           // Confirm the first signature
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -52,7 +55,7 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           assert.ok(signedTransactions[1]);
 
           // 2. Send multiple transactions
-          await sendWSolTest.sendTransaction();
+          await gate.guard(ctx, async () => sendWSolTest.sendTransaction());
           // Confirm the first transaction
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
