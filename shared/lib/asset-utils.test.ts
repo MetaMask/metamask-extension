@@ -74,9 +74,10 @@ describe('asset-utils', () => {
       const nativeAddress = '0x0000000000000000000000000000000000000000';
       const chainId = 'eip155:1231' as CaipChainId;
 
-      expect(() => toAssetId(nativeAddress, chainId)).toThrow(
-        'No XChain Swaps native asset found for chainId: eip155:1231',
-      );
+      // toAssetId now catches errors from getNativeAssetForChainId and returns undefined
+      // This allows the send flow to work for custom networks even if they're not in the swaps map
+      const result = toAssetId(nativeAddress, chainId);
+      expect(result).toBeUndefined();
     });
 
     it('should create Solana token asset ID correctly', () => {

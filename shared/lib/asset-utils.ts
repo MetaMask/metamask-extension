@@ -51,7 +51,13 @@ export const toAssetId = (
   }
 
   if (isNativeAddress(addressToUse)) {
-    return getNativeAssetForChainId(chainIdToUse)?.assetId;
+    try {
+      return getNativeAssetForChainId(chainIdToUse)?.assetId;
+    } catch {
+      // Return undefined for unsupported chains (e.g., custom networks)
+      // This allows the send flow to work for custom networks even if they're not in the swaps map
+      return undefined;
+    }
   }
   if (chainIdToUse === MultichainNetworks.SOLANA) {
     return CaipAssetTypeStruct.create(`${chainIdToUse}/token:${addressToUse}`);
