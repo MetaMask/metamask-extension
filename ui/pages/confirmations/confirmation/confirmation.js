@@ -43,7 +43,7 @@ import {
   getSnapsMetadata,
   getHideSnapBranding,
   getIsHardwareWalletErrorModalVisible,
-  getPendingHardwareSigning,
+  getPendingHardwareWalletSigning,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import Callout from '../../../components/ui/callout';
@@ -246,7 +246,7 @@ export default function ConfirmationPage({
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );
-  const isPendingHardwareSigning = useSelector(getPendingHardwareSigning);
+  const isPendingHardwareSigning = useSelector(getPendingHardwareWalletSigning);
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );

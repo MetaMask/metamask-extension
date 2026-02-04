@@ -31,7 +31,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getPendingHardwareSigning } from '../../../../../selectors';
+import { getPendingHardwareWalletSigning } from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import {
   resolvePendingApproval,
@@ -244,7 +244,7 @@ const Footer = () => {
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { showErrorModal } = useHardwareWalletError();
 
-  const isHardwareWalletSigning = useSelector(getPendingHardwareSigning);
+  const isHardwareWalletSigning = useSelector(getPendingHardwareWalletSigning);
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(

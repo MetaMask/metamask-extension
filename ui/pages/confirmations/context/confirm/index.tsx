@@ -11,7 +11,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
+import {
+  getIsHardwareWalletErrorModalVisible,
+  getPendingHardwareWalletSigning,
+} from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -37,7 +40,7 @@ export const ConfirmContextProvider: React.FC<{
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
   const dispatch = useDispatch();
-  const isPendingHardwareSigning = useSelector(getPendingHardwareSigning);
+  const isPendingHardwareSigning = useSelector(getPendingHardwareWalletSigning);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );

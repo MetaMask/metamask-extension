@@ -104,7 +104,7 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  getPendingHardwareSigning,
+  getPendingHardwareWalletSigning,
   getIsHardwareWalletErrorModalVisible,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
@@ -4158,7 +4158,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     const state = getState();
     const approvalFlows = getApprovalFlows(state);
-    const isPendingHardwareSigning = getPendingHardwareSigning(state);
+    const isPendingHardwareSigning = getPendingHardwareWalletSigning(state);
     const isHwErrorModalVisible = getIsHardwareWalletErrorModalVisible(state);
 
     // Don't close the popup if:
