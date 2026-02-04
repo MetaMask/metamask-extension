@@ -150,6 +150,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/perps-controller@npm:^0.0.0": "npm:@metamask-previews/perps-controller@0.0.0-preview-e4aa1532",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
