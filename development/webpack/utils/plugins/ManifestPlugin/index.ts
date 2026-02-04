@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { extname, join } from 'node:path/posix';
 import {
   sources,
@@ -245,7 +246,7 @@ export class ManifestPlugin<Z extends boolean> {
     );
     // Load the base manifest
     const basePath = join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = require(basePath);
+    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
 
     const buildTypeManifestPath = join(
       context,
@@ -257,7 +258,9 @@ export class ManifestPlugin<Z extends boolean> {
     const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
     let buildTypeBaseManifest: Partial<Manifest> = {};
     try {
-      buildTypeBaseManifest = require(buildTypeBasePath);
+      buildTypeBaseManifest = JSON.parse(
+        readFileSync(buildTypeBasePath, 'utf-8'),
+      );
     } catch {
       // File doesn't exist or is invalid, use empty object
     }
@@ -289,7 +292,7 @@ export class ManifestPlugin<Z extends boolean> {
         // merge browser-specific overrides into the browser manifest
         manifest = {
           ...manifest,
-          ...require(browserManifestPath),
+          ...JSON.parse(readFileSync(browserManifestPath, 'utf-8')),
         };
       } catch {
         // File doesn't exist or is invalid, skip merging
@@ -303,7 +306,7 @@ export class ManifestPlugin<Z extends boolean> {
         // merge browser-specific build type overrides into the browser manifest
         manifest = {
           ...manifest,
-          ...require(buildTypeBrowserManifestPath),
+          ...JSON.parse(readFileSync(buildTypeBrowserManifestPath, 'utf-8')),
         };
       } catch {
         // File doesn't exist or is invalid, skip merging
