@@ -29,7 +29,7 @@ const selectors = {
   waterTextDansk: `[placeholder="${da.search.message}"]`,
   headerTextDansk: { text: da.settings.message, tag: 'h3' },
   buttonTextDansk: {
-    css: '[data-testid="auto-lockout-button"]',
+    testId: 'auto-lockout-button',
     text: da.save.message,
   },
   dialogTextDeutsch: { text: de.invalidAddress.message, tag: 'p' },
