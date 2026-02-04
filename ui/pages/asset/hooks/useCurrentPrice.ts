@@ -1,6 +1,4 @@
-import {
-  AssetType,
-} from '@metamask/bridge-controller';
+import { AssetType } from '@metamask/bridge-controller';
 import { CaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
