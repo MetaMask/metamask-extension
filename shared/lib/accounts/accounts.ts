@@ -14,7 +14,6 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { Messenger } from '@metamask/messenger';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
-import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
 ///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { captureException } from '../sentry';
@@ -115,8 +114,7 @@ export type WalletSnapClient = {
 
 export type MultichainWalletSnapClientMessenger = Messenger<
   'MultichainWalletSnapClient',
-  | SnapControllerHandleRequest
-  | AccountsControllerGetNextAvailableAccountNameAction,
+  SnapControllerHandleRequest,
   never
 >;
 
@@ -184,10 +182,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
   ): Promise<string> {
     return getNextAvailableSnapAccountName(
       async () => {
-        return this.#messenger.call(
-          'AccountsController:getNextAvailableAccountName',
-          KeyringTypes.snap,
-        );
+        return '';
       },
       this.#snapId,
       options,
