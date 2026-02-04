@@ -356,10 +356,9 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
-      // allow the user to `transform` the manifest. Use a copy of the manifest
-      // so modifications for one browser don't affect other browsers.
+      // allow the user to `transform` the manifest
       if (transform) {
-        manifest = transform?.(structuredClone(manifest), browser);
+        manifest = transform(manifest, browser);
       }
 
       // Add the manifest file to the assets
