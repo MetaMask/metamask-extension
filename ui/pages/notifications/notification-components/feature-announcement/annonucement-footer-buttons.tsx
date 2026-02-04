@@ -1,4 +1,5 @@
 import React, { useCallback, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -6,6 +7,10 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
+import {
+  getShieldInAppNavigationFromExternalLink,
+  SHIELD_ANNOUNCEMENT_NOFICATION_ID,
+} from '../../../../../shared/modules/shield';
 import { FeatureAnnouncementNotification } from './types';
 
 const useAnalyticEventCallback = (props: {
@@ -66,8 +71,9 @@ export const ExtensionLinkButton = (props: {
 export const ExternalLinkButton = (props: {
   notification: FeatureAnnouncementNotification;
 }) => {
+  const navigate = useNavigate();
   const { notification } = props;
-  const onClick = useAnalyticEventCallback({
+  const analyticCallback = useAnalyticEventCallback({
     id: notification.id,
     type: notification.type,
     clickType: 'external_link',
@@ -77,11 +83,29 @@ export const ExternalLinkButton = (props: {
     return null;
   }
 
+  let href: string | undefined = notification.data.externalLink.externalLinkUrl;
+  const isShieldAnnouncementNotification =
+    notification.id === SHIELD_ANNOUNCEMENT_NOFICATION_ID;
+  // use native navigation for shield announcement instead of opening new tab
+  // TODO: clean this when we have better control of how deeplink are opened
+  if (isShieldAnnouncementNotification) {
+    href = undefined;
+  }
+  const onClick = () => {
+    analyticCallback();
+    if (isShieldAnnouncementNotification && notification.data.externalLink) {
+      const path = getShieldInAppNavigationFromExternalLink(
+        notification.data.externalLink.externalLinkUrl,
+      );
+      navigate(path);
+    }
+  };
+
   return (
     <NotificationDetailButton
       variant={ButtonVariant.Secondary}
       text={notification.data.externalLink.externalLinkText}
-      href={`${notification.data.externalLink.externalLinkUrl}`}
+      href={href}
       isExternal={true}
       onClick={onClick}
     />
