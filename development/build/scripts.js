@@ -81,6 +81,8 @@ const scuttlingConfigBase = {
     // {clear/set}Timeout are "this sensitive"
     clearTimeout: 'window',
     setTimeout: 'window',
+    clearInterval: 'window',
+    setInterval: 'window',
     // sentry special props
     __SENTRY__: '',
     sentryHooks: '',
@@ -96,6 +98,38 @@ const scuttlingConfigBase = {
     parseInt: '',
     // Lodash
     RegExp: '',
+  },
+  'scripts/load/ui.ts': {
+    // UI initialization globals
+    window: '',
+    setTimeout: 'window',
+    clearTimeout: 'window',
+    setInterval: 'window',
+    clearInterval: 'window',
+    RegExp: '',
+    Object: '',
+    Array: '',
+    String: '',
+    Number: '',
+    Boolean: '',
+    Function: '',
+    console: '',
+  },
+  'scripts/load/bootstrap.ts': {
+    // Bootstrap initialization globals
+    window: '',
+    setTimeout: 'window',
+    clearTimeout: 'window',
+    setInterval: 'window',
+    clearInterval: 'window',
+    RegExp: '',
+    Object: '',
+    Array: '',
+    String: '',
+    Number: '',
+    Boolean: '',
+    Function: '',
+    console: '',
   },
 };
 

@@ -160,6 +160,9 @@ async function defineAndRunBuildTasks() {
       'ResizeObserver',
       'setTimeout',
       'clearTimeout',
+      'setInterval',
+      'clearInterval',
+      'RegExp',
     ];
 
     if (
