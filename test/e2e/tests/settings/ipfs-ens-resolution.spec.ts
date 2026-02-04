@@ -7,7 +7,7 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Settings', function () {
+describe('Settings TEST', function () {
   const ENS_NAME = 'metamask.eth';
   const ENS_NAME_URL = `https://${ENS_NAME}/`;
   const ENS_DESTINATION_URL = `https://app.ens.domains/name/${ENS_NAME}`;

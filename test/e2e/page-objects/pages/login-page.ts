@@ -21,8 +21,6 @@ class LoginPage {
     text: 'Password is incorrect. Please try again.',
   };
 
-  private readonly metamaskAnimation: string = '.riv-animation__canvas';
-
   private readonly passwordInput: object = { testId: 'unlock-password' };
 
   private readonly resetPasswordModalButton: object = {
@@ -43,7 +41,6 @@ class LoginPage {
     try {
       await this.driver.waitForMultipleSelectors([
         this.forgotPasswordButton,
-        this.metamaskAnimation,
         this.passwordInput,
         this.unlockButton,
       ]);
