@@ -292,7 +292,9 @@ async function main(): Promise<void> {
     }
     filesToRun = PRESETS[argv.preset];
     if (filesToRun.length === 0) {
-      console.log(`⚠️Preset '${argv.preset}' is currently disabled (empty). Skipping.`);
+      console.log(
+        `⚠️Preset '${argv.preset}' is currently disabled (empty). Skipping.`,
+      );
       return;
     }
   } else {
