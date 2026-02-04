@@ -446,6 +446,27 @@
     "ui/components/app/perps/order-card/order-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/order-entry/components/amount-input/amount-input.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/order-entry/components/auto-close-section/auto-close-section.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/order-entry/components/close-amount-section/close-amount-section.test.tsx": {
+      "Material-UI: JSS warnings": 15,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/order-entry/components/leverage-slider/leverage-slider.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/order-entry/components/order-summary/order-summary.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/order-entry/order-entry.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/perps-empty-state/perps-empty-state.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1350,6 +1371,9 @@
     "ui/hooks/multi-srp/useHdKeyringsWithSnapAccounts.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/hooks/perps/usePerpsOrderForm.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/hooks/rewards/useCandidateSubscriptionId.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1518,6 +1542,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },

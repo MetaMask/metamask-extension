@@ -41,7 +41,7 @@ export const mockPositions: Position[] = [
       rawUsd: '2375.00',
     },
     liquidationPrice: '2400.00',
-    maxLeverage: 50,
+    maxLeverage: 20,
     returnOnEquity: '15.79',
     cumulativeFunding: {
       allTime: '12.50',
@@ -65,7 +65,7 @@ export const mockPositions: Position[] = [
       value: 15,
     },
     liquidationPrice: '48000.00',
-    maxLeverage: 50,
+    maxLeverage: 20,
     returnOnEquity: '-16.67',
     cumulativeFunding: {
       allTime: '-5.20',
@@ -114,7 +114,7 @@ export const mockPositions: Position[] = [
       value: 10,
     },
     liquidationPrice: '1.08',
-    maxLeverage: 25,
+    maxLeverage: 20,
     returnOnEquity: '-41.67',
     cumulativeFunding: {
       allTime: '-1.20',
@@ -240,7 +240,7 @@ export const mockPositions: Position[] = [
       value: 50,
     },
     liquidationPrice: '1.0600',
-    maxLeverage: 50,
+    maxLeverage: 20,
     returnOnEquity: '13.86',
     cumulativeFunding: {
       allTime: '8.50',
@@ -410,7 +410,7 @@ export const mockCryptoMarkets: PerpsMarketData[] = [
   {
     symbol: 'BTC',
     name: 'Bitcoin',
-    maxLeverage: '50x',
+    maxLeverage: '20x',
     price: '$45,250.00',
     change24h: '+$1,250.00',
     change24hPercent: '+2.84%',
@@ -425,7 +425,7 @@ export const mockCryptoMarkets: PerpsMarketData[] = [
   {
     symbol: 'ETH',
     name: 'Ethereum',
-    maxLeverage: '50x',
+    maxLeverage: '20x',
     price: '$3,025.50',
     change24h: '+$75.50',
     change24hPercent: '+2.56%',
@@ -455,7 +455,7 @@ export const mockCryptoMarkets: PerpsMarketData[] = [
   {
     symbol: 'ARB',
     name: 'Arbitrum',
-    maxLeverage: '25x',
+    maxLeverage: '20x',
     price: '$1.15',
     change24h: '+$0.05',
     change24hPercent: '+4.55%',
@@ -500,7 +500,7 @@ export const mockCryptoMarkets: PerpsMarketData[] = [
   {
     symbol: 'LINK',
     name: 'Chainlink',
-    maxLeverage: '25x',
+    maxLeverage: '20x',
     price: '$14.85',
     change24h: '+$0.35',
     change24hPercent: '+2.41%',
@@ -515,7 +515,7 @@ export const mockCryptoMarkets: PerpsMarketData[] = [
   {
     symbol: 'UNI',
     name: 'Uniswap',
-    maxLeverage: '25x',
+    maxLeverage: '20x',
     price: '$6.25',
     change24h: '-$0.15',
     change24hPercent: '-2.34%',
