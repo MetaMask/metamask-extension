@@ -11,8 +11,6 @@ import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/networ
 import {
   account1Short,
   account2Short,
-  assertConnected,
-  assertDisconnected,
   connectSolanaTestDapp,
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
   switchToAccount,
@@ -36,11 +34,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           const header = await testDapp.getHeader();
 
-          const connectionStatus = await header.getConnectionStatus();
-          assertConnected(connectionStatus);
-
-          const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          await header.verifyConnectionStatus('Connected');
+          await header.verifyAccount(account1Short);
         },
       );
     });
@@ -61,11 +56,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           const header = await testDapp.getHeader();
 
-          const connectionStatus = await header.getConnectionStatus();
-          assertConnected(connectionStatus);
-
-          const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          await header.verifyConnectionStatus('Connected');
+          await header.verifyAccount(account1Short);
         },
       );
     });
@@ -102,19 +94,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.switchTo();
 
           // Verify we're not connected
-          const connectionStatus = await header.getConnectionStatus();
-          assertDisconnected(connectionStatus);
+          await header.verifyConnectionStatus('Disconnected');
 
           // 2. Connect again
           await connectSolanaTestDapp(driver, testDapp);
 
           // Verify successful connection
-          const connectionStatusAfterConnect =
-            await header.getConnectionStatus();
-          assertConnected(connectionStatusAfterConnect);
-
-          const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          await header.verifyConnectionStatus('Connected');
+          await header.verifyAccount(account1Short);
         },
       );
     });
@@ -163,8 +150,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.switchTo();
 
           // Verify we're not connected
-          const connectionStatus = await header.getConnectionStatus();
-          assertDisconnected(connectionStatus);
+          await header.verifyConnectionStatus('Disconnected');
         },
       );
     });
@@ -182,17 +168,12 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           const header = await testDapp.getHeader();
 
-          const connectionStatus = await header.getConnectionStatus();
-          assertConnected(connectionStatus);
-
-          const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          await header.verifyConnectionStatus('Connected');
+          await header.verifyAccount(account1Short);
 
           await header.disconnect();
 
-          const connectionStatusAfterDisconnect =
-            await header.getConnectionStatus();
-          assertDisconnected(connectionStatusAfterDisconnect);
+          await header.verifyConnectionStatus('Disconnected');
         },
       );
     });
@@ -214,8 +195,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Check that we're connected to the last selected account
           const header = await testDapp.getHeader();
-          const account = await header.getAccount();
-          assertConnected(account, account2Short);
+          await header.verifyAccount(account2Short);
 
           // Switch to the first account
           await driver.switchToWindowWithTitle(
@@ -225,8 +205,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.switchTo();
 
           // Check that we're connected to the first account
-          const account2 = await header.getAccount();
-          assertConnected(account2, account1Short);
+          await header.verifyAccount(account1Short);
         },
       );
     });
@@ -249,8 +228,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Check that we're connected to the second account
           const header = await testDapp.getHeader();
-          let account = await header.getAccount();
-          assertConnected(account, account2Short);
+          await header.verifyAccount(account2Short);
 
           // Now switch to the first account
           await driver.switchToWindowWithTitle(
@@ -260,8 +238,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.switchTo();
 
           // Check that we're still connected to the second account
-          account = await header.getAccount();
-          assertConnected(account, account2Short);
+          await header.verifyAccount(account2Short);
 
           // Switch back to the second account
           await driver.switchToWindowWithTitle(
@@ -271,8 +248,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.switchTo();
 
           // Check that we're still connected to the second account
-          account = await header.getAccount();
-          assertConnected(account, account2Short);
+          await header.verifyAccount(account2Short);
         },
       );
     });
@@ -292,14 +268,12 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await connectSolanaTestDapp(driver, testDapp);
 
           const header = await testDapp.getHeader();
-          const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          await header.verifyAccount(account1Short);
 
           await driver.refresh();
 
           await testDapp.checkPageIsLoaded();
-          const accountAfterRefresh = await header.getAccount();
-          assertConnected(accountAfterRefresh, account1Short);
+          await header.verifyAccount(account1Short);
         },
       );
     });
@@ -321,8 +295,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           await testDapp.checkPageIsLoaded();
           const header = await testDapp.getHeader();
-          const account = await header.getAccount();
-          assertConnected(account, account2Short);
+          await header.verifyAccount(account2Short);
         },
       );
     });
