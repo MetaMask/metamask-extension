@@ -5,6 +5,7 @@ import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
+import { ERC721, ERC1155 } from '@metamask/controller-utils';
 import {
   BlockSize,
   BorderColor,
@@ -47,7 +48,6 @@ import NftOptions from '../nft-options/nft-options';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
-import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import {
   ButtonIcon,
   IconName,
@@ -122,7 +122,7 @@ export function NftDetailsComponent({
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentNetwork = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currency = useSelector(getCurrentCurrency);
   const selectedNativeConversionRate = useSelector(getConversionRate);
 
@@ -273,8 +273,7 @@ export function NftDetailsComponent({
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled =
-    standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
+  const sendDisabled = standard !== ERC721 && standard !== ERC1155;
 
   const setCorrectChain = async () => {
     // If we aren't presently on the chain of the nft, change to it

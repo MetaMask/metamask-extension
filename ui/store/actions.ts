@@ -3942,6 +3942,15 @@ export function hideLoadingIndication(): Action {
   };
 }
 
+export function setPendingHardwareWalletSigning(
+  isPending: boolean,
+): PayloadAction<boolean> {
+  return {
+    type: actionConstants.SET_PENDING_HARDWARE_WALLET_SIGNING,
+    payload: isPending,
+  };
+}
+
 export function setSlides(slides): Action {
   return {
     type: actionConstants.SET_SLIDES,
@@ -6042,6 +6051,39 @@ export function updateBalancesFoAccounts(
       { chainIds, queryAllAccounts },
     ]);
   };
+}
+
+/**
+ * Informs the StaticAssetsController that the UI requires static assets polling
+ * for the given chain ids and selected account address.
+ *
+ * @param params - The parameters for the polling.
+ * @param params.chainIds - The chain ids to poll.
+ * @param params.selectedAccountAddress - The selected account address to poll.
+ * @returns The polling token that can be used to stop polling.
+ */
+export async function staticAssetsStartPolling({
+  chainIds,
+  selectedAccountAddress,
+}: {
+  chainIds: string[];
+  selectedAccountAddress: string;
+}): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'staticAssetsStartPolling',
+    [{ chainIds, selectedAccountAddress }],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+export async function staticAssetsStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('staticAssetsStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
 }
 
 /**
