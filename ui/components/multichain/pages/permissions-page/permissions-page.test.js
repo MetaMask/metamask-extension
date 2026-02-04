@@ -266,10 +266,11 @@ describe('All Connections', () => {
     });
 
     it('calls removePermissionsFor when confirm is clicked', () => {
-      const removePermissionsForSpy = jest.spyOn(
-        actions,
-        'removePermissionsFor',
-      );
+      // Mock removePermissionsFor to return a no-op thunk to avoid
+      // calling the background method (which isn't initialized in tests)
+      const removePermissionsForMock = jest
+        .spyOn(actions, 'removePermissionsFor')
+        .mockImplementation(() => () => undefined);
 
       const { getByTestId } = renderWithProvider(
         <PermissionsPage />,
@@ -279,11 +280,11 @@ describe('All Connections', () => {
       fireEvent.click(getByTestId('disconnect-all-button'));
       fireEvent.click(getByTestId('disconnect-all-sites-confirm'));
 
-      expect(removePermissionsForSpy).toHaveBeenCalledWith({
+      expect(removePermissionsForMock).toHaveBeenCalledWith({
         'https://metamask.github.io': ['endowment:caip25'],
       });
 
-      removePermissionsForSpy.mockRestore();
+      removePermissionsForMock.mockRestore();
     });
   });
 });
