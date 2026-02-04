@@ -556,21 +556,6 @@ jobs:
       post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
     secrets: inherit
 
-  publish-release:
-    name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
-    needs:
-      - get-requirements
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
-      - run-tests
-      - e2e-chrome
-      - e2e-firefox
-    uses: ./.github/workflows/publish-release.yml
-    secrets: inherit
-
   trigger-regression-validation:
     name: Trigger Regression Validation
     # Only run for release branches, not forks
@@ -699,18 +684,20 @@ jobs:
 
           echo "All required jobs either passed or were skipped"
 
-  log-merge-group-failure:
-    name: Log merge group failure
-    # Only run this job if the merge group event fails, skip on forks
-    if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
-    needs:
-      - all-jobs-pass
-    runs-on: ubuntu-latest
-    steps:
       - name: Log merge group failure
+        if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
         uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@v1
         with:
           google-application-credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
           spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
           sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
+
+  publish-release:
+    name: Publish release
+    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
+    needs:
+      - get-requirements
+      - all-jobs-pass
+    uses: ./.github/workflows/publish-release.yml
+    secrets: inherit
