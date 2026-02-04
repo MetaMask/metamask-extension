@@ -1,4 +1,5 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react-hooks';
+import { waitFor } from '@testing-library/react';
 import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
 import type { Order, OrderFill, Funding } from '../../components/app/perps/types';
 
@@ -151,7 +152,7 @@ describe('usePerpsTransactionHistory', () => {
   });
 
   it('handles missing provider gracefully', async () => {
-    mockGetActiveProvider.mockReturnValueOnce(null);
+    mockGetActiveProvider.mockReturnValueOnce(null as unknown as ReturnType<typeof mockGetActiveProvider>);
 
     const { result } = renderHook(() =>
       usePerpsTransactionHistory({ skipInitialFetch: true }),

@@ -23,7 +23,7 @@ const mockStore = configureStore({
 });
 
 const createMockPosition = (overrides: Partial<Position> = {}): Position => ({
-  coin: 'ETH',
+  symbol: 'ETH',
   size: '2.5',
   entryPrice: '2850.00',
   positionValue: '7125.00',
@@ -51,21 +51,21 @@ const createMockPosition = (overrides: Partial<Position> = {}): Position => ({
 
 describe('PositionCard', () => {
   it('renders the position card with correct data-testid', () => {
-    const position = createMockPosition({ coin: 'ETH' });
+    const position = createMockPosition({ symbol: 'ETH' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByTestId('position-card-ETH')).toBeInTheDocument();
   });
 
   it('displays the correct coin name', () => {
-    const position = createMockPosition({ coin: 'BTC' });
+    const position = createMockPosition({ symbol: 'BTC' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByText('BTC')).toBeInTheDocument();
   });
 
   it('displays HIP-3 coin without prefix', () => {
-    const position = createMockPosition({ coin: 'xyz:TSLA' });
+    const position = createMockPosition({ symbol: 'xyz:TSLA' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByText('TSLA')).toBeInTheDocument();
@@ -92,7 +92,7 @@ describe('PositionCard', () => {
   });
 
   it('displays the absolute position size', () => {
-    const position = createMockPosition({ coin: 'SOL', size: '-50.0' });
+    const position = createMockPosition({ symbol: 'SOL', size: '-50.0' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     // Should display absolute value without negative sign
@@ -121,7 +121,7 @@ describe('PositionCard', () => {
   });
 
   it('renders the token logo', () => {
-    const position = createMockPosition({ coin: 'ARB' });
+    const position = createMockPosition({ symbol: 'ARB' });
     renderWithProvider(<PositionCard position={position} />, mockStore);
 
     expect(screen.getByTestId('perps-token-logo-ARB')).toBeInTheDocument();

@@ -64,8 +64,13 @@ module.exports = {
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   // Transform ESM packages that Jest can't parse natively
   // These packages use ES module syntax (import/export) and need to be transpiled
+  // Packages from @metamask/perps-controller dependency tree that are ESM-only:
+  // - @nktkas/hyperliquid, @nktkas/rews
+  // - @noble/hashes, @noble/curves
+  // - @scure/base (nested in micro-packed)
+  // - valibot, micro-eth-signer, micro-packed
   transformIgnorePatterns: [
-    '/node_modules/(?!(@nktkas/hyperliquid|@noble/hashes|@noble/curves)/)',
+    'node_modules/(?!(@nktkas|@noble|@scure|valibot|micro-eth-signer|micro-packed)/)',
   ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The

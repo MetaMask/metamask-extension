@@ -6,6 +6,28 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as mocks from './mocks';
 import { PerpsTabView } from './perps-tab-view';
 
+// Mock the PerpsControllerProvider to render children directly
+jest.mock('../../../providers/perps', () => ({
+  PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
+}));
+
+// Mock the perps stream hooks
+jest.mock('../../../hooks/perps/stream', () => ({
+  usePerpsLivePositions: () => ({
+    positions: mocks.mockPositions,
+    isInitialLoading: false,
+  }),
+  usePerpsLiveOrders: () => ({
+    orders: mocks.mockOrders,
+    isInitialLoading: false,
+  }),
+  usePerpsLiveAccount: () => ({
+    account: mocks.mockAccountState,
+    isInitialLoading: false,
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,

@@ -5,6 +5,25 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { OrderEntry } from './order-entry';
 
+// Mock hooks that depend on @metamask/perps-controller to avoid ESM transform issues
+jest.mock('../../../../hooks/perps/useUserHistory', () => ({
+  useUserHistory: () => ({
+    userHistory: [],
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
+  usePerpsTransactionHistory: () => ({
+    transactions: [],
+    isLoading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
