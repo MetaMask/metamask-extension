@@ -4,6 +4,7 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

@@ -17,10 +17,10 @@ class FixtureBuilderV2 {
   /**
    * Constructs a new instance of the FixtureBuilder class.
    *
-   * @param {object} [options] - The options for the constructor.
-   * @param {boolean} [options.onboarding] - Indicates if onboarding is enabled.
+   * @param options - The options for the constructor.
+   * @param options.onboarding - Indicates if onboarding is enabled.
    */
-  constructor({ onboarding = false }: { onboarding?: boolean; } = {}) {
+  constructor({ onboarding = false }: { onboarding?: boolean } = {}) {
     this.fixture =
       onboarding === true ? onboardingFixture() : defaultFixture();
   }
