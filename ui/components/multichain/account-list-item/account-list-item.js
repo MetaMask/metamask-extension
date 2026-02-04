@@ -200,7 +200,9 @@ const AccountListItem = ({
     <Box
       display={Display.Flex}
       padding={4}
-      backgroundColor={selected ? Color.primaryMuted : Color.transparent}
+      backgroundColor={
+        selected ? BackgroundColor.backgroundMuted : BackgroundColor.transparent
+      }
       className={classnames('multichain-account-list-item items-center', {
         'multichain-account-list-item--selected': selected,
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
