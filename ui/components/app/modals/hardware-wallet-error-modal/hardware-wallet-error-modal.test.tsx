@@ -98,11 +98,8 @@ describe('HardwareWalletErrorModal', () => {
         walletType: null,
       });
 
-      const { container, getByText } = render(
-        <HardwareWalletErrorModal error={error} />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
-      expect(container.firstChild).not.toBeNull();
       expect(
         getByText('[hardwareWalletErrorTitleDeviceLocked]'),
       ).toBeInTheDocument();
@@ -324,6 +321,7 @@ describe('HardwareWalletErrorModal', () => {
       await waitFor(() => {
         expect(mockEnsureDeviceReady).toHaveBeenCalledWith('test-device-id');
       });
+      expect(onRetry).toHaveBeenCalledTimes(1);
     });
 
     it('handles Confirm button click for non-retryable errors', async () => {
@@ -344,6 +342,7 @@ describe('HardwareWalletErrorModal', () => {
 
       expect(mockHideModal).toHaveBeenCalledTimes(1);
       expect(mockClearError).toHaveBeenCalledTimes(1);
+      expect(onCancel).toHaveBeenCalledTimes(1);
     });
   });
 

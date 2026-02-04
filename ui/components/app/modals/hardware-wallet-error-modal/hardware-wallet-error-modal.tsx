@@ -57,7 +57,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
-    const { error, onClose } = { ...modalProps, ...props };
+    const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
 
     const { deviceId, walletType: selectedAccountWalletType } =
       useHardwareWalletConfig();
@@ -108,6 +108,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     );
 
     const handleRetry = async () => {
+      onRetry?.();
       setIsLoading(true);
       try {
         const result = await ensureDeviceReady(deviceId ?? '');
@@ -120,6 +121,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     };
 
     const handleClose = () => {
+      onCancel?.();
       clearError();
       hideModal();
     };
@@ -207,7 +209,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
               alignItems={AlignItems.center}
               gap={4}
             >
-              {errorContent.icon && errorContent.icon && (
+              {errorContent.icon && (
                 <Text
                   variant={TextVariant.headingMd}
                   textAlign={TextAlign.Center}
