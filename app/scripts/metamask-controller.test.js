@@ -946,7 +946,7 @@ describe('MetaMaskController', () => {
           metamaskController.accountsController.getSelectedAccount().address,
         ).toBe(TEST_ADDRESS_ALT);
         expect(secondVaultAccounts[0].address).toBe(TEST_ADDRESS_ALT);
-        expect(secondVaultAccounts[0].metadata.name).toBe(DEFAULT_LABEL);
+        expect(secondVaultAccounts[0].metadata.name).toBe('');
       });
 
       it('should restore any consecutive accounts with balances without extra zero balance accounts', async () => {
@@ -1000,9 +1000,9 @@ describe('MetaMaskController', () => {
         expect(selectedAccount.address).toBe(TEST_ADDRESS);
         expect(accounts).toHaveLength(2);
         expect(accounts[0].address).toBe(TEST_ADDRESS);
-        expect(accounts[0].metadata.name).toBe(DEFAULT_LABEL);
+        expect(accounts[0].metadata.name).toBe('');
         expect(accounts[1].address).toBe(TEST_ADDRESS_2);
-        expect(accounts[1].metadata.name).toBe('Account 2');
+        expect(accounts[1].metadata.name).toBe('');
         // TODO: Handle last selected in the update of the next accounts controller.
         // expect(accounts[1].metadata.lastSelected).toBeGreaterThan(
         //   accounts[0].metadata.lastSelected,
