@@ -1,6 +1,7 @@
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerGetStateAction,
+  AccountsControllerSelectedAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import {
@@ -11,6 +12,10 @@ import {
   BridgeStatusControllerActions,
   BridgeStatusControllerStateChangeEvent,
 } from '@metamask/bridge-status-controller';
+import type {
+  AccountActivityServiceStatusChangedEvent,
+  BackendWebSocketServiceConnectionStateChangedEvent,
+} from '@metamask/core-backend';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
@@ -97,7 +102,13 @@ export function getTransactionControllerMessenger(
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
     ],
-    events: [`NetworkController:stateChange`],
+    events: [
+      'AccountActivityService:transactionUpdated',
+      'AccountActivityService:statusChanged',
+      'AccountsController:selectedAccountChange',
+      'BackendWebSocketService:connectionStateChanged',
+      'NetworkController:stateChange',
+    ],
   });
   return controllerMessenger;
 }

@@ -8851,9 +8851,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.8.0, @metamask/transaction-controller@npm:^62.9.1, @metamask/transaction-controller@npm:^62.9.2":
-  version: 62.12.0
-  resolution: "@metamask/transaction-controller@npm:62.12.0"
+"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.13.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.9.1, @metamask/transaction-controller@npm:^62.9.2":
+  version: 62.13.0
+  resolution: "@metamask/transaction-controller@npm:62.13.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -8886,7 +8886,7 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/949150f95a68186b9c919876c9c70ba2c8e6a072e3bb504624a650b8bd161931126fc50d5112c3d1fd58d541ca762a788116376b6325a19d2ee8e9d9ac0e3a4a
+  checksum: 10/52e9553c35cbdb8f97dd233e27a8082863d2f72a7a2df81d3c2aa960c40725d4da5530596ab87dbd06853a7e670b15f4a9c19daf466000b52e31eef796d8ac2c
   languageName: node
   linkType: hard
 
@@ -33733,7 +33733,7 @@ __metadata:
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.4.0"
-    "@metamask/transaction-controller": "npm:^62.8.0"
+    "@metamask/transaction-controller": "npm:^62.13.0"
     "@metamask/transaction-pay-controller": "npm:^11.0.1"
     "@metamask/tron-wallet-snap": "npm:^1.19.2"
     "@metamask/user-operation-controller": "npm:^40.0.0"
