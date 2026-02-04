@@ -56,9 +56,9 @@ const getContainerStyle = (
     };
   }
 
-  // Fullscreen: Constrain to side panel width for consistent display
+  // Fullscreen: Constrain narrower to prevent cutoff on steps with more text
   return {
-    style: { ...baseStyle, maxWidth: '320px' },
+    style: { ...baseStyle, maxWidth: '280px' },
     fit: Fit.Cover,
   };
 };
