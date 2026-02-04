@@ -32,6 +32,11 @@
             "balance": "0x0"
           }
         },
+        "0x539": {
+          "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+            "balance": "0x15af1d78b58c40000"
+          }
+        },
         "0x89": {
           "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
             "balance": "0x0"
@@ -76,11 +81,11 @@
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
             "id": "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
             "metadata": {
-              "importTime": 1770197212898,
+              "importTime": 1770204606657,
               "keyring": {
                 "type": "HD Key Tree"
               },
-              "lastSelected": 1770197212898,
+              "lastSelected": 1770204606657,
               "name": "Account 1"
             },
             "methods": [
@@ -96,22 +101,20 @@
               "entropy": {
                 "derivationPath": "m/44'/60'/0'/0/0",
                 "groupIndex": 0,
-                "id": "01KGKZKQQ19B1SDE1WM6Q1PA93",
+                "id": "01KGM6NC6034B5JB1SQE6EECNR",
                 "type": "mnemonic"
               },
-              "entropySource": "01KGKZKQQ19B1SDE1WM6Q1PA93",
+              "entropySource": "01KGM6NC6034B5JB1SQE6EECNR",
               "groupIndex": 0
             },
-            "scopes": [
-              "eip155:0"
-            ],
+            "scopes": ["eip155:0"],
             "type": "eip155:eoa"
           },
-          "f3bdf7ed-1026-484b-b449-8542d9b2e72c": {
+          "dbe7faff-e86c-43a0-8d60-4e5aa9a93eef": {
             "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
-            "id": "f3bdf7ed-1026-484b-b449-8542d9b2e72c",
+            "id": "dbe7faff-e86c-43a0-8d60-4e5aa9a93eef",
             "metadata": {
-              "importTime": 1770197223518,
+              "importTime": 1770204621269,
               "keyring": {
                 "type": "Snap Keyring"
               },
@@ -134,10 +137,10 @@
               "entropy": {
                 "derivationPath": "m/44'/501'/0'/0'",
                 "groupIndex": 0,
-                "id": "01KGKZKQQ19B1SDE1WM6Q1PA93",
+                "id": "01KGM6NC6034B5JB1SQE6EECNR",
                 "type": "mnemonic"
               },
-              "entropySource": "01KGKZKQQ19B1SDE1WM6Q1PA93",
+              "entropySource": "01KGM6NC6034B5JB1SQE6EECNR",
               "index": 0
             },
             "scopes": [
@@ -158,7 +161,7 @@
             "address": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
             "chainId": "*",
             "isEns": false,
-            "lastUpdatedAt": 1770197212899,
+            "lastUpdatedAt": 1770204606657,
             "memo": "",
             "name": "Account 1"
           }
@@ -224,7 +227,7 @@
       "showTestnetMessageInDropdown": true,
       "slides": [],
       "surveyLinkLastClickedOrClosed": null,
-      "termsOfUseLastAgreed": 1770197211882,
+      "termsOfUseLastAgreed": 1770204605623,
       "timeoutMinutes": 0,
       "trezorModel": null,
       "updateModalLastDismissedAt": null
@@ -232,16 +235,16 @@
     "AuthenticationController": {
       "isSignedIn": true,
       "srpSessionData": {
-        "01KGKZKQQ19B1SDE1WM6Q1PA93": {
+        "01KGM6NC6034B5JB1SQE6EECNR": {
           "profile": {
             "identifierId": "MOCK_SRP_IDENTIFIER_1",
-            "metaMetricsId": "0xc4e053c5d5f3ad768ee1d01684ac77230ab34126408f0f54256d7fb5ec4b6a71",
+            "metaMetricsId": "0x2dc8a588be4191ae529ab3f9a8a42d1c6611633a56a717e62a470d83178ed3dc",
             "profileId": "MOCK_SRP_IDENTIFIER_1"
           },
           "token": {
             "accessToken": "MOCK_SRP_IDENTIFIER_1",
             "expiresIn": 3600,
-            "obtainedAt": 1770197214192
+            "obtainedAt": 1770204611939
           }
         }
       }
@@ -252,10 +255,7 @@
     "ClaimsController": {
       "claims": [],
       "claimsConfigurations": {
-        "supportedNetworks": [
-          "0x1",
-          "0xe708"
-        ],
+        "supportedNetworks": ["0x1", "0xe708"],
         "validSubmissionWindowDays": 21
       },
       "drafts": []
@@ -268,8 +268,8 @@
           "usdConversionRate": null
         },
         "ETH": {
-          "conversionDate": 1770197213.95,
-          "conversionRate": 1700,
+          "conversionDate": null,
+          "conversionRate": null,
           "usdConversionRate": null
         },
         "POL": {
@@ -342,36 +342,36 @@
       "isGatorPermissionsEnabled": true
     },
     "KeyringController": {
-      "vault": "{\"data\":\"UFWO6fsxj+vdzINoqbcjYG2HZ6lg3wZpeAvRoDMET+CK2dy80M3hCPKWwI3PFeotmbTORvLQfnYhZziRdjmokE2qqCzTTwVL5Vs7figyKBNGdiO8HRcvkslMjWriaU5ZOuAJuAj2H8ojU/Bd7Gf4H/9KtspXIx04/zMcndWtVGNP1Y7aMBFqA4cSZFyx6KDyfHYWnUvKCxcnBtySFHtbLpzMaAjQLSisuL1v52ceuNBfSCPh/itjakGXhMTIPmkCELfQltwoip6JH+xQsi96BUPmLbozjlQ7D2ryhEIsLNLL7qWrRiDMXI2b2DJNbrURwSsvkTU8rkGwAyW2Vs5NYfVmFs4p6dPBBf6hfBn++Gqf2DjEJ5BfkpAImnAUSEpH00eJ/b8ojB3NV9oIIgvmPBgr7LEwatHs61zdtdqDTs1pY6bVdGW8FjCOD/bFVMKITLfiSEADk3nXkVrHGEqpnbmDFbpQTispBThaZj5wunruMqyUsDIhnC2q2CsQHPAXtDBbyqd2SIHTVoT+sodb74pbyKYdsxyIGaOnb2DstuDKrEIJw3JQwqcCMud9G6Q+m6XxyKScdjLz4faoR9TTFmHVx5j9hkSoC9UFqziI3J+FaNXtqW81Z+oGWdPQ0HVgUaFecAt8xLL57R2K9SulpsAhfccIeCKeuBME9mXoRAGtNZTt3UkKmKR0QxtdmPDEkdOHa5fdUJihdIfbzZ+AN04m7+X5XD5tfZs9b0H5OwXkfIewHpwShLXaXncWbzej1A8pLE1GxGmdjcKZUiDCSQFBZIRyvYYNErk80oLHg6iNxIB2xW2gnNHlO5WWI9yPzg4yMHMaegHx9zHaZkC5zS992RMZXt9kpy/sLbbOEYvdTeZfeGSaRxTEkYVxN3QF8BHapBjOBvKrvDbz/EI3VPLMsVXZdtZgP8LKHkmsreS5oe3EgNFfV2K+T2uNDHywLF/WU8Ge3n6snglxDzB/HOKasboQkcAbmaBaQ9LWs+1jPlI6Xy+FZd/X3GzJ+T1yY81J1ltg2SWQH5HzPNzcCr/GL6VQl6vPElgIvpFjY3GKubWZYTA2cs/GVBai2vTc0RiFU7uuo1udUZ7F8vfgY1aIGgaZapJvkq7gQoNksGB+jWVT0on1GS8UCW2cakXuBzGzR+lnjvwwl3p1di1cbF7TVJ67iFaz3A/mKFDlFceGJnZuE+rRwKTcaVp44FOFgOm+ZozFnHixc5T5u/ZZuayzjheD2+hzF0et7t7loiLQs2bG+MIWILBBry0aN0t1gz9qNoKHe7pICvRKPLN4QlZDzzBBMgaHVyXN5YFBqXKXrhk6Ipgy3BD7NPuLE8Btu0VDF77RpSucXB4B0GY5/EJj3Jmqo8WV2qH9QACQMru7NHVFE6qR4na32zX+X5+ISpNynxnKyuYNh+/v7coZ/yBtBKVQpVFYJEJpPk5O8iYeguUCfGJJq22rgJZdS21qj9JLEg==\",\"iv\":\"vjxfjtPlrfB+9DZ0rCFk1w==\",\"keyMetadata\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}},\"salt\":\"sq1jSH9wxi0vHuWI9hsSpVMVEOHRwAwuDF4ptaKWlfo=\"}"
+      "vault": "{\"data\":\"Ylq8S2y+yc4f7W6V2BYBuPFTrMT03+beNVWQkg4GqB4kgOSMxLNKKblj5eiVZiHmcaXURfMziqtfPOLfFywxoh+AOriGayxu97DL4Li7pKyS6rUqJdT90vgOR8KkWoeGTc8/dUD0hS0foEgnvA2tdp9ENJRf66MDXvsvn0TFnEWQKec3ijNrK/1wT8ZUUmg3rOWJUaeOBbXVd0SIusG+XhfyKMhr84IrMQT9oqLmSi8KEh4ovVNDfvQkRaCiB8Xp/tofZq8WDWNsgJH7l8Q5ITJdIWUWEn6QwnP2C/yqLXTNIhh9zNQ/CMxf6LeQDALuywz9nKQgq/VqwiY519ifXb+/2cPM1M8LiDQ7UlZ1sJBECnPZQXO8AXS/Co0hjTfKFbekZuvQO27wuyBPH+ePKExcnoEArNxcb4LxgLsXTzRmlnPg7GXFU0uec8+8WZGrm2UA3tcnFH0fPDFF5HlCoHfkGOHLTbi/WbAjUmD2wFe4dv8ED2FJoIX1HqRnp6uYJ5xP8AXfGTPnIpZzMok8vDxEWK2qSj3C0kMeI3in7HAf+iJrs27Tt1qeai7wOcuv4VRUglbqd5to7yFqrN6FoCap3gkWcn1pZotbvvOcEZ2essKwQRNuYcN2r1t5Qg5oKT3cd5zFKMIDE3QwgafLqm7MxeUrxETmyKXeiJ6xKVZEfz3sRZ+GfgVqPm6QP6Q2TYhqqRBmyBYM+0nrNvVr4YkVIbD57FscmJiILM67Lhg6tffHrheNlypLEkP7cbMb83PatQz1Bgg1NvKVh3ey1p8Jg+TYCLsn9xgd9J/VIcftj0Ew08O/DmLJPzNBXyFR/zw16mClqBNzSexkZILYh/pa5ARy/ajKHDvKof08rC5HdqejXI9k6rMAGlZ+ZkzpIqLADUaILr3ClUbXBymmSDypseMHlMi1ZXXg6Zuma0HjktGWZukdVwG8vmV/Ie1MvAHFNusBco2P7QTWWtLk4Zifq2Jvi+FoWT0qMBfuYFQLkj1CHZjuqGGxajzNAXAUxZ4njPtHjqePPy5+r2pbmK1Rca/IgZYHnqRhxg+vfiQ9IIkoepCfGXonDl3B8+WVyG+3ppU54lxFfjgr7N37iKhXS00h0OXhqzcyOKiB2Yc5nvQxZVxys8cOJYw7U/dTTnEiCi23KueA9b/KYVKNQFhiIijmZXkXBqJ4R2a2Vhpl9XuA/S7d6QOIUpehQm4UqgWDOcrF02X3AXeQnMqGlKqHGEo41RcAgazlTaxypHY8sYiBgkB0PzeUYUpuEr4/By385oUQyF1zy/jIJ0GPR7tVW7CcVRiGsKo8r8USEEGpvX9T9VZKfJGlNrIWj4to+AWqvPi+T4x4wTzwWHQWgnvqENnRRCOesTRQzQ0DXJtM0yWGkMXddKuftdVD+QZ3Ns1F+ya4nXA7oMuWCn+xHoMXwyOV9bpXx4hx1h5OSigGILxqUJ5jUUhv/GNrjrErNjn26g==\",\"iv\":\"jtyXXqi4DWJ+Yew2KJeZ7Q==\",\"keyMetadata\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}},\"salt\":\"/0PsjjKxU1j2l0kvJIM/G2cKi0i2cf0fWV8/nQ8a+TE=\"}"
     },
     "LoggingController": {
       "logs": {}
     },
     "MetaMetricsController": {
-      "dataCollectionForMarketing": false,
+      "dataCollectionForMarketing": true,
       "eventsBeforeMetricsOptIn": [
         {
-          "actionId": 1770197213064.2954,
+          "actionId": 1770204606835.5928,
           "category": "Onboarding",
           "environmentType": "fullscreen",
           "event": "App Installed"
         },
         {
-          "actionId": 1770197213072.8667,
+          "actionId": 1770204606843.5913,
           "category": "Onboarding",
           "environmentType": "fullscreen",
           "event": "Analytics Preference Selected",
           "properties": {
-            "has_marketing_consent": false,
+            "has_marketing_consent": true,
             "is_metrics_opted_in": true,
             "location": "onboarding_metametrics"
           }
         }
       ],
       "fragments": {},
-      "latestNonAnonymousEventTimestamp": 1770197223953,
+      "latestNonAnonymousEventTimestamp": 1770204621510,
       "marketingCampaignCookieId": null,
-      "metaMetricsId": "0xc4e053c5d5f3ad768ee1d01684ac77230ab34126408f0f54256d7fb5ec4b6a71",
+      "metaMetricsId": "0x2dc8a588be4191ae529ab3f9a8a42d1c6611633a56a717e62a470d83178ed3dc",
       "participateInMetaMetrics": true,
       "segmentApiCalls": {},
       "tracesBeforeMetricsOptIn": [
@@ -395,7 +395,7 @@
     },
     "MultichainAssetsController": {
       "accountsAssets": {
-        "f3bdf7ed-1026-484b-b449-8542d9b2e72c": [
+        "dbe7faff-e86c-43a0-8d60-4e5aa9a93eef": [
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501"
         ]
       },
@@ -421,7 +421,7 @@
     },
     "MultichainBalancesController": {
       "balances": {
-        "f3bdf7ed-1026-484b-b449-8542d9b2e72c": {
+        "dbe7faff-e86c-43a0-8d60-4e5aa9a93eef": {
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
             "amount": "0",
             "unit": "SOL"
@@ -503,10 +503,7 @@
       "selectedMultichainNetworkChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
     },
     "MultichainRatesController": {
-      "cryptocurrencies": [
-        "btc",
-        "sol"
-      ],
+      "cryptocurrencies": ["btc", "sol"],
       "fiatCurrency": "usd",
       "rates": {
         "btc": {
@@ -521,7 +518,7 @@
     },
     "MultichainTransactionsController": {
       "nonEvmTransactions": {
-        "f3bdf7ed-1026-484b-b449-8542d9b2e72c": {}
+        "dbe7faff-e86c-43a0-8d60-4e5aa9a93eef": {}
       }
     },
     "NameController": {
@@ -542,9 +539,7 @@
     "NetworkController": {
       "networkConfigurationsByChainId": {
         "0x1": {
-          "blockExplorerUrls": [
-            "https://etherscan.io"
-          ],
+          "blockExplorerUrls": ["https://etherscan.io"],
           "chainId": "0x1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -562,9 +557,7 @@
           ]
         },
         "0x18c7": {
-          "blockExplorerUrls": [
-            "https://megaeth-testnet-v2.blockscout.com"
-          ],
+          "blockExplorerUrls": ["https://megaeth-testnet-v2.blockscout.com"],
           "chainId": "0x18c7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -580,9 +573,7 @@
           ]
         },
         "0x2105": {
-          "blockExplorerUrls": [
-            "https://basescan.org"
-          ],
+          "blockExplorerUrls": ["https://basescan.org"],
           "chainId": "0x2105",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -600,9 +591,7 @@
           ]
         },
         "0x279f": {
-          "blockExplorerUrls": [
-            "https://testnet.monadexplorer.com"
-          ],
+          "blockExplorerUrls": ["https://testnet.monadexplorer.com"],
           "chainId": "0x279f",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -618,9 +607,7 @@
           ]
         },
         "0x38": {
-          "blockExplorerUrls": [
-            "https://bscscan.com"
-          ],
+          "blockExplorerUrls": ["https://bscscan.com"],
           "chainId": "0x38",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -635,10 +622,23 @@
             }
           ]
         },
+        "0x539": {
+          "blockExplorerUrls": [],
+          "chainId": "0x539",
+          "defaultRpcEndpointIndex": 0,
+          "lastUpdatedAt": 1770204608680,
+          "name": "Localhost 8545",
+          "nativeCurrency": "ETH",
+          "rpcEndpoints": [
+            {
+              "networkClientId": "9589efd1-2b4d-48c8-8281-188b31bdb6f4",
+              "type": "custom",
+              "url": "http://127.0.0.1:8545"
+            }
+          ]
+        },
         "0x89": {
-          "blockExplorerUrls": [
-            "https://polygonscan.com"
-          ],
+          "blockExplorerUrls": ["https://polygonscan.com"],
           "chainId": "0x89",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -656,9 +656,7 @@
           ]
         },
         "0xa": {
-          "blockExplorerUrls": [
-            "https://optimistic.etherscan.io"
-          ],
+          "blockExplorerUrls": ["https://optimistic.etherscan.io"],
           "chainId": "0xa",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -676,9 +674,7 @@
           ]
         },
         "0xa4b1": {
-          "blockExplorerUrls": [
-            "https://arbiscan.io"
-          ],
+          "blockExplorerUrls": ["https://arbiscan.io"],
           "chainId": "0xa4b1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -696,9 +692,7 @@
           ]
         },
         "0xaa36a7": {
-          "blockExplorerUrls": [
-            "https://sepolia.etherscan.io"
-          ],
+          "blockExplorerUrls": ["https://sepolia.etherscan.io"],
           "chainId": "0xaa36a7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -714,9 +708,7 @@
           ]
         },
         "0xe705": {
-          "blockExplorerUrls": [
-            "https://sepolia.lineascan.build"
-          ],
+          "blockExplorerUrls": ["https://sepolia.lineascan.build"],
           "chainId": "0xe705",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -732,9 +724,7 @@
           ]
         },
         "0xe708": {
-          "blockExplorerUrls": [
-            "https://lineascan.build"
-          ],
+          "blockExplorerUrls": ["https://lineascan.build"],
           "chainId": "0xe708",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -753,6 +743,12 @@
         }
       },
       "networksMetadata": {
+        "9589efd1-2b4d-48c8-8281-188b31bdb6f4": {
+          "EIPS": {
+            "1559": true
+          },
+          "status": "available"
+        },
         "arbitrum-mainnet": {
           "EIPS": {
             "1559": true
@@ -788,39 +784,40 @@
           "status": "unavailable"
         }
       },
-      "selectedNetworkClientId": "mainnet"
+      "selectedNetworkClientId": "9589efd1-2b4d-48c8-8281-188b31bdb6f4"
     },
     "NetworkEnablementController": {
       "enabledNetworkMap": {
         "bip122": {
-          "bip122:000000000019d6689c085ae165831e93": true,
+          "bip122:000000000019d6689c085ae165831e93": false,
           "bip122:000000000933ea01ad0ee984209779ba": false,
           "bip122:00000000da84f2bafbbc53dee25a72ae": false,
           "bip122:00000008819873e925422c1ff0f99f7c": false,
           "bip122:regtest": false
         },
         "eip155": {
-          "0x1": true,
+          "0x1": false,
           "0x18c7": false,
-          "0x2105": true,
+          "0x2105": false,
           "0x279f": false,
-          "0x38": true,
-          "0x89": true,
-          "0xa": true,
-          "0xa4b1": true,
+          "0x38": false,
+          "0x539": true,
+          "0x89": false,
+          "0xa": false,
+          "0xa4b1": false,
           "0xaa36a7": false,
           "0xe705": false,
-          "0xe708": true
+          "0xe708": false
         },
         "solana": {
           "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z": false,
-          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": false,
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
         "tron": {
           "tron:2494104990": false,
           "tron:3448148188": false,
-          "tron:728126428": true
+          "tron:728126428": false
         }
       },
       "nativeAssetIdentifiers": {
@@ -828,6 +825,7 @@
         "eip155:10": "eip155:10/slip44:60",
         "eip155:10143": "eip155:10143/slip44:60",
         "eip155:11155111": "eip155:11155111/slip44:60",
+        "eip155:1337": "eip155:1337/slip44:1",
         "eip155:137": "eip155:137/slip44:60",
         "eip155:42161": "eip155:42161/slip44:60",
         "eip155:56": "eip155:56/slip44:60",
@@ -1623,67 +1621,35 @@
                   "value": [
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "44'",
-                        "0'"
-                      ]
+                      "path": ["m", "44'", "0'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "44'",
-                        "1'"
-                      ]
+                      "path": ["m", "44'", "1'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "49'",
-                        "0'"
-                      ]
+                      "path": ["m", "49'", "0'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "49'",
-                        "1'"
-                      ]
+                      "path": ["m", "49'", "1'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "84'",
-                        "0'"
-                      ]
+                      "path": ["m", "84'", "0'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "84'",
-                        "1'"
-                      ]
+                      "path": ["m", "84'", "1'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "86'",
-                        "0'"
-                      ]
+                      "path": ["m", "86'", "0'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "86'",
-                        "1'"
-                      ]
+                      "path": ["m", "86'", "1'"]
                     }
                   ]
                 }
@@ -1975,9 +1941,7 @@
                 {
                   "type": "keyringOrigin",
                   "value": {
-                    "allowedOrigins": [
-                      "https://portfolio.metamask.io"
-                    ]
+                    "allowedOrigins": ["https://portfolio.metamask.io"]
                   }
                 }
               ],
@@ -2071,11 +2035,7 @@
                   "value": [
                     {
                       "curve": "ed25519",
-                      "path": [
-                        "m",
-                        "44'",
-                        "501'"
-                      ]
+                      "path": ["m", "44'", "501'"]
                     }
                   ]
                 }
@@ -2115,9 +2075,7 @@
               "caveats": [
                 {
                   "type": "chainIds",
-                  "value": [
-                    "tron:728126428"
-                  ]
+                  "value": ["tron:728126428"]
                 }
               ],
               "date": 1764061389898,
@@ -2137,9 +2095,7 @@
                 {
                   "type": "keyringOrigin",
                   "value": {
-                    "allowedOrigins": [
-                      "https://portfolio.metamask.io"
-                    ]
+                    "allowedOrigins": ["https://portfolio.metamask.io"]
                   }
                 }
               ],
@@ -2184,11 +2140,7 @@
                   "value": [
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "44'",
-                        "195'"
-                      ]
+                      "path": ["m", "44'", "195'"]
                     }
                   ]
                 }
@@ -2227,10 +2179,10 @@
       "permissionHistory": {}
     },
     "PhishingController": {
-      "c2DomainBlocklistLastFetched": 1770197216,
-      "hotlistLastFetched": 1770197216,
+      "c2DomainBlocklistLastFetched": 1770204613,
+      "hotlistLastFetched": 1770204613,
       "phishingLists": [],
-      "stalelistLastFetched": 1770197216,
+      "stalelistLastFetched": 1770204613,
       "tokenScanCache": {},
       "urlScanCache": {},
       "whitelist": [],
@@ -2247,7 +2199,7 @@
       "identities": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
           "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
-          "lastSelected": 1770197212898,
+          "lastSelected": 1770204606657,
           "name": "Account 1"
         },
         "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
@@ -2264,7 +2216,7 @@
       "lostIdentities": {
         "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
           "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
-          "lastSelected": 1770197212898,
+          "lastSelected": 1770204606657,
           "name": "Account 1"
         },
         "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
@@ -2287,14 +2239,14 @@
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showMultiRpcModal": false,
-        "showNativeTokenAsMainBalance": false,
-        "showTestNetworks": false,
+        "showNativeTokenAsMainBalance": true,
+        "showTestNetworks": true,
         "skipDeepLinkInterstitial": false,
         "smartAccountOptIn": true,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
         "tokenNetworkFilter": {
-          "0x1": true
+          "0x539": true
         },
         "tokenSortConfig": {
           "key": "tokenFiatAmount",
@@ -2327,15 +2279,13 @@
       "watchEthereumAccountEnabled": false
     },
     "ProfileMetricsController": {
-      "initialDelayEndTimestamp": 1770197213063,
+      "initialDelayEndTimestamp": 1770204606835,
       "initialEnqueueCompleted": true,
       "syncQueue": {
-        "01KGKZKQQ19B1SDE1WM6Q1PA93": [
+        "01KGM6NC6034B5JB1SQE6EECNR": [
           {
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
-            "scopes": [
-              "eip155:0"
-            ]
+            "scopes": ["eip155:0"]
           },
           {
             "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
@@ -2349,13 +2299,13 @@
       }
     },
     "RemoteFeatureFlagController": {
-      "cacheTimestamp": 1770197213348,
+      "cacheTimestamp": 1770204611113,
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
         "feature3": {
-          "name": "groupC",
-          "value": "valueC"
+          "name": "groupA",
+          "value": "valueA"
         }
       }
     },
@@ -7931,7 +7881,7 @@
         }
       },
       "databaseUnavailable": false,
-      "lastUpdated": 1770197223741,
+      "lastUpdated": 1770204621731,
       "signature": "0x3044022077a0db0807d0ad642fd093a37712698a9e9fc9cad8a7300b816801b0876afd1f022039e5469226eeb47610b0c93b5da9dd3d9a2f262e50d9654f3334dd41a03bc746"
     },
     "SubjectMetadataController": {
@@ -8019,6 +7969,9 @@
           },
           "0x2105": {},
           "0x38": {},
+          "0x539": {
+            "0x0000000000000000000000000000000000000000": "0x15af1d78b58c40000"
+          },
           "0x89": {},
           "0xa": {},
           "0xa4b1": {
@@ -8035,6 +7988,7 @@
         "0x1": {},
         "0x2105": {},
         "0x38": {},
+        "0x539": {},
         "0x89": {},
         "0xa": {},
         "0xa4b1": {},

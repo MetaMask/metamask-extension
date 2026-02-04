@@ -216,7 +216,11 @@ describe('Wallet State', function () {
         await advancedSettings.toggleShowTestnets();
         await settingsPage.closeSettingsPage();
 
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Popular',
+          'All popular networks',
+        );
 
         await switchToNetworkFromNetworkSelect(
           driver,

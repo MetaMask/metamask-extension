@@ -42,7 +42,7 @@ class AdvancedSettings {
     '.show-fiat-on-testnets-toggle';
 
   private readonly showTestnetsToggle =
-    '[data-testid="advanced-setting-show-testnets"]';
+    '[data-testid="advanced-setting-show-testnets"] .toggle-button';
 
   private readonly smartTransactionsToggle =
     '[data-testid="settings-page-stx-opt-in-toggle"]';
