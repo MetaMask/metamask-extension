@@ -57,7 +57,10 @@ export const GlobalMenuDrawer = ({
 
     const findRootLayout = (): HTMLElement | null => {
       // Return cached element if available and still in DOM
-      if (rootLayoutRef.current && document.body.contains(rootLayoutRef.current)) {
+      if (
+        rootLayoutRef.current &&
+        document.body.contains(rootLayoutRef.current)
+      ) {
         return rootLayoutRef.current;
       }
 
