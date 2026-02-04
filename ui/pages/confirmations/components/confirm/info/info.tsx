@@ -74,9 +74,9 @@ const Info = () => {
             // This should never happen, as `wallet_requestExecutionPermissions`
             // only accepts permissions of enabled types. This is here as a
             // security precaution, to ensure that permission types that are not
-            // yet complete are never available to sign.
+            // yet enabled are never available to sign.
             throw new Error(
-              `Permission type '${requestedPermissionType ?? 'unknown'}' is not enabled`,
+              `Invalid eth_signTypedData_v4 request - Advanced Permission type: ${requestedPermissionType} not enabled`,
             );
           }
 

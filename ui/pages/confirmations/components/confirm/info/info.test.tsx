@@ -133,7 +133,7 @@ describe('Info', () => {
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
     expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
-      "Permission type 'native-token-stream' is not enabled",
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
 
@@ -146,7 +146,7 @@ describe('Info', () => {
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
     expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
-      "Permission type 'native-token-stream' is not enabled",
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
 
