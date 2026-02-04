@@ -73,11 +73,19 @@ export const TREZOR_HD_PATHS = [
   { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
 ];
 
+const ONEKEY_STANDARD_BIP44_PATH = `m/44'/60'/0'/0/x`;
+export const ONEKEY_HD_PATHS = [
+  {
+    name: `Standard (${ONEKEY_STANDARD_BIP44_PATH})`,
+    value: ONEKEY_STANDARD_BIP44_PATH,
+  },
+];
+
 const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
-  oneKey: TREZOR_HD_PATHS,
+  oneKey: ONEKEY_HD_PATHS,
 };
 
 const getErrorMessage = (errorCode, t) => {
@@ -153,6 +161,7 @@ class ConnectHardwareForm extends Component {
       HardwareDeviceNames.lattice,
     ]) {
       const path = this.props.defaultHdPaths[device];
+
       const unlocked = await this.props.checkHardwareStatus(device, path);
       if (unlocked && this.state.device) {
         this.setState({ unlocked: true });
@@ -161,7 +170,7 @@ class ConnectHardwareForm extends Component {
     }
   }
 
-  connectToHardwareWallet = (device) => {
+  connectToHardwareWallet = async (device) => {
     this.setState({ device });
     if (this.state.accounts.length) {
       return;
@@ -340,10 +349,10 @@ class ConnectHardwareForm extends Component {
       this.setState({ error: this.context.t('accountSelectionRequired') });
     }
 
-    const description =
-      MEW_PATH === path
-        ? this.context.t('hardwareWalletLegacyDescription')
-        : '';
+    let description = '';
+    if (path === MEW_PATH) {
+      description = this.context.t('hardwareWalletLegacyDescription');
+    }
 
     return unlockHardwareWalletAccounts(
       selectedAccounts,

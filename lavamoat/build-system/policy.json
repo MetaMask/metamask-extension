@@ -1872,7 +1872,6 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
-        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -5052,6 +5051,11 @@
         "postcss": true
       }
     },
+    "stylelint>postcss-less": {
+      "packages": {
+        "stylelint>postcss-less>postcss": true
+      }
+    },
     "gulp-postcss>postcss-load-config": {
       "builtin": {
         "module.createRequire": true,
@@ -5072,6 +5076,11 @@
       "packages": {
         "postcss": true,
         "stylelint>postcss-selector-parser": true
+      }
+    },
+    "stylelint>postcss-reporter": {
+      "packages": {
+        "lodash": true
       }
     },
     "postcss-rtlcss": {

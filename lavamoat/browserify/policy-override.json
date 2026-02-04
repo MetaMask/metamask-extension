@@ -1,5 +1,15 @@
 {
   "resources": {
+    "browserify>url": {
+      "packages": {
+        "browserify>url>qs": true
+      }
+    },
+    "browserify>url>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
+      }
+    },
     "react-router-dom": {
       "globals": {
         "history": true
