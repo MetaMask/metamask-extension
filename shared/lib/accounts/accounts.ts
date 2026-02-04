@@ -10,7 +10,6 @@ import {
   SnapKeyring,
   SnapKeyringInternalOptions,
 } from '@metamask/eth-snap-keyring';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { Messenger } from '@metamask/messenger';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
