@@ -104,73 +104,75 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
-  if (!hasProperty(state, 'NetworkEnablementController')) {
-    captureException(
-      new Error(`Migration ${version}: NetworkEnablementController not found.`),
-    );
-    return state;
-  }
-
-  const networkEnablementState = state.NetworkEnablementController;
-
-  if (!isObject(networkEnablementState)) {
-    captureException(
-      new Error(
-        `Migration ${version}: NetworkEnablementController is not an object: ${typeof networkEnablementState}`,
-      ),
-    );
-    return state;
-  }
-
-  if (!hasProperty(networkEnablementState, 'enabledNetworkMap')) {
-    captureException(
-      new Error(
-        `Migration ${version}: NetworkEnablementController missing property enabledNetworkMap.`,
-      ),
-    );
-    return state;
-  }
-
-  if (!isObject(networkEnablementState.enabledNetworkMap)) {
-    captureException(
-      new Error(
-        `Migration ${version}: NetworkEnablementController.enabledNetworkMap is not an object: ${typeof networkEnablementState.enabledNetworkMap}.`,
-      ),
-    );
-    return state;
-  }
-
-  if (
-    !hasProperty(
-      networkEnablementState.enabledNetworkMap,
-      KnownCaipNamespace.Eip155,
-    )
-  ) {
-    captureException(
-      new Error(
-        `Migration ${version}: NetworkEnablementController.enabledNetworkMap missing property Eip155.`,
-      ),
-    );
-    return state;
-  }
-
-  if (
-    !isObject(
-      networkEnablementState.enabledNetworkMap[KnownCaipNamespace.Eip155],
-    )
-  ) {
-    captureException(
-      new Error(
-        `Migration ${version}: NetworkEnablementController.enabledNetworkMap[Eip155] is not an object: ${typeof networkEnablementState.enabledNetworkMap[KnownCaipNamespace.Eip155]}.`,
-      ),
-    );
-    return state;
-  }
-
   const { networkConfigurationsByChainId } = networkState;
-  const {
-    enabledNetworkMap: { [KnownCaipNamespace.Eip155]: eip155NetworkMap },
-  } = networkEnablementState;
+
+  // Check if NetworkEnablementController exists and is valid
+  let eip155NetworkMap: Record<string, boolean> | null = null;
+  
+  if (!hasProperty(state, 'NetworkEnablementController')) {
+    // NetworkEnablementController doesn't exist, but we can still update NetworkController
+    // Skip NetworkEnablementController validation and updates
+  } else {
+    const networkEnablementState = state.NetworkEnablementController;
+
+    if (!isObject(networkEnablementState)) {
+      captureException(
+        new Error(
+          `Migration ${version}: NetworkEnablementController is not an object: ${typeof networkEnablementState}`,
+        ),
+      );
+      return state;
+    }
+
+    if (!hasProperty(networkEnablementState, 'enabledNetworkMap')) {
+      captureException(
+        new Error(
+          `Migration ${version}: NetworkEnablementController missing property enabledNetworkMap.`,
+        ),
+      );
+      return state;
+    }
+
+    if (!isObject(networkEnablementState.enabledNetworkMap)) {
+      captureException(
+        new Error(
+          `Migration ${version}: NetworkEnablementController.enabledNetworkMap is not an object: ${typeof networkEnablementState.enabledNetworkMap}.`,
+        ),
+      );
+      return state;
+    }
+
+    if (
+      !hasProperty(
+        networkEnablementState.enabledNetworkMap,
+        KnownCaipNamespace.Eip155,
+      )
+    ) {
+      captureException(
+        new Error(
+          `Migration ${version}: NetworkEnablementController.enabledNetworkMap missing property Eip155.`,
+        ),
+      );
+      return state;
+    }
+
+    if (
+      !isObject(
+        networkEnablementState.enabledNetworkMap[KnownCaipNamespace.Eip155],
+      )
+    ) {
+      captureException(
+        new Error(
+          `Migration ${version}: NetworkEnablementController.enabledNetworkMap[Eip155] is not an object: ${typeof networkEnablementState.enabledNetworkMap[KnownCaipNamespace.Eip155]}.`,
+        ),
+      );
+      return state;
+    }
+
+    eip155NetworkMap = networkEnablementState.enabledNetworkMap[
+      KnownCaipNamespace.Eip155
+    ] as Record<string, boolean>;
+  }
 
   // Merge the MegaETH Testnet v2 network configuration if user already has it.
   if (
@@ -220,11 +222,12 @@ function transformState(state: Record<string, unknown>) {
     ] = MEGAETH_TESTNET_V2_CONFIG as NetworkConfiguration;
   }
 
-  // Add the MegaETH Testnet v2 network configuration to the enabled network map if it doesn't exist.
-  if (!hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V2_CONFIG.chainId)) {
-    (eip155NetworkMap as Record<string, boolean>)[
-      MEGAETH_TESTNET_V2_CONFIG.chainId
-    ] = false;
+  // Add the MegaETH Testnet v2 network configuration to the enabled network map if it exists and doesn't have the entry.
+  if (
+    eip155NetworkMap &&
+    !hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V2_CONFIG.chainId)
+  ) {
+    eip155NetworkMap[MEGAETH_TESTNET_V2_CONFIG.chainId] = false;
   }
 
   const megaethTestnetV1Configuration =
@@ -244,11 +247,13 @@ function transformState(state: Record<string, unknown>) {
     )
   ) {
     networkState.selectedNetworkClientId = 'mainnet';
-    // force mainnet to be enabled
-    eip155NetworkMap['0x1'] = true;
+    // force mainnet to be enabled (only if NetworkEnablementController exists)
+    if (eip155NetworkMap) {
+      eip155NetworkMap['0x1'] = true;
+    }
   }
-  // If the MegaETH Testnet v1 network configuration exists, then remove it.
-  if (hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V1_CHAIN_ID)) {
+  // If the MegaETH Testnet v1 network configuration exists in enabled network map, then remove it.
+  if (eip155NetworkMap && hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V1_CHAIN_ID)) {
     delete eip155NetworkMap[MEGAETH_TESTNET_V1_CHAIN_ID];
   }
 

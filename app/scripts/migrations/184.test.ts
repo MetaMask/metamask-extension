@@ -84,18 +84,6 @@ describe(`migration #${VERSION}`, () => {
             networkConfigurationsByChainId: {},
             selectedNetworkClientId: 'megaeth-testnet',
           },
-        },
-      },
-      scenario: 'missing NetworkEnablementController',
-    },
-    {
-      state: {
-        meta: { version: VERSION },
-        data: {
-          NetworkController: {
-            networkConfigurationsByChainId: {},
-            selectedNetworkClientId: 'megaeth-testnet',
-          },
           NetworkEnablementController: 'invalid',
         },
       },
@@ -281,6 +269,94 @@ describe(`migration #${VERSION}`, () => {
     const newStorage = await migrate(oldStorage);
 
     expect(newStorage).toStrictEqual(expectedStorage);
+  });
+
+  it('should still update NetworkController when NetworkEnablementController is missing', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MEGAETH_TESTNET_V1_CHAIN_ID]: {
+              chainId: MEGAETH_TESTNET_V1_CHAIN_ID,
+              name: 'Mega Testnet',
+              nativeCurrency: 'MegaETH',
+              blockExplorerUrls: ['https://explorer.com'],
+              defaultRpcEndpointIndex: 0,
+              defaultBlockExplorerUrlIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: 'megaeth-testnet',
+                  type: RpcEndpointType.Custom,
+                  url: 'https://rpc.com',
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage).toStrictEqual(expectedStorage);
+    expect(mockedCaptureException).not.toHaveBeenCalled();
+  });
+
+  it('should switch to mainnet when selected network is MegaETH v1 even without NetworkEnablementController', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MEGAETH_TESTNET_V1_CHAIN_ID]: {
+              chainId: MEGAETH_TESTNET_V1_CHAIN_ID,
+              name: 'Mega Testnet',
+              nativeCurrency: 'MegaETH',
+              blockExplorerUrls: ['https://explorer.com'],
+              defaultRpcEndpointIndex: 0,
+              defaultBlockExplorerUrlIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: 'megaeth-testnet',
+                  type: RpcEndpointType.Custom,
+                  url: 'https://rpc.com',
+                },
+              ],
+            },
+          },
+          selectedNetworkClientId: 'megaeth-testnet',
+        },
+      },
+    };
+
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
+          },
+          selectedNetworkClientId: 'mainnet',
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage).toStrictEqual(expectedStorage);
+    expect(mockedCaptureException).not.toHaveBeenCalled();
   });
 
   // @ts-expect-error 'each' function is not recognized by TypeScript types
