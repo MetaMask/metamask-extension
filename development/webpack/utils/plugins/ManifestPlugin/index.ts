@@ -255,7 +255,7 @@ export class ManifestPlugin<Z extends boolean> {
     );
     // Load the build type base manifest if it exists for the specific build type
     const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
-    let buildTypeBaseManifest: Partial<Omit<Manifest, 'manifest_version'>> = {};
+    let buildTypeBaseManifest: Partial<Manifest> = {};
     try {
       buildTypeBaseManifest = require(buildTypeBasePath);
     } catch {
@@ -272,12 +272,12 @@ export class ManifestPlugin<Z extends boolean> {
     const { version } = this.options;
 
     this.options.browsers.forEach((browser) => {
-      let manifest: Manifest = {
+      let manifest = {
         ...baseManifest,
         ...buildTypeBaseManifest,
         description,
         version,
-      };
+      } as Manifest;
 
       if (browser !== 'firefox') {
         // version_name isn't used by FireFox, but is by Chrome, et al.
