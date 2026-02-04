@@ -64,11 +64,13 @@ const WhatArePerpsStep: React.FC = () => {
           className="flex-1 flex items-center justify-center"
           data-testid="perps-tutorial-step-image"
         >
-          <img
-            src="./images/perps-character.png"
-            alt=""
-            className="perps-tutorial-character__image"
-          />
+          <Box className="w-[180px] h-[180px] flex items-center justify-center">
+            <img
+              src="./images/perps-character.png"
+              alt=""
+              className="w-full h-full object-contain"
+            />
+          </Box>
         </Box>
       </Box>
 

@@ -614,6 +614,7 @@ const PerpsHomePage: React.FC = () => {
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
                 // TODO: Navigate to support
               }
             }}
@@ -637,6 +638,7 @@ const PerpsHomePage: React.FC = () => {
             onClick={handleLearnPerps}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
                 handleLearnPerps();
               }
             }}
