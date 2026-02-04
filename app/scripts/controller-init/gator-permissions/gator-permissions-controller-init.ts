@@ -45,10 +45,7 @@ export const GatorPermissionsControllerInit: ControllerInitFunction<
   GatorPermissionsControllerMessenger
 > = ({ controllerMessenger, persistedState }) => {
   const controller = new GatorPermissionsController({
-    // Type mismatch due to different BaseController versions, GatorPermissionsController uses 8.3.0 while extension uses 8.2.0.
-    // We can remove once extension BaseController version is updated to 8.3.0.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    messenger: controllerMessenger as any,
+    messenger: controllerMessenger,
     state: {
       ...generateDefaultGatorPermissionsControllerState(),
       ...persistedState.GatorPermissionsController,
