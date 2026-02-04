@@ -21,9 +21,7 @@ class LoginPage {
     text: 'Password is incorrect. Please try again.',
   };
 
-  private readonly metamaskAnimation = {
-    css: 'riv-animation__canvas',
-  };
+  private readonly metamaskAnimation = '.riv-animation__canvas';
 
   private readonly passwordInput = { testId: 'unlock-password' };
 
