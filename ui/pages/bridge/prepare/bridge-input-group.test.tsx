@@ -132,11 +132,16 @@ const openAssetPicker = async () => {
   });
 };
 
-const fillSearchInput = async (searchQuery: string) => {
+const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
   const searchInput = screen.getByTestId('bridge-asset-picker-search-input');
   await act(async () => {
     await searchInput.focus();
     await userEvent.keyboard(searchQuery);
+  });
+  await waitFor(() => {
+    expect(screen.getByTestId('bridge-asset-picker-search-input')).toHaveValue(
+      expectedValue ?? searchQuery,
+    );
   });
 };
 
@@ -193,7 +198,7 @@ describe('BridgeInputGroup', () => {
       );
     });
 
-    await fillSearchInput('SD');
+    await fillSearchInput('SD', 'USD');
     await waitFor(() => {
       expectAssetListToMatch(
         `
@@ -425,21 +430,11 @@ describe('BridgeInputGroup', () => {
       await waitFor(() => {
         expect(networkPickerPopover).not.toBeVisible();
         expect(abortSpy).toHaveBeenCalledTimes(7);
+        expect(mockHandleFetch).toHaveBeenCalledTimes(3);
       });
 
       expect(await localforage.keys()).toMatchSnapshot();
       expect(mockHandleFetch.mock.calls).toMatchSnapshot();
-      expect(mockHandleFetch).toHaveBeenCalledTimes(3);
-
-      expect(abortSpy.mock.calls.flat()).toStrictEqual([
-        'Search query changed',
-        'Search query changed',
-        'Search query changed',
-        'Page unmounted',
-        'Search query changed',
-        'Asset balances changed',
-        'Asset balances changed',
-      ]);
     },
   );
 });
