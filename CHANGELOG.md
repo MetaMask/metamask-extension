@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.16.2]
+
+### Fixed
+
+- Resolved issue where All Permissions page won't load with unmigrated gator permissions controller state (#39766)
+
+## [13.16.1]
+
+### Added
+
+- Track split state migration success/fail events in Segment (#39643)
+
 ## [13.16.0]
 
 ### Added
@@ -1643,7 +1655,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.16.2...HEAD
+[13.16.2]: https://github.com/MetaMask/metamask-extension/compare/v13.16.1...v13.16.2
+[13.16.1]: https://github.com/MetaMask/metamask-extension/compare/v13.16.0...v13.16.1
 [13.16.0]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...v13.16.0
 [13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...v13.15.0
 [13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2
