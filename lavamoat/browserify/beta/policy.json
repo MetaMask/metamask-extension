@@ -1052,24 +1052,13 @@
         "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
+        "fetch": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "uuid": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/core-backend": {
-      "globals": {
-        "URL": true,
-        "WebSocket": true,
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "uuid": true
       }
     },
@@ -2505,7 +2494,7 @@
         "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/transaction-controller>@metamask/core-backend": true,
+        "@metamask/core-backend": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
@@ -3007,6 +2996,51 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/binary": true,
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true,
         "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "CancelledError": true,
+        "InfiniteQueryObserver": true,
+        "Mutation": true,
+        "MutationCache": true,
+        "MutationObserver": true,
+        "QueriesObserver": true,
+        "Query": true,
+        "QueryCache": true,
+        "QueryClient": true,
+        "QueryObserver": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "defaultScheduler": true,
+        "defaultShouldDehydrateMutation": true,
+        "defaultShouldDehydrateQuery": true,
+        "dehydrate": true,
+        "document": true,
+        "experimental_streamedQuery": true,
+        "focusManager": true,
+        "hashKey": true,
+        "hydrate": true,
+        "isCancelledError": true,
+        "isServer": true,
+        "keepPreviousData": true,
+        "matchMutation": true,
+        "matchQuery": true,
+        "noop": true,
+        "notifyManager": true,
+        "onlineManager": true,
+        "partialMatchKey": true,
+        "removeEventListener": true,
+        "replaceEqualDeep": true,
+        "setInterval": true,
+        "setTimeout": true,
+        "shouldThrowError": true,
+        "skipToken": true,
+        "timeoutManager": true
       }
     },
     "@tanstack/react-virtual": {
