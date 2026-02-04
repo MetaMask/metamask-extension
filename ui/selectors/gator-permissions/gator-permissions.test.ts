@@ -258,6 +258,27 @@ describe('Gator Permissions Selectors', () => {
         mockGatorPermissionsMap,
       );
     });
+
+    it('should fill in missing keys when serialized map omits permission types', () => {
+      const partialSerialized = JSON.stringify({
+        'native-token-stream': { [MOCK_CHAIN_ID_MAINNET]: [] },
+        // other keys intentionally omitted
+      });
+      const stateWithPartial: AppState = {
+        metamask: {
+          ...mockState.metamask,
+          gatorPermissionsMapSerialized: partialSerialized,
+        },
+      };
+      const result = getGatorPermissionsMap(stateWithPartial);
+      expect(result['native-token-stream']).toBeDefined();
+      expect(result['native-token-stream'][MOCK_CHAIN_ID_MAINNET]).toEqual([]);
+      expect(result['erc20-token-stream']).toEqual({});
+      expect(result['native-token-periodic']).toEqual({});
+      expect(result['erc20-token-periodic']).toEqual({});
+      expect(result['erc20-token-revocation']).toEqual({});
+      expect(result.other).toEqual({});
+    });
   });
 
   describe('getAggregatedGatorPermissionsCountAcrossAllChains', () => {
