@@ -1,7 +1,6 @@
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerGetStateAction,
-  AccountsControllerSelectedAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import {
@@ -12,10 +11,6 @@ import {
   BridgeStatusControllerActions,
   BridgeStatusControllerStateChangeEvent,
 } from '@metamask/bridge-status-controller';
-import type {
-  AccountActivityServiceStatusChangedEvent,
-  BackendWebSocketServiceConnectionStateChangedEvent,
-} from '@metamask/core-backend';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
