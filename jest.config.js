@@ -62,6 +62,11 @@ module.exports = {
     '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
+  // Transform ESM packages that Jest can't parse natively
+  // These packages use ES module syntax (import/export) and need to be transpiled
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@nktkas/hyperliquid|@noble/hashes|@noble/curves)/)',
+  ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
