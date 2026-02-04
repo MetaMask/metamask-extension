@@ -929,7 +929,7 @@
     "showPermissionsTour": "boolean",
     "showShieldEntryModalOnce": "boolean",
     "showStorageErrorToast": "boolean",
-    "storageWriteErrorType": "object",
+    "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
     "signature": "string",
