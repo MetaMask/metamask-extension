@@ -8,6 +8,9 @@ on:
     secrets:
       INFURA_PROJECT_ID:
         required: true
+      TEST_SRP_2:
+        required: false
+        description: Required for performanceLogin (import-srp-home). 12-word seed phrase.
 
 env:
   COMMANDS: |
@@ -59,6 +62,7 @@ jobs:
       ARTIFACT_NAME: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
