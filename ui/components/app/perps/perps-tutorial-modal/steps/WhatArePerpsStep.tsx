@@ -43,15 +43,15 @@ const WhatArePerpsStep: React.FC = () => {
     >
       <ProgressIndicator totalSteps={TOTAL_STEPS} currentStep={CURRENT_STEP} />
 
-      <Box className="flex-1 flex flex-col items-center justify-center px-6 py-8">
+      <Box className="flex-1 flex flex-col items-center justify-center px-6 pt-4 pb-2">
         <Box
-          className="flex-1 min-h-0 w-full mb-6 flex items-center justify-center"
+          className="perps-tutorial-character__container mb-2"
           data-testid="perps-tutorial-step-image"
         >
           <img
             src="./images/perps-character.png"
             alt=""
-            className="h-full w-full object-contain"
+            className="perps-tutorial-character__image"
           />
         </Box>
 
@@ -66,7 +66,7 @@ const WhatArePerpsStep: React.FC = () => {
         </Text>
         <Text
           variant={TextVariant.BodyMd}
-          className="text-left text-alternative w-full mt-4"
+          className="text-left text-alternative w-full mt-2"
         >
           {t('perpsTutorialWhatArePerpsSubtitle')}
         </Text>

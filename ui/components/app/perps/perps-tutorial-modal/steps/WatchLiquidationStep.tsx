@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { Fit } from '@rive-app/react-canvas';
 import {
   Box,
   Button,
@@ -45,25 +44,21 @@ const WatchLiquidationStep: React.FC = () => {
     >
       <ProgressIndicator totalSteps={TOTAL_STEPS} currentStep={CURRENT_STEP} />
 
-      <Box className="flex-1 flex flex-col items-center px-6 py-4">
+      <Box className="flex-1 flex flex-col items-center px-6 pt-4 pb-2">
         <Text variant={TextVariant.HeadingLg} className="text-left mb-2 w-full">
           {t('perpsTutorialWatchLiquidationTitle')}
         </Text>
         <Text
           variant={TextVariant.BodyMd}
-          className="text-left text-alternative mb-4 w-full"
+          className="text-left text-alternative w-full"
         >
           {t('perpsTutorialWatchLiquidationDescription')}
         </Text>
         <Box
-          className="flex-1 min-h-0 w-full mt-4"
+          className="flex-1 flex items-center justify-center w-full"
           data-testid="perps-tutorial-step-image"
         >
-          <PerpsTutorialAnimation
-            artboardName="03_Liquidation"
-            className="w-full h-full"
-            fit={Fit.FitWidth}
-          />
+          <PerpsTutorialAnimation artboardName="03_Liquidation" />
         </Box>
       </Box>
 
