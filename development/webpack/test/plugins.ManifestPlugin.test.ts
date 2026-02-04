@@ -51,15 +51,6 @@ describe('ManifestPlugin', () => {
       webAccessibleResources: [undefined, ['filename.map.js']],
     };
 
-    // Clear require cache after each test to avoid module caching issues
-    afterEach(() => {
-      Object.keys(require.cache).forEach((key) => {
-        if (key.includes('fixtures/ManifestPlugin')) {
-          delete require.cache[key];
-        }
-      });
-    });
-
     generateCases(matrix).forEach(runTest);
 
     type TestCase = Combination<typeof matrix>;
