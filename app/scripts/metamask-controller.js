@@ -325,6 +325,7 @@ import {
 } from './controller-init/multichain';
 import {
   AssetsContractControllerInit,
+  AssetsControllerInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -618,6 +619,7 @@ export default class MetamaskController extends EventEmitter {
       BridgeStatusController: BridgeStatusControllerInit,
       NftController: NftControllerInit,
       AssetsContractController: AssetsContractControllerInit,
+      AssetsController: AssetsControllerInit,
       NftDetectionController: NftDetectionControllerInit,
       CurrencyRateController: CurrencyRateControllerInit,
       RatesController: RatesControllerInit,
@@ -736,6 +738,7 @@ export default class MetamaskController extends EventEmitter {
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
+    this.assetsController = controllersByName.AssetsController;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;
@@ -1259,6 +1262,7 @@ export default class MetamaskController extends EventEmitter {
       TokenBalancesController: this.tokenBalancesController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
+      AssetsController: this.assetsController,
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
@@ -1316,6 +1320,7 @@ export default class MetamaskController extends EventEmitter {
         TokenBalancesController: this.tokenBalancesController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
+        AssetsController: this.assetsController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         MultichainRatesController: this.multichainRatesController,
