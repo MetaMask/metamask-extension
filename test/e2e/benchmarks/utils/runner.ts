@@ -160,32 +160,6 @@ export async function runBenchmarkWithIterations(
   };
 }
 
-export function setupPerformanceReporting(): void {
-  // Reset the tracker before each test
-  beforeEach(function () {
-    performanceTracker.reset();
-  });
-
-  // Generate performance report after each test
-  afterEach(function () {
-    if (this.currentTest) {
-      const timerCount = performanceTracker.getTimerCount();
-      if (timerCount === 0) {
-        console.log(
-          '⚠️ No timers found in performance tracker, skipping report generation',
-        );
-        return;
-      }
-
-      console.log(`📊 Found ${timerCount} timers in performance tracker`);
-      performanceTracker.generateReport(
-        this.currentTest.title,
-        this.currentTest.file || 'unknown',
-      );
-    }
-  });
-}
-
 export type MeasurePageResult = {
   metrics: Metrics[];
   title: string;
