@@ -60,7 +60,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           await swapPage.checkPageIsLoaded();
         });
         performanceTracker.addTimer(timerOpenSwapPage);
-
+        await driver.delay(5000);
         // Measure: Fetch quotes (longer timeout in CI where quote fetching can be slow)
         const swapPage = new SwapPage(driver);
         await swapPage.createSolanaSwap({
