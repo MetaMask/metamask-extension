@@ -36,6 +36,7 @@ import UnifiedTransactionList from '../../app/transaction-list/unified-transacti
 import { PerpsTabView } from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { TestTab } from '../test-tab/TestTab';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
@@ -231,6 +232,10 @@ export const AccountOverviewTabs = ({
             </ErrorBoundary>
           </Tab>
         )}
+
+        <Tab name="Test" tabKey="test">
+          <TestTab />
+        </Tab>
       </Tabs>
     </>
   );
