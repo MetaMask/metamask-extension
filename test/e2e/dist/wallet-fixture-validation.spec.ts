@@ -128,7 +128,7 @@ describe('Wallet State', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-                // Perform the onboarding manual steps with e2e SRP and password to generate the logged in state
+        // Perform the onboarding manual steps with e2e SRP and password to generate the logged in state
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.importWallet();
 
