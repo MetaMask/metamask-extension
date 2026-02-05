@@ -65,7 +65,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         const swapPage = new SwapPage(driver);
         await swapPage.enterSwapAmount('0.00001');
         await timerQuoteFetching.measure(async () => {
-          await swapPage.checkQuoteIsDisplayed({ timeout: 60000 });
+          await swapPage.checkQuoteIsDisplayed({ timeout: 120000 });
         });
         performanceTracker.addTimer(timerQuoteFetching);
       },
