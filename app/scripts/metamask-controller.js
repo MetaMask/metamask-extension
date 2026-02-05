@@ -3490,13 +3490,10 @@ export default class MetamaskController extends EventEmitter {
           tokenBalancesController,
         ),
 
-      staticAssetsStartPolling: staticAssetsService.startPolling.bind(
-        staticAssetsService,
-      ),
+      staticAssetsStartPolling:
+        staticAssetsService.startPolling.bind(staticAssetsService),
       staticAssetsStopPollingByPollingToken:
-        staticAssetsService.stopPollingByPollingToken.bind(
-          staticAssetsService,
-        ),
+        staticAssetsService.stopPollingByPollingToken.bind(staticAssetsService),
       updateBalances: tokenBalancesController.updateBalances.bind(
         tokenBalancesController,
       ),
