@@ -73,7 +73,6 @@
     "showNetworkBanner": true,
     "showPermissionsTour": true,
     "showShieldEntryModalOnce": "boolean",
-    "showStorageErrorToast": false,
     "showTestnetMessageInDropdown": true,
     "sidePanelGasPollTokens": [],
     "signatureSecurityAlertResponses": "object",

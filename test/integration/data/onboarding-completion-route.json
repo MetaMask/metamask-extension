@@ -328,7 +328,6 @@
   "showBetaHeader": false,
   "showNetworkBanner": true,
   "showPermissionsTour": true,
-  "showStorageErrorToast": false,
   "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
   "slides": [],

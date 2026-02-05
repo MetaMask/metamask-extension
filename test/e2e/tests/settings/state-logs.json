@@ -928,7 +928,6 @@
     "showNetworkBanner": "boolean",
     "showPermissionsTour": "boolean",
     "showShieldEntryModalOnce": "boolean",
-    "showStorageErrorToast": "boolean",
     "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
