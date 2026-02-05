@@ -15,9 +15,11 @@ import {
 } from '../fixtures/fixture-validation';
 import OnboardingSrpPage from '../page-objects/pages/onboarding/onboarding-srp-page';
 import OnboardingPasswordPage from '../page-objects/pages/onboarding/onboarding-password-page';
-import OnboardingMetricsPage from '../page-objects/pages/onboarding/onboarding-metrics-page';
 import OnboardingCompletePage from '../page-objects/pages/onboarding/onboarding-complete-page';
-import { handleSidepanelPostOnboarding } from '../page-objects/flows/onboarding.flow';
+import {
+  handleSidepanelPostOnboarding,
+  onboardingMetricsFlow,
+} from '../page-objects/flows/onboarding.flow';
 import HomePage from '../page-objects/pages/home/homepage';
 import OnboardingPrivacySettingsPage from '../page-objects/pages/onboarding/onboarding-privacy-settings-page';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
@@ -156,6 +158,7 @@ describe('Wallet State', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
+        // Perform the onboarding manual steps with e2e SRP and password to generate the logged in state
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.importWallet();
 
@@ -168,13 +171,10 @@ describe('Wallet State', function () {
         await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
 
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.checkPageIsLoaded();
-        await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
-        await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
-
-        await onboardingMetricsPage.validateParticipateInMetaMetricsIsChecked();
-        await onboardingMetricsPage.clickOnContinueButton();
+        await onboardingMetricsFlow(driver, {
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: true,
+        });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
@@ -204,6 +204,8 @@ describe('Wallet State', function () {
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openSettingsPage();
 
+        // Set the settings to match the desired fixture state:
+        // 1. enabled test networks and 2. enabled native balance
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.checkPageIsLoaded();
         await generalSettings.toggleShowNativeTokenAsMainBalance();
@@ -216,6 +218,7 @@ describe('Wallet State', function () {
         await advancedSettings.toggleShowTestnets();
         await settingsPage.closeSettingsPage();
 
+        // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
         await switchToNetworkFromNetworkSelect(
           driver,
           'Popular',

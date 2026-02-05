@@ -57,6 +57,8 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
   'data.AppStateController.termsOfUseLastAgreed',
+  'data.CurrencyController.currencyRates.ETH.conversionDate',
+  'data.CurrencyController.currencyRates.ETH.conversionRate',
   'data.MetaMetricsController.latestNonAnonymousEventTimestamp',
   'data.MetaMetricsController.tracesBeforeMetricsOptIn',
   'data.MetaMetricsController.traits.install_date_ext',
