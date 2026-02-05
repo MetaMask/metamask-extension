@@ -25,7 +25,9 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
+  PERPS_HOME_ROUTE,
 } from '../../helpers/constants/routes';
+import { usePerpsDepositTrigger } from '../confirmations/hooks/perps/usePerpsDepositTrigger';
 import {
   mockPositions,
   mockOrders,
@@ -52,6 +54,9 @@ const PerpsHomePage: React.FC = () => {
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const navigate = useNavigate();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const { trigger: triggerPerpsDeposit } = usePerpsDepositTrigger({
+    returnTo: PERPS_HOME_ROUTE,
+  });
 
   // Filter positions (only crypto for now, limit to 3)
   const positions = useMemo(() => {
@@ -149,9 +154,7 @@ const PerpsHomePage: React.FC = () => {
       {/* Balance Actions */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
         <PerpsMarketBalanceActions
-          onAddFunds={() => {
-            // TODO: Navigate to add funds flow
-          }}
+          onAddFunds={triggerPerpsDeposit}
           onWithdraw={() => {
             // TODO: Navigate to withdraw flow
           }}
