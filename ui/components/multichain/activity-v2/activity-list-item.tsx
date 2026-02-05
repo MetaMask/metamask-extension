@@ -18,8 +18,8 @@ import {
   selectNetworkConfigurationByChainId,
 } from '../../../selectors/selectors';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import {
-  extractCategory,
   extractAmountAndSymbol,
   calculateFiatFromMarketRates,
   mapChainInfo,
@@ -43,10 +43,13 @@ export const ActivityListItem = ({
   const { formatTokenQuantity, formatCurrencyWithMinThreshold } =
     useFormatters();
   const selectedAddress = useSelector(getSelectedAddress)?.toLowerCase();
-  const { readable, chainId, isError, pendingTransactionMeta } = transaction;
-
-  // Infer transaction category from transaction type
-  const { category } = extractCategory(transaction, selectedAddress);
+  const {
+    readable,
+    chainId,
+    isError,
+    pendingTransactionMeta,
+    category = TransactionGroupCategory.interaction,
+  } = transaction;
 
   const chainIdHex = `0x${transaction.chainId.toString(16)}`;
   const nativeCurrency = useSelector((state) =>

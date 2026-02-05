@@ -9,7 +9,6 @@ type Params = {
   limit?: number;
 };
 
-// THIS can be in a shared package
 export async function fetchV4MultiAccountTransactions(
   params: Params,
 ): Promise<V4MultiAccountTransactionsResponse> {

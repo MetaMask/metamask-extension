@@ -3,17 +3,15 @@ import type {
   FlattenedItem,
   TransactionViewModel,
 } from '../../../../shared/acme-controller/types';
-import { TransactionType } from '@metamask/transaction-controller';
 import {
-  TransactionGroupCategory,
   NATIVE_TOKEN_ADDRESS,
+  TransactionGroupCategory,
 } from '../../../../shared/constants/transaction';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { mapTransactionTypeToCategory } from '../../app/transaction-list-item/helpers';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 
 export function formatDate(timestamp: number) {
@@ -156,95 +154,31 @@ export function mapChainInfo(chainId: number) {
   };
 }
 
-// Can this be done from the API side?
-export function inferTransactionTypeFromApi(transaction: TransactionViewModel) {
-  const { to, methodId, value, valueTransfers, transactionType } = transaction;
-
-  // Use API's transactionType for known types
-  if (transactionType === 'ERC_20_APPROVE') {
-    return TransactionType.tokenMethodApprove;
-  }
-  if (transactionType === 'ERC_20_TRANSFER') {
-    return TransactionType.tokenMethodTransfer;
-  }
-  if (transactionType === 'METAMASK_V1_EXCHANGE') {
-    return TransactionType.swap;
-  }
-  if (transactionType === 'METAMASK_BRIDGE_V2_BRIDGE_OUT') {
-    return TransactionType.bridge;
-  }
-
-  // Token transfers with valueTransfers
-  if (valueTransfers && valueTransfers.length > 0) {
-    const transfer = valueTransfers[0];
-    if (transfer.transferType === 'erc20') {
-      return TransactionType.tokenMethodTransfer;
-    }
-    if (transfer.transferType === 'erc721') {
-      return TransactionType.tokenMethodTransferFrom;
-    }
-    if (transfer.transferType === 'erc1155') {
-      return TransactionType.tokenMethodSafeTransferFrom;
-    }
-  }
-
-  if (!to) {
-    return TransactionType.deployContract;
-  }
-
-  // Check if sending native currency (ETH, POL, etc.)
-  const hasNativeValue =
-    value && value !== '0x0' && value !== '0x' && BigInt(value) > 0;
-
-  if (hasNativeValue && (!valueTransfers || valueTransfers.length === 0)) {
-    return TransactionType.simpleSend;
-  }
-
-  // Has contract interaction data (methodId)
-  if (methodId && methodId !== '0x' && methodId !== null) {
-    return TransactionType.contractInteraction;
-  }
-
-  // TODO: Default
-  return TransactionType.simpleSend;
-}
-
-// Can this be done from the API side?
-export function extractCategory(
+function extractTransferAmountAndSymbol(
   transaction: TransactionViewModel,
-  accountAddress: string,
-) {
-  const { to, from } = transaction;
-
-  // Check if this is an incoming transaction
-  const isReceive = isEqualCaseInsensitive(to, accountAddress);
-  const isSend = isEqualCaseInsensitive(from, accountAddress);
-
-  // Infer the transaction type from API data
-  let transactionType = inferTransactionTypeFromApi(transaction);
-
-  // If receiving, override to incoming type
-  if (isReceive && !isSend) {
-    transactionType = TransactionType.incoming;
-  }
-
-  // Use V1's categorization logic
-  const category = mapTransactionTypeToCategory(transactionType);
-
-  return { category: category || TransactionGroupCategory.interaction };
-}
-
-// Can this be done from the API side?
-export function extractAmountAndSymbol(
-  transaction: TransactionViewModel,
-  selectedAddress: string | undefined,
   nativeCurrency?: string,
-) {
-  const { value, valueTransfers, from } = transaction;
-  const isSend =
-    from && selectedAddress && isEqualCaseInsensitive(from, selectedAddress);
+): { amount: number; symbol: string | undefined } {
+  const { value, valueTransfers, category } = transaction;
 
-  // Token transfer (only if valid transfer data exists)
+  // For swaps, prioritize showing native currency (what you spent) over tokens received
+  // Ported from useTransactionDisplayData - swaps show source token/amount by default
+  const isSwap = category === TransactionGroupCategory.swap;
+  if (isSwap && value && value !== '0' && value !== '0x0') {
+    let numericValue: number;
+    if (value.startsWith('0x')) {
+      const bigIntValue = BigInt(value);
+      numericValue = Number(bigIntValue) / 1e18;
+    } else {
+      numericValue = parseFloat(value) / 1e18;
+    }
+    return {
+      amount: numericValue,
+      symbol: nativeCurrency,
+    };
+  }
+
+  // Token transfer
+  // Ported from useTransactionDisplayData - uses tokenDisplayValue/transferInformation
   if (
     valueTransfers &&
     valueTransfers.length > 0 &&
@@ -253,33 +187,114 @@ export function extractAmountAndSymbol(
     const transfer = valueTransfers[0];
     const amt =
       parseFloat(transfer.amount) / Math.pow(10, transfer.decimal ?? 18);
-    const isTokenSend =
-      transfer.from &&
-      selectedAddress &&
-      isEqualCaseInsensitive(transfer.from, selectedAddress);
     return {
-      amount: isTokenSend ? -amt : amt,
+      amount: amt,
       symbol: transfer.symbol || '',
     };
   }
 
-  // Native currency
+  // Native currency transfer
+  // Ported from useTransactionDisplayData - uses primaryValue (txParams.value)
   if (value && value !== '0' && value !== '0x0') {
-    // Use string manipulation to avoid precision loss with very small amounts
     let numericValue: number;
     if (value.startsWith('0x')) {
-      // Convert hex to decimal, handling very small values
       const bigIntValue = BigInt(value);
       numericValue = Number(bigIntValue) / 1e18;
     } else {
       numericValue = parseFloat(value) / 1e18;
     }
     return {
-      amount: isSend ? -numericValue : numericValue,
+      amount: numericValue,
       symbol: nativeCurrency,
     };
   }
 
+  return { amount: 0, symbol: '' };
+}
+
+export function extractAmountAndSymbol(
+  transaction: TransactionViewModel,
+  selectedAddress: string | undefined,
+  nativeCurrency?: string,
+) {
+  const { from, to, valueTransfers, category, value } = transaction;
+
+  // Check if this is a simple transfer (send or receive)
+  // Ported from useTransactionDisplayData logic
+  const isTransfer =
+    category === TransactionGroupCategory.send ||
+    category === TransactionGroupCategory.receive;
+
+  // For simple transfers, check if address is involved and extract amount
+  if (isTransfer) {
+    if (
+      valueTransfers &&
+      valueTransfers.length > 0 &&
+      valueTransfers[0].contractAddress
+    ) {
+      // Token transfer - check if we're sender or recipient of the token
+      const transfer = valueTransfers[0];
+      const isTransferFrom =
+        transfer.from &&
+        selectedAddress &&
+        isEqualCaseInsensitive(transfer.from, selectedAddress);
+      const isTransferTo =
+        transfer.to &&
+        selectedAddress &&
+        isEqualCaseInsensitive(transfer.to, selectedAddress);
+
+      if (!isTransferFrom && !isTransferTo) {
+        return { amount: 0, symbol: '' };
+      }
+    } else {
+      // Native transfer - check if we're sender or recipient of the transaction
+      const isFrom =
+        from &&
+        selectedAddress &&
+        isEqualCaseInsensitive(from, selectedAddress);
+      const isTo =
+        to && selectedAddress && isEqualCaseInsensitive(to, selectedAddress);
+
+      if (!isFrom && !isTo) {
+        return { amount: 0, symbol: '' };
+      }
+    }
+
+    // Can this be done from the API side?
+    const { amount, symbol } = extractTransferAmountAndSymbol(
+      transaction,
+      nativeCurrency,
+    );
+
+    if (amount === 0) {
+      return { amount: 0, symbol: '' };
+    }
+
+    // Apply sign based on direction
+    // Default prefix is '-' (send), changed to '+' for receives (V1 line 143)
+    return {
+      amount: category === TransactionGroupCategory.send ? -amount : amount,
+      symbol,
+    };
+  }
+
+  // For swaps and other types, prioritize showing native currency (what you spent)
+  // Ported from useTransactionDisplayData - swaps show source token/amount by default
+  if (value && value !== '0' && value !== '0x0') {
+    let numericValue: number;
+    if (value.startsWith('0x')) {
+      const bigIntValue = BigInt(value);
+      numericValue = Number(bigIntValue) / 1e18;
+    } else {
+      numericValue = parseFloat(value) / 1e18;
+    }
+    return {
+      amount: -numericValue,
+      symbol: nativeCurrency,
+    };
+  }
+
+  // Fallback to empty
   return { amount: 0, symbol: '' };
 }
 

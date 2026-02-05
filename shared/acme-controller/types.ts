@@ -1,4 +1,5 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionGroupCategory } from '../constants/transaction';
 
 export type V1TransactionByHashResponse = {
   hash: string;
@@ -60,6 +61,7 @@ export type TransactionViewModel = Pick<
       'hash' | 'timestamp' | 'chainId' | 'value' | 'to' | 'from'
     >
   > & {
+    category?: TransactionGroupCategory;
     pendingTransactionMeta?: TransactionMeta;
   };
 

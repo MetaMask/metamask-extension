@@ -39,7 +39,9 @@ export const getPendingTransactions = createSelector(
             let symbol: string | undefined;
 
             const tokenChange = tx.simulationData.tokenBalanceChanges[0];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const gasFeeToken = (tx.gasFeeTokens as any)?.find(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (token: any) =>
                 token.tokenAddress?.toLowerCase() ===
                 tokenChange.address?.toLowerCase(),

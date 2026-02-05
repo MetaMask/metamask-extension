@@ -17,6 +17,7 @@ import type {
 } from '../../../../shared/acme-controller/types';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { queries } from '../../../../shared/acme-controller/queries';
+import { filterTransactions } from '../../../../shared/acme-controller/business-logic';
 import {
   groupTransactionsByDate,
   flattenGroupedTransactions,
@@ -56,13 +57,19 @@ export const ActivityList = () => {
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(queries.transactions(accountAddress));
 
+  const filteredData = useMemo(() => {
+    return data ? filterTransactions(data, accountAddress) : undefined;
+  }, [data, accountAddress]);
+
   // Merge pending and confirmed transactions, then flatten for virtualization
   const flattenedItems: FlattenedItem[] = useMemo(() => {
-    if (!data?.pages) {
+    if (!filteredData?.pages) {
       return [];
     }
 
-    const apiTransactions = data.pages.flatMap((page) => page.data ?? []);
+    const apiTransactions = filteredData.pages.flatMap(
+      (page) => page.data ?? [],
+    );
 
     const allTransactions = mergeTransactions(
       pendingTransactions,
@@ -71,7 +78,7 @@ export const ActivityList = () => {
 
     const grouped = groupTransactionsByDate(allTransactions);
     return flattenGroupedTransactions(grouped);
-  }, [data, pendingTransactions]);
+  }, [filteredData, pendingTransactions]);
 
   const virtualizer = useVirtualizer({
     count: flattenedItems.length,
