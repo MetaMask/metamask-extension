@@ -12,6 +12,7 @@ import {
   hasSchemaDifferences,
   mergeFixtureChanges,
   readFixtureFile,
+  removeIgnoredKeys,
 } from '../fixtures/fixture-validation';
 import OnboardingSrpPage from '../page-objects/pages/onboarding/onboarding-srp-page';
 import OnboardingPasswordPage from '../page-objects/pages/onboarding/onboarding-password-page';
@@ -130,12 +131,15 @@ describe('Wallet State', function () {
           throw error;
         }
 
+        // Remove ignored keys from the final state before writing
+        const filteredState = removeIgnoredKeys(finalState);
+
         console.log(`\n📂 Output: ${outPath}`);
         console.log(
           '\n=============================================================================\n',
         );
 
-        await fs.writeJson(outPath, finalState, { spaces: 2 });
+        await fs.writeJson(outPath, filteredState, { spaces: 2 });
       },
     );
   });
@@ -318,12 +322,15 @@ describe('Wallet State', function () {
           throw error;
         }
 
+        // Remove ignored keys from the final state before writing
+        const filteredState = removeIgnoredKeys(finalState);
+
         console.log(`\n📂 Output: ${outPath}`);
         console.log(
           '\n=============================================================================\n',
         );
 
-        await fs.writeJson(outPath, finalState, { spaces: 2 });
+        await fs.writeJson(outPath, filteredState, { spaces: 2 });
       },
     );
   });

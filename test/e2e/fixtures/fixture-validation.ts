@@ -377,6 +377,33 @@ export const mergeFixtureChanges = (
 };
 
 /**
+ * Removes ignored keys from a fixture object.
+ * This ensures that ignored keys are completely excluded from the exported fixture.
+ *
+ * @param fixture - The fixture object to filter
+ * @returns A new fixture object with ignored keys removed
+ */
+export const removeIgnoredKeys = (fixture: JsonLike): JsonLike => {
+  const filtered = JSON.parse(JSON.stringify(fixture)) as JsonLike;
+  const ignoredKeys = getFixtureIgnoredKeys();
+
+  // Get all keys from the fixture as a type map
+  const allKeys = Object.keys(toTypeMap(filtered));
+
+  // Delete ignored keys in reverse order (deepest first) to avoid parent deletion issues
+  const keysToDelete = allKeys
+    .filter((key) => shouldIgnoreKey(key, ignoredKeys))
+    .sort((a, b) => b.split('.').length - a.split('.').length);
+
+  for (const keyPath of keysToDelete) {
+    const leafPath = getLeafKeyPath(keyPath);
+    unset(filtered, leafPath);
+  }
+
+  return filtered;
+};
+
+/**
  * Checks if a schema diff contains any differences.
  *
  * @param schemaDiff - The schema diff to check
