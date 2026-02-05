@@ -363,6 +363,26 @@ const state = {
             },
           },
         },
+        'snap:npm:@metamask/test-snap-bip44': {
+          id: 'snap:npm:@metamask/test-snap-bip44',
+          type: 'snap',
+          groups: {
+            'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0': {
+              id: 'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+              type: 'single-account',
+              accounts: ['64f9d02e-47e6-4dfd-8232-f3518606cad3'],
+              metadata: {
+                name: 'Snap Account 1',
+              },
+            },
+          },
+          metadata: {
+            name: 'BIP-44',
+            snap: {
+              id: 'npm:@metamask/test-snap-bip44',
+            },
+          }
+        },
       },
     },
     internalAccounts: {
@@ -430,6 +450,25 @@ const state = {
             name: 'Test Account 1',
             keyring: {
               type: 'Test Keyring',
+            },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
+        },
+        '64f9d02e-47e6-4dfd-8232-f3518606cad3': {
+          address: '0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+          id: '64f9d02e-47e6-4dfd-8232-f3518606cad3',
+          metadata: {
+            name: 'Snap Account 1',
+            keyring: {
+              type: 'Snap Keyring',
+            },
+            snap: {
+              enabled: true,
+              id: 'npm:@metamask/test-snap-bip44',
+              name: 'BIP-44',
             },
           },
           options: {},
@@ -1233,6 +1272,14 @@ const state = {
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
         metadata: {
           id: '01JN08T38HEXPYQX2HKP1FCRMZ',
+          name: '',
+        },
+      },
+      {
+        type: KeyringType.snap,
+        accounts: ['0xde939393DDe455081fFb3Dfd027E189919F04BD0'],
+        metadata: {
+          id: '',
           name: '',
         },
       },
