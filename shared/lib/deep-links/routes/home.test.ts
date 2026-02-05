@@ -26,11 +26,11 @@ describe('homeRoute', () => {
     'homeRoute.handler correctly handles openNetworkSelector param: input=$searchParamVal, expected=$expected',
     ({ searchParamVal, expected }: TestCase) => {
       const params =
-        searchParamVal !== undefined
-          ? new URLSearchParams({
+        typeof searchParamVal === 'undefined'
+          ? new URLSearchParams()
+          : new URLSearchParams({
               [HomeQueryParams.OpenNetworkSelector]: searchParamVal,
-            })
-          : new URLSearchParams();
+            });
 
       const result = homeRoute.handler(params);
 
