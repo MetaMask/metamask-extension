@@ -109,7 +109,6 @@ function stripLargeSnapData(snapData: Snap): Partial<Snap> {
     ...snapData,
   };
 
-  delete newData.sourceCode;
   delete newData.auxiliaryFiles;
 
   return newData;
