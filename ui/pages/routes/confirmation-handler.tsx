@@ -80,10 +80,7 @@ export const ConfirmationHandler = () => {
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
-    if (canRedirect && showAwaitingSwapScreen) {
-      closeModals();
-      navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
-    } else if (canRedirect && hasBridgeQuotes && isPopup) {
+    if (canRedirect && hasBridgeQuotes && isPopup) {
       closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
@@ -104,11 +101,8 @@ export const ConfirmationHandler = () => {
     closeModals,
     hasApprovalFlows,
     hasBridgeQuotes,
-    hasSwapsQuotes,
     navigate,
     pendingApprovals,
-    showAwaitingSwapScreen,
-    swapsFetchParams,
     isPopup,
   ]);
 
