@@ -1260,9 +1260,20 @@
     "message": "This gas fee will $1 the original.",
     "description": "$1 is text 'replace' in bold"
   },
+  "cancelTransactionTitle": {
+    "message": "Cancel transaction"
+  },  "speedUpTransactionTitle": {
+    "message": "Speed up transaction"
+  },
   "cancelSpeedUpTransactionTooltip": {
     "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelTransactionDescription": {
+    "message": "This transaction will be canceled and this network fee will replace the original."
+  },
+  "speedUpTransactionDescription": {
+    "message": "This network fee will replace the original."
   },
   "cancelled": {
     "message": "Cancelled"

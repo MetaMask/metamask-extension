@@ -107,6 +107,7 @@ export function useGasFeeInputs(
     userFeeLevel: _transaction?.userFeeLevel,
     originalGasEstimate: _transaction?.originalGasEstimate,
     userEditedGasLimit: _transaction?.userEditedGasLimit,
+    chainId: _transaction?.chainId,
   };
 
   if (_transaction?.previousGas) {
@@ -119,6 +120,7 @@ export function useGasFeeInputs(
     ? retryTxMeta
     : _transaction;
 
+  console.log('>>> useGasFeeInputs transaction:', transaction);
   const network = useSelector((state) =>
     selectNetworkConfigurationByChainId(state, transaction?.chainId),
   );

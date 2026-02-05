@@ -40,9 +40,14 @@ export const EditGasFeesRow = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, disableGasEdit } =
     useConfirmContext<TransactionMeta>();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
+
+  console.log('editGasFeeRow transactionMeta >>>>>', {
+    disableGasEdit,
+    transactionMeta,
+  });
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
@@ -59,8 +64,11 @@ export const EditGasFeesRow = ({
   const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
   const nativeTokenSymbol = useTransactionNativeTicker() ?? '';
 
+  console.log('editGasFeeRow >>>>>', {chainId});
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
+
+  console.log('editGasFeeRow >>>>>', { simulationData, balanceChangesResult });
 
   // This prevents the gas fee row from showing as sponsored if stx is disabled
   // by the user and 7702 is not supported in the chain.
@@ -75,7 +83,10 @@ export const EditGasFeesRow = ({
   }
 
   const isGasFeeEditable =
-    !isQuotedSwapDisplayedInInfo && !gasFeeToken && !isGasFeeSponsored;
+    !isQuotedSwapDisplayedInInfo &&
+    !gasFeeToken &&
+    !isGasFeeSponsored &&
+    !disableGasEdit;
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
@@ -87,7 +98,7 @@ export const EditGasFeesRow = ({
         tooltip={tooltip}
         style={{ alignItems: AlignItems.center }}
       >
-        {isLoadingGasUsed ? (
+        {isLoadingGasUsed && !disableGasEdit ? (
           <Skeleton height={16} width={128} />
         ) : (
           <Box

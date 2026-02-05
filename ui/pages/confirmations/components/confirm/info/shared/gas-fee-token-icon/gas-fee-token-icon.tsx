@@ -73,7 +73,9 @@ export function GasFeeTokenIcon({
     );
   }
 
-  const { nativeCurrency } = networkConfiguration;
+  console.log('GasFeeTokenIcon >>>>>', { chainId, networkConfiguration });
+  const { nativeCurrency } = networkConfiguration ?? {};
+  console.log('GasFeeTokenIcon >>>>> DONE', { chainId, networkConfiguration });
 
   const source =
     CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];

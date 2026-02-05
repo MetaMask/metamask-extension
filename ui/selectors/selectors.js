@@ -1347,7 +1347,9 @@ export const selectConversionRateByChainId = createSelector(
       return undefined;
     }
 
+    console.log('selectConversionRateByChainId > Network configuration:', networkConfiguration);
     const { nativeCurrency } = networkConfiguration;
+    console.log('selectConversionRateByChainId > Network configuration: DONE', networkConfiguration);
     return state.metamask.currencyRates[nativeCurrency]?.conversionRate;
   },
 );
@@ -1945,7 +1947,9 @@ export const getUSDConversionRateByChainId = (chainId) =>
         return undefined;
       }
 
+      console.log('getUSDConversionRateByChainId > Network configuration:', networkConfiguration);
       const { nativeCurrency } = networkConfiguration;
+      console.log('getUSDConversionRateByChainId > Network configuration: DONE', networkConfiguration);
       return currencyRates[nativeCurrency]?.usdConversionRate;
     },
   );
