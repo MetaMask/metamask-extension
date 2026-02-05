@@ -1027,6 +1027,14 @@ function setupBundlerDefaults(
             // Charting library (ESM-only)
             './**/node_modules/lightweight-charts',
             './**/node_modules/fancy-canvas',
+            // Perps controller ESM dependencies
+            './**/node_modules/valibot',
+            './**/node_modules/@nktkas',
+            './**/node_modules/@noble/hashes',
+            './**/node_modules/@noble/curves',
+            './**/node_modules/@scure',
+            './**/node_modules/micro-eth-signer',
+            './**/node_modules/micro-packed',
           ],
           global: true,
         },
