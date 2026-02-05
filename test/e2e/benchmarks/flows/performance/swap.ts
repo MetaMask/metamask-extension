@@ -63,16 +63,33 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         await driver.delay(5000);
         // Measure: Fetch quotes (longer timeout in CI where quote fetching can be slow)
         const swapPage = new SwapPage(driver);
-        await swapPage.createSolanaSwap({
-          amount: 0.00001,
-          swapTo: 'USDC',
-          swapFrom: 'SOL',
-        });
+        try {
+          await swapPage.createSolanaSwap({
+            amount: 0.00001,
+            swapTo: 'USDC',
+            swapFrom: 'SOL',
+          });
 
-        await timerQuoteFetching.measure(async () => {
-          await swapPage.checkQuoteIsDisplayed({ timeout: 60000 });
-        });
-        performanceTracker.addTimer(timerQuoteFetching);
+          await timerQuoteFetching.measure(async () => {
+            await swapPage.checkQuoteIsDisplayed({ timeout: 60000 });
+          });
+          performanceTracker.addTimer(timerQuoteFetching);
+        } catch (quoteError) {
+          try {
+            await (
+              driver as {
+                takeScreenshot(title: string, name: string): Promise<void>;
+              }
+            ).takeScreenshot(testTitle, 'swap-quote-timeout-slippage-edit-button');
+            console.error(
+              'Screenshot saved to test-artifacts (see job artifacts in CI). Quote wait failed:',
+              quoteError,
+            );
+          } catch (screenshotError) {
+            console.error('Failed to take screenshot:', screenshotError);
+          }
+          throw quoteError;
+        }
       },
     );
 
