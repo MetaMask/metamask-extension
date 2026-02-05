@@ -299,7 +299,7 @@
     "@metamask/accounts-controller": "^34.0.0",
     "@metamask/address-book-controller": "^7.0.0",
     "@metamask/announcement-controller": "^8.0.0",
-    "@metamask/application-state-controller": "file:../core/packages/application-state-controller",
+    "@metamask/client-controller": "file:../core/packages/client-controller",
     "@metamask/approval-controller": "^8.0.0",
     "@metamask/assets-controllers": "^99.0.0",
     "@metamask/base-controller": "^9.0.0",

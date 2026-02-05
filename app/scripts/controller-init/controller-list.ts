@@ -97,7 +97,7 @@ import { NetworkOrderController } from '../controllers/network-order';
 import OAuthService from '../services/oauth/oauth-service';
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
-import { ApplicationStateController } from '@metamask/application-state-controller';
+import { ClientController } from '@metamask/client-controller';
 
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
@@ -124,7 +124,7 @@ export type Controller =
   | AppMetadataController
   | ApprovalController
   | AppStateController
-  | ApplicationStateController
+  | ClientController
   | AuthenticationController
   | BridgeController
   | BridgeStatusController
