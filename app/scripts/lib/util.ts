@@ -86,13 +86,56 @@ const getEnvironmentTypeMemo = memoize((url) => {
 const getEnvironmentType = (url = window.location.href) =>
   getEnvironmentTypeMemo(url);
 
+// Brand to platform mapping for userAgentData.brands detection
+// Used as fallback when UA string detection returns Chrome or Other
+const BRAND_TO_PLATFORM_MAP: Record<string, Platform> = {
+  Brave: PLATFORM_BRAVE,
+  'Microsoft Edge': PLATFORM_EDGE,
+  Opera: PLATFORM_OPERA,
+  Vivaldi: PLATFORM_VIVALDI,
+  Whale: PLATFORM_WHALE,
+  YaBrowser: PLATFORM_YANDEX,
+  Yandex: PLATFORM_YANDEX,
+  'Samsung Internet': PLATFORM_SAMSUNG,
+  Lemur: PLATFORM_LEMUR,
+  Mises: PLATFORM_MISES,
+};
+
 /**
- * Returns the platform (browser) where the extension is running.
- * Detects specific browsers based on their user agent strings or navigator properties.
+ * Detects platform from userAgentData.brands.
+ * Filters out noise brands (Chromium, GREASE brands) and matches against known browsers.
  *
- * @returns the platform ENUM
+ * @returns the matched Platform or undefined if not detected
  */
-const getPlatform = (): Platform => {
+const getPlatformFromBrands = (): Platform | undefined => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { userAgentData } = window.navigator as any;
+  if (!userAgentData?.brands) {
+    return undefined;
+  }
+
+  // Extract brand names
+  const brands: string[] = userAgentData.brands.map(
+    (b: { brand: string }) => b.brand,
+  );
+
+  // Check each brand against our mapping
+  for (const brand of brands) {
+    const platform = BRAND_TO_PLATFORM_MAP[brand];
+    if (platform) {
+      return platform;
+    }
+  }
+
+  return undefined;
+};
+
+/**
+ * Detects platform from the User-Agent string.
+ *
+ * @returns the detected Platform
+ */
+const getPlatformFromUserAgent = (): Platform => {
   const { navigator } = window;
   const { userAgent } = navigator;
 
@@ -172,6 +215,34 @@ const getPlatform = (): Platform => {
 
   // Unknown browser
   return PLATFORM_OTHER;
+};
+
+/**
+ * Returns the platform (browser) where the extension is running.
+ * Uses a hybrid approach: first tries UA string detection, then falls back to
+ * userAgentData.brands for browsers that hide their identity in the UA string
+ * but expose it via the Client Hints API (e.g., Lemur, Mises).
+ *
+ * @returns the platform ENUM
+ */
+const getPlatform = (): Platform => {
+  // First, try to detect from User-Agent string
+  const platformFromUA = getPlatformFromUserAgent();
+
+  // If UA detection found a specific browser, use it
+  if (platformFromUA !== PLATFORM_CHROME && platformFromUA !== PLATFORM_OTHER) {
+    return platformFromUA;
+  }
+
+  // UA returned Chrome or Other - try userAgentData.brands as fallback
+  // Some browsers (Lemur, Mises) hide their identity in UA but expose it in brands
+  const platformFromBrands = getPlatformFromBrands();
+  if (platformFromBrands) {
+    return platformFromBrands;
+  }
+
+  // Return what UA detection found (Chrome or Other)
+  return platformFromUA;
 };
 
 /**
