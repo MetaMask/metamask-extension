@@ -93,6 +93,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // eth_sendTransaction request
         await testDappOne.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -102,7 +105,6 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
-        const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
         await transactionConfirmation.clickFooterConfirmButton();

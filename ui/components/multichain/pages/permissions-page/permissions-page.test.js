@@ -140,7 +140,7 @@ describe('All Connections', () => {
     it('renders permissions title when Gator Permissions feature is disabled', () => {
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('permissions-page-title')).toHaveTextContent(
-        'Permissions',
+        'Dapp Connections',
       );
     });
 

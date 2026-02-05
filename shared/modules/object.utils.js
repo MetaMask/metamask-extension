@@ -21,6 +21,11 @@ export const AllProperties = Symbol('*');
  * @param {{[key: string]: object | boolean}} mask - The mask to apply to the object
  */
 export function maskObject(object, mask) {
+  // make sure the object is actually an object, if not, just return its type
+  if (typeof object !== 'object' || object === null) {
+    // As typeof null (misleadingly) returns “object,” it would be more readable to display “null” instead of “object.”
+    return object === null ? null : typeof object;
+  }
   let maskAllProperties = false;
   if (Object.keys(mask).includes(AllProperties)) {
     if (Object.keys(mask).length > 1) {
