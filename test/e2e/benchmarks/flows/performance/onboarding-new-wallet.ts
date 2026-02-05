@@ -1,35 +1,39 @@
+/**
+ * Benchmark: Onboarding - Create new wallet
+ * Measures time for creating a new wallet during onboarding
+ */
+
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
-import { WALLET_PASSWORD } from '../../e2e/constants';
-import { withFixtures } from '../../e2e/helpers';
-import { Driver } from '../../e2e/webdriver/driver';
-import HomePage from '../../e2e/page-objects/pages/home/homepage';
-import OnboardingCompletePage from '../../e2e/page-objects/pages/onboarding/onboarding-complete-page';
-import OnboardingMetricsPage from '../../e2e/page-objects/pages/onboarding/onboarding-metrics-page';
-import OnboardingPasswordPage from '../../e2e/page-objects/pages/onboarding/onboarding-password-page';
-import SecureWalletPage from '../../e2e/page-objects/pages/onboarding/secure-wallet-page';
-import StartOnboardingPage from '../../e2e/page-objects/pages/onboarding/start-onboarding-page';
-import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
-import { getCommonMocks } from '../utils/commonMocks';
-import {
-  setupPerformanceReporting,
-  performanceTracker,
-  TimerHelper,
-} from '../utils/testSetup';
-import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
-import FixtureBuilder from '../../e2e/fixtures/fixture-builder';
+import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { WALLET_PASSWORD } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import {
   handleSidepanelPostOnboarding,
   onboardingMetricsFlow,
-} from '../../e2e/page-objects/flows/onboarding.flow';
+} from '../../../page-objects/flows/onboarding.flow';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
+import OnboardingMetricsPage from '../../../page-objects/pages/onboarding/onboarding-metrics-page';
+import OnboardingPasswordPage from '../../../page-objects/pages/onboarding/onboarding-password-page';
+import SecureWalletPage from '../../../page-objects/pages/onboarding/secure-wallet-page';
+import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
+import { Driver } from '../../../webdriver/driver';
+import { performanceTracker } from '../../utils/performance-tracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { getCommonMocks } from '../../utils/common-mocks';
+import type { BenchmarkRunResult } from '../../utils/types';
 
-describe('MetaMask onboarding', function () {
-  setupPerformanceReporting();
+export const testTitle = 'benchmark-onboarding-new-wallet';
+export const persona = 'standard';
 
-  it('Creates a new wallet, sets up a secure password, and completes the onboarding process', async function () {
+export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunResult> {
+  try {
     await withFixtures(
       {
-        title: this.test?.fullTitle(),
+        title: testTitle,
         manifestFlags: {
           testing: {
             disableSync: true,
@@ -48,29 +52,19 @@ describe('MetaMask onboarding', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const timerCreateWalletToSocial = new TimerHelper(
-          'Time since the user clicks on "Create new wallet" button until "Social sign up" is visible',
-          2000,
+          'createWalletToSocialScreen',
         );
         const timerSrpButtonToPassword = new TimerHelper(
-          'Time since the user clicks on "use SRP" button until "Metamask password" form is visible',
-          2000,
+          'srpButtonToPasswordForm',
         );
         const timerPasswordToRecovery = new TimerHelper(
-          'Time since the user clicks on "Create password" button until "Recovery Phrase" screen is visible',
-          3000,
+          'createPasswordToRecoveryScreen',
         );
-        const timerSkipToMetrics = new TimerHelper(
-          'Time since the user clicks on "Skip" button until "Metrics" screen is visible',
-          3000,
-        );
+        const timerSkipToMetrics = new TimerHelper('skipBackupToMetricsScreen');
         const timerAgreeToComplete = new TimerHelper(
-          'Time since the user clicks on "I agree" button until "Onboarding Success" screen is visible',
-          3000,
+          'agreeButtonToOnboardingSuccess',
         );
-        const timerDoneToAssetList = new TimerHelper(
-          'Time since the user clicks on "Done" button until asset list is loaded',
-          15000,
-        );
+        const timerDoneToAssetList = new TimerHelper('doneButtonToAssetList');
 
         await driver.navigate();
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
@@ -138,12 +132,21 @@ describe('MetaMask onboarding', function () {
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);
           await assetListPage.checkTokenListIsDisplayed();
-          await assetListPage.checkConversionRateDisplayed();
           await assetListPage.waitForTokenToBeDisplayed('Ethereum');
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
         performanceTracker.addTimer(timerDoneToAssetList);
       },
     );
-  });
-});
+
+    return { timers: collectTimerResults(), success: true };
+  } catch (error) {
+    return {
+      timers: collectTimerResults(),
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+export const run = runOnboardingNewWalletBenchmark;

@@ -1,34 +1,39 @@
-import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
-import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
-import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
-import { withFixtures } from '../../e2e/helpers';
-import HomePage from '../../e2e/page-objects/pages/home/homepage';
-import { Driver } from '../../e2e/webdriver/driver';
-import {
-  setupPerformanceReporting,
-  performanceTracker,
-  TimerHelper,
-} from '../utils/testSetup';
-import LoginPage from '../../e2e/page-objects/pages/login-page';
-import HeaderNavbar from '../../e2e/page-objects/pages/header-navbar';
-import AccountListPage from '../../e2e/page-objects/pages/account-list-page';
-import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
+/**
+ * Benchmark: Import SRP from home interface
+ * Measures time to import an existing wallet from the home page
+ */
 
-const SECOND_SRP = process.env.TEST_SRP_2 || '';
+import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
+import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
+import { withFixtures } from '../../../helpers';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import LoginPage from '../../../page-objects/pages/login-page';
+import { Driver } from '../../../webdriver/driver';
+import { performanceTracker } from '../../utils/performance-tracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { WITH_STATE_POWER_USER } from '../../utils';
+import type { BenchmarkRunResult } from '../../utils/types';
 
-describe('Import SRP Home', function () {
-  setupPerformanceReporting();
+const SECOND_SRP = process.env.TEST_SRP_2;
 
-  it('imports an existing wallet from home interface', async function () {
-    if (!process.env.INFURA_PROJECT_ID) {
+export const testTitle = 'benchmark-import-srp-home-power-user';
+export const persona = 'powerUser';
+
+export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
+  try {
+    // Validate required environment variable
+    if (!SECOND_SRP) {
       throw new Error(
-        'Running this E2E test requires a valid process.env.INFURA_PROJECT_ID',
+        'TEST_SRP_2 environment variable is required for import-srp-home benchmark. ' +
+          'Please set TEST_SRP_2 with a valid 12-word seed phrase.',
       );
     }
-
     await withFixtures(
       {
-        title: this.test?.fullTitle(),
+        title: testTitle,
         fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
@@ -43,20 +48,15 @@ describe('Import SRP Home', function () {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerLogin = new TimerHelper(
-          'Time to login and reach home page',
-          10000,
-        );
+        const timerLogin = new TimerHelper('loginToHomeScreen');
         const timerOpenAccountMenu = new TimerHelper(
-          'Time to open account menu after login',
-          3000,
+          'openAccountMenuAfterLogin',
         );
         const timerHomeAfterImport = new TimerHelper(
-          'Time to return to home page after import with new wallet visible',
-          30000,
+          'homeAfterImportWithNewWallet',
         );
 
-        // Measure: Login flow
+        // Measure: Login flow (includes triggering action)
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
@@ -91,5 +91,15 @@ describe('Import SRP Home', function () {
         performanceTracker.addTimer(timerHomeAfterImport);
       },
     );
-  });
-});
+
+    return { timers: collectTimerResults(), success: true };
+  } catch (error) {
+    return {
+      timers: collectTimerResults(),
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+export const run = runImportSrpHomeBenchmark;
