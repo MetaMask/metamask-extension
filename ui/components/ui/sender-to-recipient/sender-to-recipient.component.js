@@ -77,7 +77,7 @@ export function RecipientWithAddress({
         type={NameType.ETHEREUM_ADDRESS}
         variation={chainId}
         variant={TextVariant.BodyXs}
-        disableNameClick={true}
+        disableNameClick
       />
     </div>
   );

@@ -96,7 +96,8 @@ const NameDisplay = memo(
           name: true,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          name__clickable: Boolean(handleClick) && !isAccount && !disableNameClick,
+          name__clickable:
+            Boolean(handleClick) && !isAccount && !disableNameClick,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           name__saved: displayState === TrustSignalDisplayState.Petname,
