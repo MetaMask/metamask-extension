@@ -5785,6 +5785,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/address-book-controller@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@metamask/address-book-controller@npm:7.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+  checksum: 10/5ada2568b7093e33b93f9caad64e3e72dd7b581ee2758cee5ea8b261b2efedbfd355659f2d2917080399e4ca782bfaa0c12be5383f2db017302d98d2902a480d
+  languageName: node
+  linkType: hard
+
 "@metamask/announcement-controller@npm:^8.0.0":
   version: 8.0.0
   resolution: "@metamask/announcement-controller@npm:8.0.0"
@@ -8199,6 +8211,30 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/3bfa8f483a1dc6c0cc5301d3d02570afadea698c71910c0b53d9a840d172bcaeeaca0d8f2f93c57f4c00b7fd65ef38a62357ec45caf05adc43128c748254f6fa
+  languageName: node
+  linkType: hard
+
+"@metamask/profile-sync-controller@npm:^27.1.0":
+  version: 27.1.0
+  resolution: "@metamask/profile-sync-controller@npm:27.1.0"
+  dependencies:
+    "@metamask/address-book-controller": "npm:^7.0.1"
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/keyring-controller": "npm:^25.1.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/snaps-controllers": "npm:^17.2.0"
+    "@metamask/snaps-sdk": "npm:^10.3.0"
+    "@metamask/snaps-utils": "npm:^11.7.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/hashes": "npm:^1.8.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/providers": ^22.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/8f07889ab3ca5d235fd6331e412fa051430d8762853f696da71386bb2509058a53ba5ab7bc227c348a16f2855440792daa43147cea0ef9d83df345968a0ed2f5
   languageName: node
   linkType: hard
 
@@ -33870,7 +33906,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^21.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
     "@metamask/profile-metrics-controller": "npm:^3.0.0"
-    "@metamask/profile-sync-controller": "npm:^27.0.0"
+    "@metamask/profile-sync-controller": "npm:^27.1.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^3.0.0"
