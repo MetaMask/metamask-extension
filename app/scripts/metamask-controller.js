@@ -2717,10 +2717,12 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
+      getHdPathForHardwareKeyring: this.getHdPathForHardwareKeyring.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
+      getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
       getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
       getTrezorFeatures: this.getTrezorFeatures.bind(this),
 
@@ -5590,11 +5592,49 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean>}
    */
   async checkHardwareStatus(deviceName, hdPath) {
+    console.log('[HW] checkHardwareStatus', deviceName, hdPath);
     return this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
         return keyring.isUnlocked();
       },
+    );
+  }
+
+  /**
+   * Get the hd path currently configured on a hardware keyring.
+   *
+   * @param deviceName
+   * @returns {Promise<string>}
+   */
+  async getHdPathForHardwareKeyring(deviceName) {
+    console.log('[HW] getHdPathForHardwareKeyring', deviceName);
+    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
+      if (typeof keyring.getHdPath === 'function') {
+        return await keyring.getHdPath();
+      }
+
+      if (keyring.hdPath) {
+        return keyring.hdPath;
+      }
+
+      if (typeof keyring.serialize === 'function') {
+        const serialized = await keyring.serialize();
+        if (serialized?.hdPath) {
+          return serialized.hdPath;
+        }
+      }
+
+      throw new Error(
+        'MetamaskController:getHdPathForHardwareKeyring - Keyring does not expose hdPath',
+      );
+    });
+  }
+
+  async getLedgerPublicKey(hdPath) {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => await keyring.bridge.getPublicKey({ hdPath }),
     );
   }
 
@@ -8762,7 +8802,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Resolve a pending approval. For hardware wallet transactions and signatures,
-   * this handles error parsing and retry logic with request recreation.
+   * this handles error parsing.
    *
    * @param {string} id - The approval ID
    * @param {unknown} value - The value to resolve with (for transactions, contains txMeta)
@@ -8781,7 +8821,6 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
 
-      // For hardware wallets, use the shared error handler with retry support
       if (walletType) {
         await this.#handleHardwareWalletError(error, walletType);
         return;

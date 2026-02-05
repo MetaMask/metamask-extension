@@ -23,6 +23,7 @@ import {
   updateAndApproveTx,
   closeCurrentNotificationWindow,
   attemptCloseNotificationPopup,
+  setPendingHardwareWalletSigning,
 } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
@@ -164,13 +165,22 @@ export function useTransactionConfirm() {
       // The transaction approval has already been processed by approveHardwareTransaction,
       // so we just need to:
       // 1. Clear pendingHardwareSigning so closeCurrentNotificationWindow isn't blocked
-      // 2. Close the popup directly
+      // 2. Close the popup directly (or navigate away in fullscreen/sidepanel)
       if (isUserRejectedHardwareWalletError(error)) {
+        const environmentType = getEnvironmentType();
+        const isPopupEnvironment =
+          environmentType === ENVIRONMENT_TYPE_NOTIFICATION ||
+          environmentType === ENVIRONMENT_TYPE_POPUP;
+
         // Clear pendingHardwareSigning and close the popup directly.
         // The approval is already gone (processed by approveHardwareTransaction),
         // so rejectPendingApproval would do nothing useful.
         dispatch(setPendingHardwareWalletSigning(false));
-        dispatch(closeCurrentNotificationWindow());
+        if (isPopupEnvironment) {
+          dispatch(closeCurrentNotificationWindow());
+        } else {
+          navigate(DEFAULT_ROUTE, { replace: true });
+        }
         return;
       }
 

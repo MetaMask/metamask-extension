@@ -6125,6 +6125,14 @@ export async function getLedgerAppConfiguration(): Promise<{
   return await submitRequestToBackground('getLedgerAppConfiguration');
 }
 
+export async function getLedgerPublicKey(hdPath: string): Promise<{
+  publicKey: string;
+  address: string;
+  chainCode?: string;
+}> {
+  return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
+}
+
 /**
  * This method deduplicates error reports to sentry by maintaining a state
  * object 'singleExceptions' in the app slice. The only place this state object
@@ -8156,6 +8164,7 @@ export async function generateClaimSignature(
 export async function getHdPathForHardwareKeyring(
   deviceName: HardwareDeviceNames,
 ): Promise<string> {
+  console.log('[HW] getHdPathForHardwareKeyring', deviceName);
   const hdPath = await submitRequestToBackground<string>(
     'getHdPathForHardwareKeyring',
     [deviceName],
