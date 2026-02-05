@@ -14,7 +14,7 @@ import PerpsTutorialAnimation from './PerpsTutorialAnimation';
 // Mock the Rive hooks
 jest.mock('@rive-app/react-canvas', () => ({
   useRive: jest.fn(() => ({
-    rive: { play: jest.fn() },
+    rive: { play: jest.fn(), cleanup: jest.fn() },
     RiveComponent: () => <div data-testid="rive-component">Rive Animation</div>,
   })),
   useRiveFile: jest.fn(() => ({
