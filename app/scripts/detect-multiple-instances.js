@@ -7,7 +7,6 @@
 
 import browser from 'webextension-polyfill';
 import {
-  PLATFORM_CHROME,
   PLATFORM_FIREFOX,
   CHROME_BUILD_IDS,
   FIREFOX_BUILD_IDS,
@@ -37,12 +36,12 @@ export const onMessageReceived = (message) => {
 export const checkForMultipleVersionsRunning = async () => {
   const platform = getPlatform();
 
-  if (platform !== PLATFORM_CHROME && platform !== PLATFORM_FIREFOX) {
-    return;
-  }
-
+  // Firefox has its own extension IDs, most other browsers use Chrome Web Store IDs.
+  // Even if they don't (which can happen for browsers with their own store like
+  // Edge Add-ons or Opera Add-ons), sendMessage silently fails (caught in try/catch below),
+  // so no harm is done.
   const buildIds =
-    platform === PLATFORM_CHROME ? CHROME_BUILD_IDS : FIREFOX_BUILD_IDS;
+    platform === PLATFORM_FIREFOX ? FIREFOX_BUILD_IDS : CHROME_BUILD_IDS;
 
   const thisBuild = browser.runtime.id;
 
