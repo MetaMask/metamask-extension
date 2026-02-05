@@ -61,11 +61,11 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         });
         performanceTracker.addTimer(timerOpenSwapPage);
 
-        // Measure: Fetch quotes
+        // Measure: Fetch quotes (longer timeout in CI where quote fetching can be slow)
         const swapPage = new SwapPage(driver);
         await swapPage.enterSwapAmount('0.00001');
         await timerQuoteFetching.measure(async () => {
-          await swapPage.checkQuoteIsDisplayed();
+          await swapPage.checkQuoteIsDisplayed({ timeout: 60000 });
         });
         performanceTracker.addTimer(timerQuoteFetching);
       },
