@@ -7,7 +7,7 @@ import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/mess
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Api = Record<string, (...params: any[]) => any>;
-type BackgroundRpcClient = MetaRpcClientFactory<Api>;
+export type BackgroundRpcClient = MetaRpcClientFactory<Api>;
 
 const NO_BACKGROUND_CONNECTION_MESSAGE =
   'Background connection is not set. Please initialize the background connection before making requests.';

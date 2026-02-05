@@ -14,7 +14,7 @@ import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
-import { queryClient } from '../contexts/query-client';
+import { uiQueryClient } from '../queries/UIQueryClient';
 import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPage from './error-page/error-page.component';
 
@@ -58,7 +58,7 @@ class Index extends PureComponent {
             <LegacyMetaMetricsProvider>
               <I18nProvider>
                 <LegacyI18nProvider>
-                  <QueryClientProvider client={queryClient}>
+                  <QueryClientProvider client={uiQueryClient}>
                     <AssetPollingProvider>
                       <MetamaskIdentityProvider>
                         <MetamaskNotificationsProvider>

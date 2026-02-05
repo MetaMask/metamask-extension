@@ -424,6 +424,7 @@ import {
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
+import { QueryService } from './queries/QueryService';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -903,6 +904,18 @@ export default class MetamaskController extends EventEmitter {
     this.notificationServicesController.init();
     this.snapController.init();
     this.cronjobController.init();
+
+    const queryServiceMessenger = new Messenger({
+      namespace: 'QueryService',
+      parent: this.controllerMessenger,
+    });
+
+    this.controllerMessenger.delegate({
+      messenger: queryServiceMessenger,
+      actions: ['RewardsDataService:estimatePoints'],
+    });
+
+    this.queryService = new QueryService(queryServiceMessenger);
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -2434,7 +2447,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @returns {object} Object containing API functions.
    */
-  getApi() {
+  getApi(outStream) {
     const {
       accountsController,
       addressBookController,
@@ -2473,7 +2486,29 @@ export default class MetamaskController extends EventEmitter {
       staticAssetsController,
     } = this;
 
+    const querySubscription = (payload) => {
+      outStream.write({
+        jsonrpc: '2.0',
+        method: 'QueryService:cacheUpdate',
+        params: [payload],
+      });
+    };
+
     return {
+      'QueryService:fetch': (...args) =>
+        this.controllerMessenger.call('QueryService:fetch', ...args),
+      'QueryService:subscribe': (queryKey) =>
+        this.controllerMessenger.call(
+          'QueryService:subscribe',
+          queryKey,
+          querySubscription,
+        ),
+      'QueryService:unsubscribe': (queryKey) =>
+        this.controllerMessenger.call(
+          'QueryService:unsubscribe',
+          queryKey,
+          querySubscription,
+        ),
       // etc
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
@@ -6550,7 +6585,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     const api = {
-      ...this.getApi(),
+      ...this.getApi(outStream),
       ...this.controllerApi,
       startSendingPatches: () => {
         uiReady = true;

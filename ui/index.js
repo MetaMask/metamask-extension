@@ -48,6 +48,7 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
+import { createUIQueryClient } from './queries/UIQueryClient';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -80,7 +81,7 @@ export const connectToBackground = (
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
-    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
+    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION && method !== 'QueryService:cacheUpdate') {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
           data,
@@ -88,6 +89,7 @@ export const connectToBackground = (
       );
     }
   });
+  createUIQueryClient(backgroundConnection);
 };
 
 export async function launchMetamaskUi(opts) {
