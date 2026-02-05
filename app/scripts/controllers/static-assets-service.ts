@@ -1,12 +1,8 @@
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { isStrictHexString, parseCaipAssetType } from '@metamask/utils';
-import type {
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-} from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
-import { StaticIntervalPollingController } from '@metamask/polling-controller';
+import { StaticIntervalPollingControllerOnly } from '@metamask/polling-controller';
 import type {
   TokensControllerAddTokensAction,
   TokensControllerGetStateAction,
@@ -16,7 +12,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
-const CONTROLLER = 'StaticAssetsController' as const;
+const SERVICE = 'StaticAssetsService' as const;
 
 export const DEFAULT_INTERVAL_MS = 3 * 60 * 60 * 1000; // 3 hour
 
@@ -29,7 +25,7 @@ const STATIC_ASSETS_URL = 'https://static.cx.metamask.io';
 const TOKEN_API_BASE_URL = 'https://token.api.cx.metamask.io';
 
 export type StaticAssetsPollingFeatureFlagOptions = {
-  /** The supported chains for the controller. */
+  /** The supported chains for the service. */
   supportedChains?: Hex[];
   /** The cache expiration time for the top assets API in milliseconds. */
   cacheExpirationTime?: number;
@@ -39,41 +35,31 @@ export type StaticAssetsPollingFeatureFlagOptions = {
   occurrenceFloor?: Record<string, number>;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type StaticAssetsControllerState = {};
+export type StaticAssetsPollingInput = {
+  chainIds: string[];
+  selectedAccountAddress: string;
+};
 
-export type StaticAssetsControllerGetStateAction = ControllerGetStateAction<
-  typeof CONTROLLER,
-  StaticAssetsControllerState
->;
+export type StaticAssetsServiceActions = never;
 
-export type StaticAssetsControllerActions =
-  StaticAssetsControllerGetStateAction;
-
-export type StaticAssetsControllerStateChangeEvent = ControllerStateChangeEvent<
-  typeof CONTROLLER,
-  StaticAssetsControllerState
->;
-
-export type StaticAssetsControllerEvents =
-  StaticAssetsControllerStateChangeEvent;
+export type StaticAssetsServiceEvents = never;
 
 export type AllowedActions =
   | TokensControllerAddTokensAction
   | TokensControllerGetStateAction
   | NetworkControllerFindNetworkClientIdByChainIdAction;
 
-export type StaticAssetsControllerMessenger = Messenger<
-  typeof CONTROLLER,
-  StaticAssetsControllerActions | AllowedActions,
-  StaticAssetsControllerEvents
+export type StaticAssetsServiceMessenger = Messenger<
+  typeof SERVICE,
+  StaticAssetsServiceActions | AllowedActions,
+  StaticAssetsServiceEvents
 >;
 
-export type StaticAssetsControllerOptions = {
-  messenger: StaticAssetsControllerMessenger;
+export type StaticAssetsServiceOptions = {
+  messenger: StaticAssetsServiceMessenger;
   /** The interval for the polling. */
   interval?: number;
-  /** The supported chains for the controller. */
+  /** The supported chains for the service. */
   getSupportedChains: () => Set<Hex>;
   /** The cache expiration time for the top assets API in milliseconds. */
   getCacheExpirationTime: () => number;
@@ -143,19 +129,12 @@ function buildImageUrl(assetId: CaipAssetType, extension: string): string {
 }
 
 /**
- * The static assets controller.
- * This controller is responsible for fetching the top assets for a chain and adding them to the TokensController.
+ * The static assets service.
+ * This service is responsible for fetching the top assets for a chain and adding them to the TokensController.
  * It is also responsible for filtering out tokens that are in the ignored tokens set.
  */
-export class StaticAssetsController extends StaticIntervalPollingController<{
-  chainIds: string[];
-  selectedAccountAddress: string;
-}>()<
-  typeof CONTROLLER,
-  StaticAssetsControllerState,
-  StaticAssetsControllerMessenger
-> {
-  /** The supported chains for the controller. */
+export class StaticAssetsService extends StaticIntervalPollingControllerOnly<StaticAssetsPollingInput>() {
+  /** The supported chains for the service. */
   readonly #getSupportedChains: () => Set<Hex>;
 
   /** The cache expiration time for the top assets API in milliseconds. */
@@ -164,26 +143,26 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
   /** The top X assets to fetch. */
   readonly #getTopX: () => number;
 
+  readonly messenger: StaticAssetsServiceMessenger;
+
   constructor({
     messenger,
     interval = DEFAULT_INTERVAL_MS,
     getSupportedChains,
     getCacheExpirationTime,
     getTopX,
-  }: StaticAssetsControllerOptions) {
-    super({
-      name: CONTROLLER,
-      messenger,
-      metadata: {},
-      state: {},
-    });
-    this.#getSupportedChains = getSupportedChains;
+  }: StaticAssetsServiceOptions) {
+    super();
 
-    this.setIntervalLength(interval);
+    this.messenger = messenger;
+
+    this.#getSupportedChains = getSupportedChains;
 
     this.#getCacheExpirationTime = getCacheExpirationTime;
 
     this.#getTopX = getTopX;
+
+    this.setIntervalLength(interval);
   }
 
   /**
@@ -292,7 +271,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
       );
     } catch (error) {
       console.error(
-        `[StaticAssetsController] Error adding tokens to TokensController for chainId ${chainId}`,
+        `[StaticAssetsService] Error adding tokens to TokensController for chainId ${chainId}`,
         error,
       );
     }
@@ -358,7 +337,6 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
       cacheExpirationTime:
         this.#getCacheExpirationTime() ?? DEFAULT_CACHE_EXPIRATION_MS,
     });
-
     if (topAssets.length > 0) {
       for (const topAsset of topAssets) {
         try {
@@ -385,7 +363,6 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
         }
       }
     }
-
     return tokens;
   }
 

@@ -383,7 +383,7 @@ import { TokenListControllerInit } from './controller-init/token-list-controller
 import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
 import { TokensControllerInit } from './controller-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
-import { StaticAssetsControllerInit } from './controller-init/static-assets-controller-init';
+import { StaticAssetsServiceInit } from './controller-init/static-assets-service-init';
 import { RatesControllerInit } from './controller-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
 import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
@@ -628,7 +628,7 @@ export default class MetamaskController extends EventEmitter {
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
-      StaticAssetsController: StaticAssetsControllerInit,
+      StaticAssetsService: StaticAssetsServiceInit,
       // MultichainNetworkController and NetworkEnablementController must be initialized before TokenRatesController
       // because TokenRatesController depends on NetworkEnablementController:getState during construction.
       MultichainNetworkController: MultichainNetworkControllerInit,
@@ -752,7 +752,7 @@ export default class MetamaskController extends EventEmitter {
     this.multichainAccountService = controllersByName.MultichainAccountService;
     ///: END:ONLY_INCLUDE_IF
     this.tokenBalancesController = controllersByName.TokenBalancesController;
-    this.staticAssetsController = controllersByName.StaticAssetsController;
+    this.staticAssetsService = controllersByName.StaticAssetsService;
     this.tokenListController = controllersByName.TokenListController;
     this.tokenDetectionController = controllersByName.TokenDetectionController;
     this.tokensController = controllersByName.TokensController;
@@ -1262,7 +1262,6 @@ export default class MetamaskController extends EventEmitter {
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
       TokenBalancesController: this.tokenBalancesController,
-      StaticAssetsController: this.staticAssetsController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       PhishingController: this.phishingController,
@@ -1320,7 +1319,7 @@ export default class MetamaskController extends EventEmitter {
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
         TokenBalancesController: this.tokenBalancesController,
-        StaticAssetsController: this.staticAssetsController,
+        StaticAssetsService: this.staticAssetsService,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
         SelectedNetworkController: this.selectedNetworkController,
@@ -2464,7 +2463,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       multichainAssetsRatesController,
       ///: END:ONLY_INCLUDE_IF
-      staticAssetsController,
+      staticAssetsService,
     } = this;
 
     return {
@@ -3491,12 +3490,12 @@ export default class MetamaskController extends EventEmitter {
           tokenBalancesController,
         ),
 
-      staticAssetsStartPolling: staticAssetsController.startPolling.bind(
-        staticAssetsController,
+      staticAssetsStartPolling: staticAssetsService.startPolling.bind(
+        staticAssetsService,
       ),
       staticAssetsStopPollingByPollingToken:
-        staticAssetsController.stopPollingByPollingToken.bind(
-          staticAssetsController,
+        staticAssetsService.stopPollingByPollingToken.bind(
+          staticAssetsService,
         ),
       updateBalances: tokenBalancesController.updateBalances.bind(
         tokenBalancesController,
@@ -8507,7 +8506,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenDetectionController.stopAllPolling();
       this.tokenListController.stopAllPolling();
       this.tokenBalancesController.stopAllPolling();
-      this.staticAssetsController.stopAllPolling();
+      this.staticAssetsService.stopAllPolling();
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
@@ -8537,7 +8536,7 @@ export default class MetamaskController extends EventEmitter {
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
       this.tokenListController.stopPollingByPollingToken(pollingToken);
       this.tokenBalancesController.stopPollingByPollingToken(pollingToken);
-      this.staticAssetsController.stopPollingByPollingToken(pollingToken);
+      this.staticAssetsService.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
