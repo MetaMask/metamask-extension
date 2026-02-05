@@ -5,7 +5,8 @@
     "isolatedModules": true,
     "outDir": "../.webpack",
     "resolveJsonModule": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noCheck": true
   },
   "exclude": ["test"],
   // this should match our node version in .nvmrc
