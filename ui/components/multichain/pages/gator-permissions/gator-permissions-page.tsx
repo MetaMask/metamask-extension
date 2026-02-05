@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react';
 import log from 'loglevel';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Content, Header, Page } from '../page';
 import {
@@ -43,7 +42,6 @@ export const GatorPermissionsPage = () => {
   const t = useI18nContext();
   const theme = useTheme();
   const navigate = useNavigate();
-  const headerRef = useRef<HTMLSpanElement>(null);
   const totalGatorPermissions = useSelector((state: AppState) =>
     getAggregatedGatorPermissionsCountAcrossAllChains(state, 'token-transfer'),
   );
@@ -199,13 +197,10 @@ export const GatorPermissionsPage = () => {
           textAlign={TextAlign.Center}
           data-testid="gator-permissions-page-title"
         >
-          {t('permissions')}
+          {t('dappConnections')}
         </Text>
       </Header>
-      <Content padding={0}>
-        <Box ref={headerRef}></Box>
-        {renderPageContent()}
-      </Content>
+      <Content padding={0}>{renderPageContent()}</Content>
     </Page>
   );
 };
