@@ -90,6 +90,13 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": "object"
   },
+  "AssetsController": {
+    "assetPreferences": "object",
+    "assetsBalance": "object",
+    "assetsMetadata": "object",
+    "assetsPrice": "object",
+    "customAssets": "object"
+  },
   "AuthenticationController": {
     "isSignedIn": "boolean",
     "srpSessionData": "object"
@@ -181,13 +188,6 @@
   "MultichainAssetsRatesController": {
     "conversionRates": "object",
     "historicalPrices": "object"
-  },
-  "AssetsController": {
-    "assetPreferences": "object",
-    "assetsBalance": "object",
-    "assetsMetadata": "object",
-    "assetsPrice": "object",
-    "customAssets": "object"
   },
   "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",

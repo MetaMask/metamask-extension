@@ -67,6 +67,12 @@
       "updateModalLastDismissedAt": null
     },
     "ApprovalController": {},
+    "AssetsController": {
+      "assetPreferences": "object",
+      "assetsBalance": "object",
+      "assetsMetadata": "object",
+      "customAssets": "object"
+    },
     "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeController": {},
     "BridgeStatusController": { "txHistory": "object" },
@@ -126,12 +132,6 @@
       "assetsMetadata": "object"
     },
     "MultichainAssetsRatesController": { "conversionRates": "object" },
-    "AssetsController": {
-      "assetPreferences": "object",
-      "assetsBalance": "object",
-      "assetsMetadata": "object",
-      "customAssets": "object"
-    },
     "MultichainBalancesController": { "balances": "object" },
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
