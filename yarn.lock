@@ -5708,13 +5708,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/application-state-controller@file:../core/packages/application-state-controller::locator=metamask-crx%40workspace%3A.":
-  version: 0.1.0
-  resolution: "@metamask/application-state-controller@file:../core/packages/application-state-controller#../core/packages/application-state-controller::hash=89566d&locator=metamask-crx%40workspace%3A."
+"@metamask/ui-state-controller@file:../core/packages/ui-state-controller::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/ui-state-controller@file:../core/packages/ui-state-controller#../core/packages/ui-state-controller::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/messenger": "npm:^0.3.0"
-  checksum: 10/59d8db50b3f6e11c7324d58c8906352afa39e8369ad59be9174677670945f3be77ca80a9310e2e9192f97dc351cd9b12f7815350b88ef3140792321449d7f9b3
   languageName: node
   linkType: hard
 
@@ -33623,7 +33622,7 @@ __metadata:
     "@metamask/address-book-controller": "npm:^7.0.0"
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
-    "@metamask/application-state-controller": "file:../core/packages/application-state-controller"
+    "@metamask/ui-state-controller": "file:../core/packages/ui-state-controller"
     "@metamask/approval-controller": "npm:^8.0.0"
     "@metamask/assets-controllers": "npm:^99.0.0"
     "@metamask/auto-changelog": "npm:^5.3.0"

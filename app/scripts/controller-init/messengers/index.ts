@@ -178,7 +178,8 @@ import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
-import { getApplicationStateControllerMessenger } from './application-state-controller-messenger';
+import { getClientStateControllerMessenger } from './client-state-controller-messenger';
+import { getUiStateControllerMessenger } from './ui-state-controller-messenger';
 import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 import { getApprovalControllerMessenger } from './approval-controller-messenger';
 import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
@@ -232,8 +233,10 @@ export type { AppMetadataControllerMessenger } from './app-metadata-controller-m
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export type { AppStateControllerMessenger } from './app-state-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
-export type { ApplicationStateControllerMessenger } from './application-state-controller-messenger';
-export { getApplicationStateControllerMessenger } from './application-state-controller-messenger';
+export type { ClientStateControllerMessenger } from './client-state-controller-messenger';
+export { getClientStateControllerMessenger } from './client-state-controller-messenger';
+export type { UiStateControllerMessenger } from './ui-state-controller-messenger';
+export { getUiStateControllerMessenger } from './ui-state-controller-messenger';
 export type { ApprovalControllerMessenger } from './approval-controller-messenger';
 export { getApprovalControllerMessenger } from './approval-controller-messenger';
 export type {
@@ -455,8 +458,12 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
   },
-  ApplicationStateController: {
-    getMessenger: getApplicationStateControllerMessenger,
+  ClientStateController: {
+    getMessenger: getClientStateControllerMessenger,
+    getInitMessenger: noop,
+  },
+  UiStateController: {
+    getMessenger: getUiStateControllerMessenger,
     getInitMessenger: noop,
   },
   AuthenticationController: {
