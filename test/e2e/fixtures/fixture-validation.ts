@@ -35,8 +35,6 @@ type JsonLike = Record<string, unknown>;
  * @returns Array of dot-separated key paths to ignore
  */
 const getFixtureIgnoredKeys = (): string[] => [
-  'data.AuthenticationController',
-  'data.MultichainAssetsController',
   // Permissions
   'data.PermissionController.subjectMetadata',
   'data.PermissionController.subjects',
@@ -70,13 +68,12 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.ProfileMetricsController.initialDelayEndTimestamp',
   'data.RemoteFeatureFlagController.cacheTimestamp',
   'data.RemoteFeatureFlagController.remoteFeatureFlags',
-  // Account-specific timestamps (importTime, lastSelected) - ignores all accounts due to dynamic UUIDs
-  'data.AccountsController.internalAccounts.accounts',
-  // Identity timestamps (lastSelected) - ignores all identities due to dynamic addresses
+  // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.PreferencesController.identities',
   'data.AddressBookController.addressBook',
-  // Network configuration timestamps (lastUpdatedAt) - ignores all network configs
-  'data.NetworkController.networkConfigurations',
+  'data.AuthenticationController',
+  'data.MultichainAssetsController',
+  'data.AccountsController.internalAccounts.accounts',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // Version that changes on every release
