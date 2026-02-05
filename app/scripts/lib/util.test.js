@@ -507,6 +507,33 @@ describe('app utils', () => {
 
         expect(getPlatform()).toStrictEqual(PLATFORM_OTHER);
       });
+
+      it('returns unknown brand for analytics discovery when brand is not mapped', () => {
+        // UA looks like Chrome
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(
+            'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/136.0.0.0 Mobile Safari/537.36',
+          );
+
+        // Brands includes an unknown browser "FutureBrowser"
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: {
+            brands: [
+              { brand: 'Chromium', version: '136' },
+              { brand: 'FutureBrowser', version: '1' },
+              { brand: 'Not.A/Brand', version: '99' },
+            ],
+            mobile: true,
+            platform: 'Android',
+          },
+          writable: true,
+          configurable: true,
+        });
+
+        // Should return the unknown brand name for analytics discovery
+        expect(getPlatform()).toStrictEqual('FutureBrowser');
+      });
     });
   });
 

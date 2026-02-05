@@ -90,22 +90,24 @@ const getEnvironmentType = (url = window.location.href) =>
 // Used as fallback when UA string detection returns Chrome or Other
 const BRAND_TO_PLATFORM_MAP: Record<string, Platform> = {
   Brave: PLATFORM_BRAVE,
+  'Google Chrome': PLATFORM_CHROME,
+  Lemur: PLATFORM_LEMUR,
   'Microsoft Edge': PLATFORM_EDGE,
+  Mises: PLATFORM_MISES,
   Opera: PLATFORM_OPERA,
+  'Samsung Internet': PLATFORM_SAMSUNG,
   Vivaldi: PLATFORM_VIVALDI,
   Whale: PLATFORM_WHALE,
   YaBrowser: PLATFORM_YANDEX,
   Yandex: PLATFORM_YANDEX,
-  'Samsung Internet': PLATFORM_SAMSUNG,
-  Lemur: PLATFORM_LEMUR,
-  Mises: PLATFORM_MISES,
 };
 
 /**
  * Detects platform from userAgentData.brands.
  * Filters out noise brands (Chromium, GREASE brands) and matches against known browsers.
+ * Returns unknown meaningful brands for analytics discovery.
  *
- * @returns the matched Platform or undefined if not detected
+ * @returns the matched Platform, unknown brand name, or undefined if not detected
  */
 const getPlatformFromBrands = (): Platform | undefined => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,12 +121,24 @@ const getPlatformFromBrands = (): Platform | undefined => {
     (b: { brand: string }) => b.brand,
   );
 
-  // Check each brand against our mapping
-  for (const brand of brands) {
+  // Filter out noise brands (Chromium engine and GREASE brands like "Not(A:Brand")
+  const meaningfulBrands = brands.filter((brand) => {
+    const lowerBrand = brand.toLowerCase();
+    return !lowerBrand.includes('chromium') && !lowerBrand.includes('brand');
+  });
+
+  // Check each meaningful brand against our mapping
+  for (const brand of meaningfulBrands) {
     const platform = BRAND_TO_PLATFORM_MAP[brand];
     if (platform) {
       return platform;
     }
+  }
+
+  // Return first unknown meaningful brand for analytics discovery
+  // This allows us to detect new browsers we haven't explicitly mapped yet
+  if (meaningfulBrands.length > 0) {
+    return meaningfulBrands[0] as Platform;
   }
 
   return undefined;
