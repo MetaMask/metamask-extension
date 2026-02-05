@@ -1027,9 +1027,11 @@ function setupBundlerDefaults(
             // Charting library (ESM-only)
             './**/node_modules/lightweight-charts',
             './**/node_modules/fancy-canvas',
-            // AssetsController and its dependencies (ESM/modern syntax)
-            './**/node_modules/viem',
-            './**/node_modules/isows',
+            // Ledger WebHID transport
+            './**/node_modules/@ledgerhq/hw-transport-webhid',
+            './**/node_modules/@ledgerhq/hw-transport',
+            './**/node_modules/@ledgerhq/hw-app-eth',
+            './**/node_modules/@ledgerhq/devices',
           ],
           global: true,
         },

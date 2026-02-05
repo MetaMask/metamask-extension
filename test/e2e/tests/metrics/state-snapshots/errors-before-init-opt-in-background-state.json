@@ -164,6 +164,7 @@
         "smartTransactions": "object"
       }
     },
+    "StaticAssetsController": {},
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "TokensController": {
       "allDetectedTokens": {},
