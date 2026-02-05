@@ -258,7 +258,7 @@ export function selectShowShieldEndingToast(
 
 /**
  * Determines if the storage error toast should be shown based on:
- * - storageWriteErrorType is not null (indicates an error occurred)
+ * - storageWriteErrorType is set (not null/undefined, indicates an error occurred)
  * - User has completed onboarding
  * - Wallet is unlocked
  *
@@ -271,9 +271,8 @@ export function selectShowStorageErrorToast(
   const { storageWriteErrorType, completedOnboarding, isUnlocked } =
     state.metamask || {};
 
-  return Boolean(
-    storageWriteErrorType !== null && completedOnboarding && isUnlocked,
-  );
+  // Check for truthy value to handle both null and undefined as "no error"
+  return Boolean(storageWriteErrorType && completedOnboarding && isUnlocked);
 }
 
 /**
