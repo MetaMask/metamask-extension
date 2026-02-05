@@ -1,11 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
+import type {
+  CandleData,
+  CandlePeriod,
+  TimeDuration,
+} from '@metamask/perps-controller';
 import { usePerpsController } from '../../../providers/perps';
-import type { CandleData, CandlePeriod, TimeDuration } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLiveCandles hook
  */
-export interface UsePerpsLiveCandlesOptions {
+export type UsePerpsLiveCandlesOptions = {
   /** Symbol to get candles for (e.g., 'BTC', 'ETH') */
   symbol: string;
   /** Candle interval (e.g., CandlePeriod.OneHour) */
@@ -14,17 +18,17 @@ export interface UsePerpsLiveCandlesOptions {
   duration?: TimeDuration;
   /** Callback for errors */
   onError?: (error: Error) => void;
-}
+};
 
 /**
  * Return type for usePerpsLiveCandles hook
  */
-export interface UsePerpsLiveCandlesReturn {
+export type UsePerpsLiveCandlesReturn = {
   /** Candle data for the symbol */
   candleData: CandleData | null;
   /** Whether we're waiting for the first real data */
   isInitialLoading: boolean;
-}
+};
 
 /**
  * Hook for real-time candlestick data via stream subscription
@@ -33,7 +37,6 @@ export interface UsePerpsLiveCandlesReturn {
  *
  * @param options - Configuration options
  * @returns Object containing candle data and loading state
- *
  * @example
  * ```tsx
  * import { CandlePeriod } from '@metamask/perps-controller';

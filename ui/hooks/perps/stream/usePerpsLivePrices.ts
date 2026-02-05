@@ -1,26 +1,26 @@
-import { useEffect, useState, useRef } from 'react';
-import { usePerpsController } from '../../../providers/perps';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import type { PriceUpdate } from '@metamask/perps-controller';
+import { usePerpsController } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLivePrices hook
  */
-export interface UsePerpsLivePricesOptions {
+export type UsePerpsLivePricesOptions = {
   /** Array of symbols to subscribe to (e.g., ['BTC', 'ETH']) */
   symbols: string[];
   /** Throttle delay in milliseconds (default: 0 - no throttling) */
   throttleMs?: number;
-}
+};
 
 /**
  * Return type for usePerpsLivePrices hook
  */
-export interface UsePerpsLivePricesReturn {
+export type UsePerpsLivePricesReturn = {
   /** Map of symbol to price update */
   prices: Record<string, PriceUpdate>;
   /** Whether we're waiting for the first data */
   isInitialLoading: boolean;
-}
+};
 
 // Stable empty object reference to prevent re-renders
 const EMPTY_PRICES: Record<string, PriceUpdate> = {};
@@ -32,7 +32,6 @@ const EMPTY_PRICES: Record<string, PriceUpdate> = {};
  *
  * @param options - Configuration options
  * @returns Object containing prices map and loading state
- *
  * @example
  * ```tsx
  * function PriceDisplay() {
@@ -56,9 +55,14 @@ export function usePerpsLivePrices(
 ): UsePerpsLivePricesReturn {
   const { symbols, throttleMs = 0 } = options;
   const controller = usePerpsController();
-  const [prices, setPrices] = useState<Record<string, PriceUpdate>>(EMPTY_PRICES);
+  const [prices, setPrices] = useState<Record<string, PriceUpdate>>(
+    EMPTY_PRICES,
+  );
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
+
+  // Memoize symbols string to avoid complex expression in dependency array
+  const symbolsKey = useMemo(() => symbols.join(','), [symbols]);
 
   useEffect(() => {
     if (symbols.length === 0) {
@@ -88,7 +92,7 @@ export function usePerpsLivePrices(
     return () => {
       unsubscribe();
     };
-  }, [controller, symbols.join(','), throttleMs]);
+  }, [controller, symbols, symbolsKey, throttleMs]);
 
   return { prices, isInitialLoading };
 }

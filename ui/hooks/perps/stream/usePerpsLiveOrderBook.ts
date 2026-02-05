@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsController } from '../../../providers/perps';
 import type { OrderBookData } from '@metamask/perps-controller';
+import { usePerpsController } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveOrderBook hook
  */
-export interface UsePerpsLiveOrderBookOptions {
+export type UsePerpsLiveOrderBookOptions = {
   /** Symbol to get order book for (e.g., 'BTC', 'ETH') */
   symbol: string;
   /** Number of levels to return per side (default: 10) */
@@ -16,17 +16,17 @@ export interface UsePerpsLiveOrderBookOptions {
   mantissa?: 2 | 5;
   /** Callback for errors */
   onError?: (error: Error) => void;
-}
+};
 
 /**
  * Return type for usePerpsLiveOrderBook hook
  */
-export interface UsePerpsLiveOrderBookReturn {
+export type UsePerpsLiveOrderBookReturn = {
   /** Full order book data */
   orderBook: OrderBookData | null;
   /** Whether we're waiting for the first real data */
   isInitialLoading: boolean;
-}
+};
 
 /**
  * Hook for real-time order book data via stream subscription
@@ -35,7 +35,6 @@ export interface UsePerpsLiveOrderBookReturn {
  *
  * @param options - Configuration options
  * @returns Object containing order book data and loading state
- *
  * @example
  * ```tsx
  * function OrderBookDisplay() {

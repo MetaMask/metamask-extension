@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
-import { usePerpsController } from '../../providers/perps';
 import type { PerpsTransaction } from '../../components/app/perps/types';
-import { useUserHistory } from './useUserHistory';
-import { usePerpsLiveFills } from './stream/usePerpsLiveFills';
 import {
   transformFillsToTransactions,
   transformOrdersToTransactions,
   transformFundingToTransactions,
   transformUserHistoryToTransactions,
 } from '../../components/app/perps/utils/transactionTransforms';
+import { usePerpsController } from '../../providers/perps';
+import { useUserHistory } from './useUserHistory';
+import { usePerpsLiveFills } from './stream/usePerpsLiveFills';
 
 /**
  * Parameters for the usePerpsTransactionHistory hook
  */
-export interface UsePerpsTransactionHistoryParams {
+export type UsePerpsTransactionHistoryParams = {
   /** Optional start time for filtering history (Unix timestamp in ms) */
   startTime?: number;
   /** Optional end time for filtering history (Unix timestamp in ms) */
@@ -23,12 +23,12 @@ export interface UsePerpsTransactionHistoryParams {
   accountId?: CaipAccountId;
   /** Skip the initial fetch on mount (default: false) */
   skipInitialFetch?: boolean;
-}
+};
 
 /**
  * Return type for the usePerpsTransactionHistory hook
  */
-export interface UsePerpsTransactionHistoryResult {
+export type UsePerpsTransactionHistoryResult = {
   /** Array of all perps transactions (trades, orders, funding, deposits/withdrawals) */
   transactions: PerpsTransaction[];
   /** Whether the hook is currently loading data */
@@ -37,7 +37,7 @@ export interface UsePerpsTransactionHistoryResult {
   error: string | null;
   /** Function to manually refetch all transaction history */
   refetch: () => Promise<void>;
-}
+};
 
 /**
  * Comprehensive hook to fetch and combine all perps transaction data.
@@ -47,8 +47,11 @@ export interface UsePerpsTransactionHistoryResult {
  * Merges real-time WebSocket fills with REST API data for instant updates.
  *
  * @param params - Optional parameters for filtering and controlling the hook
+ * @param params.startTime - Optional start time for filtering history (Unix timestamp in ms)
+ * @param params.endTime - Optional end time for filtering history (Unix timestamp in ms)
+ * @param params.accountId - Optional account ID to fetch history for
+ * @param params.skipInitialFetch - Skip the initial fetch on mount (default: false)
  * @returns Object containing transactions array, loading state, error, and refetch function
- *
  * @example
  * ```tsx
  * function ActivityPage() {
@@ -238,16 +241,16 @@ export function usePerpsTransactionHistory({
 
     // Add REST trade transactions first
     for (const tx of restTradeTransactions) {
-      // Use asset + timestamp (truncated to seconds) as key
+      // Use symbol + timestamp (truncated to seconds) as key
       const timestampSeconds = Math.floor(tx.timestamp / 1000);
-      const dedupKey = `${tx.asset}-${timestampSeconds}`;
+      const dedupKey = `${tx.symbol}-${timestampSeconds}`;
       tradeMap.set(dedupKey, tx);
     }
 
     // Add live fills (overwrites REST duplicates - live data is fresher)
     for (const tx of liveTransactions) {
       const timestampSeconds = Math.floor(tx.timestamp / 1000);
-      const dedupKey = `${tx.asset}-${timestampSeconds}`;
+      const dedupKey = `${tx.symbol}-${timestampSeconds}`;
       tradeMap.set(dedupKey, tx);
     }
 

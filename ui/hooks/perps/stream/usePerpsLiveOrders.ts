@@ -1,24 +1,24 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsController } from '../../../providers/perps';
 import type { Order } from '@metamask/perps-controller';
+import { usePerpsController } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveOrders hook
  */
-export interface UsePerpsLiveOrdersOptions {
+export type UsePerpsLiveOrdersOptions = {
   /** Throttle delay in milliseconds (default: 0 - no throttling) */
   throttleMs?: number;
-}
+};
 
 /**
  * Return type for usePerpsLiveOrders hook
  */
-export interface UsePerpsLiveOrdersReturn {
+export type UsePerpsLiveOrdersReturn = {
   /** Array of current orders */
   orders: Order[];
   /** Whether we're waiting for the first real data */
   isInitialLoading: boolean;
-}
+};
 
 // Stable empty array reference to prevent re-renders
 const EMPTY_ORDERS: Order[] = [];
@@ -30,7 +30,6 @@ const EMPTY_ORDERS: Order[] = [];
  *
  * @param options - Configuration options
  * @returns Object containing orders array and loading state
- *
  * @example
  * ```tsx
  * function OrdersList() {
@@ -53,10 +52,9 @@ const EMPTY_ORDERS: Order[] = [];
  * ```
  */
 export function usePerpsLiveOrders(
-  options: UsePerpsLiveOrdersOptions = {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _options: UsePerpsLiveOrdersOptions = {},
 ): UsePerpsLiveOrdersReturn {
-  // Note: throttleMs is accepted for API compatibility but not used by controller
-  const { throttleMs: _throttleMs = 0 } = options;
   const controller = usePerpsController();
   const [orders, setOrders] = useState<Order[]>(EMPTY_ORDERS);
   const [isInitialLoading, setIsInitialLoading] = useState(true);

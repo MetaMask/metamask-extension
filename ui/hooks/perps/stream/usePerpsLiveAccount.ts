@@ -1,24 +1,24 @@
 import { useEffect, useState, useRef } from 'react';
-import { usePerpsController } from '../../../providers/perps';
 import type { AccountState } from '@metamask/perps-controller';
+import { usePerpsController } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveAccount hook
  */
-export interface UsePerpsLiveAccountOptions {
+export type UsePerpsLiveAccountOptions = {
   /** Throttle delay in milliseconds (default: 0 - no throttling) */
   throttleMs?: number;
-}
+};
 
 /**
  * Return type for usePerpsLiveAccount hook
  */
-export interface UsePerpsLiveAccountReturn {
+export type UsePerpsLiveAccountReturn = {
   /** Current account state (null if not loaded) */
   account: AccountState | null;
   /** Whether we're waiting for the first real data */
   isInitialLoading: boolean;
-}
+};
 
 /**
  * Hook for real-time account state updates via stream subscription
@@ -27,7 +27,6 @@ export interface UsePerpsLiveAccountReturn {
  *
  * @param options - Configuration options
  * @returns Object containing account state and loading state
- *
  * @example
  * ```tsx
  * function AccountBalance() {
@@ -47,10 +46,9 @@ export interface UsePerpsLiveAccountReturn {
  * ```
  */
 export function usePerpsLiveAccount(
-  options: UsePerpsLiveAccountOptions = {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _options: UsePerpsLiveAccountOptions = {},
 ): UsePerpsLiveAccountReturn {
-  // Note: throttleMs is accepted for API compatibility but not used by controller
-  const { throttleMs: _throttleMs = 0 } = options;
   const controller = usePerpsController();
   const [account, setAccount] = useState<AccountState | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);

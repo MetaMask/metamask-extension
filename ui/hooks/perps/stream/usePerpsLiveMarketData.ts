@@ -1,22 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
-import { usePerpsController } from '../../../providers/perps';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import { usePerpsController } from '../../../providers/perps';
 
 /**
  * Options for usePerpsLiveMarketData hook
  */
-export interface UsePerpsLiveMarketDataOptions {
+export type UsePerpsLiveMarketDataOptions = {
   /**
-   * Whether to auto-fetch on mount
+   * Whether to auto-fetch on mount.
    * @default true
    */
   autoSubscribe?: boolean;
-}
+};
 
 /**
  * Return type for usePerpsLiveMarketData hook
  */
-export interface UsePerpsLiveMarketDataReturn {
+export type UsePerpsLiveMarketDataReturn = {
   /**
    * All market data
    */
@@ -49,7 +49,7 @@ export interface UsePerpsLiveMarketDataReturn {
 }
 
 /**
- * Hook for fetching market data with prices
+ * Hook for fetching market data with prices.
  *
  * Uses the PerpsController's getMarketDataWithPrices() HTTP method.
  * Note: This is not a subscription - it fetches data on mount and
@@ -57,7 +57,6 @@ export interface UsePerpsLiveMarketDataReturn {
  *
  * @param options - Hook options
  * @returns Market data and loading state
- *
  * @example
  * ```tsx
  * const { cryptoMarkets, hip3Markets, isInitialLoading } = usePerpsLiveMarketData();
@@ -103,7 +102,9 @@ export function usePerpsLiveMarketData(
       setIsInitialLoading(false);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch market data'));
+      setError(
+        err instanceof Error ? err : new Error('Failed to fetch market data'),
+      );
       setIsInitialLoading(false);
     }
   }, [controller]);

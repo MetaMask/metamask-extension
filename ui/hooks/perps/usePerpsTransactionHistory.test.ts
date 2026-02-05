@@ -1,7 +1,10 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import type {
+  Order,
+  OrderFill,
+  Funding,
+} from '../../components/app/perps/types';
 import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
-import type { Order, OrderFill, Funding } from '../../components/app/perps/types';
 
 // Mock responses
 const mockFills: OrderFill[] = [
@@ -152,7 +155,9 @@ describe('usePerpsTransactionHistory', () => {
   });
 
   it('handles missing provider gracefully', async () => {
-    mockGetActiveProvider.mockReturnValueOnce(null as unknown as ReturnType<typeof mockGetActiveProvider>);
+    mockGetActiveProvider.mockReturnValueOnce(
+      null as unknown as ReturnType<typeof mockGetActiveProvider>,
+    );
 
     const { result } = renderHook(() =>
       usePerpsTransactionHistory({ skipInitialFetch: true }),

@@ -4,7 +4,7 @@ import { usePerpsController } from '../../../providers/perps';
 /**
  * Top of book data (best bid/ask)
  */
-export interface TopOfBookData {
+export type TopOfBookData = {
   /** Best bid price */
   bestBid: string;
   /** Best bid size */
@@ -19,25 +19,25 @@ export interface TopOfBookData {
   spreadPercent: string;
   /** Mid price between bid and ask */
   midPrice: string;
-}
+};
 
 /**
  * Options for usePerpsTopOfBook hook
  */
-export interface UsePerpsTopOfBookOptions {
+export type UsePerpsTopOfBookOptions = {
   /** Symbol to get top of book for (e.g., 'BTC', 'ETH') */
   symbol: string;
-}
+};
 
 /**
  * Return type for usePerpsTopOfBook hook
  */
-export interface UsePerpsTopOfBookReturn {
+export type UsePerpsTopOfBookReturn = {
   /** Top of book data (best bid/ask) */
   topOfBook: TopOfBookData | undefined;
   /** Whether we're waiting for the first real data */
   isInitialLoading: boolean;
-}
+};
 
 /**
  * Hook for real-time top of book (best bid/ask) data via stream subscription
@@ -49,7 +49,6 @@ export interface UsePerpsTopOfBookReturn {
  *
  * @param options - Configuration options
  * @returns Object containing top of book data and loading state
- *
  * @example
  * ```tsx
  * function SpreadDisplay() {

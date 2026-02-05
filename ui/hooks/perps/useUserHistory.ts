@@ -6,19 +6,19 @@ import type { UserHistoryItem } from '../../components/app/perps/types';
 /**
  * Parameters for the useUserHistory hook
  */
-export interface UseUserHistoryParams {
+export type UseUserHistoryParams = {
   /** Optional start time for filtering history (Unix timestamp in ms) */
   startTime?: number;
   /** Optional end time for filtering history (Unix timestamp in ms) */
   endTime?: number;
   /** Optional account ID to fetch history for */
   accountId?: CaipAccountId;
-}
+};
 
 /**
  * Return type for the useUserHistory hook
  */
-export interface UseUserHistoryResult {
+export type UseUserHistoryResult = {
   /** Array of user history items (deposits/withdrawals) */
   userHistory: UserHistoryItem[];
   /** Whether the hook is currently loading data */
@@ -27,7 +27,7 @@ export interface UseUserHistoryResult {
   error: string | null;
   /** Function to manually refetch the user history */
   refetch: () => Promise<UserHistoryItem[]>;
-}
+};
 
 /**
  * Hook to fetch and manage user transaction history including deposits and withdrawals.
@@ -36,8 +36,10 @@ export interface UseUserHistoryResult {
  * via the active provider's getUserHistory method.
  *
  * @param params - Optional parameters for filtering history
+ * @param params.startTime - Optional start time for filtering history (Unix timestamp in ms)
+ * @param params.endTime - Optional end time for filtering history (Unix timestamp in ms)
+ * @param params.accountId - Optional account ID to fetch history for
  * @returns Object containing userHistory array, loading state, error, and refetch function
- *
  * @example
  * ```tsx
  * function DepositHistory() {
@@ -83,7 +85,9 @@ export function useUserHistory({
         accountId,
       };
 
-      const history = await controller.getActiveProvider().getUserHistory(params);
+      const history = await controller
+        .getActiveProvider()
+        .getUserHistory(params);
 
       setUserHistory(history);
       return history;

@@ -63,12 +63,20 @@ export type UsePerpsOrderFormReturn = {
 };
 
 /**
- * Custom hook for managing perps order form state
+ * Custom hook for managing perps order form state.
  *
  * Encapsulates all form state, handlers, and calculations for the order entry form.
  * Supports three modes: 'new', 'modify', and 'close'.
  *
  * @param options - Hook configuration options
+ * @param options.asset - Asset symbol
+ * @param options.currentPrice - Current asset price in USD
+ * @param options.initialDirection - Initial order direction
+ * @param options.mode - Order mode: 'new', 'modify', or 'close'
+ * @param options.existingPosition - Existing position data for pre-population
+ * @param options.onFormStateChange - Callback when form state changes
+ * @param options.onSubmit - Callback when order is submitted
+ * @param options.orderType - Order type: 'market' or 'limit'
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
