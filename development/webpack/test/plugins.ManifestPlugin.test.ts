@@ -50,6 +50,7 @@ describe('ManifestPlugin', () => {
       manifestVersion: [2, 3] as const,
       webAccessibleResources: [undefined, ['filename.map.js']],
     };
+
     generateCases(matrix).forEach(runTest);
 
     type TestCase = Combination<typeof matrix>;
@@ -100,6 +101,7 @@ describe('ManifestPlugin', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           web_accessible_resources: webAccessibleResources,
           ...getZipOptions(zip),
+          buildType: 'main',
         });
         manifestPlugin.apply(compiler);
         await promise;
@@ -406,6 +408,306 @@ describe('ManifestPlugin', () => {
         transformed._flags,
         undefined,
         'should not have flags when file read fails with non-ENOENT error',
+      );
+    });
+  });
+
+  describe('build type overrides', () => {
+    const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
+
+    it('should apply build type base manifest overrides', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compilation.options.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'beta',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.description,
+        'Beta build type description',
+        'should use beta build type description',
+      );
+      assert.strictEqual(
+        json.beta_property,
+        'from_beta_base',
+        'should include beta base property',
+      );
+      assert.strictEqual(
+        json.base_property,
+        'overridden_by_beta',
+        'should override base property with beta value',
+      );
+    });
+
+    it('should apply build type browser manifest overrides on top of all previous layers', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compilation.options.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'beta',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.browser_specific_settings?.chrome?.id,
+        'beta-chrome-extension-id',
+        'should use beta chrome extension id',
+      );
+      assert.strictEqual(
+        json.beta_chrome_property,
+        'from_beta_chrome',
+        'should include beta chrome property',
+      );
+      assert.strictEqual(
+        json.chrome_property,
+        'overridden_by_beta_chrome',
+        'should override chrome property with beta chrome value',
+      );
+    });
+
+    it('should gracefully skip non-existent build type manifests', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compilation.options.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'nonexistent',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      // Should use base manifest values
+      assert.strictEqual(
+        json.description,
+        'Base v3 manifest description',
+        'should use base manifest description when build type does not exist',
+      );
+      assert.strictEqual(
+        json.base_property,
+        'from_base',
+        'should use base property value',
+      );
+      assert.strictEqual(
+        json.beta_property,
+        undefined,
+        'should not have beta properties',
+      );
+    });
+
+    it('should use build type base when build type browser manifest does not exist', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compilation.options.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'flask',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.description,
+        'Flask build type description',
+        'should use flask build type description',
+      );
+      assert.strictEqual(
+        json.flask_property,
+        'from_flask_base',
+        'should include flask base property',
+      );
+      assert.strictEqual(
+        json.flask_firefox_property,
+        undefined,
+        'should not have flask firefox property for chrome',
+      );
+      assert.strictEqual(
+        json.browser_specific_settings?.chrome?.id,
+        'chrome-extension-id-v3',
+        'should use base chrome extension id since flask chrome manifest does not exist',
+      );
+    });
+
+    it('should prioritize build type base description over base description', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compilation.options.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: 'test suffix',
+        buildType: 'beta',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.description,
+        'Beta build type description – test suffix',
+        'should use beta description with suffix appended',
+      );
+    });
+
+    it('should apply different build type overrides for different browsers', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compilation.options.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome', 'firefox'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'flask',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const chromeManifest = compilation.assets['chrome/manifest.json'];
+      const chromeJson = JSON.parse(
+        chromeManifest.source().toString(),
+      ) as Manifest;
+
+      const firefoxManifest = compilation.assets['firefox/manifest.json'];
+      const firefoxJson = JSON.parse(
+        firefoxManifest.source().toString(),
+      ) as Manifest;
+
+      // Chrome should not have flask firefox overrides
+      assert.strictEqual(
+        chromeJson.flask_firefox_property,
+        undefined,
+        'chrome should not have flask firefox property',
+      );
+
+      // Firefox should have flask firefox overrides
+      assert.strictEqual(
+        firefoxJson.flask_firefox_property,
+        'from_flask_firefox',
+        'firefox should have flask firefox property',
+      );
+      assert.strictEqual(
+        firefoxJson.browser_specific_settings?.gecko?.id,
+        'flask-firefox-extension-id@metamask.io',
+        'firefox should have flask firefox extension id',
+      );
+    });
+
+    it('should work with manifest v2 and build type overrides', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compilation.options.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 2,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'beta',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(json.manifest_version, 2, 'should use manifest v2');
+      assert.strictEqual(
+        json.description,
+        'Beta build type description',
+        'should use beta build type description in v2',
+      );
+      assert.strictEqual(
+        json.beta_property,
+        'from_beta_base',
+        'should include beta base property in v2',
+      );
+    });
+
+    it('should append additional description suffix to build type description', async () => {
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compilation.options.context = context;
+
+      const manifestPlugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: 'Additional Info',
+        buildType: 'flask',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const manifest = compilation.assets['chrome/manifest.json'];
+      const json = JSON.parse(manifest.source().toString()) as Manifest;
+
+      assert.strictEqual(
+        json.description,
+        'Flask build type description – Additional Info',
+        'should append additional description to flask description',
       );
     });
   });

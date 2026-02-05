@@ -1465,6 +1465,9 @@
     "ui/hooks/useShouldShowSpeedUp.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/hooks/useStaticTokensPolling.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/hooks/useTheme.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2556,6 +2559,10 @@
       "MetaMask: Background connection not initialized": 27,
       "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/alerts/transactions/useGasSponsorshipWarningAlerts.test.ts": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useGasTooLowAlerts.test.ts": {
