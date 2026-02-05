@@ -27,6 +27,11 @@ type PerpsTutorialAnimationProps = {
   alignment?: Alignment;
 };
 
+const RIVE_COMPONENT_STYLE: React.CSSProperties = {
+  width: '100%',
+  height: '100%',
+};
+
 /**
  * Get container styles based on viewport type.
  * New RIV files have 280px artboard height.
@@ -114,14 +119,20 @@ const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
     buffer,
   });
 
+  const layout = useMemo(
+    () =>
+      new Layout({
+        fit,
+        alignment,
+      }),
+    [fit, alignment],
+  );
+
   const { rive, RiveComponent } = useRive({
     riveFile: riveFile ?? undefined,
     artboard: riveFile ? artboardName : undefined,
     autoplay: false,
-    layout: new Layout({
-      fit,
-      alignment,
-    }),
+    layout,
   });
 
   useEffect(() => {
@@ -152,7 +163,7 @@ const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
       style={containerStyle}
       data-testid="perps-tutorial-animation"
     >
-      <RiveComponent style={{ width: '100%', height: '100%' }} />
+      <RiveComponent style={RIVE_COMPONENT_STYLE} />
     </Box>
   );
 };
