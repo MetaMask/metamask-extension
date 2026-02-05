@@ -9,27 +9,19 @@ import {
   showLoadingIndication,
 } from '../actions';
 import { setShowNewSrpAddedToast } from '../../components/app/toast-master/utils';
-import { callBackgroundMethod } from '../background-connection';
+import { submitRequestToBackground } from '../background-connection';
 
-export function createMpcWallet(): ThunkAction<
-  Promise<void>,
-  MetaMaskReduxState,
-  undefined,
-  AnyAction
-> {
+export function createMpcKeyring(
+  verifierId: string,
+): ThunkAction<Promise<string>, MetaMaskReduxState, undefined, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`actions.createMpcWallet`);
+    log.debug(`actions.createMpcKeyring`);
 
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod<void>('createMpcWallet', [], (err, result) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(result);
-      });
-    })
+    const keyringId = await submitRequestToBackground<string>(
+      'createMpcKeyring',
+      [verifierId],
+    )
       .then(async (result) => {
         dispatch(hideLoadingIndication());
         dispatch(hideWarning());
@@ -41,5 +33,6 @@ export function createMpcWallet(): ThunkAction<
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
+    return keyringId;
   };
 }

@@ -243,11 +243,20 @@ export const KeyringControllerInit: ControllerInitFunction<
       dkls19Lib,
       cloudURL,
       relayerURL,
-      initRole: 'initiator',
       webSocket: WebSocket,
-      getToken: jwtSecretKey
-        ? (userId: string) => generateToken(jwtSecretKey, userId)
+      getTransportToken: jwtSecretKey
+        ? () => Promise.resolve(generateToken(jwtSecretKey, 'MetaMask Client'))
         : undefined,
+      getVerifierToken: (verifierId: string) => {
+        // Mock JWT token for verifier
+        const token = JSON.stringify({
+          sub: verifierId,
+          iat: Math.floor(Date.now() / 1000),
+          exp: Math.floor(Date.now() / 1000) + 3600,
+          channels: ['*'],
+        });
+        return Promise.resolve(token);
+      },
     };
     additionalKeyrings.push(
       Object.assign(() => new MPCKeyring(opts), { type: KeyringTypes.mpc }),

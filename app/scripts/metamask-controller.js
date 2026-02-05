@@ -434,6 +434,7 @@ import {
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
+import { createMpcKeyring } from './controllers/mpc';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2679,7 +2680,7 @@ export default class MetamaskController extends EventEmitter {
         appStateController.cancelQrCodeScan.bind(appStateController),
 
       // mpc wallets
-      createMpcWallet: this.createMpcWallet.bind(this),
+      createMpcKeyring: this.createMpcKeyring.bind(this),
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
@@ -5645,12 +5646,13 @@ export default class MetamaskController extends EventEmitter {
   //
 
   /**
-   * Creates a new MPC wallet.
+   * Creates a new MPC keyring.
    *
-   * @returns {Promise<void>}
+   * @param {string} verifierId - The ID of the verifier.
+   * @returns {Promise<string>} The ID of the newly created keyring.
    */
-  async createMpcWallet() {
-    await this.keyringController.addNewKeyring(KeyringTypes.mpc);
+  async createMpcKeyring(verifierId) {
+    return await createMpcKeyring(this.keyringController, verifierId);
   }
 
   //

@@ -6693,7 +6693,7 @@ __metadata:
 
 "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=a30e9a&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=c533e2&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
@@ -6702,7 +6702,7 @@ __metadata:
     "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
     "@metamask/mfa-wallet-network": "npm:^0.0.0"
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
-  checksum: 10/f868f1a51b7d577e1a0ad971cc9a6cc079a397baa07ff64b92934d13c50078b69c68344033d5a9a151ae493ed00ea17f547d9e38b3ac354ceafbe9cd101947e5
+  checksum: 10/689661b2fb692c02be1e761532d5c5ac933102bd5ad32604177d3ad5eec2feef042d06ee603866a0fac1379d865fa491eb43318cb03e4e5e22897d3f9f00ff70
   languageName: node
   linkType: hard
 
@@ -7431,12 +7431,12 @@ __metadata:
 
 "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz#./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::hash=7586fa&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz#./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::hash=6f19f0&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@msgpack/msgpack": "npm:^3.1.2"
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
-  checksum: 10/0476280867b5944966f9cff2eede14e2910344851422fb5505001c7203fc3ee3a5dcedaf0ecc7362542c7ae46e9a819b68ee780ceffde2e4de49ced62796b79c
+  checksum: 10/3779f3d5d370082ea2dd27163670f6085f9863049a35f605019d4fc8883c7101f92726c37a5b12b2d6ab62e768b0f8cd297cd5076a9864a608c24c739cb132d1
   languageName: node
   linkType: hard
 
@@ -7452,25 +7452,25 @@ __metadata:
 
 "@metamask/mfa-wallet-e2ee@file:./metamask-mfa-wallet-e2ee-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-e2ee@file:./metamask-mfa-wallet-e2ee-0.0.0.tgz#./metamask-mfa-wallet-e2ee-0.0.0.tgz::hash=7e9304&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-e2ee@file:./metamask-mfa-wallet-e2ee-0.0.0.tgz#./metamask-mfa-wallet-e2ee-0.0.0.tgz::hash=adbb1d&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@msgpack/msgpack": "npm:^3.1.2"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
-  checksum: 10/13ccf57849813e2ae7622d7d8cd056836571dbaccd39a52c9d729170c3933689a348b330af5dfe28a125fb22407653e847c458ba5edec8c1d7e07659d91c6065
+  checksum: 10/ce481bf5a802dc15f0d30fbb906c6157668485a532474eaf306019f19dc97b46e71fee6f716278143e2c59a2a7dcee2df1508e769d307657a37d3c54bc33f106
   languageName: node
   linkType: hard
 
 "@metamask/mfa-wallet-network@file:./metamask-mfa-wallet-network-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-network@file:./metamask-mfa-wallet-network-0.0.0.tgz#./metamask-mfa-wallet-network-0.0.0.tgz::hash=437af8&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-network@file:./metamask-mfa-wallet-network-0.0.0.tgz#./metamask-mfa-wallet-network-0.0.0.tgz::hash=702a02&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
     "@msgpack/msgpack": "npm:^3.1.2"
     "@noble/hashes": "npm:^1.8.0"
     centrifuge: "npm:^5.5.2"
-  checksum: 10/68f59188d011bdc719d9d5be0be179e153e08719c6241d862c19315cce4bc5ed865af56076fc14636f5a15e92085d55e7a803c22c8b798dd19d2f1fe82383332
+  checksum: 10/60f759c20b21cd9c56fe78336a7a67cbffabe8a5a76801d504c6e3324285c80c4e5a3a20e1389c82f031b080b65da8ae56cd5df483e5860e267d3327e73c8be5
   languageName: node
   linkType: hard
 

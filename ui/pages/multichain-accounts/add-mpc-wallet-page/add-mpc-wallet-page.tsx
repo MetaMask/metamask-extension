@@ -23,7 +23,7 @@ import {
   ACCOUNT_LIST_PAGE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { createMpcWallet } from '../../../store/controller-actions/mpc-controller';
+import { createMpcKeyring } from '../../../store/controller-actions/mpc-controller';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 
 export const AddMpcWalletPage = () => {
@@ -32,7 +32,7 @@ export const AddMpcWalletPage = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
   const handleContinue = useCallback(async () => {
-    await dispatch(createMpcWallet());
+    await dispatch(createMpcKeyring('verifier'));
     navigate(DEFAULT_ROUTE);
   }, [dispatch, navigate]);
 
