@@ -2239,6 +2239,18 @@
   "disconnectAllDescriptionText": {
     "message": "If you disconnect from this site, you’ll need to reconnect your accounts and networks to use this site again."
   },
+  "disconnectAllSites": {
+    "message": "Disconnect All"
+  },
+  "disconnectAllSitesDescriptionText": {
+    "message": "If you disconnect from all sites, you'll need to reconnect your accounts and networks to use them again."
+  },
+  "disconnectAllSitesError": {
+    "message": "Some dapps couldn't be disconnected. Please try again."
+  },
+  "disconnectAllSitesSuccess": {
+    "message": "All dapps successfully disconnected."
+  },
   "disconnectAllSnapsText": {
     "message": "Snaps"
   },
