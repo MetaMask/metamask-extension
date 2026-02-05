@@ -5785,18 +5785,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/address-book-controller@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/address-book-controller@npm:7.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.8.1"
-  checksum: 10/fdd229af695d0b2d9b7683e54a4f5f7121e9fcdcfd5cd7cf60f010726bc7627f5bd67b61665152c75e79d491712150e2c4383d4da39460535bf8eb5da49763bf
-  languageName: node
-  linkType: hard
-
 "@metamask/address-book-controller@npm:^7.0.1":
   version: 7.0.1
   resolution: "@metamask/address-book-controller@npm:7.0.1"
@@ -33834,7 +33822,7 @@ __metadata:
     "@metamask/account-tree-controller": "npm:^3.0.0"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^34.0.0"
-    "@metamask/address-book-controller": "npm:^7.0.0"
+    "@metamask/address-book-controller": "npm:^7.0.1"
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^8.0.0"
