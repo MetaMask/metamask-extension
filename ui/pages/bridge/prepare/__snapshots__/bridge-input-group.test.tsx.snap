@@ -34,7 +34,7 @@ exports[`BridgeInputGroup should render destination networks 2`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-primary-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
       A
     </div>
@@ -439,7 +439,7 @@ exports[`BridgeInputGroup should render source networks 2`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-primary-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
       A
     </div>
