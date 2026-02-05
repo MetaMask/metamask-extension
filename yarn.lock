@@ -5306,7 +5306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-transport-webhid@npm:^6.30.0, @ledgerhq/hw-transport-webhid@npm:^6.31.0":
+"@ledgerhq/hw-transport-webhid@npm:6.31.0, @ledgerhq/hw-transport-webhid@npm:^6.30.0":
   version: 6.31.0
   resolution: "@ledgerhq/hw-transport-webhid@npm:6.31.0"
   dependencies:
@@ -5315,6 +5315,18 @@ __metadata:
     "@ledgerhq/hw-transport": "npm:6.32.0"
     "@ledgerhq/logs": "npm:^6.14.0"
   checksum: 10/56a50bc620f286846eab8b549f2d7f9c42c4f5875b916468b3ea044067d5e00e7b1579c829e4b9ffc007bb7562d91aa27ab8bf09aa548d97a956e9e654f7e9b1
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-transport-webhid@patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch":
+  version: 6.31.0
+  resolution: "@ledgerhq/hw-transport-webhid@patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch::version=6.31.0&hash=c7ba21"
+  dependencies:
+    "@ledgerhq/devices": "npm:8.10.0"
+    "@ledgerhq/errors": "npm:^6.29.0"
+    "@ledgerhq/hw-transport": "npm:6.32.0"
+    "@ledgerhq/logs": "npm:^6.14.0"
+  checksum: 10/917f145b8987195b190a9e89ee8428e00d5c642d620f579f282f2edbf43313de5605890ce4efe530c82d4718b8b45138048681b0ddd3216c6df7ab0052e88cde
   languageName: node
   linkType: hard
 
@@ -40689,15 +40701,6 @@ __metadata:
   bin:
     semver: bin/semver
   checksum: 10/fca14418a174d4b4ef1fecb32c5941e3412d52a4d3d85165924ce3a47fbc7073372c26faf7484ceb4bbc2bde25880c6b97e492473dc7e9708fdfb1c6a02d546e
-  languageName: node
-  linkType: hard
-
-"semver@npm:7.7.3, semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.6, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.3, semver@npm:^7.7.2":
-  version: 7.7.3
-  resolution: "semver@npm:7.7.3"
-  bin:
-    semver: bin/semver.js
-  checksum: 10/8dbc3168e057a38fc322af909c7f5617483c50caddba135439ff09a754b20bdd6482a5123ff543dad4affa488ecf46ec5fb56d61312ad20bb140199b88dfaea9
   languageName: node
   linkType: hard
 

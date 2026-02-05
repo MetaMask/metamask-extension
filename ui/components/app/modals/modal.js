@@ -21,10 +21,8 @@ import {
 } from './identity';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
-import {
-  HardwareWalletErrorModal,
-  HARDWARE_WALLET_ERROR_MODAL_NAME,
-} from './hardware-wallet-error-modal';
+import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
