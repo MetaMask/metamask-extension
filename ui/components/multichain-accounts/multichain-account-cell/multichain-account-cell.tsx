@@ -72,11 +72,13 @@ export const MultichainAccountCell = ({
       padding={4}
       gap={4}
       onClick={handleClick}
-      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected ? ' is-selected' : ''}`}
+      className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected && !startAccessory ? ' is-selected' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
       key={`multichain-account-cell-${accountId}`}
       backgroundColor={
-        selected ? BackgroundColor.backgroundMuted : BackgroundColor.transparent
+        selected && !startAccessory
+          ? BackgroundColor.backgroundMuted
+          : BackgroundColor.transparent
       }
     >
       {startAccessory}
