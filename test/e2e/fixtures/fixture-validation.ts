@@ -35,6 +35,8 @@ type JsonLike = Record<string, unknown>;
  * @returns Array of dot-separated key paths to ignore
  */
 const getFixtureIgnoredKeys = (): string[] => [
+  'data.AuthenticationController',
+  'data.MultichainAssetsController',
   // Permissions
   'data.PermissionController.subjectMetadata',
   'data.PermissionController.subjects',
@@ -50,15 +52,44 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Timestamps and dates that change on every run
   'data.AppMetadataController.firstTimeInfo.date',
   'data.AppMetadataController.firstTimeInfo.version',
+  'data.AppStateController.lastUpdatedAt',
   'data.AppStateController.newPrivacyPolicyToastShownDate',
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
+  'data.AppStateController.termsOfUseLastAgreed',
+  'data.MetaMetricsController.latestNonAnonymousEventTimestamp',
   'data.MetaMetricsController.tracesBeforeMetricsOptIn',
   'data.MetaMetricsController.traits.install_date_ext',
+  'data.NetworkController.networkConfigurationsByChainId.0x539.lastUpdatedAt',
+  'data.PhishingController.c2DomainBlocklistLastFetched',
+  'data.PhishingController.hotlistLastFetched',
+  'data.PhishingController.stalelistLastFetched',
+  'data.PreferencesController.lostIdentities.0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastSelected',
+  'data.ProfileMetricsController.initialDelayEndTimestamp',
+  'data.RemoteFeatureFlagController.cacheTimestamp',
+  'data.RemoteFeatureFlagController.remoteFeatureFlags',
+  // Account-specific timestamps (importTime, lastSelected) - ignores all accounts due to dynamic UUIDs
+  'data.AccountsController.internalAccounts.accounts',
+  // Identity timestamps (lastSelected) - ignores all identities due to dynamic addresses
+  'data.PreferencesController.identities',
+  'data.AddressBookController.addressBook',
+  // Network configuration timestamps (lastUpdatedAt) - ignores all network configs
+  'data.NetworkController.networkConfigurations',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
+  // Random ids
+  'data.MetaMetricsController.eventsBeforeMetricsOptIn[0].actionId',
+  'data.MetaMetricsController.metaMetricsId',
+  'data.MultichainBalancesController.balances',
+  'data.MultichainTransactionsController.nonEvmTransactions',
+  'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
+  'data.NetworkController.networksMetadata',
+  'data.NetworkController.selectedNetworkClientId',
+  'data.ProfileMetricsController.syncQueue',
+  // non-EVM account IDs ARE NOT deterministic and each keyring has metadata (with source of randomness)
+  'data.KeyringController.vault',
 ];
 
 /**

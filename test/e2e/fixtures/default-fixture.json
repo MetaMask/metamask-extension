@@ -261,8 +261,8 @@
           "usdConversionRate": null
         },
         "ETH": {
-          "conversionDate": 1770282507.383,
-          "conversionRate": 1700,
+          "conversionDate": null,
+          "conversionRate": null,
           "usdConversionRate": null
         },
         "POL": {
