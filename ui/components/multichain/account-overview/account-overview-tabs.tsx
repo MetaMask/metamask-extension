@@ -59,10 +59,9 @@ export const useHomeDeepLinkEffects = () => {
   const isHomeRoute = pathname === DEFAULT_ROUTE;
 
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // callback logic to open up the network selector modal if not already open
   const isNetworkMenuOpen = useSelector(selectIsNetworkMenuOpen);
   const dispatch = useDispatch();
+
   const openNetworkSelectorModal = useCallback(() => {
     if (!isNetworkMenuOpen) {
       dispatch(toggleNetworkMenu());
