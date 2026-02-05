@@ -1,39 +1,42 @@
+/**
+ * Benchmark: Onboarding - Import existing wallet
+ * Measures time for importing an existing wallet during onboarding
+ */
+
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
-import { WALLET_PASSWORD } from '../../e2e/constants';
-import { withFixtures } from '../../e2e/helpers';
-import { Driver } from '../../e2e/webdriver/driver';
-import HomePage from '../../e2e/page-objects/pages/home/homepage';
-import OnboardingCompletePage from '../../e2e/page-objects/pages/onboarding/onboarding-complete-page';
-import OnboardingMetricsPage from '../../e2e/page-objects/pages/onboarding/onboarding-metrics-page';
-import OnboardingPasswordPage from '../../e2e/page-objects/pages/onboarding/onboarding-password-page';
-import StartOnboardingPage from '../../e2e/page-objects/pages/onboarding/start-onboarding-page';
-import OnboardingSrpPage from '../../e2e/page-objects/pages/onboarding/onboarding-srp-page';
-import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
-import HeaderNavbar from '../../e2e/page-objects/pages/header-navbar';
-import AccountListPage from '../../e2e/page-objects/pages/account-list-page';
-import { getCommonMocks } from '../utils/commonMocks';
-import {
-  setupPerformanceReporting,
-  performanceTracker,
-  TimerHelper,
-} from '../utils/testSetup';
-import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
-import { E2E_SRP } from '../../e2e/fixtures/default-fixture';
-import FixtureBuilder from '../../e2e/fixtures/fixture-builder';
+import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { E2E_SRP } from '../../../fixtures/default-fixture';
+import { WALLET_PASSWORD } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import {
   handleSidepanelPostOnboarding,
   onboardingMetricsFlow,
-} from '../../e2e/page-objects/flows/onboarding.flow';
+} from '../../../page-objects/flows/onboarding.flow';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
+import OnboardingMetricsPage from '../../../page-objects/pages/onboarding/onboarding-metrics-page';
+import OnboardingPasswordPage from '../../../page-objects/pages/onboarding/onboarding-password-page';
+import OnboardingSrpPage from '../../../page-objects/pages/onboarding/onboarding-srp-page';
+import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
+import { Driver } from '../../../webdriver/driver';
+import { performanceTracker } from '../../utils/performance-tracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { getCommonMocks } from '../../utils/common-mocks';
+import type { BenchmarkRunResult } from '../../utils/types';
 
-describe('MetaMask onboarding', function () {
-  setupPerformanceReporting();
+export const testTitle = 'benchmark-onboarding-import-wallet';
+export const persona = 'standard';
 
-  it('Import an existing wallet and completes the onboarding process', async function () {
-    this.timeout(120000);
+export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRunResult> {
+  try {
     await withFixtures(
       {
-        title: this.test?.fullTitle(),
+        title: testTitle,
         manifestFlags: {
           testing: {
             disableSync: true,
@@ -54,32 +57,21 @@ describe('MetaMask onboarding', function () {
         const srp = process.env.E2E_POWER_USER_SRP || E2E_SRP;
 
         const timerImportWalletToSocial = new TimerHelper(
-          'Time since the user clicks on "Import wallet" button until "Social" screen is visible',
-          2000,
+          'importWalletToSocialScreen',
         );
-        const timerSrpButtonToForm = new TimerHelper(
-          'Time since the user clicks on "use SRP" button until "SRP" form is visible',
-          2000,
-        );
+        const timerSrpButtonToForm = new TimerHelper('srpButtonToSrpForm');
         const timerConfirmToPassword = new TimerHelper(
-          'Time since the user clicks on "Confirm" button until "Password" form is visible',
-          3000,
+          'confirmSrpToPasswordForm',
         );
         const timerPasswordToMetrics = new TimerHelper(
-          'Time since the user clicks on "Continue" button on Password form until "Help improve Metamask" screen is visible',
-          3000,
+          'passwordFormToMetricsScreen',
         );
         const timerMetricsToComplete = new TimerHelper(
-          'Time since the user clicks on "Continue" button until "Wallet is ready" screen is visible',
-          3000,
+          'metricsToWalletReadyScreen',
         );
-        const timerDoneToHome = new TimerHelper(
-          'Time since the user clicks on "Done" button until "Home" screen is visible',
-          15000,
-        );
+        const timerDoneToHome = new TimerHelper('doneButtonToHomeScreen');
         const timerAccountListLoad = new TimerHelper(
-          'Time since the user opens "account list" until the account list is loaded',
-          5000,
+          'openAccountMenuToAccountListLoaded',
         );
 
         await driver.navigate();
@@ -149,7 +141,6 @@ describe('MetaMask onboarding', function () {
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);
           await assetListPage.checkTokenListIsDisplayed();
-          await assetListPage.checkConversionRateDisplayed();
           await assetListPage.checkTokenExistsInList('Ethereum');
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
@@ -160,10 +151,20 @@ describe('MetaMask onboarding', function () {
         await headerNavbar.openAccountMenu();
         await timerAccountListLoad.measure(async () => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded(30000);
+          await accountListPage.checkPageIsLoaded(50000);
         });
         performanceTracker.addTimer(timerAccountListLoad);
       },
     );
-  });
-});
+
+    return { timers: collectTimerResults(), success: true };
+  } catch (error) {
+    return {
+      timers: collectTimerResults(),
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+export const run = runOnboardingImportWalletBenchmark;

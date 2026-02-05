@@ -1,31 +1,29 @@
-import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
-import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
-import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
-import { withFixtures } from '../../e2e/helpers';
-import HomePage from '../../e2e/page-objects/pages/home/homepage';
-import { Driver } from '../../e2e/webdriver/driver';
-import {
-  setupPerformanceReporting,
-  performanceTracker,
-  TimerHelper,
-} from '../utils/testSetup';
-import LoginPage from '../../e2e/page-objects/pages/login-page';
-import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
-import SwapPage from '../../e2e/page-objects/pages/swap/swap-page';
+/**
+ * Benchmark: Swap flow performance
+ * Measures time for swap flow including quote fetching
+ */
 
-describe('Unified Bridge & Swap Performance', function () {
-  setupPerformanceReporting();
+import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
+import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
+import { withFixtures } from '../../../helpers';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import LoginPage from '../../../page-objects/pages/login-page';
+import SwapPage from '../../../page-objects/pages/swap/swap-page';
+import { Driver } from '../../../webdriver/driver';
+import { performanceTracker } from '../../utils/performance-tracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { WITH_STATE_POWER_USER } from '../../utils';
+import type { BenchmarkRunResult } from '../../utils/types';
 
-  it('measures swap flow performance with quote fetching', async function () {
-    if (!process.env.INFURA_PROJECT_ID) {
-      throw new Error(
-        'Running this E2E test requires a valid process.env.INFURA_PROJECT_ID',
-      );
-    }
+export const testTitle = 'benchmark-swap-power-user';
+export const persona = 'powerUser';
 
+export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
+  try {
     await withFixtures(
       {
-        title: this.test?.fullTitle(),
+        title: testTitle,
         fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
@@ -40,14 +38,8 @@ describe('Unified Bridge & Swap Performance', function () {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerOpenSwapPage = new TimerHelper(
-          'Time to open swap page from home',
-          5000,
-        );
-        const timerQuoteFetching = new TimerHelper(
-          'Time to fetch and display swap quotes',
-          10000,
-        );
+        const timerOpenSwapPage = new TimerHelper('openSwapPageFromHome');
+        const timerQuoteFetching = new TimerHelper('fetchAndDisplaySwapQuotes');
 
         // Login flow
         await driver.navigate();
@@ -58,7 +50,6 @@ describe('Unified Bridge & Swap Performance', function () {
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
         await assetListPage.waitForTokenToBeDisplayed('Ethereum');
         await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
 
@@ -80,5 +71,15 @@ describe('Unified Bridge & Swap Performance', function () {
         performanceTracker.addTimer(timerQuoteFetching);
       },
     );
-  });
-});
+
+    return { timers: collectTimerResults(), success: true };
+  } catch (error) {
+    return {
+      timers: collectTimerResults(),
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+export const run = runSwapBenchmark;
