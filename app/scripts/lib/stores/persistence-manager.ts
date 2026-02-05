@@ -803,6 +803,11 @@ export class PersistenceManager {
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();
+
+        // Clear failure tracking state to prevent stale errors from being reported
+        this.#onSetFailed = undefined;
+        this.#setFailedBeforeCallbackRegistered = false;
+        this.#errorTypeBeforeCallbackRegistered = null;
       },
     );
   }
