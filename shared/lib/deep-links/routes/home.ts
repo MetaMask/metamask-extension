@@ -1,7 +1,7 @@
 import { DEFAULT_ROUTE, Route } from './route';
 
 export enum HomeQueryParams {
-  OpenNetworkPicker = 'openNetworkPicker',
+  OpenNetworkSelector = 'openNetworkSelector',
 }
 
 export default new Route({
@@ -9,13 +9,13 @@ export default new Route({
   getTitle: (_: URLSearchParams) => 'deepLink_theHomePage',
   handler: function handler(params: URLSearchParams) {
     const query = new URLSearchParams();
-    const openNetworkPicker = params.get(HomeQueryParams.OpenNetworkPicker);
+    const openNetworkSelector = params.get(HomeQueryParams.OpenNetworkSelector);
 
     if (
-      openNetworkPicker?.toLowerCase() === 'true' ||
-      openNetworkPicker === '1'
+      openNetworkSelector?.toLowerCase() === 'true' ||
+      openNetworkSelector === '1'
     ) {
-      query.set(HomeQueryParams.OpenNetworkPicker, 'true');
+      query.set(HomeQueryParams.OpenNetworkSelector, 'true');
     }
 
     return { path: DEFAULT_ROUTE, query };

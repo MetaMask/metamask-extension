@@ -51,7 +51,6 @@ import {
   RESTORE_VAULT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
-  DEFAULT_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -61,7 +60,6 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
-import { HomeQueryParams } from '../../../shared/lib/deep-links/routes/home';
 import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
@@ -145,9 +143,6 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    toggleNetworkMenu: PropTypes.func.isRequired,
-    closeNetworkMenu: PropTypes.func.isRequired,
-    isNetworkMenuOpen: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
@@ -172,7 +167,6 @@ export default class Home extends PureComponent {
     canShowBlockageNotification: true,
     notificationClosing: false,
     shouldEvaluateCohortEligibility: true,
-    openedNetworkPickerFromDeeplink: false,
   };
 
   constructor(props) {
@@ -182,50 +176,6 @@ export default class Home extends PureComponent {
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
       attemptCloseNotificationPopup();
-    }
-  }
-
-  handleNetworkPickerDeepLink() {
-    const {
-      location,
-      navigate,
-      toggleNetworkMenu,
-      isNetworkMenuOpen,
-      redirectAfterDefaultPage,
-    } = this.props;
-
-    if (!location) {
-      return;
-    }
-
-    if (
-      redirectAfterDefaultPage?.shouldRedirect &&
-      redirectAfterDefaultPage?.path
-    ) {
-      return;
-    }
-
-    const params = new URLSearchParams(location.search);
-
-    if (!params.has(HomeQueryParams.OpenNetworkPicker)) {
-      return;
-    }
-
-    if (!isNetworkMenuOpen) {
-      toggleNetworkMenu();
-      if (!this.state.openedNetworkPickerFromDeeplink) {
-        this.setState({ openedNetworkPickerFromDeeplink: true });
-      }
-    }
-
-    params.delete(HomeQueryParams.OpenNetworkPicker);
-    const pathname = location.pathname || DEFAULT_ROUTE;
-    const nextSearch = params.toString();
-    const nextPath = nextSearch ? `${pathname}?${nextSearch}` : pathname;
-    const currentPath = `${pathname}${location.search || ''}`;
-
-    if (nextPath !== currentPath) {
-      navigate(nextPath, { replace: true });
     }
   }
 
@@ -250,8 +200,6 @@ export default class Home extends PureComponent {
 
     // Check for redirect after default page
     this.checkRedirectAfterDefaultPage();
-
-    this.handleNetworkPickerDeepLink();
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
     this.props.lookupSelectedNetworks();
@@ -280,7 +228,6 @@ export default class Home extends PureComponent {
       evaluateCohortEligibility,
       setPendingShieldCohort,
       isSignedIn,
-      location,
     } = this.props;
 
     const { shouldEvaluateCohortEligibility } = this.state;
@@ -288,7 +235,6 @@ export default class Home extends PureComponent {
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
     } = _prevProps;
-    const prevLocationSearch = _prevProps.location?.search;
     const { notificationClosing } = this.state;
 
     if (
@@ -317,19 +263,6 @@ export default class Home extends PureComponent {
 
     // Check for redirect after default page on updates
     this.checkRedirectAfterDefaultPage();
-
-    if (prevLocationSearch !== location?.search) {
-      this.handleNetworkPickerDeepLink();
-    }
-  }
-
-  componentWillUnmount() {
-    const { openedNetworkPickerFromDeeplink } = this.state;
-    const { closeNetworkMenu, isNetworkMenuOpen } = this.props;
-
-    if (openedNetworkPickerFromDeeplink && isNetworkMenuOpen) {
-      closeNetworkMenu();
-    }
   }
 
   onRecoveryPhraseReminderClose = () => {

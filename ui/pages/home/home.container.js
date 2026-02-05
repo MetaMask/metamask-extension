@@ -27,7 +27,6 @@ import {
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
-  selectIsNetworkMenuOpen,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -47,8 +46,6 @@ import {
   setNewTokensImportedError,
   setDataCollectionForMarketing,
   setEditedNetwork,
-  toggleNetworkMenu,
-  closeNetworkMenu,
   lookupSelectedNetworks,
   setPendingShieldCohort,
 } from '../../store/actions';
@@ -177,7 +174,6 @@ const mapStateToProps = (state) => {
     rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
     rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
-    isNetworkMenuOpen: selectIsNetworkMenuOpen(state),
   };
 };
 
@@ -233,8 +229,6 @@ const mapDispatchToProps = (dispatch) => {
     lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
-    toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
-    closeNetworkMenu: () => dispatch(closeNetworkMenu()),
   };
 };
 

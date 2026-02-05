@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import ErrorBoundary from '../../app/error-boundary/error-boundary';
@@ -13,7 +13,11 @@ import {
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ASSET_ROUTE,
+  DEFAULT_ROUTE,
+  DEFI_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
@@ -21,12 +25,14 @@ import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
   getIsMultichainAccountsState2Enabled,
+  selectIsNetworkMenuOpen,
 } from '../../../selectors';
 import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import {
   detectNfts,
   setDefaultHomeActiveTabName,
+  toggleNetworkMenu,
 } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
@@ -36,6 +42,7 @@ import UnifiedTransactionList from '../../app/transaction-list/unified-transacti
 import { PerpsTabView } from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { HomeQueryParams } from '../../../../shared/lib/deep-links/routes/home';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
@@ -45,6 +52,66 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showNfts: boolean;
   showActivity: boolean;
   showDefi?: boolean;
+};
+
+export const useHomeDeepLinkEffects = () => {
+  const { pathname } = useLocation();
+  const isHomeRoute = pathname === DEFAULT_ROUTE;
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // callback logic to open up the network selector modal if not already open
+  const isNetworkMenuOpen = useSelector(selectIsNetworkMenuOpen);
+  const dispatch = useDispatch();
+  const openNetworkSelectorModal = useCallback(() => {
+    if (!isNetworkMenuOpen) {
+      dispatch(toggleNetworkMenu());
+    }
+  }, [dispatch, isNetworkMenuOpen]);
+
+  const deepLinkHandlers: Record<
+    HomeQueryParams,
+    { isValidParam: (param?: string) => boolean; action: () => void }
+  > = useMemo(
+    () => ({
+      [HomeQueryParams.OpenNetworkSelector]: {
+        isValidParam: (param?: string) => param?.toLowerCase() === 'true',
+        action: openNetworkSelectorModal,
+      },
+    }),
+    [openNetworkSelectorModal],
+  );
+
+  const clearDeepLinkParams = useCallback(() => {
+    setSearchParams((params) => {
+      Object.keys(deepLinkHandlers).forEach((key) => {
+        params.delete(key);
+      });
+      return params;
+    });
+  }, [setSearchParams, deepLinkHandlers]);
+
+  const handleDeepLinkAction = useCallback(
+    (action: () => void) => {
+      action();
+      clearDeepLinkParams();
+    },
+    [clearDeepLinkParams],
+  );
+
+  useEffect(() => {
+    if (!isHomeRoute) {
+      return;
+    }
+
+    for (const [key, value] of searchParams.entries()) {
+      const deepLink = deepLinkHandlers[key as HomeQueryParams];
+      if (deepLink?.isValidParam(value)) {
+        handleDeepLinkAction(deepLink.action);
+        break;
+      }
+    }
+  }, [deepLinkHandlers, handleDeepLinkAction, isHomeRoute, searchParams]);
 };
 
 export const AccountOverviewTabs = ({
@@ -63,6 +130,8 @@ export const AccountOverviewTabs = ({
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
+
+  useHomeDeepLinkEffects();
 
   useEffect(() => {
     if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
