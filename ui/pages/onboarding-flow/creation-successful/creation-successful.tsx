@@ -345,8 +345,6 @@ export default function CreationSuccessful() {
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
 
-    navigate(DEFAULT_ROUTE);
-
     handleOnDoneNavigation(deferredDeepLinkResult, Boolean(deferredDeepLink));
   }, [
     isFromReminder,
