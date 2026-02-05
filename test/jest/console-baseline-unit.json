@@ -1465,6 +1465,9 @@
     "ui/hooks/useShouldShowSpeedUp.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/hooks/useStaticTokensPolling.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/hooks/useTheme.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
