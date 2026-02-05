@@ -1291,6 +1291,7 @@ describe('preferences controller', () => {
                 [testAccount1]: ReferralStatus.Declined,
                 [testAccount2]: ReferralStatus.Declined,
               },
+              [DefiReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1313,6 +1314,7 @@ describe('preferences controller', () => {
               [DefiReferralPartner.Hyperliquid]: {
                 [testAccount1]: ReferralStatus.Declined,
               },
+              [DefiReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1352,6 +1354,7 @@ describe('preferences controller', () => {
               [DefiReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Declined,
               },
+              [DefiReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1373,6 +1376,7 @@ describe('preferences controller', () => {
               [DefiReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Approved,
               },
+              [DefiReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1390,6 +1394,9 @@ describe('preferences controller', () => {
 
         expect(
           controller.state.referrals[DefiReferralPartner.Hyperliquid],
+        ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.AsterDex],
         ).toStrictEqual({});
       });
 
@@ -1412,9 +1419,41 @@ describe('preferences controller', () => {
         ).toStrictEqual({
           '0x123': ReferralStatus.Approved,
         });
+        // New AsterDex data is present
+        expect(
+          controller.state.referrals[DefiReferralPartner.AsterDex],
+        ).toStrictEqual({});
 
         Object.values(DefiReferralPartner).forEach((partnerId) => {
           expect(controller.state.referrals[partnerId]).toBeDefined();
+        });
+      });
+
+      it('deep merges referrals state to preserve existing user state for multiple partners', () => {
+        const existingUserState = {
+          referrals: {
+            [DefiReferralPartner.Hyperliquid]: {
+              '0x123': ReferralStatus.Approved,
+            } as Record<`0x${string}`, ReferralStatus>,
+            [DefiReferralPartner.AsterDex]: {
+              '0x456': ReferralStatus.Approved,
+            } as Record<`0x${string}`, ReferralStatus>,
+          },
+        };
+
+        const { controller } = setupController({
+          state: existingUserState as Partial<PreferencesControllerState>,
+        });
+
+        expect(
+          controller.state.referrals[DefiReferralPartner.Hyperliquid],
+        ).toStrictEqual({
+          '0x123': ReferralStatus.Approved,
+        });
+        expect(
+          controller.state.referrals[DefiReferralPartner.AsterDex],
+        ).toStrictEqual({
+          '0x456': ReferralStatus.Approved,
         });
       });
     });

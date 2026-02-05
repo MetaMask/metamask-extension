@@ -252,6 +252,7 @@ export const getDefaultPreferencesControllerState =
     watchEthereumAccountEnabled: false,
     referrals: {
       [DefiReferralPartner.Hyperliquid]: {},
+      [DefiReferralPartner.AsterDex]: {},
     },
   });
 
