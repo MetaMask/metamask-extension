@@ -269,18 +269,30 @@ export const filterTransactionsByType = (
 };
 
 /**
- * Get the appropriate text color for transaction status
+ * Transaction status type for deposit/withdrawal operations.
+ */
+type TransactionStatus =
+  | 'confirmed'
+  | 'pending'
+  | 'failed'
+  | 'completed'
+  | 'bridging';
+
+/**
+ * Get the appropriate text color for transaction status.
  *
  * @param status - The transaction status
  * @returns The appropriate text color
  */
 export const getTransactionStatusColor = (
-  status: PerpsTransaction['status'],
+  status: TransactionStatus,
 ): TextColor => {
   switch (status) {
     case 'confirmed':
+    case 'completed':
       return TextColor.SuccessDefault;
     case 'pending':
+    case 'bridging':
       return TextColor.WarningDefault;
     case 'failed':
       return TextColor.ErrorDefault;

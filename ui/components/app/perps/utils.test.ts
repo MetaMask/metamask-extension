@@ -279,11 +279,11 @@ describe('Perps Utils', () => {
     ): PerpsTransaction => ({
       id: 'tx-001',
       type: 'trade',
+      category: 'position_open',
       symbol: 'ETH',
       title: 'Opened long',
       subtitle: '2.5 ETH @ $2,850.00',
       timestamp: Date.now(),
-      status: 'confirmed',
       ...overrides,
     });
 
@@ -372,11 +372,11 @@ describe('Perps Utils', () => {
     ): PerpsTransaction => ({
       id,
       type,
+      category: type === 'trade' ? 'position_open' : type === 'order' ? 'limit_order' : type === 'funding' ? 'funding_fee' : type,
       symbol: 'ETH',
       title: 'Test transaction',
       subtitle: 'Test',
       timestamp: Date.now(),
-      status: 'confirmed',
     });
 
     const transactions: PerpsTransaction[] = [

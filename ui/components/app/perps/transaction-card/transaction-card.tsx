@@ -61,17 +61,17 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
 
   // Determine the amount to display based on transaction type
   const getAmountDisplay = (): { text: string; color: TextColor } => {
-    if (transaction.fill?.realizedPnl) {
+    if (transaction.fill?.pnl) {
       return {
-        text: `${transaction.fill.realizedPnl.startsWith('-') ? '-' : '+'}$${transaction.fill.realizedPnl.replace(/^[+-]/u, '')}`,
-        color: getTransactionAmountColor(transaction.fill.realizedPnl),
+        text: `${transaction.fill.pnl.startsWith('-') ? '-' : '+'}$${transaction.fill.pnl.replace(/^[+-]/u, '')}`,
+        color: getTransactionAmountColor(transaction.fill.pnl),
       };
     }
-    if (transaction.funding) {
-      const { amount } = transaction.funding;
-      const isNegative = amount.startsWith('-');
+    if (transaction.fundingAmount) {
+      const { fee } = transaction.fundingAmount;
+      const isNegative = fee.startsWith('-');
       return {
-        text: `${isNegative ? '-' : '+'}$${amount.replace(/^[+-]/u, '')}`,
+        text: `${isNegative ? '-' : '+'}$${fee.replace(/^[+-]/u, '')}`,
         color: isNegative ? TextColor.ErrorDefault : TextColor.SuccessDefault,
       };
     }
@@ -88,11 +88,11 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     }
     // For orders, show status in muted text
     if (transaction.type === 'order' && transaction.order) {
-      const { status } = transaction.order;
-      const statusText = ORDER_STATUS_TO_I18N_KEY[status]
-        ? t(ORDER_STATUS_TO_I18N_KEY[status])
+      const { text: statusText } = transaction.order;
+      const translatedStatus = ORDER_STATUS_TO_I18N_KEY[statusText]
+        ? t(ORDER_STATUS_TO_I18N_KEY[statusText])
         : '';
-      return { text: statusText, color: TextColor.TextMuted };
+      return { text: translatedStatus, color: TextColor.TextMuted };
     }
     return { text: displayName, color: TextColor.TextDefault };
   };
