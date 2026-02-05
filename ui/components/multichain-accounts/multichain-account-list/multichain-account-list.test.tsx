@@ -704,7 +704,7 @@ describe('MultichainAccountList', () => {
       expect(screen.getAllByRole('checkbox')[1]).not.toBeChecked();
     });
 
-    it('checkboxes and selected icons are mutually exclusive', () => {
+    it('shows is-selected class or checkboxes based on showAccountCheckbox prop', () => {
       const { rerender } = renderComponent({
         selectedAccountGroups: [walletOneGroupId],
         showAccountCheckbox: false,

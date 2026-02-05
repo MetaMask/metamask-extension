@@ -150,7 +150,7 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByText('Start')).toBeInTheDocument();
   });
 
-  it('hides selected bar when startAccessory is present', () => {
+  it('renders with startAccessory when provided', () => {
     // Arrange
     const startAccessoryElement = (
       <span data-testid="start-accessory">Start</span>
