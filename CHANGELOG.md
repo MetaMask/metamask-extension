@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Purge profile service on resetting wallet (#39665)
 - Prevented Snap crashing when clicking buttons without names (#39727)
 - Fixed details of the gas fee token (#39706)
+- Fixed error when sending native tokens on EVM networks when chainId is provided as decimal string (#39806)
 
 ## [13.16.3]
 
