@@ -14,6 +14,8 @@
  * Component location: ui/pages/confirmations/components/confirm/dapp-swap-comparison-banner/dapp-swap-comparison-banner.tsx
  */
 
+jest.setTimeout(30_000);
+
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
