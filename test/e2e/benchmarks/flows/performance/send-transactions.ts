@@ -1,34 +1,32 @@
-import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
-import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
-import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
-import { withFixtures } from '../../e2e/helpers';
-import HomePage from '../../e2e/page-objects/pages/home/homepage';
-import { Driver } from '../../e2e/webdriver/driver';
-import {
-  setupPerformanceReporting,
-  performanceTracker,
-  TimerHelper,
-} from '../utils/testSetup';
-import LoginPage from '../../e2e/page-objects/pages/login-page';
-import AssetListPage from '../../e2e/page-objects/pages/home/asset-list';
-import SendPage from '../../e2e/page-objects/pages/send/send-page';
-import SnapTransactionConfirmation from '../../e2e/page-objects/pages/confirmations/snap-transaction-confirmation';
+/**
+ * Benchmark: Send transaction flow performance
+ * Measures time for send flow from opening send page to confirmation
+ */
+
+import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
+import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
+import { withFixtures } from '../../../helpers';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import LoginPage from '../../../page-objects/pages/login-page';
+import SendPage from '../../../page-objects/pages/send/send-page';
+import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
+import { Driver } from '../../../webdriver/driver';
+import { performanceTracker } from '../../utils/performance-tracker';
+import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { WITH_STATE_POWER_USER } from '../../utils';
+import type { BenchmarkRunResult } from '../../utils/types';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 
-describe('Send Transactions Performance', function () {
-  setupPerformanceReporting();
+export const testTitle = 'benchmark-send-transactions-power-user';
+export const persona = 'powerUser';
 
-  it('measures send flow performance for native token', async function () {
-    if (!process.env.INFURA_PROJECT_ID) {
-      throw new Error(
-        'Running this E2E test requires a valid process.env.INFURA_PROJECT_ID',
-      );
-    }
-
+export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult> {
+  try {
     await withFixtures(
       {
-        title: this.test?.fullTitle(),
+        title: testTitle,
         fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
@@ -43,17 +41,10 @@ describe('Send Transactions Performance', function () {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerOpenSendPage = new TimerHelper(
-          'Time to open send page from home',
-          3000,
-        );
-        const timerAssetPicker = new TimerHelper(
-          'Time to select the token until the send form is loaded',
-          2000,
-        );
+        const timerOpenSendPage = new TimerHelper('openSendPageFromHome');
+        const timerAssetPicker = new TimerHelper('selectTokenToSendFormLoaded');
         const timerReviewTransaction = new TimerHelper(
-          'Time to review the transaction until the confirmation page is loaded',
-          5000,
+          'reviewTransactionToConfirmationPage',
         );
 
         // Login flow
@@ -77,7 +68,7 @@ describe('Send Transactions Performance', function () {
         // Measure: Select token and load form
         const sendPage = new SendPage(driver);
         await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqsZKvdp',
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           'SOL',
         );
         await timerAssetPicker.measure(async () => {
@@ -96,5 +87,15 @@ describe('Send Transactions Performance', function () {
         performanceTracker.addTimer(timerReviewTransaction);
       },
     );
-  });
-});
+
+    return { timers: collectTimerResults(), success: true };
+  } catch (error) {
+    return {
+      timers: collectTimerResults(),
+      success: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+export const run = runSendTransactionsBenchmark;

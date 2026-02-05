@@ -1,30 +1,20 @@
-import Timers from './Timers';
-
-const THRESHOLD_MARGIN = 0.1; // 10% margin
+import Timers from './timers';
+import type { TimerResult } from './types';
 
 /**
  * TimerHelper - A wrapper around the Timers singleton that provides
- * threshold validation and a convenient measure() method for performance testing.
+ * a convenient measure() method for performance testing.
  */
 class TimerHelper {
   private _id: string;
 
-  private _baseThreshold: number | null;
-
   /**
-   * Creates a new timer with optional threshold
+   * Creates a new timer
    *
    * @param id - Timer description/identifier
-   * @param threshold - Threshold in ms (effective threshold = base + 10% margin)
    */
-  constructor(id: string, threshold?: number) {
+  constructor(id: string) {
     this._id = id;
-    // Apply 1.5x multiplier in CI environments for more tolerance
-    if (threshold === undefined) {
-      this._baseThreshold = null;
-    } else {
-      this._baseThreshold = threshold * (process.env.CI ? 1.5 : 1.0);
-    }
     Timers.createTimer(this.id);
   }
 
@@ -72,33 +62,22 @@ class TimerHelper {
     return this;
   }
 
-  /**
-   * Returns the base threshold (without margin)
-   */
-  get baseThreshold(): number | null {
-    return this._baseThreshold;
-  }
-
-  /**
-   * Returns the effective threshold (base + 10% margin)
-   */
-  get threshold(): number | null {
-    if (this._baseThreshold === null) {
-      return null;
-    }
-    return Math.round(this._baseThreshold * (1 + THRESHOLD_MARGIN));
-  }
-
-  /**
-   * Returns whether this timer has a threshold defined
-   */
-  hasThreshold(): boolean {
-    return this._baseThreshold !== null;
-  }
-
   get id(): string {
     return this._id;
   }
+}
+
+/**
+ * Convert Timers singleton data to TimerResult array for benchmark runner.
+ * Use this at the end of a benchmark to collect all timer results.
+ */
+export function collectTimerResults(): TimerResult[] {
+  return Timers.getAllTimers()
+    .filter((t) => t.duration !== null)
+    .map((t) => ({
+      id: t.id,
+      duration: t.duration as number,
+    }));
 }
 
 export default TimerHelper;

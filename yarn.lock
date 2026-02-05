@@ -5189,15 +5189,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/devices@npm:8.4.4, @ledgerhq/devices@npm:^8.4.4":
-  version: 8.4.4
-  resolution: "@ledgerhq/devices@npm:8.4.4"
+"@ledgerhq/devices@npm:8.10.0, @ledgerhq/devices@npm:^8.4.4":
+  version: 8.10.0
+  resolution: "@ledgerhq/devices@npm:8.10.0"
   dependencies:
-    "@ledgerhq/errors": "npm:^6.19.1"
-    "@ledgerhq/logs": "npm:^6.12.0"
-    rxjs: "npm:^7.8.1"
-    semver: "npm:^7.3.5"
-  checksum: 10/57136fc45ae2fa42b3cf93eb7cc3542fd84010390b3d0a536d342c7e92f90e475d608b1774f17a547419edddd7df0d0b1b1dbd6d2c778009ebab0fc3ec313f67
+    "@ledgerhq/errors": "npm:^6.29.0"
+    "@ledgerhq/logs": "npm:^6.14.0"
+    rxjs: "npm:7.8.2"
+    semver: "npm:7.7.3"
+  checksum: 10/8e8f64be325610bb8abb72b1e376c2b1a803f35f23295335a6f26faa626144af8159cbe1970da127deb99ffc8a377c5b880a5f33843a727170dd8d518358e2a9
   languageName: node
   linkType: hard
 
@@ -5306,27 +5306,39 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-transport-webhid@npm:^6.30.0":
-  version: 6.30.0
-  resolution: "@ledgerhq/hw-transport-webhid@npm:6.30.0"
+"@ledgerhq/hw-transport-webhid@npm:6.31.0, @ledgerhq/hw-transport-webhid@npm:^6.30.0":
+  version: 6.31.0
+  resolution: "@ledgerhq/hw-transport-webhid@npm:6.31.0"
   dependencies:
-    "@ledgerhq/devices": "npm:8.4.4"
-    "@ledgerhq/errors": "npm:^6.19.1"
-    "@ledgerhq/hw-transport": "npm:^6.31.4"
-    "@ledgerhq/logs": "npm:^6.12.0"
-  checksum: 10/edd2ec519778147587f106c136b54ece209b1a6dadfe7f78b669b384ab668b554d5afa9210c1ff5255d317bd035f698bdbd2f197de61b647dce8a63caecd2398
+    "@ledgerhq/devices": "npm:8.10.0"
+    "@ledgerhq/errors": "npm:^6.29.0"
+    "@ledgerhq/hw-transport": "npm:6.32.0"
+    "@ledgerhq/logs": "npm:^6.14.0"
+  checksum: 10/56a50bc620f286846eab8b549f2d7f9c42c4f5875b916468b3ea044067d5e00e7b1579c829e4b9ffc007bb7562d91aa27ab8bf09aa548d97a956e9e654f7e9b1
   languageName: node
   linkType: hard
 
-"@ledgerhq/hw-transport@npm:^6.31.4":
-  version: 6.31.4
-  resolution: "@ledgerhq/hw-transport@npm:6.31.4"
+"@ledgerhq/hw-transport-webhid@patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch":
+  version: 6.31.0
+  resolution: "@ledgerhq/hw-transport-webhid@patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch::version=6.31.0&hash=c7ba21"
   dependencies:
-    "@ledgerhq/devices": "npm:^8.4.4"
-    "@ledgerhq/errors": "npm:^6.19.1"
-    "@ledgerhq/logs": "npm:^6.12.0"
+    "@ledgerhq/devices": "npm:8.10.0"
+    "@ledgerhq/errors": "npm:^6.29.0"
+    "@ledgerhq/hw-transport": "npm:6.32.0"
+    "@ledgerhq/logs": "npm:^6.14.0"
+  checksum: 10/917f145b8987195b190a9e89ee8428e00d5c642d620f579f282f2edbf43313de5605890ce4efe530c82d4718b8b45138048681b0ddd3216c6df7ab0052e88cde
+  languageName: node
+  linkType: hard
+
+"@ledgerhq/hw-transport@npm:6.32.0, @ledgerhq/hw-transport@npm:^6.31.0, @ledgerhq/hw-transport@npm:^6.31.4":
+  version: 6.32.0
+  resolution: "@ledgerhq/hw-transport@npm:6.32.0"
+  dependencies:
+    "@ledgerhq/devices": "npm:8.10.0"
+    "@ledgerhq/errors": "npm:^6.29.0"
+    "@ledgerhq/logs": "npm:^6.14.0"
     events: "npm:^3.3.0"
-  checksum: 10/cf101e5b818e95e59031241d556dbec24658f54104910e414be493bc4b90b0aea50f5d4b3339a237dd0b12845bb2683c845f3a82f2ea9da4e077b68d1e1f7e48
+  checksum: 10/5f98044fe23aa9684717f4e0884673e026b61168d7a6ac445c9396844923c2844ee80edfe3d72dfe1ba3d8c8f79b776228704bb005bcc66b3fdfe931916527e1
   languageName: node
   linkType: hard
 
@@ -5340,10 +5352,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ledgerhq/logs@npm:^6.12.0":
-  version: 6.12.0
-  resolution: "@ledgerhq/logs@npm:6.12.0"
-  checksum: 10/a0a01f5d6edb0c14e7a42d24ab67ce362219517f6a50d0572c917f4f7988a1e2e9363e3d0fb170fe267f054e1e30a111564de44276e01c538b258d902c546421
+"@ledgerhq/logs@npm:^6.12.0, @ledgerhq/logs@npm:^6.14.0":
+  version: 6.14.0
+  resolution: "@ledgerhq/logs@npm:6.14.0"
+  checksum: 10/b30b6aeef9df181efe99476a84f95b89ada695c038fbc3f915410f0bae244a342df642f003582c71222b4388cdc58d281e88ae2532ba85911f580d0cbfa4bd3a
   languageName: node
   linkType: hard
 
@@ -6179,10 +6191,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.9.0":
-  version: 1.9.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.9.0"
-  checksum: 10/cfcd2da23ccccddeb981d2e81576995e6ee9ad4e16023d238219c29feecf9e5ac9a49baeadc79013d2001b6aa20170897f082ae9c18c91ae124e17688aa4f973
+"@metamask/bitcoin-wallet-snap@npm:^1.10.0":
+  version: 1.10.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:1.10.0"
+  checksum: 10/43bc519f0d6f243658c32ddce3418277f2c7b745a37713ad2eb7927ff6fcc038f7c23dc6fb1933b56bc7ffb5e6dacf403470ee215cf5e0a138e765cd0b14ada5
   languageName: node
   linkType: hard
 
@@ -6384,19 +6396,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/core-backend@npm:5.0.0"
+"@metamask/core-backend@npm:^5.0.0, @metamask/core-backend@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@metamask/core-backend@npm:5.1.0"
   dependencies:
-    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/accounts-controller": "npm:^35.0.2"
+    "@metamask/controller-utils": "npm:^11.18.0"
+    "@metamask/keyring-controller": "npm:^25.1.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/profile-sync-controller": "npm:^27.0.0"
-    "@metamask/utils": "npm:^11.8.1"
+    "@metamask/utils": "npm:^11.9.0"
+    "@tanstack/query-core": "npm:^5.62.16"
     uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/accounts-controller": ^35.0.0
-    "@metamask/keyring-controller": ^25.0.0
-  checksum: 10/c3c8d527ccbc9d56f6ddb5579cc8c58af971e9b81ece48ea7107c48e496ec2574283119cd4b258cc6c733f15d1432632a4e975d7616809147e2d4510dba59219
+  checksum: 10/8d966656b33a5582772ab6c29d04d7d7f9d47ffb52ad18a2d06f9e134a9bc6939b835452224230fc269631ee394b6642473dec8b309fead1e1f324b6e26f286e
   languageName: node
   linkType: hard
 
@@ -8962,9 +8974,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.9.1, @metamask/transaction-controller@npm:^62.9.2":
-  version: 62.12.0
-  resolution: "@metamask/transaction-controller@npm:62.12.0"
+"@metamask/transaction-controller@npm:^62.11.0, @metamask/transaction-controller@npm:^62.12.0, @metamask/transaction-controller@npm:^62.14.0, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.7.0, @metamask/transaction-controller@npm:^62.9.1, @metamask/transaction-controller@npm:^62.9.2":
+  version: 62.14.0
+  resolution: "@metamask/transaction-controller@npm:62.14.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -8977,7 +8989,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^8.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/core-backend": "npm:^5.0.0"
+    "@metamask/core-backend": "npm:^5.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/gas-fee-controller": "npm:^26.0.2"
     "@metamask/messenger": "npm:^0.3.0"
@@ -8997,7 +9009,7 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/949150f95a68186b9c919876c9c70ba2c8e6a072e3bb504624a650b8bd161931126fc50d5112c3d1fd58d541ca762a788116376b6325a19d2ee8e9d9ac0e3a4a
+  checksum: 10/8ddc99d447990b997becc67617c8a5f4345d6412a6da53314f369bf0f12eff8be142a907e712f82aed6fe428ce08fa386797103d3d55a745b64f85ff5b19dbb0
   languageName: node
   linkType: hard
 
@@ -15107,6 +15119,13 @@ __metadata:
   version: 3.2.0
   resolution: "@tabler/icons@npm:3.2.0"
   checksum: 10/4fe4de5ad3cdb54d7c711523dc6e1fc43605bca3fcfc777277da1713184ed5f9034010435c09a5bf928d6774cd643297483394a183aead42eb8f8a6626b70bcc
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:^5.62.16":
+  version: 5.90.20
+  resolution: "@tanstack/query-core@npm:5.90.20"
+  checksum: 10/25e38f4382442bc15e0f6cce8d787e9df8d8822c61d3f3e9427e89e01b1e2506f848292e086dae29aeb55f8ce71b097c34221f3c5eda37fb4a688b5ceca5d1b3
   languageName: node
   linkType: hard
 
@@ -33768,6 +33787,9 @@ __metadata:
     "@lavamoat/snow": "npm:^2.0.4"
     "@lavamoat/webpack": "npm:1.5.6"
     "@ledgerhq/errors": "npm:^6.21.0"
+    "@ledgerhq/hw-app-eth": "npm:^6.42.0"
+    "@ledgerhq/hw-transport": "npm:^6.31.0"
+    "@ledgerhq/hw-transport-webhid": "npm:^6.31.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/pickers": "npm:^3.3.11"
@@ -33783,7 +33805,7 @@ __metadata:
     "@metamask/assets-controllers": "npm:^99.0.0"
     "@metamask/auto-changelog": "npm:^5.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.9.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^1.10.0"
     "@metamask/bridge-controller": "npm:^64.8.1"
     "@metamask/bridge-status-controller": "npm:^64.4.4"
     "@metamask/browser-passworder": "npm:^6.0.0"
@@ -33900,7 +33922,7 @@ __metadata:
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.4.0"
-    "@metamask/transaction-controller": "npm:^62.11.0"
+    "@metamask/transaction-controller": "npm:^62.14.0"
     "@metamask/transaction-pay-controller": "npm:^11.0.1"
     "@metamask/tron-wallet-snap": "npm:^1.19.2"
     "@metamask/user-operation-controller": "npm:^40.0.0"
@@ -40112,21 +40134,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rxjs@npm:7.8.2, rxjs@npm:^7.4.0, rxjs@npm:^7.8.0, rxjs@npm:^7.8.1":
+  version: 7.8.2
+  resolution: "rxjs@npm:7.8.2"
+  dependencies:
+    tslib: "npm:^2.1.0"
+  checksum: 10/03dff09191356b2b87d94fbc1e97c4e9eb3c09d4452399dddd451b09c2f1ba8d56925a40af114282d7bc0c6fe7514a2236ca09f903cf70e4bbf156650dddb49d
+  languageName: node
+  linkType: hard
+
 "rxjs@npm:^6.6.3":
   version: 6.6.7
   resolution: "rxjs@npm:6.6.7"
   dependencies:
     tslib: "npm:^1.9.0"
   checksum: 10/c8263ebb20da80dd7a91c452b9e96a178331f402344bbb40bc772b56340fcd48d13d1f545a1e3d8e464893008c5e306cc42a1552afe0d562b1a6d4e1e6262b03
-  languageName: node
-  linkType: hard
-
-"rxjs@npm:^7.4.0, rxjs@npm:^7.8.0, rxjs@npm:^7.8.1":
-  version: 7.8.1
-  resolution: "rxjs@npm:7.8.1"
-  dependencies:
-    tslib: "npm:^2.1.0"
-  checksum: 10/b10cac1a5258f885e9dd1b70d23c34daeb21b61222ee735d2ec40a8685bdca40429000703a44f0e638c27a684ac139e1c37e835d2a0dc16f6fc061a138ae3abb
   languageName: node
   linkType: hard
 
