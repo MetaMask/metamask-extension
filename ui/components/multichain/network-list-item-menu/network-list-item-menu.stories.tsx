@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
-import { Button } from '../../component-library';
+import { Button } from '@metamask/design-system-react';
 import { NetworkListItemMenu } from './network-list-item-menu';
 
 const mockStore = configureStore({
@@ -17,7 +17,13 @@ const meta: Meta<typeof NetworkListItemMenu> = {
   decorators: [
     (Story) => (
       <Provider store={mockStore}>
-        <div style={{ padding: '100px', display: 'flex', justifyContent: 'center' }}>
+        <div
+          style={{
+            padding: '100px',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
           <Story />
         </div>
       </Provider>
