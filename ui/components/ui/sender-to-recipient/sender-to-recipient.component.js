@@ -34,6 +34,7 @@ function SenderAddress({
       <PreferredAvatar
         address={toChecksumHexAddress(senderAddress)}
         size={AvatarAccountSize.Xs}
+        className="rounded-md"
       />
       <div className="sender-to-recipient__name text-s-body-xs">
         {addressOnly ? (
