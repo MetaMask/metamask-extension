@@ -66,7 +66,16 @@ module.exports = {
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
       'jest-preview/transforms/file',
   },
-  transformIgnorePatterns: ['/node_modules/'],
+  // Transform ESM packages that Jest can't parse natively
+  // These packages use ES module syntax (import/export) and need to be transpiled
+  // Packages from @metamask/perps-controller dependency tree that are ESM-only:
+  // - @nktkas/hyperliquid, @nktkas/rews
+  // - @noble/hashes, @noble/curves
+  // - @scure/base (nested in micro-packed)
+  // - valibot, micro-eth-signer, micro-packed
+  transformIgnorePatterns: [
+    'node_modules/(?!(@nktkas|@noble|@scure|valibot|micro-eth-signer|micro-packed)/)',
+  ],
   // Ensure console output is buffered (not streamed) so reporters can access testResult.console
   // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
   verbose: false,
