@@ -1,4 +1,4 @@
-import { merge } from 'lodash';
+import { merge, cloneDeep } from 'lodash';
 import type {
   PermissionConstraint,
   PermissionControllerState,
@@ -12,11 +12,11 @@ import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
 
 function defaultFixture() {
-  return defaultFixtureJson;
+  return cloneDeep(defaultFixtureJson);
 }
 
 function onboardingFixture() {
-  return onboardingFixtureJson;
+  return cloneDeep(onboardingFixtureJson);
 }
 
 type FixtureType = typeof defaultFixtureJson | typeof onboardingFixtureJson;
