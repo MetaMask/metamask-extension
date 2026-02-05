@@ -74,7 +74,21 @@ jobs:
       - get-requirements
     timeout-minutes: 30
     steps:
+      - name: Download yarn.lock from current commit in attempt to skip setup
+        run: wget "https://raw.githubusercontent.com/MetaMask/metamask-extension/${HEAD_COMMIT_HASH}/yarn.lock"
+        continue-on-error: true
+
+      - name: Try skipping setup if node-modules cache available
+        id: try-skip-setup
+        uses: actions/cache/restore@v5
+        with:
+          path: '**/node_modules'
+          # If the yarn.lock download failed, it will try to find `node-modules--default` and continue peacefully
+          key: node-modules-${{ hashFiles('yarn.lock') }}-default
+          lookup-only: true
+
       - name: Checkout and setup environment
+        if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -84,6 +98,7 @@ jobs:
 
       # Need to cache `.metamask` folder for the anvil binary
       - name: Cache .metamask folder
+        if: ${{ steps.try-skip-setup.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
         with:
           path: .metamask
