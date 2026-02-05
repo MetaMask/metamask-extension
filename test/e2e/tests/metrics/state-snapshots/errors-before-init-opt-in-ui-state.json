@@ -23,6 +23,7 @@
     "AppMetadataController": {
       "currentAppVersion": "string",
       "currentMigrationVersion": "number",
+      "firstTimeInfo": "object",
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -263,6 +264,7 @@
     "RewardsController": {
       "rewardsAccounts": "object",
       "rewardsActiveAccount": null,
+      "rewardsPointsEstimateHistory": "object",
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
       "rewardsSubscriptionTokens": "object",
@@ -286,6 +288,7 @@
       "lastUpdated": "number",
       "signature": "string"
     },
+    "StaticAssetsController": {},
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "SubscriptionController": "object",
     "SwapsController": {},
@@ -311,8 +314,7 @@
       "isBackupAndSyncEnabled": true,
       "isContactSyncingEnabled": true
     },
-    "config": "object",
-    "firstTimeInfo": "object"
+    "config": "object"
   },
-  "meta": { "version": 191 }
+  "meta": { "version": 192 }
 }

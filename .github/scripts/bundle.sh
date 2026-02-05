@@ -63,5 +63,5 @@ corepack enable
 # 5. Install dependencies
 yarn
 
-# 6. Run the production build command
-yarn build prod
+# 6. Run the production build command with 4GB of heap space
+NODE_OPTIONS='--max-old-space-size=4096' yarn build prod

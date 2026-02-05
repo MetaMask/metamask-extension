@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
-import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  Text,
+  TextButton,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
 import {
@@ -17,18 +19,15 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import GasDetailsItem from '../../../pages/confirmations/components/gas-details-item';
-import Box from '../../ui/box';
 import InfoTooltip from '../../ui/info-tooltip';
 import AppLoadingSpinner from '../app-loading-spinner';
 import {
-  Text,
-  Button,
-  ButtonLink,
   Modal,
   ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
 const CancelSpeedupPopoverWrapped = () => {
   const {
@@ -103,59 +102,54 @@ const CancelSpeedupPopoverWrapped = () => {
           onClose={() => closeModal(['cancelSpeedUpTransaction'])}
           marginBottom={4}
         >
-          {editGasMode === EditGasModes.cancel
-            ? `❌${t('cancel')}`
-            : `🚀${t('speedUp')}`}
+          {editGasMode === EditGasModes.cancel ? t('cancel') : t('speedUp')}
         </ModalHeader>
 
         <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
         <div className="cancel-speedup-popover__wrapper">
           <Text
-            alignItems={AlignItems.center}
-            display={Display.Flex}
-            variant={TextVariant.bodySm}
-            marginBottom={2}
-            paddingBottom={2}
-            className="cancel-speedup-popover__description"
+            className="cancel-speedup-popover__description flex items-center mb-2 pb-2"
+            variant={TextVariant.BodySm}
           >
-            {t('cancelSpeedUpLabel', [
-              <strong key="cancelSpeedupReplace">{t('replace')}</strong>,
-            ])}
+            {t('cancelSpeedUpLabel', [t('replace')])}
             <InfoTooltip
               position="top"
               contentText={
                 <>
-                  <Text variant={TextVariant.bodySm}>
+                  <Text variant={TextVariant.BodySm}>
                     {t('cancelSpeedUpTransactionTooltip', [
                       editGasMode === EditGasModes.cancel
                         ? t('cancel')
                         : t('speedUp'),
                     ])}
                   </Text>
-                  <ButtonLink
-                    variant={TextVariant.bodySm}
-                    href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
-                    target="_blank"
-                  >
-                    {t('learnMoreUpperCase')}
-                  </ButtonLink>
+                  <TextButton asChild className="inline">
+                    <a
+                      href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('learnMoreUpperCase')}
+                    </a>
+                  </TextButton>
                 </>
               }
             />
           </Text>
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            flexDirection={FlexDirection.Column}
-            marginTop={2}
-            paddingBottom={4}
+            alignItems={BoxAlignItems.Center}
+            flexDirection={BoxFlexDirection.Column}
+            className="mt-2"
           >
             <div className="cancel-speedup-popover__gas-details">
               <GasDetailsItem />
             </div>
           </Box>
-          <Button onClick={submitTransactionChange}>{t('submit')}</Button>
         </div>
+        <ModalFooter
+          onSubmit={submitTransactionChange}
+          submitButtonProps={{ children: t('submit') }}
+        />
       </ModalContent>
     </Modal>
   );
