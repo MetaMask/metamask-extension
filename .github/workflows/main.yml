@@ -395,7 +395,7 @@ jobs:
       - build-test-flask-browserify
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
-    if: ${{ !cancelled() && needs.prep-e2e.result == 'success' }}
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
