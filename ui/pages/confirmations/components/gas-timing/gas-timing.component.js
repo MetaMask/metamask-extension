@@ -24,8 +24,13 @@ import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
+import { FAST_CONFIRMATION_CHAIN_IDS } from '../../../../../shared/constants/network';
+
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
+
+// Chains where confirmations are faster than estimated, display "<" instead of "~"
+const FAST_CHAINS = new Set(FAST_CONFIRMATION_CHAIN_IDS);
 
 // Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
 const toHumanReadableTime = (milliseconds = 1, t) => {
@@ -188,7 +193,9 @@ export default function GasTiming({
 
       {time && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-          <span data-testid="gas-timing-time">~{time}</span>
+          <span data-testid="gas-timing-time">
+            {FAST_CHAINS.has(chainId) ? `<${time}` : `~${time}`}
+          </span>
         </Text>
       )}
     </Box>
