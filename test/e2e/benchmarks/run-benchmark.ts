@@ -113,10 +113,8 @@ const PRESETS: Record<string, string[]> = {
     `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
   ],
   performanceLogin: [
-    // TODO: Re-enable import-srp-home.ts once TEST_SRP_2 is found correctly
     `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
     `${BENCHMARK_DIR}/performance/send-transactions.ts`,
-    // TODO: Re-enable swap.ts once network-fees element is stable
     `${BENCHMARK_DIR}/performance/swap.ts`,
   ],
 
