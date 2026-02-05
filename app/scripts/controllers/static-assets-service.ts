@@ -134,6 +134,9 @@ function buildImageUrl(assetId: CaipAssetType, extension: string): string {
  * It is also responsible for filtering out tokens that are in the ignored tokens set.
  */
 export class StaticAssetsService extends StaticIntervalPollingControllerOnly<StaticAssetsPollingInput>() {
+  // required for Modular Initialization
+  readonly name = SERVICE;
+
   /** The supported chains for the service. */
   readonly #getSupportedChains: () => Set<Hex>;
 
