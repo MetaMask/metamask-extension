@@ -77,7 +77,7 @@ export const BridgeCTAButton = ({
   const isTxSubmittable = useIsTxSubmittable();
 
   // Optimized: Only subscribe to config (no rerenders on connection state changes)
-  const { isHardwareWalletAccount, deviceId } = useHardwareWalletConfig();
+  const { isHardwareWalletAccount } = useHardwareWalletConfig();
   // Optimized: Only subscribe to actions (stable, never rerenders)
   const { ensureDeviceReady } = useHardwareWalletActions();
 
@@ -169,7 +169,7 @@ export const BridgeCTAButton = ({
         if (activeQuote && isTxSubmittable && !isSubmitting) {
           // Verify hardware wallet device is ready before submitting
           if (isHardwareWalletAccount) {
-            const isDeviceReady = await ensureDeviceReady(deviceId);
+            const isDeviceReady = await ensureDeviceReady();
             if (!isDeviceReady) {
               return;
             }

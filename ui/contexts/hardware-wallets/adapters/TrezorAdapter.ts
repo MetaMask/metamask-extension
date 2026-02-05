@@ -32,8 +32,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
   private pendingOperation = false;
 
-  private currentDeviceId: string | null = null;
-
   private unsubscribeUsbEvents: (() => void) | null = null;
 
   constructor(options: HardwareWalletAdapterOptions) {
@@ -57,9 +55,8 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       // onDisconnect - device unplugged
       () => {
         // Only emit disconnect if we were tracking a connection
-        if (this.connected || this.currentDeviceId) {
+        if (this.connected) {
           this.connected = false;
-          this.currentDeviceId = null;
           this.options.onDeviceEvent({
             event: DeviceEvent.Disconnected,
           });
@@ -86,10 +83,9 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Connect to Trezor device
    * Verifies device is physically connected via WebUSB
    *
-   * @param deviceId - The device ID to connect to
    */
-  async connect(deviceId: string): Promise<void> {
-    console.log(LOG_TAG, 'Connecting to device:', deviceId);
+  async connect(): Promise<void> {
+    console.log(LOG_TAG, 'Connecting to device');
 
     try {
       // Step 1: Check WebUSB availability
@@ -113,13 +109,11 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
       // Mark as connected - device is present
       this.connected = true;
-      this.currentDeviceId = deviceId;
     } catch (error) {
       console.error(LOG_TAG, 'Connection error:', error);
 
       // Clean up on error
       this.connected = false;
-      this.currentDeviceId = null;
 
       const hwError = toHardwareWalletError(error, HardwareWalletType.Trezor);
       const deviceEvent = getDeviceEventForError(hwError.code);
@@ -141,7 +135,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
     try {
       this.connected = false;
-      this.currentDeviceId = null;
 
       this.options.onDeviceEvent({
         event: DeviceEvent.Disconnected,
@@ -170,7 +163,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
     this.unsubscribeUsbEvents = null;
 
     this.connected = false;
-    this.currentDeviceId = null;
     this.pendingOperation = false;
   }
 
@@ -191,17 +183,11 @@ export class TrezorAdapter implements HardwareWalletAdapter {
    * Note: Unlike Ledger, Trezor doesn't require checking for a specific app being open.
    * The device just needs to be connected and unlocked, which is verified during signing operations.
    *
-   * @param deviceId - The device ID to verify
    * @returns true if device is ready
    */
-  async ensureDeviceReady(deviceId: string): Promise<boolean> {
-    // If connected to a different device, reconnect to the requested device
-    if (this.isConnected() && this.currentDeviceId !== deviceId) {
-      await this.disconnect();
-    }
-
+  async ensureDeviceReady(): Promise<boolean> {
     if (!this.isConnected()) {
-      await this.connect(deviceId);
+      await this.connect();
     }
 
     try {
@@ -246,7 +232,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
         if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
           this.connected = false;
-          this.currentDeviceId = null;
         }
 
         throw error;
@@ -267,7 +252,6 @@ export class TrezorAdapter implements HardwareWalletAdapter {
       // Reset connection state for disconnection-related errors
       if (deviceEvent === DeviceEvent.Disconnected) {
         this.connected = false;
-        this.currentDeviceId = null;
       }
 
       throw hwError;

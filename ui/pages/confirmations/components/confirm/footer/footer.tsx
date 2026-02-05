@@ -239,10 +239,9 @@ const Footer = () => {
   const { onCancel, resetTransactionState } = useConfirmActions();
 
   const { connectionState } = useHardwareWalletState();
-  const { isHardwareWalletAccount, deviceId, walletType } =
-    useHardwareWalletConfig();
+  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
-  const { showErrorModal } = useHardwareWalletError();
+  const { showErrorModal, dismissErrorModal } = useHardwareWalletError();
 
   const isHardwareWalletSigning = useSelector(getPendingHardwareWalletSigning);
 
@@ -269,14 +268,15 @@ const Footer = () => {
       return true;
     }
 
-    const isDeviceReady = await ensureDeviceReady(deviceId || '');
+    const isDeviceReady = await ensureDeviceReady();
 
+    console.log('[debug] isDeviceReady', isDeviceReady);
     if (!isDeviceReady) {
       return false;
     }
 
     return true;
-  }, [isHardwareWalletAccount, deviceId, ensureDeviceReady]);
+  }, [isHardwareWalletAccount, ensureDeviceReady]);
 
   const handleSignatureCompletion = useCallback(() => {
     const environmentType = getEnvironmentType();
@@ -376,6 +376,7 @@ const Footer = () => {
     await onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
     onDappSwapCompleted();
+    dismissErrorModal();
 
     // After rejection, navigate to the next confirmation or home
     // confirmationsCount includes the current one, so if it's 1 or less, go home
@@ -394,6 +395,7 @@ const Footer = () => {
     isAddEthereumChain,
     navigate,
     onDappSwapCompleted,
+    dismissErrorModal,
     confirmationsCount,
   ]);
 
@@ -430,6 +432,7 @@ const Footer = () => {
               data-testid="reconnect-hardware-wallet-button"
               onClick={onSubmit}
               size={ButtonSize.Lg}
+              disabled={!isHardwareWalletReady}
             >
               {walletType
                 ? t('connectHardwareDevice', [t(walletType)])

@@ -37,6 +37,7 @@ function isHardwareWalletDevice(
   device: HIDDevice | USBDevice,
   walletType: HardwareWalletType,
 ): boolean {
+  console.log('[HW] isHardwareWalletDevice', device, walletType);
   switch (walletType) {
     case HardwareWalletType.Ledger:
       return device.vendorId === Number(LEDGER_USB_VENDOR_ID);
@@ -101,8 +102,10 @@ export async function checkWebHidPermission(
     return HardwareConnectionPermissionState.Denied;
   }
 
+  console.log('[HW] checkWebHidPermission', walletType);
   try {
     const devices = await window.navigator.hid.getDevices();
+    console.log('[HW] devices', devices);
 
     // Check if any devices matching the wallet type are paired
     const hasDevice = devices.some((device) =>
@@ -116,6 +119,10 @@ export async function checkWebHidPermission(
     // No paired devices means we need to request permission
     return HardwareConnectionPermissionState.Prompt;
   } catch (error) {
+    console.log(
+      '[HardwareWalletPermissions] checkWebHidPermission error',
+      error,
+    );
     return HardwareConnectionPermissionState.Unknown;
   }
 }
@@ -147,6 +154,10 @@ export async function checkWebUsbPermission(
     // No paired devices means we need to request permission
     return HardwareConnectionPermissionState.Prompt;
   } catch (error) {
+    console.log(
+      '[HardwareWalletPermissions] checkWebUsbPermission error',
+      error,
+    );
     return HardwareConnectionPermissionState.Unknown;
   }
 }
@@ -188,6 +199,8 @@ export async function requestWebHidPermission(
       filters: getDeviceFilters(walletType) as HIDDeviceFilter[],
     });
 
+    console.log('[HW] requestWebHidPermission devices', devices);
+
     // Check if user selected a device matching the wallet type
     const hasDevice = devices.some((device) =>
       isHardwareWalletDevice(device, walletType),
@@ -220,7 +233,13 @@ export async function requestWebUsbPermission(
     const hasDevice = isHardwareWalletDevice(device, walletType);
 
     return hasDevice;
-  } catch {
+  } catch (error) {
+    if (!isUserCancellationError(error)) {
+      console.log(
+        '[HardwareWalletPermissions] requestWebUsbPermission error',
+        error,
+      );
+    }
     return false;
   }
 }
@@ -239,6 +258,10 @@ export async function getConnectedLedgerDevices(): Promise<HIDDevice[]> {
       isHardwareWalletDevice(device, HardwareWalletType.Ledger),
     );
   } catch (error) {
+    console.log(
+      '[HardwareWalletPermissions] getConnectedLedgerDevices error',
+      error,
+    );
     return [];
   }
 }
@@ -256,7 +279,11 @@ export async function getConnectedTrezorDevices(): Promise<USBDevice[]> {
     return devices.filter((device) =>
       isHardwareWalletDevice(device, HardwareWalletType.Trezor),
     );
-  } catch {
+  } catch (error) {
+    console.log(
+      '[HardwareWalletPermissions] getConnectedTrezorDevices error',
+      error,
+    );
     return [];
   }
 }
@@ -281,78 +308,6 @@ export async function getConnectedDevices(
 }
 
 /**
- * Check if a specific device is connected (Ledger-specific, for backward compatibility)
- *
- * @param deviceId - Optional device ID to check for a specific device
- * @returns true if the device is connected
- */
-export async function isDeviceConnected(deviceId?: string): Promise<boolean> {
-  const devices = await getConnectedLedgerDevices();
-
-  if (!deviceId) {
-    // If no specific device ID, just check if any Ledger is connected
-    return devices.length > 0;
-  }
-
-  // Check for specific device
-  return devices.some((device) => device.productId.toString() === deviceId);
-}
-
-/**
- * Check if a hardware wallet is connected
- *
- * @param walletType - The type of hardware wallet to check
- * @param deviceId - Optional specific device ID to check
- * @returns true if the device is connected
- */
-export async function isHardwareWalletConnected(
-  walletType: HardwareWalletType,
-  deviceId?: string,
-): Promise<boolean> {
-  const devices = await getConnectedDevices(walletType);
-
-  if (!deviceId) {
-    return devices.length > 0;
-  }
-
-  return devices.some((device) => device.productId.toString() === deviceId);
-}
-
-/**
- * Get a device ID from a connected device (returns product ID)
- * Ledger-specific for backward compatibility
- */
-export async function getDeviceId(): Promise<string | null> {
-  const devices = await getConnectedLedgerDevices();
-
-  if (devices.length === 0) {
-    return null;
-  }
-
-  // Return the product ID of the first device
-  return devices[0].productId.toString();
-}
-
-/**
- * Get a device ID for a specific hardware wallet type
- *
- * @param walletType - The type of hardware wallet
- * @returns Device ID (product ID as string) or null if no device found
- */
-export async function getHardwareWalletDeviceId(
-  walletType: HardwareWalletType,
-): Promise<string | null> {
-  const devices = await getConnectedDevices(walletType);
-
-  if (devices.length === 0) {
-    return null;
-  }
-
-  // Return the product ID of the first device
-  return devices[0].productId.toString();
-}
-
-/**
  * Subscribe to native WebHID connect/disconnect events
  *
  * @param walletType - The hardware wallet type to filter events for
@@ -365,6 +320,7 @@ export function subscribeToWebHidEvents(
   onConnect: (device: HIDDevice) => void,
   onDisconnect: (device: HIDDevice) => void,
 ): () => void {
+  console.log('[HW] subscribeToWebHidEvents', walletType);
   if (!isWebHidAvailable()) {
     return () => {
       // No-op cleanup
@@ -372,6 +328,7 @@ export function subscribeToWebHidEvents(
   }
 
   const handleConnect = (event: HIDConnectionEvent) => {
+    console.log('[HW] handleConnect', event);
     // Only notify for devices matching the wallet type
     if (isHardwareWalletDevice(event.device, walletType)) {
       onConnect(event.device);
@@ -379,6 +336,7 @@ export function subscribeToWebHidEvents(
   };
 
   const handleDisconnect = (event: HIDConnectionEvent) => {
+    console.log('[HW] handleDisconnect', event);
     // Only notify for devices matching the wallet type
     if (isHardwareWalletDevice(event.device, walletType)) {
       onDisconnect(event.device);

@@ -27,8 +27,6 @@ export class QRAdapter implements HardwareWalletAdapter {
 
   private pendingOperation = false;
 
-  private currentDeviceId: string | null = null;
-
   private synced = false;
 
   constructor(options: HardwareWalletAdapterOptions) {
@@ -45,16 +43,14 @@ export class QRAdapter implements HardwareWalletAdapter {
    * Connect to QR hardware wallet
    * For QR wallets, "connection" means establishing the QR sync relationship
    *
-   * @param deviceId - The device ID to connect to (QR wallet identifier)
    */
-  async connect(deviceId: string): Promise<void> {
-    console.log(LOG_TAG, 'Connecting to QR device:', deviceId);
+  async connect(): Promise<void> {
+    console.log(LOG_TAG, 'Connecting to QR device');
 
     try {
       // For QR wallets, connection is established through QR code scanning
       // which happens in the UI flow. Here we just mark as connected.
       this.connected = true;
-      this.currentDeviceId = deviceId;
       this.synced = false;
 
       console.log(LOG_TAG, 'QR device connected, awaiting sync');
@@ -63,7 +59,6 @@ export class QRAdapter implements HardwareWalletAdapter {
 
       // Clean up on error
       this.connected = false;
-      this.currentDeviceId = null;
       this.synced = false;
 
       // Extract the error code
@@ -96,7 +91,6 @@ export class QRAdapter implements HardwareWalletAdapter {
 
     try {
       this.connected = false;
-      this.currentDeviceId = null;
       this.synced = false;
 
       this.options.onDeviceEvent({
@@ -137,7 +131,6 @@ export class QRAdapter implements HardwareWalletAdapter {
     console.log(LOG_TAG, 'Destroying adapter');
 
     this.connected = false;
-    this.currentDeviceId = null;
     this.pendingOperation = false;
     this.synced = false;
   }
@@ -157,16 +150,15 @@ export class QRAdapter implements HardwareWalletAdapter {
    * 1. The wallet is connected
    * 2. The initial QR sync has been completed
    *
-   * @param deviceId - The device ID to verify
    * @returns true if device is ready
    */
-  async verifyDeviceReady(deviceId: string): Promise<boolean> {
-    console.log(LOG_TAG, 'Verifying device ready:', deviceId);
+  async verifyDeviceReady(): Promise<boolean> {
+    console.log(LOG_TAG, 'Verifying device ready');
 
     // Step 1: Check if connected
     if (!this.isConnected()) {
       try {
-        await this.connect(deviceId);
+        await this.connect();
       } catch (error) {
         throw createHardwareWalletError(
           ErrorCode.DEVICE_STATE_003,
@@ -203,10 +195,4 @@ export class QRAdapter implements HardwareWalletAdapter {
     return true;
   }
 
-  /**
-   * Get the current device ID
-   */
-  getDeviceId(): string | null {
-    return this.currentDeviceId;
-  }
 }

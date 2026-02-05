@@ -82,7 +82,7 @@ export type Unsubscribe = () => void;
  * KeyringController's hardware wallet keyrings.
  */
 export type HardwareWalletAdapter = {
-  connect(deviceId: string): Promise<void>;
+  connect(): Promise<void>;
   disconnect(): Promise<void>;
   isConnected(): boolean;
   destroy(): void;
@@ -94,7 +94,7 @@ export type HardwareWalletAdapter = {
    * @returns true if ready
    * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
    */
-  ensureDeviceReady?(deviceId: string): Promise<boolean>;
+  ensureDeviceReady?(): Promise<boolean>;
 
   /**
    * Check the current permission state for device access.

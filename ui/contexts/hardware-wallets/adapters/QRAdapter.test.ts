@@ -36,44 +36,41 @@ describe('[QRAdapter]', () => {
 
   describe('connect', () => {
     it('should successfully connect to QR device', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
 
       expect(adapter.isConnected()).toBe(true);
       expect(adapter.isSynced()).toBe(false);
-      expect(adapter.getDeviceId()).toBe('qr-device-1');
     });
 
     it('should not be synced immediately after connection', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
 
       expect(adapter.isConnected()).toBe(true);
       expect(adapter.isSynced()).toBe(false);
     });
 
     it('should handle multiple connect calls', async () => {
-      await adapter.connect('qr-device-1');
-      await adapter.connect('qr-device-2');
+      await adapter.connect();
+      await adapter.connect();
 
       expect(adapter.isConnected()).toBe(true);
-      expect(adapter.getDeviceId()).toBe('qr-device-2');
     });
   });
 
   describe('disconnect', () => {
     it('should successfully disconnect from QR device', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       await adapter.disconnect();
 
       expect(adapter.isConnected()).toBe(false);
       expect(adapter.isSynced()).toBe(false);
-      expect(adapter.getDeviceId()).toBeNull();
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
         event: DeviceEvent.Disconnected,
       });
     });
 
     it('should reset sync state on disconnect', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       adapter.markSynced();
       expect(adapter.isSynced()).toBe(true);
 
@@ -89,12 +86,12 @@ describe('[QRAdapter]', () => {
     });
 
     it('should return true when connected', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       expect(adapter.isConnected()).toBe(true);
     });
 
     it('should return false after disconnect', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       await adapter.disconnect();
       expect(adapter.isConnected()).toBe(false);
     });
@@ -106,14 +103,14 @@ describe('[QRAdapter]', () => {
     });
 
     it('should return true after markSynced is called', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       adapter.markSynced();
 
       expect(adapter.isSynced()).toBe(true);
     });
 
     it('should allow marking as synced only when connected', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       adapter.markSynced();
 
       expect(adapter.isConnected()).toBe(true);
@@ -123,18 +120,18 @@ describe('[QRAdapter]', () => {
 
   describe('verifyDeviceReady', () => {
     it('should throw error when device is not connected', async () => {
-      await expect(adapter.verifyDeviceReady('qr-device-1')).rejects.toThrow();
+      await expect(adapter.verifyDeviceReady()).rejects.toThrow();
     });
 
     it('should throw error when device is connected but not synced', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
 
-      await expect(adapter.verifyDeviceReady('qr-device-1')).rejects.toThrow(
+      await expect(adapter.verifyDeviceReady()).rejects.toThrow(
         HardwareWalletError,
       );
 
       await expect(
-        adapter.verifyDeviceReady('qr-device-1'),
+        adapter.verifyDeviceReady(),
       ).rejects.toMatchObject({
         code: ErrorCode.DEVICE_STATE_001,
         message: expect.stringContaining('scan the QR code'),
@@ -142,19 +139,19 @@ describe('[QRAdapter]', () => {
     });
 
     it('should succeed when device is connected and synced', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       adapter.markSynced();
 
-      await expect(adapter.verifyDeviceReady('qr-device-1')).resolves.toBe(
+      await expect(adapter.verifyDeviceReady()).resolves.toBe(
         true,
       );
     });
 
     it('should emit CONNECTION_FAILED event when not synced', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
 
       try {
-        await adapter.verifyDeviceReady('qr-device-1');
+        await adapter.verifyDeviceReady();
       } catch {
         // Expected to throw
       }
@@ -167,7 +164,7 @@ describe('[QRAdapter]', () => {
 
     it('should auto-connect if not connected', async () => {
       // Should auto-connect but still require sync
-      await expect(adapter.verifyDeviceReady('qr-device-1')).rejects.toThrow(
+      await expect(adapter.verifyDeviceReady()).rejects.toThrow(
         'scan the QR code',
       );
 
@@ -176,7 +173,7 @@ describe('[QRAdapter]', () => {
 
       // After marking as synced, should succeed
       adapter.markSynced();
-      await expect(adapter.verifyDeviceReady('qr-device-1')).resolves.toBe(
+      await expect(adapter.verifyDeviceReady()).resolves.toBe(
         true,
       );
     });
@@ -192,7 +189,7 @@ describe('[QRAdapter]', () => {
 
   describe('destroy', () => {
     it('should clean up all state', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       adapter.markSynced();
       adapter.setPendingOperation(true);
 
@@ -200,11 +197,10 @@ describe('[QRAdapter]', () => {
 
       expect(adapter.isConnected()).toBe(false);
       expect(adapter.isSynced()).toBe(false);
-      expect(adapter.getDeviceId()).toBeNull();
     });
 
     it('should be safe to call multiple times', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
 
       adapter.destroy();
       adapter.destroy();
@@ -213,33 +209,16 @@ describe('[QRAdapter]', () => {
     });
   });
 
-  describe('getDeviceId', () => {
-    it('should return null when not connected', () => {
-      expect(adapter.getDeviceId()).toBeNull();
-    });
-
-    it('should return device ID when connected', async () => {
-      await adapter.connect('qr-device-1');
-      expect(adapter.getDeviceId()).toBe('qr-device-1');
-    });
-
-    it('should return null after disconnect', async () => {
-      await adapter.connect('qr-device-1');
-      await adapter.disconnect();
-      expect(adapter.getDeviceId()).toBeNull();
-    });
-  });
-
   describe('QR-specific workflow', () => {
     it('should follow complete QR wallet connection flow', async () => {
       // Step 1: Connect (no physical device check)
-      await adapter.connect('keystone-wallet-1');
+      await adapter.connect();
       expect(adapter.isConnected()).toBe(true);
       expect(adapter.isSynced()).toBe(false);
 
       // Step 2: Attempt operation before sync - should fail
       await expect(
-        adapter.verifyDeviceReady('keystone-wallet-1'),
+        adapter.verifyDeviceReady(),
       ).rejects.toThrow('scan the QR code');
 
       // Step 3: User scans QR code
@@ -248,7 +227,7 @@ describe('[QRAdapter]', () => {
 
       // Step 4: Verify device ready - should succeed
       await expect(
-        adapter.verifyDeviceReady('keystone-wallet-1'),
+        adapter.verifyDeviceReady(),
       ).resolves.toBe(true);
 
       // Step 5: Disconnect
@@ -259,7 +238,7 @@ describe('[QRAdapter]', () => {
 
     it('should handle re-sync after disconnect', async () => {
       // First connection
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       adapter.markSynced();
       expect(adapter.isSynced()).toBe(true);
 
@@ -268,42 +247,41 @@ describe('[QRAdapter]', () => {
       expect(adapter.isSynced()).toBe(false);
 
       // Reconnect - should require sync again
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
       expect(adapter.isSynced()).toBe(false);
 
-      await expect(adapter.verifyDeviceReady('qr-device-1')).rejects.toThrow();
+      await expect(adapter.verifyDeviceReady()).rejects.toThrow();
 
       // Re-sync
       adapter.markSynced();
-      await expect(adapter.verifyDeviceReady('qr-device-1')).resolves.toBe(
+      await expect(adapter.verifyDeviceReady()).resolves.toBe(
         true,
       );
     });
 
     it('should handle switching between different QR devices', async () => {
       // Connect to first device
-      await adapter.connect('keystone-1');
+      await adapter.connect();
       adapter.markSynced();
-      expect(adapter.getDeviceId()).toBe('keystone-1');
+      expect(adapter.isConnected()).toBe(true);
 
       // Switch to second device
       await adapter.disconnect();
-      await adapter.connect('airgap-1');
-      expect(adapter.getDeviceId()).toBe('airgap-1');
+      await adapter.connect();
       expect(adapter.isSynced()).toBe(false); // Needs re-sync
 
       // Sync second device
       adapter.markSynced();
-      await expect(adapter.verifyDeviceReady('airgap-1')).resolves.toBe(true);
+      await expect(adapter.verifyDeviceReady()).resolves.toBe(true);
     });
   });
 
   describe('error handling', () => {
     it('should handle errors with proper HardwareWalletError type', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
 
       try {
-        await adapter.verifyDeviceReady('qr-device-1');
+        await adapter.verifyDeviceReady();
         fail('Should have thrown an error');
       } catch (error) {
         expect(error).toBeInstanceOf(HardwareWalletError);
@@ -315,10 +293,10 @@ describe('[QRAdapter]', () => {
     });
 
     it('should preserve error details through reconstruction', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
 
       try {
-        await adapter.verifyDeviceReady('qr-device-1');
+        await adapter.verifyDeviceReady();
       } catch (error) {
         const hwError = error as HardwareWalletError;
         expect(hwError.code).toBe(ErrorCode.DEVICE_STATE_001);
@@ -331,23 +309,23 @@ describe('[QRAdapter]', () => {
   describe('comparison with USB adapters', () => {
     it('should not perform physical device checks like Ledger/Trezor', async () => {
       // QR adapter should succeed without any WebHID/WebUSB checks
-      await expect(adapter.connect('qr-device-1')).resolves.toBeUndefined();
+      await expect(adapter.connect()).resolves.toBeUndefined();
 
       // No need for device to be physically connected
       expect(adapter.isConnected()).toBe(true);
     });
 
     it('should have sync requirement instead of app check', async () => {
-      await adapter.connect('qr-device-1');
+      await adapter.connect();
 
       // QR wallets check sync state, not app state
-      await expect(adapter.verifyDeviceReady('qr-device-1')).rejects.toThrow(
+      await expect(adapter.verifyDeviceReady()).rejects.toThrow(
         'scan the QR code',
       );
 
       // After sync, should be ready
       adapter.markSynced();
-      await expect(adapter.verifyDeviceReady('qr-device-1')).resolves.toBe(
+      await expect(adapter.verifyDeviceReady()).resolves.toBe(
         true,
       );
     });
