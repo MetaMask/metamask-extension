@@ -80,7 +80,7 @@
     "ganache:start": "./development/run-ganache.sh",
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:tsc && yarn lint:styles && yarn lint:images",
-    "lint:fix": "yarn lint:prettier:fix && yarn lint:eslint:fix && yarn lint:styles:fix && yarn circular-deps:update && yarn lint:images:fix && lint:baseline:fix",
+    "lint:fix": "yarn lint:prettier:fix && yarn lint:eslint:fix && yarn lint:styles:fix && yarn circular-deps:update && yarn lint:images:fix && yarn lint:baseline:fix",
     "lint:prettier": "prettier --check --cache -- '**/*.{json,md,mdx,yml}'",
     "lint:prettier:fix": "prettier --write --cache -- '**/*.{json,md,mdx,yml}'",
     "lint:changed": "./development/get-changed-file-names.sh | grep -E --regexp='[.](js|ts|tsx)$' | tr '\\n' '\\0' | xargs -0 eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
