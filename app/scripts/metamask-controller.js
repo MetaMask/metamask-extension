@@ -6,6 +6,7 @@ import {
   createScaffoldMiddleware,
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
+import { asLegacyMiddleware } from '@metamask/json-rpc-engine/v2';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -37,6 +38,7 @@ import {
 } from '@metamask/selected-network-controller';
 
 import {
+  createWalletSnapPermissionMiddleware,
   createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
   SnapEndowments,
@@ -7368,6 +7370,8 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
+
+    engine.push(asLegacyMiddleware(createWalletSnapPermissionMiddleware()));
 
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
