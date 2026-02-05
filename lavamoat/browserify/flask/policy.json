@@ -2995,6 +2995,61 @@
         "browserify>browser-resolve": true
       }
     },
+    "@tanstack/query-async-storage-persister": {
+      "packages": {
+        "@tanstack/query-async-storage-persister>@tanstack/query-core": true
+      }
+    },
+    "@tanstack/query-broadcast-client-experimental": {
+      "packages": {
+        "@tanstack/query-broadcast-client-experimental>broadcast-channel": true
+      }
+    },
+    "@tanstack/query-async-storage-persister>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "CancelledError": true,
+        "InfiniteQueryObserver": true,
+        "Mutation": true,
+        "MutationCache": true,
+        "MutationObserver": true,
+        "QueriesObserver": true,
+        "Query": true,
+        "QueryCache": true,
+        "QueryClient": true,
+        "QueryObserver": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "defaultScheduler": true,
+        "defaultShouldDehydrateMutation": true,
+        "defaultShouldDehydrateQuery": true,
+        "dehydrate": true,
+        "document": true,
+        "experimental_streamedQuery": true,
+        "focusManager": true,
+        "hashKey": true,
+        "hydrate": true,
+        "isCancelledError": true,
+        "isServer": true,
+        "keepPreviousData": true,
+        "matchMutation": true,
+        "matchQuery": true,
+        "noop": true,
+        "notifyManager": true,
+        "onlineManager": true,
+        "partialMatchKey": true,
+        "removeEventListener": true,
+        "replaceEqualDeep": true,
+        "setInterval": true,
+        "setTimeout": true,
+        "shouldThrowError": true,
+        "skipToken": true,
+        "timeoutManager": true
+      }
+    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
@@ -3009,6 +3064,15 @@
         "setTimeout": true
       }
     },
+    "@tanstack/react-query-persist-client>@tanstack/query-persist-client-core": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@tanstack/query-async-storage-persister>@tanstack/query-core": true
+      }
+    },
     "@tanstack/react-query": {
       "globals": {
         "ReactQueryClientContext": "write"
@@ -3018,6 +3082,13 @@
         "react": true,
         "react-dom": true,
         "@tanstack/react-query>use-sync-external-store": true
+      }
+    },
+    "@tanstack/react-query-persist-client": {
+      "packages": {
+        "@tanstack/react-query-persist-client>@tanstack/query-persist-client-core": true,
+        "@tanstack/react-query": true,
+        "react": true
       }
     },
     "@tanstack/react-virtual": {
@@ -3524,6 +3595,30 @@
     "bowser": {
       "globals": {
         "define": true
+      }
+    },
+    "@tanstack/query-broadcast-client-experimental>broadcast-channel": {
+      "globals": {
+        "AbortController": true,
+        "BroadcastChannel": true,
+        "Deno": true,
+        "IDBKeyRange.bound": true,
+        "addEventListener": true,
+        "dispatchEvent": true,
+        "document.createEvent": true,
+        "indexedDB": true,
+        "localStorage": true,
+        "mozIndexedDB": true,
+        "msIndexedDB": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setTimeout": true,
+        "webkitIndexedDB": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@tanstack/query-broadcast-client-experimental>broadcast-channel>oblivious-set": true,
+        "@tanstack/query-broadcast-client-experimental>broadcast-channel>unload": true
       }
     },
     "@toruslabs/eccrypto>elliptic>brorand": {
@@ -4976,6 +5071,11 @@
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
+    "@tanstack/query-broadcast-client-experimental>broadcast-channel>oblivious-set": {
+      "globals": {
+        "setTimeout": true
+      }
+    },
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
@@ -6047,6 +6147,17 @@
     "react-markdown>unist-util-visit": {
       "packages": {
         "react-markdown>unist-util-visit>unist-util-visit-parents": true
+      }
+    },
+    "@tanstack/query-broadcast-client-experimental>broadcast-channel>unload": {
+      "globals": {
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "close": "write",
+        "console.trace": true
+      },
+      "packages": {
+        "process": true
       }
     },
     "uri-js": {

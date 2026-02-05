@@ -1742,6 +1742,28 @@
         "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
       }
     },
+    "@tanstack/query-async-storage-persister": {
+      "packages": {
+        "@tanstack/query-async-storage-persister>@tanstack/query-core": true
+      }
+    },
+    "@tanstack/query-broadcast-client-experimental": {
+      "packages": {
+        "@tanstack/query-broadcast-client-experimental>broadcast-channel": true
+      }
+    },
+    "@tanstack/query-async-storage-persister>@tanstack/query-core": {
+      "globals": {
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@swc/helpers": true
+      }
+    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
@@ -1754,6 +1776,15 @@
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
+      }
+    },
+    "@tanstack/react-query-persist-client>@tanstack/query-persist-client-core": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@tanstack/query-async-storage-persister>@tanstack/query-core": true
       }
     },
     "@tanstack/react-query": {
@@ -2080,6 +2111,27 @@
     "bowser": {
       "globals": {
         "define": true
+      }
+    },
+    "@tanstack/query-broadcast-client-experimental>broadcast-channel": {
+      "globals": {
+        "BroadcastChannel": true,
+        "Deno": true,
+        "IDBKeyRange.bound": true,
+        "addEventListener": true,
+        "dispatchEvent": true,
+        "document.createEvent": true,
+        "indexedDB": true,
+        "localStorage": true,
+        "mozIndexedDB": true,
+        "msIndexedDB": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setTimeout": true,
+        "webkitIndexedDB": true
+      },
+      "packages": {
+        "@tanstack/query-broadcast-client-experimental>broadcast-channel>oblivious-set": true
       }
     },
     "@toruslabs/eccrypto>elliptic>brorand": {
@@ -3323,6 +3375,14 @@
         "string.prototype.matchall>es-object-atoms": true,
         "string.prototype.matchall>has-symbols": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
+      }
+    },
+    "@tanstack/query-broadcast-client-experimental>broadcast-channel>oblivious-set": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@swc/helpers": true
       }
     },
     "@metamask/object-multiplex>once": {
