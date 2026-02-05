@@ -31,6 +31,7 @@ import {
   type MinimalAsset,
   validateMinimalAssetObject,
 } from '../../pages/bridge/utils/tokens';
+import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
 
 const useBridging = () => {
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ const useBridging = () => {
         chainId: GenericQuoteRequest['srcChainId'];
       },
     ) => {
+      clearAllBridgeCacheItems();
       dispatch(resetInputFields());
       trace({
         name: TraceName.SwapViewLoaded,

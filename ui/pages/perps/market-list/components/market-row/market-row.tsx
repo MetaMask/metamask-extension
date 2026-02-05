@@ -14,6 +14,7 @@ import {
   getDisplaySymbol,
   getChangeColor,
 } from '../../../../../components/app/perps/utils';
+import { useFormatters } from '../../../../../hooks/useFormatters';
 import type { PerpsMarketData } from '../../../../../components/app/perps/types';
 import type { SortField } from '../../../utils/sortMarkets';
 
@@ -31,9 +32,14 @@ export type MarketRowProps = {
  *
  * @param market - The market data
  * @param metric - The metric to display
+ * @param formatNumber - Number formatting function from useFormatters
  * @returns The formatted metric value
  */
-const getMetricValue = (market: PerpsMarketData, metric: SortField): string => {
+const getMetricValue = (
+  market: PerpsMarketData,
+  metric: SortField,
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
+): string => {
   switch (metric) {
     case 'volume':
       return `${market.volume} Vol`;
@@ -43,7 +49,10 @@ const getMetricValue = (market: PerpsMarketData, metric: SortField): string => {
       if (market.fundingRate === undefined) {
         return 'N/A';
       }
-      return `${(market.fundingRate * 100).toFixed(4)}% FR`;
+      return `${formatNumber(market.fundingRate * 100, {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4,
+      })}% FR`;
     case 'openInterest':
       return market.openInterest ? `${market.openInterest} OI` : 'N/A';
     default:
@@ -65,13 +74,14 @@ export const MarketRow: React.FC<MarketRowProps> = ({
   onPress,
   displayMetric = 'volume',
 }) => {
+  const { formatNumber } = useFormatters();
   const displaySymbol = useMemo(
     () => getDisplaySymbol(market.symbol),
     [market.symbol],
   );
   const metricValue = useMemo(
-    () => getMetricValue(market, displayMetric),
-    [market, displayMetric],
+    () => getMetricValue(market, displayMetric, formatNumber),
+    [market, displayMetric, formatNumber],
   );
 
   // Determine the appropriate color for price change

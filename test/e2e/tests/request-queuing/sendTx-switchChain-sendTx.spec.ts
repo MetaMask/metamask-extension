@@ -45,6 +45,9 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
 
         // Dapp Send Button
         await testDapp.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
 
         // Navigate back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -67,7 +70,6 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.clickNextPage();
 
         // Confirm Switch Chain

@@ -38,35 +38,6 @@ export function submitRequestToBackground<R>(
   return background[method](...(args ?? [])) as unknown as Promise<R>;
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
-
-/**
- * [Deprecated] Callback-style call to background method
- * invokes promisifiedBackground method directly.
- *
- * @deprecated Use async `submitRequestToBackground` function instead.
- * @param method - name of the background method
- * @param [args] - arguments to that method, if any
- * @param callback - Node style (error, result) callback for finishing the operation
- */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const callBackgroundMethod = <R>(
-  method: keyof Api,
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  args: Parameters<Api[typeof method]>,
-  callback: CallbackMethod<R>,
-) => {
-  submitRequestToBackground<R>(method, args).then(
-    (result) => callback(null, result),
-    callback,
-  );
-};
-
 /**
  * Sets/replaces the background connection reference
  *
