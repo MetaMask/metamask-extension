@@ -35,7 +35,7 @@ export default meta;
 type Story = StoryObj<typeof NetworkListItemMenu>;
 
 const NetworkListItemMenuWithButton = (args: any) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   return (
