@@ -27,9 +27,9 @@ const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
  * Result of initializing data sources for the AssetsController.
  */
 type DataSourcesInitResult = {
-  dataSources: DataSources;
-  dataSourceMessengers: DataSourceMessengers;
-  apiClient: ApiPlatformClient;
+  dataSources: DataSources | Record<string, never>;
+  dataSourceMessengers: DataSourceMessengers | null;
+  apiClient: ApiPlatformClient | null;
 };
 
 /**
@@ -96,6 +96,14 @@ async function initializeDataSourcesOnce(
   }
 
   dataSourcesInitPromise = (async (): Promise<DataSourcesInitResult> => {
+    // Skip data source initialization if the feature is disabled
+    if (!isEnabled()) {
+      console.log(
+        `${LOG_PREFIX} Feature disabled, skipping data source initialization`,
+      );
+      return { dataSources: {}, dataSourceMessengers: null, apiClient: null };
+    }
+
     console.log(`${LOG_PREFIX} Initializing data sources...`);
 
     // Get the root messenger - the messenger pattern uses a parent reference
@@ -153,7 +161,7 @@ async function initializeDataSourcesOnce(
   } catch (error) {
     // Reset promise so a later attempt can retry if desired.
     dataSourcesInitPromise = null;
-    console.error(`${LOG_PREFIX} Failed to initialize data sources`, error);
+    console.warn(`${LOG_PREFIX} Failed to initialize data sources`, error);
     throw error;
   }
 }
