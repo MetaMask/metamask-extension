@@ -363,83 +363,39 @@ describe('app utils', () => {
         });
       });
 
-      it('detects Lemur from brands when UA returns Chrome', () => {
-        // Lemur UA string does NOT include "Lemur" - it looks like regular Chrome
-        jest
-          .spyOn(window.navigator, 'userAgent', 'get')
-          .mockReturnValue(
-            'Mozilla/5.0 (Linux; Android 14; 23113RKC6C Build/UP1A.231005.007) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.7103.60 Mobile Safari/537.36',
-          );
+      // Browsers that hide their identity in UA string but expose it via brands
+      it.each([
+        ['Brave', 'Brave', PLATFORM_BRAVE],
+        ['Lemur', 'Lemur', PLATFORM_LEMUR],
+        ['Mises', 'Mises', PLATFORM_MISES],
+      ])(
+        'detects %s from brands when UA looks like Chrome',
+        (_name, brandName, expectedPlatform) => {
+          // UA looks like regular Chrome (no browser-specific identifier)
+          jest
+            .spyOn(window.navigator, 'userAgent', 'get')
+            .mockReturnValue(
+              'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36',
+            );
 
-        // But brands includes Lemur
-        Object.defineProperty(window.navigator, 'userAgentData', {
-          value: {
-            brands: [
-              { brand: 'Chromium', version: '136' },
-              { brand: 'Lemur', version: '136' },
-              { brand: 'Not.A/Brand', version: '99' },
-            ],
-            mobile: true,
-            platform: 'Android',
-          },
-          writable: true,
-          configurable: true,
-        });
+          // But brands includes the specific browser
+          Object.defineProperty(window.navigator, 'userAgentData', {
+            value: {
+              brands: [
+                { brand: 'Chromium', version: '136' },
+                { brand: brandName, version: '136' },
+                { brand: 'Not.A/Brand', version: '99' },
+              ],
+              mobile: true,
+              platform: 'Android',
+            },
+            writable: true,
+            configurable: true,
+          });
 
-        expect(getPlatform()).toStrictEqual(PLATFORM_LEMUR);
-      });
-
-      it('detects Mises from brands when UA returns Chrome', () => {
-        // Mises UA string does NOT include "Mises" - it looks like regular Chrome
-        jest
-          .spyOn(window.navigator, 'userAgent', 'get')
-          .mockReturnValue(
-            'Mozilla/5.0 (Linux; Android 14; 23113RKC6C Build/UP1A.231005.007) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.200 Mobile Safari/537.36',
-          );
-
-        // But brands includes Mises
-        Object.defineProperty(window.navigator, 'userAgentData', {
-          value: {
-            brands: [
-              { brand: 'Chromium', version: '131' },
-              { brand: 'Mises', version: '131' },
-              { brand: 'Not.A/Brand', version: '99' },
-            ],
-            mobile: true,
-            platform: 'Android',
-          },
-          writable: true,
-          configurable: true,
-        });
-
-        expect(getPlatform()).toStrictEqual(PLATFORM_MISES);
-      });
-
-      it('detects Brave from brands when UA returns Chrome', () => {
-        // Brave UA string looks like regular Chrome
-        jest
-          .spyOn(window.navigator, 'userAgent', 'get')
-          .mockReturnValue(
-            'Mozilla/5.0 (Linux; Android 14; 23113RKC6C Build/UP1A.231005.007) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.7103.60 Mobile Safari/537.36',
-          );
-
-        // But brands includes Brave
-        Object.defineProperty(window.navigator, 'userAgentData', {
-          value: {
-            brands: [
-              { brand: 'Chromium', version: '136' },
-              { brand: 'Brave', version: '136' },
-              { brand: 'Not.A/Brand', version: '99' },
-            ],
-            mobile: true,
-            platform: 'Android',
-          },
-          writable: true,
-          configurable: true,
-        });
-
-        expect(getPlatform()).toStrictEqual(PLATFORM_BRAVE);
-      });
+          expect(getPlatform()).toStrictEqual(expectedPlatform);
+        },
+      );
 
       it('prioritizes UA detection over brands when UA identifies a specific browser', () => {
         // Edge is detected in UA
@@ -468,7 +424,7 @@ describe('app utils', () => {
         expect(getPlatform()).toStrictEqual(PLATFORM_EDGE_ANDROID);
       });
 
-      it('returns Chrome when brands has no known browser', () => {
+      it('returns Chrome when brands contains Google Chrome', () => {
         // Generic Chrome UA
         jest
           .spyOn(window.navigator, 'userAgent', 'get')
@@ -476,7 +432,7 @@ describe('app utils', () => {
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
           );
 
-        // Brands has only generic entries
+        // Brands contains "Google Chrome" which maps to PLATFORM_CHROME
         Object.defineProperty(window.navigator, 'userAgentData', {
           value: {
             brands: [
@@ -508,7 +464,7 @@ describe('app utils', () => {
         expect(getPlatform()).toStrictEqual(PLATFORM_OTHER);
       });
 
-      it('returns unknown brand for analytics discovery when brand is not mapped', () => {
+      it('returns discovered brand even when not yet mapped in our codebase', () => {
         // UA looks like Chrome
         jest
           .spyOn(window.navigator, 'userAgent', 'get')
@@ -516,12 +472,12 @@ describe('app utils', () => {
             'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/136.0.0.0 Mobile Safari/537.36',
           );
 
-        // Brands includes an unknown browser "FutureBrowser"
+        // Brands includes a browser not yet in our mapping
         Object.defineProperty(window.navigator, 'userAgentData', {
           value: {
             brands: [
               { brand: 'Chromium', version: '136' },
-              { brand: 'FutureBrowser', version: '1' },
+              { brand: 'DiscoveredBrowser', version: '1' },
               { brand: 'Not.A/Brand', version: '99' },
             ],
             mobile: true,
@@ -531,8 +487,8 @@ describe('app utils', () => {
           configurable: true,
         });
 
-        // Should return the unknown brand name for analytics discovery
-        expect(getPlatform()).toStrictEqual('FutureBrowser');
+        // Should return the brand name as-is for analytics discovery
+        expect(getPlatform()).toStrictEqual('DiscoveredBrowser');
       });
     });
   });
