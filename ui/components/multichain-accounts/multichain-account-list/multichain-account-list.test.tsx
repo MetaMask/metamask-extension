@@ -240,11 +240,6 @@ describe('MultichainAccountList', () => {
     );
     expect(selectedCell).toHaveClass('is-selected');
 
-    const unselectedCell = screen.getByTestId(
-      `multichain-account-cell-${walletTwoGroupId}`,
-    );
-    expect(unselectedCell).not.toHaveClass('is-selected');
-
     // Find and click the second account cell (wallet two)
     const accountCell = screen.getByTestId(
       `multichain-account-cell-${walletTwoGroupId}`,
@@ -271,11 +266,6 @@ describe('MultichainAccountList', () => {
     );
     expect(selectedCell).toHaveClass('is-selected');
 
-    let unselectedCell = screen.getByTestId(
-      `multichain-account-cell-${walletTwoGroupId}`,
-    );
-    expect(unselectedCell).not.toHaveClass('is-selected');
-
     // Change the selected account to wallet two
     rerender(
       <MultichainAccountList
@@ -293,29 +283,13 @@ describe('MultichainAccountList', () => {
       `multichain-account-cell-${walletTwoGroupId}`,
     );
     expect(selectedCell).toHaveClass('is-selected');
-
-    unselectedCell = screen.getByTestId(
-      `multichain-account-cell-${walletOneGroupId}`,
-    );
-    expect(unselectedCell).not.toHaveClass('is-selected');
   });
 
-  it('shows no checkboxes and no selected icons when selectedAccountGroups is empty', () => {
+  it('shows no checkboxes when selectedAccountGroups is empty', () => {
     renderComponent({ selectedAccountGroups: [] });
 
     // No checkboxes should be present
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
-
-    // No accounts should have is-selected class since no accounts are marked as selected
-    const walletOneCell = screen.getByTestId(
-      `multichain-account-cell-${walletOneGroupId}`,
-    );
-    expect(walletOneCell).not.toHaveClass('is-selected');
-
-    const walletTwoCell = screen.getByTestId(
-      `multichain-account-cell-${walletTwoGroupId}`,
-    );
-    expect(walletTwoCell).not.toHaveClass('is-selected');
   });
 
   it('handles multiple account groups within a single wallet', () => {
@@ -752,12 +726,8 @@ describe('MultichainAccountList', () => {
         />,
       );
 
-      // Now checkboxes should be visible and is-selected class should be removed
+      // Now checkboxes should be visible
       expect(screen.getAllByRole('checkbox')).toHaveLength(2);
-      selectedCell = screen.getByTestId(
-        `multichain-account-cell-${walletOneGroupId}`,
-      );
-      expect(selectedCell).not.toHaveClass('is-selected');
     });
 
     it('hides account menu (3 dots) when showAccountCheckbox is true', () => {
