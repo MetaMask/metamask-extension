@@ -330,6 +330,7 @@
   "RewardsController": {
     "rewardsAccounts": "object",
     "rewardsActiveAccount": null,
+    "rewardsPointsEstimateHistory": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
     "rewardsSubscriptionTokens": "object",
@@ -369,6 +370,7 @@
     "lastUpdated": "number",
     "signature": "string"
   },
+  "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "SwapsController": {

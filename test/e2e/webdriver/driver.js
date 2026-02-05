@@ -1072,7 +1072,7 @@ class Driver {
   /**
    * Paste a string into a field.
    *
-   * @param {string} rawLocator  - Element locator
+   * @param {string | object} rawLocator  - Element locator
    * @param {string} contentToPaste - content to paste
    * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
