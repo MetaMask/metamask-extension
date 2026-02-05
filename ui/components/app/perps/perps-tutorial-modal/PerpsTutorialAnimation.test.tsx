@@ -183,14 +183,14 @@ describe('PerpsTutorialAnimation', () => {
       );
     });
 
-    it('uses Fit.Cover for popup environment', () => {
+    it('uses Fit.Contain for popup environment', () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
       expect(mockedRiveReactCanvas.Layout).toHaveBeenCalledWith(
         expect.objectContaining({
-          fit: 'cover',
+          fit: 'contain',
         }),
       );
     });

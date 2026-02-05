@@ -32,41 +32,43 @@ const RIVE_COMPONENT_STYLE: React.CSSProperties = {
   height: '100%',
 };
 
+const BASE_CONTAINER_STYLE: React.CSSProperties = {
+  height: '280px',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
 /**
  * Get container styles based on viewport type.
  * New RIV files have 280px artboard height.
  * Side panel uses Fit.Contain to prevent horizontal cutoff on wider animations.
+ * Popup uses reduced height (200px) to avoid scroll.
  * Wider viewports use Fit.Cover with max-width constraints.
  *
- * @param environmentType
+ * @param environmentType - The current environment type
+ * @returns Container style and fit mode for the Rive animation
  */
 const getContainerStyle = (
   environmentType: string,
 ): { style: React.CSSProperties; fit: Fit } => {
-  const baseStyle: React.CSSProperties = {
-    height: '280px',
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  };
-
   if (environmentType === ENVIRONMENT_TYPE_SIDEPANEL) {
     // Side panel: Use Fit.Contain to prevent horizontal cutoff on steps 3 & 4
-    return { style: baseStyle, fit: Fit.Contain };
+    return { style: BASE_CONTAINER_STYLE, fit: Fit.Contain };
   }
 
   if (environmentType === ENVIRONMENT_TYPE_POPUP) {
-    // Popup: Constrain width slightly to reduce scaling
+    // Popup: Use reduced height and Fit.Contain to avoid scroll and cutoff
     return {
-      style: { ...baseStyle, maxWidth: '340px' },
-      fit: Fit.Cover,
+      style: { ...BASE_CONTAINER_STYLE, height: '200px', maxWidth: '340px' },
+      fit: Fit.Contain,
     };
   }
 
   // Fullscreen: Constrain narrower to prevent cutoff on steps with more text
   return {
-    style: { ...baseStyle, maxWidth: '280px' },
+    style: { ...BASE_CONTAINER_STYLE, maxWidth: '280px' },
     fit: Fit.Cover,
   };
 };
@@ -79,9 +81,9 @@ const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
 }) => {
   const theme = useTheme();
   const isDarkTheme = theme === ThemeType.dark;
+  const environmentType = getEnvironmentType();
 
   // Get viewport-specific container style and fit mode
-  const environmentType = getEnvironmentType();
   const { style: containerStyle, fit: defaultFit } = useMemo(
     () => getContainerStyle(environmentType),
     [environmentType],

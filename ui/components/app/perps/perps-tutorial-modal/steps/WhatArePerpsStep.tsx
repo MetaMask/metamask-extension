@@ -19,6 +19,9 @@ import {
   PerpsTutorialStep,
 } from '../../../../../ducks/perps';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 import ProgressIndicator from '../ProgressIndicator';
 
 const TOTAL_STEPS = 6;
@@ -27,6 +30,7 @@ const CURRENT_STEP = 1;
 const WhatArePerpsStep: React.FC = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const handleNext = useCallback(() => {
     dispatch(setTutorialActiveStep(PerpsTutorialStep.GoLongOrShort));
@@ -43,7 +47,7 @@ const WhatArePerpsStep: React.FC = () => {
     >
       <ProgressIndicator totalSteps={TOTAL_STEPS} currentStep={CURRENT_STEP} />
 
-      <Box className="flex-1 flex flex-col items-center px-6 pt-6">
+      <Box className="flex-1 flex flex-col items-center px-6 pt-4">
         <Text variant={TextVariant.HeadingLg} className="text-left mb-2 w-full">
           {t('perpsTutorialWhatArePerpsTitle')}
         </Text>
@@ -64,7 +68,9 @@ const WhatArePerpsStep: React.FC = () => {
           className="flex-1 flex items-center justify-center"
           data-testid="perps-tutorial-step-image"
         >
-          <Box className="w-[180px] h-[180px] flex items-center justify-center">
+          <Box
+            className={`flex items-center justify-center ${isPopup ? 'w-[180px] h-[180px]' : 'w-[280px] h-[280px]'}`}
+          >
             <img
               src="./images/perps-character.png"
               alt=""

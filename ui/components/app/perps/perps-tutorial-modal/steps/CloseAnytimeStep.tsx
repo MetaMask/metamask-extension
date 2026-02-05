@@ -39,12 +39,12 @@ const CloseAnytimeStep: React.FC = () => {
 
   return (
     <ModalBody
-      className="w-full h-full pt-8 pb-4 flex flex-col"
+      className="w-full h-full pt-6 pb-4 flex flex-col"
       data-testid="perps-tutorial-close-anytime"
     >
       <ProgressIndicator totalSteps={TOTAL_STEPS} currentStep={CURRENT_STEP} />
 
-      <Box className="flex-1 flex flex-col items-center px-6 pt-6 pb-2">
+      <Box className="flex-1 flex flex-col items-center px-6 pt-4 pb-2">
         <Text variant={TextVariant.HeadingLg} className="text-left mb-2 w-full">
           {t('perpsTutorialCloseAnytimeTitle')}
         </Text>

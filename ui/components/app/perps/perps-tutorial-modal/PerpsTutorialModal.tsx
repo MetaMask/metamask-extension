@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Modal,
@@ -20,6 +20,9 @@ import {
   PerpsTutorialStep,
 } from '../../../../ducks/perps';
 import { useTheme } from '../../../../hooks/useTheme';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';
 import GoLongShortStep from './steps/GoLongShortStep';
 import ChooseLeverageStep from './steps/ChooseLeverageStep';
@@ -36,6 +39,10 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
   const activeStep = useSelector(selectTutorialActiveStep);
   const dispatch = useDispatch();
   const theme = useTheme();
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
+  // Use a shorter height for popup to avoid scroll
+  const modalHeight = useMemo(() => (isPopup ? '580px' : '675px'), [isPopup]);
 
   const handleClose = useCallback(() => {
     dispatch(setTutorialModalOpen(false));
@@ -77,7 +84,7 @@ const PerpsTutorialModal: React.FC<PerpsTutorialModalProps> = ({ onClose }) => {
           paddingTop: 0,
           paddingBottom: 0,
           style: {
-            height: '675px',
+            height: modalHeight,
             alignItems: 'center',
             justifyContent: 'center',
           },
