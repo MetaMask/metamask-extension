@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import type { PerpsController } from '@metamask/perps-controller';
-import { getPerpsController } from './getPerpsController';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getPerpsController } from './getPerpsController';
 
 /**
  * Context for the PerpsController instance.
@@ -19,20 +19,24 @@ const PerpsControllerContext = createContext<PerpsController | null>(null);
 /**
  * Props for PerpsControllerProvider
  */
-export interface PerpsControllerProviderProps {
+export type PerpsControllerProviderProps = {
   children: ReactNode;
   /** Optional pre-initialized controller for testing */
   controller?: PerpsController;
   /** Fallback UI to show while controller is initializing */
   loadingFallback?: ReactNode;
-}
+};
 
 /**
- * Provider component for PerpsController
+ * Provider component for PerpsController.
  *
  * Wrap your Perps UI components with this provider to enable
  * direct controller access for real-time data subscriptions.
  *
+ * @param props - Component props
+ * @param props.children - Child components to wrap
+ * @param props.controller - Optional pre-initialized controller for testing
+ * @param props.loadingFallback - Fallback UI to show while controller is initializing
  * @example
  * ```tsx
  * <PerpsControllerProvider>
@@ -40,6 +44,7 @@ export interface PerpsControllerProviderProps {
  * </PerpsControllerProvider>
  * ```
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function PerpsControllerProvider({
   children,
   controller: providedController,
@@ -76,7 +81,10 @@ export function PerpsControllerProvider({
       })
       .catch((err) => {
         if (isMounted) {
-          console.error('[PerpsControllerProvider] Initialization failed:', err);
+          console.error(
+            '[PerpsControllerProvider] Initialization failed:',
+            err,
+          );
           setError(err instanceof Error ? err : new Error(String(err)));
         }
       });
@@ -120,7 +128,6 @@ export function PerpsControllerProvider({
  *
  * @returns The PerpsController instance
  * @throws Error if used outside of PerpsControllerProvider
- *
  * @example
  * ```tsx
  * function AccountBalance() {

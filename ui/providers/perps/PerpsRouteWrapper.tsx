@@ -4,17 +4,19 @@ import { PerpsControllerProvider } from './PerpsControllerProvider';
 /**
  * Props for PerpsRouteWrapper
  */
-export interface PerpsRouteWrapperProps {
+export type PerpsRouteWrapperProps = {
   children: ReactNode;
-}
+};
 
 /**
- * Route-level wrapper for Perps pages
+ * Route-level wrapper for Perps pages.
  *
  * Provides the PerpsController context to all Perps routes.
  * The controller persists across page navigation within Perps,
  * avoiding recreation when switching between home, detail, and list pages.
  *
+ * @param props - Component props
+ * @param props.children - Child components to wrap
  * @example
  * ```tsx
  * // In routes config

@@ -5,6 +5,7 @@ import {
   createPerpsInfrastructure,
   type PerpsControllerState,
   type PerpsControllerMessenger,
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/perps';
 
 /**
@@ -48,7 +49,6 @@ function createPerpsMessenger(): PerpsControllerMessenger {
  *
  * @param selectedAddress - The currently selected account address
  * @returns Promise resolving to the PerpsController instance
- *
  * @example
  * ```typescript
  * const controller = await getPerpsController(selectedAccount.address);
