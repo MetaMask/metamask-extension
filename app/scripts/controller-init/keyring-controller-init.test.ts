@@ -17,6 +17,10 @@ import {
 import { KeyringControllerInit } from './keyring-controller-init';
 
 jest.mock('@metamask/keyring-controller');
+jest.mock('@metamask/eth-ledger-bridge-keyring', () => ({
+  LedgerIframeBridge: jest.fn(),
+  LedgerKeyring: jest.fn(),
+}));
 
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
