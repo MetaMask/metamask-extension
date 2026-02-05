@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export const PerpsTutorialStep = {
+  WhatArePerps: 'WhatArePerps',
+  GoLongOrShort: 'GoLongOrShort',
+  ChooseLeverage: 'ChooseLeverage',
+  WatchLiquidation: 'WatchLiquidation',
+  CloseAnytime: 'CloseAnytime',
+  ReadyToTrade: 'ReadyToTrade',
+} as const;
+
 /**
- * Tutorial step enum matching mobile implementation
+ * Union type derived from PerpsTutorialStep values
  */
-export enum PerpsTutorialStep {
-  WhatArePerps = 'WhatArePerps',
-  GoLongOrShort = 'GoLongOrShort',
-  ChooseLeverage = 'ChooseLeverage',
-  WatchLiquidation = 'WatchLiquidation',
-  CloseAnytime = 'CloseAnytime',
-  ReadyToTrade = 'ReadyToTrade',
-}
+export type PerpsTutorialStep =
+  (typeof PerpsTutorialStep)[keyof typeof PerpsTutorialStep];
 
 /**
  * Ordered array of tutorial steps for navigation
