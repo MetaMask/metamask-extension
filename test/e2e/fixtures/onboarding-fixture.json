@@ -218,8 +218,10 @@
       "conversionRates": {}
     },
     "AssetsController": {
+      "assetPreferences": {},
       "assetsBalance": {},
       "assetsMetadata": {},
+      "assetsPrice": {},
       "customAssets": {}
     },
     "MultichainBalancesController": {

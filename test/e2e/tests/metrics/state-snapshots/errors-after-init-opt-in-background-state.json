@@ -183,8 +183,10 @@
     "historicalPrices": "object"
   },
   "AssetsController": {
+    "assetPreferences": "object",
     "assetsBalance": "object",
     "assetsMetadata": "object",
+    "assetsPrice": "object",
     "customAssets": "object"
   },
   "MultichainBalancesController": { "balances": "object" },

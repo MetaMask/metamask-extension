@@ -172,8 +172,10 @@
       "allTokens": {}
     },
     "AssetsController": {
+      "assetPreferences": "object",
       "assetsBalance": "object",
       "assetsMetadata": "object",
+      "assetsPrice": "object",
       "customAssets": "object"
     },
     "TransactionController": { "transactions": "object" },

@@ -181,11 +181,8 @@ export const AssetsControllerInit: ControllerInitFunction<
   AssetsControllerMessenger,
   AssetsControllerInitMessenger
 > = ({ controllerMessenger, persistedState, initMessenger, getController }) => {
-  console.log(`${LOG_PREFIX} Initializing...`);
-
   /**
    * Check if the AssetsController feature is enabled based on the remote feature flag.
-   * This function is called by the AssetsController to determine if it should be active.
    *
    * @returns True if the feature is enabled, false otherwise.
    */
@@ -210,6 +207,8 @@ export const AssetsControllerInit: ControllerInitFunction<
       return false;
     }
   };
+
+  console.log(`${LOG_PREFIX} Initializing...`);
 
   const controller = new AssetsController({
     messenger: controllerMessenger,
