@@ -65,18 +65,24 @@ const WhatArePerpsStep: React.FC = () => {
         </Text>
 
         <Box
-          className="flex-1 flex items-center justify-center"
           data-testid="perps-tutorial-step-image"
+          style={{
+            height: isPopup ? 180 : 280,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
-          <Box
-            className={`flex items-center justify-center ${isPopup ? 'w-[180px] h-[180px]' : 'w-[280px] h-[280px]'}`}
-          >
-            <img
-              src="./images/perps-character.png"
-              alt=""
-              className="w-full h-full object-contain"
-            />
-          </Box>
+          <img
+            src="./images/perps-character.png"
+            alt=""
+            style={{
+              width: isPopup ? 180 : 280,
+              height: isPopup ? 180 : 280,
+              objectFit: 'contain',
+            }}
+          />
         </Box>
       </Box>
 
