@@ -103,7 +103,7 @@ const Name = memo(
         return;
       }
       setModalOpen(true);
-    }, [isAccount, setModalOpen]);
+    }, [disableNameClick, isAccount, setModalOpen]);
 
     const handleModalClose = useCallback(() => {
       setModalOpen(false);
