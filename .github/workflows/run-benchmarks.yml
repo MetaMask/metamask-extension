@@ -106,6 +106,14 @@ jobs:
         # Then replace the {0} placeholder with the browser, and the {1} placeholder with the buildType
         run: ${{ format(fromJson(env.COMMANDS)[matrix.pageType], matrix.browser, matrix.buildType) }}
 
+      - name: Upload test artifacts (screenshots, etc.)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-test-artifacts-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
+          path: test-artifacts/
+          if-no-files-found: ignore
+
       - name: Send benchmark results to Sentry
         if: ${{ vars.SENTRY_DSN_PERFORMANCE }}
         env:
