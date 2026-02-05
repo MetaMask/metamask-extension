@@ -236,7 +236,7 @@
         "@babel/core>@babel/template": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+        "@babel/preset-env>@babel/plugin-transform-classes>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -748,7 +748,7 @@
         "koa>cookies>depd": true,
         "koa>destroy": true,
         "mockttp>express>http-errors": true,
-        "jsdom>whatwg-encoding>iconv-lite": true,
+        "mockttp>body-parser>iconv-lite": true,
         "koa>on-finished": true,
         "mockttp>express>qs": true,
         "mockttp>body-parser>raw-body": true,
@@ -1076,7 +1076,7 @@
       "packages": {
         "postcss-loader>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
-        "mocha>js-yaml": true,
+        "eslint>js-yaml": true,
         "depcheck>cosmiconfig>parse-json": true,
         "typescript": true
       }
@@ -1848,7 +1848,28 @@
         "@viem/anvil>http-proxy>requires-port": true
       }
     },
-    "jsdom>whatwg-encoding>iconv-lite": {
+    "mockttp>body-parser>iconv-lite": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "buffer.SlowBuffer.byteLength": true,
+        "buffer.SlowBuffer.prototype.toString": true,
+        "buffer.SlowBuffer.prototype.write": true,
+        "stream.Readable.prototype.collect": true,
+        "stream.Readable.prototype.setEncoding": true,
+        "stream.Transform.call": true,
+        "stream.Transform.prototype": true,
+        "string_decoder.StringDecoder.call": true,
+        "string_decoder.StringDecoder.prototype": true
+      },
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "jsdom>whatwg-encoding>iconv-lite>safer-buffer": true
+      }
+    },
+    "mockttp>body-parser>raw-body>iconv-lite": {
       "builtin": {
         "buffer.Buffer": true,
         "buffer.SlowBuffer.byteLength": true,
@@ -2480,7 +2501,7 @@
       "packages": {
         "mockttp>body-parser>bytes": true,
         "mockttp>express>http-errors": true,
-        "jsdom>whatwg-encoding>iconv-lite": true,
+        "mockttp>body-parser>raw-body>iconv-lite": true,
         "mockttp>body-parser>unpipe": true
       }
     },
