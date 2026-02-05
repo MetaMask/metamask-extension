@@ -211,13 +211,8 @@ export class PersistenceManager {
   #onSetFailed?: (errorType: StorageWriteErrorType) => void;
 
   /**
-   * Tracks if a set failure occurred before the callback was registered.
-   * This handles the race condition where failures happen during controller initialization.
-   */
-  #setFailedBeforeCallbackRegistered = false;
-
-  /**
    * Stores the error type from the first failure that occurred before the callback was registered.
+   * If not null, indicates a failure occurred before the callback was registered.
    */
   #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
@@ -237,10 +232,7 @@ export class PersistenceManager {
     this.#onSetFailed = callback;
 
     // If a failure occurred before this callback was registered, call it now
-    if (
-      this.#setFailedBeforeCallbackRegistered &&
-      this.#errorTypeBeforeCallbackRegistered
-    ) {
+    if (this.#errorTypeBeforeCallbackRegistered !== null) {
       callback(this.#errorTypeBeforeCallbackRegistered);
     }
   }
@@ -271,7 +263,6 @@ export class PersistenceManager {
       this.#onSetFailed(errorType);
     } else {
       // Callback not yet registered - track the failure for later
-      this.#setFailedBeforeCallbackRegistered = true;
       this.#errorTypeBeforeCallbackRegistered = errorType;
     }
   }
@@ -806,7 +797,6 @@ export class PersistenceManager {
 
         // Clear failure tracking state to prevent stale errors from being reported
         this.#onSetFailed = undefined;
-        this.#setFailedBeforeCallbackRegistered = false;
         this.#errorTypeBeforeCallbackRegistered = null;
       },
     );
