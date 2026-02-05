@@ -131,7 +131,9 @@ function createStreamManager(): PerpsStreamManager {
  *
  * @param selectedAddress - The currently selected account address from the UI
  */
-function createControllerAccess(selectedAddress: string): PerpsControllerAccess {
+function createControllerAccess(
+  selectedAddress: string,
+): PerpsControllerAccess {
   return {
     accounts: {
       getSelectedEvmAccount: () => {
@@ -189,7 +191,6 @@ function createControllerAccess(selectedAddress: string): PerpsControllerAccess 
  *
  * @param selectedAddress - The currently selected account address from the UI
  * @returns PerpsPlatformDependencies object ready for PerpsController
- *
  * @example
  * ```typescript
  * import { PerpsController } from '@metamask/perps-controller';

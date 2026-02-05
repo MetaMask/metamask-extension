@@ -41,7 +41,6 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   // Use account data or defaults
   const totalBalance = account?.totalBalance ?? '0';
   const unrealizedPnl = account?.unrealizedPnl ?? '0';
-  const availableBalance = account?.availableBalance ?? '0';
 
   // Account value = totalBalance + unrealizedPnl (includes open position PnL)
   const accountValue = parseFloat(totalBalance) + parseFloat(unrealizedPnl);

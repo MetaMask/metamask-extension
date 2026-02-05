@@ -25,7 +25,7 @@ export type UsePerpsLiveAccountReturn = {
  *
  * Uses the PerpsController directly for WebSocket subscriptions.
  *
- * @param options - Configuration options
+ * @param _options - Configuration options (unused, for API compatibility)
  * @returns Object containing account state and loading state
  * @example
  * ```tsx

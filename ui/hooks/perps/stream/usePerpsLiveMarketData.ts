@@ -8,6 +8,7 @@ import { usePerpsController } from '../../../providers/perps';
 export type UsePerpsLiveMarketDataOptions = {
   /**
    * Whether to auto-fetch on mount.
+   *
    * @default true
    */
   autoSubscribe?: boolean;
@@ -46,7 +47,7 @@ export type UsePerpsLiveMarketDataReturn = {
    * Manually refresh market data
    */
   refresh: () => void;
-}
+};
 
 /**
  * Hook for fetching market data with prices.

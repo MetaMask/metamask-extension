@@ -49,8 +49,7 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
   const returnOnEquity = account?.returnOnEquity ?? '0';
 
   // Account value = totalBalance + unrealizedPnl (includes open position PnL)
-  const accountValue =
-    parseFloat(totalBalance) + parseFloat(unrealizedPnl);
+  const accountValue = parseFloat(totalBalance) + parseFloat(unrealizedPnl);
 
   const pnlNum = parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;

@@ -55,9 +55,8 @@ export function usePerpsLivePrices(
 ): UsePerpsLivePricesReturn {
   const { symbols, throttleMs = 0 } = options;
   const controller = usePerpsController();
-  const [prices, setPrices] = useState<Record<string, PriceUpdate>>(
-    EMPTY_PRICES,
-  );
+  const [prices, setPrices] =
+    useState<Record<string, PriceUpdate>>(EMPTY_PRICES);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const hasReceivedFirstUpdate = useRef(false);
 

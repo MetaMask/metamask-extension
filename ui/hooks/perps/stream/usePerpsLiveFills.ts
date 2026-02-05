@@ -28,7 +28,7 @@ const EMPTY_FILLS: OrderFill[] = [];
  *
  * Uses the PerpsController directly for WebSocket subscriptions.
  *
- * @param options - Configuration options
+ * @param _options - Configuration options (unused, for API compatibility)
  * @returns Object containing fills array and loading state
  * @example
  * ```tsx

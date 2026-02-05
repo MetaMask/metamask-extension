@@ -108,7 +108,10 @@ export const PositionCard: React.FC<PositionCardProps> = ({
         gap={1}
       >
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {formatCurrencyWithMinThreshold(parseFloat(position.positionValue), 'USD')}
+          {formatCurrencyWithMinThreshold(
+            parseFloat(position.positionValue),
+            'USD',
+          )}
         </Text>
         <Text
           variant={TextVariant.BodySm}

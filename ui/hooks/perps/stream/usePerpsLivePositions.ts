@@ -28,7 +28,7 @@ const EMPTY_POSITIONS: Position[] = [];
  *
  * Uses the PerpsController directly for WebSocket subscriptions.
  *
- * @param options - Configuration options
+ * @param _options - Configuration options (unused, for API compatibility)
  * @returns Object containing positions array and loading state
  * @example
  * ```tsx

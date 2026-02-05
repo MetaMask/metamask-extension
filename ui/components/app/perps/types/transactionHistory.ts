@@ -38,9 +38,9 @@ export enum FillType {
 }
 
 /**
- * Unified transaction interface for all perps transaction types
+ * Unified transaction type for all perps transaction types
  */
-export interface PerpsTransaction {
+export type PerpsTransaction = {
   /** Unique identifier for the transaction */
   id: string;
   /** Transaction type */
@@ -144,7 +144,7 @@ export interface PerpsTransaction {
     /** Transaction type */
     type: 'deposit' | 'withdrawal';
   };
-}
+};
 
 /**
  * Filter type for transaction list
@@ -157,11 +157,11 @@ export type PerpsTransactionFilter =
   | 'all';
 
 /**
- * Interface for date-grouped transaction sections
+ * Type for date-grouped transaction sections
  */
-export interface TransactionSection {
+export type TransactionSection = {
   /** Section header (e.g., "Today", "Jul 26") */
   title: string;
   /** Transactions in this section */
   data: PerpsTransaction[];
-}
+};

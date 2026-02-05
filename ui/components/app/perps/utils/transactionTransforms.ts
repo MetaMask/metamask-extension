@@ -7,7 +7,7 @@
  * Adapted from mobile: app/components/UI/Perps/utils/transactionTransforms.ts
  */
 
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import type { Funding, Order, OrderFill, UserHistoryItem } from '../types';
 import {
   FillType,
@@ -286,11 +286,11 @@ export function transformFillsToTransactions(
     } else if (isFlipped) {
       action = 'Flipped';
       // Will be set based on calculation below
-    } else if (!direction) {
-      console.error('Unknown fill direction', fill);
+    } else if (direction) {
+      console.error('Unknown action', fill);
       return acc;
     } else {
-      console.error('Unknown action', fill);
+      console.error('Unknown fill direction', fill);
       return acc;
     }
 
@@ -414,7 +414,8 @@ export function transformFillsToTransactions(
 }
 
 /**
- * Transform abstract Order objects to PerpsTransaction format
+ * Transform abstract Order objects to PerpsTransaction format.
+ *
  * @param orders - Array of abstract Order objects
  * @returns Array of PerpsTransaction objects
  */
@@ -499,7 +500,8 @@ export function transformOrdersToTransactions(
 }
 
 /**
- * Transform abstract Funding objects to PerpsTransaction format
+ * Transform abstract Funding objects to PerpsTransaction format.
+ *
  * @param funding - Array of abstract Funding objects
  * @returns Array of PerpsTransaction objects sorted by timestamp (newest first)
  */
@@ -537,8 +539,9 @@ export function transformFundingToTransactions(
 }
 
 /**
- * Transform UserHistoryItem objects to PerpsTransaction format
- * Only shows completed deposits/withdrawals (txHash not displayed in UI)
+ * Transform UserHistoryItem objects to PerpsTransaction format.
+ * Only shows completed deposits/withdrawals (txHash not displayed in UI).
+ *
  * @param userHistory - Array of UserHistoryItem objects (deposits/withdrawals)
  * @returns Array of PerpsTransaction objects
  */
@@ -583,7 +586,7 @@ export function transformUserHistoryToTransactions(
 /**
  * Withdrawal request type for pending withdrawals
  */
-export interface WithdrawalRequest {
+export type WithdrawalRequest = {
   id: string;
   timestamp: number;
   amount: string;
@@ -592,12 +595,12 @@ export interface WithdrawalRequest {
   status: 'pending' | 'bridging' | 'completed' | 'failed';
   destination?: string;
   withdrawalId?: string;
-}
+};
 
 /**
  * Deposit request type for pending deposits
  */
-export interface DepositRequest {
+export type DepositRequest = {
   id: string;
   timestamp: number;
   amount: string;
@@ -606,11 +609,12 @@ export interface DepositRequest {
   status: 'pending' | 'bridging' | 'completed' | 'failed';
   source?: string;
   depositId?: string;
-}
+};
 
 /**
- * Transform WithdrawalRequest objects to PerpsTransaction format
- * Only shows completed withdrawals (txHash not displayed in UI)
+ * Transform WithdrawalRequest objects to PerpsTransaction format.
+ * Only shows completed withdrawals (txHash not displayed in UI).
+ *
  * @param withdrawalRequests - Array of WithdrawalRequest objects
  * @returns Array of PerpsTransaction objects
  */
@@ -652,8 +656,9 @@ export function transformWithdrawalRequestsToTransactions(
 }
 
 /**
- * Transform DepositRequest objects to PerpsTransaction format
- * Only shows completed deposits (txHash not displayed in UI)
+ * Transform DepositRequest objects to PerpsTransaction format.
+ * Only shows completed deposits (txHash not displayed in UI).
+ *
  * @param depositRequests - Array of DepositRequest objects
  * @returns Array of PerpsTransaction objects
  */
