@@ -177,7 +177,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
     expect(mockUpdateTransaction).not.toHaveBeenCalled();
   });
 
-  it('updateTransactionToTenPercentIncreasedGasFee returns early when gasFeeEstimates is undefined and maxPriorityFeePerGas is zero', async () => {
+  it('updateTransactionToTenPercentIncreasedGasFee uses maxFeePerGas as fallback when gasFeeEstimates is undefined and maxPriorityFeePerGas is zero', async () => {
     const mockUpdateGasFees = jest
       .spyOn(Actions, 'updateTransactionGasFees')
       .mockImplementation(() => ({ type: '' }));
@@ -190,7 +190,18 @@ describe('useMaxPriorityFeePerGasInput', () => {
       },
     });
     await result.current.updateTransactionToTenPercentIncreasedGasFee();
-    expect(mockUpdateGasFees).not.toHaveBeenCalled();
+    expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
+
+    expect(mockUpdateGasFees).toHaveBeenCalledWith(undefined, {
+      estimateSuggested: 'tenPercentIncreased',
+      estimateUsed: 'custom',
+      gas: '5208',
+      gasLimit: '5208',
+      maxFeePerGas: '0x582c',
+      maxPriorityFeePerGas: '0x582c',
+      userEditedGasLimit: undefined,
+      userFeeLevel: 'custom',
+    });
   });
 
   it('updateTransactionToTenPercentIncreasedGasFee still works when gasFeeEstimates is undefined but maxPriorityFeePerGas is non-zero', async () => {
