@@ -225,23 +225,7 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "AuthenticationController": {
-      "isSignedIn": true,
-      "srpSessionData": {
-        "01KGPGYE2JJGMXDJPEVXKPJ1JG": {
-          "profile": {
-            "identifierId": "MOCK_SRP_IDENTIFIER_1",
-            "metaMetricsId": "0xdcdfa503c38c1c26ed172c5492794aff1bda22e703fb8271c7ff0587762a5304",
-            "profileId": "MOCK_SRP_IDENTIFIER_1"
-          },
-          "token": {
-            "accessToken": "MOCK_SRP_IDENTIFIER_1",
-            "expiresIn": 3600,
-            "obtainedAt": 1770282503380
-          }
-        }
-      }
-    },
+    "AuthenticationController": {},
     "BridgeStatusController": {
       "txHistory": {}
     },
