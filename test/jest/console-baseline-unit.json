@@ -115,6 +115,9 @@
     "app/scripts/migrations/176.test.ts": {
       "MetaMask: Migration skipped warnings": 3
     },
+    "app/scripts/migrations/184.test.ts": {
+      "warn: Migration 184: NetworkEnablementController not found,": 2
+    },
     "app/scripts/migrations/185.test.ts": {
       "warn: Migration #185: Could not access": 2
     },

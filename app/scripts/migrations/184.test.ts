@@ -39,7 +39,7 @@ describe(`migration #${VERSION}`, () => {
     expect(newStorage.meta).toStrictEqual({ version: VERSION });
   });
 
-  const invalidStates = [
+  const invalidNetworkControllerStates = [
     {
       state: {
         meta: { version: VERSION },
@@ -76,18 +76,71 @@ describe(`migration #${VERSION}`, () => {
       },
       scenario: 'invalid networkConfigurationsByChainId state',
     },
-    {
-      state: {
-        meta: { version: VERSION },
-        data: {
-          NetworkController: {
-            networkConfigurationsByChainId: {},
-            selectedNetworkClientId: 'megaeth-testnet',
-          },
-        },
-      },
-      scenario: 'missing NetworkEnablementController',
+  ];
+
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
+  it.each(invalidNetworkControllerStates)(
+    'should capture exception if $scenario',
+    async ({ state }: { errorMessage: string; state: VersionedData }) => {
+      const orgState = cloneDeep(state);
+
+      const migratedState = await migrate(state);
+
+      // State should be unchanged
+      expect(migratedState).toStrictEqual(orgState);
+      expect(mockedCaptureException).toHaveBeenCalledWith(expect.any(Error));
     },
+  );
+
+  it('should handle missing NetworkEnablementController gracefully and still migrate NetworkController', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MEGAETH_TESTNET_V1_CHAIN_ID]: {
+              chainId: MEGAETH_TESTNET_V1_CHAIN_ID,
+              name: 'Mega Testnet',
+              nativeCurrency: 'MegaETH',
+              blockExplorerUrls: ['https://explorer.com'],
+              defaultRpcEndpointIndex: 0,
+              defaultBlockExplorerUrlIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: 'megaeth-testnet',
+                  type: RpcEndpointType.Custom,
+                  url: 'https://rpc.com',
+                },
+              ],
+            },
+          },
+          selectedNetworkClientId: 'megaeth-testnet',
+        },
+        // NetworkEnablementController is missing
+      },
+    };
+
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
+          },
+          selectedNetworkClientId: 'megaeth-testnet',
+        },
+        // NetworkEnablementController still missing (not created by migration)
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage).toStrictEqual(expectedStorage);
+    // Should not capture exception for missing NetworkEnablementController
+    expect(mockedCaptureException).not.toHaveBeenCalled();
+  });
+
+  const invalidNetworkEnablementControllerStates = [
     {
       state: {
         meta: { version: VERSION },
@@ -151,16 +204,29 @@ describe(`migration #${VERSION}`, () => {
   ];
 
   // @ts-expect-error 'each' function is not recognized by TypeScript types
-  it.each(invalidStates)(
-    'should capture exception if $scenario',
+  it.each(invalidNetworkEnablementControllerStates)(
+    'should log warning and skip NetworkEnablementController migration if $scenario',
     async ({ state }: { errorMessage: string; state: VersionedData }) => {
-      const orgState = cloneDeep(state);
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const oldStorage = cloneDeep(state);
 
-      const migratedState = await migrate(state);
+      const migratedState = await migrate(oldStorage);
 
-      // State should be unchanged
-      expect(migratedState).toStrictEqual(orgState);
-      expect(mockedCaptureException).toHaveBeenCalledWith(expect.any(Error));
+      // Version should be updated
+      expect(migratedState.meta.version).toBe(VERSION);
+      // NetworkController migration should still happen (adds MegaETH Testnet v2)
+      expect(
+        migratedState.data.NetworkController.networkConfigurationsByChainId[
+          MEGAETH_TESTNET_V2_CONFIG.chainId
+        ],
+      ).toStrictEqual(MEGAETH_TESTNET_V2_CONFIG);
+      // Should log warning but not capture exception
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('NetworkEnablementController'),
+      );
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+
+      consoleWarnSpy.mockRestore();
     },
   );
 
