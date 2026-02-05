@@ -8275,6 +8275,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/remote-feature-flag-controller@npm:@metamask-previews/remote-feature-flag-controller@4.0.0-preview-6dfa4aeba":
+  version: 4.0.0-preview-6dfa4aeba
+  resolution: "@metamask-previews/remote-feature-flag-controller@npm:4.0.0-preview-6dfa4aeba"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.18.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.9.0"
+    uuid: "npm:^8.3.2"
+  checksum: 10/24d7ad0530f3bb0fd87ced7e4e93e33a622c0d13844920ceed5c66b9389883d261cadaeb171cc54ca30d80baacc2460b7e5af6a16611d728582baf7f85911345
+  languageName: node
+  linkType: hard
+
 "@metamask/remote-feature-flag-controller@npm:^2.0.1":
   version: 2.0.1
   resolution: "@metamask/remote-feature-flag-controller@npm:2.0.1"
@@ -8285,19 +8298,6 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
     uuid: "npm:^8.3.2"
   checksum: 10/4815f68b368331a6876b339b6204d965725938e459036f486af5b4403604285a864617649f8877d85e9461ddac3cded921b0cc55004cd86ef03224b3fd26a74d
-  languageName: node
-  linkType: hard
-
-"@metamask/remote-feature-flag-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:3.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.16.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.8.1"
-    uuid: "npm:^8.3.2"
-  checksum: 10/50cb1f01ba96de56a79313477f84791fdf40ec1551ab2a7d609ae5097967df4798d3c12a9bfc9b580a3555cae69bf516e4f77aaddc0412a1ee00630b5af50b45
   languageName: node
   linkType: hard
 
@@ -33873,7 +33873,7 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^27.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^3.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:@metamask-previews/remote-feature-flag-controller@4.0.0-preview-6dfa4aeba"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"

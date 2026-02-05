@@ -101,6 +101,10 @@ describe('getConfigForRemoteFeatureFlagRequest', () => {
 });
 
 describe('RemoteFeatureFlagControllerInit', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('initializes the controller', () => {
     const { controller } =
       RemoteFeatureFlagControllerInit(getInitRequestMock());
@@ -119,6 +123,25 @@ describe('RemoteFeatureFlagControllerInit', () => {
       getMetaMetricsId: expect.any(Function),
       clientConfigApiService: expect.any(ClientConfigApiService),
       clientVersion: expect.any(String),
+      prevClientVersion: undefined,
     });
+  });
+
+  it('passes prevClientVersion from persisted state', () => {
+    const request = getInitRequestMock();
+    request.persistedState = {
+      AppMetadataController: {
+        currentAppVersion: '10.0.0',
+      },
+    };
+
+    RemoteFeatureFlagControllerInit(request);
+
+    const controllerMock = jest.mocked(RemoteFeatureFlagController);
+    expect(controllerMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        prevClientVersion: '10.0.0',
+      }),
+    );
   });
 });
