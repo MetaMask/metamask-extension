@@ -169,7 +169,7 @@ export function useTransactionConfirm() {
         // Clear pendingHardwareSigning and close the popup directly.
         // The approval is already gone (processed by approveHardwareTransaction),
         // so rejectPendingApproval would do nothing useful.
-        dispatch(setPendingHardwareSigning(false));
+        dispatch(setPendingHardwareWalletSigning(false));
         dispatch(closeCurrentNotificationWindow());
         return;
       }

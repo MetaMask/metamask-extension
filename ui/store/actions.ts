@@ -2198,7 +2198,7 @@ async function approveHardwareTransaction(
   loadingIndicatorMessage: string,
   keyringType: string,
 ): Promise<void> {
-  dispatch(setPendingHardwareSigning(true));
+  dispatch(setPendingHardwareWalletSigning(true));
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
   const walletType =
@@ -2217,7 +2217,7 @@ async function approveHardwareTransaction(
     await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(txMeta.id));
     dispatch(updateCustomNonce(''));
-    dispatch(setPendingHardwareSigning(false));
+    dispatch(setPendingHardwareWalletSigning(false));
     dispatch(closeCurrentNotificationWindow());
   } catch (error) {
     await forceUpdateMetamaskState(dispatch);
@@ -5850,7 +5850,7 @@ async function resolveHardwareApproval(
   options: { waitForResult?: boolean } | undefined,
   keyringType: string,
 ): Promise<void> {
-  dispatch(setPendingHardwareSigning(true));
+  dispatch(setPendingHardwareWalletSigning(true));
   dispatch(showLoadingIndication());
 
   const walletType =
@@ -5869,7 +5869,7 @@ async function resolveHardwareApproval(
 
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
 
-    dispatch(setPendingHardwareSigning(false));
+    dispatch(setPendingHardwareWalletSigning(false));
 
     if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());
@@ -5886,7 +5886,7 @@ async function resolveHardwareApproval(
     // Only clear pendingHardwareSigning on success.
     // On error, keep it true to prevent auto-navigation/close of the popup.
     // The error modal will clear it when dismissed.
-    dispatch(setPendingHardwareSigning(false));
+    dispatch(setPendingHardwareWalletSigning(false));
   }
 }
 
