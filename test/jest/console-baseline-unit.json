@@ -3291,12 +3291,6 @@
     "ui/pages/swaps/import-token/import-token.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/swaps/index.test.js": {
-      "Reselect: Identity function warnings": 2,
-      "Reselect: Input stability warnings": 1,
-      "warn: No routes matched location \"/\"": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/swaps/list-with-search/list-with-search.test.js": {
       "React: PropTypes validation failures": 2,
       "error: Warning: React.createElement: type is invalid": 1,
@@ -3314,25 +3308,6 @@
     },
     "ui/pages/swaps/notification-page/notification-page.test.js": {
       "React: PropTypes validation failures": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/swaps/prepare-swap-page/prepare-swap-page.test.js": {
-      "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/swaps/prepare-swap-page/review-quote.test.js": {
-      "MetaMask: Background connection not initialized": 52,
-      "React: Act usage warnings (incorrect await)": 3,
-      "React: Act warnings (component updates not wrapped)": 9,
-      "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/swaps/prepare-swap-page/slippage-notification-modal.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/swaps/prepare-swap-page/view-quote-price-difference.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/swaps/searchable-item-list/item-list/item-list.component.test.js": {
