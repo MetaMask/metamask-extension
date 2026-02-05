@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, Navigate } from 'react-router-dom';
 import {
@@ -140,7 +140,13 @@ export const MarketListView: React.FC = () => {
       });
     }
     return markets;
-  }, [allMarkets, selectedFilter, stockSubFilter, searchQuery, currentSortOption]);
+  }, [
+    allMarkets,
+    selectedFilter,
+    stockSubFilter,
+    searchQuery,
+    currentSortOption,
+  ]);
 
   // Handlers
   const handleBack = useCallback(() => {

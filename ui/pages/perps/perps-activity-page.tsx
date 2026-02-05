@@ -118,7 +118,7 @@ const PerpsActivityPage: React.FC = () => {
         {/* Transaction List */}
         <Box flexDirection={BoxFlexDirection.Column}>
           {/* Loading State */}
-          {isLoading && transactions.length === 0 ? (
+          {isLoading && transactions.length === 0 && (
             <Box
               paddingLeft={4}
               paddingRight={4}
@@ -134,8 +134,10 @@ const PerpsActivityPage: React.FC = () => {
                 {t('loading')}
               </Text>
             </Box>
-          ) : error ? (
-            /* Error State */
+          )}
+
+          {/* Error State */}
+          {!isLoading && error && (
             <Box
               paddingLeft={4}
               paddingRight={4}
@@ -148,8 +150,10 @@ const PerpsActivityPage: React.FC = () => {
                 {error}
               </Text>
             </Box>
-          ) : groupedTransactions.length === 0 ? (
-            /* Empty State */
+          )}
+
+          {/* Empty State */}
+          {!isLoading && !error && groupedTransactions.length === 0 && (
             <Box
               paddingLeft={4}
               paddingRight={4}
@@ -165,8 +169,11 @@ const PerpsActivityPage: React.FC = () => {
                 {t('perpsNoTransactions')}
               </Text>
             </Box>
-          ) : (
-            /* Transaction Groups */
+          )}
+
+          {/* Transaction Groups */}
+          {!isLoading &&
+            !error &&
             groupedTransactions.map((group) => (
               <Box
                 key={group.date}
@@ -199,8 +206,7 @@ const PerpsActivityPage: React.FC = () => {
                   ))}
                 </Box>
               </Box>
-            ))
-          )}
+            ))}
         </Box>
       </Content>
     </Page>

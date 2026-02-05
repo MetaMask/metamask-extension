@@ -344,9 +344,7 @@ const MarketListView = mmLazy(
 );
 const PerpsActivityPage = mmLazy(
   (() =>
-    import(
-      '../perps/perps-activity-page.tsx'
-    )) as unknown as DynamicImportType,
+    import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
 );
 
 // Perps pages wrapped with PerpsControllerProvider

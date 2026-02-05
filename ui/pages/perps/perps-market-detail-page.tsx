@@ -146,7 +146,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     if (!market) {
       return 0;
     }
-    return parseFloat(market.price.replace(/[$,]/g, ''));
+    return parseFloat(market.price.replace(/[$,]/gu, ''));
   }, [market]);
 
   // Parse max leverage from market data (remove 'x')
