@@ -1469,7 +1469,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-
   postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.state;
 
@@ -4537,7 +4536,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
-        id || this.keyringController.state.keyrings[0]?.metadata.id;
+        id ?? this.keyringController.state.keyrings[0]?.metadata.id;
 
       if (!keyringIdToDiscover) {
         throw new Error('No keyring id to discover accounts for');
@@ -4585,10 +4584,7 @@ export default class MetamaskController extends EventEmitter {
       shouldSelectAccount: true,
     },
   ) {
-    const {
-      shouldCreateSocialBackup,
-      shouldSelectAccount,
-    } = options;
+    const { shouldCreateSocialBackup, shouldSelectAccount } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
