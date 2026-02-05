@@ -35,6 +35,7 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../activity-v2/activity-list';
 import { usePrefetchTransactions } from '../activity-v2/hooks';
+import { TestTab } from '../test-tab/TestTab';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
@@ -223,6 +224,10 @@ export const AccountOverviewTabs = ({
             </ErrorBoundary>
           </Tab>
         )}
+
+        <Tab name="Test" tabKey="test">
+          <TestTab />
+        </Tab>
       </Tabs>
     </>
   );
