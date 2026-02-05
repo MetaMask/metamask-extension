@@ -1,3 +1,10 @@
+/**
+ * Send ERC20 - Contract Address Warning Tests
+ *
+ * Tests that users see a warning when attempting to send
+ * ERC20 tokens to the token's own contract address.
+ */
+
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilder from '../../fixtures/fixture-builder';
@@ -7,10 +14,10 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Send ERC20 token to contract address', function () {
+describe('Send ERC20 - Contract Warning', function () {
   const smartContract = SMART_CONTRACTS.HST;
 
-  it('should display the token contract warning to the user', async function () {
+  it('displays warning when sending to token contract address', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },

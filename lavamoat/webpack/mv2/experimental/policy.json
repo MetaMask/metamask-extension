@@ -1960,7 +1960,6 @@
       "globals": {
         "Buffer.from": true,
         "Event": true,
-        "Headers": true,
         "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,
@@ -2337,7 +2336,6 @@
         "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/core-backend": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
