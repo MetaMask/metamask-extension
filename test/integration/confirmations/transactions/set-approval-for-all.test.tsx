@@ -12,7 +12,6 @@ import { getUnapprovedSetApprovalForAllTransaction } from './transactionDataHelp
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -99,6 +98,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
+  addKnownMethodData: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -109,12 +109,6 @@ const setupSubmitRequestToBackgroundMocks = (
       ...advancedDetailsMockedRequests,
       ...mockRequests,
     }),
-  );
-
-  mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    createMockImplementation({ addKnownMethodData: {} }),
   );
 };
 

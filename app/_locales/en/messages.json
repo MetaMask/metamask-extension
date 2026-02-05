@@ -572,6 +572,9 @@
   "alertReasonGasFeeLow": {
     "message": "Slow speed"
   },
+  "alertReasonGasSponsorshipUnavailable": {
+    "message": "Gas sponsorship unavailable"
+  },
   "alertReasonGasTooLow": {
     "message": "Low gas limit"
   },
@@ -624,7 +627,7 @@
     "message": "All networks"
   },
   "allPermissions": {
-    "message": "All permissions"
+    "message": "Dapp connections"
   },
   "allPopularNetworks": {
     "message": "All popular networks"
@@ -1930,6 +1933,9 @@
   "customizeYourNotificationsText": {
     "message": "Turn on the types of notifications you want to receive:"
   },
+  "dappConnections": {
+    "message": "Dapp Connections"
+  },
   "dappSuggested": {
     "message": "Site suggested"
   },
@@ -2894,6 +2900,10 @@
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "Gas sponsorship isn’t available for this transaction. You’ll need to keep at least $1 $2 in your account.",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
   "gasTimingHoursShort": {
     "message": "$1 hrs",
     "description": "$1 represents a number of hours"
@@ -3491,6 +3501,9 @@
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
+  },
+  "keycardShell": {
+    "message": "Keycard Shell"
   },
   "keyringAccountName": {
     "message": "Account name"
@@ -4746,9 +4759,6 @@
     "message": "OneKey",
     "description": "Hardware device name"
   },
-  "onekey": {
-    "message": "OneKey"
-  },
   "only": {
     "message": "only"
   },
@@ -5215,26 +5225,53 @@
     "message": "Auto close"
   },
   "perpsAvailable": {
-    "message": "$1 available",
-    "description": "$1 is the available balance amount"
+    "message": "available",
+    "description": "is the available balance amount"
   },
   "perpsBuy": {
     "message": "buy"
   },
+  "perpsClose": {
+    "message": "Close"
+  },
   "perpsCloseAll": {
     "message": "Close all"
+  },
+  "perpsCloseAmount": {
+    "message": "Close Amount"
+  },
+  "perpsCloseLong": {
+    "message": "Close Long"
+  },
+  "perpsCloseShort": {
+    "message": "Close Short"
   },
   "perpsClosedShort": {
     "message": "Closed short"
   },
+  "perpsConfirmCloseLong": {
+    "message": "Close Long"
+  },
+  "perpsConfirmCloseShort": {
+    "message": "Close Short"
+  },
   "perpsContactSupport": {
     "message": "Contact support"
+  },
+  "perpsDateToday": {
+    "message": "Today"
+  },
+  "perpsDateYesterday": {
+    "message": "Yesterday"
   },
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },
   "perpsDepositTitle": {
     "message": "Funded perps account"
+  },
+  "perpsDeposits": {
+    "message": "Deposits"
   },
   "perpsDetails": {
     "message": "Details"
@@ -5257,6 +5294,9 @@
   "perpsExploreStocksAndCommodities": {
     "message": "Explore stocks and commodities"
   },
+  "perpsFees": {
+    "message": "Fees"
+  },
   "perpsFilterAll": {
     "message": "All"
   },
@@ -5271,6 +5311,9 @@
   },
   "perpsFilterStocksOnly": {
     "message": "Stocks"
+  },
+  "perpsFunding": {
+    "message": "Funding"
   },
   "perpsFundingPayments": {
     "message": "Funding payments"
@@ -5287,11 +5330,17 @@
   "perpsLearnMore": {
     "message": "Learn more"
   },
+  "perpsLeverage": {
+    "message": "Leverage"
+  },
   "perpsLimit": {
     "message": "Limit"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
+  },
+  "perpsLiquidationPriceEst": {
+    "message": "Liquidation Price Est."
   },
   "perpsLong": {
     "message": "Long"
@@ -5312,20 +5361,40 @@
   "perpsMarkets": {
     "message": "Markets"
   },
+  "perpsModify": {
+    "message": "Modify"
+  },
+  "perpsModifyPosition": {
+    "message": "Modify Position"
+  },
   "perpsMore": {
     "message": "More"
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"
   },
+  "perpsNoTransactions": {
+    "message": "No transactions yet"
+  },
   "perpsOpenInterest": {
     "message": "Open Interest"
+  },
+  "perpsOpenLong": {
+    "message": "Open Long $1",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Open Orders"
   },
+  "perpsOpenShort": {
+    "message": "Open Short $1",
+    "description": "$1 is the asset symbol (e.g., BTC, ETH)"
+  },
   "perpsOpenedLong": {
     "message": "Opened long"
+  },
+  "perpsOrderAmount": {
+    "message": "Order Amount"
   },
   "perpsOrders": {
     "message": "Orders"
@@ -5335,6 +5404,9 @@
   },
   "perpsPosition": {
     "message": "Position"
+  },
+  "perpsPositionSize": {
+    "message": "Position Size"
   },
   "perpsPositions": {
     "message": "Positions"
@@ -5347,6 +5419,9 @@
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
+  },
+  "perpsSeeAll": {
+    "message": "See All"
   },
   "perpsSell": {
     "message": "sell"
@@ -5381,11 +5456,35 @@
   "perpsStats": {
     "message": "Stats"
   },
+  "perpsStatusCanceled": {
+    "message": "Canceled"
+  },
+  "perpsStatusCompleted": {
+    "message": "Completed"
+  },
+  "perpsStatusFilled": {
+    "message": "Filled"
+  },
+  "perpsStatusOpen": {
+    "message": "Open"
+  },
+  "perpsStatusQueued": {
+    "message": "Queued"
+  },
+  "perpsStatusRejected": {
+    "message": "Rejected"
+  },
+  "perpsStatusTriggered": {
+    "message": "Triggered"
+  },
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
   "perpsTradePerps": {
     "message": "Trade perps"
+  },
+  "perpsTrades": {
+    "message": "Trades"
   },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"

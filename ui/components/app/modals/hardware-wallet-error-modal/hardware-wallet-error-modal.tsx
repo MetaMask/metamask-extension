@@ -57,7 +57,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
-    const { error, onClose } = { ...modalProps, ...props };
+    const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
 
     const { deviceId, walletType: selectedAccountWalletType } =
       useHardwareWalletConfig();
@@ -65,9 +65,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
     // If no error, don't render anything
     if (!error) {
-      console.log(
-        '[HardwareWalletErrorModal] No error provided, closing modal',
-      );
       onClose?.();
       return null;
     }
@@ -82,24 +79,11 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         .data?.metadata;
     const errorWalletType = errorMetadata?.walletType;
 
-    // Debug logging to trace walletType extraction
-    console.log('[HardwareWalletErrorModal] Extracting walletType:', {
-      errorType: typeof error,
-      errorName: (error as { name?: string })?.name,
-      errorCode: (error as { code?: number })?.code,
-      hasMetadata: !!(error as { metadata?: unknown })?.metadata,
-      hasDataMetadata: !!(error as { data?: { metadata?: unknown } })?.data
-        ?.metadata,
-      errorWalletType,
-      selectedAccountWalletType,
-      errorMetadataKeys: errorMetadata ? Object.keys(errorMetadata) : null,
-    });
-
     // Use errorWalletType, then selectedAccountWalletType, then default to Ledger
     // as a fallback since most hardware wallet users are Ledger users.
     // This ensures the modal always shows rather than silently closing.
     const displayWalletType =
-      errorWalletType || selectedAccountWalletType || HardwareWalletType.Ledger;
+      errorWalletType ?? selectedAccountWalletType ?? HardwareWalletType.Ledger;
 
     const errorContent = buildErrorContent(
       error,
@@ -124,18 +108,36 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     );
 
     const handleRetry = async () => {
+      onRetry?.();
       setIsLoading(true);
-      const result = await ensureDeviceReady(deviceId ?? '');
-      if (result) {
-        setRecovered(true);
+      try {
+        const result = await ensureDeviceReady(deviceId ?? '');
+        if (result) {
+          setRecovered(true);
+        }
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     const handleClose = () => {
+      onCancel?.();
       clearError();
       hideModal();
     };
+
+    const retryButtonText =
+      error.code === ErrorCode.DeviceDisconnected
+        ? t('hardwareWalletErrorContinueButton')
+        : t('hardwareWalletErrorReconnectButton');
+    const retryButtonContent = isLoading ? (
+      <Icon
+        name={IconName.Loading}
+        style={{ animation: 'spin 1.2s linear infinite' }}
+      />
+    ) : (
+      retryButtonText
+    );
 
     if (recovered) {
       return (
@@ -207,7 +209,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
               alignItems={AlignItems.center}
               gap={4}
             >
-              {errorContent.icon && errorContent.icon && (
+              {errorContent.icon && (
                 <Text
                   variant={TextVariant.headingMd}
                   textAlign={TextAlign.Center}
@@ -281,16 +283,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   block
                   onClick={handleRetry}
                 >
-                  {isLoading ? (
-                    <Icon
-                      name={IconName.Loading}
-                      style={{ animation: 'spin 1.2s linear infinite' }}
-                    />
-                  ) : error.code === ErrorCode.DeviceDisconnected ? (
-                    t('hardwareWalletErrorContinueButton')
-                  ) : (
-                    t('hardwareWalletErrorReconnectButton')
-                  )}
+                  {retryButtonContent}
                 </Button>
               ) : (
                 <Button

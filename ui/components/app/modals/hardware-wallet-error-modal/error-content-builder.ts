@@ -2,6 +2,7 @@ import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { IconName } from '../../../component-library';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { IconColor } from '../../../../helpers/constants/design-system';
+import { getHardwareWalletErrorCode } from '../../../../contexts/hardware-wallets';
 
 /**
  * Error content structure
@@ -38,29 +39,6 @@ export type ErrorContent =
   | ErrorContentWithDescription;
 
 /**
- * Extract error code from a hardware wallet error.
- * Handles both direct error.code and RPC error format (error.data.code).
- *
- * @param error - The error object
- * @returns The error code or undefined
- */
-function getErrorCode(error: unknown): ErrorCode | undefined {
-  // Direct code property (HardwareWalletError instances and duck-typed errors)
-  const directCode = (error as { code?: number })?.code;
-  if (typeof directCode === 'number') {
-    return directCode as ErrorCode;
-  }
-
-  // RPC error format (from rpcErrors.internal())
-  const rpcCode = (error as { data?: { code?: number } })?.data?.code;
-  if (typeof rpcCode === 'number') {
-    return rpcCode as ErrorCode;
-  }
-
-  return undefined;
-}
-
-/**
  * Build error content based on error code
  *
  * @param error - The hardware wallet error object
@@ -73,7 +51,7 @@ export function buildErrorContent(
   walletType: HardwareWalletType,
   t: (key: string, substitutions?: string[]) => string,
 ): ErrorContent {
-  const errorCode = getErrorCode(error);
+  const errorCode = getHardwareWalletErrorCode(error);
 
   switch (errorCode) {
     // Locked device errors
