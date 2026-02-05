@@ -20,10 +20,7 @@ import {
 } from '@metamask/messenger';
 import { merge } from 'lodash';
 import { ThemeType } from '../../../shared/constants/preferences';
-import {
-  ENVIRONMENT_TYPE_BACKGROUND,
-  PLATFORM_CHROME,
-} from '../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -1419,10 +1416,6 @@ describe('MetaMetricsController', function () {
   });
 
   describe('_buildUserTraitsObject', function () {
-    beforeEach(() => {
-      jest.spyOn(Utils, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
-    });
-
     it('should return full user traits object on first call', async function () {
       const MOCK_ALL_TOKENS: TokensControllerState['allTokens'] = {
         [toHex(1)]: {
