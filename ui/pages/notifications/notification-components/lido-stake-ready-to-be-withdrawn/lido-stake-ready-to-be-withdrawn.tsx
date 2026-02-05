@@ -18,7 +18,7 @@ import {
   createTextItems,
   formatAmount,
   formatIsoDateString,
-  getNetworkDetailsByChainId,
+  getNativeCurrencyLogoByChainId,
 } from '../../../../helpers/utils/notification.util';
 import {
   TextVariant,
@@ -115,9 +115,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
           />
         ),
         Asset: ({ notification }) => {
-          const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            notification.payload.chain_id,
-          );
+          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(notification.payload.chain_id);
           return (
             <NotificationDetailAsset
               icon={{
@@ -141,9 +139,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
           );
         },
         AssetReceived: ({ notification }) => {
-          const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            notification.payload.chain_id,
-          );
+          const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(notification.payload.chain_id);
           return (
             <NotificationDetailAsset
               icon={{
