@@ -6,6 +6,7 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_FULLSCREEN,
 } from '../../../../../shared/constants/app';
+import { ThemeType } from '../../../../../shared/constants/preferences';
 import * as riveWasmContext from '../../../../contexts/rive-wasm';
 import * as useThemeHook from '../../../../hooks/useTheme';
 import PerpsTutorialAnimation from './PerpsTutorialAnimation';
@@ -18,7 +19,7 @@ jest.mock('@rive-app/react-canvas', () => ({
   })),
   useRiveFile: jest.fn(() => ({
     riveFile: { name: 'mock-rive-file' },
-    status: 'loaded',
+    status: 'success',
   })),
   Layout: jest.fn(),
   Fit: {
@@ -38,11 +39,16 @@ jest.mock('@rive-app/react-canvas', () => ({
 jest.mock('../../../../contexts/rive-wasm', () => ({
   useRiveWasmContext: jest.fn(() => ({
     isWasmReady: true,
-    error: null,
+    loading: false,
+    error: undefined,
+    urlBufferMap: {},
+    setUrlBufferCache: jest.fn(),
+    animationCompleted: {},
+    setIsAnimationCompleted: jest.fn(),
   })),
   useRiveWasmFile: jest.fn(() => ({
     buffer: new ArrayBuffer(8),
-    error: null,
+    error: undefined,
     loading: false,
   })),
 }));
@@ -70,20 +76,25 @@ describe('PerpsTutorialAnimation', () => {
     // Reset to default mocks
     mockedRiveWasmContext.useRiveWasmContext.mockReturnValue({
       isWasmReady: true,
-      error: null,
+      loading: false,
+      error: undefined,
+      urlBufferMap: {},
+      setUrlBufferCache: jest.fn(),
+      animationCompleted: {},
+      setIsAnimationCompleted: jest.fn(),
     });
     mockedRiveWasmContext.useRiveWasmFile.mockReturnValue({
       buffer: new ArrayBuffer(8),
-      error: null,
+      error: undefined,
       loading: false,
     });
     mockedRiveReactCanvas.useRiveFile.mockReturnValue({
       riveFile: {
         name: 'mock-rive-file',
       } as unknown as riveReactCanvas.RiveFile,
-      status: 'loaded',
+      status: 'success',
     });
-    mockedUseTheme.useTheme.mockReturnValue('light');
+    mockedUseTheme.useTheme.mockReturnValue(ThemeType.light);
   });
 
   describe('rendering', () => {
@@ -116,7 +127,12 @@ describe('PerpsTutorialAnimation', () => {
     it('renders loading placeholder when WASM is not ready', () => {
       mockedRiveWasmContext.useRiveWasmContext.mockReturnValue({
         isWasmReady: false,
-        error: null,
+        loading: true,
+        error: undefined,
+        urlBufferMap: {},
+        setUrlBufferCache: jest.fn(),
+        animationCompleted: {},
+        setIsAnimationCompleted: jest.fn(),
       });
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
@@ -128,8 +144,8 @@ describe('PerpsTutorialAnimation', () => {
 
     it('renders loading placeholder when buffer is loading', () => {
       mockedRiveWasmContext.useRiveWasmFile.mockReturnValue({
-        buffer: null,
-        error: null,
+        buffer: undefined,
+        error: undefined,
         loading: true,
       });
 
@@ -143,7 +159,7 @@ describe('PerpsTutorialAnimation', () => {
     it('renders loading placeholder when riveFile status is loading', () => {
       mockedRiveReactCanvas.useRiveFile.mockReturnValue({
         riveFile: null,
-        status: 'loading',
+        status: 'loading' as const,
       });
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
@@ -194,7 +210,7 @@ describe('PerpsTutorialAnimation', () => {
 
   describe('theme support', () => {
     it('uses light theme animation file when theme is light', () => {
-      mockedUseTheme.useTheme.mockReturnValue('light');
+      mockedUseTheme.useTheme.mockReturnValue(ThemeType.light);
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
@@ -204,7 +220,7 @@ describe('PerpsTutorialAnimation', () => {
     });
 
     it('uses dark theme animation file when theme is dark', () => {
-      mockedUseTheme.useTheme.mockReturnValue('dark');
+      mockedUseTheme.useTheme.mockReturnValue(ThemeType.dark);
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
