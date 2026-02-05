@@ -3,6 +3,7 @@ import { devices } from '@playwright/test';
 import { isHeadless } from './test/helpers/env';
 
 const logOutputFolder = './public/playwright/playwright-reports';
+const browserFolder = process.env.PW_BROWSER || 'chrome';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -29,24 +30,42 @@ const config: PlaywrightTestConfig = {
       'html',
       {
         open: 'on-failure',
-        outputFolder: `${logOutputFolder}/html/`,
+        outputFolder: `${logOutputFolder}/html/${browserFolder}/`,
       },
     ],
-    ['junit', { outputFile: `${logOutputFolder}/junit/test-results.xml` }],
+    ['junit', { outputFile: `./test-results/${browserFolder}/junit.xml` }],
+    ['json', { outputFile: `${logOutputFolder}/json/${browserFolder}/test-results.json` }],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on',
-    video: 'off',
+    trace: 'on-first-retry',
+    video: 'retain-on-failure',
+    screenshot: 'only-on-failure',
     /* Run tests headless in local */
     headless: isHeadless('PLAYWRIGHT'),
   },
 
   /* Configure projects for major browsers */
   projects: [
+    {
+      name: 'chrome-global',
+      testMatch: '/global/specs/**.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: true,
+      },
+    },
+    {
+      name: 'firefox-global',
+      testMatch: '/global/specs/**.spec.ts',
+      use: {
+        ...devices['Desktop Firefox'],
+        headless: true,
+      },
+    },
     {
       name: 'swap',
       testMatch: '/swap/specs/*swap.spec.ts',
@@ -61,7 +80,7 @@ const config: PlaywrightTestConfig = {
       name: 'global',
       testMatch: '/global/specs/**.spec.ts',
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices['Desktop Firefox'],
         headless: true,
       },
     },
