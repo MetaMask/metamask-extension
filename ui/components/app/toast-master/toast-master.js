@@ -877,7 +877,7 @@ function ShieldEndingToast() {
 function StorageErrorToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [isDismissed, setIsDismissed] = useState(false);
   const [hasTrackedView, setHasTrackedView] = useState(false);
 
