@@ -862,6 +862,29 @@
         "nanoid": true
       }
     },
+    "@metamask/assets-controller": {
+      "globals": {
+        "clearInterval": true,
+        "console.error": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/providers": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/core-backend": true,
+        "@metamask/keyring-snap-client": true,
+        "@metamask/messenger": true,
+        "@metamask/polling-controller": true,
+        "@metamask/assets-controller>@metamask/snaps-utils": true,
+        "@metamask/utils": true,
+        "@metamask/eth-qr-keyring>async-mutex": true,
+        "@metamask/assets-controller>bignumber.js": true,
+        "lodash": true
+      }
+    },
     "@metamask/assets-controllers": {
       "globals": {
         "AbortController": true,
@@ -1071,6 +1094,7 @@
         "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
+        "fetch": true,
         "setTimeout": true
       },
       "meta": {
@@ -1081,6 +1105,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "cockatiel": true,
         "uuid": true
       }
@@ -2983,6 +3008,22 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
       }
     },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document": true,
+        "removeEventListener": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@swc/helpers": true
+      }
+    },
     "@tanstack/react-virtual": {
       "globals": {
         "document": true,
@@ -3396,6 +3437,11 @@
       }
     },
     "@ledgerhq/hw-app-eth>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/assets-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
