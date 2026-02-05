@@ -4,7 +4,7 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import { RootMessenger } from '../../lib/messenger';
 import { type StaticAssetsServiceMessenger as StaticAssetsServiceMessengerType } from '../../controllers/static-assets-service';
 
-type AllowedActions = MessengerActions<StaticAssetsServiceMessengerType>
+type AllowedActions = MessengerActions<StaticAssetsServiceMessengerType>;
 
 export type StaticAssetsServiceMessenger = ReturnType<
   typeof getStaticAssetsServiceMessenger
