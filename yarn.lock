@@ -2791,14 +2791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint-community/regexpp@npm:^4.10.0, @eslint-community/regexpp@npm:^4.6.0, @eslint-community/regexpp@npm:^4.6.1":
-  version: 4.10.0
-  resolution: "@eslint-community/regexpp@npm:4.10.0"
-  checksum: 10/8c36169c815fc5d726078e8c71a5b592957ee60d08c6470f9ce0187c8046af1a00afbda0a065cc40ff18d5d83f82aed9793c6818f7304a74a7488dc9f3ecbd42
-  languageName: node
-  linkType: hard
-
-"@eslint-community/regexpp@npm:^4.12.1":
+"@eslint-community/regexpp@npm:^4.10.0, @eslint-community/regexpp@npm:^4.12.1, @eslint-community/regexpp@npm:^4.6.0, @eslint-community/regexpp@npm:^4.6.1":
   version: 4.12.2
   resolution: "@eslint-community/regexpp@npm:4.12.2"
   checksum: 10/049b280fddf71dd325514e0a520024969431dc3a8b02fa77476e6820e9122f28ab4c9168c11821f91a27982d2453bcd7a66193356ea84e84fb7c8d793be1ba0c
@@ -15117,16 +15110,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-async-storage-persister@npm:^5.90.22":
-  version: 5.90.22
-  resolution: "@tanstack/query-async-storage-persister@npm:5.90.22"
-  dependencies:
-    "@tanstack/query-core": "npm:5.90.20"
-    "@tanstack/query-persist-client-core": "npm:5.91.19"
-  checksum: 10/cba4591b4c61c23579b47c059661c33588a3c1dc9ad9c573f92e4584770b900d645452dfd99a3f60ebc870273128a0c51853f36650584eaffcfdc7c28da383e9
-  languageName: node
-  linkType: hard
-
 "@tanstack/query-broadcast-client-experimental@npm:^5.90.20":
   version: 5.90.20
   resolution: "@tanstack/query-broadcast-client-experimental@npm:5.90.20"
@@ -15148,27 +15131,6 @@ __metadata:
   version: 5.90.20
   resolution: "@tanstack/query-core@npm:5.90.20"
   checksum: 10/25e38f4382442bc15e0f6cce8d787e9df8d8822c61d3f3e9427e89e01b1e2506f848292e086dae29aeb55f8ce71b097c34221f3c5eda37fb4a688b5ceca5d1b3
-  languageName: node
-  linkType: hard
-
-"@tanstack/query-persist-client-core@npm:5.91.19":
-  version: 5.91.19
-  resolution: "@tanstack/query-persist-client-core@npm:5.91.19"
-  dependencies:
-    "@tanstack/query-core": "npm:5.90.20"
-  checksum: 10/052119ad70f45ed44094704fe4fc23e712061d083666da8b9950fe23dc91eccc2f12a76638310446791793d80f47b7f18dd816735ac9adeb661fd1295d61efe7
-  languageName: node
-  linkType: hard
-
-"@tanstack/react-query-persist-client@npm:^5.90.22":
-  version: 5.90.22
-  resolution: "@tanstack/react-query-persist-client@npm:5.90.22"
-  dependencies:
-    "@tanstack/query-persist-client-core": "npm:5.91.19"
-  peerDependencies:
-    "@tanstack/react-query": ^5.90.20
-    react: ^18 || ^19
-  checksum: 10/4c6e6a611c7d012720bf9fa5298e1906354c134ba4953a76565834dfe34807bd8af083f847abe1d77cca7d7edecd54d910ca7c15a144aad4096ceda54bf7f6c7
   languageName: node
   linkType: hard
 
@@ -34038,10 +34000,8 @@ __metadata:
     "@swc/core": "npm:^1.13.2"
     "@swc/helpers": "npm:^0.5.17"
     "@swc/types": "npm:^0.1.23"
-    "@tanstack/query-async-storage-persister": "npm:^5.90.22"
     "@tanstack/query-broadcast-client-experimental": "npm:^5.90.20"
     "@tanstack/react-query": "npm:^4.36.1"
-    "@tanstack/react-query-persist-client": "npm:^5.90.22"
     "@tanstack/react-virtual": "npm:^3.10.8"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -40800,7 +40760,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.7.3":
+"semver@npm:7.7.3, semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.6, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.3, semver@npm:^7.7.2":
   version: 7.7.3
   resolution: "semver@npm:7.7.3"
   bin:
@@ -40815,15 +40775,6 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 10/1ef3a85bd02a760c6ef76a45b8c1ce18226de40831e02a00bad78485390b98b6ccaa31046245fc63bba4a47a6a592b6c7eedc65cc47126e60489f9cc1ce3ed7e
-  languageName: node
-  linkType: hard
-
-"semver@npm:^7.0.0, semver@npm:^7.1.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.6, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.3, semver@npm:^7.7.2":
-  version: 7.7.2
-  resolution: "semver@npm:7.7.2"
-  bin:
-    semver: bin/semver.js
-  checksum: 10/7a24cffcaa13f53c09ce55e05efe25cd41328730b2308678624f8b9f5fc3093fc4d189f47950f0b811ff8f3c3039c24a2c36717ba7961615c682045bf03e1dda
   languageName: node
   linkType: hard
 

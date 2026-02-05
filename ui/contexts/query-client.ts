@@ -1,8 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
 import { broadcastQueryClient } from '@tanstack/query-broadcast-client-experimental';
-import { persistQueryClient } from '@tanstack/react-query-persist-client';
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import browser from 'webextension-polyfill';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,37 +16,11 @@ export const queryClient = new QueryClient({
       staleTime: 10 * 1000,
     },
   },
-} as const);
+});
 
-if (typeof browser !== 'undefined' && browser.storage?.local) {
-  const extensionStorage = {
-    getItem: async (key: string) => {
-      const result = await browser.storage.local.get(key);
-      return result[key] ?? null;
-    },
-    setItem: async (key: string, value: string) => {
-      await browser.storage.local.set({ [key]: value });
-    },
-    removeItem: async (key: string) => {
-      await browser.storage.local.remove(key);
-    },
-  };
-
-  const persister = createAsyncStoragePersister({
-    storage: extensionStorage,
-    key: 'DEMO_PERSISTENCE',
-  });
-
-  // Optional: To demonstrate persistence
-  persistQueryClient({
-    queryClient,
-    persister,
-    maxAge: 1000 * 60 * 60 * 24, // 24 hours
-  });
-}
-
-// Optional: To demonstrate cross-UI process sync
+// Sync query client across contexts (popup, sidepanel, background)
 broadcastQueryClient({
+  // @ts-expect-error - fixed once @tanstack/react-query is updated
   queryClient,
   broadcastChannel: 'demo-query-sync',
 });

@@ -2978,26 +2978,9 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
       }
     },
-    "@tanstack/query-async-storage-persister": {
-      "packages": {
-        "@tanstack/query-async-storage-persister>@tanstack/query-core": true
-      }
-    },
     "@tanstack/query-broadcast-client-experimental": {
       "packages": {
         "@tanstack/query-broadcast-client-experimental>broadcast-channel": true
-      }
-    },
-    "@tanstack/query-async-storage-persister>@tanstack/query-core": {
-      "globals": {
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@swc/helpers": true
       }
     },
     "@tanstack/react-query>@tanstack/query-core": {
@@ -3012,15 +2995,6 @@
         "removeEventListener": true,
         "setInterval": true,
         "setTimeout": true
-      }
-    },
-    "@tanstack/react-query-persist-client>@tanstack/query-persist-client-core": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@tanstack/query-async-storage-persister>@tanstack/query-core": true
       }
     },
     "@tanstack/react-query": {
