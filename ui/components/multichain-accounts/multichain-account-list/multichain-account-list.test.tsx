@@ -712,7 +712,7 @@ describe('MultichainAccountList', () => {
 
       // With checkboxes disabled, is-selected class should be present
       expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
-      let selectedCell = screen.getByTestId(
+      const selectedCell = screen.getByTestId(
         `multichain-account-cell-${walletOneGroupId}`,
       );
       expect(selectedCell).toHaveClass('is-selected');
