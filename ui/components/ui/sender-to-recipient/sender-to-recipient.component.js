@@ -65,21 +65,20 @@ export function RecipientWithAddress({
   className = '',
 }) {
   return (
-    <>
-      <div
-        className={classnames(
-          'sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address',
-          className,
-        )}
-      >
-        <Name
-          value={checksummedRecipientAddress}
-          type={NameType.ETHEREUM_ADDRESS}
-          variation={chainId}
-          variant={TextVariant.BodyXs}
-        />
-      </div>
-    </>
+    <div
+      className={classnames(
+        'sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address',
+        className,
+      )}
+    >
+      <Name
+        value={checksummedRecipientAddress}
+        type={NameType.ETHEREUM_ADDRESS}
+        variation={chainId}
+        variant={TextVariant.BodyXs}
+        disableNameClick={true}
+      />
+    </div>
   );
 }
 
