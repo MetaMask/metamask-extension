@@ -40,7 +40,12 @@ const createWrapper = (options: {
 
   const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     <Provider store={store}>
-      <MemoryRouter initialEntries={[`${pathname}${search}`]}>
+      <MemoryRouter
+        initialEntries={[`${pathname}${search}`]}
+        // TODO: this is to avoid warnings in test, we can remove this post react-router v7 upgrade
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        future={{ v7_startTransition: false, v7_relativeSplatPath: false }}
+      >
         {children}
       </MemoryRouter>
     </Provider>

@@ -3002,9 +3002,6 @@
       "React: Act warnings (component updates not wrapped)": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/home/HomeDeepLinkActions.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/keychains/restore-vault.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
