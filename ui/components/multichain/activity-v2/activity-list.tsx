@@ -14,9 +14,9 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import type {
   FlattenedItem,
   TransactionViewModel,
-} from '../../../../shared/lib/types';
+} from '../../../../shared/acme-controller/types';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
-import { queries } from '../../../../shared/lib/queries';
+import { queries } from '../../../../shared/acme-controller/queries';
 import {
   groupTransactionsByDate,
   flattenGroupedTransactions,

@@ -17,7 +17,7 @@ import {
   getSelectedAddress,
   selectNetworkConfigurationByChainId,
 } from '../../../selectors/selectors';
-import type { TransactionViewModel } from '../../../../shared/lib/types';
+import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
 import {
   extractCategory,
   extractAmountAndSymbol,

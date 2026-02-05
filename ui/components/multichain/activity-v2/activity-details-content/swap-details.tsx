@@ -6,7 +6,7 @@ import {
   AvatarToken,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
-import type { TransactionViewModel } from '../../../../../shared/lib/types';
+import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   extractAmountAndSymbol,

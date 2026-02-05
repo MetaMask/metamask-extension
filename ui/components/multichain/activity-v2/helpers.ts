@@ -2,7 +2,7 @@ import type {
   DateGroupedTransactions,
   FlattenedItem,
   TransactionViewModel,
-} from '../../../../shared/lib/types';
+} from '../../../../shared/acme-controller/types';
 import { TransactionType } from '@metamask/transaction-controller';
 import {
   TransactionGroupCategory,

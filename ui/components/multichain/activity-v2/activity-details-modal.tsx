@@ -12,7 +12,7 @@ import {
   getSelectedAddress,
   selectNetworkConfigurationByChainId,
 } from '../../../selectors/selectors';
-import type { TransactionViewModel } from '../../../../shared/lib/types';
+import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
 import { TransferDetails } from './activity-details-content/transfer-details';
 import { SwapDetails } from './activity-details-content/swap-details';
 
