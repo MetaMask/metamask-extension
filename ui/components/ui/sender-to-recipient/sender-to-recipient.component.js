@@ -33,7 +33,7 @@ function SenderAddress({
     <div className="sender-to-recipient__party sender-to-recipient__party--sender gap-1">
       <PreferredAvatar
         address={toChecksumHexAddress(senderAddress)}
-        size={AvatarAccountSize.Sm}
+        size={AvatarAccountSize.Xs}
       />
       <div className="sender-to-recipient__name text-s-body-xs">
         {addressOnly ? (
