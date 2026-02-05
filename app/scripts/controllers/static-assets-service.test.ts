@@ -12,8 +12,8 @@ import {
 } from '@metamask/messenger';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../shared/lib/fetch-with-cache';
-import type { StaticAssetsControllerMessenger } from './static-assets-controller';
-import { StaticAssetsController } from './static-assets-controller';
+import type { StaticAssetsServiceMessenger } from './static-assets-service';
+import { StaticAssetsService } from './static-assets-service';
 
 const mockTopAssets = [
   {
@@ -33,9 +33,9 @@ const mockTopAssets = [
 const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
   const messenger = new Messenger<
     MockAnyNamespace,
-    | MessengerActions<StaticAssetsControllerMessenger>
+    | MessengerActions<StaticAssetsServiceMessenger>
     | MessengerActions<AccountsControllerMessenger>,
-    | MessengerEvents<StaticAssetsControllerMessenger>
+    | MessengerEvents<StaticAssetsServiceMessenger>
     | MessengerEvents<AccountsControllerMessenger>
   >({ namespace: MOCK_ANY_NAMESPACE });
 
@@ -44,14 +44,14 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
   const tokensControllerGetStateSpy = jest.fn();
   const fetchWithCacheSpy = jest.spyOn(fetchWithCacheModule, 'default');
 
-  const staticAssetsControllerMessenger: StaticAssetsControllerMessenger =
+  const staticAssetsServiceMessenger: StaticAssetsServiceMessenger =
     new Messenger({
-      namespace: 'StaticAssetsController',
+      namespace: 'StaticAssetsService',
       parent: messenger,
     });
 
   messenger.delegate({
-    messenger: staticAssetsControllerMessenger,
+    messenger: staticAssetsServiceMessenger,
     actions: [
       'NetworkController:findNetworkClientIdByChainId',
       'TokensController:getState',
@@ -75,8 +75,8 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
     tokensControllerAddTokensSpy,
   );
 
-  const controller = new StaticAssetsController({
-    messenger: staticAssetsControllerMessenger,
+  const controller = new StaticAssetsService({
+    messenger: staticAssetsServiceMessenger,
     getSupportedChains: () => new Set(supportedChains),
     getCacheExpirationTime: () => 1000,
     getTopX: () => 10,
@@ -94,7 +94,7 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
   };
 };
 
-describe('StaticAssetsController', () => {
+describe('StaticAssetsService', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();

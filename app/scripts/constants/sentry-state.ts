@@ -343,7 +343,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundStateMask = {
     lastUpdated: false,
     databaseUnavailable: false,
   },
-  StaticAssetsController: {},
   SubjectMetadataController: {
     subjectMetadata: false,
   },

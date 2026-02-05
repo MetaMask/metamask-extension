@@ -2,29 +2,29 @@ import { Hex } from '@metamask/utils';
 import {
   DEFAULT_TOP_X,
   DEFAULT_CACHE_EXPIRATION_MS,
-  StaticAssetsController,
+  StaticAssetsService,
   StaticAssetsPollingFeatureFlagOptions,
-} from '../controllers/static-assets-controller';
+} from '../controllers/static-assets-service';
 import { ControllerInitFunction } from './types';
 import {
-  StaticAssetsControllerMessenger,
-  StaticAssetsControllerInitMessenger,
+  StaticAssetsServiceMessenger,
+  StaticAssetsServiceInitMessenger,
 } from './messengers';
 
 function getRemoteFeatureFlagControllerState(
-  initMessenger: StaticAssetsControllerInitMessenger,
+  initMessenger: StaticAssetsServiceInitMessenger,
 ): StaticAssetsPollingFeatureFlagOptions | undefined {
   const state = initMessenger.call('RemoteFeatureFlagController:getState');
   return state?.remoteFeatureFlags
     ?.staticAssetsPollingOptions as StaticAssetsPollingFeatureFlagOptions;
 }
 
-export const StaticAssetsControllerInit: ControllerInitFunction<
-  StaticAssetsController,
-  StaticAssetsControllerMessenger,
-  StaticAssetsControllerInitMessenger
+export const StaticAssetsServiceInit: ControllerInitFunction<
+  StaticAssetsService,
+  StaticAssetsServiceMessenger,
+  StaticAssetsServiceInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
-  const controller = new StaticAssetsController({
+  const service = new StaticAssetsService({
     messenger: controllerMessenger,
     getSupportedChains: (): Set<Hex> => {
       const supportedChains =
@@ -44,6 +44,8 @@ export const StaticAssetsControllerInit: ControllerInitFunction<
     },
   });
   return {
-    controller,
+    controller: service,
+    memStateKey: null,
+    persistedStateKey: null,
   };
 };

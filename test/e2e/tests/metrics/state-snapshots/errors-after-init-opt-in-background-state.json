@@ -372,7 +372,6 @@
     "lastUpdated": "number",
     "signature": "string"
   },
-  "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "SwapsController": {

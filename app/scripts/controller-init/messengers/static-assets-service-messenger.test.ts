@@ -1,23 +1,23 @@
 import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import {
-  getStaticAssetsControllerInitMessenger,
-  getStaticAssetsControllerMessenger,
-} from './static-assets-controller-messenger';
+  getStaticAssetsServiceInitMessenger,
+  getStaticAssetsServiceMessenger,
+} from './static-assets-service-messenger';
 
-describe('getStaticAssetsControllerMessenger', () => {
+describe('getStaticAssetsServiceMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = getRootMessenger<never, never>();
-    const controllerMessenger = getStaticAssetsControllerMessenger(messenger);
+    const controllerMessenger = getStaticAssetsServiceMessenger(messenger);
 
     expect(controllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
-describe('getStaticAssetsControllerInitMessenger', () => {
+describe('getStaticAssetsServiceInitMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = getRootMessenger<never, never>();
-    const initMessenger = getStaticAssetsControllerInitMessenger(messenger);
+    const initMessenger = getStaticAssetsServiceInitMessenger(messenger);
 
     expect(initMessenger).toBeInstanceOf(Messenger);
   });
