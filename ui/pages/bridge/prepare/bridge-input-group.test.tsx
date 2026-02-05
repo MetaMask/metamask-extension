@@ -427,10 +427,6 @@ describe('BridgeInputGroup', () => {
         expect(abortSpy).toHaveBeenCalledTimes(7);
       });
 
-      // Wait for all async cache updates to complete before asserting
-      await waitFor(async () => {
-        expect(await localforage.keys()).toHaveLength(3);
-      });
       expect(await localforage.keys()).toMatchSnapshot();
       expect(mockHandleFetch.mock.calls).toMatchSnapshot();
       expect(mockHandleFetch).toHaveBeenCalledTimes(3);
