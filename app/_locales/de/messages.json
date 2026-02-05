@@ -7696,7 +7696,7 @@
   "storageErrorAction": {
     "message": "Geheime Wiederherstellungsphrase sichern"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Sichern Sie Ihre geheime Wiederherstellungsphrase und installieren Sie MetaMask neu, wenn das Problem weiterhin besteht."
   },
   "storageErrorTitle": {

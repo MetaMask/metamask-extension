@@ -7696,7 +7696,7 @@
   "storageErrorAction": {
     "message": "Fazer backup da Frase de Recuperação Secreta"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Faça backup da sua Frase de Recuperação Secreta e reinstale o MetaMask se o problema persistir."
   },
   "storageErrorTitle": {
