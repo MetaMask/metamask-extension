@@ -1271,6 +1271,16 @@ async function setupMocking(
       };
     });
 
+  // Gator Permissions Snap requests granted permissions from profile sync
+  await server
+    .forGet(/v1\/userstorage\/gator_7715_permissions/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      // it actually doesn't matter _what_ we return as a valid response must be encrypted with the snap's key
+      // invalid data will be be coallesced to an empty array
+      json: '',
+    }));
+
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
