@@ -41,6 +41,8 @@ export type BenchmarkResults = {
   stdDev: StatisticalResult;
   p75: StatisticalResult;
   p95: StatisticalResult;
+  /** Web vitals per-run data and aggregated statistics */
+  webVitals?: WebVitalsSummary;
 };
 
 export type WebVitalsRating = 'good' | 'needs-improvement' | 'poor';
@@ -118,6 +120,8 @@ export type NetworkReport = {
 
 export type BenchmarkRunResult = {
   timers: TimerResult[];
+  /** Per-run web vitals snapshot captured at end of measurement */
+  webVitals?: WebVitalsMetrics;
   success: boolean;
   error?: string;
 };
@@ -187,6 +191,8 @@ export type BenchmarkSummary = {
   thresholdViolations?: ThresholdViolation[];
   /** Whether all thresholds passed (no 'fail' violations) */
   thresholdsPassed?: boolean;
+  /** Web vitals per-run data and aggregated statistics */
+  webVitals?: WebVitalsSummary;
 };
 
 export type PerformanceBenchmarkResults = {
