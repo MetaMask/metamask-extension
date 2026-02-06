@@ -233,6 +233,7 @@ const reactCompilerLoader = getReactCompilerLoader({
   verbose: args.reactCompilerVerbose,
   debug: args.reactCompilerDebug,
   disableThreadLoader: args.generatePolicy || args.reactCompilerVerbose,
+  watch: args.watch,
 });
 
 const config = {

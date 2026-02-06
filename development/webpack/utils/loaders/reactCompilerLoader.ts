@@ -1,5 +1,4 @@
 import { availableParallelism } from 'node:os';
-import { join, sep } from 'node:path';
 import type { RuleSetUseItem } from 'webpack';
 import {
   reactCompilerLoader,
@@ -55,6 +54,7 @@ export type ReactCompilerLoaderConfig = {
    *   which is null in thread-loader workers)
    */
   disableThreadLoader: boolean;
+  watch: boolean;
 };
 
 /**
@@ -67,7 +67,7 @@ export type ReactCompilerLoaderConfig = {
 export const getReactCompilerLoader = (
   config: ReactCompilerLoaderConfig,
 ): RuleSetUseItem[] => {
-  const { target, verbose, debug, disableThreadLoader } = config;
+  const { target, verbose, debug, watch, disableThreadLoader } = config;
 
   const reactCompilerOptions = {
     target,
@@ -89,9 +89,15 @@ export const getReactCompilerLoader = (
     });
   }
 
-  // Use wrapper for buildMeta tracking when thread-loader is active
   // Skip wrapper when thread-loader is disabled (wrapper not needed, also not resolvable under LavaMoat)
-  if (!disableThreadLoader) {
+  // Use wrapper for buildMeta tracking when thread-loader is active
+  if (disableThreadLoader) {
+    // Direct loader without wrapper (for policy generation or verbose mode)
+    loaders.push({
+      loader: reactCompilerLoader,
+      options: defineReactCompilerLoaderOption(reactCompilerOptions),
+    });
+  } else {
     loaders.push({
       loader: getWrapperPath(),
       options: {
@@ -99,12 +105,6 @@ export const getReactCompilerLoader = (
         // eslint-disable-next-line @typescript-eslint/naming-convention
         __verbose: verbose,
       },
-    });
-  } else {
-    // Direct loader without wrapper (for policy generation or verbose mode)
-    loaders.push({
-      loader: reactCompilerLoader,
-      options: defineReactCompilerLoaderOption(reactCompilerOptions),
     });
   }
 

@@ -11,11 +11,11 @@
 'use strict';
 
 let actualLoader;
-import(
-  'react-compiler-webpack/dist/react-compiler-loader.js'
-).then((module) => {
-  actualLoader = module.default;
-});
+import('react-compiler-webpack/dist/react-compiler-loader.js').then(
+  (module) => {
+    actualLoader = module.default;
+  },
+);
 
 const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
 
