@@ -1,5 +1,6 @@
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { errorCodes } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +18,6 @@ import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
-import { errorCodes } from '@metamask/rpc-errors';
 
 type SnapConfirmSendResult = {
   valid?: boolean;
