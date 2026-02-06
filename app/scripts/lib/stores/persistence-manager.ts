@@ -12,6 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
 import { IndexedDBStore } from './indexeddb-store';
@@ -205,14 +206,15 @@ export class PersistenceManager {
   /**
    * Callback to be invoked when a set operation fails (storage.local or IndexedDB).
    * This allows the background script to notify the UI about the failure.
+   * The callback receives the storage write error type.
    */
-  #onSetFailed?: () => void;
+  #onSetFailed?: (errorType: StorageWriteErrorType) => void;
 
   /**
-   * Tracks if a set failure occurred before the callback was registered.
-   * This handles the race condition where failures happen during controller initialization.
+   * Stores the error type from the first failure that occurred before the callback was registered.
+   * If not null, indicates a failure occurred before the callback was registered.
    */
-  #setFailedBeforeCallbackRegistered = false;
+  #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
@@ -222,29 +224,46 @@ export class PersistenceManager {
    * Sets the callback to be invoked when a set operation fails.
    * This is called by the background script to wire up the notification to the UI.
    * If a failure already occurred before this callback was registered, it will be
-   * called immediately.
+   * called immediately with the stored error type.
    *
    * @param callback - The callback to invoke when a set operation fails
    */
-  setOnSetFailed(callback: () => void) {
+  setOnSetFailed(callback: (errorType: StorageWriteErrorType) => void) {
     this.#onSetFailed = callback;
 
     // If a failure occurred before this callback was registered, call it now
-    if (this.#setFailedBeforeCallbackRegistered) {
-      callback();
+    if (this.#errorTypeBeforeCallbackRegistered !== null) {
+      callback(this.#errorTypeBeforeCallbackRegistered);
     }
+  }
+
+  /**
+   * Determines the storage write error type from an error message.
+   *
+   * @param errorMessage - The error message from the failed operation
+   * @returns The appropriate StorageWriteErrorType
+   */
+  #getStorageWriteErrorType(errorMessage: string): StorageWriteErrorType {
+    if (errorMessage.includes('FILE_ERROR_NO_SPACE')) {
+      return StorageWriteErrorType.FileErrorNoSpace;
+    }
+    return StorageWriteErrorType.Default;
   }
 
   /**
    * Notifies the UI that a set operation has failed (storage.local or IndexedDB).
    * If the callback is not yet registered, tracks the failure for later notification.
+   *
+   * @param errorMessage - The error message from the failed operation
    */
-  #notifySetFailed() {
+  #notifySetFailed(errorMessage: string) {
+    const errorType = this.#getStorageWriteErrorType(errorMessage);
+
     if (this.#onSetFailed) {
-      this.#onSetFailed();
+      this.#onSetFailed(errorType);
     } else {
       // Callback not yet registered - track the failure for later
-      this.#setFailedBeforeCallbackRegistered = true;
+      this.#errorTypeBeforeCallbackRegistered = errorType;
     }
   }
 
@@ -484,9 +503,10 @@ export class PersistenceManager {
               fingerprint: ['persistence-error', tag],
             });
           }
-          this.#notifySetFailed();
+          const normalizedError = this.#normalizePersistError(err);
+          this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
-          return [false, this.#normalizePersistError(err)];
+          return [false, normalizedError];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -616,9 +636,10 @@ export class PersistenceManager {
               fingerprint: ['persistence-error', tag],
             });
           }
-          this.#notifySetFailed();
+          const normalizedError = this.#normalizePersistError(err);
+          this.#notifySetFailed(normalizedError.message);
           log.error('error setting state in local store:', err);
-          return [false, this.#normalizePersistError(err)];
+          return [false, normalizedError];
         } finally {
           this.#isExtensionInitialized = true;
         }
@@ -773,6 +794,10 @@ export class PersistenceManager {
         this.#metadata = undefined;
         this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();
+
+        // Clear failure tracking state to prevent stale errors from being reported
+        this.#onSetFailed = undefined;
+        this.#errorTypeBeforeCallbackRegistered = null;
       },
     );
   }

@@ -7669,7 +7669,7 @@
   "storageErrorAction": {
     "message": "Cadangkan Frasa Pemulihan Rahasia"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Cadangkan Frasa Pemulihan Rahasia dan instal ulang MetaMask jika masalah berlanjut."
   },
   "storageErrorTitle": {
