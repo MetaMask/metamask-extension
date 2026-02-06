@@ -3,7 +3,7 @@ import { HardwareDeviceNames } from '../../../../shared/constants/hardware-walle
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
-  getHdPathForHardwareKeyring,
+  getHdPathForLedgerKeyring,
   getLedgerAppConfiguration,
   getLedgerPublicKey,
 } from '../../../store/actions';
@@ -78,8 +78,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
   }
 
   private async getHdPath(): Promise<string> {
-    const path = await getHdPathForHardwareKeyring(HardwareDeviceNames.ledger);
-    console.log('[HW] hdPath', path);
+    const path = await getHdPathForLedgerKeyring(HardwareDeviceNames.ledger);
     return path;
   }
 
