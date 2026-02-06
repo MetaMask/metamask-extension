@@ -12,7 +12,18 @@ import {
 } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { updateAndApproveTx } from '../../../../store/actions';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../../shared/constants/app';
+import {
+  attemptCloseNotificationPopup,
+  updateAndApproveTx,
+} from '../../../../store/actions';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
+import { useHardwareWalletError } from '../../../../contexts/hardware-wallets';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import * as DappSwapContext from '../../context/dapp-swap';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
@@ -20,10 +31,26 @@ import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupported
 import { useTransactionConfirm } from './useTransactionConfirm';
 import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 
+const mockGetEnvironmentType = jest.fn();
+
 jest.mock('../../../../../shared/modules/selectors');
+jest.mock('../../../../../app/scripts/lib/util', () => ({
+  getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
+}));
+jest.mock('../../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../../contexts/hardware-wallets'),
+  useHardwareWalletError: jest.fn(() => ({
+    showErrorModal: jest.fn(),
+  })),
+}));
+jest.mock('../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(() => Promise.resolve()),
+}));
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
+  attemptCloseNotificationPopup: jest.fn(),
   updateAndApproveTx: jest.fn(),
 }));
 
@@ -40,6 +67,7 @@ jest.mock('../gas/useIsGaslessSupported');
 jest.mock('../gas/useGaslessSupportedSmartTransactions');
 
 const CUSTOM_NONCE_VALUE = '1234';
+const originalConsoleWarn = console.warn;
 
 const TRANSACTION_META_MOCK =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -73,23 +101,36 @@ function runHook({
 }
 
 describe('useTransactionConfirm', () => {
+  let consoleWarnSpy: jest.SpyInstance;
   const updateAndApproveTxMock = jest.mocked(updateAndApproveTx);
+  const attemptCloseNotificationPopupMock = jest.mocked(
+    attemptCloseNotificationPopup,
+  );
+  const useHardwareWalletErrorMock = jest.mocked(useHardwareWalletError);
   const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
     useGaslessSupportedSmartTransactions,
   );
-
   beforeEach(() => {
     jest.resetAllMocks();
+    consoleWarnSpy = jest
+      .spyOn(console, 'warn')
+      .mockImplementation((...args: unknown[]) => {
+        const message = args.map(String).join(' ');
+        if (
+          message.includes('MetaMask: Background connection not initialized')
+        ) {
+          return;
+        }
+        originalConsoleWarn(...args);
+      });
 
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: false,
       pending: false,
     });
-    updateAndApproveTxMock.mockReturnValue(() =>
-      Promise.resolve({} as TransactionMeta),
-    );
+    updateAndApproveTxMock.mockReturnValue(() => Promise.resolve());
 
     useIsGaslessSupportedMock.mockReturnValue({
       isSupported: false,
@@ -103,9 +144,18 @@ describe('useTransactionConfirm', () => {
       pending: false,
     });
 
-    updateAndApproveTxMock.mockReturnValue(() =>
-      Promise.resolve({} as TransactionMeta),
-    );
+    updateAndApproveTxMock.mockReturnValue(() => Promise.resolve());
+    attemptCloseNotificationPopupMock.mockResolvedValue(undefined);
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: jest.fn(),
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+    });
+  });
+
+  afterEach(() => {
+    consoleWarnSpy.mockRestore();
   });
 
   it('dispatches update and approve action', async () => {
@@ -471,5 +521,30 @@ describe('useTransactionConfirm', () => {
           TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
       }),
     );
+  });
+
+  it('closes popup after successful transaction in popup environment', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(attemptCloseNotificationPopupMock).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+  });
+
+  it('navigates to activity tab after successful transaction in sidepanel', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${DEFAULT_ROUTE}?tab=${AccountOverviewTabKey.Activity}`,
+      { replace: true },
+    );
+    expect(attemptCloseNotificationPopupMock).not.toHaveBeenCalled();
   });
 });

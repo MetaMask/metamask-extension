@@ -84,11 +84,14 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
+import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
@@ -101,6 +104,8 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
+  getPendingHardwareWalletSigning,
+  getIsHardwareWalletErrorModalVisible,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
@@ -197,6 +202,7 @@ import {
 } from '../../shared/types';
 // eslint-disable-next-line import/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import * as actionConstants from './actionConstants';
 
@@ -1998,47 +2004,155 @@ export async function addTransaction(
   ]);
 }
 
+/**
+ * Approve and submit a transaction.
+ * For hardware wallets, if the user rejects on device, throws HardwareWalletTransactionRejectedError
+ * with the recreatedTxId so the caller can navigate to the new transaction.
+ *
+ * @param txMeta - The transaction metadata
+ * @param dontShowLoadingIndicator - Whether to skip showing loading indicator
+ * @param loadingIndicatorMessage - Message to show during loading
+ * @throws HardwareWalletTransactionRejectedError - When hardware wallet user rejects on device
+ */
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
-): ThunkAction<
-  Promise<TransactionMeta | null>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    !dontShowLoadingIndicator &&
-      dispatch(showLoadingIndication(loadingIndicatorMessage));
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    const fromAccount = getInternalAccountByAddress(
+      getState(),
+      txMeta.txParams.from,
+    );
 
-    const actionId = generateActionId();
-
-    try {
-      await submitRequestToBackground('resolvePendingApproval', [
-        String(txMeta.id),
-        { txMeta, actionId },
-        { waitForResult: true },
-      ]);
-
-      dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-      await forceUpdateMetamaskState(dispatch);
-
-      dispatch(completedTx(txMeta.id));
-      dispatch(hideLoadingIndication());
-      dispatch(updateCustomNonce(''));
-      dispatch(closeCurrentNotificationWindow());
-
-      return txMeta;
-    } catch (err) {
-      dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-      dispatch(goHome());
-      dispatch(hideLoadingIndication());
-
-      logErrorWithMessage(err);
-      throw err;
+    if (isHardwareAccount(fromAccount)) {
+      console.log('[Debug] Approving hardware transaction');
+      const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
+      return approveHardwareTransaction(
+        dispatch,
+        txMeta,
+        loadingIndicatorMessage,
+        keyringType,
+      );
     }
+
+    return approveTransaction(
+      dispatch,
+      txMeta,
+      dontShowLoadingIndicator,
+      loadingIndicatorMessage,
+    );
   };
+}
+
+async function approveTransaction(
+  dispatch: MetaMaskReduxDispatch,
+  txMeta: TransactionMeta,
+  dontShowLoadingIndicator: boolean,
+  loadingIndicatorMessage: string,
+): Promise<void> {
+  if (!dontShowLoadingIndicator) {
+    dispatch(showLoadingIndication(loadingIndicatorMessage));
+  }
+
+  try {
+    await submitRequestToBackground('resolvePendingApproval', [
+      String(txMeta.id),
+      { txMeta, actionId: generateActionId() },
+      { waitForResult: true },
+    ]);
+
+    await forceUpdateMetamaskState(dispatch);
+    dispatch(completedTx(txMeta.id));
+    dispatch(updateCustomNonce(''));
+    dispatch(closeCurrentNotificationWindow());
+  } catch (error) {
+    dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
+    throw error;
+  } finally {
+    dispatch(hideLoadingIndication());
+  }
+}
+
+/**
+ * Convert keyring type to hardware wallet type for error reconstruction
+ *
+ * @param keyringType - The keyring type from account metadata
+ * @returns The hardware wallet type or null if not a hardware wallet
+ */
+function keyringTypeToHardwareWalletType(
+  keyringType?: string | null,
+): HardwareWalletType | null {
+  if (!keyringType) {
+    return null;
+  }
+
+  switch (keyringType) {
+    case KeyringTypes.ledger:
+      return HardwareWalletType.Ledger;
+    case KeyringTypes.trezor:
+      return HardwareWalletType.Trezor;
+    case KeyringTypes.oneKey:
+      return HardwareWalletType.OneKey;
+    case KeyringTypes.lattice:
+      return HardwareWalletType.Lattice;
+    case KeyringTypes.qr:
+      return HardwareWalletType.Qr;
+    default:
+      return null;
+  }
+}
+
+/**
+ * Approve a hardware wallet transaction using the background API.
+ * This uses an approval flow to keep the popup open during signing.
+ * If the user rejects on the hardware device, throws HardwareWalletError
+ * with the recreated transaction ID in metadata.
+ *
+ * @param dispatch - Redux dispatch function
+ * @param txMeta - The transaction metadata
+ * @param loadingIndicatorMessage - Message to show during signing
+ * @param keyringType - The keyring type for the hardware wallet account
+ * @throws HardwareWalletError - When hardware wallet error occurs
+ */
+async function approveHardwareTransaction(
+  dispatch: MetaMaskReduxDispatch,
+  txMeta: TransactionMeta,
+  loadingIndicatorMessage: string,
+  keyringType: string,
+): Promise<void> {
+  dispatch(setPendingHardwareWalletSigning(true));
+  dispatch(showLoadingIndication(loadingIndicatorMessage));
+
+  const walletType =
+    keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
+
+  try {
+    await submitRequestToBackground('approveHardwareTransaction', [
+      {
+        txId: txMeta.id,
+        txMeta,
+        actionId: generateActionId(),
+        walletType,
+      },
+    ]);
+
+    await forceUpdateMetamaskState(dispatch);
+    dispatch(completedTx(txMeta.id));
+    dispatch(updateCustomNonce(''));
+    dispatch(setPendingHardwareWalletSigning(false));
+    dispatch(closeCurrentNotificationWindow());
+  } catch (error) {
+    await forceUpdateMetamaskState(dispatch);
+    // Reconstruct the error to ensure it's a proper HardwareWalletError instance
+    // Errors lose their class type when crossing the RPC boundary from background
+    const hwError = toHardwareWalletError(error, walletType);
+
+    // Rethrow the properly typed error for hook to handle
+    throw hwError;
+  } finally {
+    dispatch(hideLoadingIndication());
+  }
 }
 
 export async function getTransactions(
@@ -2368,7 +2482,8 @@ export function cancelTxs(
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        attemptCloseNotificationPopup();
+        // Use closeCurrentNotificationWindow which has hardware wallet guards
+        dispatch(closeCurrentNotificationWindow());
       } else {
         dispatch(hideLoadingIndication());
       }
@@ -3823,8 +3938,21 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     const state = getState();
     const approvalFlows = getApprovalFlows(state);
+    const isPendingHardwareSigning = getPendingHardwareWalletSigning(state);
+    const isHwErrorModalVisible = getIsHardwareWalletErrorModalVisible(state);
+
+    // Don't close the popup if:
+    // - Hardware wallet signing is in progress (error being handled)
+    // - Hardware wallet error modal is visible (for retry functionality)
+    if (isPendingHardwareSigning || isHwErrorModalVisible) {
+      return;
+    }
+
+    const environmentType = getEnvironmentType();
     if (
-      getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
+      [ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_POPUP].includes(
+        environmentType,
+      ) &&
       !hasTransactionPendingApprovals(state) &&
       !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
@@ -5396,25 +5524,130 @@ export function updateHiddenAccountsList(
  * Resolves a pending approval and closes the current notification window if no
  * further approvals are pending after the background state updates.
  *
+ * For hardware wallet accounts, this uses a special approval flow that keeps
+ * the popup open during signing and handles errors properly.
+ *
  * @param id - The pending approval id
- * @param [value] - The value required to confirm a pending approval
+ * @param value - The value required to confirm a pending approval
+ * @param options - Additional options for the approval
+ * @param options.waitForResult - Whether to wait for the approval result
+ * @param options.fromAddress - The address of the account making the approval (for hardware wallet detection)
  */
 export function resolvePendingApproval(
   id: string,
   value: unknown,
+  options?: { waitForResult?: boolean; fromAddress?: string },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('resolvePendingApproval', [id, value]);
-    // Before closing the current window, check if any additional confirmations
-    // are added as a result of this confirmation being accepted
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    // Check if this is a hardware wallet account
+    const fromAddress = options?.fromAddress;
+    if (fromAddress) {
+      const fromAccount = getInternalAccountByAddress(getState(), fromAddress);
 
-    const { pendingApprovals } = await forceUpdateMetamaskState(_dispatch);
-    if (Object.values(pendingApprovals).length === 0) {
-      _dispatch(closeCurrentNotificationWindow());
+      if (isHardwareAccount(fromAccount)) {
+        const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
+        return resolveHardwareApproval(
+          dispatch,
+          id,
+          value,
+          { waitForResult: options?.waitForResult },
+          keyringType,
+        );
+      }
     }
+
+    // Standard approval flow for non-hardware wallets
+    return resolveStandardApproval(dispatch, id, value, options);
   };
+}
+
+/**
+ * Standard approval resolution for non-hardware wallet accounts.
+ *
+ * @param dispatch - Redux dispatch function
+ * @param id - The pending approval id
+ * @param value - The value required to confirm a pending approval
+ * @param options - Additional options for the approval
+ * @param options.waitForResult - Whether to wait for the approval result
+ */
+async function resolveStandardApproval(
+  dispatch: MetaMaskReduxDispatch,
+  id: string,
+  value: unknown,
+  options?: { waitForResult?: boolean },
+): Promise<void> {
+  await submitRequestToBackground('resolvePendingApproval', [
+    id,
+    value,
+    options,
+  ]);
+  // Before closing the current window, check if any additional confirmations
+  // are added as a result of this confirmation being accepted
+  const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+  if (Object.values(pendingApprovals).length === 0) {
+    dispatch(closeCurrentNotificationWindow());
+  }
+}
+
+/**
+ * Resolve a pending approval for a hardware wallet account.
+ * This uses a special flow to keep the popup open during signing
+ * and handles errors properly with the hardware wallet error modal.
+ *
+ * @param dispatch - Redux dispatch function
+ * @param id - The pending approval id
+ * @param value - The value required to confirm a pending approval
+ * @param options - Additional options for the approval
+ * @param keyringType - The keyring type for the hardware wallet account
+ * @throws HardwareWalletError - When hardware wallet error occurs
+ */
+async function resolveHardwareApproval(
+  dispatch: MetaMaskReduxDispatch,
+  id: string,
+  value: unknown,
+  options: { waitForResult?: boolean } | undefined,
+  keyringType: string,
+): Promise<void> {
+  dispatch(setPendingHardwareWalletSigning(true));
+  dispatch(showLoadingIndication());
+
+  const walletType =
+    keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
+
+  try {
+    await submitRequestToBackground('resolvePendingApproval', [
+      id,
+      value,
+      {
+        ...options,
+        waitForResult: true,
+        walletType,
+      },
+    ]);
+
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+
+    dispatch(setPendingHardwareWalletSigning(false));
+
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
+  } catch (error) {
+    await forceUpdateMetamaskState(dispatch);
+    // Reconstruct the error to ensure it's a proper HardwareWalletError instance
+    // Errors lose their class type when crossing the RPC boundary from background
+    const hwError = toHardwareWalletError(error, walletType);
+
+    throw hwError;
+  } finally {
+    dispatch(hideLoadingIndication());
+    // Only clear pendingHardwareSigning on success.
+    // On error, keep it true to prevent auto-navigation/close of the popup.
+    // The error modal will clear it when dismissed.
+    dispatch(setPendingHardwareWalletSigning(false));
+  }
 }
 
 /**
@@ -5861,8 +6094,43 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
   };
 }
 
+/**
+ * Attempts to create a transport for a Ledger hardware wallet.
+ *
+ * @returns A promise that resolves to a boolean indicating whether the transport was created successfully.
+ */
 export async function attemptLedgerTransportCreation() {
   return await submitRequestToBackground('attemptLedgerTransportCreation');
+}
+
+/**
+ * Gets the app name and version from the connected Ledger device.
+ *
+ * @returns A promise that resolves to an object containing the app name and version.
+ */
+export async function getAppNameAndVersion(): Promise<{
+  appName: string;
+  version: string;
+}> {
+  return await submitRequestToBackground('getAppNameAndVersion');
+}
+
+export async function getLedgerAppConfiguration(): Promise<{
+  arbitraryDataEnabled: number;
+  erc20ProvisioningNecessary: number;
+  starkEnabled: number;
+  starkv2Supported: number;
+  version: string;
+}> {
+  return await submitRequestToBackground('getLedgerAppConfiguration');
+}
+
+export async function getLedgerPublicKey(hdPath: string): Promise<{
+  publicKey: string;
+  address: string;
+  chainCode?: string;
+}> {
+  return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
 }
 
 /**
@@ -7893,6 +8161,53 @@ export async function generateClaimSignature(
   ]);
 }
 
+export async function getHdPathForHardwareKeyring(
+  deviceName: HardwareDeviceNames,
+): Promise<string> {
+  console.log('[HW] getHdPathForHardwareKeyring', deviceName);
+  const hdPath = await submitRequestToBackground<string>(
+    'getHdPathForHardwareKeyring',
+    [deviceName],
+  );
+  return hdPath;
+}
+
+export async function getTrezorDeviceStatus(): Promise<DeviceState> {
+  return await submitRequestToBackground<DeviceState>(
+    'getTrezorDeviceStatus',
+    [],
+  );
+}
+
+/**
+ * Trezor device features response type
+ */
+export type TrezorFeaturesResponse = {
+  success: boolean;
+  payload: {
+    device_id?: string;
+    model?: string;
+    label?: string;
+    initialized?: boolean;
+    unlocked?: boolean;
+    pin_protection?: boolean;
+    passphrase_protection?: boolean;
+    error?: string;
+  };
+};
+
+/**
+ * Get Trezor device features to verify the device is ready.
+ * This is the Trezor equivalent of Ledger's getAppNameAndVersion.
+ * Returns device info including whether it's unlocked and initialized.
+ */
+export async function getTrezorFeatures(): Promise<TrezorFeaturesResponse> {
+  return await submitRequestToBackground<TrezorFeaturesResponse>(
+    'getTrezorFeatures',
+    [],
+  );
+}
+
 /**
  * Saves a claim draft.
  *
@@ -7913,16 +8228,4 @@ export async function saveClaimDraft(
  */
 export async function deleteClaimDraft(draftId: string): Promise<void> {
   return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
-}
-
-/**
- * Gets the app name and version from the connected Ledger device.
- *
- * @returns A promise that resolves to an object containing the app name and version.
- */
-export async function getAppNameAndVersion(): Promise<{
-  appName: string;
-  version: string;
-}> {
-  return await submitRequestToBackground('getAppNameAndVersion');
 }

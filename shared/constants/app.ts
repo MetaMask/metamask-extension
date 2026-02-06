@@ -20,6 +20,18 @@ export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
 export const ENVIRONMENT_TYPE_SIDEPANEL = 'sidepanel';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
+export const isPopupEnvironmentType = (
+  environmentType: EnvironmentType,
+): boolean =>
+  environmentType === ENVIRONMENT_TYPE_NOTIFICATION ||
+  environmentType === ENVIRONMENT_TYPE_POPUP;
+
+export const isFullScreenEnvironmentType = (
+  environmentType: EnvironmentType,
+): boolean =>
+  environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+  environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
 export const PLATFORM_EDGE = 'Edge';

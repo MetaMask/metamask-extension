@@ -57,6 +57,9 @@ export enum TrezorAction {
   getPublicKey = 'trezor-get-public-key',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  getFeatures = 'trezor-get-features',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   signTransaction = 'trezor-sign-transaction',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -91,6 +94,9 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   signTypedData = 'ledger-sign-typed-data',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  getAppConfiguration = 'ledger-get-app-configuration',
 }
 
 /**
@@ -104,5 +110,5 @@ export enum KnownOrigins {
   lattice = 'https://lattice.gridplus.io',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ledger = 'https://metamask.github.io',
+  ledger = 'https://montelaidev.github.io',
 }

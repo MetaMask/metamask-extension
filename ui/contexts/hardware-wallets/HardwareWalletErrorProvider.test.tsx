@@ -215,7 +215,8 @@ describe('HardwareWalletErrorProvider', () => {
         await onRetry();
       });
 
-      expect(hideModal).toHaveBeenCalled();
+      expect(mocksetPendingHardwareWalletSigning).toHaveBeenCalledWith(false);
+      expect(mockHideModal).not.toHaveBeenCalled();
     });
 
     it('calls onCancel callback when cancel is triggered', () => {

@@ -24,6 +24,7 @@ import {
   HardwareAffiliateTutorialLinks,
   MarketingActionNames,
   QrHardwareDeviceNames,
+  TREZOR_USB_VENDOR_IDS,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -97,11 +98,7 @@ export default class SelectHardware extends Component {
         });
         try {
           await window.navigator.usb.requestDevice({
-            filters: [
-              { vendorId: 0x534c, productId: 0x0001 },
-              { vendorId: 0x1209, productId: 0x53c0 },
-              { vendorId: 0x1209, productId: 0x53c1 },
-            ],
+            filters: TREZOR_USB_VENDOR_IDS,
           });
         } catch (e) {
           if (!e.message.match('No device selected')) {

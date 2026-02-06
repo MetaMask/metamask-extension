@@ -12,14 +12,12 @@ import {
   type HardwareWalletAdapterOptions,
   type DeviceEventPayload,
 } from './types';
-import { getHardwareWalletDeviceId } from './webConnectionUtils';
 import { type HardwareWalletRefs } from './HardwareWalletStateManager';
 import { toHardwareWalletError } from './rpcErrorUtils';
 
 type UseHardwareWalletConnectionParams = {
   refs: HardwareWalletRefs;
   setters: {
-    setDeviceId: (deviceId: string | null) => void;
     setConnectionState: (
       updater:
         | HardwareWalletConnectionState
@@ -40,8 +38,6 @@ export const useHardwareWalletConnection = ({
   handleDeviceEvent,
   handleDisconnect,
 }: UseHardwareWalletConnectionParams) => {
-  const { setDeviceId } = setters;
-
   const resetAdapterForFreshConnection = useCallback(
     () => {
       if (refs.adapterRef.current) {
@@ -78,98 +74,12 @@ export const useHardwareWalletConnection = ({
     [],
   );
 
-  const resolveOrDiscoverDeviceId = useCallback(
-    async ({
-      walletType,
-      abortSignal,
-    }: {
-      walletType: HardwareWalletType;
-      abortSignal?: AbortSignal;
-    }): Promise<string | null> => {
-      if (abortSignal?.aborted) {
-        return null;
-      }
-
-      const existingDeviceId = refs.deviceIdRef.current;
-      if (existingDeviceId) {
-        return existingDeviceId;
-      }
-
-      try {
-        const discoveredId = await getHardwareWalletDeviceId(walletType);
-        if (abortSignal?.aborted) {
-          return null;
-        }
-
-        const deviceIdAfterDiscovery = refs.deviceIdRef.current;
-        if (deviceIdAfterDiscovery && deviceIdAfterDiscovery !== discoveredId) {
-          return deviceIdAfterDiscovery;
-        }
-
-        if (!discoveredId) {
-          if (!abortSignal?.aborted) {
-            const error = createHardwareWalletError(
-              ErrorCode.DeviceDisconnected,
-              walletType,
-              `No ${walletType} device found. Please ensure your device is connected and unlocked.`,
-            );
-            updateConnectionState(getConnectionStateFromError(error));
-          }
-          return null;
-        }
-
-        return discoveredId;
-      } catch (error) {
-        if (!abortSignal?.aborted) {
-          updateConnectionState(
-            getConnectionStateFromError(
-              createHardwareWalletError(
-                ErrorCode.ConnectionClosed,
-                walletType,
-                `Failed to discover ${walletType} device: ${error instanceof Error ? error.message : String(error)}`,
-                { cause: error instanceof Error ? error : undefined },
-              ),
-            ),
-          );
-        }
-        return null;
-      }
-    },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
-    [updateConnectionState],
-  );
-
-  const setConnectingStateForDevice = useCallback(
-    ({
-      abortSignal,
-      deviceId: targetDeviceId,
-    }: {
-      abortSignal?: AbortSignal;
-      deviceId: string;
-    }) => {
-      if (!abortSignal?.aborted) {
-        if (
-          refs.deviceIdRef.current === null ||
-          refs.deviceIdRef.current === targetDeviceId
-        ) {
-          refs.deviceIdRef.current = targetDeviceId;
-          setDeviceId(targetDeviceId);
-          updateConnectionState(ConnectionState.connecting());
-        }
-      }
-    },
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
-    [setDeviceId, updateConnectionState],
-  );
-
   const connectWithAdapter = useCallback(
     async ({
       walletType: targetWalletType,
-      deviceId: targetDeviceId,
       abortSignal,
     }: {
       walletType: HardwareWalletType;
-      deviceId: string;
       abortSignal: AbortSignal;
     }): Promise<void> => {
       if (abortSignal.aborted) {
@@ -215,7 +125,7 @@ export const useHardwareWalletConnection = ({
       }
 
       refs.adapterRef.current = adapter;
-      await adapter.connect(targetDeviceId);
+      await adapter.connect();
 
       if (abortSignal.aborted) {
         adapter.destroy();
@@ -272,6 +182,7 @@ export const useHardwareWalletConnection = ({
 
   const connect = useCallback(
     (): Promise<void> => {
+      console.log('[HW] connect called');
       // If there's already a connection in progress, return the pending promise
       // so all callers wait for the same connection to complete
       if (refs.connectingPromiseRef.current) {
@@ -298,27 +209,15 @@ export const useHardwareWalletConnection = ({
         }
 
         resetAdapterForFreshConnection();
+        console.log('[HW] resetAdapterForFreshConnection');
         const abortSignal = beginConnectionAttempt();
-
-        const discoveredDeviceId = await resolveOrDiscoverDeviceId({
-          walletType: effectiveType,
-          abortSignal,
-        });
-        if (!discoveredDeviceId || abortSignal.aborted) {
-          return;
-        }
-
-        setConnectingStateForDevice({
-          abortSignal,
-          deviceId: discoveredDeviceId,
-        });
 
         try {
           await connectWithAdapter({
             walletType: effectiveType,
-            deviceId: discoveredDeviceId,
             abortSignal,
           });
+          console.log('[HW] connectWithAdapter finished');
         } catch (error) {
           handleConnectError({
             error,
@@ -349,8 +248,6 @@ export const useHardwareWalletConnection = ({
       connectWithAdapter,
       handleConnectError,
       resetAdapterForFreshConnection,
-      resolveOrDiscoverDeviceId,
-      setConnectingStateForDevice,
       updateConnectionState,
     ],
   );
@@ -396,12 +293,11 @@ export const useHardwareWalletConnection = ({
         // A new connection would have created a new abort controller.
         if (refs.abortControllerRef.current === controllerAtStart) {
           updateConnectionState(ConnectionState.disconnected());
-          setDeviceId(null);
         }
       }
     },
     // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
-    [updateConnectionState, setDeviceId],
+    [updateConnectionState],
   );
 
   const clearError = useCallback(
@@ -421,78 +317,64 @@ export const useHardwareWalletConnection = ({
   );
 
   const ensureDeviceReady = useCallback(
-    async (targetDeviceId?: string): Promise<boolean> => {
-      const initialDeviceId = targetDeviceId ?? refs.deviceIdRef.current;
+    async (): Promise<boolean> => {
+      console.log('[HW] ensureDeviceReady called');
       const inFlightPromise = refs.ensureDeviceReadyPromiseRef.current;
       if (inFlightPromise) {
-        const inFlightDeviceId = refs.ensureDeviceReadyDeviceIdRef.current;
-        if (
-          targetDeviceId &&
-          (!inFlightDeviceId || targetDeviceId !== inFlightDeviceId)
-        ) {
-          return false;
-        }
         return inFlightPromise;
       }
 
       const ensurePromise = (async (): Promise<boolean> => {
         const abortSignalAtStart = refs.abortControllerRef.current?.signal;
         if (abortSignalAtStart?.aborted) {
+          console.log('[HW] ensureDeviceReady: aborted at start');
           return false;
         }
 
         let expectedConnectionId = refs.currentConnectionIdRef.current ?? 0;
-        let effectiveDeviceId = initialDeviceId;
+        console.log('[HW] ensureDeviceReady: starting', {
+          isConnected: refs.adapterRef.current?.isConnected(),
+          expectedConnectionId,
+        });
 
         if (!refs.adapterRef.current?.isConnected()) {
+          console.log(
+            '[HW] ensureDeviceReady: adapter not connected, will connect',
+          );
           const currentWalletType = refs.walletTypeRef.current;
 
           if (!currentWalletType) {
+            console.log(
+              '[HW] ensureDeviceReady: no wallet type, returning false',
+            );
             return false;
           }
 
-          const hasPendingConnection = Boolean(
-            refs.connectingPromiseRef.current,
-          );
           const abortSignalBeforeConnect =
             refs.abortControllerRef.current?.signal;
           if (abortSignalBeforeConnect?.aborted) {
+            console.log('[HW] ensureDeviceReady: aborted before connect');
             return false;
-          }
-
-          if (
-            hasPendingConnection &&
-            targetDeviceId &&
-            (!refs.deviceIdRef.current ||
-              refs.deviceIdRef.current !== targetDeviceId)
-          ) {
-            return false;
-          }
-
-          if (effectiveDeviceId && !hasPendingConnection) {
-            refs.deviceIdRef.current = effectiveDeviceId;
-            setDeviceId(effectiveDeviceId);
           }
 
           if (!refs.adapterRef.current?.isConnected()) {
+            console.log('[HW] ensureDeviceReady: calling connect()');
             const connectPromise = connect();
             expectedConnectionId = refs.currentConnectionIdRef.current ?? 0;
             await connectPromise;
+            console.log('[HW] ensureDeviceReady: connect() finished', {
+              isConnected: refs.adapterRef.current?.isConnected(),
+            });
           }
-          // Update effectiveDeviceId to use newly discovered device ID if connect() found one
-          effectiveDeviceId = refs.deviceIdRef.current;
-        }
-
-        if (
-          targetDeviceId &&
-          (!effectiveDeviceId || targetDeviceId !== effectiveDeviceId)
-        ) {
-          return false;
         }
 
         // Check if this is still the latest connection attempt
         const currentId = refs.currentConnectionIdRef.current ?? 0;
         if (currentId !== expectedConnectionId) {
+          console.log('[HW] ensureDeviceReady: connection ID changed', {
+            currentId,
+            expectedConnectionId,
+          });
           return false;
         }
 
@@ -500,23 +382,43 @@ export const useHardwareWalletConnection = ({
         const abortSignal = refs.abortControllerRef.current?.signal;
 
         if (abortSignal?.aborted) {
+          console.log('[HW] ensureDeviceReady: aborted after connect');
           return false;
         }
 
         const adapter = refs.adapterRef.current;
-        if (adapter?.ensureDeviceReady && effectiveDeviceId) {
+        console.log('[HW] ensureDeviceReady: checking adapter', {
+          hasAdapter: Boolean(adapter),
+          hasEnsureDeviceReady: Boolean(adapter?.ensureDeviceReady),
+        });
+        if (adapter?.ensureDeviceReady) {
+          console.log('[HW] expectedConnectionId', expectedConnectionId);
+
           const connectionIdBeforeEnsure = expectedConnectionId;
           const isEnsureStale = () =>
             (refs.currentConnectionIdRef.current ?? 0) !==
               connectionIdBeforeEnsure || refs.adapterRef.current !== adapter;
 
           if (abortSignal?.aborted || isEnsureStale()) {
+            console.log(
+              '[HW] ensureDeviceReady: stale before adapter.ensureDeviceReady',
+            );
             return false;
           }
 
           try {
-            const result = await adapter.ensureDeviceReady(effectiveDeviceId);
+            console.log(
+              '[HW] ensureDeviceReady: calling adapter.ensureDeviceReady',
+            );
+            const result = await adapter.ensureDeviceReady();
+            console.log(
+              '[HW] ensureDeviceReady: adapter.ensureDeviceReady returned',
+              result,
+            );
             if (abortSignal?.aborted || isEnsureStale()) {
+              console.log(
+                '[HW] ensureDeviceReady: stale after adapter.ensureDeviceReady',
+              );
               return false;
             }
             if (result) {
@@ -524,9 +426,14 @@ export const useHardwareWalletConnection = ({
             }
             return result;
           } catch (error) {
+            console.log('[HW] error', error);
             if (abortSignal?.aborted || isEnsureStale()) {
               return false;
             }
+            console.log(
+              '[HardwareWalletConnection] ensureDeviceReady error',
+              error,
+            );
             if (isHardwareWalletError(error)) {
               updateConnectionState(getConnectionStateFromError(error));
             } else {
@@ -540,23 +447,24 @@ export const useHardwareWalletConnection = ({
           }
         }
 
+        console.log(
+          '[HW] ensureDeviceReady: no adapter.ensureDeviceReady',
+        );
         return false;
       })();
 
       refs.ensureDeviceReadyPromiseRef.current = ensurePromise;
-      refs.ensureDeviceReadyDeviceIdRef.current = initialDeviceId;
 
       ensurePromise.finally(() => {
         if (refs.ensureDeviceReadyPromiseRef.current === ensurePromise) {
           refs.ensureDeviceReadyPromiseRef.current = null;
-          refs.ensureDeviceReadyDeviceIdRef.current = null;
         }
       });
 
       return ensurePromise;
     },
     // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
-    [connect, updateConnectionState, setDeviceId],
+    [connect, updateConnectionState],
   );
 
   return {

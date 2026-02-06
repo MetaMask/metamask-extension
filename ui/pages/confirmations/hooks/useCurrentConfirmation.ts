@@ -10,6 +10,7 @@ import {
   selectPendingApproval,
 } from '../../../selectors';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
+import { getUnapprovedTransactions } from '../../../selectors/transactions.js';
 import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
@@ -27,8 +28,18 @@ import {
 const useCurrentConfirmation = (providedConfirmationId?: string) => {
   const { id: paramsConfirmationId } = useParams<{ id: string }>();
   const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
+
+  // Check for retried transactions first
+  const unapprovedTransactions = useSelector(getUnapprovedTransactions);
+  const retriedTransaction = (
+    Object.values(unapprovedTransactions || {}) as TransactionMeta[]
+  ).find((tx) => (tx as any).retryId);
+
   const confirmationId =
-    providedConfirmationId ?? paramsConfirmationId ?? oldestPendingApproval?.id;
+    providedConfirmationId ??
+    paramsConfirmationId ??
+    retriedTransaction?.id ??
+    oldestPendingApproval?.id;
 
   const pendingApproval = useSelector((state) =>
     selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),

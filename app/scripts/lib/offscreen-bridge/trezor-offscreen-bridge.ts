@@ -10,6 +10,7 @@ import type {
   EthereumSignedTx,
   PROTO,
   EthereumSignTypedHash,
+  Features,
 } from '@trezor/connect-web';
 import {
   OffscreenCommunicationEvents,
@@ -88,6 +89,26 @@ export class TrezorOffscreenBridge implements TrezorBridge {
         },
       );
     }) as TrezorResponse<{ publicKey: string; chainCode: string }>;
+  }
+
+  /**
+   * Get device features to check if device is ready for operations.
+   * This is similar to Ledger's getAppNameAndVersion but for Trezor.
+   * Returns device info including whether it's unlocked and initialized.
+   */
+  getFeatures() {
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage(
+        {
+          target: OffscreenCommunicationTarget.trezorOffscreen,
+          action: TrezorAction.getFeatures,
+          params: {},
+        },
+        (response) => {
+          resolve(response);
+        },
+      );
+    }) as TrezorResponse<Features>;
   }
 
   ethereumSignTransaction(params: Params<EthereumSignTransaction>) {

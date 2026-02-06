@@ -1,4 +1,5 @@
 import {
+  GetAppNameAndVersionResponse,
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
@@ -43,7 +44,8 @@ export class LedgerOffscreenBridge
         msg.target === OffscreenCommunicationTarget.extension &&
         msg.event === OffscreenCommunicationEvents.ledgerDeviceConnect
       ) {
-        this.isDeviceConnected = true;
+        // Respect the payload value for both connect (true) and disconnect (false)
+        this.isDeviceConnected = Boolean(msg.payload);
       }
     });
 
@@ -82,10 +84,25 @@ export class LedgerOffscreenBridge
     );
   }
 
-  getAppNameAndVersion(): Promise<{ appName: string; version: string }> {
+  getAppNameAndVersion(): Promise<GetAppNameAndVersionResponse> {
     return this.#sendMessage(
       {
         action: LedgerAction.getAppNameAndVersion,
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
+  }
+
+  getAppConfiguration(): Promise<{
+    arbitraryDataEnabled: number;
+    erc20ProvisioningNecessary: number;
+    starkEnabled: number;
+    starkv2Supported: number;
+    version: string;
+  }> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getAppConfiguration,
       },
       { timeout: MESSAGE_TIMEOUT },
     );
@@ -136,6 +153,7 @@ export class LedgerOffscreenBridge
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
+    console.log('[LedgerOffscreenBridge] sending #sendMessage', message);
     return new Promise((resolve, reject) => {
       let responseTimeout: ReturnType<typeof setTimeout>;
 
@@ -152,6 +170,10 @@ export class LedgerOffscreenBridge
         },
         (response) => {
           clearTimeout(responseTimeout);
+          console.log(
+            '[LedgerOffscreenBridge] #sendMessage response:',
+            response,
+          );
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {

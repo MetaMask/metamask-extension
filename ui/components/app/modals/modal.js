@@ -21,6 +21,8 @@ import {
 } from './identity';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
+import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
@@ -295,6 +297,20 @@ const MODALS = {
     },
   },
 
+  [HARDWARE_WALLET_ERROR_MODAL_NAME]: {
+    contents: <HardwareWalletErrorModal />,
+    testId: 'hardware-wallet-error-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   DEFAULT: {
     contents: [],
     mobileModalStyle: {},
@@ -343,11 +359,11 @@ class Modal extends Component {
   };
 
   hide() {
-    this.modalRef.hide();
+    this.modalRef?.hide();
   }
 
   show() {
-    this.modalRef.show();
+    this.modalRef?.show();
   }
 
   UNSAFE_componentWillReceiveProps(nextProps, _) {
@@ -359,8 +375,14 @@ class Modal extends Component {
   }
 
   render() {
-    const modal = MODALS[this.props.modalState.name || 'DEFAULT'];
+    const modalName = this.props.modalState?.name;
+    const modal = MODALS[modalName || 'DEFAULT'];
     const { contents: children, disableBackdropClick = false, testId } = modal;
+
+    if (modalName === HARDWARE_WALLET_ERROR_MODAL_NAME) {
+      return this.props.active ? children : null;
+    }
+
     const modalStyle =
       modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
     const contentStyle = modal.contentStyle || {};

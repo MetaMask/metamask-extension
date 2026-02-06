@@ -75,6 +75,13 @@ export default function init() {
 
           break;
 
+        case TrezorAction.getFeatures:
+          TrezorConnectSDK.getFeatures(msg.params).then((result) => {
+            sendResponse(result);
+          });
+
+          break;
+
         case TrezorAction.signTransaction:
           TrezorConnectSDK.ethereumSignTransaction(msg.params).then(
             (result) => {
