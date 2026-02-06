@@ -33,7 +33,7 @@ env:
   # For a `push` event, the head commit hash is `github.sha`.
   HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
   BRANCH: ${{ github.head_ref || github.ref_name }}
-  IS_MAIN: ${{ (github.head_ref || github.ref_name) == 'main' }}
+  IS_RUN_EVERYTHING_BRANCH: ${{ (github.head_ref || github.ref_name) == 'main' || (github.head_ref || github.ref_name) == 'stable' }}
   RUN_ID: ${{ github.run_id }}
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
   EVENT_NAME: ${{ github.event_name }}
@@ -83,7 +83,7 @@ jobs:
       # Do this before we use dorny/paths-filter, which might checkout other commits
       - name: 'Look for `[builds-from-run: <run>]` in the last commit message'
         id: identify-builds
-        if: ${{ env.IS_MAIN != 'true' && steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        if: ${{ env.IS_RUN_EVERYTHING_BRANCH != 'true' && steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         run: .github/scripts/identify-builds-from-run.sh
 
       - id: filter
@@ -102,7 +102,7 @@ jobs:
           FILTER_ALL_CHANGES_COUNT: ${{ steps.filter.outputs.all_changes_count }}
         run: |
           # On main we never run locales-only mode (full-signal CI and scheduled runs).
-          if [[ "$IS_MAIN" == 'true' ]]; then
+          if [[ "$IS_RUN_EVERYTHING_BRANCH" == 'true' ]]; then
             echo "needs-locales=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -117,7 +117,7 @@ jobs:
       # skip-everything is a shortcut for up-to-date == 'true' || needs-locales == 'true'
       - name: Compute skip-everything flag
         id: set-skip-everything
-        if: ${{ env.IS_MAIN == 'false' && (steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-needs-locales.outputs.needs-locales == 'true') }}
+        if: ${{ env.IS_RUN_EVERYTHING_BRANCH == 'false' && (steps.check-skip-merge-queue.outputs.up-to-date == 'true' || steps.set-needs-locales.outputs.needs-locales == 'true') }}
         run: echo "skip-everything=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now (and equivalent to !skip-everything)
@@ -143,7 +143,7 @@ jobs:
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
         # Do not run benchmarks on a fork
-        if: ${{ env.IS_FORK == 'false' && (env.IS_MAIN == 'true' || env.EVENT_NAME == 'pull_request') && steps.set-skip-everything.outputs.skip-everything != 'true' }}
+        if: ${{ env.IS_FORK == 'false' && (env.IS_RUN_EVERYTHING_BRANCH == 'true' || env.EVENT_NAME == 'pull_request') && steps.set-skip-everything.outputs.skip-everything != 'true' }}
         run: echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
 
       - name: Compute needs-e2e flag
