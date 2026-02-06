@@ -5392,14 +5392,14 @@
   "perpsOrderAmount": {
     "message": "Order Amount"
   },
-  "perpsOrders": {
-    "message": "Orders"
-  },
   "perpsOrderType": {
     "message": "Order Type"
   },
   "perpsOrderValue": {
     "message": "Order Value"
+  },
+  "perpsOrders": {
+    "message": "Orders"
   },
   "perpsPnl": {
     "message": "P&L"
@@ -5482,11 +5482,11 @@
   "perpsStatusTriggered": {
     "message": "Triggered"
   },
-  "perpsTpPrice": {
-    "message": "TP Price"
-  },
   "perpsTotalBalance": {
     "message": "Total Balance"
+  },
+  "perpsTpPrice": {
+    "message": "TP Price"
   },
   "perpsTradePerps": {
     "message": "Trade perps"
