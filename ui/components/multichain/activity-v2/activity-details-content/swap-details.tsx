@@ -9,34 +9,29 @@ import {
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
-  extractAmountAndSymbol,
   mapChainInfo,
   getExplorerUrl,
   formatDateTime,
+  formatUnits,
 } from '../helpers';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { Row } from './row';
 
 type Props = {
   transaction: TransactionViewModel;
-  formatToken: (amount: number, symbol: string) => string;
   selectedAddress?: string;
   nativeCurrency?: string;
 };
 
 export const SwapDetails = ({
   transaction,
-  formatToken,
   selectedAddress,
   nativeCurrency,
 }: Props) => {
-  const { amount, symbol } = extractAmountAndSymbol(
-    transaction,
-    selectedAddress,
-    nativeCurrency,
-  );
+  const { formatToken } = useFormatters();
   const { chainImageUrl, chainName } = mapChainInfo(transaction.chainId);
   const explorerUrl = getExplorerUrl(transaction.chainId, transaction.hash);
-  const formattedDate = formatDateTime(transaction.timestamp);
+  const formattedDate = formatDateTime(transaction.time);
 
   const networkFeeWei =
     transaction.gasUsed && transaction.effectiveGasPrice
@@ -45,22 +40,20 @@ export const SwapDetails = ({
   const networkFeeEth = Number(networkFeeWei) / 10 ** 18;
 
   // Extract amounts for swap/bridge
-  let fromAmount = amount;
-  let fromSymbol = symbol;
-  let toAmount = 0;
-  let toSymbol = '';
+  const fromData = transaction.amounts?.from;
+  const toData = transaction.amounts?.to;
 
-  if (transaction.valueTransfers) {
-    const transfers = transaction.valueTransfers;
-    if (transfers.length >= 2 && transfers[0] && transfers[1]) {
-      const fromDecimals = transfers[0].decimal ?? 18;
-      fromAmount = parseFloat(transfers[0].amount) / 10 ** fromDecimals;
-      fromSymbol = transfers[0].symbol;
-      const toDecimals = transfers[1].decimal ?? 18;
-      toAmount = parseFloat(transfers[1].amount) / 10 ** toDecimals;
-      toSymbol = transfers[1].symbol;
-    }
-  }
+  const fromAmount =
+    fromData?.amount && fromData?.decimal !== undefined
+      ? parseFloat(formatUnits(BigInt(fromData.amount), fromData.decimal))
+      : 0;
+  const fromSymbol = fromData?.symbol || '';
+
+  const toAmount =
+    toData?.amount && toData?.decimal !== undefined
+      ? parseFloat(formatUnits(BigInt(toData.amount), toData.decimal))
+      : 0;
+  const toSymbol = toData?.symbol || '';
 
   const { from, to, hash, isError } = transaction;
   const status = isError ? 'Failed' : 'Confirmed';

@@ -1,4 +1,4 @@
-import type { V4MultiAccountTransactionsResponse } from './types';
+import type { GetAccountTransactionsResponse } from './types';
 
 const API_BASE_URL = 'https://accounts.api.cx.metamask.io';
 
@@ -11,7 +11,7 @@ type Params = {
 
 export async function fetchV4MultiAccountTransactions(
   params: Params,
-): Promise<V4MultiAccountTransactionsResponse> {
+): Promise<GetAccountTransactionsResponse> {
   const { accountAddresses = [], networks = [], cursor, limit = 50 } = params;
 
   const url = new URL(`${API_BASE_URL}/v4/multiaccount/transactions`);

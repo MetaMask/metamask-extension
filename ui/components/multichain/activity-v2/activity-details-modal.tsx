@@ -27,7 +27,6 @@ export const ActivityDetailsModal = ({
   onClose,
   transaction,
 }: Props) => {
-  const { formatToken } = useFormatters();
   const selectedAddress = useSelector(getSelectedAddress)?.toLowerCase();
 
   const chainIdHex = `0x${transaction?.chainId.toString(16)}`;
@@ -49,7 +48,6 @@ export const ActivityDetailsModal = ({
 
   const commonProps = {
     transaction,
-    formatToken,
     selectedAddress,
     nativeCurrency,
   };

@@ -4,80 +4,22 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { selectedAddressTxListSelectorAllChain } from './transactions';
-import { getMarketData, getCurrencyRates } from './selectors';
+import {
+  getMarketData,
+  getCurrencyRates,
+  getEnabledNetworks,
+} from './selectors';
+import { getSelectedAccountGroupMultichainTransactions } from './multichain-transactions';
 
 export const getPendingTransactions = createSelector(
   selectedAddressTxListSelectorAllChain,
   (allTxs) => {
-    return (allTxs as TransactionMeta[])
-      .filter((tx) => {
-        const isSubmitted = tx.status === TransactionStatus.submitted;
-        const isConfirmed = tx.status === TransactionStatus.confirmed;
-        const isFailed = tx.status === TransactionStatus.failed;
-        return isSubmitted || isConfirmed || isFailed;
-      })
-      .map((tx) => {
-        // Map to V1TransactionByHashResponse transactionType
-        let transactionType;
-        if (tx.type === 'transfer') {
-          transactionType = 'ERC_20_TRANSFER';
-        } else if (tx.type === 'approve') {
-          transactionType = 'ERC_20_APPROVE';
-        } else if (tx.type === 'swap') {
-          transactionType = 'METAMASK_V1_EXCHANGE';
-        }
-
-        // Extract values
-        let valueTransfers;
-
-        if (tx.type === 'transfer') {
-          if (
-            tx.simulationData?.tokenBalanceChanges &&
-            tx.simulationData?.tokenBalanceChanges?.length > 0
-          ) {
-            let decimal: number | undefined;
-            let symbol: string | undefined;
-
-            const tokenChange = tx.simulationData.tokenBalanceChanges[0];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const gasFeeToken = (tx.gasFeeTokens as any)?.find(
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (token: any) =>
-                token.tokenAddress?.toLowerCase() ===
-                tokenChange.address?.toLowerCase(),
-            );
-
-            if (gasFeeToken) {
-              decimal = gasFeeToken.decimals;
-              symbol = gasFeeToken.symbol;
-            }
-
-            valueTransfers = [
-              {
-                amount: String(parseInt(tokenChange.difference || '0x0', 16)),
-                decimal,
-                symbol: symbol || '',
-                from: tx.txParams.from || '',
-                to: tx.txParams.to || '',
-                contractAddress: tokenChange.address || tx.txParams.to || '',
-              },
-            ];
-          }
-        }
-
-        return {
-          hash: tx.hash || '',
-          timestamp: new Date(tx.time || Date.now()).toISOString(), // Match V1TransactionByHashResponse
-          chainId: parseInt(tx.chainId, 16), // Match V1TransactionByHashResponse
-          value: tx.txParams.value || '0x0',
-          to: tx.txParams.to || '',
-          from: tx.txParams.from || '',
-          isError: tx.status === TransactionStatus.failed,
-          transactionType,
-          valueTransfers,
-          pendingTransactionMeta: tx, // For the PendingTransactionActions
-        };
-      });
+    return (allTxs as TransactionMeta[]).filter((tx) => {
+      const isSubmitted = tx.status === TransactionStatus.submitted;
+      const isConfirmed = tx.status === TransactionStatus.confirmed;
+      const isFailed = tx.status === TransactionStatus.failed;
+      return isSubmitted || isConfirmed || isFailed;
+    });
   },
 );
 
@@ -106,5 +48,35 @@ export const getMarketRates = createSelector(
     }
 
     return rates;
+  },
+);
+
+/**
+ * Gets all non-EVM chain IDs from enabled networks
+ */
+export const getNonEvmChainIds = createSelector(
+  [getEnabledNetworks],
+  (enabledNetworks) => {
+    const allNamespaces = Object.keys(enabledNetworks);
+    const nonEvmNamespaces = allNamespaces.filter((ns) => ns !== 'eip155');
+
+    const chainIds = nonEvmNamespaces.flatMap((namespace) =>
+      Object.keys(enabledNetworks[namespace] as Record<string, unknown>),
+    );
+
+    return [...new Set(chainIds)];
+  },
+);
+
+/**
+ * Gets non-EVM transactions for the selected account group.
+ *
+ * @param state - The Redux state.
+ * @returns The non-EVM transactions for the selected account group.
+ */
+export const getNonEvmTransactions = createSelector(
+  [(state) => state, getNonEvmChainIds],
+  (state, nonEvmChainIds) => {
+    return getSelectedAccountGroupMultichainTransactions(state, nonEvmChainIds);
   },
 );

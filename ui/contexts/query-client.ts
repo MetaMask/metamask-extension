@@ -29,11 +29,11 @@ broadcastQueryClient({
 if (process.env.METAMASK_DEBUG) {
   queryClient.getQueryCache().subscribe((event) => {
     if (event?.type === 'added' || event?.type === 'updated') {
-      console.log('>>> Query Client Cache update:', {
-        type: event.type,
-        queryKey: event.query.queryKey,
-        hasData: Boolean(event.query.state.data),
-      });
+      // console.log('>>> Query Client Cache update:', {
+      //   type: event.type,
+      //   queryKey: event.query.queryKey,
+      //   hasData: Boolean(event.query.state.data),
+      // });
     }
   });
 }

@@ -9,34 +9,33 @@ import {
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
-  extractAmountAndSymbol,
   mapChainInfo,
   getExplorerUrl,
   formatDateTime,
+  getTransferAmount,
 } from '../helpers';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { Row } from './row';
 
 type Props = {
   transaction: TransactionViewModel;
-  formatToken: (amount: number, symbol: string) => string;
   selectedAddress?: string;
   nativeCurrency?: string;
 };
 
 export const TransferDetails = ({
   transaction,
-  formatToken,
   selectedAddress,
   nativeCurrency,
 }: Props) => {
-  const { amount, symbol } = extractAmountAndSymbol(
-    transaction,
-    selectedAddress,
-    nativeCurrency,
-  );
+  const { formatToken } = useFormatters();
+  const { symbol } = transaction.amounts?.from ?? transaction.amounts?.to ?? {};
+  const tokenAmount = getTransferAmount(transaction.amounts);
+  const amount = tokenAmount ? parseFloat(tokenAmount.amount) : 0;
+
   const { chainImageUrl, chainName } = mapChainInfo(transaction.chainId);
   const explorerUrl = getExplorerUrl(transaction.chainId, transaction.hash);
-  const formattedDate = formatDateTime(transaction.timestamp);
+  const formattedDate = formatDateTime(transaction.time);
 
   const networkFeeWei =
     transaction.gasUsed && transaction.effectiveGasPrice

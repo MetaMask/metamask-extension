@@ -1,10 +1,12 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { TransactionGroupCategory } from '../constants/transaction';
 
-export type V1TransactionByHashResponse = {
-  hash: string;
+// transaction-controlller TransactionResponse plus missing fields from the API
+export type TransactionResponse = {
+  hash: string; // hex string
   timestamp: string; // ISO string
   chainId: number; // API returns decimal number
+  accountId: string; // e.g., 'eip155:137:0x9bed78535d6a03a955f1504aadba974d9a29e292'
   blockNumber: number;
   blockHash: string;
   gas: number;
@@ -13,21 +15,24 @@ export type V1TransactionByHashResponse = {
   effectiveGasPrice: string;
   nonce: number;
   cumulativeGasUsed: number;
-  methodId: string; // hex string
+  methodId: string | null; // hex string or null for simple transfers
   value: string;
   to: string; // address
   from: string; // address
-  isError?: boolean;
+  isError: boolean;
   valueTransfers: {
+    contractAddress?: string; // token contract address (present for token transfers)
+    decimal?: number; // token decimals (present for ERC20)
+    symbol?: string; // e.g., 'USDC'
     from: string; // address
     to: string; // address
     amount: string; // raw amount as string
-    decimal?: number; // not always provided
-    contractAddress: string;
-    symbol: string; // e.g., 'USDC'
+
+    tokenId?: string; // token ID (present for ERC721/ERC1155)
+    transferType?: string; // e.g., 'erc20', 'erc721', 'erc1155', 'normal'
     name?: string; // e.g., 'USD Coin'
-    transferType?: string; // e.g., 'erc20'
   }[];
+
   logs: {
     data: string;
     topics: string[];
@@ -35,35 +40,46 @@ export type V1TransactionByHashResponse = {
     logIndex: number;
   }[];
   toAddressName?: string; // e.g., 'METAMASK_BRIDGE_V2'
-  transactionProtocol?: string; // e.g., 'ERC_20', 'METAMASK'
   transactionCategory: string; // e.g., 'APPROVE', 'BRIDGE_OUT', 'TRANSFER', 'CONTRACT_CALL', etc.
+  transactionProtocol?: string; // e.g., 'ERC_20', 'METAMASK'
   transactionType: string; // e.g., 'ERC_20_APPROVE', 'METAMASK_BRIDGE_V2_BRIDGE_OUT', 'GENERIC_CONTRACT_CALL', etc.
-  readable: string; // e.g., 'Token: Approve', 'MetaMask Bridge V2: Bridge Withdraw', 'Unidentified Transaction'
+  readable: string; // e.g., 'Token: Approve', 'MetaMask Bridge V2: Bridge Withdraw', 'Unidentified Transaction', 'Spam Token: Transfer'
 };
 
-export type V4MultiAccountTransactionsResponse = {
-  unprocessedNetworks: string[];
+export type GetAccountTransactionsResponse = {
+  data: TransactionResponse[];
+  unprocessedNetworks?: string[];
   pageInfo: {
     count: number;
     hasNextPage: boolean;
     endCursor?: string;
   };
-  data: V1TransactionByHashResponse[];
 };
 
-export type TransactionViewModel = Pick<
-  V1TransactionByHashResponse,
-  'hash' | 'timestamp' | 'chainId' | 'value' | 'to' | 'from'
-> &
-  Partial<
-    Omit<
-      V1TransactionByHashResponse,
-      'hash' | 'timestamp' | 'chainId' | 'value' | 'to' | 'from'
-    >
-  > & {
-    category?: TransactionGroupCategory;
-    pendingTransactionMeta?: TransactionMeta;
+export type NormalizedGetAccountTransactionsResponse = Omit<
+  GetAccountTransactionsResponse,
+  'data'
+> & {
+  data: TransactionViewModel[];
+};
+
+export type TransactionViewModel = TransactionMeta & {
+  readable?: string;
+  amounts?: {
+    from?: {
+      amount: bigint;
+      decimal: number;
+      symbol?: string;
+    };
+    to?: {
+      amount: bigint;
+      decimal: number;
+      symbol?: string;
+    };
   };
+  transactionType: string;
+  category: TransactionGroupCategory;
+};
 
 export type DateGroupedTransactions = {
   date: number;

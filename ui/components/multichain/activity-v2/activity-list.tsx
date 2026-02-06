@@ -7,22 +7,20 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import {
-  getPendingTransactions,
   getMarketRates,
+  getNonEvmTransactions,
 } from '../../../selectors/activity';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import type {
-  FlattenedItem,
-  TransactionViewModel,
-} from '../../../../shared/acme-controller/types';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { queries } from '../../../../shared/acme-controller/queries';
-import { filterTransactions } from '../../../../shared/acme-controller/business-logic';
+import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
 import {
   groupTransactionsByDate,
   flattenGroupedTransactions,
   mergeTransactions,
   formatDate,
+  isDateHeader,
+  type FlattenedItem,
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModal } from './activity-details-modal';
@@ -34,51 +32,83 @@ export const ActivityList = () => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
   const accountAddress = useSelector(getSelectedInternalAccount)?.address;
-  // Pending transactions are still in Redux
-  const pendingTransactions = useSelector(getPendingTransactions);
+  // Pending transactions sourced from Redux
+
+  // It wont be here after Confirmed
+  // const pendingFromSelectedAccount = useSelector(
+  //   nonceSortedPendingTransactionsSelectorAllChains,
+  // );
+
+  /*
+   TODO:
+   - check pendingFromSelectedAccount
+   - check primaryTransaction? is type swap isBridge (see transaction-list-item.component.js)
+   const isBridgeTx =
+    transactionGroup.initialTransaction.type === TransactionType.bridge;
+  const {
+    bridgeTxHistoryItem,
+    isBridgeComplete,
+    showBridgeTxDetails,
+    isBridgeFailed,
+  } = useBridgeTxHistoryData({
+    transactionGroup,
+    isEarliestNonce,
+  });
+
+  then render this for the left side bottom part:
+  !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
+          isBridgeTx &&
+          !(isBridgeComplete || isBridgeFailed) &&
+          bridgeTxHistoryItem ? (
+            <BridgeActivityItemTxSegments
+              bridgeTxHistoryItem={bridgeTxHistoryItem}
+              transactionGroup={transactionGroup}
+            />
+  */
+
+  const pendingTransactions = []; // useSelector(getPendingTransactions);
+
+  // Non-EVM transactions sourced from Redux
+  const nonEvmTransactions = useSelector(getNonEvmTransactions);
+
   const marketRates = useSelector(getMarketRates);
   const currentCurrency = useSelector(getCurrentCurrency);
 
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<TransactionViewModel | null>(null);
+  const [selectedItem, setSelectedItem] = useState<TransactionViewModel | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleItemClick = (transaction: TransactionViewModel) => {
-    setSelectedTransaction(transaction);
+    setSelectedItem(transaction);
     setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setSelectedTransaction(null);
+    setSelectedItem(null);
   };
 
-  // Fetch transactions using React Query
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(queries.transactions(accountAddress));
 
-  const filteredData = useMemo(() => {
-    return data ? filterTransactions(data, accountAddress) : undefined;
-  }, [data, accountAddress]);
-
-  // Merge pending and confirmed transactions, then flatten for virtualization
-  const flattenedItems: FlattenedItem[] = useMemo(() => {
-    if (!filteredData?.pages) {
+  // Merge completed and non-EVM transactions, then flatten for virtualization
+  const flattenedItems = useMemo(() => {
+    if (!data?.pages) {
       return [];
     }
 
-    const apiTransactions = filteredData.pages.flatMap(
-      (page) => page.data ?? [],
-    );
+    const apiTransactions = data.pages.flatMap((page) => page.data ?? []);
 
     const allTransactions = mergeTransactions(
-      pendingTransactions,
+      [], // TODO: pendingTransactions
       apiTransactions,
+      nonEvmTransactions,
     );
 
     const grouped = groupTransactionsByDate(allTransactions);
     return flattenGroupedTransactions(grouped);
-  }, [filteredData, pendingTransactions]);
+  }, [data, nonEvmTransactions]);
 
   const virtualizer = useVirtualizer({
     count: flattenedItems.length,
@@ -121,6 +151,27 @@ export const ActivityList = () => {
     isFetchingNextPage,
   ]);
 
+  const renderItem = (item: FlattenedItem) => {
+    if (isDateHeader(item)) {
+      return (
+        <Box className="px-4 py-2 bg-background-default">
+          <Text className="text-sm text-alternative">
+            {formatDate(item.date)}
+          </Text>
+        </Box>
+      );
+    }
+
+    return (
+      <ActivityListItem
+        transaction={item.data}
+        onClick={() => handleItemClick(item.data)}
+        marketRates={marketRates}
+        currentCurrency={currentCurrency}
+      />
+    );
+  };
+
   if (flattenedItems.length > 0) {
     return (
       <Box>
@@ -141,21 +192,7 @@ export const ActivityList = () => {
                   transform: `translateY(${virtualItem.start}px)`,
                 }}
               >
-                {item &&
-                  (item.type === 'date-header' ? (
-                    <Box className="px-4 py-2 bg-background-default">
-                      <Text className="text-sm text-alternative">
-                        {formatDate(item.date)}
-                      </Text>
-                    </Box>
-                  ) : (
-                    <ActivityListItem
-                      transaction={item.data}
-                      onClick={() => handleItemClick(item.data)}
-                      marketRates={marketRates}
-                      currentCurrency={currentCurrency}
-                    />
-                  ))}
+                {item && renderItem(item)}
               </div>
             );
           })}
@@ -170,7 +207,7 @@ export const ActivityList = () => {
         <ActivityDetailsModal
           isOpen={isModalOpen}
           onClose={handleModalClose}
-          transaction={selectedTransaction}
+          transaction={selectedItem}
         />
       </Box>
     );

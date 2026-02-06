@@ -2,28 +2,27 @@ import React from 'react';
 import {
   Box,
   Text,
-  AvatarNetwork,
-  AvatarNetworkSize,
   BadgeWrapper,
   TextVariant,
 } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getTransactionTypeTitle } from '../../../helpers/utils/transactions.util';
+// import { getTransactionTypeTitle } from '../../../helpers/utils/transactions.util';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import { useFormatters } from '../../../hooks/useFormatters';
-import {
-  getSelectedAddress,
-  selectNetworkConfigurationByChainId,
-} from '../../../selectors/selectors';
+// import {
+//   getSelectedAddress,
+//   selectNetworkConfigurationByChainId,
+// } from '../../../selectors/selectors';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import { ChainIcon } from '../../app/chain-icon/chain-icon';
 import {
-  extractAmountAndSymbol,
+  // extractAmountAndSymbol,
   calculateFiatFromMarketRates,
-  mapChainInfo,
+  getTransferAmount,
 } from './helpers';
+import { useGetTitle } from './hooks';
 import { PendingTransactionActions } from './pending-transaction-actions';
 
 type Props = {
@@ -42,34 +41,18 @@ export const ActivityListItem = ({
   const t = useI18nContext();
   const { formatTokenQuantity, formatCurrencyWithMinThreshold } =
     useFormatters();
-  const selectedAddress = useSelector(getSelectedAddress)?.toLowerCase();
-  const {
-    readable,
-    chainId,
-    isError,
-    pendingTransactionMeta,
-    category = TransactionGroupCategory.interaction,
-  } = transaction;
+  const { chainId, category } = transaction;
 
-  const chainIdHex = `0x${transaction.chainId.toString(16)}`;
-  const nativeCurrency = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainIdHex),
-  )?.nativeCurrency;
+  // These properties may not exist on non-EVM transactions
+  const { isError, pendingTransactionMeta } = transaction as {
+    isError?: boolean;
+    pendingTransactionMeta?: { status: string };
+  };
 
-  const title =
-    readable ??
-    getTransactionTypeTitle(t, pendingTransactionMeta?.type, nativeCurrency);
+  const title = useGetTitle(transaction);
 
-  // Extract amount and symbol
-  const { amount, symbol } = extractAmountAndSymbol(
-    transaction,
-    selectedAddress,
-    nativeCurrency,
-  );
-
+  const { amount, symbol } = getTransferAmount(transaction.amounts);
   const fiatAmount = calculateFiatFromMarketRates(transaction, marketRates);
-
-  const { chainImageUrl, chainName } = mapChainInfo(chainId);
 
   const isPending = pendingTransactionMeta?.status === 'submitted';
 
@@ -102,16 +85,7 @@ export const ActivityListItem = ({
     >
       <div className="flex gap-4 items-center">
         <div className="flex-shrink-0">
-          <BadgeWrapper
-            badge={
-              <AvatarNetwork
-                name={chainName}
-                src={chainImageUrl}
-                size={AvatarNetworkSize.Xs}
-                className="rounded-full"
-              />
-            }
-          >
+          <BadgeWrapper badge={<ChainIcon chainId={chainId} />}>
             <TransactionIcon category={category} status={transactionStatus} />
           </BadgeWrapper>
         </div>
@@ -128,7 +102,7 @@ export const ActivityListItem = ({
 
         {/* Right side - Value */}
         <div className="flex flex-col items-end">
-          {amount !== 0 && symbol && (
+          {amount && symbol && (
             <Text className="font-medium">
               {formatTokenQuantity(amount, symbol)}
             </Text>
@@ -147,7 +121,8 @@ export const ActivityListItem = ({
       {/* Wrapper for existing pending transaction actions (speed up / cancel) */}
       {isPending && pendingTransactionMeta && (
         <PendingTransactionActions
-          transaction={pendingTransactionMeta}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          transaction={pendingTransactionMeta as any}
           isEarliestNonce={true}
         />
       )}
