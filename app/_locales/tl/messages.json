@@ -1818,12 +1818,6 @@
   "creatorAddress": {
     "message": "Address ng creator"
   },
-  "crossChainSwapsLink": {
-    "message": "Mag-swap sa mga network gamit ang MetaMask Portfolio"
-  },
-  "crossChainSwapsLinkNative": {
-    "message": "Mag-swap sa mga network gamit ang Bridge"
-  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2847,9 +2841,6 @@
     "message": "Ang bayad sa gas na ito ay iminungkahi ng $1. Ang pag-override nito ay maaaring magdulot ng problema sa iyong transaksyon. Mangyaring makipag-ugnayan sa $1 kung mayroon kang mga katanungan.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Bayarin sa Gas"
-  },
   "gasLimit": {
     "message": "Gas limit"
   },
@@ -3257,9 +3248,6 @@
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "included": {
-    "message": "kasama na"
-  },
   "includesXTransactions": {
     "message": "Kabilang ang $1 (na) transaksyon"
   },
@@ -3661,12 +3649,6 @@
   },
   "low": {
     "message": "Low"
-  },
-  "lowEstimatedReturnTooltipMessage": {
-    "message": "Magbabayad ka ng higit sa $1% ng iyong panimulang halaga sa mga bayad. Tingnan ang matatanggap mong halaga at ang mga bayad sa network."
-  },
-  "lowEstimatedReturnTooltipTitle": {
-    "message": "Mataas na gastos"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 para maghintay ng mas murang presyo. Ang mga pagtatantya sa oras ay hindi gaanong tumpak dahil ang mga presyo ay medyo hindi mahuhulaan.",
@@ -4336,9 +4318,6 @@
   },
   "notCurrentAccount": {
     "message": "Ito ba ang tamang account? Iba ito sa kasalukuyang napiling account sa iyong wallet"
-  },
-  "notEnoughBalance": {
-    "message": "Hindi sapat ang balanse"
   },
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
@@ -5336,9 +5315,6 @@
   "popularNetworks": {
     "message": "Mga popular na network"
   },
-  "preparingSwap": {
-    "message": "Inihahanda ang pag-swap..."
-  },
   "prev": {
     "message": "Nakaraan"
   },
@@ -5559,9 +5535,6 @@
   },
   "queued": {
     "message": "Naka-queue"
-  },
-  "quoteRate": {
-    "message": "Quote rate"
   },
   "quotedReceiveAmount": {
     "message": "$1 na matatanggap na halaga"
@@ -7815,16 +7788,9 @@
   "swapAndSend": {
     "message": "I-swap at Ipadala"
   },
-  "swapAnyway": {
-    "message": "I-swap pa rin"
-  },
   "swapApproval": {
     "message": "Aprubahan ang $1 para sa mga pag-swap",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapApproveNeedMoreTokens": {
-    "message": "Kailangan mo ng $1 pa $2 para makumpleto ang pag-swap na ito",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapAreYouStillThere": {
     "message": "Nandyan ka pa ba?"
@@ -7834,9 +7800,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Kumpirmahin gamit ang iyong wallet na hardware"
-  },
-  "swapContinueSwapping": {
-    "message": "Ituloy ang pag-swap"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "Sa Ethereum app sa iyong Ledger, magpunta sa \"Mga Setting\" at payagan ang data ng kontrata. Pagkatapos ay subukan muli ang iyong pag-swap."
@@ -7868,9 +7831,6 @@
     "message": "Ito ay $1 para sa pag-swap",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEnterAmount": {
-    "message": "Ilagay ang halaga"
-  },
   "swapEstimatedNetworkFees": {
     "message": "Mga tinantyang bayad sa network"
   },
@@ -7883,9 +7843,6 @@
   },
   "swapFailedErrorTitle": {
     "message": "Nabigo ang pag-swap"
-  },
-  "swapFetchingQuote": {
-    "message": "Kumukuha ng quote"
   },
   "swapFetchingQuoteNofN": {
     "message": "Kinukuha ang quote $1 ng $2",
@@ -7924,35 +7881,15 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "MetaMask ang nagbabayad sa network na ito, kaya puwede kang makipagtransaksyon kahit wala kang $1 sa account mo."
   },
-  "swapGasIncludedTooltipExplanation": {
-    "message": "Isinasama sa quote na ito ang mga bayad sa gas sa pamamagitan ng pagsasaayos sa halaga ng token na ipinapadala o natatanggap. Maaari mong matanggap ang ETH sa hiwalay na transaksyon sa iyong listahan ng aktibidad."
-  },
-  "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "Matuto pa tungkol sa mga bayad sa gas"
-  },
-  "swapHighSlippage": {
-    "message": "Mataas na slippage"
-  },
-  "swapIncludesGasAndMetaMaskFee": {
-    "message": "Kasama ang gas at $1% bayad sa MetaMask",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapIncludesMMFee": {
     "message": "Kabilang ang $1% na bayad sa MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "Kabilang ang $1% na bayad sa MetaMask – $2",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Alamin pa ang tungkol sa mga Swap"
   },
   "swapLiquiditySourceInfo": {
     "message": "Naghahanap kami sa iba't ibang pinagmumulan ng liquidity (mga exchange, aggregator at propesyonal na market maker) upang paghambingin ang mga halaga ng palitan at bayad sa network."
-  },
-  "swapLowSlippage": {
-    "message": "Mababang slippage"
   },
   "swapMaxSlippage": {
     "message": "Pinakamataas na slippage"
@@ -7968,10 +7905,6 @@
     "message": "$1 quote.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "Mga bagong quote sa $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapNoTokensAvailable": {
     "message": "Walang available na token na tumutugma sa $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -7980,29 +7913,11 @@
     "message": "Idaragdag ang iyong $1 sa account mo sa oras na maiproseso ang transaksyong ito.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapPriceDifference": {
-    "message": "Isa-swap mo na ang $1 $2 (~$3) sa $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Deperensya ng presyo ng ~$1%",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "Hindi matukoy ang price impact dahil sa kakulangan ng data ng market price. Pakikumpirma na komportable ka sa dami ng mga token na matatanggap mo bago mag-swap."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "Tingnan ang iyong rate bago magpatuloy"
-  },
   "swapProcessing": {
     "message": "Pinoproseso"
   },
   "swapQuoteDetails": {
     "message": "Mga detalye ng quote"
-  },
-  "swapQuoteNofM": {
-    "message": "$1 sa $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "Pinagmulan ng quote"
@@ -8103,32 +8018,12 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Ang mga swap ay kumplikado at sensitibo sa oras na mga transaksyon. Inirerekomenda namin ang bayad sa gas na ito para sa magandang balanse sa pagitan ng halaga at kumpiyansa ng matagumpay na Swap."
   },
-  "swapSwapFrom": {
-    "message": "I-swap mula sa"
-  },
-  "swapSwapSwitch": {
-    "message": "Mga token na papalitan o ipapalit"
-  },
-  "swapSwapTo": {
-    "message": "I-swap sa"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "para kumpirmahin gamit ang iyong wallet na hardware"
-  },
-  "swapTokenAddedManuallyDescription": {
-    "message": "I-verify ang token na ito sa $1 at siguraduhing ito ang token na gusto mong i-trade.",
-    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenAddedManuallyTitle": {
-    "message": "Mano-manong idinagdag ang token"
   },
   "swapTokenAvailable": {
     "message": "Naidagdag na ang $1 sa iyong account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenBalanceUnavailable": {
-    "message": "Hindi namin nabawi ang iyong $1 na balanse",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenNotAvailable": {
     "message": "Hindi maaaring i-swap ang token sa rehiyon na ito"
@@ -8137,23 +8032,8 @@
     "message": "I-swap ang $1 sa $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerifiedOn1SourceDescription": {
-    "message": "Na-verify $1 sa 1 pinagmulan lang. Pag-isipang i-verify ito sa $2 bago magpatuloy.",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenVerifiedOn1SourceTitle": {
-    "message": "Potensyal na hindi tunay na token"
-  },
-  "swapTokenVerifiedSources": {
-    "message": "Kinumpirma ng $1 (na) pinagmulan. I-verify sa $2.",
-    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
-  },
   "swapTokens": {
     "message": "Ipagpalit ang mga token"
-  },
-  "swapTooManyDecimalsError": {
-    "message": "Ang $1 ay nagpapahintulot sa hanggang $2 na decimal",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "Nakumpleto ang transaksyon"
@@ -8172,10 +8052,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
-  },
-  "swapsNotEnoughToken": {
-    "message": "Hindi sapat ang $1",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Tingnan sa aktibidad"
@@ -8764,9 +8640,6 @@
   "viewAddressOnExplorer": {
     "message": "Tingnan sa $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewAllQuotes": {
-    "message": "tingnan ang lahat ng quote"
   },
   "viewContact": {
     "message": "Tingnan ang Contact"

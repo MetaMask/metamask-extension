@@ -3603,7 +3603,5 @@
     "ui/selectors/transactions.test.js": {
       "Reselect: Identity function warnings": 4
     }
-  },
-  "generated": "2026-01-30T20:01:38.851Z",
-  "nodeVersion": "v24.13.0"
+  }
 }

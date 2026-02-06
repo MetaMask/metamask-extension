@@ -68,12 +68,11 @@ async function main() {
     debug,
     e2eTestPath,
     retries,
+    stopAfterOneFailure,
     leaveRunning,
     updateSnapshot,
     updatePrivacySnapshot,
   } = argv;
-
-  let { stopAfterOneFailure } = argv;
 
   const runTestsOnSingleBrowser = async (selectedBrowserForRun) => {
     if (!selectedBrowserForRun) {
@@ -122,11 +121,6 @@ async function main() {
 
     if (updatePrivacySnapshot) {
       process.env.UPDATE_PRIVACY_SNAPSHOT = 'true';
-    }
-
-    // If the file path includes 'tolerate-failure', there is no reason to retry
-    if (e2eTestPath.includes('tolerate-failure')) {
-      stopAfterOneFailure = true;
     }
 
     const configFile = path.join(__dirname, '.mocharc.js');
@@ -197,10 +191,24 @@ async function main() {
   const allBrowsers = ['chrome', 'firefox'];
   if (browser === 'all') {
     for (const currentBrowser of allBrowsers) {
-      await runTestsOnSingleBrowser(currentBrowser);
+      console.log(`Running tests on ${currentBrowser}`);
+      try {
+        await runTestsOnSingleBrowser(currentBrowser);
+      } catch (error) {
+        exitWithError(
+          `Error occurred while running tests on ${currentBrowser}: ${error}`,
+        );
+      }
     }
   } else {
-    await runTestsOnSingleBrowser(browser);
+    console.log(`Running tests on ${browser}`);
+    try {
+      await runTestsOnSingleBrowser(browser);
+    } catch (error) {
+      exitWithError(
+        `Error occurred while running tests on ${browser}: ${error}`,
+      );
+    }
   }
 
   // In CI we sometimes get to this point without being ready to properly

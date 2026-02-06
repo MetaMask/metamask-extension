@@ -32,12 +32,13 @@ setBackgroundConnection({
 } as never);
 
 const mockUseNavigate = jest.fn();
+const mockBridgePreparePath = '/cross-chain/swaps/prepare-bridge-page';
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => ({
-      pathname: '/cross-chain/swaps/prepare-swap-page',
+      pathname: mockBridgePreparePath,
       search: '',
       hash: '',
       state: null,

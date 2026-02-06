@@ -1175,10 +1175,6 @@
     "message": "Approva $1 per gli scambi",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
-  "swapApproveNeedMoreTokens": {
-    "message": "Devi avere $1 $2 in più per completare lo scambio",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
   "swapCustom": {
     "message": "personalizza"
   },
@@ -1217,21 +1213,9 @@
     "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
-  "swapNewQuoteIn": {
-    "message": "Nuove quotazioni in $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "I tuoi $1 saranno aggiunti al tuo account quando la transazione sarà processata.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
-  },
-  "swapPriceDifference": {
-    "message": "Stai per scambiare $1 $2 (~$3) per $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Differenza di prezzo di circa ~$1%",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
   "swapProcessing": {
     "message": "In elaborazione"
@@ -1280,15 +1264,6 @@
   },
   "swapSource": {
     "message": "Sorgente di liquidità"
-  },
-  "swapSwapFrom": {
-    "message": "Scambia da"
-  },
-  "swapSwapSwitch": {
-    "message": "Inverti token"
-  },
-  "swapSwapTo": {
-    "message": "Scambia a"
   },
   "swapTokenAvailable": {
     "message": "I $1 sono stati aggiunti al tuo account.",

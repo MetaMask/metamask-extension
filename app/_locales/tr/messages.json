@@ -1824,12 +1824,6 @@
   "creatorAddress": {
     "message": "Oluşturucu adresi"
   },
-  "crossChainSwapsLink": {
-    "message": "MetaMask Portfolio ile ağlar arasında swap gerçekleştirin"
-  },
-  "crossChainSwapsLinkNative": {
-    "message": "Köprü ile ağlar arasında swap yapın"
-  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2860,9 +2854,6 @@
     "message": "Bu gaz ücreti $1 tarafından önerildi. Bunu geçersiz kılmak işleminizde bir soruna neden olabilir. Sorularınız olursa lütfen $1 adresine ulaşın.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Gaz ücreti"
-  },
   "gasLimit": {
     "message": "Gaz limiti"
   },
@@ -3270,9 +3261,6 @@
     "message": "İçe aktarıldı",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "included": {
-    "message": "dahil"
-  },
   "includesXTransactions": {
     "message": "$1 işlem içerir"
   },
@@ -3674,12 +3662,6 @@
   },
   "low": {
     "message": "Düşük"
-  },
-  "lowEstimatedReturnTooltipMessage": {
-    "message": "Ücretlerdeki başlangıç tutarınızdan %$1 daha fazla ödeyeceksiniz. Aldığınız tutarı ve ağ ücretlerini kontrol edin."
-  },
-  "lowEstimatedReturnTooltipTitle": {
-    "message": "Yüksek maliyet"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Daha ucuz bir fiyat için beklemek için $1 kullanın. Fiyatlar bir şekilde öngörülemez oldukları için süre tahminleri çok daha az kesindir.",
@@ -4356,9 +4338,6 @@
   },
   "notCurrentAccount": {
     "message": "Bu hesap doğru mu? Cüzdanınızdaki mevcut seçili hesaptan farklı"
-  },
-  "notEnoughBalance": {
-    "message": "Bakiye yetersiz"
   },
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
@@ -5360,9 +5339,6 @@
   "popularNetworks": {
     "message": "Popüler ağlar"
   },
-  "preparingSwap": {
-    "message": "Takas hazırlanıyor..."
-  },
   "prev": {
     "message": "Önceki"
   },
@@ -5583,9 +5559,6 @@
   },
   "queued": {
     "message": "Kuyruğa alındı"
-  },
-  "quoteRate": {
-    "message": "Kota oranı"
   },
   "quotedReceiveAmount": {
     "message": "$1 alınan tutar"
@@ -7839,16 +7812,9 @@
   "swapAndSend": {
     "message": "Swap Gerçekleştir ve Gönder"
   },
-  "swapAnyway": {
-    "message": "Yine de swap gerçekleştir"
-  },
   "swapApproval": {
     "message": "Takas işlemleri için $1 onayla",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapApproveNeedMoreTokens": {
-    "message": "Bu takası tamamlamak için $1 daha $2 gerekli",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapAreYouStillThere": {
     "message": "Hala orada mısınız?"
@@ -7858,9 +7824,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Donanım cüzdanınızla onaylayın"
-  },
-  "swapContinueSwapping": {
-    "message": "Swap işlemine devam edin"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "Ledger'ınızdaki Ethereum uygulamasında \"Ayarlar\" öğesine gidin ve sözleşme verilerine izin verin. Ardından takas işleminizi tekrar deneyin."
@@ -7892,9 +7855,6 @@
     "message": "Bu, takas için $1 kullanacak",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEnterAmount": {
-    "message": "Bir tutar girin"
-  },
   "swapEstimatedNetworkFees": {
     "message": "Tahmini ağ ücretleri"
   },
@@ -7907,9 +7867,6 @@
   },
   "swapFailedErrorTitle": {
     "message": "Takas başarısız oldu"
-  },
-  "swapFetchingQuote": {
-    "message": "Teklif alınıyor"
   },
   "swapFetchingQuoteNofN": {
     "message": "$1 / $2 teklif alınıyor",
@@ -7948,35 +7905,15 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Bu ağ ücreti MetaMask tarafından ödenir, bu sayede hesabınızda $1 olmadan işlem yapabilirsiniz."
   },
-  "swapGasIncludedTooltipExplanation": {
-    "message": "Bu teklif, gönderilen veya alınan token miktarı düzenlenerek gaz ücretlerini içerir. Aktivite listenizde ayrı bir işlemde ETH alabilirsiniz."
-  },
-  "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "Gaz ücretleri hakkında daha fazla bilgi edinin"
-  },
-  "swapHighSlippage": {
-    "message": "Yüksek kayma"
-  },
-  "swapIncludesGasAndMetaMaskFee": {
-    "message": "Gaz ve %$1 MetaMask ücreti dahildir",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapIncludesMMFee": {
     "message": "%$1 MetaMask ücreti dahildir.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "%$1 MetaMask ücreti - $2 dahildir",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Swap işlemleri hakkında daha fazla bilgi edinin"
   },
   "swapLiquiditySourceInfo": {
     "message": "Dönüştürme oranlarını ve ağ ücretlerini karşılaştırmak için birden fazla likidite kaynağında (borsalar, toplayıcılar ve profesyonel piyasa yapıcıları) arama yaparız."
-  },
-  "swapLowSlippage": {
-    "message": "Düşük kayma"
   },
   "swapMaxSlippage": {
     "message": "Maks. kayma"
@@ -7992,10 +7929,6 @@
     "message": "$1 teklif.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "$1 içinde yeni teklifler sunulacak",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapNoTokensAvailable": {
     "message": "$1 ile eşleşen token yok",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -8004,29 +7937,11 @@
     "message": "Bu işlem gerçekleştikten sonra $1 hesabınıza eklenecek.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapPriceDifference": {
-    "message": "$4 $5 (~$6) için $1 $2 (~$3) takas yapmak üzeresiniz.",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "~%$1 fiyat farkı",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "Fiyat etkisi, piyasa fiyat verisinin mevcut olmaması nedeniyle belirlenememiştir. Takas işlemini gerçekleştirmeden önce lütfen almak üzere olduğunuz token tutarının sizin için uygun olduğunu onaylayın."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "İlerlemeden önce oranını kontrol et"
-  },
   "swapProcessing": {
     "message": "Gerçekleştiriliyor"
   },
   "swapQuoteDetails": {
     "message": "Teklif ayrıntıları"
-  },
-  "swapQuoteNofM": {
-    "message": "$1 / $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "Teklif kaynağı"
@@ -8127,32 +8042,12 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Takas işlemleri karmaşık ve zaman hassasiyeti yüksek işlemlerdir. Başarılı bir Takas için maliyet ve güven arasında iyi bir denge için bu gaz ücretini öneririz."
   },
-  "swapSwapFrom": {
-    "message": "Takas kaynağı"
-  },
-  "swapSwapSwitch": {
-    "message": "Token sıralamasını değiştir"
-  },
-  "swapSwapTo": {
-    "message": "Takas Yap"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "donanım cüzdanınızla onaylamak için"
-  },
-  "swapTokenAddedManuallyDescription": {
-    "message": "Bu token'i $1 ile doğrulayın ve işlem yapmak istediğiniz token olduğundan emin olun.",
-    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenAddedManuallyTitle": {
-    "message": "Token manuel olarak eklendi"
   },
   "swapTokenAvailable": {
     "message": "$1 hesabınıza eklendi.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenBalanceUnavailable": {
-    "message": "$1 bakiyenizi alamadık",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenNotAvailable": {
     "message": "Token bu bölgede swap işlemine uygun değildir"
@@ -8161,23 +8056,8 @@
     "message": "$1 ile $2 takası yap",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerifiedOn1SourceDescription": {
-    "message": "$1 sadece 1 kaynakta doğrulandı. İlerlemeden önce $2 üzerinde doğrulamayı deneyin.",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenVerifiedOn1SourceTitle": {
-    "message": "Sahte token olma potansiyeli var"
-  },
-  "swapTokenVerifiedSources": {
-    "message": "$1 kaynakları tarafından onaylandı. $2 üzerinde doğrulayın.",
-    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
-  },
   "swapTokens": {
     "message": "Token swap işlemi yapın"
-  },
-  "swapTooManyDecimalsError": {
-    "message": "$1, en fazla $2 ondalık basamağına izin verir",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "İşlem tamamlandı"
@@ -8196,10 +8076,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Kayma toleransı"
-  },
-  "swapsNotEnoughToken": {
-    "message": "Yeterli $1 yok",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Aktivitede görüntüle"
@@ -8788,9 +8664,6 @@
   "viewAddressOnExplorer": {
     "message": "$1 üzerinde görüntüle",
     "description": "$1 is the block explorer name"
-  },
-  "viewAllQuotes": {
-    "message": "tüm teklifleri görüntüle"
   },
   "viewContact": {
     "message": "Kişiyi görüntüle"

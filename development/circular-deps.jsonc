@@ -22,7 +22,6 @@
     "ui/components/app/metamask-translation/metamask-translation.js"
   ],
   [
-    "ui/ducks/alerts/unconnected-account.js",
     "ui/ducks/metamask/metamask.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/custom-gas.js",
@@ -31,7 +30,6 @@
     "ui/store/actions.ts"
   ],
   [
-    "ui/ducks/alerts/unconnected-account.js",
     "ui/ducks/metamask/metamask.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/custom-gas.js",
@@ -39,7 +37,6 @@
     "ui/store/actions.ts"
   ],
   [
-    "ui/ducks/alerts/unconnected-account.js",
     "ui/ducks/metamask/metamask.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/index.js",
@@ -47,20 +44,17 @@
     "ui/store/actions.ts"
   ],
   [
-    "ui/ducks/alerts/unconnected-account.js",
     "ui/ducks/metamask/metamask.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/index.js",
     "ui/store/actions.ts"
   ],
   [
-    "ui/ducks/alerts/unconnected-account.js",
     "ui/ducks/metamask/metamask.js",
     "ui/selectors/index.js",
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
-  ["ui/ducks/alerts/unconnected-account.js", "ui/store/actions.ts"],
   ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"],
   ["ui/ducks/metamask/metamask.js", "ui/store/actions.ts"],
   ["ui/selectors/multichain.ts", "ui/selectors/selectors.js"]
