@@ -121,7 +121,7 @@ const plugins: WebpackPluginInstance[] = [
     // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: MANIFEST_VERSION,
     description: commitHash
-      ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
+      ? `${args.type} build for ${args.env} from git id: ${commitHash.substring(0, 8)}`
       : null,
     version: version.version,
     versionName: version.versionName,
@@ -143,6 +143,7 @@ const plugins: WebpackPluginInstance[] = [
           },
         }
       : {}),
+    buildType: args.type,
   }),
   // use ProvidePlugin to polyfill *global* node variables
   new ProvidePlugin({
