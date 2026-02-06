@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
@@ -34,6 +34,23 @@ export type HardwareWalletState = {
 export type HardwareWalletRefs = {
   adapterRef: React.MutableRefObject<HardwareWalletAdapter | null>;
   abortControllerRef: React.MutableRefObject<AbortController | null>;
+  /**
+   * Stores the pending connection promise. When not null, a connection is in progress
+   * and concurrent callers should await this promise instead of starting a new connection.
+   */
+  connectingPromiseRef: React.MutableRefObject<Promise<void> | null>;
+  /**
+   * Stores the pending ensureDeviceReady promise to prevent overlapping checks.
+   */
+  ensureDeviceReadyPromiseRef: React.MutableRefObject<Promise<boolean> | null>;
+  /**
+   * Tracks the device ID for the in-flight ensureDeviceReady call.
+   */
+  ensureDeviceReadyDeviceIdRef: React.MutableRefObject<string | null>;
+  /**
+   * Flag to prevent concurrent connection attempts.
+   * Used to synchronously check-and-set before any async work.
+   */
   isConnectingRef: React.MutableRefObject<boolean>;
   hasAutoConnectedRef: React.MutableRefObject<boolean>;
   lastConnectedAccountRef: React.MutableRefObject<string | null>;
@@ -76,6 +93,9 @@ export const useHardwareWalletStateManager = () => {
   // Ref declarations
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const connectingPromiseRef = useRef<Promise<void> | null>(null);
+  const ensureDeviceReadyPromiseRef = useRef<Promise<boolean> | null>(null);
+  const ensureDeviceReadyDeviceIdRef = useRef<string | null>(null);
   const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
@@ -85,17 +105,15 @@ export const useHardwareWalletStateManager = () => {
   const walletTypeRef = useRef<HardwareWalletType | null>(null);
   const previousWalletTypeRef = useRef<HardwareWalletType | null>(null);
 
-  // Sync deviceId with deviceIdRef
-  useEffect(() => {
-    deviceIdRef.current = deviceId;
-  }, [deviceId]);
+  // Sync refs immediately during render (not in useEffect) to avoid stale values
+  // This is safe because updating refs doesn't trigger re-renders
+  deviceIdRef.current = deviceId;
 
-  // Sync walletType with walletTypeRef
-  useEffect(() => {
-    // Keep the previous reference so we know when to reset event subscriptions (e.g Trezor -> Ledger).
+  // Track previous wallet type for detecting wallet type changes (e.g., Trezor -> Ledger)
+  if (walletTypeRef.current !== walletType) {
     previousWalletTypeRef.current = walletTypeRef.current;
     walletTypeRef.current = walletType;
-  }, [walletType]);
+  }
 
   const state: HardwareWalletState = {
     deviceId,
@@ -110,6 +128,9 @@ export const useHardwareWalletStateManager = () => {
     () => ({
       adapterRef,
       abortControllerRef,
+      connectingPromiseRef,
+      ensureDeviceReadyPromiseRef,
+      ensureDeviceReadyDeviceIdRef,
       isConnectingRef,
       hasAutoConnectedRef,
       lastConnectedAccountRef,
@@ -151,8 +172,40 @@ export const useHardwareWalletStateManager = () => {
        * Resets connection-related refs to their initial state
        */
       resetConnectionRefs: () => {
-        isConnectingRef.current = false;
+        connectingPromiseRef.current = null;
+        ensureDeviceReadyPromiseRef.current = null;
+        ensureDeviceReadyDeviceIdRef.current = null;
         currentConnectionIdRef.current = null;
+        isConnectingRef.current = false;
+      },
+      /**
+       * Resets auto-connect state, allowing auto-connect to run again
+       */
+      resetAutoConnectState: () => {
+        hasAutoConnectedRef.current = false;
+        lastConnectedAccountRef.current = null;
+      },
+      /**
+       * Marks auto-connect as completed for an account with a specific device
+       *
+       * @param connectedAccountAddress - The account address that was auto-connected
+       * @param connectedDeviceId - The device ID that was connected
+       */
+      setAutoConnected: (
+        connectedAccountAddress: string | null,
+        connectedDeviceId: string,
+      ) => {
+        hasAutoConnectedRef.current = true;
+        lastConnectedAccountRef.current = connectedAccountAddress;
+        deviceIdRef.current = connectedDeviceId;
+      },
+      /**
+       * Updates the device ID ref directly (for auto-connect scenarios)
+       *
+       * @param newDeviceId - The device ID to set
+       */
+      setDeviceIdRef: (newDeviceId: string) => {
+        deviceIdRef.current = newDeviceId;
       },
     }),
     [setDeviceId, setHardwareConnectionPermissionState, setConnectionState],

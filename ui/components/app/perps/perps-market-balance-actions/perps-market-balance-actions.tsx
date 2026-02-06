@@ -38,7 +38,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   const { formatCurrency } = useFormatters();
 
   // Use mock data for now
-  const { totalBalance, availableBalance } = mockAccountState;
+  const { totalBalance } = mockAccountState;
   const isBalanceEmpty = parseFloat(totalBalance) === 0;
 
   const handleAddFunds = useCallback(() => {
@@ -149,9 +149,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           color={TextColor.TextAlternative}
           data-testid="perps-balance-actions-available"
         >
-          {t('perpsAvailable', [
-            formatCurrency(parseFloat(availableBalance), 'USD'),
-          ])}
+          {t('perpsAvailable')}
         </Text>
       </Box>
 

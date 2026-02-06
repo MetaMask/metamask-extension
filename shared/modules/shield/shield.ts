@@ -10,6 +10,8 @@ import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
 import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
 // eslint-disable-next-line import/no-restricted-paths
 import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
+import { SETTINGS_ROUTE } from '../../lib/deep-links/routes/route';
+import { SHIELD_QUERY_PARAMS } from '../../lib/deep-links/routes/shield';
 import { loadShieldConfig } from './config';
 
 export async function getShieldGatewayConfig(
@@ -150,4 +152,20 @@ export function updatePreferencesAndMetricsForShieldSubscription(
   preferencesController.setUsePhishDetect(true);
   // shield subscribers have to turn on transaction simulations
   preferencesController.setUseTransactionSimulations(true);
+}
+
+/**
+ * Get the shield in app navigation from an external link.
+ * This function is used to navigate to the shield page from an external link instead of opening a new tab
+ * TODO: clean this once we have better control of how deeplink are opened
+ *
+ * @param externalLink - The external link.
+ * @returns The shield in app navigation.
+ */
+export function getShieldInAppNavigationFromExternalLink(
+  externalLink: string,
+): string {
+  const url = new URL(externalLink);
+  const params = url.searchParams.toString();
+  return `${SETTINGS_ROUTE}?${SHIELD_QUERY_PARAMS.showShieldEntryModal}=true${params ? `&${params}` : ''}`;
 }
