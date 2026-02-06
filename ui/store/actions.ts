@@ -8164,7 +8164,6 @@ export async function generateClaimSignature(
 export async function getHdPathForLedgerKeyring(
   deviceName: HardwareDeviceNames,
 ): Promise<string> {
-  console.log('[HW] getHdPathForLedgerKeyring', deviceName);
   const hdPath = await submitRequestToBackground<string>(
     'getHdPathForLedgerKeyring',
     [deviceName],
