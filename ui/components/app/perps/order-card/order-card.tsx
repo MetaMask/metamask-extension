@@ -14,12 +14,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import {
-  getDisplayName,
-  formatOrderType,
-  formatStatus,
-  getStatusColor,
-} from '../utils';
+import { getDisplayName, formatOrderType } from '../utils';
 import type { Order } from '../types';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
@@ -109,7 +104,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         </Text>
       </Box>
 
-      {/* Right side: Price and status */}
+      {/* Right side: Price */}
       <Box
         className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
@@ -120,9 +115,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           {order.orderType === 'limit' && order.price !== '0'
             ? `$${order.price}`
             : t('perpsMarket')}
-        </Text>
-        <Text variant={TextVariant.BodySm} color={getStatusColor(order.status)}>
-          {formatStatus(order.status)}
         </Text>
       </Box>
     </ButtonBase>

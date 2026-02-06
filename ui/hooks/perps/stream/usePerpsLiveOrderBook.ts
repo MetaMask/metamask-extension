@@ -66,6 +66,11 @@ export function usePerpsLiveOrderBook(
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
+    // Reset state when controller changes (account switch)
+    setOrderBook(null);
+    setIsInitialLoading(true);
+    hasReceivedFirstUpdate.current = false;
+
     if (!symbol) {
       setOrderBook(null);
       setIsInitialLoading(false);

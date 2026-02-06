@@ -115,6 +115,11 @@ export function usePerpsLiveMarketData(
   }, [fetchMarketData]);
 
   useEffect(() => {
+    // Reset state when controller changes (account switch)
+    setMarkets([]);
+    setIsInitialLoading(true);
+    setError(null);
+
     if (!autoSubscribe) {
       setIsInitialLoading(false);
       return;

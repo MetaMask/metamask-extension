@@ -81,6 +81,11 @@ export function usePerpsTopOfBook(
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
+    // Reset state when controller changes (account switch)
+    setTopOfBook(undefined);
+    setIsInitialLoading(true);
+    hasReceivedFirstUpdate.current = false;
+
     if (!symbol) {
       setTopOfBook(undefined);
       setIsInitialLoading(false);

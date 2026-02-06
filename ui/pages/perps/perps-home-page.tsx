@@ -181,15 +181,16 @@ const PerpsHomePage: React.FC = () => {
             >
               {t('perpsYourPositions')}
             </Text>
-            <ButtonIcon
-              color={IconColor.IconAlternative}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('perpsPositions')}
-              iconName={IconName.MoreHorizontal}
-              onClick={() => {
-                // TODO: Handle positions menu
-              }}
-            />
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              className="cursor-pointer"
+              // TODO: Handle close all positions
+              // onClick={() => {
+              // }}
+            >
+              {t('perpsCloseAll')}
+            </Text>
           </Box>
           <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
             {positions.map((position) => {
@@ -230,17 +231,30 @@ const PerpsHomePage: React.FC = () => {
                       {Math.abs(parseFloat(position.size))} {displaySymbol}
                     </Text>
                   </Box>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                    color={
-                      isProfit
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
+                  <Box
+                    flexDirection={BoxFlexDirection.Column}
+                    alignItems={BoxAlignItems.End}
                   >
-                    {isProfit ? '+' : ''}${position.unrealizedPnl}
-                  </Text>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {formatCurrencyWithMinThreshold(
+                        parseFloat(position.positionValue),
+                        'USD',
+                      )}
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={
+                        isProfit
+                          ? TextColor.SuccessDefault
+                          : TextColor.ErrorDefault
+                      }
+                    >
+                      {isProfit ? '+' : ''}${position.unrealizedPnl}
+                    </Text>
+                  </Box>
                 </Box>
               );
             })}
@@ -263,15 +277,16 @@ const PerpsHomePage: React.FC = () => {
             >
               {t('perpsYourOrders')}
             </Text>
-            <ButtonIcon
-              color={IconColor.IconAlternative}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('perpsOrders')}
-              iconName={IconName.MoreHorizontal}
-              onClick={() => {
-                // TODO: Handle orders menu
-              }}
-            />
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              className="cursor-pointer"
+              // onClick={() => {
+              //   // TODO: Handle close all orders
+              // }}
+            >
+              {t('perpsCloseAll')}
+            </Text>
           </Box>
           <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
             {openOrders.map((order) => {
@@ -281,14 +296,12 @@ const PerpsHomePage: React.FC = () => {
                   ? t('perpsLimit')
                   : t('perpsMarket');
               const sideLabel =
-                order.side === 'buy' ? t('perpsBuy') : t('perpsSell');
-              const orderValue =
-                order.orderType === 'limit'
-                  ? formatCurrencyWithMinThreshold(
-                      parseFloat(order.size) * parseFloat(order.price),
-                      'USD',
-                    )
-                  : '-';
+                order.side === 'buy' ? t('perpsLong') : t('perpsShort');
+              // Show limit price for limit orders, "Market" label for market orders
+              const priceDisplay =
+                order.orderType === 'limit' && order.price !== '0'
+                  ? `$${order.price}`
+                  : t('perpsMarket');
 
               return (
                 <Box
@@ -315,12 +328,17 @@ const PerpsHomePage: React.FC = () => {
                       {order.size} {displaySymbol}
                     </Text>
                   </Box>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
+                  <Box
+                    flexDirection={BoxFlexDirection.Column}
+                    alignItems={BoxAlignItems.End}
                   >
-                    {orderValue}
-                  </Text>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {priceDisplay}
+                    </Text>
+                  </Box>
                 </Box>
               );
             })}
@@ -444,6 +462,11 @@ const PerpsHomePage: React.FC = () => {
         <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
           {hip3Markets.map((market) => {
             const isPositiveChange = market.change24hPercent.startsWith('+');
+            const displaySymbol = getDisplayName(market.symbol);
+            // Use getDisplayName on market.name to strip any DEX prefix
+            const displayName = market.name
+              ? getDisplayName(market.name)
+              : displaySymbol;
             return (
               <Box
                 key={market.symbol}
@@ -466,13 +489,13 @@ const PerpsHomePage: React.FC = () => {
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                   >
-                    {market.name}
+                    {displayName}
                   </Text>
                   <Text
                     variant={TextVariant.BodyXs}
                     color={TextColor.TextAlternative}
                   >
-                    {getDisplayName(market.symbol)}-USD
+                    {displaySymbol}-USD
                   </Text>
                 </Box>
                 <Box
@@ -619,6 +642,31 @@ const PerpsHomePage: React.FC = () => {
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               {t('perpsContactSupport')}
+            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+
+          {/* Give us feedback */}
+          <Box
+            className={LIST_ITEM_BASE}
+            role="button"
+            tabIndex={0}
+            onClick={() => {
+              // TODO: Navigate to feedback page
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                // TODO: Navigate to feedback page
+              }
+            }}
+            justifyContent={BoxJustifyContent.Between}
+          >
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+              {t('perpsGiveFeedback')}
             </Text>
             <Icon
               name={IconName.ArrowRight}

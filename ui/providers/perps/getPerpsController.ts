@@ -15,6 +15,12 @@ import {
 let controllerInstance: PerpsController | null = null;
 
 /**
+ * The address the current controller instance was initialized with.
+ * Used to detect account switches and reinitialize.
+ */
+let currentAddress: string | null = null;
+
+/**
  * Promise to track initialization to prevent race conditions.
  */
 let initPromise: Promise<PerpsController> | null = null;
@@ -59,14 +65,32 @@ function createPerpsMessenger(): PerpsControllerMessenger {
 export async function getPerpsController(
   selectedAddress: string,
 ): Promise<PerpsController> {
-  if (controllerInstance) {
-    return controllerInstance;
-  }
-
   if (!selectedAddress) {
     throw new Error(
       'No account selected. Please select an account before using Perps.',
     );
+  }
+
+  // Check if we need to reinitialize due to account switch
+  const addressChanged =
+    currentAddress !== null && currentAddress !== selectedAddress;
+
+  if (addressChanged && controllerInstance) {
+    console.log(
+      '[Perps] Account changed, reinitializing controller:',
+      currentAddress,
+      '->',
+      selectedAddress,
+    );
+    // Disconnect the old controller
+    await controllerInstance.disconnect();
+    controllerInstance = null;
+    initPromise = null;
+  }
+
+  // Return existing controller if address hasn't changed
+  if (controllerInstance && currentAddress === selectedAddress) {
+    return controllerInstance;
   }
 
   // Prevent race conditions during initialization
@@ -90,6 +114,7 @@ export async function getPerpsController(
       await controller.init();
 
       controllerInstance = controller;
+      currentAddress = selectedAddress;
       return controller;
     })();
   }
@@ -98,13 +123,14 @@ export async function getPerpsController(
 }
 
 /**
- * Reset the controller instance (useful for testing).
+ * Reset the controller instance (useful for testing or account switch).
  */
 export async function resetPerpsController(): Promise<void> {
   if (controllerInstance) {
     await controllerInstance.disconnect();
     controllerInstance = null;
     initPromise = null;
+    currentAddress = null;
   }
 }
 

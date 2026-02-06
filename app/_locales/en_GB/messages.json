@@ -5299,6 +5299,9 @@
   "perpsFilterStocks": {
     "message": "Stocks"
   },
+  "perpsGiveFeedback": {
+    "message": "Give us feedback"
+  },
   "perpsFunding": {
     "message": "Funding"
   },
@@ -5409,6 +5412,9 @@
   },
   "perpsSeeAll": {
     "message": "See All"
+  },
+  "perpsSeeAllPerps": {
+    "message": "See all Perps"
   },
   "perpsSell": {
     "message": "sell"
