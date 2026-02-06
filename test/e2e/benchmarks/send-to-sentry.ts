@@ -15,6 +15,7 @@ import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
+import { BENCHMARK_TYPE } from './utils/constants';
 import type { BenchmarkResults, UserActionResult } from './utils/types';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');
@@ -55,6 +56,36 @@ async function main() {
     BenchmarkResults | UserActionResult
   >;
 
+  // Check if results are empty
+  const resultEntries = Object.entries(results);
+  if (resultEntries.length === 0) {
+    console.warn(
+      '⚠️ ALERT: Benchmark results file is empty, no results will be sent to Sentry',
+    );
+    console.warn(`   File: ${argv.results}`);
+    return;
+  }
+
+  // Check if all results have empty data
+  const hasValidData = resultEntries.some(([, value]) => {
+    if ('mean' in value) {
+      // BenchmarkResults - check if mean has any metrics
+      const benchmark = value as BenchmarkResults;
+      return benchmark.mean && Object.keys(benchmark.mean).length > 0;
+    }
+    // UserActionResult - check if there are any numeric metrics
+    return Object.values(value).some((v) => typeof v === 'number');
+  });
+
+  if (!hasValidData) {
+    console.warn(
+      '⚠️ ALERT: All benchmark results are empty, no metrics will be sent to Sentry',
+    );
+    console.warn(`   File: ${argv.results}`);
+    console.warn('   Results:', JSON.stringify(results, null, 2));
+    return;
+  }
+
   Sentry.init({
     dsn: SENTRY_DSN,
     enableLogs: true,
@@ -71,43 +102,76 @@ async function main() {
     'ci.buildType': argv.buildType,
   };
 
+  let sentCount = 0;
+  let skippedCount = 0;
+
   for (const [name, value] of Object.entries(results)) {
     if ('mean' in value) {
-      // Standard benchmark result with statistical aggregations
+      // Statistical benchmark result (page load or performance)
       const benchmark = value as BenchmarkResults;
+      const type = benchmark.benchmarkType || BENCHMARK_TYPE.BENCHMARK;
+
+      // Skip if mean is empty
+      if (Object.keys(benchmark.mean).length === 0) {
+        console.warn(`⚠️ Skipping empty benchmark result: ${name}`);
+        skippedCount += 1;
+        continue;
+      }
+
       const benchmarkAttributes = {
-        ...mapKeys(benchmark.mean, (_, key) => `benchmark.mean.${key}`),
-        ...mapKeys(benchmark.p75, (_, key) => `benchmark.p75.${key}`),
-        ...mapKeys(benchmark.p95, (_, key) => `benchmark.p95.${key}`),
+        ...mapKeys(benchmark.mean, (_, key) => `${type}.mean.${key}`),
+        ...mapKeys(benchmark.p75, (_, key) => `${type}.p75.${key}`),
+        ...mapKeys(benchmark.p95, (_, key) => `${type}.p95.${key}`),
       };
 
-      Sentry.logger.info(`benchmark.${name}`, {
+      Sentry.logger.info(`${type}.${name}`, {
         ...baseCiAttributes,
         'ci.persona': benchmark.persona || 'standard',
         'ci.testTitle': benchmark.testTitle,
         ...benchmarkAttributes,
       });
+      sentCount += 1;
     } else {
       // User action result with numeric timing metrics
-      const metrics = Object.entries(value).reduce(
+      const userAction = value as UserActionResult;
+      const type = userAction.benchmarkType || BENCHMARK_TYPE.USER_ACTION;
+
+      const metrics = Object.entries(userAction).reduce(
         (acc, [key, val]) =>
           typeof val === 'number' ? { ...acc, [key]: val } : acc,
         {} as Record<string, number>,
       );
 
-      Sentry.logger.info(`userAction.${name}`, {
+      // Skip if no numeric metrics
+      if (Object.keys(metrics).length === 0) {
+        console.warn(`⚠️ Skipping empty user action result: ${name}`);
+        skippedCount += 1;
+        continue;
+      }
+
+      Sentry.logger.info(`${type}.${name}`, {
         ...baseCiAttributes,
-        'ci.persona': value.persona || 'standard',
-        'ci.testTitle': value.testTitle,
+        'ci.persona': userAction.persona || 'standard',
+        'ci.testTitle': userAction.testTitle,
         ...metrics,
       });
+      sentCount += 1;
     }
+  }
+
+  if (skippedCount > 0) {
+    console.warn(`⚠️ ALERT: Skipped ${skippedCount} empty benchmark result(s)`);
+  }
+
+  if (sentCount === 0) {
+    console.warn('⚠️ ALERT: No valid benchmark results to send to Sentry');
+    return;
   }
 
   const flushed = await Sentry.flush(10000);
   if (flushed) {
     console.log(
-      `✅ Successfully sent benchmark results to Sentry (${Object.keys(results).length} benchmarks)`,
+      `✅ Successfully sent benchmark results to Sentry (${sentCount} benchmarks)`,
     );
   } else {
     console.warn(

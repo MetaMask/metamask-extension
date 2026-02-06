@@ -12,13 +12,13 @@ import LoginPage from '../../../page-objects/pages/login-page';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import { WITH_STATE_POWER_USER } from '../../utils';
+import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 
 export const testTitle = 'benchmark-solana-asset-details-power-user';
-export const persona = 'powerUser';
+export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
   try {

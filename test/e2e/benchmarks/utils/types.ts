@@ -32,9 +32,12 @@ export type StatisticalResult = {
   [key: string]: number;
 };
 
+export type BenchmarkType = 'benchmark' | 'performance' | 'userAction';
+
 export type BenchmarkResults = {
   testTitle?: string;
   persona?: string;
+  benchmarkType?: BenchmarkType;
   mean: StatisticalResult;
   min: StatisticalResult;
   max: StatisticalResult;
@@ -47,6 +50,7 @@ export type BenchmarkResults = {
 export type UserActionResult = {
   testTitle: string;
   persona?: string;
+  benchmarkType?: BenchmarkType;
   [key: string]: string | number | undefined;
 };
 

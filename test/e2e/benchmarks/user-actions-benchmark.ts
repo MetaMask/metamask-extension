@@ -21,6 +21,7 @@ import {
 } from '../tests/bridge/constants';
 import { createInternalTransaction } from '../page-objects/flows/transaction';
 import { Driver } from '../webdriver/driver';
+import { BENCHMARK_TYPE } from './utils/constants';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
@@ -44,6 +45,7 @@ async function mockTokensEthereum(mockServer: Mockttp) {
 const USER_ACTIONS_PERSONA = 'standard';
 
 async function loadNewAccount(): Promise<{
+  benchmarkType: string;
   duration: number;
   testTitle: string;
   persona: string;
@@ -75,10 +77,16 @@ async function loadNewAccount(): Promise<{
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
+  return {
+    benchmarkType: BENCHMARK_TYPE.USER_ACTION,
+    duration: loadingTimes,
+    testTitle,
+    persona: USER_ACTIONS_PERSONA,
+  };
 }
 
 async function confirmTx(): Promise<{
+  benchmarkType: string;
   duration: number;
   testTitle: string;
   persona: string;
@@ -121,10 +129,16 @@ async function confirmTx(): Promise<{
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
+  return {
+    benchmarkType: BENCHMARK_TYPE.USER_ACTION,
+    duration: loadingTimes,
+    testTitle,
+    persona: USER_ACTIONS_PERSONA,
+  };
 }
 
 async function bridgeUserActions(): Promise<{
+  benchmarkType: string;
   loadPage: number;
   loadAssetPicker: number;
   searchToken: number;
@@ -187,6 +201,7 @@ async function bridgeUserActions(): Promise<{
     },
   );
   return {
+    benchmarkType: BENCHMARK_TYPE.USER_ACTION,
     loadPage,
     loadAssetPicker,
     searchToken,

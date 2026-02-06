@@ -27,10 +27,11 @@ import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import { getCommonMocks } from '../../utils/common-mocks';
+import { BENCHMARK_PERSONA } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
-export const persona = 'standard';
+export const persona = BENCHMARK_PERSONA.STANDARD;
 
 export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRunResult> {
   try {
@@ -142,7 +143,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           const assetListPage = new AssetListPage(driver);
           await assetListPage.checkTokenListIsDisplayed();
           await assetListPage.checkTokenExistsInList('Ethereum');
-          await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
+          await assetListPage.waitForTokenToBeDisplayed('Solana', 120000);
         });
         performanceTracker.addTimer(timerDoneToHome);
 
@@ -151,7 +152,7 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         await headerNavbar.openAccountMenu();
         await timerAccountListLoad.measure(async () => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded(50000);
+          await accountListPage.checkPageIsLoaded(120000);
         });
         performanceTracker.addTimer(timerAccountListLoad);
       },

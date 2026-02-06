@@ -199,6 +199,10 @@ Once you've created a test build with the desired feature flag enabled, proceed 
 
 This approach ensures that your e2e tests accurately reflect the user experience for the upcoming GA features.
 
+#### Running E2E performance benchmarks
+
+E2E performance benchmarks measure flow timings (onboarding, send, swap, asset details, etc.) and can be run locally or in CI. Use `yarn test:e2e:benchmark` with `--preset <name>` or a file path. See [test/e2e/benchmarks/flows/README.md](test/e2e/benchmarks/flows/README.md) for presets and options.
+
 #### Running specific builds types e2e test
 
 Different build types have different e2e tests sets. In order to run them look in the `package.json` file. You will find:
