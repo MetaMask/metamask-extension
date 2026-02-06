@@ -82,6 +82,13 @@ const createMockState = (
       selectedAccount: 'account-1',
     },
   },
+  appState: {
+    modal: {
+      modalState: {
+        name: null,
+      },
+    },
+  },
 });
 
 const createWrapper =
