@@ -278,7 +278,11 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
 
-    it('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
+    // TODO: Need to fix these comments from Chloe.
+    // 1. the test title is With 2 accounts connected, refreshing the page should keep me connected to the last selected account, but in the test body, it only connected account 1 to dapp, not the account2, so the test itself is not testing the expected behaviour
+    // 2. the method assertConnected is buggy, it checks connect status, then it uses status as account address to assert, which is very buggy and messy, so it could not do the correct assertions, need re-implement
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('With 2 accounts connected, refreshing the page should keep me connected to the last selected account', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
