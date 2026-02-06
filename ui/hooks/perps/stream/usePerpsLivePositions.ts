@@ -59,6 +59,11 @@ export function usePerpsLivePositions(
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
+    // Reset state when controller changes (account switch)
+    setPositions(EMPTY_POSITIONS);
+    setIsInitialLoading(true);
+    hasReceivedFirstUpdate.current = false;
+
     const unsubscribe = controller.subscribeToPositions({
       callback: (newPositions) => {
         // Debug: Log all positions received from controller

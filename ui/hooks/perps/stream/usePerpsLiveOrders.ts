@@ -61,6 +61,11 @@ export function usePerpsLiveOrders(
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
+    // Reset state when controller changes (account switch)
+    setOrders(EMPTY_ORDERS);
+    setIsInitialLoading(true);
+    hasReceivedFirstUpdate.current = false;
+
     const unsubscribe = controller.subscribeToOrders({
       callback: (newOrders) => {
         if (!hasReceivedFirstUpdate.current) {

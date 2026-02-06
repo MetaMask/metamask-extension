@@ -64,6 +64,11 @@ export function usePerpsLivePrices(
   const symbolsKey = useMemo(() => symbols.join(','), [symbols]);
 
   useEffect(() => {
+    // Reset state when controller changes (account switch)
+    setPrices(EMPTY_PRICES);
+    setIsInitialLoading(true);
+    hasReceivedFirstUpdate.current = false;
+
     if (symbols.length === 0) {
       setPrices(EMPTY_PRICES);
       setIsInitialLoading(false);

@@ -64,6 +64,11 @@ export function usePerpsLiveCandles(
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
+    // Reset state when controller changes (account switch)
+    setCandleData(null);
+    setIsInitialLoading(true);
+    hasReceivedFirstUpdate.current = false;
+
     if (!symbol || !interval) {
       setCandleData(null);
       setIsInitialLoading(false);

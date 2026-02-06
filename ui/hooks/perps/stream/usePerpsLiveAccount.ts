@@ -55,6 +55,11 @@ export function usePerpsLiveAccount(
   const hasReceivedFirstUpdate = useRef(false);
 
   useEffect(() => {
+    // Reset state when controller changes (account switch)
+    setAccount(null);
+    setIsInitialLoading(true);
+    hasReceivedFirstUpdate.current = false;
+
     const unsubscribe = controller.subscribeToAccount({
       callback: (newAccount) => {
         // Debug: Log account state including subAccountBreakdown for HIP-3

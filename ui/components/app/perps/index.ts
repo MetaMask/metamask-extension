@@ -36,12 +36,18 @@ export {
   getTransactionStatusColor,
   getTransactionAmountColor,
   filterMarketsByQuery,
+  isHip3Market,
+  isCryptoMarket,
 } from './utils';
 export {
   HYPERLIQUID_ASSET_ICONS_BASE_URL,
   PERPS_CONSTANTS,
   MARKET_SORTING_CONFIG,
+  HIP3_MARKET_CONFIG,
+  HIP3_ASSET_MARKET_TYPES,
+  getHip3MarketType,
 } from './constants';
+export type { Hip3MarketType } from './constants';
 export type {
   PerpsMarketData,
   MarketType,
