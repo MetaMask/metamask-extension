@@ -1966,7 +1966,6 @@
     "@metamask/profile-sync-controller": {
       "globals": {
         "Event": true,
-        "Headers": true,
         "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,

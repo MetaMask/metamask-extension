@@ -1936,7 +1936,6 @@
       "globals": {
         "Buffer.from": true,
         "Event": true,
-        "Headers": true,
         "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,
