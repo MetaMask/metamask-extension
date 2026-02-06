@@ -48,10 +48,8 @@ export type ReactCompilerLoaderConfig = {
   debug: 'all' | 'critical' | 'none';
   /**
    * Disable thread-loader parallelization.
-   * Required when:
-   * - Generating LavaMoat policies (static analysis needs full module graph)
-   * - Using --reactCompilerVerbose (stats collection requires _module.buildMeta
-   *   which is null in thread-loader workers)
+   * Required when generating LavaMoat policies (static analysis needs full module graph).
+   * Note: When verbose is true, the wrapper is still used for logging even without thread-loader.
    */
   disableThreadLoader: boolean;
   watch: boolean;
@@ -89,15 +87,13 @@ export const getReactCompilerLoader = (
     });
   }
 
-  // Skip wrapper when thread-loader is disabled (wrapper not needed, also not resolvable under LavaMoat)
-  // Use wrapper for buildMeta tracking when thread-loader is active
-  if (disableThreadLoader) {
-    // Direct loader without wrapper (for policy generation or verbose mode)
-    loaders.push({
-      loader: reactCompilerLoader,
-      options: defineReactCompilerLoaderOption(reactCompilerOptions),
-    });
-  } else {
+  // Use wrapper when:
+  // - thread-loader is enabled (for buildMeta tracking in workers)
+  // - verbose mode is enabled (wrapper provides logging via logger callback)
+  // Skip wrapper only for policy generation (not resolvable under LavaMoat)
+  const useWrapper = !disableThreadLoader || verbose;
+
+  if (useWrapper) {
     loaders.push({
       loader: getWrapperPath(),
       options: {
@@ -105,6 +101,12 @@ export const getReactCompilerLoader = (
         // eslint-disable-next-line @typescript-eslint/naming-convention
         __verbose: verbose,
       },
+    });
+  } else {
+    // Direct loader without wrapper (for policy generation only)
+    loaders.push({
+      loader: reactCompilerLoader,
+      options: defineReactCompilerLoaderOption(reactCompilerOptions),
     });
   }
 

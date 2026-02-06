@@ -97,11 +97,12 @@ describe('getReactCompilerLoader', () => {
     });
   });
 
-  describe('when disableThreadLoader is true', () => {
+  describe('when disableThreadLoader is true and verbose is false', () => {
     it('returns only one loader (no thread-loader)', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
         disableThreadLoader: true,
+        verbose: false,
       });
 
       assert.strictEqual(loaders.length, 1, 'should return 1 loader');
@@ -111,6 +112,7 @@ describe('getReactCompilerLoader', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
         disableThreadLoader: true,
+        verbose: false,
       });
 
       const loader = loaders[0] as { loader: string };
@@ -129,7 +131,7 @@ describe('getReactCompilerLoader', () => {
       const loaders = getReactCompilerLoader({
         ...baseConfig,
         disableThreadLoader: true,
-        verbose: true, // Even when verbose is true
+        verbose: false,
       });
 
       const loader = loaders[0] as {
@@ -140,6 +142,50 @@ describe('getReactCompilerLoader', () => {
         '__verbose' in loader.options,
         false,
         'direct loader should not have __verbose option',
+      );
+    });
+  });
+
+  describe('when disableThreadLoader is true but verbose is true', () => {
+    it('returns only one loader (no thread-loader)', () => {
+      const loaders = getReactCompilerLoader({
+        ...baseConfig,
+        disableThreadLoader: true,
+        verbose: true,
+      });
+
+      assert.strictEqual(loaders.length, 1, 'should return 1 loader');
+    });
+
+    it('uses wrapper loader for verbose logging', () => {
+      const loaders = getReactCompilerLoader({
+        ...baseConfig,
+        disableThreadLoader: true,
+        verbose: true,
+      });
+
+      const loader = loaders[0] as { loader: string };
+      assert.ok(
+        loader.loader.includes('reactCompilerLoaderWrapper'),
+        'should use wrapper for verbose logging',
+      );
+    });
+
+    it('passes __verbose option to wrapper', () => {
+      const loaders = getReactCompilerLoader({
+        ...baseConfig,
+        disableThreadLoader: true,
+        verbose: true,
+      });
+
+      const loader = loaders[0] as {
+        loader: string;
+        options: { __verbose?: boolean };
+      };
+      assert.strictEqual(
+        loader.options.__verbose,
+        true,
+        'wrapper should have __verbose: true',
       );
     });
   });
