@@ -204,7 +204,7 @@ const GasDetailsItem = ({
                 }}
                 textProps={{
                   color: TextColor.textAlternative,
-                  variant: TextVariant.ySm,
+                  variant: TextVariant.bodySm,
                 }}
                 type={PRIMARY}
                 value={
