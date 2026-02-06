@@ -143,18 +143,10 @@ async function main() {
     const reporterOptions = [];
 
     if (isCI) {
-      // Use absolute path and ensure toConsole is false to suppress XML output
-      const junitOutputPath = path.resolve(
-        process.cwd(),
-        'test/test-results/e2e/[hash].xml',
-      );
       reporters.push('--reporter=mocha-junit-reporter');
       reporterOptions.push(
         '--reporter-options',
-        JSON.stringify({
-          mochaFile: junitOutputPath,
-          toConsole: false,
-        }),
+        `mochaFile=test/test-results/e2e/[hash].xml,toConsole=false`,
       );
     }
 
