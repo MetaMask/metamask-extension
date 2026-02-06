@@ -23,9 +23,9 @@ jobs:
           STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
         run: |
           if [[ -n $STORYBOOK_TOKEN ]]; then
-            echo "HAS_STORYBOOK_TOKEN=true" >> $GITHUB_OUTPUT
+            echo "HAS_STORYBOOK_TOKEN=true" >> "$GITHUB_OUTPUT"
           else
-            echo "HAS_STORYBOOK_TOKEN=false" >> $GITHUB_OUTPUT
+            echo "HAS_STORYBOOK_TOKEN=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Checkout and setup high risk environment
