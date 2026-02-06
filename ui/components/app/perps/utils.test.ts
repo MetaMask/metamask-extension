@@ -366,13 +366,19 @@ describe('Perps Utils', () => {
   });
 
   describe('filterTransactionsByType', () => {
+    const categoryMap: Record<string, string> = {
+      trade: 'position_open',
+      order: 'limit_order',
+      funding: 'funding_fee',
+    };
+
     const createMockTransaction = (
       type: PerpsTransaction['type'],
       id: string,
     ): PerpsTransaction => ({
       id,
       type,
-      category: type === 'trade' ? 'position_open' : type === 'order' ? 'limit_order' : type === 'funding' ? 'funding_fee' : type,
+      category: categoryMap[type] ?? type,
       symbol: 'ETH',
       title: 'Test transaction',
       subtitle: 'Test',
