@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import {
   twMerge,
   Box,
@@ -13,13 +13,15 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
-import { PerpsControllerProvider } from '../../../providers/perps';
+import { getPerpsStreamManager } from '../../../providers/perps';
+import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -37,17 +39,43 @@ import {
   PerpsSectionSkeleton,
 } from './perps-skeletons';
 
-/**
- * Inner component that consumes controller hooks
- * Must be rendered within PerpsControllerProvider
- */
 // Card styles matching PositionCard
 const CARD_STYLES =
   'justify-start rounded-none min-w-0 h-auto gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
 
-const PerpsTabViewContent: React.FC = () => {
+/**
+ * PerpsTabView component displays the perpetuals trading tab
+ * with positions and orders sections using stream data.
+ *
+ * Uses PerpsStreamManager for cached data, enabling smooth navigation
+ * without loading skeletons when switching between views.
+ */
+export const PerpsTabView: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+
+  // Get selected address for stream manager initialization
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = selectedAccount?.address;
+
+  // Initialize stream manager and prewarm on mount
+  useEffect(() => {
+    if (!selectedAddress) {
+      return;
+    }
+
+    const streamManager = getPerpsStreamManager();
+
+    // Initialize and prewarm
+    streamManager.init(selectedAddress).then(() => {
+      streamManager.prewarm();
+    });
+
+    // Cleanup prewarm on unmount (cache persists!)
+    return () => {
+      streamManager.cleanupPrewarm();
+    };
+  }, [selectedAddress]);
 
   // Use stream hooks for real-time data
   const { positions, isInitialLoading: positionsLoading } =
@@ -372,20 +400,6 @@ const PerpsTabViewContent: React.FC = () => {
       {/* Recent Activity Section - only shown when user has positions */}
       {hasPositions && <PerpsRecentActivity />}
     </Box>
-  );
-};
-
-/**
- * PerpsTabView component displays the perpetuals trading tab
- * with positions and orders sections using stream data
- *
- * Wraps content with PerpsControllerProvider to enable controller hooks
- */
-export const PerpsTabView: React.FC = () => {
-  return (
-    <PerpsControllerProvider>
-      <PerpsTabViewContent />
-    </PerpsControllerProvider>
   );
 };
 

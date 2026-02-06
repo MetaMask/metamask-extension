@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import type { Position } from '@metamask/perps-controller';
-import { usePerpsController } from '../../../providers/perps';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
  * Options for usePerpsLivePositions hook
@@ -26,7 +26,9 @@ const EMPTY_POSITIONS: Position[] = [];
 /**
  * Hook for real-time position updates via stream subscription
  *
- * Uses the PerpsController directly for WebSocket subscriptions.
+ * Uses the PerpsStreamManager for cached, BehaviorSubject-like access.
+ * Cached data is delivered immediately on subscribe, eliminating loading
+ * skeletons when navigating between Perps views.
  *
  * @param _options - Configuration options (unused, for API compatibility)
  * @returns Object containing positions array and loading state
@@ -53,43 +55,73 @@ export function usePerpsLivePositions(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: UsePerpsLivePositionsOptions = {},
 ): UsePerpsLivePositionsReturn {
-  const controller = usePerpsController();
-  const [positions, setPositions] = useState<Position[]>(EMPTY_POSITIONS);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const hasReceivedFirstUpdate = useRef(false);
+  const { streamManager, isInitializing } = usePerpsStreamManager();
+
+  // Initialize state from cache if available (synchronous)
+  const [positions, setPositions] = useState<Position[]>(() => {
+    if (streamManager) {
+      const cached = streamManager.positions.getCachedData();
+      return cached;
+    }
+    return EMPTY_POSITIONS;
+  });
+
+  // Track whether we've received real data
+  // If cache exists, we're not in initial loading
+  const hasReceivedData = useRef(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(() => {
+    if (streamManager?.positions.hasCachedData()) {
+      hasReceivedData.current = true;
+      return false;
+    }
+    return true;
+  });
 
   useEffect(() => {
-    // Reset state when controller changes (account switch)
-    setPositions(EMPTY_POSITIONS);
-    setIsInitialLoading(true);
-    hasReceivedFirstUpdate.current = false;
+    // If still initializing stream manager, stay in loading state
+    if (isInitializing || !streamManager) {
+      return;
+    }
 
-    const unsubscribe = controller.subscribeToPositions({
-      callback: (newPositions) => {
-        // Debug: Log all positions received from controller
-        console.log(
-          '[Perps] Positions received:',
-          newPositions.length,
-          newPositions.map((p) => ({
-            symbol: p.symbol,
-            size: p.size,
-            positionValue: p.positionValue,
-          })),
-        );
+    // Check if we have cached data immediately
+    if (streamManager.positions.hasCachedData()) {
+      const cached = streamManager.positions.getCachedData();
+      setPositions(cached);
+      if (!hasReceivedData.current) {
+        hasReceivedData.current = true;
+        setIsInitialLoading(false);
+      }
+    }
 
-        if (!hasReceivedFirstUpdate.current) {
-          hasReceivedFirstUpdate.current = true;
-          setIsInitialLoading(false);
-        }
+    // Subscribe - callback fires immediately with cached data (if any)
+    const unsubscribe = streamManager.positions.subscribe((newPositions) => {
+      console.log(
+        '[Perps] Positions received:',
+        newPositions.length,
+        newPositions.map((p) => ({
+          symbol: p.symbol,
+          size: p.size,
+          positionValue: p.positionValue,
+        })),
+      );
 
-        setPositions(newPositions);
-      },
+      if (!hasReceivedData.current) {
+        hasReceivedData.current = true;
+        setIsInitialLoading(false);
+      }
+
+      setPositions(newPositions);
     });
 
     return () => {
       unsubscribe();
     };
-  }, [controller]);
+  }, [streamManager, isInitializing]);
+
+  // If stream manager isn't ready yet, show loading
+  if (!streamManager || isInitializing) {
+    return { positions: EMPTY_POSITIONS, isInitialLoading: true };
+  }
 
   return { positions, isInitialLoading };
 }

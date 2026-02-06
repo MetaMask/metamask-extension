@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
-import { usePerpsController } from '../../../providers/perps';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
  * Options for usePerpsLiveMarketData hook
@@ -49,12 +49,15 @@ export type UsePerpsLiveMarketDataReturn = {
   refresh: () => void;
 };
 
+// Stable empty array reference
+const EMPTY_MARKETS: PerpsMarketData[] = [];
+
 /**
  * Hook for fetching market data with prices.
  *
- * Uses the PerpsController's getMarketDataWithPrices() HTTP method.
- * Note: This is not a subscription - it fetches data on mount and
- * can be manually refreshed.
+ * Uses the PerpsStreamManager for cached, BehaviorSubject-like access.
+ * Cached data is delivered immediately on subscribe, eliminating loading
+ * skeletons when navigating between Perps views.
  *
  * @param options - Hook options
  * @returns Market data and loading state
@@ -78,55 +81,91 @@ export function usePerpsLiveMarketData(
   options: UsePerpsLiveMarketDataOptions = {},
 ): UsePerpsLiveMarketDataReturn {
   const { autoSubscribe = true } = options;
-  const controller = usePerpsController();
+  const { streamManager, isInitializing } = usePerpsStreamManager();
 
-  const [markets, setMarkets] = useState<PerpsMarketData[]>([]);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  // Initialize state from cache if available (synchronous)
+  const [markets, setMarkets] = useState<PerpsMarketData[]>(() => {
+    if (streamManager) {
+      return streamManager.markets.getCachedData();
+    }
+    return EMPTY_MARKETS;
+  });
+
   const [error, setError] = useState<Error | null>(null);
+
+  // Track whether we've received real data
+  const hasReceivedData = useRef(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(() => {
+    if (streamManager?.markets.hasCachedData()) {
+      hasReceivedData.current = true;
+      return false;
+    }
+    return true;
+  });
 
   // Derive crypto and HIP-3 markets
   const cryptoMarkets = markets.filter((m) => !m.marketSource);
   const hip3Markets = markets.filter((m) => m.marketSource);
 
-  const fetchMarketData = useCallback(async () => {
-    try {
-      // Get active provider to fetch market data
-      const provider = controller.getActiveProviderOrNull();
-      if (!provider) {
-        setError(new Error('Provider not initialized'));
-        setIsInitialLoading(false);
-        return;
-      }
-
-      const data = await provider.getMarketDataWithPrices();
-      setMarkets(data);
-      setIsInitialLoading(false);
-      setError(null);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err : new Error('Failed to fetch market data'),
-      );
-      setIsInitialLoading(false);
-    }
-  }, [controller]);
-
+  // Manual refresh function
   const refresh = useCallback(() => {
-    fetchMarketData();
-  }, [fetchMarketData]);
+    if (!streamManager) {
+      return;
+    }
+    // Clear and re-subscribe to trigger a fresh fetch
+    streamManager.markets.clearCache();
+    hasReceivedData.current = false;
+    setIsInitialLoading(true);
+  }, [streamManager]);
 
   useEffect(() => {
-    // Reset state when controller changes (account switch)
-    setMarkets([]);
-    setIsInitialLoading(true);
-    setError(null);
+    // If still initializing stream manager, stay in loading state
+    if (isInitializing || !streamManager) {
+      return;
+    }
 
     if (!autoSubscribe) {
       setIsInitialLoading(false);
       return;
     }
 
-    fetchMarketData();
-  }, [autoSubscribe, fetchMarketData]);
+    // Check if we have cached data immediately
+    if (streamManager.markets.hasCachedData()) {
+      const cached = streamManager.markets.getCachedData();
+      setMarkets(cached);
+      if (!hasReceivedData.current) {
+        hasReceivedData.current = true;
+        setIsInitialLoading(false);
+      }
+    }
+
+    // Subscribe - callback fires immediately with cached data (if any)
+    const unsubscribe = streamManager.markets.subscribe((newMarkets) => {
+      if (!hasReceivedData.current) {
+        hasReceivedData.current = true;
+        setIsInitialLoading(false);
+      }
+
+      setMarkets(newMarkets);
+      setError(null);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [streamManager, isInitializing, autoSubscribe]);
+
+  // If stream manager isn't ready yet, show loading
+  if (!streamManager || isInitializing) {
+    return {
+      markets: EMPTY_MARKETS,
+      cryptoMarkets: EMPTY_MARKETS,
+      hip3Markets: EMPTY_MARKETS,
+      isInitialLoading: true,
+      error: null,
+      refresh,
+    };
+  }
 
   return {
     markets,

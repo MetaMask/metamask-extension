@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import type { Order } from '@metamask/perps-controller';
-import { usePerpsController } from '../../../providers/perps';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
  * Options for usePerpsLiveOrders hook
@@ -26,7 +26,9 @@ const EMPTY_ORDERS: Order[] = [];
 /**
  * Hook for real-time order updates via stream subscription
  *
- * Uses the PerpsController directly for WebSocket subscriptions.
+ * Uses the PerpsStreamManager for cached, BehaviorSubject-like access.
+ * Cached data is delivered immediately on subscribe, eliminating loading
+ * skeletons when navigating between Perps views.
  *
  * @param _options - Configuration options (unused, for API compatibility)
  * @returns Object containing orders array and loading state
@@ -55,32 +57,61 @@ export function usePerpsLiveOrders(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: UsePerpsLiveOrdersOptions = {},
 ): UsePerpsLiveOrdersReturn {
-  const controller = usePerpsController();
-  const [orders, setOrders] = useState<Order[]>(EMPTY_ORDERS);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const hasReceivedFirstUpdate = useRef(false);
+  const { streamManager, isInitializing } = usePerpsStreamManager();
+
+  // Initialize state from cache if available (synchronous)
+  const [orders, setOrders] = useState<Order[]>(() => {
+    if (streamManager) {
+      return streamManager.orders.getCachedData();
+    }
+    return EMPTY_ORDERS;
+  });
+
+  // Track whether we've received real data
+  const hasReceivedData = useRef(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(() => {
+    if (streamManager?.orders.hasCachedData()) {
+      hasReceivedData.current = true;
+      return false;
+    }
+    return true;
+  });
 
   useEffect(() => {
-    // Reset state when controller changes (account switch)
-    setOrders(EMPTY_ORDERS);
-    setIsInitialLoading(true);
-    hasReceivedFirstUpdate.current = false;
+    // If still initializing stream manager, stay in loading state
+    if (isInitializing || !streamManager) {
+      return;
+    }
 
-    const unsubscribe = controller.subscribeToOrders({
-      callback: (newOrders) => {
-        if (!hasReceivedFirstUpdate.current) {
-          hasReceivedFirstUpdate.current = true;
-          setIsInitialLoading(false);
-        }
+    // Check if we have cached data immediately
+    if (streamManager.orders.hasCachedData()) {
+      const cached = streamManager.orders.getCachedData();
+      setOrders(cached);
+      if (!hasReceivedData.current) {
+        hasReceivedData.current = true;
+        setIsInitialLoading(false);
+      }
+    }
 
-        setOrders(newOrders);
-      },
+    // Subscribe - callback fires immediately with cached data (if any)
+    const unsubscribe = streamManager.orders.subscribe((newOrders) => {
+      if (!hasReceivedData.current) {
+        hasReceivedData.current = true;
+        setIsInitialLoading(false);
+      }
+
+      setOrders(newOrders);
     });
 
     return () => {
       unsubscribe();
     };
-  }, [controller]);
+  }, [streamManager, isInitializing]);
+
+  // If stream manager isn't ready yet, show loading
+  if (!streamManager || isInitializing) {
+    return { orders: EMPTY_ORDERS, isInitialLoading: true };
+  }
 
   return { orders, isInitialLoading };
 }

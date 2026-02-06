@@ -2,31 +2,28 @@
  * Perps Stream Hooks
  *
  * Real-time data subscription hooks for Perps UI components.
- * These hooks use the PerpsController directly via React context.
+ * These hooks use the PerpsStreamManager for cached, BehaviorSubject-like access.
+ *
+ * Key feature: Cached data is delivered immediately on subscribe, eliminating
+ * loading skeletons when navigating between Perps views (matching mobile UX).
  *
  * Usage:
- * 1. Wrap your component tree with <PerpsControllerProvider>
- * 2. Use these hooks in child components
- *
- * @example
  * ```tsx
- * import { PerpsControllerProvider } from '../providers/perps';
  * import { usePerpsLivePositions } from '../hooks/perps/stream';
  *
- * function App() {
- *   return (
- *     <PerpsControllerProvider>
- *       <PositionsList />
- *     </PerpsControllerProvider>
- *   );
- * }
- *
  * function PositionsList() {
+ *   // No provider wrapping needed - uses module-level singleton
  *   const { positions, isInitialLoading } = usePerpsLivePositions();
  *   // ... render positions
  * }
  * ```
  */
+
+// Stream Manager hook (base hook for all stream hooks)
+export {
+  usePerpsStreamManager,
+  type UsePerpsStreamManagerReturn,
+} from './usePerpsStreamManager';
 
 // Price hooks
 export {
