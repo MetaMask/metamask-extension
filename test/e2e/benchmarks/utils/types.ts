@@ -90,10 +90,12 @@ export type WebVitalsAggregated = {
   };
 };
 
+export type WebVitalsRun = WebVitalsMetrics & { iteration: number };
+
 /** Full web vitals summary: per-run snapshots for Sentry spans + aggregated stats */
 export type WebVitalsSummary = {
   /** Individual per-iteration snapshots — preserved for granular Sentry spans */
-  runs: Array<WebVitalsMetrics & { iteration: number }>;
+  runs: WebVitalsRun[];
   /** Aggregated statistics using outlier detection and percentile analysis */
   aggregated: WebVitalsAggregated;
 };

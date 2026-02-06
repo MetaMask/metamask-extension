@@ -24,10 +24,10 @@ import type {
   BenchmarkSummary,
   Metrics,
   ThresholdConfig,
-  TimerResult,
   TimerStatistics,
   UserActionMeasurement,
   WebVitalsMetrics,
+  WebVitalsRun,
   WebVitalsSummary,
 } from './types';
 import { performanceTracker } from './performance-tracker';
@@ -96,7 +96,7 @@ export async function runBenchmarkWithIterations(
 
   // Aggregate timer results and collect per-run web vitals
   const timerMap = new Map<string, number[]>();
-  const webVitalsRuns: Array<WebVitalsMetrics & { iteration: number }> = [];
+  const webVitalsRuns: WebVitalsRun[] = [];
 
   for (let idx = 0; idx < allResults.length; idx++) {
     const result = allResults[idx];
