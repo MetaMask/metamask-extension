@@ -1,7 +1,11 @@
-import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
+  getHdPathForHardwareKeyring,
+  getLedgerAppConfiguration,
+  getLedgerPublicKey,
 } from '../../../store/actions';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
 import { toHardwareWalletError } from '../rpcErrorUtils';
@@ -31,8 +35,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
   private pendingConnection: Promise<void> | null = null;
 
-  private currentDeviceId: string | null = null;
-
   private unsubscribeHidEvents: (() => void) | null = null;
 
   constructor(options: HardwareWalletAdapterOptions) {
@@ -56,9 +58,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       // onDisconnect - device unplugged
       () => {
         // Only emit disconnect if we were tracking a connection
-        if (this.connected || this.currentDeviceId) {
+        if (this.connected) {
           this.connected = false;
-          this.currentDeviceId = null;
           this.options.onDeviceEvent({
             event: DeviceEvent.Disconnected,
           });
@@ -70,34 +71,31 @@ export class LedgerAdapter implements HardwareWalletAdapter {
   /**
    * Check if device is currently connected via WebHID
    */
-  private async checkDeviceConnected(): Promise<boolean> {
+  private async checkDeviceConnected(): Promise<HIDDevice | false> {
     const devices = await getConnectedLedgerDevices();
-    return devices.length > 0;
+    // We only use the first ledger device for
+    return devices.length > 0 ? devices[0] : false;
+  }
+
+  private async getHdPath(): Promise<string> {
+    const path = await getHdPathForHardwareKeyring(HardwareDeviceNames.ledger);
+    console.log('[HW] hdPath', path);
+    return path;
   }
 
   /**
    * Connect to Ledger device
    * Verifies device is physically connected AND Ethereum app is open
    *
-   * @param deviceId - The device ID to connect to
    */
-  async connect(deviceId: string): Promise<void> {
+  async connect(): Promise<void> {
     // Already connected to the same device - return immediately
-    if (this.connected && this.currentDeviceId === deviceId) {
+    if (this.connected) {
       return;
-    }
-
-    // Already connected to a different device - disconnect firste
-    if (this.connected && this.currentDeviceId !== deviceId) {
-      await this.disconnect();
     }
 
     // Connection in progress - check if it's for the same device
     if (this.isConnecting && this.pendingConnection) {
-      if (this.currentDeviceId === deviceId) {
-        // Same device - reuse the pending promise
-        return this.pendingConnection;
-      }
       // Connecting to a different device - wait for current connection to complete/fail,
       // then disconnect and connect to the new device
       try {
@@ -114,8 +112,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
     // Start new connection - track the device we're connecting to
     this.isConnecting = true;
-    this.currentDeviceId = deviceId;
     this.pendingConnection = (async () => {
+      console.log('[HW] starting new connection');
       try {
         // Step 1: Check WebHID availability
         if (!isWebHidAvailable()) {
@@ -127,8 +125,9 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         }
 
         // Step 2: Check if device is physically connected
-        const isDeviceConnected = await this.checkDeviceConnected();
-        if (!isDeviceConnected) {
+        const connectedLedgerDevice = await this.checkDeviceConnected();
+        console.log('[HW] isDeviceConnected', connectedLedgerDevice);
+        if (!connectedLedgerDevice) {
           throw createHardwareWalletError(
             ErrorCode.DeviceDisconnected,
             HardwareWalletType.Ledger,
@@ -136,16 +135,28 @@ export class LedgerAdapter implements HardwareWalletAdapter {
           );
         }
 
-        // Step 3: Attempt to create a transport for the device
+        // Step 3: Check if device is unlocked. This is only for Nano S and Nano X because there
+        // is no way to detect if the device is locked on Nano S Plus without attempting an action.
+        // This is a hack. Any errors would show device is locked when that might not be true.
+        if (
+          connectedLedgerDevice.productName === 'Nano S' ||
+          connectedLedgerDevice.productName === 'Nano X'
+        ) {
+          const hdPath = await this.getHdPath();
+          await getLedgerPublicKey(hdPath);
+        }
+
+        // Step 4: Attempt to create a transport for the device
         await attemptLedgerTransportCreation();
+
+        console.log('[HW] attemptLedgerTransportCreation done');
 
         // Mark as connected - device is present AND app is open
         this.connected = true;
-        this.currentDeviceId = deviceId;
       } catch (error) {
+        console.log('[HW] error', error);
         // Clean up on error
         this.connected = false;
-        this.currentDeviceId = null;
 
         const hwError = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
@@ -172,7 +183,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
   async disconnect(): Promise<void> {
     try {
       this.connected = false;
-      this.currentDeviceId = null;
 
       this.options.onDeviceEvent({
         event: DeviceEvent.Disconnected,
@@ -201,9 +211,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     // See closeTransport() in app/offscreen/ledger.ts
     this.connected = false;
     this.isConnecting = false;
-    // TODO: Potential race conditon: Destroy may override currentDeviceId and pending connection before they resolve.
+    // TODO: Potential race conditon: Destroy may override pending connection before it resolves.
     this.pendingConnection = null;
-    this.currentDeviceId = null;
   }
 
   /**
@@ -211,23 +220,19 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * Throws HardwareWalletError from the KeyringController/Ledger keyring
    * These errors are already properly formatted and include all necessary metadata
    *
-   * @param deviceId - The device ID to verify
    * @returns true if device is ready
    */
-  async ensureDeviceReady(deviceId: string): Promise<boolean> {
-    // If connected to a different device, reconnect to the requested device
-    if (this.isConnected() && this.currentDeviceId !== deviceId) {
-      await this.disconnect();
-    }
-
+  async ensureDeviceReady(): Promise<boolean> {
     if (!this.isConnected()) {
-      await this.connect(deviceId);
+      console.log('[HW] not connected, connecting');
+      await this.connect();
     }
+    console.log('[HW] connected');
 
     try {
       // Get the app name and version from the Ledger device
       const { appName } = await getAppNameAndVersion();
-
+      console.log('[HW] appName', appName);
       if (appName !== 'Ethereum') {
         throw createHardwareWalletError(
           ErrorCode.DeviceStateEthAppClosed,
@@ -236,32 +241,42 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         );
       }
 
-      return true;
-    } catch (error) {
-      if (error instanceof HardwareWalletError && error.code !== undefined) {
-        // Emit appropriate device events with the properly reconstructed error
-        const deviceEvent = getDeviceEventForError(
-          error.code,
-          DeviceEvent.Disconnected,
+      // This is blind signing check.
+      const { arbitraryDataEnabled } = await getLedgerAppConfiguration();
+      console.log('[HW] arbitraryDataEnabled', arbitraryDataEnabled);
+      if (arbitraryDataEnabled !== 1) {
+        throw createHardwareWalletError(
+          ErrorCode.DeviceStateBlindSignNotSupported,
+          HardwareWalletType.Ledger,
+          'Blind signing is not enabled',
         );
-        this.options.onDeviceEvent({
-          event: deviceEvent,
-          error,
-        });
-
-        // Reset connection state for disconnection-related errors
-        const shouldResetConnection = [
-          ErrorCode.DeviceDisconnected,
-          ErrorCode.ConnectionClosed,
-        ].includes(error.code);
-
-        if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
-          this.connected = false;
-          this.currentDeviceId = null;
-        }
       }
 
-      throw error;
+      return true;
+    } catch (error) {
+      console.log('[HW] error', error);
+      console.log('[LedgerAdapter] ensureDeviceReady error', error);
+      const hwError = toHardwareWalletError(error, HardwareWalletType.Ledger);
+      // Emit appropriate device events with the properly reconstructed error
+      const deviceEvent = getDeviceEventForError(
+        hwError.code,
+        DeviceEvent.Disconnected,
+      );
+      this.options.onDeviceEvent({
+        event: deviceEvent,
+        error: hwError,
+      });
+
+      // Reset connection state for disconnection-related errors
+      const shouldResetConnection = [
+        ErrorCode.DeviceDisconnected,
+        ErrorCode.ConnectionClosed,
+      ].includes(hwError.code);
+
+      if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
+        this.connected = false;
+      }
+      throw hwError;
     }
   }
 }

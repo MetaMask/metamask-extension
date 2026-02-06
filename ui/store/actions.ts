@@ -84,11 +84,14 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
+import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
@@ -101,6 +104,8 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
+  getPendingHardwareWalletSigning,
+  getIsHardwareWalletErrorModalVisible,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
@@ -2368,7 +2373,8 @@ export function cancelTxs(
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        attemptCloseNotificationPopup();
+        // Use closeCurrentNotificationWindow which has hardware wallet guards
+        dispatch(closeCurrentNotificationWindow());
       } else {
         dispatch(hideLoadingIndication());
       }
@@ -3823,8 +3829,21 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     const state = getState();
     const approvalFlows = getApprovalFlows(state);
+    const isPendingHardwareSigning = getPendingHardwareWalletSigning(state);
+    const isHwErrorModalVisible = getIsHardwareWalletErrorModalVisible(state);
+
+    // Don't close the popup if:
+    // - Hardware wallet signing is in progress (error being handled)
+    // - Hardware wallet error modal is visible (for retry functionality)
+    if (isPendingHardwareSigning || isHwErrorModalVisible) {
+      return;
+    }
+
+    const environmentType = getEnvironmentType();
     if (
-      getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
+      [ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_POPUP].includes(
+        environmentType,
+      ) &&
       !hasTransactionPendingApprovals(state) &&
       !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
@@ -5861,8 +5880,43 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
   };
 }
 
+/**
+ * Attempts to create a transport for a Ledger hardware wallet.
+ *
+ * @returns A promise that resolves to a boolean indicating whether the transport was created successfully.
+ */
 export async function attemptLedgerTransportCreation() {
   return await submitRequestToBackground('attemptLedgerTransportCreation');
+}
+
+/**
+ * Gets the app name and version from the connected Ledger device.
+ *
+ * @returns A promise that resolves to an object containing the app name and version.
+ */
+export async function getAppNameAndVersion(): Promise<{
+  appName: string;
+  version: string;
+}> {
+  return await submitRequestToBackground('getAppNameAndVersion');
+}
+
+export async function getLedgerAppConfiguration(): Promise<{
+  arbitraryDataEnabled: number;
+  erc20ProvisioningNecessary: number;
+  starkEnabled: number;
+  starkv2Supported: number;
+  version: string;
+}> {
+  return await submitRequestToBackground('getLedgerAppConfiguration');
+}
+
+export async function getLedgerPublicKey(hdPath: string): Promise<{
+  publicKey: string;
+  address: string;
+  chainCode?: string;
+}> {
+  return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
 }
 
 /**
@@ -7893,6 +7947,17 @@ export async function generateClaimSignature(
   ]);
 }
 
+export async function getHdPathForHardwareKeyring(
+  deviceName: HardwareDeviceNames,
+): Promise<string> {
+  console.log('[HW] getHdPathForHardwareKeyring', deviceName);
+  const hdPath = await submitRequestToBackground<string>(
+    'getHdPathForHardwareKeyring',
+    [deviceName],
+  );
+  return hdPath;
+}
+
 /**
  * Saves a claim draft.
  *
@@ -7913,16 +7978,4 @@ export async function saveClaimDraft(
  */
 export async function deleteClaimDraft(draftId: string): Promise<void> {
   return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
-}
-
-/**
- * Gets the app name and version from the connected Ledger device.
- *
- * @returns A promise that resolves to an object containing the app name and version.
- */
-export async function getAppNameAndVersion(): Promise<{
-  appName: string;
-  version: string;
-}> {
-  return await submitRequestToBackground('getAppNameAndVersion');
 }
