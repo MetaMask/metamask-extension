@@ -76,14 +76,15 @@ export const getReactCompilerLoader = (
 
   const loaders: RuleSetUseItem[] = [];
 
+  const numCores = availableParallelism();
   // Add thread-loader for parallelization when enabled
   if (!disableThreadLoader) {
     loaders.push({
       loader: 'thread-loader',
       options: {
-        // Leave one core for system processes; availableParallelism respects cgroups/container limits
-        workers: availableParallelism() - 1 || 1,
+        workers: numCores < 8 ? Math.max(1, numCores - 2) : numCores - 1,
         workerParallelJobs: 50,
+        poolTimeout: watch ? Number(Infinity) : 500,
       },
     });
   }
