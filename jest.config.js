@@ -15,6 +15,9 @@ module.exports = {
   moduleNameMapper: {
     // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
     '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
+    // Map web-vitals UMD build (used for Browserify) to ESM entry (Jest handles ESM fine)
+    '^web-vitals/dist/web-vitals\\.attribution\\.umd\\.cjs$':
+      'web-vitals/attribution',
   },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
