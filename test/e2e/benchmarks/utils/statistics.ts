@@ -14,6 +14,8 @@ import type {
   ThresholdConfig,
   ThresholdViolation,
   TimerStatistics,
+  WebVitalsMetrics,
+  WebVitalsRating,
 } from './types';
 
 /**
@@ -527,4 +529,81 @@ export const formatThresholdViolations = (
     const percentileLabel = v.percentile.toUpperCase();
     return `${severityPrefix}: ${v.metricId} ${percentileLabel} (${v.value.toFixed(2)}ms) exceeds threshold (${v.threshold.toFixed(2)}ms)`;
   });
+};
+
+const WEB_VITALS_NUMERIC_KEYS = ['inp', 'lcp', 'cls'] as const;
+
+type WebVitalsNumericKey = (typeof WEB_VITALS_NUMERIC_KEYS)[number];
+
+/**
+ * Per-metric sanity bounds for web vitals.
+ *
+ * These differ from timer bounds because:
+ * - CLS is unitless (0-10 range in practice), not milliseconds
+ * - CLS of 0 is valid (perfect visual stability)
+ * - INP/LCP have different reasonable ceilings than arbitrary timer durations
+ */
+const WEB_VITALS_BOUNDS: Record<
+  WebVitalsNumericKey,
+  { min: number; max: number; allowZero: boolean }
+> = {
+  /** INP: interaction responsiveness. Google "poor" starts at 500ms. */
+  inp: { min: 1, max: 30_000, allowZero: false },
+  /** LCP: perceived load time. Google "poor" starts at 4s. */
+  lcp: { min: 1, max: 60_000, allowZero: false },
+  /** CLS: layout shift score (unitless). 0 is perfect; >1 is extremely poor. */
+  cls: { min: 0, max: 10, allowZero: true },
+};
+
+/**
+ * Calculate statistics for a single web vitals metric.
+ *
+ * Uses metric-specific sanity bounds, then the same IQR+z-score outlier
+ * detection and percentile analysis as timer statistics.
+ *
+ * @param metricId - The metric name ('inp', 'lcp', or 'cls')
+ * @param values - Raw metric values across benchmark iterations
+ */
+export const calculateWebVitalsStatistics = (
+  metricId: WebVitalsNumericKey,
+  values: number[],
+): TimerStatistics => {
+  const bounds = WEB_VITALS_BOUNDS[metricId];
+
+  // Metric-specific sanity filtering
+  const filtered: number[] = [];
+  let excludedCount = 0;
+  for (const value of values) {
+    const tooLow = bounds.allowZero ? value < bounds.min : value <= bounds.min;
+    if (tooLow || value > bounds.max) {
+      excludedCount += 1;
+    } else {
+      filtered.push(value);
+    }
+  }
+
+  // Standard outlier detection on surviving values
+  const outlierResult = detectOutliers(filtered);
+  const sorted = [...outlierResult.filtered].sort((a, b) => a - b);
+  const mean = calculateMean(outlierResult.filtered);
+  const stdDev = calculateStdDev(outlierResult.filtered);
+  const cv = mean > 0 ? (stdDev / mean) * 100 : 0;
+
+  const totalExcluded = excludedCount + outlierResult.outlierCount;
+
+  return {
+    id: metricId,
+    mean,
+    min: sorted.length > 0 ? sorted[0] : 0,
+    max: sorted.length > 0 ? sorted[sorted.length - 1] : 0,
+    stdDev,
+    cv,
+    p50: calculatePercentile(sorted, 50),
+    p75: calculatePercentile(sorted, 75),
+    p95: calculatePercentile(sorted, 95),
+    p99: calculatePercentile(sorted, 99),
+    samples: outlierResult.filtered.length,
+    outliers: totalExcluded,
+    dataQuality: assessDataQuality(cv),
+  };
 };
