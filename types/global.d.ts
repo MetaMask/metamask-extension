@@ -292,6 +292,7 @@ type StateHooks = {
 
   /**
    * Initialize Core Web Vitals observers (INP, LCP, CLS).
+   *
    * @see ui/helpers/utils/web-vitals.ts
    */
   initWebVitals?: () => void;
