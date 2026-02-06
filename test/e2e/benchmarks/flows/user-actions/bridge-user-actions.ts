@@ -16,6 +16,7 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 
 export const testTitle = 'benchmark-user-actions-bridge-user-actions';
 export const persona = 'standard';
@@ -44,6 +45,7 @@ export async function run(): Promise<BenchmarkRunResult> {
     let loadPage: number = 0;
     let loadAssetPicker: number = 0;
     let searchToken: number = 0;
+    let webVitals;
 
     const fixtureBuilder = new FixtureBuilder()
       .withNetworkControllerOnMainnet()
@@ -93,13 +95,18 @@ export async function run(): Promise<BenchmarkRunResult> {
         searchToken =
           timestampAfterTokenSearch.getTime() -
           timestampBeforeTokenSearch.getTime();
+
+        webVitals = await collectWebVitals(driver);
       },
     );
 
-    return [
-      { id: 'bridge_load_page', duration: loadPage },
-      { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
-      { id: 'bridge_search_token', duration: searchToken },
-    ];
+    return {
+      timers: [
+        { id: 'bridge_load_page', duration: loadPage },
+        { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
+        { id: 'bridge_search_token', duration: searchToken },
+      ],
+      webVitals,
+    };
   });
 }

@@ -11,6 +11,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { Driver } from '../../../webdriver/driver';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 
 export const testTitle = 'benchmark-user-actions-load-new-account';
 export const persona = 'standard';
@@ -18,6 +19,7 @@ export const persona = 'standard';
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
     let loadingTimes: number = 0;
+    let webVitals;
 
     await withFixtures(
       {
@@ -41,9 +43,14 @@ export async function run(): Promise<BenchmarkRunResult> {
         const timestampAfterAction = new Date();
         loadingTimes =
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();
+
+        webVitals = await collectWebVitals(driver);
       },
     );
 
-    return [{ id: 'load_new_account', duration: loadingTimes }];
+    return {
+      timers: [{ id: 'load_new_account', duration: loadingTimes }],
+      webVitals,
+    };
   });
 }

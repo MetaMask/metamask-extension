@@ -10,6 +10,7 @@ import { createInternalTransaction } from '../../../page-objects/flows/transacti
 import { Driver } from '../../../webdriver/driver';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 
 export const testTitle = 'benchmark-user-actions-confirm-tx';
 export const persona = 'standard';
@@ -17,6 +18,7 @@ export const persona = 'standard';
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
     let loadingTimes: number = 0;
+    let webVitals;
 
     await withFixtures(
       {
@@ -51,9 +53,14 @@ export async function run(): Promise<BenchmarkRunResult> {
         const timestampAfterAction = new Date();
         loadingTimes =
           timestampAfterAction.getTime() - timestampBeforeAction.getTime();
+
+        webVitals = await collectWebVitals(driver);
       },
     );
 
-    return [{ id: 'confirm_tx', duration: loadingTimes }];
+    return {
+      timers: [{ id: 'confirm_tx', duration: loadingTimes }],
+      webVitals,
+    };
   });
 }
