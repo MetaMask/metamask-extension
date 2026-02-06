@@ -25,6 +25,10 @@ import {
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
 import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
+import type {
+  LongTaskMetrics,
+  LongTaskMetricsWithTBT,
+} from '../ui/helpers/utils/performance-observers';
 
 declare class MessageSender {
   documentId?: string;
@@ -289,6 +293,11 @@ type StateHooks = {
    * tests.
    */
   reloadExtension?: () => void;
+
+  // Long Task / TBT metrics for E2E benchmarks
+  getLongTaskMetrics?: (reset?: boolean) => LongTaskMetrics;
+  getLongTaskMetricsWithTBT?: (reset?: boolean) => LongTaskMetricsWithTBT;
+  resetLongTaskMetrics?: () => void;
 };
 
 export declare global {
