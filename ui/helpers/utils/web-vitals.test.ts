@@ -1,3 +1,9 @@
+// Mock web-vitals UMD build (same path as in web-vitals.ts)
+import {
+  onINP,
+  onLCP,
+  onCLS,
+} from 'web-vitals/dist/web-vitals.attribution.umd.cjs';
 import {
   initINPObserver,
   initLCPObserver,
@@ -7,14 +13,11 @@ import {
   resetWebVitalsMetrics,
 } from './web-vitals';
 
-// Mock web-vitals/attribution
-jest.mock('web-vitals/attribution', () => ({
+jest.mock('web-vitals/dist/web-vitals.attribution.umd.cjs', () => ({
   onINP: jest.fn(),
   onLCP: jest.fn(),
   onCLS: jest.fn(),
 }));
-
-import { onINP, onLCP, onCLS } from 'web-vitals/attribution';
 
 const mockOnINP = onINP as jest.Mock;
 const mockOnLCP = onLCP as jest.Mock;
