@@ -41,8 +41,8 @@ const WEB_VITALS_METRICS = [
  *
  * Per-run snapshots become individual spans with measurements and rating tags,
  * following the conventions from ui/helpers/utils/web-vitals.ts:
- *   - setMeasurement: benchmark.{metric} with appropriate unit
- *   - setAttribute: {metric}.rating
+ * - setMeasurement: benchmark.{metric} with appropriate unit
+ * - setAttribute: {metric}.rating
  *
  * Aggregated summary goes as a structured log for dashboards.
  *
