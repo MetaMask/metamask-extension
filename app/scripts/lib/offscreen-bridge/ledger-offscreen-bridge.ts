@@ -1,4 +1,5 @@
 import {
+  GetAppNameAndVersionResponse,
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
@@ -82,10 +83,25 @@ export class LedgerOffscreenBridge
     );
   }
 
-  getAppNameAndVersion(): Promise<{ appName: string; version: string }> {
+  getAppNameAndVersion(): Promise<GetAppNameAndVersionResponse> {
     return this.#sendMessage(
       {
         action: LedgerAction.getAppNameAndVersion,
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
+  }
+
+  getAppConfiguration(): Promise<{
+    arbitraryDataEnabled: number;
+    erc20ProvisioningNecessary: number;
+    starkEnabled: number;
+    starkv2Supported: number;
+    version: string;
+  }> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getAppConfiguration,
       },
       { timeout: MESSAGE_TIMEOUT },
     );
