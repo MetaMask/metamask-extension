@@ -45,9 +45,8 @@ describe('web-vitals', () => {
       expect(typeof mockOnINP.mock.calls[0][0]).toBe('function');
     });
 
-    it('reports good INP to Sentry', () => {
+    it('enriches Sentry with rating tag and attribution for good INP', () => {
       const mockSentry = {
-        setMeasurement: jest.fn(),
         setTag: jest.fn(),
         setContext: jest.fn(),
         addBreadcrumb: jest.fn(),
@@ -71,11 +70,6 @@ describe('web-vitals', () => {
         },
       });
 
-      expect(mockSentry.setMeasurement).toHaveBeenCalledWith(
-        'benchmark.inp',
-        150,
-        'millisecond',
-      );
       expect(mockSentry.setTag).toHaveBeenCalledWith('inp.rating', 'good');
       expect(mockSentry.setContext).toHaveBeenCalledWith(
         'inp_attribution',
@@ -88,9 +82,8 @@ describe('web-vitals', () => {
       expect(mockSentry.addBreadcrumb).not.toHaveBeenCalled();
     });
 
-    it('reports poor INP with warning breadcrumb', () => {
+    it('adds warning breadcrumb for poor INP', () => {
       const mockSentry = {
-        setMeasurement: jest.fn(),
         setTag: jest.fn(),
         setContext: jest.fn(),
         addBreadcrumb: jest.fn(),
@@ -135,9 +128,8 @@ describe('web-vitals', () => {
       expect(mockOnLCP).toHaveBeenCalledTimes(1);
     });
 
-    it('reports LCP to Sentry with attribution', () => {
+    it('enriches Sentry with rating tag and attribution for good LCP', () => {
       const mockSentry = {
-        setMeasurement: jest.fn(),
         setTag: jest.fn(),
         setContext: jest.fn(),
         addBreadcrumb: jest.fn(),
@@ -157,11 +149,6 @@ describe('web-vitals', () => {
         },
       });
 
-      expect(mockSentry.setMeasurement).toHaveBeenCalledWith(
-        'benchmark.lcp',
-        2000,
-        'millisecond',
-      );
       expect(mockSentry.setTag).toHaveBeenCalledWith('lcp.rating', 'good');
       expect(mockSentry.setContext).toHaveBeenCalledWith(
         'lcp_attribution',
@@ -169,11 +156,12 @@ describe('web-vitals', () => {
           element: 'div.account-list',
         }),
       );
+      // Good metrics should not add breadcrumb
+      expect(mockSentry.addBreadcrumb).not.toHaveBeenCalled();
     });
 
-    it('reports poor LCP correctly', () => {
+    it('adds warning breadcrumb for poor LCP', () => {
       const mockSentry = {
-        setMeasurement: jest.fn(),
         setTag: jest.fn(),
         setContext: jest.fn(),
         addBreadcrumb: jest.fn(),
@@ -188,6 +176,12 @@ describe('web-vitals', () => {
       callback({ value: 5000, attribution: {} });
 
       expect(mockSentry.setTag).toHaveBeenCalledWith('lcp.rating', 'poor');
+      expect(mockSentry.addBreadcrumb).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: 'performance.lcp',
+          level: 'warning',
+        }),
+      );
     });
   });
 
@@ -197,9 +191,8 @@ describe('web-vitals', () => {
       expect(mockOnCLS).toHaveBeenCalledTimes(1);
     });
 
-    it('reports CLS to Sentry with unitless measurement', () => {
+    it('enriches Sentry with rating tag and attribution for good CLS', () => {
       const mockSentry = {
-        setMeasurement: jest.fn(),
         setTag: jest.fn(),
         setContext: jest.fn(),
         addBreadcrumb: jest.fn(),
@@ -220,17 +213,19 @@ describe('web-vitals', () => {
         },
       });
 
-      expect(mockSentry.setMeasurement).toHaveBeenCalledWith(
-        'benchmark.cls',
-        0.05,
-        'none', // CLS is unitless
-      );
       expect(mockSentry.setTag).toHaveBeenCalledWith('cls.rating', 'good');
+      expect(mockSentry.setContext).toHaveBeenCalledWith(
+        'cls_attribution',
+        expect.objectContaining({
+          largestShiftTarget: 'div.token-list',
+        }),
+      );
+      // Good metrics should not add breadcrumb
+      expect(mockSentry.addBreadcrumb).not.toHaveBeenCalled();
     });
 
-    it('reports poor CLS correctly', () => {
+    it('adds warning breadcrumb for poor CLS', () => {
       const mockSentry = {
-        setMeasurement: jest.fn(),
         setTag: jest.fn(),
         setContext: jest.fn(),
         addBreadcrumb: jest.fn(),
@@ -245,6 +240,12 @@ describe('web-vitals', () => {
       callback({ value: 0.3, attribution: {} });
 
       expect(mockSentry.setTag).toHaveBeenCalledWith('cls.rating', 'poor');
+      expect(mockSentry.addBreadcrumb).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: 'performance.cls',
+          level: 'warning',
+        }),
+      );
     });
   });
 
