@@ -18,7 +18,7 @@ const useAnalyticEventCallback = (props: {
   type: string;
   clickType: 'external_link' | 'internal_link';
 }) => {
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const analyticsEvent = useCallback(() => {
     trackEvent({

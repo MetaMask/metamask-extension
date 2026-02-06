@@ -21,12 +21,6 @@ jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
 
 const mockFetchWithCache = fetchWithCache as jest.Mock;
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
 const mockStore = configureStore([thunk]);
 
 const surveyData = {
@@ -61,7 +55,7 @@ const createStore = (options = { metametricsEnabled: true }) =>
 
 const renderComponent = (options = { metametricsEnabled: true }) =>
   renderWithProvider(
-    <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+    <MetaMetricsContext.Provider value={mockTrackEvent}>
       <SurveyToast />
     </MetaMetricsContext.Provider>,
     createStore(options),

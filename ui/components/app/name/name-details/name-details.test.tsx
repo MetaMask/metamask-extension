@@ -604,16 +604,9 @@ describe('NameDetails', () => {
         isAccount: false,
       });
 
-      const mockMetaMetricsContext = {
-        trackEvent: trackEventMock,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
-
       await act(async () => {
         renderWithProvider(
-          <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <MetaMetricsContext.Provider value={trackEventMock}>
             <NameDetails
               type={NameType.ETHEREUM_ADDRESS}
               value={ADDRESS_SAVED_NAME_MOCK}
@@ -695,15 +688,9 @@ describe('NameDetails', () => {
       });
 
       const trackEventMock = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: trackEventMock,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <MetaMetricsContext.Provider value={trackEventMock}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_NO_NAME_MOCK}
@@ -805,15 +792,9 @@ describe('NameDetails', () => {
       });
 
       const trackEventMock = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: trackEventMock,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <MetaMetricsContext.Provider value={trackEventMock}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
@@ -922,15 +903,9 @@ describe('NameDetails', () => {
       });
 
       const trackEventMock = jest.fn();
-      const mockMetaMetricsContext = {
-        trackEvent: trackEventMock,
-        bufferedTrace: jest.fn(),
-        bufferedEndTrace: jest.fn(),
-        onboardingParentContext: { current: null },
-      };
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <MetaMetricsContext.Provider value={trackEventMock}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}

@@ -26,13 +26,6 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-const mockMetaMetricsContext = {
-  trackEvent: jest.fn(),
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
-
 describe('TransactionListItem for Unified Swap and Bridge', () => {
   beforeEach(() => {
     mockUseLocation.mockReturnValue({
@@ -51,7 +44,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
 
   it('should render confirmed unified swap tx summary', () => {
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={jest.fn()}>
         <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
       </MetaMetricsContext.Provider>,
       configureStore()(createBridgeMockStore()),

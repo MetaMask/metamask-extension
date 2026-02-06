@@ -55,14 +55,8 @@ const {
 
 // Simple container to provide MetaMetrics context
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
 const Container = ({ children }: { children: React.ReactNode }) => (
-  <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+  <MetaMetricsContext.Provider value={mockTrackEvent}>
     {children}
   </MetaMetricsContext.Provider>
 );

@@ -61,7 +61,7 @@ export const MultichainEditAccountsPage: React.FC<
   snapsPermissionsRequestType = SnapsPermissionsRequestType.None,
 }) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(
     defaultSelectedAccountGroups,
   );

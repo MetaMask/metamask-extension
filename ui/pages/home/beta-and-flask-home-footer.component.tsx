@@ -11,7 +11,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 
 export default function BetaAndFlaskHomeFooter() {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   return (
     <>

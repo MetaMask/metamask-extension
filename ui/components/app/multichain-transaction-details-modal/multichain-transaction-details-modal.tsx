@@ -76,7 +76,7 @@ export function MultichainTransactionDetailsModal({
   onClose,
 }: MultichainTransactionDetailsModalProps) {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const userAddress = useSelector(getSelectedAccount)?.address;
   const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
   const {

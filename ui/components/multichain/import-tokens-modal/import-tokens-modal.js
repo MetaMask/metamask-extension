@@ -299,7 +299,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const infoGetter = useRef(tokenInfoGetter());
 
   // CONFIRMATION MODE
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const pendingTokens = useSelector(getPendingTokens);
 
   // Get accounts for non-EVM chains using the account tree selector

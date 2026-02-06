@@ -6,15 +6,9 @@ import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { useAmountSelectionMetrics } from './useAmountSelectionMetrics';
 
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
 
 const Container = ({ children }: { children: ReactChildren }) => (
-  <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+  <MetaMetricsContext.Provider value={mockTrackEvent}>
     {children}
   </MetaMetricsContext.Provider>
 );

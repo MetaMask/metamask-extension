@@ -86,7 +86,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const navigate = useNavigate();
   const { search } = useLocation();
   const t = useI18nContext();
-  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedEndTrace } = trackEvent;
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 

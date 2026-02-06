@@ -1,4 +1,5 @@
 /**
+ * This file is intended to be renamed to metametrics.js once the conversion is complete.
  * MetaMetrics is our own brand, and should remain aptly named regardless of the underlying
  * metrics system. This file implements Segment analytics tracking.
  */
@@ -9,16 +10,12 @@ import React, {
   useRef,
   useCallback,
   useContext,
-  useMemo,
-  type ReactNode,
-  type MutableRefObject,
-  type ComponentType,
 } from 'react';
+import PropTypes from 'prop-types';
 import { useLocation, matchPath } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import type { Span } from '@sentry/types';
-import { omit } from 'lodash';
 
+import { omit } from 'lodash';
 import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -27,14 +24,10 @@ import {
   PATH_NAME_MAP,
   getPaths,
   DEFAULT_ROUTE,
-  type AppRoutes,
 } from '../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventName,
-  type UnsanitizedMetaMetricsEventPayload,
-  type MetaMetricsEventOptions,
-  type MetaMetricsEventPayload,
 } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import { getParticipateInMetaMetrics } from '../selectors';
@@ -42,114 +35,69 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from '../store/background-connection';
+
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
-import type {
-  TraceName,
-  TraceRequest,
-  EndTraceRequest,
-  TraceCallback,
-} from '../../shared/lib/trace';
+
+// type imports
+/**
+ * @typedef {import('../../shared/constants/metametrics').UnsanitizedMetaMetricsEventPayload} MetaMetricsEventPayload
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsPageObject} MetaMetricsPageObject
+ * @typedef {import('../../shared/constants/metametrics').MetaMetricsReferrerObject} MetaMetricsReferrerObject
+ * @typedef {import('../../shared/lib/trace').TraceRequest} TraceRequest
+ * @typedef {import('../../shared/lib/trace').EndTraceRequest} EndTraceRequest
+ * @typedef {import('../../shared/lib/trace').TraceCallback} TraceCallback
+ */
+
+// types
+/**
+ * @typedef {Omit<MetaMetricsEventPayload, 'environmentType' | 'page' | 'referrer'>} UIMetricsEventPayload
+ */
+/**
+ * @typedef {(
+ *  payload: UIMetricsEventPayload,
+ *  options?: MetaMetricsEventOptions
+ * ) => Promise<void>} UITrackEventMethod
+ */
 
 /**
- * UI-specific event payload that omits fields added by the provider
+ * @typedef {<T>(request: TraceRequest, fn?: TraceCallback<T>) => Promise<T | undefined>} UITraceMethod
  */
-export type UIMetricsEventPayload = Omit<
-  UnsanitizedMetaMetricsEventPayload,
-  'environmentType' | 'page' | 'referrer'
->;
 
 /**
- * Method signature for tracking MetaMetrics events from the UI
+ * @typedef {(request: EndTraceRequest) => void} UIEndTraceMethod
  */
-export type UITrackEventMethod = (
-  payload: UIMetricsEventPayload,
-  options?: MetaMetricsEventOptions,
-) => Promise<void>;
 
 /**
- * Method signature for starting a buffered trace
+ * @typedef {UITrackEventMethod & {
+ *   bufferedTrace?: UITraceMethod,
+ *   bufferedEndTrace?: UIEndTraceMethod,
+ *   onboardingParentContext?: React.MutableRefObject<Span | null>
+ * }} MetaMetricsContextValue
  */
-export type UITraceMethod = <Result>(
-  request: TraceRequest,
-  fn?: TraceCallback<Result>,
-) => Promise<Result | undefined>;
 
 /**
- * Method signature for ending a buffered trace
+ * @type {React.Context<MetaMetricsContextValue>}
  */
-export type UIEndTraceMethod = (request: EndTraceRequest) => void;
+export const MetaMetricsContext = createContext(() => {
+  captureException(
+    Error(
+      `MetaMetrics context function was called from a react node that is not a descendant of a MetaMetrics context provider`,
+    ),
+  );
+});
 
-/**
- * Serialized parent context for RPC communication.
- * Used when passing trace context across process boundaries.
- */
-export type SerializedTraceParentContext = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  _name: TraceName;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  _id?: string;
-};
-
-/**
- * Parent context for traces - can be a Sentry Span or serialized format for RPC
- */
-export type TraceParentContext = Span | SerializedTraceParentContext | null;
-
-/**
- * The value provided by MetaMetricsContext
- */
-export type MetaMetricsContextValue = {
-  trackEvent: UITrackEventMethod;
-  bufferedTrace: UITraceMethod;
-  bufferedEndTrace: UIEndTraceMethod;
-  onboardingParentContext: MutableRefObject<TraceParentContext>;
-};
-
-const defaultContextValue: MetaMetricsContextValue = {
-  trackEvent: () => {
-    captureException(
-      Error(
-        `MetaMetrics context trackEvent was called from a react node that is not a descendant of a MetaMetrics context provider`,
-      ),
-    );
-    return Promise.resolve();
-  },
-  bufferedTrace: () => {
-    captureException(
-      Error(
-        `MetaMetrics context bufferedTrace was called from a react node that is not a descendant of a MetaMetrics context provider`,
-      ),
-    );
-    return Promise.resolve(undefined);
-  },
-  bufferedEndTrace: () => {
-    captureException(
-      Error(
-        `MetaMetrics context bufferedEndTrace was called from a react node that is not a descendant of a MetaMetrics context provider`,
-      ),
-    );
-  },
-  onboardingParentContext: { current: null },
-};
-
-export const MetaMetricsContext =
-  createContext<MetaMetricsContextValue>(defaultContextValue);
-
-type MetaMetricsProviderProps = {
-  children: ReactNode;
-};
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
+export function MetaMetricsProvider({ children }) {
   const location = useLocation();
   const context = useSegmentContext();
   const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
-  const onboardingParentContext = useRef<TraceParentContext>(null);
+  /** @type {React.MutableRefObject<Span | null>} */
+  const onboardingParentContext = useRef(null);
 
   // Sometimes we want to track context properties inside the event's "properties" object.
   const addContextPropsIntoEventProperties = useCallback(
-    (payload: UIMetricsEventPayload, options?: MetaMetricsEventOptions) => {
+    (payload, options) => {
       const fields = options?.contextPropsIntoEventProperties;
       if (!fields || fields.length === 0) {
         return;
@@ -165,7 +113,10 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     [context.page?.title],
   );
 
-  const trackEvent: UITrackEventMethod = useCallback(
+  /**
+   * @type {UITrackEventMethod}
+   */
+  const trackEvent = useCallback(
     async (payload, options) => {
       addContextPropsIntoEventProperties(payload, options);
 
@@ -180,7 +131,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
         payload.event === MetaMetricsEventName.MetricsOptOut // We wanna track the MetricsOptOut event when user opts out of metrics and basic functionality is not "DISABLED"
       ) {
         // If metrics are enabled, track immediately
-        trackMetaMetricsEvent(fullPayload as MetaMetricsEventPayload, options);
+        trackMetaMetricsEvent(fullPayload, options);
       } else {
         // If metrics are not enabled, buffer the event
         await submitRequestToBackground('addEventBeforeMetricsOptIn', [
@@ -191,16 +142,22 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     [addContextPropsIntoEventProperties, context, isMetricsEnabled],
   );
 
-  const bufferedTrace: UITraceMethod = useCallback((request, fn) => {
-    return submitRequestToBackground('bufferedTrace', [request, fn]);
+  /**
+   * @type {UITraceMethod}
+   */
+  const bufferedTrace = useCallback((request, fn) => {
+    submitRequestToBackground('bufferedTrace', [request, fn]);
   }, []);
 
-  const bufferedEndTrace: UIEndTraceMethod = useCallback((request) => {
+  /**
+   * @type {UIEndTraceMethod}
+   */
+  const bufferedEndTrace = useCallback((request) => {
     submitRequestToBackground('bufferedEndTrace', [request]);
   }, []);
 
   // Used to prevent double tracking page calls
-  const previousMatch = useRef<string | undefined>();
+  const previousMatch = useRef();
 
   /**
    * Anytime the location changes, track a page change with segment.
@@ -212,7 +169,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     const environmentType = getEnvironmentType();
     // v6 matchPath doesn't support array of paths, so we loop to find first match
     const paths = getPaths();
-    let match: ReturnType<typeof matchPath> = null;
+    let match = null;
     for (const path of paths) {
       // Normalize empty string paths to '/' - they're aliases for the Home route
       const normalizedPath = path === '' ? DEFAULT_ROUTE : path;
@@ -252,16 +209,13 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
       // homepage
       const { pattern, params } = match;
       const { path } = pattern;
-      const name = PATH_NAME_MAP.get(path as AppRoutes['path']);
+      const name = PATH_NAME_MAP.get(path);
       trackMetaMetricsPage(
         {
           name,
           // We do not want to send addresses or accounts in any events
           // Some routes include these as params.
-          params: omit(params, ['account', 'address']) as Record<
-            string,
-            string
-          >,
+          params: omit(params, ['account', 'address']),
           environmentType,
           page: context.page,
           referrer: context.referrer,
@@ -280,57 +234,48 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     context.referrer,
   ]);
 
-  const contextValue = useMemo(
-    () => ({
-      trackEvent,
-      bufferedTrace,
-      bufferedEndTrace,
-      onboardingParentContext,
-    }),
-    [trackEvent, bufferedTrace, bufferedEndTrace],
-  );
+  // For backwards compatibility, attach the new methods as properties to trackEvent
+  const trackEventWithMethods = trackEvent;
+  // eslint-disable-next-line react-compiler/react-compiler
+  trackEventWithMethods.bufferedTrace = bufferedTrace;
+  trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
+  trackEventWithMethods.onboardingParentContext = onboardingParentContext;
 
   return (
-    <MetaMetricsContext.Provider value={contextValue}>
+    <MetaMetricsContext.Provider value={trackEventWithMethods}>
       {children}
     </MetaMetricsContext.Provider>
   );
 }
 
-type LegacyChildContext = {
-  trackEvent: UITrackEventMethod;
-  bufferedTrace: UITraceMethod;
-  bufferedEndTrace: UIEndTraceMethod;
-};
+MetaMetricsProvider.propTypes = { children: PropTypes.node };
 
-type LegacyMetaMetricsProviderProps = {
-  children?: ReactNode;
-};
+export class LegacyMetaMetricsProvider extends Component {
+  static propTypes = {
+    children: PropTypes.node,
+  };
 
-/**
- * Legacy context provider for class components using the old context API
- *
- * @deprecated Use MetaMetricsContext with useContext hook instead
- */
-export class LegacyMetaMetricsProvider extends Component<LegacyMetaMetricsProviderProps> {
+  static defaultProps = {
+    children: undefined,
+  };
+
   static contextType = MetaMetricsContext;
 
-  // eslint-disable-next-line react/static-property-placement
   static childContextTypes = {
     // This has to be different than the type name for the old metametrics file
     // using the same name would result in whichever was lower in the tree to be
     // used.
-    trackEvent: (): null => null,
-    bufferedTrace: (): null => null,
-    bufferedEndTrace: (): null => null,
+    trackEvent: PropTypes.func,
+    bufferedTrace: PropTypes.func,
+    bufferedEndTrace: PropTypes.func,
   };
 
-  getChildContext(): LegacyChildContext {
-    const context = this.context as MetaMetricsContextValue;
+  getChildContext() {
+    const trackEventWithMethods = this.context;
     return {
-      trackEvent: context.trackEvent,
-      bufferedTrace: context.bufferedTrace,
-      bufferedEndTrace: context.bufferedEndTrace,
+      trackEvent: trackEventWithMethods,
+      bufferedTrace: trackEventWithMethods?.bufferedTrace,
+      bufferedEndTrace: trackEventWithMethods?.bufferedEndTrace,
     };
   }
 
@@ -340,34 +285,22 @@ export class LegacyMetaMetricsProvider extends Component<LegacyMetaMetricsProvid
 }
 
 /**
- * Props injected by withMetaMetrics HOC
- */
-export type WithMetaMetricsProps = MetaMetricsContextValue;
-
-/**
  * HOC for class components to access MetaMetricsContext
  *
- * @param WrappedComponent - Component to wrap
- * @returns Wrapped component with MetaMetrics context
+ * @param {React.ComponentType} WrappedComponent - Component to wrap
+ * @returns {React.ComponentType} Wrapped component with MetaMetrics context
  */
-export function withMetaMetrics<Props extends Record<string, unknown>>(
-  WrappedComponent: ComponentType<Props>,
-): ComponentType<Omit<Props, keyof WithMetaMetricsProps>> {
-  const WithMetaMetrics = (props: Omit<Props, keyof WithMetaMetricsProps>) => {
-    const {
-      trackEvent,
-      bufferedTrace,
-      bufferedEndTrace,
-      onboardingParentContext,
-    } = useContext(MetaMetricsContext);
+export function withMetaMetrics(WrappedComponent) {
+  const WithMetaMetrics = (props) => {
+    const metaMetricsContext = useContext(MetaMetricsContext);
 
     return (
       <WrappedComponent
-        {...(props as Props)}
-        trackEvent={trackEvent}
-        bufferedTrace={bufferedTrace}
-        bufferedEndTrace={bufferedEndTrace}
-        onboardingParentContext={onboardingParentContext}
+        {...props}
+        trackEvent={metaMetricsContext}
+        bufferedTrace={metaMetricsContext?.bufferedTrace}
+        bufferedEndTrace={metaMetricsContext?.bufferedEndTrace}
+        onboardingParentContext={metaMetricsContext?.onboardingParentContext}
       />
     );
   };

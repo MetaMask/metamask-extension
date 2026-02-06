@@ -106,7 +106,7 @@ function TransactionListItemInner({
 
   const senderAddress = txParams?.from;
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const retryTransaction = useCallback(
     async (event) => {

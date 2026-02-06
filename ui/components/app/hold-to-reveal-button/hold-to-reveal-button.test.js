@@ -13,12 +13,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import HoldToRevealButton from './hold-to-reveal-button';
 
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
 
 describe('HoldToRevealButton', () => {
   const mockStore = configureMockState([thunk])(mockState);
@@ -59,7 +53,7 @@ describe('HoldToRevealButton', () => {
 
   it('should show the locked padlock when a button is long pressed and then should show it after it was lifted off before the animation concludes', async () => {
     const { getByText, queryByLabelText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <HoldToRevealButton {...props} />
       </MetaMetricsContext.Provider>,
       mockStore,
@@ -84,7 +78,7 @@ describe('HoldToRevealButton', () => {
 
   it('should show the unlocked padlock when a button is long pressed for the duration of the animation', async () => {
     const { getByText, queryByLabelText, getByLabelText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <HoldToRevealButton {...props} />
       </MetaMetricsContext.Provider>,
       mockStore,

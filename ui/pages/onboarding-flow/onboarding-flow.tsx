@@ -106,8 +106,8 @@ export default function OnboardingFlow() {
   const isFromSettingsSecurity = new URLSearchParams(search).get(
     'isFromSettingsSecurity',
   );
-  const { bufferedTrace, onboardingParentContext } =
-    useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, onboardingParentContext } = trackEvent;
   const isUnlocked = useSelector(getIsUnlocked);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSeedlessOnboardingFeatureEnabled =
