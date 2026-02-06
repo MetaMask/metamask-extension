@@ -126,10 +126,7 @@ describe('Gas timing', () => {
 
     const mockStore = configureMockStore()(ethereumState);
     const screen = renderWithProvider(
-      <GasTiming
-        chainId={CHAIN_IDS.MAINNET}
-        maxPriorityFeePerGas="10"
-      />,
+      <GasTiming chainId={CHAIN_IDS.MAINNET} maxPriorityFeePerGas="10" />,
       mockStore,
     );
 
