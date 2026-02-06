@@ -5,6 +5,10 @@
  * Reads JSON from --results and sends metrics as Sentry structured logs with
  * attributes for filtering (ci.browser, ci.buildType, ci.persona, etc.).
  *
+ * Timer-based benchmark data goes through structured logs (existing path).
+ * Web vitals data goes through spans with measurements (separate path),
+ * following conventions from ui/helpers/utils/web-vitals.ts.
+ *
  * Requires SENTRY_DSN_PERFORMANCE env var. Throws if not set.
  */
 
@@ -15,12 +19,107 @@ import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
-import type { BenchmarkResults, UserActionResult } from './utils/types';
+import type {
+  BenchmarkResults,
+  UserActionResult,
+  WebVitalsSummary,
+} from './utils/types';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');
 const { version } = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {
   version: string;
 };
+
+const WEB_VITALS_METRICS = [
+  { key: 'inp', ratingKey: 'inpRating', unit: 'millisecond' },
+  { key: 'lcp', ratingKey: 'lcpRating', unit: 'millisecond' },
+  { key: 'cls', ratingKey: 'clsRating', unit: 'none' },
+] as const;
+
+/**
+ * Send web vitals to Sentry as spans — separate from timer-based structured logs.
+ *
+ * Per-run snapshots become individual spans with measurements and rating tags,
+ * following the conventions from ui/helpers/utils/web-vitals.ts:
+ *   - setMeasurement: benchmark.{metric} with appropriate unit
+ *   - setAttribute: {metric}.rating
+ *
+ * Aggregated summary goes as a structured log for dashboards.
+ *
+ * @param benchmarkName - The benchmark identifier (e.g. 'loadNewAccount')
+ * @param webVitals - Full web vitals summary with per-run data and aggregates
+ * @param persona - The persona used for the benchmark
+ * @param testTitle - The test title
+ * @param ciAttributes - CI metadata attributes
+ */
+function sendWebVitalsToSentry(
+  benchmarkName: string,
+  webVitals: WebVitalsSummary,
+  persona: string,
+  testTitle: string | undefined,
+  ciAttributes: Record<string, string>,
+): void {
+  // Per-run spans: each iteration gets its own span with measurements
+  for (const run of webVitals.runs) {
+    Sentry.startSpan(
+      {
+        name: `benchmark.${benchmarkName}.webVitals`,
+        op: 'benchmark.webvitals',
+        attributes: {
+          ...ciAttributes,
+          'ci.persona': persona,
+          'ci.testTitle': testTitle ?? benchmarkName,
+          'webVitals.iteration': run.iteration,
+        },
+      },
+      (span) => {
+        for (const { key, ratingKey, unit } of WEB_VITALS_METRICS) {
+          const value = run[key];
+          const rating = run[ratingKey];
+
+          if (value !== null) {
+            span.setAttribute(`benchmark.${key}`, value);
+            Sentry.setMeasurement(`benchmark.${key}`, value, unit);
+          }
+
+          if (rating !== null) {
+            span.setAttribute(`${key}.rating`, rating);
+          }
+        }
+      },
+    );
+  }
+
+  // Aggregated summary as a structured log for dashboards
+  const { aggregated } = webVitals;
+  const aggAttributes: Record<string, number | string> = {
+    'webVitals.runs': webVitals.runs.length,
+  };
+
+  for (const { key } of WEB_VITALS_METRICS) {
+    const stats = aggregated[key as keyof typeof aggregated];
+    if (stats && typeof stats === 'object' && 'mean' in stats) {
+      aggAttributes[`webVitals.${key}.mean`] = stats.mean;
+      aggAttributes[`webVitals.${key}.p75`] = stats.p75;
+      aggAttributes[`webVitals.${key}.p95`] = stats.p95;
+      aggAttributes[`webVitals.${key}.samples`] = stats.samples;
+      aggAttributes[`webVitals.${key}.dataQuality`] = stats.dataQuality;
+    }
+
+    const ratings = aggregated.ratings[key as keyof typeof aggregated.ratings];
+    aggAttributes[`webVitals.${key}.ratings.good`] = ratings.good;
+    aggAttributes[`webVitals.${key}.ratings.needsImprovement`] =
+      ratings['needs-improvement'];
+    aggAttributes[`webVitals.${key}.ratings.poor`] = ratings.poor;
+  }
+
+  Sentry.logger.info(`benchmark.${benchmarkName}.webVitals.summary`, {
+    ...ciAttributes,
+    'ci.persona': persona,
+    'ci.testTitle': testTitle ?? benchmarkName,
+    ...aggAttributes,
+  });
+}
 
 async function main() {
   const argv = await yargs(hideBin(process.argv))
