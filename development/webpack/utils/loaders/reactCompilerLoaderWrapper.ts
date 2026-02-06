@@ -9,22 +9,25 @@
  * NOTE: This loader is synchronous because react-compiler-loader internally
  * uses this.async() for its async operations. Making this wrapper async would
  * cause "callback already called" errors due to double completion signaling.
+ *
+ * NOTE: REACT_COMPILER_STATUS_KEY is duplicated here (also in reactCompilerLoader.ts)
+ * because cross-file imports fail in thread-loader worker context due to ESM
+ * resolution issues. Both values MUST stay in sync.
  */
 import { createRequire } from 'node:module';
-import type { LoaderContext, LoaderDefinitionFunction } from 'webpack';
+import type { LoaderDefinitionFunction } from 'webpack';
 
-const require = createRequire(import.meta.url);
+const esmRequire = createRequire(__filename);
 
-const reactCompilerModule =
-  require('react-compiler-webpack/dist/react-compiler-loader.js') as
-    | { default: LoaderDefinitionFunction }
-    | LoaderDefinitionFunction;
+const reactCompilerModule = esmRequire(
+  'react-compiler-webpack/dist/react-compiler-loader.js',
+) as { default: LoaderDefinitionFunction } | LoaderDefinitionFunction;
 
 const actualLoader: LoaderDefinitionFunction =
   typeof reactCompilerModule === 'function'
     ? reactCompilerModule
     : reactCompilerModule.default;
-
+// IMPORTANT: Must match REACT_COMPILER_STATUS_KEY in reactCompilerLoader.ts
 const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
 
 type ReactCompilerStatus = 'compiled' | 'skipped' | 'error' | 'unsupported';
@@ -94,7 +97,7 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
 
   try {
     // Let react-compiler-loader handle async via this.async() internally
-    return actualLoader.call(this as LoaderContext<unknown>, source, sourceMap);
+    return actualLoader.call(this, source, sourceMap);
   } finally {
     this.getOptions = originalGetOptions;
   }
