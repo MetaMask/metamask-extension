@@ -44,18 +44,18 @@ import {
   type StockSubFilter,
 } from './components/stock-sub-filter';
 
-type StockMarketType = 'equity' | 'commodity';
+type Hip3MarketType = 'equity' | 'commodity' | 'forex';
 
 const STOCK_SUB_FILTER_ALLOWED_TYPES = {
-  all: new Set<StockMarketType>(['equity', 'commodity']),
-  stocks: new Set<StockMarketType>(['equity']),
-  commodities: new Set<StockMarketType>(['commodity']),
-} satisfies Record<StockSubFilter, ReadonlySet<StockMarketType>>;
+  all: new Set<Hip3MarketType>(['equity', 'commodity']),
+  stocks: new Set<Hip3MarketType>(['equity']),
+  commodities: new Set<Hip3MarketType>(['commodity']),
+} satisfies Record<StockSubFilter, ReadonlySet<Hip3MarketType>>;
 
-const isStockMarketType = (
+const isHip3MarketType = (
   marketType: PerpsMarketData['marketType'],
-): marketType is StockMarketType =>
-  marketType === 'equity' || marketType === 'commodity';
+): marketType is Hip3MarketType =>
+  marketType === 'equity' || marketType === 'commodity' || marketType === 'forex';
 
 /**
  * Filter markets by market type
@@ -80,11 +80,17 @@ const filterByType = (
     case 'stocks': {
       const allowedMarketTypes = STOCK_SUB_FILTER_ALLOWED_TYPES[stockSubFilter];
       return markets.filter((m) => {
-        if (!isStockMarketType(m.marketType)) {
+        if (!isHip3MarketType(m.marketType)) {
           return false;
         }
         return allowedMarketTypes.has(m.marketType);
       });
+    }
+    case 'commodities': {
+      return markets.filter((m) => m.marketType === 'commodity');
+    }
+    case 'forex': {
+      return markets.filter((m) => m.marketType === 'forex');
     }
     default: {
       return markets;
@@ -106,7 +112,7 @@ export const MarketListView: React.FC = () => {
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSortId, setSelectedSortId] = useState<SortOptionId>('volume');
+  const [selectedSortId, setSelectedSortId] = useState<SortOptionId>('volumeHigh');
   const [selectedFilter, setSelectedFilter] = useState<MarketFilter>('all');
   const [stockSubFilter, setStockSubFilter] = useState<StockSubFilter>('all');
 

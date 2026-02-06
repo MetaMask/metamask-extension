@@ -2,7 +2,12 @@ import React, { useMemo } from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Dropdown, type DropdownOption } from '../dropdown';
 
-export type MarketFilter = 'all' | 'crypto' | 'stocks';
+export type MarketFilter =
+  | 'all'
+  | 'crypto'
+  | 'stocks'
+  | 'commodities'
+  | 'forex';
 
 export type FilterSelectProps = {
   /** Currently selected filter */
@@ -29,6 +34,8 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
       { id: 'all', label: t('perpsFilterAll') },
       { id: 'crypto', label: t('perpsFilterCrypto') },
       { id: 'stocks', label: t('perpsFilterStocks') },
+      { id: 'commodities', label: t('perpsFilterCommodities') },
+      { id: 'forex', label: t('perpsFilterForex') },
     ],
     [t],
   );

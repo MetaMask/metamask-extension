@@ -5290,6 +5290,9 @@
   "perpsFilterCrypto": {
     "message": "Crypto"
   },
+  "perpsFilterForex": {
+    "message": "Forex"
+  },
   "perpsFilterStocks": {
     "message": "Stocks"
   },
@@ -5419,8 +5422,20 @@
   "perpsSortFundingRate": {
     "message": "Funding rate"
   },
+  "perpsSortFundingRateHighToLow": {
+    "message": "Funding rate: high to low"
+  },
+  "perpsSortFundingRateLowToHigh": {
+    "message": "Funding rate: low to high"
+  },
   "perpsSortOpenInterest": {
     "message": "Open interest"
+  },
+  "perpsSortOpenInterestHighToLow": {
+    "message": "Open interest: high to low"
+  },
+  "perpsSortOpenInterestLowToHigh": {
+    "message": "Open interest: low to high"
   },
   "perpsSortPriceChangeHighToLow": {
     "message": "Price change: high to low"
@@ -5430,6 +5445,12 @@
   },
   "perpsSortVolume": {
     "message": "Volume"
+  },
+  "perpsSortVolumeHighToLow": {
+    "message": "Volume: high to low"
+  },
+  "perpsSortVolumeLowToHigh": {
+    "message": "Volume: low to high"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
