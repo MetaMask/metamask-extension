@@ -343,6 +343,7 @@ async function setupMocking(
         console.log(
           'Request going to Sentry metamask-performance ============',
           req.url,
+          false,
         );
         return {};
       },
