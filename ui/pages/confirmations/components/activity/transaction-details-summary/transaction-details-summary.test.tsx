@@ -5,6 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { TransactionDetailsProvider } from '../transaction-details-context';
 import { TransactionDetailsSummary } from './transaction-details-summary';
 
@@ -71,16 +72,16 @@ describe('TransactionDetailsSummary', () => {
 
   it('renders summary label', () => {
     const { getByText } = render();
-    expect(getByText('Summary')).toBeInTheDocument();
+    expect(getByText(messages.summary.message)).toBeInTheDocument();
   });
 
   it('renders bridge title for bridge transactions', () => {
     const { getByText } = render(TransactionType.bridge);
-    expect(getByText('Bridge')).toBeInTheDocument();
+    expect(getByText(messages.bridge.message)).toBeInTheDocument();
   });
 
   it('renders swap title for swap transactions', () => {
     const { getByText } = render(TransactionType.swap);
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
   });
 });

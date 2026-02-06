@@ -9,7 +9,7 @@ import { MetamaskNotificationsProvider } from '../../../contexts/metamask-notifi
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
-import { tEn } from '../../../../test/lib/i18n-helpers';
+import { tEn, enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
 import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
@@ -291,7 +291,9 @@ describe('Security Tab', () => {
     ).toBeInTheDocument();
 
     fireEvent.click(
-      screen.getByRole('button', { name: 'Delete MetaMetrics data' }),
+      screen.getByRole('button', {
+        name: messages.deleteMetaMetricsData.message,
+      }),
     );
 
     expect(mockOpenDeleteMetaMetricsDataModal).toHaveBeenCalled();

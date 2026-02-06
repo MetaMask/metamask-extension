@@ -1,21 +1,14 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import * as useTronResourcesHook from '../hooks/useTronResources';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { TronDailyResources } from './tron-daily-resources';
 
 // Mock the hooks
 jest.mock('../hooks/useTronResources');
-
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string, values?: string[]) => {
-    if (values) {
-      return `${key}-${values.join('-')}`;
-    }
-    return key;
-  },
-}));
 
 describe('TronDailyResources', () => {
   const mockAccount: InternalAccount = {
@@ -56,14 +49,22 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
-      expect(screen.getByText('tronDailyResources')).toBeInTheDocument();
       expect(
-        screen.getByText('tronDailyResourcesDescription-5,000'),
+        screen.getByText(messages.tronDailyResources.message),
       ).toBeInTheDocument();
-      expect(screen.getByText('tronEnergy')).toBeInTheDocument();
-      expect(screen.getByText('tronBandwidth')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          messages.tronDailyResourcesDescription.message.replace('$1', '5,000'),
+        ),
+      ).toBeInTheDocument();
+      expect(screen.getByText(messages.tronEnergy.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.tronBandwidth.message),
+      ).toBeInTheDocument();
     });
 
     it('displays formatted current values for energy and bandwidth', () => {
@@ -82,7 +83,9 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Check that values are formatted with locale
       expect(screen.getByText('65,000')).toBeInTheDocument();
@@ -105,11 +108,15 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Should show singular message for 1 USDT transfer covered
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionSingular'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionSingular.message,
+        ),
       ).toBeInTheDocument();
     });
 
@@ -129,11 +136,18 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Should show "3" USDT transfers covered
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionPlural-3'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionPlural.message.replace(
+            '$1',
+            '3',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
@@ -153,11 +167,18 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Should show "0" USDT transfers covered
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionPlural-0'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionPlural.message.replace(
+            '$1',
+            '0',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
@@ -177,11 +198,15 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Should show singular message for 1 TRX transfer covered
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionSingular'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionSingular.message,
+        ),
       ).toBeInTheDocument();
     });
 
@@ -201,11 +226,18 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Should show "4" TRX transfers covered
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionPlural-4'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionPlural.message.replace(
+            '$1',
+            '4',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
@@ -225,11 +257,18 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Should show "0" TRX transfers covered
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionPlural-0'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionPlural.message.replace(
+            '$1',
+            '0',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
@@ -249,16 +288,28 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Both energy and bandwidth show "0", so we expect 2 instances
       const zeroElements = screen.getAllByText('0');
       expect(zeroElements).toHaveLength(2);
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionPlural-0'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionPlural.message.replace(
+            '$1',
+            '0',
+          ),
+        ),
       ).toBeInTheDocument();
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionPlural-0'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionPlural.message.replace(
+            '$1',
+            '0',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
@@ -278,7 +329,9 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Check formatted large numbers
       expect(screen.getByText('1,000,000')).toBeInTheDocument();
@@ -286,12 +339,22 @@ describe('TronDailyResources', () => {
 
       // 1000000 / 65000 = 15 USDT transfers
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionPlural-15'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionPlural.message.replace(
+            '$1',
+            '15',
+          ),
+        ),
       ).toBeInTheDocument();
 
       // 50000 / 280 = 178 TRX transfers
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionPlural-178'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionPlural.message.replace(
+            '$1',
+            '178',
+          ),
+        ),
       ).toBeInTheDocument();
     });
 
@@ -311,7 +374,7 @@ describe('TronDailyResources', () => {
         },
       });
 
-      const { container } = render(
+      const { container } = renderWithProvider(
         <TronDailyResources account={mockAccount} chainId={chainId} />,
       );
 
@@ -337,7 +400,7 @@ describe('TronDailyResources', () => {
         },
       });
 
-      const { container } = render(
+      const { container } = renderWithProvider(
         <TronDailyResources account={mockAccount} chainId={chainId} />,
       );
 
@@ -366,7 +429,9 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       expect(mockUseTronResources).toHaveBeenCalledWith(mockAccount, chainId);
       expect(mockUseTronResources).toHaveBeenCalledTimes(1);
@@ -388,14 +453,20 @@ describe('TronDailyResources', () => {
         },
       });
 
-      render(<TronDailyResources account={mockAccount} chainId={chainId} />);
+      renderWithProvider(
+        <TronDailyResources account={mockAccount} chainId={chainId} />,
+      );
 
       // Should floor fractional transfers to 1, using singular message
       expect(
-        screen.getByText('tronEnergyCoverageDescriptionSingular'),
+        screen.getByText(
+          messages.tronEnergyCoverageDescriptionSingular.message,
+        ),
       ).toBeInTheDocument();
       expect(
-        screen.getByText('tronBandwidthCoverageDescriptionSingular'),
+        screen.getByText(
+          messages.tronBandwidthCoverageDescriptionSingular.message,
+        ),
       ).toBeInTheDocument();
     });
   });
@@ -417,7 +488,7 @@ describe('TronDailyResources', () => {
         },
       });
 
-      const { container } = render(
+      const { container } = renderWithProvider(
         <TronDailyResources
           account={undefined as unknown as InternalAccount}
           chainId={chainId}
@@ -444,7 +515,7 @@ describe('TronDailyResources', () => {
         },
       });
 
-      const { container } = render(
+      const { container } = renderWithProvider(
         <TronDailyResources account={mockAccount} chainId="" />,
       );
 

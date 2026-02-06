@@ -3,6 +3,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useAccountSyncing';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   BackupAndSyncDevSettings,
   useDeleteAccountSyncDataProps,
@@ -25,12 +26,12 @@ describe('BackupAndSyncDevSettings', () => {
 
   it('renders the BackupAndSyncDevSettings component', () => {
     const { getByText } = render(<BackupAndSyncDevSettings />);
-    expect(getByText('Backup and sync')).toBeInTheDocument();
+    expect(getByText(messages.backupAndSync.message)).toBeInTheDocument();
   });
 
   it('calls onDelete and shows success icon when reset button is clicked', async () => {
     const { getByRole } = render(<BackupAndSyncDevSettings />);
-    const resetButton = getByRole('button', { name: 'Reset' });
+    const resetButton = getByRole('button', { name: messages.reset.message });
 
     fireEvent.click(resetButton);
 

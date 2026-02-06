@@ -13,6 +13,7 @@ import { cloneDeep } from 'lodash';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { BalanceChangeList } from './balance-change-list';
 import { SimulationDetails, StaticRow } from './simulation-details';
@@ -406,6 +407,8 @@ describe('SimulationDetails', () => {
       containerTypes: [TransactionContainerType.EnforcedSimulations],
     });
 
-    expect(getByText('Balance changes')).toBeInTheDocument();
+    expect(
+      getByText(messages.simulationDetailsTitleEnforced.message),
+    ).toBeInTheDocument();
   });
 });

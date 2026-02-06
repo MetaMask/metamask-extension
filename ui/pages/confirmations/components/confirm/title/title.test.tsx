@@ -79,9 +79,11 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(getByText('Signature request')).toBeInTheDocument();
     expect(
-      getByText('Review request details before you confirm.'),
+      getByText(tEn('confirmTitleSignature') as string),
+    ).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescSign') as string),
     ).toBeInTheDocument();
   });
 
@@ -94,9 +96,11 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(getByText('Spending cap request')).toBeInTheDocument();
     expect(
-      getByText('This site wants permission to spend your tokens.'),
+      getByText(tEn('confirmTitlePermitTokens') as string),
+    ).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescPermitSignature') as string),
     ).toBeInTheDocument();
   });
 
@@ -109,9 +113,11 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(getByText('Withdrawal request')).toBeInTheDocument();
     expect(
-      getByText('This site wants permission to withdraw your NFTs'),
+      getByText(tEn('confirmTitleApproveTransactionNFT') as string),
+    ).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescApproveTransaction') as string),
     ).toBeInTheDocument();
   });
 
@@ -126,9 +132,11 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(getByText('Account update')).toBeInTheDocument();
     expect(
-      getByText("You're switching to a smart account."),
+      getByText(tEn('confirmTitleAccountTypeSwitch') as string),
+    ).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescDelegationUpgrade') as string),
     ).toBeInTheDocument();
   });
 
@@ -139,9 +147,11 @@ describe('ConfirmTitle', () => {
       mockStore,
     );
 
-    expect(getByText('Signature request')).toBeInTheDocument();
     expect(
-      getByText('Review request details before you confirm.'),
+      getByText(tEn('confirmTitleSignature') as string),
+    ).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescSign') as string),
     ).toBeInTheDocument();
   });
 

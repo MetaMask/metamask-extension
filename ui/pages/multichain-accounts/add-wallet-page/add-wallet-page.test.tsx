@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -55,8 +56,8 @@ describe('AddWalletPage', () => {
   it('renders the page with correct title and components', () => {
     renderComponent();
 
-    expect(screen.getByText('Add wallet')).toBeInTheDocument();
-    expect(screen.getByText('Private key')).toBeInTheDocument();
+    expect(screen.getByText(messages.addWallet.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.privateKey.message)).toBeInTheDocument();
     expect(screen.getByTestId(backButtonTestId)).toBeInTheDocument();
   });
 

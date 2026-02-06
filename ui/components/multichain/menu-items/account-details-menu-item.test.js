@@ -1,10 +1,11 @@
 import React from 'react';
-import { fireEvent } from '../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AccountDetailsMenuItem } from '.';
 
 const mockInternalAccount = getSelectedInternalAccountFromMockState(mockState);
@@ -40,7 +41,7 @@ describe('AccountDetailsMenuItem', () => {
     global.platform = { openTab: jest.fn() };
 
     const { getByText, getByTestId } = render();
-    expect(getByText('Account details')).toBeInTheDocument();
+    expect(getByText(messages.accountDetails.message)).toBeInTheDocument();
 
     fireEvent.click(getByTestId('account-list-menu-details'));
 

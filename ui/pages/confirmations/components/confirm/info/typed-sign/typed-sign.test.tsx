@@ -18,6 +18,7 @@ import {
   unapprovedTypedSignMsgV4,
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import TypedSignInfo from './typed-sign';
@@ -111,7 +112,7 @@ describe('TypedSignInfo', () => {
       <TypedSignInfo />,
       mockStore,
     );
-    expect(getByText('Estimated changes')).toBeDefined();
+    expect(getByText(messages.estimatedChanges.message)).toBeDefined();
   });
 
   it('correctly renders permit sign type', () => {
@@ -216,7 +217,7 @@ describe('TypedSignInfo', () => {
       <TypedSignInfo />,
       mockStore,
     );
-    expect(getByText('Network')).toBeInTheDocument();
+    expect(getByText(messages.network.message)).toBeInTheDocument();
     expect(getByText('Goerli')).toBeInTheDocument();
   });
 });

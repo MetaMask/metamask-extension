@@ -9,6 +9,7 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../store/store';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import Header from './header';
 
 jest.mock('react-router-dom', () => ({
@@ -62,13 +63,13 @@ describe('Header', () => {
 
   it('contains account info icon', async () => {
     const { getByLabelText } = render();
-    expect(getByLabelText('Account details')).toBeInTheDocument();
+    expect(getByLabelText(messages.accountDetails.message)).toBeInTheDocument();
   });
 
   it('shows modal when account info icon is clicked', async () => {
     const { getByLabelText, queryByTestId } = render();
     expect(queryByTestId('account-details-modal')).not.toBeInTheDocument();
-    const accountInfoIcon = getByLabelText('Account details');
+    const accountInfoIcon = getByLabelText(messages.accountDetails.message);
     fireEvent.click(accountInfoIcon);
     await waitFor(() => {
       expect(queryByTestId('account-details-modal')).toBeInTheDocument();

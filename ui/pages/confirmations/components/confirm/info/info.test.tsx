@@ -16,6 +16,7 @@ import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import { getEnabledAdvancedPermissions } from '../../../../../../shared/modules/environment';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import Info from './info';
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
@@ -149,7 +150,7 @@ describe('Info', () => {
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
 
     await waitFor(() => {
-      expect(screen.getByText('Speed')).toBeInTheDocument();
+      expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
     });
 
     expect(container).toMatchSnapshot();
@@ -161,7 +162,7 @@ describe('Info', () => {
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
 
     await waitFor(() => {
-      expect(screen.getByText('Speed')).toBeInTheDocument();
+      expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
     });
 
     expect(container).toMatchSnapshot();

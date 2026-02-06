@@ -1,6 +1,7 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { fireEvent } from '../../../../test/jest';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import SwapsFooter from '.';
 
 const createProps = (customProps = {}) => {
@@ -21,8 +22,8 @@ describe('SwapsFooter', () => {
       <SwapsFooter {...props} />,
     );
     expect(getByText(props.submitText)).toBeInTheDocument();
-    expect(getByText('Back')).toBeInTheDocument();
-    expect(getByText('Terms of service')).toBeInTheDocument();
+    expect(getByText(messages.back.message)).toBeInTheDocument();
+    expect(getByText(messages.termsOfService.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -31,7 +32,7 @@ describe('SwapsFooter', () => {
     const props = createProps();
     const { getByText } = renderWithProvider(<SwapsFooter {...props} />);
     expect(getByText(props.submitText)).toBeInTheDocument();
-    fireEvent.click(getByText('Terms of service'));
+    fireEvent.click(getByText(messages.termsOfService.message));
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: 'https://metamask.io/terms.html',
     });

@@ -6,6 +6,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { flushPromises } from '../../../../../../../test/lib/timer-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../../types/confirm';
 import {
@@ -54,7 +55,9 @@ describe('Splash', () => {
       mockStore,
     );
 
-    expect(getByText('Use smart account?')).toBeInTheDocument();
+    expect(
+      getByText(messages.smartAccountSplashTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('closes after acknowledgement', () => {

@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 
 // Mock semver to control version comparison in tests
 jest.mock('semver', () => ({
@@ -187,7 +188,7 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       // ETH has a mock position
-      expect(getByText('Position')).toBeInTheDocument();
+      expect(getByText(messages.perpsPosition.message)).toBeInTheDocument();
     });
 
     it('displays position P&L', () => {
@@ -199,7 +200,7 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       // Check for P&L label
-      expect(getByText('P&L')).toBeInTheDocument();
+      expect(getByText(messages.perpsPnl.message)).toBeInTheDocument();
     });
 
     it('displays position details section', () => {
@@ -210,10 +211,12 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Details')).toBeInTheDocument();
-      expect(getByText('Direction')).toBeInTheDocument();
-      expect(getByText('Entry price')).toBeInTheDocument();
-      expect(getByText('Liquidation price')).toBeInTheDocument();
+      expect(getByText(messages.perpsDetails.message)).toBeInTheDocument();
+      expect(getByText(messages.perpsDirection.message)).toBeInTheDocument();
+      expect(getByText(messages.perpsEntryPrice.message)).toBeInTheDocument();
+      expect(
+        getByText(messages.perpsLiquidationPrice.message),
+      ).toBeInTheDocument();
     });
 
     it('displays stats section', () => {
@@ -224,8 +227,8 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Stats')).toBeInTheDocument();
-      expect(getByText('24h Volume')).toBeInTheDocument();
+      expect(getByText(messages.perpsStats.message)).toBeInTheDocument();
+      expect(getByText(messages.perps24hVolume.message)).toBeInTheDocument();
     });
 
     it('displays recent activity section', () => {
@@ -236,7 +239,9 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Recent Activity')).toBeInTheDocument();
+      expect(
+        getByText(messages.perpsRecentActivity.message),
+      ).toBeInTheDocument();
     });
 
     it('displays learn section', () => {
@@ -247,7 +252,7 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Learn the basics of perps')).toBeInTheDocument();
+      expect(getByText(messages.perpsLearnBasics.message)).toBeInTheDocument();
     });
   });
 
@@ -261,7 +266,9 @@ describe('PerpsMarketDetailPage', () => {
         store,
       );
 
-      expect(getByText('Market not found')).toBeInTheDocument();
+      expect(
+        getByText(messages.perpsMarketNotFound.message),
+      ).toBeInTheDocument();
     });
 
     it('displays the unknown market symbol in error message', () => {

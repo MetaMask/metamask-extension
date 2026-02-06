@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
@@ -93,7 +94,9 @@ describe('PayWithModal', () => {
   it('renders modal with header', () => {
     renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
 
-    expect(screen.getByText('Pay with')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.payWithModalTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('renders Asset component with correct props', () => {

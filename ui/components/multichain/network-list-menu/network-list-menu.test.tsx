@@ -17,6 +17,7 @@ import {
 } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
@@ -273,9 +274,9 @@ describe('NetworkListMenu', () => {
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 
-    expect(getByText('Add a custom network')).toBeInTheDocument();
-    expect(getByText('Show test networks')).toBeInTheDocument();
-    expect(getByPlaceholderText('Search')).toBeInTheDocument();
+    expect(getByText(messages.addACustomNetwork.message)).toBeInTheDocument();
+    expect(getByText(messages.showTestnetNetworks.message)).toBeInTheDocument();
+    expect(getByPlaceholderText(messages.search.message)).toBeInTheDocument();
   });
 
   it('renders mainnet item', () => {
@@ -348,7 +349,7 @@ describe('NetworkListMenu', () => {
 
     expect(queryByText('Chain 5')).toBeInTheDocument();
 
-    const searchBox = getByPlaceholderText('Search');
+    const searchBox = getByPlaceholderText(messages.search.message);
     fireEvent.focus(searchBox);
     fireEvent.change(searchBox, { target: { value: 'Main' } });
 
@@ -583,7 +584,7 @@ describe('NetworkListMenu', () => {
       expect(queryByText('Arbitrum')).toBeInTheDocument();
 
       // Simulate typing "Optimism" into the search box
-      const searchBox = getByPlaceholderText('Search');
+      const searchBox = getByPlaceholderText(messages.search.message);
       fireEvent.focus(searchBox);
       fireEvent.change(searchBox, { target: { value: 'OP' } });
 
@@ -602,7 +603,7 @@ describe('NetworkListMenu', () => {
       expect(queryByText('Sepolia')).toBeInTheDocument();
 
       // Simulate typing "Linea Sepolia" into the search box
-      const searchBox = getByPlaceholderText('Search');
+      const searchBox = getByPlaceholderText(messages.search.message);
       fireEvent.focus(searchBox);
       fireEvent.change(searchBox, { target: { value: 'Linea Sepolia' } });
 
@@ -635,7 +636,7 @@ describe('NetworkListMenu', () => {
     it('should still allow searching networks even when switching is disabled', () => {
       const { getByPlaceholderText, queryByText } = render();
 
-      const searchBox = getByPlaceholderText('Search');
+      const searchBox = getByPlaceholderText(messages.search.message);
       fireEvent.focus(searchBox);
       fireEvent.change(searchBox, { target: { value: 'Ethereum' } });
 

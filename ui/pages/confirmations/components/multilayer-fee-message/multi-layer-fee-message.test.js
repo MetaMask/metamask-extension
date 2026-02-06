@@ -4,6 +4,7 @@ import { toHex } from '@metamask/controller-utils';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import MultilayerFeeMessage from './multi-layer-fee-message';
 
 const VALUE_MOCK_DECIMAL = 1e15;
@@ -55,10 +56,12 @@ describe('Multi layer fee message', () => {
         store,
       );
 
-      expect(getByText('Layer 1 fees')).toBeInTheDocument();
+      expect(getByText(messages.layer1Fees.message)).toBeInTheDocument();
       expect(getByText('0.000000003000 ETH')).toBeInTheDocument();
 
-      expect(getByText('Amount + fees')).toBeInTheDocument();
+      expect(
+        getByText(messages.transactionDetailMultiLayerTotalSubtitle.message),
+      ).toBeInTheDocument();
       expect(getByText('0.001000024000 ETH')).toBeInTheDocument();
       expect(getByText('$0.56')).toBeInTheDocument();
     });

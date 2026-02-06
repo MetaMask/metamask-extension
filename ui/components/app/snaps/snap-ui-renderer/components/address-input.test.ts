@@ -1,5 +1,6 @@
 import { Box, AddressInput, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderInterface } from '../test-utils';
 
 const MOCK_ACCOUNT_NAME = 'Account 1';
@@ -91,7 +92,7 @@ describe('SnapUIAddressInput', () => {
 
     const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
-    const label = getByText('Address');
+    const label = getByText(messages.address.message);
     expect(label).toBeDefined();
   });
 
@@ -226,7 +227,7 @@ describe('SnapUIAddressInput', () => {
     const matchedAddressName = queryByText(MOCK_ACCOUNT_NAME);
     expect(matchedAddressName).toBeTruthy();
 
-    const error = getByText('Invalid address');
+    const error = getByText(messages.invalidAddress.message);
     expect(error).toBeDefined();
   });
 

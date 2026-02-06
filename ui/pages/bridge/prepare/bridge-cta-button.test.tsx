@@ -10,6 +10,7 @@ import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -34,7 +35,7 @@ describe('BridgeCTAButton', () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(getByText('Select token')).toBeInTheDocument();
+    expect(getByText(messages.swapSelectToken.message)).toBeInTheDocument();
   });
 
   it('should render the component when amount is missing', () => {
@@ -60,7 +61,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select amount')).toBeInTheDocument();
+    expect(getByText(messages.bridgeEnterAmount.message)).toBeInTheDocument();
   });
 
   it('should render the component when amount and dest token is missing', () => {
@@ -91,7 +92,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select amount')).toBeInTheDocument();
+    expect(getByText(messages.bridgeEnterAmount.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -121,7 +122,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Select amount')).toBeInTheDocument();
+    expect(getByText(messages.bridgeEnterAmount.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -154,7 +155,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
   });
 
@@ -197,17 +198,17 @@ describe('BridgeCTAButton', () => {
       'disable',
       'there is insufficient gas for quote',
       { isInsufficientGasForQuote: true },
-      'Insufficient funds',
+      messages.insufficientFundsSend.message,
     ],
     ['enable', 'the estimated return is low', { isEstimatedReturnLow: true }],
-    ['enable', 'there are no validation errors', {}, 'Swap'],
+    ['enable', 'there are no validation errors', {}, messages.swap.message],
   ])(
     'should %s the component when quotes are loading and %s',
     async (
       status: 'disable' | 'enable',
       _: string,
       validationErrors: Record<string, boolean>,
-      buttonLabel: string = 'Swap',
+      buttonLabel: string = messages.swap.message,
     ) => {
       const mockStore = createBridgeMockStore({
         featureFlagOverrides: {
@@ -285,7 +286,7 @@ describe('BridgeCTAButton', () => {
       configureStore(mockStore),
     );
 
-    expect(getByText('Swap')).toBeInTheDocument();
+    expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(getByRole('button')).not.toBeDisabled();
     expect(getByRole('button')).toMatchInlineSnapshot(`
       <button

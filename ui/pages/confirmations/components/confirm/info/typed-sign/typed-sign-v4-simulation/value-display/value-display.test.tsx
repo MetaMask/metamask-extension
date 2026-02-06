@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 
 import mockState from '../../../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-helpers';
 import { MetaMetricsContext } from '../../../../../../../../contexts/metametrics';
 import PermitSimulationValueDisplay from './value-display';
 
@@ -91,7 +92,7 @@ describe('PermitSimulationValueDisplay', () => {
       // Intentionally empty
     });
 
-    expect(getByText('Unlimited')).toBeInTheDocument();
+    expect(getByText(messages.unlimited.message)).toBeInTheDocument();
   });
 
   it('renders unlimited if value over threshold', async () => {
@@ -120,7 +121,7 @@ describe('PermitSimulationValueDisplay', () => {
       // Intentionally empty
     });
 
-    expect(getByText('Unlimited')).toBeInTheDocument();
+    expect(getByText(messages.unlimited.message)).toBeInTheDocument();
   });
 
   it('renders unlimited if value under threshold', async () => {
@@ -149,6 +150,6 @@ describe('PermitSimulationValueDisplay', () => {
       // Intentionally empty
     });
 
-    expect(queryByText('Unlimited')).toBeNull();
+    expect(queryByText(messages.unlimited.message)).toBeNull();
   });
 });

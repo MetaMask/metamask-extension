@@ -1,9 +1,10 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { MOCKS, fireEvent } from '../../../../test/jest';
+import { MOCKS } from '../../../../test/jest';
 
 import {
   checkNetworkAndAccountSupports1559,
@@ -15,6 +16,7 @@ import {
   getIsGasEstimatesLoading,
 } from '../../../ducks/metamask/metamask';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../helpers/constants/transactions';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 import FeeCard from '.';
 
@@ -89,18 +91,24 @@ describe('FeeCard', () => {
     useSelector.mockImplementation(generateUseSelectorRouter());
     const props = createProps();
     const { getByText } = renderWithProvider(<FeeCard {...props} />);
-    expect(getByText('6 quotes.')).toBeInTheDocument();
-    expect(getByText('Estimated gas fee')).toBeInTheDocument();
-    expect(getByText('Max fee')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapNQuotesWithDot.message.replace('$1', '6')),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.transactionDetailGasHeading.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.maxFee.message)).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
     expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
-    expect(getByText('Includes a 0.875% MetaMask fee.')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapIncludesMMFee.message.replace('$1', '0.875')),
+    ).toBeInTheDocument();
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
     expect(document.querySelector('.info-tooltip')).toMatchSnapshot();
-    expect(getByText('Edit limit')).toBeInTheDocument();
+    expect(getByText(messages.swapEditLimit.message)).toBeInTheDocument();
   });
 
   it('renders the component with EIP-1559 enabled', () => {
@@ -110,13 +118,19 @@ describe('FeeCard', () => {
       maxFeePerGasDecGWEI: '4',
     });
     const { getByText } = renderWithProvider(<FeeCard {...props} />);
-    expect(getByText('6 quotes.')).toBeInTheDocument();
-    expect(getByText('Estimated gas fee')).toBeInTheDocument();
-    expect(getByText('Max fee')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapNQuotesWithDot.message.replace('$1', '6')),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.transactionDetailGasHeading.message),
+    ).toBeInTheDocument();
+    expect(getByText(messages.maxFee.message)).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
     expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
-    expect(getByText('Includes a 0.875% MetaMask fee.')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapIncludesMMFee.message.replace('$1', '0.875')),
+    ).toBeInTheDocument();
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
@@ -132,8 +146,12 @@ describe('FeeCard', () => {
     const { getByText, queryByTestId } = renderWithProvider(
       <FeeCard {...props} />,
     );
-    expect(getByText('6 quotes.')).toBeInTheDocument();
-    expect(getByText('Estimated gas fee')).toBeInTheDocument();
+    expect(
+      getByText(messages.swapNQuotesWithDot.message.replace('$1', '6')),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.transactionDetailGasHeading.message),
+    ).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
     expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
@@ -145,7 +163,7 @@ describe('FeeCard', () => {
       hideTokenApprovalRow: true,
     });
     const { queryByText } = renderWithProvider(<FeeCard {...props} />);
-    expect(queryByText('Edit limit')).not.toBeInTheDocument();
+    expect(queryByText(messages.swapEditLimit.message)).not.toBeInTheDocument();
   });
 
   it('approves a token', () => {
@@ -153,7 +171,7 @@ describe('FeeCard', () => {
       onTokenApprovalClick: jest.fn(),
     });
     const { queryByText } = renderWithProvider(<FeeCard {...props} />);
-    fireEvent.click(queryByText('Edit limit'));
+    fireEvent.click(queryByText(messages.swapEditLimit.message));
     expect(props.onTokenApprovalClick).toHaveBeenCalled();
   });
 });

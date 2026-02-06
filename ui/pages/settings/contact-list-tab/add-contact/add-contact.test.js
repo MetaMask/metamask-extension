@@ -12,6 +12,7 @@ import {
   MOCK_ADDRESS_BOOK,
   MOCK_DOMAIN_RESOLUTION,
 } from '../../../../../test/data/mock-data';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import * as domainDucks from '../../../../ducks/domains';
 import AddContact from './add-contact.component';
 
@@ -51,8 +52,8 @@ describe('AddContact component', () => {
 
     const { getByText } = renderWithProvider(<AddContact {...props} />, store);
 
-    expect(getByText('Username')).toBeInTheDocument();
-    expect(getByText('Public address')).toBeInTheDocument();
+    expect(getByText(messages.userName.message)).toBeInTheDocument();
+    expect(getByText(messages.publicAddress.message)).toBeInTheDocument();
   });
 
   it('should validate the address correctly', async () => {
@@ -66,7 +67,9 @@ describe('AddContact component', () => {
     fireEvent.change(input, { target: { value: 'invalid address' } });
 
     await waitFor(() =>
-      expect(getByText('Recipient address is invalid')).toBeInTheDocument(),
+      expect(
+        getByText(messages.invalidAddressRecipient.message),
+      ).toBeInTheDocument(),
     );
   });
 
@@ -77,7 +80,7 @@ describe('AddContact component', () => {
     const input = document.getElementById('nickname');
     fireEvent.change(input, { target: { value: '' } });
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     expect(saveButton).toBeDisabled();
   });
 
@@ -102,7 +105,7 @@ describe('AddContact component', () => {
     });
 
     await waitFor(() => {
-      expect(getByText('Save')).not.toBeDisabled();
+      expect(getByText(messages.save.message)).not.toBeDisabled();
     });
   });
 
@@ -126,13 +129,13 @@ describe('AddContact component', () => {
       // invalid length
       target: { value: '0x1234' },
     });
-    expect(getByText('Save')).toBeDisabled();
+    expect(getByText(messages.save.message)).toBeDisabled();
 
     fireEvent.change(addressInput, {
       // wrong checksum
       target: { value: '0x1234bf0bba69C63E2657cF94693cC4A907085678' },
     });
-    expect(getByText('Save')).toBeDisabled();
+    expect(getByText(messages.save.message)).toBeDisabled();
   });
 
   it('should disable the submit button when the name is an existing account name', () => {
@@ -153,7 +156,7 @@ describe('AddContact component', () => {
       target: { value: '0x43c9159B6251f3E205B9113A023C8256cDD40D91' },
     });
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     expect(saveButton).toBeDisabled();
   });
 
@@ -175,7 +178,7 @@ describe('AddContact component', () => {
       target: { value: '0x43c9159B6251f3E205B9113A023C8256cDD40D91' },
     });
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     expect(saveButton).toBeDisabled();
   });
 
@@ -193,9 +196,9 @@ describe('AddContact component', () => {
 
     fireEvent.change(nameInput, { target: { value: duplicateName } });
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
 
-    expect(await findByText('Name is already in use')).toBeDefined();
+    expect(await findByText(messages.nameAlreadyInUse.message)).toBeDefined();
     expect(saveButton).toBeDisabled();
   });
 
@@ -210,9 +213,9 @@ describe('AddContact component', () => {
 
     fireEvent.change(nameInput, { target: { value: duplicateName } });
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
 
-    expect(getByText('Name is already in use')).toBeDefined();
+    expect(getByText(messages.nameAlreadyInUse.message)).toBeDefined();
     expect(saveButton).toBeDisabled();
   });
 
@@ -233,9 +236,9 @@ describe('AddContact component', () => {
 
     fireEvent.click(domainResolutionCell);
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
 
-    expect(await findByText('Name is already in use')).toBeDefined();
+    expect(await findByText(messages.nameAlreadyInUse.message)).toBeDefined();
     expect(saveButton).toBeDisabled();
   });
 });

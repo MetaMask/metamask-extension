@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { CloseAmountSection } from './close-amount-section';
@@ -28,13 +29,17 @@ describe('CloseAmountSection', () => {
     it('renders position size label', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Position Size')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsPositionSize.message),
+      ).toBeInTheDocument();
     });
 
     it('renders close amount label', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Close Amount')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCloseAmount.message),
+      ).toBeInTheDocument();
     });
 
     it('displays total position size', () => {

@@ -5,6 +5,7 @@ import configureMockStore from 'redux-mock-store';
 import { useNavigate } from 'react-router-dom';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   LedgerTransportTypes,
   HardwareDeviceNames,
@@ -170,7 +171,7 @@ describe('ConnectHardwareForm', () => {
       );
 
       const ledgerButton = getByLabelText('Ledger');
-      const continueButton = getByText('Continue');
+      const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(ledgerButton);
       fireEvent.click(continueButton);
@@ -206,7 +207,7 @@ describe('ConnectHardwareForm', () => {
       );
 
       const ledgerButton = getByLabelText('Ledger');
-      const continueButton = getByText('Continue');
+      const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(ledgerButton);
       fireEvent.click(continueButton);

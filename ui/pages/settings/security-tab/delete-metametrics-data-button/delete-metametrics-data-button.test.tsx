@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 import {
   getMetaMetricsDataDeletionTimestamp,
@@ -71,7 +72,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeEnabled();
     expect(
       container.querySelector('.settings-page__content-description')
@@ -99,7 +100,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeEnabled();
     expect(
       container.querySelector('.settings-page__content-description')
@@ -123,7 +124,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')
@@ -161,7 +162,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')
@@ -194,7 +195,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(
-      getByRole('button', { name: 'Delete MetaMetrics data' }),
+      getByRole('button', { name: messages.deleteMetaMetricsData.message }),
     ).toBeDisabled();
     expect(
       container.querySelector('.settings-page__content-description')

@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
@@ -95,7 +96,9 @@ describe('AddressQRCodeModal', () => {
 
     // The address is displayed in segments, so we check for the last 5 characters
     expect(screen.getByText('3e7bc')).toBeInTheDocument(); // Last 5 chars
-    expect(screen.getByText('Copy address')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.copyAddressShort.message),
+    ).toBeInTheDocument();
   });
 
   it('should render the view on explorer button for Ethereum', () => {
@@ -119,7 +122,9 @@ describe('AddressQRCodeModal', () => {
       />,
     );
 
-    expect(screen.getByText('View on Etherscan')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.etherscanViewOn.message),
+    ).toBeInTheDocument();
   });
 
   it('should handle copy functionality when copy button is clicked', async () => {
@@ -138,7 +143,7 @@ describe('AddressQRCodeModal', () => {
       />,
     );
 
-    const copyButton = screen.getByText('Copy address');
+    const copyButton = screen.getByText(messages.copyAddressShort.message);
     fireEvent.click(copyButton);
 
     expect(mockHandleCopy).toHaveBeenCalledTimes(1);

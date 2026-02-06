@@ -12,6 +12,7 @@ import {
   getMockContractInteractionConfirmState,
 } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import * as DappSwapContext from '../../../../context/dapp-swap';
 import BaseTransactionInfo from './base-transaction-info';
 
@@ -87,7 +88,7 @@ describe('<BaseTransactionInfo />', () => {
       <BaseTransactionInfo />,
       mockStore,
     );
-    expect(getByText('Network fee')).toBeInTheDocument();
+    expect(getByText(messages.networkFee.message)).toBeInTheDocument();
     expect(getByText('Speed')).toBeInTheDocument();
     expect(queryByText('Origin')).toBeNull();
     expect(queryByText('Amount')).toBeNull();

@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AmountInput } from './amount-input';
@@ -38,7 +39,9 @@ describe('AmountInput', () => {
     it('renders order amount section', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
-      expect(screen.getByText('Order Amount')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsOrderAmount.message),
+      ).toBeInTheDocument();
     });
 
     it('renders the amount input field', () => {

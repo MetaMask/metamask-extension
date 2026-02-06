@@ -3,6 +3,7 @@ import { BigNumber } from 'bignumber.js';
 import { BatchTransactionParams } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
@@ -147,7 +148,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('123.6')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
@@ -159,7 +160,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('Unlimited')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
@@ -171,7 +172,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('#321')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
@@ -192,7 +193,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('All')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
@@ -204,7 +205,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('123 #321')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
@@ -225,7 +226,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('All')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
@@ -237,7 +238,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('123.6')).toBeInTheDocument();
     expect(getByText('#321')).toBeInTheDocument();
   });
@@ -257,7 +258,7 @@ describe('BatchSimulationDetails', () => {
 
     getByTestId('balance-change-edit').click();
 
-    expect(getByText('Edit spending cap')).toBeInTheDocument();
+    expect(getByText(messages.editSpendingCap.message)).toBeInTheDocument();
   });
 
   it('updates nested transaction data on modal submit', async () => {
@@ -275,7 +276,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     await act(async () => {
-      getByText('Save').click();
+      getByText(messages.save.message).click();
     });
 
     expect(updateAtomicBatchDataMock).toHaveBeenCalledTimes(1);

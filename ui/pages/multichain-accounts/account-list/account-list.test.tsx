@@ -4,6 +4,7 @@ import { fireEvent, screen, within } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { AccountList } from './account-list';
 
@@ -52,7 +53,7 @@ describe('AccountList', () => {
   it('renders the page with correct components and elements', () => {
     renderComponent();
 
-    expect(screen.getByText('Accounts')).toBeInTheDocument();
+    expect(screen.getByText(messages.accounts.message)).toBeInTheDocument();
     expect(screen.getByLabelText('Back')).toBeInTheDocument();
 
     const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
@@ -77,15 +78,23 @@ describe('AccountList', () => {
     renderComponent();
 
     // First, let's verify the button is rendered by looking for it with role
-    const addWalletButton = screen.getByRole('button', { name: 'Add wallet' });
+    const addWalletButton = screen.getByRole('button', {
+      name: messages.addWallet.message,
+    });
     expect(addWalletButton).toBeInTheDocument();
 
     fireEvent.click(addWalletButton);
 
     // The modal renders with portal, so we need to look for modal content
-    expect(screen.getByText('Import a wallet')).toBeInTheDocument();
-    expect(screen.getByText('Import an account')).toBeInTheDocument();
-    expect(screen.getByText('Add a hardware wallet')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.importAWallet.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.importAnAccount.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.addAHardwareWallet.message),
+    ).toBeInTheDocument();
   });
 
   it('displays the search field with correct placeholder', () => {
@@ -138,7 +147,7 @@ describe('AccountList', () => {
     fireEvent.change(searchInput, { target: { value: 'nonexistent account' } });
 
     expect(
-      screen.getByText('No accounts found for the given search query'),
+      screen.getByText(messages.noAccountsFound.message),
     ).toBeInTheDocument();
   });
 

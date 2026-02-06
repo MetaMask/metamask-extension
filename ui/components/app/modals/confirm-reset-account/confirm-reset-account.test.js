@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import ConfirmResetAccount from '.';
 
 describe('Confirm Reset Account', () => {
@@ -22,7 +23,7 @@ describe('Confirm Reset Account', () => {
       <ConfirmResetAccount.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(getByText('Nevermind'));
+    fireEvent.click(getByText(messages.nevermind.message));
 
     expect(props.resetAccount).not.toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();
@@ -33,7 +34,7 @@ describe('Confirm Reset Account', () => {
       <ConfirmResetAccount.WrappedComponent {...props} />,
     );
 
-    await fireEvent.click(getByText('Clear'));
+    await fireEvent.click(getByText(messages.clear.message));
 
     expect(props.resetAccount).toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();

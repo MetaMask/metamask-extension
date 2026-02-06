@@ -3,6 +3,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { OrderEntry } from './order-entry';
 
 const mockStore = configureStore({
@@ -29,12 +30,18 @@ describe('OrderEntry', () => {
       renderWithProvider(<OrderEntry {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
-      expect(screen.getByText('Order Amount')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsOrderAmount.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('amount-input-field')).toBeInTheDocument();
       expect(screen.getByTestId('leverage-slider')).toBeInTheDocument();
-      expect(screen.getByText('Margin')).toBeInTheDocument();
-      expect(screen.getByText('Fees')).toBeInTheDocument();
-      expect(screen.getByText('Liquidation Price Est.')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsMargin.message),
+      ).toBeInTheDocument();
+      expect(screen.getByText(messages.perpsFees.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLiquidationPriceEst.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('auto-close-toggle')).toBeInTheDocument();
       expect(
         screen.getByTestId('order-entry-submit-button'),
@@ -295,8 +302,12 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Position Size')).toBeInTheDocument();
-      expect(screen.getByText('Close Amount')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsPositionSize.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsCloseAmount.message),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
     });
 

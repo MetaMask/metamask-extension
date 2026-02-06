@@ -10,6 +10,7 @@ import {
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import {
   signatureRequestSIWE,
   unapprovedPersonalSignMsg,
@@ -98,7 +99,7 @@ describe('PersonalSignInfo', () => {
       <PersonalSignInfo />,
       mockStore,
     );
-    expect(getByText('Signing in with')).toBeDefined();
+    expect(getByText(messages.signingInWith.message)).toBeDefined();
   });
 
   it('display simulation for SIWE request if preference useTransactionSimulations is enabled', () => {
@@ -116,7 +117,7 @@ describe('PersonalSignInfo', () => {
       <PersonalSignInfo />,
       mockStore,
     );
-    expect(getByText('Estimated changes')).toBeDefined();
+    expect(getByText(messages.estimatedChanges.message)).toBeDefined();
   });
 
   it('does not display tooltip text when isSIWE is true', async () => {
@@ -130,7 +131,7 @@ describe('PersonalSignInfo', () => {
       mockStore,
     );
 
-    const requestFromLabel = getByText('Request from');
+    const requestFromLabel = getByText(messages.requestFrom.message);
     await requestFromLabel.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
@@ -156,7 +157,7 @@ describe('PersonalSignInfo', () => {
       mockStore,
     );
 
-    const requestFromLabel = getByText('Request from');
+    const requestFromLabel = getByText(messages.requestFrom.message);
     await requestFromLabel.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
@@ -178,7 +179,7 @@ describe('PersonalSignInfo', () => {
       mockStore,
     );
 
-    const requestFromLabel = getByText('Request from');
+    const requestFromLabel = getByText(messages.requestFrom.message);
     await requestFromLabel.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
@@ -231,7 +232,7 @@ describe('PersonalSignInfo', () => {
       <PersonalSignInfo />,
       mockStore,
     );
-    expect(getByText('Network')).toBeInTheDocument();
+    expect(getByText(messages.network.message)).toBeInTheDocument();
     expect(getByText('Goerli')).toBeInTheDocument();
   });
 });

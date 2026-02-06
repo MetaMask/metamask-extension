@@ -5,6 +5,7 @@ import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AddMultichainAccount } from './add-multichain-account';
 
 jest.mock('../../../../shared/lib/trace', () => {
@@ -73,7 +74,7 @@ describe('AddMultichainAccount', () => {
     expect(
       screen.getByTestId(addMultichainAccountButtonTestId),
     ).toBeInTheDocument();
-    expect(screen.getByText('Add account')).toBeInTheDocument();
+    expect(screen.getByText(messages.addAccount.message)).toBeInTheDocument();
     expect(
       container.querySelector(addMultichainAccountIconClass),
     ).toBeInTheDocument();
@@ -143,7 +144,7 @@ describe('AddMultichainAccount', () => {
     expect(screen.getByText('Adding account...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('Add account')).toBeInTheDocument();
+      expect(screen.getByText(messages.addAccount.message)).toBeInTheDocument();
     });
 
     // Check that the component returned to normal state
@@ -216,7 +217,7 @@ describe('AddMultichainAccount', () => {
         store,
       );
 
-      fireEvent.click(getByText('Add account'));
+      fireEvent.click(getByText(messages.addAccount.message));
 
       await waitFor(() => {
         expect(getByText('Adding account...')).toBeInTheDocument();
@@ -271,7 +272,7 @@ describe('AddMultichainAccount', () => {
         store,
       );
 
-      expect(getByText('Add account')).toBeInTheDocument();
+      expect(getByText(messages.addAccount.message)).toBeInTheDocument();
     });
 
     it('handles loading state transitions correctly', () => {
@@ -288,7 +289,7 @@ describe('AddMultichainAccount', () => {
         store,
       );
 
-      expect(getByText('Add account')).toBeInTheDocument();
+      expect(getByText(messages.addAccount.message)).toBeInTheDocument();
 
       // Simulate account syncing starting
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
@@ -310,7 +311,7 @@ describe('AddMultichainAccount', () => {
 
       rerender(<AddMultichainAccount walletId={mockWalletId} />);
 
-      expect(getByText('Add account')).toBeInTheDocument();
+      expect(getByText(messages.addAccount.message)).toBeInTheDocument();
     });
   });
 });

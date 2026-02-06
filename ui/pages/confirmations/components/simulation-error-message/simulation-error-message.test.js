@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import SimulationErrorMessage from './simulation-error-message';
 
 describe('Simulation Error Message', () => {
@@ -56,9 +57,13 @@ describe('Simulation Error Message', () => {
         'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
       ),
     ).toBeInTheDocument();
-    expect(queryByText('I want to proceed anyway')).toBeInTheDocument();
+    expect(
+      queryByText(messages.proceedWithTransaction.message),
+    ).toBeInTheDocument();
 
-    const proceedAnywayLink = getByText('I want to proceed anyway');
+    const proceedAnywayLink = getByText(
+      messages.proceedWithTransaction.message,
+    );
     fireEvent.click(proceedAnywayLink);
     expect(props.setUserAcknowledgedGasMissing).toHaveBeenCalledTimes(1);
   });

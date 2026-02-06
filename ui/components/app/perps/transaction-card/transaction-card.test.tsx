@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import type { PerpsTransaction } from '../types';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { TransactionCard } from './transaction-card';
 
 const mockStore = configureStore({
@@ -49,7 +50,9 @@ describe('TransactionCard', () => {
       mockStore,
     );
 
-    expect(screen.getByText('Opened long')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsOpenedLong.message),
+    ).toBeInTheDocument();
   });
 
   it('displays the token logo', () => {
@@ -215,7 +218,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Completed')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusCompleted.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -236,7 +241,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Filled')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusFilled.message),
+      ).toBeInTheDocument();
     });
 
     it('shows "Canceled" status text for canceled orders', () => {
@@ -255,7 +262,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Canceled')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusCanceled.message),
+      ).toBeInTheDocument();
     });
 
     it('shows "Queued" status text for queued orders', () => {
@@ -274,7 +283,9 @@ describe('TransactionCard', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Queued')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsStatusQueued.message),
+      ).toBeInTheDocument();
     });
 
     it('extracts size and symbol from subtitle for orders', () => {

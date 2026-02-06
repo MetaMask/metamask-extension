@@ -1,6 +1,7 @@
 import React from 'react';
-import { fireEvent } from '../../../../test/jest';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import SelectedToken from './selected-token';
 
 const createProps = (customProps = {}) => {
@@ -31,7 +32,7 @@ describe('SelectedToken', () => {
       <SelectedToken {...props} />,
     );
     expect(container).toMatchSnapshot();
-    expect(getByText('Select token')).toBeInTheDocument();
+    expect(getByText(messages.swapSelectToken.message)).toBeInTheDocument();
   });
 
   it('renders the component and opens the list', () => {

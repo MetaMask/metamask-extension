@@ -1,9 +1,9 @@
 import React from 'react';
+import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import { fireEvent } from '../../../../../../test/jest';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';

@@ -4,6 +4,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 
 import { isSnapId } from '@metamask/snaps-utils';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../test/data/confirmations/helper';
 import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
@@ -127,7 +128,7 @@ describe('TypedSignInfo', () => {
       <TypedSignInfoV1 />,
       mockStore,
     );
-    expect(getByText('Network')).toBeInTheDocument();
+    expect(getByText(messages.network.message)).toBeInTheDocument();
     expect(getByText('Goerli')).toBeInTheDocument();
   });
 });

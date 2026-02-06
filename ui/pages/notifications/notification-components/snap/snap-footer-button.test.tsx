@@ -3,6 +3,7 @@ import { processNotification } from '@metamask/notification-services-controller/
 import { fireEvent, waitFor } from '@testing-library/react';
 import { createMockSnapNotification } from '@metamask/notification-services-controller/notification-services/mocks';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { SnapFooterButton } from './snap-footer-button';
 import { DetailedViewData, SnapNotification } from './types';
@@ -80,8 +81,8 @@ describe('SnapFooterButton', () => {
 
     // Confirm Leave
     await waitFor(() => {
-      const leaveModalTitle = getByText('Leave MetaMask?');
-      const leaveModalButton = getByText('Visit site');
+      const leaveModalTitle = getByText(messages.leaveMetaMask.message);
+      const leaveModalButton = getByText(messages.visitSite.message);
       expect(leaveModalTitle).toBeInTheDocument();
       expect(leaveModalButton).toBeInTheDocument();
     });

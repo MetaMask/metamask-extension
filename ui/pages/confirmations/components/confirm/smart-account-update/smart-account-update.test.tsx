@@ -4,6 +4,7 @@ import { fireEvent } from '@testing-library/dom';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../types/confirm';
 import { setSmartAccountOptIn } from '../../../../../store/actions';
@@ -53,7 +54,9 @@ describe('SmartAccountUpdate', () => {
       mockStore,
     );
 
-    expect(getByText('Use smart account?')).toBeInTheDocument();
+    expect(
+      getByText(messages.smartAccountSplashTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('show success after acknowledgement', () => {

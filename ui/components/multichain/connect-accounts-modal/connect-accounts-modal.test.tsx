@@ -1,9 +1,7 @@
 import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import { waitFor } from '@testing-library/react';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import messages from '../../../../app/_locales/en/messages.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';

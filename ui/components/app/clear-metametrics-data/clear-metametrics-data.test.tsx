@@ -2,6 +2,7 @@ import * as React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import * as Actions from '../../../store/actions';
 import { DELETE_METAMETRICS_DATA_MODAL_CLOSE } from '../../../store/actionConstants';
 import ClearMetaMetricsData from './clear-metametrics-data';
@@ -33,27 +34,27 @@ describe('ClearMetaMetricsData', () => {
     const store = configureStore({});
     const { getByText } = renderWithProvider(<ClearMetaMetricsData />, store);
 
-    expect(getByText('Delete MetaMetrics data?')).toBeInTheDocument();
     expect(
-      getByText(
-        'We are about to remove all your MetaMetrics data. Are you sure?',
-      ),
+      getByText(messages.deleteMetaMetricsDataModalTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.deleteMetaMetricsDataModalDesc.message),
     ).toBeInTheDocument();
   });
 
   it('should call createMetaMetricsDataDeletionTask when Clear button is clicked', () => {
     const store = configureStore({});
     const { getByText } = renderWithProvider(<ClearMetaMetricsData />, store);
-    expect(getByText('Delete')).toBeEnabled();
-    fireEvent.click(getByText('Delete'));
+    expect(getByText(messages.delete.message)).toBeEnabled();
+    fireEvent.click(getByText(messages.delete.message));
     expect(Actions.createMetaMetricsDataDeletionTask).toHaveBeenCalledTimes(1);
   });
 
   it('should call hideDeleteMetaMetricsDataModal when Cancel button is clicked', () => {
     const store = configureStore({});
     const { getByText } = renderWithProvider(<ClearMetaMetricsData />, store);
-    expect(getByText('Cancel')).toBeEnabled();
-    fireEvent.click(getByText('Cancel'));
+    expect(getByText(messages.cancel.message)).toBeEnabled();
+    fireEvent.click(getByText(messages.cancel.message));
     expect(mockCloseDeleteMetaMetricsDataModal).toHaveBeenCalledTimes(1);
   });
 });

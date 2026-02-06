@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { setAccountGroupName } from '../../../store/actions';
@@ -31,7 +32,7 @@ describe('MultichainAccountEditModal', () => {
     renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
 
     expect(screen.getByText('Rename')).toBeInTheDocument();
-    expect(screen.getByText('Account name')).toBeInTheDocument();
+    expect(screen.getByText(messages.accountName.message)).toBeInTheDocument();
 
     const inputField = screen.getByPlaceholderText('Account 1');
     expect(inputField).toBeInTheDocument();
@@ -251,7 +252,7 @@ describe('MultichainAccountEditModal', () => {
     await waitFor(() => {
       // Check that the error message is displayed
       expect(
-        screen.getByText('This name is already in use.'),
+        screen.getByText(messages.accountNameAlreadyInUse.message),
       ).toBeInTheDocument();
 
       // Check that the input field has the error styling

@@ -12,6 +12,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { Modal } from '../../components/app/modals';
 import configureStore from '../../store/store';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import RevealSeedPage from './reveal-seed';
 
 const mockUseParams = jest.fn().mockReturnValue({});
@@ -88,7 +89,7 @@ describe('Reveal Seed Page', () => {
       target: { value: password },
     });
 
-    fireEvent.click(queryByText('Next'));
+    fireEvent.click(queryByText(messages.next.message));
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
@@ -105,7 +106,7 @@ describe('Reveal Seed Page', () => {
       target: { value: password },
     });
 
-    fireEvent.click(queryByText('Next'));
+    fireEvent.click(queryByText(messages.next.message));
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
@@ -124,7 +125,7 @@ describe('Reveal Seed Page', () => {
       target: { value: 'bad password' },
     });
 
-    fireEvent.click(queryByText('Next'));
+    fireEvent.click(queryByText(messages.next.message));
 
     await waitFor(() => {
       expect(mockShowModal).not.toHaveBeenCalled();
@@ -143,7 +144,7 @@ describe('Reveal Seed Page', () => {
       store,
     );
 
-    const nextButton = queryByText('Next');
+    const nextButton = queryByText(messages.next.message);
 
     fireEvent.change(queryByTestId('input-password'), {
       target: { value: password },
@@ -153,7 +154,9 @@ describe('Reveal Seed Page', () => {
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
-      expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
+      expect(
+        queryByText(messages.holdToRevealSRPTitle.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -183,7 +186,7 @@ describe('Reveal Seed Page', () => {
       target: { value: 'bad-password' },
     });
 
-    fireEvent.click(queryByText('Next'));
+    fireEvent.click(queryByText(messages.next.message));
 
     await waitFor(() => {
       expect(mockRequestRevealSeedWords).toHaveBeenCalled();
@@ -219,7 +222,7 @@ describe('Reveal Seed Page', () => {
       target: { value: password },
     });
 
-    fireEvent.click(queryByText('Next'));
+    fireEvent.click(queryByText(messages.next.message));
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
@@ -245,10 +248,12 @@ describe('Reveal Seed Page', () => {
           hd_entropy_index: 0,
         },
       });
-      expect(queryByText('Keep your SRP safe')).toBeInTheDocument();
+      expect(
+        queryByText(messages.holdToRevealSRPTitle.message),
+      ).toBeInTheDocument();
     });
 
-    const holdButton = getByText('Hold to reveal SRP');
+    const holdButton = getByText(messages.holdToRevealSRP.message);
     const circleLocked = queryByLabelText('hold to reveal circle locked');
 
     fireEvent.pointerDown(holdButton);
@@ -275,8 +280,8 @@ describe('Reveal Seed Page', () => {
     mockTrackEvent.mockClear();
 
     // completed hold click
-    const qrTab = getByText('QR');
-    const textTab = getByText('Text');
+    const qrTab = getByText(messages.revealSeedWordsQR.message);
+    const textTab = getByText(messages.revealSeedWordsText.message);
 
     fireEvent.click(qrTab);
 
@@ -304,7 +309,7 @@ describe('Reveal Seed Page', () => {
 
     mockTrackEvent.mockClear();
 
-    const copyButton = getByText('Copy to clipboard');
+    const copyButton = getByText(messages.copyToClipboard.message);
 
     fireEvent.click(copyButton);
 
@@ -329,7 +334,7 @@ describe('Reveal Seed Page', () => {
       });
     });
 
-    const doneButton = getByText('Close');
+    const doneButton = getByText(messages.close.message);
     fireEvent.click(doneButton);
 
     await waitFor(() => {
@@ -361,7 +366,7 @@ describe('Reveal Seed Page', () => {
       mockStore,
     );
 
-    const cancelButton = queryByText('Cancel');
+    const cancelButton = queryByText(messages.cancel.message);
     fireEvent.click(cancelButton);
 
     await waitFor(() => {
@@ -398,7 +403,7 @@ describe('Reveal Seed Page', () => {
         target: { value: password },
       });
 
-      fireEvent.click(queryByText('Next'));
+      fireEvent.click(queryByText(messages.next.message));
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(
@@ -420,7 +425,7 @@ describe('Reveal Seed Page', () => {
         target: { value: password },
       });
 
-      fireEvent.click(queryByText('Next'));
+      fireEvent.click(queryByText(messages.next.message));
 
       await waitFor(() => {
         expect(mockRequestRevealSeedWords).toHaveBeenCalledWith(

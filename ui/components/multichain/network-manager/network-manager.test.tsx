@@ -4,6 +4,7 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { SolScope } from '@metamask/keyring-api';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
@@ -177,11 +178,17 @@ describe('NetworkManager Component', () => {
     renderNetworkManager();
 
     // Verify tabs are rendered
-    expect(screen.getByText('Popular')).toBeInTheDocument();
-    expect(screen.getByText('Custom')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkTabPopular.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkTabCustom.message),
+    ).toBeInTheDocument();
 
     // Verify default tab content is rendered
-    expect(screen.getByText('All popular networks')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.allPopularNetworks.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('Arbitrum')).toBeInTheDocument();
     expect(screen.getByText('Optimism')).toBeInTheDocument();
     expect(screen.getByText('Avalanche')).toBeInTheDocument();
@@ -190,7 +197,9 @@ describe('NetworkManager Component', () => {
 
   it('should render popular networks tab when non-EVM popular network is selected', () => {
     renderNetworkManagerWithNonEvmNetworkSelected();
-    expect(screen.queryByText('All popular networks')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.allPopularNetworks.message),
+    ).toBeInTheDocument();
   });
 
   it('should render custom networks tab when non-EVM devnet is selected', () => {
@@ -202,21 +211,31 @@ describe('NetworkManager Component', () => {
       },
     });
 
-    expect(screen.queryByText('All popular networks')).not.toBeInTheDocument();
-    expect(screen.queryByText('Add custom network')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.allPopularNetworks.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.addCustomNetwork.message),
+    ).toBeInTheDocument();
   });
 
   it('switches tab when tab is clicked', () => {
     renderNetworkManager();
 
     // Verify that Default tab is active by default
-    expect(screen.getByText('Popular')).toBeInTheDocument();
-    expect(screen.getByText('All popular networks')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkTabPopular.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.allPopularNetworks.message),
+    ).toBeInTheDocument();
 
     // Click on Custom tab
-    fireEvent.click(screen.getByText('Custom'));
+    fireEvent.click(screen.getByText(messages.networkTabCustom.message));
 
     // Verify Custom tab content is rendered
-    expect(screen.getByText('Add custom network')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.addCustomNetwork.message),
+    ).toBeInTheDocument();
   });
 });

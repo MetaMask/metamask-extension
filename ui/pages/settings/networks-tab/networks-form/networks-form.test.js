@@ -19,6 +19,7 @@ import {
   updateNetwork,
 } from '../../../../store/actions';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { NetworksForm } from './networks-form';
 
 jest.mock('../../../../../ui/store/actions', () => ({
@@ -172,12 +173,12 @@ describe('NetworkForm Component', () => {
         ticker: 'ETH',
       },
     });
-    expect(queryByText('Network name')).toBeInTheDocument();
-    expect(queryByText('Default RPC URL')).toBeInTheDocument();
-    expect(queryByText('Chain ID')).toBeInTheDocument();
-    expect(queryByText('Currency symbol')).toBeInTheDocument();
-    expect(queryByText('Block explorer URL')).toBeInTheDocument();
-    expect(queryByText('Save')).toBeInTheDocument();
+    expect(queryByText(messages.networkName.message)).toBeInTheDocument();
+    expect(queryByText(messages.defaultRpcUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.chainId.message)).toBeInTheDocument();
+    expect(queryByText(messages.currencySymbol.message)).toBeInTheDocument();
+    expect(queryByText(messages.blockExplorerUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.save.message)).toBeInTheDocument();
 
     expect(
       await screen.findByText(
@@ -189,12 +190,12 @@ describe('NetworkForm Component', () => {
   it('should render network form correctly', () => {
     const { queryByText, getByDisplayValue } =
       renderComponent(propNetworkDisplay);
-    expect(queryByText('Network name')).toBeInTheDocument();
-    expect(queryByText('Default RPC URL')).toBeInTheDocument();
-    expect(queryByText('Chain ID')).toBeInTheDocument();
-    expect(queryByText('Currency symbol')).toBeInTheDocument();
-    expect(queryByText('Block explorer URL')).toBeInTheDocument();
-    expect(queryByText('Save')).toBeInTheDocument();
+    expect(queryByText(messages.networkName.message)).toBeInTheDocument();
+    expect(queryByText(messages.defaultRpcUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.chainId.message)).toBeInTheDocument();
+    expect(queryByText(messages.currencySymbol.message)).toBeInTheDocument();
+    expect(queryByText(messages.blockExplorerUrl.message)).toBeInTheDocument();
+    expect(queryByText(messages.save.message)).toBeInTheDocument();
 
     expect(
       getByDisplayValue(propNetworkDisplay.networkFormState.chainId),
@@ -246,7 +247,7 @@ describe('NetworkForm Component', () => {
       'The RPC URL you have entered returned a different chain ID (56).';
     expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
 
-    expect(screen.getByText('Save')).toBeDisabled();
+    expect(screen.getByText(messages.save.message)).toBeDisabled();
   });
 
   it('should chainID be a valid number', async () => {
@@ -422,7 +423,7 @@ describe('NetworkForm Component', () => {
 
   it('should call addNetwork when saving a new network', async () => {
     const { getByText } = renderComponent(propNetworkDisplay);
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(addNetwork).toHaveBeenCalledTimes(1);
@@ -447,7 +448,7 @@ describe('NetworkForm Component', () => {
       ...propNetworkDisplay,
       existingNetwork: {},
     });
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(updateNetwork).toHaveBeenCalledTimes(1);
@@ -529,7 +530,7 @@ describe('NetworkForm Component', () => {
       store,
     );
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {
@@ -590,7 +591,7 @@ describe('NetworkForm Component', () => {
       store,
     );
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {
@@ -660,7 +661,7 @@ describe('NetworkForm Component', () => {
       store,
     );
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {
@@ -728,7 +729,7 @@ describe('NetworkForm Component', () => {
       store,
     );
 
-    const saveButton = getByText('Save');
+    const saveButton = getByText(messages.save.message);
     fireEvent.click(saveButton);
 
     await waitFor(() => {

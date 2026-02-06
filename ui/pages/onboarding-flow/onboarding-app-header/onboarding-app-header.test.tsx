@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Location as RouterLocation } from 'react-router-dom';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import OnboardingAppHeader from './onboarding-app-header';
 
@@ -81,6 +82,6 @@ describe('OnboardingAppHeader', () => {
       />,
       store,
     );
-    expect(getByText('Pin the MetaMask extension')).toBeInTheDocument();
+    expect(getByText(messages.pinMetaMask.message)).toBeInTheDocument();
   });
 });

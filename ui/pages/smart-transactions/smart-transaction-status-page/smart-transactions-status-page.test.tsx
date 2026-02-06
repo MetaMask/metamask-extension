@@ -8,6 +8,7 @@ import {
 
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { createSwapsMockStore } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
@@ -43,16 +44,19 @@ describe('SmartTransactionStatusPage', () => {
     {
       status: SmartTransactionStatuses.PENDING,
       isDapp: false,
-      expectedTexts: ['Your transaction was submitted', 'View activity'],
+      expectedTexts: [
+        messages.smartTransactionPending.message,
+        messages.viewActivity.message,
+      ],
       snapshotName: 'pending',
     },
     {
       status: SmartTransactionStatuses.SUCCESS,
       isDapp: false,
       expectedTexts: [
-        'Your transaction is complete',
-        'View transaction',
-        'View activity',
+        messages.smartTransactionSuccess.message,
+        messages.viewTransaction.message,
+        messages.viewActivity.message,
       ],
       snapshotName: 'success',
     },
@@ -60,10 +64,10 @@ describe('SmartTransactionStatusPage', () => {
       status: SmartTransactionStatuses.REVERTED,
       isDapp: false,
       expectedTexts: [
-        'Your transaction failed',
-        'View transaction',
-        'View activity',
-        'Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support.',
+        messages.smartTransactionError.message,
+        messages.viewTransaction.message,
+        messages.viewActivity.message,
+        messages.smartTransactionErrorDescription.message,
       ],
       snapshotName: 'failed',
     },
@@ -118,7 +122,7 @@ describe('SmartTransactionStatusPage', () => {
         store,
       );
 
-      const backToHomeButton = getByText('Back to home');
+      const backToHomeButton = getByText(messages.backToHome.message);
       fireEvent.click(backToHomeButton);
       expect(onCloseExtension).toHaveBeenCalled();
     });
@@ -135,7 +139,7 @@ describe('SmartTransactionStatusPage', () => {
         store,
       );
 
-      const viewActivityButton = getByText('View activity');
+      const viewActivityButton = getByText(messages.viewActivity.message);
       fireEvent.click(viewActivityButton);
       expect(onViewActivity).toHaveBeenCalled();
     });

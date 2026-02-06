@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import CreateNewVault from './create-new-vault';
@@ -27,7 +28,9 @@ describe('CreateNewVault', () => {
       <CreateNewVault submitText="Import" onSubmit={jest.fn()} />,
       store,
     );
-    expect(screen.getByText('Secret Recovery Phrase')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.secretRecoveryPhrase.message),
+    ).toBeInTheDocument();
   });
 
   it('renders CreateNewVault component and shows You can paste... text', () => {

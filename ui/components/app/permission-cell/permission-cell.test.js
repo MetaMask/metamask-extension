@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import PermissionCell from './permission-cell';
 
@@ -56,7 +57,9 @@ describe('Permission Cell', () => {
     expect(
       screen.getByText('Access the Ethereum provider.'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Revoked in this update')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.permissionRevoked.message),
+    ).toBeInTheDocument();
   });
 
   it('renders requested permission cell', () => {
@@ -74,6 +77,8 @@ describe('Permission Cell', () => {
     expect(
       screen.getByText('Access the Ethereum provider.'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Requested now')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.permissionRequested.message),
+    ).toBeInTheDocument();
   });
 });
