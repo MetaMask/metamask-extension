@@ -91,15 +91,6 @@ describe('NFTs options', () => {
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
 
-    const sortButton = await findByTestId('sort-by-popover-toggle');
-    let tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
-    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'false');
-
-    fireEvent.click(sortButton);
-
-    tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
-    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'true');
-
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );

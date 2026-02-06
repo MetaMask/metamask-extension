@@ -44,7 +44,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setShowSupportDataConsentModal } from '../../../store/actions';
+import {
+  setShowSupportDataConsentModal,
+  showModal,
+} from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
@@ -67,10 +70,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
-import {
-  ACCOUNT_LIST_PAGE_ROUTE,
-  REVIEW_PERMISSIONS,
-} from '../../../helpers/constants/routes';
+import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import {
   getShowSupportDataConsentModal,
@@ -172,9 +172,9 @@ export const AppHeaderUnlockedContent = ({
     });
   };
 
-  const handleConnectionsRoute = () => {
-    navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
-  };
+  const handleNetworkManagerOpen = useCallback(() => {
+    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
+  }, [dispatch]);
 
   const handleCopyClick = useCallback(() => {
     handleCopy(normalizedCurrentAddress);
@@ -399,9 +399,7 @@ export const AppHeaderUnlockedContent = ({
         <Box display={Display.Flex} gap={2}>
           {showConnectedStatus && (
             <Box ref={menuRef} data-testid="connection-menu" margin="auto">
-              <ConnectedStatusIndicator
-                onClick={() => handleConnectionsRoute()}
-              />
+              <ConnectedStatusIndicator onClick={handleNetworkManagerOpen} />
             </Box>
           )}{' '}
           <Box

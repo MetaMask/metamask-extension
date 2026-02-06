@@ -84,6 +84,7 @@ import {
   clearRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
 import { AppHeader } from '../../components/multichain/app-header';
+import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -248,6 +249,7 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
           {...props}
           evaluateCohortEligibility={evaluateCohortEligibility}
         />
+        <DappConnectionControlBar />
       </div>
     </>
   );
