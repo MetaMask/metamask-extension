@@ -1,7 +1,6 @@
 import { sep } from 'node:path';
 import type { LoaderContext } from 'webpack';
-import type { JSONSchema7 } from 'json-schema';
-import { validate } from 'schema-utils';
+import { validate, type JSONSchema7 } from 'schema-utils';
 import type { FromSchema } from 'json-schema-to-ts';
 import { transform, type Options } from '@swc/core';
 
