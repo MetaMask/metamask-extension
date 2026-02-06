@@ -6,6 +6,7 @@ import {
   DEFAULT_NUM_PAGE_LOADS,
 } from './constants';
 import {
+  aggregateWebVitals,
   calcMaxResult,
   calcMeanResult,
   calcMinResult,
@@ -26,6 +27,8 @@ import type {
   TimerResult,
   TimerStatistics,
   UserActionMeasurement,
+  WebVitalsMetrics,
+  WebVitalsSummary,
 } from './types';
 import { performanceTracker } from './performance-tracker';
 
@@ -91,9 +94,12 @@ export async function runBenchmarkWithIterations(
     }
   }
 
-  // Aggregate timer results
+  // Aggregate timer results and collect per-run web vitals
   const timerMap = new Map<string, number[]>();
-  for (const result of allResults) {
+  const webVitalsRuns: Array<WebVitalsMetrics & { iteration: number }> = [];
+
+  for (let idx = 0; idx < allResults.length; idx++) {
+    const result = allResults[idx];
     if (result.success) {
       for (const timer of result.timers) {
         if (!timerMap.has(timer.id)) {
@@ -103,6 +109,10 @@ export async function runBenchmarkWithIterations(
         if (timerDurations) {
           timerDurations.push(timer.duration);
         }
+      }
+
+      if (result.webVitals) {
+        webVitalsRuns.push({ ...result.webVitals, iteration: idx });
       }
     }
   }
@@ -144,6 +154,15 @@ export async function runBenchmarkWithIterations(
     ? validateThresholds(timerStats, thresholdConfig)
     : undefined;
 
+  // Aggregate web vitals if any runs reported them
+  let webVitalsSummary: WebVitalsSummary | undefined;
+  if (webVitalsRuns.length > 0) {
+    webVitalsSummary = {
+      runs: webVitalsRuns,
+      aggregated: aggregateWebVitals(webVitalsRuns),
+    };
+  }
+
   return {
     name,
     iterations,
@@ -158,6 +177,7 @@ export async function runBenchmarkWithIterations(
       thresholdViolations: thresholdResult.violations,
       thresholdsPassed: thresholdResult.passed,
     }),
+    ...(webVitalsSummary && { webVitals: webVitalsSummary }),
   };
 }
 
