@@ -25,6 +25,7 @@ import type {
   ThresholdConfig,
   TimerResult,
   TimerStatistics,
+  UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
 
@@ -231,11 +232,11 @@ export async function runPageLoadBenchmark(
 }
 
 export async function runUserActionBenchmark(
-  measureFn: () => Promise<TimerResult[]>,
+  measureFn: () => Promise<UserActionMeasurement>,
 ): Promise<BenchmarkRunResult> {
   try {
-    const timers = await measureFn();
-    return { timers, success: true };
+    const { timers, webVitals } = await measureFn();
+    return { timers, webVitals, success: true };
   } catch (error) {
     return {
       timers: [],
