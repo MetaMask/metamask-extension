@@ -15,9 +15,9 @@ env:
       "standardHome": "yarn test:e2e:benchmark --preset standardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2",
       "powerUserHome": "yarn test:e2e:benchmark --preset powerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2",
       "userActions": "yarn test:e2e:benchmark --preset userActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2",
-      "performanceOnboardingNew": "yarn test:e2e:benchmark --preset performanceOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingNew.json --retries 2",
+      "performanceOnboarding": "yarn test:e2e:benchmark --preset performanceOnboarding --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboarding.json --retries 2",
       "performanceAssets": "yarn test:e2e:benchmark --preset performanceAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2",
-      "performanceLogin": "yarn test:e2e:benchmark --preset performanceLogin --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceLogin.json --retries 2"
+      "performanceTransactions": "yarn test:e2e:benchmark --preset performanceTransactions --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceTransactions.json --retries 2"
     }
 
 jobs:
@@ -33,22 +33,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # PowerUser + UserActions benchmarks run on all 4 browser/buildType combinations
+        # Page load + User action benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
         pageType: [standardHome, powerUserHome, userActions]
-        # New added performance benchmarks only run on Chrome + Browserify to reduce CI runtime
+        # Performance benchmarks only run on Chrome + Browserify to reduce CI runtime
         include:
-          # TODO: Re-enable performanceOnboardingImport once account list loading is fixed
           - browser: chrome
             buildType: browserify
-            pageType: performanceOnboardingNew
+            pageType: performanceOnboarding
           - browser: chrome
             buildType: browserify
             pageType: performanceAssets
           - browser: chrome
             buildType: browserify
-            pageType: performanceLogin
+            pageType: performanceTransactions
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -59,6 +58,9 @@ jobs:
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      # GITHUB_REF_NAME is used by mock-config.ts to determine if mocks should be used
+      # For PRs: use head_ref (source branch), for pushes: use ref_name (target branch)
+      GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
     continue-on-error: true
     steps:
       - name: Checkout and setup environment

@@ -3,6 +3,7 @@
  * Measures time for send flow from opening send page to confirmation
  */
 
+import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
@@ -14,8 +15,16 @@ import SnapTransactionConfirmation from '../../../page-objects/pages/confirmatio
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
+import { shouldUseMockedRequests } from '../../utils/mock-config';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
+import {
+  mockSolanaBalanceQuote,
+  mockGetMinimumBalanceForRentExemption,
+  simulateSolanaTransaction,
+  mockGetLatestBlockhash,
+  mockGetFeeForMessage,
+} from '../../../tests/solana/common-solana';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 
@@ -36,9 +45,17 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
-        useMockingPassThrough: true,
+        useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (server: Mockttp) => {
+          // Mock Solana RPC calls for balance and transaction
+          await mockSolanaBalanceQuote(server); // Returns 50 SOL
+          await mockGetMinimumBalanceForRentExemption(server);
+          await simulateSolanaTransaction(server, true); // native SOL
+          await mockGetLatestBlockhash(server);
+          await mockGetFeeForMessage(server);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSendPage = new TimerHelper('openSendPageFromHome');

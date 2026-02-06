@@ -16,6 +16,7 @@ import {
 } from '../../helpers/file';
 import { runBenchmarkWithIterations } from './utils';
 import {
+  BENCHMARK_TYPE,
   ONBOARDING_IMPORT_THRESHOLDS,
   ONBOARDING_NEW_WALLET_THRESHOLDS,
   IMPORT_SRP_HOME_THRESHOLDS,
@@ -27,6 +28,7 @@ import {
 import type {
   BenchmarkResults,
   BenchmarkSummary,
+  BenchmarkType,
   StatisticalResult,
   ThresholdConfig,
 } from './utils/types';
@@ -38,11 +40,13 @@ import type {
  * @param summary
  * @param testTitle
  * @param persona
+ * @param benchmarkType
  */
 function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
   persona?: string,
+  benchmarkType?: BenchmarkType,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -63,6 +67,7 @@ function convertSummaryToResults(
   return {
     testTitle,
     persona,
+    benchmarkType,
     mean,
     min,
     max,
@@ -101,22 +106,28 @@ function getThresholdConfig(filePath: string): ThresholdConfig | undefined {
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
 const PRESETS: Record<string, string[]> = {
-  // Performance benchmarks
-  // TODO: Re-enable performanceOnboardingImport once account list loading is fixed
-  performanceOnboardingNew: [
+  // Performance benchmarks - Onboarding (first-time user flows)
+  performanceOnboarding: [
     `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
+    `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
   ],
+
+  // Performance benchmarks - Assets
   performanceAssets: [
     `${BENCHMARK_DIR}/performance/asset-details.ts`,
     `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
   ],
-  performanceLogin: [
-    // TODO: Re-enable import-srp-home.ts once TEST_SRP_2 is found correctly
-    // `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
+
+  // Performance benchmarks - Transactions
+  performanceTransactions: [
     `${BENCHMARK_DIR}/performance/send-transactions.ts`,
     // TODO: Re-enable swap.ts once network-fees element is stable
     // `${BENCHMARK_DIR}/performance/swap.ts`,
   ],
+
+  // Disabled benchmarks (require additional setup)
+  // performanceAccountManagement
+  // import-srp-home.ts - requires TEST_SRP_2 env var for importing second wallet
 
   // Page load benchmarks
   standardHome: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
@@ -197,7 +208,12 @@ async function runBenchmarkFile(
       console.log('✅ All thresholds passed');
     }
 
-    return convertSummaryToResults(summary, testTitle, persona);
+    // Determine benchmarkType based on file path
+    const benchmarkType = filePath.includes('/performance/')
+      ? BENCHMARK_TYPE.PERFORMANCE
+      : BENCHMARK_TYPE.USER_ACTION;
+
+    return convertSummaryToResults(summary, testTitle, persona, benchmarkType);
   }
 
   // For other benchmarks (page-load), run once with options

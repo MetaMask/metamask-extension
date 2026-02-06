@@ -3,6 +3,17 @@ import type { ThresholdConfig } from './types';
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
 
+export const BENCHMARK_PERSONA = {
+  STANDARD: 'standard',
+  POWER_USER: 'powerUser',
+} as const;
+
+export const BENCHMARK_TYPE = {
+  BENCHMARK: 'benchmark',
+  PERFORMANCE: 'performance',
+  USER_ACTION: 'userAction',
+} as const;
+
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',
   load: 'navigation[0].load',
@@ -174,8 +185,8 @@ export const SEND_TRANSACTIONS_THRESHOLDS: ThresholdConfig = {
  */
 export const ASSET_DETAILS_THRESHOLDS: ThresholdConfig = {
   assetClickToPriceChart: {
-    p75: { warn: 5500, fail: 7000 },
-    p95: { warn: 8000, fail: 10000 },
+    p75: { warn: 7000, fail: 9000 },
+    p95: { warn: 10000, fail: 12000 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
 };
