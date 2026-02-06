@@ -10,12 +10,18 @@
  * @see https://web.dev/articles/cls
  */
 
+// Use UMD build for Browserify/LavaMoat compatibility (ESM not supported)
+// Types are declared in types/web-vitals-umd.d.ts
 import type {
   INPMetricWithAttribution,
   LCPMetricWithAttribution,
   CLSMetricWithAttribution,
-} from 'web-vitals/attribution';
-import { onINP, onLCP, onCLS } from 'web-vitals/attribution';
+} from 'web-vitals/dist/web-vitals.attribution.umd.cjs';
+import {
+  onINP,
+  onLCP,
+  onCLS,
+} from 'web-vitals/dist/web-vitals.attribution.umd.cjs';
 
 /**
  * Web Vitals metrics stored for E2E benchmark retrieval.
