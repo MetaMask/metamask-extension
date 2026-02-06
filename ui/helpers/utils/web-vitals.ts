@@ -4,6 +4,22 @@
  * Provides utilities to measure INP, LCP, and CLS using the attribution build
  * which shows which element/script caused each metric.
  *
+ * IMPORTANT: On `chrome-extension://` pages, Chrome does not emit
+ * `PerformancePaintTiming` (`first-paint`, `first-contentful-paint`) or
+ * `largest-contentful-paint` entries. `PerformanceNavigationTiming.responseStart`
+ * is also 0 for local extension files. As a result,
+ * `browserTracingIntegration` in `setupSentry.js` cannot capture LCP, FCP,
+ * CLS, or TTFB on production extension pages (confirmed: 19.5M pageload
+ * transactions with zero web vitals measurements in Sentry). The
+ * `onLCP`/`onCLS` callbacks below may not fire in production either, as
+ * they depend on the same `PerformanceObserver` entry types. `onINP` uses
+ * `PerformanceEventTiming` which IS supported on extension pages, so INP
+ * may still report in production.
+ *
+ * These observers reliably fire during CI E2E benchmark runs, where metrics
+ * are collected via `stateHooks.getWebVitalsMetrics()` and sent to Sentry
+ * by `test/e2e/benchmarks/send-to-sentry.ts`.
+ *
  * @see https://github.com/GoogleChrome/web-vitals
  * @see https://web.dev/articles/inp
  * @see https://web.dev/articles/lcp
@@ -75,6 +91,10 @@ const CLS_NEEDS_IMPROVEMENT_THRESHOLD = 0.25;
 
 /**
  * Get rating based on thresholds.
+ *
+ * @param value
+ * @param goodThreshold
+ * @param needsImprovementThreshold
  */
 function getRating(
   value: number,
@@ -91,25 +111,37 @@ function getRating(
 }
 
 /**
- * Report a metric to Sentry.
- * Uses globalThis.sentry to avoid direct Sentry dependency.
+ * Enrich Sentry scope with web vitals context.
+ *
+ * Numeric measurements are NOT sent here. On `chrome-extension://` pages,
+ * `browserTracingIntegration` cannot capture web vitals because Chrome does
+ * not emit paint performance entries for the `chrome-extension://` protocol.
+ * Benchmark measurements are handled separately by `send-to-sentry.ts`.
+ *
+ * This function adds contextual data when callbacks do fire:
+ * - Rating tags for filtering (e.g. `inp.rating:poor`)
+ * - Attribution context (which element/interaction caused the metric)
+ * - Breadcrumbs on poor/needs-improvement metrics for error correlation
+ *
+ * @param name - Metric name (INP, LCP, CLS)
+ * @param value - Metric value for breadcrumb message formatting
+ * @param unit - Display unit for breadcrumb message ('millisecond' | 'none')
+ * @param rating - Rating classification
+ * @param attribution - Attribution data from web-vitals library
  */
-function reportMetricToSentry(
+function enrichSentryWithWebVitals(
   name: string,
   value: number,
   unit: 'millisecond' | 'none',
   rating: string,
   attribution?: Record<string, unknown>,
 ): void {
-  const sentry = globalThis.sentry;
+  const { sentry } = globalThis;
   if (!sentry) {
     return;
   }
 
-  // Set measurement for Sentry traces
-  sentry.setMeasurement?.(`benchmark.${name.toLowerCase()}`, value, unit);
-
-  // Set rating tag for filtering
+  // Set rating tag for filtering (e.g. inp.rating:poor in Sentry Discover)
   sentry.setTag?.(`${name.toLowerCase()}.rating`, rating);
 
   // Set attribution context if available
@@ -117,7 +149,7 @@ function reportMetricToSentry(
     sentry.setContext?.(`${name.toLowerCase()}_attribution`, attribution);
   }
 
-  // Add breadcrumb for poor metrics
+  // Add breadcrumb for poor metrics — enriches the next error event
   if (rating === 'poor' || rating === 'needs-improvement') {
     sentry.addBreadcrumb?.({
       category: `performance.${name.toLowerCase()}`,
@@ -133,6 +165,10 @@ function reportMetricToSentry(
  *
  * INP measures how long it takes for the page to respond to user interactions.
  * It's a Core Web Vital that replaced FID in 2024.
+ *
+ * Unlike LCP/CLS, INP uses `PerformanceEventTiming` entries which ARE
+ * supported on `chrome-extension://` pages, so this observer may fire in
+ * production when users interact with the extension popup.
  *
  * @see https://web.dev/articles/inp
  */
@@ -163,7 +199,7 @@ export function initINPObserver(): void {
           attribution.presentationDelay ?? null;
       }
 
-      reportMetricToSentry(
+      enrichSentryWithWebVitals(
         'INP',
         value,
         'millisecond',
@@ -181,6 +217,10 @@ export function initINPObserver(): void {
  *
  * LCP measures when the largest content element finishes rendering.
  * For extensions, this is typically the account list or balance display.
+ *
+ * NOTE: Chrome does not emit `largest-contentful-paint` entries on
+ * `chrome-extension://` pages. This observer will not fire in production
+ * but does fire during CI E2E benchmark runs.
  *
  * @see https://web.dev/articles/lcp
  */
@@ -204,7 +244,7 @@ export function initLCPObserver(): void {
         attributionData.url = attribution.url ?? null;
       }
 
-      reportMetricToSentry(
+      enrichSentryWithWebVitals(
         'LCP',
         value,
         'millisecond',
@@ -222,6 +262,11 @@ export function initLCPObserver(): void {
  *
  * CLS measures unexpected movement of visible elements.
  * Values >0.1 indicate visual instability.
+ *
+ * NOTE: CLS depends on `layout-shift` entries. On `chrome-extension://`
+ * pages, CLS observation is unreliable — even if `layout-shift` entries
+ * are emitted, `browserTracingIntegration` deletes CLS when FCP is missing.
+ * This observer primarily fires during CI E2E benchmark runs.
  *
  * @see https://web.dev/articles/cls
  */
@@ -249,7 +294,7 @@ export function initCLSObserver(): void {
       }
 
       // CLS is unitless
-      reportMetricToSentry('CLS', value, 'none', rating, attributionData);
+      enrichSentryWithWebVitals('CLS', value, 'none', rating, attributionData);
     });
   } catch (error) {
     console.warn('[Performance] Failed to initialize CLS observer:', error);
@@ -260,7 +305,9 @@ export function initCLSObserver(): void {
  * Initialize all Web Vitals observers.
  *
  * Sets up INP, LCP, and CLS measurement with attribution.
- * Metrics are automatically reported to Sentry when available.
+ * On `chrome-extension://` pages, only INP is expected to fire in
+ * production. LCP and CLS fire during CI E2E benchmark runs where
+ * data is collected via `stateHooks.getWebVitalsMetrics()`.
  */
 export function initWebVitals(): void {
   initINPObserver();
