@@ -17,6 +17,7 @@ import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
+import { errorCodes } from '@metamask/rpc-errors';
 
 type SnapConfirmSendResult = {
   valid?: boolean;
@@ -91,8 +92,18 @@ export const useSendActions = () => {
         // Success - navigate to activity tab
         navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } catch (error) {
-        // User rejected or other error - clear any error state and navigate back
-        updateNonEVMSubmitError(undefined);
+        // Check for user rejection using error code (4001) - this is language-independent
+        const errorCode = (error as { code?: number })?.code;
+        const isUserRejection =
+          errorCode === errorCodes.provider.userRejectedRequest;
+
+        if (isUserRejection) {
+          // User deliberately cancelled - clear error and navigate back silently
+          updateNonEVMSubmitError(undefined);
+        } else {
+          // Actual snap/internal error - display error message to user
+          updateNonEVMSubmitError(t('transactionError'));
+        }
         navigate(-1);
       }
     }

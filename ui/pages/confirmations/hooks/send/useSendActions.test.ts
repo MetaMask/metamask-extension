@@ -165,7 +165,34 @@ describe('useSendQueryParams', () => {
     });
   });
 
-  it('handleSubmit handles user rejection for non-evm send', async () => {
+  it('handleSubmit handles user rejection (code 4001) for non-evm send', async () => {
+    const mockUpdateNonEVMSubmitError = jest.fn();
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: SOLANA_ASSET,
+      from: MOCK_ADDRESS_3,
+      to: MOCK_ADDRESS_4,
+      value: '10',
+      updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
+    } as unknown as SendContext.SendContextType);
+
+    const userRejectionError = Object.assign(new Error('User rejected'), {
+      code: 4001,
+    });
+    jest
+      .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
+      .mockImplementation(() => Promise.reject(userRejectionError));
+
+    const result = renderHook();
+    result.handleSubmit(MOCK_ADDRESS_4);
+
+    await waitFor(() => {
+      // Should clear error for user rejection
+      expect(mockUpdateNonEVMSubmitError).toHaveBeenCalledWith(undefined);
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+    });
+  });
+
+  it('handleSubmit displays generic error for non-rejection snap errors', async () => {
     const mockUpdateNonEVMSubmitError = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_ASSET,
@@ -177,14 +204,24 @@ describe('useSendQueryParams', () => {
 
     jest
       .spyOn(MultichainTransactionUtils, 'sendMultichainTransactionForReview')
-      .mockImplementation(() => Promise.reject(new Error('User rejected')));
+      .mockImplementation(() =>
+        Promise.reject(new Error('Unexpected snap error')),
+      );
 
     const result = renderHook();
     result.handleSubmit(MOCK_ADDRESS_4);
 
     await waitFor(() => {
-      // Should not set error for user rejection
-      expect(mockUpdateNonEVMSubmitError).toHaveBeenCalledWith(undefined);
+      // Should set generic error message for non-rejection errors
+      expect(mockUpdateNonEVMSubmitError).toHaveBeenCalledWith(
+        expect.any(String),
+      );
+      // The last call should NOT be undefined (not a user rejection)
+      const lastCall =
+        mockUpdateNonEVMSubmitError.mock.calls[
+          mockUpdateNonEVMSubmitError.mock.calls.length - 1
+        ];
+      expect(lastCall[0]).not.toBeUndefined();
       expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
   });
