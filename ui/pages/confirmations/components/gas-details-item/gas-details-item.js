@@ -204,7 +204,7 @@ const GasDetailsItem = ({
                 }}
                 textProps={{
                   color: TextColor.textAlternative,
-                  variant: TextVariant.bodySm,
+                  variant: TextVariant.ySm,
                 }}
                 type={PRIMARY}
                 value={
@@ -217,6 +217,7 @@ const GasDetailsItem = ({
       }
       subTitle={
         <GasTiming
+          chainId={txData.chainId}
           maxPriorityFeePerGas={maxPriorityFeePerGasToRender}
           maxFeePerGas={maxFeePerGasToRender}
         />
