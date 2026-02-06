@@ -153,7 +153,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
    */
   const showErrorModalInternal = useCallback(
     (error: unknown, skipFilters = false) => {
-      console.log('[HW] showErrorModalInternal', error);
       // For user rejections/cancellations: dismiss any open modal and close the popup
       // unless explicitly forced (manual calls can show these errors)
       if (!skipFilters && isUserRejection(error)) {
@@ -257,7 +256,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       // OR if we haven't shown an error yet (displayedError is null)
       // Note: showErrorModalInternal will handle user rejections by dismissing the modal
       if (errorCode !== displayedErrorCode || !displayedError) {
-        console.log('[HW] showing error modal', error);
         setDisplayedError(error);
         showErrorModalInternal(error, false);
       }

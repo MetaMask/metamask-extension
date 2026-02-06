@@ -88,10 +88,6 @@ export const useHardwareWalletAutoConnect = ({
         }
 
         updateConnectionState(ConnectionState.connected());
-        console.log('[HW] auto-connect: device connected', {
-          walletType,
-          accountAddress: effectAccountAddress,
-        });
 
         const currentPermissionState =
           await checkHardwareWalletPermission(walletType);
@@ -141,10 +137,6 @@ export const useHardwareWalletAutoConnect = ({
           return;
         }
 
-        console.log('[HW] auto-connect: device disconnected', {
-          walletType,
-          accountAddress: effectAccountAddress,
-        });
         if (!adapterRef.current?.isConnected()) {
           return;
         }
