@@ -89,7 +89,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     // For orders, show status in muted text
     if (transaction.type === 'order' && transaction.order) {
       const { text: statusText } = transaction.order;
-      const statusKey = statusText.toLowerCase();
+      const statusKey = statusText?.toLowerCase() ?? '';
       const translatedStatus = ORDER_STATUS_TO_I18N_KEY[statusKey]
         ? t(ORDER_STATUS_TO_I18N_KEY[statusKey])
         : '';
