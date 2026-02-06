@@ -22,9 +22,25 @@ export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
+export const PLATFORM_CHROMIUM = 'Chromium';
+export const PLATFORM_COCCOC = 'CocCoc';
 export const PLATFORM_EDGE = 'Edge';
+export const PLATFORM_EDGE_ANDROID = 'EdgeAndroid';
 export const PLATFORM_FIREFOX = 'Firefox';
+export const PLATFORM_KIWI = 'Kiwi';
+export const PLATFORM_LEMUR = 'Lemur';
+export const PLATFORM_MAXTHON = 'Maxthon';
+export const PLATFORM_MISES = 'Mises';
 export const PLATFORM_OPERA = 'Opera';
+export const PLATFORM_OTHER = 'Other';
+export const PLATFORM_PUFFIN = 'Puffin';
+export const PLATFORM_QQBROWSER = 'QQBrowser';
+export const PLATFORM_SAMSUNG = 'Samsung';
+export const PLATFORM_SILK = 'Silk';
+export const PLATFORM_UCBROWSER = 'UCBrowser';
+export const PLATFORM_VIVALDI = 'Vivaldi';
+export const PLATFORM_WHALE = 'Whale';
+export const PLATFORM_YANDEX = 'Yandex';
 
 /**
  * Object containing all platform constants for type-safe usage.
@@ -32,9 +48,25 @@ export const PLATFORM_OPERA = 'Opera';
 export const PLATFORM = {
   BRAVE: PLATFORM_BRAVE,
   CHROME: PLATFORM_CHROME,
+  CHROMIUM: PLATFORM_CHROMIUM,
+  COCCOC: PLATFORM_COCCOC,
   EDGE: PLATFORM_EDGE,
+  EDGE_ANDROID: PLATFORM_EDGE_ANDROID,
   FIREFOX: PLATFORM_FIREFOX,
+  KIWI: PLATFORM_KIWI,
+  LEMUR: PLATFORM_LEMUR,
+  MAXTHON: PLATFORM_MAXTHON,
+  MISES: PLATFORM_MISES,
   OPERA: PLATFORM_OPERA,
+  OTHER: PLATFORM_OTHER,
+  PUFFIN: PLATFORM_PUFFIN,
+  QQBROWSER: PLATFORM_QQBROWSER,
+  SAMSUNG: PLATFORM_SAMSUNG,
+  SILK: PLATFORM_SILK,
+  UCBROWSER: PLATFORM_UCBROWSER,
+  VIVALDI: PLATFORM_VIVALDI,
+  WHALE: PLATFORM_WHALE,
+  YANDEX: PLATFORM_YANDEX,
 } as const;
 
 export type Platform = (typeof PLATFORM)[keyof typeof PLATFORM];
