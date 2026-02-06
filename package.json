@@ -405,7 +405,7 @@
     "@metamask/subscription-controller": "^5.4.2",
     "@metamask/transaction-controller": "^62.11.0",
     "@metamask/transaction-pay-controller": "^11.0.1",
-    "@metamask/tron-wallet-snap": "^1.19.2",
+    "@metamask/tron-wallet-snap": "^1.20.0",
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.4.2",
     "@ngraveio/bc-ur": "^1.1.13",
