@@ -1818,12 +1818,6 @@
   "creatorAddress": {
     "message": "Alamat pembuat"
   },
-  "crossChainSwapsLink": {
-    "message": "Bertukar antar jaringan dengan Portfolio MetaMask"
-  },
-  "crossChainSwapsLinkNative": {
-    "message": "Bertukar antara jaringan dengan Bridge"
-  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2847,9 +2841,6 @@
     "message": "Biaya gas ini telah disarankan oleh $1. Mengubahnya dapat menyebabkan masalah pada transaksi Anda. Jika ada pertanyaan, hubungi $1.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Biaya gas"
-  },
   "gasLimit": {
     "message": "Batas gas"
   },
@@ -3257,9 +3248,6 @@
     "message": "Diimpor",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "included": {
-    "message": "termasuk"
-  },
   "includesXTransactions": {
     "message": "Termasuk transaksi $1"
   },
@@ -3661,12 +3649,6 @@
   },
   "low": {
     "message": "Rendah"
-  },
-  "lowEstimatedReturnTooltipMessage": {
-    "message": "Anda akan membayar lebih dari $1% dari jumlah awal sebagai biaya. Periksa jumlah penerimaan dan biaya jaringan Anda."
-  },
-  "lowEstimatedReturnTooltipTitle": {
-    "message": "Biaya tinggi"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Gunakan $1 untuk menunggu harga yang lebih murah. Estimasi waktu kurang akurat karena harga sedang tidak dapat diprediksi.",
@@ -4336,9 +4318,6 @@
   },
   "notCurrentAccount": {
     "message": "Apa ini akun yang benar? Ini berbeda dari akun yang saat ini dipilih di dompet Anda"
-  },
-  "notEnoughBalance": {
-    "message": "Saldo tidak cukup"
   },
   "notEnoughGas": {
     "message": "Gas tidak cukup"
@@ -5336,9 +5315,6 @@
   "popularNetworks": {
     "message": "Jaringan populer"
   },
-  "preparingSwap": {
-    "message": "Mempersiapkan pertukaran..."
-  },
   "prev": {
     "message": "Sebelumnya"
   },
@@ -5559,9 +5535,6 @@
   },
   "queued": {
     "message": "Antrean"
-  },
-  "quoteRate": {
-    "message": "Tingkat kuotasi"
   },
   "quotedReceiveAmount": {
     "message": "Jumlah $1 yang diterima"
@@ -7815,16 +7788,9 @@
   "swapAndSend": {
     "message": "Tukar & Kirim"
   },
-  "swapAnyway": {
-    "message": "Tetap tukar"
-  },
   "swapApproval": {
     "message": "Setujui pertukaran $1",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapApproveNeedMoreTokens": {
-    "message": "Anda memerlukan $1 $2 lagi untuk menyelesaikan pertukaran ini",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapAreYouStillThere": {
     "message": "Masih di sana?"
@@ -7834,9 +7800,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Konfirmasikan dengan dompet perangkat keras Anda"
-  },
-  "swapContinueSwapping": {
-    "message": "Lanjutkan pertukaran"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "Di aplikasi Ethereum di Ledger Anda, buka \"Pengaturan\" dan izinkan data kontrak. Lalu, coba lagi pertukaran Anda."
@@ -7868,9 +7831,6 @@
     "message": "Ini akan $1 untuk menukar",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEnterAmount": {
-    "message": "Masukkan jumlah"
-  },
   "swapEstimatedNetworkFees": {
     "message": "Estimasi biaya jaringan"
   },
@@ -7883,9 +7843,6 @@
   },
   "swapFailedErrorTitle": {
     "message": "Pertukaran gagal"
-  },
-  "swapFetchingQuote": {
-    "message": "Mengambil kuotasi"
   },
   "swapFetchingQuoteNofN": {
     "message": "Mengambil kuotasi $1 dari $2",
@@ -7924,35 +7881,15 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Biaya jaringan ini dibayar oleh MetaMask, jadi Anda dapat bertransaksi tanpa $1 di akun Anda."
   },
-  "swapGasIncludedTooltipExplanation": {
-    "message": "Kuotasi ini mencakup biaya gas dengan menyesuaikan jumlah token yang dikirim atau diterima. Anda mungkin akan menerima ETH dalam transaksi terpisah pada daftar aktivitas Anda."
-  },
-  "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "Pelajari selengkapnya seputar biaya gas"
-  },
-  "swapHighSlippage": {
-    "message": "Selip tinggi"
-  },
-  "swapIncludesGasAndMetaMaskFee": {
-    "message": "Termasuk biaya gas dan MetaMask sebesar $1%",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapIncludesMMFee": {
     "message": "Termasuk $1% biaya MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "Termasuk $1% biaya MetaMask – $2",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Pelajari selengkapnya seputar Swap"
   },
   "swapLiquiditySourceInfo": {
     "message": "Kami mencari beberapa sumber likuiditas (bursa, agregator, dan pendiri pasar profesional) untuk membandingkan tarif bursa dan biaya jaringan."
-  },
-  "swapLowSlippage": {
-    "message": "Selip rendah"
   },
   "swapMaxSlippage": {
     "message": "Selip maks"
@@ -7968,10 +7905,6 @@
     "message": "$1 kuota.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "Kuotasi baru di $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapNoTokensAvailable": {
     "message": "Tidak ada token yang cocok yang tersedia $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -7980,29 +7913,11 @@
     "message": "$1 akan ditambahkan ke akun Anda setelah transaksi ini diproses.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapPriceDifference": {
-    "message": "Anda akan menukar $1 $2 (~$3) untuk $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Perbedaan harga ~$1%",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "Dampak harga tidak dapat ditentukan karena kurangnya data harga pasar. Harap konfirmasi bahwa Anda setuju dengan jumlah token yang akan Anda terima sebelum penukaran."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "Periksa tarif Anda sebelum melanjutkan"
-  },
   "swapProcessing": {
     "message": "Memproses"
   },
   "swapQuoteDetails": {
     "message": "Detail kuotasi"
-  },
-  "swapQuoteNofM": {
-    "message": "$1 dari $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "Sumber kuotasi"
@@ -8103,32 +8018,12 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Pertukaran adalah transaksi yang kompleks dan sensitif terhadap waktu. Kami merekomendasikan biaya gas ini untuk keseimbangan yang baik antara biaya dan konfidensi dari keberhasilan Pertukaran."
   },
-  "swapSwapFrom": {
-    "message": "Tukar dari"
-  },
-  "swapSwapSwitch": {
-    "message": "Alihkan order token"
-  },
-  "swapSwapTo": {
-    "message": "Tukar ke"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "untuk mengonfirmasikan dengan dompet perangkat keras Anda"
-  },
-  "swapTokenAddedManuallyDescription": {
-    "message": "Verifikasikan token ini di $1 dan pastikan ini adalah token yang ingin Anda perdagangkan.",
-    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenAddedManuallyTitle": {
-    "message": "Token ditambahkan secara manual"
   },
   "swapTokenAvailable": {
     "message": "$1 telah ditambahkan ke akun Anda.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenBalanceUnavailable": {
-    "message": "Kami tidak dapat mengambil saldo $1 Anda",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenNotAvailable": {
     "message": "Token tidak tersedia untuk ditukar di wilayah ini"
@@ -8137,23 +8032,8 @@
     "message": "Tukar $1 ke $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerifiedOn1SourceDescription": {
-    "message": "$1 hanya diverifikasi di 1 sumber. Pertimbangkan untuk memverifikasinya di $2 sebelum melanjutkan.",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenVerifiedOn1SourceTitle": {
-    "message": "Token berpotensi tidak autentik"
-  },
-  "swapTokenVerifiedSources": {
-    "message": "Dikonfirmasi oleh $1 sumber. Verifikasikan pada $2.",
-    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
-  },
   "swapTokens": {
     "message": "Tukar token"
-  },
-  "swapTooManyDecimalsError": {
-    "message": "$1 memungkinkan hingga $2 desimal",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "Transaksi selesai"
@@ -8172,10 +8052,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Toleransi selip"
-  },
-  "swapsNotEnoughToken": {
-    "message": "$1 tidak cukup",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Lihat di aktivitas"
@@ -8764,9 +8640,6 @@
   "viewAddressOnExplorer": {
     "message": "Lihat di $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewAllQuotes": {
-    "message": "lihat semua kuotasi"
   },
   "viewContact": {
     "message": "Lihat kontak"
