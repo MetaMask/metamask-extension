@@ -10,10 +10,12 @@
 
 import type {
   PercentileThreshold,
+  RatingDistribution,
   StatisticalResult,
   ThresholdConfig,
   ThresholdViolation,
   TimerStatistics,
+  WebVitalsAggregated,
   WebVitalsMetrics,
   WebVitalsRating,
 } from './types';
@@ -607,3 +609,56 @@ export const calculateWebVitalsStatistics = (
     dataQuality: assessDataQuality(cv),
   };
 };
+
+function createEmptyRatingDistribution(): RatingDistribution {
+  return { good: 0, 'needs-improvement': 0, poor: 0, null: 0 };
+}
+
+/**
+ * Aggregate per-run web vitals into statistical summaries.
+ *
+ * Uses metric-specific sanity bounds (CLS is unitless, INP/LCP have different
+ * ceilings than generic timer durations), then standard outlier detection and
+ * percentile analysis. Preserves rating distributions for categorical analysis.
+ *
+ * @param runs - Array of per-run web vitals snapshots
+ * @returns Aggregated statistics per metric + rating distributions
+ */
+export function aggregateWebVitals(
+  runs: WebVitalsMetrics[],
+): WebVitalsAggregated {
+  const result: WebVitalsAggregated = {
+    inp: null,
+    lcp: null,
+    cls: null,
+    ratings: {
+      inp: createEmptyRatingDistribution(),
+      lcp: createEmptyRatingDistribution(),
+      cls: createEmptyRatingDistribution(),
+    },
+  };
+
+  for (const metric of WEB_VITALS_NUMERIC_KEYS) {
+    // Extract non-null numeric values for statistical analysis
+    const values = runs
+      .map((r) => r[metric])
+      .filter((v): v is number => v !== null);
+
+    if (values.length > 0) {
+      result[metric] = calculateWebVitalsStatistics(metric, values);
+    }
+
+    // Tally rating distribution across all runs
+    const ratingKey = `${metric}Rating` as const;
+    for (const run of runs) {
+      const rating: WebVitalsRating | null = run[ratingKey];
+      if (rating === null) {
+        result.ratings[metric].null += 1;
+      } else {
+        result.ratings[metric][rating] += 1;
+      }
+    }
+  }
+
+  return result;
+}
