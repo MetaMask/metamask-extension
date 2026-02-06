@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
@@ -233,6 +233,7 @@ const Footer = () => {
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { showErrorModal, dismissErrorModal } = useHardwareWalletError();
+  const [hasPreflightSucceeded, setHasPreflightSucceeded] = useState(false);
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
@@ -240,19 +241,40 @@ const Footer = () => {
   );
   const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
+  useEffect(() => {
+    if (!isHardwareWalletAccount) {
+      setHasPreflightSucceeded(false);
+      return;
+    }
+
+    if (
+      connectionState.status === ConnectionStatus.Disconnected ||
+      connectionState.status === ConnectionStatus.ErrorState
+    ) {
+      setHasPreflightSucceeded(false);
+    }
+  }, [connectionState.status, isHardwareWalletAccount]);
+
+  useEffect(() => {
+    setHasPreflightSucceeded(false);
+  }, [currentConfirmationId]);
+
   const isHardwareWalletReady = useMemo(() => {
-    return (
-      isHardwareWalletAccount &&
-      [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
-        connectionState.status,
-      )
+    if (!isHardwareWalletAccount) {
+      return true;
+    }
+
+    if (hasPreflightSucceeded) {
+      return true;
+    }
+
+    return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
+      connectionState.status,
     );
-  }, [isHardwareWalletAccount, connectionState.status]);
+  }, [connectionState.status, hasPreflightSucceeded, isHardwareWalletAccount]);
 
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSignature) ||
-    !isHardwareWalletReady ||
-    isGaslessLoading;
+    (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
 
   const onSubmitPreflightCheck = useCallback(async (): Promise<boolean> => {
     if (!isHardwareWalletAccount) {
@@ -260,6 +282,7 @@ const Footer = () => {
     }
 
     const isDeviceReady = await ensureDeviceReady();
+    setHasPreflightSucceeded(isDeviceReady);
 
     if (!isDeviceReady) {
       return false;
@@ -381,9 +404,8 @@ const Footer = () => {
             <Button
               block
               data-testid="reconnect-hardware-wallet-button"
-              onClick={onSubmit}
+              onClick={onSubmitPreflightCheck}
               size={ButtonSize.Lg}
-              disabled={!isHardwareWalletReady}
             >
               {walletType
                 ? t('connectHardwareDevice', [t(walletType)])
