@@ -242,7 +242,6 @@ describe('HardwareWalletStateManager', () => {
         // previousWalletTypeRef should be null on first render
         expect(result.current.refs.previousWalletTypeRef.current).toBe(null);
       });
-
     });
   });
 });

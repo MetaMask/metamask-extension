@@ -33,7 +33,6 @@ type UseHardwareWalletConnectionParams = {
 
 export const useHardwareWalletConnection = ({
   refs,
-  setters,
   updateConnectionState,
   handleDeviceEvent,
   handleDisconnect,

@@ -264,7 +264,6 @@ describe('HardwareWalletContext', () => {
       expect(typeof result.current.isWebHidAvailable).toBe('boolean');
       expect(typeof result.current.isWebUsbAvailable).toBe('boolean');
     });
-
   });
 
   describe('useHardwareWalletState hook', () => {

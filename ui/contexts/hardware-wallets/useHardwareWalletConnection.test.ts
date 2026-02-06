@@ -303,9 +303,7 @@ describe('useHardwareWalletConnection', () => {
         onAppNotOpen: jest.fn(),
         onDeviceEvent: mockHandleDeviceEvent,
       });
-      mockAdapter.connectMock.mockRejectedValue(
-        new Error('Connection failed'),
-      );
+      mockAdapter.connectMock.mockRejectedValue(new Error('Connection failed'));
       (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
         mockAdapter,
       );

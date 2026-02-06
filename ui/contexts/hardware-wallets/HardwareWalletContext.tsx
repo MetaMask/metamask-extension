@@ -7,14 +7,12 @@ import React, {
   useRef,
   type ReactNode,
 } from 'react';
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { ConnectionState } from './connectionState';
 import { useHardwareWalletStateManager } from './HardwareWalletStateManager';
 import { useDeviceEventHandlers } from './HardwareWalletEventHandlers';
 import { useHardwareWalletPermissions } from './useHardwareWalletPermissions';
 import { useHardwareWalletConnection } from './useHardwareWalletConnection';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
-import { createHardwareWalletError } from './errors';
 import {
   HardwareWalletType,
   HardwareConnectionPermissionState,
