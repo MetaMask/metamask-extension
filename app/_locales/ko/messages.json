@@ -1818,12 +1818,6 @@
   "creatorAddress": {
     "message": "크리에이터 주소"
   },
-  "crossChainSwapsLink": {
-    "message": "MetaMask Portfolio로 네트워크 간 스왑"
-  },
-  "crossChainSwapsLinkNative": {
-    "message": "브릿지로 네트워크 간 스왑"
-  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2847,9 +2841,6 @@
     "message": "이 가스비는 $1에 의해 제안된 것입니다. 이를 무시하면 트랜잭션에 문제가 생길 수 있습니다. 질문이 있으시면 $1에 문의하세요.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "가스 수수료"
-  },
   "gasLimit": {
     "message": "가스 한도"
   },
@@ -3257,9 +3248,6 @@
     "message": "가져옴",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "included": {
-    "message": "포함됨"
-  },
   "includesXTransactions": {
     "message": "$1건의 트랜잭션 포함"
   },
@@ -3661,12 +3649,6 @@
   },
   "low": {
     "message": "낮음"
-  },
-  "lowEstimatedReturnTooltipMessage": {
-    "message": "시작 금액의 $1% 이상을 수수료로 지불하게 됩니다. 받는 금액과 네트워크 수수료를 확인하세요."
-  },
-  "lowEstimatedReturnTooltipTitle": {
-    "message": "높은 비용"
   },
   "lowGasSettingToolTipMessage": {
     "message": "$1을(를) 사용하고 더 저렴한 가격을 기다리세요. 시간 추정치는 가격을 다소 예측할 수 없기 때문에 훨씬 덜 정확합니다.",
@@ -4336,9 +4318,6 @@
   },
   "notCurrentAccount": {
     "message": "올바른 계정인가요? 현재 지갑에서 선택된 계정과 다릅니다."
-  },
-  "notEnoughBalance": {
-    "message": "잔액 부족"
   },
   "notEnoughGas": {
     "message": "가스 부족"
@@ -5336,9 +5315,6 @@
   "popularNetworks": {
     "message": "인기 네트워크"
   },
-  "preparingSwap": {
-    "message": "스왑 준비 중..."
-  },
   "prev": {
     "message": "이전"
   },
@@ -5559,9 +5535,6 @@
   },
   "queued": {
     "message": "대기열에 지정됨"
-  },
-  "quoteRate": {
-    "message": "견적 비율"
   },
   "quotedReceiveAmount": {
     "message": "$1 수령 금액"
@@ -7815,16 +7788,9 @@
   "swapAndSend": {
     "message": "스왑 및 전송"
   },
-  "swapAnyway": {
-    "message": "스왑 계속 진행"
-  },
   "swapApproval": {
     "message": "스왑을 위해 $1 승인",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapApproveNeedMoreTokens": {
-    "message": "이 스왑을 완료하려면 $1개의 추가 $2이(가) 필요합니다.",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapAreYouStillThere": {
     "message": "아직 이용 중인가요?"
@@ -7834,9 +7800,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 컨펌합니다."
-  },
-  "swapContinueSwapping": {
-    "message": "스왑 계속"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "Ledger의 이더리움 앱에서 \"설정 \"으로 이동하여 계약 데이터를 허용한 후, 스왑을 다시 시도하세요."
@@ -7868,9 +7831,6 @@
     "message": "스왑하려면 $1이(가) 필요합니다.",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEnterAmount": {
-    "message": "금액 입력"
-  },
   "swapEstimatedNetworkFees": {
     "message": "예상 네트워크 수수료"
   },
@@ -7883,9 +7843,6 @@
   },
   "swapFailedErrorTitle": {
     "message": "스왑 실패"
-  },
-  "swapFetchingQuote": {
-    "message": "견적 가져오기"
   },
   "swapFetchingQuoteNofN": {
     "message": "$2 중 $1 견적 가져오기",
@@ -7924,35 +7881,15 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "이 네트워크 수수료는 MetaMask가 지불하므로 계정에 $1이(가) 없어도 거래할 수 있습니다."
   },
-  "swapGasIncludedTooltipExplanation": {
-    "message": "이 견적은 가스비가 포함되어 있으며 보내거나 받는 토큰 수량이 조정됩니다. ETH는 활동 목록에서 별도의 거래로 표시될 수 있습니다."
-  },
-  "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "가스비에 대해 더 자세히 알아보기"
-  },
-  "swapHighSlippage": {
-    "message": "높은 슬리피지"
-  },
-  "swapIncludesGasAndMetaMaskFee": {
-    "message": "가스비 및 $1%의 MetaMask 수수료가 포함됩니다",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapIncludesMMFee": {
     "message": "$1%의 MetaMask 요금이 포함됩니다.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "$1% MetaMask 요금 - $2 포함",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "스왑 자세히 알아보기"
   },
   "swapLiquiditySourceInfo": {
     "message": "저희는 여러 유동성 공급원(거래소, 애그리게이터, 투자전문기관)을 검색하여 환율과 네트워크 수수료를 비교해 드립니다."
-  },
-  "swapLowSlippage": {
-    "message": "낮은 슬리피지"
   },
   "swapMaxSlippage": {
     "message": "최대 슬리패지"
@@ -7968,10 +7905,6 @@
     "message": "$1 견적.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "$1의 새 견적",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapNoTokensAvailable": {
     "message": "$1와(과) 일치하는 토큰이 없습니다.",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -7980,29 +7913,11 @@
     "message": "$1토큰은 이 트랜잭션이 처리되면 회원님의 계정에 추가됩니다.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapPriceDifference": {
-    "message": "$1 $2(~$3)을(를) $4 $5(~$6)(으)로 스왑하려고 합니다.",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "~$1%의 가격 차이",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "시장 가격 데이터가 부족하여 가격 영향을 파악할 수 없습니다. 스왑하기 전에 받게 될 토큰 수가 만족스러운지 컨펌하시기 바랍니다."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "계속 진행하기 전에 환율을 확인하세요"
-  },
   "swapProcessing": {
     "message": "처리 중"
   },
   "swapQuoteDetails": {
     "message": "견적 세부 사항"
-  },
-  "swapQuoteNofM": {
-    "message": "$1/$2개",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "견적 소스"
@@ -8103,32 +8018,12 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "스왑은 복잡하고 시간에 민감한 트랜잭션입니다. 성공적인 스왑의 비용과 확신 사이의 적절한 균형을 위해 이 가스비를 권장합니다."
   },
-  "swapSwapFrom": {
-    "message": "스왑 시작:"
-  },
-  "swapSwapSwitch": {
-    "message": "토큰 주문 변환"
-  },
-  "swapSwapTo": {
-    "message": "스왑 대상:"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 컨펌하기 위해"
-  },
-  "swapTokenAddedManuallyDescription": {
-    "message": "$1에서 이 토큰이 트랜잭션할 토큰이 맞는지 확인하세요.",
-    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenAddedManuallyTitle": {
-    "message": "토큰 직접 추가됨"
   },
   "swapTokenAvailable": {
     "message": "$1이(가) 계정에 추가되었습니다.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenBalanceUnavailable": {
-    "message": "$1 잔액을 불러오지 못했습니다.",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenNotAvailable": {
     "message": "이 지역에서는 토큰을 스왑할 수 없습니다"
@@ -8137,23 +8032,8 @@
     "message": "$1에서 $2(으)로 스왑",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerifiedOn1SourceDescription": {
-    "message": "$1 토큰은 1 소스에서만 확인됩니다. 계속 진행하기 전에 $2에서도 확인하세요.",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenVerifiedOn1SourceTitle": {
-    "message": "잠재적 모조 토큰"
-  },
-  "swapTokenVerifiedSources": {
-    "message": "$1 소스에서 컨펌함. $2에서 확인하세요.",
-    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
-  },
   "swapTokens": {
     "message": "토큰 스왑"
-  },
-  "swapTooManyDecimalsError": {
-    "message": "$1은(는) 소수점 이하 $2까지 허용됩니다.",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "트랜잭션 완료"
@@ -8172,10 +8052,6 @@
   },
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"
-  },
-  "swapsNotEnoughToken": {
-    "message": "$1 부족",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "활동에서 보기"
@@ -8764,9 +8640,6 @@
   "viewAddressOnExplorer": {
     "message": "$1에서 보기",
     "description": "$1 is the block explorer name"
-  },
-  "viewAllQuotes": {
-    "message": "모든 견적 보기"
   },
   "viewContact": {
     "message": "연락처 보기"

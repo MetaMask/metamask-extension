@@ -1818,12 +1818,6 @@
   "creatorAddress": {
     "message": "Adresse du créateur"
   },
-  "crossChainSwapsLink": {
-    "message": "Échanges inter-réseaux avec MetaMask Portfolio"
-  },
-  "crossChainSwapsLinkNative": {
-    "message": "Échanges inter-réseaux avec Bridge"
-  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2847,9 +2841,6 @@
     "message": "Ces frais de gaz ont été suggérés par $1. Si vous n’en tenez pas compte, vous risquez de rencontrer des difficultés lors de votre transaction. Veuillez contacter $1 pour toute question.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Frais de transaction"
-  },
   "gasLimit": {
     "message": "Limite de gaz"
   },
@@ -3257,9 +3248,6 @@
     "message": "Importés",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "included": {
-    "message": "compris"
-  },
   "includesXTransactions": {
     "message": "Inclut $1 transactions"
   },
@@ -3661,12 +3649,6 @@
   },
   "low": {
     "message": "Faible"
-  },
-  "lowEstimatedReturnTooltipMessage": {
-    "message": "Les frais s’élèveront à plus de $1 % du montant initial. Vérifiez le montant que vous recevrez et les frais de réseau."
-  },
-  "lowEstimatedReturnTooltipTitle": {
-    "message": "Coût élevé"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Utilisez $1 pour attendre un prix inférieur. Les estimations de temps sont nettement moins précises, car les prix sont relativement imprévisibles.",
@@ -4336,9 +4318,6 @@
   },
   "notCurrentAccount": {
     "message": "S’agit-il du bon compte ? Il est différent de celui actuellement sélectionné dans votre portefeuille"
-  },
-  "notEnoughBalance": {
-    "message": "Solde insuffisant"
   },
   "notEnoughGas": {
     "message": "Pas assez de gaz"
@@ -5336,9 +5315,6 @@
   "popularNetworks": {
     "message": "Réseaux populaires"
   },
-  "preparingSwap": {
-    "message": "Préparation du swap..."
-  },
   "prev": {
     "message": "Préc."
   },
@@ -5559,9 +5535,6 @@
   },
   "queued": {
     "message": "En attente"
-  },
-  "quoteRate": {
-    "message": "Cotation"
   },
   "quotedReceiveAmount": {
     "message": "$1 reçoit le montant"
@@ -7815,16 +7788,9 @@
   "swapAndSend": {
     "message": "Échanger et envoyer"
   },
-  "swapAnyway": {
-    "message": "Procéder de toute façon au swap"
-  },
   "swapApproval": {
     "message": "Approuver $1 pour les swaps",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapApproveNeedMoreTokens": {
-    "message": "Vous avez besoin de $1 $2 de plus pour effectuer ce swap",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapAreYouStillThere": {
     "message": "Êtes-vous toujours là ?"
@@ -7834,9 +7800,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirmez avec votre portefeuille matériel"
-  },
-  "swapContinueSwapping": {
-    "message": "Continuer à faire des swaps"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "Dans l’application Ethereum de votre Ledger, allez dans « Paramètres » et autorisez les données de contrat. Ensuite, retentez votre swap."
@@ -7868,9 +7831,6 @@
     "message": "Ce sera $1 pour le swap",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEnterAmount": {
-    "message": "Saisissez le montant"
-  },
   "swapEstimatedNetworkFees": {
     "message": "Frais de réseau estimés"
   },
@@ -7883,9 +7843,6 @@
   },
   "swapFailedErrorTitle": {
     "message": "Échec du swap"
-  },
-  "swapFetchingQuote": {
-    "message": "Récupération de la cotation"
   },
   "swapFetchingQuoteNofN": {
     "message": "Récupération du devis $1 sur $2",
@@ -7924,35 +7881,15 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Ces frais de réseau sont pris en charge par MetaMask, vous pouvez donc effectuer des transactions sans avoir de $1 sur votre compte."
   },
-  "swapGasIncludedTooltipExplanation": {
-    "message": "Cette cotation incorpore les frais de gaz en ajustant le montant du jeton envoyé ou reçu. Vous pouvez recevoir des ETH dans une transaction séparée sur la liste de vos activités."
-  },
-  "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "En savoir plus sur les frais de gaz"
-  },
-  "swapHighSlippage": {
-    "message": "Important effet de glissement"
-  },
-  "swapIncludesGasAndMetaMaskFee": {
-    "message": "Inclut les frais de gaz et les frais MetaMask qui s’élèvent à $1 %",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapIncludesMMFee": {
     "message": "Comprend des frais MetaMask à hauteur de $1 %.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "Comprend des frais MetaMask à hauteur de $1 % – $2",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "En savoir plus sur les swaps"
   },
   "swapLiquiditySourceInfo": {
     "message": "Nous consultons différentes sources de liquidité (bourses, agrégateurs et teneurs de marché professionnels) pour comparer les taux de change et les frais de réseau."
-  },
-  "swapLowSlippage": {
-    "message": "Faible effet de glissement"
   },
   "swapMaxSlippage": {
     "message": "Glissement maximal"
@@ -7968,10 +7905,6 @@
     "message": "$1 cotations.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "Nouvelles cotations dans $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapNoTokensAvailable": {
     "message": "Aucun jeton disponible correspondant à $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -7980,29 +7913,11 @@
     "message": "Vos $1 seront ajoutés à votre compte une fois que cette transaction sera traitée.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapPriceDifference": {
-    "message": "Vous êtes sur le point d’effectuer un swap de $1 $2 (~$3) contre $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Différence de prix de ~$1",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "L’incidence sur les prix n’a pas pu être déterminée faute de données suffisantes sur les prix du marché. Veuillez confirmer que vous êtes satisfait·e du nombre de jetons que vous êtes sur le point de recevoir avant de procéder au swap."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "Vérifiez votre taux avant de poursuivre"
-  },
   "swapProcessing": {
     "message": "Traitement en cours"
   },
   "swapQuoteDetails": {
     "message": "Détails de la cotation"
-  },
-  "swapQuoteNofM": {
-    "message": "$1 sur $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "Origine de la cotation"
@@ -8103,32 +8018,12 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Les swaps sont des transactions complexes et soumises à une contrainte de temps. Nous recommandons ce prix de carburant pour assurer un bon équilibre entre le coût et la garantie d’un swap réussi."
   },
-  "swapSwapFrom": {
-    "message": "Échanger depuis"
-  },
-  "swapSwapSwitch": {
-    "message": "Inverser l’échange de jetons"
-  },
-  "swapSwapTo": {
-    "message": "Passer à"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "pour confirmer avec votre portefeuille matériel"
-  },
-  "swapTokenAddedManuallyDescription": {
-    "message": "Vérifiez ce jeton sur $1 et assurez-vous qu’il s’agit bien du jeton que vous souhaitez échanger.",
-    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenAddedManuallyTitle": {
-    "message": "Jeton ajouté manuellement"
   },
   "swapTokenAvailable": {
     "message": "Votre $1 a été ajouté à votre compte.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenBalanceUnavailable": {
-    "message": "Nous n’avons pas pu récupérer votre solde de $1",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenNotAvailable": {
     "message": "Impossible d’échanger ce jeton dans cette région"
@@ -8137,23 +8032,8 @@
     "message": "Swap de $1 vers $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerifiedOn1SourceDescription": {
-    "message": "$1 n’a été vérifié que par 1 source. Envisagez de le vérifier auprès de $2 sources avant de continuer.",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenVerifiedOn1SourceTitle": {
-    "message": "Jeton potentiellement inauthentique"
-  },
-  "swapTokenVerifiedSources": {
-    "message": "Confirmé par $1 sources. Vérifier sur $2.",
-    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
-  },
   "swapTokens": {
     "message": "Échanger des jetons"
-  },
-  "swapTooManyDecimalsError": {
-    "message": "$1 accepte jusqu’à $2 décimales",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "Transaction terminée"
@@ -8172,10 +8052,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Tolérance au slippage"
-  },
-  "swapsNotEnoughToken": {
-    "message": "Pas assez de $1",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Afficher dans l’activité"
@@ -8764,9 +8640,6 @@
   "viewAddressOnExplorer": {
     "message": "Consulter sur $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewAllQuotes": {
-    "message": "afficher toutes les cotations"
   },
   "viewContact": {
     "message": "Voir le contact"

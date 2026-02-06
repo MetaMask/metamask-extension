@@ -1818,12 +1818,6 @@
   "creatorAddress": {
     "message": "Διεύθυνση δημιουργού"
   },
-  "crossChainSwapsLink": {
-    "message": "Εναλλαγή σε διάφορα δίκτυα με το MetaMask Portfolio"
-  },
-  "crossChainSwapsLinkNative": {
-    "message": "Εναλλαγή μεταξύ δικτύων με το Bridge"
-  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2847,9 +2841,6 @@
     "message": "Αυτό το τέλος συναλλαγής έχει προταθεί από το $1. Εάν το παραβλέψετε ίσως προκληθεί πρόβλημα με την συναλλαγή σας. Παρακαλούμε απευθυνθείτε στο $1 εάν έχετε ερωτήσεις.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Τέλη Συναλλαγής"
-  },
   "gasLimit": {
     "message": "Όριο τέλους συναλλαγής"
   },
@@ -3257,9 +3248,6 @@
     "message": "Έγινε εισαγωγή",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "included": {
-    "message": "περιλαμβάνονται"
-  },
   "includesXTransactions": {
     "message": "Περιλαμβάνει $1 συναλλαγές"
   },
@@ -3661,12 +3649,6 @@
   },
   "low": {
     "message": "Χαμηλότερη τιμή"
-  },
-  "lowEstimatedReturnTooltipMessage": {
-    "message": "Θα πληρώσετε πάνω από το $1% του αρχικού σας ποσού σε τέλη. Ελέγξτε το ποσό που θα λάβετε και τα τέλη δικτύου."
-  },
-  "lowEstimatedReturnTooltipTitle": {
-    "message": "Υψηλό κόστος"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε το $1 για να περιμένετε μια φθηνότερη τιμή. Οι χρονικές εκτιμήσεις είναι πολύ λιγότερο ακριβείς καθώς οι τιμές είναι κάπως απρόβλεπτες.",
@@ -4336,9 +4318,6 @@
   },
   "notCurrentAccount": {
     "message": "Είναι αυτός ο σωστός λογαριασμός; Είναι διαφορετικός από τον τρέχοντα επιλεγμένο λογαριασμό στο πορτοφόλι σας."
-  },
-  "notEnoughBalance": {
-    "message": "Ανεπαρκές υπόλοιπο"
   },
   "notEnoughGas": {
     "message": "Δεν υπάρχει αρκετό τέλος συναλλαγής"
@@ -5336,9 +5315,6 @@
   "popularNetworks": {
     "message": "Δημοφιλή δίκτυα"
   },
-  "preparingSwap": {
-    "message": "Προετοιμασία ανταλλαγής..."
-  },
   "prev": {
     "message": "Προηγούμενο"
   },
@@ -5559,9 +5535,6 @@
   },
   "queued": {
     "message": "Σε Αναμονή"
-  },
-  "quoteRate": {
-    "message": "Τιμή προσφοράς"
   },
   "quotedReceiveAmount": {
     "message": "$1 ποσό που θα λάβετε"
@@ -7815,16 +7788,9 @@
   "swapAndSend": {
     "message": "Ανταλλαγή & Αποστολή"
   },
-  "swapAnyway": {
-    "message": "Ανταλλαγή ούτως ή άλλως"
-  },
   "swapApproval": {
     "message": "Έγκριση $1 για ανταλλαγές",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapApproveNeedMoreTokens": {
-    "message": "Χρειάζεστε $1 περισσότερα $2 για να ολοκληρώσετε αυτήν την ανταλλαγή",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapAreYouStillThere": {
     "message": "Είστε ακόμα εδώ;"
@@ -7834,9 +7800,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Επιβεβαιώστε με το πορτοφόλι υλικού σας"
-  },
-  "swapContinueSwapping": {
-    "message": "Συνεχίστε με τις ανταλλαγές"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "Στην εφαρμογή Ethereum στο Ledger, μεταβείτε στις \"Ρυθμίσεις\" και επιτρέψτε τα δεδομένα συμβολαίων. Στη συνέχεια, δοκιμάστε ξανά την ανταλλαγή σας."
@@ -7868,9 +7831,6 @@
     "message": "Αυτό θα $1 για ανταλλαγή",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEnterAmount": {
-    "message": "Πληκτρολογήστε ένα ποσό"
-  },
   "swapEstimatedNetworkFees": {
     "message": "Εκτιμώμενα τέλη δικτύου"
   },
@@ -7883,9 +7843,6 @@
   },
   "swapFailedErrorTitle": {
     "message": "Η ανταλλαγή απέτυχε"
-  },
-  "swapFetchingQuote": {
-    "message": "Λήψη προσφοράς"
   },
   "swapFetchingQuoteNofN": {
     "message": "Λήψη προσφοράς $1 από $2",
@@ -7924,35 +7881,15 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Το MetaMask περιλαμβάνει αυτά τα τέλη δικτύου, οπότε μπορείτε να συνεχίσετε τις συναλλαγές ακόμη κι αν δεν έχετε $1 στον λογαριασμό σας."
   },
-  "swapGasIncludedTooltipExplanation": {
-    "message": "Αυτή η προσφορά ενσωματώνει τα τέλη συναλλαγών προσαρμόζοντας το ποσό των tokens που έχετε στείλει ή λάβει. Μπορείτε να λάβετε ETH σε ξεχωριστή συναλλαγή στη λίστα δραστηριοτήτων σας."
-  },
-  "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "Μάθετε περισσότερα για τα τέλη συναλλαγών"
-  },
-  "swapHighSlippage": {
-    "message": "Υψηλή ολίσθηση"
-  },
-  "swapIncludesGasAndMetaMaskFee": {
-    "message": "Περιλαμβάνει τα τέλη και μια χρέωση $1% του MetaMask",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapIncludesMMFee": {
     "message": "Περιλαμβάνει μια χρέωση $1% στο MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "Περιλαμβάνει μια χρέωση $1% στο MetaMask - $2",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Μάθετε περισσότερα για τις Ανταλλαγές"
   },
   "swapLiquiditySourceInfo": {
     "message": "Αναζητούμε πολλαπλές πηγές ρευστότητας (χρηματιστήρια, συσσωρευτές και επαγγελματίες διαπραγματευτές αγοράς) για να συγκρίνουμε τις ισοτιμίες ανταλλαγής και τα τέλη δικτύου."
-  },
-  "swapLowSlippage": {
-    "message": "Χαμηλή ολίσθηση"
   },
   "swapMaxSlippage": {
     "message": "Μέγιστη απόκλιση"
@@ -7968,10 +7905,6 @@
     "message": "$1 προσφορές.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "Νέες προσφορές σε $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapNoTokensAvailable": {
     "message": "Δεν υπάρχουν διαθέσιμα tokens που να αντιστοιχούν σε $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -7980,29 +7913,11 @@
     "message": "Το $1 σας θα προστεθεί στον λογαριασμό σας μόλις ολοκληρωθεί αυτή η συναλλαγή.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapPriceDifference": {
-    "message": "Πρόκειται να ανταλλάξετε $1 $2 (~$3) για $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Διαφορά τιμής ~$1%",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "Η επίπτωση στις τιμές δεν ήταν δυνατόν να προσδιοριστεί λόγω έλλειψης στοιχείων για τις τιμές της αγοράς. Παρακαλούμε επιβεβαιώστε ότι είστε ικανοποιημένοι με το ποσό των tokens που πρόκειται να λάβετε πριν από την ανταλλαγή."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "Ελέγξτε την τιμή σας πριν συνεχίσετε"
-  },
   "swapProcessing": {
     "message": "Επεξεργασία"
   },
   "swapQuoteDetails": {
     "message": "Λεπτομέρειες προσφοράς"
-  },
-  "swapQuoteNofM": {
-    "message": "$1 από $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "Πηγή προσφοράς"
@@ -8103,32 +8018,12 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Οι ανταλλαγές είναι πολύπλοκες και με επείγοντα χαρακτήρα συναλλαγές. Συνιστούμε αυτό το τέλος συναλλαγής για μια καλή ισορροπία μεταξύ κόστους και εμπιστοσύνης σε μια επιτυχημένη Ανταλλαγή."
   },
-  "swapSwapFrom": {
-    "message": "Ανταλλαγή από"
-  },
-  "swapSwapSwitch": {
-    "message": "Αλλαγή της σειράς των tokens"
-  },
-  "swapSwapTo": {
-    "message": "Ανταλλαγή σε"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "για επιβεβαίωση με το πορτοφόλι υλικού σας"
-  },
-  "swapTokenAddedManuallyDescription": {
-    "message": "Επαληθεύστε αυτό το token στο $1 και βεβαιωθείτε ότι είναι το token που θέλετε να κάνετε συναλλαγές.",
-    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenAddedManuallyTitle": {
-    "message": "Το token προστέθηκε χειροκίνητα"
   },
   "swapTokenAvailable": {
     "message": "Το $1 έχει προστεθεί στον λογαριασμό σας.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenBalanceUnavailable": {
-    "message": "Δεν μπορέσαμε να ανακτήσουμε το υπόλοιπο του $1",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenNotAvailable": {
     "message": "Το token δεν είναι διαθέσιμο για ανταλλαγή σε αυτή την περιοχή"
@@ -8137,23 +8032,8 @@
     "message": "Ανταλλαγή $1 έως $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerifiedOn1SourceDescription": {
-    "message": "Το $1 επαληθεύτηκε μόνο από 1 πηγή. Εξετάστε το ενδεχόμενο επαλήθευσης σε $2 πριν προχωρήσετε.",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenVerifiedOn1SourceTitle": {
-    "message": "Ενδεχομένως μη αυθεντικό token"
-  },
-  "swapTokenVerifiedSources": {
-    "message": "Επιβεβαιώνεται από $1 πηγές. Επαληθεύστε στο $2.",
-    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
-  },
   "swapTokens": {
     "message": "Ανταλλαγή tokens"
-  },
-  "swapTooManyDecimalsError": {
-    "message": "Το $1 επιτρέπει έως και $2 δεκαδικά ψηφία",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "Η συναλλαγή ολοκληρώθηκε"
@@ -8172,10 +8052,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Ανοχή απόκλισης"
-  },
-  "swapsNotEnoughToken": {
-    "message": "Δεν υπάρχουν αρκετά $1",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Προβολή σε δραστηριότητα"
@@ -8764,9 +8640,6 @@
   "viewAddressOnExplorer": {
     "message": "Προβολή σε $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewAllQuotes": {
-    "message": "προβολή όλων των προσφορών"
   },
   "viewContact": {
     "message": "Προβολή επαφής"

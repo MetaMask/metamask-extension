@@ -1,3 +1,10 @@
+/**
+ * Send ERC20 - Mainnet with Preloaded State
+ *
+ * Tests sending tokens on mainnet with a preloaded wallet state (DAI).
+ * This covers the mainnet-specific flow that requires pre-seeded token balances.
+ */
+
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -8,8 +15,8 @@ import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Send ERC20', function () {
-  it('should send DAI', async function () {
+describe('Send ERC20 - Mainnet', function () {
+  it('sends DAI with preloaded state', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
