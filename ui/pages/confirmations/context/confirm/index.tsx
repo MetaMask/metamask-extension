@@ -6,10 +6,15 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import {
+  getIsHardwareWalletErrorModalVisible,
+  getPendingHardwareWalletSigning,
+} from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -34,16 +39,34 @@ export const ConfirmContextProvider: React.FC<{
   useSyncConfirmPath(currentConfirmation);
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
+  const dispatch = useDispatch();
+  const isPendingHardwareSigning = useSelector(getPendingHardwareWalletSigning);
+  const isHardwareWalletErrorModalVisible = useSelector(
+    getIsHardwareWalletErrorModalVisible,
+  );
 
   /**
    * The hook below takes care of navigating to the home page when the confirmation not acted on by user
    * but removed by us, this can happen in cases like when dapp changes network.
+   * We skip navigation if a hardware wallet transaction is being signed to prevent premature navigation.
+   * We also skip navigation if the hardware wallet error modal is visible to allow for retry functionality.
    */
   useEffect(() => {
-    if (previousConfirmation && !currentConfirmation) {
+    const wouldNavigate = previousConfirmation && !currentConfirmation;
+    const isBlocked =
+      isPendingHardwareSigning || isHardwareWalletErrorModalVisible;
+
+    if (wouldNavigate && !isBlocked) {
       navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
     }
-  }, [previousConfirmation, currentConfirmation, navigate]);
+  }, [
+    previousConfirmation,
+    currentConfirmation,
+    navigate,
+    dispatch,
+    isPendingHardwareSigning,
+    isHardwareWalletErrorModalVisible,
+  ]);
 
   const value = useMemo(
     () => ({

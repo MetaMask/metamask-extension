@@ -224,6 +224,10 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
+import {
+  toHardwareWalletError,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../ui/contexts/hardware-wallets';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -2713,10 +2717,13 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
+      getHdPathForHardwareKeyring: this.getHdPathForHardwareKeyring.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
+      getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
+      getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -3430,6 +3437,8 @@ export default class MetamaskController extends EventEmitter {
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
+      // Hardware wallet transaction approval with retry support
+      approveHardwareTransaction: this.approveHardwareTransaction.bind(this),
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -5518,6 +5527,13 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  async getLedgerAppConfiguration() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => await keyring.bridge.getAppConfiguration(),
+    );
+  }
+
   /**
    * Fetch account list from a hardware device.
    *
@@ -5560,6 +5576,43 @@ export default class MetamaskController extends EventEmitter {
       async (keyring) => {
         return keyring.isUnlocked();
       },
+    );
+  }
+
+  /**
+   * Get the hd path currently configured on a hardware keyring.
+   *
+   * @param deviceName
+   * @returns {Promise<string>}
+   */
+  async getHdPathForHardwareKeyring(deviceName) {
+    console.log('[HW] getHdPathForHardwareKeyring', deviceName);
+    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
+      if (typeof keyring.getHdPath === 'function') {
+        return await keyring.getHdPath();
+      }
+
+      if (keyring.hdPath) {
+        return keyring.hdPath;
+      }
+
+      if (typeof keyring.serialize === 'function') {
+        const serialized = await keyring.serialize();
+        if (serialized?.hdPath) {
+          return serialized.hdPath;
+        }
+      }
+
+      throw new Error(
+        'MetamaskController:getHdPathForHardwareKeyring - Keyring does not expose hdPath',
+      );
+    });
+  }
+
+  async getLedgerPublicKey(hdPath) {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => await keyring.bridge.getPublicKey({ hdPath }),
     );
   }
 
@@ -8725,13 +8778,33 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  resolvePendingApproval = async (id, value, options) => {
+  /**
+   * Resolve a pending approval. For hardware wallet transactions and signatures,
+   * this handles error parsing.
+   *
+   * @param {string} id - The approval ID
+   * @param {unknown} value - The value to resolve with (for transactions, contains txMeta)
+   * @param {object} options - Options for the approval
+   * @param {string} [options.walletType] - The hardware wallet type (if hardware wallet)
+   * @param {boolean} [options.waitForResult] - Whether to wait for the result
+   */
+  resolvePendingApproval = async (id, value, options = {}) => {
+    const { walletType } = options;
+
     try {
       await this.approvalController.accept(id, value, options);
-    } catch (exp) {
-      if (!(exp instanceof ApprovalRequestNotFoundError)) {
-        throw exp;
+    } catch (error) {
+      // Ignore if approval was already handled
+      if (error instanceof ApprovalRequestNotFoundError) {
+        return;
       }
+
+      if (walletType) {
+        await this.#handleHardwareWalletError(error, walletType);
+        return;
+      }
+
+      throw error;
     }
   };
 
@@ -8746,6 +8819,57 @@ export default class MetamaskController extends EventEmitter {
         throw exp;
       }
     }
+  };
+
+  /**
+   * Handle hardware wallet errors with retry support.
+   * Parses the error, checks if it's retryable, and if so, attempts to recreate
+   * the request (transaction or signature). Always throws an RPC error with
+   * properly formatted data.
+   *
+   * @param {Error} error - The original error from the hardware wallet
+   * @param {string} walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
+   * @throws {JsonRpcError} Always throws with hardware wallet error data
+   */
+  async #handleHardwareWalletError(error, walletType) {
+    const hwWalletError = toHardwareWalletError(error, walletType);
+    // Throw a JsonRpcError with hardware wallet error data preserved
+    // This ensures the error properties survive serialization across the RPC boundary
+    throw rpcErrors.internal({
+      message: hwWalletError.message,
+      data: {
+        code: hwWalletError.code,
+        severity: hwWalletError.severity,
+        category: hwWalletError.category,
+        userMessage: hwWalletError.userMessage,
+        metadata: hwWalletError.metadata,
+      },
+    });
+  }
+
+  /**
+   * Approve a hardware wallet transaction with retry support.
+   * This is a convenience wrapper around resolvePendingApproval for the
+   * transaction confirmation flow, which passes txMeta in a specific format.
+   *
+   * @param {object} opts - Options for the transaction
+   * @param {string} opts.txId - The transaction ID to approve
+   * @param {object} opts.txMeta - The transaction metadata
+   * @param {string} opts.actionId - The action ID for tracking
+   * @param {string} opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
+   * @throws {JsonRpcError} When hardware wallet error occurs (with recreatedTxId if recreation succeeded)
+   */
+  approveHardwareTransaction = async ({
+    txId,
+    txMeta,
+    actionId,
+    walletType,
+  }) => {
+    await this.resolvePendingApproval(
+      String(txId),
+      { txMeta, actionId },
+      { waitForResult: true, walletType },
+    );
   };
 
   rejectAllPendingApprovals() {
