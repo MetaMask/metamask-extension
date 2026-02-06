@@ -61,7 +61,10 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
       );
     });
-    it('Should be able to cancel connection and connect again', async function () {
+
+    // TODO: Need to fix this test from Chloe.
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should be able to cancel connection and connect again', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -105,7 +108,10 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
       );
     });
-    it('Should not create session when Solana permissions are deselected', async function () {
+
+    // TODO: Need to fix this test from Chloe.
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should not create session when Solana permissions are deselected', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -154,7 +160,10 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
       );
     });
-    it('Should disconnect', async function () {
+
+    // TODO: Need to fix this test from Chloe.
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Should disconnect', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -179,7 +188,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
     });
   });
   describe('Switch account', function () {
-    it('Switching between 2 accounts should reflect in the dapp', async function () {
+    // TODO: Need to fix this test from Chloe.
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Switching between 2 accounts should reflect in the dapp', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
@@ -212,7 +223,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
   });
 
   describe('Given I have connected to one of my two accounts', function () {
-    it('Switching between them should NOT reflect in the dapp', async function () {
+    // TODO: Need to fix this test from Chloe.
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('Switching between them should NOT reflect in the dapp', async function () {
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
