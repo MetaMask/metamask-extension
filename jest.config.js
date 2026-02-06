@@ -3,6 +3,7 @@ const consoleReporterRules = require('./test/jest/console-reporter-rules-unit');
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.(js|ts|tsx)',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
@@ -53,6 +54,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.test.(js|ts|tsx)',
     '<rootDir>/shared/**/*.test.(js|ts|tsx)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/**/*.test.(js|ts|tsx)',

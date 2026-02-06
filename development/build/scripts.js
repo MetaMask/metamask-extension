@@ -1035,6 +1035,11 @@ function setupBundlerDefaults(
             './**/node_modules/@scure',
             './**/node_modules/micro-eth-signer',
             './**/node_modules/micro-packed',
+            // Ledger WebHID transport
+            './**/node_modules/@ledgerhq/hw-transport-webhid',
+            './**/node_modules/@ledgerhq/hw-transport',
+            './**/node_modules/@ledgerhq/hw-app-eth',
+            './**/node_modules/@ledgerhq/devices',
           ],
           global: true,
         },

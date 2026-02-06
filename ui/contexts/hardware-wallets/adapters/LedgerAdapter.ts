@@ -197,8 +197,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     this.unsubscribeHidEvents?.();
     this.unsubscribeHidEvents = null;
 
-    // Ledger iframe will clean up the connection after each transaction.
-    // https://github.com/MetaMask/ledger-iframe-bridge/blob/1e02823f47306ae27fe941f2829ad8d142454a67/ledger-bridge.js#L143-L161
+    // The offscreen ledger script cleans up the transport after each action.
+    // See closeTransport() in app/offscreen/ledger.ts
     this.connected = false;
     this.isConnecting = false;
     // TODO: Potential race conditon: Destroy may override currentDeviceId and pending connection before they resolve.

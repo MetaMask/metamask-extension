@@ -1611,12 +1611,6 @@
   "creatorAddress": {
     "message": "Seoladh an chruthaitheora"
   },
-  "crossChainSwapsLink": {
-    "message": "Malartaigh thar líonraí le Punann MetaMask"
-  },
-  "crossChainSwapsLinkNative": {
-    "message": "Malartaigh thar líonraí le Bridge"
-  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2569,9 +2563,6 @@
     "message": "Tá an táille gáis seo molta ag $1. Má sháraítear é seo, d’fhéadfadh fadhb a bheith ann le d’idirbheart. Téigh i dteagmháil le $1 má tá ceisteanna agat.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Táille gáis"
-  },
   "gasLimit": {
     "message": "Teorainn gáis"
   },
@@ -2885,9 +2876,6 @@
   "imported": {
     "message": "Iompórtáilte",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "included": {
-    "message": "san áireamh"
   },
   "includesXTransactions": {
     "message": "Áirítear idirbhearta $1"
@@ -3277,12 +3265,6 @@
   },
   "low": {
     "message": "Íseal"
-  },
-  "lowEstimatedReturnTooltipMessage": {
-    "message": "Íocfaidh tú níos mó ná $1% de do mhéid tosaigh i dtáillí. Seiceáil do mhéid fála agus táillí líonra."
-  },
-  "lowEstimatedReturnTooltipTitle": {
-    "message": "Costas ard"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Bain úsáid as $1 chun fanacht le haghaidh praghas níos saoire. Tá meastacháin ama i bhfad níos lú cruinn mar go bhfuil praghsanna rud beag dothuartha.",
@@ -3904,9 +3886,6 @@
   },
   "notCurrentAccount": {
     "message": "An é seo an cuntas ceart? Tá sé difriúil ón gcuntas atá roghnaithe i do sparán faoi láthair."
-  },
-  "notEnoughBalance": {
-    "message": "Iarmhéid neamhleor"
   },
   "notEnoughGas": {
     "message": "Gan dóthain gáis"
@@ -4636,9 +4615,6 @@
   "popularNetworks": {
     "message": "Líonraí coitianta"
   },
-  "preparingSwap": {
-    "message": "Ag ullmhú malartaithe..."
-  },
   "prev": {
     "message": "Roimhe Seo"
   },
@@ -4829,9 +4805,6 @@
   },
   "queued": {
     "message": "Sa scuaine"
-  },
-  "quoteRate": {
-    "message": "Ráta luachana"
   },
   "quotedReceiveAmount": {
     "message": "Méid faighte $1"
@@ -6445,16 +6418,9 @@
   "swapAndSend": {
     "message": "Malartaigh & Seol"
   },
-  "swapAnyway": {
-    "message": "Malartaigh ar aon nós"
-  },
   "swapApproval": {
     "message": "Ceadaigh $1 le haghaidh malartuithe",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapApproveNeedMoreTokens": {
-    "message": "Teastaíonn $1 breise $2 uait chun an malartú seo a chríochnú",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapAreYouStillThere": {
     "message": "An bhfuil tú fós ann?"
@@ -6464,9 +6430,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Deimhnigh le do sparán crua-earraí"
-  },
-  "swapContinueSwapping": {
-    "message": "Lean ar aghaidh ag malartú"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "San aip Ethereum ar do Ledger, téigh go \"Socruithe\" agus ceadaigh sonraí conartha. Ansin, déan iarracht arís ar do mhalartú."
@@ -6498,9 +6461,6 @@
     "message": "Cosnóidh sé seo $1 le haghaidh malartú",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEnterAmount": {
-    "message": "Cuir isteach méid"
-  },
   "swapEstimatedNetworkFees": {
     "message": "Táillí líonra measta"
   },
@@ -6513,9 +6473,6 @@
   },
   "swapFailedErrorTitle": {
     "message": "Theip ar an malartú"
-  },
-  "swapFetchingQuote": {
-    "message": "Ag fáil luachan"
   },
   "swapFetchingQuoteNofN": {
     "message": "Ag fáil luachan $1 de $2",
@@ -6548,35 +6505,15 @@
   "swapGasFeesSplit": {
     "message": "Tá táillí gáis ar an scáileán roimhe seo roinnte idir an dá idirbheart seo."
   },
-  "swapGasIncludedTooltipExplanation": {
-    "message": "Cuimsíonn an luachan seo táillí gáis tríd an méid comharthaí a seoladh nó a fuarthas a choigeartú. Féadfaidh tú ETH a fháil in idirbheart ar leith ar do liosta gníomhaíochta."
-  },
-  "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "Foghlaim tuilleadh faoi tháillí gáis"
-  },
-  "swapHighSlippage": {
-    "message": "Sleamhnú ard"
-  },
-  "swapIncludesGasAndMetaMaskFee": {
-    "message": "Áirítear gásailín agus táille $1% MetaMask",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapIncludesMMFee": {
     "message": "Áirítear táille $1% le haghaidh MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "Áirítear táille $1% ar MetaMask – $2",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Foghlaim tuilleadh faoi Mhalartuithe"
   },
   "swapLiquiditySourceInfo": {
     "message": "Déanaimid cuardach ar fhoinsí leachtachta iolracha (malartáin, comhiomlánaitheoirí agus lucht déanta margaidh gairmiúla) chun rátaí malairte agus táillí líonra a chur i gcomparáid."
-  },
-  "swapLowSlippage": {
-    "message": "Sleamhnú íseal"
   },
   "swapMaxSlippage": {
     "message": "Sleamhnú uasta"
@@ -6592,10 +6529,6 @@
     "message": "Sleachta $1.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "Sleachta nua i $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapNoTokensAvailable": {
     "message": "Níl aon chomharthaí ar fáil a mheaitseálann $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -6604,29 +6537,11 @@
     "message": "Cuirfear do $1 le do chuntas a luaithe a bheidh an t-idirbheart seo próiseáilte.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapPriceDifference": {
-    "message": "Tá tú ar tí $1 $2 (~$3) a mhalartú ar $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Difríocht praghais de ~$1%",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "Níorbh fhéidir tionchar an phraghais a chinneadh mar gheall ar easpa sonraí faoi phraghsanna an mhargaidh. Deimhnigh le do thoil go bhfuil tú sásta leis an méid comharthaí atá tú ar tí a fháil sula ndéanann tú malartú."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "Seiceáil do ráta sula leanann tú ar aghaidh"
-  },
   "swapProcessing": {
     "message": "Próiseáil"
   },
   "swapQuoteDetails": {
     "message": "Sonraí luachana"
-  },
-  "swapQuoteNofM": {
-    "message": "$1 de $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "Foinse luachana"
@@ -6727,32 +6642,12 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Is idirbhearta casta agus íogaire ó thaobh ama de iad malartuithe. Molaimid an táille gáis seo le haghaidh cothromaíocht mhaith idir costas agus muinín as malartú rathúil."
   },
-  "swapSwapFrom": {
-    "message": "Malartaigh ó"
-  },
-  "swapSwapSwitch": {
-    "message": "Athraigh ord na gcomharthaí"
-  },
-  "swapSwapTo": {
-    "message": "Malartaigh go"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "le deimhniú le do sparán crua-earraí"
-  },
-  "swapTokenAddedManuallyDescription": {
-    "message": "Fíoraigh an comhartha seo ar $1 agus déan cinnte gurb é an comhartha is mian leat a thrádáil.",
-    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenAddedManuallyTitle": {
-    "message": "Comhartha curtha leis de láimh"
   },
   "swapTokenAvailable": {
     "message": "Tá do $1 curtha le do chuntas.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenBalanceUnavailable": {
-    "message": "Ní raibh muid in ann d’iarmhéid $1 a aisghabháil",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenNotAvailable": {
     "message": "Níl an comhartha ar fáil le malartú sa réigiún seo"
@@ -6761,23 +6656,8 @@
     "message": "Malartaigh $1 go $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerifiedOn1SourceDescription": {
-    "message": "Níl $1 fíoraithe ach ar fhoinse amháin. Smaoinigh ar é a fhíorú ar $2 sula leanann tú ar aghaidh.",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenVerifiedOn1SourceTitle": {
-    "message": "Comhartha a d'fhéadfadh a bheith neamhbharántúil"
-  },
-  "swapTokenVerifiedSources": {
-    "message": "Deimhnithe ag $1 foinse. Fíoraigh ar $2.",
-    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
-  },
   "swapTokens": {
     "message": "Malartaigh comharthaí"
-  },
-  "swapTooManyDecimalsError": {
-    "message": "Ceadaíonn $1 suas le $2 deachúlacha",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "Idirbheart críochnaithe"
@@ -6796,10 +6676,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Caoinfhulaingt sleamhnáin"
-  },
-  "swapsNotEnoughToken": {
-    "message": "Ní leor $1",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Féach i ngníomhaíocht"
@@ -7327,9 +7203,6 @@
   "viewAddressOnExplorer": {
     "message": "Féach ar $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewAllQuotes": {
-    "message": "féach ar na luachana go léir"
   },
   "viewContact": {
     "message": "Féach ar an teagmháil"
