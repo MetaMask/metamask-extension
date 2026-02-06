@@ -7,10 +7,10 @@ import {
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import {
   attemptLedgerTransportCreation,
-  checkHardwareStatus,
   getAppNameAndVersion,
   getHdPathForHardwareKeyring,
   getLedgerAppConfiguration,
+  getLedgerPublicKey,
 } from '../../../store/actions';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
 import * as webConnectionUtils from '../webConnectionUtils';
@@ -18,10 +18,10 @@ import { LedgerAdapter } from './LedgerAdapter';
 
 jest.mock('../../../store/actions', () => ({
   attemptLedgerTransportCreation: jest.fn(),
-  checkHardwareStatusInBackground: jest.fn(),
   getAppNameAndVersion: jest.fn(),
   getHdPathForHardwareKeyring: jest.fn(),
   getLedgerAppConfiguration: jest.fn(),
+  getLedgerPublicKey: jest.fn(),
 }));
 
 jest.mock('../webConnectionUtils', () => ({
@@ -33,8 +33,6 @@ const mockAttemptLedgerTransportCreation =
   attemptLedgerTransportCreation as jest.MockedFunction<
     typeof attemptLedgerTransportCreation
   >;
-const mockCheckHardwareStatusInBackground =
-  checkHardwareStatus as jest.MockedFunction<typeof checkHardwareStatus>;
 const mockGetAppNameAndVersion = getAppNameAndVersion as jest.MockedFunction<
   typeof getAppNameAndVersion
 >;
@@ -46,6 +44,9 @@ const mockGetLedgerAppConfiguration =
   getLedgerAppConfiguration as jest.MockedFunction<
     typeof getLedgerAppConfiguration
   >;
+const mockGetLedgerPublicKey = getLedgerPublicKey as jest.MockedFunction<
+  typeof getLedgerPublicKey
+>;
 
 const mockSubscribeToWebHidEvents =
   webConnectionUtils.subscribeToWebHidEvents as jest.MockedFunction<
@@ -73,7 +74,7 @@ describe('LedgerAdapter', () => {
   const createMockHidDevice = (vendorId: number) => ({
     vendorId,
     productId: 0x0001,
-    productName: 'Ledger Nano X',
+    productName: 'Nano X',
     opened: true,
   });
 
@@ -118,7 +119,11 @@ describe('LedgerAdapter', () => {
     });
 
     mockGetHdPathForHardwareKeyring.mockResolvedValue("m/44'/60'/0'/0");
-    mockCheckHardwareStatusInBackground.mockResolvedValue(true);
+    mockGetLedgerPublicKey.mockResolvedValue({
+      publicKey: '0x',
+      address: '0x',
+      chainCode: '0x',
+    });
 
     adapter = new LedgerAdapter(mockOptions);
     mockGetLedgerAppConfiguration.mockResolvedValue(
@@ -226,10 +231,7 @@ describe('LedgerAdapter', () => {
       expect(mockGetHdPathForHardwareKeyring).toHaveBeenCalledWith(
         HardwareDeviceNames.ledger,
       );
-      expect(mockCheckHardwareStatusInBackground).toHaveBeenCalledWith(
-        HardwareDeviceNames.ledger,
-        "m/44'/60'/0'/0",
-      );
+      expect(mockGetLedgerPublicKey).toHaveBeenCalledWith("m/44'/60'/0'/0");
       expect(mockNavigatorHid.getDevices).toHaveBeenCalled();
       expect(mockAttemptLedgerTransportCreation).toHaveBeenCalled();
       expect(adapter.isConnected()).toBe(true);
@@ -290,11 +292,18 @@ describe('LedgerAdapter', () => {
     });
 
     it('throws error when device is locked before connection', async () => {
-      mockCheckHardwareStatusInBackground.mockResolvedValue(false);
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      const lockError = new HardwareWalletError('Device is locked', {
+        code: ErrorCode.AuthenticationDeviceLocked,
+        severity: Severity.Err,
+        category: Category.Authentication,
+        userMessage: 'Device is locked',
+      });
+      mockGetLedgerPublicKey.mockRejectedValue(lockError);
 
-      await expect(adapter.connect()).rejects.toThrow(
-        HardwareWalletError,
-      );
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -407,7 +416,7 @@ describe('LedgerAdapter', () => {
       expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(1);
     });
 
-    it('skips connection when connection is already in progress', async () => {
+    it('waits for pending connection before reconnecting', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
@@ -433,8 +442,8 @@ describe('LedgerAdapter', () => {
       await firstConnect;
       await secondConnect;
 
-      // Transport creation should only be called once
-      expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(1);
+      // Transport creation should be called twice (first connect, then reconnect)
+      expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(2);
     });
 
     it('waits for pending connection then reconnects', async () => {
@@ -893,18 +902,16 @@ describe('LedgerAdapter', () => {
       const unknownError = createMockError('Unknown error');
       mockGetAppNameAndVersion.mockRejectedValue(unknownError);
 
-      // When error code cannot be extracted, no device event is emitted
-      // and the original error is re-thrown
       await expect(adapter.ensureDeviceReady()).rejects.toThrow(
-        'Unknown error',
+        HardwareWalletError,
       );
 
-      // No device event should be emitted for errors without code
-      const deviceEventCalls = (mockOptions.onDeviceEvent as jest.Mock).mock
-        .calls;
-      // Filter out any calls that don't have an error (like successful events)
-      const errorEventCalls = deviceEventCalls.filter((call) => call[0]?.error);
-      expect(errorEventCalls.length).toBe(0);
+      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: DeviceEvent.Disconnected,
+          error: expect.any(Error),
+        }),
+      );
     });
 
     it('emits DISCONNECTED event and resets state for unknown HardwareWalletError codes during verification', async () => {
@@ -957,7 +964,7 @@ describe('LedgerAdapter', () => {
       }
     });
 
-    it('re-throws original error when verification fails with generic error', async () => {
+    it('wraps generic errors as HardwareWalletError during verification', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
@@ -967,17 +974,15 @@ describe('LedgerAdapter', () => {
       const verificationError = createMockError('Verification failed');
       mockGetAppNameAndVersion.mockRejectedValue(verificationError);
 
-      // Original error is re-thrown without modification
       await expect(adapter.ensureDeviceReady()).rejects.toThrow(
-        'Verification failed',
+        HardwareWalletError,
       );
 
       try {
         await adapter.ensureDeviceReady();
       } catch (error) {
-        // Original error is re-thrown, not a HardwareWalletError
-        expect(error).toBeInstanceOf(Error);
-        expect((error as Error).message).toBe('Verification failed');
+        expect(error).toBeInstanceOf(HardwareWalletError);
+        expect((error as HardwareWalletError).code).toBe(ErrorCode.Unknown);
       }
     });
 
