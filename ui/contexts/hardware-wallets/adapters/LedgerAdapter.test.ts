@@ -248,9 +248,7 @@ describe('LedgerAdapter', () => {
 
       const newAdapter = new LedgerAdapter(mockOptions);
 
-      await expect(newAdapter.connect()).rejects.toThrow(
-        HardwareWalletError,
-      );
+      await expect(newAdapter.connect()).rejects.toThrow(HardwareWalletError);
 
       try {
         await newAdapter.connect();
@@ -274,9 +272,7 @@ describe('LedgerAdapter', () => {
     it('throws error when device is not physically connected', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([]);
 
-      await expect(adapter.connect()).rejects.toThrow(
-        HardwareWalletError,
-      );
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
 
       try {
         await adapter.connect();
@@ -328,9 +324,7 @@ describe('LedgerAdapter', () => {
       });
       mockAttemptLedgerTransportCreation.mockRejectedValue(transportError);
 
-      await expect(adapter.connect()).rejects.toThrow(
-        HardwareWalletError,
-      );
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -354,9 +348,7 @@ describe('LedgerAdapter', () => {
       });
       mockAttemptLedgerTransportCreation.mockRejectedValue(transportError);
 
-      await expect(adapter.connect()).rejects.toThrow(
-        HardwareWalletError,
-      );
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -388,9 +380,7 @@ describe('LedgerAdapter', () => {
       const transportError = createMockError('Unknown error');
       mockAttemptLedgerTransportCreation.mockRejectedValue(transportError);
 
-      await expect(adapter.connect()).rejects.toThrow(
-        HardwareWalletError,
-      );
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
 
       try {
         await adapter.connect();
@@ -1068,9 +1058,7 @@ describe('LedgerAdapter', () => {
         createMockHidDevice(0x1234), // Wrong vendor ID
       ]);
 
-      await expect(adapter.connect()).rejects.toThrow(
-        HardwareWalletError,
-      );
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
 
       try {
         await adapter.connect();
@@ -1088,9 +1076,7 @@ describe('LedgerAdapter', () => {
 
       // When getDevices throws, checkDeviceConnected catches it and returns false
       // This leads to the device not found error
-      await expect(adapter.connect()).rejects.toThrow(
-        HardwareWalletError,
-      );
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
 
       try {
         await adapter.connect();
@@ -1115,9 +1101,7 @@ describe('LedgerAdapter', () => {
       });
       mockAttemptLedgerTransportCreation.mockRejectedValue(transportError);
 
-      await expect(adapter.connect()).rejects.toThrow(
-        HardwareWalletError,
-      );
+      await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({

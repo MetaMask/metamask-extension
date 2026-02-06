@@ -1790,8 +1790,8 @@ describe('MetaMaskController', () => {
 
           const withKeyringSpy = jest
             .spyOn(metamaskController.keyringController, 'withKeyring')
-            .mockImplementation(async (_selector, callback) => {
-              return await callback({ keyring: mockKeyring });
+            .mockImplementation(async (_selector, fn) => {
+              return await fn({ keyring: mockKeyring });
             });
 
           try {
