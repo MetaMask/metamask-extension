@@ -157,6 +157,7 @@ async function main() {
   Sentry.init({
     dsn: SENTRY_DSN,
     enableLogs: true,
+    tracesSampleRate: 1.0, // CI benchmarks: capture all spans
     release: `metamask-extension@${version}`,
   });
 
@@ -180,12 +181,24 @@ async function main() {
         ...mapKeys(benchmark.p95, (_, key) => `benchmark.p95.${key}`),
       };
 
+      // Timer data: structured logs (existing path, unchanged)
       Sentry.logger.info(`benchmark.${name}`, {
         ...baseCiAttributes,
         'ci.persona': benchmark.persona || 'standard',
         'ci.testTitle': benchmark.testTitle,
         ...benchmarkAttributes,
       });
+
+      // Web vitals: separate reporting path via spans
+      if (benchmark.webVitals) {
+        sendWebVitalsToSentry(
+          name,
+          benchmark.webVitals,
+          benchmark.persona || 'standard',
+          benchmark.testTitle,
+          baseCiAttributes,
+        );
+      }
     } else {
       // User action result with numeric timing metrics
       const metrics = Object.entries(value).reduce(
