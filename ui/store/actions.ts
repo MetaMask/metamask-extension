@@ -3941,14 +3941,14 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     const state = getState();
     const approvalFlows = getApprovalFlows(state);
-    const ispendingHardwareWalletSigning =
+    const isPendingHardwareWalletSigning =
       getPendingHardwareWalletSigning(state);
     const isHwErrorModalVisible = getIsHardwareWalletErrorModalVisible(state);
 
     // Don't close the popup if:
     // - Hardware wallet signing is in progress (error being handled)
     // - Hardware wallet error modal is visible (for retry functionality)
-    if (ispendingHardwareWalletSigning || isHwErrorModalVisible) {
+    if (isPendingHardwareWalletSigning || isHwErrorModalVisible) {
       return;
     }
 

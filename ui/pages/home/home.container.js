@@ -158,7 +158,7 @@ const mapStateToProps = (state) => {
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     isHardwareWalletErrorModalVisible:
       getIsHardwareWalletErrorModalVisible(state),
-    ispendingHardwareWalletSigning: getPendingHardwareWalletSigning(state),
+    isPendingHardwareWalletSigning: getPendingHardwareWalletSigning(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
