@@ -14,6 +14,7 @@ import {
   OutboundRequest,
   OutboundResponse,
   SetClientActive,
+  SnapsRegistryStateChangeEvent,
 } from '@metamask/snaps-controllers';
 import {
   GetEndowments,
@@ -92,7 +93,8 @@ type Events =
   | ErrorMessageEvent
   | OutboundRequest
   | OutboundResponse
-  | KeyringControllerLockEvent;
+  | KeyringControllerLockEvent
+  | SnapsRegistryStateChangeEvent;
 
 export type SnapControllerMessenger = ReturnType<
   typeof getSnapControllerMessenger
@@ -124,6 +126,7 @@ export function getSnapControllerMessenger(
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
+      'SnapsRegistry:stateChange',
     ],
     actions: [
       'PermissionController:getEndowments',
