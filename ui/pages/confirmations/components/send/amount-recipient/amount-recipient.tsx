@@ -29,7 +29,7 @@ import { HexData } from '../hex-data';
 export const AmountRecipient = () => {
   const t = useI18nContext();
   const [hexDataError, setHexDataError] = useState<string>();
-  const { asset, toResolved, submitError } = useSendContext();
+  const { asset, toResolved, nonEVMSubmitError } = useSendContext();
   const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
   const { isNonEvmSendType } = useSendType();
   const { handleSubmit } = useSendActions();
@@ -41,7 +41,7 @@ export const AmountRecipient = () => {
     Boolean(amountError) ||
     Boolean(recipientValidationResult.recipientError) ||
     Boolean(hexDataError) ||
-    Boolean(submitError);
+    Boolean(nonEVMSubmitError);
   const isDisabled = hasError || !toResolved;
 
   const onClick = useCallback(async () => {
@@ -92,7 +92,7 @@ export const AmountRecipient = () => {
         }
         marginBottom={4}
       >
-        {amountError ?? hexDataError ?? submitError ?? t('continue')}
+        {amountError ?? hexDataError ?? nonEVMSubmitError ?? t('continue')}
       </Button>
     </Box>
   );

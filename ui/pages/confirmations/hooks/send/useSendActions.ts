@@ -36,7 +36,7 @@ export const useSendActions = () => {
     hexData,
     maxValueMode,
     toResolved: to,
-    updateSubmitError,
+    updateNonEVMSubmitError,
     value,
   } = useSendContext();
   const { isEvmSendType } = useSendType();
@@ -48,7 +48,7 @@ export const useSendActions = () => {
     const toAddress = to;
 
     // Clear any previous submit error
-    updateSubmitError(undefined);
+    updateNonEVMSubmitError(undefined);
 
     if (isEvmSendType) {
       dispatch(
@@ -83,7 +83,7 @@ export const useSendActions = () => {
           const errorMessage = result?.errors?.length
             ? mapSnapErrorCodeIntoTranslation(result.errors[0].code, t)
             : t('transactionError');
-          updateSubmitError(errorMessage);
+          updateNonEVMSubmitError(errorMessage);
           navigate(-1);
           return;
         }
@@ -92,7 +92,7 @@ export const useSendActions = () => {
         navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } catch (error) {
         // User rejected or other error - clear any error state and navigate back
-        updateSubmitError(undefined);
+        updateNonEVMSubmitError(undefined);
         navigate(-1);
       }
     }
@@ -108,7 +108,7 @@ export const useSendActions = () => {
     maxValueMode,
     t,
     to,
-    updateSubmitError,
+    updateNonEVMSubmitError,
     value,
   ]);
 

@@ -61,7 +61,7 @@ describe('useSendQueryParams', () => {
       to: MOCK_ADDRESS_2,
       value: 10,
       maxValueMode: true,
-      updateSubmitError: jest.fn(),
+      updateNonEVMSubmitError: jest.fn(),
     } as unknown as SendContext.SendContextType);
 
     const mockSubmitEvmTransaction = jest
@@ -90,7 +90,7 @@ describe('useSendQueryParams', () => {
       from: MOCK_ADDRESS_3,
       to: MOCK_ADDRESS_4,
       value: '10',
-      updateSubmitError: jest.fn(),
+      updateNonEVMSubmitError: jest.fn(),
     } as unknown as SendContext.SendContextType);
 
     const mockSubmitNonEvmTransaction = jest
@@ -109,13 +109,13 @@ describe('useSendQueryParams', () => {
   });
 
   it('handleSubmit handles snap validation errors for non-evm send', async () => {
-    const mockUpdateSubmitError = jest.fn();
+    const mockUpdateNonEVMSubmitError = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_ASSET,
       from: MOCK_ADDRESS_3,
       to: MOCK_ADDRESS_4,
       value: '10',
-      updateSubmitError: mockUpdateSubmitError,
+      updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
     } as unknown as SendContext.SendContextType);
 
     jest
@@ -131,19 +131,19 @@ describe('useSendQueryParams', () => {
     result.handleSubmit(MOCK_ADDRESS_4);
 
     await waitFor(() => {
-      expect(mockUpdateSubmitError).toHaveBeenCalled();
+      expect(mockUpdateNonEVMSubmitError).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
   });
 
   it('handleSubmit handles valid: false without errors array for non-evm send', async () => {
-    const mockUpdateSubmitError = jest.fn();
+    const mockUpdateNonEVMSubmitError = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_ASSET,
       from: MOCK_ADDRESS_3,
       to: MOCK_ADDRESS_4,
       value: '10',
-      updateSubmitError: mockUpdateSubmitError,
+      updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
     } as unknown as SendContext.SendContextType);
 
     jest
@@ -160,19 +160,19 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       // Should show generic error message when valid: false but no errors array
-      expect(mockUpdateSubmitError).toHaveBeenCalled();
+      expect(mockUpdateNonEVMSubmitError).toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
   });
 
   it('handleSubmit handles user rejection for non-evm send', async () => {
-    const mockUpdateSubmitError = jest.fn();
+    const mockUpdateNonEVMSubmitError = jest.fn();
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_ASSET,
       from: MOCK_ADDRESS_3,
       to: MOCK_ADDRESS_4,
       value: '10',
-      updateSubmitError: mockUpdateSubmitError,
+      updateNonEVMSubmitError: mockUpdateNonEVMSubmitError,
     } as unknown as SendContext.SendContextType);
 
     jest
@@ -184,7 +184,7 @@ describe('useSendQueryParams', () => {
 
     await waitFor(() => {
       // Should not set error for user rejection
-      expect(mockUpdateSubmitError).toHaveBeenCalledWith(undefined);
+      expect(mockUpdateNonEVMSubmitError).toHaveBeenCalledWith(undefined);
       expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
   });
