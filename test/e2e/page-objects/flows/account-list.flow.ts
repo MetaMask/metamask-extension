@@ -5,25 +5,7 @@ import {
 } from '../../../stub/keyring-bridge';
 import AccountListPage from '../pages/account-list-page';
 import AddressListModal from '../pages/multichain/address-list-modal';
-import HeaderNavbar from '../pages/header-navbar';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
-
-/**
- * Opens the account menu from the header and switches to the specified account.
- * Assumes the user is on the home page.
- *
- * @param driver - The webdriver instance.
- * @param accountName - The account label to switch to (e.g. 'Account 1').
- */
-export async function openAccountMenuAndSwitchToAccount(
-  driver: Driver,
-  accountName: string,
-): Promise<void> {
-  const headerNavbar = new HeaderNavbar(driver);
-  await headerNavbar.openAccountMenu();
-  const accountListPage = new AccountListPage(driver);
-  await accountListPage.switchToAccount(accountName);
-}
 
 export async function checkAccountAddressDisplayedInAccountList(
   driver: Driver,

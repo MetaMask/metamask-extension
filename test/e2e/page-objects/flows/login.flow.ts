@@ -26,23 +26,6 @@ export const loginWithoutBalanceValidation = async (
 };
 
 /**
- * Unlocks the wallet and waits for the homepage to load. Call when the driver is already on the lock screen
- * (e.g. after navigate() and checkPageIsLoaded()). Use loginWithoutBalanceValidation when starting from an arbitrary page.
- *
- * @param driver - The webdriver instance.
- * @param password - The password used to unlock the wallet.
- */
-export const loginToHomepageFromLockScreen = async (
-  driver: Driver,
-  password?: string,
-): Promise<void> => {
-  const loginPage = new LoginPage(driver);
-  await loginPage.loginToHomepage(password);
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-};
-
-/**
  * This method unlocks the wallet and verifies that the user lands on the homepage with the expected balance. It is designed to be the initial step in setting up a test environment.
  *
  * @param driver - The webdriver instance.

@@ -1,40 +1,9 @@
 import HomePage from '../pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
-import SnapTransactionConfirmation from '../pages/confirmations/snap-transaction-confirmation';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../pages/home/activity-list';
-import SendPage from '../pages/send/send-page';
 import { createInternalTransaction } from './transaction';
-
-/**
- * Fills the send form (recipient and amount) and presses Continue. Use when the token is already selected.
- *
- * @param sendPage - The send page instance.
- * @param recipientAddress - The recipient address.
- * @param amount - The amount to send.
- */
-export const fillSendFormAndPressContinue = async (
-  sendPage: SendPage,
-  recipientAddress: string,
-  amount: string,
-): Promise<void> => {
-  await sendPage.fillRecipient(recipientAddress);
-  await sendPage.fillAmount(amount);
-  await sendPage.pressContinueButton();
-};
-
-/**
- * Waits for the snap transaction confirmation page to load.
- *
- * @param driver - The webdriver instance.
- */
-export const waitForSnapTransactionConfirmation = async (
-  driver: Driver,
-): Promise<void> => {
-  const confirmation = new SnapTransactionConfirmation(driver);
-  await confirmation.checkPageIsLoaded();
-};
 
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.

@@ -59,40 +59,6 @@ function mockSseQuoteStream(
   );
 }
 
-/**
- * Builds an SSE stream for getQuoteStream with the given quote payloads.
- *
- * @param events
- * @param delayMs
- */
-function mockSseQuoteStream(
-  events: unknown[],
-  delayMs = 500,
-): ReturnType<typeof Readable.fromWeb> {
-  let index = 0;
-  const getEventId = (i: number) => `${Date.now().toString()}-${i}`;
-  const emitLine = (
-    c: ReadableStreamDefaultController<Uint8Array>,
-    line: string,
-  ) => c.enqueue(new TextEncoder().encode(line));
-  return Readable.fromWeb(
-    new ReadableStreamWeb<Uint8Array>({
-      async pull(controller) {
-        if (index >= events.length) {
-          controller.close();
-          return;
-        }
-        const quote = events[index];
-        emitLine(controller, `event: quote\n`);
-        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
-        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
-        await new Promise((r) => setTimeout(r, delayMs));
-        index += 1;
-      },
-    }),
-  );
-}
-
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
   try {
     await withFixtures(

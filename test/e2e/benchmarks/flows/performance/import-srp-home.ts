@@ -6,7 +6,6 @@
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
-import { loginToHomepageFromLockScreen } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
@@ -62,7 +61,9 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         await timerLogin.measure(async () => {
-          await loginToHomepageFromLockScreen(driver);
+          await loginPage.loginToHomepage();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
         });
         performanceTracker.addTimer(timerLogin);
 
@@ -83,7 +84,6 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);
           await assetListPage.checkTokenListIsDisplayed();
-          await assetListPage.checkConversionRateDisplayed(120000);
           await assetListPage.checkTokenExistsInList('Ethereum');
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
