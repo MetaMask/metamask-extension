@@ -43,6 +43,27 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
 };
 
+export type WebVitalsRating = 'good' | 'needs-improvement' | 'poor';
+
+/**
+ * Core Web Vitals metrics from the web-vitals library.
+ * INP requires actual user interactions to measure meaningful data.
+ */
+export type WebVitalsMetrics = {
+  /** Interaction to Next Paint in milliseconds */
+  inp: number | null;
+  /** Largest Contentful Paint in milliseconds */
+  lcp: number | null;
+  /** Cumulative Layout Shift (unitless score) */
+  cls: number | null;
+  /** Rating for INP metric */
+  inpRating: WebVitalsRating | null;
+  /** Rating for LCP metric */
+  lcpRating: WebVitalsRating | null;
+  /** Rating for CLS metric */
+  clsRating: WebVitalsRating | null;
+};
+
 /** User action result with testTitle, persona and numeric timing metrics. */
 export type UserActionResult = {
   testTitle: string;
