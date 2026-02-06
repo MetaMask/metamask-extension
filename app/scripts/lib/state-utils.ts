@@ -53,7 +53,6 @@ const REMOVE_KEYS = [
 const REMOVE_PATHS: (string | true)[][] = [
   ['nodeAuthTokens', true, 'authToken'],
   ['snaps', true, 'auxiliaryFiles'],
-  ['snaps', true, 'sourceCode'],
   ['socialBackupsMetadata', true, 'hash'],
   ['srpSessionData', true, 'token', 'accessToken'],
 ];
