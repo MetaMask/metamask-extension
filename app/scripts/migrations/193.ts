@@ -74,17 +74,19 @@ async function transformState(state: Record<string, unknown>) {
 
   const browserStorageAdapter = new BrowserStorageAdapter();
 
-  await Promise.all(Object.values(
-    snapControllerState.snaps as Record<string, Record<string, unknown>>,
-  ).map(async (snap) => {
-    const sourceCode = snap.sourceCode as string;
+  await Promise.all(
+    Object.values(
+      snapControllerState.snaps as Record<string, Record<string, unknown>>,
+    ).map(async (snap) => {
+      const sourceCode = snap.sourceCode as string;
 
-    await browserStorageAdapter.setItem('SnapController', snap.id as string, {
-      sourceCode,
-    });
+      await browserStorageAdapter.setItem('SnapController', snap.id as string, {
+        sourceCode,
+      });
 
-    delete snap.sourceCode;
-  }));
+      delete snap.sourceCode;
+    }),
+  );
 
   return true;
 }
