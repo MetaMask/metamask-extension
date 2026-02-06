@@ -26,7 +26,6 @@ import type {
   ThresholdConfig,
   TimerStatistics,
   UserActionMeasurement,
-  WebVitalsMetrics,
   WebVitalsRun,
   WebVitalsSummary,
 } from './types';
