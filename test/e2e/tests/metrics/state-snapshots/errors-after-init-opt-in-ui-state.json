@@ -209,7 +209,7 @@
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
     "isUnlocked": true,
-    "isUpdateAvailable": false,
+    "pendingExtensionVersion": null,
     "isUpdatingFCMToken": "boolean",
     "isUpdatingMetamaskNotifications": "boolean",
     "isUpdatingMetamaskNotificationsAccount": "object",

@@ -46,7 +46,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isRampCardClosed": false,
-    "isUpdateAvailable": false,
+    "pendingExtensionVersion": null,
     "isWalletResetInProgress": "boolean",
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,

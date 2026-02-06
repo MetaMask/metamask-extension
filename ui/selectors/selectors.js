@@ -4066,12 +4066,21 @@ export function getRequestType(state, id) {
 /**
  * Determines whether the update modal should be shown.
  *
+ * Logic:
+ * - If !pendingVersion || pendingVersion <= version → do not show
+ * - Else if version < minimumVersion → show
+ * - Else → do not show
+ *
  * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
  * @returns {boolean} True if the update modal should be shown, false otherwise.
  */
 export function getShowUpdateModal(state) {
   const {
-    metamask: { isUpdateAvailable, updateModalLastDismissedAt, lastUpdatedAt },
+    metamask: {
+      pendingExtensionVersion,
+      updateModalLastDismissedAt,
+      lastUpdatedAt,
+    },
   } = state;
   const remoteFeatureFlags = getRemoteFeatureFlags(state);
 
@@ -4081,7 +4090,20 @@ export function getShowUpdateModal(state) {
   const extensionUpdatePromptMinimumVersion = semver.valid(
     semver.coerce(remoteFeatureFlags.extensionUpdatePromptMinimumVersion),
   );
-  const isExtensionOutdated =
+
+  const pendingVersionValid = pendingExtensionVersion
+    ? semver.valid(semver.coerce(pendingExtensionVersion))
+    : null;
+
+  const hasNewerUpdate =
+    Boolean(pendingVersionValid && extensionCurrentVersion) &&
+    semver.gt(pendingVersionValid, extensionCurrentVersion);
+
+  if (!hasNewerUpdate) {
+    return false;
+  }
+
+  const isBelowMinimum =
     extensionCurrentVersion && extensionUpdatePromptMinimumVersion
       ? semver.lt(extensionCurrentVersion, extensionUpdatePromptMinimumVersion)
       : false;
@@ -4095,13 +4117,11 @@ export function getShowUpdateModal(state) {
     ? currentTime - lastUpdatedAt > updateModalCooldown
     : true;
 
-  const showUpdateModal =
-    isExtensionOutdated &&
-    isUpdateAvailable &&
+  return (
+    isBelowMinimum &&
     enoughTimePassedSinceLastDismissal &&
-    enoughTimePassedSinceLastUpdate;
-
-  return showUpdateModal;
+    enoughTimePassedSinceLastUpdate
+  );
 }
 
 /**
