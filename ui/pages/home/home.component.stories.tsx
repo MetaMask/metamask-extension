@@ -45,6 +45,7 @@ const meta: Meta<typeof Home> = {
     showTermsOfUsePopup: false,
     firstTimeFlowType: FirstTimeFlowType.import,
     completedOnboarding: true,
+    showWhatsNewPopup: false,
     announcementsToShow: false,
     onboardedInThisUISession: false,
     showMultiRpcModal: false,
