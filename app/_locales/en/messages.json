@@ -1622,10 +1622,6 @@
   "connectAnAccountHeader": {
     "message": "Connect an account"
   },
-  "connectHardwareDevice": {
-    "message": "Connect $1",
-    "description": "$1 is the hardware wallet device name"
-  },
   "connectManually": {
     "message": "Manually connect to current site"
   },
@@ -3108,9 +3104,6 @@
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
-  },
-  "hardwareWalletStartTransactionFlow": {
-    "message": "Start transaction flow"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Be sure your $1 is plugged in and to select the Ethereum app."
