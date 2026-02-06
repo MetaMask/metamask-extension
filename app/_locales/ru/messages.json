@@ -7693,7 +7693,7 @@
   "storageErrorAction": {
     "message": "Создать резервную копию секретной фразы для восстановления"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Создайте резервную копию вашей секретной фразы для восстановления и переустановите MetaMask, если проблема сохранится."
   },
   "storageErrorTitle": {

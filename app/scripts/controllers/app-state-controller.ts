@@ -46,6 +46,7 @@ import {
   AccountOverviewTabKey,
   CarouselSlide,
   NetworkConnectionBanner,
+  StorageWriteErrorType,
 } from '../../../shared/constants/app-state';
 import type {
   ThrottledOrigins,
@@ -169,10 +170,11 @@ export type AppStateControllerState = {
   isWalletResetInProgress: boolean;
 
   /**
-   * Whether to show the storage error toast.
-   * This is set to true when set operations fail (storage.local or IndexedDB).
+   * The type of storage write error that occurred, or null if no error.
+   * When not null, indicates the storage error toast should be shown.
+   * Used to show specific error messages (e.g., disk space vs general error).
    */
-  showStorageErrorToast: boolean;
+  storageWriteErrorType: StorageWriteErrorType | null;
 };
 
 const controllerName = 'AppStateController';
@@ -334,7 +336,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
-  showStorageErrorToast: false,
+  storageWriteErrorType: null,
   ...getInitialStateOverrides(),
 });
 
@@ -720,7 +722,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
-  showStorageErrorToast: {
+  storageWriteErrorType: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -957,14 +959,15 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether to show the storage error toast.
+   * Sets the storage write error type, which controls whether to show the storage error toast.
+   * When errorType is not null, the toast will be shown with the appropriate message.
    * This is called when set operations fail (storage.local or IndexedDB).
    *
-   * @param show - Whether to show the toast
+   * @param errorType - The type of storage write error, or null to hide the toast
    */
-  setShowStorageErrorToast(show: boolean): void {
+  setStorageWriteErrorType(errorType: StorageWriteErrorType | null): void {
     this.update((state) => {
-      state.showStorageErrorToast = show;
+      state.storageWriteErrorType = errorType;
     });
   }
 
