@@ -8,27 +8,10 @@ import {
 } from 'react-compiler-webpack';
 
 /**
- * Lazily resolve the wrapper path to avoid resolution errors during LavaMoat policy generation.
- * The wrapper is only needed when thread-loader is active (i.e., NOT during policy generation).
+ * Resolve the wrapper loader path.
+ * Uses require.resolve for consistent module resolution regardless of build context.
  */
-const getWrapperPath = (() => {
-  let cachedPath: string | null = null;
-  return () => {
-    if (cachedPath === null) {
-      // Resolve to source location regardless of whether running from source or compiled (.webpack) code
-      // Use specific path segment replacement to avoid matching .webpack elsewhere in path
-      // no need to escape for regex because we're using a specific path segment replacement
-      cachedPath = join(
-        __dirname.replace(
-          `${sep}development${sep}.webpack${sep}`,
-          `${sep}development${sep}webpack${sep}`,
-        ),
-        'reactCompilerLoaderWrapper.ts',
-      );
-    }
-    return cachedPath;
-  };
-})();
+const getWrapperPath = () => require.resolve('./reactCompilerLoaderWrapper');
 
 /**
  * React Compiler result status stored in module.buildMeta.
