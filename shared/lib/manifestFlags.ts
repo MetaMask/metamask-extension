@@ -129,6 +129,12 @@ export type ManifestFlags = {
      * immediately, triggering the storage error toast notification.
      */
     simulateStorageSetFailure?: boolean;
+    /**
+     * Simulate background initialization hang for testing the initialization
+     * timeout recovery flow. When enabled, the background will never complete
+     * initialization, triggering the 10-second timeout and vault recovery UI.
+     */
+    simulateInitializationHang?: boolean;
   };
 };
 

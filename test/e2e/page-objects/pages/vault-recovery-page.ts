@@ -12,6 +12,31 @@ class VaultRecoveryPage extends CriticalErrorPage {
   // Locators
   readonly #recoveryButton = '#critical-error-button';
 
+  // The vault recovery page has a different h1 than the critical error page
+  readonly #vaultRecoveryPageTitle: object = {
+    text: 'Internal error: database cannot be accessed',
+    css: 'h1',
+  };
+
+  /**
+   * Check that the page has loaded.
+   * Overrides the parent method because the vault recovery page displays
+   * "Internal error: database cannot be accessed" instead of the generic
+   * "MetaMask had trouble starting." title that CriticalErrorPage expects.
+   */
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.#vaultRecoveryPageTitle);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for vault recovery page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Vault recovery page is loaded');
+  }
+
   /**
    * Check that the recovery button is displayed.
    */
@@ -81,9 +106,18 @@ class VaultRecoveryPage extends CriticalErrorPage {
    * Wait for the vault recovery page to be available after reloading the extension.
    * Since reloading the background restarts the extension, the UI isn't
    * available immediately. This method keeps reloading until it is.
+   *
+   * @param options - Optional configuration.
+   * @param options.timeout - Timeout in milliseconds for waiting. Use a longer timeout
+   * for tests that involve initialization timeouts (e.g., 25000ms for 10s init timeout).
+   * Defaults to 10000ms.
    */
-  async waitForPageAfterExtensionReload(): Promise<void> {
-    console.log('Wait for vault recovery page after extension reload');
+  async waitForPageAfterExtensionReload({
+    timeout = 10000,
+  }: { timeout?: number } = {}): Promise<void> {
+    console.log(
+      `Wait for vault recovery page after extension reload (timeout: ${timeout}ms)`,
+    );
     await this.driver.waitUntil(
       async () => {
         await this.driver.navigate(PAGES.HOME, { waitForControllers: false });
@@ -93,10 +127,10 @@ class VaultRecoveryPage extends CriticalErrorPage {
         return title === WINDOW_TITLES.ExtensionInFullScreenView;
       },
       // reload and check title as quickly a possible
-      { interval: 100, timeout: 10000 },
+      { interval: 100, timeout },
     );
     await this.driver.assertElementNotPresent('.loading-logo', {
-      timeout: 10000,
+      timeout,
     });
   }
 }

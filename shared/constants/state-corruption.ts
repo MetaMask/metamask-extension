@@ -16,6 +16,11 @@ export enum VaultCorruptionType {
    */
   InaccessibleDatabase = 'inaccessible_database',
   /**
+   * Background initialization timed out. This can occur when state processing
+   * hangs on corrupted or malformed data.
+   */
+  InitializationTimeout = 'initialization_timeout',
+  /**
    * Unknown corruption type. Used as a fallback for unexpected error types. (shouldn't happen in practice)
    */
   Unknown = 'unknown',

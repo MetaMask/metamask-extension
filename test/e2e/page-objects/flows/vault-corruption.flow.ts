@@ -58,6 +58,9 @@ export async function getFirstAddress(
  * background page for MV2 or offscreen page for MV3.
  * @param options - Additional options.
  * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
+ * @param options.recoveryPageTimeout - Timeout in milliseconds for waiting for the recovery page.
+ * Use a longer timeout for tests involving initialization timeouts (e.g., 25000ms for 10s init timeout).
+ * Defaults to 10000ms.
  * @returns The initial first account's address (before corruption).
  */
 export async function onboardThenTriggerCorruptionFlow(
@@ -65,8 +68,10 @@ export async function onboardThenTriggerCorruptionFlow(
   script: string,
   {
     participateInMetaMetrics = false,
+    recoveryPageTimeout = 10000,
   }: {
     participateInMetaMetrics?: boolean;
+    recoveryPageTimeout?: number;
   } = {},
 ): Promise<string> {
   const initialWindow = await driver.driver.getWindowHandle();
@@ -107,7 +112,9 @@ export async function onboardThenTriggerCorruptionFlow(
   // Since reloading the background restarts the extension the UI isn't
   // available immediately. So we just keep reloading the UI until it is.
   const vaultRecoveryPage = new VaultRecoveryPage(driver);
-  await vaultRecoveryPage.waitForPageAfterExtensionReload();
+  await vaultRecoveryPage.waitForPageAfterExtensionReload({
+    timeout: recoveryPageTimeout,
+  });
 
   return firstAddress;
 }

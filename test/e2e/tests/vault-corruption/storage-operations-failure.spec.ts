@@ -12,18 +12,7 @@ import {
 } from '../../page-objects/flows/vault-corruption.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
-import { getConfig } from './helpers';
-
-/**
- * Simple script that reloads the extension.
- * Used when manifest flags (like simulateStorageGetFailure) handle the corruption simulation.
- */
-const simpleReloadScript = `
-  const callback = arguments[arguments.length - 1];
-  const browser = globalThis.browser ?? globalThis.chrome;
-  browser.runtime.reload();
-  callback();
-`;
+import { getConfig, simpleReloadScript } from './helpers';
 
 /**
  * Tests for storage operations failure recovery.

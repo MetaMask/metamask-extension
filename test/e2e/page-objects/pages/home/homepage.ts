@@ -78,9 +78,12 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+  // Match both ETH-specific and multichain coin overview send buttons
+  protected readonly sendButton: string =
+    '[data-testid="eth-overview-send"], [data-testid="coin-overview-send"]';
 
-  protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
+  protected readonly swapButton: string =
+    '[data-testid="eth-overview-swap"], [data-testid="coin-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',

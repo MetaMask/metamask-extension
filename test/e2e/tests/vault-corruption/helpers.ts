@@ -1,6 +1,18 @@
 import { type ManifestFlags } from '../../../../shared/lib/manifestFlags';
 
 /**
+ * Simple script that reloads the extension.
+ * Used when manifest flags (like simulateStorageGetFailure, simulateInitializationHang)
+ * handle the corruption/failure simulation.
+ */
+export const simpleReloadScript = `
+  const callback = arguments[arguments.length - 1];
+  const browser = globalThis.browser ?? globalThis.chrome;
+  browser.runtime.reload();
+  callback();
+`;
+
+/**
  * Returns the config for database/vault corruption tests.
  *
  * @param title - The title of the test.

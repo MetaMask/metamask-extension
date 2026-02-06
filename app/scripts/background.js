@@ -47,18 +47,24 @@ import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
-import { isStateCorruptionError } from '../../shared/constants/errors';
+import {
+  isStateCorruptionError,
+  INITIALIZATION_TIMEOUT_ERROR,
+} from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import { VaultCorruptionType } from '../../shared/constants/state-corruption';
 import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
+import { trackVaultCorruptionEvent } from './lib/state-corruption/track-vault-corruption';
 import {
   backedUpStateKeys,
   PersistenceManager,
+  PersistenceError,
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
@@ -211,6 +217,11 @@ const phishingPageHref = phishingPageUrl.toString();
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
+
+// Timeout for background initialization (in milliseconds).
+// This should be shorter than the UI's 16-second timeout (UI_SYNC_TIMEOUT)
+// so the background can detect the issue first and provide better error information.
+const INITIALIZATION_TIMEOUT = 10_000; // 10 seconds
 
 lazyListener.once('runtime', 'onInstalled').then((details) => {
   handleOnInstalled(details);
@@ -570,7 +581,69 @@ const handleOnConnect = async (port) => {
 
   // Queue up connection attempts here, waiting until after initialization
   try {
-    await isInitialized;
+    // Race initialization against a timeout. If initialization takes too long,
+    // we assume something is wrong with the state (e.g., corrupted data causing
+    // processing to hang) and trigger the recovery flow.
+    const initializationTimeoutError = Symbol('initializationTimeout');
+    const initializationTimeout = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(initializationTimeoutError);
+      }, INITIALIZATION_TIMEOUT);
+    });
+
+    await Promise.race([isInitialized, initializationTimeout]).catch(
+      async (error) => {
+        // Check if this is our timeout sentinel
+        if (error === initializationTimeoutError) {
+          log.error(
+            'Background initialization timed out after',
+            INITIALIZATION_TIMEOUT,
+            'ms',
+          );
+
+          // Try to get backup for recovery.
+          // Wrap in try-catch to prevent backup failures from masking the
+          // original timeout error (we care more about the error that got us here).
+          let backup = null;
+          try {
+            backup = (await persistenceManager.getBackup()) ?? null;
+          } catch {
+            // Ignore getBackup errors - we're already in an error state
+          }
+
+          // This check verifies if we have any keys saved in our backup.
+          // We use this as a sigil to determine if we've ever saved a vault before.
+          if (
+            backup &&
+            Object.values(backup).some((value) => value !== undefined)
+          ) {
+            log.info(
+              'Backup vault found in IndexedDB, triggering recovery flow',
+            );
+
+            // Track the timeout event
+            trackVaultCorruptionEvent(
+              backup,
+              MetaMetricsEventName.VaultCorruptionDetected,
+              VaultCorruptionType.InitializationTimeout,
+            );
+
+            // Throw PersistenceError to trigger the recovery flow
+            throw new PersistenceError(
+              INITIALIZATION_TIMEOUT_ERROR,
+              backup,
+              VaultCorruptionType.InitializationTimeout,
+            );
+          }
+
+          // No valid backup available - re-throw as a generic error
+          log.error('No backup vault available in IndexedDB, cannot recover');
+          throw new Error(INITIALIZATION_TIMEOUT_ERROR);
+        }
+        // Re-throw other errors
+        throw error;
+      },
+    );
 
     // This is set in `setupController`, which is called as part of initialization
     connectWindowPostMessage(port);
@@ -2303,6 +2376,32 @@ async function initBackground(backup) {
       }
     }
     persistenceManager.cleanUpMostRecentRetrievedState();
+
+    // For testing: simulate initialization hang to test the timeout recovery flow.
+    // Only triggers when:
+    // 1. backup === null (not in a repair flow - repair must complete normally)
+    // 2. A valid backup exists in IndexedDB (after onboarding)
+    // This allows first onboarding to complete, then hang on reload, then repair to succeed.
+    if (
+      inTest &&
+      backup === null &&
+      getManifestFlags().testing?.simulateInitializationHang
+    ) {
+      const existingBackup = await persistenceManager.getBackup();
+      // Check if backup has any meaningful content (same pattern as timeout handler)
+      if (
+        existingBackup &&
+        Object.values(existingBackup).some((value) => value !== undefined)
+      ) {
+        log.info(
+          'Simulating initialization hang (simulateInitializationHang flag is set and backup exists)',
+        );
+        // This promise never resolves, simulating a hang during initialization
+        await new Promise(() => {
+          // Intentionally never resolves to simulate hang
+        });
+      }
+    }
 
     log.info('MetaMask initialization complete.');
     resolveInitialization();

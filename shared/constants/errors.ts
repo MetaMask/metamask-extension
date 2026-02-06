@@ -12,9 +12,15 @@ export const MISSING_VAULT_ERROR =
 export const CORRUPTION_BLOCK_CHECKSUM_MISMATCH =
   'Corruption: block checksum mismatch';
 
+// This error is emitted when background initialization takes too long,
+// which may indicate corrupted state data causing processing to hang.
+export const INITIALIZATION_TIMEOUT_ERROR =
+  'Background initialization timed out. This may indicate corrupted state data.';
+
 export function isStateCorruptionError(err: ErrorLike) {
   return (
     err.message === MISSING_VAULT_ERROR ||
-    err.message === CORRUPTION_BLOCK_CHECKSUM_MISMATCH
+    err.message === CORRUPTION_BLOCK_CHECKSUM_MISMATCH ||
+    err.message === INITIALIZATION_TIMEOUT_ERROR
   );
 }
