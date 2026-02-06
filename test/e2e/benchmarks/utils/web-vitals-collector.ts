@@ -15,19 +15,17 @@ import type { WebVitalsMetrics } from './types';
  *
  * @param driver - Selenium WebDriver instance with access to the extension page
  * @returns Per-run web vitals snapshot. Null values indicate the metric was not
- *   observed (e.g. INP before any interaction, or LCP on a non-initial load).
+ * observed (e.g. INP before any interaction, or LCP on a non-initial load).
  */
 export async function collectWebVitals(
   driver: Driver,
 ): Promise<WebVitalsMetrics> {
   return await driver.executeScript(() => {
-    const stateHooks = (
-      window as Window & {
-        stateHooks?: {
-          getWebVitalsMetrics?: () => WebVitalsMetrics;
-        };
-      }
-    ).stateHooks;
+    const { stateHooks } = window as Window & {
+      stateHooks?: {
+        getWebVitalsMetrics?: () => WebVitalsMetrics;
+      };
+    };
 
     if (stateHooks?.getWebVitalsMetrics) {
       return stateHooks.getWebVitalsMetrics();
