@@ -51,6 +51,7 @@ describe('getReactCompilerLoader', () => {
 
       const wrapperLoader = loaders[1] as {
         loader: string;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         options: { __verbose?: boolean };
       };
       assert.strictEqual(
@@ -180,6 +181,7 @@ describe('getReactCompilerLoader', () => {
 
       const loader = loaders[0] as {
         loader: string;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         options: { __verbose?: boolean };
       };
       assert.strictEqual(
