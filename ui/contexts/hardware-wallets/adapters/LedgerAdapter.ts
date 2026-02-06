@@ -138,24 +138,13 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         // Step 3: Check if device is unlocked. This is only for Nano S and Nano X because there
         // is no way to detect if the device is locked on Nano S Plus without attempting an action.
         // This is a hack. Any errors would show device is locked when that might not be true.
-        // if (
-        //   connectedLedgerDevice.productName === 'Nano S' ||
-        //   connectedLedgerDevice.productName === 'Nano X'
-        // ) {
-        //   const hdPath = await this.getHdPath();
-        //   try {
-        //     // This will throw an error
-        //     const publicKey = await getLedgerPublicKey(hdPath);
-        //     console.log('[HW] publicKey', publicKey);
-        //   } catch (error) {
-        //     console.log('[HW] error', error);
-        //     throw createHardwareWalletError(
-        //       ErrorCode.AuthenticationDeviceLocked,
-        //       HardwareWalletType.Ledger,
-        //       'Ledger device is locked. Please unlock your Ledger device.',
-        //     );
-        //   }
-        // }
+        if (
+          connectedLedgerDevice.productName === 'Nano S' ||
+          connectedLedgerDevice.productName === 'Nano X'
+        ) {
+          const hdPath = await this.getHdPath();
+          await getLedgerPublicKey(hdPath);
+        }
 
         // Step 4: Attempt to create a transport for the device
         await attemptLedgerTransportCreation();
