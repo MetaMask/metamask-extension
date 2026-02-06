@@ -43,7 +43,6 @@ import {
   getSnapsMetadata,
   getHideSnapBranding,
   getIsHardwareWalletErrorModalVisible,
-  getPendingHardwareWalletSigning,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import Callout from '../../../components/ui/callout';
@@ -246,7 +245,6 @@ export default function ConfirmationPage({
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );
-  const isPendingHardwareSigning = useSelector(getPendingHardwareWalletSigning);
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
@@ -384,14 +382,12 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     // Don't navigate away if:
     // - Hardware wallet error modal is visible (for retry functionality)
-    // - Hardware wallet signing is in progress (error being handled)
     const wouldNavigate =
       pendingConfirmations.length === 0 &&
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations;
 
-    const isBlocked =
-      isHardwareWalletErrorModalVisible || isPendingHardwareSigning;
+    const isBlocked = isHardwareWalletErrorModalVisible;
 
     if (wouldNavigate && !isBlocked) {
       const to = shouldShowActivity
@@ -408,7 +404,6 @@ export default function ConfirmationPage({
     redirectToHomeOnZeroConfirmations,
     shouldShowActivity,
     isHardwareWalletErrorModalVisible,
-    isPendingHardwareSigning,
   ]);
 
   useEffect(() => {

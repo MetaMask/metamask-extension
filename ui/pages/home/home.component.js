@@ -79,7 +79,6 @@ function shouldCloseNotificationPopup({
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
   isHardwareWalletErrorModalVisible,
-  isPendingHardwareSigning,
 }) {
   const baseCondition =
     isNotification &&
@@ -87,8 +86,7 @@ function shouldCloseNotificationPopup({
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
-  const isBlocked =
-    isHardwareWalletErrorModalVisible || isPendingHardwareSigning;
+  const isBlocked = isHardwareWalletErrorModalVisible;
 
   const shouldClose = baseCondition && !isBlocked;
 
@@ -141,9 +139,6 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isHardwareWalletErrorModalVisible: PropTypes.bool,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
-    isPendingHardwareSigning: PropTypes.bool,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,

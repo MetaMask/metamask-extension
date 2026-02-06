@@ -556,27 +556,7 @@ describe('ConfirmFooter', () => {
       expect(mockOnTransactionConfirm).not.toHaveBeenCalled();
     });
 
-    it('disables confirm button when hardware signing is pending', () => {
-      const pendingState = getMockContractInteractionConfirmState();
-      const pendingConfirmation = pendingState.metamask.transactions[0];
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: pendingConfirmation,
-        isScrollToBottomCompleted: true,
-        setIsScrollToBottomCompleted: () => undefined,
-      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
-
-      const { getByTestId } = render({
-        ...pendingState,
-        appState: {
-          ...pendingState.appState,
-          pendingHardwareSigning: true,
-        },
-      });
-
-      expect(getByTestId('confirm-footer-button')).toBeDisabled();
-    });
-
-    it('clears pending signing and closes popup on hardware wallet rejection', async () => {
+    it('closes popup on hardware wallet rejection', async () => {
       const hardwareError = new Error('User rejected');
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
@@ -593,11 +573,6 @@ describe('ConfirmFooter', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .mockImplementation(() => () => Promise.reject(hardwareError) as any);
-      const setPendingHardwareWalletSigningSpy = jest
-        .spyOn(Actions, 'setPendingHardwareWalletSigning')
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockReturnValue({} as any);
       const closeWindowSpy = jest
         .spyOn(Actions, 'closeCurrentNotificationWindow')
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -619,7 +594,6 @@ describe('ConfirmFooter', () => {
         expect(resolveSpy).toHaveBeenCalled();
       });
 
-      expect(setPendingHardwareWalletSigningSpy).toHaveBeenCalledWith(false);
       expect(closeWindowSpy).toHaveBeenCalled();
       expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
     });
@@ -642,11 +616,6 @@ describe('ConfirmFooter', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .mockImplementation(() => () => Promise.reject(hardwareError) as any);
-      const setPendingHardwareWalletSigningSpy = jest
-        .spyOn(Actions, 'setPendingHardwareWalletSigning')
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockReturnValue({} as any);
       const closeWindowSpy = jest
         .spyOn(Actions, 'closeCurrentNotificationWindow')
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -668,7 +637,6 @@ describe('ConfirmFooter', () => {
         expect(resolveSpy).toHaveBeenCalled();
       });
 
-      expect(setPendingHardwareWalletSigningSpy).toHaveBeenCalledWith(false);
       expect(closeWindowSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
@@ -700,11 +668,6 @@ describe('ConfirmFooter', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .mockImplementation(() => () => Promise.reject(hardwareError) as any);
-      const setPendingHardwareWalletSigningSpy = jest
-        .spyOn(Actions, 'setPendingHardwareWalletSigning')
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockReturnValue({} as any);
 
       const { getByTestId } = render(
         getMockPersonalSignConfirmStateForRequest({
@@ -721,7 +684,6 @@ describe('ConfirmFooter', () => {
         expect(resolveSpy).toHaveBeenCalled();
       });
 
-      expect(setPendingHardwareWalletSigningSpy).toHaveBeenCalledWith(false);
       expect(showHardwareWalletErrorModalMock).toHaveBeenCalledWith(
         hardwareError,
       );

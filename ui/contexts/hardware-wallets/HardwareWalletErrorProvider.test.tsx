@@ -8,7 +8,6 @@ import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   showModal,
   hideModal,
-  setPendingHardwareWalletSigning,
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import { createHardwareWalletError } from './errors';
@@ -37,8 +36,6 @@ jest.mock('./HardwareWalletContext', () => ({
 
 const mockShowModal = showModal as jest.Mock;
 const mockHideModal = hideModal as jest.Mock;
-const mocksetPendingHardwareWalletSigning =
-  setPendingHardwareWalletSigning as jest.Mock;
 const mockCloseCurrentNotificationWindow =
   closeCurrentNotificationWindow as jest.Mock;
 
@@ -51,11 +48,6 @@ mockShowModal.mockImplementation((payload) => ({
 // Mock hideModal to return a proper action object
 mockHideModal.mockImplementation(() => ({
   type: 'MODAL_CLOSE',
-}));
-
-mocksetPendingHardwareWalletSigning.mockImplementation((payload) => ({
-  type: 'SET_PENDING_HARDWARE_WALLET_SIGNING',
-  payload,
 }));
 
 mockCloseCurrentNotificationWindow.mockImplementation(() => ({
@@ -222,7 +214,6 @@ describe('HardwareWalletErrorProvider', () => {
         await onRetry();
       });
 
-      expect(mocksetPendingHardwareWalletSigning).toHaveBeenCalledWith(false);
       expect(mockHideModal).not.toHaveBeenCalled();
     });
 
@@ -272,7 +263,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
     });
 
-    it('resets pending hardware signing state on unmount when modal is open', () => {
+    it('hides modal on unmount when modal is open', () => {
       const store = mockStore(createMockState());
       const { result, unmount } = renderHardwareWalletErrorHook(store);
 
@@ -291,34 +282,30 @@ describe('HardwareWalletErrorProvider', () => {
 
       // Clear mock calls before unmount
       mockHideModal.mockClear();
-      mocksetPendingHardwareWalletSigning.mockClear();
 
       // Unmount the component
       act(() => {
         unmount();
       });
 
-      // Verify that both hideModal and setPendingHardwareWalletSigning(false) were called
+      // Verify that hideModal was called
       expect(mockHideModal).toHaveBeenCalled();
-      expect(mocksetPendingHardwareWalletSigning).toHaveBeenCalledWith(false);
     });
 
-    it('does not reset pending hardware signing state on unmount when modal is not open', () => {
+    it('does not hide modal on unmount when modal is not open', () => {
       const store = mockStore(createMockState());
       const { unmount } = renderHardwareWalletErrorHook(store);
 
       // Clear mock calls before unmount
       mockHideModal.mockClear();
-      mocksetPendingHardwareWalletSigning.mockClear();
 
       // Unmount the component without showing a modal
       act(() => {
         unmount();
       });
 
-      // Verify that neither hideModal nor setPendingHardwareWalletSigning were called
+      // Verify that hideModal was not called
       expect(mockHideModal).not.toHaveBeenCalled();
-      expect(mocksetPendingHardwareWalletSigning).not.toHaveBeenCalled();
     });
   });
 });

@@ -16,7 +16,6 @@ import {
   getNewNetworkAdded,
   getIsSigningQRHardwareTransaction,
   getIsHardwareWalletErrorModalVisible,
-  getPendingHardwareWalletSigning,
   getNewNftAddedMessage,
   getNewTokensImported,
   getRemoveNftMessage,
@@ -158,7 +157,6 @@ const mapStateToProps = (state) => {
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     isHardwareWalletErrorModalVisible:
       getIsHardwareWalletErrorModalVisible(state),
-    isPendingHardwareSigning: getPendingHardwareWalletSigning(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),

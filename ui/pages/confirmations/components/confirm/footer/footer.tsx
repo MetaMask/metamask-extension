@@ -3,7 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { AccountOverviewTabKey } from '../../../../../../shared/constants/app-state';
@@ -31,15 +31,9 @@ import {
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getPendingHardwareWalletSigning } from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
-import {
-  resolvePendingApproval,
-  closeCurrentNotificationWindow,
-} from '../../../../../store/actions';
+import { resolvePendingApproval } from '../../../../../store/actions';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
@@ -52,7 +46,6 @@ import {
   useAddEthereumChain,
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
-import { SignatureRequestType } from '../../../types/confirm';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
   ConnectionStatus,
@@ -226,8 +219,7 @@ const Footer = () => {
   const navigate = useNavigate();
   const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
-  const { navigateNext, count: confirmationsCount } =
-    useConfirmationNavigation();
+  const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
@@ -242,8 +234,6 @@ const Footer = () => {
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { showErrorModal, dismissErrorModal } = useHardwareWalletError();
-
-  const isHardwareWalletSigning = useSelector(getPendingHardwareWalletSigning);
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
@@ -270,42 +260,12 @@ const Footer = () => {
 
     const isDeviceReady = await ensureDeviceReady();
 
-    console.log('[debug] isDeviceReady', isDeviceReady);
     if (!isDeviceReady) {
       return false;
     }
 
     return true;
   }, [isHardwareWalletAccount, ensureDeviceReady]);
-
-  const handleSignatureCompletion = useCallback(() => {
-    const environmentType = getEnvironmentType();
-    const isPopupEnvironment = isPopupEnvironmentType(environmentType);
-    const isFullScreenEnvironment =
-      isFullScreenEnvironmentType(environmentType);
-
-    if (confirmationsCount > 1 && currentConfirmation?.id) {
-      navigateNext(currentConfirmation.id);
-      return;
-    }
-
-    if (isPopupEnvironment) {
-      dispatch(closeCurrentNotificationWindow());
-      return;
-    }
-
-    if (isFullScreenEnvironment) {
-      navigate(`${DEFAULT_ROUTE}?tab=${AccountOverviewTabKey.Activity}`, {
-        replace: true,
-      });
-    }
-  }, [
-    confirmationsCount,
-    currentConfirmation?.id,
-    dispatch,
-    navigate,
-    navigateNext,
-  ]);
 
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
@@ -321,26 +281,15 @@ const Footer = () => {
       await onAddEthereumChain();
       navigate(DEFAULT_ROUTE);
       resetTransactionState();
-    } else if (
-      isTransactionConfirmation ||
-      (!isSignature && isHardwareWalletAccount)
-    ) {
+    } else if (isTransactionConfirmation) {
       await onTransactionConfirm();
+      navigateNext(currentConfirmation.id);
     } else {
-      // Signatures and other non-transaction approvals
-      // Get the from address for hardware wallet detection
-      const fromAddress =
-        (currentConfirmation as SignatureRequestType).msgParams?.from ??
-        (currentConfirmation as TransactionMeta).txParams?.from;
-
       try {
         await dispatch(
-          resolvePendingApproval(currentConfirmation.id, undefined, {
-            fromAddress,
-          }),
+          resolvePendingApproval(currentConfirmation.id, undefined),
         );
         resetTransactionState();
-        handleSignatureCompletion();
       } catch (error) {
         // Use isHardwareWalletError which handles duck typing for errors
         // that lost their class type over the RPC boundary
@@ -356,15 +305,13 @@ const Footer = () => {
     onSubmitPreflightCheck,
     isAddEthereumChain,
     isTransactionConfirmation,
-    isSignature,
-    isHardwareWalletAccount,
     onAddEthereumChain,
     navigate,
     resetTransactionState,
     onTransactionConfirm,
+    navigateNext,
     dispatch,
     showErrorModal,
-    handleSignatureCompletion,
   ]);
 
   const handleFooterCancel = useCallback(async () => {
@@ -377,26 +324,20 @@ const Footer = () => {
 
     onDappSwapCompleted();
     dismissErrorModal();
-
-    // After rejection, navigate to the next confirmation or home
-    // confirmationsCount includes the current one, so if it's 1 or less, go home
-    if (isAddEthereumChain || confirmationsCount <= 1) {
+    if (isAddEthereumChain) {
       navigate(DEFAULT_ROUTE);
-    } else if (currentConfirmation?.id) {
-      navigateNext(currentConfirmation.id);
     } else {
-      navigate(DEFAULT_ROUTE);
+      navigateNext(currentConfirmation.id);
     }
   }, [
     navigateNext,
     onCancel,
     shouldThrottleOrigin,
-    currentConfirmation?.id,
+    currentConfirmation.id,
     isAddEthereumChain,
     navigate,
     onDappSwapCompleted,
     dismissErrorModal,
-    confirmationsCount,
   ]);
 
   const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
@@ -442,7 +383,7 @@ const Footer = () => {
             <ConfirmButton
               alertOwnerId={currentConfirmation?.id}
               onSubmit={onSubmit}
-              disabled={isConfirmDisabled || isHardwareWalletSigning}
+              disabled={isConfirmDisabled}
               onCancel={onCancel}
             />
           )}

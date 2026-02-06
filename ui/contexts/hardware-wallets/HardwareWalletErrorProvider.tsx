@@ -13,7 +13,6 @@ import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   showModal,
   hideModal,
-  setPendingHardwareWalletSigning,
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
@@ -96,16 +95,12 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     isManuallyShownRef.current = false;
     setDisplayedError(null);
     dispatch(hideModal());
-    dispatch(setPendingHardwareWalletSigning(false));
   }, [dispatch]);
 
   /**
    * Handle retry action from the modal
    */
-  const handleRetry = useCallback(() => {
-    // Clear pending signing so the user can retry after success.
-    dispatch(setPendingHardwareWalletSigning(false));
-  }, [dispatch]);
+  const handleRetry = useCallback(() => undefined, []);
 
   /**
    * Handle cancel/close action from the modal
@@ -162,8 +157,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
           setDisplayedError(null);
           dispatch(hideModal());
         }
-        // Clear pendingHardwareWalletSigning and close the popup
-        dispatch(setPendingHardwareWalletSigning(false));
         dispatch(closeCurrentNotificationWindow());
         return;
       }
@@ -276,7 +269,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     return () => {
       if (isModalOpenRef.current) {
         dispatch(hideModal());
-        dispatch(setPendingHardwareWalletSigning(false));
         isModalOpenRef.current = false;
         setDisplayedError(null);
       }

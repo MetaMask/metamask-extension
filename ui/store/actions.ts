@@ -104,7 +104,6 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  getPendingHardwareWalletSigning,
   getIsHardwareWalletErrorModalVisible,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
@@ -2026,7 +2025,6 @@ export function updateAndApproveTx(
     );
 
     if (isHardwareAccount(fromAccount)) {
-      console.log('[Debug] Approving hardware transaction');
       const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
       return approveHardwareTransaction(
         dispatch,
@@ -2121,7 +2119,6 @@ async function approveHardwareTransaction(
   loadingIndicatorMessage: string,
   keyringType: string,
 ): Promise<void> {
-  dispatch(setPendingHardwareWalletSigning(true));
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
   const walletType =
@@ -2140,7 +2137,6 @@ async function approveHardwareTransaction(
     await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(txMeta.id));
     dispatch(updateCustomNonce(''));
-    dispatch(setPendingHardwareWalletSigning(false));
     dispatch(closeCurrentNotificationWindow());
   } catch (error) {
     await forceUpdateMetamaskState(dispatch);
@@ -3938,13 +3934,11 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     const state = getState();
     const approvalFlows = getApprovalFlows(state);
-    const isPendingHardwareSigning = getPendingHardwareWalletSigning(state);
     const isHwErrorModalVisible = getIsHardwareWalletErrorModalVisible(state);
 
     // Don't close the popup if:
-    // - Hardware wallet signing is in progress (error being handled)
     // - Hardware wallet error modal is visible (for retry functionality)
-    if (isPendingHardwareSigning || isHwErrorModalVisible) {
+    if (isHwErrorModalVisible) {
       return;
     }
 
@@ -4067,15 +4061,6 @@ export function setHardwareWalletDefaultHdPath({
 export function hideLoadingIndication(): Action {
   return {
     type: actionConstants.HIDE_LOADING,
-  };
-}
-
-export function setPendingHardwareWalletSigning(
-  isPending: boolean,
-): PayloadAction<boolean> {
-  return {
-    type: actionConstants.SET_PENDING_HARDWARE_WALLET_SIGNING,
-    payload: isPending,
   };
 }
 
@@ -5610,7 +5595,6 @@ async function resolveHardwareApproval(
   options: { waitForResult?: boolean } | undefined,
   keyringType: string,
 ): Promise<void> {
-  dispatch(setPendingHardwareWalletSigning(true));
   dispatch(showLoadingIndication());
 
   const walletType =
@@ -5629,8 +5613,6 @@ async function resolveHardwareApproval(
 
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
 
-    dispatch(setPendingHardwareWalletSigning(false));
-
     if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());
     }
@@ -5643,10 +5625,6 @@ async function resolveHardwareApproval(
     throw hwError;
   } finally {
     dispatch(hideLoadingIndication());
-    // Only clear pendingHardwareSigning on success.
-    // On error, keep it true to prevent auto-navigation/close of the popup.
-    // The error modal will clear it when dismissed.
-    dispatch(setPendingHardwareWalletSigning(false));
   }
 }
 
