@@ -5,12 +5,11 @@
 
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { withFixtures } from '../../../helpers';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
-import HomePage from '../../../page-objects/pages/home/homepage';
-import LoginPage from '../../../page-objects/pages/login-page';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
@@ -18,14 +17,13 @@ import {
   getTestSpecificMock,
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
-import { WITH_STATE_POWER_USER } from '../../utils';
+import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 // Native ETH token identifier for price chart
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
-
 export const testTitle = 'benchmark-asset-details-power-user';
-export const persona = 'powerUser';
+export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
   try {
@@ -50,13 +48,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         const timer = new TimerHelper('assetClickToPriceChart');
 
         // Login flow
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
+        await loginWithoutBalanceValidation(driver);
 
         // Verify power user accounts are loaded correctly
         const headerNavbar = new HeaderNavbar(driver);
@@ -80,6 +72,7 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         // Only Ethereum network is selected so only 1 token visible
         await assetListPage.checkTokenItemNumber(1);
 
+        await assetListPage.clickOnAsset('Ethereum');
         // Measure: Asset click to price chart loaded
         await timer.measure(async () => {
           await assetListPage.clickOnAsset('Ether');

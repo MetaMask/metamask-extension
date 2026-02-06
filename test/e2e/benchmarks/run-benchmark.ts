@@ -106,40 +106,36 @@ function getThresholdConfig(filePath: string): ThresholdConfig | undefined {
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
 const PRESETS: Record<string, string[]> = {
-  // Performance benchmarks - Onboarding (first-time user flows)
-  performanceOnboarding: [
-    `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
+  // Performance benchmarks - Onboarding
+  performanceOnboardingImport: [
     `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
   ],
-
+  performanceOnboardingNew: [
+    `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
+  ],
   // Performance benchmarks - Assets
   performanceAssets: [
     `${BENCHMARK_DIR}/performance/asset-details.ts`,
     `${BENCHMARK_DIR}/performance/solana-asset-details.ts`,
   ],
-
+  // Performance benchmarks - Accounts
+  performanceAccountManagement: [
+    `${BENCHMARK_DIR}/performance/import-srp-home.ts`,
+  ],
   // Performance benchmarks - Transactions
   performanceTransactions: [
     `${BENCHMARK_DIR}/performance/send-transactions.ts`,
-    // TODO: Re-enable swap.ts once network-fees element is stable
-    // `${BENCHMARK_DIR}/performance/swap.ts`,
+    `${BENCHMARK_DIR}/performance/swap.ts`,
   ],
-
-  // Disabled benchmarks (require additional setup)
-  // performanceAccountManagement
-  // import-srp-home.ts - requires TEST_SRP_2 env var for importing second wallet
-
   // Page load benchmarks
   standardHome: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
   powerUserHome: [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
-
   // User action benchmarks
   userActions: [
     `${BENCHMARK_DIR}/user-actions/load-new-account.ts`,
     `${BENCHMARK_DIR}/user-actions/confirm-tx.ts`,
     `${BENCHMARK_DIR}/user-actions/bridge-user-actions.ts`,
   ],
-
   // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
     'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
