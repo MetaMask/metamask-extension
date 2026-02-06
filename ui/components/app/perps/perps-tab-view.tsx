@@ -32,6 +32,10 @@ import { StartTradeCta } from './start-trade-cta';
 import { PerpsRecentActivity } from './perps-recent-activity';
 import { PerpsTokenLogo } from './perps-token-logo';
 import { getDisplayName } from './utils';
+import {
+  PerpsControlBarSkeleton,
+  PerpsSectionSkeleton,
+} from './perps-skeletons';
 
 /**
  * Inner component that consumes controller hooks
@@ -92,11 +96,9 @@ const PerpsTabViewContent: React.FC = () => {
         gap={4}
         data-testid="perps-tab-view-loading"
       >
-        <PerpsTabControlBar
-          onManageBalancePress={handleManageBalancePress}
-          hasPositions={false}
-        />
-        {/* Loading skeleton could be added here */}
+        <PerpsControlBarSkeleton />
+        <PerpsSectionSkeleton cardCount={5} />
+        <PerpsSectionSkeleton cardCount={5} />
       </Box>
     );
   }
@@ -242,7 +244,9 @@ const PerpsTabViewContent: React.FC = () => {
                         alignItems={BoxAlignItems.Start}
                         gap={1}
                       >
-                        <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+                        <Text fontWeight={FontWeight.Medium}>
+                          {displayName}
+                        </Text>
                         <Text
                           variant={TextVariant.BodySm}
                           color={TextColor.TextAlternative}
@@ -281,7 +285,12 @@ const PerpsTabViewContent: React.FC = () => {
           )}
 
           {/* See All Perps CTA */}
-          <Box paddingLeft={4} paddingRight={4} paddingTop={4} paddingBottom={2}>
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingTop={4}
+            paddingBottom={2}
+          >
             <ButtonBase
               className="w-full justify-center rounded-xl bg-muted py-3 hover:bg-muted-hover active:bg-muted-pressed"
               onClick={handleSeeAllPerps}

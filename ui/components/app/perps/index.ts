@@ -65,3 +65,14 @@ export type {
   OrderDirection,
   OrderCalculations,
 } from './order-entry';
+
+// Skeleton components
+export {
+  PerpsCardSkeleton,
+  PerpsControlBarSkeleton,
+  PerpsSectionSkeleton,
+  PerpsBalanceActionsSkeleton,
+  PerpsHomeCardSkeleton,
+  PerpsDetailPageSkeleton,
+} from './perps-skeletons';
+export type { PerpsSectionSkeletonProps } from './perps-skeletons';

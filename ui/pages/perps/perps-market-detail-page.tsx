@@ -45,6 +45,7 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
 } from '../../components/app/perps/utils';
+import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { useFormatters } from '../../hooks/useFormatters';
 import {
   OrderEntry,
@@ -278,34 +279,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Show loading state while market data is being fetched
   if (marketsLoading) {
-    return (
-      <Box className="main-container asset__container">
-        <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
-          <Box
-            data-testid="perps-market-detail-back-button"
-            onClick={handleBackClick}
-            aria-label={t('back')}
-            className="p-2 cursor-pointer"
-          >
-            <Icon
-              name={IconName.ArrowLeft}
-              size={IconSize.Sm}
-              color={IconColor.IconAlternative}
-            />
-          </Box>
-        </Box>
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          padding={4}
-        >
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {t('loading')}
-          </Text>
-        </Box>
-      </Box>
-    );
+    return <PerpsDetailPageSkeleton />;
   }
 
   // If market not found after loading, show error state
