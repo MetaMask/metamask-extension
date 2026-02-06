@@ -12,6 +12,7 @@ import {
 } from '@metamask/messenger';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as fetchWithCacheModule from '../../../shared/lib/fetch-with-cache';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import type { StaticAssetsServiceMessenger } from './static-assets-service';
 import { StaticAssetsService } from './static-assets-service';
 
@@ -78,7 +79,13 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
   const controller = new StaticAssetsService({
     messenger: staticAssetsServiceMessenger,
     getSupportedChains: () => new Set(supportedChains),
-    getCacheExpirationTime: () => 1000,
+    fetchFn: async (url, requestOptions) =>
+      await fetchWithCache({
+        url: url.toString(),
+        fetchOptions: { ...requestOptions, method: 'GET' },
+        cacheOptions: { cacheRefreshTime: 1000 },
+        functionName: 'fetchTopAssets',
+      }),
     getTopX: () => 10,
   });
 

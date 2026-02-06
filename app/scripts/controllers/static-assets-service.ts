@@ -10,8 +10,6 @@ import type {
 } from '@metamask/assets-controllers';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-
 const SERVICE = 'StaticAssetsService' as const;
 
 export const DEFAULT_INTERVAL_MS = 3 * 60 * 60 * 1000; // 3 hour
@@ -55,16 +53,29 @@ export type StaticAssetsServiceMessenger = Messenger<
   StaticAssetsServiceEvents
 >;
 
+/**
+ * The fetch function type.
+ *
+ * @param input - The input to fetch.
+ * @param init - The init options to use.
+ * @returns A promise that resolves to the response.
+ */
+type FetchFunction = (
+  input: RequestInfo | URL | string,
+  init?: RequestInit,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+) => Promise<any>;
+
 export type StaticAssetsServiceOptions = {
   messenger: StaticAssetsServiceMessenger;
   /** The interval for the polling. */
   interval?: number;
   /** The supported chains for the service. */
   getSupportedChains: () => Set<Hex>;
-  /** The cache expiration time for the top assets API in milliseconds. */
-  getCacheExpirationTime: () => number;
   /** The top X assets to fetch. */
   getTopX: () => number;
+  /** The fetch function to use. */
+  fetchFn: FetchFunction;
 };
 
 /**
@@ -87,15 +98,15 @@ type TopAsset = {
  *
  * @param params - The parameters for the fetch.
  * @param params.chainId - The chain ID.
- * @param params.cacheExpirationTime - The cache expiration time in milliseconds.
- * @returns The top assets.
+ * @param params.fetchFn - The fetch function to use.
+ * @returns A promise that resolves to the top assets.
  */
 async function fetchTopAssets({
   chainId,
-  cacheExpirationTime,
+  fetchFn,
 }: {
   chainId: string;
-  cacheExpirationTime: number;
+  fetchFn: FetchFunction;
 }): Promise<TopAsset[]> {
   try {
     if (!isStrictHexString(chainId)) {
@@ -109,13 +120,8 @@ async function fetchTopAssets({
     url.searchParams.set('minLiquidity', '1');
     url.searchParams.set('minMarketCap', '1');
 
-    const response = await fetchWithCache({
-      url: url.toString(),
-      fetchOptions: { method: 'GET' },
-      cacheOptions: { cacheRefreshTime: cacheExpirationTime },
-      functionName: 'fetchTopAssets',
-    });
-    return response;
+    const response = await fetchFn(url, { method: 'GET' });
+    return response as TopAsset[];
   } catch (error) {
     // we return an empty array if the fetch top assets fails
     return [];
@@ -140,8 +146,8 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
   /** The supported chains for the service. */
   readonly #getSupportedChains: () => Set<Hex>;
 
-  /** The cache expiration time for the top assets API in milliseconds. */
-  readonly #getCacheExpirationTime: () => number;
+  /** The fetch function to use. */
+  readonly #fetchFn: FetchFunction;
 
   /** The top X assets to fetch. */
   readonly #getTopX: () => number;
@@ -152,8 +158,8 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     messenger,
     interval = DEFAULT_INTERVAL_MS,
     getSupportedChains,
-    getCacheExpirationTime,
     getTopX,
+    fetchFn,
   }: StaticAssetsServiceOptions) {
     super();
 
@@ -161,9 +167,9 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
 
     this.#getSupportedChains = getSupportedChains;
 
-    this.#getCacheExpirationTime = getCacheExpirationTime;
-
     this.#getTopX = getTopX;
+
+    this.#fetchFn = fetchFn;
 
     this.setIntervalLength(interval);
   }
@@ -337,8 +343,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     const topX = this.#getTopX();
     const topAssets = await fetchTopAssets({
       chainId,
-      cacheExpirationTime:
-        this.#getCacheExpirationTime() ?? DEFAULT_CACHE_EXPIRATION_MS,
+      fetchFn: this.#fetchFn,
     });
     if (topAssets.length > 0) {
       for (const topAsset of topAssets) {

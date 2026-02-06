@@ -5,6 +5,7 @@ import {
   StaticAssetsService,
   StaticAssetsPollingFeatureFlagOptions,
 } from '../controllers/static-assets-service';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { ControllerInitFunction } from './types';
 import {
   StaticAssetsServiceMessenger,
@@ -31,16 +32,25 @@ export const StaticAssetsServiceInit: ControllerInitFunction<
         getRemoteFeatureFlagControllerState(initMessenger)?.supportedChains;
       return new Set(Array.isArray(supportedChains) ? supportedChains : []);
     },
-    getCacheExpirationTime: (): number => {
-      const cacheExpirationTime =
-        getRemoteFeatureFlagControllerState(initMessenger)?.cacheExpirationTime;
-      return cacheExpirationTime
-        ? Number(cacheExpirationTime)
-        : DEFAULT_CACHE_EXPIRATION_MS;
-    },
     getTopX: (): number => {
       const topX = getRemoteFeatureFlagControllerState(initMessenger)?.topX;
       return topX ? Number(topX) : DEFAULT_TOP_X;
+    },
+    fetchFn: async (url, requestOptions) => {
+      const cacheExpirationTime =
+        getRemoteFeatureFlagControllerState(initMessenger)?.cacheExpirationTime;
+
+      const urlString = url.toString();
+      return await fetchWithCache({
+        url: urlString,
+        fetchOptions: { method: 'GET', ...requestOptions },
+        cacheOptions: {
+          cacheRefreshTime: cacheExpirationTime
+            ? Number(cacheExpirationTime)
+            : DEFAULT_CACHE_EXPIRATION_MS,
+        },
+        functionName: 'fetchTopAssets',
+      });
     },
   });
   return {

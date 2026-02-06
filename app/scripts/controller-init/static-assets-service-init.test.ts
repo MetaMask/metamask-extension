@@ -42,7 +42,7 @@ describe('StaticAssetsServiceInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       getSupportedChains: expect.any(Function),
-      getCacheExpirationTime: expect.any(Function),
+      fetchFn: expect.any(Function),
       getTopX: expect.any(Function),
     });
   });
