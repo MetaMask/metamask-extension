@@ -69,6 +69,7 @@ function convertSummaryToResults(
     stdDev,
     p75,
     p95,
+    ...(summary.webVitals && { webVitals: summary.webVitals }),
   };
 }
 
