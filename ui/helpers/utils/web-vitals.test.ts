@@ -59,10 +59,12 @@ describe('web-vitals', () => {
       callback({
         value: 150,
         attribution: {
-          eventTarget: 'button',
-          eventType: 'click',
-          loadState: 'complete',
           interactionTarget: 'button.submit',
+          interactionType: 'pointer',
+          loadState: 'complete',
+          inputDelay: 10,
+          processingDuration: 100,
+          presentationDelay: 40,
         },
       });
 
@@ -75,8 +77,8 @@ describe('web-vitals', () => {
       expect(mockSentry.setContext).toHaveBeenCalledWith(
         'inp_attribution',
         expect.objectContaining({
-          eventTarget: 'button',
-          eventType: 'click',
+          interactionTarget: 'button.submit',
+          interactionType: 'pointer',
         }),
       );
       // Good metrics should not add breadcrumb
@@ -99,7 +101,10 @@ describe('web-vitals', () => {
       // Simulate poor INP (> 500ms)
       callback({
         value: 600,
-        attribution: { eventTarget: 'div', eventType: 'click' },
+        attribution: {
+          interactionTarget: 'div.slow-element',
+          interactionType: 'pointer',
+        },
       });
 
       expect(mockSentry.setTag).toHaveBeenCalledWith('inp.rating', 'poor');
