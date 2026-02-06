@@ -47,6 +47,11 @@ export const ALL_METRICS = {
   loadScripts: 'Load Scripts',
   setupStore: 'Setup Store',
   numNetworkReqs: 'numNetworkReqs',
+  // Long Task / TBT metrics (benchmark-only, via `PerformanceObserver`)
+  longTaskCount: 'longTaskCount',
+  longTaskTotalDuration: 'longTaskTotalDuration',
+  longTaskMaxDuration: 'longTaskMaxDuration',
+  tbt: 'tbt',
 } as const;
 
 export const WITH_STATE_POWER_USER = {

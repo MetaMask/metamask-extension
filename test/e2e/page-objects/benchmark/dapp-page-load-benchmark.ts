@@ -75,6 +75,22 @@ export type BenchmarkMetrics = {
      */
     jsHeapSizeLimit: number;
   };
+  /**
+   * Long Task metrics for measuring main thread blocking.
+   * TBT (Total Blocking Time) is a key Core Web Vital proxy metric.
+   */
+  longTaskMetrics?: {
+    /** Total count of long tasks (>50ms) observed */
+    count: number;
+    /** Sum of all long task durations in milliseconds */
+    totalDuration: number;
+    /** Maximum single long task duration in milliseconds */
+    maxDuration: number;
+    /** Total Blocking Time in milliseconds (sum of duration - 50ms for each task) */
+    tbt: number;
+    /** TBT rating based on Lighthouse thresholds */
+    tbtRating: 'good' | 'needs-improvement' | 'poor';
+  };
 };
 
 /**
@@ -317,6 +333,21 @@ export class PageLoadBenchmark {
         'largest-contentful-paint',
       )[0] as PerformanceEntry;
 
+      // Collect Long Task / TBT metrics from stateHooks if available
+      const longTaskMetricsRaw = (
+        window as typeof window & {
+          stateHooks?: {
+            getLongTaskMetricsWithTBT?: () => {
+              count: number;
+              totalDuration: number;
+              maxDuration: number;
+              tbt: number;
+              tbtRating: 'good' | 'needs-improvement' | 'poor';
+            };
+          };
+        }
+      ).stateHooks?.getLongTaskMetricsWithTBT?.();
+
       return {
         pageLoadTime: navigation.loadEventEnd - navigation.startTime,
         domContentLoaded:
@@ -331,6 +362,15 @@ export class PageLoadBenchmark {
               usedJSHeapSize: performance.memory.usedJSHeapSize,
               totalJSHeapSize: performance.memory.totalJSHeapSize,
               jsHeapSizeLimit: performance.memory.jsHeapSizeLimit,
+            }
+          : undefined,
+        longTaskMetrics: longTaskMetricsRaw
+          ? {
+              count: longTaskMetricsRaw.count,
+              totalDuration: longTaskMetricsRaw.totalDuration,
+              maxDuration: longTaskMetricsRaw.maxDuration,
+              tbt: longTaskMetricsRaw.tbt,
+              tbtRating: longTaskMetricsRaw.tbtRating,
             }
           : undefined,
       };
