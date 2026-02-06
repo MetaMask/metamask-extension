@@ -10,7 +10,7 @@ on:
         required: true
       TEST_SRP_2:
         required: false
-        description: Required for performanceLogin (import-srp-home). 12-word seed phrase.
+        description: Required for performanceAccountManagement (import-srp-home). 12-word seed phrase.
 
 env:
   COMMANDS: |

@@ -16,7 +16,6 @@ import {
 } from '../../helpers/file';
 import { runBenchmarkWithIterations } from './utils';
 import {
-  BENCHMARK_TYPE,
   ONBOARDING_IMPORT_THRESHOLDS,
   ONBOARDING_NEW_WALLET_THRESHOLDS,
   IMPORT_SRP_HOME_THRESHOLDS,
@@ -28,7 +27,6 @@ import {
 import type {
   BenchmarkResults,
   BenchmarkSummary,
-  BenchmarkType,
   StatisticalResult,
   ThresholdConfig,
 } from './utils/types';
@@ -40,13 +38,11 @@ import type {
  * @param summary
  * @param testTitle
  * @param persona
- * @param benchmarkType
  */
 function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
   persona?: string,
-  benchmarkType?: BenchmarkType,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -67,7 +63,6 @@ function convertSummaryToResults(
   return {
     testTitle,
     persona,
-    benchmarkType,
     mean,
     min,
     max,
@@ -106,14 +101,13 @@ function getThresholdConfig(filePath: string): ThresholdConfig | undefined {
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
 const PRESETS: Record<string, string[]> = {
-  // Performance benchmarks
+  // Performance benchmarks - Onboarding
   performanceOnboardingImport: [
     `${BENCHMARK_DIR}/performance/onboarding-import-wallet.ts`,
   ],
   performanceOnboardingNew: [
     `${BENCHMARK_DIR}/performance/onboarding-new-wallet.ts`,
   ],
-
   // Performance benchmarks - Assets
   performanceAssets: [
     `${BENCHMARK_DIR}/performance/asset-details.ts`,
@@ -131,14 +125,12 @@ const PRESETS: Record<string, string[]> = {
   // Page load benchmarks
   standardHome: [`${BENCHMARK_DIR}/page-load/standard-home.ts`],
   powerUserHome: [`${BENCHMARK_DIR}/page-load/power-user-home.ts`],
-
   // User action benchmarks
   userActions: [
     `${BENCHMARK_DIR}/user-actions/load-new-account.ts`,
     `${BENCHMARK_DIR}/user-actions/confirm-tx.ts`,
     `${BENCHMARK_DIR}/user-actions/bridge-user-actions.ts`,
   ],
-
   // Playwright page-load benchmark (for local use; CI runs this separately)
   pageLoadBenchmark: [
     'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
@@ -207,12 +199,7 @@ async function runBenchmarkFile(
       console.log('✅ All thresholds passed');
     }
 
-    // Determine benchmarkType based on file path
-    const benchmarkType = filePath.includes('/performance/')
-      ? BENCHMARK_TYPE.PERFORMANCE
-      : BENCHMARK_TYPE.USER_ACTION;
-
-    return convertSummaryToResults(summary, testTitle, persona, benchmarkType);
+    return convertSummaryToResults(summary, testTitle, persona);
   }
 
   // For other benchmarks (page-load), run once with options

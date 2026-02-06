@@ -77,7 +77,11 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         performanceTracker.addTimer(timerAssetPicker);
 
         // Measure: Review transaction
-        await fillSendFormAndPressContinue(sendPage, RECIPIENT_ADDRESS, '0.00001');
+        await fillSendFormAndPressContinue(
+          sendPage,
+          RECIPIENT_ADDRESS,
+          '0.00001',
+        );
         await timerReviewTransaction.measure(async () => {
           await waitForSnapTransactionConfirmation(driver);
         });
