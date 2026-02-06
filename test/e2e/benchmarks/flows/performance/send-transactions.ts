@@ -6,18 +6,20 @@
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
+import { openAccountMenuAndSwitchToAccount } from '../../../page-objects/flows/account-list.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import {
+  fillSendFormAndPressContinue,
+  waitForSnapTransactionConfirmation,
+} from '../../../page-objects/flows/send-transaction.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import LoginPage from '../../../page-objects/pages/login-page';
 import SendPage from '../../../page-objects/pages/send/send-page';
-import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 
@@ -50,18 +52,11 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         );
 
         // Login flow
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        const accountListPage = new AccountListPage(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
-        await accountListPage.switchToAccount('Account 1');
+        await openAccountMenuAndSwitchToAccount(driver, 'Account 1');
         // Measure: Open send page
         await homePage.startSendFlow();
         await timerOpenSendPage.measure(async () => {
@@ -82,12 +77,9 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         performanceTracker.addTimer(timerAssetPicker);
 
         // Measure: Review transaction
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
-        await sendPage.fillAmount('0.00001');
-        await sendPage.pressContinueButton();
+        await fillSendFormAndPressContinue(sendPage, RECIPIENT_ADDRESS, '0.00001');
         await timerReviewTransaction.measure(async () => {
-          const confirmation = new SnapTransactionConfirmation(driver);
-          await confirmation.checkPageIsLoaded();
+          await waitForSnapTransactionConfirmation(driver);
         });
         performanceTracker.addTimer(timerReviewTransaction);
       },

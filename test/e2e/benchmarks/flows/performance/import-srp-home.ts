@@ -6,6 +6,7 @@
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
+import { loginToHomepageFromLockScreen } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
@@ -61,9 +62,7 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         await timerLogin.measure(async () => {
-          await loginPage.loginToHomepage();
-          const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
+          await loginToHomepageFromLockScreen(driver);
         });
         performanceTracker.addTimer(timerLogin);
 

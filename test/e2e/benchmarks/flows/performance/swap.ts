@@ -10,9 +10,9 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
 import type { MockedEndpoint } from '../../../mock-e2e';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import LoginPage from '../../../page-objects/pages/login-page';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import { SSE_RESPONSE_HEADER } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
@@ -102,12 +102,8 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         const timerQuoteFetching = new TimerHelper('fetchAndDisplaySwapQuotes');
 
         // Login flow
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.waitForTokenToBeDisplayed('Ethereum');
