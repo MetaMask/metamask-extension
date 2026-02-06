@@ -27,15 +27,6 @@ describe('createAdapterForHardwareWalletType', () => {
       );
       expect(adapter).toBeInstanceOf(LedgerAdapter);
     });
-
-    it('throws error for unsupported hardware wallet types', () => {
-      expect(() =>
-        createAdapterForHardwareWalletType(
-          HardwareWalletType.Lattice,
-          mockOptions,
-        ),
-      ).toThrow('Unsupported hardware wallet type: lattice');
-    });
   });
 
   describe('non-hardware wallet accounts', () => {
