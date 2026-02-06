@@ -1,5 +1,7 @@
+import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
 import {
   HardwareWalletType,
@@ -11,6 +13,10 @@ import {
   type HardwareWalletRefs,
 } from './HardwareWalletStateManager';
 import * as webConnectionUtils from './webConnectionUtils';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 
 jest.mock('./webConnectionUtils');
 
@@ -44,6 +50,11 @@ const createMockRefs = (
   ...overrides,
 });
 
+const createWrapper =
+  (initialEntries: string[] = [CONFIRM_TRANSACTION_ROUTE]) =>
+  ({ children }: { children: React.ReactNode }) =>
+    React.createElement(MemoryRouter, { initialEntries }, children);
+
 describe('useHardwareWalletAutoConnect', () => {
   let mockSetHardwareConnectionPermissionState: jest.Mock;
   let mockUpdateConnectionState: jest.Mock;
@@ -66,6 +77,7 @@ describe('useHardwareWalletAutoConnect', () => {
   const setupHook = (
     stateOverrides: Partial<HardwareWalletState> = {},
     refsOverrides: Partial<HardwareWalletRefs> = {},
+    initialEntries: string[] = [CONFIRM_TRANSACTION_ROUTE],
   ) => {
     return renderHook(() =>
       useHardwareWalletAutoConnect({
@@ -82,6 +94,7 @@ describe('useHardwareWalletAutoConnect', () => {
         resetAutoConnectState: mockResetAutoConnectState,
         setAutoConnected: mockSetAutoConnected,
       }),
+      { wrapper: createWrapper(initialEntries) },
     );
   };
 
@@ -113,6 +126,7 @@ describe('useHardwareWalletAutoConnect', () => {
           resetAutoConnectState: mockResetAutoConnectState,
           setAutoConnected: mockSetAutoConnected,
         }),
+        { wrapper: createWrapper() },
       );
 
       expect(webConnectionUtils.subscribeToWebUsbEvents).toHaveBeenCalledWith(
@@ -146,6 +160,7 @@ describe('useHardwareWalletAutoConnect', () => {
           resetAutoConnectState: mockResetAutoConnectState,
           setAutoConnected: mockSetAutoConnected,
         }),
+        { wrapper: createWrapper() },
       );
 
       expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
@@ -167,6 +182,7 @@ describe('useHardwareWalletAutoConnect', () => {
           resetAutoConnectState: mockResetAutoConnectState,
           setAutoConnected: mockSetAutoConnected,
         }),
+        { wrapper: createWrapper() },
       );
 
       expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
@@ -303,12 +319,20 @@ describe('useHardwareWalletAutoConnect', () => {
 
       expect(mockUnsubscribe).toHaveBeenCalled();
     });
+
+    it('does not subscribe outside confirmation routes', () => {
+      setupHook({}, {}, [DEFAULT_ROUTE]);
+
+      expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
+      expect(webConnectionUtils.subscribeToWebUsbEvents).not.toHaveBeenCalled();
+    });
   });
 
   describe('auto-connection effect', () => {
     const setupAutoConnectHook = (
       stateOverrides: Partial<HardwareWalletState> = {},
       refsOverrides: Partial<HardwareWalletRefs> = {},
+      initialEntries: string[] = [CONFIRM_TRANSACTION_ROUTE],
     ) => {
       const refs = createMockRefs({
         connectRef: { current: mockConnectRef },
@@ -329,6 +353,7 @@ describe('useHardwareWalletAutoConnect', () => {
           resetAutoConnectState: mockResetAutoConnectState,
           setAutoConnected: mockSetAutoConnected,
         }),
+        { wrapper: createWrapper(initialEntries) },
       );
       return { hook, refs };
     };
@@ -368,6 +393,7 @@ describe('useHardwareWalletAutoConnect', () => {
           resetAutoConnectState: mockResetAutoConnectState,
           setAutoConnected: mockSetAutoConnected,
         }),
+        { wrapper: createWrapper() },
       );
 
       expect(mockConnectRef).not.toHaveBeenCalled();
@@ -389,6 +415,21 @@ describe('useHardwareWalletAutoConnect', () => {
       );
 
       expect(mockConnectRef).not.toHaveBeenCalled();
+    });
+
+    it('does not auto-connect outside confirmation routes', async () => {
+      (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
+        { productId: 123 },
+      ]);
+
+      setupAutoConnectHook({}, {}, [DEFAULT_ROUTE]);
+
+      await waitFor(() => {
+        expect(webConnectionUtils.getConnectedDevices).not.toHaveBeenCalled();
+      });
+
+      expect(mockConnectRef).not.toHaveBeenCalled();
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
     });
 
     it('auto-connects when account changes', async () => {
