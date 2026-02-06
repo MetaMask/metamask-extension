@@ -88,7 +88,7 @@ export function useTransactionConfirm() {
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
   } = useShieldConfirm();
 
-  const onTransactionConfirm = useCallback(async () => {
+  const onTransactionConfirm = useCallback(async (): Promise<boolean> => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
     updateSwapWithQuoteDetailsIfRequired(newTransactionMeta);
@@ -104,6 +104,8 @@ export function useTransactionConfirm() {
     handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
     try {
       await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+      onDappSwapCompleted();
+      return true;
     } catch (error) {
       handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
         newTransactionMeta,
@@ -115,9 +117,8 @@ export function useTransactionConfirm() {
         throw error;
       }
       showErrorModal(error);
+      return false;
     }
-
-    onDappSwapCompleted();
   }, [
     newTransactionMeta,
     customNonceValue,

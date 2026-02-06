@@ -6,13 +6,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
-import { AccountOverviewTabKey } from '../../../../../../shared/constants/app-state';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
-import {
-  isFullScreenEnvironmentType,
-  isPopupEnvironmentType,
-} from '../../../../../../shared/constants/app';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
   Box,
@@ -46,6 +41,7 @@ import {
   useAddEthereumChain,
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
+import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import {
   ConnectionStatus,
@@ -224,8 +220,11 @@ const Footer = () => {
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
+  const currentConfirmationId = currentConfirmation?.id;
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
+
+  const { from: fromAddress } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
@@ -251,7 +250,9 @@ const Footer = () => {
   }, [isHardwareWalletAccount, connectionState.status]);
 
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
+    (!isScrollToBottomCompleted && !isSignature) ||
+    !isHardwareWalletReady ||
+    isGaslessLoading;
 
   const onSubmitPreflightCheck = useCallback(async (): Promise<boolean> => {
     if (!isHardwareWalletAccount) {
@@ -282,12 +283,16 @@ const Footer = () => {
       navigate(DEFAULT_ROUTE);
       resetTransactionState();
     } else if (isTransactionConfirmation) {
-      await onTransactionConfirm();
-      navigateNext(currentConfirmation.id);
+      const didConfirm = await onTransactionConfirm();
+      if (didConfirm && currentConfirmationId) {
+        navigateNext(currentConfirmationId);
+      }
     } else {
       try {
         await dispatch(
-          resolvePendingApproval(currentConfirmation.id, undefined),
+          resolvePendingApproval(currentConfirmation.id, undefined, {
+            fromAddress,
+          }),
         );
         resetTransactionState();
       } catch (error) {
@@ -302,6 +307,7 @@ const Footer = () => {
     }
   }, [
     currentConfirmation,
+    currentConfirmationId,
     onSubmitPreflightCheck,
     isAddEthereumChain,
     isTransactionConfirmation,
@@ -312,6 +318,7 @@ const Footer = () => {
     navigateNext,
     dispatch,
     showErrorModal,
+    fromAddress,
   ]);
 
   const handleFooterCancel = useCallback(async () => {
@@ -326,14 +333,17 @@ const Footer = () => {
     dismissErrorModal();
     if (isAddEthereumChain) {
       navigate(DEFAULT_ROUTE);
-    } else {
-      navigateNext(currentConfirmation.id);
+      return;
+    }
+
+    if (currentConfirmationId) {
+      navigateNext(currentConfirmationId);
     }
   }, [
     navigateNext,
     onCancel,
     shouldThrottleOrigin,
-    currentConfirmation.id,
+    currentConfirmationId,
     isAddEthereumChain,
     navigate,
     onDappSwapCompleted,
