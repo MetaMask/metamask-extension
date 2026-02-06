@@ -67,7 +67,7 @@ export type Loader = RuleSetRule & { options: CodeFenceLoaderOptions };
 export function getCodeFenceLoader(features: FeatureLabels): Loader {
   // Convert Sets to arrays for JSON serialization through thread-loader
   return {
-    loader: require.resolve('./codeFenceLoader'),
+    loader: __filename,
     options: {
       features: {
         active: Array.from(features.active),
