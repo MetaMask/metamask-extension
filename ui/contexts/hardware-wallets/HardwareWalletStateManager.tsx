@@ -180,11 +180,6 @@ export const useHardwareWalletStateManager = () => {
     [setHardwareConnectionPermissionState, setConnectionState],
   );
 
-  useEffect(() => {
-    console.log('[HW] state', state);
-    console.log('[HW] refs', refs);
-  }, [state]);
-
   return {
     state,
     refs,

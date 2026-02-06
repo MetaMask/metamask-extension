@@ -132,7 +132,7 @@ export const useHardwareWalletAutoConnect = ({
         }
       };
 
-      const handleNativeDisconnect = async (_device: HIDDevice | USBDevice) => {
+      const handleNativeDisconnect = async () => {
         if (abortSignal.aborted) {
           return;
         }

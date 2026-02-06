@@ -71,10 +71,10 @@ export class LedgerAdapter implements HardwareWalletAdapter {
   /**
    * Check if device is currently connected via WebHID
    */
-  private async checkDeviceConnected(): Promise<HIDDevice | false> {
+  private async checkDeviceConnected(): Promise<HIDDevice | undefined> {
     const devices = await getConnectedLedgerDevices();
     // We only use the first ledger device for
-    return devices.length > 0 ? devices[0] : false;
+    return devices.length > 0 ? devices[0] : undefined;
   }
 
   private async getHdPath(): Promise<string> {
@@ -138,10 +138,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         // Step 3: Check if device is unlocked. This is only for Nano S and Nano X because there
         // is no way to detect if the device is locked on Nano S Plus without attempting an action.
         // This is a hack. Any errors would show device is locked when that might not be true.
-        if (
-          connectedLedgerDevice.productName === 'Nano S' ||
-          connectedLedgerDevice.productName === 'Nano X'
-        ) {
+        const productName = connectedLedgerDevice.productName ?? '';
+        if (productName.includes('Nano S') || productName.includes('Nano X')) {
           const hdPath = await this.getHdPath();
           await getLedgerPublicKey(hdPath);
         }
