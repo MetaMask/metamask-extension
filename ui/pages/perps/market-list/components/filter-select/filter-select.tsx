@@ -7,13 +7,16 @@ export type MarketFilter =
   | 'crypto'
   | 'stocks'
   | 'commodities'
-  | 'forex';
+  | 'forex'
+  | 'new';
 
 export type FilterSelectProps = {
   /** Currently selected filter */
   value: MarketFilter;
   /** Callback when filter changes */
   onChange: (filter: MarketFilter) => void;
+  /** Whether to show the "New" filter option (only shown if there are uncategorized assets) */
+  showNewFilter?: boolean;
 };
 
 /**
@@ -22,23 +25,30 @@ export type FilterSelectProps = {
  * @param props - Component props
  * @param props.value - Currently selected filter
  * @param props.onChange - Callback when filter changes
+ * @param props.showNewFilter - Whether to show the "New" filter option
  */
 export const FilterSelect: React.FC<FilterSelectProps> = ({
   value,
   onChange,
+  showNewFilter = false,
 }) => {
   const t = useI18nContext();
 
-  const options: DropdownOption<MarketFilter>[] = useMemo(
-    () => [
+  const options: DropdownOption<MarketFilter>[] = useMemo(() => {
+    const baseOptions: DropdownOption<MarketFilter>[] = [
       { id: 'all', label: t('perpsFilterAll') },
       { id: 'crypto', label: t('perpsFilterCrypto') },
       { id: 'stocks', label: t('perpsFilterStocks') },
       { id: 'commodities', label: t('perpsFilterCommodities') },
       { id: 'forex', label: t('perpsFilterForex') },
-    ],
-    [t],
-  );
+    ];
+
+    if (showNewFilter) {
+      baseOptions.push({ id: 'new', label: t('perpsFilterNew') });
+    }
+
+    return baseOptions;
+  }, [t, showNewFilter]);
 
   return (
     <Dropdown

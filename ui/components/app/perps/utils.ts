@@ -349,3 +349,38 @@ export const filterMarketsByQuery = (
       market.name?.toLowerCase().includes(lowerQuery),
   );
 };
+
+/**
+ * Check if a market is an allowed HIP-3 market (stocks, commodities, forex)
+ *
+ * HIP-3 markets are identified by having a marketSource that matches one of
+ * the allowed HIP-3 DEX providers from the feature flag.
+ *
+ * @param market - The market data to check
+ * @param allowedSources - Set of allowed HIP-3 source identifiers from the selector
+ * @returns True if the market is from an allowed HIP-3 source
+ * @example
+ * const allowedSources = new Set(['xyz']);
+ * isHip3Market({ symbol: 'xyz:TSLA', marketSource: 'xyz' }, allowedSources) // → true
+ * isHip3Market({ symbol: 'BTC', marketSource: undefined }, allowedSources) // → false
+ * isHip3Market({ symbol: 'abc:AAPL', marketSource: 'abc' }, allowedSources) // → false
+ */
+export const isHip3Market = (
+  market: PerpsMarketData,
+  allowedSources: Set<string>,
+): boolean => {
+  return Boolean(market.marketSource && allowedSources.has(market.marketSource));
+};
+
+/**
+ * Check if a market is a crypto market (main DEX, no marketSource)
+ *
+ * @param market - The market data to check
+ * @returns True if the market is a crypto market
+ * @example
+ * isCryptoMarket({ symbol: 'BTC', marketSource: undefined }) // → true
+ * isCryptoMarket({ symbol: 'xyz:TSLA', marketSource: 'xyz' }) // → false
+ */
+export const isCryptoMarket = (market: PerpsMarketData): boolean => {
+  return !market.marketSource;
+};

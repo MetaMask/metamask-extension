@@ -5293,10 +5293,10 @@
   "perpsFilterForex": {
     "message": "Forex"
   },
-  "perpsFilterStocks": {
-    "message": "Stocks"
+  "perpsFilterNew": {
+    "message": "New"
   },
-  "perpsFilterStocksOnly": {
+  "perpsFilterStocks": {
     "message": "Stocks"
   },
   "perpsFunding": {
