@@ -98,11 +98,12 @@ export type WebVitalsSummary = {
   aggregated: WebVitalsAggregated;
 };
 
-/** User action result with testTitle, persona and numeric timing metrics. */
+/** User action result with testTitle, persona, timing metrics, and Core Web Vitals. */
 export type UserActionResult = {
   testTitle: string;
   persona?: string;
-  [key: string]: string | number | undefined;
+  webVitals?: WebVitalsMetrics;
+  [key: string]: string | number | WebVitalsMetrics | undefined;
 };
 
 export type BenchmarkArguments = {
@@ -201,3 +202,9 @@ export type PerformanceBenchmarkResults = {
 };
 
 export type BenchmarkFunction = () => Promise<BenchmarkRunResult>;
+
+/** Return type for user-action measurement functions inside flows */
+export type UserActionMeasurement = {
+  timers: TimerResult[];
+  webVitals?: WebVitalsMetrics;
+};
