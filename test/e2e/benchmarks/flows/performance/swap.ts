@@ -3,21 +3,61 @@
  * Measures time for swap flow including quote fetching
  */
 
+import { Readable } from 'stream';
+import { ReadableStream as ReadableStreamWeb } from 'stream/web';
+import type { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
+import type { MockedEndpoint } from '../../../mock-e2e';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import LoginPage from '../../../page-objects/pages/login-page';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
+import { SSE_RESPONSE_HEADER } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
+import swapQuoteSolUsdc from './mocks/swap-quote-sol-usdc.json';
 
 export const testTitle = 'benchmark-swap-power-user';
 export const persona = 'powerUser';
+
+/**
+ * Builds an SSE stream for getQuoteStream with the given quote payloads.
+ *
+ * @param events
+ * @param delayMs
+ */
+function mockSseQuoteStream(
+  events: unknown[],
+  delayMs = 500,
+): ReturnType<typeof Readable.fromWeb> {
+  let index = 0;
+  const getEventId = (i: number) => `${Date.now().toString()}-${i}`;
+  const emitLine = (
+    c: ReadableStreamDefaultController<Uint8Array>,
+    line: string,
+  ) => c.enqueue(new TextEncoder().encode(line));
+  return Readable.fromWeb(
+    new ReadableStreamWeb<Uint8Array>({
+      async pull(controller) {
+        if (index >= events.length) {
+          controller.close();
+          return;
+        }
+        const quote = events[index];
+        emitLine(controller, `event: quote\n`);
+        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
+        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
+        await new Promise((r) => setTimeout(r, delayMs));
+        index += 1;
+      },
+    }),
+  );
+}
 
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
   try {
@@ -36,6 +76,26 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         extendedTimeoutMultiplier: 3,
+        testSpecificMock: async (
+          mockServer: Mockttp,
+        ): Promise<MockedEndpoint[]> => {
+          // Mockttp streams are single-use; register multiple rules so every
+          // getQuoteStream request gets a fresh SSE stream.
+          const REPEAT_GET_QUOTE_STREAM = 20;
+          const getQuoteStreamMocks: MockedEndpoint[] = [];
+          for (let i = 0; i < REPEAT_GET_QUOTE_STREAM; i += 1) {
+            const mock = await mockServer
+              .forGet(/getQuoteStream/u)
+              .once()
+              .thenStream(
+                200,
+                mockSseQuoteStream([swapQuoteSolUsdc]),
+                SSE_RESPONSE_HEADER,
+              );
+            getQuoteStreamMocks.push(mock);
+          }
+          return getQuoteStreamMocks;
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSwapPage = new TimerHelper('openSwapPageFromHome');
@@ -60,12 +120,11 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           await swapPage.checkPageIsLoaded();
         });
         performanceTracker.addTimer(timerOpenSwapPage);
-        await driver.delay(5000);
         // Measure: Fetch quotes (longer timeout in CI where quote fetching can be slow)
         const swapPage = new SwapPage(driver);
         try {
           await swapPage.createSolanaSwap({
-            amount: 0.00001,
+            amount: 1,
             swapTo: 'USDC',
             swapFrom: 'SOL',
           });
@@ -80,7 +139,10 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
               driver as {
                 takeScreenshot(title: string, name: string): Promise<void>;
               }
-            ).takeScreenshot(testTitle, 'swap-quote-timeout-slippage-edit-button');
+            ).takeScreenshot(
+              testTitle,
+              'swap-quote-timeout-slippage-edit-button',
+            );
             console.error(
               'Screenshot saved to test-artifacts (see job artifacts in CI). Quote wait failed:',
               quoteError,
