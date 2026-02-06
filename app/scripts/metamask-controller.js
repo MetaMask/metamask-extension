@@ -2713,10 +2713,13 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
+      getHdPathForHardwareKeyring: this.getHdPathForHardwareKeyring.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
+      getLedgerPublicKey: this.getLedgerPublicKey.bind(this),
+      getLedgerAppConfiguration: this.getLedgerAppConfiguration.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5518,6 +5521,13 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  async getLedgerAppConfiguration() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => await keyring.bridge.getAppConfiguration(),
+    );
+  }
+
   /**
    * Fetch account list from a hardware device.
    *
@@ -5560,6 +5570,42 @@ export default class MetamaskController extends EventEmitter {
       async (keyring) => {
         return keyring.isUnlocked();
       },
+    );
+  }
+
+  /**
+   * Get the hd path currently configured on a hardware keyring.
+   *
+   * @param deviceName
+   * @returns {Promise<string>}
+   */
+  async getHdPathForHardwareKeyring(deviceName) {
+    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
+      if (typeof keyring.getHdPath === 'function') {
+        return await keyring.getHdPath();
+      }
+
+      if (keyring.hdPath) {
+        return keyring.hdPath;
+      }
+
+      if (typeof keyring.serialize === 'function') {
+        const serialized = await keyring.serialize();
+        if (serialized?.hdPath) {
+          return serialized.hdPath;
+        }
+      }
+
+      throw new Error(
+        'MetamaskController:getHdPathForHardwareKeyring - Keyring does not expose hdPath',
+      );
+    });
+  }
+
+  async getLedgerPublicKey(hdPath) {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => await keyring.bridge.getPublicKey({ hdPath }),
     );
   }
 
