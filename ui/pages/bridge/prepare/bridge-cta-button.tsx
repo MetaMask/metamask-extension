@@ -77,32 +77,41 @@ export const BridgeCTAButton = ({
   const isTxSubmittable = useIsTxSubmittable();
 
   // Optimized: Only subscribe to config (no rerenders on connection state changes)
-  const { isHardwareWalletAccount } = useHardwareWalletConfig();
+  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   // Optimized: Only subscribe to actions (stable, never rerenders)
   const { ensureDeviceReady } = useHardwareWalletActions();
 
+  const hardwareWalletName = useMemo(
+    () => (walletType ? t(walletType) : undefined),
+    [t, walletType],
+  );
+
   const label = useMemo(() => {
     if (wasTxDeclined) {
-      return 'youDeclinedTheTransaction';
+      return { key: 'youDeclinedTheTransaction' };
     }
 
     if (!fromAmount) {
       if (!toToken) {
-        return needsDestinationAddress
-          ? 'bridgeSelectTokenAmountAndAccount'
-          : 'bridgeSelectTokenAndAmount';
+        return {
+          key: needsDestinationAddress
+            ? 'bridgeSelectTokenAmountAndAccount'
+            : 'bridgeSelectTokenAndAmount',
+        };
       }
-      return needsDestinationAddress
-        ? 'bridgeSelectDestinationAccount'
-        : 'bridgeEnterAmount';
+      return {
+        key: needsDestinationAddress
+          ? 'bridgeSelectDestinationAccount'
+          : 'bridgeEnterAmount',
+      };
     }
 
     if (needsDestinationAddress) {
-      return 'bridgeSelectDestinationAccount';
+      return { key: 'bridgeSelectDestinationAccount' };
     }
 
     if (isQuoteExpired && !isLoading) {
-      return 'bridgeQuoteExpired';
+      return { key: 'bridgeQuoteExpired' };
     }
 
     if (isLoading && !isTxSubmittable && !activeQuote) {
@@ -114,17 +123,19 @@ export const BridgeCTAButton = ({
     }
 
     if (isInsufficientBalance || isInsufficientGasForQuote) {
-      return 'alertReasonInsufficientBalance';
+      return { key: 'alertReasonInsufficientBalance' };
     }
 
     if (isTxSubmittable || isTxAlertPresent || isTxAlertLoading) {
       if (isHardwareWalletAccount) {
-        return 'hardwareWalletStartTransactionFlow';
+        return hardwareWalletName
+          ? { key: 'connectHardwareDevice', args: [hardwareWalletName] }
+          : { key: 'connect' };
       }
-      return 'swap';
+      return { key: 'swap' };
     }
 
-    return 'swapSelectToken';
+    return { key: 'swapSelectToken' };
   }, [
     isLoading,
     isTxAlertPresent,
@@ -141,6 +152,7 @@ export const BridgeCTAButton = ({
     activeQuote,
     isNoQuotesAvailable,
     isHardwareWalletAccount,
+    hardwareWalletName,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
@@ -193,7 +205,7 @@ export const BridgeCTAButton = ({
         isSubmitting
       }
     >
-      {label ? t(label) : ''}
+      {label?.key ? t(label.key, label.args) : ''}
     </Button>
   ) : (
     <Row
@@ -206,7 +218,7 @@ export const BridgeCTAButton = ({
         textAlign={TextAlign.Center}
         color={TextColor.textAlternative}
       >
-        {label ? t(label) : ''}
+        {label?.key ? t(label.key, label.args) : ''}
       </Text>
       {secondaryButtonLabel && (
         <ButtonLink
