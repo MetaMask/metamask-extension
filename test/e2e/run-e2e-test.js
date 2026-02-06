@@ -139,10 +139,8 @@ async function main() {
 
     // Use enhanced spec reporter for readable console output with colors and summary
     // Only add junit reporter in CI environments
-    // const isCI =
-    //   process.env.CI === 'true' ||
-    //   process.env.GITHUB_ACTIONS === 'true' ||
-    //   false;
+    const isCI =
+      process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
     // Use enhanced reporter by default, allow override via E2E_REPORTER env var
     const consoleReporter =
       process.env.E2E_REPORTER ||
@@ -150,21 +148,21 @@ async function main() {
     const reporters = [`--reporter=${consoleReporter}`];
     const reporterOptions = [];
 
-    // if (isCI) {
-    //   // Use absolute path and ensure toConsole is false to suppress XML output
-    //   const junitOutputPath = path.resolve(
-    //     process.cwd(),
-    //     'test/test-results/e2e/[hash].xml',
-    //   );
-    //   reporters.push('--reporter=mocha-junit-reporter');
-    //   reporterOptions.push(
-    //     '--reporter-options',
-    //     JSON.stringify({
-    //       mochaFile: junitOutputPath,
-    //       toConsole: false,
-    //     }),
-    //   );
-    // }
+    if (isCI) {
+      // Use absolute path and ensure toConsole is false to suppress XML output
+      const junitOutputPath = path.resolve(
+        process.cwd(),
+        'test/test-results/e2e/[hash].xml',
+      );
+      reporters.push('--reporter=mocha-junit-reporter');
+      reporterOptions.push(
+        '--reporter-options',
+        JSON.stringify({
+          mochaFile: junitOutputPath,
+          toConsole: false,
+        }),
+      );
+    }
 
     try {
       await retry({ retries, stopAfterOneFailure }, async () => {
