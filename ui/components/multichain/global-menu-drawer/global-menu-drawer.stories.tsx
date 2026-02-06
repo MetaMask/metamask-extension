@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '../../component-library/button';
-import { Text } from '../../component-library/text';
+import { Button, Text, TextVariant } from '@metamask/design-system-react';
 import { GlobalMenuDrawer } from './global-menu-drawer';
 
 const meta: Meta<typeof GlobalMenuDrawer> = {
@@ -39,7 +38,7 @@ const DefaultWrapper = (args: React.ComponentProps<typeof GlobalMenuDrawer>) => 
         title="Example Drawer"
       >
         <div className="p-4">
-          <Text variant="headingMd" marginBottom={4}>
+          <Text variant={TextVariant.HeadingMd} className="mb-4">
             Drawer Content
           </Text>
           <Text>
@@ -71,7 +70,7 @@ const WithoutCloseButtonWrapper = () => {
       >
         <div className="p-4">
           <Text>This drawer doesn&apos;t have a close button in the header.</Text>
-          <Button onClick={() => setIsOpen(false)} marginTop={4}>
+          <Button onClick={() => setIsOpen(false)} className="mt-4">
             Close Drawer
           </Button>
         </div>
