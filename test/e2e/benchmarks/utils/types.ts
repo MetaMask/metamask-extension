@@ -64,6 +64,38 @@ export type WebVitalsMetrics = {
   clsRating: WebVitalsRating | null;
 };
 
+/** Distribution of rating buckets across benchmark runs */
+export type RatingDistribution = {
+  good: number;
+  'needs-improvement': number;
+  poor: number;
+  null: number;
+};
+
+/** Per-metric aggregated web vitals with full statistical analysis */
+export type WebVitalsAggregated = {
+  /** Aggregated INP statistics (null if no runs reported INP) */
+  inp: TimerStatistics | null;
+  /** Aggregated LCP statistics (null if no runs reported LCP) */
+  lcp: TimerStatistics | null;
+  /** Aggregated CLS statistics (null if no runs reported CLS) */
+  cls: TimerStatistics | null;
+  /** Rating distribution across all runs */
+  ratings: {
+    inp: RatingDistribution;
+    lcp: RatingDistribution;
+    cls: RatingDistribution;
+  };
+};
+
+/** Full web vitals summary: per-run snapshots for Sentry spans + aggregated stats */
+export type WebVitalsSummary = {
+  /** Individual per-iteration snapshots — preserved for granular Sentry spans */
+  runs: Array<WebVitalsMetrics & { iteration: number }>;
+  /** Aggregated statistics using outlier detection and percentile analysis */
+  aggregated: WebVitalsAggregated;
+};
+
 /** User action result with testTitle, persona and numeric timing metrics. */
 export type UserActionResult = {
   testTitle: string;
