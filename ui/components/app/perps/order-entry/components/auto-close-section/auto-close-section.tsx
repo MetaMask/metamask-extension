@@ -9,6 +9,9 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   FontWeight,
+  Button,
+  ButtonVariant,
+  ButtonSize,
 } from '@metamask/design-system-react';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import {
@@ -41,6 +44,7 @@ const SL_PRESETS = [10, 25, 50, 75];
  * @param props.onStopLossPriceChange - Callback when SL price changes
  * @param props.direction - Current order direction
  * @param props.currentPrice - Current asset price (used as entry price for new orders)
+ * @param props.entryPrice - Position entry price (modify mode - use for accurate % calc)
  */
 export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   enabled,
@@ -51,12 +55,13 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
   onStopLossPriceChange,
   direction,
   currentPrice,
+  entryPrice: entryPriceProp,
 }) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
 
-  // Use current price as the reference for percentage calculations
-  const entryPrice = currentPrice;
+  // In modify mode use position's entry price; otherwise use current price
+  const entryPrice = entryPriceProp ?? currentPrice;
 
   // Format price for display (with locale-aware formatting)
   const formatPrice = useCallback(
@@ -273,25 +278,16 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
             {/* Preset Buttons */}
             <Box flexDirection={BoxFlexDirection.Row} gap={2}>
               {TP_PRESETS.map((preset) => (
-                <Box
+                <Button
                   key={`tp-${preset}`}
-                  as="button"
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Sm}
                   onClick={() => handleTpPreset(preset)}
-                  className={twMerge(
-                    'flex-1 py-1.5 rounded-lg bg-muted cursor-pointer',
-                    'hover:bg-hover active:bg-pressed',
-                    'border-0 transition-colors duration-150',
-                    'text-center',
-                  )}
+                  className={twMerge('flex-1', 'rounded-md')}
                   data-testid={`tp-preset-${preset}`}
                 >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    +{preset}%
-                  </Text>
-                </Box>
+                  +{preset}%
+                </Button>
               ))}
             </Box>
 
@@ -363,25 +359,16 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
             {/* Preset Buttons */}
             <Box flexDirection={BoxFlexDirection.Row} gap={2}>
               {SL_PRESETS.map((preset) => (
-                <Box
+                <Button
                   key={`sl-${preset}`}
-                  as="button"
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Sm}
                   onClick={() => handleSlPreset(preset)}
-                  className={twMerge(
-                    'flex-1 py-1.5 rounded-lg bg-muted cursor-pointer',
-                    'hover:bg-hover active:bg-pressed',
-                    'border-0 transition-colors duration-150',
-                    'text-center',
-                  )}
+                  className={twMerge('flex-1', 'rounded-md')}
                   data-testid={`sl-preset-${preset}`}
                 >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
-                  >
-                    -{preset}%
-                  </Text>
-                </Box>
+                  -{preset}%
+                </Button>
               ))}
             </Box>
 

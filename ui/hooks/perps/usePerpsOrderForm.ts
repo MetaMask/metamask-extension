@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useFormatters } from '../useFormatters';
 import type {
   OrderFormState,
@@ -126,8 +126,20 @@ export function usePerpsOrderForm({
     setFormState((prev) => ({ ...prev, type: orderType }));
   }, [orderType]);
 
-  // Reset form state when mode or existingPosition changes
+  // Track the last "context" we initialized from - only reset when this changes.
+  // This prevents the reset effect from overwriting user edits (e.g. preset button clicks)
+  // when existingPosition gets a new object reference (e.g. from stream updates) but
+  // refers to the same position.
+  const lastInitKeyRef = useRef<string>('');
+
+  // Reset form state when mode changes or when switching to a different position
   useEffect(() => {
+    const initKey = `${mode}-${existingPosition?.size ?? ''}-${existingPosition?.symbol ?? ''}`;
+    if (lastInitKeyRef.current === initKey) {
+      return;
+    }
+    lastInitKeyRef.current = initKey;
+
     // Reset close percent when mode changes
     setClosePercent(100);
 

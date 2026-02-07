@@ -187,8 +187,10 @@ export type AutoCloseSectionProps = {
   onStopLossPriceChange: (price: string) => void;
   /** Current order direction (affects TP/SL validation) */
   direction: OrderDirection;
-  /** Current asset price (for TP/SL calculations) */
+  /** Current asset price (for TP/SL calculations and new orders) */
   currentPrice: number;
+  /** Position entry price (for modify mode - use instead of currentPrice for accurate % calc) */
+  entryPrice?: number;
 };
 
 /**

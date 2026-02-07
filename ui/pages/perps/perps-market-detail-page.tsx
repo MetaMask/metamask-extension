@@ -546,6 +546,22 @@ const PerpsMarketDetailPage: React.FC = () => {
     setOrderFormState(formState);
   }, []);
 
+  // Memoize existingPosition so it only changes when position data actually changes.
+  // Without this, a new object is created on every render, causing usePerpsOrderForm
+  // to reset form state (including TP/SL inputs) and overwriting user edits.
+  const existingPositionForOrder = useMemo(() => {
+    if (!position) {
+      return undefined;
+    }
+    return {
+      size: position.size,
+      leverage: position.leverage.value,
+      entryPrice: position.entryPrice,
+      takeProfitPrice: position.takeProfitPrice,
+      stopLossPrice: position.stopLossPrice,
+    };
+  }, [position]);
+
   // Handle order submission
   const handleOrderSubmit = useCallback(async () => {
     console.log('[Perps] handleOrderSubmit called');
@@ -581,20 +597,24 @@ const PerpsMarketDetailPage: React.FC = () => {
           throw new Error(result.error || 'Failed to close position');
         }
       } else if (orderMode === 'modify' && position) {
-        // Modify position mode - update TP/SL
-        if (
-          orderFormState.autoCloseEnabled &&
-          (orderFormState.takeProfitPrice || orderFormState.stopLossPrice)
-        ) {
-          const tpslParams = {
-            symbol: orderFormState.asset,
-            takeProfitPrice: orderFormState.takeProfitPrice || undefined,
-            stopLossPrice: orderFormState.stopLossPrice || undefined,
-          };
-          const result = await controller.updatePositionTPSL(tpslParams);
-          if (!result.success) {
-            throw new Error(result.error || 'Failed to update TP/SL');
-          }
+        // Modify position mode - always update TP/SL (pass undefined to clear when disabled)
+        // Strip commas from formatted price strings before sending to API
+        const cleanTp =
+          orderFormState.autoCloseEnabled && orderFormState.takeProfitPrice
+            ? orderFormState.takeProfitPrice.replace(/,/gu, '')
+            : undefined;
+        const cleanSl =
+          orderFormState.autoCloseEnabled && orderFormState.stopLossPrice
+            ? orderFormState.stopLossPrice.replace(/,/gu, '')
+            : undefined;
+        const tpslParams = {
+          symbol: orderFormState.asset,
+          takeProfitPrice: cleanTp || undefined,
+          stopLossPrice: cleanSl || undefined,
+        };
+        const result = await controller.updatePositionTPSL(tpslParams);
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to update TP/SL');
         }
       } else {
         // New order mode
@@ -1156,17 +1176,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             onFormStateChange={handleFormStateChange}
             mode={orderMode}
             orderType={orderType}
-            existingPosition={
-              position
-                ? {
-                    size: position.size,
-                    leverage: position.leverage.value,
-                    entryPrice: position.entryPrice,
-                    takeProfitPrice: position.takeProfitPrice,
-                    stopLossPrice: position.stopLossPrice,
-                  }
-                : undefined
-            }
+            existingPosition={existingPositionForOrder}
           />
         </Box>
       )}
@@ -2099,28 +2109,28 @@ const PerpsMarketDetailPage: React.FC = () => {
             gap={3}
             data-testid="perps-position-cta-buttons"
           >
-            {/* Modify Button */}
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              onClick={handleModifyPosition}
-              className="flex-1"
-              data-testid="perps-modify-cta-button"
-            >
-              {t('perpsModify')}
-            </Button>
-
-            {/* Close Button */}
+            {/* Modify Button - Primary: Update TP/SL is the common action */}
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
-              onClick={handleClosePosition}
+              onClick={handleModifyPosition}
               className={twMerge(
                 'flex-1',
                 parseFloat(position.size) >= 0
                   ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
                   : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
               )}
+              data-testid="perps-modify-cta-button"
+            >
+              {t('perpsModify')}
+            </Button>
+
+            {/* Close Button - Secondary: Destructive action, less prominent */}
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              onClick={handleClosePosition}
+              className="flex-1"
               data-testid="perps-close-cta-button"
             >
               {parseFloat(position.size) >= 0
