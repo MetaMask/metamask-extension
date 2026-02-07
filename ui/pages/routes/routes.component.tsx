@@ -68,7 +68,10 @@ import {
   PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-import { PerpsRouteWrapper } from '../../providers/perps';
+import {
+  PerpsControllerProvider,
+  PerpsRouteWrapper,
+} from '../../providers/perps';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -361,7 +364,9 @@ const WrappedMarketListView = () => (
 );
 const WrappedPerpsActivityPage = () => (
   <PerpsRouteWrapper>
-    <PerpsActivityPage />
+    <PerpsControllerProvider>
+      <PerpsActivityPage />
+    </PerpsControllerProvider>
   </PerpsRouteWrapper>
 );
 // End Lazy Routes

@@ -21,6 +21,7 @@ import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
+import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import {
   groupTransactionsByDate,
   filterTransactionsByType,
@@ -119,21 +120,7 @@ const PerpsActivityPage: React.FC = () => {
         <Box flexDirection={BoxFlexDirection.Column}>
           {/* Loading State */}
           {isLoading && transactions.length === 0 && (
-            <Box
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={8}
-              paddingBottom={8}
-              alignItems={BoxAlignItems.Center}
-              justifyContent={BoxJustifyContent.Center}
-            >
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-              >
-                {t('loading')}
-              </Text>
-            </Box>
+            <PerpsActivityPageSkeleton />
           )}
 
           {/* Error State */}

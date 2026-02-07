@@ -73,6 +73,7 @@ export {
   PerpsSectionSkeleton,
   PerpsBalanceActionsSkeleton,
   PerpsHomeCardSkeleton,
+  PerpsActivityPageSkeleton,
   PerpsDetailPageSkeleton,
 } from './perps-skeletons';
 export type { PerpsSectionSkeletonProps } from './perps-skeletons';
