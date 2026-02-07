@@ -15,17 +15,14 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
 export const PerpsCardSkeleton: React.FC = () => {
   return (
     <Box
-      className="px-4 py-3 bg-default"
+      className="pt-2 pb-2 px-4 h-[62px] bg-default"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      gap={3}
+      gap={4}
       data-testid="perps-card-skeleton"
     >
-      {/* Token Logo Skeleton */}
-      <Skeleton
-        className="h-10 w-10 shrink-0"
-        borderRadius={BorderRadius.pill}
-      />
+      {/* Token Logo Skeleton - matches AvatarTokenSize.Md (32px) */}
+      <Skeleton className="h-8 w-8 shrink-0" borderRadius={BorderRadius.pill} />
 
       {/* Left side: Symbol and info */}
       <Box

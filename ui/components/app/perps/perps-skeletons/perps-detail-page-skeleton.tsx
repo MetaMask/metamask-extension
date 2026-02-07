@@ -131,17 +131,17 @@ export const PerpsDetailPageSkeleton: React.FC = () => {
           flexDirection={BoxFlexDirection.Column}
           className="overflow-hidden rounded-xl"
         >
-          {/* Activity Items */}
+          {/* Activity Items - matches TransactionCard (62px height, 8px v-padding, 16px h-padding, 16px gap, 32px logo) */}
           {[1, 2, 3].map((index) => (
             <Box
               key={index}
-              className="w-full bg-muted px-4 py-3"
+              className="w-full bg-muted pt-2 pb-2 px-4 h-[62px]"
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
-              gap={3}
+              gap={4}
             >
               <Skeleton
-                className="h-10 w-10 shrink-0"
+                className="h-8 w-8 shrink-0"
                 borderRadius={BorderRadius.pill}
               />
               <Box

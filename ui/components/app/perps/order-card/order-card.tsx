@@ -54,7 +54,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     }
   }, [navigate, order, onClick]);
 
-  const baseStyles = 'cursor-pointer px-4 py-3';
+  const baseStyles = 'cursor-pointer pt-2 pb-2 px-4 h-[62px]';
   const variantStyles =
     variant === 'muted'
       ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
@@ -64,9 +64,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     <ButtonBase
       className={twMerge(
         // Reset ButtonBase defaults for card layout
-        'justify-start rounded-none min-w-0 h-auto',
-        // Card styles
-        'gap-3 text-left',
+        'justify-start rounded-none min-w-0',
+        // Card styles (matches tokens tab: 62px height, 8px v-padding, 16px h-padding, 16px gap)
+        'gap-4 text-left',
         baseStyles,
         variantStyles,
       )}

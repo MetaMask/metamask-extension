@@ -7,12 +7,15 @@ import {
 
 import { Skeleton } from '../../../component-library/skeleton';
 import { PerpsCardSkeleton } from './perps-card-skeleton';
+import { PerpsStartTradeCtaSkeleton } from './perps-start-trade-cta-skeleton';
 
 export type PerpsSectionSkeletonProps = {
   /** Number of card skeletons to show (default: 3) */
   cardCount?: number;
   /** Whether to show the section header skeleton */
   showHeader?: boolean;
+  /** Whether to show the Start a new trade CTA skeleton (e.g. for positions section) */
+  showStartTradeCta?: boolean;
 };
 
 /**
@@ -22,10 +25,12 @@ export type PerpsSectionSkeletonProps = {
  * @param options0
  * @param options0.cardCount
  * @param options0.showHeader
+ * @param options0.showStartTradeCta
  */
 export const PerpsSectionSkeleton: React.FC<PerpsSectionSkeletonProps> = ({
   cardCount = 3,
   showHeader = true,
+  showStartTradeCta = false,
 }) => {
   return (
     <Box
@@ -53,6 +58,9 @@ export const PerpsSectionSkeleton: React.FC<PerpsSectionSkeletonProps> = ({
           <PerpsCardSkeleton key={`card-skeleton-${index}`} />
         ))}
       </Box>
+
+      {/* Start Trade CTA Skeleton - matches positions section layout */}
+      {showStartTradeCta && <PerpsStartTradeCtaSkeleton />}
     </Box>
   );
 };

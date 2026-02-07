@@ -61,10 +61,10 @@ export const PositionCard: React.FC<PositionCardProps> = ({
     <ButtonBase
       className={twMerge(
         // Reset ButtonBase defaults for card layout
-        'justify-start rounded-none min-w-0 h-auto',
-        // Card styles
-        'gap-3 text-left cursor-pointer',
-        'bg-default px-4 py-3',
+        'justify-start rounded-none min-w-0',
+        // Card styles (matches tokens tab: 62px height, 8px v-padding, 16px h-padding, 16px gap)
+        'gap-4 text-left cursor-pointer',
+        'bg-default pt-2 pb-2 px-4 h-[62px]',
         'hover:bg-hover active:bg-pressed',
       )}
       isFullWidth

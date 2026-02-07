@@ -39,9 +39,9 @@ import {
   PerpsSectionSkeleton,
 } from './perps-skeletons';
 
-// Card styles matching PositionCard
+// Card styles matching PositionCard (aligns with tokens tab: 62px height, 8px v-padding, 16px h-padding, 16px gap)
 const CARD_STYLES =
-  'justify-start rounded-none min-w-0 h-auto gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';
+  'justify-start rounded-none min-w-0 h-[62px] gap-4 text-left cursor-pointer bg-default pt-2 pb-2 px-4 hover:bg-hover active:bg-pressed';
 
 /**
  * PerpsTabView component displays the perpetuals trading tab
@@ -125,7 +125,7 @@ export const PerpsTabView: React.FC = () => {
         data-testid="perps-tab-view-loading"
       >
         <PerpsControlBarSkeleton />
-        <PerpsSectionSkeleton cardCount={5} />
+        <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
       </Box>
     );
@@ -332,68 +332,79 @@ export const PerpsTabView: React.FC = () => {
         </>
       )}
 
-      {/* Positions Section */}
-      {hasPositions && (
+      {/* Positions + Orders sections - tighter gap between them when both shown */}
+      {(hasPositions || hasOrders) && (
         <Box
           flexDirection={BoxFlexDirection.Column}
           gap={2}
-          data-testid="perps-positions-section"
+          data-testid="perps-positions-orders-section"
         >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-            paddingLeft={4}
-            paddingRight={4}
-            paddingTop={4}
-            marginBottom={2}
-          >
-            <Text fontWeight={FontWeight.Medium}>{t('perpsPositions')}</Text>
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
+          {hasPositions && (
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              gap={2}
+              data-testid="perps-positions-section"
             >
-              {t('perpsCloseAll')}
-            </Text>
-          </Box>
-          <Box flexDirection={BoxFlexDirection.Column}>
-            {positions.map((position) => (
-              <PositionCard key={position.symbol} position={position} />
-            ))}
-          </Box>
-          <StartTradeCta onPress={handleNewTrade} />
-        </Box>
-      )}
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={4}
+                marginBottom={2}
+              >
+                <Text fontWeight={FontWeight.Medium}>
+                  {t('perpsPositions')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsCloseAll')}
+                </Text>
+              </Box>
+              <Box flexDirection={BoxFlexDirection.Column}>
+                {positions.map((position) => (
+                  <PositionCard key={position.symbol} position={position} />
+                ))}
+              </Box>
+              <StartTradeCta onPress={handleNewTrade} />
+            </Box>
+          )}
 
-      {/* Orders Section */}
-      {hasOrders && (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          gap={2}
-          data-testid="perps-orders-section"
-        >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Center}
-            paddingLeft={4}
-            paddingRight={4}
-            paddingTop={4}
-            marginBottom={2}
-          >
-            <Text fontWeight={FontWeight.Medium}>{t('perpsOpenOrders')}</Text>
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
+          {hasOrders && (
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              gap={2}
+              data-testid="perps-orders-section"
             >
-              {t('perpsCloseAll')}
-            </Text>
-          </Box>
-          <Box flexDirection={BoxFlexDirection.Column}>
-            {orders.map((order) => (
-              <OrderCard key={order.orderId} order={order} />
-            ))}
-          </Box>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={hasPositions ? 0 : 4}
+                marginBottom={2}
+              >
+                <Text fontWeight={FontWeight.Medium}>
+                  {t('perpsOpenOrders')}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsCloseAll')}
+                </Text>
+              </Box>
+              <Box flexDirection={BoxFlexDirection.Column}>
+                {orders.map((order) => (
+                  <OrderCard key={order.orderId} order={order} />
+                ))}
+              </Box>
+            </Box>
+          )}
         </Box>
       )}
 

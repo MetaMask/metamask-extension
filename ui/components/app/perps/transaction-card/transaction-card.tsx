@@ -165,7 +165,10 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     </>
   );
 
-  const sharedClassName = twMerge('gap-3 px-4 py-3', variantStyles);
+  const sharedClassName = twMerge(
+    'gap-4 pt-2 pb-2 px-4 h-[62px]',
+    variantStyles,
+  );
 
   if (isClickable) {
     return (

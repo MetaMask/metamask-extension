@@ -6,6 +6,12 @@
  */
 
 /**
+ * Height of list item rows (positions, orders, markets, transactions).
+ * Matches ASSET_CELL_HEIGHT from the tokens tab for visual consistency.
+ */
+export const PERPS_LIST_ITEM_HEIGHT = 62;
+
+/**
  * HyperLiquid asset icons base URL
  * Used to fetch asset icons for perps trading pairs
  */
@@ -154,5 +160,7 @@ export const getHip3MarketType = (
   symbol: string,
   fallbackMarketType?: string,
 ): Hip3MarketType | undefined => {
-  return HIP3_ASSET_MARKET_TYPES[symbol] ?? (fallbackMarketType as Hip3MarketType);
+  return (
+    HIP3_ASSET_MARKET_TYPES[symbol] ?? (fallbackMarketType as Hip3MarketType)
+  );
 };
