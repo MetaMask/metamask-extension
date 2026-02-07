@@ -21,6 +21,7 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -29,6 +30,7 @@ import {
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
 } from '../../hooks/perps/stream';
+import { getPerpsController } from '../../providers/perps';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -53,7 +55,69 @@ import {
   type OrderFormState,
   type OrderMode,
 } from '../../components/app/perps/order-entry';
-import type { OrderType } from '../../components/app/perps/types';
+import type { OrderType, OrderParams } from '../../components/app/perps/types';
+
+/**
+ * Convert UI OrderFormState to PerpsController OrderParams
+ *
+ * @param formState - The form state from OrderEntry component
+ * @param currentPrice - Current market price
+ * @param mode - Order mode ('new', 'modify', 'close')
+ * @param existingPositionSize - Size of existing position (for close/modify modes)
+ * @returns OrderParams for the PerpsController
+ */
+function formStateToOrderParams(
+  formState: OrderFormState,
+  currentPrice: number,
+  mode: OrderMode,
+  existingPositionSize?: string,
+): OrderParams {
+  const isBuy = formState.direction === 'long';
+
+  // Calculate position size from margin and leverage
+  // Position size = (margin * leverage) / price
+  const marginAmount = parseFloat(formState.amount) || 0;
+  const positionSize = (marginAmount * formState.leverage) / currentPrice;
+
+  // For close mode, use the existing position size
+  const size =
+    mode === 'close' && existingPositionSize
+      ? Math.abs(parseFloat(existingPositionSize)).toString()
+      : positionSize.toString();
+
+  const params: OrderParams = {
+    symbol: formState.asset,
+    isBuy,
+    size,
+    orderType: formState.type,
+    leverage: formState.leverage,
+    currentPrice,
+    usdAmount: formState.amount,
+  };
+
+  // Add limit price for limit orders
+  if (formState.type === 'limit' && formState.limitPrice) {
+    params.price = formState.limitPrice;
+  }
+
+  // Add take profit if set and auto-close is enabled
+  if (formState.autoCloseEnabled && formState.takeProfitPrice) {
+    params.takeProfitPrice = formState.takeProfitPrice;
+  }
+
+  // Add stop loss if set and auto-close is enabled
+  if (formState.autoCloseEnabled && formState.stopLossPrice) {
+    params.stopLossPrice = formState.stopLossPrice;
+  }
+
+  // Mark as reduce only for close mode
+  if (mode === 'close') {
+    params.reduceOnly = true;
+    params.isFullClose = true;
+  }
+
+  return params;
+}
 
 /**
  * View state for the market detail page
@@ -72,6 +136,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = selectedAccount?.address;
   const { formatCurrencyWithMinThreshold, formatTokenQuantity, formatNumber } =
     useFormatters();
 
@@ -138,6 +204,10 @@ const PerpsMarketDetailPage: React.FC = () => {
   );
   // Order mode: 'new' for opening, 'modify' for adjusting, 'close' for closing
   const [orderMode, setOrderMode] = useState<OrderMode>('new');
+
+  // Order submission states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Get available balance from account state
   const availableBalance = account ? parseFloat(account.availableBalance) : 0;
@@ -253,15 +323,75 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   // Handle order submission
-  const handleOrderSubmit = useCallback(() => {
-    if (!orderFormState) {
+  const handleOrderSubmit = useCallback(async () => {
+    if (!orderFormState || !selectedAddress) {
       return;
     }
-    // TODO: Integrate with PerpsController to submit order
-    // For now, just log the order and return to detail view
-    console.log('Order submitted:', orderFormState);
-    setCurrentView('detail');
-  }, [orderFormState]);
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      // Get the controller lazily when submitting (avoids hook initialization issues)
+      const controller = await getPerpsController(selectedAddress);
+
+      if (orderMode === 'close' && position) {
+        // Close position mode - requires currentPrice for market orders
+        const closeParams = {
+          symbol: orderFormState.asset,
+          // Close the full position size
+          size: Math.abs(parseFloat(position.size)).toString(),
+          // Market order type for immediate execution
+          orderType: 'market' as const,
+          // Current price is required for slippage calculation
+          currentPrice,
+        };
+        const result = await controller.closePosition(closeParams);
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to close position');
+        }
+      } else if (orderMode === 'modify' && position) {
+        // Modify position mode - update TP/SL
+        if (
+          orderFormState.autoCloseEnabled &&
+          (orderFormState.takeProfitPrice || orderFormState.stopLossPrice)
+        ) {
+          const tpslParams = {
+            symbol: orderFormState.asset,
+            takeProfitPrice: orderFormState.takeProfitPrice || undefined,
+            stopLossPrice: orderFormState.stopLossPrice || undefined,
+          };
+          const result = await controller.updatePositionTPSL(tpslParams);
+          if (!result.success) {
+            throw new Error(result.error || 'Failed to update TP/SL');
+          }
+        }
+      } else {
+        // New order mode
+        const orderParams = formStateToOrderParams(
+          orderFormState,
+          currentPrice,
+          orderMode,
+          position?.size,
+        );
+        const result = await controller.placeOrder(orderParams);
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to place order');
+        }
+      }
+
+      // Success - return to detail view and reset mode
+      setCurrentView('detail');
+      setOrderMode('new');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      setSubmitError(errorMessage);
+      console.error('Order submission failed:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [orderFormState, selectedAddress, orderMode, position, currentPrice]);
 
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere
@@ -1166,22 +1296,48 @@ const PerpsMarketDetailPage: React.FC = () => {
         paddingTop={3}
         paddingBottom={4}
       >
-        {/* Order Mode: Show Submit Order button */}
+        {/* Order Mode: Show Submit Order button with error display */}
         {currentView === 'order' && (
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            onClick={handleOrderSubmit}
-            className={twMerge(
-              'w-full',
-              isLong
-                ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
-                : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            {/* Error message display */}
+            {submitError && (
+              <Box
+                className="bg-error-muted rounded-lg"
+                padding={3}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+              >
+                <Icon
+                  name={IconName.Warning}
+                  size={IconSize.Sm}
+                  color={IconColor.ErrorDefault}
+                />
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.ErrorDefault}
+                >
+                  {submitError}
+                </Text>
+              </Box>
             )}
-            data-testid="submit-order-button"
-          >
-            {submitButtonText}
-          </Button>
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              onClick={handleOrderSubmit}
+              disabled={isSubmitting}
+              className={twMerge(
+                'w-full',
+                isLong
+                  ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
+                  : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
+                isSubmitting && 'opacity-70 cursor-not-allowed',
+              )}
+              data-testid="submit-order-button"
+            >
+              {isSubmitting ? t('perpsSubmitting') : submitButtonText}
+            </Button>
+          </Box>
         )}
 
         {/* Detail Mode with Position: Show Modify and Close buttons */}
