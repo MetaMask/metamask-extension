@@ -5488,6 +5488,10 @@
   "perpsStatusTriggered": {
     "message": "Triggered"
   },
+  "perpsSubmitting": {
+    "message": "Submitting...",
+    "description": "Loading text shown while an order is being submitted"
+  },
   "perpsTotalBalance": {
     "message": "Total Balance"
   },

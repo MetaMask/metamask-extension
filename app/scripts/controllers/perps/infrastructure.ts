@@ -22,6 +22,8 @@ import type {
   PerpsTraceName,
   PerpsTraceValue,
 } from '@metamask/perps-controller';
+// eslint-disable-next-line import/no-restricted-paths
+import { submitRequestToBackground } from '../../../../ui/store/background-connection';
 
 /**
  * Create a stubbed logger for error reporting.
@@ -145,9 +147,14 @@ function createControllerAccess(
       },
     },
     keyring: {
-      signTypedMessage: async (_msgParams, _version) => {
-        // TODO: Wire to KeyringController for trading operations
-        throw new Error('Keyring signing not implemented in PoC');
+      signTypedMessage: async (msgParams, _version) => {
+        // Call the background API to sign typed data via KeyringController
+        // The background handles EIP-712 V4 signing for Hyperliquid orders
+        const signature = await submitRequestToBackground<string>(
+          'perpsSignTypedData',
+          [msgParams],
+        );
+        return signature;
       },
     },
     network: {
