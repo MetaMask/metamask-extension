@@ -64,25 +64,17 @@ export const ActivityList = () => {
 
   // Merge all transactions and flatten for virtualization
   const flattenedItems = useMemo(() => {
-    const apiTransactions =
+    const evmTransactions =
       data?.pages?.flatMap((page) => page.data ?? []) ?? [];
+
+    // Combine API (EVM) + non-EVM transactions - both are TransactionViewModel[]
+    const allCompleted = [...evmTransactions, ...nonEvmTransactions];
 
     // Filter local completed transactions not yet in API (deduped by hash)
     const localCompletedNotInApi = filterLocalCompletedNotInApi(
       recentTransactionGroups,
-      apiTransactions,
+      evmTransactions,
     );
-
-    // Combine API (EVM) + non-EVM transactions - both are TransactionViewModel[]
-    const allCompleted = [...apiTransactions, ...nonEvmTransactions];
-
-    console.log(
-      '>>> pendingTransactionGroups',
-      pendingTransactionGroups.length,
-    );
-    console.log('>>> localCompletedNotInApi', localCompletedNotInApi.length);
-    console.log('>>> apiTransactions', apiTransactions.length);
-    console.log('>>> nonEvmTransactions', nonEvmTransactions.length);
 
     // Merge all three types by time:
     // - pending (TransactionGroup) → rendered by PendingActivityItem

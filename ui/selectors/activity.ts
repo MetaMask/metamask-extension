@@ -50,7 +50,7 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
  *
  * We need steps 1-3 from Redux because they're not in API yet.
  */
-export const getLocalPendingTransactionGroups = createSelector(
+export const getPendingTransactionGroups = createSelector(
   getTransactions,
   getSelectedInternalAccount,
   (transactions, selectedAccount): TransactionGroup[] => {
