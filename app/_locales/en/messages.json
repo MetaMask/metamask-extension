@@ -5492,6 +5492,18 @@
     "message": "Submitting...",
     "description": "Loading text shown while an order is being submitted"
   },
+  "perpsTakeProfit": {
+    "message": "Take Profit",
+    "description": "Label for take profit price input"
+  },
+  "perpsStopLoss": {
+    "message": "Stop Loss",
+    "description": "Label for stop loss price input"
+  },
+  "perpsSaveChanges": {
+    "message": "Save Changes",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsTotalBalance": {
     "message": "Total Balance"
   },

@@ -1,4 +1,10 @@
-import React, { useMemo, useCallback, useState, useRef } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -56,6 +62,15 @@ import {
   type OrderMode,
 } from '../../components/app/perps/order-entry';
 import type { OrderType, OrderParams } from '../../components/app/perps/types';
+import { TextField, TextFieldSize } from '../../components/component-library';
+import {
+  BorderRadius,
+  BackgroundColor,
+} from '../../helpers/constants/design-system';
+
+// Preset percentage options for quick selection (matching AutoCloseSection)
+const TP_PRESETS = [10, 25, 50, 100];
+const SL_PRESETS = [10, 25, 50, 75];
 
 /**
  * Convert UI OrderFormState to PerpsController OrderParams
@@ -85,6 +100,9 @@ function formStateToOrderParams(
       ? Math.abs(parseFloat(existingPositionSize)).toString()
       : positionSize.toString();
 
+  // Clean commas from formatted values before sending to API
+  const cleanAmount = formState.amount.replace(/,/gu, '');
+
   const params: OrderParams = {
     symbol: formState.asset,
     isBuy,
@@ -92,22 +110,24 @@ function formStateToOrderParams(
     orderType: formState.type,
     leverage: formState.leverage,
     currentPrice,
-    usdAmount: formState.amount,
+    usdAmount: cleanAmount,
   };
 
   // Add limit price for limit orders
   if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = formState.limitPrice;
+    params.price = formState.limitPrice.replace(/,/gu, '');
   }
 
   // Add take profit if set and auto-close is enabled
+  // Clean commas from formatted price values before sending to API
   if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    params.takeProfitPrice = formState.takeProfitPrice;
+    params.takeProfitPrice = formState.takeProfitPrice.replace(/,/gu, '');
   }
 
   // Add stop loss if set and auto-close is enabled
+  // Clean commas from formatted price values before sending to API
   if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    params.stopLossPrice = formState.stopLossPrice;
+    params.stopLossPrice = formState.stopLossPrice.replace(/,/gu, '');
   }
 
   // Mark as reduce only for close mode
@@ -208,6 +228,50 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Order submission states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  // Track pending order waiting for position to appear in stream
+  const [pendingOrderSymbol, setPendingOrderSymbol] = useState<string | null>(
+    null,
+  );
+
+  // Derived state: true when submitting OR waiting for position confirmation
+  const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
+
+  // Auto close card expansion state
+  const [isAutoCloseExpanded, setIsAutoCloseExpanded] = useState(false);
+  const [editingTpPrice, setEditingTpPrice] = useState<string>('');
+  const [editingSlPrice, setEditingSlPrice] = useState<string>('');
+  const [isSavingTPSL, setIsSavingTPSL] = useState(false);
+  const [tpslError, setTpslError] = useState<string | null>(null);
+  // Track pending TP/SL values waiting for stream confirmation
+  const [pendingTpsl, setPendingTpsl] = useState<{
+    tp: string | undefined;
+    sl: string | undefined;
+  } | null>(null);
+
+  // Derived state: true when saving OR waiting for stream confirmation
+  const isTPSLPending = isSavingTPSL || pendingTpsl !== null;
+
+  // Helper: format price for display (with locale-aware formatting)
+  const formatEditPrice = useCallback(
+    (value: number): string => {
+      return formatNumber(value, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    },
+    [formatNumber],
+  );
+
+  // Helper: format percentage for display
+  const formatEditPercent = useCallback(
+    (value: number): string => {
+      return formatNumber(value, {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      });
+    },
+    [formatNumber],
+  );
 
   // Get available balance from account state
   const availableBalance = account ? parseFloat(account.availableBalance) : 0;
@@ -227,6 +291,152 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
     return parseInt(market.maxLeverage.replace('x', ''), 10);
   }, [market]);
+
+  // Get position direction for TP/SL calculations (default to long if no position)
+  const positionDirection = useMemo(() => {
+    if (!position) {
+      return 'long';
+    }
+    return parseFloat(position.size) >= 0 ? 'long' : 'short';
+  }, [position]);
+
+  // Use entry price for existing position, or current price for display
+  const entryPriceForEdit = useMemo(() => {
+    if (position?.entryPrice) {
+      return parseFloat(position.entryPrice.replace(/,/gu, ''));
+    }
+    return currentPrice;
+  }, [position, currentPrice]);
+
+  // Convert price to percentage for display
+  const priceToPercentForEdit = useCallback(
+    (price: string, isTP: boolean): string => {
+      if (!price || !entryPriceForEdit) {
+        return '';
+      }
+      const cleanPrice = price.replace(/,/gu, '');
+      const priceNum = parseFloat(cleanPrice);
+      if (isNaN(priceNum) || priceNum <= 0) {
+        return '';
+      }
+
+      const diff = priceNum - entryPriceForEdit;
+      const percentChange = (diff / entryPriceForEdit) * 100;
+
+      // For long: TP is above entry (positive %), SL is below entry (show as positive loss %)
+      // For short: TP is below entry (show as positive profit %), SL is above entry (show as positive loss %)
+      if (positionDirection === 'long') {
+        return formatEditPercent(isTP ? percentChange : -percentChange);
+      }
+      return formatEditPercent(isTP ? -percentChange : percentChange);
+    },
+    [entryPriceForEdit, positionDirection, formatEditPercent],
+  );
+
+  // Convert percentage to price
+  const percentToPriceForEdit = useCallback(
+    (percent: number, isTP: boolean): string => {
+      if (!entryPriceForEdit || percent === 0) {
+        return '';
+      }
+
+      // For long: TP = entry * (1 + %), SL = entry * (1 - %)
+      // For short: TP = entry * (1 - %), SL = entry * (1 + %)
+      let multiplier: number;
+      if (positionDirection === 'long') {
+        multiplier = isTP ? 1 + percent / 100 : 1 - percent / 100;
+      } else {
+        multiplier = isTP ? 1 - percent / 100 : 1 + percent / 100;
+      }
+
+      const price = entryPriceForEdit * multiplier;
+      return formatEditPrice(price);
+    },
+    [entryPriceForEdit, positionDirection, formatEditPrice],
+  );
+
+  // Computed percentage values for TP/SL editing
+  const editingTpPercent = useMemo(
+    () => priceToPercentForEdit(editingTpPrice, true),
+    [priceToPercentForEdit, editingTpPrice],
+  );
+
+  const editingSlPercent = useMemo(
+    () => priceToPercentForEdit(editingSlPrice, false),
+    [priceToPercentForEdit, editingSlPrice],
+  );
+
+  // Handlers for TP preset buttons
+  const handleTpPresetClick = useCallback(
+    (percent: number) => {
+      const newPrice = percentToPriceForEdit(percent, true);
+      setEditingTpPrice(newPrice);
+    },
+    [percentToPriceForEdit],
+  );
+
+  // Handlers for SL preset buttons
+  const handleSlPresetClick = useCallback(
+    (percent: number) => {
+      const newPrice = percentToPriceForEdit(percent, false);
+      setEditingSlPrice(newPrice);
+    },
+    [percentToPriceForEdit],
+  );
+
+  // Handler for TP percentage input change (bidirectional)
+  const handleTpPercentInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (value === '' || /^-?\d*\.?\d*$/u.test(value)) {
+        const numValue = parseFloat(value);
+        if (value === '' || value === '-') {
+          setEditingTpPrice('');
+        } else if (!isNaN(numValue)) {
+          const newPrice = percentToPriceForEdit(numValue, true);
+          setEditingTpPrice(newPrice);
+        }
+      }
+    },
+    [percentToPriceForEdit],
+  );
+
+  // Handler for SL percentage input change (bidirectional)
+  const handleSlPercentInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = event.target;
+      if (value === '' || /^-?\d*\.?\d*$/u.test(value)) {
+        const numValue = parseFloat(value);
+        if (value === '' || value === '-') {
+          setEditingSlPrice('');
+        } else if (!isNaN(numValue)) {
+          const newPrice = percentToPriceForEdit(numValue, false);
+          setEditingSlPrice(newPrice);
+        }
+      }
+    },
+    [percentToPriceForEdit],
+  );
+
+  // Handler for TP price input blur (format the value)
+  const handleTpPriceBlur = useCallback(() => {
+    if (editingTpPrice) {
+      const numValue = parseFloat(editingTpPrice.replace(/,/gu, ''));
+      if (!isNaN(numValue) && numValue > 0) {
+        setEditingTpPrice(formatEditPrice(numValue));
+      }
+    }
+  }, [editingTpPrice, formatEditPrice]);
+
+  // Handler for SL price input blur (format the value)
+  const handleSlPriceBlur = useCallback(() => {
+    if (editingSlPrice) {
+      const numValue = parseFloat(editingSlPrice.replace(/,/gu, ''));
+      if (!isNaN(numValue) && numValue > 0) {
+        setEditingSlPrice(formatEditPrice(numValue));
+      }
+    }
+  }, [editingSlPrice, formatEditPrice]);
 
   // Handle candle period change
   //
@@ -319,12 +529,20 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Handle form state changes from OrderEntry
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
+    console.log('[Perps] handleFormStateChange:', formState.amount, formState);
     setOrderFormState(formState);
   }, []);
 
   // Handle order submission
   const handleOrderSubmit = useCallback(async () => {
+    console.log('[Perps] handleOrderSubmit called');
+    console.log('[Perps] orderFormState:', orderFormState);
+    console.log('[Perps] orderMode:', orderMode);
+
     if (!orderFormState || !selectedAddress) {
+      console.log(
+        '[Perps] Early return - missing orderFormState or selectedAddress',
+      );
       return;
     }
 
@@ -336,11 +554,10 @@ const PerpsMarketDetailPage: React.FC = () => {
       const controller = await getPerpsController(selectedAddress);
 
       if (orderMode === 'close' && position) {
-        // Close position mode - requires currentPrice for market orders
+        // Close position mode - don't pass size to close full position
+        // The controller will automatically close the entire position when size is omitted
         const closeParams = {
           symbol: orderFormState.asset,
-          // Close the full position size
-          size: Math.abs(parseFloat(position.size)).toString(),
           // Market order type for immediate execution
           orderType: 'market' as const,
           // Current price is required for slippage calculation
@@ -374,13 +591,23 @@ const PerpsMarketDetailPage: React.FC = () => {
           orderMode,
           position?.size,
         );
+        console.log('[Perps] Placing order with params:', orderParams);
         const result = await controller.placeOrder(orderParams);
+        console.log('[Perps] Order result:', result);
         if (!result.success) {
           throw new Error(result.error || 'Failed to place order');
         }
+
+        // Set pending state - wait for position to appear in stream before navigating
+        console.log(
+          '[Perps] Setting pending order symbol:',
+          orderFormState.asset,
+        );
+        setPendingOrderSymbol(orderFormState.asset);
+        return; // Don't navigate yet, wait for stream confirmation
       }
 
-      // Success - return to detail view and reset mode
+      // Success for close/modify - return to detail view immediately
       setCurrentView('detail');
       setOrderMode('new');
     } catch (error) {
@@ -392,6 +619,211 @@ const PerpsMarketDetailPage: React.FC = () => {
       setIsSubmitting(false);
     }
   }, [orderFormState, selectedAddress, orderMode, position, currentPrice]);
+
+  // Initialize TP/SL editing values only when the card is first expanded
+  // We use a ref to track if we've already initialized to prevent stream updates
+  // from overwriting user edits
+  const hasInitializedTpsl = useRef(false);
+
+  useEffect(() => {
+    console.log('[Perps] Init effect - isAutoCloseExpanded:', isAutoCloseExpanded, 'hasInitialized:', hasInitializedTpsl.current);
+
+    // Reset the initialization flag when card is collapsed
+    if (!isAutoCloseExpanded) {
+      hasInitializedTpsl.current = false;
+      return;
+    }
+
+    // Only initialize once when the card is first expanded
+    if (isAutoCloseExpanded && position && !hasInitializedTpsl.current) {
+      console.log('[Perps] Initializing TP/SL from position:', {
+        tp: position.takeProfitPrice,
+        sl: position.stopLossPrice,
+      });
+      setEditingTpPrice(position.takeProfitPrice ?? '');
+      setEditingSlPrice(position.stopLossPrice ?? '');
+      setTpslError(null);
+      hasInitializedTpsl.current = true;
+    }
+  }, [isAutoCloseExpanded, position]);
+
+  // Handle auto close card toggle
+  const handleAutoCloseToggle = useCallback(() => {
+    setIsAutoCloseExpanded((prev) => !prev);
+    setTpslError(null);
+  }, []);
+
+  // Handle saving TP/SL changes
+  const handleSaveTPSL = useCallback(async () => {
+    if (!selectedAddress || !position) {
+      return;
+    }
+
+    setIsSavingTPSL(true);
+    setTpslError(null);
+
+    try {
+      const controller = await getPerpsController(selectedAddress);
+
+      // Clean price strings (remove commas from formatted values)
+      const cleanTpPrice = editingTpPrice.replace(/,/gu, '').trim();
+      const cleanSlPrice = editingSlPrice.replace(/,/gu, '').trim();
+
+      const tpslParams = {
+        symbol: position.symbol,
+        // Send undefined to clear, or the price string if set
+        takeProfitPrice: cleanTpPrice || undefined,
+        stopLossPrice: cleanSlPrice || undefined,
+      };
+
+      console.log('[Perps] Updating TP/SL with params:', tpslParams);
+      const result = await controller.updatePositionTPSL(tpslParams);
+      console.log('[Perps] TP/SL update result:', result);
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to update TP/SL');
+      }
+
+      // Success - set pending state and wait for stream to confirm before collapsing
+      // This prevents the brief flash of stale/zero values
+      setPendingTpsl({
+        tp: cleanTpPrice || undefined,
+        sl: cleanSlPrice || undefined,
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      setTpslError(errorMessage);
+      console.error('TP/SL update failed:', error);
+    } finally {
+      setIsSavingTPSL(false);
+    }
+  }, [selectedAddress, position, editingTpPrice, editingSlPrice]);
+
+  // Watch for stream to confirm TP/SL update, then collapse the card
+  useEffect(() => {
+    if (!pendingTpsl || !position) {
+      return;
+    }
+
+    // Normalize values for comparison - compare as numbers to handle formatting differences
+    const normalizeToNumber = (
+      val: string | undefined | null,
+    ): number | null => {
+      if (!val || val.trim() === '') {
+        return null;
+      }
+      const cleaned = val.replace(/,/gu, '').trim();
+      const num = parseFloat(cleaned);
+      return isNaN(num) ? null : num;
+    };
+
+    const currentTpNum = normalizeToNumber(position.takeProfitPrice);
+    const currentSlNum = normalizeToNumber(position.stopLossPrice);
+    const pendingTpNum = normalizeToNumber(pendingTpsl.tp);
+    const pendingSlNum = normalizeToNumber(pendingTpsl.sl);
+
+    console.log('[Perps] Comparing TP/SL values:', {
+      currentTp: position.takeProfitPrice,
+      currentTpNum,
+      pendingTp: pendingTpsl.tp,
+      pendingTpNum,
+      currentSl: position.stopLossPrice,
+      currentSlNum,
+      pendingSl: pendingTpsl.sl,
+      pendingSlNum,
+    });
+
+    // Compare as numbers with small tolerance for floating point differences
+    const numbersMatch = (a: number | null, b: number | null): boolean => {
+      if (a === null && b === null) {
+        return true;
+      }
+      if (a === null || b === null) {
+        return false;
+      }
+      // Use relative tolerance for comparison
+      const tolerance = Math.max(Math.abs(a), Math.abs(b)) * 0.0001;
+      return Math.abs(a - b) <= tolerance;
+    };
+
+    const tpMatches = numbersMatch(currentTpNum, pendingTpNum);
+    const slMatches = numbersMatch(currentSlNum, pendingSlNum);
+
+    console.log('[Perps] TP matches:', tpMatches, 'SL matches:', slMatches);
+
+    if (tpMatches && slMatches) {
+      console.log('[Perps] Stream confirmed TP/SL update, collapsing card');
+      // Stream confirmed - clear pending and collapse
+      setPendingTpsl(null);
+      setIsAutoCloseExpanded(false);
+    }
+  }, [pendingTpsl, position]);
+
+  // Fallback timeout: if stream doesn't confirm within 10 seconds, collapse anyway
+  useEffect(() => {
+    if (!pendingTpsl) {
+      return undefined;
+    }
+
+    const timeout = setTimeout(() => {
+      console.warn(
+        '[Perps] TP/SL stream confirmation timed out, collapsing anyway',
+      );
+      setPendingTpsl(null);
+      setIsAutoCloseExpanded(false);
+    }, 10000);
+
+    return () => clearTimeout(timeout);
+  }, [pendingTpsl]);
+
+  // Watch for new position to appear in stream after order placement
+  useEffect(() => {
+    if (!pendingOrderSymbol) {
+      return;
+    }
+
+    console.log(
+      '[Perps] Watching for position, pendingOrderSymbol:',
+      pendingOrderSymbol,
+    );
+    console.log(
+      '[Perps] Current allPositions symbols:',
+      allPositions.map((p) => p.symbol),
+    );
+
+    // Check if position for this symbol now exists
+    const hasPosition = allPositions.some(
+      (p) => p.symbol === pendingOrderSymbol,
+    );
+
+    if (hasPosition) {
+      console.log('[Perps] Position found! Navigating to detail view');
+      // Position confirmed - clear pending and navigate to detail view
+      setPendingOrderSymbol(null);
+      setIsSubmitting(false);
+      setCurrentView('detail');
+      setOrderMode('new');
+    }
+  }, [pendingOrderSymbol, allPositions]);
+
+  // Fallback timeout: if position doesn't appear within 15 seconds, navigate anyway
+  useEffect(() => {
+    if (!pendingOrderSymbol) {
+      return undefined;
+    }
+
+    const timeout = setTimeout(() => {
+      console.warn(
+        '[Perps] Position stream confirmation timed out, navigating anyway',
+      );
+      setPendingOrderSymbol(null);
+      setIsSubmitting(false);
+      setCurrentView('detail');
+      setOrderMode('new');
+    }, 15000);
+
+    return () => clearTimeout(timeout);
+  }, [pendingOrderSymbol]);
 
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere
@@ -710,7 +1142,15 @@ const PerpsMarketDetailPage: React.FC = () => {
 
       {/* Order Entry View - shown when in order mode */}
       {currentView === 'order' && (
-        <Box paddingLeft={4} paddingRight={4} paddingTop={4} className="flex-1">
+        <Box
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={4}
+          className={twMerge(
+            'flex-1',
+            isOrderPending && 'pointer-events-none opacity-50',
+          )}
+        >
           <OrderEntry
             asset={decodedSymbol}
             currentPrice={currentPrice}
@@ -865,35 +1305,352 @@ const PerpsMarketDetailPage: React.FC = () => {
                   </Box>
                 </Box>
 
-                {/* Third Row: Auto Close (Full Width) */}
+                {/* Third Row: Auto Close (Full Width) - Expandable */}
                 <Box
-                  className="cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
+                  className="rounded-xl bg-muted overflow-hidden"
                   flexDirection={BoxFlexDirection.Column}
-                  onClick={() => {
-                    // TODO: Handle auto close card press
-                  }}
                 >
-                  <Box paddingBottom={1}>
-                    <Text
-                      variant={TextVariant.BodySm}
-                      color={TextColor.TextAlternative}
-                    >
-                      {t('perpsAutoClose')}
-                    </Text>
-                  </Box>
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
+                  {/* Header - Always visible, click to toggle */}
+                  <Box
+                    className={twMerge(
+                      'cursor-pointer px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed transition-all duration-200',
+                      isAutoCloseExpanded ? 'rounded-t-xl' : 'rounded-xl',
+                    )}
+                    flexDirection={BoxFlexDirection.Row}
+                    justifyContent={BoxJustifyContent.Between}
+                    alignItems={BoxAlignItems.Center}
+                    onClick={handleAutoCloseToggle}
                   >
-                    TP{' '}
-                    {position.takeProfitPrice
-                      ? `$${position.takeProfitPrice}`
-                      : '-'}
-                    , SL{' '}
-                    {position.stopLossPrice
-                      ? `$${position.stopLossPrice}`
-                      : '-'}
-                  </Text>
+                    <Box flexDirection={BoxFlexDirection.Column}>
+                      <Box paddingBottom={1}>
+                        <Text
+                          variant={TextVariant.BodySm}
+                          color={TextColor.TextAlternative}
+                        >
+                          {t('perpsAutoClose')}
+                        </Text>
+                      </Box>
+                      <Box
+                        flexDirection={BoxFlexDirection.Row}
+                        alignItems={BoxAlignItems.Center}
+                        gap={1}
+                      >
+                        <Text
+                          variant={TextVariant.BodyMd}
+                          fontWeight={FontWeight.Medium}
+                        >
+                          TP{' '}
+                        </Text>
+                        <Text
+                          variant={TextVariant.BodyMd}
+                          fontWeight={FontWeight.Medium}
+                        >
+                          {position.takeProfitPrice
+                            ? `$${position.takeProfitPrice}`
+                            : '-'}
+                        </Text>
+                        <Text
+                          variant={TextVariant.BodyMd}
+                          fontWeight={FontWeight.Medium}
+                        >
+                          , SL{' '}
+                        </Text>
+                        <Text
+                          variant={TextVariant.BodyMd}
+                          fontWeight={FontWeight.Medium}
+                        >
+                          {position.stopLossPrice
+                            ? `$${position.stopLossPrice}`
+                            : '-'}
+                        </Text>
+                      </Box>
+                    </Box>
+                    <Icon
+                      name={IconName.ArrowDown}
+                      size={IconSize.Sm}
+                      color={IconColor.IconAlternative}
+                      className={twMerge(
+                        'transition-transform duration-300 ease-in-out',
+                        isAutoCloseExpanded && 'rotate-180',
+                      )}
+                    />
+                  </Box>
+
+                  {/* Expanded content - TP/SL inputs */}
+                  <Box
+                    className={twMerge(
+                      'grid transition-all duration-300 ease-in-out',
+                      isAutoCloseExpanded
+                        ? 'grid-rows-[1fr] opacity-100'
+                        : 'grid-rows-[0fr] opacity-0',
+                    )}
+                  >
+                    <Box
+                      className="overflow-hidden border-t border-muted"
+                      flexDirection={BoxFlexDirection.Column}
+                    >
+                      <Box
+                        className="px-4 py-3"
+                        flexDirection={BoxFlexDirection.Column}
+                        gap={4}
+                      >
+                        {/* Take Profit Section */}
+                        <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+                          <Text
+                            variant={TextVariant.BodySm}
+                            color={TextColor.TextAlternative}
+                            fontWeight={FontWeight.Medium}
+                          >
+                            {t('perpsTakeProfit')}
+                          </Text>
+
+                          {/* TP Preset Buttons */}
+                          <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+                            {TP_PRESETS.map((preset) => (
+                              <Box
+                                key={`tp-edit-${preset}`}
+                                onClick={
+                                  isTPSLPending
+                                    ? undefined
+                                    : () => handleTpPresetClick(preset)
+                                }
+                                className={twMerge(
+                                  'flex-1 py-1.5 rounded-lg bg-muted cursor-pointer',
+                                  'hover:bg-hover active:bg-pressed',
+                                  'border-0 transition-colors duration-150',
+                                  'text-center',
+                                  isTPSLPending &&
+                                    'opacity-50 cursor-not-allowed pointer-events-none',
+                                )}
+                              >
+                                <Text
+                                  variant={TextVariant.BodySm}
+                                  color={TextColor.TextAlternative}
+                                >
+                                  +{preset}%
+                                </Text>
+                              </Box>
+                            ))}
+                          </Box>
+
+                          {/* TP Input Row: Price ($) left, Percent (%) right */}
+                          <Box
+                            flexDirection={BoxFlexDirection.Row}
+                            gap={2}
+                            alignItems={BoxAlignItems.Center}
+                          >
+                            {/* TP Price Input */}
+                            <Box className="flex-1">
+                              <TextField
+                                size={TextFieldSize.Md}
+                                value={editingTpPrice}
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>,
+                                ) => {
+                                  const { value } = e.target;
+                                  if (
+                                    value === '' ||
+                                    /^[\d,]*\.?\d*$/u.test(value)
+                                  ) {
+                                    setEditingTpPrice(value);
+                                  }
+                                }}
+                                onBlur={handleTpPriceBlur}
+                                placeholder="0.00"
+                                borderRadius={BorderRadius.MD}
+                                borderWidth={0}
+                                backgroundColor={
+                                  BackgroundColor.backgroundMuted
+                                }
+                                className="w-full"
+                                disabled={isTPSLPending}
+                                startAccessory={
+                                  <Text
+                                    variant={TextVariant.BodyMd}
+                                    color={TextColor.TextAlternative}
+                                  >
+                                    $
+                                  </Text>
+                                }
+                              />
+                            </Box>
+
+                            {/* TP Percent Input */}
+                            <Box className="flex-1">
+                              <TextField
+                                size={TextFieldSize.Md}
+                                value={editingTpPercent}
+                                onChange={handleTpPercentInputChange}
+                                placeholder="0.0"
+                                borderRadius={BorderRadius.MD}
+                                borderWidth={0}
+                                backgroundColor={
+                                  BackgroundColor.backgroundMuted
+                                }
+                                className="w-full"
+                                disabled={isTPSLPending}
+                                endAccessory={
+                                  <Text
+                                    variant={TextVariant.BodyMd}
+                                    color={TextColor.TextAlternative}
+                                  >
+                                    %
+                                  </Text>
+                                }
+                              />
+                            </Box>
+                          </Box>
+                        </Box>
+
+                        {/* Stop Loss Section */}
+                        <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+                          <Text
+                            variant={TextVariant.BodySm}
+                            color={TextColor.TextAlternative}
+                            fontWeight={FontWeight.Medium}
+                          >
+                            {t('perpsStopLoss')}
+                          </Text>
+
+                          {/* SL Preset Buttons */}
+                          <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+                            {SL_PRESETS.map((preset) => (
+                              <Box
+                                key={`sl-edit-${preset}`}
+                                onClick={
+                                  isTPSLPending
+                                    ? undefined
+                                    : () => handleSlPresetClick(preset)
+                                }
+                                className={twMerge(
+                                  'flex-1 py-1.5 rounded-lg bg-muted cursor-pointer',
+                                  'hover:bg-hover active:bg-pressed',
+                                  'border-0 transition-colors duration-150',
+                                  'text-center',
+                                  isTPSLPending &&
+                                    'opacity-50 cursor-not-allowed pointer-events-none',
+                                )}
+                              >
+                                <Text
+                                  variant={TextVariant.BodySm}
+                                  color={TextColor.TextAlternative}
+                                >
+                                  -{preset}%
+                                </Text>
+                              </Box>
+                            ))}
+                          </Box>
+
+                          {/* SL Input Row: Price ($) left, Percent (%) right */}
+                          <Box
+                            flexDirection={BoxFlexDirection.Row}
+                            gap={2}
+                            alignItems={BoxAlignItems.Center}
+                          >
+                            {/* SL Price Input */}
+                            <Box className="flex-1">
+                              <TextField
+                                size={TextFieldSize.Md}
+                                value={editingSlPrice}
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>,
+                                ) => {
+                                  const { value } = e.target;
+                                  if (
+                                    value === '' ||
+                                    /^[\d,]*\.?\d*$/u.test(value)
+                                  ) {
+                                    setEditingSlPrice(value);
+                                  }
+                                }}
+                                onBlur={handleSlPriceBlur}
+                                placeholder="0.00"
+                                borderRadius={BorderRadius.MD}
+                                borderWidth={0}
+                                backgroundColor={
+                                  BackgroundColor.backgroundMuted
+                                }
+                                className="w-full"
+                                disabled={isTPSLPending}
+                                startAccessory={
+                                  <Text
+                                    variant={TextVariant.BodyMd}
+                                    color={TextColor.TextAlternative}
+                                  >
+                                    $
+                                  </Text>
+                                }
+                              />
+                            </Box>
+
+                            {/* SL Percent Input */}
+                            <Box className="flex-1">
+                              <TextField
+                                size={TextFieldSize.Md}
+                                value={editingSlPercent}
+                                onChange={handleSlPercentInputChange}
+                                placeholder="0.0"
+                                borderRadius={BorderRadius.MD}
+                                borderWidth={0}
+                                backgroundColor={
+                                  BackgroundColor.backgroundMuted
+                                }
+                                className="w-full"
+                                disabled={isTPSLPending}
+                                endAccessory={
+                                  <Text
+                                    variant={TextVariant.BodyMd}
+                                    color={TextColor.TextAlternative}
+                                  >
+                                    %
+                                  </Text>
+                                }
+                              />
+                            </Box>
+                          </Box>
+                        </Box>
+
+                        {/* Error message */}
+                        {tpslError && (
+                          <Box
+                            className="bg-error-muted rounded-lg"
+                            padding={2}
+                            flexDirection={BoxFlexDirection.Row}
+                            alignItems={BoxAlignItems.Center}
+                            gap={2}
+                          >
+                            <Icon
+                              name={IconName.Warning}
+                              size={IconSize.Sm}
+                              color={IconColor.ErrorDefault}
+                            />
+                            <Text
+                              variant={TextVariant.BodySm}
+                              color={TextColor.ErrorDefault}
+                            >
+                              {tpslError}
+                            </Text>
+                          </Box>
+                        )}
+
+                        {/* Save Button */}
+                        <Button
+                          variant={ButtonVariant.Primary}
+                          size={ButtonSize.Md}
+                          onClick={handleSaveTPSL}
+                          disabled={isTPSLPending}
+                          className={twMerge(
+                            'w-full',
+                            isTPSLPending && 'opacity-70 cursor-not-allowed',
+                          )}
+                        >
+                          {isTPSLPending
+                            ? t('perpsSubmitting')
+                            : t('perpsSaveChanges')}
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Box>
                 </Box>
               </Box>
 
@@ -1325,17 +2082,17 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={handleOrderSubmit}
-              disabled={isSubmitting}
+              disabled={isOrderPending}
               className={twMerge(
                 'w-full',
                 isLong
                   ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
                   : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
-                isSubmitting && 'opacity-70 cursor-not-allowed',
+                isOrderPending && 'opacity-70 cursor-not-allowed',
               )}
               data-testid="submit-order-button"
             >
-              {isSubmitting ? t('perpsSubmitting') : submitButtonText}
+              {isOrderPending ? t('perpsSubmitting') : submitButtonText}
             </Button>
           </Box>
         )}
