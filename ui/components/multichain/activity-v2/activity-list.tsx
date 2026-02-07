@@ -13,6 +13,7 @@ import {
 } from '../../../selectors/activity';
 // import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/acme-controller/queries';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
@@ -37,6 +38,7 @@ export const ActivityList = () => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
   const accountAddress = useSelector(getSelectedInternalAccount)?.address;
+  const useExternalServices = useSelector(getUseExternalServices);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TransactionViewModel | null>(
     null,
@@ -54,9 +56,11 @@ export const ActivityList = () => {
   // Bridge history for enriching bridge transactions
   // const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
 
-  // EVM transactions from API
+  // EVM transactions from API (disabled when basic functionality is off)
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery(queries.transactions(accountAddress));
+    useInfiniteQuery(
+      queries.transactions(accountAddress, { enabled: useExternalServices }),
+    );
 
   console.log('>>> pendingTransactionGroups', pendingTransactionGroups);
   console.log('>>> recentTransactionGroups', recentTransactionGroups);

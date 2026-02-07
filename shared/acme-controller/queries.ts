@@ -11,6 +11,7 @@ import {
 export const queries = {
   transactions: (
     accountAddress: string,
+    options: { enabled?: boolean } = {},
   ): UseInfiniteQueryOptions<NormalizedGetAccountTransactionsResponse> => ({
     queryKey: ['multiaccount', 'transactions', accountAddress],
     queryFn: async ({ pageParam }) => {
@@ -40,7 +41,7 @@ export const queries = {
       };
     },
     select: filterTransactions, // We should do this server-side
-    enabled: Boolean(accountAddress),
+    enabled: Boolean(accountAddress) && (options.enabled ?? true),
     getNextPageParam: ({ pageInfo }) =>
       pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
   }),

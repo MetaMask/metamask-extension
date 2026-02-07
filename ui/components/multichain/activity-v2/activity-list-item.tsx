@@ -49,8 +49,9 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
 
   return (
     <Box
-      className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover"
+      className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover activity-list-item"
       onClick={onClick}
+      data-testid="activity-list-item"
     >
       <div className="flex gap-4 items-center">
         <div className="flex-shrink-0">
@@ -61,11 +62,18 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
 
         {/* Left side - Action and Details */}
         <div className="flex-1 min-w-0">
-          <Text className="font-medium truncate ">
-            {title} {transaction.hash?.slice(-4)}
+          <Text
+            className="font-medium truncate"
+            data-testid="activity-list-item-action"
+          >
+            {title}
           </Text>
           <div className="flex gap-2 items-center">
-            <Text variant={TextVariant.BodySm} className={statusColor}>
+            <Text
+              variant={TextVariant.BodySm}
+              className={statusColor}
+              data-testid={`activity-list-item-status-${transactionStatus}`}
+            >
               {displayStatus}
             </Text>
           </div>
@@ -74,7 +82,10 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         {/* Right side - Value */}
         <div className="flex flex-col items-end">
           {amount && symbol && (
-            <Text className="font-medium">
+            <Text
+              className="font-medium"
+              data-testid="transaction-list-item-primary-currency"
+            >
               {formatTokenQuantity(amount, symbol)}
             </Text>
           )}

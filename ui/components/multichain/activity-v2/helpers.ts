@@ -122,19 +122,25 @@ export function getTransferAmount(amounts: TransactionViewModel['amounts']): {
     };
   }
 
-  // For other transactions, use from or to
-  const data = amounts?.from ?? amounts?.to ?? null;
-
-  if (!data?.amount || data.decimal === undefined) {
-    return {};
+  // For outgoing transactions, use from with negative sign
+  if (hasFrom) {
+    const formatted = formatUnits(fromAmount, fromDecimal);
+    const amount = formatted.startsWith('-') ? formatted : `-${formatted}`;
+    return {
+      amount: amount as `${number}`,
+      symbol: amounts?.from?.symbol,
+    };
   }
 
-  const result = {
-    amount: formatUnits(data.amount, data.decimal) as `${number}`,
-    symbol: data.symbol,
-  };
+  // For incoming transactions, use to
+  if (hasTo) {
+    return {
+      amount: formatUnits(toAmount, toDecimal) as `${number}`,
+      symbol: amounts?.to?.symbol,
+    };
+  }
 
-  return result;
+  return {};
 }
 
 export function getExplorerUrl(chainId: number, hash: string): string | null {
