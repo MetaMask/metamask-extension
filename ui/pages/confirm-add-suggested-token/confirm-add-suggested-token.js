@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { ERC20 } from '@metamask/controller-utils';
 import {

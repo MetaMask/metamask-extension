@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   AddNetworkFields,
   NetworkConfiguration,

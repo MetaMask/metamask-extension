@@ -12,7 +12,7 @@ import {
 } from 'chart.js';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Line } from 'react-chartjs-2';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { brandColor } from '@metamask/design-tokens';
 import {
   Hex,

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { AvatarAccountSize } from '@metamask/design-system-react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import Identicon from '../../../ui/identicon';
 import { Icon, IconSize, Text } from '../../../component-library';
 import { TextVariant } from '../../../../helpers/constants/design-system';

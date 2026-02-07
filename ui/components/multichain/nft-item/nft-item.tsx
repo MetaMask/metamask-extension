@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useSelector } from 'react-redux';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import {

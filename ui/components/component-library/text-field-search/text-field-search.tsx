@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TextFieldProps, TextFieldType } from '../text-field/text-field.types';
 import { PolymorphicRef } from '../box';

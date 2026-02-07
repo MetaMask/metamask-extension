@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/check-tag-names */
 /* eslint-disable import/no-useless-path-segments */
 /* eslint-disable import/extensions */
-import classnames from 'classnames';
+import classnames from 'clsx';
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRoutes, useLocation, useNavigationType } from 'react-router-dom';

@@ -3717,12 +3717,6 @@
         "browserify>string_decoder": true
       }
     },
-    "classnames": {
-      "globals": {
-        "classNames": "write",
-        "define": true
-      }
-    },
     "@metamask/jazzicon>color>clone": {
       "globals": {
         "Buffer": true

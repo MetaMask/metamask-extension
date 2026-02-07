@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Location as RouterLocation } from 'react-router-dom';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Dropdown from '../../../components/ui/dropdown';

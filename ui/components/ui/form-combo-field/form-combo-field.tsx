@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import { I18nContext } from '../../../contexts/i18n';

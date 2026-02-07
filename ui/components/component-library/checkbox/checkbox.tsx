@@ -1,5 +1,5 @@
 import React, { ChangeEvent, KeyboardEvent } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 import {
   BackgroundColor,

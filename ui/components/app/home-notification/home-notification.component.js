@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import { Button, ButtonVariant, Icon, IconName } from '../../component-library';
 import Checkbox from '../../ui/check-box';

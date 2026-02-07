@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import log from 'loglevel';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import BigNumber from 'bignumber.js';
 import Modal from '../../modal';
 import Identicon from '../../../ui/identicon';

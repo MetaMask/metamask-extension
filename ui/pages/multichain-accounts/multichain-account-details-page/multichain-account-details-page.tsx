@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 
 import { KeyringTypes } from '@metamask/keyring-controller';

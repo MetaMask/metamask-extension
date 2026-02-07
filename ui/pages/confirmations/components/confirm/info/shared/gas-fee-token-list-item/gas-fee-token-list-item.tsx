@@ -1,6 +1,6 @@
 import React from 'react';
 import { GasFeeToken } from '@metamask/transaction-controller';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';

@@ -2,7 +2,7 @@
 import React, { useState, useContext, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';

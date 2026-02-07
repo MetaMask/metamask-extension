@@ -21603,13 +21603,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.2.6":
-  version: 2.5.1
-  resolution: "classnames@npm:2.5.1"
-  checksum: 10/58eb394e8817021b153bb6e7d782cfb667e4ab390cb2e9dac2fc7c6b979d1cc2b2a733093955fc5c94aa79ef5c8c89f11ab77780894509be6afbb91dddd79d15
-  languageName: node
-  linkType: hard
-
 "clean-css@npm:^5.2.2, clean-css@npm:~5.3.2":
   version: 5.3.3
   resolution: "clean-css@npm:5.3.3"
@@ -34074,7 +34067,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     chart.js: "npm:^4.4.1"
     chokidar: "npm:^3.6.0"
-    classnames: "npm:^2.2.6"
+    clsx: "npm:^2.1.1"
     cockatiel: "npm:^3.1.2"
     commander: "npm:^14.0.0"
     concurrently: "npm:^8.2.2"
