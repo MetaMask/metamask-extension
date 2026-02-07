@@ -1,26 +1,41 @@
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { Transaction } from '@metamask/keyring-api';
 import type { Hex } from 'viem';
-import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
-import {
-  NATIVE_TOKEN_ADDRESS,
-  TransactionGroupCategory,
-} from '../../../../shared/constants/transaction';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
+import type { TransactionGroup } from '../../../selectors/selectors.types';
 
+/**
+ * Discriminated union for activity list items.
+ * - 'pending': EVM transaction with status unapproved/approved/submitted (needs speed up/cancel UI)
+ * - 'local-completed': EVM transaction confirmed but not yet in API (from Redux)
+ * - 'completed': Completed transaction from API (v2's ActivityListItem)
+ */
 export type FlattenedItem =
   | { type: 'date-header'; date: number }
-  | { type: 'transaction'; data: TransactionViewModel; id: string };
+  | { type: 'pending'; transactionGroup: TransactionGroup; id: string }
+  | { type: 'local-completed'; transactionGroup: TransactionGroup; id: string }
+  | { type: 'completed'; data: TransactionViewModel; id: string };
 
 export function isDateHeader(
   item: FlattenedItem,
 ): item is FlattenedItem & { type: 'date-header' } {
   return item.type === 'date-header';
+}
+
+export function isPendingItem(
+  item: FlattenedItem,
+): item is FlattenedItem & { type: 'pending' } {
+  return item.type === 'pending';
+}
+
+export function isLocalCompletedItem(
+  item: FlattenedItem,
+): item is FlattenedItem & { type: 'local-completed' } {
+  return item.type === 'local-completed';
 }
 
 // TODO: Re-use existing
@@ -78,45 +93,48 @@ export function formatUnits(value: bigint, decimals: number) {
   return `${negative ? '-' : ''}${integer || '0'}${fraction ? `.${fraction}` : ''}`;
 }
 
-export function getTransferAmount(amounts: TransactionViewModel['amounts']) {
+// Get the primary display amount for a transaction.
+// - For swaps (has both from and to): returns the "from" amount (negative)
+// - For sends: returns the "from" amount
+// - For receives: returns the "to" amount
+export function getTransferAmount(amounts: TransactionViewModel['amounts']): {
+  amount?: `${number}`;
+  symbol?: string;
+} {
+  const fromAmount = amounts?.from?.amount;
+  const fromDecimal = amounts?.from?.decimal;
+  const toAmount = amounts?.to?.amount;
+  const toDecimal = amounts?.to?.decimal;
+
+  const hasFrom = fromAmount !== undefined && fromDecimal !== undefined;
+  const hasTo = toAmount !== undefined && toDecimal !== undefined;
+  const isSwap = hasFrom && hasTo;
+
+  // For swaps, show the sent amount (from) as negative
+  if (isSwap) {
+    const formatted = formatUnits(fromAmount, fromDecimal);
+
+    // Guard against double negative - API may already provide signed amounts
+    const amount = formatted.startsWith('-') ? formatted : `-${formatted}`;
+    return {
+      amount: amount as `${number}`,
+      symbol: amounts?.from?.symbol,
+    };
+  }
+
+  // For other transactions, use from or to
   const data = amounts?.from ?? amounts?.to ?? null;
 
   if (!data?.amount || data.decimal === undefined) {
     return {};
   }
 
-  return {
-    amount: formatUnits(data.amount, data.decimal),
+  const result = {
+    amount: formatUnits(data.amount, data.decimal) as `${number}`,
     symbol: data.symbol,
   };
-}
 
-export function groupTransactionsByDate(transactions: TransactionViewModel[]) {
-  const groupedByDate = new Map<
-    number,
-    { date: number; transactions: TransactionViewModel[] }
-  >();
-
-  transactions.forEach((transaction) => {
-    const date = parseDate(transaction.time);
-
-    if (!groupedByDate.has(date)) {
-      groupedByDate.set(date, { date, transactions: [] });
-    }
-
-    groupedByDate.get(date)?.transactions.push(transaction);
-  });
-
-  // Convert map to array and sort by date (newest first)
-  const grouped = Array.from(groupedByDate.values());
-  grouped.sort((a, b) => b.date - a.date);
-
-  // Sort transactions within each group (newest first)
-  grouped.forEach((group) => {
-    group.transactions.sort((a, b) => b.time - a.time);
-  });
-
-  return grouped;
+  return result;
 }
 
 export function getExplorerUrl(chainId: number, hash: string): string | null {
@@ -125,132 +143,104 @@ export function getExplorerUrl(chainId: number, hash: string): string | null {
   return baseUrl ? `${baseUrl}tx/${hash}` : null;
 }
 
-export function flattenGroupedTransactions(
-  groupedTransactions: { date: number; transactions: TransactionViewModel[] }[],
-) {
-  const flattened: FlattenedItem[] = [];
-
-  groupedTransactions.forEach((group) => {
-    flattened.push({
-      type: 'date-header',
-      date: group.date,
-    });
-
-    group.transactions.forEach((tx) => {
-      flattened.push({
-        type: 'transaction',
-        id: tx.hash ?? tx.id,
-        data: tx,
-      });
-    });
-  });
-
-  return flattened;
-}
-
-/**
- * Convert a decimal string amount (e.g., "0.00032585") to BigInt representation
- *
- * @param amountStr - The amount as a decimal string
- * @param decimals - Number of decimal places to use
- * @returns BigInt representation
- */
-function parseAmountToBigInt(amountStr: string, decimals: number): bigint {
-  const [integerPart = '0', fractionalPart = ''] = amountStr.split('.');
-  const paddedFraction = fractionalPart
-    .padEnd(decimals, '0')
-    .slice(0, decimals);
-  return BigInt(integerPart + paddedFraction);
-}
-
-/**
- * Normalize non-EVM Transaction to TransactionViewModel shape
- *
- * @param tx - The non-EVM transaction
- * @returns A TransactionViewModel compatible object
- */
-function normalizeNonEvmTransaction(tx: Transaction): TransactionViewModel {
-  const timeMs = (tx.timestamp ?? 0) * 1000;
-
-  // Get decimals for this chain
-  const decimals =
-    MULTICHAIN_NETWORK_DECIMAL_PLACES[
-      tx.chain as keyof typeof MULTICHAIN_NETWORK_DECIMAL_PLACES
-    ] ?? 8;
-
-  // Extract first from/to movement for addresses and amounts
-  const fromMovement = tx.from?.[0];
-  const toMovement = tx.to?.[0];
-
-  // Pick relevant movement based on type (receive = to, send = from)
-  const isReceive = tx.type === 'receive';
-  const primaryMovement = isReceive ? toMovement : fromMovement;
-
-  // Extract amount from the asset
-  const asset = primaryMovement?.asset;
-  const amountStr =
-    asset && 'amount' in asset ? String(asset.amount) : undefined;
-  const symbol = asset && 'unit' in asset ? String(asset.unit) : undefined;
-
-  // Build amounts object (same structure as EVM)
-  const amountData =
-    amountStr && symbol
-      ? {
-          amount: parseAmountToBigInt(amountStr, decimals),
-          decimal: decimals,
-          symbol,
-        }
-      : undefined;
-
-  // Determine amounts placement based on transaction type
-  let amounts: TransactionViewModel['amounts'];
-  if (amountData) {
-    amounts = isReceive ? { to: amountData } : { from: amountData };
-  }
-
-  // Map non-EVM type to category
-  const categoryMap: Record<string, TransactionViewModel['category']> = {
-    send: TransactionGroupCategory.send,
-    receive: TransactionGroupCategory.receive,
-    swap: TransactionGroupCategory.swap,
-  };
-  const category = categoryMap[tx.type] ?? TransactionGroupCategory.interaction;
-
-  return {
-    // Required TransactionMeta fields (minimal stubs)
-    id: tx.id,
-    hash: '',
-    chainId: tx.chain as Hex,
-    networkClientId: tx.chain,
-    status: tx.status as TransactionViewModel['status'],
-    time: timeMs,
-    txParams: {
-      from: fromMovement?.address ?? '',
-      to: toMovement?.address ?? '',
-    },
-
-    // TransactionViewModel extensions
-    readable: '',
-    transactionType: tx.type,
-    category,
-    amounts,
-  } as TransactionViewModel;
-}
-
-export function mergeTransactions(
-  _pendingTransactions: TransactionMeta[], // TODO: Re-enable pending logic
-  completedTransactions: TransactionViewModel[],
-  nonEvmTransactions: { transactions: Transaction[] },
-): TransactionViewModel[] {
-  // Normalize non-EVM transactions to TransactionViewModel
-  const normalizedNonEvm = (nonEvmTransactions?.transactions ?? []).map(
-    normalizeNonEvmTransaction,
+// NOTE
+export function filterLocalCompletedNotInApi(
+  localCompletedGroups: TransactionGroup[],
+  apiTransactions: TransactionViewModel[],
+): TransactionGroup[] {
+  // Build a set of transaction hashes from API for deduplication
+  const apiHashes = new Set(
+    apiTransactions
+      .map((tx) => tx.hash?.toLowerCase())
+      .filter((hash): hash is string => Boolean(hash)),
   );
 
-  // Merge and sort by time (newest first)
-  return [...completedTransactions, ...normalizedNonEvm].sort(
+  // Only include those NOT already in API
+  return localCompletedGroups.filter((group) => {
+    const hash = group.primaryTransaction.hash?.toLowerCase();
+    return hash && !apiHashes.has(hash);
+  });
+}
+
+export function mergeAllTransactionsByTime(
+  pendingGroups: TransactionGroup[],
+  localCompletedGroups: TransactionGroup[],
+  apiTransactions: TransactionViewModel[],
+): (
+  | { type: 'pending'; group: TransactionGroup; time: number }
+  | { type: 'local-completed'; group: TransactionGroup; time: number }
+  | { type: 'completed'; tx: TransactionViewModel; time: number }
+)[] {
+  const pendingItems = pendingGroups.map((group) => ({
+    type: 'pending' as const,
+    group,
+    time: group.primaryTransaction.time ?? 0,
+  }));
+
+  const localCompletedItems = localCompletedGroups.map((group) => ({
+    type: 'local-completed' as const,
+    group,
+    time: group.primaryTransaction.time ?? 0,
+  }));
+
+  const completedItems = apiTransactions.map((tx) => ({
+    type: 'completed' as const,
+    tx,
+    time: tx.time ?? 0,
+  }));
+
+  // Sort all by time (newest first)
+  return [...pendingItems, ...localCompletedItems, ...completedItems].sort(
     (a, b) => b.time - a.time,
   );
+}
+
+export function groupAndFlattenMergedTransactions(
+  mergedItems: (
+    | { type: 'pending'; group: TransactionGroup; time: number }
+    | { type: 'local-completed'; group: TransactionGroup; time: number }
+    | { type: 'completed'; tx: TransactionViewModel; time: number }
+  )[],
+): FlattenedItem[] {
+  if (mergedItems.length === 0) {
+    return [];
+  }
+
+  const flattened: FlattenedItem[] = [];
+  let currentDate: number | null = null;
+
+  for (const item of mergedItems) {
+    const date = parseDate(item.time);
+
+    // Add date header when date changes
+    if (date !== currentDate) {
+      flattened.push({ type: 'date-header', date });
+      currentDate = date;
+    }
+
+    // Add the transaction item based on type
+    if (item.type === 'pending') {
+      flattened.push({
+        type: 'pending',
+        id: item.group.primaryTransaction.id,
+        transactionGroup: item.group,
+      });
+    } else if (item.type === 'local-completed') {
+      flattened.push({
+        type: 'local-completed',
+        id: item.group.primaryTransaction.id,
+        transactionGroup: item.group,
+      });
+    } else {
+      flattened.push({
+        type: 'completed',
+        id: item.tx.id,
+        data: item.tx,
+      });
+    }
+  }
+
+  return flattened;
 }
 
 export function mapChainInfo(chainId: Hex) {

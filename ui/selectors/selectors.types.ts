@@ -2,10 +2,20 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { SubjectMetadata } from '@metamask/permission-controller';
-import { CaipAccountId, CaipChainId } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { CaipAccountId, CaipChainId, Hex } from '@metamask/utils';
 
 type KeyringType = {
   type: string;
+};
+
+export type TransactionGroup = {
+  hasCancelled: boolean;
+  hasRetried: boolean;
+  initialTransaction: TransactionMeta;
+  nonce: Hex;
+  primaryTransaction: TransactionMeta;
+  transactions: TransactionMeta[];
 };
 
 export type InternalAccountWithBalance = InternalAccount & {

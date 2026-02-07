@@ -7,23 +7,28 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import {
-  getMarketRates,
   getNonEvmTransactions,
+  getPendingTransactionGroups,
+  getRecentTransactionGroups,
 } from '../../../selectors/activity';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+// import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/acme-controller/queries';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
 import {
-  groupTransactionsByDate,
-  flattenGroupedTransactions,
-  mergeTransactions,
+  mergeAllTransactionsByTime,
+  groupAndFlattenMergedTransactions,
+  filterLocalCompletedNotInApi,
   formatDate,
   isDateHeader,
+  isPendingItem,
+  isLocalCompletedItem,
   type FlattenedItem,
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModal } from './activity-details-modal';
+import { PendingActivityItem } from './pending-activity-item';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
@@ -32,83 +37,71 @@ export const ActivityList = () => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
   const accountAddress = useSelector(getSelectedInternalAccount)?.address;
-  // Pending transactions sourced from Redux
-
-  // It wont be here after Confirmed
-  // const pendingFromSelectedAccount = useSelector(
-  //   nonceSortedPendingTransactionsSelectorAllChains,
-  // );
-
-  /*
-   TODO:
-   - check pendingFromSelectedAccount
-   - check primaryTransaction? is type swap isBridge (see transaction-list-item.component.js)
-   const isBridgeTx =
-    transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const {
-    bridgeTxHistoryItem,
-    isBridgeComplete,
-    showBridgeTxDetails,
-    isBridgeFailed,
-  } = useBridgeTxHistoryData({
-    transactionGroup,
-    isEarliestNonce,
-  });
-
-  then render this for the left side bottom part:
-  !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
-          isBridgeTx &&
-          !(isBridgeComplete || isBridgeFailed) &&
-          bridgeTxHistoryItem ? (
-            <BridgeActivityItemTxSegments
-              bridgeTxHistoryItem={bridgeTxHistoryItem}
-              transactionGroup={transactionGroup}
-            />
-  */
-
-  const pendingTransactions = []; // useSelector(getPendingTransactions);
-
-  // Non-EVM transactions sourced from Redux
-  const nonEvmTransactions = useSelector(getNonEvmTransactions);
-
-  const marketRates = useSelector(getMarketRates);
-  const currentCurrency = useSelector(getCurrentCurrency);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TransactionViewModel | null>(
     null,
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleItemClick = (transaction: TransactionViewModel) => {
-    setSelectedItem(transaction);
-    setIsModalOpen(true);
-  };
+  // Non-EVM transactions - not in API
+  const nonEvmTransactions = useSelector(getNonEvmTransactions);
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedItem(null);
-  };
+  // Pending transactions (unapproved/approved/submitted) - not in API
+  const pendingTransactionGroups = useSelector(getPendingTransactionGroups);
 
+  // Recently confirmed transactions - may not be in API yet
+  const recentTransactionGroups = useSelector(getRecentTransactionGroups);
+
+  // Bridge history for enriching bridge transactions
+  // const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
+
+  // EVM transactions from API
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(queries.transactions(accountAddress));
 
-  // Merge completed and non-EVM transactions, then flatten for virtualization
+  console.log('>>> pendingTransactionGroups', pendingTransactionGroups);
+  console.log('>>> recentTransactionGroups', recentTransactionGroups);
+  // console.log('>>> bridgeHistoryItems', bridgeHistoryItems);
+
+  // Merge all transactions and flatten for virtualization
   const flattenedItems = useMemo(() => {
-    if (!data?.pages) {
-      return [];
-    }
+    const apiTransactions =
+      data?.pages?.flatMap((page) => page.data ?? []) ?? [];
 
-    const apiTransactions = data.pages.flatMap((page) => page.data ?? []);
-
-    const allTransactions = mergeTransactions(
-      [], // TODO: pendingTransactions
+    // Filter local completed transactions not yet in API (deduped by hash)
+    const localCompletedNotInApi = filterLocalCompletedNotInApi(
+      recentTransactionGroups,
       apiTransactions,
-      nonEvmTransactions,
     );
 
-    const grouped = groupTransactionsByDate(allTransactions);
-    return flattenGroupedTransactions(grouped);
-  }, [data, nonEvmTransactions]);
+    // Combine API (EVM) + non-EVM transactions - both are TransactionViewModel[]
+    const allCompleted = [...apiTransactions, ...nonEvmTransactions];
+
+    console.log(
+      '>>> pendingTransactionGroups',
+      pendingTransactionGroups.length,
+    );
+    console.log('>>> localCompletedNotInApi', localCompletedNotInApi.length);
+    console.log('>>> apiTransactions', apiTransactions.length);
+    console.log('>>> nonEvmTransactions', nonEvmTransactions.length);
+
+    // Merge all three types by time:
+    // - pending (TransactionGroup) → rendered by PendingActivityItem
+    // - local-completed (TransactionGroup) → rendered by PendingActivityItem
+    // - completed (TransactionViewModel) → rendered by ActivityListItem
+    const mergedByTime = mergeAllTransactionsByTime(
+      pendingTransactionGroups,
+      localCompletedNotInApi,
+      allCompleted,
+    );
+
+    // Group by date and flatten for virtualization
+    return groupAndFlattenMergedTransactions(mergedByTime);
+  }, [
+    data,
+    nonEvmTransactions,
+    pendingTransactionGroups,
+    recentTransactionGroups,
+  ]);
 
   const virtualizer = useVirtualizer({
     count: flattenedItems.length,
@@ -151,6 +144,20 @@ export const ActivityList = () => {
     isFetchingNextPage,
   ]);
 
+  const earliestNonceByChain = useEarliestNonceByChain(
+    pendingTransactionGroups,
+  );
+
+  const handleItemClick = (transaction: TransactionViewModel) => {
+    setSelectedItem(transaction);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedItem(null);
+  };
+
   const renderItem = (item: FlattenedItem) => {
     if (isDateHeader(item)) {
       return (
@@ -162,12 +169,32 @@ export const ActivityList = () => {
       );
     }
 
+    // Pending EVM transactions - delegate to v1's TransactionListItem
+    if (isPendingItem(item)) {
+      return (
+        <PendingActivityItem
+          transactionGroup={item.transactionGroup}
+          earliestNonceByChain={earliestNonceByChain}
+        />
+      );
+    }
+
+    // Local completed transactions (confirmed but not yet in API)
+    // Also delegate to v1's TransactionListItem for consistent rendering
+    if (isLocalCompletedItem(item)) {
+      return (
+        <PendingActivityItem
+          transactionGroup={item.transactionGroup}
+          earliestNonceByChain={earliestNonceByChain}
+        />
+      );
+    }
+
+    // Completed transactions from API - use v2's ActivityListItem
     return (
       <ActivityListItem
         transaction={item.data}
         onClick={() => handleItemClick(item.data)}
-        marketRates={marketRates}
-        currentCurrency={currentCurrency}
       />
     );
   };
