@@ -433,7 +433,6 @@ export class MetaMaskSessionManager implements ISessionManager {
       goal: input.goal,
       flowTags: input.flowTags ?? [],
       tags: input.tags ?? [],
-      git: knowledgeStore.getGitInfoSync(),
       build: {
         buildType: 'build:test',
         extensionPathResolved: input.extensionPath,
