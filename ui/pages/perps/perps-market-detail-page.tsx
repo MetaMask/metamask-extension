@@ -37,6 +37,7 @@ import {
   usePerpsLiveMarketData,
 } from '../../hooks/perps/stream';
 import { getPerpsController } from '../../providers/perps';
+import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -196,6 +197,21 @@ const PerpsMarketDetailPage: React.FC = () => {
     );
   }, [decodedSymbol, allPositions]);
 
+  // Ref to track current position - avoids stale data in callbacks
+  // This follows mobile's pattern (currentPositionRef) to ensure we always
+  // have the latest position data when callbacks execute after navigation/delays
+  //
+  // TODO: Future improvement - pass the live position from WebSocket to
+  // updatePositionTPSL to avoid REST fallback. See mobile's architecture:
+  // - If params.position is provided, use it (WebSocket-derived)
+  // - Otherwise, controller falls back to REST fetch
+  // This optimization should be implemented in @metamask/perps-controller
+  // and applied to multiple operations (TPSL, closePosition, etc.)
+  const positionRef = useRef(position);
+  useEffect(() => {
+    positionRef.current = position;
+  }, [position]);
+
   // Find orders for this market
   const orders = useMemo(() => {
     if (!decodedSymbol) {
@@ -242,14 +258,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   const [editingSlPrice, setEditingSlPrice] = useState<string>('');
   const [isSavingTPSL, setIsSavingTPSL] = useState(false);
   const [tpslError, setTpslError] = useState<string | null>(null);
-  // Track pending TP/SL values waiting for stream confirmation
-  const [pendingTpsl, setPendingTpsl] = useState<{
-    tp: string | undefined;
-    sl: string | undefined;
-  } | null>(null);
 
-  // Derived state: true when saving OR waiting for stream confirmation
-  const isTPSLPending = isSavingTPSL || pendingTpsl !== null;
+  // Derived state: true when saving TP/SL
+  // Note: We no longer need to track pending state because we directly push
+  // fresh data to the stream after a successful API call
+  const isTPSLPending = isSavingTPSL;
 
   // Helper: format price for display (with locale-aware formatting)
   const formatEditPrice = useCallback(
@@ -626,7 +639,12 @@ const PerpsMarketDetailPage: React.FC = () => {
   const hasInitializedTpsl = useRef(false);
 
   useEffect(() => {
-    console.log('[Perps] Init effect - isAutoCloseExpanded:', isAutoCloseExpanded, 'hasInitialized:', hasInitializedTpsl.current);
+    console.log(
+      '[Perps] Init effect - isAutoCloseExpanded:',
+      isAutoCloseExpanded,
+      'hasInitialized:',
+      hasInitializedTpsl.current,
+    );
 
     // Reset the initialization flag when card is collapsed
     if (!isAutoCloseExpanded) {
@@ -654,8 +672,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   // Handle saving TP/SL changes
+  // Uses positionRef to avoid stale position data in the callback
+  // (following mobile's currentPositionRef pattern)
   const handleSaveTPSL = useCallback(async () => {
-    if (!selectedAddress || !position) {
+    const currentPosition = positionRef.current;
+    if (!selectedAddress || !currentPosition) {
       return;
     }
 
@@ -670,7 +691,7 @@ const PerpsMarketDetailPage: React.FC = () => {
       const cleanSlPrice = editingSlPrice.replace(/,/gu, '').trim();
 
       const tpslParams = {
-        symbol: position.symbol,
+        symbol: currentPosition.symbol,
         // Send undefined to clear, or the price string if set
         takeProfitPrice: cleanTpPrice || undefined,
         stopLossPrice: cleanSlPrice || undefined,
@@ -683,12 +704,45 @@ const PerpsMarketDetailPage: React.FC = () => {
         throw new Error(result.error || 'Failed to update TP/SL');
       }
 
-      // Success - set pending state and wait for stream to confirm before collapsing
-      // This prevents the brief flash of stale/zero values
-      setPendingTpsl({
-        tp: cleanTpPrice || undefined,
-        sl: cleanSlPrice || undefined,
-      });
+      // Set optimistic override - this preserves user-set values when
+      // WebSocket sends stale data (HyperLiquid has a delay in reflecting
+      // new TP/SL trigger orders via the stream)
+      const streamManager = getPerpsStreamManager();
+      streamManager.setOptimisticTPSL(
+        currentPosition.symbol,
+        cleanTpPrice || undefined,
+        cleanSlPrice || undefined,
+      );
+
+      // Also push the updated positions immediately to update the UI
+      const currentPositions = streamManager.positions.getCachedData();
+      const optimisticallyUpdatedPositions = currentPositions.map((p) =>
+        p.symbol === currentPosition.symbol
+          ? {
+              ...p,
+              takeProfitPrice: cleanTpPrice || undefined,
+              stopLossPrice: cleanSlPrice || undefined,
+            }
+          : p,
+      );
+      streamManager.positions.pushData(optimisticallyUpdatedPositions);
+
+      // Schedule delayed REST refetch as safety net
+      // Use pushPositionsWithOverrides so we don't overwrite with stale REST
+      // data while the override is still active
+      setTimeout(async () => {
+        try {
+          const freshPositions = await controller.getPositions({
+            skipCache: true,
+          });
+          streamManager.pushPositionsWithOverrides(freshPositions);
+        } catch (e) {
+          console.warn('[Perps] Delayed refetch failed:', e);
+        }
+      }, 2500);
+
+      // Success - collapse the card
+      setIsAutoCloseExpanded(false);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
@@ -697,84 +751,25 @@ const PerpsMarketDetailPage: React.FC = () => {
     } finally {
       setIsSavingTPSL(false);
     }
-  }, [selectedAddress, position, editingTpPrice, editingSlPrice]);
+  }, [selectedAddress, editingTpPrice, editingSlPrice]);
 
-  // Watch for stream to confirm TP/SL update, then collapse the card
+  // Refetch positions when tab becomes visible (catch changes made elsewhere)
   useEffect(() => {
-    if (!pendingTpsl || !position) {
-      return;
-    }
-
-    // Normalize values for comparison - compare as numbers to handle formatting differences
-    const normalizeToNumber = (
-      val: string | undefined | null,
-    ): number | null => {
-      if (!val || val.trim() === '') {
-        return null;
+    const handleVisibility = async () => {
+      if (document.visibilityState === 'visible' && selectedAddress) {
+        try {
+          const controller = await getPerpsController(selectedAddress);
+          const positions = await controller.getPositions({ skipCache: true });
+          getPerpsStreamManager().pushPositionsWithOverrides(positions);
+        } catch (e) {
+          console.warn('[Perps] Visibility refetch failed:', e);
+        }
       }
-      const cleaned = val.replace(/,/gu, '').trim();
-      const num = parseFloat(cleaned);
-      return isNaN(num) ? null : num;
     };
-
-    const currentTpNum = normalizeToNumber(position.takeProfitPrice);
-    const currentSlNum = normalizeToNumber(position.stopLossPrice);
-    const pendingTpNum = normalizeToNumber(pendingTpsl.tp);
-    const pendingSlNum = normalizeToNumber(pendingTpsl.sl);
-
-    console.log('[Perps] Comparing TP/SL values:', {
-      currentTp: position.takeProfitPrice,
-      currentTpNum,
-      pendingTp: pendingTpsl.tp,
-      pendingTpNum,
-      currentSl: position.stopLossPrice,
-      currentSlNum,
-      pendingSl: pendingTpsl.sl,
-      pendingSlNum,
-    });
-
-    // Compare as numbers with small tolerance for floating point differences
-    const numbersMatch = (a: number | null, b: number | null): boolean => {
-      if (a === null && b === null) {
-        return true;
-      }
-      if (a === null || b === null) {
-        return false;
-      }
-      // Use relative tolerance for comparison
-      const tolerance = Math.max(Math.abs(a), Math.abs(b)) * 0.0001;
-      return Math.abs(a - b) <= tolerance;
-    };
-
-    const tpMatches = numbersMatch(currentTpNum, pendingTpNum);
-    const slMatches = numbersMatch(currentSlNum, pendingSlNum);
-
-    console.log('[Perps] TP matches:', tpMatches, 'SL matches:', slMatches);
-
-    if (tpMatches && slMatches) {
-      console.log('[Perps] Stream confirmed TP/SL update, collapsing card');
-      // Stream confirmed - clear pending and collapse
-      setPendingTpsl(null);
-      setIsAutoCloseExpanded(false);
-    }
-  }, [pendingTpsl, position]);
-
-  // Fallback timeout: if stream doesn't confirm within 10 seconds, collapse anyway
-  useEffect(() => {
-    if (!pendingTpsl) {
-      return undefined;
-    }
-
-    const timeout = setTimeout(() => {
-      console.warn(
-        '[Perps] TP/SL stream confirmation timed out, collapsing anyway',
-      );
-      setPendingTpsl(null);
-      setIsAutoCloseExpanded(false);
-    }, 10000);
-
-    return () => clearTimeout(timeout);
-  }, [pendingTpsl]);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () =>
+      document.removeEventListener('visibilitychange', handleVisibility);
+  }, [selectedAddress]);
 
   // Watch for new position to appear in stream after order placement
   useEffect(() => {

@@ -6,6 +6,7 @@
  * - BehaviorSubject-like subscription (immediate callback with cached data)
  * - Prewarm functionality to keep cache fresh
  * - Account-aware initialization (reinitializes on account switch)
+ * - Optimistic TP/SL overrides (preserves user-set values until WebSocket catches up)
  *
  * Architecture:
  * - Single instance shared across all Perps views (tab, home, detail, etc.)
@@ -19,7 +20,6 @@
  *
  * // Subscribe with immediate cached data
  * const unsubscribe = streamManager.positions.subscribe((positions) => {
- *   // First call is synchronous with cached data (if available)
  *   setPositions(positions);
  * });
  * ```
@@ -47,6 +47,24 @@ const EMPTY_MARKETS: PerpsMarketData[] = [];
 // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
 const placeholderConnectFn = () => () => {};
 
+/**
+ * Optimistic TP/SL override for a position.
+ * Used to preserve user-set values until WebSocket catches up.
+ */
+type OptimisticTPSLOverride = {
+  takeProfitPrice?: string;
+  stopLossPrice?: string;
+  expiresAt: number;
+};
+
+// Grace period for optimistic overrides (30 seconds)
+// HyperLiquid's WebSocket can take >10s to reflect new TP/SL trigger orders
+const OPTIMISTIC_OVERRIDE_TTL_MS = 30000;
+
+// Block period: ignore WebSocket pushes for this long after optimistic update
+// Prevents immediate overwrite from stale WebSocket data
+const WEBSOCKET_BLOCK_MS = 3000;
+
 class PerpsStreamManager {
   // Data channels
   positions: PerpsDataChannel<Position[]>;
@@ -65,6 +83,13 @@ class PerpsStreamManager {
   private initPromise: Promise<void> | null = null;
 
   private prewarmCleanups: (() => void)[] = [];
+
+  // Optimistic overrides for TP/SL - preserves user-set values until WebSocket catches up
+  private optimisticTPSLOverrides: Map<string, OptimisticTPSLOverride> =
+    new Map();
+
+  // When we last set an optimistic update - used to block WebSocket overwrites
+  private lastOptimisticUpdateTime = 0;
 
   constructor() {
     // Initialize channels with placeholder connect functions
@@ -91,6 +116,115 @@ class PerpsStreamManager {
       connectFn: placeholderConnectFn,
       initialValue: EMPTY_MARKETS,
       name: 'markets',
+    });
+  }
+
+  /**
+   * Set optimistic TP/SL override for a position.
+   * This preserves user-set values when WebSocket sends stale data.
+   *
+   * @param symbol - Position symbol
+   * @param takeProfitPrice - Take profit price (or undefined to clear)
+   * @param stopLossPrice - Stop loss price (or undefined to clear)
+   */
+  setOptimisticTPSL(
+    symbol: string,
+    takeProfitPrice?: string,
+    stopLossPrice?: string,
+  ): void {
+    this.lastOptimisticUpdateTime = Date.now();
+    this.optimisticTPSLOverrides.set(symbol, {
+      takeProfitPrice,
+      stopLossPrice,
+      expiresAt: Date.now() + OPTIMISTIC_OVERRIDE_TTL_MS,
+    });
+  }
+
+  /**
+   * Clear optimistic override for a position.
+   *
+   * @param symbol - Position symbol
+   */
+  clearOptimisticTPSL(symbol: string): void {
+    this.optimisticTPSLOverrides.delete(symbol);
+  }
+
+  /**
+   * Push positions to the channel with optimistic overrides applied.
+   * Use this instead of positions.pushData() when pushing data from REST
+   * (delayed refetch, visibility refetch) so we don't overwrite with stale
+   * data while the override is active.
+   *
+   * IMPORTANT: We do NOT clear overrides when merging REST data - only clear
+   * when WebSocket confirms. Otherwise REST could return correct data, we'd
+   * clear the override, then the next WebSocket push (still stale) would
+   * overwrite with old values.
+   *
+   * @param positions - Raw positions from REST
+   */
+  pushPositionsWithOverrides(positions: Position[]): void {
+    const withOverrides = this.applyOptimisticOverrides(positions, false);
+    this.positions.pushData(withOverrides);
+  }
+
+  /**
+   * Apply optimistic overrides to positions array.
+   * Expired overrides are automatically cleaned up.
+   *
+   * @param positions - Raw positions from stream
+   * @param clearOnMatch - If true, clear override when incoming matches expected. Only true for WebSocket data.
+   * @returns Positions with active optimistic overrides merged in
+   */
+  private applyOptimisticOverrides(
+    positions: Position[],
+    clearOnMatch = true,
+  ): Position[] {
+    const now = Date.now();
+
+    // Clean up expired overrides
+    for (const [symbol, override] of this.optimisticTPSLOverrides.entries()) {
+      if (override.expiresAt < now) {
+        this.optimisticTPSLOverrides.delete(symbol);
+      }
+    }
+
+    // If no active overrides, return as-is
+    if (this.optimisticTPSLOverrides.size === 0) {
+      return positions;
+    }
+
+    return positions.map((position) => {
+      const override = this.optimisticTPSLOverrides.get(position.symbol);
+      if (override) {
+        if (clearOnMatch) {
+          const incomingTp = position.takeProfitPrice ?? '';
+          const incomingSl = position.stopLossPrice ?? '';
+          const expectedTp = override.takeProfitPrice ?? '';
+          const expectedSl = override.stopLossPrice ?? '';
+          const tpMatches =
+            incomingTp === expectedTp ||
+            (incomingTp &&
+              expectedTp &&
+              parseFloat(incomingTp) === parseFloat(expectedTp));
+          const slMatches =
+            incomingSl === expectedSl ||
+            (incomingSl &&
+              expectedSl &&
+              parseFloat(incomingSl) === parseFloat(expectedSl));
+
+          if (tpMatches && slMatches) {
+            this.optimisticTPSLOverrides.delete(position.symbol);
+            return position;
+          }
+        }
+
+        return {
+          ...position,
+          takeProfitPrice: override.takeProfitPrice,
+          stopLossPrice: override.stopLossPrice,
+        };
+      }
+      return position;
     });
   }
 
@@ -148,8 +282,24 @@ class PerpsStreamManager {
       this.controller = controller;
 
       // Wire up channel connect functions to controller subscriptions
+      // Wrap positions callback to apply optimistic TP/SL overrides
       this.positions.setConnectFn((callback) =>
-        controller.subscribeToPositions({ callback }),
+        controller.subscribeToPositions({
+          callback: (positions) => {
+            const now = Date.now();
+            const inBlockPeriod =
+              now - this.lastOptimisticUpdateTime < WEBSOCKET_BLOCK_MS;
+
+            // During block period with active overrides, ignore WebSocket pushes
+            // to prevent stale data from overwriting our optimistic update
+            if (inBlockPeriod && this.optimisticTPSLOverrides.size > 0) {
+              return;
+            }
+
+            const withOverrides = this.applyOptimisticOverrides(positions);
+            callback(withOverrides);
+          },
+        }),
       );
 
       this.orders.setConnectFn((callback) =>
@@ -288,6 +438,7 @@ class PerpsStreamManager {
     this.controller = null;
     this.currentAddress = null;
     this.initPromise = null;
+    this.optimisticTPSLOverrides.clear();
   }
 }
 
