@@ -177,6 +177,16 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             onStopLossPriceChange={handleStopLossPriceChange}
             direction={formState.direction}
             currentPrice={currentPrice}
+            entryPrice={
+              mode === 'modify' && existingPosition?.entryPrice
+                ? (() => {
+                    const p = parseFloat(
+                      existingPosition.entryPrice.replace(/,/gu, ''),
+                    );
+                    return Number.isNaN(p) ? undefined : p;
+                  })()
+                : undefined
+            }
           />
         )}
       </Box>

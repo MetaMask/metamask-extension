@@ -113,6 +113,24 @@ export class PerpsDataChannel<TData> {
   }
 
   /**
+   * Manually push data into the channel (bypasses WebSocket).
+   * Used after REST API calls to immediately reflect changes
+   * while waiting for WebSocket to catch up.
+   *
+   * This is useful when:
+   * - An API call succeeds but WebSocket hasn't pushed the update yet
+   * - You want to show confirmed data immediately without waiting for stream
+   *
+   * @param data - The data to push into the cache and notify subscribers
+   */
+  pushData(data: TData): void {
+    this.cache = data;
+    this.subscribers.forEach((callback) => {
+      callback(data);
+    });
+  }
+
+  /**
    * Prewarm: Start a subscription that keeps the channel connected
    * and cache updated, even when no UI components are subscribed.
    *
