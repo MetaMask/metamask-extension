@@ -256,8 +256,10 @@ export default class Home extends PureComponent {
       evaluateCohortEligibility &&
       isSignedIn
     ) {
-      setPendingShieldCohort(null);
-      evaluateCohortEligibility(pendingShieldCohort);
+      evaluateCohortEligibility(pendingShieldCohort).then(() => {
+        // reset pending shield cohort only if evaluation succeeded
+        setPendingShieldCohort(null);
+      });
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
 
