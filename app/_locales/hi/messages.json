@@ -7064,6 +7064,78 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "इस विकल्प को चालू करने से MetaMask में डीप लिंक खोलने पर दिखाई देने वाली इंटरस्टिशियल स्क्रीन को स्किप कर दिया जाएगा। \"डीप लिंक\" https://link.metamask.io/home जैसा लिंक होता है जो MetaMask को खोलने का कारण बनता है; ऐसे लिंक को अन्य लोग छुपा या बदल सकते हैं। इंटरस्टिशियल स्क्रीन आपको MetaMask के भीतर गलती से खुलने वाले पेज से बचाने के लिए डिज़ाइन की गई है जो आपके एकाउंट्स, टोकन, इतिहास, बैलेंस, सेटिंग्स या अन्य संभावित रूप से संवेदनशील जानकारी प्रदर्शित कर सकते हैं। यह सेटिंग केवल MetaMask द्वारा साइन किए गए लिंक पर लागू होती है।"
   },
+  "slideBridgeDescription": {
+    "message": "Move across 9 chains, all within your wallet",
+    "description": "Description for the bridge carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Ready to bridge?",
+    "description": "Title for the bridge carousel slide"
+  },
+  "slideCashOutDescription": {
+    "message": "Sell your crypto for cash",
+    "description": "Description for the cash out carousel slide"
+  },
+  "slideCashOutTitle": {
+    "message": "Cash out with MetaMask",
+    "description": "Title for the cash out carousel slide"
+  },
+  "slideDebitCardDescription": {
+    "message": "Available in select regions",
+    "description": "Description for the debit card carousel slide"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMask debit card",
+    "description": "Title for the debit card carousel slide"
+  },
+  "slideFundWalletDescription": {
+    "message": "Add or transfer tokens to get started",
+    "description": "Description for the fund wallet carousel slide"
+  },
+  "slideFundWalletTitle": {
+    "message": "Fund your wallet",
+    "description": "Title for the fund wallet carousel slide"
+  },
+  "slideMultiSrpDescription": {
+    "message": "Import and use multiple wallets in MetaMask",
+    "description": "Description for the multi-SRP carousel slide"
+  },
+  "slideMultiSrpTitle": {
+    "message": "Add multiple Secret Recovery Phrases",
+    "description": "Title for the multi-SRP carousel slide"
+  },
+  "slideRemoteModeDescription": {
+    "message": "Access your hardware wallet without plugging it in",
+    "description": "Description for the remote mode carousel slide"
+  },
+  "slideRemoteModeTitle": {
+    "message": "Remote mode",
+    "description": "Title for the remote mode carousel slide"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Same address. Smarter features.",
+    "description": "Description for the smart account upgrade carousel slide"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Switch to smart account",
+    "description": "Title for the smart account upgrade carousel slide"
+  },
+  "slideSolanaDescription": {
+    "message": "Manage your Solana assets in MetaMask",
+    "description": "Description for the Solana carousel slide"
+  },
+  "slideSolanaTitle": {
+    "message": "Solana support",
+    "description": "Title for the Solana carousel slide"
+  },
+  "slideSweepStakeDescription": {
+    "message": "Enter for a chance to win prizes",
+    "description": "Description for the sweepstake carousel slide"
+  },
+  "slideSweepStakeTitle": {
+    "message": "Join the sweepstake",
+    "description": "Title for the sweepstake carousel slide"
+  },
   "slippage": {
     "message": "स्लिपेज (slippage)"
   },

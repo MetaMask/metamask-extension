@@ -433,6 +433,78 @@
   "signed": {
     "message": "Te Siyen"
   },
+  "slideBridgeDescription": {
+    "message": "Move across 9 chains, all within your wallet",
+    "description": "Description for the bridge carousel slide"
+  },
+  "slideBridgeTitle": {
+    "message": "Ready to bridge?",
+    "description": "Title for the bridge carousel slide"
+  },
+  "slideCashOutDescription": {
+    "message": "Sell your crypto for cash",
+    "description": "Description for the cash out carousel slide"
+  },
+  "slideCashOutTitle": {
+    "message": "Cash out with MetaMask",
+    "description": "Title for the cash out carousel slide"
+  },
+  "slideDebitCardDescription": {
+    "message": "Available in select regions",
+    "description": "Description for the debit card carousel slide"
+  },
+  "slideDebitCardTitle": {
+    "message": "MetaMask debit card",
+    "description": "Title for the debit card carousel slide"
+  },
+  "slideFundWalletDescription": {
+    "message": "Add or transfer tokens to get started",
+    "description": "Description for the fund wallet carousel slide"
+  },
+  "slideFundWalletTitle": {
+    "message": "Fund your wallet",
+    "description": "Title for the fund wallet carousel slide"
+  },
+  "slideMultiSrpDescription": {
+    "message": "Import and use multiple wallets in MetaMask",
+    "description": "Description for the multi-SRP carousel slide"
+  },
+  "slideMultiSrpTitle": {
+    "message": "Add multiple Secret Recovery Phrases",
+    "description": "Title for the multi-SRP carousel slide"
+  },
+  "slideRemoteModeDescription": {
+    "message": "Access your hardware wallet without plugging it in",
+    "description": "Description for the remote mode carousel slide"
+  },
+  "slideRemoteModeTitle": {
+    "message": "Remote mode",
+    "description": "Title for the remote mode carousel slide"
+  },
+  "slideSmartAccountUpgradeDescription": {
+    "message": "Same address. Smarter features.",
+    "description": "Description for the smart account upgrade carousel slide"
+  },
+  "slideSmartAccountUpgradeTitle": {
+    "message": "Switch to smart account",
+    "description": "Title for the smart account upgrade carousel slide"
+  },
+  "slideSolanaDescription": {
+    "message": "Manage your Solana assets in MetaMask",
+    "description": "Description for the Solana carousel slide"
+  },
+  "slideSolanaTitle": {
+    "message": "Solana support",
+    "description": "Title for the Solana carousel slide"
+  },
+  "slideSweepStakeDescription": {
+    "message": "Enter for a chance to win prizes",
+    "description": "Description for the sweepstake carousel slide"
+  },
+  "slideSweepStakeTitle": {
+    "message": "Join the sweepstake",
+    "description": "Title for the sweepstake carousel slide"
+  },
   "speedUp": {
     "message": "pi vit"
   },
