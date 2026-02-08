@@ -882,5 +882,11 @@
       }
     },
     "version": "v0.3.0"
+  },
+  "previewBuilds": {
+    "@metamask/assets-controller": {
+      "type": "non-breaking",
+      "previewVersion": "0.2.0-preview-429bf064c"
+    }
   }
 }

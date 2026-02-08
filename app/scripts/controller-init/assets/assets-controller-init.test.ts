@@ -14,15 +14,12 @@ import { AssetsControllerInit } from './assets-controller-init';
 jest.mock('@metamask/assets-controller', () => ({
   ...jest.requireActual('@metamask/assets-controller'),
   AssetsController: jest.fn().mockImplementation(() => ({
-    registerDataSources: jest.fn(),
     state: {},
   })),
-  initMessengers: jest.fn().mockReturnValue({}),
-  initDataSources: jest.fn().mockReturnValue({}),
 }));
 
 jest.mock('@metamask/core-backend', () => ({
-  createApiPlatformClient: jest.fn().mockReturnValue({}),
+  createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
 }));
 
 function getInitRequestMock(
@@ -30,6 +27,7 @@ function getInitRequestMock(
     featureFlagEnabled?: boolean;
     featureVersion?: string | null;
     minimumVersion?: string | null;
+    useTokenDetection?: boolean;
   } = {},
 ): jest.Mocked<
   ControllerInitRequest<
@@ -41,6 +39,7 @@ function getInitRequestMock(
     featureFlagEnabled = false,
     featureVersion = ASSETS_UNIFY_STATE_VERSION_1,
     minimumVersion = null,
+    useTokenDetection = true,
   } = options;
 
   const baseMessenger = getRootMessenger<never, never>();
@@ -52,7 +51,6 @@ function getInitRequestMock(
   };
 
   // Mock getController for RemoteFeatureFlagController
-  // @ts-expect-error: Partial mock.
   requestMock.getController.mockImplementation((controllerName) => {
     if (controllerName === 'RemoteFeatureFlagController') {
       return {
@@ -65,9 +63,20 @@ function getInitRequestMock(
             },
           },
         },
-      };
+      } as unknown as ReturnType<typeof requestMock.getController>;
     }
     throw new Error(`Unexpected controller name: ${controllerName}`);
+  });
+
+  // Mock initMessenger.call for PreferencesController
+  requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
+    if (action === 'PreferencesController:getState') {
+      return { useTokenDetection };
+    }
+    if (action === 'AuthenticationController:getBearerToken') {
+      return Promise.resolve('mock-bearer-token');
+    }
+    throw new Error(`Unexpected action: ${action}`);
   });
 
   return requestMock;
@@ -91,32 +100,21 @@ describe('AssetsControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       isEnabled: expect.any(Function),
+      queryApiClient: expect.any(Object),
+      rpcDataSourceConfig: { tokenDetectionEnabled: true },
     });
-  });
-
-  it('registers data sources with the controller', () => {
-    const { controller } = AssetsControllerInit(getInitRequestMock());
-
-    expect(controller.registerDataSources).toHaveBeenCalledWith([
-      'BackendWebsocketDataSource',
-      'AccountsApiDataSource',
-      'RpcDataSource',
-      'SnapDataSource',
-      'TokenDataSource',
-      'PriceDataSource',
-      'DetectionMiddleware',
-    ]);
   });
 
   it('uses persisted state when available', () => {
     const persistedState = {
       AssetsController: {
-        assets: { '0x1': { tokens: [] } },
+        assetsMetadata: {},
+        assetsBalance: {},
+        assetsPrice: {},
       },
     };
 
     const requestMock = getInitRequestMock();
-    // @ts-expect-error: Partial mock.
     requestMock.persistedState = persistedState;
 
     AssetsControllerInit(requestMock);
@@ -125,7 +123,41 @@ describe('AssetsControllerInit', () => {
       messenger: expect.any(Object),
       state: persistedState.AssetsController,
       isEnabled: expect.any(Function),
+      queryApiClient: expect.any(Object),
+      rpcDataSourceConfig: { tokenDetectionEnabled: true },
     });
+  });
+
+  it('passes tokenDetectionEnabled from preferences', () => {
+    const requestMock = getInitRequestMock({ useTokenDetection: false });
+    AssetsControllerInit(requestMock);
+
+    expect(AssetsController).toHaveBeenCalledWith(
+      expect.objectContaining({
+        rpcDataSourceConfig: { tokenDetectionEnabled: false },
+      }),
+    );
+  });
+
+  it('defaults tokenDetectionEnabled to true when preferences call fails', () => {
+    const requestMock = getInitRequestMock();
+    requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
+      if (action === 'PreferencesController:getState') {
+        throw new Error('Failed to get preferences');
+      }
+      if (action === 'AuthenticationController:getBearerToken') {
+        return Promise.resolve('mock-bearer-token');
+      }
+      throw new Error(`Unexpected action: ${action}`);
+    });
+
+    AssetsControllerInit(requestMock);
+
+    expect(AssetsController).toHaveBeenCalledWith(
+      expect.objectContaining({
+        rpcDataSourceConfig: { tokenDetectionEnabled: true },
+      }),
+    );
   });
 
   describe('isEnabled function', () => {
@@ -180,16 +212,26 @@ describe('AssetsControllerInit', () => {
         initMessenger: getAssetsControllerInitMessenger(baseMessenger),
       };
 
-      // @ts-expect-error: Partial mock.
       requestMock.getController.mockImplementation((controllerName) => {
         if (controllerName === 'RemoteFeatureFlagController') {
           return {
             state: {
               remoteFeatureFlags: {},
             },
-          };
+          } as unknown as ReturnType<typeof requestMock.getController>;
         }
         throw new Error(`Unexpected controller name: ${controllerName}`);
+      });
+
+      // Mock initMessenger.call
+      requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
+        if (action === 'PreferencesController:getState') {
+          return { useTokenDetection: true };
+        }
+        if (action === 'AuthenticationController:getBearerToken') {
+          return Promise.resolve('mock-bearer-token');
+        }
+        throw new Error(`Unexpected action: ${action}`);
       });
 
       AssetsControllerInit(requestMock);
@@ -213,8 +255,16 @@ describe('AssetsControllerInit', () => {
         throw new Error('Controller not found');
       });
 
-      // Suppress console.warn for this test
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      // Mock initMessenger.call
+      requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
+        if (action === 'PreferencesController:getState') {
+          return { useTokenDetection: true };
+        }
+        if (action === 'AuthenticationController:getBearerToken') {
+          return Promise.resolve('mock-bearer-token');
+        }
+        throw new Error(`Unexpected action: ${action}`);
+      });
 
       AssetsControllerInit(requestMock);
 
@@ -222,9 +272,6 @@ describe('AssetsControllerInit', () => {
       const isEnabled = constructorCall.isEnabled as () => boolean;
 
       expect(isEnabled()).toBe(false);
-      expect(warnSpy).toHaveBeenCalled();
-
-      warnSpy.mockRestore();
     });
   });
 });
