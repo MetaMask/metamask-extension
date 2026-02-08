@@ -226,7 +226,6 @@ export default class Home extends PureComponent {
       clearNewNetworkAdded,
       pendingShieldCohort,
       evaluateCohortEligibility,
-      setPendingShieldCohort,
       isSignedIn,
     } = this.props;
 
@@ -256,10 +255,7 @@ export default class Home extends PureComponent {
       evaluateCohortEligibility &&
       isSignedIn
     ) {
-      evaluateCohortEligibility(pendingShieldCohort).then(() => {
-        // reset pending shield cohort only if evaluation succeeded
-        setPendingShieldCohort(null);
-      });
+      evaluateCohortEligibility(pendingShieldCohort);
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
 

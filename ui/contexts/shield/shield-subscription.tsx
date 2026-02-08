@@ -11,6 +11,7 @@ import log from 'loglevel';
 import { useSubscriptionEligibility } from '../../hooks/subscription/useSubscription';
 import {
   assignUserToCohort,
+  setPendingShieldCohort,
   setShowShieldEntryModalOnce,
   subscriptionsStartPolling,
 } from '../../store/actions';
@@ -214,6 +215,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
               shouldUpdateBackgroundState: false,
             }),
           );
+          await dispatch(setPendingShieldCohort(null));
           return;
         }
 
@@ -239,6 +241,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
                 shouldUpdateBackgroundState: false,
               }),
             );
+            await dispatch(setPendingShieldCohort(null));
           }
         }
       } catch (error) {
