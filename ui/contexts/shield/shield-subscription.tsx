@@ -176,20 +176,28 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             return;
           }
 
-          // User has an assigned cohort but it has expired
-          // track `shield_eligibility_cohort_timeout` event
-          await captureShieldEligibilityCohortEvent(
-            {
-              cohort: assignedCohortName as CohortName,
-              numberOfEligibleCohorts: eligibleCohorts.length,
-            },
-            MetaMetricsEventName.ShieldEligibilityCohortTimeout,
-          );
+          // could continue if entrypointCohort is wallet_home and assignedCohort has not expired
+          // so we need to check hasExpired here before recording the event
+          if (hasExpired) {
+            // User has an assigned cohort but it has expired
+            // track `shield_eligibility_cohort_timeout` event
+            await captureShieldEligibilityCohortEvent(
+              {
+                cohort: assignedCohortName as CohortName,
+                numberOfEligibleCohorts: eligibleCohorts.length,
+              },
+              MetaMetricsEventName.ShieldEligibilityCohortTimeout,
+            );
+          }
 
           const cohort = eligibleCohorts.find(
             (c) => c.cohort === entrypointCohort,
           );
           if (!cohort) {
+            log.warn(
+              '[evaluateCohortEligibility] error',
+              'user pending no cohort found',
+            );
             return;
           }
 
