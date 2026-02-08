@@ -85,6 +85,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
+import { AccountCountDisplay } from '../../app/account-count-display';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -389,6 +390,11 @@ export const AppHeaderUnlockedContent = ({
         {isMultichainAccountsState2Enabled
           ? multichainAccountAppContent
           : AppContent}
+        <AccountCountDisplay
+          onNavigateToAccounts={() => {
+            navigate(ACCOUNT_LIST_PAGE_ROUTE);
+          }}
+        />
       </Box>
       <Box
         display={Display.Flex}
