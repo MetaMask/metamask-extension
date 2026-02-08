@@ -27,6 +27,22 @@ export const StackCard: React.FC<StackCardProps> = ({
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
+  // Defensive helper to safely translate with fallback
+  const safeTranslate = (key: string, fallback: string = key): string => {
+    if (isContentfulContent) {
+      return key;
+    }
+    try {
+      const result = t(key);
+      return result || fallback;
+    } catch (error) {
+      console.warn(
+        `[StackCard] Failed to translate key "${key}": ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+      return fallback;
+    }
+  };
+
   const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -92,7 +108,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
-            {isContentfulContent ? slide.title : t(slide.title)}
+            {safeTranslate(slide.title, slide.title)}
           </Text>
 
           {onTransitionToNextCard && (
@@ -101,7 +117,7 @@ export const StackCard: React.FC<StackCardProps> = ({
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
               ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
+                safeTranslate(slide.title, slide.title),
               ])}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}
@@ -116,7 +132,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
-            {isContentfulContent ? slide.description : t(slide.description)}
+            {safeTranslate(slide.description, slide.description)}
           </Text>
         </div>
       </div>

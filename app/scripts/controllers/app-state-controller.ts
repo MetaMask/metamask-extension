@@ -981,8 +981,16 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       const currentSlides = state.slides || [];
 
+      // Filter out deprecated slides that don't have Contentful IDs
+      // This prevents old slides with missing i18n keys from causing errors
+      const validCurrentSlides = currentSlides.filter(
+        (slide) =>
+          slide.id.startsWith('contentful-') ||
+          slides.some((s) => s.id === slide.id),
+      );
+
       const newSlides = slides.map((slide) => {
-        const existingSlide = currentSlides.find((s) => s.id === slide.id);
+        const existingSlide = validCurrentSlides.find((s) => s.id === slide.id);
         if (existingSlide) {
           return {
             ...existingSlide,
