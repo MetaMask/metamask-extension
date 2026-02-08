@@ -241,9 +241,9 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
                 shouldUpdateBackgroundState: false,
               }),
             );
-            await dispatch(setPendingShieldCohort(null));
           }
         }
+        await dispatch(setPendingShieldCohort(null));
       } catch (error) {
         captureException(
           createSentryError(
