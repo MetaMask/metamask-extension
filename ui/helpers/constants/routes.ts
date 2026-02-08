@@ -112,15 +112,8 @@ export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
   '/encryption-public-key-request';
 export const CROSS_CHAIN_SWAP_ROUTE = '/cross-chain';
 export const CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE = '/cross-chain/tx-details';
-export const SWAPS_ROUTE = '/swaps';
-export const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
-export const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
-export const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
+export const PREPARE_SWAP_ROUTE = '/swaps/prepare-bridge-page';
 export const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
-export const SMART_TRANSACTION_STATUS_ROUTE = '/swaps/smart-transaction-status';
-export const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
-export const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
-export const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 export const ONBOARDING_ROUTE = '/onboarding';
 export const ONBOARDING_REVEAL_SRP_ROUTE = '/onboarding/reveal-recovery-phrase';
 export const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -473,34 +466,8 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: CROSS_CHAIN_SWAP_ROUTE,
-    label: 'Prepare Cross Chain Swap Page',
-    trackInAnalytics: true,
-  },
-  { path: SWAPS_ROUTE, label: 'Swaps', trackInAnalytics: false },
-  {
-    path: PREPARE_SWAP_ROUTE,
-    label: 'Prepare Swap Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SWAPS_NOTIFICATION_ROUTE,
-    label: 'Swaps Notification Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: LOADING_QUOTES_ROUTE,
-    label: 'Swaps Loading Quotes Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: AWAITING_SWAP_ROUTE,
-    label: 'Swaps Awaiting Swaps Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SWAPS_ERROR_ROUTE,
-    label: 'Swaps Error Page',
+    path: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+    label: 'Prepare Bridge Page',
     trackInAnalytics: true,
   },
   {
@@ -590,16 +557,6 @@ export const ROUTES = [
   {
     path: AWAITING_SIGNATURES_ROUTE,
     label: 'Swaps Awaiting Signatures',
-    trackInAnalytics: false,
-  },
-  {
-    path: SMART_TRANSACTION_STATUS_ROUTE,
-    label: 'Swaps Smart Transaction Status',
-    trackInAnalytics: false,
-  },
-  {
-    path: SWAPS_MAINTENANCE_ROUTE,
-    label: 'Swaps Maintenance',
     trackInAnalytics: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
