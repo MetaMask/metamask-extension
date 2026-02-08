@@ -28,11 +28,13 @@ import type {
 import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import { RootMessenger } from '../../../lib/messenger';
 
-// Re-export the messenger type from the package
+/**
+ * Re-export the messenger type from the package.
+ */
 export type AssetsControllerMessenger = AssetsControllerMessengerType;
 
 /**
- * App lifecycle event: fired when app becomes active (opened/foregrounded)
+ * App lifecycle event: fired when app becomes active (opened/foregrounded).
  */
 type AppStateControllerAppOpenedEvent = {
   type: 'AppStateController:appOpened';
@@ -40,7 +42,7 @@ type AppStateControllerAppOpenedEvent = {
 };
 
 /**
- * App lifecycle event: fired when app becomes inactive (closed/backgrounded)
+ * App lifecycle event: fired when app becomes inactive (closed/backgrounded).
  */
 type AppStateControllerAppClosedEvent = {
   type: 'AppStateController:appClosed';
@@ -48,7 +50,27 @@ type AppStateControllerAppClosedEvent = {
 };
 
 /**
- * NetworkController:getState action
+ * Actions that the AssetsController core needs to call.
+ * These are used directly by the AssetsController itself.
+ */
+type CoreAssetsControllerActions =
+  | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
+  | NetworkEnablementControllerGetStateAction;
+
+/**
+ * Events that the AssetsController core subscribes to.
+ * These are used directly by the AssetsController itself.
+ */
+type CoreAssetsControllerEvents =
+  | AccountTreeControllerSelectedAccountGroupChangeEvent
+  | NetworkEnablementControllerEvents
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent
+  | AppStateControllerAppOpenedEvent
+  | AppStateControllerAppClosedEvent;
+
+/**
+ * NetworkController:getState action for RpcDataSource.
  */
 type NetworkControllerGetStateAction = {
   type: 'NetworkController:getState';
@@ -56,7 +78,7 @@ type NetworkControllerGetStateAction = {
 };
 
 /**
- * NetworkController:getNetworkClientById action
+ * NetworkController:getNetworkClientById action for RpcDataSource.
  */
 type NetworkControllerGetNetworkClientByIdAction = {
   type: 'NetworkController:getNetworkClientById';
@@ -64,12 +86,49 @@ type NetworkControllerGetNetworkClientByIdAction = {
 };
 
 /**
- * TokenListController:getState action
+ * Actions required by RpcDataSource.
+ *
+ * @see RpcDataSource in @metamask/assets-controller
+ */
+type RpcDataSourceActions =
+  | NetworkControllerGetStateAction
+  | NetworkControllerGetNetworkClientByIdAction;
+
+/**
+ * Events required by RpcDataSource.
+ *
+ * @see RpcDataSource in @metamask/assets-controller
+ */
+type RpcDataSourceEvents = NetworkControllerStateChangeEvent;
+
+/**
+ * TokenListController:getState action for TokenDataSource.
  */
 type TokenListControllerGetStateAction = {
   type: 'TokenListController:getState';
   handler: () => unknown;
 };
+
+/**
+ * Actions required by TokenDataSource.
+ *
+ * @see TokenDataSource in @metamask/assets-controller
+ */
+type TokenDataSourceActions = TokenListControllerGetStateAction;
+
+/**
+ * Actions required by BackendWebsocketDataSource.
+ *
+ * @see BackendWebsocketDataSource in @metamask/assets-controller
+ */
+type BackendWebsocketDataSourceActions = BackendWebSocketServiceActions;
+
+/**
+ * Events required by BackendWebsocketDataSource.
+ *
+ * @see BackendWebsocketDataSource in @metamask/assets-controller
+ */
+type BackendWebsocketDataSourceEvents = BackendWebSocketServiceEvents;
 
 /**
  * AccountsController:accountBalancesUpdated event for SnapDataSource.
@@ -92,46 +151,69 @@ type AccountsControllerAccountBalancesUpdatedEvent = {
 };
 
 /**
- * Actions that the AssetsController needs to call
+ * Actions required by SnapDataSource.
+ *
+ * @see SnapDataSource in @metamask/assets-controller
  */
-type AllowedActions =
-  | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
-  | NetworkEnablementControllerGetStateAction
-  // Data source dependencies
-  | NetworkControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | TokenListControllerGetStateAction
-  | BackendWebSocketServiceActions
-  // SnapDataSource dependencies
+type SnapDataSourceActions =
   | GetRunnableSnaps
   | HandleSnapRequest
   | GetPermissions;
 
 /**
- * Events that the AssetsController subscribes to
+ * Events required by SnapDataSource.
+ *
+ * @see SnapDataSource in @metamask/assets-controller
  */
-type AllowedEvents =
-  | AccountTreeControllerSelectedAccountGroupChangeEvent
-  | NetworkEnablementControllerEvents
-  | KeyringControllerLockEvent
-  | KeyringControllerUnlockEvent
-  | AppStateControllerAppOpenedEvent
-  | AppStateControllerAppClosedEvent
-  // Data source dependencies
-  | NetworkControllerStateChangeEvent
-  | BackendWebSocketServiceEvents
-  // SnapDataSource dependencies
+type SnapDataSourceEvents =
   | AccountsControllerAccountBalancesUpdatedEvent
   | PermissionControllerStateChange;
 
+/**
+ * All actions allowed for the AssetsController messenger.
+ * Includes core controller actions and all data source actions.
+ *
+ * Note: Data source actions are included because the package creates data sources
+ * internally using the controller's messenger. When the package supports separate
+ * data source messengers, these should be decoupled.
+ */
+type AllowedActions =
+  | CoreAssetsControllerActions
+  | RpcDataSourceActions
+  | TokenDataSourceActions
+  | BackendWebsocketDataSourceActions
+  | SnapDataSourceActions;
+
+/**
+ * All events allowed for the AssetsController messenger.
+ * Includes core controller events and all data source events.
+ *
+ * Note: Data source events are included because the package creates data sources
+ * internally using the controller's messenger. When the package supports separate
+ * data source messengers, these should be decoupled.
+ */
+type AllowedEvents =
+  | CoreAssetsControllerEvents
+  | RpcDataSourceEvents
+  | BackendWebsocketDataSourceEvents
+  | SnapDataSourceEvents;
+
+/**
+ * Messenger type for AssetsController initialization.
+ */
 export type AssetsControllerInitMessenger = ReturnType<
   typeof getAssetsControllerInitMessenger
 >;
 
 /**
  * Get a messenger for the AssetsController.
- * The AssetsController uses the @metamask/messenger pattern and requires a child messenger
+ *
+ * The AssetsController uses the messenger pattern and requires a child messenger
  * with the 'AssetsController' namespace.
+ *
+ * Note: Currently includes data source dependencies because the package creates
+ * data sources internally using the controller's messenger. When the package
+ * supports separate data source messengers, these should be decoupled.
  *
  * @param messenger - The root controller messenger.
  * @returns The controller messenger.
@@ -149,39 +231,30 @@ export function getAssetsControllerMessenger(
     parent: messenger,
   });
 
-  // Delegate the allowed actions and events that the controller needs to call
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
-      // Core AssetsController dependencies
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       'NetworkEnablementController:getState',
-      // Data source dependencies - NetworkController
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
-      // Data source dependencies - TokenListController
       'TokenListController:getState',
-      // Data source dependencies - BackendWebSocketService
       'BackendWebSocketService:subscribe',
       'BackendWebSocketService:getConnectionInfo',
       'BackendWebSocketService:findSubscriptionsByChannelPrefix',
-      // SnapDataSource dependencies
       'SnapController:handleRequest',
       'SnapController:getRunnableSnaps',
       'PermissionController:getPermissions',
     ],
     events: [
-      // Core AssetsController events
       'AccountTreeController:selectedAccountGroupChange',
       'NetworkEnablementController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
       'AppStateController:appOpened',
       'AppStateController:appClosed',
-      // Data source events
       'NetworkController:stateChange',
       'BackendWebSocketService:connectionStateChanged',
-      // SnapDataSource events
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',
     ],
@@ -191,7 +264,7 @@ export function getAssetsControllerMessenger(
 }
 
 /**
- * PreferencesController:getState action
+ * PreferencesController:getState action.
  */
 type PreferencesControllerGetStateAction = {
   type: 'PreferencesController:getState';
@@ -199,7 +272,7 @@ type PreferencesControllerGetStateAction = {
 };
 
 /**
- * Actions needed during AssetsController initialization
+ * Actions needed during AssetsController initialization.
  */
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerToken
