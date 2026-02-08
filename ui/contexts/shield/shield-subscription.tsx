@@ -25,6 +25,8 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { captureException } from '../../../shared/lib/sentry';
+import { createSentryError } from '../../../shared/modules/error';
 
 export const ShieldSubscriptionContext = React.createContext<{
   evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;
@@ -201,7 +203,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             return;
           }
 
-          dispatch(
+          await dispatch(
             setShowShieldEntryModalOnce({
               show: true,
               shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event
@@ -226,7 +228,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             modalType,
           );
           if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
-            dispatch(
+            await dispatch(
               setShowShieldEntryModalOnce({
                 show: true,
                 shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event to subscription backend
@@ -240,6 +242,12 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
           }
         }
       } catch (error) {
+        captureException(
+          createSentryError(
+            'Failed to evaluate cohort eligibility',
+            error as Error,
+          ),
+        );
         log.warn('[evaluateCohortEligibility] error', error);
       }
     },
