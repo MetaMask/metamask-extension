@@ -1,11 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { IconName as IconNameNew } from '@metamask/design-system-react';
 import { TextProps, ValidTagType } from '../text/text.types';
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../box';
-import { IconProps } from '../icon';
+import { IconName, IconProps } from '../icon';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -24,10 +22,8 @@ export interface TagStyleUtilityProps extends StyleUtilityProps {
   className?: string;
   /**
    * The name of the icon to be used in the Tag component
-   * Accepts both deprecated IconName from component-library and new IconName from @metamask/design-system-react
-   * Using string to allow both enum types without TypeScript strictness issues
    */
-  startIconName?: string;
+  startIconName?: IconName;
   /**
    * The icon props of the component. Most Icon component props can be used
    */
