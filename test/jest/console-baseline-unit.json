@@ -74,6 +74,7 @@
       "error: This browser doesn't support cancelAnimationFrame.": 1,
       "error: TypeError: Cannot convert undefined or": 2,
       "error: {": 1,
+      "warn: Error during SnapController initialization. AssertionError:": 2,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },

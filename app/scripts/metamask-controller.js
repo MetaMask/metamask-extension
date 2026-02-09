@@ -6,6 +6,7 @@ import {
   createScaffoldMiddleware,
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
+import { asLegacyMiddleware } from '@metamask/json-rpc-engine/v2';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -37,6 +38,7 @@ import {
 } from '@metamask/selected-network-controller';
 
 import {
+  createWalletSnapPermissionMiddleware,
   createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
   SnapEndowments,
@@ -7369,6 +7371,8 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
+    engine.push(asLegacyMiddleware(createWalletSnapPermissionMiddleware()));
+
     // Legacy RPC method that needs to be implemented _ahead of_ the permission
     // middleware.
     engine.push(
@@ -7996,24 +8000,6 @@ export default class MetamaskController extends EventEmitter {
     if (Object.keys(connections).length === 0) {
       delete this.connections[origin];
     }
-  }
-
-  /**
-   * Closes all connections for the given origin, and removes the references
-   * to them.
-   * Ignores unknown origins.
-   *
-   * @param {string} origin - The origin string.
-   */
-  removeAllConnections(origin) {
-    const connections = this.connections[origin];
-    if (!connections) {
-      return;
-    }
-
-    Object.keys(connections).forEach((id) => {
-      this.removeConnection(origin, id);
-    });
   }
 
   /**
@@ -9304,7 +9290,6 @@ export default class MetamaskController extends EventEmitter {
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
       removeAccount: this.removeAccount.bind(this),
-      removeAllConnections: this.removeAllConnections.bind(this),
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:
