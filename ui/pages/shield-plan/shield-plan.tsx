@@ -152,21 +152,23 @@ const ShieldPlan = () => {
 
   // redirect to subscription settings page if user already has a subscription
   useEffect(() => {
-    if (shieldSubscription) {
-      // Clear the checkout-in-progress flag before redirecting,
-      // otherwise the flag stays true and Home will keep redirecting back here.
-      if (shieldCardCheckoutInProgress) {
-        try {
-          dispatch(setShieldCardCheckoutInProgress(false));
-        } catch (error) {
-          log.error(
-            '[ShieldPlan] Failed to clear shieldCardCheckoutInProgress',
-            error,
-          );
+    (async () => {
+      if (shieldSubscription) {
+        // Clear the checkout-in-progress flag before redirecting,
+        // otherwise the flag stays true and Home will keep redirecting back here.
+        if (shieldCardCheckoutInProgress) {
+          try {
+            await dispatch(setShieldCardCheckoutInProgress(false));
+          } catch (error) {
+            log.error(
+              '[ShieldPlan] Failed to clear shieldCardCheckoutInProgress',
+              error,
+            );
+          }
         }
+        navigate(TRANSACTION_SHIELD_ROUTE);
       }
-      navigate(TRANSACTION_SHIELD_ROUTE);
-    }
+    })();
   }, [navigate, shieldSubscription, shieldCardCheckoutInProgress, dispatch]);
 
   const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
