@@ -7669,7 +7669,7 @@
   "storageErrorAction": {
     "message": "I-back up ang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase)"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "I-back up ang Secret Recovery Phrase mo at muling i-install ang MetaMask kung magpapatuloy ang problema."
   },
   "storageErrorTitle": {
