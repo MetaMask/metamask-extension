@@ -47,7 +47,6 @@ describe('HardwareWalletErrorModal', () => {
     jest.clearAllMocks();
     mockEnsureDeviceReady.mockResolvedValue(true);
     mockUseHardwareWalletConfig.mockReturnValue({
-      deviceId: 'test-device-id',
       walletType: HardwareWalletType.Ledger,
     });
   });
@@ -94,7 +93,6 @@ describe('HardwareWalletErrorModal', () => {
       );
 
       mockUseHardwareWalletConfig.mockReturnValue({
-        deviceId: null,
         walletType: null,
       });
 
@@ -319,7 +317,7 @@ describe('HardwareWalletErrorModal', () => {
       });
 
       await waitFor(() => {
-        expect(mockEnsureDeviceReady).toHaveBeenCalledWith('test-device-id');
+        expect(mockEnsureDeviceReady).toHaveBeenCalled();
       });
       expect(onRetry).toHaveBeenCalledTimes(1);
     });
