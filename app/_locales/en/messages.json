@@ -3795,46 +3795,6 @@
   "marketCap": {
     "message": "Market cap"
   },
-  "merklRewardsAnnualBonus": {
-    "message": "$1% bonus",
-    "description": "Displays the annual bonus APY for Merkl rewards. $1 is the APY percentage."
-  },
-  "merklRewardsClaim": {
-    "message": "Claim",
-    "description": "Button label to claim Merkl rewards"
-  },
-  "merklRewardsClaimableBonus": {
-    "message": "Claimable bonus",
-    "description": "Label for the claimable Merkl rewards bonus amount"
-  },
-  "merklRewardsClaimableBonusTooltip": {
-    "message": "mUSD bonuses are claimed on Linea.",
-    "description": "Tooltip explaining that mUSD bonuses are claimed on the Linea network"
-  },
-  "merklRewardsClaimBonus": {
-    "message": "Claim bonus",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
-  "merklRewardsClaimOnLineaDescription": {
-    "message": "Your bonus will be issued on Linea, separate from your Ethereum mUSD balance.",
-    "description": "Description in the Claim on Linea modal explaining where bonuses are issued"
-  },
-  "merklRewardsClaimOnLineaTitle": {
-    "message": "Claim bonuses on Linea",
-    "description": "Title of the modal confirming that bonuses are claimed on Linea"
-  },
-  "merklRewardsContinue": {
-    "message": "Continue",
-    "description": "Button label to continue with the Merkl claim process"
-  },
-  "merklRewardsTermsApply": {
-    "message": "Terms apply.",
-    "description": "Link text for the terms of use in Merkl rewards"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "Unexpected error. Please try again.",
-    "description": "Error message shown when claiming Merkl rewards fails"
-  },
   "marketCapFDV": {
     "message": "Market cap (FDV)"
   },
@@ -3874,6 +3834,46 @@
   },
   "memo": {
     "message": "memo"
+  },
+  "merklRewardsAnnualBonus": {
+    "message": "$1% bonus",
+    "description": "Displays the annual bonus APY for Merkl rewards. $1 is the APY percentage."
+  },
+  "merklRewardsClaim": {
+    "message": "Claim",
+    "description": "Button label to claim Merkl rewards"
+  },
+  "merklRewardsClaimBonus": {
+    "message": "Claim bonus",
+    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
+  },
+  "merklRewardsClaimOnLineaDescription": {
+    "message": "Your bonus will be issued on Linea, separate from your Ethereum mUSD balance.",
+    "description": "Description in the Claim on Linea modal explaining where bonuses are issued"
+  },
+  "merklRewardsClaimOnLineaTitle": {
+    "message": "Claim bonuses on Linea",
+    "description": "Title of the modal confirming that bonuses are claimed on Linea"
+  },
+  "merklRewardsClaimableBonus": {
+    "message": "Claimable bonus",
+    "description": "Label for the claimable Merkl rewards bonus amount"
+  },
+  "merklRewardsClaimableBonusTooltip": {
+    "message": "mUSD bonuses are claimed on Linea.",
+    "description": "Tooltip explaining that mUSD bonuses are claimed on the Linea network"
+  },
+  "merklRewardsContinue": {
+    "message": "Continue",
+    "description": "Button label to continue with the Merkl claim process"
+  },
+  "merklRewardsTermsApply": {
+    "message": "Terms apply.",
+    "description": "Link text for the terms of use in Merkl rewards"
+  },
+  "merklRewardsUnexpectedError": {
+    "message": "Unexpected error. Please try again.",
+    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Message"
