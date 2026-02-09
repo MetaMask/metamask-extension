@@ -209,6 +209,7 @@ import {
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
+import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -220,7 +221,6 @@ import type {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
 
 type CustomGasSettings = {
   gas?: string;
