@@ -2717,7 +2717,7 @@ export default class MetamaskController extends EventEmitter {
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
-      getHdPathForHardwareKeyring: this.getHdPathForHardwareKeyring.bind(this),
+      getHdPathForLedgerKeyring: this.getHdPathForLedgerKeyring.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
@@ -5582,31 +5582,15 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Get the hd path currently configured on a hardware keyring.
    *
-   * @param deviceName
    * @returns {Promise<string>}
    */
-  async getHdPathForHardwareKeyring(deviceName) {
-    console.log('[HW] getHdPathForHardwareKeyring', deviceName);
-    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      if (typeof keyring.getHdPath === 'function') {
+  async getHdPathForLedgerKeyring() {
+    return this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => {
         return await keyring.getHdPath();
-      }
-
-      if (keyring.hdPath) {
-        return keyring.hdPath;
-      }
-
-      if (typeof keyring.serialize === 'function') {
-        const serialized = await keyring.serialize();
-        if (serialized?.hdPath) {
-          return serialized.hdPath;
-        }
-      }
-
-      throw new Error(
-        'MetamaskController:getHdPathForHardwareKeyring - Keyring does not expose hdPath',
-      );
-    });
+      },
+    );
   }
 
   async getLedgerPublicKey(hdPath) {

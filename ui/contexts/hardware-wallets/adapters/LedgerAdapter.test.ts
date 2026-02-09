@@ -8,7 +8,7 @@ import { HardwareDeviceNames } from '../../../../shared/constants/hardware-walle
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
-  getHdPathForHardwareKeyring,
+  getHdPathForLedgerKeyring,
   getLedgerAppConfiguration,
   getLedgerPublicKey,
 } from '../../../store/actions';
@@ -19,7 +19,7 @@ import { LedgerAdapter } from './LedgerAdapter';
 jest.mock('../../../store/actions', () => ({
   attemptLedgerTransportCreation: jest.fn(),
   getAppNameAndVersion: jest.fn(),
-  getHdPathForHardwareKeyring: jest.fn(),
+  getHdPathForLedgerKeyring: jest.fn(),
   getLedgerAppConfiguration: jest.fn(),
   getLedgerPublicKey: jest.fn(),
 }));
@@ -36,9 +36,9 @@ const mockAttemptLedgerTransportCreation =
 const mockGetAppNameAndVersion = getAppNameAndVersion as jest.MockedFunction<
   typeof getAppNameAndVersion
 >;
-const mockGetHdPathForHardwareKeyring =
-  getHdPathForHardwareKeyring as jest.MockedFunction<
-    typeof getHdPathForHardwareKeyring
+const mockgetHdPathForLedgerKeyring =
+  getHdPathForLedgerKeyring as jest.MockedFunction<
+    typeof getHdPathForLedgerKeyring
   >;
 const mockGetLedgerAppConfiguration =
   getLedgerAppConfiguration as jest.MockedFunction<
@@ -118,7 +118,7 @@ describe('LedgerAdapter', () => {
       configurable: true,
     });
 
-    mockGetHdPathForHardwareKeyring.mockResolvedValue("m/44'/60'/0'/0");
+    mockgetHdPathForLedgerKeyring.mockResolvedValue("m/44'/60'/0'/0");
     mockGetLedgerPublicKey.mockResolvedValue({
       publicKey: '0x',
       address: '0x',
@@ -228,7 +228,7 @@ describe('LedgerAdapter', () => {
 
       await adapter.connect();
 
-      expect(mockGetHdPathForHardwareKeyring).toHaveBeenCalledWith(
+      expect(mockgetHdPathForLedgerKeyring).toHaveBeenCalledWith(
         HardwareDeviceNames.ledger,
       );
       expect(mockGetLedgerPublicKey).toHaveBeenCalledWith("m/44'/60'/0'/0");

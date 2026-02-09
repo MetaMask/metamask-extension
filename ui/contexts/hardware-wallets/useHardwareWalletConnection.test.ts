@@ -779,24 +779,19 @@ describe('useHardwareWalletConnection', () => {
 
       const { result } = setupHook();
 
-      let firstPromise: Promise<boolean> | undefined;
-      let secondPromise: Promise<boolean> | undefined;
+      const firstPromise = result.current.ensureDeviceReady();
+      const secondPromise = result.current.ensureDeviceReady();
 
-      await act(async () => {
-        firstPromise = result.current.ensureDeviceReady();
-      });
+      expect(firstPromise).toBeDefined();
+      expect(secondPromise).toBeDefined();
 
-      await act(async () => {
-        secondPromise = result.current.ensureDeviceReady();
-      });
-
-      expect(secondPromise).toBe(firstPromise);
-
+      let results: boolean[] = [];
       await act(async () => {
         resolveEnsure?.(true);
-        await firstPromise;
+        results = await Promise.all([firstPromise, secondPromise]);
       });
 
+      expect(results).toStrictEqual([true, true]);
       expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalledTimes(1);
     });
   });

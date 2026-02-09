@@ -3,6 +3,7 @@ import {
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
+  AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
 import {
@@ -92,13 +93,7 @@ export class LedgerOffscreenBridge
     );
   }
 
-  getAppConfiguration(): Promise<{
-    arbitraryDataEnabled: number;
-    erc20ProvisioningNecessary: number;
-    starkEnabled: number;
-    starkv2Supported: number;
-    version: string;
-  }> {
+  getAppConfiguration(): Promise<AppConfigurationResponse> {
     return this.#sendMessage(
       {
         action: LedgerAction.getAppConfiguration,

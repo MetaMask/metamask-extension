@@ -294,6 +294,7 @@ jobs:
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
 
   run-tests:
     name: Run tests

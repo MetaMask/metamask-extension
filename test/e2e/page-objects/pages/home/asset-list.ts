@@ -807,10 +807,13 @@ class AssetListPage {
   /**
    * Checks if the token list prices are displayed and no "No conversion rate available" message is displayed
    *
+   * @param timeout
    * @throws Error if a "No conversion rate available" message is displayed
    */
-  async checkConversionRateDisplayed(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
+  async checkConversionRateDisplayed(timeout: number = 10000): Promise<void> {
+    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage, {
+      timeout,
+    });
   }
 
   async waitUntilTokenSearchMatch(numberOfMatches: number) {

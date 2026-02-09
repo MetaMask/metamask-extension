@@ -8,6 +8,9 @@ on:
     secrets:
       INFURA_PROJECT_ID:
         required: true
+      TEST_SRP_2:
+        required: false
+        description: Required for performanceLogin (import-srp-home). 12-word seed phrase.
 
 env:
   COMMANDS: |
@@ -15,6 +18,7 @@ env:
       "standardHome": "yarn test:e2e:benchmark --preset standardHome --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2",
       "powerUserHome": "yarn test:e2e:benchmark --preset powerUserHome --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2",
       "userActions": "yarn test:e2e:benchmark --preset userActions --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2",
+      "performanceOnboardingImport": "yarn test:e2e:benchmark --preset performanceOnboardingImport --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingImport.json --retries 2",
       "performanceOnboardingNew": "yarn test:e2e:benchmark --preset performanceOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingNew.json --retries 2",
       "performanceAssets": "yarn test:e2e:benchmark --preset performanceAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2",
       "performanceLogin": "yarn test:e2e:benchmark --preset performanceLogin --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceLogin.json --retries 2"
@@ -39,7 +43,9 @@ jobs:
         pageType: [standardHome, powerUserHome, userActions]
         # New added performance benchmarks only run on Chrome + Browserify to reduce CI runtime
         include:
-          # TODO: Re-enable performanceOnboardingImport once account list loading is fixed
+          - browser: chrome
+            buildType: browserify
+            pageType: performanceOnboardingImport
           - browser: chrome
             buildType: browserify
             pageType: performanceOnboardingNew
@@ -56,6 +62,7 @@ jobs:
       ARTIFACT_NAME: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}

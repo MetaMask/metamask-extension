@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
@@ -179,11 +179,6 @@ export const useHardwareWalletStateManager = () => {
     }),
     [setHardwareConnectionPermissionState, setConnectionState],
   );
-
-  useEffect(() => {
-    console.log('[HW] state', state);
-    console.log('[HW] refs', refs);
-  }, [state]);
 
   return {
     state,

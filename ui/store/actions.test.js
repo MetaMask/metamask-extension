@@ -35,6 +35,7 @@ const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
 
 const middleware = [thunk];
 const defaultState = {
+  appState: {},
   metamask: {
     currentLocale: 'test',
     networkConfigurationsByChainId: {

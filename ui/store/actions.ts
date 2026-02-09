@@ -54,6 +54,11 @@ import { Immer, Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import {
+  GetAppNameAndVersionResponse,
+  AppConfigurationResponse,
+  GetPublicKeyResponse,
+} from '@metamask/eth-ledger-bridge-keyring';
+import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
@@ -2053,22 +2058,31 @@ async function approveTransaction(
     dispatch(showLoadingIndication(loadingIndicatorMessage));
   }
 
+  const actionId = generateActionId();
+
   try {
     await submitRequestToBackground('resolvePendingApproval', [
       String(txMeta.id),
-      { txMeta, actionId: generateActionId() },
+      { txMeta, actionId },
       { waitForResult: true },
     ]);
 
+    dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
     await forceUpdateMetamaskState(dispatch);
+
     dispatch(completedTx(txMeta.id));
+    dispatch(hideLoadingIndication());
     dispatch(updateCustomNonce(''));
     dispatch(closeCurrentNotificationWindow());
-  } catch (error) {
+
+    return txMeta;
+  } catch (err) {
     dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-    throw error;
-  } finally {
+    dispatch(goHome());
     dispatch(hideLoadingIndication());
+
+    logErrorWithMessage(err);
+    throw err;
   }
 }
 
@@ -6086,28 +6100,16 @@ export async function attemptLedgerTransportCreation() {
  *
  * @returns A promise that resolves to an object containing the app name and version.
  */
-export async function getAppNameAndVersion(): Promise<{
-  appName: string;
-  version: string;
-}> {
+export async function getAppNameAndVersion(): Promise<GetAppNameAndVersionResponse> {
   return await submitRequestToBackground('getAppNameAndVersion');
 }
 
-export async function getLedgerAppConfiguration(): Promise<{
-  arbitraryDataEnabled: number;
-  erc20ProvisioningNecessary: number;
-  starkEnabled: number;
-  starkv2Supported: number;
-  version: string;
-}> {
+export async function getLedgerAppConfiguration(): Promise<AppConfigurationResponse> {
   return await submitRequestToBackground('getLedgerAppConfiguration');
 }
-
-export async function getLedgerPublicKey(hdPath: string): Promise<{
-  publicKey: string;
-  address: string;
-  chainCode?: string;
-}> {
+export async function getLedgerPublicKey(
+  hdPath: string,
+): Promise<GetPublicKeyResponse> {
   return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
 }
 
@@ -8139,12 +8141,11 @@ export async function generateClaimSignature(
   ]);
 }
 
-export async function getHdPathForHardwareKeyring(
+export async function getHdPathForLedgerKeyring(
   deviceName: HardwareDeviceNames,
 ): Promise<string> {
-  console.log('[HW] getHdPathForHardwareKeyring', deviceName);
   const hdPath = await submitRequestToBackground<string>(
-    'getHdPathForHardwareKeyring',
+    'getHdPathForLedgerKeyring',
     [deviceName],
   );
   return hdPath;

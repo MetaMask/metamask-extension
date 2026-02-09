@@ -3,7 +3,7 @@ import { HardwareDeviceNames } from '../../../../shared/constants/hardware-walle
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
-  getHdPathForHardwareKeyring,
+  getHdPathForLedgerKeyring,
   getLedgerAppConfiguration,
   getLedgerPublicKey,
 } from '../../../store/actions';
@@ -71,15 +71,14 @@ export class LedgerAdapter implements HardwareWalletAdapter {
   /**
    * Check if device is currently connected via WebHID
    */
-  private async checkDeviceConnected(): Promise<HIDDevice | false> {
+  private async checkDeviceConnected(): Promise<HIDDevice | undefined> {
     const devices = await getConnectedLedgerDevices();
     // We only use the first ledger device for
-    return devices.length > 0 ? devices[0] : false;
+    return devices.length > 0 ? devices[0] : undefined;
   }
 
   private async getHdPath(): Promise<string> {
-    const path = await getHdPathForHardwareKeyring(HardwareDeviceNames.ledger);
-    console.log('[HW] hdPath', path);
+    const path = await getHdPathForLedgerKeyring(HardwareDeviceNames.ledger);
     return path;
   }
 
@@ -113,7 +112,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     // Start new connection - track the device we're connecting to
     this.isConnecting = true;
     this.pendingConnection = (async () => {
-      console.log('[HW] starting new connection');
       try {
         // Step 1: Check WebHID availability
         if (!isWebHidAvailable()) {
@@ -126,7 +124,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
         // Step 2: Check if device is physically connected
         const connectedLedgerDevice = await this.checkDeviceConnected();
-        console.log('[HW] isDeviceConnected', connectedLedgerDevice);
         if (!connectedLedgerDevice) {
           throw createHardwareWalletError(
             ErrorCode.DeviceDisconnected,
@@ -138,10 +135,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         // Step 3: Check if device is unlocked. This is only for Nano S and Nano X because there
         // is no way to detect if the device is locked on Nano S Plus without attempting an action.
         // This is a hack. Any errors would show device is locked when that might not be true.
-        if (
-          connectedLedgerDevice.productName === 'Nano S' ||
-          connectedLedgerDevice.productName === 'Nano X'
-        ) {
+        const productName = connectedLedgerDevice.productName ?? '';
+        if (productName.includes('Nano S') || productName.includes('Nano X')) {
           const hdPath = await this.getHdPath();
           await getLedgerPublicKey(hdPath);
         }
@@ -149,12 +144,9 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         // Step 4: Attempt to create a transport for the device
         await attemptLedgerTransportCreation();
 
-        console.log('[HW] attemptLedgerTransportCreation done');
-
         // Mark as connected - device is present AND app is open
         this.connected = true;
       } catch (error) {
-        console.log('[HW] error', error);
         // Clean up on error
         this.connected = false;
 
@@ -224,15 +216,12 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    */
   async ensureDeviceReady(): Promise<boolean> {
     if (!this.isConnected()) {
-      console.log('[HW] not connected, connecting');
       await this.connect();
     }
-    console.log('[HW] connected');
 
     try {
       // Get the app name and version from the Ledger device
       const { appName } = await getAppNameAndVersion();
-      console.log('[HW] appName', appName);
       if (appName !== 'Ethereum') {
         throw createHardwareWalletError(
           ErrorCode.DeviceStateEthAppClosed,
@@ -241,9 +230,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         );
       }
 
-      // This is blind signing check.
+      // This is blind signing check. This is needed for dapps and signatures.
       const { arbitraryDataEnabled } = await getLedgerAppConfiguration();
-      console.log('[HW] arbitraryDataEnabled', arbitraryDataEnabled);
       if (arbitraryDataEnabled !== 1) {
         throw createHardwareWalletError(
           ErrorCode.DeviceStateBlindSignNotSupported,
@@ -254,8 +242,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
       return true;
     } catch (error) {
-      console.log('[HW] error', error);
-      console.log('[LedgerAdapter] ensureDeviceReady error', error);
       const hwError = toHardwareWalletError(error, HardwareWalletType.Ledger);
       // Emit appropriate device events with the properly reconstructed error
       const deviceEvent = getDeviceEventForError(

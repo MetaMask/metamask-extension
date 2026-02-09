@@ -258,13 +258,23 @@ const KNOWN_PUBLIC_KEY_ADDRESSES = [
   },
 ];
 
-const buildMockKeyringBridge = (publicKeyPayload) =>
+const buildMockKeyringBridge = (
+  publicKeyPayload,
+  appConfiguration = {
+    arbitraryDataEnabled: 1,
+    erc20ProvisioningNecessary: 0,
+    starkEnabled: 0,
+    starkv2Supported: 0,
+    version: '1.0.0',
+  },
+) =>
   jest.fn(() => ({
     init: jest.fn(),
     dispose: jest.fn(),
     destroy: jest.fn(),
     updateTransportMethod: jest.fn(),
     getPublicKey: jest.fn(async () => publicKeyPayload),
+    getAppConfiguration: jest.fn(async () => appConfiguration),
   }));
 
 jest.mock('@metamask/eth-trezor-keyring', () => ({

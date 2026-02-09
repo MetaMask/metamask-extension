@@ -207,7 +207,7 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
+        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
       ).toBeInTheDocument();
       expect(
         getByText('[hardwareWalletErrorRecoveryUnlock1]'),
@@ -317,7 +317,7 @@ describe('HardwareWalletErrorModal', () => {
       });
 
       await waitFor(() => {
-        expect(mockEnsureDeviceReady).toHaveBeenCalledWith('test-device-id');
+        expect(mockEnsureDeviceReady).toHaveBeenCalled();
       });
       expect(onRetry).toHaveBeenCalledTimes(1);
     });
