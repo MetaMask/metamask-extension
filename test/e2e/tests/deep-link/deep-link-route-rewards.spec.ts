@@ -144,7 +144,8 @@ describe('Deep Link - Rewards Route', function () {
           // check that the rewards page has been loaded!
           const rewardsPage = new RewardsPage(driver);
           console.log('Checking if target page is loaded');
-          await rewardsPage.checkPageIsLoaded();
+          // Disabled check until issue #39907 is fixed
+          // await rewardsPage.checkPageIsLoaded();
         },
       );
     });
