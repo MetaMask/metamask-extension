@@ -172,7 +172,7 @@ export const ViewExplorerMenuItem = ({
         closeMenu?.();
       }}
       subtitle={blockExplorerUrlSubTitle || null}
-      iconName={IconName.Export}
+      iconNameLegacy={IconName.Export}
       data-testid="account-list-menu-open-explorer"
     >
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}

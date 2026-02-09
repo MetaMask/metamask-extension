@@ -7693,7 +7693,7 @@
   "storageErrorAction": {
     "message": "シークレットリカバリーフレーズをバックアップしてください"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "問題が解決しない場合は、シークレットリカバリーフレーズをバックアップして、MetaMaskを再インストールしてください。"
   },
   "storageErrorTitle": {
