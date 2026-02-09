@@ -156,20 +156,18 @@ const ShieldPlan = () => {
       if (shieldSubscription) {
         // Clear the checkout-in-progress flag before redirecting,
         // otherwise the flag stays true and Home will keep redirecting back here.
-        if (shieldCardCheckoutInProgress) {
-          try {
-            await dispatch(setShieldCardCheckoutInProgress(false));
-          } catch (error) {
-            log.error(
-              '[ShieldPlan] Failed to clear shieldCardCheckoutInProgress',
-              error,
-            );
-          }
+        try {
+          await dispatch(setShieldCardCheckoutInProgress(false));
+        } catch (error) {
+          log.error(
+            '[ShieldPlan] Failed to clear shieldCardCheckoutInProgress',
+            error,
+          );
         }
         navigate(TRANSACTION_SHIELD_ROUTE);
       }
     })();
-  }, [navigate, shieldSubscription, shieldCardCheckoutInProgress, dispatch]);
+  }, [navigate, shieldSubscription, dispatch]);
 
   const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
     lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
