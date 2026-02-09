@@ -2,6 +2,8 @@ import { ReactNode } from 'react';
 import {
   IconName,
   IconSize,
+  IconColor,
+  TextColor,
 } from '@metamask/design-system-react';
 
 /**
@@ -21,6 +23,16 @@ type GlobalMenuItemBase = {
    * If not provided, defaults to Lg
    */
   iconSize?: IconSize;
+  /**
+   * Optional icon color (from @metamask/design-system-react)
+   * If not provided, defaults to iconAlternative
+   */
+  iconColor?: IconColor;
+  /**
+   * Optional text color (from @metamask/design-system-react)
+   * If not provided, uses default text color
+   */
+  textColor?: TextColor;
   /**
    * Label text for the menu item (can be string or ReactNode for custom content)
    */
