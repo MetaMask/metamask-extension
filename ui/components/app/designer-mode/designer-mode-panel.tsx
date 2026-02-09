@@ -609,6 +609,7 @@ export function DesignerModePanel() {
   >([]);
   const [agentInput, setAgentInput] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [waitingForAgent, setWaitingForAgent] = useState(false);
   const [serverConnected, setServerConnected] = useState<boolean | null>(null);
   const agentChatRef = useRef<HTMLDivElement>(null);
 
@@ -648,6 +649,7 @@ export function DesignerModePanel() {
         if (res.ok) {
           const data = await res.json();
           if (data.responses && data.responses.length > 0) {
+            setWaitingForAgent(false);
             setAgentMessages((prev) => [
               ...prev,
               ...data.responses.map((r: string) => ({
@@ -701,10 +703,7 @@ export function DesignerModePanel() {
       });
 
       if (res.ok) {
-        setAgentMessages((prev) => [
-          ...prev,
-          { text: 'Sent to agent — waiting for changes...', type: 'status' },
-        ]);
+        setWaitingForAgent(true);
       } else {
         setAgentMessages((prev) => [
           ...prev,
@@ -1554,11 +1553,11 @@ export function DesignerModePanel() {
               </div>
 
               {/* Chat messages */}
-              {agentMessages.length > 0 && (
+              {(agentMessages.length > 0 || waitingForAgent) && (
                 <div
                   ref={agentChatRef}
                   style={{
-                    maxHeight: 100,
+                    maxHeight: 120,
                     overflowY: 'auto',
                     marginBottom: 8,
                     display: 'flex',
@@ -1605,6 +1604,9 @@ export function DesignerModePanel() {
                       {msg.text}
                     </div>
                   ))}
+
+                  {/* Animated "Agent is working" indicator */}
+                  {waitingForAgent && <AgentWorkingIndicator />}
                 </div>
               )}
 
@@ -1715,5 +1717,101 @@ function Kbd({ children }: { children: React.ReactNode }) {
     >
       {children}
     </kbd>
+  );
+}
+
+// Animated indicator while waiting for the agent to respond
+function AgentWorkingIndicator() {
+  const [dotCount, setDotCount] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDotCount((prev) => (prev + 1) % 4);
+    }, 400);
+    return () => clearInterval(interval);
+  }, []);
+
+  const dots = '.'.repeat(dotCount);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: '6px 8px',
+        backgroundColor: 'rgba(13, 153, 255, 0.06)',
+        borderRadius: 4,
+        border: `1px solid rgba(13, 153, 255, 0.15)`,
+      }}
+    >
+      {/* Pulsing orb */}
+      <div
+        style={{
+          position: 'relative',
+          width: 16,
+          height: 16,
+          flexShrink: 0,
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '50%',
+            backgroundColor: C.accent,
+            opacity: 0.25,
+            animation: 'designerPulse 1.5s ease-in-out infinite',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            top: 4,
+            left: 4,
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            backgroundColor: C.accent,
+            animation: 'designerGlow 1.5s ease-in-out infinite',
+          }}
+        />
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <span
+          style={{
+            fontSize: 10,
+            color: C.accent,
+            fontWeight: 500,
+            fontFamily: FONT,
+          }}
+        >
+          Agent is working{dots}
+        </span>
+        <span
+          style={{
+            fontSize: 9,
+            color: C.textTertiary,
+            fontFamily: FONT,
+            marginTop: 1,
+          }}
+        >
+          Please check your agent for progress and approvals
+        </span>
+      </div>
+
+      {/* Inline keyframes */}
+      <style>{`
+        @keyframes designerPulse {
+          0%, 100% { transform: scale(1); opacity: 0.2; }
+          50% { transform: scale(1.6); opacity: 0.05; }
+        }
+        @keyframes designerGlow {
+          0%, 100% { opacity: 1; box-shadow: 0 0 4px ${C.accent}; }
+          50% { opacity: 0.6; box-shadow: 0 0 10px ${C.accent}; }
+        }
+      `}</style>
+    </div>
   );
 }
