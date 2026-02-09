@@ -142,7 +142,7 @@ describe('Deep Link - /home Route', function () {
           // check that the home page has been loaded!
           const homePage = new HomePage(driver);
           console.log('Checking if target page is loaded');
-          homePage.checkPageIsLoaded();
+          await homePage.checkPageIsLoaded();
         },
       );
     });
