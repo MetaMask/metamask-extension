@@ -62,7 +62,7 @@ export const TokenCellSecondaryDisplay = React.memo(
 
     const secondaryDisplayText = useCurrencyRateCheck
       ? token.secondary || '—'
-      : '—';
+      : '';
 
     // show scam warning
     if (showScamWarning) {
