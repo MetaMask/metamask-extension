@@ -46,6 +46,7 @@ import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 
 import log from 'loglevel';
+import browser from 'webextension-polyfill';
 import { parseCaipAccountId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -83,14 +84,7 @@ import {
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
 
-const HYPERLIQUID_ORIGIN =
-  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
-
-const { Ganache } = require('../../test/e2e/seeder/ganache');
-
-const ganacheServer = new Ganache();
-
-const browserPolyfillMock = {
+jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
@@ -102,6 +96,11 @@ const browserPolyfillMock = {
     getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
   },
   storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
+      remove: jest.fn().mockResolvedValue(undefined),
+    },
     session: {
       set: jest.fn(),
     },
@@ -114,7 +113,15 @@ const browserPolyfillMock = {
       addListener: jest.fn(),
     },
   },
-};
+}));
+
+// Use the actual mocked module so all code importing webextension-polyfill
+// shares the same mock instance
+const browserPolyfillMock = jest.mocked(browser);
+
+const { Ganache } = require('../../test/e2e/seeder/ganache');
+
+const ganacheServer = new Ganache();
 
 const mockULIDs = [
   '01JKAF3DSGM3AB87EM9N0K41AJ',
@@ -251,13 +258,23 @@ const KNOWN_PUBLIC_KEY_ADDRESSES = [
   },
 ];
 
-const buildMockKeyringBridge = (publicKeyPayload) =>
+const buildMockKeyringBridge = (
+  publicKeyPayload,
+  appConfiguration = {
+    arbitraryDataEnabled: 1,
+    erc20ProvisioningNecessary: 0,
+    starkEnabled: 0,
+    starkv2Supported: 0,
+    version: '1.0.0',
+  },
+) =>
   jest.fn(() => ({
     init: jest.fn(),
     dispose: jest.fn(),
     destroy: jest.fn(),
     updateTransportMethod: jest.fn(),
     getPublicKey: jest.fn(async () => publicKeyPayload),
+    getAppConfiguration: jest.fn(async () => appConfiguration),
   }));
 
 jest.mock('@metamask/eth-trezor-keyring', () => ({
@@ -492,7 +509,6 @@ describe('MetaMaskController', () => {
       jest.spyOn(Messenger.prototype, 'subscribe');
       jest.spyOn(TokenListController.prototype, 'start');
       jest.spyOn(TokenListController.prototype, 'stop');
-      jest.spyOn(TokenListController.prototype, 'clearingTokenListData');
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
@@ -1691,14 +1707,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#getApi', () => {
-      it('getState', () => {
-        const getApi = metamaskController.getApi();
-        const state = getApi.getState();
-        expect(state).toStrictEqual(metamaskController.getState());
-      });
-    });
-
     describe('hardware keyrings', () => {
       beforeEach(async () => {
         await metamaskController.createNewVaultAndKeychain('test@123');
@@ -1769,6 +1777,44 @@ describe('MetaMaskController', () => {
             });
           },
         );
+      });
+
+      describe('getLedgerAppConfiguration', () => {
+        it('returns the app configuration from the Ledger bridge', async () => {
+          const mockConfiguration = {
+            arbitraryDataEnabled: 1,
+            erc20ProvisioningNecessary: 0,
+            starkEnabled: 0,
+            starkv2Supported: 0,
+            version: '1.0.0',
+          };
+
+          const mockKeyring = {
+            bridge: {
+              getAppConfiguration: jest
+                .fn()
+                .mockResolvedValue(mockConfiguration),
+            },
+            updateTransportMethod: jest.fn().mockResolvedValue(undefined),
+          };
+
+          const withKeyringSpy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyring')
+            .mockImplementation(async (_selector, fn) => {
+              return await fn({ keyring: mockKeyring });
+            });
+
+          try {
+            const result = await metamaskController.getLedgerAppConfiguration();
+
+            expect(
+              mockKeyring.bridge.getAppConfiguration,
+            ).toHaveBeenCalledTimes(1);
+            expect(result).toStrictEqual(mockConfiguration);
+          } finally {
+            withKeyringSpy.mockRestore();
+          }
+        });
       });
 
       describe('getHardwareTypeForMetric', () => {
@@ -4526,6 +4572,12 @@ describe('MetaMaskController', () => {
     });
 
     describe('handleDefiReferral', () => {
+      const HYPERLIQUID_LEARN_MORE_URL =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].learnMoreUrl;
+      const HYPERLIQUID_ORIGIN =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
+      const HYPERLIQUID_NAME =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].name;
       const mockTabId = 140;
       const mockNewConnectionTriggerType = 'new_connection';
       const mockOnNavigateTriggerType = 'on_navigate_connected_tab';
@@ -4668,7 +4720,12 @@ describe('MetaMaskController', () => {
         expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
-          requestData: { selectedAddress: mockPermittedAccount },
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: mockPermittedAccount,
+          },
           shouldShowRequest: true, // pop-up = true because triggerType is new connection
         });
       });
@@ -4689,7 +4746,12 @@ describe('MetaMaskController', () => {
         expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
-          requestData: { selectedAddress: mockPermittedAccount },
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: mockPermittedAccount,
+          },
           shouldShowRequest: false, // false because triggerType is navigate to connected tab
         });
       });

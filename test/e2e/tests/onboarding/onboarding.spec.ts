@@ -152,9 +152,6 @@ describe('MetaMask onboarding', function () {
         await onboardingSrpPage.checkPageIsLoaded();
 
         await onboardingSrpPage.fillSrp(wrongSeedPhrase);
-        await onboardingSrpPage.clickConfirmButtonWithSrpError();
-
-        // check the wrong SRP warning message is displayed
         await onboardingSrpPage.checkSrpError();
         await onboardingSrpPage.checkConfirmSrpButtonIsDisabled();
       },
@@ -178,8 +175,6 @@ describe('MetaMask onboarding', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        // await startOnboardingPage.checkBannerPageIsLoaded();
-        // await startOnboardingPage.agreeToTermsOfUse();
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 

@@ -15,7 +15,8 @@ import { Box } from '../../component-library';
  * @param options.permission - The permission to render.
  * @param options.index - The index of the permission.
  * @param options.accounts - An array representing list of accounts for which permission is used.
- * @param options.requestedChainIds - An array representing list of chain ids for which permission is used.
+ * @param options.requestedChainIds - An array representing list of EVM chain ids for which permission is used.
+ * @param options.caipChainIds - An array of CAIP chain IDs for multichain display (e.g., 'solana:...').
  * @returns {JSX.Element} A permission description node.
  */
 function getDescriptionNode({
@@ -23,6 +24,7 @@ function getDescriptionNode({
   index,
   accounts,
   requestedChainIds,
+  caipChainIds,
 }) {
   return (
     <PermissionCell
@@ -34,6 +36,7 @@ function getDescriptionNode({
       key={`${permission.permissionName}-${index}`}
       accounts={accounts}
       chainIds={requestedChainIds}
+      caipChainIds={caipChainIds}
     />
   );
 }
@@ -44,6 +47,7 @@ export default function PermissionsConnectPermissionList({
   subjectName,
   accounts,
   requestedChainIds,
+  caipChainIds,
 }) {
   const t = useI18nContext();
   const snapsMetadata = useSelector(getSnapsMetadata);
@@ -62,6 +66,7 @@ export default function PermissionsConnectPermissionList({
           index,
           accounts,
           requestedChainIds,
+          caipChainIds,
         });
       })}
     </Box>
@@ -74,4 +79,6 @@ PermissionsConnectPermissionList.propTypes = {
   requestedChainIds: PropTypes.array,
   accounts: PropTypes.arrayOf(PropTypes.object),
   isRequestApprovalPermittedChains: PropTypes.boolean,
+  /** CAIP chain IDs for multichain display (e.g., 'solana:...') */
+  caipChainIds: PropTypes.array,
 };

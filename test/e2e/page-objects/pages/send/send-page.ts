@@ -3,7 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 class SendPage {
   private readonly driver: Driver;
 
-  private readonly amountInput = '[data-testid="send-amount-input"]';
+  private readonly amountInput = { testId: 'send-amount-input' };
 
   private readonly continueButton = {
     text: 'Continue',
@@ -17,8 +17,9 @@ class SendPage {
 
   private readonly hexDataInput = '[placeholder="Enter hex data (optional)"]';
 
-  private readonly inputRecipient =
-    'input[placeholder="Enter or paste an address or name"]';
+  private readonly inputRecipient = {
+    testId: 'recipient-address-input',
+  };
 
   private readonly insufficientFundsError = {
     text: 'Insufficient funds',
@@ -41,15 +42,19 @@ class SendPage {
     testId: 'send-network-filter-toggle',
   };
 
-  private readonly recipientModalButton =
-    '[data-testid="open-recipient-modal-btn"]';
+  private readonly recipientModalButton = {
+    testId: 'open-recipient-modal-btn',
+  };
 
   private readonly solanaNetwork = {
     text: 'Solana',
   };
 
-  private readonly tokenAsset = (chainId: string, symbol: string) =>
-    `[data-testid="token-asset-${chainId}-${symbol}"]`;
+  private readonly tokenAsset = (chainId: string, symbol: string) => {
+    return {
+      testId: `token-asset-${chainId}-${symbol}`,
+    };
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -68,6 +73,17 @@ class SendPage {
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
     await this.driver.findElement(this.invalidAddressError);
+  }
+
+  async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.networkPicker);
+  }
+
+  async checkSendFormIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.amountInput,
+      this.inputRecipient,
+    ]);
   }
 
   async checkPageIsLoaded(): Promise<void> {

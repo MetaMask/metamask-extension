@@ -159,24 +159,25 @@ import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/modules/feature-flags';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-import {
-  getUnapprovedTransactions,
-  getCurrentNetworkTransactions,
-} from './transactions';
 // eslint-disable-next-line import/order
 import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getInternalAccountByAddress,
 } from './accounts';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
+import { getHasShieldEntryModalShownOnce } from './subscription';
+import { getApprovalRequestsByType } from './approvals';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
 } from './multichain/networks';
-import { getApprovalRequestsByType } from './approvals';
-import { getHasShieldEntryModalShownOnce } from './subscription';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
+import {
+  getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
+} from './transactions';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -204,6 +205,29 @@ export function getAppIsLoading(state) {
   return state.appState.isLoading;
 }
 
+/**
+ * Used to prevent the popup from closing while a hardware wallet is signing.
+ *
+ * @param state - Redux state
+ * @returns true when hardware wallet signing is pending
+ */
+export function getPendingHardwareWalletSigning(state) {
+  return state.appState.pendingHardwareWalletSigning;
+}
+
+/**
+ * Check if the hardware wallet error modal is currently visible.
+ * Used to prevent auto-closing the notification popup when an error modal is shown.
+ *
+ * @param state - Redux state
+ * @returns true if the hardware wallet error modal is open
+ */
+export function getIsHardwareWalletErrorModalVisible(state) {
+  return (
+    state.appState.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
+  );
+}
+
 export function getNftIsStillFetchingIndication(state) {
   return state.appState.isNftStillFetchingIndication;
 }
@@ -218,10 +242,6 @@ export function getCustomNonceValue(state) {
 
 export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
-}
-
-export function getShowWhatsNewPopup(state) {
-  return state.appState.showWhatsNewPopup;
 }
 
 export function getShowPermittedNetworkToastOpen(state) {
@@ -2432,46 +2452,6 @@ export const getSnapInsights = createDeepEqualSelector(
   (_, id) => id,
   (insights, id) => insights?.[id],
 );
-
-/**
- * Get an object of announcement IDs and if they are allowed or not.
- *
- * @returns {object}
- */
-function getAllowedAnnouncementIds() {
-  return {};
-}
-
-/**
- * @typedef {object} Announcement
- * @property {number} id - A unique identifier for the announcement
- * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
- */
-
-/**
- * Announcements are managed by the announcement controller and referenced by
- * `state.metamask.announcements`. This function returns a list of announcements
- * the can be shown to the user. This list includes all announcements that do not
- * have a truthy `isShown` property.
- *
- * The returned announcements are sorted by date.
- *
- * @param {object} state - the redux state object
- * @returns {Announcement[]} An array of announcements that can be shown to the user
- */
-
-export function getSortedAnnouncementsToShow(state) {
-  const announcements = Object.values(state.metamask.announcements);
-  const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
-  const announcementsToShow = announcements.filter(
-    (announcement) =>
-      !announcement.isShown && allowedAnnouncementIds[announcement.id],
-  );
-  const announcementsSortedByDate = announcementsToShow.sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
-  return announcementsSortedByDate;
-}
 
 /**
  * @param state
