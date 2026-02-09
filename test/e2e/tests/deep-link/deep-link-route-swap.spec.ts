@@ -6,10 +6,8 @@ import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import RewardsPage from '../../page-objects/pages/rewards/rewards-page';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { REWARDS_ROUTE } from '../../../../ui/helpers/constants/routes';
 import {
   bytesToB64,
   cartesianProduct,
@@ -19,24 +17,15 @@ import {
 
 const TEST_PAGE = 'https://doesntexist.test/';
 
-describe('Deep Link - Routes', function () {
-  let keyPair: CryptoKeyPair;
-  let deepLinkPublicKey: string;
-
-  beforeEach(async function () {
-    keyPair = await generateECDSAKeyPair();
-    deepLinkPublicKey = bytesToB64(
-      await crypto.subtle.exportKey('raw', keyPair.publicKey),
-    );
-  });
-
+describe('Deep Link - /swap Route', function () {
   /**
    * Generates the configuration for the test, including fixtures and
    * manifest flags.
    *
    * @param title - The title of the test, used for debugging and logging.
+   * @param deepLinkPublicKey - The public key for deep link verification.
    */
-  async function getConfig(title?: string) {
+  async function getConfig(title?: string, deepLinkPublicKey?: string) {
     return {
       fixtures: new FixtureBuilder().build(),
       title,
@@ -78,7 +67,7 @@ describe('Deep Link - Routes', function () {
       'signed without sig_params',
       'unsigned',
     ] as const,
-    ['/home', '/swap', '/INVALID', REWARDS_ROUTE] as const,
+    ['/swap'] as const,
     ['continue'] as const,
   ).map(([locked, signed, route, action]) => {
     return { locked, signed, route, action };
@@ -86,14 +75,18 @@ describe('Deep Link - Routes', function () {
 
   scenarios.forEach(({ locked, signed, route, action }) => {
     it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
+      const keyPair = await generateECDSAKeyPair();
+      const deepLinkPublicKey = bytesToB64(
+        await crypto.subtle.exportKey('raw', keyPair.publicKey),
+      );
+
       await withFixtures(
-        await getConfig(this.test?.fullTitle()),
+        await getConfig(this.test?.fullTitle(), deepLinkPublicKey),
         async ({ driver }: { driver: Driver }) => {
           const isSigned =
             signed === 'signed with sig_params' ||
             signed === 'signed without sig_params';
           const withSigParams = signed === 'signed with sig_params';
-          const isInvalidRoute = route === '/INVALID';
 
           // ensure the background is ready to process deep links (by waiting
           // for the UI to load)
@@ -117,9 +110,6 @@ describe('Deep Link - Routes', function () {
           // navigate to the route and make sure it
           // redirects to the deep link interstitial page
           const rawUrl = `https://link.metamask.io${route}`;
-          // note: we sign the "/INVALID" link as well, as signed links that no
-          // longer exist/match should be treated handled the same way as
-          // unsigned links. We test for this below.
           const preparedUrl = isSigned
             ? await signDeepLink(keyPair.privateKey, rawUrl, withSigParams)
             : rawUrl;
@@ -130,9 +120,8 @@ describe('Deep Link - Routes', function () {
           console.log('Checking if deep link page is loaded');
           await deepLink.checkPageIsLoaded();
 
-          // we should render the checkbox when the link is "signed", unless
-          // it's an "INVALID" route
-          const shouldRenderCheckbox = isSigned && !isInvalidRoute;
+          // we should render the checkbox when the link is "signed"
+          const shouldRenderCheckbox = isSigned;
           console.log('Checking if deep link interstitial checkbox exists');
           const hasCheckbox =
             await deepLink.hasSkipDeepLinkInterstitialCheckBox();
@@ -141,21 +130,6 @@ describe('Deep Link - Routes', function () {
             shouldRenderCheckbox,
             'Checkbox presence mismatch',
           );
-
-          if (isInvalidRoute) {
-            console.log('Getting error text for invalid route');
-            const text = await deepLink.getDescriptionText();
-            assert.equal(
-              text,
-              `We can't find the page you are looking for.${
-                isSigned
-                  ? `
-Update to the latest version of MetaMask
-and we'll take you to the right place.`
-                  : ''
-              }`,
-            );
-          }
 
           console.log('Clicking continue button');
           await deepLink.clickContinueButton();
@@ -166,28 +140,10 @@ and we'll take you to the right place.`
             await loginPage.loginToHomepage();
           }
 
-          let Page;
-          switch (route) {
-            case '/home':
-            case '/INVALID':
-              Page = HomePage;
-              break;
-            case '/swap':
-              Page = SwapPage;
-              break;
-            case REWARDS_ROUTE:
-              Page = RewardsPage;
-              break;
-            default: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              throw new Error(`Unknown route: ${route}`);
-            }
-          }
-          // check that the page we want has been loaded!
-          const page = new Page(driver);
+          // check that the swap page has been loaded!
+          const swapPage = new SwapPage(driver);
           console.log('Checking if target page is loaded');
-          page.checkPageIsLoaded();
+          swapPage.checkPageIsLoaded();
         },
       );
     });
