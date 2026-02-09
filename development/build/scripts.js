@@ -1027,6 +1027,8 @@ function setupBundlerDefaults(
             // Charting library (ESM-only)
             './**/node_modules/lightweight-charts',
             './**/node_modules/fancy-canvas',
+            // Web Vitals (ESM — "type": "module" in package.json)
+            './**/node_modules/web-vitals',
             // Ledger WebHID transport
             './**/node_modules/@ledgerhq/hw-transport-webhid',
             './**/node_modules/@ledgerhq/hw-transport',
