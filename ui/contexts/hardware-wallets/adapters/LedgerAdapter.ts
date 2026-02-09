@@ -230,7 +230,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         );
       }
 
-      // This is blind signing check.
+      // This is blind signing check. This is needed for dapps and signatures.
       const { arbitraryDataEnabled } = await getLedgerAppConfiguration();
       if (arbitraryDataEnabled !== 1) {
         throw createHardwareWalletError(
