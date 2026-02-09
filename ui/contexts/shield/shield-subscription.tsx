@@ -155,6 +155,12 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
           return;
         }
 
+        // Clear the pending cohort before any async work to prevent a race
+        // condition: if #assignPostTxCohort sets POST_TX while the eligibility
+        // check is in-flight, a late clear would clobber the new value.
+        // The entrypointCohort argument already captures the value we need.
+        await dispatch(setPendingShieldCohort(null));
+
         const shieldEligibility = await getShieldSubscriptionEligibility();
 
         if (
@@ -215,7 +221,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
               shouldUpdateBackgroundState: false,
             }),
           );
-          await dispatch(setPendingShieldCohort(null));
           return;
         }
 
@@ -243,8 +248,14 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             );
           }
         }
-        await dispatch(setPendingShieldCohort(null));
       } catch (error) {
+        // Restore the pending cohort so it can be retried on the next
+        // componentDidUpdate cycle instead of being silently lost.
+        try {
+          await dispatch(setPendingShieldCohort(entrypointCohort));
+        } catch {
+          // if this also fails - the next transaction will re-set the cohort.
+        }
         captureException(
           createSentryError(
             'Failed to evaluate cohort eligibility',
