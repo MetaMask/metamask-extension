@@ -25,7 +25,7 @@
       "MetaMask: RPC middleware errors": 10
     },
     "app/scripts/lib/dapp-swap/dapp-swap-middleware.test.ts": {
-      "error: Error: fail": 1,
+      "error: Error: Error fetching dapp swap": 1,
       "error: TypeError: fetchQuotes(...).then is not a": 1
     },
     "app/scripts/lib/forwardRequestToSnap.test.ts": {
@@ -38,6 +38,7 @@
       "error: Error: Migration 184: NetworkController missing": 1,
       "error: Error: Migration 186: Invalid NetworkController": 1,
       "error: Error: Migration 189: Invalid NetworkController": 1,
+      "error: Error: Migration 193: SnapController not": 1,
       "error: Error: No INFURA_PROJECT_ID set!": 1,
       "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
       "warn: Migration 183.1: currencyRates not found": 1,
@@ -166,6 +167,12 @@
     "app/scripts/migrations/189.test.ts": {
       "error: Error: Migration 189: Infura project": 1,
       "error: Error: Migration 189: Invalid NetworkController": 6
+    },
+    "app/scripts/migrations/193.test.ts": {
+      "error: Error: Migration 193: SnapController is": 1,
+      "error: Error: Migration 193: SnapController missing": 1,
+      "error: Error: Migration 193: SnapController not": 1,
+      "error: Error: Migration 193: SnapController.snaps is": 1
     },
     "app/scripts/services/subscription/subscription-service.test.ts": {
       "Reselect: Identity function warnings": 1

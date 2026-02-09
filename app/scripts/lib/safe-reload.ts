@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import { captureException } from '../../../shared/lib/sentry';
+import { createSentryError } from '../../../shared/modules/error';
 import { OperationSafener } from './operation-safener';
 import { PersistenceManager } from './stores/persistence-manager';
 import { MetaMaskStateType } from './stores/base-store';
@@ -27,7 +28,9 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
       } catch (error) {
         // unlikely to have an error here, as `persistenceManager.set` handles
         // nearly all error cases internally already.
-        captureException(error);
+        captureException(
+          createSentryError('MetaMask - Persistence failed', error),
+        );
       }
     },
     wait: 1000,

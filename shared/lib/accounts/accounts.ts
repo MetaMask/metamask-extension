@@ -22,6 +22,7 @@ import { HardwareDeviceNames } from '../../constants/hardware-wallets';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
+import { createSentryError } from '../../modules/error';
 
 /**
  * Supported non-EVM Snaps.
@@ -231,7 +232,9 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
           accounts.push(account);
         } catch (error) {
           // Still logging this one to sentry as this is a fairly new process for account discovery.
-          captureException(error);
+          captureException(
+            createSentryError('Unable to create discovered account', error),
+          );
         }
       }
     }
