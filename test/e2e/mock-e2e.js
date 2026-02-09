@@ -194,7 +194,7 @@ async function setupMocking(
     .withQuery({
       client: 'extension',
       distribution: 'main',
-      environment: 'prod',
+      environment: 'dev',
     })
     .thenCallback(() => {
       return {
@@ -1077,44 +1077,6 @@ async function setupMocking(
       statusCode: 404,
     };
   });
-
-  // remote feature flags
-  await server
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .withQuery({
-      client: 'extension',
-      distribution: 'main',
-      environment: 'dev',
-    })
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
-          { feature1: true },
-          { feature2: false },
-          {
-            feature3: [
-              {
-                value: 'valueA',
-                name: 'groupA',
-                scope: { type: 'threshold', value: 0.3 },
-              },
-              {
-                value: 'valueB',
-                name: 'groupB',
-                scope: { type: 'threshold', value: 0.5 },
-              },
-              {
-                scope: { type: 'threshold', value: 1 },
-                value: 'valueC',
-                name: 'groupC',
-              },
-            ],
-          },
-        ],
-      };
-    });
 
   // On Ramp Content
   const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
