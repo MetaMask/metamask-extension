@@ -82,6 +82,11 @@ function EditableValue({
     }
   }, [value, isEditing]);
 
+  // Detect if value looks numeric (e.g. "14px", "500", "1.5em", "0px")
+  const isNumeric = /^-?\d*\.?\d+(px|em|rem|%|vh|vw|pt)?$/u.test(
+    value.trim(),
+  );
+
   // Apply live on every keystroke (Figma-like)
   const handleChange = useCallback(
     (newVal: string) => {
@@ -91,19 +96,39 @@ function EditableValue({
     [onApply],
   );
 
+  const incrementValue = useCallback(
+    (delta: number, fromValue?: string) => {
+      const v = fromValue ?? editValue;
+      const match = v.match(/^(-?\d*\.?\d+)(.*)/u);
+      if (match) {
+        const num = parseFloat(match[1]) + delta;
+        const unit = match[2] || '';
+        const newVal = `${num}${unit}`;
+        setEditValue(newVal);
+        onApply(newVal);
+      }
+    },
+    [editValue, onApply],
+  );
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Enter' && !multiline) {
         setIsEditing(false);
       } else if (e.key === 'Escape') {
-        // Revert to original value before editing started
         onApply(originalValueRef.current);
         setEditValue(originalValueRef.current);
         setIsEditing(false);
+      } else if (isNumeric && e.key === 'ArrowUp') {
+        e.preventDefault();
+        incrementValue(e.shiftKey ? 10 : 1);
+      } else if (isNumeric && e.key === 'ArrowDown') {
+        e.preventDefault();
+        incrementValue(e.shiftKey ? -10 : -1);
       }
       e.stopPropagation();
     },
-    [multiline, onApply],
+    [multiline, onApply, isNumeric, incrementValue],
   );
 
   const handleColorChange = useCallback(
@@ -184,7 +209,7 @@ function EditableValue({
         (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
       }}
       style={displayStyles}
-      title="Click to edit"
+      title={isNumeric ? 'Click to edit · ↑↓ to increment' : 'Click to edit'}
     >
       {isColor && (
         <>
@@ -407,6 +432,21 @@ function MiniInput({ val, side, label, onApply }: MiniInputProps) {
     }
   }, [val, isEditing]);
 
+  const incrementMini = useCallback(
+    (delta: number, fromValue?: string) => {
+      const v = fromValue ?? editVal;
+      const match = v.match(/^(-?\d*\.?\d+)(.*)/u);
+      if (match) {
+        const num = parseFloat(match[1]) + delta;
+        const unit = match[2] || '';
+        const newVal = `${num}${unit}`;
+        setEditVal(newVal);
+        onApply(side, newVal);
+      }
+    },
+    [editVal, onApply, side],
+  );
+
   if (isEditing) {
     return (
       <input
@@ -424,12 +464,18 @@ function MiniInput({ val, side, label, onApply }: MiniInputProps) {
             onApply(side, originalVal.current);
             setEditVal(originalVal.current);
             setIsEditing(false);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            incrementMini(e.shiftKey ? 10 : 1);
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            incrementMini(e.shiftKey ? -10 : -1);
           }
           e.stopPropagation();
         }}
         style={{
           ...miniInputStyle,
-          borderColor: C.inputFocus,
+          borderColor: C.divider,
           backgroundColor: C.input,
         }}
       />
@@ -448,7 +494,7 @@ function MiniInput({ val, side, label, onApply }: MiniInputProps) {
         (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
       }}
       style={miniInputStyle}
-      title={`Click to edit ${label}-${side}`}
+      title={`Click to edit ${label}-${side} · ↑↓ to increment`}
     >
       {shortenValue(val)}
     </span>

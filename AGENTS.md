@@ -1660,8 +1660,12 @@ yarn designer-wait
    - Any inline style/text edits the designer already made
    - The designer's natural-language message (e.g. "make this button red")
 4. Apply the requested changes to the **source code**
-5. Run `yarn designer-wait` again to receive the next request
-6. Repeat until the designer says "done" or you are told to stop
+5. Send a response to the designer panel so they know you're done:
+   ```bash
+   curl -s -X POST http://localhost:3334/api/response -H "Content-Type: text/plain" -d "Done — <brief summary of what you changed>"
+   ```
+6. Run `yarn designer-wait` again to receive the next request
+7. Repeat until the designer says "done" or you are told to stop
 
 ### Architecture
 

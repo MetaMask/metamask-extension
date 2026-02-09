@@ -28,9 +28,14 @@ Activate this workflow when the user says any of:
 
 4. **Apply the requested changes** to the source code.
 
-5. **Run `yarn designer-wait` again** to receive the next request.
+5. **Send a response** to the designer panel so they see you're done:
+   ```bash
+   curl -s -X POST http://localhost:3334/api/response -H "Content-Type: text/plain" -d "Done — <brief summary>"
+   ```
 
-6. **Repeat** until told to stop.
+6. **Run `yarn designer-wait` again** to receive the next request.
+
+7. **Repeat** until told to stop.
 
 ## Key Details
 

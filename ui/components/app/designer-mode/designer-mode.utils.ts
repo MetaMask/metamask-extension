@@ -569,8 +569,12 @@ export function formatAgentPrompt(
 
 ## Instructions for AI Agent
 Apply the changes described below to the **source code**. The designer is
-watching via hot reload and will see your changes live. After applying,
-run \`yarn designer-wait\` again to receive the next request.`);
+watching via hot reload and will see your changes live.
+
+**After applying changes, you MUST do both:**
+1. Send a response to the designer panel:
+   \`curl -s -X POST http://localhost:3334/api/response -H "Content-Type: text/plain" -d "Done — <brief summary of what you changed>"\`
+2. Run \`yarn designer-wait\` again to receive the next request.`);
 
   // Element info
   sections.push(`## Selected Element
