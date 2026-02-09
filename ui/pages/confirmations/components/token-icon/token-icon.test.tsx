@@ -60,9 +60,9 @@ describe('TokenIcon', () => {
   });
 
   it('renders the network badge', () => {
-    const { container } = renderTokenIcon();
+    const { getByAltText } = renderTokenIcon();
 
-    expect(container.querySelector('.mm-avatar-network')).toBeInTheDocument();
+    expect(getByAltText('Ethereum Mainnet')).toBeInTheDocument();
   });
 
   it('finds token image and symbol from send tokens', () => {

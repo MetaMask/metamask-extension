@@ -9,60 +9,65 @@ exports[`AddressListItem displays duplicate contact warning icon 1`] = `
       class="mm-box mm-box--display-flex"
     >
       <div
-        class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+        class="relative inline-flex self-start"
       >
         <div
-          class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+          class="inline-flex"
         >
           <div
-            class="flex [&>div]:!rounded-none"
+            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
           >
             <div
-              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
+              class="flex [&>div]:!rounded-none"
             >
-              <svg
-                height="32"
-                width="32"
-                x="0"
-                y="0"
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
               >
-                <rect
-                  fill="#F5D800"
+                <svg
                   height="32"
-                  transform="translate(-2.25975164212884 9.98672785630931) rotate(238.2 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
-                />
-                <rect
-                  fill="#1888F2"
-                  height="32"
-                  transform="translate(3.59834074343342 13.96339479555801) rotate(211.2 16.00000000000000 16.00000000000000)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-                <rect
-                  fill="#017E8E"
-                  height="32"
-                  transform="translate(5.50481940703773 -22.91863393981918) rotate(404.9 16.00000000000000 16.00000000000000)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-              </svg>
+                >
+                  <rect
+                    fill="#F5D800"
+                    height="32"
+                    transform="translate(-2.25975164212884 9.98672785630931) rotate(238.2 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#1888F2"
+                    height="32"
+                    transform="translate(3.59834074343342 13.96339479555801) rotate(211.2 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#017E8E"
+                    height="32"
+                    transform="translate(5.50481940703773 -22.91863393981918) rotate(404.9 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
         <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <img
-              alt="Custom Mainnet RPC logo"
-              class="mm-avatar-network__network-image"
+              alt="Custom Mainnet RPC"
+              class="size-full object-contain"
               src="./images/eth_logo.svg"
             />
           </div>
@@ -130,60 +135,65 @@ exports[`AddressListItem renders the address and label without duplicate contact
       class="mm-box mm-box--display-flex"
     >
       <div
-        class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+        class="relative inline-flex self-start"
       >
         <div
-          class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+          class="inline-flex"
         >
           <div
-            class="flex [&>div]:!rounded-none"
+            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
           >
             <div
-              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
+              class="flex [&>div]:!rounded-none"
             >
-              <svg
-                height="32"
-                width="32"
-                x="0"
-                y="0"
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
               >
-                <rect
-                  fill="#F5D800"
+                <svg
                   height="32"
-                  transform="translate(-2.25975164212884 9.98672785630931) rotate(238.2 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
-                />
-                <rect
-                  fill="#1888F2"
-                  height="32"
-                  transform="translate(3.59834074343342 13.96339479555801) rotate(211.2 16.00000000000000 16.00000000000000)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-                <rect
-                  fill="#017E8E"
-                  height="32"
-                  transform="translate(5.50481940703773 -22.91863393981918) rotate(404.9 16.00000000000000 16.00000000000000)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-              </svg>
+                >
+                  <rect
+                    fill="#F5D800"
+                    height="32"
+                    transform="translate(-2.25975164212884 9.98672785630931) rotate(238.2 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#1888F2"
+                    height="32"
+                    transform="translate(3.59834074343342 13.96339479555801) rotate(211.2 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#017E8E"
+                    height="32"
+                    transform="translate(5.50481940703773 -22.91863393981918) rotate(404.9 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
         <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <img
-              alt="Custom Mainnet RPC logo"
-              class="mm-avatar-network__network-image"
+              alt="Custom Mainnet RPC"
+              class="size-full object-contain"
               src="./images/eth_logo.svg"
             />
           </div>
@@ -232,60 +242,65 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
       class="mm-box mm-box--display-flex"
     >
       <div
-        class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+        class="relative inline-flex self-start"
       >
         <div
-          class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+          class="inline-flex"
         >
           <div
-            class="flex [&>div]:!rounded-none"
+            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
           >
             <div
-              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
+              class="flex [&>div]:!rounded-none"
             >
-              <svg
-                height="32"
-                width="32"
-                x="0"
-                y="0"
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 73, 94);"
               >
-                <rect
-                  fill="#F5D800"
+                <svg
                   height="32"
-                  transform="translate(-2.25975164212884 9.98672785630931) rotate(238.2 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
-                />
-                <rect
-                  fill="#1888F2"
-                  height="32"
-                  transform="translate(3.59834074343342 13.96339479555801) rotate(211.2 16.00000000000000 16.00000000000000)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-                <rect
-                  fill="#017E8E"
-                  height="32"
-                  transform="translate(5.50481940703773 -22.91863393981918) rotate(404.9 16.00000000000000 16.00000000000000)"
-                  width="32"
-                  x="0"
-                  y="0"
-                />
-              </svg>
+                >
+                  <rect
+                    fill="#F5D800"
+                    height="32"
+                    transform="translate(-2.25975164212884 9.98672785630931) rotate(238.2 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#1888F2"
+                    height="32"
+                    transform="translate(3.59834074343342 13.96339479555801) rotate(211.2 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#017E8E"
+                    height="32"
+                    transform="translate(5.50481940703773 -22.91863393981918) rotate(404.9 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
         <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <img
-              alt="Custom Mainnet RPC logo"
-              class="mm-avatar-network__network-image"
+              alt="Custom Mainnet RPC"
+              class="size-full object-contain"
               src="./images/eth_logo.svg"
             />
           </div>
