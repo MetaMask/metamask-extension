@@ -207,7 +207,7 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
+        getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
       ).toBeInTheDocument();
       expect(
         getByText('[hardwareWalletErrorRecoveryUnlock1]'),

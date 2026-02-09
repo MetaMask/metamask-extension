@@ -208,6 +208,7 @@ import {
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
+import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -2022,7 +2023,12 @@ export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<
+  Promise<TransactionMeta | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     const fromAccount = getInternalAccountByAddress(
       getState(),
@@ -2031,7 +2037,7 @@ export function updateAndApproveTx(
 
     if (isHardwareAccount(fromAccount)) {
       const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
-      return approveHardwareTransaction(
+      return approveHardwareWalletTransaction(
         dispatch,
         txMeta,
         loadingIndicatorMessage,
@@ -2053,7 +2059,7 @@ async function approveTransaction(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
-): Promise<void> {
+): Promise<TransactionMeta | null> {
   if (!dontShowLoadingIndicator) {
     dispatch(showLoadingIndication(loadingIndicatorMessage));
   }
@@ -2087,35 +2093,6 @@ async function approveTransaction(
 }
 
 /**
- * Convert keyring type to hardware wallet type for error reconstruction
- *
- * @param keyringType - The keyring type from account metadata
- * @returns The hardware wallet type or null if not a hardware wallet
- */
-function keyringTypeToHardwareWalletType(
-  keyringType?: string | null,
-): HardwareWalletType | null {
-  if (!keyringType) {
-    return null;
-  }
-
-  switch (keyringType) {
-    case KeyringTypes.ledger:
-      return HardwareWalletType.Ledger;
-    case KeyringTypes.trezor:
-      return HardwareWalletType.Trezor;
-    case KeyringTypes.oneKey:
-      return HardwareWalletType.OneKey;
-    case KeyringTypes.lattice:
-      return HardwareWalletType.Lattice;
-    case KeyringTypes.qr:
-      return HardwareWalletType.Qr;
-    default:
-      return null;
-  }
-}
-
-/**
  * Approve a hardware wallet transaction using the background API.
  * This uses an approval flow to keep the popup open during signing.
  * If the user rejects on the hardware device, throws HardwareWalletError
@@ -2127,19 +2104,19 @@ function keyringTypeToHardwareWalletType(
  * @param keyringType - The keyring type for the hardware wallet account
  * @throws HardwareWalletError - When hardware wallet error occurs
  */
-async function approveHardwareTransaction(
+async function approveHardwareWalletTransaction(
   dispatch: MetaMaskReduxDispatch,
   txMeta: TransactionMeta,
   loadingIndicatorMessage: string,
   keyringType: string,
-): Promise<void> {
+): Promise<TransactionMeta | null> {
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
   const walletType =
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
 
   try {
-    await submitRequestToBackground('approveHardwareTransaction', [
+    await submitRequestToBackground('approveHardwareWalletTransaction', [
       {
         txId: txMeta.id,
         txMeta,
@@ -5547,7 +5524,7 @@ export function resolvePendingApproval(
 
       if (isHardwareAccount(fromAccount)) {
         const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
-        return resolveHardwareApproval(
+        return resolveHardwareWalletApproval(
           dispatch,
           id,
           value,
@@ -5602,7 +5579,7 @@ async function resolveStandardApproval(
  * @param keyringType - The keyring type for the hardware wallet account
  * @throws HardwareWalletError - When hardware wallet error occurs
  */
-async function resolveHardwareApproval(
+async function resolveHardwareWalletApproval(
   dispatch: MetaMaskReduxDispatch,
   id: string,
   value: unknown,
@@ -8141,12 +8118,10 @@ export async function generateClaimSignature(
   ]);
 }
 
-export async function getHdPathForLedgerKeyring(
-  deviceName: HardwareDeviceNames,
-): Promise<string> {
+export async function getHdPathForLedgerKeyring(): Promise<string> {
   const hdPath = await submitRequestToBackground<string>(
     'getHdPathForLedgerKeyring',
-    [deviceName],
+    [],
   );
   return hdPath;
 }

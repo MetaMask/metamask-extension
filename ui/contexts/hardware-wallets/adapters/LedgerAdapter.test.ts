@@ -4,7 +4,6 @@ import {
   Severity,
   Category,
 } from '@metamask/hw-wallet-sdk';
-import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
@@ -228,9 +227,7 @@ describe('LedgerAdapter', () => {
 
       await adapter.connect();
 
-      expect(mockgetHdPathForLedgerKeyring).toHaveBeenCalledWith(
-        HardwareDeviceNames.ledger,
-      );
+      expect(mockgetHdPathForLedgerKeyring).toHaveBeenCalled();
       expect(mockGetLedgerPublicKey).toHaveBeenCalledWith("m/44'/60'/0'/0");
       expect(mockNavigatorHid.getDevices).toHaveBeenCalled();
       expect(mockAttemptLedgerTransportCreation).toHaveBeenCalled();
