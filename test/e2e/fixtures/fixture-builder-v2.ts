@@ -97,7 +97,7 @@ class FixtureBuilderV2 {
                       },
                       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
                         accounts: [
-                          `"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer"`,
+                          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
                         ],
                       },
                       'wallet:eip155': {
