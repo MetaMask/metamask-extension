@@ -15,6 +15,9 @@ const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
+const {
+  getProductionRemoteFlagApiResponse,
+} = require('./feature-flags/feature-flag-registry');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -184,6 +187,22 @@ async function setupMocking(
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
+
+  // remote feature flags — production-accurate defaults from the registry
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'prod',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: getProductionRemoteFlagApiResponse(),
+      };
+    });
 
   // Subscriptions Polling Get Subscriptions
   await server
