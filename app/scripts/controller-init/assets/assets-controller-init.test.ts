@@ -224,15 +224,17 @@ describe('AssetsControllerInit', () => {
       });
 
       // Mock initMessenger.call
-      requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
-        if (action === 'PreferencesController:getState') {
-          return { useTokenDetection: true };
-        }
-        if (action === 'AuthenticationController:getBearerToken') {
-          return Promise.resolve('mock-bearer-token');
-        }
-        throw new Error(`Unexpected action: ${action}`);
-      });
+      requestMock.initMessenger.call = jest
+        .fn()
+        .mockImplementation((action) => {
+          if (action === 'PreferencesController:getState') {
+            return { useTokenDetection: true };
+          }
+          if (action === 'AuthenticationController:getBearerToken') {
+            return Promise.resolve('mock-bearer-token');
+          }
+          throw new Error(`Unexpected action: ${action}`);
+        });
 
       AssetsControllerInit(requestMock);
 
@@ -256,15 +258,17 @@ describe('AssetsControllerInit', () => {
       });
 
       // Mock initMessenger.call
-      requestMock.initMessenger.call = jest.fn().mockImplementation((action) => {
-        if (action === 'PreferencesController:getState') {
-          return { useTokenDetection: true };
-        }
-        if (action === 'AuthenticationController:getBearerToken') {
-          return Promise.resolve('mock-bearer-token');
-        }
-        throw new Error(`Unexpected action: ${action}`);
-      });
+      requestMock.initMessenger.call = jest
+        .fn()
+        .mockImplementation((action) => {
+          if (action === 'PreferencesController:getState') {
+            return { useTokenDetection: true };
+          }
+          if (action === 'AuthenticationController:getBearerToken') {
+            return Promise.resolve('mock-bearer-token');
+          }
+          throw new Error(`Unexpected action: ${action}`);
+        });
 
       AssetsControllerInit(requestMock);
 
