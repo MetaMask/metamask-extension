@@ -131,4 +131,3 @@ export type GlobalMenuListProps = {
    */
   className?: string;
 };
-

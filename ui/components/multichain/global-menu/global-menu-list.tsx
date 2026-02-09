@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import { MenuItem } from '../../ui/menu';
 import {
   Box,
   Text,
@@ -13,13 +12,15 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import {
-  GlobalMenuListProps,
-  isRouteItem,
-} from './global-menu-list.types';
+import { MenuItem } from '../../ui/menu';
+import { GlobalMenuListProps, isRouteItem } from './global-menu-list.types';
 
 /**
  * Renders menu item content with badge and chevron
+ *
+ * @param label
+ * @param badge
+ * @param showChevron
  */
 const renderMenuItemContent = (
   label: string | ReactNode,
@@ -40,9 +41,7 @@ const renderMenuItemContent = (
       justifyContent={BoxJustifyContent.Between}
       className="w-full"
     >
-      <Box className="flex-1 min-w-0">
-        {label}
-      </Box>
+      <Box className="flex-1 min-w-0">{label}</Box>
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
@@ -72,10 +71,7 @@ export const GlobalMenuList = ({
       flexDirection={BoxFlexDirection.Column}
     >
       {sections.map((section, sectionIndex) => (
-        <Box
-          key={section.id}
-          flexDirection={BoxFlexDirection.Column}
-        >
+        <Box key={section.id} flexDirection={BoxFlexDirection.Column}>
           {/* Section Separator - Show before section if it's not the first section */}
           {sectionIndex > 0 && (
             <Box
