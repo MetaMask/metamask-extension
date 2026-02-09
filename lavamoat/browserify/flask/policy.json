@@ -2829,7 +2829,7 @@
         "devicePixelRatio": true,
         "document": false,
         "document.createElement": true,
-        "fetch": false,
+        "fetch": true,
         "h": false,
         "importScripts": false,
         "location.href": false,
