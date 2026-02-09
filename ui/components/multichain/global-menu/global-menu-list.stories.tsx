@@ -4,10 +4,7 @@ import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import { GlobalMenuList } from './global-menu-list';
 import { GlobalMenuSection } from './global-menu-list.types';
-import {
-  IconName,
-  TextColor,
-} from '@metamask/design-system-react';
+import { IconName } from '@metamask/design-system-react';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 
 const store = configureStore(testData);
@@ -36,7 +33,7 @@ const defaultSections: GlobalMenuSection[] = [
       },
       {
         id: 'open-full-screen',
-        iconName: IconName.Expand,
+        iconName: IconName.Export,
         label: 'Open full screen',
         onClick: () => {
           console.log('Open full screen clicked');
@@ -107,8 +104,6 @@ const defaultSections: GlobalMenuSection[] = [
         iconName: IconName.Lock,
         label: 'Log Out',
         to: '/',
-        showChevron: false,
-        textColor: TextColor.ErrorDefault,
         onClick: () => {
           console.log('Log Out clicked');
         },

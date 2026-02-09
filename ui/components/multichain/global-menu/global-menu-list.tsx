@@ -1,40 +1,36 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { MenuItem } from '../../ui/menu';
 import {
   Box,
   Text,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
   TextColor,
   TextVariant,
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
-  BoxBorderColor,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import {
   GlobalMenuListProps,
-  MenuItemContentProps,
   isRouteItem,
 } from './global-menu-list.types';
 
 /**
- * Component that renders the content inside a menu item
- * Handles displaying the label, badge, and chevron icon
+ * Renders menu item content with badge and chevron
  */
-const MenuItemContent = ({
-  label,
-  badge,
-  showChevron,
-  textColor,
-}: MenuItemContentProps) => {
+const renderMenuItemContent = (
+  label: string | ReactNode,
+  badge?: ReactNode,
+  showChevron?: boolean,
+): ReactNode => {
   const hasBadge = Boolean(badge);
   const needsWrapper = hasBadge || showChevron;
 
   if (!needsWrapper) {
-    return <Text color={textColor}>{label}</Text>;
+    return label;
   }
 
   return (
@@ -42,12 +38,16 @@ const MenuItemContent = ({
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
+      className="w-full"
     >
-      <Text color={textColor}>{label}</Text>
+      <Box className="flex-1 min-w-0">
+        {label}
+      </Box>
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         gap={2}
+        className="flex-shrink-0"
       >
         {hasBadge && badge}
         {showChevron && (
@@ -62,14 +62,6 @@ const MenuItemContent = ({
   );
 };
 
-/**
- * GlobalMenuList component that displays menu items organized into sections
- * Uses MenuItem component directly, matching the pattern from global-menu.tsx
- *
- * @param props - The component props
- * @param props.sections - Sections to display in the menu
- * @param props.className - Optional className for styling
- */
 export const GlobalMenuList = ({
   sections,
   className = '',
@@ -87,24 +79,21 @@ export const GlobalMenuList = ({
           {/* Section Separator - Show before section if it's not the first section */}
           {sectionIndex > 0 && (
             <Box
-              borderColor={BoxBorderColor.BorderMuted}
               className="w-full"
-              style={{ height: '1px', borderBottomWidth: 0 }}
+              style={{ borderTop: '1px solid #858B9A1A' }}
             />
           )}
 
           {/* Section Header */}
           {section.title && (
             <Box
-              paddingLeft={4}
-              paddingRight={4}
+              className="mx-4"
               paddingTop={sectionIndex > 0 ? 4 : 2}
               paddingBottom={2}
             >
               <Text
-                variant={TextVariant.BodySm}
+                variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
-                style={{ textTransform: 'uppercase' }}
               >
                 {section.title}
               </Text>
@@ -113,15 +102,13 @@ export const GlobalMenuList = ({
 
           {/* Section Items */}
           {section.items.map((item) => {
-            const showChevron = item.showChevron !== false;
-            const textColor = item.textColor || TextColor.TextDefault;
-
+            // Show chevron for route items that have a valid route
+            const showChevron = isRouteItem(item);
             return (
               <MenuItem
                 key={item.id}
                 iconName={item.iconName}
-                iconSize={IconSize.Lg}
-                textVariant={TextVariant.BodyMd}
+                iconSize={item.iconSize ?? IconSize.Lg}
                 to={isRouteItem(item) ? item.to : undefined}
                 onClick={item.onClick}
                 disabled={item.disabled}
@@ -129,12 +116,7 @@ export const GlobalMenuList = ({
                 subtitle={item.subtitle}
                 data-testid={`global-menu-item-${item.id}`}
               >
-                <MenuItemContent
-                  label={item.label}
-                  badge={item.badge}
-                  showChevron={showChevron}
-                  textColor={textColor}
-                />
+                {renderMenuItemContent(item.label, item.badge, showChevron)}
               </MenuItem>
             );
           })}

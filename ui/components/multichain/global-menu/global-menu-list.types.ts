@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import {
   IconName,
-  TextColor,
+  IconSize,
 } from '@metamask/design-system-react';
 
 /**
@@ -17,9 +17,14 @@ type GlobalMenuItemBase = {
    */
   iconName: IconName;
   /**
-   * Label text for the menu item
+   * Optional icon size
+   * If not provided, defaults to Lg
    */
-  label: string;
+  iconSize?: IconSize;
+  /**
+   * Label text for the menu item (can be string or ReactNode for custom content)
+   */
+  label: string | ReactNode;
   /**
    * Optional badge component (e.g., NotificationsTagCounter)
    * The badge component handles its own internal state/logic
@@ -37,14 +42,6 @@ type GlobalMenuItemBase = {
    * Optional info dot indicator
    */
   showInfoDot?: boolean;
-  /**
-   * Whether to show chevron icon on the right (default: true)
-   */
-  showChevron?: boolean;
-  /**
-   * Optional custom text color
-   */
-  textColor?: TextColor;
 };
 
 /**
@@ -123,25 +120,3 @@ export type GlobalMenuListProps = {
   className?: string;
 };
 
-/**
- * Props for the MenuItemContent component
- */
-export type MenuItemContentProps = {
-  /**
-   * Label text to display
-   */
-  label: string;
-  /**
-   * Optional badge component (e.g., NotificationsTagCounter)
-   * The badge component handles its own internal state/logic
-   */
-  badge?: ReactNode;
-  /**
-   * Whether to show chevron icon on the right
-   */
-  showChevron: boolean;
-  /**
-   * Text color for the label
-   */
-  textColor: TextColor;
-};

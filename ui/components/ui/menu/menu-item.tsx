@@ -32,6 +32,7 @@ type MenuItemProps = {
   // Legacy props from component-library (kept for backward compatibility)
   iconNameLegacy?: IconNameLegacy;
   iconColorLegacy?: IconColorLegacy;
+  iconSizeLegacy?: IconSizeLegacy;
   textVariantLegacy?: TextVariantLegacy;
   // New props from @metamask/design-system-react
   iconName?: IconName;
@@ -55,6 +56,7 @@ const MenuItem = React.forwardRef<
       'data-testid': dataTestId,
       iconNameLegacy,
       iconColorLegacy,
+      iconSizeLegacy,
       textVariantLegacy,
       iconName,
       iconSize,
@@ -90,7 +92,7 @@ const MenuItem = React.forwardRef<
             {!useNewSystem && iconNameLegacy && (
               <IconLegacy
                 name={iconNameLegacy}
-                size={IconSizeLegacy.Sm}
+                size={iconSizeLegacy || IconSizeLegacy.Sm}
                 marginRight={2}
               />
             )}
@@ -108,7 +110,7 @@ const MenuItem = React.forwardRef<
             {!useNewSystem && iconNameLegacy && (
               <IconLegacy
                 name={iconNameLegacy}
-                size={IconSizeLegacy.Sm}
+                size={iconSizeLegacy || IconSizeLegacy.Sm}
                 marginRight={3}
                 color={iconColorLegacy}
               />
