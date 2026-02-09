@@ -24,10 +24,6 @@ import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-// TODO: Migrate to shared directory and remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
-import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
 import {
   formatCaptureShieldPaymentMethodChangeEventProps,
   getSubscriptionRequestTrackingProps,
@@ -559,10 +555,8 @@ export class SubscriptionService {
   }
 
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
-    const swapsControllerState = await this.#getSwapsFeatureFlagsFromNetwork();
     const uiState = {
       metamask: {
-        ...swapsControllerState,
         ...this.#messenger.call('AccountsController:getState'),
         ...this.#messenger.call('PreferencesController:getState'),
         ...this.#messenger.call('SmartTransactionsController:getState'),
@@ -575,36 +569,6 @@ export class SubscriptionService {
     const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
 
     return isSendBundleSupportedChain && isSmartTransaction;
-  }
-
-  // Deprecated: remove in follow-up clean up task
-  // Clean-up task https://consensyssoftware.atlassian.net/browse/STX-371
-  async #getSwapsFeatureFlagsFromNetwork(): Promise<
-    SwapsControllerState | undefined
-  > {
-    const swapsControllerState = this.#messenger.call(
-      'SwapsController:getState',
-    );
-    const { swapsFeatureFlags } = swapsControllerState.swapsState;
-    try {
-      if (!swapsFeatureFlags || Object.keys(swapsFeatureFlags).length === 0) {
-        const updatedSwapsFeatureFlags = await fetchSwapsFeatureFlags();
-        if (!updatedSwapsFeatureFlags) {
-          return swapsControllerState;
-        }
-        return {
-          ...swapsControllerState,
-          swapsState: {
-            ...swapsControllerState.swapsState,
-            swapsFeatureFlags: updatedSwapsFeatureFlags,
-          },
-        };
-      }
-    } catch (error) {
-      log.error('Failed to fetch swaps feature flags', error);
-      return swapsControllerState;
-    }
-    return swapsControllerState;
   }
 
   #getAccountTypeAndCategoryForMetrics() {

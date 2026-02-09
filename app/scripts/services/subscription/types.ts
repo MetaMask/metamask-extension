@@ -25,7 +25,6 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { SwapsControllerGetStateAction } from '../../controllers/swaps/swaps.types';
 import {
   AppStateControllerGetStateAction,
   AppStateControllerSetPendingShieldCohortAction,
@@ -63,7 +62,6 @@ export type SubscriptionServiceAction =
   | PreferencesControllerGetStateAction
   | AccountsControllerGetStateAction
   | SmartTransactionsControllerGetStateAction
-  | SwapsControllerGetStateAction
   | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | AuthenticationControllerGetBearerToken

@@ -51,7 +51,6 @@ export function getSubscriptionServiceMessenger(
       'PreferencesController:getState',
       'SmartTransactionsController:getState',
       'NetworkController:getState',
-      'SwapsController:getState',
       'RemoteFeatureFlagController:getState',
       'MetaMetricsController:trackEvent',
       'KeyringController:getState',

@@ -71,7 +71,6 @@ import type { DecryptMessageControllerState } from '../../app/scripts/controller
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
-import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
 
 export type ControllerStatePropertiesEnumerated = {
@@ -304,7 +303,6 @@ export type ControllerStatePropertiesEnumerated = {
   databaseUnavailable: SnapsRegistryState['databaseUnavailable'];
   signature: SnapsRegistryState['signature'];
   subjectMetadata: SubjectMetadataControllerState['subjectMetadata'];
-  swapsState: SwapsControllerState['swapsState'];
   tokenBalances: TokenBalancesControllerState['tokenBalances'];
   allDetectedTokens: TokensControllerState['allDetectedTokens'];
   allIgnoredTokens: TokensControllerState['allIgnoredTokens'];
@@ -387,7 +385,6 @@ type ControllerStateTypesMerged = AccountsControllerState &
   SnapInsightsControllerState &
   SnapsRegistryState &
   SubjectMetadataControllerState &
-  SwapsControllerState &
   TokenBalancesControllerState &
   TokensControllerState &
   TokenListState &
