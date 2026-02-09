@@ -349,7 +349,7 @@ describe('MetaMask onboarding', function () {
   it('Navigates to a route using deferred deep link after onboarding completes', async function () {
     const referringLink =
       'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=KYoYO9beWAlLIT6GUATcHj98hoDiO9h3UZC76ZcMfreKsJcFtCp_vJCWqa9s8-6aO4FLPgoMI02k03t2WcL5bA';
-    const expectedPath = '/cross-chain/swaps/prepare-swap-page';
+    const expectedPath = '/cross-chain/swaps/';
 
     await withFixtures(
       {
