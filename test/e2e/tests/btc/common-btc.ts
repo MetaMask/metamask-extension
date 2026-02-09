@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { completeImportSRPOnboardingFlow, handleSidepanelPostOnboarding } from '../../page-objects/flows/onboarding.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import {
   mockBitcoinFeatureFlag,
@@ -27,8 +27,14 @@ export type BtcAccountSnapOptions = {
 };
 
 export async function withBtcAccountSnap(
+  {
+    title,
+    dappPaths,
+  }: {
+    title?: string;
+    dappPaths?: string[];
+  },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
-  title?: string,
   options: BtcAccountSnapOptions = {},
 ) {
   const { mockSwap = false, mockSwapQuotes = true } = options;
@@ -38,7 +44,11 @@ export async function withBtcAccountSnap(
       // Use onboarding flow to trigger fullScan (not sync)
       onboarding: true,
       title,
-      dappOptions: { numberOfTestDapps: 1 },
+      dapp: true,
+      dappOptions:
+        Array.isArray(dappPaths) && dappPaths.length > 0
+          ? { numberOfTestDapps: 0, customDappPaths: dappPaths }
+          : { numberOfTestDapps: 1 },
       manifestFlags: {
         remoteFeatureFlags: {
           bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
@@ -81,6 +91,8 @@ export async function withBtcAccountSnap(
       await networkManager.openNetworkManager();
       await networkManager.selectTab('Popular');
       await networkManager.selectNetworkByNameWithWait('Bitcoin');
+
+      await handleSidepanelPostOnboarding(driver);
 
       await test(driver, mockServer);
     },
