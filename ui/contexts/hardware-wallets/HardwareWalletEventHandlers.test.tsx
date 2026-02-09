@@ -23,11 +23,9 @@ describe('useDeviceEventHandlers', () => {
     hasAutoConnectedRef: { current: boolean };
     lastConnectedAccountRef: { current: string | null };
     connectRef: { current: (() => Promise<void>) | null };
-    deviceIdRef: { current: string | null };
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
     ensureDeviceReadyPromiseRef: { current: Promise<boolean> | null };
-    ensureDeviceReadyDeviceIdRef: { current: string | null };
   };
   let mockSetters: {
     setConnectionState: jest.Mock;
@@ -48,11 +46,9 @@ describe('useDeviceEventHandlers', () => {
       hasAutoConnectedRef: { current: false },
       lastConnectedAccountRef: { current: null },
       connectRef: { current: null },
-      deviceIdRef: { current: null },
       walletTypeRef: { current: null },
       previousWalletTypeRef: { current: null },
       ensureDeviceReadyPromiseRef: { current: null },
-      ensureDeviceReadyDeviceIdRef: { current: null },
     };
 
     mockSetters = {
