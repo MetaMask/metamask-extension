@@ -13,6 +13,7 @@ import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
+import { DesignerMode } from '../components/app/designer-mode';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
@@ -60,7 +61,9 @@ class Index extends PureComponent {
                       <MetamaskNotificationsProvider>
                         <ShieldSubscriptionProvider>
                           <RiveWasmProvider>
-                            <Routes />
+                            <DesignerMode>
+                              <Routes />
+                            </DesignerMode>
                           </RiveWasmProvider>
                         </ShieldSubscriptionProvider>
                       </MetamaskNotificationsProvider>

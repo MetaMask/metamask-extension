@@ -37,6 +37,10 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../selectors';
 import { ConfirmationsDeveloperOptions } from '../../confirmations/components/developer/confirmations-developer-options';
+import {
+  getDesignerModeEnabled,
+  setDesignerModeEnabled,
+} from '../../../components/app/designer-mode';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
@@ -60,6 +64,9 @@ const DeveloperOptionsTab = () => {
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
+  const [isDesignerModeEnabled, setIsDesignerModeEnabled] = useState(
+    getDesignerModeEnabled,
+  );
 
   const settingsRefs = Array(
     getNumberOfSettingRoutesInTab(t, t('developerOptions')),
@@ -100,6 +107,12 @@ const DeveloperOptionsTab = () => {
   ): Promise<void> => {
     await dispatch(setServiceWorkerKeepAlivePreference(value));
     setIsServiceWorkerKeptAlive(value);
+  };
+
+  const handleToggleDesignerMode = (value: boolean): void => {
+    const newValue = !value;
+    setDesignerModeEnabled(newValue);
+    setIsDesignerModeEnabled(newValue);
   };
 
   const renderAnnouncementReset = () => {
@@ -216,6 +229,19 @@ const DeveloperOptionsTab = () => {
     );
   };
 
+  const renderDesignerModeToggle = () => {
+    return (
+      <ToggleRow
+        title="Designer Mode"
+        description="Enable UI element inspector for designers. Hover over elements to see component names, styles, and design tokens. Press Ctrl+Shift+D to toggle, or use the floating button. Copy element info for AI agents."
+        isEnabled={isDesignerModeEnabled}
+        onToggle={handleToggleDesignerMode}
+        dataTestId="developer-options-designer-mode-toggle"
+        settingsRef={settingsRefs[4] as React.RefObject<HTMLDivElement>}
+      />
+    );
+  };
+
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
 
   const renderRemoteFeatureFlags = () => {
@@ -275,6 +301,17 @@ const DeveloperOptionsTab = () => {
         {renderAnnouncementReset()}
         {renderOnboardingReset()}
         {renderServiceWorkerKeepAliveToggle()}
+      </div>
+
+      <Text
+        className="settings-page__security-tab-sub-header"
+        color={TextColor.textAlternative}
+        paddingTop={6}
+      >
+        UI Tools
+      </Text>
+      <div className="settings-page__content-padded">
+        {renderDesignerModeToggle()}
       </div>
 
       <BackupAndSyncDevSettings />
