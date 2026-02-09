@@ -94,13 +94,11 @@ export type InstallType = (typeof INSTALL_TYPE)[keyof typeof INSTALL_TYPE];
 /**
  * Device type for analytics: mobile or desktop.
  * - 'mobile' means the user-agent indicates a mobile device
- * - 'desktop' means the user-agent indicates a desktop device
- * - 'unknown' means detection was not possible (e.g. no userAgentData and UA parsing failed)
+ * - 'desktop' means the user-agent indicates a desktop device (default when UA is missing or inconclusive)
  */
 export const DEVICE_TYPE = {
   DESKTOP: 'desktop',
   MOBILE: 'mobile',
-  UNKNOWN: 'unknown',
 } as const;
 
 export type DeviceType = (typeof DEVICE_TYPE)[keyof typeof DEVICE_TYPE];
