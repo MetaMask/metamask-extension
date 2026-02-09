@@ -193,20 +193,6 @@ export const fetchMerklRewardsForAsset = async (
 };
 
 /**
- * Get the chain ID to use for claiming rewards.
- * For mUSD, claims always go to Linea regardless of which chain the user is viewing.
- *
- * @param tokenAddress - The token's contract address
- * @returns The chain ID for claiming
- */
-export const getClaimChainId = (tokenAddress: string): Hex => {
-  if (isMusdToken(tokenAddress)) {
-    return MERKL_CLAIM_CHAIN_ID;
-  }
-  return MERKL_CLAIM_CHAIN_ID;
-};
-
-/**
  * Get the RPC URL for a given chain ID, using the build-time resolved Infura
  * project ID from FEATURED_RPCS. This avoids the {infuraProjectId} placeholder
  * stored in NetworkController state, matching the pattern used by notification.util.ts.
@@ -236,7 +222,7 @@ export const getClaimedAmountFromContract = async (
   tokenAddress: Hex,
 ): Promise<string | null> => {
   try {
-    const claimChainId = getClaimChainId(tokenAddress);
+    const claimChainId = MERKL_CLAIM_CHAIN_ID;
     const rpcUrl = getRpcUrlForChain(claimChainId);
     if (!rpcUrl) {
       return null;

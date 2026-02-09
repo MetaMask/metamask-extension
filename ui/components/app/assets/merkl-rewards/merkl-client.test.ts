@@ -1,13 +1,10 @@
 import {
   fetchMerklRewards,
   fetchMerklRewardsForAsset,
-  getClaimChainId,
   getClaimedAmountFromContract,
 } from './merkl-client';
 import {
   MERKL_API_BASE_URL,
-  MERKL_CLAIM_CHAIN_ID,
-  MERKL_DISTRIBUTOR_ADDRESS,
   MUSD_TOKEN_ADDRESS,
   AGLAMERKL_ADDRESS_MAINNET,
   AGLAMERKL_ADDRESS_LINEA,
@@ -308,24 +305,6 @@ describe('merkl-client', () => {
       );
 
       expect(result).toStrictEqual(mockData[0].rewards[0]);
-    });
-  });
-
-  describe('getClaimChainId', () => {
-    it('returns Linea chain ID for mUSD token', () => {
-      expect(getClaimChainId(MUSD_TOKEN_ADDRESS)).toBe(MERKL_CLAIM_CHAIN_ID);
-    });
-
-    it('returns Linea chain ID for mUSD token (case-insensitive)', () => {
-      expect(getClaimChainId(MUSD_TOKEN_ADDRESS.toLowerCase())).toBe(
-        MERKL_CLAIM_CHAIN_ID,
-      );
-    });
-
-    it('returns Linea chain ID for non-mUSD tokens (default behavior)', () => {
-      expect(getClaimChainId(AGLAMERKL_ADDRESS_MAINNET)).toBe(
-        MERKL_CLAIM_CHAIN_ID,
-      );
     });
   });
 

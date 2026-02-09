@@ -39,8 +39,6 @@ export const DISTRIBUTOR_CLAIMED_ABI = [
 export const ELIGIBLE_TOKENS: Record<string, string[]> = {
   [CHAIN_IDS.MAINNET]: [AGLAMERKL_ADDRESS_MAINNET, MUSD_TOKEN_ADDRESS],
   [CHAIN_IDS.LINEA_MAINNET]: [AGLAMERKL_ADDRESS_LINEA, MUSD_TOKEN_ADDRESS],
-  // TODO: remove — temporary for testing
-  ['0xe709']: [AGLAMERKL_ADDRESS_LINEA, MUSD_TOKEN_ADDRESS],
 };
 
 /** Remote feature flag key for Merkl campaign claiming */

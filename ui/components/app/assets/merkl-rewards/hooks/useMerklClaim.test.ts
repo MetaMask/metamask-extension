@@ -64,7 +64,6 @@ describe('useMerklClaim', () => {
     (merklClient.fetchMerklRewardsForAsset as jest.Mock).mockResolvedValue(
       mockRewardData,
     );
-    (merklClient.getClaimChainId as jest.Mock).mockReturnValue('0xe708');
   });
 
   it('initializes with correct default state', () => {
