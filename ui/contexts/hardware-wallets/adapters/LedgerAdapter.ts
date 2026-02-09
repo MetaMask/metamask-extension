@@ -136,7 +136,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         // is no way to detect if the device is locked on Nano S Plus without attempting an action.
         // This is a hack. Any errors would show device is locked when that might not be true.
         const productName = connectedLedgerDevice.productName ?? '';
-        if (productName.includes('Nano S') || productName.includes('Nano X')) {
+        if (['Nano S', 'Nano X', 'Nano S Plus'].includes(productName)) {
           const hdPath = await this.getHdPath();
           await getLedgerPublicKey(hdPath);
         }

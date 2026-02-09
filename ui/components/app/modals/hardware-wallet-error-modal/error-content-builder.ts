@@ -56,7 +56,6 @@ export function buildErrorContent(
   switch (errorCode) {
     // Locked device errors
     case ErrorCode.AuthenticationDeviceLocked:
-    case ErrorCode.ConnectionClosed:
       return {
         variant: 'recovery',
         icon: IconName.Lock,
@@ -97,6 +96,18 @@ export function buildErrorContent(
           t('hardwareWalletErrorRecoveryConnection1'),
           t('hardwareWalletErrorRecoveryConnection2'),
           t('hardwareWalletErrorRecoveryConnection3'),
+        ],
+      };
+
+    // Usually bolos will yield this result
+    case ErrorCode.ConnectionClosed:
+      return {
+        variant: 'recovery',
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+        recoveryInstructions: [
+          t('hardwareWalletErrorRecoveryUnlock1'),
+          t('hardwareWalletErrorRecoveryUnlock2'),
+          t('hardwareWalletErrorRecoveryUnlock3'),
         ],
       };
 

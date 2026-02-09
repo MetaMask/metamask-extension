@@ -2032,9 +2032,8 @@ export function updateAndApproveTx(
     );
 
     if (isHardwareAccount(fromAccount)) {
-      console.log('[Debug] Approving hardware transaction');
       const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
-      return approveHardwareTransaction(
+      return approveHardwareWalletTransaction(
         dispatch,
         txMeta,
         loadingIndicatorMessage,
@@ -2101,7 +2100,7 @@ async function approveTransaction(
  * @param keyringType - The keyring type for the hardware wallet account
  * @throws HardwareWalletError - When hardware wallet error occurs
  */
-async function approveHardwareTransaction(
+async function approveHardwareWalletTransaction(
   dispatch: MetaMaskReduxDispatch,
   txMeta: TransactionMeta,
   loadingIndicatorMessage: string,
@@ -2114,7 +2113,7 @@ async function approveHardwareTransaction(
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
 
   try {
-    await submitRequestToBackground('approveHardwareTransaction', [
+    await submitRequestToBackground('approveHardwareWalletTransaction', [
       {
         txId: txMeta.id,
         txMeta,
