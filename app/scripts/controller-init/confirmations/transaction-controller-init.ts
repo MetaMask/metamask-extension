@@ -327,7 +327,6 @@ function addTransactionControllerListeners(
     handleTransactionFailed.bind(null, transactionMetricsRequest),
   );
 
-
   initMessenger.subscribe(
     'TransactionController:transactionRejected',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879

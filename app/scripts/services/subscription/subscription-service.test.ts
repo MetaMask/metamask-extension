@@ -768,7 +768,6 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
     expect(mockSubmitSponsorshipIntents).not.toHaveBeenCalled();
   });
 
-
   it('should handle sponsorship intent submission error', async () => {
     mockSubmitSponsorshipIntents.mockRestore();
 
