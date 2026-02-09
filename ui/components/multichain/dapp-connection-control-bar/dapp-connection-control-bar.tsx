@@ -8,12 +8,9 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
-  ButtonIcon,
-  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
-  Tag,
   Text,
 } from '../../component-library';
 import {
@@ -230,17 +227,22 @@ export const DappConnectionControlBar: React.FC = () => {
           </Box>
 
           {/* Connected badge - pushed to the right */}
-          <Box style={{ marginLeft: 'auto' }}>
-            <Tag
-              label={t('tooltipSatusConnected')}
-              backgroundColor={BackgroundColor.successMuted}
-              borderRadius={BorderRadius.pill}
-              labelProps={{
-                color: TextColor.successDefault,
-                variant: TextVariant.bodyXs,
-              }}
-              data-testid="dapp-connection-control-bar__connected-badge"
-            />
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            gap={1}
+            backgroundColor={BackgroundColor.successMuted}
+            borderRadius={BorderRadius.pill}
+            paddingLeft={2}
+            paddingRight={2}
+            padding={1}
+            style={{ marginLeft: 'auto' }}
+            data-testid="dapp-connection-control-bar__connected-badge"
+          >
+            <Box className="dapp-connection-control-bar__status-dot" />
+            <Text variant={TextVariant.bodyXs} color={TextColor.successDefault}>
+              {t('tooltipSatusConnected')}
+            </Text>
           </Box>
         </Box>
 
@@ -290,25 +292,32 @@ export const DappConnectionControlBar: React.FC = () => {
           )}
 
           {/* Permissions button */}
-          <Box className="dapp-connection-control-bar__action-icon">
-            <ButtonIcon
-              iconName={IconName.Setting}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('managePermissions')}
-              onClick={handlePermissionsClick}
-              data-testid="dapp-connection-control-bar__permissions-button"
+          <Box
+            as="button"
+            className="dapp-connection-control-bar__action-icon"
+            onClick={handlePermissionsClick}
+            data-testid="dapp-connection-control-bar__permissions-button"
+            aria-label={t('managePermissions')}
+          >
+            <Icon
+              name={IconName.Setting}
+              size={IconSize.Sm}
+              color={IconColor.iconDefault}
             />
           </Box>
 
           {/* Disconnect button */}
-          <Box className="dapp-connection-control-bar__action-icon">
-            <ButtonIcon
-              iconName={IconName.Logout}
-              size={ButtonIconSize.Sm}
+          <Box
+            as="button"
+            className="dapp-connection-control-bar__action-icon"
+            onClick={handleDisconnectClick}
+            data-testid="dapp-connection-control-bar__disconnect-button"
+            aria-label={t('disconnect')}
+          >
+            <Icon
+              name={IconName.Logout}
+              size={IconSize.Sm}
               color={IconColor.errorDefault}
-              ariaLabel={t('disconnect')}
-              onClick={handleDisconnectClick}
-              data-testid="dapp-connection-control-bar__disconnect-button"
             />
           </Box>
         </Box>

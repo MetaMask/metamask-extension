@@ -21,6 +21,7 @@
   }
 
   &__action-icon {
+    cursor: pointer;
     border: 1px solid #3a4046;
     border-radius: 12px;
     background-color: #2b2d31;
@@ -29,6 +30,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: #33363a;
+    }
+  }
+
+  &__status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-success-default);
     flex-shrink: 0;
   }
 }
