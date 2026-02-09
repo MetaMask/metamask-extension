@@ -5530,9 +5530,6 @@ export function updateHiddenAccountsList(
  *
  * @param id - The pending approval id
  * @param value - The value required to confirm a pending approval
- * @param options - Additional options for the approval
- * @param options.waitForResult - Whether to wait for the approval result
- * @param options.fromAddress - The address of the account making the approval (for hardware wallet detection)
  */
 export function resolvePendingApproval(
   id: string,
