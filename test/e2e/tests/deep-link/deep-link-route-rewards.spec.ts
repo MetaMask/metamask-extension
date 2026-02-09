@@ -144,7 +144,7 @@ describe('Deep Link - Rewards Route', function () {
           // check that the rewards page has been loaded!
           const rewardsPage = new RewardsPage(driver);
           console.log('Checking if target page is loaded');
-          rewardsPage.checkPageIsLoaded();
+          await rewardsPage.checkPageIsLoaded();
         },
       );
     });

@@ -143,7 +143,7 @@ describe('Deep Link - /swap Route', function () {
           // check that the swap page has been loaded!
           const swapPage = new SwapPage(driver);
           console.log('Checking if target page is loaded');
-          swapPage.checkPageIsLoaded();
+          await swapPage.checkPageIsLoaded();
         },
       );
     });

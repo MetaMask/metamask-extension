@@ -158,7 +158,7 @@ and we'll take you to the right place.`
           // invalid routes redirect to home page
           const homePage = new HomePage(driver);
           console.log('Checking if target page is loaded');
-          homePage.checkPageIsLoaded();
+          await homePage.checkPageIsLoaded();
         },
       );
     });
