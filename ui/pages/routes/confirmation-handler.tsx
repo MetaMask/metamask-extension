@@ -28,11 +28,6 @@ import {
   selectHasBridgeQuotes,
   selectPendingApprovalsForNavigation,
 } from '../../selectors';
-import {
-  getFetchParams,
-  selectHasSwapsQuotes,
-  selectShowAwaitingSwapScreen,
-} from '../../ducks/swaps/swaps';
 import { useModalState } from '../../hooks/useModalState';
 
 const EXEMPTED_ROUTES = [
@@ -68,10 +63,7 @@ export const ConfirmationHandler = () => {
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
 
-  const showAwaitingSwapScreen = useSelector(selectShowAwaitingSwapScreen);
-  const hasSwapsQuotes = useSelector(selectHasSwapsQuotes);
   const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
-  const swapsFetchParams = useSelector(getFetchParams);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
   const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
@@ -116,11 +108,7 @@ export const ConfirmationHandler = () => {
     SNAP_APPROVAL_TYPES.includes(approval.type),
   );
 
-  const hasSwapRelatedNavigation =
-    showAwaitingSwapScreen ||
-    hasSwapsQuotes ||
-    swapsFetchParams ||
-    hasBridgeQuotes;
+  const hasSwapRelatedNavigation = hasBridgeQuotes;
 
   const isFullscreenExemption =
     isFullscreen &&

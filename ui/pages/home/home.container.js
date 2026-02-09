@@ -55,7 +55,6 @@ import {
   getIsSeedlessPasswordOutdated,
   getWeb3ShimUsageAlertEnabledness,
 } from '../../ducks/metamask/metamask';
-import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
@@ -100,7 +99,6 @@ const mapStateToProps = (state) => {
   const selectedAccount = getSelectedInternalAccount(state);
   const { address: selectedAddress } = selectedAccount;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const swapsEnabled = getSwapsFeatureIsLive(state);
   const redirectAfterDefaultPage = getRedirectAfterDefaultPage(state);
 
   const envType = getEnvironmentType();
@@ -130,7 +128,6 @@ const mapStateToProps = (state) => {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
-    swapsEnabled,
     shouldShowSeedPhraseReminder,
     isPopup,
     isNotification,
