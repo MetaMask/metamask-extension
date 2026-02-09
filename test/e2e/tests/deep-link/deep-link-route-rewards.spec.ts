@@ -34,6 +34,18 @@ describe('Deep Link - Rewards Route', function () {
         testing: {
           deepLinkPublicKey,
         },
+        remoteFeatureFlags: {
+          rewardsEnabled: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          rewardsOnboardingEnabled: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          rewardsBitcoinEnabledExtension: true,
+          rewardsTronEnabledExtension: true,
+        },
       },
       testSpecificMock: async (server: Mockttp) => {
         // Deep Links
@@ -144,8 +156,7 @@ describe('Deep Link - Rewards Route', function () {
           // check that the rewards page has been loaded!
           const rewardsPage = new RewardsPage(driver);
           console.log('Checking if target page is loaded');
-          // Disabled check until issue #39907 is fixed
-          // await rewardsPage.checkPageIsLoaded();
+          await rewardsPage.checkPageIsLoaded();
         },
       );
     });
