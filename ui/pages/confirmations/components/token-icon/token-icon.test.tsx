@@ -62,7 +62,10 @@ describe('TokenIcon', () => {
   it('renders the network badge', () => {
     const { container } = renderTokenIcon();
 
-    expect(container.querySelector('.mm-avatar-network')).toBeInTheDocument();
+    // ChainBadge renders the new AvatarNetwork from @metamask/design-system-react
+    // which renders an img element for the network icon inside the badge container
+    const badgeImg = container.querySelector('img[alt="Ethereum Mainnet"]');
+    expect(badgeImg).toBeInTheDocument();
   });
 
   it('finds token image and symbol from send tokens', () => {

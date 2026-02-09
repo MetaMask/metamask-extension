@@ -13,23 +13,29 @@ exports[`TokenListItem handles clicking staking opens tab 1`] = `
       style="height: 62px;"
     >
       <div
-        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+        class="relative inline-flex self-start multichain-token-list-item__badge"
+        style="margin-right: 16px;"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
-        >
-          ?
-        </div>
-        <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+          class="inline-flex"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+          >
+            ?
+          </div>
+        </div>
+        <div
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <img
-              alt="network logo"
-              class="mm-avatar-network__network-image"
-              src="./eth-logo.png"
+              alt="Network logo"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
             />
           </div>
         </div>
@@ -104,20 +110,30 @@ exports[`TokenListItem should display warning scam modal 1`] = `
       style="height: 62px;"
     >
       <div
-        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+        class="relative inline-flex self-start multichain-token-list-item__badge"
+        style="margin-right: 16px;"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
-        >
-          S
-        </div>
-        <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+          class="inline-flex"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
           >
-            ?
+            S
+          </div>
+        </div>
+        <div
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+          >
+            <img
+              alt="Network logo"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
           </div>
         </div>
       </div>
@@ -184,20 +200,30 @@ exports[`TokenListItem should display warning scam modal fallback when safechain
       style="height: 62px;"
     >
       <div
-        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+        class="relative inline-flex self-start multichain-token-list-item__badge"
+        style="margin-right: 16px;"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
-        >
-          S
-        </div>
-        <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+          class="inline-flex"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
           >
-            ?
+            S
+          </div>
+        </div>
+        <div
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+          >
+            <img
+              alt="Network logo"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
           </div>
         </div>
       </div>
@@ -265,23 +291,29 @@ exports[`TokenListItem should render correctly 1`] = `
       style="height: 62px;"
     >
       <div
-        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+        class="relative inline-flex self-start multichain-token-list-item__badge"
+        style="margin-right: 16px;"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
-        >
-          ?
-        </div>
-        <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+          class="inline-flex"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+          >
+            ?
+          </div>
+        </div>
+        <div
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <img
-              alt="network logo"
-              class="mm-avatar-network__network-image"
-              src="./eth-logo.png"
+              alt="Network logo"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
             />
           </div>
         </div>
@@ -335,20 +367,30 @@ exports[`TokenListItem should render crypto balance 1`] = `
       style="height: 62px;"
     >
       <div
-        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+        class="relative inline-flex self-start multichain-token-list-item__badge"
+        style="margin-right: 16px;"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
-        >
-          ?
-        </div>
-        <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+          class="inline-flex"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
           >
             ?
+          </div>
+        </div>
+        <div
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+          >
+            <img
+              alt="Network logo"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
           </div>
         </div>
       </div>
@@ -403,20 +445,30 @@ exports[`TokenListItem should render crypto balance with warning scam 1`] = `
       style="height: 62px;"
     >
       <div
-        class="mm-box mm-badge-wrapper multichain-token-list-item__badge mm-box--margin-right-4 mm-box--display-inline-block"
+        class="relative inline-flex self-start multichain-token-list-item__badge"
+        style="margin-right: 16px;"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
-        >
-          ?
-        </div>
-        <div
-          class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+          class="inline-flex"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
           >
             ?
+          </div>
+        </div>
+        <div
+          class="absolute"
+          style="bottom: 0px; right: 0px;"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+          >
+            <img
+              alt="Network logo"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
           </div>
         </div>
       </div>
