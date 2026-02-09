@@ -21,8 +21,8 @@ import {
   mockScripthashTxs2,
   mockBlockHeight0,
   mockBlockHeight931551
-} from './mocks';
-import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
+} from '../../tests/btc/mocks';
+import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../../tests/btc/mocks/min-api';
 
 export const SIGNED_MESSAGES_MOCK = {
   'wallet-standard': '2724869233025221621920421093532286127255141612424720818615921381191207251442501586115313322589232701841211498526164118447506531691441452531632515054170854923516144217244138526413321383814964922461752251001934510822017023317996175199153832039315615106711782001715754',
@@ -70,7 +70,8 @@ export async function withBtcAccountSnap(
       // Ensure bitcoinAccounts flag is enabled at runtime regardless of remote fetch
       manifestFlags: {
         remoteFeatureFlags: {
-          bitcoinAccounts: { enabled: true, minimumVersion: '0.0.0' },
+          bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
+          sendRedesign: { enabled: true }
         },
       },
       testSpecificMock: async (mockServer: Mockttp) => [
