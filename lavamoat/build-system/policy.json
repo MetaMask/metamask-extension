@@ -990,7 +990,9 @@
         "node:fs.realpathSync": true,
         "node:path.dirname": true,
         "node:path.join": true,
-        "node:path.relative": true
+        "node:path.normalize": true,
+        "node:path.relative": true,
+        "node:path.sep": true
       },
       "packages": {
         "depcheck>resolve": true
