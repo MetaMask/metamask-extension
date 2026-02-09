@@ -385,7 +385,7 @@
     "@metamask/streams": "^0.4.0",
     "@metamask/subscription-controller": "^6.0.0",
     "@metamask/transaction-controller": "^62.16.0",
-    "@metamask/transaction-pay-controller": "^11.0.1",
+    "@metamask/transaction-pay-controller": "^12.2.0",
     "@metamask/tron-wallet-snap": "^1.21.1",
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.4.2",
