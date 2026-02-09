@@ -7,6 +7,7 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  DEEP_LINK_ROUTE,
 } from '../../../helpers/constants/routes';
 import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
 import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
@@ -280,6 +281,54 @@ describe('Wallet Ready Page', () => {
         expect(mockUseNavigate).not.toHaveBeenCalled();
       });
     });
+
+    it('should skip side panel opening and navigate to interstitial page for Interstitial type (unsigned/invalid signature)', async () => {
+      const urlPathAndQuery = '/swap?amount=100';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Interstitial,
+        urlPathAndQuery,
+      });
+      (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
+        `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
+      );
+
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://link.metamask.io/swap?amount=100',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        // The side panel should NOT be opened for Interstitial type
+        expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+        expect(deepLinkUtils.buildInterstitialRoute).toHaveBeenCalledWith(
+          urlPathAndQuery,
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
+        );
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('Deferred Deep Link - Side Panel Disabled', () => {
@@ -413,6 +462,46 @@ describe('Wallet Ready Page', () => {
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    });
+
+    it('should navigate to interstitial page for Interstitial type (unsigned/invalid signature) when side panel is disabled', async () => {
+      const urlPathAndQuery = '/swap?amount=100';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Interstitial,
+        urlPathAndQuery,
+      });
+      (deepLinkUtils.buildInterstitialRoute as jest.Mock).mockReturnValue(
+        `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
+      );
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://link.metamask.io/swap?amount=100',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(deepLinkUtils.buildInterstitialRoute).toHaveBeenCalledWith(
+          urlPathAndQuery,
+        );
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          `${DEEP_LINK_ROUTE}?u=%2Fswap%3Famount%3D100`,
+        );
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
       });
     });
   });

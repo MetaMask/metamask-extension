@@ -1,3 +1,5 @@
+import type { SignatureStatus } from './verify';
+
 /**
  * Represents deferred deep link data retrieved from browser cookies.
  * This contains information about a deep link that should be used
@@ -27,6 +29,10 @@ export enum DeferredDeepLinkRouteType {
    * Internal app route.
    */
   Navigate = 'navigate',
+  /**
+   * Internal route requiring interstitial page (unsigned/invalid signature).
+   */
+  Interstitial = 'interstitial',
 }
 
 /**
@@ -34,5 +40,17 @@ export enum DeferredDeepLinkRouteType {
  */
 export type DeferredDeepLinkRoute =
   | { type: DeferredDeepLinkRouteType.Redirect; url: string }
-  | { type: DeferredDeepLinkRouteType.Navigate; route: string }
+  | {
+      type: DeferredDeepLinkRouteType.Navigate;
+      route: string;
+      signature: SignatureStatus;
+    }
+  | {
+      type: DeferredDeepLinkRouteType.Interstitial;
+      /**
+       * The URL path and query to pass to the interstitial page.
+       * Format: /path?query (e.g., /buy?address=0x...)
+       */
+      urlPathAndQuery: string;
+    }
   | null;

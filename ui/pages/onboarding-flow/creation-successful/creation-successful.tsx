@@ -68,7 +68,10 @@ import {
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
-import { getDeferredDeepLinkRoute } from '../../../../shared/lib/deep-links/utils';
+import {
+  getDeferredDeepLinkRoute,
+  buildInterstitialRoute,
+} from '../../../../shared/lib/deep-links/utils';
 import {
   DeferredDeepLink,
   DeferredDeepLinkRoute,
@@ -206,6 +209,13 @@ export default function CreationSuccessful() {
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
         ) {
           navigate(deferredDeepLinkResult.route);
+        } else if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Interstitial
+        ) {
+          const interstitialRoute = buildInterstitialRoute(
+            deferredDeepLinkResult.urlPathAndQuery,
+          );
+          navigate(interstitialRoute);
         }
       }
 
@@ -228,8 +238,18 @@ export default function CreationSuccessful() {
         ) {
           window.open(deferredDeepLinkResult.url, '_blank');
           navigate(DEFAULT_ROUTE);
-        } else {
+        } else if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+        ) {
           navigate(deferredDeepLinkResult.route);
+        } else if (
+          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Interstitial
+        ) {
+          // For unsigned/invalid signature links, navigate to the interstitial warning page
+          const interstitialRoute = buildInterstitialRoute(
+            deferredDeepLinkResult.urlPathAndQuery,
+          );
+          navigate(interstitialRoute);
         }
       } else {
         navigate(DEFAULT_ROUTE);
@@ -252,7 +272,8 @@ export default function CreationSuccessful() {
     const deferredDeepLinkResult =
       await getDeferredDeepLinkRoute(deferredDeepLink);
     const shouldOpenSidePanel =
-      deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate;
+      deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate &&
+      deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Interstitial;
 
     // Track onboarding completion event
     if (!isOnboardingCompleted) {

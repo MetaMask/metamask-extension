@@ -484,4 +484,119 @@ describe('MetaMask onboarding', function () {
       },
     );
   });
+
+  it('Shows interstitial warning page for unsigned deferred deep link after onboarding completes', async function () {
+    // This deep link is unsigned (no sig parameter)
+    const referringLink =
+      'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff';
+    const expectedInterstitialPath = '/link';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withAppStateController({
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await importSRPOnboardingFlow({
+          driver,
+          seedPhrase: TEST_SEED_PHRASE,
+        });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+
+        // This click triggers deferred deep link navigation
+        await onboardingCompletePage.completeOnboarding();
+
+        let lastUrl = await driver.getCurrentUrl();
+
+        // Should navigate to the interstitial page for unsigned links
+        await driver.waitUntil(
+          async () => {
+            lastUrl = await driver.getCurrentUrl();
+            return lastUrl.includes(expectedInterstitialPath);
+          },
+          { interval: 200, timeout: 10000 },
+        );
+
+        if (!lastUrl.includes(expectedInterstitialPath)) {
+          throw new Error(
+            `Expected to navigate to interstitial page (${expectedInterstitialPath}) for unsigned deep link, but current URL was: ${lastUrl}`,
+          );
+        }
+
+        // Verify the interstitial page shows the caution warning
+        // The page displays: "You were sent here by a third party, not MetaMask."
+        await driver.waitForSelector({
+          css: '[data-testid="deep-link-description"]',
+          text: 'third party',
+        });
+      },
+    );
+  });
+
+  it('Shows interstitial warning page for deferred deep link with invalid signature after onboarding completes', async function () {
+    const referringLink =
+      'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=invalid-signature';
+    const expectedInterstitialPath = '/link';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withAppStateController({
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await importSRPOnboardingFlow({
+          driver,
+          seedPhrase: TEST_SEED_PHRASE,
+        });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+
+        // This click triggers deferred deep link navigation
+        await onboardingCompletePage.completeOnboarding();
+
+        let lastUrl = await driver.getCurrentUrl();
+
+        // Should navigate to the interstitial page for links with invalid signature
+        await driver.waitUntil(
+          async () => {
+            lastUrl = await driver.getCurrentUrl();
+            return lastUrl.includes(expectedInterstitialPath);
+          },
+          { interval: 200, timeout: 10000 },
+        );
+
+        if (!lastUrl.includes(expectedInterstitialPath)) {
+          throw new Error(
+            `Expected to navigate to interstitial page (${expectedInterstitialPath}) for deep link with invalid signature, but current URL was: ${lastUrl}`,
+          );
+        }
+
+        // Verify the interstitial page shows the caution warning
+        // The page displays: "You were sent here by a third party, not MetaMask."
+        await driver.waitForSelector({
+          css: '[data-testid="deep-link-description"]',
+          text: 'third party',
+        });
+      },
+    );
+  });
 });
