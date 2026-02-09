@@ -9,6 +9,7 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   showModal,
@@ -16,6 +17,12 @@ import {
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+  AWAITING_SIGNATURES_ROUTE,
+} from '../../helpers/constants/routes';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
@@ -28,6 +35,18 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
+
+/**
+ * Route prefixes where hardware wallet error modals should auto-show.
+ * This restricts auto-shown errors to transaction, signing, and bridge pages.
+ * Manually triggered errors (via showErrorModal) are not affected.
+ */
+const ERROR_MODAL_ROUTE_PREFIXES = [
+  CONFIRM_TRANSACTION_ROUTE, // /confirm-transaction (transactions + signature requests)
+  CONFIRMATION_V_NEXT_ROUTE, // /confirmation (redesigned confirmation flow)
+  CROSS_CHAIN_SWAP_ROUTE, // /cross-chain (bridge pages)
+  AWAITING_SIGNATURES_ROUTE, // /swaps/awaiting-signatures
+];
 
 type HardwareWalletErrorContextType = {
   /**
@@ -73,6 +92,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );
@@ -81,6 +101,18 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
   const { clearError } = useHardwareWalletActions();
+
+  /**
+   * Check if the current route is one where auto-shown error modals are allowed.
+   * Only transaction, signing, and bridge pages should auto-show errors.
+   */
+  const isOnErrorModalRoute = useMemo(
+    () =>
+      ERROR_MODAL_ROUTE_PREFIXES.some((prefix) =>
+        location.pathname.startsWith(prefix),
+      ),
+    [location.pathname],
+  );
 
   // Store the current error to display (independent of connection state)
   const [displayedError, setDisplayedError] = useState<unknown | null>(null);
@@ -233,6 +265,12 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       return;
     }
 
+    // Only auto-show errors on transaction, signing, and bridge pages.
+    // Other pages (e.g. home) should not show auto-triggered error modals.
+    if (!isOnErrorModalRoute) {
+      return;
+    }
+
     // Check if we have a NEW error state
     if (connectionState.status === ConnectionStatus.ErrorState) {
       const { error } = connectionState;
@@ -257,6 +295,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   }, [
     connectionState,
     isHardwareWalletAccount,
+    isOnErrorModalRoute,
     showErrorModalInternal,
     dispatch,
     displayedError,

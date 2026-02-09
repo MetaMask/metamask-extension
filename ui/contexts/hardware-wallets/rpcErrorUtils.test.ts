@@ -358,7 +358,7 @@ describe('rpcErrorUtils', () => {
     it('returns true for UserRejected error code', () => {
       const error = new HardwareWalletError('User rejected', {
         code: ErrorCode.UserRejected,
-        severity: Severity.Warn,
+        severity: Severity.Warning,
         category: Category.UserAction,
         userMessage: 'User rejected the transaction',
       });
@@ -369,7 +369,7 @@ describe('rpcErrorUtils', () => {
     it('returns true for UserCancelled error code', () => {
       const error = new HardwareWalletError('User cancelled', {
         code: ErrorCode.UserCancelled,
-        severity: Severity.Warn,
+        severity: Severity.Warning,
         category: Category.UserAction,
         userMessage: 'User cancelled the transaction',
       });
@@ -401,7 +401,7 @@ describe('rpcErrorUtils', () => {
     it('returns true for JsonRpcError with UserRejected code', () => {
       const error = new JsonRpcError(1234, 'User rejected', {
         code: ErrorCode.UserRejected,
-        severity: Severity.Warn,
+        severity: Severity.Warning,
         category: Category.UserAction,
         userMessage: 'User rejected',
       });
