@@ -1,0 +1,89 @@
+import React, { useCallback, useEffect, useRef } from 'react';
+import type { Hex } from '@metamask/utils';
+import { Box, BoxBorderColor } from '@metamask/design-system-react';
+import {
+  isEligibleForMerklRewards,
+  useMerklRewards,
+} from './hooks/useMerklRewards';
+import { usePendingMerklClaim } from './hooks/usePendingMerklClaim';
+import { SCROLL_TO_MERKL_REWARDS_KEY } from './constants';
+import PendingMerklRewards from './pending-merkl-rewards';
+import ClaimMerklRewards from './claim-merkl-rewards';
+
+type MerklRewardsProps = {
+  tokenAddress: string;
+  chainId: Hex;
+};
+
+/**
+ * Main component to display Merkl rewards information and claim functionality
+ * on the asset details page. Handles eligibility checking, feature flag gating,
+ * and reward data fetching internally.
+ *
+ * Renders a separator, claimable bonus display, and a claim button when the
+ * user has unclaimed rewards for the given token.
+ *
+ * @param props - Component props
+ * @param props.tokenAddress - The token's contract address
+ * @param props.chainId - The chain ID of the token
+ */
+const MerklRewards: React.FC<MerklRewardsProps> = ({
+  tokenAddress,
+  chainId,
+}) => {
+  const { claimableReward, isFeatureEnabled, refetch } = useMerklRewards({
+    tokenAddress,
+    chainId,
+  });
+
+  const isEligible = isEligibleForMerklRewards(chainId, tokenAddress);
+
+  // Refetch rewards when a pending claim is confirmed
+  const handleClaimConfirmed = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
+  usePendingMerklClaim({ onClaimConfirmed: handleClaimConfirmed });
+
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Scroll the Merkl rewards section into view if the user clicked
+  // the "Claim bonus" badge from the token list.
+  useEffect(() => {
+    if (
+      claimableReward &&
+      sessionStorage.getItem(SCROLL_TO_MERKL_REWARDS_KEY) === 'true'
+    ) {
+      sessionStorage.removeItem(SCROLL_TO_MERKL_REWARDS_KEY);
+      // Small delay to ensure the section is fully painted before scrolling
+      const timer = setTimeout(() => {
+        sectionRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [claimableReward]);
+
+  if (!isEligible || !isFeatureEnabled || !claimableReward) {
+    return null;
+  }
+
+  return (
+    <div ref={sectionRef}>
+      <Box
+        borderColor={BoxBorderColor.BorderMuted}
+        marginHorizontal={4}
+        marginTop={2}
+        paddingTop={1}
+        style={{ borderTopWidth: '1px', borderTopStyle: 'solid' }}
+      />
+      <PendingMerklRewards claimableReward={claimableReward} />
+      <ClaimMerklRewards tokenAddress={tokenAddress} chainId={chainId} />
+    </div>
+  );
+};
+
+export default MerklRewards;
