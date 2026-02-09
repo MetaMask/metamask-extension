@@ -202,8 +202,12 @@ export class LedgerOffscreenHandler {
     s: string;
   }> {
     const app = await this.ensureApp();
+    // Use nft: Ledger's resolution is selector-based only: approve() uses
+    // the same selector (0x095ea7b3) for both ERC20 and ERC721, this 4-byte
+    // selector alone cannot tell “token allowance” from “NFT allowance”.
+    // With nft: true - the device shows NFT allowance for token approves (e.g. USDC swap).
+    // See @ledgerhq/evm-tools selectors and hw-app-eth resolveTransaction.
     const result = await app.clearSignTransaction(hdPath, tx, {
-      nft: true,
       externalPlugins: true,
       erc20: true,
     });
