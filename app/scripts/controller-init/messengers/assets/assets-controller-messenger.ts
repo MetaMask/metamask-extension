@@ -34,22 +34,6 @@ import { RootMessenger } from '../../../lib/messenger';
 export type AssetsControllerMessenger = AssetsControllerMessengerType;
 
 /**
- * App lifecycle event: fired when app becomes active (opened/foregrounded).
- */
-type AppStateControllerAppOpenedEvent = {
-  type: 'AppStateController:appOpened';
-  payload: [];
-};
-
-/**
- * App lifecycle event: fired when app becomes inactive (closed/backgrounded).
- */
-type AppStateControllerAppClosedEvent = {
-  type: 'AppStateController:appClosed';
-  payload: [];
-};
-
-/**
  * Actions that the AssetsController core needs to call.
  * These are used directly by the AssetsController itself.
  */
@@ -65,9 +49,7 @@ type CoreAssetsControllerEvents =
   | AccountTreeControllerSelectedAccountGroupChangeEvent
   | NetworkEnablementControllerEvents
   | KeyringControllerLockEvent
-  | KeyringControllerUnlockEvent
-  | AppStateControllerAppOpenedEvent
-  | AppStateControllerAppClosedEvent;
+  | KeyringControllerUnlockEvent;
 
 /**
  * NetworkController:getState action for RpcDataSource.
@@ -251,8 +233,6 @@ export function getAssetsControllerMessenger(
       'NetworkEnablementController:stateChange',
       'KeyringController:lock',
       'KeyringController:unlock',
-      'AppStateController:appOpened',
-      'AppStateController:appClosed',
       'NetworkController:stateChange',
       'BackendWebSocketService:connectionStateChanged',
       'AccountsController:accountBalancesUpdated',
