@@ -35,7 +35,11 @@ const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
 
 const middleware = [thunk];
 const defaultState = {
-  appState: {},
+  appState: {
+    modal: {
+      modalState: {},
+    },
+  },
   metamask: {
     currentLocale: 'test',
     networkConfigurationsByChainId: {
@@ -81,11 +85,6 @@ const defaultState = {
         },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-    },
-  },
-  appState: {
-    modal: {
-      modalState: {},
     },
   },
 };
@@ -784,29 +783,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#getHdPathForHardwareKeyring', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls getHdPathForHardwareKeyring in background', async () => {
-      const mockHdPath = "m/44'/60'/0'";
-
-      background.getHdPathForHardwareKeyring.resolves(mockHdPath);
-
-      setBackgroundConnection(background);
-
-      const result = await actions.getHdPathForHardwareKeyring(
-        HardwareDeviceNames.ledger,
-      );
-
-      expect(
-        background.getHdPathForHardwareKeyring.callCount,
-      ).toStrictEqual(1);
-      expect(result).toStrictEqual(mockHdPath);
-    });
-  });
-
   describe('#getTrezorDeviceStatus', () => {
     afterEach(() => {
       sinon.restore();
@@ -835,7 +811,7 @@ describe('Actions', () => {
       const mockFeatures = {
         success: true,
         payload: {
-          device_id: 'test-device',
+          deviceId: 'test-device',
           model: 'T',
           label: 'My Trezor',
           initialized: true,

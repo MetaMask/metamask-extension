@@ -159,13 +159,13 @@ import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/modules/feature-flags';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
 // eslint-disable-next-line import/order
 import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getInternalAccountByAddress,
 } from './accounts';
-import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getApprovalRequestsByType } from './approvals';
 import {

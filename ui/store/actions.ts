@@ -8164,13 +8164,13 @@ export async function getTrezorDeviceStatus(): Promise<DeviceState> {
 export type TrezorFeaturesResponse = {
   success: boolean;
   payload: {
-    device_id?: string;
+    deviceId?: string;
     model?: string;
     label?: string;
     initialized?: boolean;
     unlocked?: boolean;
-    pin_protection?: boolean;
-    passphrase_protection?: boolean;
+    pinProtection?: boolean;
+    passphraseProtection?: boolean;
     error?: string;
   };
 };
