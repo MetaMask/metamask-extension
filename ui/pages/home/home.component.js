@@ -73,6 +73,7 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
+import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
 function shouldCloseNotificationPopup({
   isNotification,
@@ -912,6 +913,9 @@ export default class Home extends PureComponent {
           </div>
           {this.renderNotifications()}
         </div>
+
+        {/* Ghost component that manages the useHomeDeepLinkEffects */}
+        <HomeDeepLinkActions />
       </ScrollContainer>
     );
   }
