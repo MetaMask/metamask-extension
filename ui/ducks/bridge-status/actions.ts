@@ -38,7 +38,7 @@ export const submitBridgeTx = async (
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return await dispatch(
-     callBridgeStatusControllerMethod<
+      callBridgeStatusControllerMethod<
         [
           string,
           QuoteResponse & QuoteMetadata,
