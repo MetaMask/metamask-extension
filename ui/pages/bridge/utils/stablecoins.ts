@@ -55,6 +55,7 @@ export const STABLECOIN_ASSET_IDS = new Set(
       '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C', // USDT
     ].map((address) => toAssetId(address, CHAIN_IDS.ZKSYNC_ERA)),
     toAssetId('0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392', CHAIN_IDS.SEI), // USDC
+    toAssetId('0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb', CHAIN_IDS.MEGAETH_MAINNET), // USDT0
   ]
     .filter((assetId) => assetId !== undefined)
     .map((assetId) => assetId.toLowerCase()),
