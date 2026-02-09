@@ -3342,8 +3342,8 @@
         "Blob": true,
         "FormData": true,
         "ReadableStream": true,
-        "TextEncoder": true,
         "URL": true,
+        "URLSearchParams": true,
         "WorkerGlobalScope": true,
         "XMLHttpRequest": true,
         "btoa": true,
@@ -3358,21 +3358,9 @@
         "setTimeout": true
       },
       "packages": {
-        "browserify": true,
-        "browserify>browserify-zlib": true,
         "browserify>buffer": true,
-        "crypto-browserify": true,
-        "webpack>events": true,
-        "axios>follow-redirects": true,
-        "axios>form-data": true,
-        "https-browserify": true,
         "process": true,
-        "axios>proxy-from-env": true,
-        "stream-browserify": true,
-        "stream-http": true,
-        "browserify>timers-browserify": true,
-        "browserify>url": true,
-        "browserify>util": true
+        "browserify>timers-browserify": true
       }
     },
     "@metamask/snaps-controllers>tar-stream>b4a": {
@@ -4300,31 +4288,9 @@
         "tslib": true
       }
     },
-    "axios>follow-redirects": {
-      "globals": {
-        "clearTimeout": true,
-        "console.warn": true,
-        "document": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "browserify>assert": true,
-        "nock>debug": true,
-        "https-browserify": true,
-        "process": true,
-        "stream-browserify": true,
-        "stream-http": true,
-        "browserify>url": true
-      }
-    },
     "browserify>util>which-typed-array>for-each": {
       "packages": {
         "string.prototype.matchall>es-abstract>is-callable": true
-      }
-    },
-    "axios>form-data": {
-      "globals": {
-        "FormData": true
       }
     },
     "fuse.js": {
@@ -5097,12 +5063,6 @@
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/path": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/pool": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/utf8": true
-      }
-    },
-    "axios>proxy-from-env": {
-      "packages": {
-        "process": true,
-        "browserify>url": true
       }
     },
     "crypto-browserify>public-encrypt": {
