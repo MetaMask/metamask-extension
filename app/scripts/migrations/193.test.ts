@@ -112,6 +112,8 @@ describe(`migration #${VERSION}`, () => {
         SnapController: {
           snaps: {
             'mock-snap-id': { sourceCode: 'sourceCode', id: 'mock-snap-id' },
+            'foo-snap-id': { id: 'foo-snap-id', sourceCode: 'sourceCode2' },
+            'bar-snap-id': { id: 'bar-snap-id', sourceCode: 'sourceCode3 ' },
           },
         },
       },
@@ -126,11 +128,40 @@ describe(`migration #${VERSION}`, () => {
     await migrate(oldState, new Set());
 
     expect(oldState.data).toEqual({
-      SnapController: { snaps: { 'mock-snap-id': { id: 'mock-snap-id' } } },
+      SnapController: {
+        snaps: {
+          'mock-snap-id': { id: 'mock-snap-id' },
+          'foo-snap-id': { id: 'foo-snap-id' },
+          'bar-snap-id': { id: 'bar-snap-id' },
+        },
+      },
     });
 
-    expect(mockSetItem).toHaveBeenCalledWith('SnapController', 'mock-snap-id', {
-      sourceCode: 'sourceCode',
-    });
+    expect(mockSetItem).toHaveBeenNthCalledWith(
+      1,
+      'SnapController',
+      'mock-snap-id',
+      {
+        sourceCode: 'sourceCode',
+      },
+    );
+
+    expect(mockSetItem).toHaveBeenNthCalledWith(
+      2,
+      'SnapController',
+      'foo-snap-id',
+      {
+        sourceCode: 'sourceCode2',
+      },
+    );
+
+    expect(mockSetItem).toHaveBeenNthCalledWith(
+      3,
+      'SnapController',
+      'bar-snap-id',
+      {
+        sourceCode: 'sourceCode3 ',
+      },
+    );
   });
 });
