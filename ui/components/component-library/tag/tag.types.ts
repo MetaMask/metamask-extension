@@ -1,16 +1,18 @@
+import type {
+  IconName,
+  IconSize,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { TextProps, ValidTagType } from '../text/text.types';
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../box';
 import { IconName as IconNameLegacy, IconProps } from '../icon';
-import { IconColor as IconColorLegacy } from '../../../helpers/constants/design-system';
-import { TextVariant as TextVariantLegacy } from '../../../helpers/constants/design-system';
-import type {
-  IconName,
-  IconSize,
-  TextVariant,
-} from '@metamask/design-system-react';
+import {
+  IconColor as IconColorLegacy,
+  TextVariant as TextVariantLegacy,
+} from '../../../helpers/constants/design-system';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
