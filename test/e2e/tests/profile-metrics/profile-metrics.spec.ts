@@ -152,6 +152,7 @@ describe('Profile Metrics', function () {
           const [authCall] = mockedEndpoint;
           await waitForEndpointToBeCalled(driver, authCall, 2);
 
+          console.log(requests);
           const requests = await authCall.getSeenRequests();
           assert.equal(
             requests.length,
