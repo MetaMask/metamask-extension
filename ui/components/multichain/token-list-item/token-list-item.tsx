@@ -91,7 +91,6 @@ export const TokenListItemComponent = ({
   secondary,
   title,
   tooltipText,
-  tokenChainImage,
   chainId,
   isNativeCurrency = false,
   isStakeable = false,

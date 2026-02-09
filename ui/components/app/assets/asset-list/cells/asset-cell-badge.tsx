@@ -7,7 +7,7 @@ import {
   getAssetImageUrl,
   isEvmChainId,
 } from '../../../../../../shared/lib/asset-utils';
-import { ChainBadge } from '../../../../app/chain-badge/chain-badge';
+import { ChainBadge } from '../../../chain-badge/chain-badge';
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;

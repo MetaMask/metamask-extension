@@ -1,11 +1,6 @@
 import React, { useContext } from 'react';
 import Confusable from '../../ui/confusable';
-import {
-  Box,
-  Text,
-  Icon,
-  IconName,
-} from '../../component-library';
+import { Box, Text, Icon, IconName } from '../../component-library';
 import {
   TextAlign,
   TextVariant,

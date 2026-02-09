@@ -52,11 +52,7 @@ export const ChainBadge: React.FC<ChainBadgeProps> = ({
   return (
     <BadgeWrapper
       badge={
-        <AvatarNetwork
-          size={size}
-          name={networkName}
-          src={networkImageUrl}
-        />
+        <AvatarNetwork size={size} name={networkName} src={networkImageUrl} />
       }
       {...badgeWrapperProps}
     >
