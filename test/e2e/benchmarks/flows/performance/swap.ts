@@ -3,18 +3,13 @@
  * Measures time for swap flow including quote fetching
  */
 
-import { Readable } from 'stream';
-import { ReadableStream as ReadableStreamWeb } from 'stream/web';
-import type { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
-import type { MockedEndpoint } from '../../../mock-e2e';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
-import { SSE_RESPONSE_HEADER } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
@@ -24,44 +19,9 @@ import {
 } from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
-import swapQuoteSolUsdc from './mocks/swap-quote-sol-usdc.json';
 
 export const testTitle = 'benchmark-swap-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
-
-/**
- * Builds an SSE stream for getQuoteStream with the given quote payloads.
- *
- * @param events
- * @param delayMs
- */
-function mockSseQuoteStream(
-  events: unknown[],
-  delayMs = 500,
-): ReturnType<typeof Readable.fromWeb> {
-  let index = 0;
-  const getEventId = (i: number) => `${Date.now().toString()}-${i}`;
-  const emitLine = (
-    c: ReadableStreamDefaultController<Uint8Array>,
-    line: string,
-  ) => c.enqueue(new TextEncoder().encode(line));
-  return Readable.fromWeb(
-    new ReadableStreamWeb<Uint8Array>({
-      async pull(controller) {
-        if (index >= events.length) {
-          controller.close();
-          return;
-        }
-        const quote = events[index];
-        emitLine(controller, `event: quote\n`);
-        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
-        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
-        await new Promise((r) => setTimeout(r, delayMs));
-        index += 1;
-      },
-    }),
-  );
-}
 
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
   try {

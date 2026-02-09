@@ -72,10 +72,9 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         // Only Ethereum network is selected so only 1 token visible
         await assetListPage.checkTokenItemNumber(1);
 
-        await assetListPage.clickOnAsset('Ethereum');
         // Measure: Asset click to price chart loaded
+        await assetListPage.clickOnAsset('Ethereum');
         await timer.measure(async () => {
-          await assetListPage.clickOnAsset('Ether');
           await assetListPage.checkPriceChartIsShown();
           await assetListPage.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
         });
