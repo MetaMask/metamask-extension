@@ -9,6 +9,12 @@ import type {
   Token,
 } from '@metamask/assets-controllers';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import {
+  createServicePolicy,
+  CreateServicePolicyOptions,
+  ServicePolicy,
+} from '@metamask/controller-utils';
+import { createSentryError } from '../../../shared/modules/error';
 
 const SERVICE = 'StaticAssetsService' as const;
 
@@ -76,6 +82,8 @@ export type StaticAssetsServiceOptions = {
   getTopX: () => number;
   /** The fetch function to use. */
   fetchFn: FetchFunction;
+  /** The policy options to use. */
+  policyOptions?: CreateServicePolicyOptions;
 };
 
 /**
@@ -94,40 +102,12 @@ type TopAsset = {
 };
 
 /**
- * Fetch top assets for a chain from the API.
+ * Build the image URL for a token.
  *
- * @param params - The parameters for the fetch.
- * @param params.chainId - The chain ID.
- * @param params.fetchFn - The fetch function to use.
- * @returns A promise that resolves to the top assets.
+ * @param assetId - The asset ID.
+ * @param extension - The extension of the image.
+ * @returns The image URL.
  */
-async function fetchTopAssets({
-  chainId,
-  fetchFn,
-}: {
-  chainId: string;
-  fetchFn: FetchFunction;
-}): Promise<TopAsset[]> {
-  try {
-    if (!isStrictHexString(chainId)) {
-      return [];
-    }
-    const caip2ChainId = toEvmCaipChainId(chainId);
-    const url = new URL(`${TOKEN_API_BASE_URL}/v3/tokens/trending`);
-    url.searchParams.set('chainIds', caip2ChainId);
-    // Set the minimum volume, liquidity and market cap to 1 to fetch all tokens.
-    url.searchParams.set('minVolume24hUsd', '1');
-    url.searchParams.set('minLiquidity', '1');
-    url.searchParams.set('minMarketCap', '1');
-
-    const response = await fetchFn(url, { method: 'GET' });
-    return response as TopAsset[];
-  } catch (error) {
-    // we return an empty array if the fetch top assets fails
-    return [];
-  }
-}
-
 function buildImageUrl(assetId: CaipAssetType, extension: string): string {
   const caipAssetType = parseCaipAssetType(assetId);
   // Most of the token has migrated to v2, hence, we use v2 instead of v1.
@@ -152,6 +132,13 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
   /** The top X assets to fetch. */
   readonly #getTopX: () => number;
 
+  /**
+   * The policy that wraps the request.
+   *
+   * @see {@link createServicePolicy}
+   */
+  readonly #policy: ServicePolicy;
+
   readonly messenger: StaticAssetsServiceMessenger;
 
   constructor({
@@ -160,6 +147,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     getSupportedChains,
     getTopX,
     fetchFn,
+    policyOptions = {},
   }: StaticAssetsServiceOptions) {
     super();
 
@@ -168,6 +156,8 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     this.#getSupportedChains = getSupportedChains;
 
     this.#getTopX = getTopX;
+
+    this.#policy = createServicePolicy(policyOptions);
 
     this.#fetchFn = fetchFn;
 
@@ -279,6 +269,13 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
         networkClientId,
       );
     } catch (error) {
+      // Due to the polling logic, the error will be captured multiple times if the error is not handled.
+      this.messenger.captureException?.(
+        createSentryError(
+          `[StaticAssetsService] Error adding tokens to TokensController for chainId ${chainId}`,
+          error as Error,
+        ),
+      );
       console.error(
         `[StaticAssetsService] Error adding tokens to TokensController for chainId ${chainId}`,
         error,
@@ -341,10 +338,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
   async #fetchTopAssets(chainId: string): Promise<Token[]> {
     const tokens: Token[] = [];
     const topX = this.#getTopX();
-    const topAssets = await fetchTopAssets({
-      chainId,
-      fetchFn: this.#fetchFn,
-    });
+    const topAssets = await this.#fetchTopAssetsFromAPI(chainId);
     if (topAssets.length > 0) {
       for (const topAsset of topAssets) {
         try {
@@ -372,6 +366,29 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
       }
     }
     return tokens;
+  }
+
+  /**
+   * Fetch top assets for a chain from the API.
+   *
+   * @param chainId - The chain ID.
+   * @returns A promise that resolves to the top assets.
+   */
+  async #fetchTopAssetsFromAPI(chainId: string): Promise<TopAsset[]> {
+    if (!isStrictHexString(chainId)) {
+      return [];
+    }
+    const caip2ChainId = toEvmCaipChainId(chainId);
+    const url = new URL(`${TOKEN_API_BASE_URL}/v3/tokens/trending`);
+    url.searchParams.set('chainIds', caip2ChainId);
+    // Set the minimum volume, liquidity and market cap to 1 to fetch all tokens.
+    url.searchParams.set('minVolume24hUsd', '1');
+    url.searchParams.set('minLiquidity', '1');
+    url.searchParams.set('minMarketCap', '1');
+
+    return await this.#policy.execute<TopAsset[]>(async () => {
+      return this.#fetchFn(url, { method: 'GET' });
+    });
   }
 
   /**
