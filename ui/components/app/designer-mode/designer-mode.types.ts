@@ -73,6 +73,10 @@ export type DesignerModeContextValue = DesignerModeState & {
   clearSelection: () => void;
   /** Copy element info to clipboard in AI-friendly format */
   copyToClipboard: () => Promise<void>;
+  /** Apply a CSS style change to the selected/hovered element */
+  applyStyleChange: (property: string, value: string) => void;
+  /** Apply a text content change to the selected/hovered element */
+  applyTextChange: (text: string) => void;
 };
 
 export type AIFriendlyElementInfo = {

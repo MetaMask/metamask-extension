@@ -184,17 +184,79 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
 
     try {
       await navigator.clipboard.writeText(formattedText);
-      // Could add a toast notification here
       console.info('[Designer Mode] Element info copied to clipboard');
     } catch (error) {
       console.error('[Designer Mode] Failed to copy to clipboard:', error);
     }
   }, [state.selectedElement, state.hoveredElement]);
 
+  const applyStyleChange = useCallback(
+    (property: string, value: string) => {
+      const elementInfo = state.selectedElement || state.hoveredElement;
+      if (!elementInfo?.element) {
+        return;
+      }
+
+      // Convert kebab-case to camelCase for style property
+      const camelProperty = property.replace(/-([a-z])/gu, (_, c: string) =>
+        c.toUpperCase(),
+      );
+      (elementInfo.element.style as unknown as Record<string, string>)[
+        camelProperty
+      ] = value;
+
+      // Re-extract element info to update the panel
+      const updatedInfo = extractElementInfo(elementInfo.element);
+      setState((prev) => ({
+        ...prev,
+        ...(prev.isLocked
+          ? { selectedElement: updatedInfo, hoveredElement: updatedInfo }
+          : { hoveredElement: updatedInfo }),
+      }));
+    },
+    [state.selectedElement, state.hoveredElement],
+  );
+
+  const applyTextChange = useCallback(
+    (text: string) => {
+      const elementInfo = state.selectedElement || state.hoveredElement;
+      if (!elementInfo?.element) {
+        return;
+      }
+
+      // Find the first text node and change it, or set textContent
+      const textNode = Array.from(elementInfo.element.childNodes).find(
+        (node) => node.nodeType === Node.TEXT_NODE,
+      );
+      if (textNode) {
+        textNode.textContent = text;
+      } else {
+        elementInfo.element.textContent = text;
+      }
+
+      // Re-extract element info
+      const updatedInfo = extractElementInfo(elementInfo.element);
+      setState((prev) => ({
+        ...prev,
+        ...(prev.isLocked
+          ? { selectedElement: updatedInfo, hoveredElement: updatedInfo }
+          : { hoveredElement: updatedInfo }),
+      }));
+    },
+    [state.selectedElement, state.hoveredElement],
+  );
+
   // Keyboard shortcut: Ctrl/Cmd + Shift + D to toggle
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Ctrl+Shift+D or Cmd+Shift+D to toggle designer mode
+      // Don't intercept keyboard events when user is typing in an input
+      const target = event.target as HTMLElement;
+      const isTyping =
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable;
+
+      // Ctrl+Shift+D or Cmd+Shift+D to toggle designer mode (always works)
       if (
         (event.ctrlKey || event.metaKey) &&
         event.shiftKey &&
@@ -202,6 +264,12 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
       ) {
         event.preventDefault();
         toggleDesignerMode();
+        return;
+      }
+
+      // Skip remaining shortcuts when user is typing in a form field
+      if (isTyping) {
+        return;
       }
 
       // Escape to clear selection or exit designer mode
@@ -247,6 +315,8 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
       toggleSelection,
       clearSelection,
       copyToClipboard,
+      applyStyleChange,
+      applyTextChange,
     }),
     [
       state,
@@ -255,6 +325,8 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
       toggleSelection,
       clearSelection,
       copyToClipboard,
+      applyStyleChange,
+      applyTextChange,
     ],
   );
 
