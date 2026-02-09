@@ -6,6 +6,7 @@ import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../shared/constants/gas';
+import { FAST_CONFIRMATION_CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../../helpers/constants/common';
 import { toHumanReadableTime } from '../../../../../helpers/utils/util';
@@ -131,7 +132,13 @@ const EditGasItem = ({ priorityLevel }) => {
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
       >
         {editGasMode !== EditGasModes.swaps &&
-          (minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--')}
+          (minWaitTime
+            ? toHumanReadableTime(t, minWaitTime, {
+                showSubSecondPrecision: FAST_CONFIRMATION_CHAIN_IDS.has(
+                  transaction.chainId,
+                ),
+              })
+            : '--')}
       </span>
       <span
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}

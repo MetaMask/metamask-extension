@@ -540,10 +540,20 @@ export function getURLHostName(url) {
 const MINUTE_CUTOFF = 90 * 60;
 const SECOND_CUTOFF = 90;
 
-export const toHumanReadableTime = (t, milliseconds) => {
+export const toHumanReadableTime = (
+  t,
+  milliseconds,
+  { showSubSecondPrecision = false } = {},
+) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
   }
+
+  if (showSubSecondPrecision && milliseconds < 1000) {
+    const decimalSeconds = (milliseconds / 1000).toFixed(1);
+    return t('gasTimingSecondsShort', [decimalSeconds]);
+  }
+
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
     return t('gasTimingSecondsShort', [seconds]);

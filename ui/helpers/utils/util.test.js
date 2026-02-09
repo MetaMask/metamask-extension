@@ -491,6 +491,29 @@ describe('util', () => {
     it('should return value in hours for milliseconds passed very high above 5400000', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
     });
+    it('should return sub-second value when showSubSecondPrecision is true and milliseconds < 1000', () => {
+      expect(
+        util.toHumanReadableTime(t, 200, { showSubSecondPrecision: true }),
+      ).toStrictEqual('0.2 sec');
+    });
+    it('should return sub-second value of 0.1 for very small milliseconds with showSubSecondPrecision', () => {
+      expect(
+        util.toHumanReadableTime(t, 50, { showSubSecondPrecision: true }),
+      ).toStrictEqual('0.1 sec');
+    });
+    it('should return 1 sec for 1000ms even with showSubSecondPrecision true', () => {
+      expect(
+        util.toHumanReadableTime(t, 1000, { showSubSecondPrecision: true }),
+      ).toStrictEqual('1 sec');
+    });
+    it('should not show sub-second value when showSubSecondPrecision is false', () => {
+      expect(
+        util.toHumanReadableTime(t, 200, { showSubSecondPrecision: false }),
+      ).toStrictEqual('1 sec');
+    });
+    it('should not show sub-second value by default for milliseconds < 1000', () => {
+      expect(util.toHumanReadableTime(t, 200)).toStrictEqual('1 sec');
+    });
   });
   describe('sanitizeMessage', () => {
     let message;
