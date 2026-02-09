@@ -85,6 +85,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
+import { MerklRewards } from '../../../components/app/assets/merkl-rewards';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
@@ -416,7 +417,11 @@ const AssetPage = ({
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount as TokenWithFiatAmount}
             safeChains={safeChains}
+            hideMerklBadge
           />
+        )}
+        {type === AssetType.token && asset.address && (
+          <MerklRewards tokenAddress={asset.address} chainId={chainId} />
         )}
         <Box
           marginTop={2}
