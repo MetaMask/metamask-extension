@@ -377,7 +377,7 @@ class FixtureBuilder {
     return this.withNetworkController({
       selectedNetworkClientId: 'henesys',
       networkConfigurations: {
-        etherlink: {
+        henesys: {
           chainId: CHAIN_IDS.MSU,
           nickname: 'Henesys',
           rpcUrl: 'https://henesys-rpc.msu.io',
@@ -386,6 +386,86 @@ class FixtureBuilder {
             blockExplorerUrl: 'https://msu-explorer.xangle.io',
           },
           id: 'henesys',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnXLayerMainnet() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'xlayer',
+      networkConfigurations: {
+        xlayer: {
+          chainId: CHAIN_IDS.X_LAYER,
+          nickname: 'X Layer',
+          rpcUrl: 'https://rpc.xlayer.tech',
+          ticker: 'OKB',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://www.oklink.com/x-layer',
+          },
+          id: 'xlayer',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnBOB() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'bob',
+      networkConfigurations: {
+        bob: {
+          chainId: CHAIN_IDS.BOB,
+          nickname: 'BOB',
+          rpcUrl: 'https://rpc.gobob.xyz',
+          ticker: 'ETH',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://explorer.gobob.xyz',
+          },
+          id: 'bob',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnRootstock() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'rootstock',
+      networkConfigurations: {
+        rootstock: {
+          chainId: CHAIN_IDS.ROOTSTOCK,
+          nickname: 'Rootstock Mainnet',
+          rpcUrl: 'https://public-node.rsk.co',
+          ticker: 'RBTC',
+          rpcPrefs: {
+            blockExplorerUrl: 'http://explorer.rsk.co',
+          },
+          id: 'rootstock',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+    withNetworkControllerOnMegaETH() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'megaeth',
+      networkConfigurations: {
+        megaeth: {
+          chainId: CHAIN_IDS.MEGAETH_MAINNET,
+          nickname: 'MegaETH',
+          rpcUrl: 'https://mainnet.megaeth.com/rpc',
+          ticker: 'ETH',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://megaeth.blockscout.com',
+          },
+          id: 'megaeth',
           type: 'rpc',
           isCustom: true,
         },

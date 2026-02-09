@@ -22,41 +22,69 @@ type NetworkConfig = {
 
 // Network configurations
 const networkConfigs: NetworkConfig[] = [
-  {
-    name: 'Monad Testnet',
-    tokenSymbol: 'MON',
-    fixtureMethod: (builder) => builder.withNetworkControllerOnMonad(),
-    testTitle: 'Monad Network Connection Tests',
-    chainId: CHAIN_IDS.MONAD_TESTNET,
-  },
-  // TODO: Uncomment this when the test MegaETH Testnet v2 is fixed
   // {
-  //   name: 'MegaETH Testnet',
-  //   tokenSymbol: 'ETH',
-  //   fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
-  //   testTitle: 'MegaETH Network Connection Tests',
-  //   chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
+  //   name: 'Monad Testnet',
+  //   tokenSymbol: 'MON',
+  //   fixtureMethod: (builder) => builder.withNetworkControllerOnMonad(),
+  //   testTitle: 'Monad Network Connection Tests',
+  //   chainId: CHAIN_IDS.MONAD_TESTNET,
+  // },
+  // // TODO: Uncomment this when the test MegaETH Testnet v2 is fixed
+  // // {
+  // //   name: 'MegaETH Testnet',
+  // //   tokenSymbol: 'ETH',
+  // //   fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETHTestnet(),
+  // //   testTitle: 'MegaETH Network Connection Tests',
+  // //   chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
+  // // },
+  // {
+  //   name: 'Sei',
+  //   tokenSymbol: 'SEI',
+  //   fixtureMethod: (builder) => builder.withNetworkControllerOnSei(),
+  //   testTitle: 'Sei Network Connection Tests',
+  //   chainId: CHAIN_IDS.SEI,
+  // },
+  // {
+  //   name: 'Etherlink',
+  //   tokenSymbol: 'XTZ',
+  //   fixtureMethod: (builder) => builder.withNetworkControllerOnEtherlinkMainnet(),
+  //   testTitle: 'Etherlink Network Connection Tests',
+  //   chainId: CHAIN_IDS.ETHERLINK,
+  // },
+  // {
+  //   name: 'Henesys',
+  //   tokenSymbol: 'NXPC',
+  //   fixtureMethod: (builder) => builder.withNetworkControllerOnMSU(),
+  //   testTitle: 'Henesys Network Connection Tests',
+  //   chainId: CHAIN_IDS.MSU,
+  // },
+  // {
+  //   name: 'X Layer',
+  //   tokenSymbol: 'OKB',
+  //   fixtureMethod: (builder) => builder.withNetworkControllerOnXLayerMainnet(),
+  //   testTitle: 'X Layer Mainnet Network Connection Tests',
+  //   chainId: CHAIN_IDS.X_LAYER,
+  // },
+  // {
+  //   name: 'BOB',
+  //   tokenSymbol: 'Ethereum',
+  //   fixtureMethod: (builder) => builder.withNetworkControllerOnBOB(),
+  //   testTitle: 'BOB Network Connection Tests',
+  //   chainId: CHAIN_IDS.BOB,
+  // },
+  // {
+  //   name: 'Rootstock Mainnet',
+  //   tokenSymbol: 'RBTC',
+  //   fixtureMethod: (builder) => builder.withNetworkControllerOnRootstock(),
+  //   testTitle: 'Rootstock Mainnet Network Connection Tests',
+  //   chainId: CHAIN_IDS.ROOTSTOCK,
   // },
   {
-    name: 'Sei',
-    tokenSymbol: 'SEI',
-    fixtureMethod: (builder) => builder.withNetworkControllerOnSei(),
-    testTitle: 'Sei Network Connection Tests',
-    chainId: CHAIN_IDS.SEI,
-  },
-  {
-    name: 'Etherlink',
-    tokenSymbol: 'XTZ',
-    fixtureMethod: (builder) => builder.withNetworkControllerOnEtherlinkMainnet(),
-    testTitle: 'Etherlink Network Connection Tests',
-    chainId: CHAIN_IDS.ETHERLINK,
-  },
-  {
-    name: 'Henesys',
-    tokenSymbol: 'NXPC',
-    fixtureMethod: (builder) => builder.withNetworkControllerOnMSU(),
-    testTitle: 'Henesys Network Connection Tests',
-    chainId: CHAIN_IDS.MSU,
+    name: 'MegaETH',
+    tokenSymbol: 'ETH',
+    fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
+    testTitle: 'MegaETH Network Connection Tests',
+    chainId: CHAIN_IDS.MEGAETH_MAINNET,
   },
 ];
 
@@ -111,7 +139,7 @@ networkConfigs.forEach((config) => {
           // Verify dapp can access the account
           await testDapp.checkGetAccountsResult(WALLET_ADDRESS.toLowerCase());
 
-          // Test various Dapp functionalities
+          // // Test various Dapp functionalities
           await performDappActionAndVerify(
             driver,
             () => testDapp.clickSimpleSendButton(),

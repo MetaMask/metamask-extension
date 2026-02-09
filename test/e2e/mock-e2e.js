@@ -81,6 +81,10 @@ const blocklistedHosts = [
   'sepolia.infura.io',
   'node.mainnet.etherlink.com',
   'henesys-rpc.msu.io',
+  'rpc.xlayer.tech',
+  'rpc.gobob.xyz',
+  'public-node.rsk.co',
+  'mainnet.megaeth.com',
 ];
 const {
   mockEmptyStalelistAndHotlist,
