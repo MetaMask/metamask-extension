@@ -866,7 +866,7 @@
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/assets-controller>@metamask/core-backend": true,
+        "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/polling-controller": true,
         "@metamask/assets-controller>@metamask/snaps-utils": true,
@@ -1093,26 +1093,13 @@
         "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
-        "uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/core-backend": {
-      "globals": {
-        "URL": true,
-        "WebSocket": true,
-        "clearTimeout": true,
         "fetch": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controller>@metamask/core-backend>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "uuid": true
       }
     },
@@ -3056,7 +3043,7 @@
         "browserify>browser-resolve": true
       }
     },
-    "@metamask/assets-controller>@metamask/core-backend>@tanstack/query-core": {
+    "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "CancelledError": true,
