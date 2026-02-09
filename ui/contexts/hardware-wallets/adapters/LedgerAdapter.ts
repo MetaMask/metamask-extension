@@ -1,5 +1,4 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
