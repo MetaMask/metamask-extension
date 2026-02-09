@@ -649,6 +649,7 @@ export function updateSubscriptionCryptoPaymentMethod(
 
 export function cancelSubscription(params: {
   subscriptionId: string;
+  cancelAtPeriodEnd?: boolean;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
