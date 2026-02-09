@@ -19682,12 +19682,12 @@ __metadata:
 
 "axios@patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch":
   version: 1.13.5
-  resolution: "axios@patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch::version=1.13.5&hash=5ccb45"
+  resolution: "axios@patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch::version=1.13.5&hash=be7cd7"
   dependencies:
     follow-redirects: "npm:^1.15.11"
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/6e67beac792b88086cf4c66ae634e89b45d8c26972fc182a7065dc5b632b2c45be6cf2ca195199f87865a6f7f740d4878242c702e4289fc6ef9919160b08dea8
+  checksum: 10/b9b272d9b58d24dbc6eea03024d2c5ef0c73004c28334312b29e16b091a9015efe25d60d475d523ad71dfacd8a179316bf3df1fc5e9aec3512aefda2a91ffeef
   languageName: node
   linkType: hard
 
