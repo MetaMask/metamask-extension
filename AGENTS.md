@@ -32,7 +32,7 @@ Read these files for detailed coding standards:
 
 - Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
 - Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
-- E2E testing standards: `.test/e2e/AGENTS.md`
+- E2E testing standards: `./test/e2e/AGENTS.md`
 - Front-end performance:
   - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)
   - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
@@ -986,7 +986,7 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 
 **E2E Best Practices:**
 
-Find them in .test/e2e/AGENTS.md
+Find them in [](./test/e2e/AGENTS.md)
 
 ### Integration Tests
 
@@ -1607,8 +1607,8 @@ Performance Checks (React Components):
 
 - **Controller Patterns:** [.cursor/rules/controller-guidelines/RULE.md](./.cursor/rules/controller-guidelines/RULE.md)
 - **Unit Testing:** [.cursor/rules/unit-testing-guidelines/RULE.md](./.cursor/rules/unit-testing-guidelines/RULE.md)
-- **E2E Testing:** [./.test/e2e/AGENTS.md](./.test/e2e/AGENTS.md)
-- **E2E Deprecated Patterns:** [./.test/e2e/AGENTS.md](./.test/e2e/AGENTS.md)
+- **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
+- **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **Front-End Performance:**
   - [Rendering Performance](.cursor/rules/front-end-performance-rendering/RULE.md) - Start here (keys, memoization, virtualization)
   - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects/RULE.md) - useEffect best practices
