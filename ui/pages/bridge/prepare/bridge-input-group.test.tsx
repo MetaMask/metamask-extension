@@ -431,12 +431,13 @@ describe('BridgeInputGroup', () => {
           networkPickerPopover.getElementsByTagName('p')[1],
         );
       });
-      await waitFor(async () => {
+      await waitFor(() => {
         expect(networkPickerPopover).not.toBeVisible();
         expect(abortSpy).toHaveBeenCalledTimes(7);
         expect(mockHandleFetch).toHaveBeenCalledTimes(3);
       });
 
+      expect(await localforage.keys()).toMatchSnapshot();
       expect(mockHandleFetch.mock.calls).toMatchSnapshot();
     },
   );
