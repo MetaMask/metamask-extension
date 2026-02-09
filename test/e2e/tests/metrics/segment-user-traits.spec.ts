@@ -108,6 +108,11 @@ describe('Segment User Traits', function () {
             metaMetricsId: MOCK_META_METRICS_ID,
           })
           .build(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            assetsEnableNotificationsByDefaultV2: false,
+          },
+        },
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
@@ -143,6 +148,11 @@ describe('Segment User Traits', function () {
             metaMetricsId: MOCK_META_METRICS_ID,
           })
           .build(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            assetsEnableNotificationsByDefaultV2: false,
+          },
+        },
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },

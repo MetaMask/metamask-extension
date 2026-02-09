@@ -25,6 +25,10 @@ export function getConfig(
 
   const manifestFlags: ManifestFlags = {
     ...additionalManifestFlags,
+    remoteFeatureFlags: {
+      assetsEnableNotificationsByDefaultV2: false,
+      ...(additionalManifestFlags.remoteFeatureFlags ?? {}),
+    },
     testing: {
       forceExtensionStore: true,
       ...(additionalManifestFlags.testing ?? {}),

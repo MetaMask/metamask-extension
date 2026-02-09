@@ -124,6 +124,11 @@ describe('Address Book', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            assetsEnableNotificationsByDefaultV2: false,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -152,6 +157,11 @@ describe('Address Book', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            assetsEnableNotificationsByDefaultV2: false,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -195,6 +205,11 @@ describe('Address Book', function (this: Suite) {
             },
           })
           .build(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            assetsEnableNotificationsByDefaultV2: false,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -238,6 +253,11 @@ describe('Address Book', function (this: Suite) {
             },
           })
           .build(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            assetsEnableNotificationsByDefaultV2: false,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -266,6 +286,11 @@ describe('Address Book', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            assetsEnableNotificationsByDefaultV2: false,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

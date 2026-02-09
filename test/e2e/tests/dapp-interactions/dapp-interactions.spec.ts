@@ -61,6 +61,11 @@ describe('Dapp interactions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            assetsEnableNotificationsByDefaultV2: false,
+          },
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
