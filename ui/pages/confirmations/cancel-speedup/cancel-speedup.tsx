@@ -3,27 +3,26 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import {
-  Text,
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonVariant,
-  ButtonSize,
   IconName,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalFooter,
 } from '../../../components/component-library';
-import {
-  IconColor,
-  TextVariant,
-  TextColor,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
 
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -47,12 +46,13 @@ type EditGasButtonProps = {
 };
 
 const EditGasButton = ({ onClick }: EditGasButtonProps) => {
+  const t = useI18nContext();
   return (
-    <Button
-      size={ButtonSize.Auto}
-      variant={ButtonVariant.Link}
-      startIconName={IconName.Edit}
-      color={IconColor.primaryDefault}
+    <ButtonIcon
+      size={ButtonIconSize.Sm}
+      color={TextColor.PrimaryDefault}
+      ariaLabel={t('edit')}
+      iconName={IconName.Edit}
       onClick={onClick}
       data-testid="edit-gas-fee-icon"
     />
@@ -80,28 +80,21 @@ const NetworkFeeRow = ({
       data-testid="edit-gas-fees-row"
     >
       <Box
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Center}
         className="flex"
       >
         <EditGasButton onClick={onEdit} />
         <Box
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={1}
           className="flex"
         >
-          <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
-            {nativeFee}
-          </Text>
+          <Text className="text-default font-medium">{nativeFee}</Text>
           {showFiat && (
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-            >
-              {fiatFee}
-            </Text>
+            <Text className="text-alternative font-medium">{fiatFee}</Text>
           )}
         </Box>
       </Box>
@@ -123,7 +116,7 @@ const SpeedRow = ({
   const t = useI18nContext();
   return (
     <ConfirmInfoRow label={t('speed')} data-testid="gas-fee-details-speed">
-      <Box alignItems={AlignItems.center} className="flex">
+      <Box alignItems={BoxAlignItems.Center} className="flex">
         <GasTiming
           chainId={chainId}
           maxFeePerGas={maxFeePerGas}
@@ -131,6 +124,87 @@ const SpeedRow = ({
         />
       </Box>
     </ConfirmInfoRow>
+  );
+};
+
+const GasFeesSection = ({ transaction }: { transaction: TransactionMeta }) => {
+  const { openModal } =
+    useTransactionModalContext() as TransactionModalContextType;
+
+  const { maxFeePerGas, maxPriorityFeePerGas, minimumCostInHexWei } =
+    useGasFeeContext() as GasFeeContextType;
+
+  const { showFiatInTestnets } = useSelector(getPreferences);
+  const isTestnet = TEST_CHAINS.includes(
+    transaction?.chainId as (typeof TEST_CHAINS)[number],
+  );
+  const showFiat = !isTestnet || showFiatInTestnets;
+
+  const {
+    currency: primaryCurrency,
+    numberOfDecimals: primaryNumberOfDecimals,
+  } = useUserPreferencedCurrency(PRIMARY);
+  const {
+    currency: secondaryCurrency,
+    numberOfDecimals: secondaryNumberOfDecimals,
+  } = useUserPreferencedCurrency(SECONDARY);
+
+  const [nativeFee] = useCurrencyDisplay(minimumCostInHexWei, {
+    numberOfDecimals: primaryNumberOfDecimals,
+    currency: primaryCurrency,
+  });
+
+  const [fiatFee] = useCurrencyDisplay(minimumCostInHexWei, {
+    numberOfDecimals: secondaryNumberOfDecimals,
+    currency: secondaryCurrency,
+  });
+
+  return (
+    <ConfirmInfoSection data-testid="cancel-speedup-section">
+      <NetworkFeeRow
+        nativeFee={nativeFee}
+        fiatFee={fiatFee}
+        showFiat={showFiat}
+        onEdit={() => openModal('editGasFee')}
+      />
+
+      <SpeedRow
+        chainId={transaction.chainId}
+        maxFeePerGas={maxFeePerGas}
+        maxPriorityFeePerGas={maxPriorityFeePerGas}
+      />
+    </ConfirmInfoSection>
+  );
+};
+
+const DescriptionSection = ({ isCancel }: { isCancel: boolean }) => {
+  const t = useI18nContext();
+  return (
+    <Box marginTop={4}>
+      <Text
+        variant={TextVariant.BodySm}
+        color={TextColor.TextAlternative}
+        className="text-center"
+      >
+        {isCancel
+          ? t('cancelTransactionDescription')
+          : t('speedUpTransactionDescription')}
+      </Text>
+    </Box>
+  );
+};
+
+const ConfirmButton = ({ onClick }: { onClick: () => void }) => {
+  const t = useI18nContext();
+  return (
+    <Button
+      variant={ButtonVariant.Primary}
+      className="w-full"
+      onClick={onClick}
+      data-testid="cancel-speedup-confirm-button"
+    >
+      {t('confirm')}
+    </Button>
   );
 };
 
@@ -175,7 +249,7 @@ const CancelSpeedupModal = ({
   dataTestId,
 }: CancelSpeedupModalProps) => {
   const t = useI18nContext();
-  const { openModal, currentModal } =
+  const { currentModal } =
     useTransactionModalContext() as TransactionModalContextType;
   const appIsLoading = useSelector(getAppIsLoading);
 
@@ -188,9 +262,6 @@ const CancelSpeedupModal = ({
     updateTransaction,
     updateTransactionToTenPercentIncreasedGasFee,
     updateTransactionUsingEstimate,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    minimumCostInHexWei,
   } = useGasFeeContext() as GasFeeContextType;
 
   const isCancel = mode === EditGasModes.cancel;
@@ -237,31 +308,6 @@ const CancelSpeedupModal = ({
     onClose();
   };
 
-  const { showFiatInTestnets } = useSelector(getPreferences);
-  const isTestnet = TEST_CHAINS.includes(
-    transaction?.chainId as (typeof TEST_CHAINS)[number],
-  );
-  const showFiat = !isTestnet || showFiatInTestnets;
-
-  const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY);
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY);
-
-  const [nativeFee] = useCurrencyDisplay(minimumCostInHexWei, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  });
-
-  const [fiatFee] = useCurrencyDisplay(minimumCostInHexWei, {
-    numberOfDecimals: secondaryNumberOfDecimals,
-    currency: secondaryCurrency,
-  });
-
   return (
     <Modal isOpen onClose={onClose} data-testid={dataTestId}>
       <ModalOverlay />
@@ -272,41 +318,11 @@ const CancelSpeedupModal = ({
             : t('speedUpTransactionTitle')}
         </ModalHeader>
         <Box padding={4}>
-          <ConfirmInfoSection data-testid="cancel-speedup-section">
-            <NetworkFeeRow
-              nativeFee={nativeFee}
-              fiatFee={fiatFee}
-              showFiat={showFiat}
-              onEdit={() => openModal('editGasFee')}
-            />
-
-            <SpeedRow
-              chainId={transaction.chainId}
-              maxFeePerGas={maxFeePerGas}
-              maxPriorityFeePerGas={maxPriorityFeePerGas}
-            />
-          </ConfirmInfoSection>
-          <Box marginTop={4}>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              textAlign={TextAlign.Center}
-            >
-              {isCancel
-                ? t('cancelTransactionDescription')
-                : t('speedUpTransactionDescription')}
-            </Text>
-          </Box>
+          <GasFeesSection transaction={transaction} />
+          <DescriptionSection isCancel={isCancel} />
         </Box>
         <ModalFooter>
-          <Button
-            variant={ButtonVariant.Primary}
-            className="w-full"
-            onClick={handleSubmit}
-            data-testid="cancel-speedup-confirm-button"
-          >
-            {t('confirm')}
-          </Button>
+          <ConfirmButton onClick={handleSubmit} />
         </ModalFooter>
       </ModalContent>
     </Modal>
