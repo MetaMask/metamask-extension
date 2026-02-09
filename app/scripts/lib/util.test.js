@@ -505,7 +505,9 @@ describe('app utils', () => {
         configurable: true,
       });
       if (userAgent !== undefined) {
-        jest.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(userAgent);
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(userAgent);
       }
     };
 
@@ -530,10 +532,13 @@ describe('app utils', () => {
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/94.0.4606.81 Safari/537.36',
         DEVICE_TYPE.DESKTOP,
       ],
-    ])('falls back to UA when userAgentData is missing', (userAgent, expected) => {
-      setNavigator({ userAgentData: undefined, userAgent });
-      expect(getDeviceType()).toStrictEqual(expected);
-    });
+    ])(
+      'falls back to UA when userAgentData is missing',
+      (userAgent, expected) => {
+        setNavigator({ userAgentData: undefined, userAgent });
+        expect(getDeviceType()).toStrictEqual(expected);
+      },
+    );
   });
 
   describe('getOs', () => {
@@ -544,10 +549,14 @@ describe('app utils', () => {
         configurable: true,
       });
       if (userAgent !== undefined) {
-        jest.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(userAgent);
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(userAgent);
       }
       if (platform !== undefined) {
-        jest.spyOn(window.navigator, 'platform', 'get').mockReturnValue(platform);
+        jest
+          .spyOn(window.navigator, 'platform', 'get')
+          .mockReturnValue(platform);
       }
     };
 
@@ -556,10 +565,13 @@ describe('app utils', () => {
       ['macOS', OS.MACOS],
       ['Linux', OS.LINUX],
       ['Android', OS.ANDROID],
-    ])('returns %s when userAgentData.platform is "%s"', (platform, expected) => {
-      setNavigator({ userAgentData: { platform } });
-      expect(getOs()).toStrictEqual(expected);
-    });
+    ])(
+      'returns %s when userAgentData.platform is "%s"',
+      (platform, expected) => {
+        setNavigator({ userAgentData: { platform } });
+        expect(getOs()).toStrictEqual(expected);
+      },
+    );
 
     it('returns Other for unknown userAgentData.platform string', () => {
       setNavigator({ userAgentData: { platform: 'UnknownOS' } });
@@ -583,10 +595,13 @@ describe('app utils', () => {
         'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15',
         OS.IOS,
       ],
-    ])('falls back to UA when userAgentData is missing', (userAgent, expected) => {
-      setNavigator({ userAgentData: undefined, userAgent });
-      expect(getOs()).toStrictEqual(expected);
-    });
+    ])(
+      'falls back to UA when userAgentData is missing',
+      (userAgent, expected) => {
+        setNavigator({ userAgentData: undefined, userAgent });
+        expect(getOs()).toStrictEqual(expected);
+      },
+    );
 
     it('returns unknown when userAgentData is missing and UA cannot be parsed', () => {
       setNavigator({

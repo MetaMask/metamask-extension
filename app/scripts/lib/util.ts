@@ -94,15 +94,15 @@ const getEnvironmentType = (url = window.location.href) =>
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
  * Not present in all TypeScript DOM libs, so we define the shape we use.
  */
-interface NavigatorUserAgentData {
-  brands?: Array<{ brand: string; version?: string }>;
+type NavigatorUserAgentData = {
+  brands?: { brand: string; version?: string }[];
   mobile?: boolean;
   platform?: string;
-}
+};
 
-interface NavigatorWithUserAgentData extends Navigator {
+type NavigatorWithUserAgentData = Navigator & {
   userAgentData?: NavigatorUserAgentData;
-}
+};
 
 function getNavigator(): NavigatorWithUserAgentData {
   if (typeof window !== 'undefined') {
@@ -355,7 +355,11 @@ export const getOs = (): Os => {
   if (ua.includes('Windows') || platformStr.startsWith('Win')) {
     return OS.WINDOWS;
   }
-  if (ua.includes('Macintosh') || ua.includes('Mac OS') || platformStr.startsWith('Mac')) {
+  if (
+    ua.includes('Macintosh') ||
+    ua.includes('Mac OS') ||
+    platformStr.startsWith('Mac')
+  ) {
     return OS.MACOS;
   }
   if (ua.includes('Linux') || platformStr.includes('Linux')) {

@@ -1,5 +1,11 @@
 import { Json } from '@metamask/utils';
-import type { DeviceType, EnvironmentType, InstallType, Os, Platform } from './app';
+import type {
+  DeviceType,
+  EnvironmentType,
+  InstallType,
+  Os,
+  Platform,
+} from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
 
 type JsonWithUndefined =
