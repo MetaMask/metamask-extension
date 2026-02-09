@@ -243,11 +243,17 @@ export enum AssetType {
  * Describes the standard which a token conforms to.
  */
 export enum TokenStandard {
-  /** A token that conforms to the ERC20 standard. */
+  /**
+   * @deprecated Use `ERC20` from `@metamask/controller-utils` instead.
+   */
   ERC20 = 'ERC20',
-  /** A token that conforms to the ERC721 standard. */
+  /**
+   * @deprecated Use `ERC721` from `@metamask/controller-utils` instead.
+   */
   ERC721 = 'ERC721',
-  /** A token that conforms to the ERC1155 standard. */
+  /**
+   * @deprecated Use `ERC1155` from `@metamask/controller-utils` instead.
+   */
   ERC1155 = 'ERC1155',
   /** Not a token, but rather the base asset of the selected chain. */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

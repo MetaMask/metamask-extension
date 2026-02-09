@@ -57,6 +57,17 @@ export enum ClaimSubmitToastType {
   DraftDeleteFailed = 'draft-delete-failed',
 }
 
+/**
+ * Type of storage write error that occurred.
+ * Used to show specific error messages in the storage error toast.
+ */
+export enum StorageWriteErrorType {
+  /** A general storage write error */
+  Default = 'default',
+  /** Device is out of disk space */
+  FileErrorNoSpace = 'file-error-no-space',
+}
+
 export type NetworkConnectionBanner =
   | { status: 'unknown' | 'available' }
   | {

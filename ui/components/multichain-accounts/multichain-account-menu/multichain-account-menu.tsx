@@ -48,7 +48,7 @@ export const MultichainAccountMenu = ({
   const dispatch = useDispatch();
   const popoverRef = useRef<HTMLDivElement>(null);
   const accountTree = useSelector(getAccountTree);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // Get the account group metadata to check pinned/hidden state
   const accountGroupMetadata = useMemo(() => {

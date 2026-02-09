@@ -37,6 +37,7 @@ const REMOVE_KEYS = [
   'revokeToken',
   'vaultEncryptionKey',
   'vaultEncryptionSalt',
+  'pendingToBeRevokedTokens',
 
   // SnapController
   'snapStates',
@@ -52,7 +53,6 @@ const REMOVE_KEYS = [
 const REMOVE_PATHS: (string | true)[][] = [
   ['nodeAuthTokens', true, 'authToken'],
   ['snaps', true, 'auxiliaryFiles'],
-  ['snaps', true, 'sourceCode'],
   ['socialBackupsMetadata', true, 'hash'],
   ['srpSessionData', true, 'token', 'accessToken'],
 ];
@@ -108,7 +108,6 @@ function stripLargeSnapData(snapData: Snap): Partial<Snap> {
     ...snapData,
   };
 
-  delete newData.sourceCode;
   delete newData.auxiliaryFiles;
 
   return newData;

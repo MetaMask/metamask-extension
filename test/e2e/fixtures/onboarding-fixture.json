@@ -36,8 +36,11 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentAppVersion": "13.17.0",
-      "currentMigrationVersion": 189,
+      "currentMigrationVersion": 193,
+      "firstTimeInfo": {
+        "date": 0,
+        "version": "13.17.0"
+      },
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -1967,6 +1970,7 @@
     "RewardsController": {
       "rewardsAccounts": {},
       "rewardsActiveAccount": null,
+      "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
@@ -2118,10 +2122,6 @@
     "TokenBalancesController": {
       "tokenBalances": {}
     },
-    "TokenListController": {
-      "preventPollingOnNetworkRestart": false,
-      "tokensChainsCache": {}
-    },
     "TokenRatesController": {
       "marketData": {}
     },
@@ -2149,6 +2149,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 189
+    "version": 193
   }
 }

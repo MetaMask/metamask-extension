@@ -93,7 +93,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdatedAt: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
-    showStorageErrorToast: true,
+    storageWriteErrorType: true,
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
@@ -283,6 +283,7 @@ export const SENTRY_BACKGROUND_STATE = {
     rewardsSeasons: false,
     rewardsSeasonStatuses: false,
     rewardsSubscriptionTokens: false,
+    rewardsPointsEstimateHistory: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
@@ -325,6 +326,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdated: false,
     databaseUnavailable: false,
   },
+  StaticAssetsController: {},
   SubjectMetadataController: {
     subjectMetadata: false,
   },
@@ -362,7 +364,6 @@ export const SENTRY_BACKGROUND_STATE = {
     [AllProperties]: false,
   },
   TokenListController: {
-    preventPollingOnNetworkRestart: true,
     tokensChainsCache: {
       [AllProperties]: false,
     },
