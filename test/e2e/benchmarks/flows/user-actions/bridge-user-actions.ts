@@ -14,7 +14,7 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from '../../../tests/bridge/constants';
 import { Driver } from '../../../webdriver/driver';
-import { BENCHMARK_PERSONA } from '../../utils/constants';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
 
@@ -102,5 +102,5 @@ export async function run(): Promise<BenchmarkRunResult> {
       { id: 'bridge_load_asset_picker', duration: loadAssetPicker },
       { id: 'bridge_search_token', duration: searchToken },
     ];
-  });
+  }, BENCHMARK_TYPE.USER_ACTION);
 }

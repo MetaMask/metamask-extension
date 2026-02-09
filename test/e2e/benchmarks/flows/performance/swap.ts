@@ -18,6 +18,7 @@ import {
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
 import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
+import { BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-swap-power-user';
@@ -76,12 +77,17 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }

@@ -26,7 +26,7 @@ import {
   getTestSpecificMock,
   shouldUseMockedRequests,
 } from '../../utils/mock-config';
-import { BENCHMARK_PERSONA } from '../../utils/constants';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-new-wallet';
@@ -140,12 +140,17 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }

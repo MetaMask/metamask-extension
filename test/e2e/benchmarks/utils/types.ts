@@ -71,6 +71,7 @@ export type BenchmarkRunResult = {
   timers: TimerResult[];
   success: boolean;
   error?: string;
+  benchmarkType?: BenchmarkType;
 };
 
 export type TimerStatistics = {
@@ -138,6 +139,8 @@ export type BenchmarkSummary = {
   thresholdViolations?: ThresholdViolation[];
   /** Whether all thresholds passed (no 'fail' violations) */
   thresholdsPassed?: boolean;
+  /** Benchmark type extracted from the first successful run */
+  benchmarkType?: BenchmarkType;
 };
 
 export type PerformanceBenchmarkResults = {

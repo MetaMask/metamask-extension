@@ -16,7 +16,6 @@ import {
 } from '../../helpers/file';
 import { runBenchmarkWithIterations } from './utils';
 import {
-  BENCHMARK_TYPE,
   ONBOARDING_IMPORT_THRESHOLDS,
   ONBOARDING_NEW_WALLET_THRESHOLDS,
   IMPORT_SRP_HOME_THRESHOLDS,
@@ -204,12 +203,12 @@ async function runBenchmarkFile(
       console.log('✅ All thresholds passed');
     }
 
-    // Determine benchmarkType based on file path
-    const benchmarkType = filePath.includes('/performance/')
-      ? BENCHMARK_TYPE.PERFORMANCE
-      : BENCHMARK_TYPE.USER_ACTION;
-
-    return convertSummaryToResults(summary, testTitle, persona, benchmarkType);
+    return convertSummaryToResults(
+      summary,
+      testTitle,
+      persona,
+      summary.benchmarkType,
+    );
   }
 
   // For other benchmarks (page-load), run once with options
