@@ -14,7 +14,6 @@ import {
   BoxJustifyContent,
   BoxBorderColor,
 } from '@metamask/design-system-react';
-import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
   GlobalMenuListProps,
   MenuItemContentProps,
@@ -50,12 +49,7 @@ const MenuItemContent = ({
         alignItems={BoxAlignItems.Center}
         gap={2}
       >
-        {hasBadge &&
-          (typeof badge === 'number' ? (
-            <NotificationsTagCounter />
-          ) : (
-            badge
-          ))}
+        {hasBadge && badge}
         {showChevron && (
           <Icon
             name={IconName.ArrowRight}
@@ -126,7 +120,6 @@ export const GlobalMenuList = ({
               <MenuItem
                 key={item.id}
                 iconName={item.iconName}
-                iconColor={item.iconColor}
                 iconSize={IconSize.Lg}
                 textVariant={TextVariant.BodyMd}
                 to={isRouteItem(item) ? item.to : undefined}

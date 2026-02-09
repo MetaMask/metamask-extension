@@ -6,9 +6,9 @@ import { GlobalMenuList } from './global-menu-list';
 import { GlobalMenuSection } from './global-menu-list.types';
 import {
   IconName,
-  IconColor,
   TextColor,
 } from '@metamask/design-system-react';
+import { NotificationsTagCounter } from '../notifications-tag-counter';
 
 const store = configureStore(testData);
 
@@ -20,7 +20,7 @@ const defaultSections: GlobalMenuSection[] = [
         id: 'notifications',
         iconName: IconName.Notification,
         label: 'Notifications',
-        badge: 5,
+        badge: <NotificationsTagCounter />,
         to: '/notifications',
         onClick: () => {
           console.log('Notifications clicked');
@@ -108,7 +108,6 @@ const defaultSections: GlobalMenuSection[] = [
         label: 'Log Out',
         to: '/',
         showChevron: false,
-        iconColor: IconColor.ErrorDefault,
         textColor: TextColor.ErrorDefault,
         onClick: () => {
           console.log('Log Out clicked');
