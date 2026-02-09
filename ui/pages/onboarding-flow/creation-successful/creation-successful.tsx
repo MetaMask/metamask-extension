@@ -201,6 +201,11 @@ export default function CreationSuccessful() {
       deferredDeepLinkResult: DeferredDeepLinkRoute,
       hasDeferredDeepLink: boolean,
     ) => {
+      // Clean up deferred deep link from the state (both: expired or active)
+      if (hasDeferredDeepLink) {
+        dispatch(removeDeferredDeepLink());
+      }
+
       if (deferredDeepLinkResult) {
         if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
@@ -219,11 +224,6 @@ export default function CreationSuccessful() {
           navigate(interstitialRoute);
         }
       }
-
-      // Clean up deferred deep link from the state (both: expired or active)
-      if (hasDeferredDeepLink) {
-        dispatch(removeDeferredDeepLink());
-      }
     },
     [dispatch, navigate],
   );
@@ -233,6 +233,11 @@ export default function CreationSuccessful() {
       deferredDeepLinkResult: DeferredDeepLinkRoute,
       hasDeferredDeepLink: boolean,
     ) => {
+      // Clean up deferred deep link from the state (both: expired or active)
+      if (hasDeferredDeepLink) {
+        dispatch(removeDeferredDeepLink());
+      }
+
       if (deferredDeepLinkResult) {
         if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
@@ -246,7 +251,6 @@ export default function CreationSuccessful() {
         } else if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Interstitial
         ) {
-          // For unsigned/invalid signature links, navigate to the interstitial warning page
           const interstitialRoute = buildInterstitialRoute(
             deferredDeepLinkResult.urlPathAndQuery,
           );
@@ -254,11 +258,6 @@ export default function CreationSuccessful() {
         }
       } else {
         navigate(DEFAULT_ROUTE);
-      }
-
-      // Clean up deferred deep link from the state (both: expired or active)
-      if (hasDeferredDeepLink) {
-        dispatch(removeDeferredDeepLink());
       }
     },
     [dispatch, navigate],
