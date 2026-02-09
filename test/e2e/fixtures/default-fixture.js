@@ -151,6 +151,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         snapsInstallPrivacyWarningShown: true,
         hasShownMultichainAccountsIntroModal: true,
         showShieldEntryModalOnce: false,
+        shieldCardCheckoutInProgress: false,
         pendingShieldCohort: null,
         pendingShieldCohortTxType: null,
         appActiveTab: {

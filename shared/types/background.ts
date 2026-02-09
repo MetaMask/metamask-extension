@@ -142,6 +142,7 @@ export type ControllerStatePropertiesEnumerated = {
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
   lastUpdatedFromVersion: AppStateControllerState['lastUpdatedFromVersion'];
   showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
+  shieldCardCheckoutInProgress: AppStateControllerState['shieldCardCheckoutInProgress'];
   pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
   pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];

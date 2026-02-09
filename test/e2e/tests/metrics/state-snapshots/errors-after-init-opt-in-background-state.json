@@ -72,6 +72,7 @@
     "showDownloadMobileAppSlide": "boolean",
     "showNetworkBanner": true,
     "showPermissionsTour": true,
+    "shieldCardCheckoutInProgress": "boolean",
     "showShieldEntryModalOnce": "boolean",
     "showTestnetMessageInDropdown": true,
     "sidePanelGasPollTokens": [],

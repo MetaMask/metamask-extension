@@ -151,6 +151,7 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
+  shieldCardCheckoutInProgress: boolean;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -207,6 +208,11 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
+export type AppStateControllerSetShieldCardCheckoutInProgressAction = {
+  type: 'AppStateController:setShieldCardCheckoutInProgress';
+  handler: AppStateController['setShieldCardCheckoutInProgress'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
@@ -215,7 +221,8 @@ export type AppStateControllerActions =
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
-  | AppStateControllerSetPendingShieldCohortAction;
+  | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetShieldCardCheckoutInProgressAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -332,6 +339,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
+  shieldCardCheckoutInProgress: false,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
@@ -686,6 +694,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  shieldCardCheckoutInProgress: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   pendingShieldCohort: {
     includeInStateLogs: true,
     persist: false,
@@ -813,6 +827,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setPendingShieldCohort',
       this.setPendingShieldCohort.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setShieldCardCheckoutInProgress',
+      this.setShieldCardCheckoutInProgress.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -1671,6 +1690,12 @@ export class AppStateController extends BaseController<
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
+    });
+  }
+
+  setShieldCardCheckoutInProgress(inProgress: boolean): void {
+    this.update((state) => {
+      state.shieldCardCheckoutInProgress = inProgress;
     });
   }
 

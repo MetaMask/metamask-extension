@@ -79,6 +79,7 @@
       "showNetworkBanner": true,
       "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
+      "shieldCardCheckoutInProgress": false,
       "showTestnetMessageInDropdown": true,
       "slides": [],
       "surveyLinkLastClickedOrClosed": null,

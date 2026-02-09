@@ -749,6 +749,23 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
+export function setShieldCardCheckoutInProgress(
+  inProgress: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setShieldCardCheckoutInProgress', [
+        inProgress,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[setShieldCardCheckoutInProgress] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
 export function setPendingShieldCohort(
   cohort: string | null,
   txType?: string | null,

@@ -14,6 +14,7 @@ import {
 export type SubscriptionState = {
   metamask: SubscriptionControllerState & {
     showShieldEntryModalOnce: boolean | null;
+    shieldCardCheckoutInProgress: boolean;
   };
 };
 
@@ -41,6 +42,12 @@ export function getIsActiveShieldSubscription(
   state: SubscriptionState,
 ): boolean {
   return getIsShieldSubscriptionActive(state.metamask.subscriptions);
+}
+
+export function getShieldCardCheckoutInProgress(
+  state: SubscriptionState,
+): boolean {
+  return state.metamask?.shieldCardCheckoutInProgress ?? false;
 }
 
 export function getHasShieldEntryModalShownOnce(

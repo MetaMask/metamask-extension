@@ -3022,6 +3022,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
       setPendingShieldCohort:
         appStateController.setPendingShieldCohort.bind(appStateController),
+      setShieldCardCheckoutInProgress:
+        appStateController.setShieldCardCheckoutInProgress.bind(
+          appStateController,
+        ),
       setShieldPausedToastLastClickedOrClosed:
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,
