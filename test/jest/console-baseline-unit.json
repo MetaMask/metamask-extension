@@ -10,11 +10,6 @@
       "MetaMask: MetaMetrics invalid trait types": 4,
       "warn: MetaMetricsController#_identify: No userTraits found": 1
     },
-    "app/scripts/controllers/swaps/swaps.test.ts": {
-      "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
-    },
     "app/scripts/detect-multiple-instances.test.js": {
       "MetaMask: Multiple instances warning": 1
     },
