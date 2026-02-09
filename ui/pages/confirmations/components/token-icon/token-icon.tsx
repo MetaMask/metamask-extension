@@ -1,16 +1,11 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
-  BadgeWrapper,
 } from '../../../../components/component-library';
-import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useSendTokens } from '../../hooks/send/useSendTokens';
+import { ChainBridge } from '../../../../components/app/ChainBridge/ChainBridge';
 
 export type TokenIconSize = 'sm' | 'md';
 
@@ -25,11 +20,6 @@ const TOKEN_ICON_SIZE_MAP: Record<TokenIconSize, AvatarTokenSize> = {
   md: AvatarTokenSize.Md,
 };
 
-const NETWORK_BADGE_SIZE_MAP: Record<TokenIconSize, AvatarNetworkSize> = {
-  sm: AvatarNetworkSize.Xs,
-  md: AvatarNetworkSize.Xs,
-};
-
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function TokenIcon({
   chainId,
@@ -37,10 +27,6 @@ export function TokenIcon({
   size = 'md',
 }: TokenIconProps) {
   const sendTokens = useSendTokens({ includeNoBalance: true });
-
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
-  );
 
   const matchedToken = useMemo(() => {
     return sendTokens.find(
@@ -51,21 +37,13 @@ export function TokenIcon({
   }, [tokenAddress, chainId, sendTokens]);
 
   return (
-    <BadgeWrapper
-      badge={
-        <AvatarNetwork
-          size={NETWORK_BADGE_SIZE_MAP[size]}
-          name={networkConfiguration?.name ?? ''}
-          src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-        />
-      }
-    >
+    <ChainBridge chainId={chainId}>
       <AvatarToken
         size={TOKEN_ICON_SIZE_MAP[size]}
         src={matchedToken?.image}
         name={matchedToken?.symbol}
         showHalo={false}
       />
-    </BadgeWrapper>
+    </ChainBridge>
   );
 }

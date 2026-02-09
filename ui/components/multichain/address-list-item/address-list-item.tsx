@@ -1,15 +1,10 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
 import Confusable from '../../ui/confusable';
 import {
   Box,
   Text,
   Icon,
   IconName,
-  BadgeWrapper,
-  AvatarNetwork,
-  AvatarNetworkSize,
 } from '../../component-library';
 import {
   TextAlign,
@@ -26,8 +21,7 @@ import { PreferredAvatar } from '../../app/preferred-avatar';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 import { I18nContext } from '../../../contexts/i18n';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { getImageForChainId } from '../../../selectors/multichain';
+import { ChainBridge } from '../../app/ChainBridge/ChainBridge';
 
 type AddressListItemProps = {
   address: string;
@@ -47,7 +41,6 @@ export const AddressListItem = ({
   onClick,
 }: AddressListItemProps) => {
   const t = useContext(I18nContext);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
 
   let displayName: string | React.ReactNode = shortenAddress(address);
   if (label) {
@@ -72,19 +65,9 @@ export const AddressListItem = ({
       alignItems={AlignItems.center}
     >
       <Box display={Display.Flex}>
-        <BadgeWrapper
-          badge={
-            <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
-              name={allNetworks?.[chainId as Hex]?.name}
-              src={getImageForChainId(chainId)}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              borderWidth={2}
-            />
-          }
-        >
+        <ChainBridge chainId={chainId}>
           <PreferredAvatar address={address} className="flex" />
-        </BadgeWrapper>
+        </ChainBridge>
       </Box>
       <Box
         display={Display.Flex}
