@@ -1517,182 +1517,303 @@ export function DesignerModePanel() {
                 </div>
               </CollapsibleSection>
             )}
-            {/* ── Agent Chat section ────────────────────── */}
-            <CollapsibleSection title="Send to Agent" icon="▶">
-              {/* Server status */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  marginBottom: 8,
-                  fontSize: 10,
-                }}
-              >
-                <span
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    backgroundColor:
-                      serverConnected === true
-                        ? C.success
-                        : serverConnected === false
-                          ? '#ff453a'
-                          : C.textTertiary,
-                    flexShrink: 0,
-                  }}
-                />
-                <span style={{ color: C.textTertiary }}>
-                  {serverConnected === true
-                    ? 'Connected to localhost:3334'
-                    : serverConnected === false
-                      ? 'Server offline — run: yarn designer-server'
-                      : 'Checking server...'}
-                </span>
-              </div>
-
-              {/* Chat messages */}
-              {(agentMessages.length > 0 || waitingForAgent) && (
-                <div
-                  ref={agentChatRef}
-                  style={{
-                    maxHeight: 120,
-                    overflowY: 'auto',
-                    marginBottom: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 4,
-                  }}
-                >
-                  {agentMessages.map((msg, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        fontSize: 10,
-                        color:
-                          msg.type === 'agent'
-                            ? C.success
-                            : msg.type === 'sent'
-                              ? C.text
-                              : C.textTertiary,
-                        fontStyle:
-                          msg.type === 'status' ? 'italic' : 'normal',
-                        padding: '3px 6px',
-                        backgroundColor:
-                          msg.type === 'sent'
-                            ? C.accentDim
-                            : msg.type === 'agent'
-                              ? 'rgba(48, 209, 88, 0.1)'
-                              : 'transparent',
-                        borderRadius: 3,
-                      }}
-                    >
-                      {msg.type === 'sent' && (
-                        <span style={{ color: C.accent, marginRight: 4 }}>
-                          You:
-                        </span>
-                      )}
-                      {msg.type === 'agent' && (
-                        <span
-                          style={{ color: C.success, marginRight: 4 }}
-                        >
-                          Agent:
-                        </span>
-                      )}
-                      {msg.type === 'status' && '→ '}
-                      {msg.text}
-                    </div>
-                  ))}
-
-                  {/* Animated "Agent is working" indicator */}
-                  {waitingForAgent && <AgentWorkingIndicator />}
-                </div>
-              )}
-
-              {/* Input + Send button */}
-              <div style={{ display: 'flex', gap: 4 }}>
-                <input
-                  value={agentInput}
-                  onChange={(e) => setAgentInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendToAgent();
-                    }
-                    e.stopPropagation();
-                  }}
-                  placeholder="e.g. make this button red"
-                  disabled={isSending}
-                  style={{
-                    flex: 1,
-                    backgroundColor: C.input,
-                    color: C.text,
-                    border: `1px solid ${C.divider}`,
-                    borderRadius: 4,
-                    padding: '5px 8px',
-                    fontSize: 11,
-                    fontFamily: FONT,
-                    outline: 'none',
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={handleSendToAgent}
-                  disabled={isSending || !agentInput.trim()}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor:
-                      isSending || !agentInput.trim()
-                        ? C.surface
-                        : C.accent,
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 4,
-                    cursor:
-                      isSending || !agentInput.trim()
-                        ? 'not-allowed'
-                        : 'pointer',
-                    fontSize: 11,
-                    fontWeight: 600,
-                    fontFamily: FONT,
-                    opacity:
-                      isSending || !agentInput.trim() ? 0.4 : 1,
-                    flexShrink: 0,
-                  }}
-                >
-                  {isSending ? '...' : 'Send'}
-                </button>
-              </div>
-            </CollapsibleSection>
           </>
         )}
       </div>
 
-      {/* ── Footer ───────────────────────────────────────────── */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '6px 12px',
-          backgroundColor: C.surface,
-          borderTop: `1px solid ${C.divider}`,
-          fontSize: 10,
-          color: C.textTertiary,
-          flexShrink: 0,
-        }}
-      >
-        <span>
-          <Kbd>Click</Kbd> lock
-        </span>
-        <span>
-          <Kbd>C</Kbd> copy
-        </span>
-        <span>
-          <Kbd>Esc</Kbd> exit
-        </span>
-      </div>
+      {/* ── Chat with Agent (fixed bottom) ────────────────────── */}
+      {elementInfo && (
+        <div
+          style={{
+            flexShrink: 0,
+            border: `1px solid #555`,
+            borderBottom: 'none',
+            borderRadius: '12px 12px 0 0',
+            backgroundColor: '#1a1a1a',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* Top bar: status + component pill */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 12px 6px',
+              gap: 8,
+            }}
+          >
+            {/* Connection status */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                fontSize: 10,
+                color:
+                  serverConnected === true
+                    ? C.success
+                    : serverConnected === false
+                      ? '#ff453a'
+                      : C.textTertiary,
+                fontFamily: FONT,
+                fontWeight: 500,
+                flexShrink: 0,
+              }}
+            >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  backgroundColor:
+                    serverConnected === true
+                      ? C.success
+                      : serverConnected === false
+                        ? '#ff453a'
+                        : C.textTertiary,
+                  boxShadow:
+                    serverConnected === true
+                      ? `0 0 6px ${C.success}`
+                      : 'none',
+                }}
+              />
+              {serverConnected === true
+                ? 'Connected'
+                : serverConnected === false
+                  ? 'Offline'
+                  : 'Connecting...'}
+            </div>
+
+            {/* Component pill */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                backgroundColor: C.input,
+                border: `1px solid ${C.divider}`,
+                borderRadius: 20,
+                padding: '2px 10px 2px 6px',
+                maxWidth: '65%',
+                overflow: 'hidden',
+              }}
+            >
+              <span
+                style={{
+                  width: 14,
+                  height: 14,
+                  borderRadius: '50%',
+                  backgroundColor: C.accentDim,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 8,
+                  color: C.accent,
+                  flexShrink: 0,
+                }}
+              >
+                ◆
+              </span>
+              <span
+                style={{
+                  fontSize: 10,
+                  color: C.textSecondary,
+                  fontFamily: MONO,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+                title={
+                  elementInfo.component.componentName || 'Unknown'
+                }
+              >
+                {elementInfo.component.componentName || 'Unknown'}
+              </span>
+              {elementInfo.component.testId && (
+                <span
+                  style={{
+                    fontSize: 8,
+                    color: C.textTertiary,
+                    fontFamily: MONO,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  #{elementInfo.component.testId}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Message thread */}
+          <div
+            ref={agentChatRef}
+            style={{
+              maxHeight: 160,
+              overflowY: 'auto',
+              padding:
+                agentMessages.length > 0 || waitingForAgent
+                  ? '10px 12px 6px'
+                  : '0',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+            }}
+          >
+            {agentMessages.length === 0 && !waitingForAgent && null}
+
+            {agentMessages.map((msg, i) => (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems:
+                    msg.type === 'sent' ? 'flex-end' : 'flex-start',
+                }}
+              >
+                {/* Sender label */}
+                {msg.type !== 'status' && (
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 600,
+                      color:
+                        msg.type === 'sent' ? C.textTertiary : C.success,
+                      marginBottom: 2,
+                      fontFamily: FONT,
+                      textTransform: 'uppercase',
+                      letterSpacing: 0.3,
+                    }}
+                  >
+                    {msg.type === 'sent' ? 'You' : 'Agent'}
+                  </span>
+                )}
+                {/* Bubble */}
+                <div
+                  style={{
+                    fontSize: 11,
+                    lineHeight: 1.4,
+                    color:
+                      msg.type === 'status' ? C.textTertiary : C.text,
+                    fontStyle:
+                      msg.type === 'status' ? 'italic' : 'normal',
+                    fontFamily: FONT,
+                    padding:
+                      msg.type === 'status' ? '2px 0' : '6px 10px',
+                    backgroundColor:
+                      msg.type === 'sent'
+                        ? C.accent
+                        : msg.type === 'agent'
+                          ? C.surface
+                          : 'transparent',
+                    borderRadius:
+                      msg.type === 'sent'
+                        ? '10px 10px 2px 10px'
+                        : msg.type === 'agent'
+                          ? '10px 10px 10px 2px'
+                          : '0',
+                    maxWidth: '90%',
+                    wordBreak: 'break-word',
+                  }}
+                >
+                  {msg.type === 'status' && '→ '}
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+
+            {waitingForAgent && <AgentWorkingIndicator />}
+          </div>
+
+          {/* Composer — input with embedded send button (Cursor-style) */}
+          <div style={{ padding: '6px 10px 10px' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                backgroundColor: '#2a2a2a',
+                border: `1px solid ${C.divider}`,
+                borderRadius: 10,
+                padding: '4px 4px 4px 10px',
+                transition: 'border-color 0.15s',
+              }}
+              onFocus={(e) => {
+                (
+                  e.currentTarget as HTMLElement
+                ).style.borderColor = C.accent;
+              }}
+              onBlur={(e) => {
+                (
+                  e.currentTarget as HTMLElement
+                ).style.borderColor = C.divider;
+              }}
+            >
+              <textarea
+                value={agentInput}
+                onChange={(e) => setAgentInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendToAgent();
+                  }
+                  e.stopPropagation();
+                }}
+                placeholder="Ask the agent to make changes..."
+                disabled={isSending}
+                rows={3}
+                style={{
+                  flex: 1,
+                  backgroundColor: 'transparent',
+                  color: C.text,
+                  border: 'none',
+                  padding: '4px 0',
+                  fontSize: 12,
+                  fontFamily: FONT,
+                  outline: 'none',
+                  resize: 'none',
+                  lineHeight: 1.4,
+                }}
+              />
+              <button
+                type="button"
+                onClick={handleSendToAgent}
+                disabled={isSending || !agentInput.trim()}
+                title="Send (Enter)"
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor:
+                    isSending || !agentInput.trim()
+                      ? 'transparent'
+                      : C.accent,
+                  color:
+                    isSending || !agentInput.trim()
+                      ? C.textTertiary
+                      : '#fff',
+                  border: 'none',
+                  borderRadius: 8,
+                  cursor:
+                    isSending || !agentInput.trim()
+                      ? 'default'
+                      : 'pointer',
+                  fontSize: 14,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  transition: 'background-color 0.15s, color 0.15s',
+                }}
+              >
+                ↑
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
         </>
       )}
     </div>
