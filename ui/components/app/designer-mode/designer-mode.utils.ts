@@ -512,11 +512,16 @@ ${aiFormat.suggestedChangesFormat}
 function computeStyleChanges(
   originalSnapshot: ElementSnapshot,
   currentInfo: ElementInfo,
+  editedProperties?: Set<string>,
 ): Array<{ property: string; from: string; to: string }> {
   const changes: Array<{ property: string; from: string; to: string }> = [];
 
   for (const category of Object.values(currentInfo.styles)) {
     for (const style of category) {
+      // If editedProperties is provided, only include explicitly edited props
+      if (editedProperties && !editedProperties.has(style.property)) {
+        continue;
+      }
       const originalValue = originalSnapshot.styles[style.property];
       if (originalValue && originalValue !== style.value) {
         changes.push({
@@ -548,20 +553,13 @@ export function getDirectTextContent(element: HTMLElement): string {
  */
 export function formatAgentPrompt(
   elementInfo: ElementInfo,
-  originalSnapshot: ElementSnapshot | null,
+  _originalSnapshot: ElementSnapshot | null,
   designerMessage: string,
+  editLog?: string[],
 ): string {
   const designTokens = extractDesignTokensFromClasses(
     elementInfo.component.classNames,
   );
-
-  // Compute changeset
-  const styleChanges = originalSnapshot
-    ? computeStyleChanges(originalSnapshot, elementInfo)
-    : [];
-  const currentText = getDirectTextContent(elementInfo.element);
-  const textChanged =
-    originalSnapshot && originalSnapshot.textContent !== currentText;
 
   // Build the prompt
   const sections: string[] = [];
@@ -596,23 +594,10 @@ ${propsStr}
 \`\`\``);
   }
 
-  // Changeset — style changes
-  if (styleChanges.length > 0 || textChanged) {
-    let changesetStr = `## Changes Made by Designer (apply these to source)\n`;
-
-    if (styleChanges.length > 0) {
-      changesetStr += `\n### Style Changes\n`;
-      changesetStr += styleChanges
-        .map((c) => `- **${c.property}**: \`${c.from}\` → \`${c.to}\``)
-        .join('\n');
-    }
-
-    if (textChanged) {
-      changesetStr += `\n\n### Text Content Change\n`;
-      changesetStr += `- \`${originalSnapshot?.textContent || ''}\` → \`${currentText}\``;
-    }
-
-    sections.push(changesetStr);
+  // Inline edits the designer made
+  if (editLog && editLog.length > 0) {
+    sections.push(`## Changes Made by Designer (apply these to source)
+${editLog.map((entry) => `- ${entry}`).join('\n')}`);
   }
 
   // Current computed styles (for reference)

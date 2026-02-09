@@ -25,6 +25,7 @@ const initialState: DesignerModeState = {
   selectedElement: null,
   isLocked: false,
   originalSnapshot: null,
+  editLog: [],
 };
 
 const DesignerModeContext = createContext<DesignerModeContextValue | null>(
@@ -154,6 +155,7 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
           isLocked: false,
           selectedElement: null,
           originalSnapshot: null,
+          editLog: [],
         };
       }
 
@@ -179,6 +181,7 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
         selectedElement: elementInfo,
         hoveredElement: elementInfo,
         originalSnapshot: { styles, textContent },
+        editLog: [],
       };
     });
   }, []);
@@ -189,6 +192,7 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
       isLocked: false,
       selectedElement: null,
       originalSnapshot: null,
+      editLog: [],
     }));
   }, []);
 
@@ -215,7 +219,7 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
         return;
       }
 
-      // Convert kebab-case to camelCase for style property
+      // Convert kebab-case to camelCase and apply the change
       const camelProperty = property.replace(/-([a-z])/gu, (_, c: string) =>
         c.toUpperCase(),
       );
@@ -223,14 +227,26 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
         camelProperty
       ] = value;
 
+      // Use original snapshot for the "from" value (not current computed style)
+      const originalValue =
+        state.originalSnapshot?.styles[property] ?? '(unset)';
+      const logEntry = `${property}: ${originalValue} → ${value}`;
+
       // Re-extract element info to update the panel
       const updatedInfo = extractElementInfo(elementInfo.element);
-      setState((prev) => ({
-        ...prev,
-        ...(prev.isLocked
-          ? { selectedElement: updatedInfo, hoveredElement: updatedInfo }
-          : { hoveredElement: updatedInfo }),
-      }));
+      setState((prev) => {
+        // Replace existing entry for same property, or add new
+        const filteredLog = prev.editLog.filter(
+          (entry) => !entry.startsWith(`${property}:`),
+        );
+        return {
+          ...prev,
+          editLog: [...filteredLog, logEntry],
+          ...(prev.isLocked
+            ? { selectedElement: updatedInfo, hoveredElement: updatedInfo }
+            : { hoveredElement: updatedInfo }),
+        };
+      });
     },
     [state.selectedElement, state.hoveredElement],
   );
@@ -242,6 +258,9 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
         return;
       }
 
+      // Use original snapshot for the "from" value
+      const oldText = state.originalSnapshot?.textContent ?? '';
+
       // Find the first text node and change it, or set textContent
       const textNode = Array.from(elementInfo.element.childNodes).find(
         (node) => node.nodeType === Node.TEXT_NODE,
@@ -252,17 +271,30 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
         elementInfo.element.textContent = text;
       }
 
+      // Record the edit
+      const logEntry = `text: "${oldText}" → "${text}"`;
+
       // Re-extract element info
       const updatedInfo = extractElementInfo(elementInfo.element);
-      setState((prev) => ({
-        ...prev,
-        ...(prev.isLocked
-          ? { selectedElement: updatedInfo, hoveredElement: updatedInfo }
-          : { hoveredElement: updatedInfo }),
-      }));
+      setState((prev) => {
+        const filteredLog = prev.editLog.filter(
+          (entry) => !entry.startsWith('text:'),
+        );
+        return {
+          ...prev,
+          editLog: [...filteredLog, logEntry],
+          ...(prev.isLocked
+            ? { selectedElement: updatedInfo, hoveredElement: updatedInfo }
+            : { hoveredElement: updatedInfo }),
+        };
+      });
     },
     [state.selectedElement, state.hoveredElement],
   );
+
+  const clearEditLog = useCallback(() => {
+    setState((prev) => ({ ...prev, editLog: [] }));
+  }, []);
 
   // Keyboard shortcut: Ctrl/Cmd + Shift + D to toggle
   useEffect(() => {
@@ -335,6 +367,7 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
       copyToClipboard,
       applyStyleChange,
       applyTextChange,
+      clearEditLog,
     }),
     [
       state,
@@ -345,6 +378,7 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
       copyToClipboard,
       applyStyleChange,
       applyTextChange,
+      clearEditLog,
     ],
   );
 

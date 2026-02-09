@@ -593,6 +593,8 @@ export function DesignerModePanel() {
     selectedElement,
     isLocked,
     originalSnapshot,
+    editLog,
+    clearEditLog,
     toggleDesignerMode,
     clearSelection,
     copyToClipboard,
@@ -695,6 +697,7 @@ export function DesignerModePanel() {
         currentElement,
         originalSnapshot,
         message,
+        editLog,
       );
       const res = await fetch('http://localhost:3334/api/message', {
         method: 'POST',
@@ -704,6 +707,7 @@ export function DesignerModePanel() {
 
       if (res.ok) {
         setWaitingForAgent(true);
+        clearEditLog();
       } else {
         setAgentMessages((prev) => [
           ...prev,
@@ -720,7 +724,7 @@ export function DesignerModePanel() {
       ]);
     }
     setIsSending(false);
-  }, [agentInput, isLocked, selectedElement, hoveredElement, originalSnapshot]);
+  }, [agentInput, isLocked, selectedElement, hoveredElement, originalSnapshot, editLog, clearEditLog]);
 
   // ── Drag-to-move state ──────────────────────────────────────
   const [position, setPosition] = useState({ x: 8, y: 8 }); // offset from bottom-right
@@ -790,6 +794,46 @@ export function DesignerModePanel() {
   const textContent = elementInfo
     ? getDirectTextContent(elementInfo.element)
     : '';
+
+  const hasPendingEdits = editLog.length > 0;
+
+  const handleApplyEdits = async () => {
+    if (!elementInfo || !hasPendingEdits) {
+      return;
+    }
+    setIsSending(true);
+    setWaitingForAgent(true);
+
+    const message = `Apply these changes:\n${editLog.join('\n')}`;
+    setAgentMessages((prev) => [...prev, { text: message, type: 'sent' }]);
+
+    try {
+      const prompt = formatAgentPrompt(
+        elementInfo,
+        originalSnapshot,
+        message,
+        editLog,
+      );
+      const res = await fetch('http://localhost:3334/api/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: prompt,
+      });
+      if (res.ok) {
+        clearEditLog();
+      }
+    } catch {
+      setAgentMessages((prev) => [
+        ...prev,
+        {
+          text: 'Server not reachable. Run: yarn designer-server',
+          type: 'status',
+        },
+      ]);
+      setWaitingForAgent(false);
+    }
+    setIsSending(false);
+  };
 
   const handleCopy = async () => {
     await copyToClipboard();
@@ -1648,6 +1692,77 @@ export function DesignerModePanel() {
               )}
             </div>
           </div>
+
+          {/* Pending edits banner */}
+          {hasPendingEdits && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                margin: '6px 12px 0',
+                padding: '6px 10px',
+                backgroundColor: 'rgba(255, 179, 0, 0.08)',
+                border: '1px solid rgba(255, 179, 0, 0.25)',
+                borderRadius: 8,
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: '#ffb300',
+                    fontFamily: FONT,
+                  }}
+                >
+                  {editLog.length} unsent edit
+                  {editLog.length > 1 ? 's' : ''}
+                </span>
+                <span
+                  style={{
+                    fontSize: 9,
+                    color: C.textTertiary,
+                    fontFamily: MONO,
+                  }}
+                >
+                  {editLog
+                    .slice(0, 2)
+                    .map((e) => e.split(':')[0])
+                    .join(', ')}
+                  {editLog.length > 2
+                    ? `, +${editLog.length - 2} more`
+                    : ''}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleApplyEdits}
+                disabled={isSending}
+                style={{
+                  padding: '5px 12px',
+                  backgroundColor: '#ffb300',
+                  color: '#1a1a1a',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: isSending ? 'not-allowed' : 'pointer',
+                  fontSize: 11,
+                  fontWeight: 700,
+                  fontFamily: FONT,
+                  flexShrink: 0,
+                  opacity: isSending ? 0.5 : 1,
+                }}
+              >
+                Apply
+              </button>
+            </div>
+          )}
 
           {/* Message thread */}
           <div

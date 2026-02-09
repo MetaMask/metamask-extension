@@ -70,6 +70,8 @@ export type DesignerModeState = {
   isLocked: boolean;
   /** Snapshot of styles/text when the element was first locked (for changeset) */
   originalSnapshot: ElementSnapshot | null;
+  /** Plain-text log of edits the designer made (e.g. "padding-top: 12px → 13px") */
+  editLog: string[];
 };
 
 export type DesignerModeContextValue = DesignerModeState & {
@@ -87,6 +89,8 @@ export type DesignerModeContextValue = DesignerModeState & {
   applyStyleChange: (property: string, value: string) => void;
   /** Apply a text content change to the selected/hovered element */
   applyTextChange: (text: string) => void;
+  /** Clear the edit log (after sending to agent) */
+  clearEditLog: () => void;
 };
 
 export type AIFriendlyElementInfo = {
