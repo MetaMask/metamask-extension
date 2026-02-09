@@ -17,8 +17,7 @@ import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
-const USDC_TOKEN_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-
+const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const testTitle = 'benchmark-asset-details-power-user';
 export const persona = 'powerUser';
 
@@ -75,11 +74,11 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         await homePage.checkPageIsLoaded();
         await assetListPage.checkTokenListIsDisplayed();
 
+        await assetListPage.clickOnAsset('Ethereum');
         // Measure: Asset click to price chart loaded
         await timer.measure(async () => {
-          await assetListPage.clickOnAsset('USDC');
           await assetListPage.checkPriceChartIsShown();
-          await assetListPage.checkPriceChartLoaded(USDC_TOKEN_ADDRESS);
+          await assetListPage.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);
         });
         performanceTracker.addTimer(timer);
       },
