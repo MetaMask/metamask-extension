@@ -1,4 +1,4 @@
-// Mock web-vitals UMD build (same path as in web-vitals.ts)
+// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { onINP, onLCP, onCLS } from 'web-vitals/attribution';
 import {
   initINPObserver,
