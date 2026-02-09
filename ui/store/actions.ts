@@ -2060,10 +2060,12 @@ async function approveTransaction(
     dispatch(showLoadingIndication(loadingIndicatorMessage));
   }
 
+  const actionId = generateActionId();
+
   try {
     await submitRequestToBackground('resolvePendingApproval', [
       String(txMeta.id),
-      { txMeta, actionId: generateActionId() },
+      { txMeta, actionId },
       { waitForResult: true },
     ]);
 
@@ -2074,11 +2076,15 @@ async function approveTransaction(
     dispatch(hideLoadingIndication());
     dispatch(updateCustomNonce(''));
     dispatch(closeCurrentNotificationWindow());
-  } catch (error) {
+
+    return txMeta;
+  } catch (err) {
     dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-    throw error;
-  } finally {
+    dispatch(goHome());
     dispatch(hideLoadingIndication());
+
+    logErrorWithMessage(err);
+    throw err;
   }
 }
 
@@ -5535,10 +5541,14 @@ export function updateHiddenAccountsList(
  *
  * @param id - The pending approval id
  * @param value - The value required to confirm a pending approval
+ * @param options - Additional options for the approval
+ * @param options.fromAddress - The address of the account initiating the approval
+ * @param options.waitForResult - Whether to wait for the approval result
  */
 export function resolvePendingApproval(
   id: string,
   value: unknown,
+  options?: { fromAddress?: string; waitForResult?: boolean },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
