@@ -180,6 +180,13 @@ export const MultichainAccountsConnectPage: React.FC<
       KnownSessionProperties.TronAccountChangedNotifications
     ];
 
+  const isBitcoinWalletStandardRequest =
+    requestedScopes.length === 1 &&
+    requestedScopes[0] === MultichainNetworks.BITCOIN &&
+    requestedCaip25CaveatValue.sessionProperties[
+      KnownSessionProperties.Bip122AccountChangedNotifications
+    ];
+
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
       existingCaip25CaveatValue
@@ -277,7 +284,8 @@ export const MultichainAccountsConnectPage: React.FC<
     if (
       (requestedCaipChainIds.length === 0 && isEip1193Request) ||
       isSolanaWalletStandardRequest ||
-      isTronWalletAdapterRequest
+      isTronWalletAdapterRequest ||
+      isBitcoinWalletStandardRequest
     ) {
       return defaultSelectedNetworkList;
     }
