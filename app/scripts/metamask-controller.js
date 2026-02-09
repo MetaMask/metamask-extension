@@ -3439,8 +3439,8 @@ export default class MetamaskController extends EventEmitter {
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
-      // Hardware wallet transaction approval with retry support
-      approveHardwareTransaction: this.approveHardwareTransaction.bind(this),
+      approveHardwareWalletTransaction:
+        this.approveHardwareWalletTransaction.bind(this),
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -8829,7 +8829,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
    * @throws {JsonRpcError} When hardware wallet error occurs (with recreatedTxId if recreation succeeded)
    */
-  approveHardwareTransaction = async ({
+  approveHardwareWalletTransaction = async ({
     txId,
     txMeta,
     actionId,
