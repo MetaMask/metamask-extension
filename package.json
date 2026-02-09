@@ -307,7 +307,7 @@
     "@metamask/address-book-controller": "^7.0.1",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
-    "@metamask/assets-controller": "^0.2.0",
+    "@metamask/assets-controller": "^1.0.0",
     "@metamask/assets-controllers": "^99.0.0",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.10.0",
@@ -319,7 +319,7 @@
     "@metamask/connectivity-controller": "^0.1.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.18.0",
-    "@metamask/core-backend": "^5.1.0",
+    "@metamask/core-backend": "^5.0.0",
     "@metamask/delegation-controller": "^1.0.0",
     "@metamask/delegation-core": "^0.2.0-rc.1",
     "@metamask/delegation-deployments": "^0.15.0",
@@ -888,11 +888,5 @@
       }
     },
     "version": "v0.3.0"
-  },
-  "previewBuilds": {
-    "@metamask/assets-controller": {
-      "type": "non-breaking",
-      "previewVersion": "0.2.0-preview-429bf064c"
-    }
   }
 }
