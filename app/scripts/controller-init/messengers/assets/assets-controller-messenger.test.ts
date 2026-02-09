@@ -64,12 +64,9 @@ describe('getAssetsControllerMessenger', () => {
           'NetworkEnablementController:stateChange',
           'KeyringController:lock',
           'KeyringController:unlock',
-          'AppStateController:appOpened',
-          'AppStateController:appClosed',
           // Data source events
           'NetworkController:stateChange',
           'BackendWebSocketService:connectionStateChanged',
-          // SnapDataSource events
           'AccountsController:accountBalancesUpdated',
           'PermissionController:stateChange',
         ]),
