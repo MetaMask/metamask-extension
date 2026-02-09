@@ -467,6 +467,157 @@ type SpacingEditorProps = {
   color: string;
 };
 
+// ═══════════════════════════════════════════════════════════════════
+// Sub-component: EditablePillList
+// Editable list of pills with add/remove (for tokens and classes)
+// ═══════════════════════════════════════════════════════════════════
+
+type EditablePillListProps = {
+  items: string[];
+  color: string;
+  bgColor: string;
+  borderColor?: string;
+  onAdd: (item: string) => void;
+  onRemove: (item: string) => void;
+  placeholder?: string;
+};
+
+function EditablePillList({
+  items,
+  color,
+  bgColor,
+  borderColor,
+  onAdd,
+  onRemove,
+  placeholder = 'Add...',
+}: EditablePillListProps) {
+  const [inputValue, setInputValue] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isAdding && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isAdding]);
+
+  const handleAdd = () => {
+    if (inputValue.trim()) {
+      onAdd(inputValue.trim());
+      setInputValue('');
+    }
+    setIsAdding(false);
+  };
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: 4,
+        alignItems: 'center',
+      }}
+    >
+      {items.map((item, index) => (
+        <span
+          key={`${item}-${index}`}
+          style={{
+            fontSize: 10,
+            color,
+            backgroundColor: bgColor,
+            padding: '2px 6px',
+            borderRadius: 3,
+            fontFamily: MONO,
+            border: borderColor ? `1px solid ${borderColor}` : 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+          }}
+        >
+          {item}
+          <span
+            onClick={() => onRemove(item)}
+            style={{
+              cursor: 'pointer',
+              opacity: 0.5,
+              fontSize: 8,
+              lineHeight: 1,
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.opacity = '1';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.opacity = '0.5';
+            }}
+            title={`Remove ${item}`}
+          >
+            ✕
+          </span>
+        </span>
+      ))}
+
+      {/* Add button / input */}
+      {isAdding ? (
+        <input
+          ref={inputRef}
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleAdd();
+            } else if (e.key === 'Escape') {
+              setInputValue('');
+              setIsAdding(false);
+            }
+            e.stopPropagation();
+          }}
+          onBlur={handleAdd}
+          placeholder={placeholder}
+          style={{
+            width: 120,
+            fontSize: 10,
+            fontFamily: MONO,
+            color: C.text,
+            backgroundColor: C.input,
+            border: `1px solid ${C.inputFocus}`,
+            borderRadius: 3,
+            padding: '2px 6px',
+            outline: 'none',
+          }}
+        />
+      ) : (
+        <span
+          onClick={() => setIsAdding(true)}
+          style={{
+            fontSize: 10,
+            color: C.textTertiary,
+            backgroundColor: 'transparent',
+            border: `1px dashed ${C.divider}`,
+            borderRadius: 3,
+            padding: '2px 8px',
+            cursor: 'pointer',
+            fontFamily: MONO,
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.borderColor = C.accent;
+            (e.currentTarget as HTMLElement).style.color = C.accent;
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.borderColor = C.divider;
+            (e.currentTarget as HTMLElement).style.color = C.textTertiary;
+          }}
+        >
+          + Add
+        </span>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Sub-component: SpacingEditor
+// ═══════════════════════════════════════════════════════════════════
+
 function SpacingEditor({
   label,
   top,
@@ -1500,29 +1651,33 @@ export function DesignerModePanel() {
                 icon="◆"
                 defaultOpen={false}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: 4,
+                <EditablePillList
+                  items={designTokens.map((t) => t.token)}
+                  color={C.accent}
+                  bgColor={C.accentDim}
+                  onAdd={(token) => {
+                    const cls = `mm-box--${token}`;
+                    elementInfo.element.classList.add(cls);
+                    applyStyleChange(
+                      `__token-add`,
+                      `added token class: ${cls}`,
+                    );
                   }}
-                >
-                  {designTokens.map((token, index) => (
-                    <span
-                      key={`${token.token}-${index}`}
-                      style={{
-                        fontSize: 10,
-                        color: C.accent,
-                        backgroundColor: C.accentDim,
-                        padding: '2px 8px',
-                        borderRadius: 3,
-                        fontFamily: MONO,
-                      }}
-                    >
-                      {token.token}
-                    </span>
-                  ))}
-                </div>
+                  onRemove={(token) => {
+                    // Try to find and remove matching class
+                    const cls = elementInfo.element.className
+                      .split(' ')
+                      .find((c) => c.includes(token.split(': ')[1] || token));
+                    if (cls) {
+                      elementInfo.element.classList.remove(cls);
+                      applyStyleChange(
+                        `__token-remove`,
+                        `removed token class: ${cls}`,
+                      );
+                    }
+                  }}
+                  placeholder="e.g. padding-4"
+                />
               </CollapsibleSection>
             )}
 
@@ -1533,32 +1688,27 @@ export function DesignerModePanel() {
                 icon="{ }"
                 defaultOpen={false}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: 4,
+                <EditablePillList
+                  items={elementInfo.component.classNames}
+                  color={C.textSecondary}
+                  bgColor={C.input}
+                  borderColor={C.divider}
+                  onAdd={(cls) => {
+                    elementInfo.element.classList.add(cls);
+                    applyStyleChange(
+                      `__class-add`,
+                      `added class: ${cls}`,
+                    );
                   }}
-                >
-                  {elementInfo.component.classNames.map(
-                    (cls, index) => (
-                      <span
-                        key={`${cls}-${index}`}
-                        style={{
-                          fontSize: 10,
-                          color: C.textSecondary,
-                          backgroundColor: C.input,
-                          padding: '2px 6px',
-                          borderRadius: 3,
-                          fontFamily: MONO,
-                          border: `1px solid ${C.divider}`,
-                        }}
-                      >
-                        {cls}
-                      </span>
-                    ),
-                  )}
-                </div>
+                  onRemove={(cls) => {
+                    elementInfo.element.classList.remove(cls);
+                    applyStyleChange(
+                      `__class-remove`,
+                      `removed class: ${cls}`,
+                    );
+                  }}
+                  placeholder="e.g. mm-box--padding-4"
+                />
               </CollapsibleSection>
             )}
           </>

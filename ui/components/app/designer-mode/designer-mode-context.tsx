@@ -219,26 +219,35 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
         return;
       }
 
-      // Convert kebab-case to camelCase and apply the change
-      const camelProperty = property.replace(/-([a-z])/gu, (_, c: string) =>
-        c.toUpperCase(),
-      );
-      (elementInfo.element.style as unknown as Record<string, string>)[
-        camelProperty
-      ] = value;
+      // Special log-only entries (class/token changes handled by the panel)
+      const isLogOnly = property.startsWith('__');
 
-      // Use original snapshot for the "from" value (not current computed style)
-      const originalValue =
-        state.originalSnapshot?.styles[property] ?? '(unset)';
-      const logEntry = `${property}: ${originalValue} → ${value}`;
+      if (!isLogOnly) {
+        // Convert kebab-case to camelCase and apply the change
+        const camelProperty = property.replace(
+          /-([a-z])/gu,
+          (_, c: string) => c.toUpperCase(),
+        );
+        (elementInfo.element.style as unknown as Record<string, string>)[
+          camelProperty
+        ] = value;
+      }
+
+      // Build log entry
+      const logEntry = isLogOnly
+        ? value // For log-only entries, value IS the log message
+        : `${property}: ${state.originalSnapshot?.styles[property] ?? '(unset)'} → ${value}`;
 
       // Re-extract element info to update the panel
       const updatedInfo = extractElementInfo(elementInfo.element);
       setState((prev) => {
-        // Replace existing entry for same property, or add new
-        const filteredLog = prev.editLog.filter(
-          (entry) => !entry.startsWith(`${property}:`),
-        );
+        // For CSS properties, deduplicate by property name
+        // For log-only entries, always append
+        const filteredLog = isLogOnly
+          ? prev.editLog
+          : prev.editLog.filter(
+              (entry) => !entry.startsWith(`${property}:`),
+            );
         return {
           ...prev,
           editLog: [...filteredLog, logEntry],
