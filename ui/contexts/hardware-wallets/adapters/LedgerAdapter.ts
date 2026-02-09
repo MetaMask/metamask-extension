@@ -78,7 +78,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
   }
 
   private async getHdPath(): Promise<string> {
-    const path = await getHdPathForLedgerKeyring(HardwareDeviceNames.ledger);
+    const path = await getHdPathForLedgerKeyring();
     return path;
   }
 

@@ -2024,7 +2024,12 @@ export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<
+  Promise<TransactionMeta | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     const fromAccount = getInternalAccountByAddress(
       getState(),
@@ -2055,7 +2060,7 @@ async function approveTransaction(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
-): Promise<void> {
+): Promise<TransactionMeta | null> {
   if (!dontShowLoadingIndicator) {
     dispatch(showLoadingIndication(loadingIndicatorMessage));
   }
@@ -2105,7 +2110,7 @@ async function approveHardwareWalletTransaction(
   txMeta: TransactionMeta,
   loadingIndicatorMessage: string,
   keyringType: string,
-): Promise<void> {
+): Promise<TransactionMeta | null> {
   dispatch(setPendingHardwareWalletSigning(true));
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
@@ -5531,7 +5536,7 @@ export function resolvePendingApproval(
 
       if (isHardwareAccount(fromAccount)) {
         const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
-        return resolveHardwareApproval(
+        return resolveHardwareWalletApproval(
           dispatch,
           id,
           value,
@@ -5586,7 +5591,7 @@ async function resolveStandardApproval(
  * @param keyringType - The keyring type for the hardware wallet account
  * @throws HardwareWalletError - When hardware wallet error occurs
  */
-async function resolveHardwareApproval(
+async function resolveHardwareWalletApproval(
   dispatch: MetaMaskReduxDispatch,
   id: string,
   value: unknown,
@@ -8132,12 +8137,10 @@ export async function generateClaimSignature(
   ]);
 }
 
-export async function getHdPathForLedgerKeyring(
-  deviceName: HardwareDeviceNames,
-): Promise<string> {
+export async function getHdPathForLedgerKeyring(): Promise<string> {
   const hdPath = await submitRequestToBackground<string>(
     'getHdPathForLedgerKeyring',
-    [deviceName],
+    [],
   );
   return hdPath;
 }
