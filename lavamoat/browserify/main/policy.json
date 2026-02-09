@@ -6194,7 +6194,6 @@
         "PerformanceEventTiming.prototype": true,
         "PerformanceObserver": true,
         "addEventListener": true,
-        "define": true,
         "document.addEventListener": true,
         "document.prerendering": true,
         "document.readyState": true,

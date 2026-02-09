@@ -4645,6 +4645,23 @@
         "react-markdown>vfile>vfile-message": true
       }
     },
+    "web-vitals": {
+      "globals": {
+        "PerformanceEventTiming.prototype": true,
+        "PerformanceObserver": true,
+        "addEventListener": true,
+        "document.addEventListener": true,
+        "document.prerendering": true,
+        "document.readyState": true,
+        "document.visibilityState": true,
+        "document.wasDiscarded": true,
+        "performance": true,
+        "removeEventListener": true,
+        "requestAnimationFrame": true,
+        "requestIdleCallback": true,
+        "setTimeout": true
+      }
+    },
     "webextension-polyfill": {
       "globals": {
         "browser": true,
