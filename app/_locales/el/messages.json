@@ -7669,7 +7669,7 @@
   "storageErrorAction": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησής σας και εγκαταστήστε ξανά το MetaMask αν το πρόβλημα συνεχιστεί."
   },
   "storageErrorTitle": {

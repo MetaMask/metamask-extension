@@ -7693,7 +7693,7 @@
   "storageErrorAction": {
     "message": "Gizli Kurtarma İfadesini yedekle"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Gizli Kurtarma İfadenizi yedekleyin ve sorun devam ederse MetaMask'i tekrar yükleyin."
   },
   "storageErrorTitle": {
