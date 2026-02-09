@@ -1,16 +1,12 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import { AvatarNetworkSize } from '@metamask/design-system-react';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
-  BadgeWrapper,
 } from '../../../../components/component-library';
-import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useSendTokens } from '../../hooks/send/useSendTokens';
+import { ChainBadge } from '../../../../components/app/chain-badge/chain-badge';
 
 export type TokenIconSize = 'sm' | 'md';
 
@@ -38,10 +34,6 @@ export function TokenIcon({
 }: TokenIconProps) {
   const sendTokens = useSendTokens({ includeNoBalance: true });
 
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
-  );
-
   const matchedToken = useMemo(() => {
     return sendTokens.find(
       (token) =>
@@ -51,21 +43,13 @@ export function TokenIcon({
   }, [tokenAddress, chainId, sendTokens]);
 
   return (
-    <BadgeWrapper
-      badge={
-        <AvatarNetwork
-          size={NETWORK_BADGE_SIZE_MAP[size]}
-          name={networkConfiguration?.name ?? ''}
-          src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-        />
-      }
-    >
+    <ChainBadge chainId={chainId} size={NETWORK_BADGE_SIZE_MAP[size]}>
       <AvatarToken
         size={TOKEN_ICON_SIZE_MAP[size]}
         src={matchedToken?.image}
         name={matchedToken?.symbol}
         showHalo={false}
       />
-    </BadgeWrapper>
+    </ChainBadge>
   );
 }

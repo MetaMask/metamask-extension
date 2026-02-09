@@ -20,10 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   AvatarToken,
-  BadgeWrapper,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -56,8 +53,8 @@ import {
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
+import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
@@ -164,9 +161,6 @@ export const TokenListItemComponent = ({
     address &&
     noFeeAssets?.includes(address.toLowerCase());
 
-  // Used for badge icon
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-
   return (
     <Box
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -222,24 +216,13 @@ export const TokenListItemComponent = ({
           },
         })}
       >
-        <BadgeWrapper
-          badge={
-            <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
-              name={allNetworks?.[chainId as Hex]?.name}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              src={tokenChainImage || undefined}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              borderWidth={2}
-              className="multichain-token-list-item__badge__avatar-network"
-            />
-          }
-          marginRight={4}
+        <ChainBadge
+          chainId={chainId}
           className="multichain-token-list-item__badge"
+          style={{ marginRight: 16 }}
         >
           <AvatarToken name={tokenSymbol} src={tokenImage} />
-        </BadgeWrapper>
+        </ChainBadge>
         <Box
           className="multichain-token-list-item__container-cell--text-container"
           display={Display.Flex}

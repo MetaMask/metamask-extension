@@ -1,20 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  BadgeWrapper,
-} from '../../../../component-library';
+import { AvatarToken } from '../../../../component-library';
 import { getNativeCurrencyForChain } from '../../../../../selectors';
-import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   getAssetImageUrl,
   isEvmChainId,
 } from '../../../../../../shared/lib/asset-utils';
+import { ChainBadge } from '../../../../app/chain-badge/chain-badge';
 
 type AssetCellBadgeProps = {
   chainId: `0x${string}` | `${string}:${string}`;
@@ -50,36 +43,24 @@ export const getAvatarTokenSrc = (
 
 export const AssetCellBadge = React.memo(
   ({ chainId, isNative, tokenImage, symbol, assetId }: AssetCellBadgeProps) => {
-    const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-
     const avatarTokenSrc = getAvatarTokenSrc({
       chainId,
       isNative,
       tokenImage,
       assetId,
     });
-    const badgeWrapperSrc = getImageForChainId(chainId) ?? undefined;
 
     return (
-      <BadgeWrapper
-        badge={
-          <AvatarNetwork
-            size={AvatarNetworkSize.Xs}
-            name={allNetworks?.[chainId as Hex]?.name}
-            src={badgeWrapperSrc}
-            backgroundColor={BackgroundColor.backgroundSection}
-            borderWidth={2}
-          />
-        }
-        marginRight={4}
-        style={{ alignSelf: 'center' }}
+      <ChainBadge
+        chainId={chainId}
+        style={{ alignSelf: 'center', marginRight: 16 }}
       >
         <AvatarToken
           name={symbol}
           backgroundColor={BackgroundColor.backgroundSection}
           src={avatarTokenSrc}
         />
-      </BadgeWrapper>
+      </ChainBadge>
     );
   },
   (prevProps, nextProps) => prevProps.chainId === nextProps.chainId,
