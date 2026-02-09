@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from 'viem';
+import type { Hex } from '@metamask/utils';
 import {
   Box,
   Text,
