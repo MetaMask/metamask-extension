@@ -243,8 +243,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
       return true;
     } catch (error) {
-      console.log('[hw] 1111 error', error);
-
       const hwError = toHardwareWalletError(error, HardwareWalletType.Ledger);
       // Emit appropriate device events with the properly reconstructed error
       const deviceEvent = getDeviceEventForError(

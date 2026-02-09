@@ -273,7 +273,8 @@
     "qs@npm:6.13.0": "^6.14.1",
     "@metamask/bridge-status-controller": "64.3.0",
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
-    "fast-xml-parser": "^5.3.4"
+    "fast-xml-parser": "^5.3.4",
+    "@metamask/snaps-controllers": "^18.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
@@ -396,11 +397,11 @@
     "@metamask/shield-controller": "^5.0.1",
     "@metamask/signature-controller": "^39.0.1",
     "@metamask/smart-transactions-controller": "^22.4.0",
-    "@metamask/snaps-controllers": "^17.2.1",
-    "@metamask/snaps-execution-environments": "^10.4.1",
-    "@metamask/snaps-rpc-methods": "^14.2.0",
+    "@metamask/snaps-controllers": "^18.0.0",
+    "@metamask/snaps-execution-environments": "^11.0.0",
+    "@metamask/snaps-rpc-methods": "^14.3.0",
     "@metamask/snaps-sdk": "^10.4.0",
-    "@metamask/snaps-utils": "^12.0.1",
+    "@metamask/snaps-utils": "^12.1.0",
     "@metamask/solana-wallet-snap": "^2.6.1",
     "@metamask/solana-wallet-standard": "^0.6.0",
     "@metamask/storage-service": "^1.0.0",

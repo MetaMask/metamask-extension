@@ -5513,7 +5513,7 @@ export function updateHiddenAccountsList(
 export function resolvePendingApproval(
   id: string,
   value: unknown,
-  options?: { waitForResult?: boolean; fromAddress?: string },
+  options?: { fromAddress?: string; waitForResult?: boolean },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -8125,42 +8125,6 @@ export async function getHdPathForLedgerKeyring(): Promise<string> {
     [],
   );
   return hdPath;
-}
-
-export async function getTrezorDeviceStatus(): Promise<DeviceState> {
-  return await submitRequestToBackground<DeviceState>(
-    'getTrezorDeviceStatus',
-    [],
-  );
-}
-
-/**
- * Trezor device features response type
- */
-export type TrezorFeaturesResponse = {
-  success: boolean;
-  payload: {
-    deviceId?: string;
-    model?: string;
-    label?: string;
-    initialized?: boolean;
-    unlocked?: boolean;
-    pinProtection?: boolean;
-    passphraseProtection?: boolean;
-    error?: string;
-  };
-};
-
-/**
- * Get Trezor device features to verify the device is ready.
- * This is the Trezor equivalent of Ledger's getAppNameAndVersion.
- * Returns device info including whether it's unlocked and initialized.
- */
-export async function getTrezorFeatures(): Promise<TrezorFeaturesResponse> {
-  return await submitRequestToBackground<TrezorFeaturesResponse>(
-    'getTrezorFeatures',
-    [],
-  );
 }
 
 /**
