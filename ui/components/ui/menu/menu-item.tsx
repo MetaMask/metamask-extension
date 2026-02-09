@@ -2,16 +2,12 @@ import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
-  IconName as IconNameNew,
-  IconColor as IconColorNew,
-} from '@metamask/design-system-react';
-import {
   BadgeWrapper,
   BadgeWrapperPosition,
   BadgeStatus,
   BadgeStatusStatus,
   Icon,
-  IconName as IconNameDeprecated,
+  IconName,
   IconSize,
   Text,
   TextVariant,
