@@ -39,7 +39,8 @@ export const Tag: TagComponent = React.forwardRef(
   ) => {
     // Determine which icon and text system to use
     // iconNameLegacy is an alias for startIconName for consistency with MenuItem
-    const actualIconName = iconName || iconNameLegacy;
+    // Include startIconName to maintain backward compatibility
+    const actualIconName = iconName || iconNameLegacy || startIconName;
     const actualIconSize = iconSize || IconSize.Xs;
 
     // Extract color from labelProps, ensuring it's TextColor type for legacy Text component
