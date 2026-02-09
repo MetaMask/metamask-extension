@@ -1530,6 +1530,7 @@ export function DesignerModePanel() {
             borderBottom: 'none',
             borderRadius: '12px 12px 0 0',
             backgroundColor: '#1a1a1a',
+            boxShadow: '0 -6px 20px rgba(0, 0, 0, 0.4)',
             display: 'flex',
             flexDirection: 'column',
           }}
