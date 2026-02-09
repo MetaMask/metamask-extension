@@ -103,6 +103,7 @@ import { ShieldPaymentModal } from './shield-payment-modal';
 import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
+import log from 'loglevel';
 
 const ShieldPlan = () => {
   const navigate = useNavigate();
@@ -420,7 +421,11 @@ const ShieldPlan = () => {
   const handleBack = async () => {
     // Clear the checkout-in-progress flag when leaving the shield plan page
     if (shieldCardCheckoutInProgress) {
-      await dispatch(setShieldCardCheckoutInProgress(false));
+      try {
+        await dispatch(setShieldCardCheckoutInProgress(false));
+      } catch (error) {
+        log.error('[handleBack] error', error);
+      }
     }
 
     const source = new URLSearchParams(search).get('source');
