@@ -82,6 +82,11 @@ const defaultState = {
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
   },
+  appState: {
+    modal: {
+      modalState: {},
+    },
+  },
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
 
@@ -732,6 +737,119 @@ describe('Actions', () => {
 
       expect(background.getLedgerAppConfiguration.callCount).toStrictEqual(1);
       expect(result).toStrictEqual(mockConfiguration);
+    });
+  });
+
+  describe('#getAppNameAndVersion', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getAppNameAndVersion in background', async () => {
+      const mockResponse = { appName: 'Ethereum', version: '1.10.4' };
+
+      background.getAppNameAndVersion.resolves(mockResponse);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getAppNameAndVersion();
+
+      expect(background.getAppNameAndVersion.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockResponse);
+    });
+  });
+
+  describe('#getLedgerPublicKey', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getLedgerPublicKey in background with hdPath', async () => {
+      const mockResponse = {
+        publicKey: '0x1234',
+        address: '0xabcd',
+        chainCode: '0x5678',
+      };
+      const hdPath = "m/44'/60'/0'/0/0";
+
+      background.getLedgerPublicKey.resolves(mockResponse);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getLedgerPublicKey(hdPath);
+
+      expect(background.getLedgerPublicKey.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockResponse);
+    });
+  });
+
+  describe('#getHdPathForHardwareKeyring', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getHdPathForHardwareKeyring in background', async () => {
+      const mockHdPath = "m/44'/60'/0'";
+
+      background.getHdPathForHardwareKeyring.resolves(mockHdPath);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getHdPathForHardwareKeyring(
+        HardwareDeviceNames.ledger,
+      );
+
+      expect(
+        background.getHdPathForHardwareKeyring.callCount,
+      ).toStrictEqual(1);
+      expect(result).toStrictEqual(mockHdPath);
+    });
+  });
+
+  describe('#getTrezorDeviceStatus', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getTrezorDeviceStatus in background', async () => {
+      const mockStatus = { connected: true };
+
+      background.getTrezorDeviceStatus = sinon.stub().resolves(mockStatus);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getTrezorDeviceStatus();
+
+      expect(background.getTrezorDeviceStatus.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockStatus);
+    });
+  });
+
+  describe('#getTrezorFeatures', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getTrezorFeatures in background', async () => {
+      const mockFeatures = {
+        success: true,
+        payload: {
+          device_id: 'test-device',
+          model: 'T',
+          label: 'My Trezor',
+          initialized: true,
+          unlocked: true,
+        },
+      };
+
+      background.getTrezorFeatures = sinon.stub().resolves(mockFeatures);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getTrezorFeatures();
+
+      expect(background.getTrezorFeatures.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockFeatures);
     });
   });
 
