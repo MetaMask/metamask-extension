@@ -62,8 +62,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError } = useHardwareWalletActions();
 
-    console.log('[hw] error', error);
-
     // If no error, don't render anything
     if (!error) {
       onClose?.();

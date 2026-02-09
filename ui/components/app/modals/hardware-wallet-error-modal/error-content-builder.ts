@@ -53,8 +53,6 @@ export function buildErrorContent(
 ): ErrorContent {
   const errorCode = getHardwareWalletErrorCode(error);
 
-  console.log('errorCode', errorCode);
-
   switch (errorCode) {
     // Locked device errors
     case ErrorCode.AuthenticationDeviceLocked:

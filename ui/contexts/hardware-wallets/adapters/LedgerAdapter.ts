@@ -146,8 +146,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         // Mark as connected - device is present AND app is open
         this.connected = true;
       } catch (error) {
-        console.log('[hw] connect error', error);
-
         // Clean up on error
         this.connected = false;
 
