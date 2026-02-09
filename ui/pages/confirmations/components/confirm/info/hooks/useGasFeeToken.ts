@@ -118,11 +118,8 @@ function useNativeGasFeeToken(): GasFeeToken {
     selectTransactionAvailableBalance(state, transactionId),
   );
 
-  console.log('>>>>>> test 123')
-
   const { nativeCurrency } = networkConfiguration ?? {};
   const { gas, maxFeePerGas, maxPriorityFeePerGas } = txParams ?? {};
-  console.log('>>>>>> test 123 DONE')
 
   return {
     amount: estimatedFeeNativeHex,

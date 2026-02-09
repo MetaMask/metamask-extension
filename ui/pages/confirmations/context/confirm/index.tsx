@@ -18,7 +18,6 @@ export type ConfirmContextType = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
-  disableGasEdit?: boolean;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -28,8 +27,7 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
   confirmationId?: string;
-  disableGasEdit?: boolean;
-}> = ({ children, confirmationId, disableGasEdit = false }) => {
+}> = ({ children, confirmationId }) => {
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation(confirmationId);
@@ -52,13 +50,11 @@ export const ConfirmContextProvider: React.FC<{
       currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
-      disableGasEdit,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
-      disableGasEdit,
     ],
   );
 
@@ -78,6 +74,5 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation,>() => {
     currentConfirmation: CurrentConfirmation;
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
-    disableGasEdit?: boolean;
   };
 };

@@ -120,7 +120,6 @@ export function useGasFeeInputs(
     ? retryTxMeta
     : _transaction;
 
-  console.log('>>> useGasFeeInputs transaction:', transaction);
   const network = useSelector((state) =>
     selectNetworkConfigurationByChainId(state, transaction?.chainId),
   );
