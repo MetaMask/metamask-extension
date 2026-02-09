@@ -63,7 +63,9 @@ import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/const
 import {
   checkAlarmExists,
   generateRandomId,
+  getDeviceType,
   getInstallType,
+  getOs,
   getPlatform,
   isValidDate,
 } from '../lib/util';
@@ -1462,6 +1464,8 @@ export default class MetaMetricsController extends BaseController<
       )?.[0]?.[1]?.profile?.profileId,
       [MetaMetricsUserTrait.Platform]: getPlatform(),
       [MetaMetricsUserTrait.InstallType]: getInstallType(),
+      [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
+      [MetaMetricsUserTrait.Os]: getOs(),
     };
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
