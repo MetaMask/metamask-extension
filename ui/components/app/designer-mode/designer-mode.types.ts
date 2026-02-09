@@ -51,6 +51,14 @@ export type ElementInfo = {
   componentPath: string[];
 };
 
+/** Snapshot of an element's styles and text at a point in time */
+export type ElementSnapshot = {
+  /** Flat map of CSS property → value at capture time */
+  styles: Record<string, string>;
+  /** Direct text content at capture time */
+  textContent: string;
+};
+
 export type DesignerModeState = {
   /** Whether designer mode is active */
   isActive: boolean;
@@ -60,6 +68,8 @@ export type DesignerModeState = {
   selectedElement: ElementInfo | null;
   /** Whether selection is locked (clicking locks, clicking again unlocks) */
   isLocked: boolean;
+  /** Snapshot of styles/text when the element was first locked (for changeset) */
+  originalSnapshot: ElementSnapshot | null;
 };
 
 export type DesignerModeContextValue = DesignerModeState & {

@@ -8,7 +8,10 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useDesignerMode } from './designer-mode-context';
-import { extractDesignTokensFromClasses } from './designer-mode.utils';
+import {
+  extractDesignTokensFromClasses,
+  formatAgentPrompt,
+} from './designer-mode.utils';
 import type { ComputedStyleInfo } from './designer-mode.types';
 
 // ═══════════════════════════════════════════════════════════════════
@@ -589,6 +592,7 @@ export function DesignerModePanel() {
     hoveredElement,
     selectedElement,
     isLocked,
+    originalSnapshot,
     toggleDesignerMode,
     clearSelection,
     copyToClipboard,
@@ -598,6 +602,126 @@ export function DesignerModePanel() {
 
   const [copySuccess, setCopySuccess] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+
+  // ── Agent chat state ────────────────────────────────────────
+  const [agentMessages, setAgentMessages] = useState<
+    Array<{ text: string; type: 'sent' | 'status' | 'agent' }>
+  >([]);
+  const [agentInput, setAgentInput] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [serverConnected, setServerConnected] = useState<boolean | null>(null);
+  const agentChatRef = useRef<HTMLDivElement>(null);
+
+  // Check server health on mount and periodically
+  useEffect(() => {
+    if (!isActive) {
+      return;
+    }
+
+    const checkHealth = async () => {
+      try {
+        const res = await fetch('http://localhost:3334/api/health', {
+          signal: AbortSignal.timeout(2000),
+        });
+        setServerConnected(res.ok);
+      } catch {
+        setServerConnected(false);
+      }
+    };
+
+    checkHealth();
+    const interval = setInterval(checkHealth, 10000);
+    return () => clearInterval(interval);
+  }, [isActive]);
+
+  // Poll for agent responses when we've sent messages
+  useEffect(() => {
+    if (!isActive || agentMessages.length === 0) {
+      return;
+    }
+
+    const pollResponses = async () => {
+      try {
+        const res = await fetch('http://localhost:3334/api/responses', {
+          signal: AbortSignal.timeout(3000),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.responses && data.responses.length > 0) {
+            setAgentMessages((prev) => [
+              ...prev,
+              ...data.responses.map((r: string) => ({
+                text: r,
+                type: 'agent' as const,
+              })),
+              {
+                text: 'Refresh the extension to see the changes.',
+                type: 'status' as const,
+              },
+            ]);
+          }
+        }
+      } catch {
+        // Silently ignore poll failures
+      }
+    };
+
+    const interval = setInterval(pollResponses, 2000);
+    return () => clearInterval(interval);
+  }, [isActive, agentMessages.length]);
+
+  // Auto-scroll agent chat
+  useEffect(() => {
+    if (agentChatRef.current) {
+      agentChatRef.current.scrollTop = agentChatRef.current.scrollHeight;
+    }
+  }, [agentMessages]);
+
+  const handleSendToAgent = useCallback(async () => {
+    const currentElement = isLocked ? selectedElement : hoveredElement;
+    if (!agentInput.trim() || !currentElement) {
+      return;
+    }
+
+    const message = agentInput.trim();
+    setAgentInput('');
+    setIsSending(true);
+    setAgentMessages((prev) => [...prev, { text: message, type: 'sent' }]);
+
+    try {
+      const prompt = formatAgentPrompt(
+        currentElement,
+        originalSnapshot,
+        message,
+      );
+      const res = await fetch('http://localhost:3334/api/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: prompt,
+      });
+
+      if (res.ok) {
+        setAgentMessages((prev) => [
+          ...prev,
+          { text: 'Sent to agent — waiting for changes...', type: 'status' },
+        ]);
+      } else {
+        setAgentMessages((prev) => [
+          ...prev,
+          { text: `Failed to send (${res.status})`, type: 'status' },
+        ]);
+      }
+    } catch {
+      setAgentMessages((prev) => [
+        ...prev,
+        {
+          text: 'Server not reachable. Run: yarn designer-server',
+          type: 'status',
+        },
+      ]);
+    }
+    setIsSending(false);
+  }, [agentInput, isLocked, selectedElement, hoveredElement, originalSnapshot]);
 
   // ── Drag-to-move state ──────────────────────────────────────
   const [position, setPosition] = useState({ x: 8, y: 8 }); // offset from bottom-right
@@ -1394,6 +1518,151 @@ export function DesignerModePanel() {
                 </div>
               </CollapsibleSection>
             )}
+            {/* ── Agent Chat section ────────────────────── */}
+            <CollapsibleSection title="Send to Agent" icon="▶">
+              {/* Server status */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  marginBottom: 8,
+                  fontSize: 10,
+                }}
+              >
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    backgroundColor:
+                      serverConnected === true
+                        ? C.success
+                        : serverConnected === false
+                          ? '#ff453a'
+                          : C.textTertiary,
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ color: C.textTertiary }}>
+                  {serverConnected === true
+                    ? 'Connected to localhost:3334'
+                    : serverConnected === false
+                      ? 'Server offline — run: yarn designer-server'
+                      : 'Checking server...'}
+                </span>
+              </div>
+
+              {/* Chat messages */}
+              {agentMessages.length > 0 && (
+                <div
+                  ref={agentChatRef}
+                  style={{
+                    maxHeight: 100,
+                    overflowY: 'auto',
+                    marginBottom: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 4,
+                  }}
+                >
+                  {agentMessages.map((msg, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        fontSize: 10,
+                        color:
+                          msg.type === 'agent'
+                            ? C.success
+                            : msg.type === 'sent'
+                              ? C.text
+                              : C.textTertiary,
+                        fontStyle:
+                          msg.type === 'status' ? 'italic' : 'normal',
+                        padding: '3px 6px',
+                        backgroundColor:
+                          msg.type === 'sent'
+                            ? C.accentDim
+                            : msg.type === 'agent'
+                              ? 'rgba(48, 209, 88, 0.1)'
+                              : 'transparent',
+                        borderRadius: 3,
+                      }}
+                    >
+                      {msg.type === 'sent' && (
+                        <span style={{ color: C.accent, marginRight: 4 }}>
+                          You:
+                        </span>
+                      )}
+                      {msg.type === 'agent' && (
+                        <span
+                          style={{ color: C.success, marginRight: 4 }}
+                        >
+                          Agent:
+                        </span>
+                      )}
+                      {msg.type === 'status' && '→ '}
+                      {msg.text}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Input + Send button */}
+              <div style={{ display: 'flex', gap: 4 }}>
+                <input
+                  value={agentInput}
+                  onChange={(e) => setAgentInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendToAgent();
+                    }
+                    e.stopPropagation();
+                  }}
+                  placeholder="e.g. make this button red"
+                  disabled={isSending}
+                  style={{
+                    flex: 1,
+                    backgroundColor: C.input,
+                    color: C.text,
+                    border: `1px solid ${C.divider}`,
+                    borderRadius: 4,
+                    padding: '5px 8px',
+                    fontSize: 11,
+                    fontFamily: FONT,
+                    outline: 'none',
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleSendToAgent}
+                  disabled={isSending || !agentInput.trim()}
+                  style={{
+                    padding: '5px 10px',
+                    backgroundColor:
+                      isSending || !agentInput.trim()
+                        ? C.surface
+                        : C.accent,
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 4,
+                    cursor:
+                      isSending || !agentInput.trim()
+                        ? 'not-allowed'
+                        : 'pointer',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    fontFamily: FONT,
+                    opacity:
+                      isSending || !agentInput.trim() ? 0.4 : 1,
+                    flexShrink: 0,
+                  }}
+                >
+                  {isSending ? '...' : 'Send'}
+                </button>
+              </div>
+            </CollapsibleSection>
           </>
         )}
       </div>

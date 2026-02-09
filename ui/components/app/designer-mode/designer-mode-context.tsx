@@ -24,6 +24,7 @@ const initialState: DesignerModeState = {
   hoveredElement: null,
   selectedElement: null,
   isLocked: false,
+  originalSnapshot: null,
 };
 
 const DesignerModeContext = createContext<DesignerModeContextValue | null>(
@@ -152,16 +153,32 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
           ...prev,
           isLocked: false,
           selectedElement: null,
+          originalSnapshot: null,
         };
       }
 
       // Lock selection to this element
       const elementInfo = extractElementInfo(element);
+
+      // Capture a snapshot of current styles and text for changeset tracking
+      const styles: Record<string, string> = {};
+      for (const category of Object.values(elementInfo.styles)) {
+        for (const style of category) {
+          styles[style.property] = style.value;
+        }
+      }
+      const textContent = Array.from(element.childNodes)
+        .filter((node) => node.nodeType === Node.TEXT_NODE)
+        .map((node) => node.textContent || '')
+        .join('')
+        .trim();
+
       return {
         ...prev,
         isLocked: true,
         selectedElement: elementInfo,
         hoveredElement: elementInfo,
+        originalSnapshot: { styles, textContent },
       };
     });
   }, []);
@@ -171,6 +188,7 @@ export function DesignerModeProvider({ children }: DesignerModeProviderProps) {
       ...prev,
       isLocked: false,
       selectedElement: null,
+      originalSnapshot: null,
     }));
   }, []);
 

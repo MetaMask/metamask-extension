@@ -4,6 +4,7 @@
 
 import type {
   ElementInfo,
+  ElementSnapshot,
   ComponentInfo,
   ComputedStyleInfo,
   DesignTokenInfo,
@@ -88,7 +89,7 @@ function getReactFiber(element: HTMLElement): unknown | null {
   );
 
   if (fiberKey) {
-    return (element as Record<string, unknown>)[fiberKey];
+    return (element as unknown as Record<string, unknown>)[fiberKey];
   }
   return null;
 }
@@ -503,4 +504,139 @@ ${Object.entries(aiFormat.styles.borders).map(([k, v]) => `- ${k}: ${v}`).join('
 ---
 ${aiFormat.suggestedChangesFormat}
 `;
+}
+
+/**
+ * Compute style changes between the original snapshot and the current element
+ */
+function computeStyleChanges(
+  originalSnapshot: ElementSnapshot,
+  currentInfo: ElementInfo,
+): Array<{ property: string; from: string; to: string }> {
+  const changes: Array<{ property: string; from: string; to: string }> = [];
+
+  for (const category of Object.values(currentInfo.styles)) {
+    for (const style of category) {
+      const originalValue = originalSnapshot.styles[style.property];
+      if (originalValue && originalValue !== style.value) {
+        changes.push({
+          property: style.property,
+          from: originalValue,
+          to: style.value,
+        });
+      }
+    }
+  }
+
+  return changes;
+}
+
+/**
+ * Get the direct text content of an element (excluding children's text)
+ */
+export function getDirectTextContent(element: HTMLElement): string {
+  return Array.from(element.childNodes)
+    .filter((node) => node.nodeType === Node.TEXT_NODE)
+    .map((node) => node.textContent || '')
+    .join('')
+    .trim();
+}
+
+/**
+ * Format a structured prompt for an AI agent.
+ * Includes element info, changeset from inline edits, and the designer's message.
+ */
+export function formatAgentPrompt(
+  elementInfo: ElementInfo,
+  originalSnapshot: ElementSnapshot | null,
+  designerMessage: string,
+): string {
+  const designTokens = extractDesignTokensFromClasses(
+    elementInfo.component.classNames,
+  );
+
+  // Compute changeset
+  const styleChanges = originalSnapshot
+    ? computeStyleChanges(originalSnapshot, elementInfo)
+    : [];
+  const currentText = getDirectTextContent(elementInfo.element);
+  const textChanged =
+    originalSnapshot && originalSnapshot.textContent !== currentText;
+
+  // Build the prompt
+  const sections: string[] = [];
+
+  // Instructions
+  sections.push(`# Designer Mode Request
+
+## Instructions for AI Agent
+Apply the changes described below to the **source code**. The designer is
+watching via hot reload and will see your changes live. After applying,
+run \`yarn designer-wait\` again to receive the next request.`);
+
+  // Element info
+  sections.push(`## Selected Element
+- **Component**: ${elementInfo.component.componentName || 'Unknown'}
+- **Path**: ${elementInfo.componentPath.join(' > ') || 'N/A'}
+- **Test ID**: ${elementInfo.component.testId || 'None'}
+- **Classes**: ${elementInfo.component.classNames.join(', ') || 'None'}`);
+
+  // Design tokens
+  if (designTokens.length > 0) {
+    sections.push(`## Design Tokens
+${designTokens.map((t) => `- ${t.token} (${t.category})`).join('\n')}`);
+  }
+
+  // Props
+  const propsStr = JSON.stringify(elementInfo.component.props, null, 2);
+  if (propsStr !== '{}') {
+    sections.push(`## Component Props
+\`\`\`json
+${propsStr}
+\`\`\``);
+  }
+
+  // Changeset — style changes
+  if (styleChanges.length > 0 || textChanged) {
+    let changesetStr = `## Changes Made by Designer (apply these to source)\n`;
+
+    if (styleChanges.length > 0) {
+      changesetStr += `\n### Style Changes\n`;
+      changesetStr += styleChanges
+        .map((c) => `- **${c.property}**: \`${c.from}\` → \`${c.to}\``)
+        .join('\n');
+    }
+
+    if (textChanged) {
+      changesetStr += `\n\n### Text Content Change\n`;
+      changesetStr += `- \`${originalSnapshot?.textContent || ''}\` → \`${currentText}\``;
+    }
+
+    sections.push(changesetStr);
+  }
+
+  // Current computed styles (for reference)
+  const aiFormat = toAIFriendlyFormat(elementInfo);
+  sections.push(`## Current Computed Styles (for reference)
+
+### Layout
+${Object.entries(aiFormat.styles.layout).map(([k, v]) => `- ${k}: ${v}`).join('\n') || 'None'}
+
+### Typography
+${Object.entries(aiFormat.styles.typography).map(([k, v]) => `- ${k}: ${v}`).join('\n') || 'None'}
+
+### Colors
+${Object.entries(aiFormat.styles.colors).map(([k, v]) => `- ${k}: ${v}`).join('\n') || 'None'}
+
+### Spacing
+${Object.entries(aiFormat.styles.spacing).map(([k, v]) => `- ${k}: ${v}`).join('\n') || 'None'}
+
+### Borders
+${Object.entries(aiFormat.styles.borders).map(([k, v]) => `- ${k}: ${v}`).join('\n') || 'None'}`);
+
+  // Designer's message
+  sections.push(`## Designer's Message
+> ${designerMessage}`);
+
+  return sections.join('\n\n');
 }

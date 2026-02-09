@@ -72,6 +72,7 @@ export type {
   DesignerModeState,
   DesignerModeContextValue,
   ElementInfo,
+  ElementSnapshot,
   ComponentInfo,
   AIFriendlyElementInfo,
 } from './designer-mode.types';

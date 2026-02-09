@@ -1633,3 +1633,64 @@ Performance Checks (React Components):
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
+
+---
+
+## Designer Mode — Design ↔ Agent Collaboration
+
+Designer Mode lets a designer inspect and edit UI elements in the browser, then
+send change requests directly to an AI agent. The agent applies the changes to
+the source code, hot reload shows the result, and the loop continues.
+
+### Quick Start (Agent Workflow)
+
+When asked to **"start designer mode"**, **"listen for design requests"**, or
+**"collaborate with the designer"**, follow this loop:
+
+```bash
+# 1. Start the relay server (run once, keep in background)
+yarn designer-server
+
+# 2. Wait for the designer to send a request (blocks until one arrives)
+yarn designer-wait
+```
+
+3. Read the structured output from `designer-wait` — it contains:
+   - The selected element (component name, path, test ID, classes)
+   - Any inline style/text edits the designer already made
+   - The designer's natural-language message (e.g. "make this button red")
+4. Apply the requested changes to the **source code**
+5. Run `yarn designer-wait` again to receive the next request
+6. Repeat until the designer says "done" or you are told to stop
+
+### Architecture
+
+```
+Browser (Designer Mode panel)  ──POST──►  localhost:3334  ◄──GET /api/wait──  Agent CLI
+                                          (relay server)
+```
+
+- **`yarn designer-server`** — HTTP relay on port 3334. Receives requests from the
+  browser panel and holds them for the agent CLI.
+- **`yarn designer-wait`** — Blocking CLI. Long-polls the server, prints the
+  structured prompt to stdout when a request arrives, then exits. The agent reads
+  stdout and acts on it.
+
+### What the Designer Does
+
+1. Enable Designer Mode in **Settings → Developer Options**
+2. Press `Ctrl+Shift+D` (or `Cmd+Shift+D`) to activate the inspector
+3. Click an element to lock the selection
+4. Optionally edit values inline (styles, text content) in the panel
+5. Type a message in the **"Send to Agent"** section and click Send
+6. Watch the code change via hot reload
+
+### Important Notes
+
+- The designer's inline edits are **ephemeral** (applied to the DOM only). The
+  agent must apply equivalent changes to the source code for them to persist.
+- The prompt includes a changeset showing what the designer edited (original →
+  new values), so the agent knows exactly what to change.
+- The `designer-wait` output is self-documenting — even if you haven't read this
+  section, the prompt tells you what to do and to run `designer-wait` again.
+- The server defaults to port 3334. Override with `DESIGNER_PORT` env var.
