@@ -4971,18 +4971,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keystonehq/bc-ur-registry-eth@npm:^0.19.1":
-  version: 0.19.1
-  resolution: "@keystonehq/bc-ur-registry-eth@npm:0.19.1"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.0.0"
-    "@keystonehq/bc-ur-registry": "npm:^0.6.0"
-    hdkey: "npm:^2.0.1"
-    uuid: "npm:^8.3.2"
-  checksum: 10/7e64e6a754e6b66fc83a8f3880b54828c5b37f4eaaea3287eee31bd9d9b5ac0ba4cd4b8e751af9bd2f66e6f19291eaf02f46cd177d05ed9b30c1349cdd04572f
-  languageName: node
-  linkType: hard
-
 "@keystonehq/bc-ur-registry-eth@npm:^0.22.1":
   version: 0.22.1
   resolution: "@keystonehq/bc-ur-registry-eth@npm:0.22.1"
@@ -5014,17 +5002,6 @@ __metadata:
     bs58check: "npm:^2.1.2"
     tslib: "npm:^2.3.0"
   checksum: 10/b586d4fac24a3fc28ec2218901e72aa7a1cb55e0e7fc4a7e9d2db80f382fc3115db409301da287c541ba8f9ab2938844dbd8e396e5ba7afd67087232a6c1d7d0
-  languageName: node
-  linkType: hard
-
-"@keystonehq/bc-ur-registry@npm:^0.6.0":
-  version: 0.6.4
-  resolution: "@keystonehq/bc-ur-registry@npm:0.6.4"
-  dependencies:
-    "@ngraveio/bc-ur": "npm:^1.1.5"
-    bs58check: "npm:^2.1.2"
-    tslib: "npm:^2.3.0"
-  checksum: 10/d4cdbefc14f3305543340d509564e1a795eb458327d46aad8665927999150df7e282939dcb714b81fea386061019e3b9f41eedbbb09a59d404355711c33159b2
   languageName: node
   linkType: hard
 
@@ -6769,14 +6746,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^23.0.0":
-  version: 23.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:23.0.0"
+"@metamask/eth-json-rpc-middleware@npm:^23.0.0, @metamask/eth-json-rpc-middleware@npm:^23.1.0":
+  version: 23.1.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:23.1.0"
   dependencies:
-    "@metamask/eth-block-tracker": "npm:^15.0.0"
+    "@metamask/eth-block-tracker": "npm:^15.0.1"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/json-rpc-engine": "npm:^10.2.0"
+    "@metamask/json-rpc-engine": "npm:^10.2.1"
     "@metamask/message-manager": "npm:^14.1.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -6784,7 +6761,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/fc2363c15a08e0a15a4aa688e572059d5ba93673156c95748682e775676637670cd6ac6182692b55a1f17c5b2612927c35377ba6010096a6d2c1a80ac329fbf8
+  checksum: 10/3d122e04edfc2c317b80f465dace316e4201dcc2c9e5d191bd46e62c5cd1396855685a2caed8e6189bb858ac91ddde59afb266b0028e12354e4b61ab499bc3e3
   languageName: node
   linkType: hard
 
@@ -6840,24 +6817,6 @@ __metadata:
     "@metamask/keyring-utils": "npm:^3.2.0"
     hdkey: "npm:^2.1.0"
   checksum: 10/7f8bc5be11cab39acddaa677a3aabb676c308195c31a1e29032ace1eb038c840aeb8c06ce5702c9b191cdd90b16c094a1d39258c53933bde7f7c107cba59da35
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-qr-keyring@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/eth-qr-keyring@npm:1.1.0"
-  dependencies:
-    "@ethereumjs/rlp": "npm:^5.0.2"
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    async-mutex: "npm:^0.5.0"
-    hdkey: "npm:^2.1.0"
-    uuid: "npm:^9.0.1"
-  checksum: 10/ec72d2dff1662b2332169969f730722b87af2f361b7f97bd59c4e23e539a05a3229b76e767ddc0a8126ac01eea9ca3e63591b854ba9dd1c39227d0faba6c594c
   languageName: node
   linkType: hard
 
@@ -33863,10 +33822,9 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^23.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^23.1.0"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.3.0"
-    "@metamask/eth-qr-keyring": "npm:^1.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^18.0.2"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
