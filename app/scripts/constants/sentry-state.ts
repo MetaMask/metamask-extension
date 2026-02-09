@@ -93,7 +93,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdatedAt: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
-    showStorageErrorToast: true,
+    storageWriteErrorType: true,
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
@@ -326,6 +326,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdated: false,
     databaseUnavailable: false,
   },
+  StaticAssetsController: {},
   SubjectMetadataController: {
     subjectMetadata: false,
   },

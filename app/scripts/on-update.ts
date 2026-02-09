@@ -1,7 +1,5 @@
 import log from 'loglevel';
-import Bowser from 'bowser';
 import { PLATFORM_FIREFOX } from '../../shared/constants/app';
-import { getIsChromiumBrowserMV3StableUpdatesSupported } from '../../shared/modules/browser-runtime.utils';
 import { getPlatform } from './lib/util';
 import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
@@ -52,17 +50,14 @@ export function onUpdate(
   appStateController.setLastUpdatedAt(lastUpdatedAt);
   appStateController.setLastUpdatedFromVersion(previousVersion);
 
-  if (
-    !isFirefox &&
-    !getIsChromiumBrowserMV3StableUpdatesSupported(
-      Bowser.getParser(globalThis.navigator.userAgent),
-    )
-  ) {
+  if (!isFirefox) {
     // Work around Chromium bug https://issues.chromium.org/issues/40805401
-    // by doing a safe reload after an update. We have gated this workaround behind
-    // a Chromium version check for `<143`, to prevent it from running on
-    // newer versions that are no longer affected by the bug. Once the affected
-    // Chromium versions are no longer supported, we should remove this.
+    // by doing a safe reload after an update.
+    //
+    // This was initially only used for Chromium versions `<143`, because it
+    // was supposed to be fixed in v143. But we continued to see reports of
+    // this crash in later versions.
+    //
     // We only want to do the safe reload when the version actually changed,
     // just as a safe guard, as Chrome fires this event each time we call
     // `runtime.reload` -- as we really don't want to send Chrome into a restart
