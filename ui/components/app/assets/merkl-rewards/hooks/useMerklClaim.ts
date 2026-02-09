@@ -8,8 +8,12 @@ import {
   addTransactionAndRouteToConfirmationPage,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { DISTRIBUTOR_CLAIM_ABI, MERKL_DISTRIBUTOR_ADDRESS } from '../constants';
-import { fetchMerklRewardsForAsset, getClaimChainId } from '../merkl-client';
+import {
+  DISTRIBUTOR_CLAIM_ABI,
+  MERKL_CLAIM_CHAIN_ID,
+  MERKL_DISTRIBUTOR_ADDRESS,
+} from '../constants';
+import { fetchMerklRewardsForAsset } from '../merkl-client';
 import type { MetaMaskReduxDispatch } from '../../../../../store/store';
 
 type UseMerklClaimOptions = {
@@ -39,7 +43,7 @@ export const useMerklClaim = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
 
-  const claimChainId = getClaimChainId(tokenAddress);
+  const claimChainId = MERKL_CLAIM_CHAIN_ID;
 
   // Cleanup: abort any pending fetch on unmount
   useEffect(
