@@ -276,10 +276,9 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
           error as Error,
         ),
       );
-      console.error(
-        `[StaticAssetsService] Error adding tokens to TokensController for chainId ${chainId}`,
-        error,
-      );
+      // When tokens can not be added to the TokensController in the polling loop,
+      // it is not a critical error,
+      // so it is not necessary to rethrow the error to users to impact the UX.
     }
   }
 
