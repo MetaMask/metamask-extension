@@ -6,7 +6,6 @@ import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../shared/constants/gas';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../../helpers/constants/common';
 import { toHumanReadableTime } from '../../../../../helpers/utils/util';
@@ -18,14 +17,11 @@ import InfoTooltip from '../../../../../components/ui/info-tooltip';
 import LoadingHeartBeat from '../../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-preferenced-currency-display';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
+import { FAST_CONFIRMATION_CHAIN_IDS } from '../../../../../../shared/constants/network';
 
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
 
-const FAST_CONFIRMATION_CHAIN_ID = new Set([
-  CHAIN_IDS.MEGAETH_TESTNET,
-  CHAIN_IDS.MEGAETH_TESTNET_V2,
-  CHAIN_IDS.MEGAETH_MAINNET,
-]);
+const FAST_CONFIRMATION_CHAIN_SET = new Set(FAST_CONFIRMATION_CHAIN_IDS);
 
 const getTitleAndIcon = (priorityLevel, editGasMode) => {
   let icon = priorityLevel;
@@ -140,7 +136,7 @@ const EditGasItem = ({ priorityLevel }) => {
         {editGasMode !== EditGasModes.swaps &&
           (minWaitTime
             ? toHumanReadableTime(t, minWaitTime, {
-                showSubSecondPrecision: FAST_CONFIRMATION_CHAIN_ID.has(
+                showSubSecondPrecision: FAST_CONFIRMATION_CHAIN_SET.has(
                   transaction.chainId,
                 ),
               })

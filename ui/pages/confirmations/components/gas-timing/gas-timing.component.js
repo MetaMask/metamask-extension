@@ -33,17 +33,7 @@ const SECOND_CUTOFF = 90;
 const FAST_CHAINS = new Set(FAST_CONFIRMATION_CHAIN_IDS);
 
 // Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
-const toHumanReadableTime = (
-  milliseconds = 1,
-  t,
-  { showSubSecondPrecision = false } = {},
-) => {
-  // Show sub-second precision for fast chains (e.g., MEGAETH)
-  if (showSubSecondPrecision && milliseconds < 1000) {
-    const decimalSeconds = (milliseconds / 1000).toFixed(1);
-    return t('gasTimingSecondsShort', [decimalSeconds]);
-  }
-
+const toHumanReadableTime = (milliseconds = 1, t) => {
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
     return t('gasTimingSecondsShort', [seconds]);
