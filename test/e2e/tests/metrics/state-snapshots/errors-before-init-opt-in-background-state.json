@@ -44,6 +44,13 @@
       "termsOfUseLastAgreed": "number",
       "trezorModel": null
     },
+    "AssetsController": {
+      "assetPreferences": "object",
+      "assetsBalance": "object",
+      "assetsMetadata": "object",
+      "assetsPrice": "object",
+      "customAssets": "object"
+    },
     "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeController": {},
     "CurrencyController": {
