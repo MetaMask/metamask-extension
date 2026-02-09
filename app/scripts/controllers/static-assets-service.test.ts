@@ -32,18 +32,20 @@ const mockTopAssets = [
 ];
 
 const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
+  // const captureExceptionSpy = jest.spyOn(Messenger.prototype, 'captureException');
+  const captureExceptionSpy = jest.fn();
+  const tokensControllerAddTokensSpy = jest.fn();
+  const networkControllerFindNetworkClientIdByChainIdSpy = jest.fn();
+  const tokensControllerGetStateSpy = jest.fn();
+  const fetchWithCacheSpy = jest.spyOn(fetchWithCacheModule, 'default');
+
   const messenger = new Messenger<
     MockAnyNamespace,
     | MessengerActions<StaticAssetsServiceMessenger>
     | MessengerActions<AccountsControllerMessenger>,
     | MessengerEvents<StaticAssetsServiceMessenger>
     | MessengerEvents<AccountsControllerMessenger>
-  >({ namespace: MOCK_ANY_NAMESPACE });
-
-  const tokensControllerAddTokensSpy = jest.fn();
-  const networkControllerFindNetworkClientIdByChainIdSpy = jest.fn();
-  const tokensControllerGetStateSpy = jest.fn();
-  const fetchWithCacheSpy = jest.spyOn(fetchWithCacheModule, 'default');
+  >({ namespace: MOCK_ANY_NAMESPACE, captureException: captureExceptionSpy });
 
   const staticAssetsServiceMessenger: StaticAssetsServiceMessenger =
     new Messenger({
@@ -97,6 +99,7 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
       tokensControllerAddTokensSpy,
       networkControllerFindNetworkClientIdByChainIdSpy,
       tokensControllerGetStateSpy,
+      captureExceptionSpy,
     },
   };
 };
@@ -397,6 +400,38 @@ describe('StaticAssetsService', () => {
           );
         },
       );
+
+      it('captures the error to Sentry if TokensController:addTokens fails', async () => {
+        const {
+          controller,
+          spies: {
+            tokensControllerAddTokensSpy,
+            networkControllerFindNetworkClientIdByChainIdSpy,
+            tokensControllerGetStateSpy,
+            captureExceptionSpy,
+            fetchWithCacheSpy,
+          },
+        } = setupController({
+          supportedChains: [CHAIN_IDS.MAINNET],
+        });
+        networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
+          'mainnet',
+        );
+        tokensControllerGetStateSpy.mockResolvedValue({
+          allIgnoredTokens: {},
+        });
+        tokensControllerAddTokensSpy.mockRejectedValue(
+          new Error('Add tokens failed'),
+        );
+        fetchWithCacheSpy.mockResolvedValue(mockTopAssets);
+
+        await controller._executePoll({
+          chainIds: [CHAIN_IDS.MAINNET],
+          selectedAccountAddress: '0x123',
+        });
+
+        expect(captureExceptionSpy).toHaveBeenCalled();
+      });
     });
 
     describe('filterIgnoredTokens', () => {
