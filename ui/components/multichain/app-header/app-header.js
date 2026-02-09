@@ -11,7 +11,7 @@ import {
 import {
   CONFIRM_TRANSACTION_ROUTE,
   SEND_ROUTE,
-  SWAPS_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 
 import {
@@ -41,7 +41,7 @@ import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 import { AppHeaderLockedContent } from './app-header-locked-content';
 
 export const AppHeader = ({ location }) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const menuRef = useRef(null);
   const isUnlocked = useSelector(getIsUnlocked);
 
@@ -70,7 +70,10 @@ export const AppHeader = ({ location }) => {
     ),
   );
   const isSwapsPage = Boolean(
-    matchPath({ path: SWAPS_ROUTE, end: false }, location?.pathname || ''),
+    matchPath(
+      { path: CROSS_CHAIN_SWAP_ROUTE, end: false },
+      location?.pathname || '',
+    ),
   );
   const isSendPage = Boolean(
     matchPath({ path: SEND_ROUTE, end: false }, location?.pathname || ''),

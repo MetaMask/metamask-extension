@@ -249,7 +249,7 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
         [
@@ -257,9 +257,9 @@ class AccountListPage {
             css: this.addMultichainAccountButton,
             text: 'Add account',
           },
-          this.multichainAccountOptionsMenuButton,
+          this.addMultichainWalletButton,
         ],
-        { timeout: 15000 },
+        { timeout },
       );
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);

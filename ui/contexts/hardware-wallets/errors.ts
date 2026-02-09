@@ -111,55 +111,6 @@ function getErrorProperties(code: ErrorCode): {
 }
 
 /**
- * Parse an unknown error and convert it to a HardwareWalletError
- *
- * @param error - The error to parse
- * @param walletType - The hardware wallet type
- * @returns A HardwareWalletError instance
- */
-export function parseErrorByType(
-  error: unknown,
-  walletType: HardwareWalletType,
-): HardwareWalletError {
-  // If already a HardwareWalletError, return it
-  if (error instanceof HardwareWalletError) {
-    return error;
-  }
-
-  // Get error message
-  const errorMessage = error instanceof Error ? error.message : String(error);
-  const errorMessageLower = errorMessage.toLowerCase();
-  const cause = error instanceof Error ? error : undefined;
-
-  // Parse hardware wallet error codes using mappings from keyring-utils
-  // Only check Ledger mappings for Ledger wallets
-  if (walletType === HardwareWalletType.Ledger) {
-    for (const [errorCode, mapping] of Object.entries(LEDGER_ERROR_MAPPINGS)) {
-      if (errorMessageLower.includes(errorCode.toLowerCase())) {
-        return createHardwareWalletError(
-          mapping.code,
-          walletType,
-          errorMessage,
-          {
-            cause,
-          },
-        );
-      }
-    }
-  }
-
-  // TODO: Add mappings for other hardware wallets
-
-  // Default to unknown error
-  return createHardwareWalletError(
-    ErrorCode.Unknown,
-    walletType,
-    errorMessage,
-    { cause },
-  );
-}
-
-/**
  * Convert a HardwareWalletError to an appropriate connection state
  *
  * @param error - The hardware wallet error
@@ -171,21 +122,16 @@ export function getConnectionStateFromError(
   switch (error.code) {
     case ErrorCode.AuthenticationDeviceLocked:
     case ErrorCode.AuthenticationDeviceBlocked:
+    case ErrorCode.ConnectionTransportMissing:
+    case ErrorCode.AuthenticationSecurityCondition:
+    case ErrorCode.ConnectionClosed:
+    case ErrorCode.DeviceDisconnected:
+    case ErrorCode.UserRejected:
+    case ErrorCode.UserCancelled:
+    case ErrorCode.ConnectionTimeout:
       return ConnectionState.error(error);
     case ErrorCode.DeviceStateEthAppClosed:
       return ConnectionState.awaitingApp();
-    case ErrorCode.ConnectionTransportMissing:
-      return ConnectionState.error(error);
-    case ErrorCode.AuthenticationSecurityCondition:
-      return ConnectionState.error(error);
-    case ErrorCode.ConnectionClosed:
-    case ErrorCode.DeviceDisconnected:
-      return ConnectionState.error(error);
-    case ErrorCode.UserRejected:
-    case ErrorCode.UserCancelled:
-      return ConnectionState.error(error);
-    case ErrorCode.ConnectionTimeout:
-      return ConnectionState.error(error);
     default:
       return ConnectionState.error(error);
   }
@@ -217,5 +163,20 @@ export function getDeviceEventForError(
       return DeviceEvent.ConnectionFailed;
     default:
       return defaultEvent;
+  }
+}
+
+export function isRetryableHardwareWalletError(error: HardwareWalletError) {
+  switch (error.code) {
+    case ErrorCode.AuthenticationDeviceLocked:
+    case ErrorCode.DeviceStateEthAppClosed:
+    case ErrorCode.ConnectionTransportMissing:
+    case ErrorCode.AuthenticationSecurityCondition:
+    case ErrorCode.ConnectionTimeout:
+    case ErrorCode.ConnectionClosed:
+    case ErrorCode.DeviceDisconnected:
+      return true;
+    default:
+      return false;
   }
 }
