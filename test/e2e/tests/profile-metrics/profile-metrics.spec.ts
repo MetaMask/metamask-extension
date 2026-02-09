@@ -77,7 +77,7 @@ async function waitForEndpointToBeCalled(
 
 describe('Profile Metrics', function () {
   describe('when MetaMetrics is enabled, the feature flag is on, and the user acknowledged the privacy change', function () {
-    it('sends exising accounts to the API on wallet unlock after activating MetaMetrics and an initial delay', async function () {
+    it('sends existing accounts to the API on wallet unlock after activating MetaMetrics and an initial delay', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -108,6 +108,7 @@ describe('Profile Metrics', function () {
           await waitForEndpointToBeCalled(driver, authCall);
 
           const requests = await authCall.getSeenRequests();
+          console.log(requests);
           assert.equal(
             requests.length,
             2,
