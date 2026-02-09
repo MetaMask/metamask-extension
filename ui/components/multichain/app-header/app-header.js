@@ -11,7 +11,7 @@ import {
 import {
   CONFIRM_TRANSACTION_ROUTE,
   SEND_ROUTE,
-  SWAPS_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 
 import {
@@ -70,7 +70,10 @@ export const AppHeader = ({ location }) => {
     ),
   );
   const isSwapsPage = Boolean(
-    matchPath({ path: SWAPS_ROUTE, end: false }, location?.pathname || ''),
+    matchPath(
+      { path: CROSS_CHAIN_SWAP_ROUTE, end: false },
+      location?.pathname || '',
+    ),
   );
   const isSendPage = Boolean(
     matchPath({ path: SEND_ROUTE, end: false }, location?.pathname || ''),

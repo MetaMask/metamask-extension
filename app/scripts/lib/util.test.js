@@ -8,10 +8,27 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  PLATFORM_BRAVE,
   PLATFORM_CHROME,
+  PLATFORM_CHROMIUM,
+  PLATFORM_COCCOC,
   PLATFORM_EDGE,
+  PLATFORM_EDGE_ANDROID,
   PLATFORM_FIREFOX,
+  PLATFORM_KIWI,
+  PLATFORM_LEMUR,
+  PLATFORM_MAXTHON,
+  PLATFORM_MISES,
   PLATFORM_OPERA,
+  PLATFORM_OTHER,
+  PLATFORM_PUFFIN,
+  PLATFORM_QQBROWSER,
+  PLATFORM_SAMSUNG,
+  PLATFORM_SILK,
+  PLATFORM_UCBROWSER,
+  PLATFORM_VIVALDI,
+  PLATFORM_WHALE,
+  PLATFORM_YANDEX,
 } from '../../../shared/constants/app';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import * as FourBiteUtils from '../../../shared/lib/four-byte';
@@ -232,6 +249,15 @@ describe('app utils', () => {
       expect(getPlatform()).toStrictEqual(PLATFORM_EDGE);
     });
 
+    it('detects Edge Android', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36 EdgA/144.0.0.0',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_EDGE_ANDROID);
+    });
+
     it('should detect Opera', () => {
       setBrowserSpecificWindow('opera');
       expect(getPlatform()).toStrictEqual(PLATFORM_OPERA);
@@ -240,6 +266,230 @@ describe('app utils', () => {
     it('should detect Chrome', () => {
       setBrowserSpecificWindow('chrome');
       expect(getPlatform()).toStrictEqual(PLATFORM_CHROME);
+    });
+
+    // Parameterized tests for browsers detected via User-Agent string
+    // Note: Lemur and Mises are NOT included here because they don't expose
+    // their identity in UA strings - they're detected via userAgentData.brands
+    it.each([
+      [
+        'Vivaldi',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Vivaldi/7.7.3851.58',
+        PLATFORM_VIVALDI,
+      ],
+      [
+        'Samsung Internet',
+        'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Mobile Safari/537.36 SamsungBrowser/23.0',
+        PLATFORM_SAMSUNG,
+      ],
+      [
+        'Yandex',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 YaBrowser/23.7.0 Safari/537.36',
+        PLATFORM_YANDEX,
+      ],
+      [
+        'Whale',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Whale/3.21.192.18 Safari/537.36',
+        PLATFORM_WHALE,
+      ],
+      [
+        'Puffin',
+        'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36 Puffin/9.7.0.51573AP',
+        PLATFORM_PUFFIN,
+      ],
+      [
+        'Silk',
+        'Mozilla/5.0 (Linux; Android 9; KFMAWI) AppleWebKit/537.36 (KHTML, like Gecko) Silk/112.4.2 like Chrome/112.0.5615.136 Safari/537.36',
+        PLATFORM_SILK,
+      ],
+      [
+        'UC Browser',
+        'Mozilla/5.0 (Linux; U; Android 10; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.108 UCBrowser/13.4.0.1306 Mobile Safari/537.36',
+        PLATFORM_UCBROWSER,
+      ],
+      [
+        'Maxthon',
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36 Maxthon/5.2.7.5000',
+        PLATFORM_MAXTHON,
+      ],
+      [
+        'Chromium',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chromium/116.0.5845.96 Safari/537.36',
+        PLATFORM_CHROMIUM,
+      ],
+      [
+        'Cốc Cốc',
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) coc_coc_browser/83.0.138 Chrome/77.0.3865.138 Safari/537.36',
+        PLATFORM_COCCOC,
+      ],
+      [
+        'QQ Browser (desktop)',
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3715.128 Safari/537.36 Core/1.70.3722.400 QQBrowser/10.5.3739.400',
+        PLATFORM_QQBROWSER,
+      ],
+      [
+        'QQ Browser (mobile)',
+        'Mozilla/5.0 (Linux; U; Android 13; zh-cn) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/109.0.5414.86 MQQBrowser/16.2 Mobile Safari/537.36',
+        PLATFORM_QQBROWSER,
+      ],
+      [
+        'Kiwi',
+        'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36 Kiwi Chrome/116.0.0.0',
+        PLATFORM_KIWI,
+      ],
+      [
+        'Unknown (no Chrome)',
+        'Mozilla/5.0 (compatible; SomeUnknownBrowser/1.0)',
+        PLATFORM_OTHER,
+      ],
+    ])('detects %s browser from UA string', (_name, ua, expected) => {
+      jest.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(ua);
+      expect(getPlatform()).toStrictEqual(expected);
+    });
+
+    describe('hybrid detection (UA + brands fallback)', () => {
+      let originalUserAgentData;
+
+      beforeEach(() => {
+        originalUserAgentData = window.navigator.userAgentData;
+      });
+
+      afterEach(() => {
+        // Restore original userAgentData
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: originalUserAgentData,
+          writable: true,
+          configurable: true,
+        });
+      });
+
+      // Browsers that hide their identity in UA string but expose it via brands
+      it.each([
+        ['Brave', 'Brave', PLATFORM_BRAVE],
+        ['Lemur', 'Lemur', PLATFORM_LEMUR],
+        ['Mises', 'Mises', PLATFORM_MISES],
+      ])(
+        'detects %s from brands when UA looks like Chrome',
+        (_name, brandName, expectedPlatform) => {
+          // UA looks like regular Chrome (no browser-specific identifier)
+          jest
+            .spyOn(window.navigator, 'userAgent', 'get')
+            .mockReturnValue(
+              'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36',
+            );
+
+          // But brands includes the specific browser
+          Object.defineProperty(window.navigator, 'userAgentData', {
+            value: {
+              brands: [
+                { brand: 'Chromium', version: '136' },
+                { brand: brandName, version: '136' },
+                { brand: 'Not.A/Brand', version: '99' },
+              ],
+              mobile: true,
+              platform: 'Android',
+            },
+            writable: true,
+            configurable: true,
+          });
+
+          expect(getPlatform()).toStrictEqual(expectedPlatform);
+        },
+      );
+
+      it('prioritizes UA detection over brands when UA identifies a specific browser', () => {
+        // Edge is detected in UA
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(
+            'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36 EdgA/144.0.0.0',
+          );
+
+        // Brands also includes Edge (should not matter since UA detection succeeds)
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: {
+            brands: [
+              { brand: 'Chromium', version: '144' },
+              { brand: 'Microsoft Edge', version: '144' },
+              { brand: 'Not.A/Brand', version: '99' },
+            ],
+            mobile: true,
+            platform: 'Android',
+          },
+          writable: true,
+          configurable: true,
+        });
+
+        // Should use UA detection (Edge Android) not brands
+        expect(getPlatform()).toStrictEqual(PLATFORM_EDGE_ANDROID);
+      });
+
+      it('returns Chrome when brands contains Google Chrome', () => {
+        // Generic Chrome UA
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
+          );
+
+        // Brands contains "Google Chrome" which maps to PLATFORM_CHROME
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: {
+            brands: [
+              { brand: 'Chromium', version: '94' },
+              { brand: 'Google Chrome', version: '94' },
+              { brand: 'Not.A/Brand', version: '99' },
+            ],
+            mobile: false,
+            platform: 'macOS',
+          },
+          writable: true,
+          configurable: true,
+        });
+
+        expect(getPlatform()).toStrictEqual(PLATFORM_CHROME);
+      });
+
+      it('returns Other when UA is unknown and brands is unavailable', () => {
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue('Mozilla/5.0 (compatible; SomeUnknownBrowser/1.0)');
+
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: undefined,
+          writable: true,
+          configurable: true,
+        });
+
+        expect(getPlatform()).toStrictEqual(PLATFORM_OTHER);
+      });
+
+      it('returns discovered brand even when not yet mapped in our codebase', () => {
+        // UA looks like Chrome
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(
+            'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/136.0.0.0 Mobile Safari/537.36',
+          );
+
+        // Brands includes a browser not yet in our mapping
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: {
+            brands: [
+              { brand: 'Chromium', version: '136' },
+              { brand: 'DiscoveredBrowser', version: '1' },
+              { brand: 'Not.A/Brand', version: '99' },
+            ],
+            mobile: true,
+            platform: 'Android',
+          },
+          writable: true,
+          configurable: true,
+        });
+
+        // Should return the brand name as-is for analytics discovery
+        expect(getPlatform()).toStrictEqual('DiscoveredBrowser');
+      });
     });
   });
 
