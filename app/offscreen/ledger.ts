@@ -91,16 +91,14 @@ export class LedgerOffscreenHandler {
     );
 
     if (ledgerDevices.length === 0) {
-      throw new HardwareWalletError(
-        'No permitted Ledger device found. User must grant permission from the UI first.',
-        {
-          code: ErrorCode.DeviceDisconnected,
-          severity: Severity.Err,
-          category: Category.Connection,
-          userMessage:
-            'No permitted Ledger device found. User must grant permission from the UI first.',
-        },
-      );
+      const errorMessage =
+        'No permitted Ledger device found. User must grant permission from the UI first.';
+      throw new HardwareWalletError(errorMessage, {
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: errorMessage,
+      });
     }
 
     // Try to create a transport with the permitted device
