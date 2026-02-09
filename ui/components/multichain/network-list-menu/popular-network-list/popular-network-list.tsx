@@ -85,7 +85,7 @@ const PopularNetworkList = ({
             {t('additionalNetworks')}
           </Text>
 
-          <Box onMouseEnter={handleMouseEnter} marginTop={1}>
+          <Box onMouseEnter={handleMouseEnter}>
             <Box marginLeft={2}>
               <Icon
                 className="add-network__warning-icon"
