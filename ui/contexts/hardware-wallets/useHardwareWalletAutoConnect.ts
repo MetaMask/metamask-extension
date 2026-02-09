@@ -1,44 +1,47 @@
-import { useEffect, type Dispatch, type SetStateAction } from 'react';
+import { useEffect } from 'react';
 import {
   checkHardwareWalletPermission,
-  getHardwareWalletDeviceId,
+  getConnectedDevices,
   subscribeToWebHidEvents,
   subscribeToWebUsbEvents,
 } from './webConnectionUtils';
-import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
+import {
+  HardwareWalletType,
+  HardwareConnectionPermissionState,
+  type HardwareWalletConnectionState,
+} from './types';
 import {
   type HardwareWalletState,
   type HardwareWalletRefs,
 } from './HardwareWalletStateManager';
+import { ConnectionState } from './connectionState';
 
 type UseHardwareWalletAutoConnectParams = {
   state: HardwareWalletState;
   refs: HardwareWalletRefs;
-  setDeviceId: Dispatch<SetStateAction<string | null>>;
   setHardwareConnectionPermissionState: (
     permission: HardwareConnectionPermissionState,
   ) => void;
+  updateConnectionState: (newState: HardwareWalletConnectionState) => void;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
   handleDisconnect: (error?: unknown) => void;
   resetAutoConnectState: () => void;
-  setAutoConnected: (accountAddress: string | null, deviceId: string) => void;
-  setDeviceIdRef: (deviceId: string) => void;
+  setAutoConnected: (accountAddress: string | null) => void;
 };
 
 export const useHardwareWalletAutoConnect = ({
   state,
   refs,
-  setDeviceId,
   setHardwareConnectionPermissionState,
+  updateConnectionState,
   hardwareConnectionPermissionState,
   isWebHidAvailable,
   isWebUsbAvailable,
   handleDisconnect,
   resetAutoConnectState,
   setAutoConnected,
-  setDeviceIdRef,
 }: UseHardwareWalletAutoConnectParams) => {
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
 
@@ -46,7 +49,6 @@ export const useHardwareWalletAutoConnect = ({
     adapterRef,
     isConnectingRef,
     connectRef,
-    deviceIdRef,
     hasAutoConnectedRef,
     lastConnectedAccountRef,
   } = refs;
@@ -56,8 +58,8 @@ export const useHardwareWalletAutoConnect = ({
       if (
         !isHardwareWalletAccount ||
         !walletType ||
-        hardwareConnectionPermissionState !==
-          HardwareConnectionPermissionState.Granted
+        hardwareConnectionPermissionState ===
+          HardwareConnectionPermissionState.Denied
       ) {
         return undefined;
       }
@@ -80,12 +82,12 @@ export const useHardwareWalletAutoConnect = ({
       // so we only mark auto-connected for the correct account
       const effectAccountAddress = accountAddress;
 
-      const handleNativeConnect = async (device: HIDDevice | USBDevice) => {
+      const handleNativeConnect = async () => {
         if (abortSignal.aborted) {
           return;
         }
 
-        const newDeviceId = device.productId.toString();
+        updateConnectionState(ConnectionState.connected());
 
         const currentPermissionState =
           await checkHardwareWalletPermission(walletType);
@@ -95,7 +97,6 @@ export const useHardwareWalletAutoConnect = ({
           return;
         }
 
-        setDeviceId(newDeviceId);
         setHardwareConnectionPermissionState(currentPermissionState);
 
         if (
@@ -115,8 +116,7 @@ export const useHardwareWalletAutoConnect = ({
             try {
               await connect();
               if (!abortSignal.aborted) {
-                setDeviceIdRef(newDeviceId);
-                setAutoConnected(effectAccountAddress, newDeviceId);
+                setAutoConnected(effectAccountAddress);
               }
             } catch {
               // Connection failed, don't mark as connected
@@ -132,24 +132,25 @@ export const useHardwareWalletAutoConnect = ({
         }
       };
 
-      const handleNativeDisconnect = async (device: HIDDevice | USBDevice) => {
+      const handleNativeDisconnect = async () => {
         if (abortSignal.aborted) {
           return;
         }
 
-        const disconnectedDeviceId = device.productId.toString();
-        if (deviceIdRef.current === disconnectedDeviceId) {
-          handleDisconnect();
-
-          const currentPermissionState =
-            await checkHardwareWalletPermission(walletType);
-
-          if (abortSignal.aborted) {
-            return;
-          }
-
-          setHardwareConnectionPermissionState(currentPermissionState);
+        if (!adapterRef.current?.isConnected()) {
+          return;
         }
+
+        handleDisconnect();
+
+        const currentPermissionState =
+          await checkHardwareWalletPermission(walletType);
+
+        if (abortSignal.aborted) {
+          return;
+        }
+
+        setHardwareConnectionPermissionState(currentPermissionState);
       };
 
       const getSubscriptionFunction = (type: HardwareWalletType) => {
@@ -173,6 +174,18 @@ export const useHardwareWalletAutoConnect = ({
         handleNativeDisconnect,
       );
 
+      getConnectedDevices(walletType)
+        .then((devices) => {
+          if (abortSignal.aborted || devices.length === 0) {
+            return;
+          }
+
+          handleNativeConnect();
+        })
+        .catch(() => {
+          // Swallow errors; auto-connect best-effort only.
+        });
+
       return () => {
         unsubscribe?.();
         abortController.abort();
@@ -188,8 +201,8 @@ export const useHardwareWalletAutoConnect = ({
       isWebHidAvailable,
       isWebUsbAvailable,
       handleDisconnect,
-      setDeviceId,
       setHardwareConnectionPermissionState,
+      updateConnectionState,
       setAutoConnected,
     ],
   );
@@ -221,16 +234,14 @@ export const useHardwareWalletAutoConnect = ({
       // so we only mark auto-connected for the correct account
       const effectAccountAddress = accountAddress;
 
-      getHardwareWalletDeviceId(walletType)
-        .then(async (id) => {
+      getConnectedDevices(walletType)
+        .then(async (devices) => {
           if (abortSignal.aborted) {
             return;
           }
 
-          setDeviceId(id);
-
           if (
-            id &&
+            devices.length > 0 &&
             connectRef.current &&
             !adapterRef.current?.isConnected() &&
             !isConnectingRef.current &&
@@ -245,8 +256,7 @@ export const useHardwareWalletAutoConnect = ({
               await connect();
               // Check cancellation again after async connect completes
               if (!abortSignal.aborted) {
-                setDeviceIdRef(id);
-                setAutoConnected(effectAccountAddress ?? null, id);
+                setAutoConnected(effectAccountAddress ?? null);
               }
             } catch {
               // Connection failed, don't mark as auto-connected
@@ -273,7 +283,6 @@ export const useHardwareWalletAutoConnect = ({
       accountAddress,
       walletType,
       hardwareConnectionPermissionState,
-      setDeviceId,
       resetAutoConnectState,
       setAutoConnected,
     ],
