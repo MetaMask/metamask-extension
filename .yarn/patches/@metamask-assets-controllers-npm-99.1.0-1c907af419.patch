@@ -1,0 +1,112 @@
+diff --git a/dist/TokenBalancesController.cjs b/dist/TokenBalancesController.cjs
+index 9c91f20ce150a49fc9c914ca25cc6885e8800f34..075edb48321640a2abed5b038fbcb2e17661071e 100644
+--- a/dist/TokenBalancesController.cjs
++++ b/dist/TokenBalancesController.cjs
+@@ -123,7 +123,7 @@ class TokenBalancesController extends (0, polling_controller_1.StaticIntervalPol
+             return this.messenger.call('NetworkController:getNetworkClientById', networkClientId);
+         });
+         _TokenBalancesController_createAccountsApiFetcher.set(this, () => {
+-            const originalFetcher = new api_balance_fetcher_1.AccountsApiBalanceFetcher(__classPrivateFieldGet(this, _TokenBalancesController_platform, "f"), __classPrivateFieldGet(this, _TokenBalancesController_getProvider, "f"));
++            const originalFetcher = new api_balance_fetcher_1.AccountsApiBalanceFetcher(__classPrivateFieldGet(this, _TokenBalancesController_platform, "f"), __classPrivateFieldGet(this, _TokenBalancesController_getProvider, "f"), () => this.state.tokenBalances);
+             return {
+                 // Dynamically check allowExternalServices() at call time, not just at construction time
+                 supports: (chainId) => __classPrivateFieldGet(this, _TokenBalancesController_allowExternalServices, "f").call(this) &&
+diff --git a/dist/multi-chain-accounts-service/api-balance-fetcher.cjs b/dist/multi-chain-accounts-service/api-balance-fetcher.cjs
+index 50d8ee9fb47ecc6e08f6322095e7689b8e3bd5a7..6ae7034bd87dfdaa49324fd36a340689df45960e 100644
+--- a/dist/multi-chain-accounts-service/api-balance-fetcher.cjs
++++ b/dist/multi-chain-accounts-service/api-balance-fetcher.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _AccountsApiBalanceFetcher_instances, _AccountsApiBalanceFetcher_platform, _AccountsApiBalanceFetcher_getProvider, _AccountsApiBalanceFetcher_fetchStakedBalances, _AccountsApiBalanceFetcher_fetchBalances;
++var _AccountsApiBalanceFetcher_instances, _AccountsApiBalanceFetcher_platform, _AccountsApiBalanceFetcher_getProvider, _AccountsApiBalanceFetcher_getUserTokens, _AccountsApiBalanceFetcher_fetchStakedBalances, _AccountsApiBalanceFetcher_fetchBalances;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.AccountsApiBalanceFetcher = void 0;
+ const contracts_1 = require("@ethersproject/contracts");
+@@ -31,12 +31,14 @@ const ACCOUNTS_API_TIMEOUT_MS = 10000;
+ const checksum = (addr) => (0, controller_utils_1.toChecksumHexAddress)(addr);
+ const toCaipAccount = (chainId, account) => (0, assetsUtil_1.accountAddressToCaipReference)(chainId, account);
+ class AccountsApiBalanceFetcher {
+-    constructor(platform = 'extension', getProvider) {
++    constructor(platform = 'extension', getProvider, getUserTokens) {
+         _AccountsApiBalanceFetcher_instances.add(this);
+         _AccountsApiBalanceFetcher_platform.set(this, 'extension');
+         _AccountsApiBalanceFetcher_getProvider.set(this, void 0);
++        _AccountsApiBalanceFetcher_getUserTokens.set(this, void 0);
+         __classPrivateFieldSet(this, _AccountsApiBalanceFetcher_platform, platform, "f");
+         __classPrivateFieldSet(this, _AccountsApiBalanceFetcher_getProvider, getProvider, "f");
++        __classPrivateFieldSet(this, _AccountsApiBalanceFetcher_getUserTokens, getUserTokens, "f");
+     }
+     supports(chainId) {
+         return constants_1.SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(chainId);
+@@ -91,7 +93,8 @@ class AccountsApiBalanceFetcher {
+         });
+         // Ensure native token entries exist for all addresses on all requested chains
+         const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+-        const nativeBalancesFromAPI = new Map(); // key: `${address}-${chainId}`
++        const nativeBalancesFromAPI = new Map(); // key: `${accountAddress}-${chainId}`
++        const nonNativeBalancesFromAPI = new Map(); // key: `${accountAddress}-${tokenAddress}-${chainId}`
+         // Process regular API balances
+         if (apiResponse.balances) {
+             const apiBalances = apiResponse.balances.flatMap((b) => {
+@@ -127,6 +130,9 @@ class AccountsApiBalanceFetcher {
+                 if (token === ZERO_ADDRESS && value !== undefined) {
+                     nativeBalancesFromAPI.set(`${finalAccount}-${chainId}`, value);
+                 }
++                if (token !== ZERO_ADDRESS && value !== undefined) {
++                    nonNativeBalancesFromAPI.set(`${finalAccount.toLowerCase()}-${token.toLowerCase()}-${chainId}`, value);
++                }
+                 return [
+                     {
+                         success: value !== undefined,
+@@ -156,6 +162,29 @@ class AccountsApiBalanceFetcher {
+                 }
+             });
+         });
++        // Add zero erc-20 balance entries for addresses that API didn't return
++        if (__classPrivateFieldGet(this, _AccountsApiBalanceFetcher_getUserTokens, "f")) {
++            const userTokens = __classPrivateFieldGet(this, _AccountsApiBalanceFetcher_getUserTokens, "f").call(this);
++            Object.entries(userTokens).forEach(([account, chains]) => {
++                Object.entries(chains).forEach(([chainId, tokens]) => {
++                    Object.entries(tokens).forEach(([tokenAddress]) => {
++                        const tokenLowerCase = tokenAddress.toLowerCase();
++                        const key = `${account.toLowerCase()}-${tokenLowerCase}-${chainId}`;
++                        const isERC = tokenAddress !== ZERO_ADDRESS;
++                        const existingBalance = nonNativeBalancesFromAPI.get(key);
++                        if (isERC && !existingBalance) {
++                            results.push({
++                                success: true,
++                                value: new bn_js_1.default('0'),
++                                account: account,
++                                token: tokenLowerCase,
++                                chainId: chainId,
++                            });
++                        }
++                    });
++                });
++            });
++        }
+         // Add staked balances
+         results.push(...stakedBalances);
+         return {
+@@ -165,7 +194,7 @@ class AccountsApiBalanceFetcher {
+     }
+ }
+ exports.AccountsApiBalanceFetcher = AccountsApiBalanceFetcher;
+-_AccountsApiBalanceFetcher_platform = new WeakMap(), _AccountsApiBalanceFetcher_getProvider = new WeakMap(), _AccountsApiBalanceFetcher_instances = new WeakSet(), _AccountsApiBalanceFetcher_fetchStakedBalances = async function _AccountsApiBalanceFetcher_fetchStakedBalances(addrs) {
++_AccountsApiBalanceFetcher_platform = new WeakMap(), _AccountsApiBalanceFetcher_getProvider = new WeakMap(), _AccountsApiBalanceFetcher_getUserTokens = new WeakMap(), _AccountsApiBalanceFetcher_instances = new WeakSet(), _AccountsApiBalanceFetcher_fetchStakedBalances = async function _AccountsApiBalanceFetcher_fetchStakedBalances(addrs) {
+     // Return empty array if no provider is available for blockchain calls
+     if (!__classPrivateFieldGet(this, _AccountsApiBalanceFetcher_getProvider, "f")) {
+         return [];
+@@ -187,8 +216,8 @@ _AccountsApiBalanceFetcher_platform = new WeakMap(), _AccountsApiBalanceFetcher_
+         const chainIdHex = chainId;
+         // Only fetch staked balance on supported networks (mainnet and hoodi)
+         if (![
+-            assetsUtil_1.SupportedStakedBalanceNetworks.mainnet,
+-            assetsUtil_1.SupportedStakedBalanceNetworks.hoodi,
++            assetsUtil_1.SupportedStakedBalanceNetworks.Mainnet,
++            assetsUtil_1.SupportedStakedBalanceNetworks.Hoodi,
+         ].includes(chainIdHex)) {
+             continue;
+         }
