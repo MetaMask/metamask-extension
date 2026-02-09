@@ -5588,7 +5588,7 @@ export default class MetamaskController extends EventEmitter {
     return this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
       async (keyring) => {
-        return await keyring.getHdPath();
+        return await keyring.hdPath;
       },
     );
   }
