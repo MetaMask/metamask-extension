@@ -96,6 +96,7 @@ const mockGetHasAccountOptedIn = jest.fn();
 const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
 const mockClearLastSelectedPaymentMethod = jest.fn();
+const mockSetShieldCardCheckoutInProgress = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -176,6 +177,10 @@ rootMessenger.registerActionHandler(
   'SubscriptionController:clearLastSelectedPaymentMethod',
   mockClearLastSelectedPaymentMethod,
 );
+rootMessenger.registerActionHandler(
+  'AppStateController:setShieldCardCheckoutInProgress',
+  mockSetShieldCardCheckoutInProgress,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -198,6 +203,7 @@ rootMessenger.delegate({
     'NetworkController:getState',
     'RemoteFeatureFlagController:getState',
     'AppStateController:getState',
+    'AppStateController:setShieldCardCheckoutInProgress',
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
     'KeyringController:getState',
