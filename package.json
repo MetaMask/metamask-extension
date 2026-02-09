@@ -306,6 +306,8 @@
     "@metamask/accounts-controller": "^34.0.0",
     "@metamask/address-book-controller": "^7.0.1",
     "@metamask/announcement-controller": "^8.0.0",
+    "@metamask/client-state-controller": "file:../core/packages/client-state-controller",
+    "@metamask/ui-state-controller": "file:../core/packages/ui-state-controller",
     "@metamask/approval-controller": "^8.0.0",
     "@metamask/assets-controllers": "^99.0.0",
     "@metamask/base-controller": "^9.0.0",
