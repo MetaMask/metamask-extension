@@ -68,7 +68,6 @@ const goToOnboardingWelcomeLoginPage = async ({
   if (needNavigateToNewPage) {
     await driver.navigate();
   }
-
   if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
     await onboardingMetricsFlow(driver, {
       participateInMetaMetrics,

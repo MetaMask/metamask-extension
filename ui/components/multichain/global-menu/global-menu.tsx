@@ -109,7 +109,7 @@ export const GlobalMenu = ({
 }: GlobalMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
   const basicFunctionality = useSelector(getUseExternalServices);
@@ -377,7 +377,7 @@ export const GlobalMenu = ({
       {basicFunctionality && (
         <>
           <MenuItem
-            iconName={IconName.Notification}
+            iconNameLegacy={IconName.Notification}
             onClick={() => handleNotificationsClick()}
             data-testid="notifications-menu-item"
           >
@@ -409,7 +409,7 @@ export const GlobalMenu = ({
 
       {(isPopup || isSidepanel) && (
         <MenuItem
-          iconName={IconName.Export}
+          iconNameLegacy={IconName.Export}
           onClick={() => {
             global?.platform?.openExtensionInBrowser?.();
             trackEvent({
@@ -453,7 +453,7 @@ export const GlobalMenu = ({
         isSidePanelEnabled &&
         (isPopup || isSidepanel) && (
           <MenuItem
-            iconName={isSidepanel ? IconName.PopUp : IconName.Sidepanel}
+            iconNameLegacy={isSidepanel ? IconName.Popup : IconName.Sidepanel}
             onClick={async () => {
               await toggleDefaultView();
               trackEvent({
@@ -479,7 +479,7 @@ export const GlobalMenu = ({
             ? GATOR_PERMISSIONS
             : PERMISSIONS
         }
-        iconName={IconName.SecurityTick}
+        iconNameLegacy={IconName.SecurityTick}
         onClick={() => {
           trackEvent({
             event: MetaMetricsEventName.NavPermissionsOpened,
@@ -497,7 +497,7 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         data-testid="global-menu-networks"
-        iconName={IconName.Hierarchy}
+        iconNameLegacy={IconName.Hierarchy}
         onClick={() => {
           dispatch(toggleNetworkMenu());
           closeMenu();
@@ -507,14 +507,14 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         to={SNAPS_ROUTE}
-        iconName={IconName.Snaps}
+        iconNameLegacy={IconName.Snaps}
         onClick={closeMenu}
         showInfoDot={snapsUpdatesAvailable}
       >
         {t('snaps')}
       </MenuItem>
       <MenuItem
-        iconName={IconName.MessageQuestion}
+        iconNameLegacy={IconName.MessageQuestion}
         onClick={handleSupportMenuClick}
         data-testid="global-menu-support"
       >
@@ -544,7 +544,7 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         to={SETTINGS_ROUTE}
-        iconName={IconName.Setting}
+        iconNameLegacy={IconName.Setting}
         disabled={hasUnapprovedTransactions}
         onClick={() => {
           trackEvent({
@@ -563,7 +563,7 @@ export const GlobalMenu = ({
       <MenuItem
         to={DEFAULT_ROUTE}
         ref={lastItemRef} // ref for last item in GlobalMenu
-        iconName={IconName.Lock}
+        iconNameLegacy={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
           trackEvent({

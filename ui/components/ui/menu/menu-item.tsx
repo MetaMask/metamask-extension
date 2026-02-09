@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import {
@@ -8,48 +7,45 @@ import {
 } from '@metamask/design-system-react';
 import {
   BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
   BadgeWrapperPosition,
+  BadgeStatus,
+  BadgeStatusStatus,
   Icon,
   IconName as IconNameDeprecated,
   IconSize,
   Text,
-  Box,
+  TextVariant,
+  TextColor,
+  twMerge,
+} from '@metamask/design-system-react';
+import {
+  Icon as IconLegacy,
+  IconName as IconNameLegacy,
+  IconSize as IconSizeLegacy,
+  Text as TextLegacy,
 } from '../../component-library';
 import {
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  IconColor as IconColorDeprecated,
-  TextColor as TextColorDeprecated,
-  TextVariant as TextVariantDeprecated,
+  IconColor as IconColorLegacy,
+  TextVariant as TextVariantLegacy,
 } from '../../../helpers/constants/design-system';
 
 type MenuItemProps = {
   children: React.ReactNode;
   className?: string;
   'data-testid'?: string;
-  /**
-   * Accepts both deprecated IconName from component-library and new IconName from @metamask/design-system-react
-   * Using string to allow both enum types without TypeScript strictness issues
-   */
-  iconName: IconNameDeprecated | IconNameNew | string;
-  /**
-   * Accepts both deprecated IconColor from design-system and new IconColor from @metamask/design-system-react
-   * Using string to allow both enum types without TypeScript strictness issues
-   */
-  iconColor?: IconColorDeprecated | IconColorNew | string;
+  // Legacy props from component-library (kept for backward compatibility)
+  iconNameLegacy?: IconNameLegacy;
+  iconColorLegacy?: IconColorLegacy;
+  textVariantLegacy?: TextVariantLegacy;
+  // New props from @metamask/design-system-react
+  iconName?: IconName;
   iconSize?: IconSize;
+  textVariant?: TextVariant;
   to?: string;
   onClick?: () => void;
   subtitle?: string;
   disabled?: boolean;
   showInfoDot?: boolean;
-  /**
-   * Accepts both deprecated TextVariant from design-system and new TextVariant from @metamask/design-system-react
-   * Using string to allow both enum types without TypeScript strictness issues
-   */
-  textVariant?: string;
 };
 
 const MenuItem = React.forwardRef<
@@ -61,72 +57,109 @@ const MenuItem = React.forwardRef<
       children,
       className = '',
       'data-testid': dataTestId,
+      iconNameLegacy,
+      iconColorLegacy,
+      textVariantLegacy,
       iconName,
-      iconColor,
-      iconSize = IconSize.Sm,
+      iconSize,
+      textVariant,
       onClick,
       subtitle,
       disabled,
       showInfoDot,
-      textVariant,
       to,
     }: MenuItemProps,
     ref,
   ) => {
+    // Determine which icon and text system to use
+    const useNewSystem = iconName || textVariant;
+    const actualIconName = iconName || iconNameLegacy;
+
     const content = (
       <>
-        {iconName && showInfoDot && (
+        {/* Icon rendering with badge support */}
+        {actualIconName && showInfoDot && (
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-            display={Display.Block}
-            position={BadgeWrapperPosition.topRight}
-            positionObj={{ top: 0, right: 4 }}
-            badge={
-              <Box
-                style={{ width: '10px', height: '10px', content: '' }}
-                borderRadius={BorderRadius.full}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            }
+            badge={<BadgeStatus status={BadgeStatusStatus.New} />}
+            position={BadgeWrapperPosition.TopRight}
+            positionXOffset={4}
           >
-            <Icon
-              name={iconName as unknown as IconNameDeprecated}
-              size={iconSize}
-              marginRight={2}
-            />
+            {useNewSystem && iconName && (
+              <Icon
+                name={iconName}
+                size={iconSize || IconSize.Md}
+                className="mr-2"
+              />
+            )}
+            {!useNewSystem && iconNameLegacy && (
+              <IconLegacy
+                name={iconNameLegacy}
+                size={IconSizeLegacy.Sm}
+                marginRight={2}
+              />
+            )}
           </BadgeWrapper>
         )}
-        {iconName && !showInfoDot && (
-          <Icon
-            name={iconName as unknown as IconNameDeprecated}
-            size={iconSize}
-            marginRight={3}
-            color={iconColor as unknown as IconColorDeprecated}
-          />
+        {actualIconName && !showInfoDot && (
+          <>
+            {useNewSystem && iconName && (
+              <Icon
+                name={iconName}
+                size={iconSize || IconSize.Md}
+                className="mr-3"
+              />
+            )}
+            {!useNewSystem && iconNameLegacy && (
+              <IconLegacy
+                name={iconNameLegacy}
+                size={IconSizeLegacy.Sm}
+                marginRight={3}
+                color={iconColorLegacy}
+              />
+            )}
+          </>
         )}
+
         <div>
-          <Text
-            variant={textVariant as unknown as TextVariantDeprecated}
-            as="div"
-          >
-            {children}
-          </Text>
-          {subtitle ? (
+          {textVariant && (
+            <Text variant={textVariant} asChild>
+              <div>{children}</div>
+            </Text>
+          )}
+          {!textVariant && textVariantLegacy && (
+            <TextLegacy variant={textVariantLegacy} as="div">
+              {children}
+            </TextLegacy>
+          )}
+          {!textVariant && !textVariantLegacy && <div>{children}</div>}
+          {subtitle && (
             <Text
-              variant={TextVariantDeprecated.bodyXs}
-              color={TextColorDeprecated.textAlternative}
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
             >
               {subtitle}
             </Text>
-          ) : null}
+          )}
         </div>
       </>
+    );
+
+    const baseClasses = twMerge(
+      'grid grid-cols-[min-content_auto] items-center',
+      'w-full p-4',
+      'text-start text-inherit [font-size:inherit]',
+      'bg-transparent cursor-pointer',
+      'hover:bg-default-hover hover:text-inherit',
+      'active:bg-default-pressed active:text-inherit',
+      'focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2',
+      'first:rounded-t-lg last:rounded-b-lg',
+      className,
     );
 
     if (to) {
       return disabled ? (
         <span
-          className={classnames('menu-item', className)}
+          className={baseClasses}
           data-testid={dataTestId}
           ref={ref as React.Ref<HTMLSpanElement>}
         >
@@ -135,7 +168,7 @@ const MenuItem = React.forwardRef<
       ) : (
         <Link
           to={to}
-          className={classnames('menu-item', className)}
+          className={baseClasses}
           data-testid={dataTestId}
           ref={ref as React.Ref<HTMLAnchorElement>}
           onClick={onClick}
@@ -147,7 +180,7 @@ const MenuItem = React.forwardRef<
 
     return (
       <button
-        className={classnames('menu-item', className)}
+        className={baseClasses}
         data-testid={dataTestId}
         disabled={disabled}
         ref={ref as React.Ref<HTMLButtonElement>}
