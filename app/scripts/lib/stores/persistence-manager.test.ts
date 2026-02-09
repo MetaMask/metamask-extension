@@ -37,6 +37,11 @@ jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
   captureMessage: jest.fn(),
 }));
+jest.mock('../../../../shared/lib/trace', () => ({
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+  TraceName: {},
+}));
 const mockedCaptureException = jest.mocked(captureException);
 const mockedCaptureMessage = jest.mocked(captureMessage);
 
