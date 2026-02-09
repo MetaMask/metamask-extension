@@ -15,7 +15,7 @@ import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
-import type { BenchmarkResults, UserActionResult } from './types-generated';
+import type { BenchmarkResults, UserActionResult } from './utils/types';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');
 const { version } = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {

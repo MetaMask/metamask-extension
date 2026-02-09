@@ -1426,8 +1426,8 @@ export function setupController(
   });
 
   // Wire up the callback to notify the UI when set operations fail
-  persistenceManager.setOnSetFailed(() => {
-    controller.appStateController.setShowStorageErrorToast(true);
+  persistenceManager.setOnSetFailed((errorType) => {
+    controller.appStateController.setStorageWriteErrorType(errorType);
   });
 
   /**

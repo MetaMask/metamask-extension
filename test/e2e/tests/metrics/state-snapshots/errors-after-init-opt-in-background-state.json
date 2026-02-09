@@ -73,12 +73,12 @@
     "showNetworkBanner": true,
     "showPermissionsTour": true,
     "showShieldEntryModalOnce": "boolean",
-    "showStorageErrorToast": false,
     "showTestnetMessageInDropdown": true,
     "sidePanelGasPollTokens": [],
     "signatureSecurityAlertResponses": "object",
     "slides": "object",
     "snapsInstallPrivacyWarningShown": true,
+    "storageWriteErrorType": null,
     "surveyLinkLastClickedOrClosed": "object",
     "termsOfUseLastAgreed": "number",
     "throttledOrigins": "object",
@@ -370,6 +370,7 @@
     "lastUpdated": "number",
     "signature": "string"
   },
+  "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "SwapsController": {
