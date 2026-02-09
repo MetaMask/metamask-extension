@@ -238,7 +238,7 @@ export class LedgerOffscreenHandler {
   }> {
     const app = await this.ensureApp();
     // The nft parameter resolution is selector-based only: approve() uses
-    // the same selector (0x095ea7b3) for both ERC20 and ERC721, this 4-byte
+    // the same selector (0x095ea7b3) for both ERC20 and ERC721
     // (see @ledgerhq/evm-tools selectors and hw-app-eth resolveTransaction).
     //
     // The nft parameter will be set to true only for the selectors defined in
