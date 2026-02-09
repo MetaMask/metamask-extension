@@ -77,7 +77,10 @@ import {
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
+import {
+  getLastUsedShieldSubscriptionPaymentDetails,
+  getShieldCardCheckoutInProgress,
+} from '../../selectors/subscription';
 import {
   ShieldMetricsSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
@@ -90,7 +93,10 @@ import {
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
+import {
+  setLastUsedSubscriptionPaymentDetails,
+  setShieldCardCheckoutInProgress,
+} from '../../store/actions';
 import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
 import { getIntlLocale } from '../../ducks/locale/locale';
 import { ShieldPaymentModal } from './shield-payment-modal';
@@ -107,6 +113,10 @@ const ShieldPlan = () => {
 
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
+  );
+
+  const shieldCardCheckoutInProgress = useSelector(
+    getShieldCardCheckoutInProgress,
   );
 
   const {
@@ -407,7 +417,12 @@ const ShieldPlan = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRewardsModal, setShowRewardsModal] = useState(false);
 
-  const handleBack = () => {
+  const handleBack = async () => {
+    // Clear the checkout-in-progress flag when leaving the shield plan page
+    if (shieldCardCheckoutInProgress) {
+      await dispatch(setShieldCardCheckoutInProgress(false));
+    }
+
     const source = new URLSearchParams(search).get('source');
     if (source === ShieldMetricsSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page

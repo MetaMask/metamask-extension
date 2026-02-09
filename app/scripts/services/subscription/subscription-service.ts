@@ -213,11 +213,23 @@ export class SubscriptionService {
 
       // skipping redirect and open new tab in test environment
       if (!process.env.IN_TEST) {
+        // Mark checkout as in progress so the UI can redirect back to shield plan page if user abandons checkout
+        this.#messenger.call(
+          'AppStateController:setShieldCardCheckoutInProgress',
+          true,
+        );
+
         await this.#openAndWaitForTabToClose({
           url: checkoutSessionUrl,
           successUrl: redirectUrl,
           cancelUrl,
         });
+
+        // Clear the in-progress flag on successful checkout
+        this.#messenger.call(
+          'AppStateController:setShieldCardCheckoutInProgress',
+          false,
+        );
 
         if (!currentTabId) {
           // open extension browser shield settings if open from pop up (no current tab)

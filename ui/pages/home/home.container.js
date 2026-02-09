@@ -63,6 +63,7 @@ import {
   selectOnboardingModalOpen,
 } from '../../ducks/rewards/selectors';
 import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
+import { getShieldCardCheckoutInProgress } from '../../selectors/subscription';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -82,6 +83,7 @@ import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi
 import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
+  setRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
 import { AppHeader } from '../../components/multichain/app-header';
 import Home from './home.component';
@@ -174,6 +176,7 @@ const mapStateToProps = (state) => {
     rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
     rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
+    shieldCardCheckoutInProgress: getShieldCardCheckoutInProgress(state),
   };
 };
 
@@ -224,6 +227,8 @@ const mapDispatchToProps = (dispatch) => {
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),
+    setRedirectAfterDefaultPage: (redirectAfterDefaultPage) =>
+      dispatch(setRedirectAfterDefaultPage(redirectAfterDefaultPage)),
     clearRedirectAfterDefaultPage: () =>
       dispatch(clearRedirectAfterDefaultPage()),
     lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
