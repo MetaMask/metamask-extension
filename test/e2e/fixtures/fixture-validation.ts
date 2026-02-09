@@ -58,9 +58,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppStateController.termsOfUseLastAgreed',
   'data.CurrencyController.currencyRates.ETH.conversionDate',
   'data.CurrencyController.currencyRates.ETH.conversionRate',
-  'data.MetaMetricsController.latestNonAnonymousEventTimestamp',
-  'data.MetaMetricsController.tracesBeforeMetricsOptIn',
-  'data.MetaMetricsController.traits.install_date_ext',
   'data.NetworkController.networkConfigurationsByChainId.0x539.lastUpdatedAt',
   'data.PhishingController.c2DomainBlocklistLastFetched',
   'data.PhishingController.hotlistLastFetched',
@@ -74,14 +71,13 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountsController.internalAccounts.accounts',
   'data.AuthenticationController',
+  'data.MetaMetricsController',
   'data.MultichainAssetsController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
   // Random ids
-  'data.MetaMetricsController.eventsBeforeMetricsOptIn[0].actionId',
-  'data.MetaMetricsController.metaMetricsId',
   'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
