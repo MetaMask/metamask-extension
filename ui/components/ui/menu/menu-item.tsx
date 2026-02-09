@@ -1,38 +1,47 @@
 import React, { memo } from 'react';
-import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import {
   BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
   BadgeWrapperPosition,
+  BadgeStatus,
+  BadgeStatusStatus,
   Icon,
   IconName,
   IconSize,
   Text,
-  Box,
+  TextVariant,
+  TextColor,
+  twMerge,
+} from '@metamask/design-system-react';
+import {
+  Icon as IconLegacy,
+  IconName as IconNameLegacy,
+  IconSize as IconSizeLegacy,
+  Text as TextLegacy,
 } from '../../component-library';
 import {
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  IconColor,
-  TextColor,
-  TextVariant,
+  IconColor as IconColorLegacy,
+  TextVariant as TextVariantLegacy,
 } from '../../../helpers/constants/design-system';
 
 type MenuItemProps = {
   children: React.ReactNode;
   className?: string;
   'data-testid'?: string;
-  iconName: IconName;
-  iconColor?: IconColor;
+  // Legacy props from component-library (kept for backward compatibility)
+  iconNameLegacy?: IconNameLegacy;
+  iconColorLegacy?: IconColorLegacy;
+  textVariantLegacy?: TextVariantLegacy;
+  // New props from @metamask/design-system-react
+  iconName?: IconName;
+  iconSize?: IconSize;
+  textVariant?: TextVariant;
   to?: string;
   onClick?: () => void;
   subtitle?: string;
   disabled?: boolean;
   showInfoDot?: boolean;
-  textVariant?: TextVariant;
 };
 
 const MenuItem = React.forwardRef<
@@ -44,64 +53,109 @@ const MenuItem = React.forwardRef<
       children,
       className = '',
       'data-testid': dataTestId,
+      iconNameLegacy,
+      iconColorLegacy,
+      textVariantLegacy,
       iconName,
-      iconColor,
+      iconSize,
+      textVariant,
       onClick,
       subtitle,
       disabled,
       showInfoDot,
-      textVariant,
       to,
     }: MenuItemProps,
     ref,
   ) => {
+    // Determine which icon and text system to use
+    const useNewSystem = iconName || textVariant;
+    const actualIconName = iconName || iconNameLegacy;
+
     const content = (
       <>
-        {iconName && showInfoDot && (
+        {/* Icon rendering with badge support */}
+        {actualIconName && showInfoDot && (
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
-            display={Display.Block}
-            position={BadgeWrapperPosition.topRight}
-            positionObj={{ top: 0, right: 4 }}
-            badge={
-              <Box
-                style={{ width: '10px', height: '10px', content: '' }}
-                borderRadius={BorderRadius.full}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            }
+            badge={<BadgeStatus status={BadgeStatusStatus.New} />}
+            position={BadgeWrapperPosition.TopRight}
+            positionXOffset={4}
           >
-            <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
+            {useNewSystem && iconName && (
+              <Icon
+                name={iconName}
+                size={iconSize || IconSize.Md}
+                className="mr-2"
+              />
+            )}
+            {!useNewSystem && iconNameLegacy && (
+              <IconLegacy
+                name={iconNameLegacy}
+                size={IconSizeLegacy.Sm}
+                marginRight={2}
+              />
+            )}
           </BadgeWrapper>
         )}
-        {iconName && !showInfoDot && (
-          <Icon
-            name={iconName}
-            size={IconSize.Sm}
-            marginRight={3}
-            color={iconColor}
-          />
+        {actualIconName && !showInfoDot && (
+          <>
+            {useNewSystem && iconName && (
+              <Icon
+                name={iconName}
+                size={iconSize || IconSize.Md}
+                className="mr-3"
+              />
+            )}
+            {!useNewSystem && iconNameLegacy && (
+              <IconLegacy
+                name={iconNameLegacy}
+                size={IconSizeLegacy.Sm}
+                marginRight={3}
+                color={iconColorLegacy}
+              />
+            )}
+          </>
         )}
+
         <div>
-          <Text variant={textVariant} as="div">
-            {children}
-          </Text>
-          {subtitle ? (
+          {textVariant && (
+            <Text variant={textVariant} asChild>
+              <div>{children}</div>
+            </Text>
+          )}
+          {!textVariant && textVariantLegacy && (
+            <TextLegacy variant={textVariantLegacy} as="div">
+              {children}
+            </TextLegacy>
+          )}
+          {!textVariant && !textVariantLegacy && <div>{children}</div>}
+          {subtitle && (
             <Text
-              variant={TextVariant.bodyXs}
-              color={TextColor.textAlternative}
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
             >
               {subtitle}
             </Text>
-          ) : null}
+          )}
         </div>
       </>
+    );
+
+    const baseClasses = twMerge(
+      'grid grid-cols-[min-content_auto] items-center',
+      'w-full p-4',
+      'text-start text-inherit [font-size:inherit]',
+      'bg-transparent cursor-pointer',
+      'hover:bg-default-hover hover:text-inherit',
+      'active:bg-default-pressed active:text-inherit',
+      'focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2',
+      'first:rounded-t-lg last:rounded-b-lg',
+      className,
     );
 
     if (to) {
       return disabled ? (
         <span
-          className={classnames('menu-item', className)}
+          className={baseClasses}
           data-testid={dataTestId}
           ref={ref as React.Ref<HTMLSpanElement>}
         >
@@ -110,7 +164,7 @@ const MenuItem = React.forwardRef<
       ) : (
         <Link
           to={to}
-          className={classnames('menu-item', className)}
+          className={baseClasses}
           data-testid={dataTestId}
           ref={ref as React.Ref<HTMLAnchorElement>}
           onClick={onClick}
@@ -122,7 +176,7 @@ const MenuItem = React.forwardRef<
 
     return (
       <button
-        className={classnames('menu-item', className)}
+        className={baseClasses}
         data-testid={dataTestId}
         disabled={disabled}
         ref={ref as React.Ref<HTMLButtonElement>}

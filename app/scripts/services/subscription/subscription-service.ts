@@ -117,11 +117,22 @@ export class SubscriptionService {
 
       // skipping redirect and open new tab in test environment
       if (!process.env.IN_TEST) {
-        await this.#openAndWaitForTabToClose({
-          url: checkoutSessionUrl,
-          successUrl: redirectUrl,
-          cancelUrl,
-        });
+        try {
+          await this.#openAndWaitForTabToClose({
+            url: checkoutSessionUrl,
+            successUrl: redirectUrl,
+            cancelUrl,
+          });
+        } catch (error) {
+          const isTabClosed =
+            error instanceof Error &&
+            error.message.includes(SHIELD_ERROR.tabActionFailed);
+          // continue to refetch subscriptions if the tab is closed
+          // since stripe update payment method page doesn't automatically redirect to the success url
+          if (!isTabClosed) {
+            throw error;
+          }
+        }
 
         if (!currentTabId) {
           // open extension browser shield settings if open from pop up (no current tab)

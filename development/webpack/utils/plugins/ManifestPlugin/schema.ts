@@ -8,7 +8,14 @@ type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 export const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
-  required: ['browsers', 'description', 'manifest_version', 'version', 'zip'],
+  required: [
+    'browsers',
+    'description',
+    'manifest_version',
+    'version',
+    'zip',
+    'buildType',
+  ],
   properties: {
     browsers: {
       description: 'The browsers to build for.',
@@ -105,6 +112,10 @@ export const schema = {
         },
       },
       additionalProperties: false,
+    },
+    buildType: {
+      description: 'The build type to create.',
+      type: 'string',
     },
   },
   additionalProperties: false,
