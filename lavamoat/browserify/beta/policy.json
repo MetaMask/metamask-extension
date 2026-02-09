@@ -1245,7 +1245,7 @@
         "@ledgerhq/hw-app-eth": true,
         "@ledgerhq/hw-transport": true,
         "@metamask/eth-sig-util": true,
-        "@metamask/hw-wallet-sdk": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/hw-wallet-sdk": true,
         "@metamask/keyring-api": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
@@ -1497,18 +1497,6 @@
         "@metamask/keyring-api>uuid": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-api": {
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
-        "bitcoin-address-validation": true,
-        "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-api>uuid": true
-      }
-    },
     "@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -1557,16 +1545,6 @@
       }
     },
     "@metamask/keyring-utils": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },

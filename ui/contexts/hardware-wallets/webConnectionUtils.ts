@@ -235,6 +235,7 @@ export async function getConnectedLedgerDevices(): Promise<HIDDevice[]> {
 
   try {
     const devices = await window.navigator.hid.getDevices();
+    console.log('[hw] getConnectedLedgerDevices', devices);
     return devices.filter((device) =>
       isHardwareWalletDevice(device, HardwareWalletType.Ledger),
     );

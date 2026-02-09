@@ -7153,6 +7153,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/hw-wallet-sdk@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@metamask/hw-wallet-sdk@npm:0.5.0"
+  checksum: 10/ed306846a35723968f45ee24198fd04ce6d53a461077015eda777a85efe36569009a737be74d4945a3aba894b6f193b3acd66bf19c2f7a0de4dc75d07dd24d0a
+  languageName: node
+  linkType: hard
+
 "@metamask/institutional-wallet-snap@npm:1.3.4":
   version: 1.3.4
   resolution: "@metamask/institutional-wallet-snap@npm:1.3.4"
@@ -7374,23 +7381,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^21.4.0":
-  version: 21.4.0
-  resolution: "@metamask/keyring-api@npm:21.4.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/keyring-utils": "npm:^3.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    "@types/uuid": "npm:^9.0.8"
-    async-mutex: "npm:^0.5.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-    uuid: "npm:^9.0.1"
-  checksum: 10/f780ccdda9f072effa0472bddefeb210618ba597e1c3c9d333056c8a7770d0fb6f18e6647d77069c63b0297184f676cc682d6347cf30e164567655f0fa82b567
-  languageName: node
-  linkType: hard
-
 "@metamask/keyring-api@npm:^8.1.3":
   version: 8.1.3
   resolution: "@metamask/keyring-api@npm:8.1.3"
@@ -7514,18 +7504,6 @@ __metadata:
   linkType: hard
 
 "@metamask/keyring-utils@npm:^3.1.0, @metamask/keyring-utils@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@metamask/keyring-utils@npm:3.2.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/e71aa1b9ec9a24c72ea6d4864a10f11e68e5b77789728067230ec40cee2e85ad69073404d2fa62c760f014fd910fb68b3305a08f906f2534b9119e2a26d06a2b
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-utils@npm:^3.2.0":
   version: 3.2.0
   resolution: "@metamask/keyring-utils@npm:3.2.0"
   dependencies:
@@ -33906,7 +33884,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^25.0.0"
     "@metamask/gator-permissions-controller": "npm:^1.1.2"
     "@metamask/gator-permissions-snap": "npm:^1.1.1"
-    "@metamask/hw-wallet-sdk": "npm:^0.4.0"
+    "@metamask/hw-wallet-sdk": "npm:^0.5.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.2.1"

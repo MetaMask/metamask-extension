@@ -1023,9 +1023,6 @@
   "bridgeFetchNewQuotes": {
     "message": "Fetch a new one?"
   },
-  "hardwareWalletLoading": {
-    "message": "Confirm transaction on your hardware wallet."
-  },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 to $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -1624,6 +1621,10 @@
   },
   "connectAnAccountHeader": {
     "message": "Connect an account"
+  },
+  "connectHardwareDevice": {
+    "message": "Connect $1",
+    "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Manually connect to current site"
@@ -3107,6 +3108,9 @@
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletLoading": {
+    "message": "Confirm transaction on your hardware wallet."
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Be sure your $1 is plugged in and to select the Ethereum app."
