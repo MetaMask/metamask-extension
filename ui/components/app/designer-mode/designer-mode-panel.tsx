@@ -61,6 +61,7 @@ function EditableValue({
 }: EditableValueProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
+  const originalValueRef = useRef(value);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
   const colorRef = useRef<HTMLInputElement>(null);
 
@@ -68,6 +69,7 @@ function EditableValue({
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
       inputRef.current.select();
+      originalValueRef.current = value;
     }
   }, [isEditing]);
 
@@ -77,24 +79,28 @@ function EditableValue({
     }
   }, [value, isEditing]);
 
-  const handleApply = useCallback(() => {
-    if (editValue !== value) {
-      onApply(editValue);
-    }
-    setIsEditing(false);
-  }, [editValue, value, onApply]);
+  // Apply live on every keystroke (Figma-like)
+  const handleChange = useCallback(
+    (newVal: string) => {
+      setEditValue(newVal);
+      onApply(newVal);
+    },
+    [onApply],
+  );
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Enter' && !multiline) {
-        handleApply();
+        setIsEditing(false);
       } else if (e.key === 'Escape') {
-        setEditValue(value);
+        // Revert to original value before editing started
+        onApply(originalValueRef.current);
+        setEditValue(originalValueRef.current);
         setIsEditing(false);
       }
       e.stopPropagation();
     },
-    [handleApply, multiline, value],
+    [multiline, onApply],
   );
 
   const handleColorChange = useCallback(
@@ -144,8 +150,8 @@ function EditableValue({
         <textarea
           ref={inputRef as React.RefObject<HTMLTextAreaElement>}
           value={editValue}
-          onChange={(e) => setEditValue(e.target.value)}
-          onBlur={handleApply}
+          onChange={(e) => handleChange(e.target.value)}
+          onBlur={() => setIsEditing(false)}
           onKeyDown={handleKeyDown}
           style={inputStyles}
         />
@@ -155,8 +161,8 @@ function EditableValue({
       <input
         ref={inputRef as React.RefObject<HTMLInputElement>}
         value={editValue}
-        onChange={(e) => setEditValue(e.target.value)}
-        onBlur={handleApply}
+        onChange={(e) => handleChange(e.target.value)}
+        onBlur={() => setIsEditing(false)}
         onKeyDown={handleKeyDown}
         style={inputStyles}
       />
@@ -352,6 +358,102 @@ function PropertyRow({
 // Visual cross-layout for margin/padding (Figma-like)
 // ═══════════════════════════════════════════════════════════════════
 
+// ── Shared style for mini spacing inputs ─────────────────────────
+
+const miniInputStyle: React.CSSProperties = {
+  width: 40,
+  textAlign: 'center' as const,
+  fontSize: 10,
+  fontFamily: MONO,
+  color: C.text,
+  backgroundColor: 'transparent',
+  border: '1px solid transparent',
+  borderRadius: 3,
+  padding: '2px 2px',
+  cursor: 'pointer',
+  transition: 'border-color 0.1s, background-color 0.1s',
+  outline: 'none',
+};
+
+// ── MiniInput: standalone component to preserve focus across re-renders
+
+type MiniInputProps = {
+  val: string;
+  side: string;
+  label: string;
+  onApply: (side: string, value: string) => void;
+};
+
+function MiniInput({ val, side, label, onApply }: MiniInputProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editVal, setEditVal] = useState(val);
+  const originalVal = useRef(val);
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && ref.current) {
+      ref.current.focus();
+      ref.current.select();
+      originalVal.current = val;
+    }
+  }, [isEditing]);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setEditVal(val);
+    }
+  }, [val, isEditing]);
+
+  if (isEditing) {
+    return (
+      <input
+        ref={ref}
+        value={editVal}
+        onChange={(e) => {
+          setEditVal(e.target.value);
+          onApply(side, e.target.value);
+        }}
+        onBlur={() => setIsEditing(false)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            setIsEditing(false);
+          } else if (e.key === 'Escape') {
+            onApply(side, originalVal.current);
+            setEditVal(originalVal.current);
+            setIsEditing(false);
+          }
+          e.stopPropagation();
+        }}
+        style={{
+          ...miniInputStyle,
+          borderColor: C.inputFocus,
+          backgroundColor: C.input,
+        }}
+      />
+    );
+  }
+
+  return (
+    <span
+      onClick={() => setIsEditing(true)}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.backgroundColor = C.inputHover;
+        (e.currentTarget as HTMLElement).style.borderColor = C.divider;
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+        (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
+      }}
+      style={miniInputStyle}
+      title={`Click to edit ${label}-${side}`}
+    >
+      {shortenValue(val)}
+    </span>
+  );
+}
+
+// ── SpacingEditor ────────────────────────────────────────────────
+
 type SpacingEditorProps = {
   label: string;
   top: string;
@@ -371,98 +473,6 @@ function SpacingEditor({
   onApply,
   color,
 }: SpacingEditorProps) {
-  const miniInputStyle: React.CSSProperties = {
-    width: 40,
-    textAlign: 'center' as const,
-    fontSize: 10,
-    fontFamily: MONO,
-    color: C.text,
-    backgroundColor: 'transparent',
-    border: `1px solid transparent`,
-    borderRadius: 3,
-    padding: '2px 2px',
-    cursor: 'pointer',
-    transition: 'border-color 0.1s, background-color 0.1s',
-    outline: 'none',
-  };
-
-  const MiniInput = ({
-    val,
-    side,
-  }: {
-    val: string;
-    side: string;
-  }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const [editVal, setEditVal] = useState(val);
-    const ref = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-      if (isEditing && ref.current) {
-        ref.current.focus();
-        ref.current.select();
-      }
-    }, [isEditing]);
-
-    useEffect(() => {
-      if (!isEditing) {
-        setEditVal(val);
-      }
-    }, [val, isEditing]);
-
-    if (isEditing) {
-      return (
-        <input
-          ref={ref}
-          value={editVal}
-          onChange={(e) => setEditVal(e.target.value)}
-          onBlur={() => {
-            if (editVal !== val) {
-              onApply(side, editVal);
-            }
-            setIsEditing(false);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              if (editVal !== val) {
-                onApply(side, editVal);
-              }
-              setIsEditing(false);
-            } else if (e.key === 'Escape') {
-              setEditVal(val);
-              setIsEditing(false);
-            }
-            e.stopPropagation();
-          }}
-          style={{
-            ...miniInputStyle,
-            borderColor: C.inputFocus,
-            backgroundColor: C.input,
-          }}
-        />
-      );
-    }
-
-    return (
-      <span
-        onClick={() => setIsEditing(true)}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLElement).style.backgroundColor = C.inputHover;
-          (e.currentTarget as HTMLElement).style.borderColor = C.divider;
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLElement).style.backgroundColor =
-            'transparent';
-          (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
-        }}
-        style={miniInputStyle}
-        title={`Click to edit ${label}-${side}`}
-      >
-        {shortenValue(val)}
-      </span>
-    );
-  };
-
   return (
     <div style={{ marginBottom: 8 }}>
       <div
@@ -490,7 +500,7 @@ function SpacingEditor({
           border: `1px solid ${C.divider}`,
         }}
       >
-        <MiniInput val={top} side="top" />
+        <MiniInput val={top} side="top" label={label} onApply={onApply} />
         <div
           style={{
             display: 'flex',
@@ -500,7 +510,7 @@ function SpacingEditor({
             justifyContent: 'center',
           }}
         >
-          <MiniInput val={left} side="left" />
+          <MiniInput val={left} side="left" label={label} onApply={onApply} />
           <div
             style={{
               width: 36,
@@ -511,9 +521,19 @@ function SpacingEditor({
               flexShrink: 0,
             }}
           />
-          <MiniInput val={right} side="right" />
+          <MiniInput
+            val={right}
+            side="right"
+            label={label}
+            onApply={onApply}
+          />
         </div>
-        <MiniInput val={bottom} side="bottom" />
+        <MiniInput
+          val={bottom}
+          side="bottom"
+          label={label}
+          onApply={onApply}
+        />
       </div>
     </div>
   );
