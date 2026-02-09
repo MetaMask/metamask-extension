@@ -127,7 +127,7 @@ describe(`migration #${VERSION}`, () => {
 
     await migrate(oldState, new Set());
 
-    expect(oldState.data).toEqual({
+    expect(oldState.data).toStrictEqual({
       SnapController: {
         snaps: {
           'mock-snap-id': { id: 'mock-snap-id' },
