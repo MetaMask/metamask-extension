@@ -1403,11 +1403,6 @@ describe('Sentry errors', function () {
         userOptIn: true, // Initialized as undefined
         userOptInV2: true, // Initialized as undefined
       },
-      swapsState: {
-        // This can get wiped out during initialization due to a bug in
-        // the "resetState" method
-        swapsFeatureFlags: true,
-      },
       // Part of the AuthenticationController store, but initialized as undefined
       // Only populated once the client is authenticated
       srpSessionData: {},
