@@ -107,7 +107,7 @@ describe('Profile Metrics', function () {
           const [authCall] = mockedEndpoint;
           // There are 2 PUT requests:
           // 1. One for default EVM Account 1 alone
-          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added -- due to old fixtures)
+          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added)
           await waitForEndpointToBeCalled(driver, authCall, 2);
 
           const requests = await authCall.getSeenRequests();
@@ -157,7 +157,7 @@ describe('Profile Metrics', function () {
 
           // There are 3 PUT requests:
           // 1. One for default EVM Account 1 alone
-          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added -- due to old fixtures)
+          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added)
           // 3. One for Account 2 (Solana + EVM Accounts in one request)
           await waitForEndpointToBeCalled(driver, authCall, 3);
 
