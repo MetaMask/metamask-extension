@@ -97,7 +97,8 @@ export default function CreationSuccessful() {
   const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-  const deferredDeepLink = useSelector(getDeferredDeepLink) as DeferredDeepLink;
+  const deferredDeepLink: DeferredDeepLink | null =
+    useSelector(getDeferredDeepLink);
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';

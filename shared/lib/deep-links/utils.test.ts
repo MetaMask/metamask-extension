@@ -343,12 +343,7 @@ describe('Deep link utils', () => {
 
     describe('when referringLink is missing or invalid', () => {
       it('returns null when deferredDeepLink is null', async () => {
-        const result = await getDeferredDeepLinkRoute(null as never);
-        expect(result).toBeNull();
-      });
-
-      it('returns null when deferredDeepLink is undefined', async () => {
-        const result = await getDeferredDeepLinkRoute(undefined as never);
+        const result = await getDeferredDeepLinkRoute(null);
         expect(result).toBeNull();
       });
 

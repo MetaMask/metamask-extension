@@ -94,15 +94,15 @@ export function getDeferredDeepLinkFromCookie(): Promise<DeferredDeepLink | null
  * If the destination is an internal route with a valid signature, it returns the path with query parameters.
  * If the signature is missing or invalid, it returns an interstitial route to show a warning page.
  *
- * @param deferredDeepLink - The deferred deep link data containing the referring link URL and creation timestamp.
+ * @param deferredDeepLink - The deferred deep link data, or null if none is stored.
  * @returns A DeferredDeepLinkRoute with either:
  * - `type: DeferredDeepLinkRouteType.Redirect` and `url: string` for external URLs.
  * - `type: DeferredDeepLinkRouteType.Navigate` and `route: string` for internal routes with valid signature.
  * - `type: DeferredDeepLinkRouteType.Interstitial` and `urlPathAndQuery: string` for unsigned/invalid signature links.
- * - `null` if parsing fails, the link is invalid, or the link is older than two hours.
+ * - `null` if the input is null, parsing fails, the link is invalid, or the link is older than two hours.
  */
 export async function getDeferredDeepLinkRoute(
-  deferredDeepLink: DeferredDeepLink,
+  deferredDeepLink: DeferredDeepLink | null,
 ): Promise<DeferredDeepLinkRoute> {
   if (!deferredDeepLink?.referringLink) {
     return null;
