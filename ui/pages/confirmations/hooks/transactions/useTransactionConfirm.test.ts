@@ -87,9 +87,7 @@ describe('useTransactionConfirm', () => {
       isSupported: false,
       pending: false,
     });
-    updateAndApproveTxMock.mockReturnValue(() =>
-      Promise.resolve({} as TransactionMeta),
-    );
+    updateAndApproveTxMock.mockReturnValue(() => Promise.resolve());
 
     useIsGaslessSupportedMock.mockReturnValue({
       isSupported: false,
@@ -103,9 +101,7 @@ describe('useTransactionConfirm', () => {
       pending: false,
     });
 
-    updateAndApproveTxMock.mockReturnValue(() =>
-      Promise.resolve({} as TransactionMeta),
-    );
+    updateAndApproveTxMock.mockReturnValue(() => Promise.resolve());
   });
 
   it('dispatches update and approve action', async () => {
