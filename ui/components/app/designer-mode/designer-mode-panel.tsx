@@ -577,6 +577,63 @@ export function DesignerModePanel() {
   } = useDesignerMode();
 
   const [copySuccess, setCopySuccess] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  // ── Drag-to-move state ──────────────────────────────────────
+  const [position, setPosition] = useState({ x: 8, y: 8 }); // offset from bottom-right
+  const dragRef = useRef<{
+    isDragging: boolean;
+    startX: number;
+    startY: number;
+    startPosX: number;
+    startPosY: number;
+  } | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const handleDragStart = useCallback(
+    (e: React.MouseEvent) => {
+      // Only drag from the header area, not from buttons
+      if ((e.target as HTMLElement).closest('button')) {
+        return;
+      }
+      e.preventDefault();
+      dragRef.current = {
+        isDragging: true,
+        startX: e.clientX,
+        startY: e.clientY,
+        startPosX: position.x,
+        startPosY: position.y,
+      };
+    },
+    [position],
+  );
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!dragRef.current?.isDragging) {
+        return;
+      }
+      const dx = e.clientX - dragRef.current.startX;
+      const dy = e.clientY - dragRef.current.startY;
+      setPosition({
+        x: Math.max(0, dragRef.current.startPosX - dx),
+        y: Math.max(0, dragRef.current.startPosY - dy),
+      });
+    };
+
+    const handleMouseUp = () => {
+      if (dragRef.current) {
+        dragRef.current.isDragging = false;
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
   if (!isActive) {
     return null;
@@ -605,10 +662,14 @@ export function DesignerModePanel() {
 
   const panelStyle: React.CSSProperties = {
     position: 'fixed',
-    bottom: 8,
-    right: 8,
+    bottom: position.y,
+    right: position.x,
     width: 340,
-    maxHeight: 'calc(100vh - 70px)',
+    maxHeight: isMinimized
+      ? 'none'
+      : isLocked
+        ? 'min(680px, calc(100vh - 80px))'
+        : 'min(280px, calc(100vh - 80px))',
     backgroundColor: C.bg,
     color: C.text,
     borderRadius: 8,
@@ -621,34 +682,56 @@ export function DesignerModePanel() {
     display: 'flex',
     flexDirection: 'column',
     userSelect: 'none',
+    transition: dragRef.current?.isDragging
+      ? 'none'
+      : 'max-height 0.2s ease',
   };
 
   // ── Render ─────────────────────────────────────────────────────
 
   return (
     <div
+      ref={panelRef}
       className="designer-mode-panel"
       data-designer-mode="panel"
       style={panelStyle}
     >
-      {/* ── Header ───────────────────────────────────────────── */}
+      {/* ── Header (draggable) ───────────────────────────────── */}
       <div
+        onMouseDown={handleDragStart}
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '8px 12px',
           backgroundColor: C.surface,
-          borderBottom: `1px solid ${C.divider}`,
+          borderBottom: isMinimized ? 'none' : `1px solid ${C.divider}`,
           flexShrink: 0,
+          cursor: 'grab',
         }}
       >
         <span
-          style={{ fontWeight: 600, fontSize: 12, color: C.accent }}
+          style={{
+            fontWeight: 600,
+            fontSize: 12,
+            color: C.accent,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+          }}
         >
+          <span
+            style={{
+              color: C.textTertiary,
+              fontSize: 10,
+              letterSpacing: 1,
+            }}
+          >
+            ⠿
+          </span>
           Designer Mode
         </span>
-        <div style={{ display: 'flex', gap: 4 }}>
+        <div style={{ display: 'flex', gap: 2 }}>
           <button
             type="button"
             onClick={handleCopy}
@@ -669,6 +752,27 @@ export function DesignerModePanel() {
             }}
           >
             {copySuccess ? '✓ Copied' : 'Copy for AI'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsMinimized(!isMinimized)}
+            title={isMinimized ? 'Expand panel' : 'Minimize panel'}
+            style={{
+              width: 24,
+              height: 24,
+              backgroundColor: 'transparent',
+              color: C.textTertiary,
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer',
+              fontSize: 12,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: MONO,
+            }}
+          >
+            {isMinimized ? '▢' : '▁'}
           </button>
           <button
             type="button"
@@ -694,6 +798,9 @@ export function DesignerModePanel() {
         </div>
       </div>
 
+      {/* ── Collapsible body (hidden when minimized) ─────────── */}
+      {!isMinimized && (
+        <>
       {/* ── Lock status bar ──────────────────────────────────── */}
       {isLocked && (
         <div
@@ -1060,7 +1167,7 @@ export function DesignerModePanel() {
             </CollapsibleSection>
 
             {/* ── Fill & Stroke section ────────────────────── */}
-            <CollapsibleSection title="Fill & Stroke" icon="◉">
+            <CollapsibleSection title="Fill & Stroke" icon="◉" defaultOpen={false}>
               <PropertyRow
                 label="Background"
                 value={findStyleValue(
@@ -1295,6 +1402,8 @@ export function DesignerModePanel() {
           <Kbd>Esc</Kbd> exit
         </span>
       </div>
+        </>
+      )}
     </div>
   );
 }
