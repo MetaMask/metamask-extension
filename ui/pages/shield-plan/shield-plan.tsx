@@ -34,6 +34,7 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
+import log from 'loglevel';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
@@ -103,7 +104,6 @@ import { ShieldPaymentModal } from './shield-payment-modal';
 import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
-import log from 'loglevel';
 
 const ShieldPlan = () => {
   const navigate = useNavigate();
