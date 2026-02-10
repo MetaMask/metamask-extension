@@ -5338,6 +5338,27 @@
   "perpsMargin": {
     "message": "Margin"
   },
+  "perpsAddMargin": {
+    "message": "Add Margin"
+  },
+  "perpsRemoveMargin": {
+    "message": "Remove Margin"
+  },
+  "perpsAvailableBalance": {
+    "message": "Available balance"
+  },
+  "perpsMaxRemovable": {
+    "message": "Max removable"
+  },
+  "perpsLiquidationDistance": {
+    "message": "Liq. distance"
+  },
+  "perpsMarginRiskWarning": {
+    "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
+  },
+  "perpsMax": {
+    "message": "Max"
+  },
   "perpsMarket": {
     "message": "Market"
   },
@@ -5487,6 +5508,22 @@
   },
   "perpsStatusTriggered": {
     "message": "Triggered"
+  },
+  "perpsSubmitting": {
+    "message": "Submitting...",
+    "description": "Loading text shown while an order is being submitted"
+  },
+  "perpsTakeProfit": {
+    "message": "Take Profit",
+    "description": "Label for take profit price input"
+  },
+  "perpsStopLoss": {
+    "message": "Stop Loss",
+    "description": "Label for stop loss price input"
+  },
+  "perpsSaveChanges": {
+    "message": "Save Changes",
+    "description": "Button text for saving TP/SL changes"
   },
   "perpsTotalBalance": {
     "message": "Total Balance"
