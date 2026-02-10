@@ -6,6 +6,7 @@ import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import configureStore from '../../ui/store/store';
@@ -28,6 +29,14 @@ const createMockMetaMetricsContext = (
   bufferedTrace: jest.fn().mockResolvedValue(undefined),
   bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
   onboardingParentContext: { current: null },
+});
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
 });
 
 export const I18nProvider = (props) => {
@@ -69,7 +78,11 @@ function createProviderWrapper(
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
             <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+              <LegacyMetaMetricsProvider>
+                <QueryClientProvider client={queryClient}>
+                  {children}
+                </QueryClientProvider>
+              </LegacyMetaMetricsProvider>
             </MetaMetricsContext.Provider>
           </LegacyI18nProvider>
         </I18nProvider>
