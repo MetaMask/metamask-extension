@@ -2,9 +2,14 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
 import {
+  DEEP_LINK_BASIC_FUNCTIONALITY_OFF,
   DEEP_LINK_HOST,
   SIG_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
+import {
+  DEFAULT_ROUTE,
+  SWAP_ROUTE,
+} from '../../../../shared/lib/deep-links/routes/route';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
@@ -47,7 +52,15 @@ jest.mock('../../../../shared/modules/mv3.utils', () => ({
 
 const getState = jest.fn(() => ({
   preferences: { skipDeepLinkInterstitial: false },
+  useExternalServices: true,
 })) as unknown as jest.MockedFunction<MetaMaskController['getState']>;
+
+const TEST_DEEPLINK_ORIGIN = 'https://example.com';
+const EXTERNAL_ROUTE_PATH = 'external-route';
+const INTERNAL_ROUTE_PATH = 'internal-route';
+const REDIRECT_ROUTE_PATH = 'redirect-route';
+const NONEXISTENT_ROUTE_PATH = 'nonexistent-route';
+const SWAP_ROUTE_PATH = 'swap';
 
 describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
@@ -104,9 +117,12 @@ describe('DeepLinkRouter', () => {
       async (manifestVersion) => {
         mockIsManifestV3.mockReturnValue(manifestVersion === 'mv3');
         const tabId = 1;
-        const url = `https://example.com/external-route`;
+        const url = `${TEST_DEEPLINK_ORIGIN}/${EXTERNAL_ROUTE_PATH}`;
         parseMock.mockResolvedValue({
-          destination: {},
+          destination: {
+            path: EXTERNAL_ROUTE_PATH,
+            query: new URLSearchParams(),
+          },
         } as ParsedDeepLink);
         const response = await onBeforeRequest?.({
           tabId,
@@ -123,17 +139,20 @@ describe('DeepLinkRouter', () => {
       'should redirect signed/unsigned links to the correct route',
       async ({ signed }: { signed: boolean }) => {
         const tabId = 1;
-        const url = `https://example.com/external-route?query=param`;
+        const url = `${TEST_DEEPLINK_ORIGIN}/${EXTERNAL_ROUTE_PATH}?query=param`;
         parseMock.mockResolvedValue({
           signature: signed ? 'valid' : 'invalid',
-          destination: {},
+          destination: {
+            path: EXTERNAL_ROUTE_PATH,
+            query: new URLSearchParams(),
+          },
         } as ParsedDeepLink);
         await onBeforeRequest?.({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam',
+          url: `chrome-extension://extension-id/home.html#link?u=%2F${EXTERNAL_ROUTE_PATH}%3Fquery%3Dparam`,
         });
       },
     );
@@ -141,13 +160,14 @@ describe('DeepLinkRouter', () => {
     describe('skipDeepLinkInterstitial: true', () => {
       it('should redirect signed links to the correct route when skipDeepLinkInterstitial is true', async () => {
         const tabId = 1;
-        const url = `https://example.com/test-route?${SIG_PARAM}=12345`;
+        const url = `${TEST_DEEPLINK_ORIGIN}/${INTERNAL_ROUTE_PATH}?${SIG_PARAM}=12345`;
         getState.mockReturnValue({
           preferences: { skipDeepLinkInterstitial: true },
+          useExternalServices: true,
         } as unknown as ReturnType<MetaMaskController['getState']>);
         parseMock.mockResolvedValue({
           destination: {
-            path: 'internal-route',
+            path: INTERNAL_ROUTE_PATH,
             query: new URLSearchParams([['one', 'two']]),
           },
           signature: 'valid',
@@ -158,19 +178,23 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         // it should go directly to the internal route
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#internal-route?one=two',
+          url: `chrome-extension://extension-id/home.html#${INTERNAL_ROUTE_PATH}?one=two`,
         });
       });
 
       it('should redirect unsigned links to the correct route when skipDeepLinkInterstitial is true', async () => {
         const tabId = 1;
-        const url = `https://example.com/external-route?query=param`;
+        const url = `${TEST_DEEPLINK_ORIGIN}/${EXTERNAL_ROUTE_PATH}?query=param`;
         getState.mockReturnValue({
           preferences: { skipDeepLinkInterstitial: true },
+          useExternalServices: true,
         } as unknown as ReturnType<MetaMaskController['getState']>);
         parseMock.mockResolvedValue({
           signature: 'invalid',
-          destination: {},
+          destination: {
+            path: EXTERNAL_ROUTE_PATH,
+            query: new URLSearchParams(),
+          },
         } as ParsedDeepLink);
         await onBeforeRequest?.({
           tabId,
@@ -178,7 +202,7 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         // it should NOT go directly to the internal route, but still be shown the interstitial
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam',
+          url: `chrome-extension://extension-id/home.html#link?u=%2F${EXTERNAL_ROUTE_PATH}%3Fquery%3Dparam`,
         });
       });
     });
@@ -195,7 +219,7 @@ describe('DeepLinkRouter', () => {
     });
 
     it('should reject parsing very long URLs', async () => {
-      const url = `https://example.com/${'a'.repeat(5000)}`;
+      const url = `${TEST_DEEPLINK_ORIGIN}/${'a'.repeat(5000)}`;
       const response = await onBeforeRequest?.({
         tabId: 1,
         url,
@@ -227,9 +251,12 @@ describe('DeepLinkRouter', () => {
     it('should capture browser.tabs.update exceptions and emit an error event', async function () {
       const logErrorSpy = jest.spyOn(log, 'error');
       const tabId = 1;
-      const url = `https://example.com/test-route`;
+      const url = `${TEST_DEEPLINK_ORIGIN}/${INTERNAL_ROUTE_PATH}`;
       parseMock.mockResolvedValue({
-        destination: {},
+        destination: {
+          path: INTERNAL_ROUTE_PATH,
+          query: new URLSearchParams(),
+        },
         signature: 'invalid',
       } as ParsedDeepLink);
 
@@ -249,10 +276,10 @@ describe('DeepLinkRouter', () => {
 
     it('should handle redirecting routes', async function () {
       const tabId = 1;
-      const url = `https://example.com/redirect-route`;
+      const url = `${TEST_DEEPLINK_ORIGIN}/${REDIRECT_ROUTE_PATH}`;
       parseMock.mockResolvedValue({
         destination: {
-          redirectTo: new URL('https://example.com/internal-route'),
+          redirectTo: new URL(`${TEST_DEEPLINK_ORIGIN}/${INTERNAL_ROUTE_PATH}`),
         },
       } as ParsedDeepLink);
       await onBeforeRequest?.({
@@ -260,20 +287,89 @@ describe('DeepLinkRouter', () => {
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'https://example.com/internal-route',
+        url: `${TEST_DEEPLINK_ORIGIN}/${INTERNAL_ROUTE_PATH}`,
       });
     });
 
     it("should handle routes that don't exist by redirecting to 404, including u param", async function () {
       const tabId = 1;
-      const url = `https://example.com/nonexistent-route`;
+      const url = `${TEST_DEEPLINK_ORIGIN}/${NONEXISTENT_ROUTE_PATH}`;
       parseMock.mockResolvedValue(false);
       await onBeforeRequest?.({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?errorCode=404&u=%2Fnonexistent-route',
+        url: `chrome-extension://extension-id/home.html#link?errorCode=404&u=%2F${NONEXISTENT_ROUTE_PATH}`,
+      });
+    });
+
+    it('redirects to interstitial when Basic Functionality is off and destination is not in the allowlist', async function () {
+      const tabId = 1;
+      const url = `${TEST_DEEPLINK_ORIGIN}/${SWAP_ROUTE_PATH}?from=eip155%3A1%2Ferc20%3A0xA0b86991&to=eip155%3A1%2Ferc20%3A0xdAC17F958D2ee523a2206206994597C13D831ec7`;
+      getState.mockReturnValue({
+        preferences: { skipDeepLinkInterstitial: false },
+        useExternalServices: false,
+      } as unknown as ReturnType<MetaMaskController['getState']>);
+      parseMock.mockResolvedValue({
+        destination: {
+          path: SWAP_ROUTE,
+          query: new URLSearchParams(),
+        },
+        signature: 'valid',
+      } as ParsedDeepLink);
+      await onBeforeRequest?.({
+        tabId,
+        url,
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+        url: 'chrome-extension://extension-id/home.html#link?u=%2Fswap%3Ffrom%3Deip155%253A1%252Ferc20%253A0xA0b86991%26to%3Deip155%253A1%252Ferc20%253A0xdAC17F958D2ee523a2206206994597C13D831ec7&basicFunctionalityOff=true',
+      });
+    });
+
+    it('allows deeplinks when Basic Functionality is on and destination is not in the allowlist', async function () {
+      const tabId = 1;
+      const url = `${TEST_DEEPLINK_ORIGIN}/${SWAP_ROUTE_PATH}`;
+      getState.mockReturnValue({
+        preferences: { skipDeepLinkInterstitial: true },
+        useExternalServices: true,
+      } as unknown as ReturnType<MetaMaskController['getState']>);
+      parseMock.mockResolvedValue({
+        destination: {
+          path: SWAP_ROUTE,
+          query: new URLSearchParams([['swaps', 'true']]),
+        },
+        signature: 'valid',
+      } as ParsedDeepLink);
+      await onBeforeRequest?.({
+        tabId,
+        url,
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+        url: 'chrome-extension://extension-id/home.html#/cross-chain/swaps/prepare-bridge-page?swaps=true',
+      });
+    });
+
+    it('allows deeplinks when Basic Functionality is off and destination is in the allowlist (e.g. home)', async function () {
+      const tabId = 1;
+      const url = `${TEST_DEEPLINK_ORIGIN}/home`;
+      getState.mockReturnValue({
+        preferences: { skipDeepLinkInterstitial: true },
+        useExternalServices: false,
+      } as unknown as ReturnType<MetaMaskController['getState']>);
+      parseMock.mockResolvedValue({
+        destination: {
+          path: DEFAULT_ROUTE,
+          query: new URLSearchParams(),
+        },
+        signature: 'valid',
+      } as ParsedDeepLink);
+      await onBeforeRequest?.({
+        tabId,
+        url,
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+        url: 'chrome-extension://extension-id/home.html#/',
       });
     });
   });

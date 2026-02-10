@@ -8,7 +8,10 @@ import {
   ButtonVariant,
 } from '../../components/component-library/button';
 import { parse } from '../../../shared/lib/deep-links/parse';
-import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
+import {
+  DEEP_LINK_BASIC_FUNCTIONALITY_OFF,
+  DEEP_LINK_HOST,
+} from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -182,6 +185,8 @@ export const DeepLink = () => {
   const [skipDeepLinkInterstitialChecked, setSkipDeepLinkInterstitialChecked] =
     useState(skipDeepLinkInterstitial);
   const [isLoading, setIsLoading] = useState(true);
+  const [isBasicFunctionalityOffView, setIsBasicFunctionalityOffView] =
+    useState(false);
 
   // Use ref to track current abort controller
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -198,6 +203,9 @@ export const DeepLink = () => {
       const params = new URLSearchParams(location.search);
       const urlStr = params.get('u');
       const errorCode = params.get('errorCode');
+      const isBasicFunctionalityOff =
+        params.get(DEEP_LINK_BASIC_FUNCTIONALITY_OFF) === 'true';
+      setIsBasicFunctionalityOffView(isBasicFunctionalityOff);
 
       if (!urlStr || errorCode) {
         setRoute(null);
@@ -248,6 +256,21 @@ export const DeepLink = () => {
           setPageNotFoundError(false);
         }
         setCta(t('deepLink_GoToTheHomePageButton'));
+        return;
+      }
+
+      // Link blocked because Basic Functionality is off: show interstitial with explanation and "Go to home".
+      if (isBasicFunctionalityOff) {
+        setTitle(t('deepLink_BasicFunctionalityOffTitle'));
+        setDescription(t('deepLink_BasicFunctionalityOffDescription'));
+        setExtraDescription(null);
+        setRoute({
+          href: getExtensionURL('/'),
+          signed: true,
+        });
+        setCta(t('deepLink_GoToTheHomePageButton'));
+        setPageNotFoundError(false);
+        setIsLoading(false);
         return;
       }
 
@@ -366,7 +389,7 @@ export const DeepLink = () => {
             )}
 
             <Box width={BlockSize.Full} marginTop={12}>
-              {route?.signed ? (
+              {route?.signed && !isBasicFunctionalityOffView ? (
                 <Box
                   display={Display.Flex}
                   width={BlockSize.Full}
@@ -391,9 +414,7 @@ export const DeepLink = () => {
                     {t('deepLink_DontRemindMeAgain')}
                   </Label>
                 </Box>
-              ) : (
-                ''
-              )}
+              ) : null}
               <Button
                 width={BlockSize.Full}
                 variant={ButtonVariant.Primary}

@@ -7,11 +7,15 @@ import {
   parse,
 } from '../../../../shared/lib/deep-links/parse';
 import {
+  DEEP_LINK_BASIC_FUNCTIONALITY_OFF,
   DEEP_LINK_HOST,
   DEEP_LINK_MAX_LENGTH,
 } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
-import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
+import {
+  DEEP_LINK_DESTINATION_PATHS_ALLOWED_WHEN_BASIC_FUNCTIONALITY_OFF,
+  DEEP_LINK_ROUTE,
+} from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
 import {
   SignatureStatus,
@@ -169,21 +173,43 @@ export class DeepLinkRouter extends EventEmitter<{
 
         if ('redirectTo' in parsed.destination) {
           link = parsed.destination.redirectTo.toString();
-        } else if (this.canSkipInterstitial(parsed.signature)) {
-          // signed links than can and should skip the interstitial page
-          link = this.getExtensionURL(
-            parsed.destination.path,
-            parsed.destination.query.toString(),
-          );
+        } else if ('path' in parsed.destination) {
+          const pathAllowed =
+            this.getState().useExternalServices ||
+            DEEP_LINK_DESTINATION_PATHS_ALLOWED_WHEN_BASIC_FUNCTIONALITY_OFF.has(
+              parsed.destination.path,
+            );
+
+          if (!pathAllowed) {
+            // Basic Functionality is off and path not in allowlist: show interstitial
+            // with "feature unavailable".
+            const search = new URLSearchParams({
+              u: this.formatUrlForInterstitialPage(url),
+              [DEEP_LINK_BASIC_FUNCTIONALITY_OFF]: 'true',
+            });
+            link = this.getExtensionURL(
+              TRIMMED_DEEP_LINK_ROUTE,
+              search.toString(),
+            );
+          } else if (this.canSkipInterstitial(parsed.signature)) {
+            // signed links than can and should skip the interstitial page
+            link = this.getExtensionURL(
+              parsed.destination.path,
+              parsed.destination.query.toString(),
+            );
+          } else {
+            // unsigned links or signed links that don't skip the interstitial
+            const search = new URLSearchParams({
+              u: this.formatUrlForInterstitialPage(url),
+            });
+            link = this.getExtensionURL(
+              TRIMMED_DEEP_LINK_ROUTE,
+              search.toString(),
+            );
+          }
         } else {
-          // unsigned links or signed links that don't skip the interstitial
-          const search = new URLSearchParams({
-            u: this.formatUrlForInterstitialPage(url),
-          });
-          link = this.getExtensionURL(
-            TRIMMED_DEEP_LINK_ROUTE,
-            search.toString(),
-          );
+          // should never happen, but if it does, show error page
+          throw new Error(`Invalid destination for url: ${urlStr}`);
         }
       } else {
         // unable to parse, show error page

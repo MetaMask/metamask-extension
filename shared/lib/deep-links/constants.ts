@@ -4,3 +4,6 @@ export const DEEP_LINK_HOST = process.env.DEEP_LINK_HOST;
 export const DEEP_LINK_MAX_LENGTH = 2048;
 export const SIG_PARAM = 'sig';
 export const SIG_PARAMS_PARAM = 'sig_params';
+
+/** Query param (boolean) for the interstitial page when the link is blocked because Basic Functionality is off. Value is the string "true". */
+export const DEEP_LINK_BASIC_FUNCTIONALITY_OFF = 'basicFunctionalityOff';

@@ -2,6 +2,7 @@
 /* eslint-disable import/no-restricted-paths */
 import {
   CROSS_CHAIN_SWAP_ROUTE,
+  DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
 
@@ -48,6 +49,15 @@ export type RouteOptions = {
 };
 
 export const SWAP_ROUTE = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+
+/**
+ * When Basic Functionality (useExternalServices) is off, deep links to internal
+ * paths are blocked by default. Only destination paths in this allowlist remain
+ * accessible. Enable routes case by case by adding their path here.
+ * Paths not in this set redirect to home when the toggle is off.
+ */
+export const DEEP_LINK_DESTINATION_PATHS_ALLOWED_WHEN_BASIC_FUNCTIONALITY_OFF: ReadonlySet<string> =
+  new Set([DEFAULT_ROUTE]);
 
 /**
  * Represents a route in the application.
