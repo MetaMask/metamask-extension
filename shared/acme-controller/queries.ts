@@ -10,6 +10,8 @@ import {
 
 const SECOND = 1000;
 
+export const transactionsQueryKey = ['multiaccount', 'transactions'];
+
 export const queries = {
   transactions: (
     accountAddress: string,
@@ -17,7 +19,7 @@ export const queries = {
       UseInfiniteQueryOptions<NormalizedGetAccountTransactionsResponse>
     >,
   ): UseInfiniteQueryOptions<NormalizedGetAccountTransactionsResponse> => ({
-    queryKey: ['multiaccount', 'transactions', accountAddress],
+    queryKey: [...transactionsQueryKey, accountAddress],
     queryFn: async ({ pageParam }) => {
       const response = await fetchV4MultiAccountTransactions({
         accountAddresses: accountAddress ? [accountAddress] : [],

@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Modal, { ModalContent } from '../../modal';
+import { queryClient } from '../../../../contexts/query-client';
+import { transactionsQueryKey } from '../../../../../shared/acme-controller/queries';
 
 export default class ConfirmResetAccount extends PureComponent {
   static propTypes = {
@@ -13,7 +15,10 @@ export default class ConfirmResetAccount extends PureComponent {
   };
 
   handleReset = () => {
-    this.props.resetAccount().then(() => this.props.hideModal());
+    this.props.resetAccount().then(() => {
+      queryClient.removeQueries({ queryKey: transactionsQueryKey });
+      this.props.hideModal();
+    });
   };
 
   render() {
