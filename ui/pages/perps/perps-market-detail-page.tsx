@@ -26,6 +26,8 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
+import type { CandleStick } from '@metamask/perps-controller';
+import { brandColor } from '@metamask/design-tokens';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -45,6 +47,7 @@ import {
   PerpsCandlestickChart,
   PerpsCandlestickChartRef,
 } from '../../components/app/perps/perps-candlestick-chart';
+import type { ChartPriceLine } from '../../components/app/perps/perps-candlestick-chart';
 import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
 import {
   CandlePeriod,
@@ -246,6 +249,9 @@ const PerpsMarketDetailPage: React.FC = () => {
     throttleMs: 1000,
   });
 
+  // OHLCV bar state: the candle currently hovered by crosshair (null = no hover)
+  const [hoveredCandle, setHoveredCandle] = useState<CandleStick | null>(null);
+
   // View state: 'detail' or 'order'
   const [currentView, setCurrentView] = useState<MarketDetailView>('detail');
   const [orderDirection, setOrderDirection] = useState<OrderDirection>('long');
@@ -336,6 +342,57 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
     return currentPrice;
   }, [position, currentPrice]);
+
+  // Build price lines for chart overlay (TP, Entry, SL)
+  // Only shown when user has an open position for this market
+  const chartPriceLines = useMemo((): ChartPriceLine[] => {
+    if (!position) {
+      return [];
+    }
+
+    const lines: ChartPriceLine[] = [];
+
+    // Take Profit line (green/lime, dashed)
+    if (position.takeProfitPrice) {
+      const tpPrice = parseFloat(position.takeProfitPrice.replace(/,/gu, ''));
+      if (!isNaN(tpPrice) && tpPrice > 0) {
+        lines.push({
+          price: tpPrice,
+          label: 'TP',
+          color: brandColor.lime100,
+          lineStyle: 2,
+        });
+      }
+    }
+
+    // Entry price line (gray, dashed)
+    if (position.entryPrice) {
+      const entryPrice = parseFloat(position.entryPrice.replace(/,/gu, ''));
+      if (!isNaN(entryPrice) && entryPrice > 0) {
+        lines.push({
+          price: entryPrice,
+          label: 'Entry',
+          color: 'rgba(255, 255, 255, 0.5)',
+          lineStyle: 2,
+        });
+      }
+    }
+
+    // Stop Loss line (red, dashed)
+    if (position.stopLossPrice) {
+      const slPrice = parseFloat(position.stopLossPrice.replace(/,/gu, ''));
+      if (!isNaN(slPrice) && slPrice > 0) {
+        lines.push({
+          price: slPrice,
+          label: 'SL',
+          color: brandColor.red300,
+          lineStyle: 2,
+        });
+      }
+    }
+
+    return lines;
+  }, [position]);
 
   // Convert price to percentage for display
   const priceToPercentForEdit = useCallback(
@@ -986,7 +1043,9 @@ const PerpsMarketDetailPage: React.FC = () => {
         height={250}
         selectedPeriod={selectedPeriod}
         candleData={candleData}
+        priceLines={chartPriceLines}
         onNeedMoreHistory={fetchMoreHistory}
+        onCrosshairMove={setHoveredCandle}
       />
     );
   };
@@ -1192,6 +1251,55 @@ const PerpsMarketDetailPage: React.FC = () => {
           </Box>
         )}
       </Box>
+
+      {/* OHLCV Bar — shown when crosshair hovers a candle */}
+      {hoveredCandle && (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingBottom={1}
+          data-testid="perps-ohlcv-bar"
+        >
+          {[
+            { label: 'Open', value: hoveredCandle.open },
+            { label: 'Close', value: hoveredCandle.close },
+            { label: 'High', value: hoveredCandle.high },
+            { label: 'Low', value: hoveredCandle.low },
+          ].map(({ label, value }) => (
+            <Box
+              key={label}
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Start}
+            >
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+                {`$${formatNumber(parseFloat(value), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}`}
+              </Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
+              >
+                {label}
+              </Text>
+            </Box>
+          ))}
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.End}
+          >
+            <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              {`$${formatNumber(parseFloat(hoveredCandle.volume) * parseFloat(hoveredCandle.close), { notation: 'compact', maximumFractionDigits: 2 })}`}
+            </Text>
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
+              Volume
+            </Text>
+          </Box>
+        </Box>
+      )}
 
       {/* Candlestick Chart */}
       <Box

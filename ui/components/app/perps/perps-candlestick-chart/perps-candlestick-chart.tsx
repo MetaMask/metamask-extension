@@ -30,6 +30,20 @@ const LOAD_MORE_COOLDOWN_MS = 2000;
 /** Logical range threshold: request more history when user scrolls this close to left edge */
 const EDGE_DETECTION_THRESHOLD = 5;
 
+/**
+ * A horizontal price line to draw on the chart (e.g., TP, Entry, SL).
+ */
+export type ChartPriceLine = {
+  /** Price level to draw the line at */
+  price: number;
+  /** Label displayed on the price axis (e.g., "TP", "Entry", "SL") */
+  label: string;
+  /** Line color */
+  color: string;
+  /** Line style: 0 = solid, 1 = dotted, 2 = dashed (default 2) */
+  lineStyle?: number;
+};
+
 type PerpsCandlestickChartProps = {
   /** Height of the chart in pixels */
   height?: number;
@@ -37,6 +51,8 @@ type PerpsCandlestickChartProps = {
   selectedPeriod?: CandlePeriod;
   /** Candle data to display. When null/undefined the parent handles loading/error states. */
   candleData?: CandleData | null;
+  /** Horizontal price lines to overlay on the chart (TP, Entry, SL, etc.) */
+  priceLines?: ChartPriceLine[];
   /** Callback when data needs to be fetched for a new period */
   onPeriodDataRequest?: (period: CandlePeriod) => void;
   /** Callback when user scrolls near the left edge and more history is needed */
@@ -76,6 +92,7 @@ const PerpsCandlestickChart = forwardRef<
       height = 250,
       selectedPeriod = CandlePeriod.FiveMinutes,
       candleData,
+      priceLines,
       onPeriodDataRequest,
       onNeedMoreHistory,
       onCrosshairMove,
@@ -95,6 +112,10 @@ const PerpsCandlestickChart = forwardRef<
 
     // Edge detection cooldown
     const lastLoadMoreTimeRef = useRef<number>(0);
+
+    // Track created price line objects for cleanup
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const activePriceLinesRef = useRef<any[]>([]);
 
     // Stable refs for callbacks (avoid re-subscribing on every render)
     const onNeedMoreHistoryRef = useRef(onNeedMoreHistory);
@@ -419,6 +440,40 @@ const PerpsCandlestickChart = forwardRef<
       prevCandleCountRef.current = currentCount;
       prevLastCandleTimeRef.current = currentLastTime;
     }, [candleData, selectedPeriod, onPeriodDataRequest]);
+
+    // Manage price lines (TP, Entry, SL, etc.)
+    useEffect(() => {
+      if (!seriesRef.current) {
+        return;
+      }
+
+      const series = seriesRef.current;
+
+      // Remove previously created price lines
+      for (const line of activePriceLinesRef.current) {
+        try {
+          series.removePriceLine(line);
+        } catch {
+          // Line may already have been removed if series was recreated
+        }
+      }
+      activePriceLinesRef.current = [];
+
+      // Create new price lines
+      if (priceLines && priceLines.length > 0) {
+        for (const pl of priceLines) {
+          const line = series.createPriceLine({
+            price: pl.price,
+            color: pl.color,
+            lineWidth: 1,
+            lineStyle: pl.lineStyle ?? 2, // Default: dashed
+            axisLabelVisible: true,
+            title: pl.label,
+          });
+          activePriceLinesRef.current.push(line);
+        }
+      }
+    }, [priceLines]);
 
     return (
       <Box
