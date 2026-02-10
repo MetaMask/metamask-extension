@@ -123,6 +123,11 @@ function getCopyTargets(
       dest: `images`,
     },
     {
+      src: getPathInsideNodeModules('@rive-app/canvas', 'rive.wasm'),
+      dest: 'images/rive.wasm',
+      pattern: '',
+    },
+    {
       src: getPathInsideNodeModules('@metamask/contract-metadata', 'images/'),
       dest: `images/contract`,
     },
@@ -195,11 +200,6 @@ function getCopyTargets(
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
       dest: isManifestV3 ? 'scripts/' : '',
-    },
-    {
-      src: getPathInsideNodeModules('@rive-app/canvas', 'rive.wasm'),
-      dest: 'images/rive.wasm',
-      pattern: '',
     },
     ...(isManifestV3
       ? [

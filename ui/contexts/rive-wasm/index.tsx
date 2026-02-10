@@ -11,7 +11,6 @@ import React, {
   useState,
 } from 'react';
 import { useAsyncResult } from '../../hooks/useAsync';
-import { captureException } from '../../../shared/lib/sentry';
 
 const RIVE_WASM_URL = new URL(
   '@rive-app/canvas/rive.wasm',
@@ -31,19 +30,21 @@ const useRiveWasmReady = () => {
       setIsWasmReady(true);
       return true;
     }
+    const response = await fetch(RIVE_WASM_URL);
+    if (!response.ok) {
+      throw new Error(
+        `HTTP error! status while fetching rive.wasm: ${response.status}`,
+      );
+    }
+    const arrayBuffer = await response.arrayBuffer();
+    (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
+      arrayBuffer;
+    // Lavamoat blocks RuntimeLoader access to fetch for security reasons,
+    // so setWasmUrl won't work.
+    RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
 
     // Preload the WASM
-    try {
-      RuntimeLoader.setWasmUrl(RIVE_WASM_URL.href);
-      await RuntimeLoader.awaitInstance();
-    } catch (e) {
-      // in integration tests we don't have the file
-      if (!process.env.IN_TEST) {
-        // but this shouldn't ever happen in production
-        captureException(`HTTP error! status while fetching rive.wasm`);
-      }
-      return false;
-    }
+    await RuntimeLoader.awaitInstance();
     setIsWasmReady(true);
     return true;
   }, [isWasmReady, setIsWasmReady]);
