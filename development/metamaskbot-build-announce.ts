@@ -436,16 +436,15 @@ async function start(): Promise<void> {
     console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
-  // Add AI-generated test plan section (only for release branches).
-  // Use direct download URL (same as chrome/firefox builds) so clicking downloads the JSON.
+  // Add AI-generated test plan section when a test plan was generated.
+  // Prefer direct JSON download (CloudFront) when HOST_URL is set; otherwise link to artifacts.
   const testPlanVersion = process.env.TEST_PLAN_VERSION;
-  if (testPlanVersion && HOST_URL) {
-    const testPlanDownloadUrl = `${HOST_URL}/build-test-plan/builds/test-plan-${testPlanVersion}.json`;
+  if (testPlanVersion) {
     const testPlanFileName = `test-plan-${testPlanVersion}.json`;
-    console.log(
-      `AI test plan direct download URL: ${testPlanDownloadUrl}`,
-    );
-    const testPlanLink = `<a href="${testPlanDownloadUrl}">${testPlanFileName}</a>`;
+    const testPlanUrl = HOST_URL
+      ? `${HOST_URL}/build-test-plan/builds/${testPlanFileName}`
+      : allArtifactsUrl;
+    const testPlanLink = `<a href="${testPlanUrl}">${testPlanFileName}</a>`;
     const testPlanSection = `AI generated test plan: ${testPlanLink}\n\n`;
     commentBody += testPlanSection;
   }
