@@ -6,7 +6,7 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   Text,
-  TextButton,
+  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
