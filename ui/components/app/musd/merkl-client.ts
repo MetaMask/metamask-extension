@@ -15,23 +15,23 @@ import {
  * Merkl API reward data structure
  */
 export type MerklRewardData = {
-  rewards: {
-    token: {
-      address: string;
-      chainId: number;
-      symbol: string;
-      decimals: number;
-      price: number | null;
-    };
-    pending: string;
-    proofs: string[];
-    amount: string;
-    claimed: string;
-    recipient: string;
-  }[];
+  rewards: MerklReward[];
 };
 
-export type MerklReward = MerklRewardData['rewards'][0];
+export type MerklReward = {
+  token: {
+    address: string;
+    chainId: number;
+    symbol: string;
+    decimals: number;
+    price: number | null;
+  };
+  pending: string;
+  proofs: string[];
+  amount: string;
+  claimed: string;
+  recipient: string;
+};
 
 /**
  * Options for fetching Merkl rewards
