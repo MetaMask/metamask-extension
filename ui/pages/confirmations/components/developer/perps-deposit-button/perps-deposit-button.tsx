@@ -7,8 +7,8 @@ export const PerpsDepositButton = () => {
   const { trigger, isLoading } = usePerpsDepositTrigger();
 
   const handleTrigger = useCallback(async () => {
-    const didTrigger = await trigger();
-    if (didTrigger) {
+    const triggerResult = await trigger();
+    if (triggerResult) {
       setHasTriggered(true);
     }
   }, [trigger]);

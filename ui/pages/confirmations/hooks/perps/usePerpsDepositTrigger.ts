@@ -1,47 +1,23 @@
 import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
-import { Interface } from '@ethersproject/abi';
-import { BigNumber } from 'bignumber.js';
-import { TransactionType } from '@metamask/transaction-controller';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  addTransaction,
-  findNetworkClientIdByChainId,
-} from '../../../../store/actions';
 import { getSelectedInternalAccount } from '../../../../selectors';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  ARBITRUM_USDC,
-  HYPERLIQUID_BRIDGE_ADDRESS,
-} from '../../constants/perps';
 import { ConfirmationLoader } from '../useConfirmationNavigation';
+import { preparePerpsDepositTransaction } from './preparePerpsDepositTransaction';
 
-const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
-const erc20Interface = new Interface(ERC20_ABI);
-
-const generateERC20TransferData = (
-  recipient: Hex,
-  amount: string,
-  decimals: number,
-): Hex => {
-  const multiplier = new BigNumber(10).pow(decimals);
-  const amountRaw = new BigNumber(amount).times(multiplier);
-
-  return erc20Interface.encodeFunctionData('transfer', [
-    recipient,
-    `0x${amountRaw.toString(16)}`,
-  ]) as Hex;
+export type PerpsDepositTriggerResponse = {
+  transactionId: string;
 };
 
 export type PerpsDepositTriggerOptions = {
   returnTo?: string;
+  onCreated?: (transactionId: string) => void;
 };
 
 export type PerpsDepositTriggerResult = {
-  trigger: () => Promise<boolean>;
+  trigger: () => Promise<PerpsDepositTriggerResponse | null>;
   isLoading: boolean;
 };
 
@@ -58,6 +34,7 @@ export type PerpsDepositTriggerResult = {
 export function usePerpsDepositTrigger(
   options: PerpsDepositTriggerOptions = {},
 ): PerpsDepositTriggerResult {
+  const { returnTo, onCreated } = options;
   const navigate = useNavigate();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,40 +44,21 @@ export function usePerpsDepositTrigger(
 
   const trigger = useCallback(async () => {
     if (isInFlightRef.current || isLoading) {
-      return false;
+      return null;
     }
 
     if (!selectedAccount?.address) {
       console.error('No selected account');
-      return false;
+      return null;
     }
 
     isInFlightRef.current = true;
     setIsLoading(true);
 
     try {
-      const networkClientId = await findNetworkClientIdByChainId(
-        CHAIN_IDS.ARBITRUM,
-      );
-
-      const transferData = generateERC20TransferData(
-        HYPERLIQUID_BRIDGE_ADDRESS,
-        '0',
-        ARBITRUM_USDC.decimals,
-      );
-
-      const txMeta = await addTransaction(
-        {
-          from: selectedAccount.address as Hex,
-          to: ARBITRUM_USDC.address,
-          data: transferData,
-          value: '0x0',
-        },
-        {
-          networkClientId,
-          type: TransactionType.perpsDeposit,
-        },
-      );
+      const { transactionId } = await preparePerpsDepositTransaction({
+        fromAddress: selectedAccount.address,
+      });
 
       const search = new URLSearchParams({
         loader: ConfirmationLoader.CustomAmount,
@@ -108,23 +66,25 @@ export function usePerpsDepositTrigger(
 
       navigate(
         {
-          pathname: `${CONFIRM_TRANSACTION_ROUTE}/${txMeta.id}`,
+          pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
           search,
         },
         {
-          state: options.returnTo ? { returnTo: options.returnTo } : undefined,
+          state: returnTo ? { returnTo } : undefined,
         },
       );
 
-      return true;
+      onCreated?.(transactionId);
+
+      return { transactionId };
     } catch (error) {
       console.error('Failed to create perps deposit transaction', error);
-      return false;
+      return null;
     } finally {
       isInFlightRef.current = false;
       setIsLoading(false);
     }
-  }, [isLoading, navigate, options.returnTo, selectedAccount?.address]);
+  }, [isLoading, navigate, onCreated, returnTo, selectedAccount?.address]);
 
   return {
     trigger,

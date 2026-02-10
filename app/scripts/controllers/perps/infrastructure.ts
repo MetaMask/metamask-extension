@@ -185,9 +185,23 @@ function createControllerAccess(
       },
     },
     transaction: {
-      submit: async (_txParams, _options) => {
-        // TODO: Wire to TransactionController for deposit/withdraw
-        throw new Error('Transaction submission not implemented in PoC');
+      submit: async (txParams, options) => {
+        const transactionMeta = await submitRequestToBackground<{
+          id: string;
+          hash?: string;
+        }>('addTransactionAndWaitForPublish', [
+          txParams,
+          {
+            ...options,
+            origin: options.origin ?? 'metamask',
+          },
+        ]);
+
+        return {
+          // Align with mobile flow by resolving only after publish/hash is available.
+          result: Promise.resolve(transactionMeta.hash ?? ''),
+          transactionMeta,
+        };
       },
     },
     rewards: {
