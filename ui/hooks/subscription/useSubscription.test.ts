@@ -17,7 +17,6 @@ jest.mock('../useGasFeeEstimates');
 jest.mock('./useSubscriptionPricing');
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
-  estimateGas: jest.fn().mockResolvedValue('0x5208'),
   addTransaction: jest.fn().mockResolvedValue({}),
   getSubscriptionPricing: jest.fn().mockResolvedValue({}),
 }));

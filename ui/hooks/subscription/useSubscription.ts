@@ -23,7 +23,6 @@ import { getUserSubscriptions } from '../../selectors/subscription';
 import {
   addTransaction,
   cancelSubscription,
-  estimateGas,
   estimateRewardsPoints,
   getRewardsHasAccountOptedIn,
   getRewardsSeasonMetadata,
@@ -405,9 +404,6 @@ export const useSubscriptionCryptoApprovalTransaction = (
       value: '0x0',
       data: approvalData,
     };
-
-    // Estimate gas (raw estimate, no buffer)
-    transactionParams.gas = await estimateGas(transactionParams);
 
     // Set optimized gas fees for gas sponsorship: min(2 * low, medium)
     if (
