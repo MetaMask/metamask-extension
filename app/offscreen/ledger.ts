@@ -200,6 +200,13 @@ export class LedgerOffscreenHandler {
    * Signs a transaction using clear signing, which displays human-readable
    * token/NFT information on the Ledger device screen.
    *
+   * Falls back to blind signing if clear signing context cannot be resolved
+   * (e.g., unrecognized contract or method). The fallback is triggered by
+   * status code 0x6985 ("Condition of use not satisfied"), which the device
+   * returns when clear signing metadata is unavailable. A genuine user
+   * rejection on the device will also produce 0x6985, but that will simply
+   * surface the same error from the blind-signing attempt.
+   *
    * @param hdPath - The HD derivation path.
    * @param tx - The raw transaction hex string.
    * @returns Signature components v, r, s.
@@ -213,16 +220,43 @@ export class LedgerOffscreenHandler {
     s: string;
   }> {
     const app = await this.ensureApp();
-    const result = await app.clearSignTransaction(hdPath, tx, {
-      nft: true,
-      externalPlugins: true,
-      erc20: true,
-    });
-    return {
-      v: result.v,
-      r: result.r,
-      s: result.s,
-    };
+
+    try {
+      const result = await app.clearSignTransaction(hdPath, tx, {
+        nft: true,
+        externalPlugins: true,
+        erc20: true,
+      });
+      return {
+        v: result.v,
+        r: result.r,
+        s: result.s,
+      };
+    } catch (error) {
+      // 0x6985 = "Condition of use not satisfied"
+      // This can occur when clear signing context is unavailable for the
+      // transaction (unrecognized contract/method). Fall back to blind signing.
+      const statusCode =
+        error instanceof Error &&
+        'statusCode' in error &&
+        typeof error.statusCode === 'number'
+          ? error.statusCode
+          : undefined;
+
+      if (statusCode === 0x6985) {
+        console.warn(
+          'Clear signing failed with 0x6985, falling back to blind signing',
+        );
+        const result = await app.signTransaction(hdPath, tx);
+        return {
+          v: result.v,
+          r: result.r,
+          s: result.s,
+        };
+      }
+
+      throw error;
+    }
   }
 
   /**
@@ -313,10 +347,10 @@ export class LedgerOffscreenHandler {
       }
     });
 
-    navigator.hid.addEventListener('disconnect', ({ device }) => {
+    navigator.hid.addEventListener('disconnect', async ({ device }) => {
       if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
         // Clean up transport state on disconnect
-        this.closeTransport();
+        await this.closeTransport();
 
         chrome.runtime.sendMessage({
           target: OffscreenCommunicationTarget.extension,
@@ -362,8 +396,8 @@ export class LedgerOffscreenHandler {
               },
             });
           })
-          .finally(() => {
-            this.closeTransport();
+          .finally(async () => {
+            await this.closeTransport();
           });
 
         // Return true to indicate we will send response asynchronously
