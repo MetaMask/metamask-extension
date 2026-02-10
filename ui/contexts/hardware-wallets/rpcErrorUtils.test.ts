@@ -173,7 +173,7 @@ describe('rpcErrorUtils', () => {
         severity: Severity.Err,
         category: Category.Connection,
         userMessage: 'Device disconnected',
-        metadata: { deviceId: 'test-device' },
+        metadata: { transport: 'usb' },
       });
 
       const result = toHardwareWalletError(jsonRpcError, mockWalletType);
@@ -184,7 +184,7 @@ describe('rpcErrorUtils', () => {
       expect(result.category).toBe(Category.Connection);
       expect(result.userMessage).toBe('Device disconnected');
       expect(result.metadata).toEqual({
-        deviceId: 'test-device',
+        transport: 'usb',
         walletType: mockWalletType,
       });
       expect(result.message).toBe('Hardware wallet error');

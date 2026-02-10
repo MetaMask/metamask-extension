@@ -7669,7 +7669,7 @@
   "storageErrorAction": {
     "message": "Respalda la frase secreta de recuperación"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Haz una copia de respaldo de tu frase secreta de recuperación y reinstala MetaMask si el problema continúa."
   },
   "storageErrorTitle": {

@@ -7669,7 +7669,7 @@
   "storageErrorAction": {
     "message": "비밀복구구문 백업"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "비밀복구구문을 백업하고 문제가 발생할 경우 MetaMask를 다시 설치하세요."
   },
   "storageErrorTitle": {

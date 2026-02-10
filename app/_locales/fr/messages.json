@@ -7669,7 +7669,7 @@
   "storageErrorAction": {
     "message": "Sauvegarder la phrase secrète de récupération"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Sauvegardez votre phrase secrète de récupération et réinstallez MetaMask si le problème persiste."
   },
   "storageErrorTitle": {

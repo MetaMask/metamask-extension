@@ -1,7 +1,9 @@
 import {
+  GetAppNameAndVersionResponse,
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
+  AppConfigurationResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
 import {
@@ -82,10 +84,19 @@ export class LedgerOffscreenBridge
     );
   }
 
-  getAppNameAndVersion(): Promise<{ appName: string; version: string }> {
+  getAppNameAndVersion(): Promise<GetAppNameAndVersionResponse> {
     return this.#sendMessage(
       {
         action: LedgerAction.getAppNameAndVersion,
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
+  }
+
+  getAppConfiguration(): Promise<AppConfigurationResponse> {
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getAppConfiguration,
       },
       { timeout: MESSAGE_TIMEOUT },
     );

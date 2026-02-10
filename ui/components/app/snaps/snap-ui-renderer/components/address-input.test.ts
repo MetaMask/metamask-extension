@@ -2,6 +2,7 @@ import { Box, AddressInput, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderInterface } from '../test-utils';
+import { toEvmCaipAccountId } from '../../../../../../shared/lib/multichain/scope-utils';
 
 const MOCK_ACCOUNT_NAME = 'Account 1';
 
@@ -136,7 +137,7 @@ describe('SnapUIAddressInput', () => {
           displayAvatar: true,
         }),
       }),
-      { state: { input: `eip155:0:${testAddress}` } },
+      { state: { input: toEvmCaipAccountId(testAddress) } },
     );
 
     const matchedAddress = getByDisplayValue(testAddress);
@@ -157,7 +158,7 @@ describe('SnapUIAddressInput', () => {
           displayAvatar: false,
         }),
       }),
-      { state: { input: `eip155:0:${testAddress}` } },
+      { state: { input: toEvmCaipAccountId(testAddress) } },
     );
 
     const matchedAddress = getByDisplayValue(testAddress);

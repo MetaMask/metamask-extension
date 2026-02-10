@@ -37,6 +37,7 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.BASE,
   CHAIN_IDS.SEI,
   CHAIN_IDS.MONAD,
+  CHAIN_IDS.HYPE,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -115,6 +116,8 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: 'Sei',
   [CHAIN_IDS.MONAD]: 'Monad',
   [toEvmCaipChainId(CHAIN_IDS.MONAD)]: 'Monad',
+  [CHAIN_IDS.HYPE]: 'HyperEVM',
+  [toEvmCaipChainId(CHAIN_IDS.HYPE)]: 'HyperEVM',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
@@ -229,6 +232,14 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     decimals: 6,
     name: 'USD Coin',
     assetId: `${toEvmCaipChainId(CHAIN_IDS.MONAD)}/erc20:${toChecksumHexAddress('0x754704Bc059F8C67012fEd69BC8A327a5aafb603')}`,
+  },
+  [toEvmCaipChainId(CHAIN_IDS.HYPE)]: {
+    // HYPE -> USDC on HyperEVM
+    address: '0xb88339cb7199b77e23db6e890353e22632ba630f',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.HYPE)}/erc20:${toChecksumHexAddress('0xb88339cb7199b77e23db6e890353e22632ba630f')}`,
   },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana

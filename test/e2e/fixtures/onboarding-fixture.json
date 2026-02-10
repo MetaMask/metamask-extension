@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 192,
+      "currentMigrationVersion": 193,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -1970,11 +1970,11 @@
     "RewardsController": {
       "rewardsAccounts": {},
       "rewardsActiveAccount": null,
+      "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
-      "rewardsSubscriptions": {},
-      "rewardsPointsEstimateHistory": []
+      "rewardsSubscriptions": {}
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
@@ -2149,6 +2149,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 192
+    "version": 193
   }
 }

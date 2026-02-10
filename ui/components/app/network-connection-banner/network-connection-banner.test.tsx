@@ -376,7 +376,7 @@ describe('NetworkConnectionBanner', () => {
       expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
         bannerType: 'degraded',
         eventName:
-          MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
+          MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
         networkClientId: 'custom-arbitrum',
       });
     });
@@ -408,7 +408,7 @@ describe('NetworkConnectionBanner', () => {
       expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
         bannerType: 'unavailable',
         eventName:
-          MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
+          MetaMetricsEventName.NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked,
         networkClientId: 'custom-arbitrum',
       });
     });
