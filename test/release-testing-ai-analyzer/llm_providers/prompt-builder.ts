@@ -3,7 +3,11 @@
  * Extracted from ClaudeAnalyzer to avoid code duplication
  */
 
-import type { PullRequestInfo, FileCategories, PullRequestFile } from '../types';
+import type {
+  PullRequestInfo,
+  FileCategories,
+  PullRequestFile,
+} from '../types';
 
 export class PromptBuilder {
   /**
@@ -150,7 +154,9 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
     if (categories.controllers.length > 0) {
       summary += `\n### Controllers (${categories.controllers.length} files)\n`;
       categories.controllers.slice(0, 10).forEach((file: string) => {
-        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
+        const fileInfo = files.find(
+          (f: PullRequestFile) => f.filename === file,
+        );
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
       if (categories.controllers.length > 10) {
@@ -161,7 +167,9 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
     if (categories.uiComponents.length > 0) {
       summary += `\n### UI Components (${categories.uiComponents.length} files)\n`;
       categories.uiComponents.slice(0, 10).forEach((file: string) => {
-        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
+        const fileInfo = files.find(
+          (f: PullRequestFile) => f.filename === file,
+        );
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
       if (categories.uiComponents.length > 10) {
@@ -172,7 +180,9 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
     if (categories.migrations.length > 0) {
       summary += `\n### Migrations (${categories.migrations.length} files)\n`;
       categories.migrations.forEach((file: string) => {
-        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
+        const fileInfo = files.find(
+          (f: PullRequestFile) => f.filename === file,
+        );
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
     }
@@ -185,7 +195,9 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
     if (categories.config.length > 0) {
       summary += `\n### Config (${categories.config.length} files)\n`;
       categories.config.slice(0, 5).forEach((file: string) => {
-        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
+        const fileInfo = files.find(
+          (f: PullRequestFile) => f.filename === file,
+        );
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
       if (categories.config.length > 5) {
@@ -196,7 +208,9 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
     if (categories.other.length > 0) {
       summary += `\n### Other (${categories.other.length} files)\n`;
       categories.other.slice(0, 5).forEach((file: string) => {
-        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
+        const fileInfo = files.find(
+          (f: PullRequestFile) => f.filename === file,
+        );
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
       if (categories.other.length > 5) {

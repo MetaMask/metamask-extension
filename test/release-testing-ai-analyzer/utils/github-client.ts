@@ -18,26 +18,42 @@ type Octokit = {
       get: (params: {
         owner: string;
         repo: string;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         pull_number: number;
-      }) => Promise<{ data: { title: string; body: string | null; user: { login: string } | null; base: { ref: string }; head: { ref: string } } }>;
+      }) => Promise<{
+        data: {
+          title: string;
+          body: string | null;
+          user: { login: string } | null;
+          base: { ref: string };
+          head: { ref: string };
+        };
+      }>;
       listFiles: (params: {
         owner: string;
         repo: string;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         pull_number: number;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         per_page: number;
       }) => Promise<{ data: GitHubFile[] }>;
       listCommits: (params: {
         owner: string;
         repo: string;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         pull_number: number;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         per_page: number;
       }) => Promise<{ data: unknown[] }>;
     };
   };
-  paginate: <T>(
-    fn: (params: unknown) => Promise<{ data: T[] }>,
-    params: unknown,
-  ) => Promise<T[]>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  paginate: <TItem>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    fn: (params: any) => Promise<{ data: TItem[] }>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    params: any,
+  ) => Promise<TItem[]>;
 };
 
 export class GitHubClient {
@@ -66,7 +82,9 @@ export class GitHubClient {
     if (!this.octokit) {
       // Use dynamic import for ESM module
       const { Octokit } = await import('@octokit/rest');
-      this.octokit = new Octokit(this.token ? { auth: this.token } : {}) as Octokit;
+      this.octokit = new Octokit(
+        this.token ? { auth: this.token } : {},
+      ) as Octokit;
     }
     return this.octokit;
   }
@@ -89,7 +107,8 @@ export class GitHubClient {
 
       // Get all changed files with pagination
       const allFiles = await octokit.paginate<GitHubFile>(
-        octokit.rest.pulls.listFiles,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        octokit.rest.pulls.listFiles as any,
         {
           owner: this.owner,
           repo: this.repo,
@@ -102,7 +121,8 @@ export class GitHubClient {
 
       // Get all commits with pagination
       const allCommits = await octokit.paginate<unknown>(
-        octokit.rest.pulls.listCommits,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        octokit.rest.pulls.listCommits as any,
         {
           owner: this.owner,
           repo: this.repo,
