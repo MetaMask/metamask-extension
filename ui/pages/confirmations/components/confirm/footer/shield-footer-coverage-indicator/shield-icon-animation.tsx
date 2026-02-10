@@ -75,7 +75,7 @@ const ShieldIconAnimation = ({
   isDisabled?: boolean;
 }) => {
   const theme = useTheme();
-  const { rive, RiveComponent } = useRiveWasmAnimation({
+  const { rive, RiveComponent, canRenderRive } = useRiveWasmAnimation({
     url: './images/riv_animations/shield_icon.riv',
     riveParams: {
       stateMachines: STATE_MACHINE_NAME,
@@ -199,7 +199,7 @@ const ShieldIconAnimation = ({
   }, []);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
-  if (!rive) {
+  if (!canRenderRive) {
     return <Box className="riv-animation__shield-icon-container"></Box>;
   }
 

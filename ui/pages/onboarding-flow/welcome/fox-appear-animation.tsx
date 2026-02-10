@@ -14,7 +14,7 @@ export default function FoxAppearAnimation({
   isLoader = false,
   skipTransition = false,
 }: FoxAppearAnimationProps) {
-  const { rive, RiveComponent } = useRiveWasmAnimation({
+  const { rive, RiveComponent, canRenderRive } = useRiveWasmAnimation({
     url: './images/riv_animations/fox_appear.riv',
     riveParams: {
       stateMachines: 'FoxRaiseUp',
@@ -65,7 +65,7 @@ export default function FoxAppearAnimation({
   }, [rive, isLoader, skipTransition]);
 
   // Don't render Rive component until ready or if loading/failed
-  if (!rive) {
+  if (!canRenderRive) {
     return (
       <Box
         className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}

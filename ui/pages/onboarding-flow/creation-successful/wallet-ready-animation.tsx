@@ -9,7 +9,7 @@ import { useRiveWasmAnimation } from '../../../contexts/rive-wasm';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WalletReadyAnimation() {
   const theme = useTheme();
-  const { rive, RiveComponent } = useRiveWasmAnimation({
+  const { rive, RiveComponent, canRenderRive } = useRiveWasmAnimation({
     url: './images/riv_animations/wallet_ready.riv',
     riveParams: {
       stateMachines: 'OnboardingLoader',
@@ -45,7 +45,7 @@ export default function WalletReadyAnimation() {
   }, [rive, theme]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
-  if (!rive) {
+  if (!canRenderRive) {
     return <Box className="riv-animation__wallet-ready-container"></Box>;
   }
 

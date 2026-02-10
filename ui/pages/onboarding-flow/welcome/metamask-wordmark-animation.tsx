@@ -48,40 +48,41 @@ export default function MetamaskWordMarkAnimation({
     start?: StateMachineInput;
   }>({});
 
-  const { rive, RiveComponent, hasFailed } = useRiveWasmAnimation({
-    url: './images/riv_animations/metamask_wordmark.riv',
-    riveParams: {
-      stateMachines: STATE_MACHINE_NAME,
-      autoplay: false,
-      layout: new Layout({
-        fit: Fit.Contain,
-        alignment: Alignment.Center,
-      }),
-      onStateChange: (event) => {
-        // The event.data contains an array of state names
-        if (event.data && Array.isArray(event.data)) {
-          // Clear any existing timeout to avoid multiple triggers
-          if (animationTimeoutRef.current) {
-            clearTimeout(animationTimeoutRef.current);
-          }
-
-          // Set a timeout after state change to detect animation completion
-          // Adjust this timeout to match your animation's actual duration
-          animationTimeoutRef.current = setTimeout(() => {
-            if (!isAnimationComplete) {
-              setIsAnimationComplete(true);
+  const { rive, RiveComponent, hasFailed, canRenderRive } =
+    useRiveWasmAnimation({
+      url: './images/riv_animations/metamask_wordmark.riv',
+      riveParams: {
+        stateMachines: STATE_MACHINE_NAME,
+        autoplay: false,
+        layout: new Layout({
+          fit: Fit.Contain,
+          alignment: Alignment.Center,
+        }),
+        onStateChange: (event) => {
+          // The event.data contains an array of state names
+          if (event.data && Array.isArray(event.data)) {
+            // Clear any existing timeout to avoid multiple triggers
+            if (animationTimeoutRef.current) {
+              clearTimeout(animationTimeoutRef.current);
             }
-          }, 1000); // Adjust this based on your animation duration (in milliseconds)
-        }
+
+            // Set a timeout after state change to detect animation completion
+            // Adjust this timeout to match your animation's actual duration
+            animationTimeoutRef.current = setTimeout(() => {
+              if (!isAnimationComplete) {
+                setIsAnimationComplete(true);
+              }
+            }, 1000); // Adjust this based on your animation duration (in milliseconds)
+          }
+        },
+        onLoadError: (error) => {
+          console.error(
+            '[Rive - MetamaskWordMarkAnimation] Failed to initialize animation:',
+            error,
+          );
+        },
       },
-      onLoadError: (error) => {
-        console.error(
-          '[Rive - MetamaskWordMarkAnimation] Failed to initialize animation:',
-          error,
-        );
-      },
-    },
-  });
+    });
 
   // Track if animation has been initialized
   const [isInitialized, setIsInitialized] = useState(false);
@@ -162,7 +163,7 @@ export default function MetamaskWordMarkAnimation({
     prevThemeRef.current = theme;
   }, [rive, theme, isInitialized]);
 
-  const isLoading = !rive;
+  const isLoading = !canRenderRive;
 
   // Trigger animation complete on failure
   useEffect(() => {

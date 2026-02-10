@@ -211,11 +211,13 @@ export const useRiveWasmAnimation = ({
 
   const riveState = useRive(riveInitParams, riveOptions);
   const hasFailed = Boolean(wasmError || bufferError || riveError);
-  const rive = shouldInitializeRive && !hasFailed ? riveState.rive : null;
+  const canRenderRive = shouldInitializeRive && !hasFailed;
+  const rive = canRenderRive ? riveState.rive : null;
 
   return {
     rive,
     RiveComponent: riveState.RiveComponent,
     hasFailed,
+    canRenderRive,
   };
 };
