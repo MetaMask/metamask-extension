@@ -123,15 +123,18 @@ const CancelSpeedupPopoverWrapped = () => {
                         : t('speedUp'),
                     ])}{' '}
                     <Text
-                      as="a"
-                      href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      asChild
                       variant={TextVariant.BodySm}
                       color={TextColor.Primary}
                       className="hover:text-primary-alternative cursor-pointer"
                     >
-                      {t('learnMoreUpperCase')}
+                      <a
+                        href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t('learnMoreUpperCase')}
+                      </a>
                     </Text>
                   </Text>
                 </>
