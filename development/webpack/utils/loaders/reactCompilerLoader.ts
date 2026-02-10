@@ -80,7 +80,8 @@ export const getReactCompilerLoader = (
     loaders.push({
       loader: 'thread-loader',
       options: {
-        workers: numCores < 8 ? Math.max(1, numCores - 2) : numCores - 1,
+        workers:
+          numCores < 8 ? Math.max(1, numCores - 2) : Math.floor(0.9 * numCores),
         workerParallelJobs: 50,
         poolTimeout: watch ? Number(Infinity) : 500,
       },
