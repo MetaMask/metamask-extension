@@ -1014,7 +1014,6 @@ function setupBundlerDefaults(
             './**/node_modules/@firebase',
             './**/node_modules/marked',
             './**/node_modules/@solana',
-            './**/node_modules/axios',
             // Ocap Kernel
             './**/node_modules/@endo',
             './**/node_modules/@agoric',
