@@ -80,7 +80,7 @@ export const connectToBackground = (
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
-    } else if (method !== 'QueryService:cacheUpdate') {
+    } else if (!method.endsWith('cacheUpdate')) {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
           data,

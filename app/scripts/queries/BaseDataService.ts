@@ -1,68 +1,113 @@
-import { Messenger } from '@metamask/messenger';
-import { Json } from '@metamask/utils';
 import {
-  dehydrate,
+  DefaultError,
   DehydratedState,
+  FetchInfiniteQueryOptions,
+  FetchQueryOptions,
+  InfiniteData,
   QueryClient,
   QueryKey,
+  dehydrate,
   hashQueryKey,
 } from '@tanstack/query-core';
-
-type QueryServiceMessenger = Messenger<'QueryService', any, any>;
+import {
+  Messenger,
+  ActionConstraint,
+  EventConstraint,
+} from '@metamask/messenger';
+import { Json } from '@metamask/utils';
 
 type SubscriptionCallback = (payload: Json) => void;
 
-export class QueryService {
-  client: QueryClient;
+export class BaseDataService<
+  ServiceName extends string,
+  ServiceMessenger extends Messenger<
+    ServiceName,
+    ActionConstraint,
+    EventConstraint,
+    // Use `any` to allow any parent to be set. `any` is harmless in a type constraint anyway,
+    // it's the one totally safe place to use it.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    any
+  >,
+> {
+  name: string;
 
-  #messenger: QueryServiceMessenger;
+  #messenger: ServiceMessenger;
+
+  #client = new QueryClient();
 
   #subscriptions: Map<string, Set<SubscriptionCallback>> = new Map();
 
-  constructor(messenger: QueryServiceMessenger) {
+  constructor({
+    name,
+    messenger,
+  }: {
+    name: ServiceName;
+    messenger: ServiceMessenger;
+  }) {
+    this.name = name;
     this.#messenger = messenger;
-    this.client = new QueryClient({
-      defaultOptions: {
-        queries: {
-          queryFn: ({ queryKey }) => this.#executeQuery(queryKey),
-        },
-      },
-    });
 
     this.#registerMessageHandlers();
     this.#setupCacheListener();
   }
 
-  #executeQuery(queryKey: QueryKey) {
-    const [action, ...args] = queryKey as [string, ...any[]];
-    return this.#messenger.call(action, ...args);
+  protected async fetchQuery<
+    TQueryFnData,
+    TError = DefaultError,
+    TData = TQueryFnData,
+    TQueryKey extends QueryKey = QueryKey,
+    TPageParam = never,
+  >(
+    options: FetchQueryOptions<
+      TQueryFnData,
+      TError,
+      TData,
+      TQueryKey,
+      TPageParam
+    >,
+  ): Promise<TData> {
+    return this.#client.ensureQueryData(options);
+  }
+
+  protected async fetchInfiniteQuery<
+    TQueryFnData,
+    TError = DefaultError,
+    TData = TQueryFnData,
+    TQueryKey extends QueryKey = QueryKey,
+    TPageParam = unknown,
+  >(
+    options: FetchInfiniteQueryOptions<
+      TQueryFnData,
+      TError,
+      TData,
+      TQueryKey,
+      TPageParam
+    >,
+  ): Promise<InfiniteData<TData, TPageParam>> {
+    return this.#client.ensureQueryData(options);
   }
 
   #registerMessageHandlers() {
     this.#messenger.registerActionHandler(
-      'QueryService:subscribe',
+      // @ts-expect-error TODO.
+      `${this.name}:subscribe`,
       (queryKey: QueryKey, callback: SubscriptionCallback) => {
         return this.#handleSubscribe(queryKey, callback);
       },
     );
 
     this.#messenger.registerActionHandler(
-      'QueryService:unsubscribe',
+      // @ts-expect-error TODO.
+      `${this.name}:unsubscribe`,
       (queryKey: QueryKey, callback: SubscriptionCallback) => {
         return this.#handleUnsubscribe(queryKey, callback);
-      },
-    );
-
-    this.#messenger.registerActionHandler(
-      'QueryService:fetch',
-      async (queryKey: QueryKey) => {
-        return this.#handleFetch(queryKey);
       },
     );
   }
 
   #setupCacheListener() {
-    this.client.getQueryCache().subscribe((event) => {
+    this.#client.getQueryCache().subscribe((event) => {
       if (!event.query) {
         return;
       }
@@ -107,14 +152,9 @@ export class QueryService {
     }
   }
 
-  async #handleFetch(queryKey: QueryKey): Promise<DehydratedState> {
-    await this.client.ensureQueryData({ queryKey });
-    return this.#getDehydratedStateForQuery(queryKey);
-  }
-
   #getDehydratedStateForQuery(queryKey: QueryKey): DehydratedState {
     const hash = hashQueryKey(queryKey);
-    return dehydrate(this.client, {
+    return dehydrate(this.#client, {
       shouldDehydrateQuery: (query) => query.queryHash === hash,
     });
   }
