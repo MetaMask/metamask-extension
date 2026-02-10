@@ -143,7 +143,9 @@ describe('Deep link utils', () => {
 
       expect(result).toBeNull();
       expect(logErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Failed to retrieve cookie with browser API.'),
+        expect.stringContaining(
+          'Failed to use browser API for deferred deep link cookies.',
+        ),
         expect.any(Error),
       );
     });

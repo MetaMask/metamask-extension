@@ -27,64 +27,53 @@ export function buildInterstitialRoute(urlPathAndQuery: string): string {
  *
  * @returns The parsed deferred deep link data or null if not found.
  */
-export function getDeferredDeepLinkFromCookie(): Promise<DeferredDeepLink | null> {
-  return new Promise((resolve) => {
-    try {
-      browser.cookies
-        .get({
-          url: 'https://metamask.io/',
-          name: 'deferred_deeplink',
-        })
-        .then((cookie) => {
-          if (!cookie) {
-            resolve(null);
-            return;
-          }
+export async function getDeferredDeepLinkFromCookie(): Promise<DeferredDeepLink | null> {
+  try {
+    const cookie = await browser.cookies.get({
+      url: 'https://metamask.io/',
+      name: 'deferred_deeplink',
+    });
 
-          try {
-            const cookieData = JSON.parse(cookie.value);
-
-            // Validate the parsed data
-            if (
-              !cookieData.referringLink ||
-              typeof cookieData.referringLink !== 'string'
-            ) {
-              log.error('Invalid referringLink in deferred_deeplink cookie.');
-              resolve(null);
-              return;
-            }
-
-            // Validate if createdAt is a valid number (timestamp)
-            if (
-              typeof cookieData.createdAt !== 'number' ||
-              !Number.isFinite(cookieData.createdAt)
-            ) {
-              log.error('Invalid createdAt value in deferred_deeplink cookie.');
-              resolve(null);
-              return;
-            }
-
-            resolve({
-              createdAt: cookieData.createdAt,
-              referringLink: cookieData.referringLink,
-            });
-          } catch (error) {
-            log.error('Failed to parse deferred_deeplink cookie.', error);
-            resolve(null);
-          }
-        })
-        .catch((error) => {
-          log.error('Failed to retrieve cookie with browser API.', error);
-          resolve(null);
-        });
-    } catch (error) {
-      log.error(
-        'Failed to use browser API for deferred deep link cookies.',
-        error,
-      );
-      resolve(null);
+    if (!cookie) {
+      return null;
     }
-  });
+
+    try {
+      const cookieData = JSON.parse(cookie.value);
+
+      // Validate the parsed data
+      if (
+        !cookieData.referringLink ||
+        typeof cookieData.referringLink !== 'string'
+      ) {
+        log.error('Invalid referringLink in deferred_deeplink cookie.');
+        return null;
+      }
+
+      // Validate if createdAt is a valid number (timestamp)
+      if (
+        typeof cookieData.createdAt !== 'number' ||
+        !Number.isFinite(cookieData.createdAt)
+      ) {
+        log.error('Invalid createdAt value in deferred_deeplink cookie.');
+        return null;
+      }
+
+      return {
+        createdAt: cookieData.createdAt,
+        referringLink: cookieData.referringLink,
+      };
+    } catch (error) {
+      log.error('Failed to parse deferred_deeplink cookie.', error);
+      return null;
+    }
+  } catch (error) {
+    log.error(
+      'Failed to use browser API for deferred deep link cookies.',
+      error,
+    );
+    return null;
+  }
 }
 
 /**
