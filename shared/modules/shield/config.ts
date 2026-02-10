@@ -34,7 +34,7 @@ export type BuildType = (typeof BUILD_TYPE)[keyof typeof BUILD_TYPE];
 
 export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
   [BUILD_TYPE.main]: {
-    subscriptionEnv: SubscriptionEnv.PRD,
+    subscriptionEnv: SubscriptionEnv.UAT,
     claimsEnv: ClaimsEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],

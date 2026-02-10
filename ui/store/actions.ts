@@ -512,9 +512,6 @@ export function getSubscriptions(): ThunkAction<
       return subscriptions;
     } catch (error) {
       log.error('[getSubscriptions] error', error);
-      captureException(
-        createSentryError('Failed to fetch subscriptions', error),
-      );
       throw error;
     }
   };
@@ -539,9 +536,6 @@ export function getSubscriptionPricing(): ThunkAction<
       return pricing;
     } catch (error) {
       log.error('[getSubscriptionPricing] error', error);
-      captureException(
-        createSentryError('Failed to fetch subscription pricing', error),
-      );
       throw error;
     }
   };
@@ -566,12 +560,6 @@ export async function getSubscriptionCryptoApprovalAmount(
     return cryptoApprovalAmount;
   } catch (error) {
     log.error('[getSubscriptionCryptoApprovalAmount] error', error);
-    captureException(
-      createSentryError(
-        'Failed to get subscription crypto approval amount',
-        error,
-      ),
-    );
     throw error;
   }
 }
