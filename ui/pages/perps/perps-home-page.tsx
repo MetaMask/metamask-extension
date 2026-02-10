@@ -267,6 +267,7 @@ const PerpsHomePage: React.FC = () => {
               const isLong = parseFloat(position.size) >= 0;
               const pnlValue = parseFloat(position.unrealizedPnl);
               const isProfit = pnlValue >= 0;
+              const leverage = position.leverage?.value ?? 1;
 
               return (
                 <Box
@@ -290,7 +291,7 @@ const PerpsHomePage: React.FC = () => {
                       variant={TextVariant.BodySm}
                       fontWeight={FontWeight.Medium}
                     >
-                      {displaySymbol} |{' '}
+                      {displaySymbol} {leverage}x{' '}
                       {isLong ? t('perpsLong') : t('perpsShort')}
                     </Text>
                     <Text

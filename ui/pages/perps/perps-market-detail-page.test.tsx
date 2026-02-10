@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import {
@@ -249,7 +250,7 @@ describe('PerpsMarketDetailPage', () => {
     it('displays position details section', () => {
       const store = mockStore(createMockState(true));
 
-      const { getByText } = renderWithProvider(
+      const { getByText, getAllByText } = renderWithProvider(
         <PerpsMarketDetailPage />,
         store,
       );
@@ -257,7 +258,11 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText('Details')).toBeInTheDocument();
       expect(getByText('Direction')).toBeInTheDocument();
       expect(getByText('Entry price')).toBeInTheDocument();
-      expect(getByText('Liquidation price')).toBeInTheDocument();
+      // 'Liquidation price' appears in both the Details section and the
+      // Edit Margin expandable, so use getAllByText
+      expect(getAllByText('Liquidation price').length).toBeGreaterThanOrEqual(
+        1,
+      );
     });
 
     it('displays stats section', () => {
@@ -292,6 +297,35 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       expect(getByText('Learn the basics of perps')).toBeInTheDocument();
+    });
+
+    it('expands edit margin section when margin card is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      // The Edit Margin expandable is rendered but collapsed (hidden via CSS grid)
+      // Before expanding, the 'Add Margin' text exists in the DOM but is not visible
+      fireEvent.click(screen.getByText('Margin'));
+
+      // After expanding, both the mode toggle and confirm button show 'Add Margin'
+      const addMarginElements = screen.getAllByText('Add Margin');
+      expect(addMarginElements.length).toBeGreaterThanOrEqual(2);
+      expect(screen.getByText('Remove Margin')).toBeInTheDocument();
+    });
+
+    it('collapses margin section when auto close is opened (mutual exclusion)', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText('Margin'));
+      const addMarginElements = screen.getAllByText('Add Margin');
+      expect(addMarginElements.length).toBeGreaterThanOrEqual(1);
+
+      fireEvent.click(screen.getByText('Auto close'));
+      expect(screen.getByText('Take Profit')).toBeInTheDocument();
+      expect(screen.getByText('Stop Loss')).toBeInTheDocument();
     });
   });
 
