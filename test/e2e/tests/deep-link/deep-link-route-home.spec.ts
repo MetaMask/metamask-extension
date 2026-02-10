@@ -1,64 +1,16 @@
-import assert from 'node:assert/strict';
-import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { emptyHtmlPage } from '../../mock-e2e';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
+import { bytesToB64, cartesianProduct, generateECDSAKeyPair } from './helpers';
 import {
-  bytesToB64,
-  cartesianProduct,
-  signDeepLink,
-  generateECDSAKeyPair,
-} from './helpers';
-
-const TEST_PAGE = 'https://doesntexist.test/';
+  getConfig,
+  prepareDeepLinkUrl,
+  shouldRenderCheckbox,
+} from './deep-link-helpers';
 
 describe('Deep Link - /home Route', function () {
-  /**
-   * Generates the configuration for the test, including fixtures and
-   * manifest flags.
-   *
-   * @param title - The title of the test, used for debugging and logging.
-   * @param deepLinkPublicKey - The public key for deep link verification.
-   */
-  async function getConfig(title?: string, deepLinkPublicKey?: string) {
-    return {
-      fixtures: new FixtureBuilder().build(),
-      title,
-      manifestFlags: {
-        testing: {
-          deepLinkPublicKey,
-        },
-      },
-      testSpecificMock: async (server: Mockttp) => {
-        // Deep Links
-        await server
-          .forGet(/^https?:\/\/link\.metamask\.io\/.*$/u)
-          .thenCallback(() => {
-            return {
-              statusCode: 200,
-              body: emptyHtmlPage(),
-              headers: {
-                'Content-Type': 'text/html; charset=utf-8',
-              },
-            };
-          });
-        await server.forGet(TEST_PAGE).thenCallback(() => {
-          return {
-            statusCode: 200,
-            body: emptyHtmlPage(),
-            headers: {
-              'Content-Type': 'text/html; charset=utf-8',
-            },
-          };
-        });
-      },
-    };
-  }
-
   const scenarios = cartesianProduct(
     ['locked', 'unlocked'] as const,
     [
@@ -80,13 +32,11 @@ describe('Deep Link - /home Route', function () {
       );
 
       await withFixtures(
-        await getConfig(this.test?.fullTitle(), deepLinkPublicKey),
+        await getConfig({
+          title: this.test?.fullTitle(),
+          deepLinkPublicKey,
+        }),
         async ({ driver }: { driver: Driver }) => {
-          const isSigned =
-            signed === 'signed with sig_params' ||
-            signed === 'signed without sig_params';
-          const withSigParams = signed === 'signed with sig_params';
-
           // ensure the background is ready to process deep links (by waiting
           // for the UI to load)
           console.log('Navigating to initial page');
@@ -108,41 +58,21 @@ describe('Deep Link - /home Route', function () {
 
           // navigate to the route and make sure it
           // redirects to the deep link interstitial page
-          const rawUrl = `https://link.metamask.io${route}`;
-          const preparedUrl = isSigned
-            ? await signDeepLink(keyPair.privateKey, rawUrl, withSigParams)
-            : rawUrl;
-          console.log('Opening deep link URL');
-          await driver.openNewURL(preparedUrl);
+          const preparedUrl = await prepareDeepLinkUrl({
+            route,
+            signed,
+            privateKey: keyPair.privateKey,
+          });
 
-          const deepLink = new DeepLink(driver);
-          console.log('Checking if deep link page is loaded');
-          await deepLink.checkPageIsLoaded();
-
-          // we should render the checkbox when the link is "signed"
-          const shouldRenderCheckbox = isSigned;
-          console.log('Checking if deep link interstitial checkbox exists');
-          const hasCheckbox =
-            await deepLink.hasSkipDeepLinkInterstitialCheckBox();
-          assert.equal(
-            hasCheckbox,
-            shouldRenderCheckbox,
-            'Checkbox presence mismatch',
+          // Navigate through deep link interstitial, complete login if locked,
+          // and verify the home page has been loaded!
+          await navigateDeepLinkToDestination(
+            driver,
+            preparedUrl,
+            locked,
+            shouldRenderCheckbox(signed),
+            HomePage,
           );
-
-          console.log('Clicking continue button');
-          await deepLink.clickContinueButton();
-          if (locked === 'locked') {
-            console.log('Checking if login page is loaded (locked scenario)');
-            await loginPage.checkPageIsLoaded();
-            console.log('Logging in to homepage (locked scenario)');
-            await loginPage.loginToHomepage();
-          }
-
-          // check that the home page has been loaded!
-          const homePage = new HomePage(driver);
-          console.log('Checking if target page is loaded');
-          await homePage.checkPageIsLoaded();
         },
       );
     });
