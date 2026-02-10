@@ -118,18 +118,28 @@ async function main() {
         continue;
       }
 
-      const benchmarkAttributes = {
-        ...mapKeys(benchmark.mean, (_, key) => `${type}.mean.${key}`),
-        ...mapKeys(benchmark.p75, (_, key) => `${type}.p75.${key}`),
-        ...mapKeys(benchmark.p95, (_, key) => `${type}.p95.${key}`),
-      };
-
       Sentry.logger.info(`${type}.${name}`, {
         ...baseCiAttributes,
         'ci.persona': benchmark.persona || 'standard',
         'ci.testTitle': benchmark.testTitle,
-        ...benchmarkAttributes,
+        'ci.logType': 'metadata',
       });
+
+      // Send one log per stat type (metrics only) to stay within Sentry's per-log attribute limit
+      const statTypes = ['mean', 'p75', 'p95'] as const;
+      for (const statType of statTypes) {
+        const statData = benchmark[statType];
+        if (!statData || Object.keys(statData).length === 0) {
+          continue;
+        }
+
+        Sentry.logger.info(`${type}.${name}`, {
+          'ci.commitHash':
+            process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
+          'ci.logType': statType,
+          ...mapKeys(statData, (_, key) => `${key}`),
+        });
+      }
       sentCount += 1;
     } else {
       // User action result with numeric timing metrics
@@ -149,10 +159,19 @@ async function main() {
         continue;
       }
 
+      // Send CI metadata as its own log entry
       Sentry.logger.info(`${type}.${name}`, {
         ...baseCiAttributes,
         'ci.persona': userAction.persona || 'standard',
         'ci.testTitle': userAction.testTitle,
+        'ci.logType': 'metadata',
+      });
+
+      // Send metrics as a separate log entry
+      Sentry.logger.info(`${type}.${name}`, {
+        'ci.commitHash':
+          process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
+        'ci.logType': 'metrics',
         ...metrics,
       });
       sentCount += 1;

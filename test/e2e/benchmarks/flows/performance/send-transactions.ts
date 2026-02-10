@@ -16,7 +16,11 @@ import SendPage from '../../../page-objects/pages/send/send-page';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  WITH_STATE_POWER_USER,
+} from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
@@ -89,12 +93,17 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }

@@ -11,7 +11,11 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  WITH_STATE_POWER_USER,
+} from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
@@ -55,12 +59,17 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }

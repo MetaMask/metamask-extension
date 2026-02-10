@@ -14,6 +14,7 @@ import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
+import { BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -77,12 +78,17 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }

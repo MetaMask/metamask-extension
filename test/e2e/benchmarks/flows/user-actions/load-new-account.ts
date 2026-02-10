@@ -9,7 +9,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { Driver } from '../../../webdriver/driver';
-import { BENCHMARK_PERSONA } from '../../utils/constants';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
 
@@ -46,5 +46,5 @@ export async function run(): Promise<BenchmarkRunResult> {
     );
 
     return [{ id: 'load_new_account', duration: loadingTimes }];
-  });
+  }, BENCHMARK_TYPE.USER_ACTION);
 }

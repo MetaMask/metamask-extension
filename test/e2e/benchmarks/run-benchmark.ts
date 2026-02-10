@@ -27,6 +27,7 @@ import {
 import type {
   BenchmarkResults,
   BenchmarkSummary,
+  BenchmarkType,
   StatisticalResult,
   ThresholdConfig,
 } from './utils/types';
@@ -38,11 +39,13 @@ import type {
  * @param summary
  * @param testTitle
  * @param persona
+ * @param benchmarkType
  */
 function convertSummaryToResults(
   summary: BenchmarkSummary,
   testTitle: string,
   persona?: string,
+  benchmarkType?: BenchmarkType,
 ): BenchmarkResults {
   const mean: StatisticalResult = {};
   const min: StatisticalResult = {};
@@ -63,6 +66,7 @@ function convertSummaryToResults(
   return {
     testTitle,
     persona,
+    benchmarkType,
     mean,
     min,
     max,
@@ -199,7 +203,12 @@ async function runBenchmarkFile(
       console.log('✅ All thresholds passed');
     }
 
-    return convertSummaryToResults(summary, testTitle, persona);
+    return convertSummaryToResults(
+      summary,
+      testTitle,
+      persona,
+      summary.benchmarkType,
+    );
   }
 
   // For other benchmarks (page-load), run once with options
