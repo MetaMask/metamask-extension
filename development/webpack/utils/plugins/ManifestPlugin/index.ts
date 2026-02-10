@@ -424,10 +424,20 @@ export class ManifestPlugin<Z extends boolean> {
     if (!browserScripts) return excluded;
 
     for (const entryName of this.manifestScriptEntries) {
-      // Skip hardcoded self-contained scripts that aren't from manifests
-      if (!compilation.entrypoints.has(entryName)) continue;
       // If this browser needs this entry, don't exclude its files
       if (browserScripts.has(entryName)) continue;
+
+      // Only exclude entries that at least one other browser references.
+      // Entries not referenced by any browser (e.g., bootstrap, snow.prod)
+      // are shared and must go to all browsers.
+      let isPerBrowserEntry = false;
+      for (const scripts of this.browserEntries.values()) {
+        if (scripts.has(entryName)) {
+          isPerBrowserEntry = true;
+          break;
+        }
+      }
+      if (!isPerBrowserEntry) continue;
 
       const ep = compilation.entrypoints.get(entryName);
       if (ep) {
