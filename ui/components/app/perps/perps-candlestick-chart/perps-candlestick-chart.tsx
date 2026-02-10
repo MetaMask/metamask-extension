@@ -351,7 +351,7 @@ const PerpsCandlestickChart = forwardRef<
         return;
       }
 
-      const candles = candleData.candles;
+      const { candles } = candleData;
       const currentCount = candles.length;
       const currentLastTime =
         currentCount > 0 ? candles[currentCount - 1].time : 0;
