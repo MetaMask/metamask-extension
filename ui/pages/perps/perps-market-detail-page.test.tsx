@@ -13,6 +13,44 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 
+// Mock lightweight-charts to prevent DOM rendering issues in tests
+const mockPriceLine = { options: jest.fn() };
+jest.mock('lightweight-charts', () => ({
+  createChart: () => ({
+    addSeries: () => ({
+      setData: jest.fn(),
+      update: jest.fn(),
+      createPriceLine: jest.fn().mockReturnValue(mockPriceLine),
+      removePriceLine: jest.fn(),
+      priceScale: jest.fn().mockReturnValue({ applyOptions: jest.fn() }),
+      applyOptions: jest.fn(),
+    }),
+    applyOptions: jest.fn(),
+    timeScale: jest.fn().mockReturnValue({
+      fitContent: jest.fn(),
+      scrollToPosition: jest.fn(),
+      scrollToRealTime: jest.fn(),
+      getVisibleLogicalRange: jest.fn(),
+      setVisibleLogicalRange: jest.fn(),
+      subscribeVisibleLogicalRangeChange: jest.fn(),
+      unsubscribeVisibleLogicalRangeChange: jest.fn(),
+      applyOptions: jest.fn(),
+    }),
+    panes: jest.fn().mockReturnValue([]),
+    priceScale: jest.fn().mockReturnValue({ applyOptions: jest.fn() }),
+    resize: jest.fn(),
+    remove: jest.fn(),
+    subscribeCrosshairMove: jest.fn(),
+    unsubscribeCrosshairMove: jest.fn(),
+  }),
+  CandlestickSeries: 'CandlestickSeries',
+  HistogramSeries: 'HistogramSeries',
+  ColorType: { Solid: 'Solid' },
+  CrosshairMode: { Normal: 0 },
+  LineStyle: { Dashed: 2, Solid: 0 },
+  PriceScaleMode: { Normal: 0 },
+}));
+
 // Mock semver to control version comparison in tests
 jest.mock('semver', () => ({
   gte: jest.fn(() => true),
@@ -57,6 +95,27 @@ jest.mock('../../hooks/perps/stream', () => ({
   usePerpsLiveMarketData: () => ({
     markets: [...mockCryptoMarkets, ...mockHip3Markets],
     isInitialLoading: false,
+  }),
+  usePerpsLiveCandles: () => ({
+    candleData: {
+      symbol: 'ETH',
+      interval: '5m',
+      candles: [
+        {
+          time: 1768188300000,
+          open: '2500.0',
+          high: '2520.0',
+          low: '2490.0',
+          close: '2510.0',
+          volume: '100.0',
+        },
+      ],
+    },
+    isInitialLoading: false,
+    isLoadingMore: false,
+    hasHistoricalData: true,
+    error: null,
+    fetchMoreHistory: jest.fn(),
   }),
 }));
 
