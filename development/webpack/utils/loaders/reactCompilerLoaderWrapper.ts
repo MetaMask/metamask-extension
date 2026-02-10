@@ -17,7 +17,8 @@
 import { createRequire } from 'node:module';
 import type { LoaderDefinitionFunction } from 'webpack';
 
-const esmRequire = createRequire(__filename);
+// @ts-expect-error ESM resolution issues
+const esmRequire = createRequire(import.meta.url);
 
 const reactCompilerModule = esmRequire(
   'react-compiler-webpack/dist/react-compiler-loader.js',
