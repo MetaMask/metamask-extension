@@ -2026,6 +2026,12 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLink_BasicFunctionalityOffDescription": {
+    "message": "This link requires Basic Functionality to be turned on. You can change this in Settings > Security and privacy."
+  },
+  "deepLink_BasicFunctionalityOffTitle": {
+    "message": "This feature isn't available"
+  },
   "deepLink_Caution": {
     "message": "Proceed with caution"
   },
