@@ -5202,6 +5202,9 @@
   "perpsAddFundsDescription": {
     "message": "Add funds to start trading perpetual contracts with leverage"
   },
+  "perpsAddMargin": {
+    "message": "Add Margin"
+  },
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
@@ -5211,6 +5214,9 @@
   "perpsAvailable": {
     "message": "available",
     "description": "is the available balance amount"
+  },
+  "perpsAvailableBalance": {
+    "message": "Available balance"
   },
   "perpsBuy": {
     "message": "buy"
@@ -5299,9 +5305,6 @@
   "perpsFilterStocks": {
     "message": "Stocks"
   },
-  "perpsGiveFeedback": {
-    "message": "Give us feedback"
-  },
   "perpsFunding": {
     "message": "Funding"
   },
@@ -5310,6 +5313,9 @@
   },
   "perpsFundingRate": {
     "message": "Funding Rate"
+  },
+  "perpsGiveFeedback": {
+    "message": "Give us feedback"
   },
   "perpsIncreasedPosition": {
     "message": "Increased position"
@@ -5326,6 +5332,9 @@
   "perpsLimit": {
     "message": "Limit"
   },
+  "perpsLiquidationDistance": {
+    "message": "Liq. distance"
+  },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
@@ -5338,26 +5347,8 @@
   "perpsMargin": {
     "message": "Margin"
   },
-  "perpsAddMargin": {
-    "message": "Add Margin"
-  },
-  "perpsRemoveMargin": {
-    "message": "Remove Margin"
-  },
-  "perpsAvailableBalance": {
-    "message": "Available balance"
-  },
-  "perpsMaxRemovable": {
-    "message": "Max removable"
-  },
-  "perpsLiquidationDistance": {
-    "message": "Liq. distance"
-  },
   "perpsMarginRiskWarning": {
     "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
-  },
-  "perpsMax": {
-    "message": "Max"
   },
   "perpsMarket": {
     "message": "Market"
@@ -5371,6 +5362,12 @@
   },
   "perpsMarkets": {
     "message": "Markets"
+  },
+  "perpsMax": {
+    "message": "Max"
+  },
+  "perpsMaxRemovable": {
+    "message": "Max removable"
   },
   "perpsModify": {
     "message": "Modify"
@@ -5425,8 +5422,15 @@
   "perpsRecentActivity": {
     "message": "Recent Activity"
   },
+  "perpsRemoveMargin": {
+    "message": "Remove Margin"
+  },
   "perpsReturn": {
     "message": "Return"
+  },
+  "perpsSaveChanges": {
+    "message": "Save Changes",
+    "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
@@ -5509,6 +5513,10 @@
   "perpsStatusTriggered": {
     "message": "Triggered"
   },
+  "perpsStopLoss": {
+    "message": "Stop Loss",
+    "description": "Label for stop loss price input"
+  },
   "perpsSubmitting": {
     "message": "Submitting...",
     "description": "Loading text shown while an order is being submitted"
@@ -5516,14 +5524,6 @@
   "perpsTakeProfit": {
     "message": "Take Profit",
     "description": "Label for take profit price input"
-  },
-  "perpsStopLoss": {
-    "message": "Stop Loss",
-    "description": "Label for stop loss price input"
-  },
-  "perpsSaveChanges": {
-    "message": "Save Changes",
-    "description": "Button text for saving TP/SL changes"
   },
   "perpsTotalBalance": {
     "message": "Total Balance"
