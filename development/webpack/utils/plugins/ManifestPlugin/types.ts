@@ -2,6 +2,12 @@ import type { Browser, Manifest } from '../../helpers';
 
 export type BaseManifestPluginOptions<Zip extends boolean> = {
   /**
+   * Absolute path to the app root directory where manifest files and entry
+   * source files are located.
+   */
+  appRoot: string;
+
+  /**
    * The browsers to build for.
    */
   browsers: readonly [Browser, ...Browser[]];

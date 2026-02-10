@@ -1,11 +1,12 @@
-import { readFileSync } from 'node:fs';
-import { extname, join } from 'node:path/posix';
+import { readFileSync, readdirSync } from 'node:fs';
+import { extname, join, parse } from 'node:path/posix';
 import {
   sources,
   ProgressPlugin,
   type Compilation,
   type Compiler,
   type Asset,
+  type EntryObject,
 } from 'webpack';
 import { validate } from 'schema-utils';
 import {
@@ -21,9 +22,17 @@ import type { ManifestPluginOptions } from './types';
 const { RawSource, ConcatSource } = sources;
 
 type Assets = Compilation['assets'];
+type EntryDescription = Exclude<EntryObject[string], string | string[]>;
 
 const NAME = 'ManifestPlugin';
 const BROWSER_TEMPLATE_RE = /\[browser\]/gu;
+
+/**
+ * @param filename
+ * @returns filename with .js extension (.ts | .tsx | .mjs -> .js)
+ */
+const extensionToJs = (filename: string) =>
+  filename.replace(/\.(ts|tsx|mjs)$/u, '.js');
 
 /**
  * Adds the given asset to the zip file
@@ -64,13 +73,9 @@ function addAssetToZip(
 }
 
 /**
- * A webpack plugin that generates extension manifests for browsers and organizes
- * assets into browser-specific directories and optionally zips them.
- *
- * TODO: it'd be great if the logic to find entry points was also in this plugin
- * instead of in helpers.ts. Moving that here would allow us to utilize the
- * this.options.transform function to modify the manifest before collecting the
- * entry points.
+ * A webpack plugin that generates extension manifests for browsers, collects
+ * entry points from the fully merged manifest, organizes assets into
+ * browser-specific directories, and optionally zips them.
  */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -104,14 +109,273 @@ export class ManifestPlugin<Z extends boolean> {
 
   manifests: Map<Browser, sources.Source> = new Map();
 
+  /**
+   * Webpack entry points derived from the fully merged per-browser manifests.
+   */
+  readonly entry: EntryObject;
+
+  /**
+   * Returns `true` if the given chunk can be split into shared chunks.
+   * Manifest scripts and hardcoded self-contained scripts cannot be chunked.
+   */
+  readonly canBeChunked: (chunk: { name?: string | null }) => boolean;
+
+  private mergedManifests: Map<Browser, Manifest>;
+
+  private manifestScriptEntries: Set<string>;
+
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });
     this.options = options;
     this.manifests = new Map();
+
+    this.mergedManifests = this.buildMergedManifests();
+    const { entry, canBeChunked, manifestScripts } = this.collectEntries();
+    this.entry = entry;
+    this.canBeChunked = canBeChunked;
+    this.manifestScriptEntries = manifestScripts;
   }
 
   apply(compiler: Compiler) {
     compiler.hooks.compilation.tap(NAME, this.hookIntoPipelines.bind(this));
+  }
+
+  /**
+   * Builds the fully merged manifest for each browser. This performs the full
+   * merge pipeline: base + build-type base + options + browser-specific +
+   * build-type browser-specific + web_accessible_resources + transform.
+   *
+   * Called once in the constructor; results are cached and cloned per
+   * compilation in `prepareManifests`.
+   */
+  private buildMergedManifests(): Map<Browser, Manifest> {
+    const { appRoot } = this.options;
+    const manifestPath = join(
+      appRoot,
+      `manifest/v${this.options.manifest_version}`,
+    );
+    // Load the base manifest
+    const basePath = join(manifestPath, `_base.json`);
+    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
+
+    const buildTypeManifestPath = join(
+      appRoot,
+      'build-types',
+      this.options.buildType,
+      'manifest',
+    );
+    // Load the build type base manifest if it exists for the specific build type
+    const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
+    let buildTypeBaseManifest: Partial<Manifest> = {};
+    try {
+      buildTypeBaseManifest = JSON.parse(
+        readFileSync(buildTypeBasePath, 'utf-8'),
+      );
+    } catch {
+      // File doesn't exist or is invalid, use empty object
+    }
+
+    const { transform } = this.options;
+    const resources = this.options.web_accessible_resources;
+    const baseDescription =
+      buildTypeBaseManifest.description ?? baseManifest.description;
+    const description = this.options.description
+      ? `${baseDescription} – ${this.options.description}`
+      : baseDescription;
+    const { version } = this.options;
+
+    const result = new Map<Browser, Manifest>();
+
+    this.options.browsers.forEach((browser) => {
+      let manifest = structuredClone({
+        ...baseManifest,
+        ...buildTypeBaseManifest,
+        description,
+        version,
+      }) as Manifest;
+
+      if (browser !== 'firefox') {
+        // version_name isn't used by FireFox, but is by Chrome, et al.
+        manifest.version_name = this.options.versionName;
+      }
+
+      const browserManifestPath = join(manifestPath, `${browser}.json`);
+      try {
+        // merge browser-specific overrides into the browser manifest
+        manifest = {
+          ...manifest,
+          ...JSON.parse(readFileSync(browserManifestPath, 'utf-8')),
+        };
+      } catch {
+        // File doesn't exist or is invalid, skip merging
+      }
+
+      const buildTypeBrowserManifestPath = join(
+        buildTypeManifestPath,
+        `${browser}.json`,
+      );
+      try {
+        // merge browser-specific build type overrides into the browser manifest
+        manifest = {
+          ...manifest,
+          ...JSON.parse(readFileSync(buildTypeBrowserManifestPath, 'utf-8')),
+        };
+      } catch {
+        // File doesn't exist or is invalid, skip merging
+      }
+
+      // merge provided `web_accessible_resources`
+      if (resources && resources.length > 0) {
+        if (manifest.manifest_version === 3) {
+          manifest.web_accessible_resources =
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            manifest.web_accessible_resources || [];
+          const war = manifest.web_accessible_resources.find((resource) =>
+            resource.matches.includes('<all_urls>'),
+          );
+          if (war) {
+            // merge the resources into the existing <all_urls> resource, ensure uniqueness using `Set`
+            war.resources = [...new Set([...war.resources, ...resources])];
+          } else {
+            // add a new <all_urls> resource
+            manifest.web_accessible_resources.push({
+              matches: ['<all_urls>'],
+              resources: [...resources],
+            });
+          }
+        } else {
+          manifest.web_accessible_resources = [
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            ...(manifest.web_accessible_resources || []),
+            ...resources,
+          ];
+        }
+      }
+
+      // allow the user to `transform` the manifest
+      if (transform) {
+        manifest = transform(manifest, browser);
+      }
+
+      result.set(browser, manifest);
+    });
+
+    return result;
+  }
+
+  /**
+   * Collects webpack entry points from the fully merged per-browser manifests.
+   * Takes the union across all browsers so that every script referenced by any
+   * browser is compiled.
+   */
+  private collectEntries(): {
+    entry: EntryObject;
+    canBeChunked: (chunk: { name?: string | null }) => boolean;
+    manifestScripts: Set<string>;
+  } {
+    const { appRoot } = this.options;
+    const htmlPages = join(appRoot, 'html', 'pages');
+    const entry: EntryObject = {};
+    const selfContainedScripts: Set<string> = new Set([
+      'snow.prod',
+      'use-snow',
+      'bootstrap',
+    ]);
+
+    function addManifestScript(
+      filename: string,
+      opts?: Partial<EntryDescription>,
+    ) {
+      if (selfContainedScripts.has(filename)) {
+        return; // already added
+      }
+      selfContainedScripts.add(filename);
+      const jsName = extensionToJs(filename);
+      const { dir, name } = parse(jsName);
+      entry[filename] = {
+        chunkLoading: false,
+        filename: join(dir, `${name}.[contenthash].js`),
+        import: join(appRoot, filename),
+        ...opts,
+      };
+    }
+
+    function addHtml(filename: string) {
+      const parsedFileName = parse(filename).name;
+      entry[parsedFileName] = join(htmlPages, filename);
+    }
+
+    // Iterate over each browser's merged manifest and collect entries (union)
+    for (const manifest of this.mergedManifests.values()) {
+      // add content_scripts to entries
+      for (const contentScript of manifest.content_scripts ?? []) {
+        for (const script of contentScript.js ?? []) {
+          addManifestScript(script);
+        }
+      }
+
+      // Handle background
+      if (manifest.background?.page) {
+        const parsedFileName = parse(manifest.background.page).name;
+        if (!entry[parsedFileName]) {
+          addHtml(manifest.background.page);
+        }
+      }
+      if (manifest.background?.service_worker) {
+        addManifestScript(manifest.background.service_worker, {
+          chunkLoading: 'import-scripts',
+        });
+      }
+      for (const script of manifest.background?.scripts ?? []) {
+        addManifestScript(script);
+      }
+
+      // Handle web_accessible_resources (may be v2 string[] or v3 object[])
+      for (const resource of manifest.web_accessible_resources ?? []) {
+        if (typeof resource === 'string') {
+          // MV2 format
+          if (resource.endsWith('.js')) {
+            addManifestScript(resource);
+          }
+        } else {
+          // MV3 format
+          for (const filename of resource.resources) {
+            if (filename.endsWith('.js')) {
+              addManifestScript(filename);
+            }
+          }
+        }
+      }
+    }
+
+    // Scan html/pages/ for HTML entries (browser-independent)
+    try {
+      for (const filename of readdirSync(htmlPages)) {
+        if (/\.html?$/iu.test(filename)) {
+          if (filename === 'background.html') {
+            continue;
+          }
+          // ignore offscreen.html for MV2 extensions
+          if (
+            this.options.manifest_version === 2 &&
+            filename === 'offscreen.html'
+          ) {
+            continue;
+          }
+          addHtml(filename);
+        }
+      }
+    } catch {
+      // html/pages/ directory doesn't exist, skip
+    }
+
+    function canBeChunked({ name }: { name?: string | null }): boolean {
+      return !name || !selfContainedScripts.has(name);
+    }
+
+    return { entry, canBeChunked, manifestScripts: selfContainedScripts };
   }
 
   private async zipAssets(
@@ -238,127 +502,113 @@ export class ManifestPlugin<Z extends boolean> {
     assetDeletions.forEach((assetName) => compilation.deleteAsset(assetName));
   }
 
-  private prepareManifests(compilation: Compilation): void {
-    const context = compilation.options.context as string;
-    const manifestPath = join(
-      context,
-      `manifest/v${this.options.manifest_version}`,
-    );
-    // Load the base manifest
-    const basePath = join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
-
-    const buildTypeManifestPath = join(
-      context,
-      'build-types',
-      this.options.buildType,
-      'manifest',
-    );
-    // Load the build type base manifest if it exists for the specific build type
-    const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
-    let buildTypeBaseManifest: Partial<Manifest> = {};
-    try {
-      buildTypeBaseManifest = JSON.parse(
-        readFileSync(buildTypeBasePath, 'utf-8'),
-      );
-    } catch {
-      // File doesn't exist or is invalid, use empty object
+  /**
+   * Resolves an entry script name to its actual output filename using the
+   * compilation's entrypoints map.
+   */
+  private resolveEntryFile(
+    compilation: Compilation,
+    scriptName: string,
+  ): string {
+    const ep = compilation.entrypoints.get(scriptName);
+    if (ep) {
+      const jsFile = ep.getFiles().find((f: string) => f.endsWith('.js'));
+      if (jsFile) return jsFile;
     }
+    return scriptName;
+  }
 
-    const { transform } = this.options;
-    const resources = this.options.web_accessible_resources;
-    const baseDescription =
-      buildTypeBaseManifest.description ?? baseManifest.description;
-    const description = this.options.description
-      ? `${baseDescription} – ${this.options.description}`
-      : baseDescription;
-    const { version } = this.options;
-
+  /**
+   * Prepares final manifests for each browser by cloning the cached merged
+   * manifests and resolving all script filenames from compilation entrypoints.
+   */
+  private prepareManifests(compilation: Compilation): void {
     this.options.browsers.forEach((browser) => {
-      let manifest = structuredClone({
-        ...baseManifest,
-        ...buildTypeBaseManifest,
-        description,
-        version,
-      }) as Manifest;
+      const manifest = structuredClone(
+        this.mergedManifests.get(browser),
+      ) as Manifest;
 
-      if (browser !== 'firefox') {
-        // version_name isn't used by FireFox, but is by Chrome, et al.
-        manifest.version_name = this.options.versionName;
-      }
-
-      const browserManifestPath = join(manifestPath, `${browser}.json`);
-      try {
-        // merge browser-specific overrides into the browser manifest
-        manifest = {
-          ...manifest,
-          ...JSON.parse(readFileSync(browserManifestPath, 'utf-8')),
-        };
-      } catch {
-        // File doesn't exist or is invalid, skip merging
-      }
-
-      const buildTypeBrowserManifestPath = join(
-        buildTypeManifestPath,
-        `${browser}.json`,
-      );
-      try {
-        // merge browser-specific build type overrides into the browser manifest
-        manifest = {
-          ...manifest,
-          ...JSON.parse(readFileSync(buildTypeBrowserManifestPath, 'utf-8')),
-        };
-      } catch {
-        // File doesn't exist or is invalid, skip merging
-      }
-
-      // merge provided `web_accessible_resources`
-      if (resources && resources.length > 0) {
-        if (manifest.manifest_version === 3) {
-          manifest.web_accessible_resources =
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            manifest.web_accessible_resources || [];
-          const war = manifest.web_accessible_resources.find((resource) =>
-            resource.matches.includes('<all_urls>'),
+      // Resolve content_scripts filenames
+      for (const contentScript of manifest.content_scripts ?? []) {
+        if (contentScript.js) {
+          contentScript.js = contentScript.js.map((script: string) =>
+            this.resolveEntryFile(compilation, script),
           );
-          if (war) {
-            // merge the resources into the existing <all_urls> resource, ensure uniqueness using `Set`
-            war.resources = [...new Set([...war.resources, ...resources])];
-          } else {
-            // add a new <all_urls> resource
-            manifest.web_accessible_resources.push({
-              matches: ['<all_urls>'],
-              resources: [...resources],
-            });
+        }
+      }
+
+      if (manifest.manifest_version === 2) {
+        // Resolve MV2 background.scripts filenames
+        if (manifest.background?.scripts) {
+          manifest.background.scripts = manifest.background.scripts.map(
+            (script: string) => this.resolveEntryFile(compilation, script),
+          );
+        }
+        // Resolve MV2 web_accessible_resources JS filenames
+        if (manifest.web_accessible_resources) {
+          manifest.web_accessible_resources =
+            manifest.web_accessible_resources.map((resource: string) =>
+              resource.endsWith('.js')
+                ? this.resolveEntryFile(compilation, resource)
+                : resource,
+            );
+        }
+      } else if (manifest.manifest_version === 3) {
+        // Resolve MV3 service worker filename
+        if (manifest.background?.service_worker) {
+          manifest.background.service_worker = this.resolveEntryFile(
+            compilation,
+            manifest.background.service_worker,
+          );
+        }
+        // Resolve MV3 web_accessible_resources JS filenames
+        if (manifest.web_accessible_resources) {
+          for (const resource of manifest.web_accessible_resources) {
+            resource.resources = resource.resources.map((filename: string) =>
+              filename.endsWith('.js')
+                ? this.resolveEntryFile(compilation, filename)
+                : filename,
+            );
           }
-        } else {
-          manifest.web_accessible_resources = [
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            ...(manifest.web_accessible_resources || []),
-            ...resources,
-          ];
         }
       }
 
-      // handle manifest v3 service worker logic
-      if (
-        manifest.manifest_version === 3 &&
-        manifest.background?.service_worker
-      ) {
-        const serviceWorkerEntrypoint = compilation.entrypoints.get(
-          manifest.background.service_worker,
-        );
-        if (serviceWorkerEntrypoint) {
-          const serviceWorkerFiles = serviceWorkerEntrypoint.getFiles();
-          manifest.background.service_worker = serviceWorkerFiles[0];
+      // Add source map files to web_accessible_resources if devtool is source-map
+      if (compilation.options.devtool === 'source-map') {
+        const sourceMapFiles: string[] = [];
+        for (const contentScript of manifest.content_scripts ?? []) {
+          for (const script of contentScript.js ?? []) {
+            sourceMapFiles.push(`${script}.map`);
+          }
         }
-      }
-
-      // allow the user to `transform` the manifest
-      if (transform) {
-        manifest = transform(manifest, browser);
+        if (sourceMapFiles.length > 0) {
+          if (manifest.manifest_version === 3) {
+            manifest.web_accessible_resources =
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              manifest.web_accessible_resources || [];
+            const war = manifest.web_accessible_resources.find((resource) =>
+              resource.matches.includes('<all_urls>'),
+            );
+            if (war) {
+              war.resources = [
+                ...new Set([...war.resources, ...sourceMapFiles]),
+              ];
+            } else {
+              manifest.web_accessible_resources.push({
+                matches: ['<all_urls>'],
+                resources: sourceMapFiles,
+              });
+            }
+          } else {
+            manifest.web_accessible_resources = [
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              ...(manifest.web_accessible_resources || []),
+              ...sourceMapFiles,
+            ];
+          }
+        }
       }
 
       // Add the manifest file to the assets

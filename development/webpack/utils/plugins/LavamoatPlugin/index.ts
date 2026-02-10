@@ -32,7 +32,7 @@ export const lavamoatPlugin = (args: Args) =>
     readableResourceIds: true,
     // we apply lockdown to 'runtime.<hash>.js' and 'scripts/contentscript.js'
     inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js)$/u,
+      /^(?:runtime|scripts\/contentscript)\.[0-9a-f]{20}\.js$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',

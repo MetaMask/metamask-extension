@@ -80,6 +80,7 @@ export function mockWebpack(
         files: new Set(Object.keys(assets)),
       } as Chunk,
     ]),
+    entrypoints: new Map(),
     getAsset: mock.fn((name) => assets[name]),
     updateAsset: mock.fn(
       (name: string, fn: (source: sources.Source) => sources.Source) => {

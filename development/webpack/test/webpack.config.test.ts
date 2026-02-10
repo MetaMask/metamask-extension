@@ -132,10 +132,10 @@ ${Object.entries(env)
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
     ) as ManifestPlugin<boolean>;
     assert(manifestPlugin, 'Manifest plugin should be present');
-    assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, [
-      'scripts/inpage.js.map',
-      'scripts/contentscript.js.map',
-    ]);
+    assert.strictEqual(
+      manifestPlugin.options.web_accessible_resources,
+      undefined,
+    );
     assert.deepStrictEqual(
       manifestPlugin.options.description,
       `main build for development from git id: ${getLatestCommit().hash()}`,
@@ -232,7 +232,10 @@ ${Object.entries(env)
     const manifestPlugin = instance.options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
     ) as WebpackPluginInstance;
-    assert.deepStrictEqual(manifestPlugin.options.web_accessible_resources, []);
+    assert.strictEqual(
+      manifestPlugin.options.web_accessible_resources,
+      undefined,
+    );
     assert.deepStrictEqual(manifestPlugin.options.description, null);
     assert.deepStrictEqual(manifestPlugin.options.zip, true);
     assert(manifestPlugin.options.zipOptions, 'Zip options should be present');

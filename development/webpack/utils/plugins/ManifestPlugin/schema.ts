@@ -9,6 +9,7 @@ export const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
   required: [
+    'appRoot',
     'browsers',
     'description',
     'manifest_version',
@@ -17,6 +18,11 @@ export const schema = {
     'buildType',
   ],
   properties: {
+    appRoot: {
+      description:
+        'Absolute path to the app root directory where manifest files and entry source files are located.',
+      type: 'string',
+    },
     browsers: {
       description: 'The browsers to build for.',
       type: 'array',

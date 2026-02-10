@@ -1,0 +1,7 @@
+{
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "manifest_version": 2
+}

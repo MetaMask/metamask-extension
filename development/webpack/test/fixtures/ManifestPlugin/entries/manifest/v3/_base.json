@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "description": "base description",
+  "background": {
+    "service_worker": "service-worker.ts"
+  },
+  "content_scripts": [
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["scripts/contentscript.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["scripts/inpage.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
+    {
+      "matches": ["*://connect.trezor.io/*/popup.html*"],
+      "js": ["vendor/trezor/content-script.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["images/test.png"]
+    }
+  ]
+}

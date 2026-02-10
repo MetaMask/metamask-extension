@@ -1,7 +1,7 @@
 import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { join } from 'node:path';
-import { type Compilation } from 'webpack';
+import { type Compilation, type Chunk } from 'webpack';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import { Manifest } from '../utils/helpers';
@@ -88,8 +88,8 @@ describe('ManifestPlugin', () => {
           files.map(({ source }) => source),
           files.map(() => null),
         );
-        compilation.options.context = context;
         const manifestPlugin = new ManifestPlugin({
+          appRoot: context,
           browsers,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -417,9 +417,9 @@ describe('ManifestPlugin', () => {
 
     it('should apply build type base manifest overrides', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
 
       const manifestPlugin = new ManifestPlugin({
+        appRoot: context,
         browsers: ['chrome'],
         // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
@@ -455,9 +455,9 @@ describe('ManifestPlugin', () => {
 
     it('should apply build type browser manifest overrides on top of all previous layers', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
 
       const manifestPlugin = new ManifestPlugin({
+        appRoot: context,
         browsers: ['chrome'],
         // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
@@ -493,9 +493,9 @@ describe('ManifestPlugin', () => {
 
     it('should gracefully skip non-existent build type manifests', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
 
       const manifestPlugin = new ManifestPlugin({
+        appRoot: context,
         browsers: ['chrome'],
         // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
@@ -532,9 +532,9 @@ describe('ManifestPlugin', () => {
 
     it('should use build type base when build type browser manifest does not exist', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
 
       const manifestPlugin = new ManifestPlugin({
+        appRoot: context,
         browsers: ['chrome'],
         // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
@@ -575,9 +575,9 @@ describe('ManifestPlugin', () => {
 
     it('should prioritize build type base description over base description', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
 
       const manifestPlugin = new ManifestPlugin({
+        appRoot: context,
         browsers: ['chrome'],
         // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
@@ -603,9 +603,9 @@ describe('ManifestPlugin', () => {
 
     it('should apply different build type overrides for different browsers', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
 
       const manifestPlugin = new ManifestPlugin({
+        appRoot: context,
         browsers: ['chrome', 'firefox'],
         // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
@@ -651,9 +651,9 @@ describe('ManifestPlugin', () => {
 
     it('should work with manifest v2 and build type overrides', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
 
       const manifestPlugin = new ManifestPlugin({
+        appRoot: context,
         browsers: ['chrome'],
         // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 2,
@@ -685,9 +685,9 @@ describe('ManifestPlugin', () => {
 
     it('should append additional description suffix to build type description', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compilation.options.context = context;
 
       const manifestPlugin = new ManifestPlugin({
+        appRoot: context,
         browsers: ['chrome'],
         // eslint-disable-next-line @typescript-eslint/naming-convention
         manifest_version: 3,
@@ -709,6 +709,219 @@ describe('ManifestPlugin', () => {
         'Flask build type description – Additional Info',
         'should append additional description to flask description',
       );
+    });
+  });
+
+  describe('entry collection', () => {
+    const entriesContext = join(
+      __dirname,
+      'fixtures/ManifestPlugin/entries',
+    );
+
+    it('should collect correct MV2 entries from merged manifest', () => {
+      const manifestPlugin = new ManifestPlugin({
+        appRoot: entriesContext,
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 2,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      const { entry, canBeChunked } = manifestPlugin;
+
+      // Should have content_scripts
+      assert(
+        'scripts/contentscript.js' in entry,
+        'should have scripts/contentscript.js entry',
+      );
+      assert(
+        'scripts/inpage.js' in entry,
+        'should have scripts/inpage.js entry',
+      );
+      assert(
+        'vendor/trezor/content-script.js' in entry,
+        'should have vendor/trezor/content-script.js entry',
+      );
+      // Should have background scripts
+      assert('background.js' in entry, 'should have background.js entry');
+      // Should have web_accessible_resources JS
+      assert('testing.js' in entry, 'should have testing.js entry');
+      // Should have HTML pages
+      assert('one' in entry, 'should have one.html entry');
+      assert('two' in entry, 'should have two.html entry');
+      // background.html should be present (MV2 background page)
+      assert('background' in entry, 'should have background.html entry');
+
+      // canBeChunked should return false for manifest scripts
+      assert.strictEqual(
+        canBeChunked({ name: 'scripts/contentscript.js' } as Chunk),
+        false,
+        'contentscript.js should not be chunkable',
+      );
+      assert.strictEqual(
+        canBeChunked({ name: 'scripts/inpage.js' } as Chunk),
+        false,
+        'inpage.js should not be chunkable',
+      );
+      assert.strictEqual(
+        canBeChunked({ name: 'background.js' } as Chunk),
+        false,
+        'background.js should not be chunkable',
+      );
+    });
+
+    it('should collect correct MV3 entries from merged manifest', () => {
+      const manifestPlugin = new ManifestPlugin({
+        appRoot: entriesContext,
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      const { entry, canBeChunked } = manifestPlugin;
+
+      // Should have content_scripts
+      assert(
+        'scripts/contentscript.js' in entry,
+        'should have scripts/contentscript.js entry',
+      );
+      assert(
+        'scripts/inpage.js' in entry,
+        'should have scripts/inpage.js entry',
+      );
+      // Should have service_worker
+      assert(
+        'service-worker.ts' in entry,
+        'should have service-worker.ts entry',
+      );
+      // service_worker should have chunkLoading: 'import-scripts'
+      const swEntry = entry['service-worker.ts'];
+      assert(typeof swEntry === 'object' && !Array.isArray(swEntry));
+      assert.strictEqual(
+        (swEntry as { chunkLoading: string }).chunkLoading,
+        'import-scripts',
+        'service worker should use import-scripts chunk loading',
+      );
+      // HTML pages (no background.html for MV3)
+      assert('one' in entry, 'should have one.html entry');
+      assert('two' in entry, 'should have two.html entry');
+
+      // canBeChunked should return false for manifest scripts
+      assert.strictEqual(
+        canBeChunked({ name: 'service-worker.ts' } as Chunk),
+        false,
+        'service-worker.ts should not be chunkable',
+      );
+    });
+
+    it('should collect union of entries across multiple browsers', () => {
+      const manifestPlugin = new ManifestPlugin({
+        appRoot: entriesContext,
+        browsers: ['chrome', 'firefox'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      const { entry } = manifestPlugin;
+
+      // Chrome MV3 needs service_worker from base
+      assert(
+        'service-worker.ts' in entry,
+        'should have service-worker.ts from chrome',
+      );
+      // Firefox overrides to MV2-style background.page, so background.html
+      // should also be present
+      assert(
+        'background' in entry,
+        'should have background.html from firefox override',
+      );
+      // Common content_scripts should still be present
+      assert(
+        'scripts/contentscript.js' in entry,
+        'should have content scripts',
+      );
+    });
+
+    it('should return false for hardcoded self-contained entries', () => {
+      const manifestPlugin = new ManifestPlugin({
+        appRoot: entriesContext,
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      const { canBeChunked } = manifestPlugin;
+
+      assert.strictEqual(
+        canBeChunked({ name: 'snow.prod' } as Chunk),
+        false,
+        'snow.prod should not be chunkable',
+      );
+      assert.strictEqual(
+        canBeChunked({ name: 'use-snow' } as Chunk),
+        false,
+        'use-snow should not be chunkable',
+      );
+      assert.strictEqual(
+        canBeChunked({ name: 'bootstrap' } as Chunk),
+        false,
+        'bootstrap should not be chunkable',
+      );
+      assert.strictEqual(
+        canBeChunked({ name: 'anything-else' } as Chunk),
+        true,
+        'other scripts should be chunkable',
+      );
+      assert.strictEqual(
+        canBeChunked({} as Chunk),
+        true,
+        'chunks without a name should be chunkable',
+      );
+    });
+
+    it('should include [contenthash] in entry filenames', () => {
+      const manifestPlugin = new ManifestPlugin({
+        appRoot: entriesContext,
+        browsers: ['chrome'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      const { entry } = manifestPlugin;
+
+      // All script entries should have [contenthash] in their filename
+      for (const [key, value] of Object.entries(entry)) {
+        if (typeof value === 'object' && !Array.isArray(value) && 'filename' in value) {
+          assert(
+            (value.filename as string).includes('[contenthash]'),
+            `entry ${key} filename should include [contenthash], got: ${value.filename}`,
+          );
+        }
+      }
     });
   });
 });

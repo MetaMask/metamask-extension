@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "description": "base description",
+  "background": {
+    "scripts": ["background.js"],
+    "page": "background.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["scripts/contentscript.js", "scripts/inpage.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "js": ["vendor/trezor/content-script.js"]
+    }
+  ],
+  "web_accessible_resources": ["images/test.png", "testing.js"]
+}
