@@ -5,6 +5,12 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
+      E2E_OPENAI_API_KEY:
+        required: false
+      E2E_CLAUDE_API_KEY:
+        required: false
+      E2E_GEMINI_API_KEY:
+        required: false
     inputs:
       lavamoat-policy-changed:
         description: 'Whether the Lavamoat policy files have changed'
