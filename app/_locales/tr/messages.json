@@ -4288,9 +4288,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Geçerli tarayıcı sürümünüzle snap'ler ve çoğu donanım cüzdanı çalışmayacak."
   },
-  "noMMFeeSwapping": {
-    "message": "MetaMask ücreti yok"
-  },
   "noNetworkFee": {
     "message": "Ağ ücreti yok"
   },

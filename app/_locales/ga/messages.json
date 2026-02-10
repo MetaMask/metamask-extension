@@ -3842,9 +3842,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ní oibreoidh Snaps, ná an chuid is mó de sparán crua-earraí, le do leagan brabhsálaí reatha."
   },
-  "noMMFeeSwapping": {
-    "message": "Gan aon táille MM ar mhalartú go $1."
-  },
   "noNetworksAvailable": {
     "message": "Níl aon líonraí ar fáil"
   },

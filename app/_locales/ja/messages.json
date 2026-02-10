@@ -4288,9 +4288,6 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap、およびほとんどのハードウェアウォレットは、現在お使いのブラウザのバージョンで使用できません。"
   },
-  "noMMFeeSwapping": {
-    "message": "MetaMaskの手数料なし"
-  },
   "noNetworkFee": {
     "message": "ネットワーク手数料なし"
   },
