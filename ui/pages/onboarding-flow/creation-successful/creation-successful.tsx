@@ -196,42 +196,11 @@ export default function CreationSuccessful() {
     );
   }, [navigate, t]);
 
-  const handleOnDoneNavigationWithSidepanelOpen = useCallback(
-    (
-      deferredDeepLinkResult: DeferredDeepLinkRoute,
-      hasDeferredDeepLink: boolean,
-    ) => {
-      // Clean up deferred deep link from the state (both: expired or active)
-      if (hasDeferredDeepLink) {
-        dispatch(removeDeferredDeepLink());
-      }
-
-      if (deferredDeepLinkResult) {
-        if (
-          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
-        ) {
-          window.location.assign(deferredDeepLinkResult.url);
-        } else if (
-          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
-        ) {
-          navigate(deferredDeepLinkResult.route);
-        } else if (
-          deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Interstitial
-        ) {
-          const interstitialRoute = buildInterstitialRoute(
-            deferredDeepLinkResult.urlPathAndQuery,
-          );
-          navigate(interstitialRoute);
-        }
-      }
-    },
-    [dispatch, navigate],
-  );
-
   const handleOnDoneNavigation = useCallback(
     (
       deferredDeepLinkResult: DeferredDeepLinkRoute,
       hasDeferredDeepLink: boolean,
+      completedWithSidePanelFlow: boolean,
     ) => {
       // Clean up deferred deep link from the state (both: expired or active)
       if (hasDeferredDeepLink) {
@@ -242,8 +211,12 @@ export default function CreationSuccessful() {
         if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect
         ) {
-          window.open(deferredDeepLinkResult.url, '_blank');
-          navigate(DEFAULT_ROUTE);
+          if (completedWithSidePanelFlow) {
+            window.location.assign(deferredDeepLinkResult.url);
+          } else {
+            window.open(deferredDeepLinkResult.url, '_blank');
+            navigate(DEFAULT_ROUTE);
+          }
         } else if (
           deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
         ) {
@@ -256,7 +229,7 @@ export default function CreationSuccessful() {
           );
           navigate(interstitialRoute);
         }
-      } else {
+      } else if (!completedWithSidePanelFlow) {
         navigate(DEFAULT_ROUTE);
       }
     },
@@ -350,9 +323,10 @@ export default function CreationSuccessful() {
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
 
-            handleOnDoneNavigationWithSidepanelOpen(
+            handleOnDoneNavigation(
               deferredDeepLinkResult,
               Boolean(deferredDeepLink),
+              true,
             );
 
             return;
@@ -366,7 +340,11 @@ export default function CreationSuccessful() {
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
 
-    handleOnDoneNavigation(deferredDeepLinkResult, Boolean(deferredDeepLink));
+    handleOnDoneNavigation(
+      deferredDeepLinkResult,
+      Boolean(deferredDeepLink),
+      false,
+    );
   }, [
     isFromReminder,
     deferredDeepLink,
@@ -380,7 +358,6 @@ export default function CreationSuccessful() {
     trackEvent,
     isSidePanelSetAsDefault,
     participateInMetaMetrics,
-    handleOnDoneNavigationWithSidepanelOpen,
     handleOnDoneNavigation,
   ]);
 
