@@ -551,7 +551,9 @@ describe('ConfirmFooter', () => {
       fireEvent.click(getByTestId('confirm-footer-button'));
 
       await waitFor(() => {
-        expect(ensureDeviceReadyMock).toHaveBeenCalledWith();
+        expect(ensureDeviceReadyMock).toHaveBeenCalledWith({
+          requireBlindSigning: true,
+        });
       });
       expect(mockOnTransactionConfirm).not.toHaveBeenCalled();
     });

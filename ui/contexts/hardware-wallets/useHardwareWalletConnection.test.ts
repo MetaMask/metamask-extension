@@ -588,6 +588,30 @@ describe('useHardwareWalletConnection', () => {
       );
     });
 
+    it('passes options through to adapter ensureDeviceReady', async () => {
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(true);
+      mockRefs.adapterRef.current = mockAdapter;
+
+      const { result } = setupHook();
+
+      await act(async () => {
+        await result.current.ensureDeviceReady({
+          requireBlindSigning: false,
+        });
+      });
+
+      expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalledWith({
+        requireBlindSigning: false,
+      });
+    });
+
     it('returns false when device verification fails', async () => {
       const mockAdapter = new MockHardwareWalletAdapter({
         onDisconnect: mockHandleDisconnect,

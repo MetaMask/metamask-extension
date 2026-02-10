@@ -50,6 +50,7 @@ import {
   useHardwareWalletState,
   useHardwareWalletError,
   isHardwareWalletError,
+  type EnsureDeviceReadyOptions,
 } from '../../../../../contexts/hardware-wallets';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
@@ -241,6 +242,16 @@ const Footer = () => {
   );
   const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
+  // Simple sends (plain native asset transfers) don't require blind signing
+  // on the Ledger device since they don't involve contract interactions.
+  const ensureDeviceReadyOptions = useMemo<EnsureDeviceReadyOptions>(
+    () => ({
+      requireBlindSigning:
+        currentConfirmation?.type !== TransactionType.simpleSend,
+    }),
+    [currentConfirmation?.type],
+  );
+
   useEffect(() => {
     if (!isHardwareWalletAccount) {
       setHasPreflightSucceeded(false);
@@ -281,7 +292,7 @@ const Footer = () => {
       return true;
     }
 
-    const isDeviceReady = await ensureDeviceReady();
+    const isDeviceReady = await ensureDeviceReady(ensureDeviceReadyOptions);
     setHasPreflightSucceeded(isDeviceReady);
 
     if (!isDeviceReady) {
@@ -289,7 +300,7 @@ const Footer = () => {
     }
 
     return true;
-  }, [isHardwareWalletAccount, ensureDeviceReady]);
+  }, [isHardwareWalletAccount, ensureDeviceReady, ensureDeviceReadyOptions]);
 
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {

@@ -8,6 +8,7 @@ import { ConnectionState } from './connectionState';
 import { createAdapterForHardwareWalletType } from './adapters/factory';
 import {
   HardwareWalletType,
+  type EnsureDeviceReadyOptions,
   type HardwareWalletConnectionState,
   type HardwareWalletAdapterOptions,
   type DeviceEventPayload,
@@ -313,7 +314,7 @@ export const useHardwareWalletConnection = ({
   );
 
   const ensureDeviceReady = useCallback(
-    async (): Promise<boolean> => {
+    async (options?: EnsureDeviceReadyOptions): Promise<boolean> => {
       const inFlightPromise = refs.ensureDeviceReadyPromiseRef.current;
       if (inFlightPromise) {
         return inFlightPromise;
@@ -372,7 +373,7 @@ export const useHardwareWalletConnection = ({
           }
 
           try {
-            const result = await adapter.ensureDeviceReady();
+            const result = await adapter.ensureDeviceReady(options);
             if (abortSignal?.aborted || isEnsureStale()) {
               return false;
             }
