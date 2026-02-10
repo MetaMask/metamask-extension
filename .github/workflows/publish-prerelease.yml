@@ -6,11 +6,11 @@ on:
       PR_COMMENT_TOKEN:
         required: true
       E2E_OPENAI_API_KEY:
-        required: false
+        required: true
       E2E_CLAUDE_API_KEY:
-        required: false
+        required: true
       E2E_GEMINI_API_KEY:
-        required: false
+        required: true
     inputs:
       lavamoat-policy-changed:
         description: 'Whether the Lavamoat policy files have changed'
@@ -28,7 +28,11 @@ jobs:
     timeout-minutes: 30
     environment: pr-comment
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
+      E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+      E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       RUN_ID: ${{ github.run_id }}
@@ -89,11 +93,6 @@ jobs:
       - name: AI generated test plan
         if: ${{ startsWith(env.BRANCH, 'release') && env.PR_NUMBER }}
         id: generate-test-plan
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
-          E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
-          E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
         run: |
           # Extract version from branch name (e.g., release/13.18.0 -> 13.18.0)
           VERSION="${BRANCH#release}"
