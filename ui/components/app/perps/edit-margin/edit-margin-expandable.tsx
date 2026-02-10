@@ -180,7 +180,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
         )}
       >
         <Box
-          className="overflow-hidden border-t border-muted"
+          className="overflow-hidden"
           flexDirection={BoxFlexDirection.Column}
         >
           <Box
