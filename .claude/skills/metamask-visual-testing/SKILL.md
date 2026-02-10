@@ -305,7 +305,7 @@ mm_screenshot { "name": "after-unlock" }
 Options:
 
 - `name`: Screenshot filename (required)
-- `fullPage`: Capture full page (default: false)
+- `fullPage`: Capture full page (default: true)
 - `selector`: Capture specific element
 - `includeBase64`: Include base64 in response
 

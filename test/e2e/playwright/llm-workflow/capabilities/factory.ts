@@ -45,7 +45,7 @@ const DEFAULT_E2E_CONFIG: E2EEnvironmentConfig = {
 const DEFAULT_PROD_CONFIG: ProdEnvironmentConfig = {
   ...DEFAULT_BASE_CONFIG,
   environment: 'prod',
-  defaultChainId: 1337,
+  defaultChainId: 1,
 };
 
 export function createMetaMaskE2EContext(

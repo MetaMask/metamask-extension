@@ -56,7 +56,6 @@ The system uses a **decoupled, capability-based architecture**:
 | **Session Manager** | `mcp-server/metamask-provider.ts` | Manages browser session, page tracking, capability coordination |
 | **Capabilities**    | `capabilities/`                   | MetaMask-specific implementations                               |
 | **Launcher**        | `extension-launcher.ts`           | Core browser/extension launcher                                 |
-| **Anvil Service**   | `launcher/anvil-service.ts`       | Local blockchain management                                     |
 
 ---
 
@@ -306,7 +305,6 @@ test/e2e/playwright/llm-workflow/
 │   └── index.ts                  # Public exports
 │
 ├── launcher/                     # Browser/extension launcher components
-│   ├── anvil-service.ts          # Anvil blockchain service
 │   └── state-inspector.ts        # Screen detection, state extraction
 │
 ├── extension-launcher.ts         # Core MetaMaskExtensionLauncher class
