@@ -27,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
+    permissions:
+      id-token: write
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
@@ -118,6 +120,21 @@ jobs:
           name: test-plan-${{ steps.generate-test-plan.outputs.test_plan_version }}
           path: test-plan-${{ steps.generate-test-plan.outputs.test_plan_version }}.json
           retention-days: 90
+
+      - name: Prepare test plan for S3
+        if: ${{ startsWith(env.BRANCH, 'release') && steps.generate-test-plan.outputs.test_plan_generated == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        run: |
+          mkdir -p build-test-plan/builds
+          cp "test-plan-${{ steps.generate-test-plan.outputs.test_plan_version }}.json" build-test-plan/builds/
+
+      - name: Upload test plan to S3
+        if: ${{ startsWith(env.BRANCH, 'release') && steps.generate-test-plan.outputs.test_plan_generated == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-test-plan/builds
+          path: build-test-plan/builds
 
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
