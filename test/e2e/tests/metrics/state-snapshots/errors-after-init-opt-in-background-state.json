@@ -65,6 +65,7 @@
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
+    "shieldSubscriptionError": null,
     "shieldEndingToastLastClickedOrClosed": "object",
     "shieldPausedToastLastClickedOrClosed": "object",
     "showAccountBanner": true,

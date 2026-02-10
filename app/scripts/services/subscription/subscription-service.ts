@@ -5,6 +5,7 @@ import {
   PRODUCT_TYPES,
   StartSubscriptionRequest,
   Subscription,
+  SubscriptionServiceError,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
 import {
@@ -520,6 +521,9 @@ export class SubscriptionService {
       log.error('Error on Shield subscription approval transaction', error);
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
+      const cause =
+        error instanceof SubscriptionServiceError ? error.cause : undefined;
+
       if (currentShieldSubscription && isCurrentShieldSubscriptionActive) {
         // If there is an active subscription, we can assume this is a Payment Method Change request
         this.#trackPaymentMethodChangeRequestEvent(
@@ -528,6 +532,7 @@ export class SubscriptionService {
           txMeta,
           {
             error: errorMessage,
+            cause: cause?.message ?? '',
           },
         );
       } else {
@@ -538,6 +543,7 @@ export class SubscriptionService {
           txMeta,
           {
             error: errorMessage,
+            cause: cause?.message ?? '',
           },
         );
       }
@@ -547,6 +553,12 @@ export class SubscriptionService {
         'SubscriptionController:clearLastSelectedPaymentMethod',
         PRODUCT_TYPES.SHIELD,
       );
+
+      // Surface subscription error to UI
+      const subscriptionErrorMessage = cause?.message ?? errorMessage;
+      this.#messenger.call('AppStateController:setShieldSubscriptionError', {
+        message: subscriptionErrorMessage,
+      });
 
       this.#captureException(
         createSentryError(
