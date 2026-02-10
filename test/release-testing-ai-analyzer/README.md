@@ -213,6 +213,24 @@ The tool automatically validates the generated plan and provides:
 
 ## Integration
 
+### Adding secrets for CI (GitHub Actions)
+
+The script runs in CI from the **publish-prerelease** workflow (on release PRs). To make it work:
+
+1. **Open repository secrets**
+   - GitHub repo → **Settings** → **Secrets and variables** → **Actions**.
+
+2. **Create these repository secrets** (optional; at least one LLM key is needed for the script to run):
+   - `E2E_OPENAI_API_KEY` – OpenAI API key (recommended as default).
+   - `E2E_CLAUDE_API_KEY` – Claude/Anthropic API key (fallback).
+   - `E2E_GEMINI_API_KEY` – Google Gemini API key (fallback).
+
+3. **Click “New repository secret”** for each, set **Name** (e.g. `E2E_OPENAI_API_KEY`) and **Secret** (the API key value). Never commit keys to the repo.
+
+4. **How they’re used in CI**
+   - `main.yml` passes these secrets into the reusable workflow `publish-prerelease.yml`.
+   - The “AI generated test plan” step in `publish-prerelease.yml` runs the script with those env vars. If none are set, the step will fail with “No API key found”; if at least one is set, the script runs (with provider fallback).
+
 ### CI/CD Integration
 
 Can be integrated into GitHub Actions:

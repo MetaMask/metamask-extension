@@ -558,27 +558,12 @@ jobs:
     uses: ./.github/workflows/publish-prerelease.yml
     with:
       lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
-      post-new-builds: ${{ needs.identify-builds.outputs.builds-from-run == github.run_id }}
+      post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
       E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
       E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
-
-  publish-release:
-    name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' }}
-    needs:
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
-      - run-tests
-      - e2e-chrome
-      - e2e-firefox
-    uses: ./.github/workflows/publish-release.yml
-      post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
-    secrets: inherit
 
   trigger-regression-validation:
     name: Trigger Regression Validation
