@@ -369,7 +369,9 @@ export const isHip3Market = (
   market: PerpsMarketData,
   allowedSources: Set<string>,
 ): boolean => {
-  return Boolean(market.marketSource && allowedSources.has(market.marketSource));
+  return Boolean(
+    market.marketSource && allowedSources.has(market.marketSource),
+  );
 };
 
 /**
