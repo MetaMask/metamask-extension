@@ -29,8 +29,10 @@ import {
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
 import {
+  ConnectionStatus,
   useHardwareWalletActions,
   useHardwareWalletConfig,
+  useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
 
 export const BridgeCTAButton = ({
@@ -80,11 +82,21 @@ export const BridgeCTAButton = ({
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   // Optimized: Only subscribe to actions (stable, never rerenders)
   const { ensureDeviceReady } = useHardwareWalletActions();
+  const { connectionState } = useHardwareWalletState();
 
   const hardwareWalletName = useMemo(
     () => (walletType ? t(walletType) : undefined),
     [t, walletType],
   );
+
+  const isHardwareWalletReady = useMemo(() => {
+    if (!isHardwareWalletAccount) {
+      return true;
+    }
+    return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
+      connectionState.status,
+    );
+  }, [connectionState.status, isHardwareWalletAccount]);
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
@@ -127,7 +139,7 @@ export const BridgeCTAButton = ({
     }
 
     if (isTxSubmittable || isTxAlertPresent || isTxAlertLoading) {
-      if (isHardwareWalletAccount) {
+      if (isHardwareWalletAccount && !isHardwareWalletReady) {
         return hardwareWalletName
           ? { key: 'connectHardwareDevice', args: [hardwareWalletName] }
           : { key: 'connect' };
@@ -152,6 +164,7 @@ export const BridgeCTAButton = ({
     activeQuote,
     isNoQuotesAvailable,
     isHardwareWalletAccount,
+    isHardwareWalletReady,
     hardwareWalletName,
   ]);
 
