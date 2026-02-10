@@ -626,7 +626,6 @@
     "@welldone-software/why-did-you-render": "^8.0.3",
     "addons-linter": "^9.5.0",
     "autoprefixer": "^10.4.19",
-    "axios": "^1.12.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",
