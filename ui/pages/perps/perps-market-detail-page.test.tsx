@@ -250,7 +250,7 @@ describe('PerpsMarketDetailPage', () => {
     it('displays position details section', () => {
       const store = mockStore(createMockState(true));
 
-      const { getByText } = renderWithProvider(
+      const { getByText, getAllByText } = renderWithProvider(
         <PerpsMarketDetailPage />,
         store,
       );
@@ -258,7 +258,9 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText('Details')).toBeInTheDocument();
       expect(getByText('Direction')).toBeInTheDocument();
       expect(getByText('Entry price')).toBeInTheDocument();
-      expect(getByText('Liquidation price')).toBeInTheDocument();
+      // 'Liquidation price' appears in both the Details section and the
+      // Edit Margin expandable, so use getAllByText
+      expect(getAllByText('Liquidation price').length).toBeGreaterThanOrEqual(1);
     });
 
     it('displays stats section', () => {
@@ -300,11 +302,13 @@ describe('PerpsMarketDetailPage', () => {
 
       renderWithProvider(<PerpsMarketDetailPage />, store);
 
-      expect(screen.queryByText('Add Margin')).not.toBeInTheDocument();
-
+      // The Edit Margin expandable is rendered but collapsed (hidden via CSS grid)
+      // Before expanding, the 'Add Margin' text exists in the DOM but is not visible
       fireEvent.click(screen.getByText('Margin'));
 
-      expect(screen.getByText('Add Margin')).toBeInTheDocument();
+      // After expanding, both the mode toggle and confirm button show 'Add Margin'
+      const addMarginElements = screen.getAllByText('Add Margin');
+      expect(addMarginElements.length).toBeGreaterThanOrEqual(2);
       expect(screen.getByText('Remove Margin')).toBeInTheDocument();
     });
 
@@ -314,7 +318,8 @@ describe('PerpsMarketDetailPage', () => {
       renderWithProvider(<PerpsMarketDetailPage />, store);
 
       fireEvent.click(screen.getByText('Margin'));
-      expect(screen.getByText('Add Margin')).toBeInTheDocument();
+      const addMarginElements = screen.getAllByText('Add Margin');
+      expect(addMarginElements.length).toBeGreaterThanOrEqual(1);
 
       fireEvent.click(screen.getByText('Auto close'));
       expect(screen.getByText('Take Profit')).toBeInTheDocument();

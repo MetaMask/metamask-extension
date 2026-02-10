@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
 import { mockPositions, mockAccountState } from '../../components/app/perps/mocks';
 

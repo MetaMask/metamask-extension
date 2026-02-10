@@ -51,7 +51,9 @@ describe('EditMarginExpandable', () => {
         mockStore,
       );
 
-      expect(screen.getByText('Add Margin')).toBeInTheDocument();
+      const addMarginElements = screen.getAllByText('Add Margin');
+      // Mode toggle tab + confirm button both show 'Add Margin'
+      expect(addMarginElements.length).toBeGreaterThanOrEqual(2);
       expect(screen.getByText('Remove Margin')).toBeInTheDocument();
     });
 
