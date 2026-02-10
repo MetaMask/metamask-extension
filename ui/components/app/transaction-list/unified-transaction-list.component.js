@@ -11,8 +11,8 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { useVirtualizer } from '@tanstack/react-virtual';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
-import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
 ///: END:ONLY_INCLUDE_IF
+import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
