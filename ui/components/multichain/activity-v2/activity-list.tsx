@@ -10,8 +10,8 @@ import {
   getNonEvmTransactions,
   getPendingTransactionGroups,
   getRecentTransactionGroups,
+  getFirstEvmAddress,
 } from '../../../selectors/activity';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { getUseExternalServices } from '../../../selectors/selectors';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/acme-controller/queries';
@@ -36,12 +36,14 @@ const HEADER_HEIGHT = 36;
 export const ActivityList = () => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
-  const accountAddress = useSelector(getSelectedInternalAccount)?.address;
   const useExternalServices = useSelector(getUseExternalServices);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TransactionViewModel | null>(
     null,
   );
+
+  // Activity tab should show ALL transactions regardless of selected chain/network
+  const evmAddress = useSelector(getFirstEvmAddress) || '';
 
   // Non-EVM transactions - not in API
   const nonEvmTransactions = useSelector(getNonEvmTransactions);
@@ -55,15 +57,13 @@ export const ActivityList = () => {
   // Bridge history for enriching bridge transactions
   // const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
 
-  // EVM transactions from API (disabled when basic functionality is off)
+  // EVM transactions from API
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(
-      queries.transactions(accountAddress, { enabled: useExternalServices }),
+      queries.transactions(evmAddress, {
+        enabled: useExternalServices && Boolean(evmAddress),
+      }),
     );
-
-  console.log('>>> pendingTransactionGroups', pendingTransactionGroups);
-  console.log('>>> recentTransactionGroups', recentTransactionGroups);
-  // console.log('>>> bridgeHistoryItems', bridgeHistoryItems);
 
   // Merge all transactions and flatten for virtualization
   const flattenedItems = useMemo(() => {

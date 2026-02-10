@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
+import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -19,27 +20,22 @@ type Props = {
 export const ActivityListItem = ({ transaction, onClick }: Props) => {
   const currentCurrency = useSelector(getCurrentCurrency);
   const marketRates = useSelector(getMarketRates);
-  const { formatTokenQuantity, formatCurrencyWithMinThreshold } =
-    useFormatters();
+  const { formatTokenAmount, formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId, category } = transaction;
-
-  const { isError } = transaction as {
-    isError?: boolean;
-  };
+  const { isError } = transaction as { isError?: boolean };
 
   const title = useGetTitle(transaction);
   const { amount, symbol } = getTransferAmount(transaction.amounts);
-  const fiatAmount = calculateFiatFromMarketRates(transaction, marketRates);
 
-  let displayStatus = 'Confirmed';
-  let statusColor = 'text-success-default';
-  let transactionStatus = TransactionStatus.confirmed;
+  // TODO: marketRates for non-EVM chains
+  const isEvmChain = !chainId.includes(':');
+  const fiatAmount = isEvmChain
+    ? calculateFiatFromMarketRates(transaction, marketRates)
+    : null;
 
-  if (isError) {
-    displayStatus = 'Failed';
-    statusColor = 'text-error-default';
-    transactionStatus = TransactionStatus.failed;
-  }
+  const transactionStatus = isError
+    ? TransactionStatus.failed
+    : TransactionStatus.confirmed;
 
   return (
     <Box
@@ -62,15 +58,9 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
           >
             {title}
           </Text>
-          <div className="flex gap-2 items-center">
-            <Text
-              variant={TextVariant.BodySm}
-              className={statusColor}
-              data-testid={`activity-list-item-status-${transactionStatus}`}
-            >
-              {displayStatus}
-            </Text>
-          </div>
+          <Text variant={TextVariant.BodySm}>
+            <TransactionStatusLabel status={transactionStatus} statusOnly />
+          </Text>
         </div>
 
         {/* Right side - Value */}
@@ -80,10 +70,10 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
               className="font-medium"
               data-testid="transaction-list-item-primary-currency"
             >
-              {formatTokenQuantity(amount, symbol)}
+              {formatTokenAmount(amount, symbol)}
             </Text>
           )}
-          {fiatAmount !== null && fiatAmount > 0 && (
+          {fiatAmount !== null && (
             <Text
               variant={TextVariant.BodySm}
               className="text-text-alternative"

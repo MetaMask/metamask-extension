@@ -18,7 +18,11 @@ import {
   groupAndSortTransactionsByNonce,
 } from './transactions';
 import { getMarketData, getCurrencyRates } from './selectors';
-import { getSelectedInternalAccount } from './accounts';
+import {
+  getSelectedInternalAccount,
+  getInternalAccounts,
+  isNonEvmAccount,
+} from './accounts';
 import { getSelectedAccountGroupMultichainTransactions } from './multichain-transactions';
 import { EMPTY_ARRAY } from './shared';
 
@@ -219,3 +223,11 @@ export const getNonEvmTransactions = (
   );
   return transactions.map(normalizeNonEvmTransaction);
 };
+
+export const getFirstEvmAddress = createSelector(
+  getInternalAccounts,
+  (accounts): string | undefined => {
+    const evmAccount = accounts.find((account) => !isNonEvmAccount(account));
+    return evmAccount?.address;
+  },
+);

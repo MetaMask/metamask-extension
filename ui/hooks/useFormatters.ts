@@ -109,7 +109,7 @@ export function useFormatters() {
       /**
        * Format token quantity without trailing zeros.
        */
-      formatTokenQuantity: formatTokenAmount.bind(null, base.formatToken),
+      formatTokenAmount: formatTokenAmount.bind(null, base.formatToken),
     };
   }, [locale]);
 }
