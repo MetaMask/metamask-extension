@@ -312,36 +312,37 @@ const Footer = () => {
       return;
     }
 
-    if (isAddEthereumChain) {
-      await onAddEthereumChain();
-      navigate(DEFAULT_ROUTE);
-      resetTransactionState();
-    } else if (isTransactionConfirmation) {
-      const didConfirm = await onTransactionConfirm();
-      if (didConfirm && currentConfirmationId) {
-        navigateNext(currentConfirmationId);
-      }
-      resetTransactionState();
-    } else {
-      try {
-        await dispatch(
-          resolvePendingApproval(currentConfirmation.id, undefined, {
-            fromAddress,
-          }),
-        );
-        if (currentConfirmationId) {
+    try {
+      if (isAddEthereumChain) {
+        await onAddEthereumChain();
+        navigate(DEFAULT_ROUTE);
+      } else if (isTransactionConfirmation) {
+        const didConfirm = await onTransactionConfirm();
+        if (didConfirm && currentConfirmationId) {
           navigateNext(currentConfirmationId);
         }
-        resetTransactionState();
-      } catch (error) {
-        // Use isHardwareWalletError which handles duck typing for errors
-        // that lost their class type over the RPC boundary
-        if (!isHardwareWalletError(error)) {
-          // Non-hardware wallet error - rethrow
-          throw error;
+      } else {
+        try {
+          await dispatch(
+            resolvePendingApproval(currentConfirmation.id, undefined, {
+              fromAddress,
+            }),
+          );
+          if (currentConfirmationId) {
+            navigateNext(currentConfirmationId);
+          }
+        } catch (error) {
+          // Use isHardwareWalletError which handles duck typing for errors
+          // that lost their class type over the RPC boundary
+          if (!isHardwareWalletError(error)) {
+            // Non-hardware wallet error - rethrow
+            throw error;
+          }
+          showErrorModal(error);
         }
-        showErrorModal(error);
       }
+    } finally {
+      resetTransactionState();
     }
   }, [
     currentConfirmation,
