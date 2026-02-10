@@ -5,6 +5,7 @@
 import { RuntimeLoader } from '@rive-app/react-canvas';
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { useAsyncResult } from '../../hooks/useAsync';
+import { captureException } from '../../../shared/lib/sentry';
 
 const RIVE_WASM_URL = new URL(
   '@rive-app/canvas/rive.wasm',
@@ -12,7 +13,7 @@ const RIVE_WASM_URL = new URL(
   import.meta.url,
 );
 
-export const useRiveWasmReady = () => {
+const useRiveWasmReady = () => {
   const [isWasmReady, setIsWasmReady] = useState(false);
 
   const result = useAsyncResult(async () => {
@@ -30,7 +31,12 @@ export const useRiveWasmReady = () => {
       RuntimeLoader.setWasmUrl(RIVE_WASM_URL.href);
       await RuntimeLoader.awaitInstance();
     } catch (e) {
-      throw new Error(`HTTP error! status while fetching rive.wasm`);
+      // in integration tests we don't have the file
+      if (!process.env.IN_TEST) {
+        // but this shouldn't ever happen in production
+        captureException(`HTTP error! status while fetching rive.wasm`);
+        return false;
+      }
     }
     setIsWasmReady(true);
     return true;
