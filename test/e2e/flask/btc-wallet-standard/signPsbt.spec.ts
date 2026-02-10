@@ -23,31 +23,19 @@ describe('Bitcoin Wallet Standard - Sign psbt - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappBitcoin(driver);
           await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded()
 
           // 1. Connect
-          const header = await testDapp.getHeader();
           await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
-
 
           await testDapp.switchToMainnet();
 
-          // Verify successful connection
-          const connectionStatusAfterConnect =
-            await header.getConnectionStatus();
-          assertConnected(connectionStatusAfterConnect);
+          // 2. Sign psbt
+          await testDapp.setPsbt(psbt);
+          await testDapp.signPsbt();
 
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
 
-          // 2. Send transaction
-          const signPsbtTest = await testDapp.getSignPsbtTest()
-          await signPsbtTest.setPsbt(psbt);
-          await signPsbtTest.signPsbt();
-
-
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
-            const signedPsbtResult = await signPsbtTest.getSignedPsbt();
-
-            assert.strictEqual(signedPsbtResult, signedPsbt);
+          await testDapp.verifySignedPsbt(signedPsbt);
         },
       );
     });

@@ -26,19 +26,9 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappBitcoin(driver);
           await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded()
 
           // 1. Start connection and cancel it
-          const header = await testDapp.getHeader();
-          await header.connect();
-
-          // wait to display wallet connect modal
-          await driver.delay(regularDelayMs);
-
-          const modal = await testDapp.getWalletModal();
-          await modal.connectToMetaMaskWallet(connectionLibrary);
-
-          await driver.delay(regularDelayMs);
+          await testDapp.connectToWallet(connectionLibrary);
 
           // Cancel the connection
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -50,19 +40,14 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await testDapp.switchTo();
 
           // Verify we're not connected
-          const connectionStatus = await header.getConnectionStatus();
-          assertDisconnected(connectionStatus);
+          await testDapp.findHeaderNotConnectedState();
 
           // 2. Connect again
-          await connectBitcoinTestDapp(driver, testDapp);
+          await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
 
           // Verify successful connection
-          const connectionStatusAfterConnect =
-            await header.getConnectionStatus();
-          assertConnected(connectionStatusAfterConnect);
-
-          const account = await header.getAccount();
-          assertConnected(account, account1Short);
+          await testDapp.findHeaderConnectedState();
+          await testDapp.findConnectedAccount(account1Short);
         },
       );
     });
@@ -119,7 +104,7 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
         },
       );
     });
-
+ 
     it(`Does not create session when Bitcoin permissions are deselected with ${connectionLibrary}`, async function () {
       await withBtcAccountSnap(
         {
@@ -132,12 +117,7 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await testDapp.checkPageIsLoaded();
 
           // Start connection
-          const header = await testDapp.getHeader();
-          await header.connect();
-          await driver.delay(regularDelayMs);
-          const modal = await testDapp.getWalletModal();
-          await modal.connectToMetaMaskWallet(connectionLibrary);
-          await driver.delay(regularDelayMs);
+          await testDapp.connectToWallet(connectionLibrary);
 
           // Open the permissions modal
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -165,8 +145,7 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           await testDapp.switchTo();
 
           // Verify we're not connected
-          const connectionStatus = await header.getConnectionStatus();
-          assertDisconnected(connectionStatus);
+          await testDapp.findHeaderNotConnectedState();
         },
       );
     });

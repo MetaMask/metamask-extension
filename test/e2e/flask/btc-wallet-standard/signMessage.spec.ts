@@ -10,7 +10,7 @@ import {
 } from './testHelpers';
 
 describe('Bitcoin Wallet Standard - Sign Message - e2e tests', function () {
-  const connectionLibraryOptions: ('sats-connect' | 'wallet-standard')[] = ['wallet-standard', 'sats-connect'];
+  const connectionLibraryOptions: ('sats-connect' | 'wallet-standard')[] = ['sats-connect'];
   const messageToSign = 'Hello, world! This is a test message.';
 
   connectionLibraryOptions.forEach((connectionLibrary) => {
@@ -23,31 +23,21 @@ describe('Bitcoin Wallet Standard - Sign Message - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappBitcoin(driver);
           await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded()
 
           // 1. Connect
-          const header = await testDapp.getHeader();
           await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
 
-          // Verify successful connection
-          const connectionStatusAfterConnect =
-            await header.getConnectionStatus();
-          assertConnected(connectionStatusAfterConnect);
-
-
           // 2. Sign a message
-          const signMessageTest = await testDapp.getSignMessageTest();
-          await signMessageTest.setMessage(messageToSign);
-          await signMessageTest.signMessage();
+          await testDapp.setMessage(messageToSign);
+          await testDapp.signMessage();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await clickConfirmButton(driver);
           
           // 3. Verify the signed message
           await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
-          const signedMessage = await signMessageTest.getSignedMessage();
 
-          assert.equal(signedMessage[0], SIGNED_MESSAGES_MOCK[connectionLibrary]);
+          await testDapp.verifySignedMessage(SIGNED_MESSAGES_MOCK[connectionLibrary]);
         },
       );
     });

@@ -22,6 +22,7 @@ import {
   mockBlockHeight0,
   mockBlockHeight931551
 } from '../../tests/btc/mocks';
+import { DAPP_PATH } from '../../constants';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../../tests/btc/mocks/min-api';
 
 export const SIGNED_MESSAGES_MOCK = {
@@ -32,12 +33,13 @@ export const SIGNED_MESSAGES_MOCK = {
 export async function withBtcAccountSnap(
   {
     title,
-    numberOfAccounts = 0,
-    dappPaths,
+    dappOptions,
   }: {
     title?: string;
-    numberOfAccounts?: number;
-    dappPaths?: string[];
+    dappOptions?: {
+      numberOfTestDapps?: number;
+      customDappPaths?: string[];
+    };
   },
   test: (
     driver: Driver,
@@ -61,10 +63,10 @@ export async function withBtcAccountSnap(
         .build(),
       title,
       dapp: true,
-      dappOptions:
-        Array.isArray(dappPaths) && dappPaths.length > 0
-          ? { numberOfTestDapps: 0, customDappPaths: dappPaths }
-          : { numberOfTestDapps: 1 },
+      dappOptions: dappOptions ?? {
+        numberOfTestDapps: 1,
+        customDappPaths: [DAPP_PATH.TEST_DAPP_BITCOIN],
+      },
       // Force multichain accounts State 2 for Bitcoin UI to be available in E2E
       forceBip44Version: false,
       // Ensure bitcoinAccounts flag is enabled at runtime regardless of remote fetch
