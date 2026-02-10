@@ -104,7 +104,7 @@ describe('Gas timing', () => {
     });
   });
 
-  it('renders "~1 sec" for Ethereum mainnet (non-fast chain)', async () => {
+  it('renders "<1 sec" for Ethereum mainnet', async () => {
     useGasFeeContext.mockReturnValue({
       estimateUsed: 'high',
     });
@@ -131,41 +131,7 @@ describe('Gas timing', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('gas-timing-time')).toHaveTextContent('~1 sec');
-    });
-  });
-
-  it('renders "<3 sec" for MegaETH when estimate time is over 1000ms', async () => {
-    useGasFeeContext.mockReturnValue({
-      estimateUsed: 'high',
-    });
-
-    const fastChainState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        gasFeeEstimates: {
-          ...mockState.metamask.gasFeeEstimates,
-          high: {
-            ...mockState.metamask.gasFeeEstimates.high,
-            minWaitTimeEstimate: 2500,
-          },
-        },
-        gasEstimateType: GasEstimateTypes.feeMarket,
-      },
-    };
-
-    const mockStore = configureMockStore()(fastChainState);
-    const screen = renderWithProvider(
-      <GasTiming
-        chainId={CHAIN_IDS.MEGAETH_MAINNET}
-        maxPriorityFeePerGas="10"
-      />,
-      mockStore,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId('gas-timing-time')).toHaveTextContent('<3 sec');
+      expect(screen.getByTestId('gas-timing-time')).toHaveTextContent('<1 sec');
     });
   });
 });

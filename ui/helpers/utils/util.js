@@ -540,10 +540,7 @@ export function getURLHostName(url) {
 const MINUTE_CUTOFF = 90 * 60;
 const SECOND_CUTOFF = 90;
 
-export const toHumanReadableTime = (
-  t,
-  milliseconds
-) => {
+export const toHumanReadableTime = (t, milliseconds) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
   }
