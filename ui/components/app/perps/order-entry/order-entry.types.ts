@@ -27,6 +27,8 @@ export type OrderMode = 'new' | 'modify' | 'close';
  * Used in 'modify' and 'close' modes
  */
 export type ExistingPositionData = {
+  /** Asset symbol (e.g., 'ETH', 'BTC') - used for tracking position identity */
+  symbol?: string;
   /** Position size (signed: positive = long, negative = short) */
   size: string;
   /** Current leverage multiplier */

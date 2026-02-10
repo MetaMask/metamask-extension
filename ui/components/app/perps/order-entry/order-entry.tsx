@@ -148,6 +148,11 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             onLeverageChange={handleLeverageChange}
             maxLeverage={maxLeverage}
+            minLeverage={
+              mode === 'modify' && existingPosition
+                ? existingPosition.leverage
+                : undefined
+            }
           />
         )}
 

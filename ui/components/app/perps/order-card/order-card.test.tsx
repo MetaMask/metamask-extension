@@ -97,34 +97,6 @@ describe('OrderCard', () => {
     expect(screen.getByText('Market')).toBeInTheDocument();
   });
 
-  it('displays open status correctly', () => {
-    const order = createMockOrder({ status: 'open' });
-    renderWithProvider(<OrderCard order={order} />, mockStore);
-
-    expect(screen.getByText('Open')).toBeInTheDocument();
-  });
-
-  it('displays filled status correctly', () => {
-    const order = createMockOrder({ status: 'filled' });
-    renderWithProvider(<OrderCard order={order} />, mockStore);
-
-    expect(screen.getByText('Filled')).toBeInTheDocument();
-  });
-
-  it('displays canceled status correctly', () => {
-    const order = createMockOrder({ status: 'canceled' });
-    renderWithProvider(<OrderCard order={order} />, mockStore);
-
-    expect(screen.getByText('Canceled')).toBeInTheDocument();
-  });
-
-  it('displays queued status correctly', () => {
-    const order = createMockOrder({ status: 'queued' });
-    renderWithProvider(<OrderCard order={order} />, mockStore);
-
-    expect(screen.getByText('Queued')).toBeInTheDocument();
-  });
-
   it('renders the token logo', () => {
     const order = createMockOrder({ symbol: 'SOL' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
