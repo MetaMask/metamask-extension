@@ -56,18 +56,8 @@ async function main() {
     BenchmarkResults | UserActionResult
   >;
 
-  // Check if results are empty
-  const resultEntries = Object.entries(results);
-  if (resultEntries.length === 0) {
-    console.warn(
-      '⚠️ ALERT: Benchmark results file is empty, no results will be sent to Sentry',
-    );
-    console.warn(`   File: ${argv.results}`);
-    return;
-  }
-
-  // Check if all results have empty data
-  const hasValidData = resultEntries.some(([, value]) => {
+  // Soft-fail if results have no valid metric data
+  const hasValidData = Object.values(results).some((value) => {
     if ('mean' in value) {
       // BenchmarkResults - check if mean has any metrics
       const benchmark = value as BenchmarkResults;
@@ -78,11 +68,7 @@ async function main() {
   });
 
   if (!hasValidData) {
-    console.warn(
-      '⚠️ ALERT: All benchmark results are empty, no metrics will be sent to Sentry',
-    );
-    console.warn(`   File: ${argv.results}`);
-    console.warn('   Results:', JSON.stringify(results, null, 2));
+    console.warn(`⚠️ No valid benchmark data to send to Sentry. File: ${argv.results}`);
     return;
   }
 
