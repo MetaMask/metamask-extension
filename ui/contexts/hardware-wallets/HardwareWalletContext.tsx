@@ -24,7 +24,6 @@ import { isWebHidAvailable, isWebUsbAvailable } from './webConnectionUtils';
 export type HardwareWalletConfigContextType = {
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
-  deviceId: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
@@ -44,7 +43,7 @@ export type HardwareWalletActionsContextType = {
   requestHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
-  ensureDeviceReady: (deviceId?: string) => Promise<boolean>;
+  ensureDeviceReady: () => Promise<boolean>;
 };
 
 /**
@@ -55,7 +54,6 @@ export type HardwareWalletContextType = {
   isHardwareWalletAccount: boolean;
   walletType: HardwareWalletType | null;
   connectionState: HardwareWalletConnectionState;
-  deviceId: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
@@ -70,7 +68,7 @@ export type HardwareWalletContextType = {
   requestHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
-  ensureDeviceReady: (deviceId?: string) => Promise<boolean>;
+  ensureDeviceReady: () => Promise<boolean>;
 };
 
 const HardwareWalletContext = createContext<HardwareWalletContextType | null>(
@@ -100,7 +98,7 @@ export const useHardwareWallet = (): HardwareWalletContextType => {
 
 /**
  * Hook to access hardware wallet config (rarely changes)
- * Use this when you need wallet type, device ID, permissions, etc.
+ * Use this when you need wallet type, permissions, etc.
  * This hook will NOT cause rerenders when connection state changes.
  */
 export const useHardwareWalletConfig = (): HardwareWalletConfigContextType => {
@@ -156,7 +154,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   const { state, refs, setters } = useHardwareWalletStateManager();
 
   const {
-    deviceId,
     hardwareConnectionPermissionState,
     connectionState,
     walletType,
@@ -164,12 +161,10 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   } = state;
 
   const {
-    setDeviceId,
     setHardwareConnectionPermissionState,
     setConnectionState,
     resetAutoConnectState,
     setAutoConnected,
-    setDeviceIdRef,
   } = setters;
 
   const isWebHidAvailableState = useMemo(() => isWebHidAvailable(), []);
@@ -194,7 +189,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     useHardwareWalletConnection({
       refs,
       setters: {
-        setDeviceId,
         setConnectionState,
       },
       updateConnectionState,
@@ -224,15 +218,14 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   useHardwareWalletAutoConnect({
     state,
     refs,
-    setDeviceId,
     setHardwareConnectionPermissionState,
+    updateConnectionState,
     hardwareConnectionPermissionState,
     isWebHidAvailable: isWebHidAvailableState,
     isWebUsbAvailable: isWebUsbAvailableState,
     handleDisconnect,
     resetAutoConnectState,
     setAutoConnected,
-    setDeviceIdRef,
   });
 
   // Abort controller lifecycle
@@ -253,14 +246,13 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       refs.adapterRef.current = null;
     }
     updateConnectionState(ConnectionState.disconnected());
-    setDeviceId(null);
     refs.isConnectingRef.current = false;
     refs.currentConnectionIdRef.current = null;
     refs.hasAutoConnectedRef.current = false;
     refs.lastConnectedAccountRef.current = null;
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setDeviceId, updateConnectionState]);
+  }, [updateConnectionState]);
 
   // Reset when leaving hardware wallet account
   useEffect(() => {
@@ -300,7 +292,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       isHardwareWalletAccount,
       walletType,
       connectionState,
-      deviceId,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
@@ -319,7 +310,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       isHardwareWalletAccount,
       walletType,
       connectionState,
-      deviceId,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,
@@ -332,7 +322,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     () => ({
       isHardwareWalletAccount,
       walletType,
-      deviceId,
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
@@ -340,7 +329,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     [
       isHardwareWalletAccount,
       walletType,
-      deviceId,
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,
