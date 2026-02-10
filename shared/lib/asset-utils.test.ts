@@ -70,13 +70,14 @@ describe('asset-utils', () => {
       ]);
     });
 
-    it('should return undefined if getNativeAssetForChainId throws an error', () => {
+    it('should return undefined if getNativeAssetForChainId returns undefined for unsupported chain', () => {
       const nativeAddress = '0x0000000000000000000000000000000000000000';
       const chainId = 'eip155:1231' as CaipChainId;
 
-      expect(() => toAssetId(nativeAddress, chainId)).toThrow(
-        'No XChain Swaps native asset found for chainId: eip155:1231',
-      );
+      // getNativeAssetForChainId returns undefined (not throws) for chains not in the swaps map
+      // Format normalization in isEvmChainId should prevent conversion errors
+      const result = toAssetId(nativeAddress, chainId);
+      expect(result).toBeUndefined();
     });
 
     it('should create Solana token asset ID correctly', () => {
@@ -470,6 +471,31 @@ describe('asset-utils', () => {
 
     it('should return false for non-EVM chain ids', () => {
       expect(isEvmChainId('solana:1')).toBe(false);
+    });
+
+    it('should return true for EVM chain ids passed as decimal strings', () => {
+      // Test Injective testnet (1439) - the original bug case
+      expect(isEvmChainId('1439' as Hex)).toBe(true);
+      // Test other EVM chains as decimal strings
+      expect(isEvmChainId('1' as Hex)).toBe(true); // Ethereum mainnet
+      expect(isEvmChainId('137' as Hex)).toBe(true); // Polygon
+      expect(isEvmChainId('1776' as Hex)).toBe(true); // Injective mainnet
+    });
+
+    it('should return false for non-EVM chain ids passed as decimal strings', () => {
+      // Test Solana (1151111081099710)
+      expect(isEvmChainId('1151111081099710' as Hex)).toBe(false);
+      // Test Bitcoin (20000000000001)
+      expect(isEvmChainId('20000000000001' as Hex)).toBe(false);
+      // Test Tron (728126428)
+      expect(isEvmChainId('728126428' as Hex)).toBe(false);
+    });
+
+    it('should handle Injective testnet chainId in different formats', () => {
+      // All these should return true for Injective testnet (1439)
+      expect(isEvmChainId('1439' as Hex)).toBe(true); // Decimal string
+      expect(isEvmChainId('0x59f' as Hex)).toBe(true); // Hex format
+      expect(isEvmChainId('eip155:1439' as CaipChainId)).toBe(true); // CAIP format
     });
   });
 });
