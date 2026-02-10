@@ -2,7 +2,7 @@
  * Shared response parsing utilities for all LLM analyzers
  */
 
-import type { LLMAnalysisResponse, TestingScenario } from '../../types';
+import type { LLMAnalysisResponse, TestingScenario } from '../types';
 
 /**
  * Keywords that indicate build/configuration scenarios that should be excluded
@@ -126,14 +126,14 @@ export function validateAndNormalizeResponse(
 
   // Validate each scenario, filter out low risk and build/config changes, and sort by risk level
   parsed.scenarios = parsed.scenarios
-    .filter((scenario) => {
+    .filter((scenario: TestingScenario) => {
       validateScenario(scenario);
       return !shouldExcludeScenario(scenario);
     })
     .sort(sortByRiskLevel);
 
   // Ensure test steps are numbered correctly (1., 2., 3., etc.)
-  parsed.scenarios.forEach((scenario) => {
+  parsed.scenarios.forEach((scenario: TestingScenario) => {
     scenario.testSteps = normalizeTestSteps(scenario.testSteps);
   });
 

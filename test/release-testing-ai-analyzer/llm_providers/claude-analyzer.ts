@@ -8,7 +8,7 @@ import type {
   PullRequestInfo,
   FileCategories,
   LLMAnalysisResponse,
-} from '../../types';
+} from '../types';
 import type { LLMAnalyzer } from './llm-analyzer';
 import {
   getApiKeyForProvider,

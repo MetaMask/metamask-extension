@@ -2,12 +2,11 @@
  * Google Gemini API integration for analyzing PR changes and generating testing scenarios
  */
 
-import { GoogleGenAI } from '@google/genai';
 import type {
   PullRequestInfo,
   FileCategories,
   LLMAnalysisResponse,
-} from '../../types';
+} from '../types';
 import type { LLMAnalyzer } from './llm-analyzer';
 import {
   getApiKeyForProvider,
@@ -19,6 +18,19 @@ import {
   extractJSONFromResponse,
   validateAndNormalizeResponse,
 } from './response-parser';
+
+type GoogleGenAI = {
+  models: {
+    generateContent: (params: {
+      model: string;
+      contents: string;
+      generationConfig?: {
+        maxOutputTokens?: number;
+        responseMimeType?: string;
+      };
+    }) => Promise<unknown>;
+  };
+};
 
 export class GeminiAnalyzer implements LLMAnalyzer {
   private client: GoogleGenAI | null = null;
@@ -38,14 +50,16 @@ export class GeminiAnalyzer implements LLMAnalyzer {
   /**
    * Lazily initialize the Google GenAI client
    */
-  private getClient(): GoogleGenAI {
+  private async getClient(): Promise<GoogleGenAI> {
     if (!this.client) {
       if (!this.apiKey) {
         throw new Error(
           `Gemini API key not found. Set ${getEnvKeyForProvider('gemini')} environment variable.`,
         );
       }
-      this.client = new GoogleGenAI({ apiKey: this.apiKey });
+      // Use dynamic import for ESM module
+      const { GoogleGenAI } = await import('@google/genai');
+      this.client = new GoogleGenAI({ apiKey: this.apiKey }) as GoogleGenAI;
     }
     return this.client;
   }
@@ -66,7 +80,7 @@ export class GeminiAnalyzer implements LLMAnalyzer {
     );
 
     try {
-      const client = this.getClient();
+      const client = await this.getClient();
       const response = await client.models.generateContent({
         model: this.model,
         contents: prompt,

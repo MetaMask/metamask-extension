@@ -6,7 +6,7 @@ import type {
   PullRequestInfo,
   FileCategories,
   LLMAnalysisResponse,
-} from '../../types';
+} from '../types';
 
 export type LLMProvider = 'claude' | 'openai' | 'gemini';
 

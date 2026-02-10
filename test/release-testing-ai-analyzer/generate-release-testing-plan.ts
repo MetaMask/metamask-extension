@@ -84,7 +84,7 @@ async function main(): Promise<void> {
 
     let analysis: LLMAnalysisResponse | undefined;
     let analyzer: LLMAnalyzer | null = null;
-    let providerUsed: LLMProvider;
+    let providerUsed: LLMProvider | undefined;
     let modelUsed: string = '';
 
     // Determine provider with fallback if not explicitly specified
@@ -92,15 +92,16 @@ async function main(): Promise<void> {
       providerUsed = options.provider;
     } else {
       // Use fallback chain from config: GPT-5 → Claude → Gemini
-      providerUsed = LLM_CONFIG.providerPriority.find(
+      const foundProvider = LLM_CONFIG.providerPriority.find(
         (provider) => getApiKeyForProvider(provider) !== undefined,
-      ) as LLMProvider | undefined;
+      );
 
-      if (!providerUsed) {
+      if (!foundProvider) {
         throw new Error(
           'No API key found. Please set E2E_OPENAI_API_KEY, E2E_CLAUDE_API_KEY, or E2E_GEMINI_API_KEY environment variable, or use --provider flag.',
         );
       }
+      providerUsed = foundProvider;
     }
 
     const providerName = providerNames[providerUsed];
@@ -121,9 +122,11 @@ async function main(): Promise<void> {
       console.log('   This may take 30-60 seconds...\n');
       analysis = await analyzer.analyzePR(prInfo, fileCategories);
       modelUsed = analyzer.getModelName();
-      console.log(
-        `   ✓ Generated ${analysis.scenarios.length} testing scenarios\n`,
-      );
+      if (analysis) {
+        console.log(
+          `   ✓ Generated ${analysis.scenarios.length} testing scenarios\n`,
+        );
+      }
     } catch (error) {
       // If explicit provider fails, try fallback chain
       if (options.provider) {
@@ -156,9 +159,11 @@ async function main(): Promise<void> {
           analysis = await analyzer.analyzePR(prInfo, fileCategories);
           providerUsed = fallbackProvider;
           modelUsed = analyzer.getModelName();
-          console.log(
-            `   ✓ Generated ${analysis.scenarios.length} testing scenarios with ${providerNames[fallbackProvider]}\n`,
-          );
+          if (analysis) {
+            console.log(
+              `   ✓ Generated ${analysis.scenarios.length} testing scenarios with ${providerNames[fallbackProvider]}\n`,
+            );
+          }
           success = true;
           break;
         } catch (fallbackError) {

@@ -3,7 +3,7 @@
  * Extracted from ClaudeAnalyzer to avoid code duplication
  */
 
-import type { PullRequestInfo, FileCategories } from '../../types';
+import type { PullRequestInfo, FileCategories, PullRequestFile } from '../types';
 
 export class PromptBuilder {
   /**
@@ -28,7 +28,7 @@ Your task is to analyze a release PR and identify risky areas that need focused 
 - Author: ${prInfo.author}
 - Commits: ${prInfo.commitCount}
 - Files Changed: ${prInfo.files.length}
-- Total Changes: +${prInfo.files.reduce((sum, f) => sum + f.additions, 0)} -${prInfo.files.reduce((sum, f) => sum + f.deletions, 0)}
+- Total Changes: +${prInfo.files.reduce((sum: number, f: PullRequestFile) => sum + f.additions, 0)} -${prInfo.files.reduce((sum: number, f: PullRequestFile) => sum + f.deletions, 0)}
 
 ## Changed Files Summary
 
@@ -149,8 +149,8 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
 
     if (categories.controllers.length > 0) {
       summary += `\n### Controllers (${categories.controllers.length} files)\n`;
-      categories.controllers.slice(0, 10).forEach((file) => {
-        const fileInfo = files.find((f) => f.filename === file);
+      categories.controllers.slice(0, 10).forEach((file: string) => {
+        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
       if (categories.controllers.length > 10) {
@@ -160,8 +160,8 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
 
     if (categories.uiComponents.length > 0) {
       summary += `\n### UI Components (${categories.uiComponents.length} files)\n`;
-      categories.uiComponents.slice(0, 10).forEach((file) => {
-        const fileInfo = files.find((f) => f.filename === file);
+      categories.uiComponents.slice(0, 10).forEach((file: string) => {
+        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
       if (categories.uiComponents.length > 10) {
@@ -171,8 +171,8 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
 
     if (categories.migrations.length > 0) {
       summary += `\n### Migrations (${categories.migrations.length} files)\n`;
-      categories.migrations.forEach((file) => {
-        const fileInfo = files.find((f) => f.filename === file);
+      categories.migrations.forEach((file: string) => {
+        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
     }
@@ -184,8 +184,8 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
 
     if (categories.config.length > 0) {
       summary += `\n### Config (${categories.config.length} files)\n`;
-      categories.config.slice(0, 5).forEach((file) => {
-        const fileInfo = files.find((f) => f.filename === file);
+      categories.config.slice(0, 5).forEach((file: string) => {
+        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
       if (categories.config.length > 5) {
@@ -195,8 +195,8 @@ Return ONLY valid JSON, no markdown formatting or code blocks.`;
 
     if (categories.other.length > 0) {
       summary += `\n### Other (${categories.other.length} files)\n`;
-      categories.other.slice(0, 5).forEach((file) => {
-        const fileInfo = files.find((f) => f.filename === file);
+      categories.other.slice(0, 5).forEach((file: string) => {
+        const fileInfo = files.find((f: PullRequestFile) => f.filename === file);
         summary += `- ${file} (+${fileInfo?.additions || 0} -${fileInfo?.deletions || 0})\n`;
       });
       if (categories.other.length > 5) {

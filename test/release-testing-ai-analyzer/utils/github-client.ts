@@ -2,25 +2,73 @@
  * GitHub API client for retrieving PR information
  */
 
-import { Octokit } from '@octokit/rest';
 import type { PullRequestFile, PullRequestInfo } from '../types';
 
+type GitHubFile = {
+  filename: string;
+  additions: number | null;
+  deletions: number | null;
+  status: 'added' | 'removed' | 'modified' | 'renamed' | undefined;
+  patch: string | null | undefined;
+};
+
+type Octokit = {
+  rest: {
+    pulls: {
+      get: (params: {
+        owner: string;
+        repo: string;
+        pull_number: number;
+      }) => Promise<{ data: { title: string; body: string | null; user: { login: string } | null; base: { ref: string }; head: { ref: string } } }>;
+      listFiles: (params: {
+        owner: string;
+        repo: string;
+        pull_number: number;
+        per_page: number;
+      }) => Promise<{ data: GitHubFile[] }>;
+      listCommits: (params: {
+        owner: string;
+        repo: string;
+        pull_number: number;
+        per_page: number;
+      }) => Promise<{ data: unknown[] }>;
+    };
+  };
+  paginate: <T>(
+    fn: (params: unknown) => Promise<{ data: T[] }>,
+    params: unknown,
+  ) => Promise<T[]>;
+};
+
 export class GitHubClient {
-  private octokit: Octokit;
+  private octokit: Octokit | null = null;
 
   private owner: string;
 
   private repo: string;
+
+  private token: string | undefined;
 
   constructor(
     token: string | undefined,
     owner: string = 'MetaMask',
     repo: string = 'metamask-extension',
   ) {
-    // Create Octokit instance - works without auth for public repos
-    this.octokit = new Octokit(token ? { auth: token } : {});
+    this.token = token;
     this.owner = owner;
     this.repo = repo;
+  }
+
+  /**
+   * Lazily initialize the Octokit client
+   */
+  private async getOctokit(): Promise<Octokit> {
+    if (!this.octokit) {
+      // Use dynamic import for ESM module
+      const { Octokit } = await import('@octokit/rest');
+      this.octokit = new Octokit(this.token ? { auth: this.token } : {}) as Octokit;
+    }
+    return this.octokit;
   }
 
   /**
@@ -30,8 +78,9 @@ export class GitHubClient {
    */
   async getPullRequestInfo(prNumber: number): Promise<PullRequestInfo> {
     try {
+      const octokit = await this.getOctokit();
       // Get PR details
-      const { data: pr } = await this.octokit.rest.pulls.get({
+      const { data: pr } = await octokit.rest.pulls.get({
         owner: this.owner,
         repo: this.repo,
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -39,8 +88,8 @@ export class GitHubClient {
       });
 
       // Get all changed files with pagination
-      const allFiles = await this.octokit.paginate(
-        this.octokit.rest.pulls.listFiles,
+      const allFiles = await octokit.paginate<GitHubFile>(
+        octokit.rest.pulls.listFiles,
         {
           owner: this.owner,
           repo: this.repo,
@@ -52,8 +101,8 @@ export class GitHubClient {
       );
 
       // Get all commits with pagination
-      const allCommits = await this.octokit.paginate(
-        this.octokit.rest.pulls.listCommits,
+      const allCommits = await octokit.paginate<unknown>(
+        octokit.rest.pulls.listCommits,
         {
           owner: this.owner,
           repo: this.repo,
@@ -64,7 +113,7 @@ export class GitHubClient {
         },
       );
 
-      const prFiles: PullRequestFile[] = allFiles.map((file) => ({
+      const prFiles: PullRequestFile[] = allFiles.map((file: GitHubFile) => ({
         filename: file.filename,
         additions: file.additions || 0,
         deletions: file.deletions || 0,
@@ -112,7 +161,8 @@ export class GitHubClient {
    */
   async validatePullRequest(prNumber: number): Promise<boolean> {
     try {
-      await this.octokit.rest.pulls.get({
+      const octokit = await this.getOctokit();
+      await octokit.rest.pulls.get({
         owner: this.owner,
         repo: this.repo,
         // eslint-disable-next-line @typescript-eslint/naming-convention
