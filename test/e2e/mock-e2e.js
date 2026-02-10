@@ -1101,6 +1101,12 @@ async function setupMocking(
   // Notification APIs
   await mockNotificationServices(server);
 
+  // Override notification list with empty response to prevent unread dot
+  // Notification-specific tests re-register this endpoint via testSpecificMock
+  await server
+    .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .thenCallback(() => ({ statusCode: 200, json: [] }));
+
   // Identity APIs
   await mockIdentityServices(server);
 

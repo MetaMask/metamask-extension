@@ -22,12 +22,6 @@ async function mockSentryError(mockServer: MockttpServer) {
   ];
 }
 
-const DISABLE_NOTIFICATIONS_FLAGS = {
-  remoteFeatureFlags: {
-    assetsEnableNotificationsByDefaultV2: false,
-  },
-};
-
 describe('Developer Options - Sentry', function (this: Suite) {
   it('gives option to cause a page crash and provides sentry form to report', async function () {
     await withFixtures(
@@ -39,9 +33,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
           })
           .withPreferencesController({ pna25Acknowledged: true })
           .build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSentryError,
         ignoredConsoleErrors: [
           'Unable to find value of key "developerOptions" for locale "en"',
         ],
@@ -68,7 +60,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
           })
           .withPreferencesController({ pna25Acknowledged: true })
           .build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
+
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'Unable to find value of key "developerOptions" for locale "en"',
@@ -93,7 +85,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPreferencesController({ pna25Acknowledged: true })
           .build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
+
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'Unable to find value of key "developerOptions" for locale "en"',

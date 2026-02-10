@@ -10,12 +10,6 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-const DISABLE_NOTIFICATIONS_FLAGS = {
-  remoteFeatureFlags: {
-    assetsEnableNotificationsByDefaultV2: false,
-  },
-};
-
 describe('Settings Search', function () {
   const settingsSearch = {
     general: 'Show native token as main balance',
@@ -30,7 +24,6 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -52,7 +45,6 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -74,7 +66,6 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -96,7 +87,6 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -118,7 +108,6 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -140,7 +129,6 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -162,7 +150,6 @@ describe('Settings Search', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        manifestFlags: DISABLE_NOTIFICATIONS_FLAGS,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

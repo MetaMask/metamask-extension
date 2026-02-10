@@ -47,11 +47,6 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           fixtures: new FixtureBuilder({ onboarding: true })
             .withMetaMetricsController()
             .build(),
-          manifestFlags: {
-            remoteFeatureFlags: {
-              assetsEnableNotificationsByDefaultV2: false,
-            },
-          },
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
             await mockNotificationServices(server, triggerServer);
@@ -82,11 +77,6 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          manifestFlags: {
-            remoteFeatureFlags: {
-              assetsEnableNotificationsByDefaultV2: false,
-            },
-          },
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
             return [await mockNotificationServices(server, triggerServer)];
