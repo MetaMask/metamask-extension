@@ -1,12 +1,9 @@
-import { strict as assert } from 'assert';
 import { withBtcAccountSnap } from '../btc/common-btc';
 import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
-import { regularDelayMs } from '../../helpers';
+import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
 import { SECONDARY_BTC_ADDRESS, WINDOW_TITLES } from '../../constants';
 import {
-  assertConnected,
   clickConfirmButton,
-  connectBitcoinTestDapp,
   DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
   txHashShort,
 } from './testHelpers';
