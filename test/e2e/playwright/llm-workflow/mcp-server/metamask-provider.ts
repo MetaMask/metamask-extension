@@ -234,11 +234,8 @@ export class MetaMaskSessionManager implements ISessionManager {
     }
 
     const extPrefix = `chrome-extension://${extensionId}`;
-    if (url.includes('notification.html')) {
-      return 'notification';
-    }
     if (url.startsWith(extPrefix)) {
-      return 'extension';
+      return url.includes('notification.html') ? 'notification' : 'extension';
     }
     if (url.startsWith('http')) {
       return 'dapp';

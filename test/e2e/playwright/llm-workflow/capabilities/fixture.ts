@@ -49,7 +49,15 @@ export class MetaMaskFixtureCapability implements FixtureCapability {
       ...state,
       meta: state.meta ?? { version: FIXTURE_STATE_METADATA_VERSION },
     };
-    server.loadJsonState(fixtureWithMeta, null);
+    server.loadJsonState(fixtureWithMeta, {
+      getContractAddress: (name: string) => {
+        throw new Error(
+          `Fixture references contract "${name}" via __FIXTURE_SUBSTITUTION__CONTRACT, ` +
+            `but no contract registry is available. Deploy the contract via seedContracts or ` +
+            `remove the substitution from the fixture.`,
+        );
+      },
+    });
     console.log(`FixtureServer running on port ${this.port}`);
   }
 
