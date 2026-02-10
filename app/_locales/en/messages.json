@@ -5317,6 +5317,9 @@
   "perpsFundingRate": {
     "message": "Funding Rate"
   },
+  "perpsFundingRateTooltip": {
+    "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
+  },
   "perpsGiveFeedback": {
     "message": "Give us feedback"
   },
@@ -5389,6 +5392,15 @@
   },
   "perpsOpenInterest": {
     "message": "Open Interest"
+  },
+  "perpsOpenInterestTooltip": {
+    "message": "The combined value of all open positions for this perp"
+  },
+  "perpsOraclePrice": {
+    "message": "Oracle Price"
+  },
+  "perpsOraclePriceTooltip": {
+    "message": "The median of external prices reported by validators, used for computing funding rate"
   },
   "perpsOpenLong": {
     "message": "Open Long $1",
