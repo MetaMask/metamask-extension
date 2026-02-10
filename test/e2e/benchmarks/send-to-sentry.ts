@@ -14,8 +14,8 @@ import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
-import { BENCHMARK_TYPE } from './utils/constants';
+import { getGitBranch } from './send-to-sentry-utils';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './utils/constants';
 import type { BenchmarkResults, UserActionResult } from './utils/types';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');
@@ -92,44 +92,12 @@ async function main() {
     release: `metamask-extension@${version}`,
   });
 
-  // CI metadata as flat attributes (persona comes from each result's JSON)
+  // CI metadata — keep minimal to maximise attribute budget for metrics
   const baseCiAttributes = {
     'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
-    'ci.prNumber': process.env.PR_NUMBER || 'none',
-    'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
-    'ci.job': process.env.GITHUB_JOB || 'local',
     'ci.browser': argv.browser,
     'ci.buildType': argv.buildType,
   };
-
-  function sendMetadataLog(
-    message: string,
-    persona: string | undefined,
-    testTitle: string | undefined,
-  ): void {
-    Sentry.logger.info(message, {
-      ...baseCiAttributes,
-      'ci.persona': persona || 'standard',
-      'ci.testTitle': testTitle,
-      'ci.logType': 'metadata',
-    });
-  }
-
-  function sendMetricsLog(
-    message: string,
-    logType: string,
-    persona: string | undefined,
-    testTitle: string | undefined,
-    metrics: Record<string, number>,
-  ): void {
-    Sentry.logger.info(message, {
-      ...baseCiAttributes,
-      'ci.persona': persona || 'standard',
-      'ci.testTitle': testTitle,
-      'ci.logType': logType,
-      ...metrics,
-    });
-  }
 
   let sentCount = 0;
   let skippedCount = 0;
@@ -148,24 +116,24 @@ async function main() {
         continue;
       }
 
-      sendMetadataLog(message, benchmark.persona, benchmark.testTitle);
-
-      // Send one log per stat type (metrics only) to stay within Sentry's per-log attribute limit
+      const allMetrics: Record<string, number> = {};
       const statTypes = ['mean', 'p75', 'p95'] as const;
       for (const statType of statTypes) {
         const statData = benchmark[statType];
-        if (!statData || Object.keys(statData).length === 0) {
-          continue;
+        if (statData && Object.keys(statData).length > 0) {
+          Object.assign(
+            allMetrics,
+            mapKeys(statData, (_, key) => `${type}.${statType}.${key}`),
+          );
         }
-
-        sendMetricsLog(
-          message,
-          statType,
-          benchmark.persona,
-          benchmark.testTitle,
-          mapKeys(statData, (_, key) => `${type}.${statType}.${key}`),
-        );
       }
+
+      Sentry.logger.info(message, {
+        ...baseCiAttributes,
+        'ci.persona': benchmark.persona || BENCHMARK_PERSONA.STANDARD,
+        'ci.testTitle': benchmark.testTitle,
+        ...allMetrics,
+      });
       sentCount += 1;
     } else {
       // User action result with numeric timing metrics
@@ -186,14 +154,12 @@ async function main() {
         continue;
       }
 
-      sendMetadataLog(message, userAction.persona, userAction.testTitle);
-      sendMetricsLog(
-        message,
-        'metrics',
-        userAction.persona,
-        userAction.testTitle,
-        metrics,
-      );
+      Sentry.logger.info(message, {
+        ...baseCiAttributes,
+        'ci.persona': userAction.persona || BENCHMARK_PERSONA.STANDARD,
+        'ci.testTitle': userAction.testTitle,
+        ...metrics,
+      });
       sentCount += 1;
     }
   }
