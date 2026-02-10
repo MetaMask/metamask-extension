@@ -84,7 +84,7 @@ export const connectToBackground = (
       await handleStartUISync(data.params[0]);
     } else if (method === 'perpsStreamUpdate') {
       getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
-    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION && method !== 'QueryService:cacheUpdate') {
+    } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION && !method.endsWith('cacheUpdate')) {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
           data,
