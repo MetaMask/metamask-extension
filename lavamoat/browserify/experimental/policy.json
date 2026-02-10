@@ -2744,18 +2744,18 @@
         "navigator.userAgentData": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
+    "@google/genai>protobufjs>@protobufjs/codegen": {
       "globals": {
         "console.log": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": {
+    "@google/genai>protobufjs>@protobufjs/fetch": {
       "globals": {
         "XMLHttpRequest": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
+        "@google/genai>protobufjs>@protobufjs/aspromise": true,
+        "@google/genai>protobufjs>@protobufjs/inquire": true
       }
     },
     "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
@@ -3141,7 +3141,7 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils": true,
         "browserify>buffer": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": true,
+        "@google/genai>protobufjs>long": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": true,
         "tslib": true
       }
@@ -3242,7 +3242,7 @@
         "@zxing/library>ts-custom-error": true
       }
     },
-    "readable-stream>abort-controller": {
+    "openai>abort-controller": {
       "globals": {
         "AbortController": true
       }
@@ -4744,7 +4744,7 @@
         "navigator": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/protobuf>long": {
+    "@google/genai>protobufjs>long": {
       "globals": {
         "WebAssembly.Instance": true,
         "WebAssembly.Module": true,
@@ -5053,16 +5053,16 @@
         "setTimeout": true
       },
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/base64": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/eventemitter": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/fetch": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/float": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/path": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/pool": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/utf8": true
+        "@google/genai>protobufjs>@protobufjs/aspromise": true,
+        "@google/genai>protobufjs>@protobufjs/base64": true,
+        "@google/genai>protobufjs>@protobufjs/codegen": true,
+        "@google/genai>protobufjs>@protobufjs/eventemitter": true,
+        "@google/genai>protobufjs>@protobufjs/fetch": true,
+        "@google/genai>protobufjs>@protobufjs/float": true,
+        "@google/genai>protobufjs>@protobufjs/inquire": true,
+        "@google/genai>protobufjs>@protobufjs/path": true,
+        "@google/genai>protobufjs>@protobufjs/pool": true,
+        "@google/genai>protobufjs>@protobufjs/utf8": true
       }
     },
     "crypto-browserify>public-encrypt": {
@@ -5425,7 +5425,7 @@
         "queueMicrotask": true
       },
       "packages": {
-        "readable-stream>abort-controller": true,
+        "openai>abort-controller": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "process": true,
@@ -5522,7 +5522,7 @@
         "queueMicrotask": true
       },
       "packages": {
-        "readable-stream>abort-controller": true,
+        "openai>abort-controller": true,
         "browserify>buffer": true,
         "webpack>events": true,
         "process": true,
