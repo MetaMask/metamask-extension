@@ -122,14 +122,17 @@ const CancelSpeedupPopoverWrapped = () => {
                         ? t('cancel')
                         : t('speedUp'),
                     ])}{' '}
-                    <a
+                    <Text
+                      as="a"
                       href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary-default hover:text-primary-alternative cursor-pointer"
+                      variant={TextVariant.BodySm}
+                      color={TextColor.Primary}
+                      className="hover:text-primary-alternative cursor-pointer"
                     >
                       {t('learnMoreUpperCase')}
-                    </a>
+                    </Text>
                   </Text>
                 </>
               }
