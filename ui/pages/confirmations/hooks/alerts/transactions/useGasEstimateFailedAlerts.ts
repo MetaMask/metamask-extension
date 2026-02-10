@@ -1,6 +1,5 @@
 'use no memo';
 
-import { TransactionMeta, UserFeeLevel } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -9,15 +8,11 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../context/confirm';
+import { useEstimationFailed } from '../../gas/useEstimationFailed';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-
-  const estimationFailed =
-    Boolean(currentConfirmation?.simulationFails) &&
-    currentConfirmation?.userFeeLevel !== UserFeeLevel.CUSTOM;
+  const estimationFailed = useEstimationFailed();
 
   return useMemo(() => {
     if (!estimationFailed) {

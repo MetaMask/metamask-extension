@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  UserFeeLevel,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -24,6 +21,7 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
@@ -54,12 +52,9 @@ export const EditGasFeesRow = ({
     chainId,
     isGasFeeSponsored: doesSentinelAllowSponsorship,
     simulationData,
-    simulationFails,
-    userFeeLevel,
   } = transactionMeta;
 
-  const estimationFailed =
-    Boolean(simulationFails) && UserFeeLevel.CUSTOM !== userFeeLevel;
+  const estimationFailed = useEstimationFailed();
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
