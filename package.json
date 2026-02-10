@@ -273,6 +273,7 @@
     "fast-xml-parser": "^5.3.4"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.72.1",
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
     "@blockaid/ppom_release": "^1.5.3",
     "@date-io/luxon": "^1.3.13",
@@ -285,6 +286,7 @@
     "@ethersproject/hdnode": "^5.6.2",
     "@ethersproject/providers": "^5.7.2",
     "@fortawesome/fontawesome-free": "^5.13.0",
+    "@google/genai": "^1.39.0",
     "@keystonehq/bc-ur-registry-eth": "^0.22.1",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.4",
@@ -409,6 +411,7 @@
     "@metamask/utils": "^11.4.2",
     "@ngraveio/bc-ur": "^1.1.13",
     "@noble/hashes": "^1.3.3",
+    "@octokit/rest": "^22.0.1",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch",
     "@rive-app/react-canvas": "patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch",
@@ -464,6 +467,7 @@
     "lottie-web": "^5.12.2",
     "luxon": "^3.2.1",
     "nanoid": "^3.3.8",
+    "openai": "^6.17.0",
     "pify": "^5.0.0",
     "prop-types": "^15.6.1",
     "punycode": "^2.1.1",

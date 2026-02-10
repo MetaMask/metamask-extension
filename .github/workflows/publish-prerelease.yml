@@ -80,6 +80,42 @@ jobs:
           name: page-load-benchmark-results
           path: test-artifacts/benchmarks
 
+      - name: AI generated test plan
+        if: ${{ startsWith(env.BRANCH, 'release/') && env.PR_NUMBER }}
+        id: generate-test-plan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          E2E_OPENAI_API_KEY: ${{ secrets.E2E_OPENAI_API_KEY }}
+          E2E_CLAUDE_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+          E2E_GEMINI_API_KEY: ${{ secrets.E2E_GEMINI_API_KEY }}
+        run: |
+          # Extract version from branch name (e.g., release/13.18.0 -> 13.18.0)
+          VERSION="${BRANCH#release/}"
+          echo "Generating test plan for version: $VERSION"
+          echo "PR Number: $PR_NUMBER"
+
+          # Generate test plan JSON
+          OUTPUT_FILE="test-plan-${VERSION}.json"
+          if yarn tsx test/release-testing-ai-analyzer/generate-release-testing-plan.ts "$PR_NUMBER" --output "$OUTPUT_FILE"; then
+            # Export version for use in upload step and bot script
+            echo "TEST_PLAN_VERSION=${VERSION}" >> "${GITHUB_ENV}"
+            echo "test_plan_generated=true" >> "${GITHUB_OUTPUT}"
+            echo "test_plan_version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          else
+            echo "Warning: Test plan generation failed. Continuing without test plan."
+            echo "test_plan_generated=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Upload test plan artifact
+        if: ${{ startsWith(env.BRANCH, 'release/') && steps.generate-test-plan.outputs.test_plan_generated == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-plan-${{ steps.generate-test-plan.outputs.test_plan_version }}
+          path: test-plan-${{ steps.generate-test-plan.outputs.test_plan_version }}.json
+          retention-days: 90
+
       - name: Publish prerelease
         if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
+        env:
+          TEST_PLAN_VERSION: ${{ steps.generate-test-plan.outputs.test_plan_version }}
         run: yarn tsx ./development/metamaskbot-build-announce.ts
