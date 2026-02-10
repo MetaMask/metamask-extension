@@ -236,7 +236,7 @@
         "fetch": false
       }
     },
-    "@tanstack/query-core": {
+    "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
         "document": false
       }
