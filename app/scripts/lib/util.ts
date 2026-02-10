@@ -1,4 +1,5 @@
 import urlLib from 'url';
+import ipRegex from 'ip-regex';
 import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
@@ -18,14 +19,39 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
+  PLATFORM_CHROMIUM,
+  PLATFORM_COCCOC,
   PLATFORM_EDGE,
+  PLATFORM_EDGE_ANDROID,
   PLATFORM_FIREFOX,
+  PLATFORM_KIWI,
+  PLATFORM_LEMUR,
+  PLATFORM_MAXTHON,
+  PLATFORM_MISES,
   PLATFORM_OPERA,
+  PLATFORM_OTHER,
+  PLATFORM_PUFFIN,
+  PLATFORM_QQBROWSER,
+  PLATFORM_SAMSUNG,
+  PLATFORM_SILK,
+  PLATFORM_UCBROWSER,
+  PLATFORM_VIVALDI,
+  PLATFORM_WHALE,
+  PLATFORM_YANDEX,
+  type Platform,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
-import { getSafeChainsListFromCacheOnly } from '../../../shared/lib/network-utils';
+import {
+  getSafeChainsListFromCacheOnly,
+  getIsMetaMaskInfuraEndpointUrl,
+  getIsQuicknodeEndpointUrl,
+  KNOWN_CUSTOM_ENDPOINT_URLS,
+} from '../../../shared/lib/network-utils';
+// Re-export install type utilities from dedicated module to avoid circular dependencies
+// and keep the sentry bundle lightweight
+export { getInstallType, initInstallType } from './install-type';
 
 /**
  * @see {@link getEnvironmentType}
@@ -60,25 +86,177 @@ const getEnvironmentTypeMemo = memoize((url) => {
 const getEnvironmentType = (url = window.location.href) =>
   getEnvironmentTypeMemo(url);
 
+// Brand to platform mapping for userAgentData.brands detection
+// Used as fallback when UA string detection returns Chrome or Other
+const BRAND_TO_PLATFORM_MAP: Record<string, Platform> = {
+  Brave: PLATFORM_BRAVE,
+  'Google Chrome': PLATFORM_CHROME,
+  Lemur: PLATFORM_LEMUR,
+  'Microsoft Edge': PLATFORM_EDGE,
+  Mises: PLATFORM_MISES,
+  Opera: PLATFORM_OPERA,
+  'Samsung Internet': PLATFORM_SAMSUNG,
+  Vivaldi: PLATFORM_VIVALDI,
+  Whale: PLATFORM_WHALE,
+  YaBrowser: PLATFORM_YANDEX,
+  Yandex: PLATFORM_YANDEX,
+};
+
 /**
- * Returns the platform (browser) where the extension is running.
+ * Detects platform from userAgentData.brands.
+ * Filters out noise brands (Chromium, GREASE brands) and matches against known browsers.
+ * Returns unknown meaningful brands for analytics discovery.
  *
- * @returns the platform ENUM
+ * @returns the matched Platform, unknown brand name, or undefined if not detected
  */
-const getPlatform = () => {
+const getPlatformFromBrands = (): Platform | undefined => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { userAgentData } = window.navigator as any;
+  if (!userAgentData?.brands) {
+    return undefined;
+  }
+
+  // Extract brand names
+  const brands: string[] = userAgentData.brands.map(
+    (b: { brand: string }) => b.brand,
+  );
+
+  // Filter out noise brands (Chromium engine and GREASE brands like "Not(A:Brand")
+  const meaningfulBrands = brands.filter((brand) => {
+    const lowerBrand = brand.toLowerCase();
+    return !lowerBrand.includes('chromium') && !lowerBrand.includes('brand');
+  });
+
+  // Check each meaningful brand against our mapping
+  for (const brand of meaningfulBrands) {
+    const platform = BRAND_TO_PLATFORM_MAP[brand];
+    if (platform) {
+      return platform;
+    }
+  }
+
+  // Return first unknown meaningful brand for analytics discovery
+  // This allows us to detect new browsers we haven't explicitly mapped yet
+  if (meaningfulBrands.length > 0) {
+    return meaningfulBrands[0] as Platform;
+  }
+
+  return undefined;
+};
+
+/**
+ * Detects platform from the User-Agent string.
+ *
+ * @returns the detected Platform
+ */
+const getPlatformFromUserAgent = (): Platform => {
   const { navigator } = window;
   const { userAgent } = navigator;
 
+  // Firefox - check first as it has a unique engine
   if (userAgent.includes('Firefox')) {
     return PLATFORM_FIREFOX;
-  } else if ('brave' in navigator) {
+  }
+
+  // Brave - uses navigator.brave API
+  if ('brave' in navigator) {
     return PLATFORM_BRAVE;
-  } else if (userAgent.includes('Edg/')) {
+  }
+
+  // Edge - identified by "Edg/" in user agent (desktop) or "EdgA/" (Android)
+  if (userAgent.includes('EdgA/')) {
+    return PLATFORM_EDGE_ANDROID;
+  }
+  if (userAgent.includes('Edg/')) {
     return PLATFORM_EDGE;
-  } else if (userAgent.includes('OPR')) {
+  }
+
+  // Opera - identified by "OPR" in user agent
+  if (userAgent.includes('OPR')) {
     return PLATFORM_OPERA;
   }
-  return PLATFORM_CHROME;
+
+  // Chromium-based browsers with unique identifiers
+  // Check these before Chrome since they include "Chrome/" in their user agent
+  if (userAgent.includes('Vivaldi/')) {
+    return PLATFORM_VIVALDI;
+  }
+  if (userAgent.includes('YaBrowser/')) {
+    return PLATFORM_YANDEX;
+  }
+  if (userAgent.includes('SamsungBrowser/')) {
+    return PLATFORM_SAMSUNG;
+  }
+  if (userAgent.includes('Whale/')) {
+    return PLATFORM_WHALE;
+  }
+  if (userAgent.includes('Puffin/')) {
+    return PLATFORM_PUFFIN;
+  }
+  if (userAgent.includes('Silk/')) {
+    return PLATFORM_SILK;
+  }
+  if (userAgent.includes('UCBrowser/')) {
+    return PLATFORM_UCBROWSER;
+  }
+  if (userAgent.includes('Maxthon/')) {
+    return PLATFORM_MAXTHON;
+  }
+  if (userAgent.includes('coc_coc_browser/')) {
+    return PLATFORM_COCCOC;
+  }
+  if (userAgent.includes('QQBrowser/') || userAgent.includes('MQQBrowser/')) {
+    return PLATFORM_QQBROWSER;
+  }
+  if (userAgent.includes('Kiwi')) {
+    return PLATFORM_KIWI;
+  }
+  if (userAgent.includes('Lemur')) {
+    return PLATFORM_LEMUR;
+  }
+  if (userAgent.includes('Mises')) {
+    return PLATFORM_MISES;
+  }
+  if (userAgent.includes('Chromium/')) {
+    return PLATFORM_CHROMIUM;
+  }
+
+  // Chrome - identified by "Chrome/" and "Safari/" in user agent
+  // Note: Some browsers like Arc mimic Chrome's exact user agent and cannot be distinguished
+  if (userAgent.includes('Chrome/') && userAgent.includes('Safari/')) {
+    return PLATFORM_CHROME;
+  }
+
+  // Unknown browser
+  return PLATFORM_OTHER;
+};
+
+/**
+ * Returns the platform (browser) where the extension is running.
+ * Uses a hybrid approach: first tries UA string detection, then falls back to
+ * userAgentData.brands for browsers that hide their identity in the UA string
+ * but expose it via the Client Hints API (e.g., Lemur, Mises).
+ *
+ * @returns the platform ENUM
+ */
+const getPlatform = (): Platform => {
+  // First, try to detect from User-Agent string
+  const platformFromUA = getPlatformFromUserAgent();
+
+  // If UA detection found a specific browser, use it
+  if (platformFromUA !== PLATFORM_CHROME && platformFromUA !== PLATFORM_OTHER) {
+    return platformFromUA;
+  }
+
+  // UA returned Chrome or Other - try userAgentData.brands as fallback
+  // Some browsers (Lemur, Mises) hide their identity in UA but expose it in brands
+  const platformFromBrands = getPlatformFromBrands();
+  if (platformFromBrands) {
+    return platformFromBrands;
+  }
+
+  // Return what UA detection found (Chrome or Other)
+  return platformFromUA;
 };
 
 /**
@@ -479,7 +657,95 @@ let knownDomainsSet: Set<string> | null = null;
 let initPromise: Promise<void> | null = null;
 
 /**
- * Initialize the set of known domains from the chains list
+ * Extracts the hostname from a URL.
+ *
+ * @param url - The URL to extract the hostname from.
+ * @returns The lowercase hostname, or null if the URL is invalid.
+ */
+function extractHostname(url: string): string | null {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Check if a hostname is localhost or an IP address.
+ * Public RPC providers use domain names, not raw IP addresses.
+ * These should never be considered "public" endpoints even if they appear in chainlist.
+ *
+ * @param hostname - The hostname to check.
+ * @returns True if the hostname is localhost or an IP address (v4 or v6).
+ */
+function isLocalhostOrIPAddress(hostname: string): boolean {
+  const lowerHostname = hostname.toLowerCase();
+
+  // Check for localhost
+  if (lowerHostname === 'localhost') {
+    return true;
+  }
+
+  // Remove brackets from IPv6 addresses for testing (e.g., [::1] -> ::1)
+  const hostnameWithoutBrackets = lowerHostname.replace(/^\[|\]$/gu, '');
+
+  // Check for IP address (v4 or v6)
+  if (ipRegex({ exact: true }).test(hostnameWithoutBrackets)) {
+    return true;
+  }
+
+  return false;
+}
+
+// RFC 6761 special-use TLDs that should never be used by real public RPC providers
+const SPECIAL_USE_TLDS = [
+  '.test',
+  '.localhost',
+  '.invalid',
+  '.example',
+  '.local',
+] as const;
+
+// RFC 6761 reserved example domains
+const RESERVED_EXAMPLE_DOMAINS = ['example.com', 'example.net', 'example.org'];
+
+/**
+ * Check if a hostname is a special-use domain per RFC 6761.
+ * These domains are reserved and should never be used by real public RPC providers.
+ *
+ * @param hostname - The hostname to check.
+ * @returns True if the hostname is a special-use domain.
+ * @see https://datatracker.ietf.org/doc/html/rfc6761
+ */
+export function isSpecialUseDomain(hostname: string): boolean {
+  const lowerHostname = hostname.toLowerCase();
+
+  // Check special-use TLDs
+  if (SPECIAL_USE_TLDS.some((tld) => lowerHostname.endsWith(tld))) {
+    return true;
+  }
+
+  // Check reserved example domains (exact match or subdomain)
+  if (
+    RESERVED_EXAMPLE_DOMAINS.some(
+      (domain) =>
+        lowerHostname === domain || lowerHostname.endsWith(`.${domain}`),
+    )
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Initialize the set of known domains from the safe chainlist cache.
+ * This should be called once at startup in the background context.
+ * Localhost and private IP addresses are filtered out to prevent leaking
+ * private network information to analytics.
+ *
+ * @returns A promise that resolves when initialization is complete.
  */
 export async function initializeRpcProviderDomains(): Promise<void> {
   if (initPromise) {
@@ -494,12 +760,15 @@ export async function initializeRpcProviderDomains(): Promise<void> {
       for (const chain of chainsList) {
         if (chain.rpc && Array.isArray(chain.rpc)) {
           for (const rpcUrl of chain.rpc) {
-            try {
-              const url = new URL(rpcUrl);
-              knownDomainsSet.add(url.hostname);
-            } catch (e) {
-              // Skip invalid URLs
-              continue;
+            const hostname = extractHostname(rpcUrl);
+            // Filter out localhost, IP addresses, and RFC 6761 special-use domains
+            // Public providers use real domain names
+            if (
+              hostname &&
+              !isLocalhostOrIPAddress(hostname) &&
+              !isSpecialUseDomain(hostname)
+            ) {
+              knownDomainsSet.add(hostname);
             }
           }
         }
@@ -516,10 +785,58 @@ export async function initializeRpcProviderDomains(): Promise<void> {
 /**
  * Check if a domain is in the known domains list
  *
- * @param domain - The domain to check
+ * @param domain - The domain to check.
+ * @returns True if the domain is found in the chainlist cache.
  */
 export function isKnownDomain(domain: string): boolean {
   return knownDomainsSet?.has(domain?.toLowerCase()) ?? false;
+}
+
+/**
+ * Check if an RPC endpoint URL has a "known" domain, i.e. the domain is listed
+ * in a public registry. Localhost and private IPs are filtered out during
+ * initialization of the known domains set.
+ *
+ * @param endpointUrl - The URL of the RPC endpoint.
+ * @returns True if the endpoint's domain is listed in a public registry.
+ */
+function isKnownEndpointUrl(endpointUrl: string): boolean {
+  const hostname = extractHostname(endpointUrl);
+  if (!hostname) {
+    return false;
+  }
+  return isKnownDomain(hostname);
+}
+
+/**
+ * Some URLs that users add as networks refer to private servers, and we do not
+ * want to report these in Segment (or any other data collection service). This
+ * function returns whether the given RPC endpoint is safe to share.
+ *
+ * @param endpointUrl - The URL of the endpoint.
+ * @param infuraProjectId - Our Infura project ID.
+ * @returns True if the endpoint URL is safe to share with external data
+ * collection services, false otherwise.
+ */
+export function isPublicEndpointUrl(
+  endpointUrl: string,
+  infuraProjectId: string,
+): boolean {
+  const isMetaMaskInfuraEndpointUrl = getIsMetaMaskInfuraEndpointUrl(
+    endpointUrl,
+    infuraProjectId,
+  );
+  const isQuicknodeEndpointUrl = getIsQuicknodeEndpointUrl(endpointUrl);
+  const isKnownCustomEndpointUrl =
+    KNOWN_CUSTOM_ENDPOINT_URLS.includes(endpointUrl);
+  const isKnownEndpoint = isKnownEndpointUrl(endpointUrl);
+
+  return (
+    isMetaMaskInfuraEndpointUrl ||
+    isQuicknodeEndpointUrl ||
+    isKnownCustomEndpointUrl ||
+    isKnownEndpoint
+  );
 }
 
 /**
