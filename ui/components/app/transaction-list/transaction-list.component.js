@@ -654,10 +654,7 @@ export default function TransactionList({
         {renderFilterButton()}
         {groupedPendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
-          <TransactionActivityEmptyState
-            className="mx-auto mt-5 mb-6"
-            account={selectedAccount}
-          />
+          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
         ) : (
           <Box className="transaction-list__transactions">
             {groupedPendingTransactions.length > 0 && (
