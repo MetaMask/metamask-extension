@@ -843,6 +843,7 @@
       "ws>utf-8-validate": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
+      "@google/genai>protobufjs": false,
       "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
       "tsx>esbuild": true,
       "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": true,
