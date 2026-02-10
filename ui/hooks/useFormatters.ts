@@ -41,6 +41,56 @@ function formatCompact(
   });
 }
 
+// Format token quantity without trailing zeros.
+function formatTokenAmount(
+  formatToken: (
+    value: Value,
+    symbol: string,
+    options?: Intl.NumberFormatOptions,
+  ) => string,
+  value: Value,
+  symbol: string,
+) {
+  const minThreshold = 0.00001;
+  const number = Number(value);
+  const absoluteValue = Math.abs(number);
+
+  if (!Number.isFinite(number)) {
+    return '';
+  }
+
+  if (number === 0) {
+    return formatToken(0, symbol, { maximumFractionDigits: 0 });
+  }
+
+  if (absoluteValue < minThreshold) {
+    return `<${formatToken(minThreshold, symbol, {
+      minimumSignificantDigits: 1,
+      maximumSignificantDigits: 1,
+    })}`;
+  }
+
+  if (absoluteValue < 1) {
+    return formatToken(number, symbol, {
+      minimumSignificantDigits: 1,
+      maximumSignificantDigits: 4,
+    });
+  }
+
+  if (absoluteValue < 1000000) {
+    return formatToken(number, symbol, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 4,
+    });
+  }
+
+  return formatToken(number, symbol, {
+    notation: 'compact',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+}
+
 export function useFormatters() {
   const locale = useSelector(getIntlLocale);
 
@@ -56,6 +106,10 @@ export function useFormatters() {
         base.formatNumber,
       ),
       formatCompact: formatCompact.bind(null, base.formatNumber),
+      /**
+       * Format token quantity without trailing zeros.
+       */
+      formatTokenQuantity: formatTokenAmount.bind(null, base.formatToken),
     };
   }, [locale]);
 }

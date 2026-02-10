@@ -20,7 +20,7 @@ import { useSafeChains } from '../../../pages/settings/networks-tab/networks-for
 import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
-  getIsMultichainAccountsState2Enabled,
+  // getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
@@ -31,14 +31,14 @@ import {
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import TransactionList from '../../app/transaction-list';
-import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
+// import TransactionList from '../../app/transaction-list';
+// import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
 import { PerpsTabView } from '../../app/perps';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { ActivityList } from '../activity-v2/activity-list';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
-import { ActivityList } from '../activity-v2/activity-list';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
@@ -143,10 +143,10 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
-  const isBIP44FeatureFlagEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
+  // const isBIP44FeatureFlagEnabled = useSelector(
+  //   getIsMultichainAccountsState2Enabled,
+  // );
+  // const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
 
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
@@ -217,7 +217,7 @@ export const AccountOverviewTabs = ({
           </Tab>
         )}
 
-        {showActivity && (
+        {/* {showActivity && (
           <Tab
             name={t('activity')}
             tabKey={AccountOverviewTabKey.Activity}
@@ -231,7 +231,7 @@ export const AccountOverviewTabs = ({
               )}
             </ErrorBoundary>
           </Tab>
-        )}
+        )} */}
 
         {showActivity && (
           <Tab

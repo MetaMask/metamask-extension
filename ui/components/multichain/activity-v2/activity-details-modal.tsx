@@ -7,7 +7,6 @@ import {
   ModalHeader,
   ModalBody,
 } from '../../component-library';
-import { useFormatters } from '../../../hooks/useFormatters';
 import {
   getSelectedAddress,
   selectNetworkConfigurationByChainId,

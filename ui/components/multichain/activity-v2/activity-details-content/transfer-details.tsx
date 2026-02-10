@@ -19,15 +19,9 @@ import { Row } from './row';
 
 type Props = {
   transaction: TransactionViewModel;
-  selectedAddress?: string;
-  nativeCurrency?: string;
 };
 
-export const TransferDetails = ({
-  transaction,
-  selectedAddress,
-  nativeCurrency,
-}: Props) => {
+export const TransferDetails = ({ transaction }: Props) => {
   const { formatToken } = useFormatters();
   const { symbol } = transaction.amounts?.from ?? transaction.amounts?.to ?? {};
   const tokenAmount = getTransferAmount(transaction.amounts);

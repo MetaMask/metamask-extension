@@ -19,15 +19,9 @@ import { Row } from './row';
 
 type Props = {
   transaction: TransactionViewModel;
-  selectedAddress?: string;
-  nativeCurrency?: string;
 };
 
-export const SwapDetails = ({
-  transaction,
-  selectedAddress,
-  nativeCurrency,
-}: Props) => {
+export const SwapDetails = ({ transaction }: Props) => {
   const { formatToken } = useFormatters();
   const { chainImageUrl, chainName } = mapChainInfo(transaction.chainId);
   const explorerUrl = getExplorerUrl(transaction.chainId, transaction.hash);
