@@ -189,6 +189,7 @@ import {
   TraceName,
   TraceOperation,
 } from '../../shared/lib/trace';
+import { DATA_SERVICES } from '../../shared/constants/data-services';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
@@ -425,6 +426,7 @@ import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { QueryService } from './queries/QueryService';
+import { ActivityDataService } from './queries/ActivityDataService';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -905,17 +907,14 @@ export default class MetamaskController extends EventEmitter {
     this.snapController.init();
     this.cronjobController.init();
 
-    const queryServiceMessenger = new Messenger({
-      namespace: 'QueryService',
+    const activityDataServiceMessenger = new Messenger({
+      namespace: 'ActivityDataService',
       parent: this.controllerMessenger,
     });
 
-    this.controllerMessenger.delegate({
-      messenger: queryServiceMessenger,
-      actions: ['RewardsDataService:estimatePoints'],
-    });
-
-    this.queryService = new QueryService(queryServiceMessenger);
+    this.activityDataService = new ActivityDataService(
+      activityDataServiceMessenger,
+    );
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -2486,29 +2485,44 @@ export default class MetamaskController extends EventEmitter {
       staticAssetsController,
     } = this;
 
-    const querySubscription = (payload) => {
-      outStream.write({
-        jsonrpc: '2.0',
-        method: 'QueryService:cacheUpdate',
-        params: [payload],
-      });
-    };
+    // TODO: Consider moving data service API setup somewhere else
+    const dataServiceApi = DATA_SERVICES.reduce((accumulator, dataService) => {
+      // TODO: Consider if this can be tied into the messenger more.
+      const querySubscription = (payload) => {
+        outStream.write({
+          jsonrpc: '2.0',
+          method: `${dataService}:cacheUpdate`,
+          params: [payload],
+        });
+      };
+
+      // TODO: Figure out how data actions can be dynamically bound
+      accumulator[`${dataService}:getActivity`] = (options) =>
+        this.controllerMessenger.call(
+          `${dataService}:getActivity`,
+          ...options.queryKey.slice(1),
+          options,
+        );
+
+      accumulator[`${dataService}:subscribe`] = (queryKey) =>
+        this.controllerMessenger.call(
+          `${dataService}:subscribe`,
+          queryKey,
+          querySubscription,
+        );
+
+      accumulator[`${dataService}:unsubscribe`] = (queryKey) =>
+        this.controllerMessenger.call(
+          `${dataService}:unsubscribe`,
+          queryKey,
+          querySubscription,
+        );
+
+      return accumulator;
+    }, {});
 
     return {
-      'QueryService:fetch': (...args) =>
-        this.controllerMessenger.call('QueryService:fetch', ...args),
-      'QueryService:subscribe': (queryKey) =>
-        this.controllerMessenger.call(
-          'QueryService:subscribe',
-          queryKey,
-          querySubscription,
-        ),
-      'QueryService:unsubscribe': (queryKey) =>
-        this.controllerMessenger.call(
-          'QueryService:unsubscribe',
-          queryKey,
-          querySubscription,
-        ),
+      ...dataServiceApi,
       // etc
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
