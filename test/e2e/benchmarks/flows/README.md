@@ -36,6 +36,7 @@ yarn test:e2e:benchmark --preset performanceOnboardingNew --out results.json
 | `pageLoadBenchmark`            | Playwright benchmarks           | `page-load-benchmark.spec.ts`                                    |
 | `all`                          | All benchmarks                  | Everything above                                                 |
 
+
 ### Performance benchmarks: browserify vs webpack
 
 - **PRs:** Performance benchmarks run on **Chrome + Browserify** only.

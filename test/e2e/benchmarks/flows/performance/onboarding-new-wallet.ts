@@ -55,11 +55,9 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         const timerCreateWalletToSocial = new TimerHelper(
           'createWalletToSocialScreen',
         );
-        const timerSrpButtonToPassword = new TimerHelper(
-          'srpButtonToPasswordForm',
-        );
+        const timerSrpButtonToPassword = new TimerHelper('srpButtonToPwForm');
         const timerPasswordToRecovery = new TimerHelper(
-          'createPasswordToRecoveryScreen',
+          'createPwToRecoveryScreen',
         );
         const timerSkipToMetrics = new TimerHelper('skipBackupToMetricsScreen');
         const timerAgreeToComplete = new TimerHelper(

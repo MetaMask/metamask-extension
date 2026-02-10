@@ -15,7 +15,7 @@ import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
-import { BENCHMARK_TYPE } from './utils/constants';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './utils/constants';
 import type { BenchmarkResults, UserActionResult } from './utils/types';
 
 const packageJsonPath = path.resolve(__dirname, '../../../package.json');
@@ -92,12 +92,11 @@ async function main() {
     release: `metamask-extension@${version}`,
   });
 
-  // CI metadata as flat attributes (persona comes from each result's JSON)
+  // CI metadata
   const baseCiAttributes = {
     'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
     'ci.prNumber': process.env.PR_NUMBER || 'none',
     'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
-    'ci.job': process.env.GITHUB_JOB || 'local',
     'ci.browser': argv.browser,
     'ci.buildType': argv.buildType,
   };
@@ -110,6 +109,7 @@ async function main() {
       // Statistical benchmark result (page load or performance)
       const benchmark = value as BenchmarkResults;
       const type = benchmark.benchmarkType || BENCHMARK_TYPE.BENCHMARK;
+      const message = `${type}.${name}`;
 
       // Skip if mean is empty
       if (Object.keys(benchmark.mean).length === 0) {
@@ -118,23 +118,30 @@ async function main() {
         continue;
       }
 
-      const benchmarkAttributes = {
-        ...mapKeys(benchmark.mean, (_, key) => `${type}.mean.${key}`),
-        ...mapKeys(benchmark.p75, (_, key) => `${type}.p75.${key}`),
-        ...mapKeys(benchmark.p95, (_, key) => `${type}.p95.${key}`),
-      };
+      const allMetrics: Record<string, number> = {};
+      const statTypes = ['mean', 'p75', 'p95'] as const;
+      for (const statType of statTypes) {
+        const statData = benchmark[statType];
+        if (statData && Object.keys(statData).length > 0) {
+          Object.assign(
+            allMetrics,
+            mapKeys(statData, (_, key) => `${type}.${statType}.${key}`),
+          );
+        }
+      }
 
-      Sentry.logger.info(`${type}.${name}`, {
+      Sentry.logger.info(message, {
         ...baseCiAttributes,
-        'ci.persona': benchmark.persona || 'standard',
+        'ci.persona': benchmark.persona || BENCHMARK_PERSONA.STANDARD,
         'ci.testTitle': benchmark.testTitle,
-        ...benchmarkAttributes,
+        ...allMetrics,
       });
       sentCount += 1;
     } else {
       // User action result with numeric timing metrics
       const userAction = value as UserActionResult;
       const type = userAction.benchmarkType || BENCHMARK_TYPE.USER_ACTION;
+      const message = `${type}.${name}`;
 
       const metrics = Object.entries(userAction).reduce(
         (acc, [key, val]) =>
@@ -149,9 +156,9 @@ async function main() {
         continue;
       }
 
-      Sentry.logger.info(`${type}.${name}`, {
+      Sentry.logger.info(message, {
         ...baseCiAttributes,
-        'ci.persona': userAction.persona || 'standard',
+        'ci.persona': userAction.persona || BENCHMARK_PERSONA.STANDARD,
         'ci.testTitle': userAction.testTitle,
         ...metrics,
       });
