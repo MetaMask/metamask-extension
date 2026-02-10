@@ -35,6 +35,26 @@ jest.mock('../confirmations/hooks/perps/usePerpsDepositTrigger', () => ({
   })),
 }));
 
+jest.mock('../../hooks/perps/stream', () => ({
+  usePerpsLiveAccount: jest.fn(() => ({
+    account: undefined,
+    isInitialLoading: false,
+  })),
+  usePerpsLivePositions: jest.fn(() => ({
+    positions: [],
+    isInitialLoading: false,
+  })),
+  usePerpsLiveOrders: jest.fn(() => ({
+    orders: [],
+    isInitialLoading: false,
+  })),
+  usePerpsLiveMarketData: jest.fn(() => ({
+    cryptoMarkets: [],
+    hip3Markets: [],
+    isInitialLoading: false,
+  })),
+}));
+
 // eslint-disable-next-line import/first
 import PerpsHomePage from './perps-home-page';
 
@@ -61,9 +81,16 @@ describe('PerpsHomePage', () => {
   it('calls perps deposit trigger when Add funds is clicked', () => {
     const store = mockStore(createMockState(true));
 
-    const { getByTestId } = renderWithProvider(<PerpsHomePage />, store);
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <PerpsHomePage />,
+      store,
+    );
 
-    fireEvent.click(getByTestId('perps-balance-actions-add-funds'));
+    const addFundsButton =
+      queryByTestId('perps-balance-actions-add-funds') ??
+      getByTestId('perps-balance-actions-add-funds-empty');
+
+    fireEvent.click(addFundsButton);
 
     expect(mockTriggerPerpsDeposit).toHaveBeenCalledTimes(1);
   });
