@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  CANCEL_TYPES,
   PAYMENT_TYPES,
   PaymentType,
   PRODUCT_TYPES,
@@ -67,6 +68,7 @@ import {
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import {
   determineSubscriptionMetricsSourceFromMarketingUtmParams,
+  getIsSubscriptionCancelNotAllowed,
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
   isNonUISubscriptionError,
@@ -191,8 +193,19 @@ export const useCancelSubscription = (subscription?: Subscription) => {
       if (!subscription) {
         return;
       }
+
+      const { cancelType } = subscription;
+
+      // Do nothing if cancellation is not allowed
+      if (getIsSubscriptionCancelNotAllowed(cancelType)) {
+        return;
+      }
+
       const subscriptionId = subscription.id;
-      await dispatch(cancelSubscription({ subscriptionId }));
+      const cancelAtPeriodEnd =
+        cancelType === CANCEL_TYPES.ALLOWED_AT_PERIOD_END;
+
+      await dispatch(cancelSubscription({ subscriptionId, cancelAtPeriodEnd }));
       trackMembershipCancelledEvent('succeeded');
     } catch (error) {
       const errorMessage =
@@ -200,7 +213,7 @@ export const useCancelSubscription = (subscription?: Subscription) => {
       trackMembershipCancelledEvent('failed', errorMessage);
       throw error;
     }
-  }, [dispatch, subscription, captureShieldMembershipCancelledEvent]);
+  }, [dispatch, subscription, trackMembershipCancelledEvent]);
 };
 
 export const useUnCancelSubscription = (subscription?: Subscription) => {

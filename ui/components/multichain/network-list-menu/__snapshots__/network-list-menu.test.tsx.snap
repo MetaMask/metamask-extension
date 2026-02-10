@@ -428,10 +428,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                         Additional networks
                       </p>
                       <div
-                        class="mm-box mm-box--margin-top-1"
+                        class="mm-box mm-box--display-flex mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--margin-left-2"
+                          class="mm-box mm-box--margin-left-2 mm-box--display-flex"
                         >
                           <svg
                             class="inline-block w-4 h-4 text-icon-muted add-network__warning-icon"
@@ -1665,10 +1665,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         Additional networks
                       </p>
                       <div
-                        class="mm-box mm-box--margin-top-1"
+                        class="mm-box mm-box--display-flex mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--margin-left-2"
+                          class="mm-box mm-box--margin-left-2 mm-box--display-flex"
                         >
                           <svg
                             class="inline-block w-4 h-4 text-icon-muted add-network__warning-icon"
