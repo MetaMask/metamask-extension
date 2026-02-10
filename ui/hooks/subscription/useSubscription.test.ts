@@ -2,14 +2,15 @@ import { act, waitFor } from '@testing-library/react';
 import { cloneDeep } from 'lodash';
 import { PAYMENT_TYPES } from '@metamask/subscription-controller';
 import type { Hex } from '@metamask/utils';
+import { addHexPrefix } from 'ethereumjs-util';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import * as actions from '../../store/actions';
-import { useSubscriptionCryptoApprovalTransaction } from './useSubscription';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import type { MetaMaskReduxState } from '../../store/store';
+import { useSubscriptionCryptoApprovalTransaction } from './useSubscription';
 import * as subscriptionPricingHooks from './useSubscriptionPricing';
 import type { TokenWithApprovalAmount } from './useSubscriptionPricing';
 
@@ -36,10 +37,17 @@ const MOCK_SELECTED_TOKEN = {
     paymentAddress: '0x1234567890123456789012345678901234567890' as Hex,
     paymentTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as Hex,
   },
-} satisfies Pick<TokenWithApprovalAmount, 'chainId' | 'address' | 'approvalAmount'>;
+} satisfies Pick<
+  TokenWithApprovalAmount,
+  'chainId' | 'address' | 'approvalAmount'
+>;
 
 /**
  * Helper to mock EIP-1559 fee market gas estimates
+ *
+ * @param lowPriorityFee
+ * @param mediumPriorityFee
+ * @param baseFee
  */
 function mockFeeMarketGasEstimates(
   lowPriorityFee: string,
@@ -61,6 +69,8 @@ function mockFeeMarketGasEstimates(
 
 /**
  * Helper to mock legacy gas estimates (non-EIP-1559)
+ *
+ * @param gasPrice
  */
 function mockLegacyGasEstimates(gasPrice: string) {
   mockUseGasFeeEstimates.mockReturnValue({
@@ -132,8 +142,10 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
       const [txParams] = mockAddTransaction.mock.calls[0];
       // priorityFee = min(2 * 1.0, 2.5) = 2.0 GWEI
       // maxFee = baseFee + priorityFee = 50.0 + 2.0 = 52.0 GWEI
-      expect(txParams.maxPriorityFeePerGas).toBe(decGWEIToHexWEI(2.0));
-      expect(txParams.maxFeePerGas).toBe(decGWEIToHexWEI(52.0));
+      expect(txParams.maxPriorityFeePerGas).toBe(
+        addHexPrefix(decGWEIToHexWEI(2.0)),
+      );
+      expect(txParams.maxFeePerGas).toBe(addHexPrefix(decGWEIToHexWEI(52.0)));
     });
 
     it('uses medium as priorityFee when 2 * low > medium', async () => {
@@ -156,8 +168,10 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
       const [txParams] = mockAddTransaction.mock.calls[0];
       // priorityFee = min(2 * 2.0, 2.5) = 2.5 GWEI
       // maxFee = baseFee + priorityFee = 50.0 + 2.5 = 52.5 GWEI
-      expect(txParams.maxPriorityFeePerGas).toBe(decGWEIToHexWEI(2.5));
-      expect(txParams.maxFeePerGas).toBe(decGWEIToHexWEI(52.5));
+      expect(txParams.maxPriorityFeePerGas).toBe(
+        addHexPrefix(decGWEIToHexWEI(2.5)),
+      );
+      expect(txParams.maxFeePerGas).toBe(addHexPrefix(decGWEIToHexWEI(52.5)));
     });
 
     it('does not set gas fees on non-EIP-1559 networks', async () => {
@@ -202,8 +216,10 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
       const [txParams] = mockAddTransaction.mock.calls[0];
       // priorityFee = min(2 * 1.5, 3.0) = 3.0 GWEI
       // maxFee = baseFee + priorityFee = 50.0 + 3.0 = 53.0 GWEI
-      expect(txParams.maxPriorityFeePerGas).toBe(decGWEIToHexWEI(3.0));
-      expect(txParams.maxFeePerGas).toBe(decGWEIToHexWEI(53.0));
+      expect(txParams.maxPriorityFeePerGas).toBe(
+        addHexPrefix(decGWEIToHexWEI(3.0)),
+      );
+      expect(txParams.maxFeePerGas).toBe(addHexPrefix(decGWEIToHexWEI(53.0)));
     });
 
     it('does not set gas fees when gas estimates are missing', async () => {

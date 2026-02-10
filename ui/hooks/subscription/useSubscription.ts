@@ -18,6 +18,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { addHexPrefix } from 'ethereumjs-util';
 import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import {
@@ -427,11 +428,11 @@ export const useSubscriptionCryptoApprovalTransaction = (
         !Number.isNaN(baseFee)
       ) {
         const priorityFee = Math.min(lowPriority * 2, mediumPriority);
-        transactionParams.maxPriorityFeePerGas = decGWEIToHexWEI(
-          priorityFee,
+        transactionParams.maxPriorityFeePerGas = addHexPrefix(
+          decGWEIToHexWEI(priorityFee),
         ) as Hex;
-        transactionParams.maxFeePerGas = decGWEIToHexWEI(
-          baseFee + priorityFee,
+        transactionParams.maxFeePerGas = addHexPrefix(
+          decGWEIToHexWEI(baseFee + priorityFee),
         ) as Hex;
       }
     }
