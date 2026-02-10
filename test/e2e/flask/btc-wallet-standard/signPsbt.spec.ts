@@ -1,10 +1,8 @@
-import { strict as assert } from 'assert';
 import { withBtcAccountSnap } from '../btc/common-btc';
 import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
+import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
 import { WINDOW_TITLES } from '../../constants';
 import {
-  assertConnected,
-  connectBitcoinTestDapp,
   DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
   psbt,
   signedPsbt
