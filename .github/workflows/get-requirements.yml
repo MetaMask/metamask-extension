@@ -82,7 +82,7 @@ jobs:
       - name: 'Look for `[builds-from-run: <run>]` in the last commit message'
         id: identify-builds
         if: ${{ env.IS_RUN_EVERYTHING_BRANCH != 'true' && steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        run: .github/scripts/identify-builds-from-run.sh
+        run: .github/scripts/identify-builds-from-run.sh "${HEAD_COMMIT_HASH}"
 
       - id: filter
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
