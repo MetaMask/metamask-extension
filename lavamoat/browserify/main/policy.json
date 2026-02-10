@@ -3065,7 +3065,7 @@
         "defaultShouldDehydrateMutation": true,
         "defaultShouldDehydrateQuery": true,
         "dehydrate": true,
-        "document": true,
+        "document": false,
         "experimental_streamedQuery": true,
         "focusManager": true,
         "hashKey": true,

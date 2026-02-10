@@ -543,6 +543,11 @@
     "@swc/core>@swc/core-win32-x64-msvc": {
       "native": true
     },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false
+      }
+    },
     "webpack>@webassemblyjs/ast": {
       "globals": {
         "console.warn": true
