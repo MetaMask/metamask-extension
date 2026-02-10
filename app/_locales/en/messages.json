@@ -2026,6 +2026,12 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLink_BasicFunctionalityOffDescription": {
+    "message": "This link requires Basic Functionality to be turned on. You can change this in Settings > Security and privacy."
+  },
+  "deepLink_BasicFunctionalityOffTitle": {
+    "message": "This feature isn't available"
+  },
   "deepLink_Caution": {
     "message": "Proceed with caution"
   },
@@ -2044,12 +2050,6 @@
   },
   "deepLink_Error404Title": {
     "message": "This page doesn't exist"
-  },
-  "deepLink_BasicFunctionalityOffTitle": {
-    "message": "This feature isn't available"
-  },
-  "deepLink_BasicFunctionalityOffDescription": {
-    "message": "This link requires Basic Functionality to be turned on. You can change this in Settings > Security and privacy."
   },
   "deepLink_Error404_CTA": {
     "message": "$1 and we'll take you to the right place.",
