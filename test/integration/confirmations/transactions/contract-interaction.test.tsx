@@ -331,7 +331,7 @@ describe('Contract Interaction Confirmation', () => {
 
     const gasTimingTime =
       await within(gasFeeSpeed).findByTestId('gas-timing-time');
-    expect(gasTimingTime).toHaveTextContent('<0 sec');
+    expect(gasTimingTime).toHaveTextContent('~0 sec');
   });
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
