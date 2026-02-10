@@ -61,12 +61,8 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           'importWalletToSocialScreen',
         );
         const timerSrpButtonToForm = new TimerHelper('srpButtonToSrpForm');
-        const timerConfirmToPassword = new TimerHelper(
-          'confirmSrpToPwForm',
-        );
-        const timerPasswordToMetrics = new TimerHelper(
-          'pwFormToMetricsScreen',
-        );
+        const timerConfirmToPassword = new TimerHelper('confirmSrpToPwForm');
+        const timerPasswordToMetrics = new TimerHelper('pwFormToMetricsScreen');
         const timerMetricsToComplete = new TimerHelper(
           'metricsToWalletReadyScreen',
         );
