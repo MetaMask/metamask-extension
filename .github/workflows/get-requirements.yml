@@ -61,8 +61,6 @@ jobs:
       - uses: actions/checkout@v6
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
         with:
-          # Specifying `ref` ensures that the head commit is checked out directly.
-          ref: ${{ env.HEAD_COMMIT_HASH }}
           fetch-depth: 1
 
       # Do this before we use dorny/paths-filter, which might checkout other commits
