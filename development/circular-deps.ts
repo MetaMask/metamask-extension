@@ -97,15 +97,19 @@ async function update(): Promise<void> {
 
 /**
  * Simplified version of stripJsonComments that removes any line that
- * starts with // (ignoring whitespace).
+ * starts with // (ignoring whitespace) and strips trailing commas
+ * before closing brackets/braces (which are valid in JSONC but not JSON).
  *
  * @param jsonc
  */
 function stripJsonComments(jsonc: string): string {
-  return jsonc
+  const withoutComments = jsonc
     .split('\n')
     .filter((line) => !line.trim().startsWith('//'))
     .join('\n');
+
+  // Remove trailing commas before ] or } (with optional whitespace/newlines)
+  return withoutComments.replace(/,(\s*[\]}])/gu, '$1');
 }
 
 async function check(): Promise<void> {

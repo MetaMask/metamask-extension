@@ -192,7 +192,7 @@ export default function GasTiming({
       {time && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
           <span data-testid="gas-timing-time">
-            {timeMs < 1000 ? `<${time}` : `~${time}`}
+            {timeMs > 0 && timeMs < 1000 ? `<${time}` : `~${time}`}
           </span>
         </Text>
       )}
