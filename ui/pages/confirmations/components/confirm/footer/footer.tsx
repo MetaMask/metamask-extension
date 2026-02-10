@@ -329,6 +329,9 @@ const Footer = () => {
             fromAddress,
           }),
         );
+        if (currentConfirmationId) {
+          navigateNext(currentConfirmationId);
+        }
         resetTransactionState();
       } catch (error) {
         // Use isHardwareWalletError which handles duck typing for errors
