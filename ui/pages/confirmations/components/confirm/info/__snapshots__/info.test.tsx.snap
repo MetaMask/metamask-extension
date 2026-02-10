@@ -459,7 +459,7 @@ exports[`Info renders info section for approve request 1`] = `
             <span
               data-testid="gas-timing-time"
             >
-              &lt;0 sec
+              ~0 sec
             </span>
           </p>
         </div>
@@ -814,7 +814,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
             <span
               data-testid="gas-timing-time"
             >
-              &lt;0 sec
+              ~0 sec
             </span>
           </p>
         </div>
@@ -1427,7 +1427,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             <span
               data-testid="gas-timing-time"
             >
-              &lt;0 sec
+              ~0 sec
             </span>
           </p>
         </div>
