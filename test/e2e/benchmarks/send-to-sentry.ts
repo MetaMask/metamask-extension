@@ -68,7 +68,9 @@ async function main() {
   });
 
   if (!hasValidData) {
-    console.warn(`⚠️ No valid benchmark data to send to Sentry. File: ${argv.results}`);
+    console.warn(
+      `⚠️ No valid benchmark data to send to Sentry. File: ${argv.results}`,
+    );
     return;
   }
 
