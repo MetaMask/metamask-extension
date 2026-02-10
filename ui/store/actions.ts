@@ -1978,7 +1978,6 @@ export async function addTransactionAndWaitForPublish(
  *
  * @param txParams - the transaction parameters
  * @param options - Additional options for the transaction.
- * @param options.disableGasBuffer - Whether to disable gas limit buffer.
  * @param options.method
  * @param options.networkClientId - ID of the network client to use for the transaction.
  * @param options.requireApproval - Whether the transaction requires approval.
@@ -1991,7 +1990,6 @@ export async function addTransactionAndWaitForPublish(
 export async function addTransaction(
   txParams: TransactionParams,
   options: {
-    disableGasBuffer?: boolean;
     method?: string;
     networkClientId?: NetworkClientId;
     requireApproval?: boolean;
