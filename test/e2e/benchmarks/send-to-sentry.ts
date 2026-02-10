@@ -102,8 +102,6 @@ async function main() {
     'ci.buildType': argv.buildType,
   };
 
-  const commitHash = baseCiAttributes['ci.commitHash'];
-
   function sendMetadataLog(
     message: string,
     persona: string | undefined,
@@ -120,10 +118,14 @@ async function main() {
   function sendMetricsLog(
     message: string,
     logType: string,
+    persona: string | undefined,
+    testTitle: string | undefined,
     metrics: Record<string, number>,
   ): void {
     Sentry.logger.info(message, {
-      'ci.commitHash': commitHash,
+      ...baseCiAttributes,
+      'ci.persona': persona || 'standard',
+      'ci.testTitle': testTitle,
       'ci.logType': logType,
       ...metrics,
     });
@@ -159,6 +161,8 @@ async function main() {
         sendMetricsLog(
           message,
           statType,
+          benchmark.persona,
+          benchmark.testTitle,
           mapKeys(statData, (_, key) => `${type}.${statType}.${key}`),
         );
       }
@@ -183,7 +187,13 @@ async function main() {
       }
 
       sendMetadataLog(message, userAction.persona, userAction.testTitle);
-      sendMetricsLog(message, 'metrics', metrics);
+      sendMetricsLog(
+        message,
+        'metrics',
+        userAction.persona,
+        userAction.testTitle,
+        metrics,
+      );
       sentCount += 1;
     }
   }
