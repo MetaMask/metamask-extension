@@ -542,14 +542,13 @@ const SECOND_CUTOFF = 90;
 
 export const toHumanReadableTime = (
   t,
-  milliseconds,
-  { showSubSecondPrecision = false } = {},
+  milliseconds
 ) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
   }
 
-  if (showSubSecondPrecision && milliseconds < 1000) {
+  if (milliseconds < 1000) {
     const decimalSeconds = (milliseconds / 1000).toFixed(1);
     return t('gasTimingSecondsShort', [decimalSeconds]);
   }

@@ -738,16 +738,6 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.TEMPO_TESTNET,
 ];
 
-/**
- * Chains with sub-second block times where transaction confirmations
- * are expected to be faster than the estimated time.
- */
-export const FAST_CONFIRMATION_CHAIN_IDS: Hex[] = [
-  CHAIN_IDS.MEGAETH_TESTNET,
-  CHAIN_IDS.MEGAETH_TESTNET_V2,
-  CHAIN_IDS.MEGAETH_MAINNET,
-];
-
 export const CAIP_FORMATTED_TEST_CHAINS: CaipChainId[] = [
   ...TEST_CHAINS.map((chainId) =>
     toCaipChainId(KnownCaipNamespace.Eip155, hexToNumber(chainId).toString()),

@@ -17,11 +17,8 @@ import InfoTooltip from '../../../../../components/ui/info-tooltip';
 import LoadingHeartBeat from '../../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-preferenced-currency-display';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
-import { FAST_CONFIRMATION_CHAIN_IDS } from '../../../../../../shared/constants/network';
 
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
-
-const FAST_CONFIRMATION_CHAIN_SET = new Set(FAST_CONFIRMATION_CHAIN_IDS);
 
 const getTitleAndIcon = (priorityLevel, editGasMode) => {
   let icon = priorityLevel;
@@ -134,13 +131,7 @@ const EditGasItem = ({ priorityLevel }) => {
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
       >
         {editGasMode !== EditGasModes.swaps &&
-          (minWaitTime
-            ? toHumanReadableTime(t, minWaitTime, {
-                showSubSecondPrecision: FAST_CONFIRMATION_CHAIN_SET.has(
-                  transaction.chainId,
-                ),
-              })
-            : '--')}
+          (minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--')}
       </span>
       <span
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}

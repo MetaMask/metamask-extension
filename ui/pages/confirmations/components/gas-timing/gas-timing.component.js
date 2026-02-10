@@ -24,13 +24,9 @@ import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
-import { FAST_CONFIRMATION_CHAIN_IDS } from '../../../../../shared/constants/network';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
-
-// Chains where confirmations are faster than estimated, display "<" instead of "~"
-const FAST_CHAINS = new Set(FAST_CONFIRMATION_CHAIN_IDS);
 
 // Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
 const toHumanReadableTime = (milliseconds = 1, t) => {
@@ -142,6 +138,7 @@ export default function GasTiming({
   const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
   let text = t(textTKey);
   let time = '';
+  let timeMs = 0;
 
   // Anything medium or faster is positive
   if (
@@ -152,10 +149,12 @@ export default function GasTiming({
       Number(maxPriorityFeePerGas) < Number(high.suggestedMaxPriorityFeePerGas)
     ) {
       // Medium
-      time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+      timeMs = low.maxWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     } else {
       // High
-      time = toHumanReadableTime(high.minWaitTimeEstimate, t);
+      timeMs = high.minWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     }
   } else if (isUnknownLow) {
     // If the user has chosen a value less than our low estimate,
@@ -170,13 +169,12 @@ export default function GasTiming({
     ) {
       text = t('editGasTooLow');
     } else {
-      time = toHumanReadableTime(
-        Number(customEstimatedTime?.upperTimeBound),
-        t,
-      );
+      timeMs = Number(customEstimatedTime?.upperTimeBound);
+      time = toHumanReadableTime(timeMs, t);
     }
   } else {
-    time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+    timeMs = low.maxWaitTimeEstimate;
+    time = toHumanReadableTime(timeMs, t);
   }
 
   return (
@@ -194,7 +192,7 @@ export default function GasTiming({
       {time && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
           <span data-testid="gas-timing-time">
-            {FAST_CHAINS.has(chainId) ? `<${time}` : `~${time}`}
+            {timeMs < 1000 ? `<${time}` : `~${time}`}
           </span>
         </Text>
       )}
