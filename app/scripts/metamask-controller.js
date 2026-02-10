@@ -948,6 +948,10 @@ export default class MetamaskController extends EventEmitter {
           // edge flows the selected account may not yet be available.
           const selected = this.accountsController.getSelectedAccount();
           const address = selected?.address;
+          // After onboarding, default selected account will be an EVM
+          // account, and those accounts are `Bip44Account`s which should have
+          // an `entropy` property.
+          // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
           if (this.isMultichainAccountsFeatureState2Enabled()) {
@@ -4672,9 +4676,6 @@ export default class MetamaskController extends EventEmitter {
         { id },
         async ({ keyring }) => keyring.getAccounts(),
       );
-      // END: multichain state 2
-      // ELSE statement should cover calling to create the wallet, before this block the addNewSeedPhraseBackup should be called regardless of state 2 or not
-      // we will just conditionally call the removeAccount call with the state 2 flag if the seed phrase isn't backed up. Still throwing the error of course.
 
       if (this.onboardingController.getIsSocialLoginFlow()) {
         try {
