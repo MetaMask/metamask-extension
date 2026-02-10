@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added deeplinking to the NFT tab (#39669)
 - Added tempo testnet native and network token IDs and images (#39491)
 - Added Keycard Shell to the list of QR-based hardware wallets (#36911)
+- Added network picker deeplink (#39676)
 
 ### Changed
 
