@@ -5,13 +5,13 @@ import React, {
   Fragment,
   useEffect,
 } from 'react';
-import { isCrossChain } from '@metamask/bridge-controller';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useVirtualizer } from '@tanstack/react-virtual';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
+import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
 ///: END:ONLY_INCLUDE_IF
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
@@ -94,6 +94,7 @@ import {
 import {
   selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
+  selectSwapReceiveTxHashes,
 } from '../../../ducks/bridge-status/selectors';
 import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
@@ -474,6 +475,7 @@ export default function UnifiedTransactionList({
   const groupEvmAddress = accountGroupEvmAccount?.address?.toLowerCase();
 
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
+  const swapReceiveTxHashes = useSelector(selectSwapReceiveTxHashes);
 
   const pendingFromSelectedAccount = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
@@ -644,8 +646,31 @@ export default function UnifiedTransactionList({
     nonEvmChainIds,
     bridgeHistoryItems,
   ]);
-  const groupedUnifiedActivityItems =
-    groupAnyTransactionsByDate(unifiedActivityItems);
+
+  const filteredUnifiedActivityItems = useMemo(() => {
+    if (!swapReceiveTxHashes?.size) {
+      return unifiedActivityItems;
+    }
+
+    return unifiedActivityItems.filter((item) => {
+      if (item.kind !== TransactionKind.NON_EVM) {
+        return true;
+      }
+
+      const isReceiveType =
+        item.transaction?.type === KeyringTransactionType.Receive;
+      if (!isReceiveType) {
+        return true;
+      }
+
+      const txIdOrHash = item.id || item.transaction?.id;
+      return !(txIdOrHash && swapReceiveTxHashes.has(txIdOrHash));
+    });
+  }, [swapReceiveTxHashes, unifiedActivityItems]);
+
+  const groupedUnifiedActivityItems = groupAnyTransactionsByDate(
+    filteredUnifiedActivityItems,
+  );
 
   // Extract pending EVM transaction groups for earliest nonce calculation
   const pendingEvmTransactionGroups = useMemo(() => {
@@ -701,12 +726,10 @@ export default function UnifiedTransactionList({
     (item, index) => {
       if (item.kind === TransactionKind.NON_EVM) {
         const matchedBridgeHistoryItem = bridgeHistoryItems[item.id];
+
         if (
           matchedBridgeHistoryItem &&
-          isCrossChain(
-            matchedBridgeHistoryItem.quote?.srcChainId,
-            matchedBridgeHistoryItem.quote?.destChainId,
-          )
+          isBridgeLikeSwap(matchedBridgeHistoryItem)
         ) {
           return (
             <MultichainBridgeTransactionListItem
@@ -851,10 +874,7 @@ export default function UnifiedTransactionList({
     <>
       {selectedTransaction &&
         (selectedBridgeHistoryItem &&
-        isCrossChain(
-          selectedBridgeHistoryItem.quote.srcChainId,
-          selectedBridgeHistoryItem.quote.destChainId,
-        ) ? (
+        isBridgeLikeSwap(selectedBridgeHistoryItem) ? (
           <MultichainBridgeTransactionDetailsModal
             transaction={selectedTransaction}
             bridgeHistoryItem={selectedBridgeHistoryItem}
