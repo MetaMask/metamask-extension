@@ -311,13 +311,42 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Get available balance from account state
   const availableBalance = account ? parseFloat(account.availableBalance) : 0;
 
-  // Parse current price from market data (remove $ and commas)
-  const currentPrice = useMemo(() => {
+  // Parse fallback price from market data (used before candle stream is ready)
+  const marketPrice = useMemo(() => {
     if (!market) {
       return 0;
     }
     return parseFloat(market.price.replace(/[$,]/gu, ''));
   }, [market]);
+
+  // Current price derived from the last candle's close price.
+  // Updates on every live tick (~1000ms), keeping the price line in sync with the chart.
+  // This is the single source of truth for price display on the detail page.
+  const chartCurrentPrice = useMemo(() => {
+    if (!candleData?.candles?.length) {
+      return 0;
+    }
+    const lastCandle = candleData.candles.at(-1);
+    return lastCandle?.close ? parseFloat(lastCandle.close) : 0;
+  }, [candleData]);
+
+  // Current price for calculations (orders, margin, slippage).
+  // Prefers the live candle price, falls back to market data during initial load.
+  const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
+
+  // Formatted display price for the header — synced with the chart price line.
+  // Falls back to market.price string during initial candle load.
+  const displayPrice = useMemo(() => {
+    if (chartCurrentPrice > 0) {
+      return `$${formatNumber(chartCurrentPrice, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    return market?.price ?? '$0.00';
+  }, [chartCurrentPrice, market, formatNumber]);
+
+  // 24h change from market data.
+  // TODO: When PerpsControllerProvider is available in the route tree,
+  // subscribe to usePerpsLivePrices for live 24h change updates.
+  const displayChange = market?.change24hPercent ?? '';
 
   // Parse max leverage from market data (remove 'x')
   const maxLeverage = useMemo(() => {
@@ -343,56 +372,66 @@ const PerpsMarketDetailPage: React.FC = () => {
     return currentPrice;
   }, [position, currentPrice]);
 
-  // Build price lines for chart overlay (TP, Entry, SL)
-  // Only shown when user has an open position for this market
+  // Build price lines for chart overlay (current price + TP, Entry, SL)
+  // Current price line is always shown; TP/Entry/SL only when position exists.
   const chartPriceLines = useMemo((): ChartPriceLine[] => {
-    if (!position) {
-      return [];
-    }
-
     const lines: ChartPriceLine[] = [];
 
-    // Take Profit line (green/lime, dashed)
-    if (position.takeProfitPrice) {
-      const tpPrice = parseFloat(position.takeProfitPrice.replace(/,/gu, ''));
-      if (!isNaN(tpPrice) && tpPrice > 0) {
-        lines.push({
-          price: tpPrice,
-          label: 'TP',
-          color: brandColor.lime100,
-          lineStyle: 2,
-        });
-      }
+    // Current price line — always shown, derived from last candle close
+    if (chartCurrentPrice > 0) {
+      lines.push({
+        price: chartCurrentPrice,
+        label: '',
+        color: 'rgba(255, 255, 255, 0.3)',
+        lineStyle: 2,
+        lineWidth: 2,
+      });
     }
 
-    // Entry price line (gray, dashed)
-    if (position.entryPrice) {
-      const entryPrice = parseFloat(position.entryPrice.replace(/,/gu, ''));
-      if (!isNaN(entryPrice) && entryPrice > 0) {
-        lines.push({
-          price: entryPrice,
-          label: 'Entry',
-          color: 'rgba(255, 255, 255, 0.5)',
-          lineStyle: 2,
-        });
+    // Position-specific lines (only when user has an open position)
+    if (position) {
+      // Take Profit line (green/lime, dashed)
+      if (position.takeProfitPrice) {
+        const tpPrice = parseFloat(position.takeProfitPrice.replace(/,/gu, ''));
+        if (!isNaN(tpPrice) && tpPrice > 0) {
+          lines.push({
+            price: tpPrice,
+            label: 'TP',
+            color: brandColor.lime100,
+            lineStyle: 2,
+          });
+        }
       }
-    }
 
-    // Stop Loss line (red, dashed)
-    if (position.stopLossPrice) {
-      const slPrice = parseFloat(position.stopLossPrice.replace(/,/gu, ''));
-      if (!isNaN(slPrice) && slPrice > 0) {
-        lines.push({
-          price: slPrice,
-          label: 'SL',
-          color: brandColor.red300,
-          lineStyle: 2,
-        });
+      // Entry price line (gray, dashed)
+      if (position.entryPrice) {
+        const entryPrice = parseFloat(position.entryPrice.replace(/,/gu, ''));
+        if (!isNaN(entryPrice) && entryPrice > 0) {
+          lines.push({
+            price: entryPrice,
+            label: 'Entry',
+            color: 'rgba(255, 255, 255, 0.5)',
+            lineStyle: 2,
+          });
+        }
+      }
+
+      // Stop Loss line (red, dashed)
+      if (position.stopLossPrice) {
+        const slPrice = parseFloat(position.stopLossPrice.replace(/,/gu, ''));
+        if (!isNaN(slPrice) && slPrice > 0) {
+          lines.push({
+            price: slPrice,
+            label: 'SL',
+            color: brandColor.red300,
+            lineStyle: 2,
+          });
+        }
       }
     }
 
     return lines;
-  }, [position]);
+  }, [position, chartCurrentPrice]);
 
   // Convert price to percentage for display
   const priceToPercentForEdit = useCallback(
@@ -1106,14 +1145,14 @@ const PerpsMarketDetailPage: React.FC = () => {
                 color={TextColor.TextAlternative}
                 data-testid="perps-order-price"
               >
-                {market.price}
+                {displayPrice}
               </Text>
               <Text
                 variant={TextVariant.BodyXs}
-                color={getChangeColor(market.change24hPercent)}
+                color={getChangeColor(displayChange)}
                 data-testid="perps-order-change"
               >
-                {market.change24hPercent}
+                {displayChange}
               </Text>
             </Box>
           </Box>
@@ -1136,14 +1175,14 @@ const PerpsMarketDetailPage: React.FC = () => {
                 fontWeight={FontWeight.Medium}
                 data-testid="perps-market-detail-price"
               >
-                {market.price}
+                {displayPrice}
               </Text>
               <Text
                 variant={TextVariant.BodyXs}
-                color={getChangeColor(market.change24hPercent)}
+                color={getChangeColor(displayChange)}
                 data-testid="perps-market-detail-change"
               >
-                {market.change24h} ({market.change24hPercent})
+                {displayChange}
               </Text>
             </Box>
           </Box>

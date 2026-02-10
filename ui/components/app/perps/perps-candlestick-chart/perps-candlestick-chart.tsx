@@ -31,17 +31,19 @@ const LOAD_MORE_COOLDOWN_MS = 2000;
 const EDGE_DETECTION_THRESHOLD = 5;
 
 /**
- * A horizontal price line to draw on the chart (e.g., TP, Entry, SL).
+ * A horizontal price line to draw on the chart (e.g., TP, Entry, SL, current price).
  */
 export type ChartPriceLine = {
   /** Price level to draw the line at */
   price: number;
-  /** Label displayed on the price axis (e.g., "TP", "Entry", "SL") */
+  /** Label displayed on the price axis (e.g., "TP", "Entry", "SL", or "" for no title) */
   label: string;
   /** Line color */
   color: string;
   /** Line style: 0 = solid, 1 = dotted, 2 = dashed (default 2) */
   lineStyle?: number;
+  /** Line width in pixels (default 1) */
+  lineWidth?: number;
 };
 
 type PerpsCandlestickChartProps = {
@@ -465,7 +467,7 @@ const PerpsCandlestickChart = forwardRef<
           const line = series.createPriceLine({
             price: pl.price,
             color: pl.color,
-            lineWidth: 1,
+            lineWidth: pl.lineWidth ?? 1,
             lineStyle: pl.lineStyle ?? 2, // Default: dashed
             axisLabelVisible: true,
             title: pl.label,
