@@ -8,18 +8,25 @@ import Box from '../../ui/box/box';
 import { Button } from '../../component-library';
 
 export const TestTab = () => {
-  const queryKey = [
-    'ActivityDataService:getActivity',
-    '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-  ];
-
   const infiniteQuery = useInfiniteQuery({
-    queryKey,
+    queryKey: [
+      'ActivityDataService:getActivity',
+      '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+    ],
     getNextPageParam: ({ pageInfo }) =>
       pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
   });
 
-  const query = useQuery({ queryKey });
+  const query = useQuery({
+    queryKey: [
+      'AssetDataService:getAssets',
+      [
+        'eip155:1/slip44:60',
+        'bip122:000000000019d6689c085ae165831e93/slip44:0',
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+      ],
+    ],
+  });
 
   const handleFetchNextPage = () => {
     infiniteQuery.fetchNextPage();

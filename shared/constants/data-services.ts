@@ -1,1 +1,1 @@
-export const DATA_SERVICES = ['ActivityDataService'];
+export const DATA_SERVICES = ['ActivityDataService', 'AssetDataService'];
