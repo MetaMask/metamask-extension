@@ -63,6 +63,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Fetch HEAD commit for message checks
+        if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
+        run: git fetch --depth=1 origin "${HEAD_COMMIT_HASH}"
+
       # Do this before we use dorny/paths-filter, which might checkout other commits
       - name: Check skip-e2e tag
         id: skip-e2e-tag
