@@ -436,6 +436,16 @@ async function start(): Promise<void> {
     console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
+  // Add AI-generated test plan section (only for release branches)
+  const testPlanVersion = process.env.TEST_PLAN_VERSION;
+  if (testPlanVersion) {
+    const testPlanArtifactUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
+    const testPlanFileName = `test-plan-${testPlanVersion}.json`;
+    const testPlanLink = `<a href="${testPlanArtifactUrl}">${testPlanFileName}</a>`;
+    const testPlanSection = `AI generated test plan: ${testPlanLink}\n\n`;
+    commentBody += testPlanSection;
+  }
+
   await postCommentWithMetamaskBot({
     commentBody,
     owner: OWNER,
