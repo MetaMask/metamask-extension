@@ -22,6 +22,8 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
+  AvatarToken,
+  AvatarTokenSize,
 } from '../../../components/component-library';
 
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
@@ -33,8 +35,15 @@ import {
 } from '../../../contexts/gasFee';
 import { ConfirmInfoRow } from '../../../components/app/confirm/info/row';
 import GasTiming from '../components/gas-timing/gas-timing.component';
-import { getAppIsLoading, getPreferences } from '../../../selectors';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
+import {
+  getAppIsLoading,
+  getPreferences,
+  selectNetworkConfigurationByChainId,
+} from '../../../selectors';
+import {
+  CHAIN_ID_TOKEN_IMAGE_MAP,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -50,29 +59,41 @@ const EditGasButton = ({ onClick }: EditGasButtonProps) => {
   return (
     <ButtonIcon
       size={ButtonIconSize.Sm}
-      color={TextColor.PrimaryDefault}
       ariaLabel={t('edit')}
       iconName={IconName.Edit}
       onClick={onClick}
       data-testid="edit-gas-fee-icon"
+      className="text-primary-default"
     />
   );
 };
 
 type NetworkFeeRowProps = {
-  nativeFee: string;
+  nativeFeeParts: { value: string; suffix?: string };
   fiatFee: string;
   showFiat: boolean;
   onEdit: () => void;
+  chainId: string;
 };
 
 const NetworkFeeRow = ({
-  nativeFee,
+  nativeFeeParts,
   fiatFee,
   showFiat,
   onEdit,
+  chainId,
 }: NetworkFeeRowProps) => {
   const t = useI18nContext();
+
+  const networkConfiguration = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  const source =
+    CHAIN_ID_TOKEN_IMAGE_MAP[chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP];
+
+  const { nativeCurrency } = networkConfiguration;
+
   return (
     <ConfirmInfoRow
       label={t('networkFee')}
@@ -92,10 +113,27 @@ const NetworkFeeRow = ({
           gap={1}
           className="flex"
         >
-          {showFiat && (
+          {showFiat && fiatFee && (
             <Text className="text-alternative font-medium">{fiatFee}</Text>
           )}
-          <Text className="text-default font-medium">{nativeFee}</Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+            className="flex"
+          >
+            <Text className="text-default font-medium">
+              {nativeFeeParts.value}
+            </Text>
+            <AvatarToken
+              size={AvatarTokenSize.Xs}
+              src={source}
+              name={nativeCurrency}
+            />
+            {nativeCurrency && (
+              <Text className="text-default font-medium">{nativeCurrency}</Text>
+            )}
+          </Box>
         </Box>
       </Box>
     </ConfirmInfoRow>
@@ -149,7 +187,8 @@ const GasFeesSection = ({ transaction }: { transaction: TransactionMeta }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
 
-  const [nativeFee] = useCurrencyDisplay(maximumCostInHexWei, {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [nativeFee, nativeFeeParts] = useCurrencyDisplay(maximumCostInHexWei, {
     numberOfDecimals: primaryNumberOfDecimals,
     currency: primaryCurrency,
   });
@@ -162,10 +201,11 @@ const GasFeesSection = ({ transaction }: { transaction: TransactionMeta }) => {
   return (
     <ConfirmInfoSection data-testid="cancel-speedup-section">
       <NetworkFeeRow
-        nativeFee={nativeFee}
+        nativeFeeParts={nativeFeeParts}
         fiatFee={fiatFee}
         showFiat={showFiat}
         onEdit={() => openModal('editGasFee')}
+        chainId={transaction.chainId}
       />
 
       <SpeedRow

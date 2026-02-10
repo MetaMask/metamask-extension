@@ -1,6 +1,5 @@
 import React from 'react';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
-import BigNumber from 'bignumber.js';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   EditGasModes,
@@ -9,7 +8,6 @@ import {
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
-import { CancelSpeedup } from './cancel-speedup';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -22,6 +20,8 @@ import {
   createSpeedUpTransaction,
 } from '../../../store/actions';
 import { MetaMaskReduxState } from '../../../selectors';
+import { CancelSpeedup } from './cancel-speedup';
+import BigNumber from 'bignumber.js';
 
 jest.mock('../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -79,19 +79,19 @@ const EXPECTED_ETH_FEE_2 = hexWEIToDecETH(
 
 const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
   MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16); // 10 GWEI in hex WEI
-const mockTransaction =           {
-            id: '1',
-            chainId: '0x5',
-            networkClientId: 'goerli',
-            userFeeLevel: 'tenPercentIncreased',
-            txParams: {
-              from: mockSelectedInternalAccount.address,
-              gas: '0x5208',
-              maxFeePerGas: MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
-              maxPriorityFeePerGas: '0x2540be400',
-            },
-            gasLimitNoBuffer: '0x5208',
-          } as unknown as TransactionMeta
+const mockTransaction = {
+  id: '1',
+  chainId: '0x5',
+  networkClientId: 'goerli',
+  userFeeLevel: 'tenPercentIncreased',
+  txParams: {
+    from: mockSelectedInternalAccount.address,
+    gas: '0x5208',
+    maxFeePerGas: MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
+    maxPriorityFeePerGas: '0x2540be400',
+  },
+  gasLimitNoBuffer: '0x5208',
+} as unknown as TransactionMeta;
 
 describe('CancelSpeedup Component', () => {
   const mockCloseModal = jest.fn();
@@ -143,10 +143,15 @@ describe('CancelSpeedup Component', () => {
 
     return renderWithProvider(
       <CancelSpeedup
-        transaction={{ ...mockTransaction, txParams: {
-          ...mockTransaction.txParams,
-            maxFeePerGas,
-        } } as TransactionMeta}
+        transaction={
+          {
+            ...mockTransaction,
+            txParams: {
+              ...mockTransaction.txParams,
+              maxFeePerGas,
+            },
+          } as TransactionMeta
+        }
         editGasMode={EditGasModes.cancel}
         {...props}
       />,
@@ -253,8 +258,9 @@ describe('CancelSpeedup Component', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent(
-        `${EXPECTED_ETH_FEE_1} ETH`,
+        EXPECTED_ETH_FEE_1,
       );
+      expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent('ETH');
     });
   });
 
@@ -268,8 +274,9 @@ describe('CancelSpeedup Component', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent(
-        `${EXPECTED_ETH_FEE_2} ETH`,
+        EXPECTED_ETH_FEE_2,
       );
+      expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent('ETH');
     });
   });
 });
