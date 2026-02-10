@@ -4,6 +4,8 @@ import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import Homepage from '../../page-objects/pages/home/homepage';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 import {
   mockBitcoinFeatureFlag,
   mockExchangeRates,
@@ -34,12 +36,14 @@ export async function withBtcAccountSnap(
   {
     title,
     dappOptions,
+    numberOfAccounts = 1,
   }: {
     title?: string;
     dappOptions?: {
       numberOfTestDapps?: number;
       customDappPaths?: string[];
     };
+    numberOfAccounts?: number;
   },
   test: (
     driver: Driver,
@@ -106,6 +110,23 @@ export async function withBtcAccountSnap(
       await loginWithBalanceValidation(driver);
 
       await driver.delay(regularDelayMs); // workaround to avoid flakiness
+
+      const accountListPage = new AccountListPage(driver);
+      const homepage = new Homepage(driver);
+      await homepage.checkExpectedBalanceIsDisplayed();
+
+      for (let i = 0; i < numberOfAccounts; i++) {
+        // For the first iteration open the account menu
+        if (i === 0) {
+          await homepage.headerNavbar.openAccountMenu();
+        }
+
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
+      }
+
+      await accountListPage.selectAccount('Account 1');
+
       await test(driver, mockServer);
     },
   );

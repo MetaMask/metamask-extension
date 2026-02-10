@@ -1,17 +1,14 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
-import { largeDelayMs, regularDelayMs } from '../../helpers';
-import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
-import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { DEFAULT_BTC_ADDRESS, DAPP_PATH } from '../../constants';
+import { DEFAULT_BTC_ADDRESS, SECONDARY_BTC_ADDRESS, DAPP_PATH } from '../../constants';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
 export const account1Short = `${DEFAULT_BTC_ADDRESS.slice(0, 4)}...${DEFAULT_BTC_ADDRESS.slice(-4)}`;
+export const account2Short = `${SECONDARY_BTC_ADDRESS.slice(0, 4)}...${SECONDARY_BTC_ADDRESS.slice(-4)}`;
 export const txHashShort = `f632...2f78`
 
 export const psbt = 'cHNidP8BAHECAAAAAZWJ25B394BrSQ65wNtwny+qxXez2vsQvaUn8WZmUQyfAQAAAAD/////AugDAAAAAAAAFgAUsXnj+ePQhyHrPBWaQ1JhLV1m8ZyI1/UFAAAAABYAFEaddug4fhHL6QEMcu5LdI3ZFS+lAAAAAAABAMECAAAAAAEBEXLSQnkwax1H8e/6rJXmytghfvqDx4g5A/BcQMOVoo0NAAAAAP3///8CnggAAAAAAAAWABRGnXboOH4Ry+kBDHLuS3SN2RUvpQWBIAAAAAAAIlEg7RKe4I4bra27T+dfOEchNHnda5rSEGJZ1VIIkdl/aBABQHupG8m5wmhyVfotju/RGyhjuuPe62jlP9SNxoymBT4LXut008rusTtuTBY+g2so7BknoqBnLg9VuFhgkxTSpoUAAAAAAAAA'
