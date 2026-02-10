@@ -88,7 +88,7 @@ function resolveLatestReleaseBranch(): string {
       encoding: 'utf-8',
       cwd: REPO_ROOT,
       maxBuffer: 512 * 1024,
-      shell: true,
+      shell: process.env.SHELL || '/bin/sh',
     });
   } catch {
     return '';
@@ -233,13 +233,263 @@ function assignFocusArea(entry: ChangelogEntry): string {
   return 'Other / General';
 }
 
+/**
+ * Suggest specific verification steps for a charter based on the PR description.
+ * Returns 1–3 bullets tailored to what changed; avoids generic "verify in popup/full window" for everything.
+ */
+function suggestCharterSteps(description: string): string[] {
+  const d = description.toLowerCase();
+  // Order matters: more specific first
+  if ((d.includes('quote') || d.includes('restore')) && (d.includes('popup') || d.includes('bridge'))) {
+    return [
+      'Open swap/bridge in popup, fill From/To, get quote, close popup, reopen; verify quote is restored.',
+      'In full window, get quote then navigate away and back; verify quote is not restored (expected).',
+    ];
+  }
+  if (d.includes('fee disclaimer') || (d.includes('mm fee') && d.includes('swap'))) {
+    return [
+      'Get a quote with MM fee and one without; verify disclaimer is shown only when fee > 0.',
+      'Change amount or tokens to re-quote; verify disclaimer updates correctly and does not flicker.',
+    ];
+  }
+  if (d.includes('cache') && (d.includes('bridge') || d.includes('gettoken'))) {
+    return [
+      'Search tokens across multiple networks and switch networks; verify token metadata is correct and not mixed across networks.',
+      'Rapidly switch networks and search again; confirm no stale or wrong-network data.',
+    ];
+  }
+  if (d.includes('swap') && (d.includes('activity') || d.includes('token detail'))) {
+    return [
+      'Perform a swap, then open the source and destination token detail pages; verify the swap appears in the Activity list with correct type and amounts.',
+      'Check ordering and timestamps; repeat with send/receive and confirm all activity types show.',
+    ];
+  }
+  if (d.includes('perps') && (d.includes('history') || d.includes('transaction'))) {
+    return [
+      'With Perps enabled, open Perps activity/history; verify empty state when no txs, and correct list when there are txs.',
+      'Check pagination/scroll, ordering, and that row details match the list.',
+    ];
+  }
+  if (d.includes('perps') && (d.includes('order') || d.includes('entry'))) {
+    return [
+      'Open a Perps market detail; verify order entry UI (Long/Short, amount, leverage) and that invalid inputs show validation errors.',
+      'Switch between Long and Short and between markets; confirm UI resets and no stale values.',
+    ];
+  }
+  if (d.includes('perps') && (d.includes('home') || d.includes('market') || d.includes('candlestick') || d.includes('list'))) {
+    return [
+      'With Perps flag on, open Perps home and market list; verify list loads, search/filter work, and market detail opens.',
+      'Verify candlestick/placeholder and navigation back to list and home in popup and full window.',
+    ];
+  }
+  if ((d.includes('cancel') && d.includes('speedup')) || (d.includes('edit gas') && d.includes('modal'))) {
+    return [
+      'Open cancel or speedup modal and edit gas fee modal; verify layout, focus trap, and that Escape/close work.',
+      'Test in popup and sidepanel; confirm no black backgrounds or layout overflow.',
+    ];
+  }
+  if (d.includes('activity log') && (d.includes('header') || d.includes('disclosure'))) {
+    return [
+      'Open activity log and use the header control (arrow disclosure); verify expand/collapse and keyboard navigation.',
+      'Check hover states and that the control is tappable in narrow viewports.',
+    ];
+  }
+  if (d.includes('srp') && (d.includes('validation') || d.includes('import'))) {
+    return [
+      'During SRP import, try invalid formats, extra whitespace, mixed case, and partial entry; verify validation messages and that invalid SRP is rejected.',
+      'Confirm valid SRP still imports successfully.',
+    ];
+  }
+  if (d.includes('webcam') || (d.includes('camera') && d.includes('sidepanel'))) {
+    return [
+      'Trigger the hardware wallet scan (camera) flow in sidepanel; verify permission prompt and that camera works.',
+      'Repeat in popup if supported; confirm no crash when switching view.',
+    ];
+  }
+  if (d.includes('dapp connection') || (d.includes('constrained') && d.includes('width'))) {
+    return [
+      'Open Dapp Connections (or connected sites) in sidepanel, popup, and full window; verify content is constrained and readable, no horizontal overflow.',
+      'Check that controls and list items are usable in narrow width.',
+    ];
+  }
+  if (d.includes('polling') && (d.includes('asset') || d.includes('balance'))) {
+    return [
+      'After an incoming transfer, verify asset/balance updates without manual refresh; switch accounts and confirm balances update.',
+      'Check token list and token details reflect the new state.',
+    ];
+  }
+  if (d.includes('clickable') && (d.includes('asset') || d.includes('control'))) {
+    return [
+      'On the asset list control bar (network, sort, close), tap the close/filter controls near the edges; verify they respond (larger hit area).',
+      'Test in popup and sidepanel; confirm no mis-taps on adjacent elements.',
+    ];
+  }
+  if (d.includes('deeplink') && d.includes('nft')) {
+    return [
+      'Use a deep link to the NFT tab; verify the NFT tab is selected and scroll position is correct.',
+      'Test signed and unsigned links; confirm navigation and params are preserved.',
+    ];
+  }
+  if (d.includes('nft') && (d.includes('grid') || d.includes('container'))) {
+    return [
+      'Resize extension (popup/sidepanel) and verify NFT grid column count and layout adapt correctly.',
+      'Confirm no horizontal scroll or overlapping items.',
+    ];
+  }
+  if (d.includes('tooltip') && (d.includes('gas') || d.includes('alignment') || d.includes('overlap'))) {
+    return [
+      'Open edit gas / gas option tooltips; verify alignment, values, and that tooltip does not overlap filter or other controls.',
+      'Check arrow and gradient colors match; test in popup and full window.',
+    ];
+  }
+  if (d.includes('subscription') && (d.includes('polling') || d.includes('locked'))) {
+    return [
+      'With wallet locked or window/sidepanel inactive, verify subscription or polling behavior (e.g. no unnecessary requests or errors).',
+      'Unlock or focus the window and confirm updates resume as expected.',
+    ];
+  }
+  if (d.includes('switch to infura') || (d.includes('one-click') && d.includes('network'))) {
+    return [
+      'Add or use a custom network with connectivity issues; verify the "Switch to Infura" (or one-click fix) button appears and works.',
+      'Confirm network works after switching and that explorer/RPC are updated.',
+    ];
+  }
+  if (d.includes('rpc') || (d.includes('explorer') && d.includes('url'))) {
+    return [
+      'For the affected network(s), verify RPC and explorer URLs are correct; add network or refresh and confirm chain works.',
+      'Check explorer links from the UI open the right block explorer.',
+    ];
+  }
+  if (d.includes('copy') && (d.includes('network') || d.includes('avatar'))) {
+    return [
+      'On the home screen network avatar group, use the Copy icon; verify it copies the expected value (e.g. address or network info).',
+      'Confirm icon is visible and tappable in popup and sidepanel.',
+    ];
+  }
+  if (d.includes('fiat') && (d.includes('non-ethereum') || d.includes('all network'))) {
+    return [
+      'View activity or balances with "all networks" or a non-Ethereum chain; verify fiat amounts are correct and not wrong-chain values.',
+      'Switch chains and confirm amounts update correctly.',
+    ];
+  }
+  if (d.includes('memory') && d.includes('dapp')) {
+    return [
+      'Visit several dapps and leave extension open; verify memory usage does not grow unbounded over time.',
+      'Close and reopen extension; confirm no degradation after multiple dapp visits.',
+    ];
+  }
+  if (d.includes('performance') || (d.includes('memoization') && d.includes('selector'))) {
+    return [
+      'Perform common actions (confirmations, nav, switching accounts); verify UI remains responsive with no noticeable slowdown.',
+      'Check that repeated actions (e.g. opening confirmations list) do not get slower.',
+    ];
+  }
+  if (d.includes('shortid') || d.includes('short id')) {
+    return [
+      'In the relevant UI, verify the shortId (or shortened ID) is shown instead of the full long ID.',
+      'Confirm copy or detail view still allows access to full ID if needed.',
+    ];
+  }
+  if (d.includes('back arrow') || (d.includes('icon') && d.includes('nft detail'))) {
+    return [
+      'On NFT details, asset details, and DeFi detail pages, verify back arrow icon color and visibility.',
+      'Confirm back navigation works from each page.',
+    ];
+  }
+  if (d.includes('smart transaction') || d.includes('smart-transactions')) {
+    return [
+      'Verify swap or transaction flow uses the new smart transactions flag from remote config where applicable.',
+      'Test with flag on/off if possible; confirm no regression in swap or tx submission.',
+    ];
+  }
+  if (d.includes('utxo') && d.includes('swap')) {
+    return [
+      'Perform a full swap that involves change/UTXO; verify change is dropped or handled as described and swap completes.',
+      'Check balance and activity after the swap.',
+    ];
+  }
+  if (d.includes('snap') && (d.includes('account') || d.includes('dialog') || d.includes('error'))) {
+    return [
+      'In the Snap account creation or error flow, verify the changed behavior (e.g. no account name dialog, or InsufficientBalanceToFee response).',
+      'Confirm Snap install/update and account creation still work end-to-end.',
+    ];
+  }
+  if (d.includes('confirmations') || d.includes('cta copy')) {
+    return [
+      'On a confirmation screen, verify the CTA button copy and styling match the change.',
+      'Complete a confirmation and confirm flow still succeeds.',
+    ];
+  }
+  if (d.includes('transaction list') || d.includes('dynamic height')) {
+    return [
+      'Scroll the transaction/activity list; verify item height and layout (e.g. dynamic height) and that list scrolls correctly.',
+      'Check in popup and full window; confirm no cut-off or overlap.',
+    ];
+  }
+  if (d.includes('appactivetab') || d.includes('dapp url')) {
+    return [
+      'With a dapp open, verify extension or confirmations use the correct active tab/dapp URL.',
+      'Switch tabs and confirm behavior updates as expected.',
+    ];
+  }
+  if (d.includes('add button') || d.includes('+ icon')) {
+    return [
+      'Locate the updated add button / + icon in the UI; verify it is visible and opens the expected action.',
+      'Confirm in popup and sidepanel layout.',
+    ];
+  }
+  if (d.includes('onboarding') || d.includes('srp') && (d.includes('background') || d.includes('chip'))) {
+    return [
+      'Run onboarding or SRP import and verify card background colors and SRP chips/text inputs match the update.',
+      'Confirm flow remains usable and readable.',
+    ];
+  }
+  if (d.includes('sentry') || d.includes('storage') || d.includes('database corruption')) {
+    return [
+      'Verify extension runs normally; if possible trigger an error path and confirm Sentry or error reporting behaves as described.',
+      'No mandatory user-facing test; focus on regression of normal flows.',
+    ];
+  }
+  if (d.includes('permission') && d.includes('rpc')) {
+    return [
+      'Call wallet_getSupportedExecutionPermissions and wallet_getGrantedExecutionPermissions from a dapp; verify response format and granted permissions.',
+      'Grant/revoke and confirm values update.',
+    ];
+  }
+  // Default: still specific to "the change" but generic wording
+  return [
+    'Verify the change in popup, full window, and sidepanel where relevant.',
+    'Check edge cases and error paths; confirm no regression in related flows.',
+  ];
+}
+
+/** Fetch refs from origin so git log can run when running in a clone that doesn't have them locally. */
+function fetchRefsIfNeeded(baseline: string | null, releaseBranch: string): void {
+  const refs = [releaseBranch];
+  if (baseline) refs.push(baseline);
+  try {
+    execSync('git fetch origin ' + refs.join(' '), {
+      encoding: 'utf-8',
+      cwd: REPO_ROOT,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+  } catch {
+    // Network or permission issue; getPrsFromGit will still try git log (may fail)
+  }
+}
+
 function getPrsFromGit(releaseBranch: string, baseline: string | null): Array<{ pr: number; title?: string }> {
-  const range = baseline ? `${baseline}..${releaseBranch}` : releaseBranch;
+  fetchRefsIfNeeded(baseline, releaseBranch);
+  // Use origin/ refs so we see fetched branches when not on release branch
+  const range = baseline
+    ? `origin/${baseline}..origin/${releaseBranch}`
+    : `origin/${releaseBranch}`;
   let out: string;
   try {
     out = execSync(`git log ${range} --merges --pretty=format:"%s"`, {
       encoding: 'utf-8',
       cwd: REPO_ROOT,
+      stdio: ['pipe', 'pipe', 'pipe'],
     });
   } catch {
     return [];
@@ -321,22 +571,23 @@ function buildDoc(opts: BuildDocOpts): string {
     '',
     '## Exploratory charters',
     '',
-    '_Add charters per focus area below. Use the PR descriptions above to define what to verify._',
-    '',
   );
 
   for (const areaName of areaOrder) {
     const list = byArea.get(areaName) ?? [];
     lines.push(`### ${areaName}`);
     if (list.length === 0) {
-      lines.push('1. (Regression) Verify existing behavior still works in this area.');
+      lines.push('1. **Regression** – Verify existing behavior still works in this area (flows, deep links, related UI).');
     } else {
+      list.forEach((e, idx) => {
+        const num = idx + 1;
+        lines.push(`${num}. **${e.description}** ${prLink(e.prNumber)}`);
+        const steps = suggestCharterSteps(e.description);
+        steps.forEach((step) => lines.push('   - ' + step));
+      });
       lines.push(
-        '1. _Charter 1:_ Focus on PRs: ' +
-          list.map((e) => '#' + e.prNumber).join(', ') +
-          ' — verify [describe main scenario].',
+        (list.length + 1) + '. **Edge cases and failure modes** – Empty state, errors, timeouts; test in popup, sidepanel, and full window.',
       );
-      lines.push('2. _Charter 2:_ Edge cases and failure modes (e.g. empty state, errors, popup/sidepanel).');
     }
     lines.push('');
   }
@@ -344,9 +595,11 @@ function buildDoc(opts: BuildDocOpts): string {
   lines.push(
     '## Exit criteria',
     '',
-    '- No P0/P1 defects in scoped areas.',
+    '_These are acceptance conditions for the release. The tester verifies them by running the charters above, logging any defects (with severity P0/P1/P2), and not signing off until P0/P1 in scoped areas are fixed or accepted. The document does not enforce them automatically._',
+    '',
+    '- No P0/P1 defects in scoped areas (open or unresolved).',
     '- All new PR-related behaviors verified in at least one target view (popup, sidepanel, or full window).',
-    '- Any regressions recorded with repro steps and screenshots.',
+    '- Any regressions recorded with repro steps and screenshots (e.g. in issue tracker).',
     '',
   );
 
