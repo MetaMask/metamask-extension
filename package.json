@@ -186,7 +186,6 @@
     "inline-source-map@~0.6.0": "patch:inline-source-map@npm%3A0.6.2#./.yarn/patches/inline-source-map-npm-0.6.2-96902459a0.patch",
     "plugin-error@^1.0.1": "patch:plugin-error@npm%3A1.0.1#./.yarn/patches/plugin-error-npm-1.0.1-7d15e880d6.patch",
     "plugin-error@1.0.1": "patch:plugin-error@npm%3A1.0.1#./.yarn/patches/plugin-error-npm-1.0.1-7d15e880d6.patch",
-    "regenerator-runtime@^0.13.4": "patch:regenerator-runtime@npm%3A0.13.7#./.yarn/patches/regenerator-runtime-npm-0.13.7-41bcbe64ea.patch",
     "ws@8.13.0": "^8.17.1",
     "ws@7.4.6": "^7.5.10",
     "jsdom@^16.7.0": "patch:jsdom@npm%3A16.7.0#./.yarn/patches/jsdom-npm-16.7.0-216c5c4bf9.patch",
