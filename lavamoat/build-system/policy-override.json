@@ -601,6 +601,11 @@
         "process.platform": true
       },
       "native": true
+    },
+    "@tanstack/query-core": {
+      "globals": {
+        "document": false
+      }
     }
   }
 }

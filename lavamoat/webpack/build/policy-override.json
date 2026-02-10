@@ -331,6 +331,11 @@
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/template": true
       }
+    },
+    "@tanstack/query-core": {
+      "globals": {
+        "document": false
+      }
     }
   }
 }

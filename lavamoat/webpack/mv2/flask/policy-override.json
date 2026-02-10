@@ -235,6 +235,11 @@
       "globals": {
         "fetch": false
       }
+    },
+    "@tanstack/query-core": {
+      "globals": {
+        "document": false
+      }
     }
   }
 }

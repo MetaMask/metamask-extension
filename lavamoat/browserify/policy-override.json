@@ -62,6 +62,11 @@
         "crypto.getRandomValues": true
       }
     },
+    "@tanstack/query-core": {
+      "globals": {
+        "document": false
+      }
+    },
     "@metamask/notification-services-controller>firebase>@firebase/messaging": {
       "globals": {
         "PushManager.getSubscription": true,

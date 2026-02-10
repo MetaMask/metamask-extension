@@ -230,6 +230,11 @@
         "navigator": false,
         "navigator.userAgent": true
       }
+    },
+    "@tanstack/query-core": {
+      "globals": {
+        "document": false
+      }
     }
   }
 }
