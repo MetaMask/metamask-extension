@@ -2,7 +2,6 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
 import {
-  DEEP_LINK_BASIC_FUNCTIONALITY_OFF,
   DEEP_LINK_HOST,
   SIG_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
