@@ -233,7 +233,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
                   fontWeight={FontWeight.Medium}
                   color={
                     marginMode === 'add'
-                      ? TextColor.primaryInverse
+                      ? TextColor.PrimaryInverse
                       : TextColor.TextDefault
                   }
                 >
@@ -263,7 +263,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
                   fontWeight={FontWeight.Medium}
                   color={
                     marginMode === 'remove'
-                      ? TextColor.primaryInverse
+                      ? TextColor.PrimaryInverse
                       : TextColor.TextDefault
                   }
                 >

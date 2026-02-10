@@ -82,7 +82,7 @@ export const PerpsDetailPageSkeleton: React.FC = () => {
       {/* Period Selector Skeleton */}
       <Box
         flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.SpaceEvenly}
+        justifyContent={BoxJustifyContent.Evenly}
         paddingTop={3}
         paddingBottom={3}
         paddingLeft={4}
