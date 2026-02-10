@@ -2,16 +2,20 @@
 import { withBtcAccountSnap } from '../btc/common-btc';
 import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 import { regularDelayMs } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
+import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import {
   account1Short,
+  account2Short,
   assertConnected,
   assertDisconnected,
   DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 
 describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
   const connectionLibraryOptions: ('sats-connect' | 'wallet-standard')[] = ['wallet-standard', 'sats-connect'];
@@ -149,9 +153,8 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
         },
       );
     });
-  })
-  /* describe('Switch account', function () {
-    it('Switching between 2 accounts should reflect in the dapp', async function () {
+
+    it(`Switching between 2 accounts should reflects in the dapp with ${connectionLibrary}`, async function () {
       await withBtcAccountSnap(
         {
           ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -161,77 +164,41 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappBitcoin(driver);
           await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded();
-          await connectBitcoinTestDapp(driver, testDapp, {
-            selectAllAccounts: true,
-          });
-          await driver.delay(regularDelayMs);
 
-          // Check that we're connected to the last selected account
-          const header = await testDapp.getHeader();
-          const account = await header.getAccount();
-          assertConnected(account, account2Short);
+          // 1. Connect
+          await testDapp.connectToWallet(connectionLibrary);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
+          );
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.openEditAccountsModal();
+          const editConnectedAccountsModal = new EditConnectedAccountsModal(
+            driver,
+          );
+          await editConnectedAccountsModal.selectAccount(2);
+          await editConnectedAccountsModal.clickOnConnect();
+          await connectAccountConfirmation.confirmConnect();
 
-          // Switch to the first account
+          await testDapp.switchTo();
+
+          // Verify successful connection
+          await testDapp.findConnectedAccount(account1Short);
+
+          // 2. Switch to the second account
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await switchToAccount(driver, 'Solana 1');
+          const nonEvmHomepage = new NonEvmHomepage(driver);
+          await nonEvmHomepage.headerNavbar.openAccountMenu();
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.switchToAccount('Account 2');
+
           await testDapp.switchTo();
 
-          // Check that we're connected to the first account
-          const account2 = await header.getAccount();
-          assertConnected(account2, DEFAULT_BTC_ADDRESS);
+          await testDapp.findConnectedAccount(account2Short);
         },
       );
     });
-  });
-  describe('Given I have connected to one of my two accounts', function () {
-    it('Switching between them should NOT reflect in the dapp', async function () {
-      await withBtcAccountSnap(
-        {
-          ...DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS,
-          title: this.test?.fullTitle(),
-          numberOfAccounts: 2, // we create two account
-        },
-        async (driver) => {
-          const testDapp = new TestDappBitcoin(driver);
-          await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded();
-
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
-          await connectBitcoinTestDapp(driver, testDapp, {
-            selectAllAccounts: false,
-          });
-
-          // Check that we're connected to the second account
-          const header = await testDapp.getHeader();
-          let account = await header.getAccount();
-          assertConnected(account, account2Short);
-
-          // Now switch to the first account
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-          await switchToAccount(driver, 'Solana 1');
-          await testDapp.switchTo();
-
-          // Check that we're still connected to the second account
-          account = await header.getAccount();
-          assertConnected(account, account2Short);
-
-          // Switch back to the second account
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-          await switchToAccount(driver, 'Solana 2');
-          await testDapp.switchTo();
-
-          // Check that we're still connected to the second account
-          account = await header.getAccount();
-          assertConnected(account, account2Short);
-        },
-      );
-    });
-  }); */
+  })
 });
