@@ -19,7 +19,7 @@ const createMockTransaction = (
   id: 'tx-test-001',
   type: 'trade',
   symbol: 'ETH',
-  title: 'Opened long',
+  title: messages.perpsOpenedLong.message,
   subtitle: '2.5 ETH @ $2,850.00',
   timestamp: Date.now() - 3600000,
   status: 'confirmed',
@@ -44,7 +44,9 @@ describe('TransactionCard', () => {
   });
 
   it('displays the transaction title', () => {
-    const transaction = createMockTransaction({ title: 'Opened long' });
+    const transaction = createMockTransaction({
+      title: messages.perpsOpenedLong.message,
+    });
     renderWithProvider(
       <TransactionCard transaction={transaction} />,
       mockStore,
@@ -380,7 +382,7 @@ describe('TransactionCard', () => {
       const transaction = createMockTransaction({
         type: 'trade',
         symbol: 'xyz:TSLA',
-        title: 'Opened long',
+        title: messages.perpsOpenedLong.message,
         fill: {
           size: '10',
           price: '240.00',
