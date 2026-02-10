@@ -14,7 +14,7 @@ import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { getGitBranch } from './send-to-sentry-utils';
+import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
 import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './utils/constants';
 import type { BenchmarkResults, UserActionResult } from './utils/types';
 
@@ -80,9 +80,11 @@ async function main() {
     release: `metamask-extension@${version}`,
   });
 
-  // CI metadata — keep minimal to maximise attribute budget for metrics
+  // CI metadata
   const baseCiAttributes = {
     'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
+    'ci.prNumber': process.env.PR_NUMBER || 'none',
+    'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
     'ci.browser': argv.browser,
     'ci.buildType': argv.buildType,
   };
