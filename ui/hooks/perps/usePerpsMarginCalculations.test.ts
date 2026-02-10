@@ -1,6 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
+import {
+  mockPositions,
+  mockAccountState,
+} from '../../components/app/perps/mocks';
 import { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
-import { mockPositions, mockAccountState } from '../../components/app/perps/mocks';
 
 describe('usePerpsMarginCalculations', () => {
   const position = mockPositions[0]; // ETH long, marginUsed 2375, leverage 3
@@ -78,8 +81,7 @@ describe('usePerpsMarginCalculations', () => {
       );
 
       const liqPrice = parseFloat(position.liquidationPrice ?? '0');
-      const expected =
-        (Math.abs(currentPrice - liqPrice) / currentPrice) * 100;
+      const expected = (Math.abs(currentPrice - liqPrice) / currentPrice) * 100;
       expect(result.current.currentLiquidationDistance).toBeCloseTo(expected);
     });
   });
@@ -113,7 +115,7 @@ describe('usePerpsMarginCalculations', () => {
 
       expect(result.current.riskAssessment).toEqual(
         expect.objectContaining({
-          riskLevel: expect.stringMatching(/^(safe|warning|danger)$/),
+          riskLevel: expect.stringMatching(/^(safe|warning|danger)$/u),
           priceDiff: expect.any(Number),
           riskRatio: expect.any(Number),
         }),

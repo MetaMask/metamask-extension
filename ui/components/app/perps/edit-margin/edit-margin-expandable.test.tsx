@@ -3,8 +3,8 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { EditMarginExpandable } from './edit-margin-expandable';
 import { mockPositions, mockAccountState } from '../mocks';
+import { EditMarginExpandable } from './edit-margin-expandable';
 
 const mockGetPerpsController = jest.fn();
 const mockGetPerpsStreamManager = jest.fn();
@@ -75,7 +75,7 @@ describe('EditMarginExpandable', () => {
         mockStore,
       );
 
-      const buttons = screen.getAllByRole('button', { name: /Add Margin/i });
+      const buttons = screen.getAllByRole('button', { name: /Add Margin/iu });
       expect(buttons.length).toBeGreaterThanOrEqual(1);
     });
 
@@ -164,7 +164,7 @@ describe('EditMarginExpandable', () => {
       fireEvent.change(input, { target: { value: '100' } });
 
       const confirmButton = screen.getByRole('button', {
-        name: /Add Margin/i,
+        name: /Add Margin/iu,
       });
       fireEvent.click(confirmButton);
 
@@ -194,7 +194,7 @@ describe('EditMarginExpandable', () => {
       );
 
       const confirmButton = screen.getByRole('button', {
-        name: /Add Margin/i,
+        name: /Add Margin/iu,
       });
       expect(confirmButton).toBeDisabled();
       fireEvent.click(confirmButton);
@@ -221,7 +221,7 @@ describe('EditMarginExpandable', () => {
       fireEvent.change(input, { target: { value: '100' } });
 
       const confirmButton = screen.getByRole('button', {
-        name: /Add Margin/i,
+        name: /Add Margin/iu,
       });
       fireEvent.click(confirmButton);
 

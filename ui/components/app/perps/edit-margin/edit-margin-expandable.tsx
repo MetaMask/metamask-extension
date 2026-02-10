@@ -18,7 +18,7 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TextField, TextFieldSize } from '../../../../components/component-library';
+import { TextField, TextFieldSize } from '../../../component-library';
 import {
   BorderRadius,
   BackgroundColor,
@@ -43,6 +43,14 @@ export type EditMarginExpandableProps = {
 /**
  * Expandable section for adding or removing margin from an isolated position.
  * Renders the expandable content only; the margin card header lives in the parent.
+ *
+ * @param options0 - Component props
+ * @param options0.position - The position to adjust margin for
+ * @param options0.account - The user's account state
+ * @param options0.currentPrice - The current market price
+ * @param options0.selectedAddress - The selected wallet address
+ * @param options0.isExpanded - Whether the expandable section is open
+ * @param options0.onToggle - Callback when the section is toggled
  */
 export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
   position,
@@ -163,10 +171,17 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
   const showRiskWarning =
     marginMode === 'remove' &&
     riskAssessment &&
-    (riskAssessment.riskLevel === 'warning' || riskAssessment.riskLevel === 'danger');
+    (riskAssessment.riskLevel === 'warning' ||
+      riskAssessment.riskLevel === 'danger');
 
-  const confirmDisabled =
-    !isValid || isSaving || parseFloat(marginAmount) <= 0;
+  const confirmDisabled = !isValid || isSaving || parseFloat(marginAmount) <= 0;
+
+  const getConfirmButtonLabel = () => {
+    if (isSaving) {
+      return t('perpsSubmitting');
+    }
+    return marginMode === 'add' ? t('perpsAddMargin') : t('perpsRemoveMargin');
+  };
 
   return (
     <Box
@@ -176,7 +191,9 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
       <Box
         className={twMerge(
           'grid transition-all duration-300 ease-in-out',
-          isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+          isExpanded
+            ? 'grid-rows-[1fr] opacity-100'
+            : 'grid-rows-[0fr] opacity-0',
         )}
       >
         <Box
@@ -207,13 +224,18 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
                   marginMode === 'add'
                     ? 'bg-primary-default'
                     : 'hover:bg-muted-hover active:bg-muted-pressed',
-                  isSaving && 'opacity-50 cursor-not-allowed pointer-events-none',
+                  isSaving &&
+                    'opacity-50 cursor-not-allowed pointer-events-none',
                 )}
               >
                 <Text
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
-                  color={marginMode === 'add' ? TextColor.primaryInverse : TextColor.TextDefault}
+                  color={
+                    marginMode === 'add'
+                      ? TextColor.primaryInverse
+                      : TextColor.TextDefault
+                  }
                 >
                   {t('perpsAddMargin')}
                 </Text>
@@ -232,13 +254,18 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
                   marginMode === 'remove'
                     ? 'bg-primary-default'
                     : 'hover:bg-muted-hover active:bg-muted-pressed',
-                  isSaving && 'opacity-50 cursor-not-allowed pointer-events-none',
+                  isSaving &&
+                    'opacity-50 cursor-not-allowed pointer-events-none',
                 )}
               >
                 <Text
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
-                  color={marginMode === 'remove' ? TextColor.primaryInverse : TextColor.TextDefault}
+                  color={
+                    marginMode === 'remove'
+                      ? TextColor.primaryInverse
+                      : TextColor.TextDefault
+                  }
                 >
                   {t('perpsRemoveMargin')}
                 </Text>
@@ -320,7 +347,11 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
                 >
-                  ${formatNumber(maxAmount, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  $
+                  {formatNumber(maxAmount, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </Text>
               </Box>
 
@@ -339,7 +370,9 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
                 >
-                  {currentLiqPrice !== null ? `$${formatNumber(currentLiqPrice, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
+                  {currentLiqPrice === null
+                    ? '-'
+                    : `$${formatNumber(currentLiqPrice, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                   {newLiquidationPrice !== null &&
                     ` → $${formatNumber(newLiquidationPrice, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 </Text>
@@ -429,11 +462,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
                 confirmDisabled && 'opacity-70 cursor-not-allowed',
               )}
             >
-              {isSaving
-                ? t('perpsSubmitting')
-                : marginMode === 'add'
-                  ? t('perpsAddMargin')
-                  : t('perpsRemoveMargin')}
+              {getConfirmButtonLabel()}
             </Button>
           </Box>
         </Box>

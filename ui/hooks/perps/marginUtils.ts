@@ -41,6 +41,9 @@ export type CalculateNewLiquidationPriceParams = {
 
 /**
  * Assess liquidation risk after margin removal.
+ *
+ * @param params - The parameters for assessing margin removal risk
+ * @returns The risk assessment containing risk level, price diff, and risk ratio
  */
 export function assessMarginRemovalRisk(
   params: AssessMarginRemovalRiskParams,
@@ -77,6 +80,9 @@ export function assessMarginRemovalRisk(
 
 /**
  * Calculate maximum margin that can be safely removed from a position.
+ *
+ * @param params - The parameters for calculating max removable margin
+ * @returns The maximum amount of margin that can be safely removed
  */
 export function calculateMaxRemovableMargin(
   params: CalculateMaxRemovableMarginParams,
@@ -128,6 +134,9 @@ export function calculateMaxRemovableMargin(
 
 /**
  * Calculate new liquidation price after margin adjustment.
+ *
+ * @param params - The parameters for calculating new liquidation price
+ * @returns The new liquidation price after the margin adjustment
  */
 export function calculateNewLiquidationPrice(
   params: CalculateNewLiquidationPriceParams,

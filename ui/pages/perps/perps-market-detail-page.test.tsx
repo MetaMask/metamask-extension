@@ -260,7 +260,9 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText('Entry price')).toBeInTheDocument();
       // 'Liquidation price' appears in both the Details section and the
       // Edit Margin expandable, so use getAllByText
-      expect(getAllByText('Liquidation price').length).toBeGreaterThanOrEqual(1);
+      expect(getAllByText('Liquidation price').length).toBeGreaterThanOrEqual(
+        1,
+      );
     });
 
     it('displays stats section', () => {

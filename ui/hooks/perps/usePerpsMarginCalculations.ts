@@ -31,6 +31,14 @@ export type UsePerpsMarginCalculationsReturn = {
 /**
  * Compute max addable/removable margin, new liquidation price, distances, and risk.
  * Used by the edit margin expandable to drive the info panel and validation.
+ *
+ * @param options0 - The hook parameters
+ * @param options0.position - The current position to adjust margin for
+ * @param options0.currentPrice - The current market price
+ * @param options0.account - The user's account state (null if not loaded)
+ * @param options0.mode - Whether adding or removing margin
+ * @param options0.amount - The margin adjustment amount as a string
+ * @returns Computed margin calculations including max amount, liquidation data, and validation
  */
 export function usePerpsMarginCalculations({
   position,
