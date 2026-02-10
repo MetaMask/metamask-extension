@@ -437,6 +437,7 @@ import {
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 import { ActivityDataService } from './queries/ActivityDataService';
+import { AssetDataService } from './queries/AssetDataService';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -925,6 +926,13 @@ export default class MetamaskController extends EventEmitter {
     this.activityDataService = new ActivityDataService(
       activityDataServiceMessenger,
     );
+
+    const assetDataServiceMessenger = new Messenger({
+      namespace: 'AssetDataService',
+      parent: this.controllerMessenger,
+    });
+
+    this.assetDataService = new AssetDataService(assetDataServiceMessenger);
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
@@ -2491,6 +2499,13 @@ export default class MetamaskController extends EventEmitter {
       accumulator[`${dataService}:getActivity`] = (options) =>
         this.controllerMessenger.call(
           `${dataService}:getActivity`,
+          ...options.queryKey.slice(1),
+          options,
+        );
+
+      accumulator[`${dataService}:getAssets`] = (options) =>
+        this.controllerMessenger.call(
+          `${dataService}:getAssets`,
           ...options.queryKey.slice(1),
           options,
         );

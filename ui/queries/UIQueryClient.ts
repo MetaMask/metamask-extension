@@ -32,11 +32,7 @@ export function createUIQueryClient(backgroundConnection: BackgroundRpcClient) {
             throw new Error('Queries must use data service actions.');
           }
 
-          const state = await sendBackgroundRequest(potentialAction, [options]);
-
-          hydrate(client, state);
-
-          return client.getQueryData(queryKey);
+          return await sendBackgroundRequest(potentialAction, [options]);
         },
         staleTime: Infinity,
         refetchOnWindowFocus: false,
