@@ -113,7 +113,7 @@
     "storybook": "storybook dev -p 6006 -c .storybook",
     "storybook:build": "storybook build -c .storybook -o storybook-build",
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch stable",
-    "update-changelog": "auto-changelog update --autoCategorize --useChangelogEntry --useShortPrLink",
+    "update-changelog": "auto-changelog update --rc --autoCategorize --useChangelogEntry --useShortPrLink --requirePrNumbers",
     "generate:migration": "./development/generate-migration.sh",
     "lavamoat:build": "lavamoat development/build/index.js --policy lavamoat/build-system/policy.json --policyOverride lavamoat/build-system/policy-override.json",
     "lavamoat:build:auto": "yarn lavamoat:build --writeAutoPolicy",
