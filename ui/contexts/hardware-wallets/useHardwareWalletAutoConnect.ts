@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+  AWAITING_SIGNATURES_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   checkHardwareWalletPermission,
@@ -50,9 +52,11 @@ export const useHardwareWalletAutoConnect = ({
 }: UseHardwareWalletAutoConnectParams) => {
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
   const location = useLocation();
-  const isOnConfirmationRoute =
+  const isOnAutoConnectRoute =
     location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
-    location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE);
+    location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
+    location.pathname.startsWith(CROSS_CHAIN_SWAP_ROUTE) ||
+    location.pathname.startsWith(AWAITING_SIGNATURES_ROUTE);
 
   const {
     adapterRef,
@@ -65,7 +69,7 @@ export const useHardwareWalletAutoConnect = ({
   useEffect(
     () => {
       if (
-        !isOnConfirmationRoute ||
+        !isOnAutoConnectRoute ||
         !isHardwareWalletAccount ||
         !walletType ||
         hardwareConnectionPermissionState ===
@@ -205,7 +209,7 @@ export const useHardwareWalletAutoConnect = ({
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      isOnConfirmationRoute,
+      isOnAutoConnectRoute,
       isHardwareWalletAccount,
       walletType,
       hardwareConnectionPermissionState,
@@ -222,7 +226,7 @@ export const useHardwareWalletAutoConnect = ({
   useEffect(
     () => {
       if (
-        !isOnConfirmationRoute ||
+        !isOnAutoConnectRoute ||
         !isHardwareWalletAccount ||
         !walletType ||
         hardwareConnectionPermissionState !==
@@ -291,7 +295,7 @@ export const useHardwareWalletAutoConnect = ({
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      isOnConfirmationRoute,
+      isOnAutoConnectRoute,
       isHardwareWalletAccount,
       accountAddress,
       walletType,
