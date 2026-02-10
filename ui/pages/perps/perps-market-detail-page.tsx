@@ -166,8 +166,12 @@ const PerpsMarketDetailPage: React.FC = () => {
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
-  const { formatCurrencyWithMinThreshold, formatTokenQuantity, formatNumber } =
-    useFormatters();
+  const {
+    formatCurrencyWithMinThreshold,
+    formatTokenQuantity,
+    formatNumber,
+    formatPercentWithMinThreshold,
+  } = useFormatters();
 
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
@@ -1418,8 +1422,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                           : TextColor.ErrorDefault
                       }
                     >
-                      {parseFloat(position.returnOnEquity) >= 0 ? '+' : ''}
-                      {position.returnOnEquity}%
+                      {formatPercentWithMinThreshold(
+                        parseFloat(position.returnOnEquity),
+                      )}
                     </Text>
                   </Box>
                 </Box>
@@ -1446,10 +1451,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      {formatTokenQuantity(
-                        Math.abs(parseFloat(position.size)),
-                        getDisplayName(position.symbol),
-                      )}
+                      {`${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
                     </Text>
                   </Box>
 
@@ -1471,7 +1473,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      ${position.marginUsed}
+                      {formatCurrencyWithMinThreshold(
+                        parseFloat(position.marginUsed),
+                        'USD',
+                      )}
                     </Text>
                   </Box>
                 </Box>
@@ -2287,25 +2292,20 @@ const PerpsMarketDetailPage: React.FC = () => {
             gap={3}
             data-testid="perps-position-cta-buttons"
           >
-            {/* Modify Button - Primary: Update TP/SL is the common action */}
+            {/* Modify Button - Dark neutral style */}
             <Button
-              variant={ButtonVariant.Primary}
+              variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               onClick={handleModifyPosition}
-              className={twMerge(
-                'flex-1',
-                parseFloat(position.size) >= 0
-                  ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
-                  : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
-              )}
+              className="flex-1"
               data-testid="perps-modify-cta-button"
             >
               {t('perpsModify')}
             </Button>
 
-            {/* Close Button - Secondary: Destructive action, less prominent */}
+            {/* Close Button - White / Primary style */}
             <Button
-              variant={ButtonVariant.Secondary}
+              variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={handleClosePosition}
               className="flex-1"
@@ -2330,10 +2330,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('long')}
-              className={twMerge(
-                'flex-1',
-                'bg-success-default hover:bg-success-hover active:bg-success-pressed',
-              )}
+              className="flex-1"
               data-testid="perps-long-cta-button"
             >
               {t('perpsLong')}
@@ -2344,10 +2341,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('short')}
-              className={twMerge(
-                'flex-1',
-                'bg-error-default hover:bg-error-hover active:bg-error-pressed',
-              )}
+              className="flex-1"
               data-testid="perps-short-cta-button"
             >
               {t('perpsShort')}
