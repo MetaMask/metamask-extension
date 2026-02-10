@@ -1,15 +1,13 @@
-import * as path from 'path';
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { largeDelayMs, regularDelayMs } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
-import { withBtcAccountSnap } from '../btc/common-btc';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { DEFAULT_BTC_ADDRESS } from '../../constants';
+import { DEFAULT_BTC_ADDRESS, DAPP_PATH } from '../../constants';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -23,18 +21,10 @@ export const signedPsbt = 'cHNidP8BAFICAAAAAZWJ25B394BrSQ65wNtwny+qxXez2vsQvaUn8
  * Default options for setting up Bitcoin E2E test environment
  */
 export const DEFAULT_BITCOIN_TEST_DAPP_FIXTURE_OPTIONS = {
-  numberOfAccounts: 1,
-  dappPaths: [
-    path.join(
-      '..',
-      '..',
-      'node_modules',
-      '@metamask',
-      'test-dapp-bitcoin',
-      'dist',
-    ),
-  ],
-} satisfies Parameters<typeof withBtcAccountSnap>[0];
+  dappOptions: {
+    customDappPaths: [DAPP_PATH.TEST_DAPP_BITCOIN],
+  },
+}
 
 /* const onboardBitcoinAccount = async (driver: Driver): Promise<void> => {
   console.log('onboarding a new bitcoin account');
@@ -100,15 +90,7 @@ export const connectBitcoinTestDapp = async (
 ): Promise<void> => {
   console.log('connect bitcoin test dapp');
   await testDapp.checkPageIsLoaded();
-  const header = await testDapp.getHeader();
-
-  await header.connect();
-
-  // wait to display wallet connect modal
-  await driver.delay(regularDelayMs);
-
-  const modal = await testDapp.getWalletModal();
-  await modal.connectToMetaMaskWallet(options.connectionLibrary);
+  await testDapp.connectToWallet(options.connectionLibrary);
 
   // Get to extension modal, and click on the "Connect" button
   await driver.delay(largeDelayMs);

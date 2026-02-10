@@ -24,43 +24,28 @@ describe('Bitcoin Wallet Standard - Send transaction - e2e tests', function () {
         async (driver) => {
           const testDapp = new TestDappBitcoin(driver);
           await testDapp.openTestDappPage();
-          await testDapp.checkPageIsLoaded()
 
           // 1. Connect
-          const header = await testDapp.getHeader();
           await connectBitcoinTestDapp(driver, testDapp, { connectionLibrary });
-
 
           await testDapp.switchToMainnet();
 
-          // Verify successful connection
-          const connectionStatusAfterConnect =
-            await header.getConnectionStatus();
-          assertConnected(connectionStatusAfterConnect);
-
-
           // 2. Send transaction
-          const sendTransaxrionTest = await testDapp.getSendTransactionTest()
-          await sendTransaxrionTest.setRecepient(SECONDARY_BTC_ADDRESS);
-          await sendTransaxrionTest.setAmount('1000');
-          await sendTransaxrionTest.sendTransaction();
+          await testDapp.setRecepient(SECONDARY_BTC_ADDRESS);
+          await testDapp.setAmount('1000');
+          await testDapp.sendTransaction();
 
-
-          // Wallet-standard uses signPsbt which does not prompt the user for confirmation
-          // Once signPsbt is update in the snap to required confirmation this must be removed
+          // Sats-connect does not print the transaction hash
           if (connectionLibrary === 'sats-connect') {
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
             await clickConfirmButton(driver);
-            
-            await driver.delay(regularDelayMs);
           }
 
-          // Sats-connect does not print the transaction hash
+          // Wallet-standard uses signPsbt which does not prompt the user for confirmation
+          // Once signPsbt is updated in the snap to required confirmation this must be removed
           if (connectionLibrary === 'wallet-standard') {
             await driver.switchToWindowWithTitle(WINDOW_TITLES.BitcoinTestDApp);
-            const transactionHash = await sendTransaxrionTest.getTransactionHash();
-
-            assert.strictEqual(transactionHash, txHashShort);
+            await testDapp.verifyTransactionHash(txHashShort);
           }
         },
       );
