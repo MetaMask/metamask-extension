@@ -115,6 +115,7 @@
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch stable",
     "update-changelog": "auto-changelog update --autoCategorize --useChangelogEntry --useShortPrLink",
     "generate:migration": "./development/generate-migration.sh",
+    "generate:release-test-plan": "tsx development/generate-release-test-plan.ts",
     "lavamoat:build": "lavamoat development/build/index.js --policy lavamoat/build-system/policy.json --policyOverride lavamoat/build-system/policy-override.json",
     "lavamoat:build:auto": "yarn lavamoat:build --writeAutoPolicy",
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
