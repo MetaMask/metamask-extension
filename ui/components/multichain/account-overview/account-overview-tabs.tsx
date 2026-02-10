@@ -38,6 +38,7 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
+import { ActivityList } from '../activity-v2/activity-list';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
@@ -228,6 +229,18 @@ export const AccountOverviewTabs = ({
               ) : (
                 <TransactionList />
               )}
+            </ErrorBoundary>
+          </Tab>
+        )}
+
+        {showActivity && (
+          <Tab
+            name={'Activity V2'}
+            tabKey={AccountOverviewTabKey.Activity2}
+            data-testid="account-overview__activity-tab"
+          >
+            <ErrorBoundary key="activity2">
+              <ActivityList />
             </ErrorBoundary>
           </Tab>
         )}

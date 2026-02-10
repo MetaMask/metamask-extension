@@ -27,10 +27,8 @@ class ActivityListPage {
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
-  private readonly confirmedTransactions = {
-    text: 'Confirmed',
-    css: '.transaction-status-label--confirmed',
-  };
+  private readonly confirmedTransactions =
+    '[data-testid="activity-list-item-status-confirmed"], .transaction-status-label--confirmed';
 
   private readonly confirmTransactionReplacementButton = {
     text: 'Submit',

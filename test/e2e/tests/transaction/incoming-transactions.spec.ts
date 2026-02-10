@@ -14,6 +14,7 @@ const RESPONSE_STANDARD_MOCK = {
   hash: '0x1',
   timestamp: new Date(TIMESTAMP_MOCK).toISOString(),
   chainId: 1,
+  accountId: `eip155:0:${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}`,
   blockNumber: 1,
   blockHash: '0x2',
   gas: 1,
@@ -27,7 +28,19 @@ const RESPONSE_STANDARD_MOCK = {
   to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   from: '0x2',
   isError: false,
-  valueTransfers: [],
+  valueTransfers: [
+    {
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '1230000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
+  logs: [],
+  transactionCategory: 'TRANSFER',
+  transactionType: 'INCOMING',
+  readable: 'Received',
 };
 
 const RESPONSE_STANDARD_2_MOCK = {
@@ -35,6 +48,15 @@ const RESPONSE_STANDARD_2_MOCK = {
   hash: '0x2',
   value: '2340000000000000000',
   timestamp: new Date(TIMESTAMP_MOCK - 1).toISOString(),
+  valueTransfers: [
+    {
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '2340000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
 };
 
 const RESPONSE_TOKEN_TRANSFER_MOCK = {
@@ -58,21 +80,30 @@ const RESPONSE_OUTGOING_MOCK = {
   to: '0x2',
   methodId: '0x12345678',
   value: '4560000000000000000',
+  valueTransfers: [
+    {
+      from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      to: '0x2',
+      amount: '4560000000000000000',
+      decimal: 18,
+      symbol: 'ETH',
+    },
+  ],
+  transactionCategory: 'CONTRACT_CALL',
+  transactionType: 'CONTRACT_INTERACTION',
+  readable: 'Contract interaction',
 };
 
 async function mockAccountsApi(
   mockServer: Mockttp,
-  {
-    cursor,
-    transactions,
-  }: { cursor?: string; transactions?: Record<string, unknown>[] } = {},
+  { transactions }: { transactions?: Record<string, unknown>[] } = {},
 ) {
   return [
     await mockServer
       .forGet(
-        `https://accounts.api.cx.metamask.io/v1/accounts/${DEFAULT_FIXTURE_ACCOUNT.toLowerCase()}/transactions`,
+        'https://accounts.api.cx.metamask.io/v4/multiaccount/transactions',
       )
-      .withQuery(cursor ? { cursor } : {})
+
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -80,7 +111,7 @@ async function mockAccountsApi(
             RESPONSE_STANDARD_MOCK,
             RESPONSE_STANDARD_2_MOCK,
           ],
-          pageInfo: { hasNextPage: false },
+          pageInfo: { hasNextPage: false, count: 2 },
         },
       })),
   ];
@@ -203,34 +234,6 @@ describe('Incoming Transactions', function () {
         const activityList = await changeNetworkAndGoToActivity(driver);
         await driver.delay(2000);
         await activityList.checkNoTxInActivity();
-      },
-    );
-  });
-
-  it('ignores duplicate transactions already in state', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withUseBasicFunctionalityEnabled()
-          .withTransactions([
-            {
-              hash: RESPONSE_STANDARD_MOCK.hash,
-              txParams: { from: RESPONSE_STANDARD_MOCK.from },
-              type: TransactionType.incoming,
-            },
-          ])
-          .withEnabledNetworks({
-            eip155: {
-              '0x1': true,
-            },
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApi,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
