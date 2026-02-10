@@ -16,6 +16,8 @@ import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import { WITH_STATE_POWER_USER } from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
+import AccountListPage from '../../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 
 const RECIPIENT_ADDRESS = 'GxSJqxAyTjCjyDmPxdBBfVE9QwuMhEoHrPLRTmMyqxnU';
 
@@ -56,7 +58,10 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-
+        const accountListPage = new AccountListPage(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+        await accountListPage.switchToAccount('Account 1');
         // Measure: Open send page
         await homePage.startSendFlow();
         await timerOpenSendPage.measure(async () => {

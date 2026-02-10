@@ -68,6 +68,7 @@ import {
   type OrderFormState,
   type OrderMode,
 } from '../../components/app/perps/order-entry';
+import { EditMarginExpandable } from '../../components/app/perps/edit-margin';
 import type { OrderType, OrderParams } from '../../components/app/perps/types';
 import { TextField, TextFieldSize } from '../../components/component-library';
 import {
@@ -276,6 +277,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Auto close card expansion state
   const [isAutoCloseExpanded, setIsAutoCloseExpanded] = useState(false);
+  const [isMarginExpanded, setIsMarginExpanded] = useState(false);
   const [editingTpPrice, setEditingTpPrice] = useState<string>('');
   const [editingSlPrice, setEditingSlPrice] = useState<string>('');
   const [isSavingTPSL, setIsSavingTPSL] = useState(false);
@@ -654,7 +656,6 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Handle form state changes from OrderEntry
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
-    console.log('[Perps] handleFormStateChange:', formState.amount, formState);
     setOrderFormState(formState);
   }, []);
 
@@ -676,14 +677,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Handle order submission
   const handleOrderSubmit = useCallback(async () => {
-    console.log('[Perps] handleOrderSubmit called');
-    console.log('[Perps] orderFormState:', orderFormState);
-    console.log('[Perps] orderMode:', orderMode);
-
     if (!orderFormState || !selectedAddress) {
-      console.log(
-        '[Perps] Early return - missing orderFormState or selectedAddress',
-      );
       return;
     }
 
@@ -736,18 +730,12 @@ const PerpsMarketDetailPage: React.FC = () => {
           orderMode,
           position?.size,
         );
-        console.log('[Perps] Placing order with params:', orderParams);
         const result = await controller.placeOrder(orderParams);
-        console.log('[Perps] Order result:', result);
         if (!result.success) {
           throw new Error(result.error || 'Failed to place order');
         }
 
         // Set pending state - wait for position to appear in stream before navigating
-        console.log(
-          '[Perps] Setting pending order symbol:',
-          orderFormState.asset,
-        );
         setPendingOrderSymbol(orderFormState.asset);
         return; // Don't navigate yet, wait for stream confirmation
       }
@@ -759,7 +747,6 @@ const PerpsMarketDetailPage: React.FC = () => {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
       setSubmitError(errorMessage);
-      console.error('Order submission failed:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -771,13 +758,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   const hasInitializedTpsl = useRef(false);
 
   useEffect(() => {
-    console.log(
-      '[Perps] Init effect - isAutoCloseExpanded:',
-      isAutoCloseExpanded,
-      'hasInitialized:',
-      hasInitializedTpsl.current,
-    );
-
     // Reset the initialization flag when card is collapsed
     if (!isAutoCloseExpanded) {
       hasInitializedTpsl.current = false;
@@ -786,10 +766,6 @@ const PerpsMarketDetailPage: React.FC = () => {
 
     // Only initialize once when the card is first expanded
     if (isAutoCloseExpanded && position && !hasInitializedTpsl.current) {
-      console.log('[Perps] Initializing TP/SL from position:', {
-        tp: position.takeProfitPrice,
-        sl: position.stopLossPrice,
-      });
       setEditingTpPrice(position.takeProfitPrice ?? '');
       setEditingSlPrice(position.stopLossPrice ?? '');
       setTpslError(null);
@@ -800,7 +776,14 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Handle auto close card toggle
   const handleAutoCloseToggle = useCallback(() => {
     setIsAutoCloseExpanded((prev) => !prev);
+    setIsMarginExpanded(false);
     setTpslError(null);
+  }, []);
+
+  // Handle margin card toggle (expand/collapse edit margin section)
+  const handleMarginToggle = useCallback(() => {
+    setIsMarginExpanded((prev) => !prev);
+    setIsAutoCloseExpanded(false);
   }, []);
 
   // Handle saving TP/SL changes
@@ -829,9 +812,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         stopLossPrice: cleanSlPrice || undefined,
       };
 
-      console.log('[Perps] Updating TP/SL with params:', tpslParams);
       const result = await controller.updatePositionTPSL(tpslParams);
-      console.log('[Perps] TP/SL update result:', result);
       if (!result.success) {
         throw new Error(result.error || 'Failed to update TP/SL');
       }
@@ -909,22 +890,12 @@ const PerpsMarketDetailPage: React.FC = () => {
       return;
     }
 
-    console.log(
-      '[Perps] Watching for position, pendingOrderSymbol:',
-      pendingOrderSymbol,
-    );
-    console.log(
-      '[Perps] Current allPositions symbols:',
-      allPositions.map((p) => p.symbol),
-    );
-
     // Check if position for this symbol now exists
     const hasPosition = allPositions.some(
       (p) => p.symbol === pendingOrderSymbol,
     );
 
     if (hasPosition) {
-      console.log('[Perps] Position found! Navigating to detail view');
       // Position confirmed - clear pending and navigate to detail view
       setPendingOrderSymbol(null);
       setIsSubmitting(false);
@@ -940,9 +911,6 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
 
     const timeout = setTimeout(() => {
-      console.warn(
-        '[Perps] Position stream confirmation timed out, navigating anyway',
-      );
       setPendingOrderSymbol(null);
       setIsSubmitting(false);
       setCurrentView('detail');
@@ -1489,9 +1457,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   <Box
                     className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
                     flexDirection={BoxFlexDirection.Column}
-                    onClick={() => {
-                      // TODO: Handle margin card press
-                    }}
+                    onClick={handleMarginToggle}
                   >
                     <Box paddingBottom={1}>
                       <Text
@@ -1509,6 +1475,18 @@ const PerpsMarketDetailPage: React.FC = () => {
                     </Text>
                   </Box>
                 </Box>
+
+                {/* Edit Margin - Expandable (full width) */}
+                {position && selectedAddress && (
+                  <EditMarginExpandable
+                    position={position}
+                    account={account}
+                    currentPrice={currentPrice}
+                    selectedAddress={selectedAddress}
+                    isExpanded={isMarginExpanded}
+                    onToggle={handleMarginToggle}
+                  />
+                )}
 
                 {/* Third Row: Auto Close (Full Width) - Expandable */}
                 <Box

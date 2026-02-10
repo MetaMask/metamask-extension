@@ -169,6 +169,9 @@
   "accountsSmallCase": {
     "message": "accounts"
   },
+  "actionUnavailable": {
+    "message": "Action unavailable"
+  },
   "active": {
     "message": "Active"
   },
@@ -5202,6 +5205,9 @@
   "perpsAddFundsDescription": {
     "message": "Add funds to start trading perpetual contracts with leverage"
   },
+  "perpsAddMargin": {
+    "message": "Add Margin"
+  },
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
@@ -5211,6 +5217,9 @@
   "perpsAvailable": {
     "message": "available",
     "description": "is the available balance amount"
+  },
+  "perpsAvailableBalance": {
+    "message": "Available balance"
   },
   "perpsBuy": {
     "message": "buy"
@@ -5299,9 +5308,6 @@
   "perpsFilterStocks": {
     "message": "Stocks"
   },
-  "perpsGiveFeedback": {
-    "message": "Give us feedback"
-  },
   "perpsFunding": {
     "message": "Funding"
   },
@@ -5310,6 +5316,9 @@
   },
   "perpsFundingRate": {
     "message": "Funding Rate"
+  },
+  "perpsGiveFeedback": {
+    "message": "Give us feedback"
   },
   "perpsIncreasedPosition": {
     "message": "Increased position"
@@ -5326,6 +5335,9 @@
   "perpsLimit": {
     "message": "Limit"
   },
+  "perpsLiquidationDistance": {
+    "message": "Liq. distance"
+  },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
@@ -5337,6 +5349,9 @@
   },
   "perpsMargin": {
     "message": "Margin"
+  },
+  "perpsMarginRiskWarning": {
+    "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
   },
   "perpsMarket": {
     "message": "Market"
@@ -5350,6 +5365,12 @@
   },
   "perpsMarkets": {
     "message": "Markets"
+  },
+  "perpsMax": {
+    "message": "Max"
+  },
+  "perpsMaxRemovable": {
+    "message": "Max removable"
   },
   "perpsModify": {
     "message": "Modify"
@@ -5404,8 +5425,15 @@
   "perpsRecentActivity": {
     "message": "Recent Activity"
   },
+  "perpsRemoveMargin": {
+    "message": "Remove Margin"
+  },
   "perpsReturn": {
     "message": "Return"
+  },
+  "perpsSaveChanges": {
+    "message": "Save Changes",
+    "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
@@ -5487,6 +5515,18 @@
   },
   "perpsStatusTriggered": {
     "message": "Triggered"
+  },
+  "perpsStopLoss": {
+    "message": "Stop Loss",
+    "description": "Label for stop loss price input"
+  },
+  "perpsSubmitting": {
+    "message": "Submitting...",
+    "description": "Loading text shown while an order is being submitted"
+  },
+  "perpsTakeProfit": {
+    "message": "Take Profit",
+    "description": "Label for take profit price input"
   },
   "perpsTotalBalance": {
     "message": "Total Balance"
@@ -6953,6 +6993,15 @@
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
     "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelImmediateDetails": {
+    "message": "If you cancel, your wallet and transactions will not be covered."
+  },
+  "shieldTxCancelNotAllowed": {
+    "message": "Your subscription cannot be cancelled at the moment."
+  },
+  "shieldTxCancelNotAllowedPendingVerification": {
+    "message": "Your subscription cannot be cancelled due to pending verification."
   },
   "shieldTxCancelWhenPausedDetails": {
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."

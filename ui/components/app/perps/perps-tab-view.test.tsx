@@ -6,10 +6,15 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as mocks from './mocks';
 import { PerpsTabView } from './perps-tab-view';
 
-// Mock the PerpsControllerProvider to render children directly
+// Mock the PerpsControllerProvider and getPerpsStreamManager
 jest.mock('../../../providers/perps', () => ({
   PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
+  getPerpsStreamManager: () => ({
+    init: jest.fn().mockResolvedValue(undefined),
+    prewarm: jest.fn(),
+    cleanupPrewarm: jest.fn(),
+  }),
 }));
 
 // Mock the perps stream hooks
@@ -24,6 +29,12 @@ jest.mock('../../../hooks/perps/stream', () => ({
   }),
   usePerpsLiveAccount: () => ({
     account: mocks.mockAccountState,
+    isInitialLoading: false,
+  }),
+  usePerpsLiveMarketData: () => ({
+    markets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
+    cryptoMarkets: mocks.mockCryptoMarkets,
+    hip3Markets: mocks.mockHip3Markets,
     isInitialLoading: false,
   }),
 }));
