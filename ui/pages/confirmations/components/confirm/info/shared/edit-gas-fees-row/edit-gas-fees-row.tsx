@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  UserFeeLevel,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -51,7 +54,12 @@ export const EditGasFeesRow = ({
     chainId,
     isGasFeeSponsored: doesSentinelAllowSponsorship,
     simulationData,
+    simulationFails,
+    userFeeLevel,
   } = transactionMeta;
+
+  const estimationFailed =
+    Boolean(simulationFails) && UserFeeLevel.CUSTOM !== userFeeLevel;
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
@@ -107,14 +115,21 @@ export const EditGasFeesRow = ({
               </Text>
             )}
             {isGasFeeEditable && <EditGasIconButton />}
-            {showFiat && !showAdvancedDetails && !isGasFeeSponsored && (
-              <FiatValue
-                fullValue={fiatFeeWith18SignificantDigits}
-                roundedValue={fiatValue}
-              />
+            {estimationFailed && (
+              <Text color={TextColor.textDefault}>{t('unavailable')}</Text>
             )}
-            {!(showFiat && !showAdvancedDetails) && !isGasFeeSponsored && (
-              <TokenValue roundedValue={tokenValue} />
+            {!estimationFailed && (
+              <>
+                {showFiat && !showAdvancedDetails && !isGasFeeSponsored && (
+                  <FiatValue
+                    fullValue={fiatFeeWith18SignificantDigits}
+                    roundedValue={fiatValue}
+                  />
+                )}
+                {!(showFiat && !showAdvancedDetails) && !isGasFeeSponsored && (
+                  <TokenValue roundedValue={tokenValue} />
+                )}
+              </>
             )}
             {!isGasFeeSponsored && <SelectedGasFeeToken />}
           </Box>

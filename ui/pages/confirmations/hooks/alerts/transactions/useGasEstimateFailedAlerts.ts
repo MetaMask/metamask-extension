@@ -1,6 +1,6 @@
 'use no memo';
 
-import { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionMeta, UserFeeLevel } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -15,7 +15,9 @@ export function useGasEstimateFailedAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
-  const estimationFailed = Boolean(currentConfirmation?.simulationFails);
+  const estimationFailed =
+    Boolean(currentConfirmation?.simulationFails) &&
+    currentConfirmation?.userFeeLevel !== UserFeeLevel.CUSTOM;
 
   return useMemo(() => {
     if (!estimationFailed) {

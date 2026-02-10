@@ -2,7 +2,12 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
-import { CHAIN_IDS, GasFeeToken } from '@metamask/transaction-controller';
+import {
+  CHAIN_IDS,
+  GasFeeToken,
+  SimulationError,
+  UserFeeLevel,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
@@ -27,12 +32,21 @@ jest.mock(
 function render({
   gasFeeTokens,
   selectedGasFeeToken,
-}: { gasFeeTokens?: GasFeeToken[]; selectedGasFeeToken?: Hex } = {}) {
+  simulationFails,
+  userFeeLevel,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  selectedGasFeeToken?: Hex;
+  simulationFails?: SimulationError;
+  userFeeLevel?: UserFeeLevel;
+} = {}) {
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       chainId: CHAIN_IDS.GOERLI,
       gasFeeTokens,
       selectedGasFeeToken,
+      simulationFails,
+      userFeeLevel,
     }),
   );
 
@@ -85,5 +99,36 @@ describe('<EditGasFeesRow />', () => {
     });
 
     expect(queryByTestId('edit-gas-fee-icon')).toBeNull();
+  });
+
+  describe('estimationFailed', () => {
+    it('renders "Unavailable" when simulation fails and userFeeLevel is not CUSTOM', () => {
+      const { getByText, queryByTestId } = render({
+        simulationFails: { debug: {} } as SimulationError,
+        userFeeLevel: UserFeeLevel.MEDIUM,
+      });
+
+      expect(getByText('Unavailable')).toBeInTheDocument();
+      expect(queryByTestId('native-currency')).toBeNull();
+      expect(queryByTestId('first-gas-field')).toBeNull();
+    });
+
+    it('does not render "Unavailable" when simulation fails but userFeeLevel is CUSTOM', () => {
+      const { queryByText } = render({
+        simulationFails: { debug: {} } as SimulationError,
+        userFeeLevel: UserFeeLevel.CUSTOM,
+      });
+
+      expect(queryByText('Unavailable')).toBeNull();
+    });
+
+    it('does not render "Unavailable" when simulation does not fail', () => {
+      const { queryByText } = render({
+        simulationFails: undefined,
+        userFeeLevel: UserFeeLevel.MEDIUM,
+      });
+
+      expect(queryByText('Unavailable')).toBeNull();
+    });
   });
 });
