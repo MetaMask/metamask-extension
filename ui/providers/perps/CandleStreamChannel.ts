@@ -2,15 +2,12 @@
  * CandleStreamChannel - Multiplexer/cache for candlestick data streams
  *
  * Sits between the PerpsController and React hooks. Provides:
- * - Subscription deduplication: multiple components subscribing to the same
- *   symbol+interval share one controller.subscribeToCandles() call
- * - Per-key caching: stores latest CandleData per "${symbol}-${interval}" key;
- *   new subscribers get cached data immediately (BehaviorSubject pattern)
- * - Throttling: per-subscriber configurable throttle (first update immediate)
- * - Load-more: fetchHistoricalCandles() merges older data into cache
- * - Auto-disconnect: tears down controller subscription when last subscriber
- *   for a key unsubscribes (cache is preserved for re-navigation)
- * - Reconnect: re-establishes all active subscriptions after WS reconnect
+ * - Subscription deduplication per symbol+interval key
+ * - Per-key caching with immediate delivery to new subscribers
+ * - Per-subscriber throttling (first update always immediate)
+ * - Load-more via fetchHistoricalCandles (merge older data into cache)
+ * - Auto-disconnect when last subscriber for a key unsubscribes
+ * - Reconnect to re-establish all active subscriptions after WS reconnect
  *
  * Cache key format: "${symbol}-${interval}" (e.g., "BTC-1h")
  */
