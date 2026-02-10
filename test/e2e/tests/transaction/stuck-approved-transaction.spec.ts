@@ -19,7 +19,7 @@ describe('Editing Confirm Transaction', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        new HomePage(driver).goToActivityList();
+        await new HomePage(driver).goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkCompletedTxNumberDisplayedInActivity();
         await activityList.checkTxAmountInActivity();
