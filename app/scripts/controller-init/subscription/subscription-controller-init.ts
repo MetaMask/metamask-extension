@@ -21,6 +21,7 @@ export const SubscriptionControllerInit: ControllerInitFunction<
       getAccessToken: () =>
         initMessenger.call('AuthenticationController:getBearerToken'),
     },
+    fetchFunction: fetch.bind(globalThis),
   });
 
   const controller = new SubscriptionController({
