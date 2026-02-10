@@ -179,9 +179,6 @@ export function useGasFeeInputs(
     if (supportsEIP1559) {
       if (transaction?.userFeeLevel) {
         setInternalEstimateToUse(transaction?.userFeeLevel);
-      }
-
-      if (transaction?.userFeeLevel) {
         setEstimateUsed(transaction?.userFeeLevel);
       }
 
