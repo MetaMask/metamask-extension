@@ -90,8 +90,7 @@ export const GasFeesDetails = (): JSX.Element | null => {
         )}
       {supportsEIP1559 &&
         !transactionMeta.selectedGasFeeToken &&
-        !transactionMeta.isGasFeeSponsored &&
-        !estimationFailed && (
+        !transactionMeta.isGasFeeSponsored && (
           <ConfirmInfoAlertRow
             alertKey={RowAlertKey.Speed}
             data-testid="gas-fee-details-speed"

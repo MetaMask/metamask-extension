@@ -136,22 +136,6 @@ describe('<GasFeesDetails />', () => {
       expect(queryByTestId('gas-fee-details-max-fee')).toBeNull();
     });
 
-    it('does not render gas timing if estimation failed', async () => {
-      const { queryByTestId } = renderWithConfirmContextProvider(
-        <GasFeesDetails />,
-        getStore({
-          simulationFails: { debug: {} } as SimulationError,
-          userFeeLevel: UserFeeLevel.MEDIUM,
-        }),
-      );
-
-      await act(async () => {
-        // Intentionally empty
-      });
-
-      expect(queryByTestId('gas-fee-details-speed')).toBeNull();
-    });
-
     it('renders max fee if advanced and userFeeLevel is CUSTOM even with simulation failure', async () => {
       const { getByTestId } = renderWithConfirmContextProvider(
         <GasFeesDetails />,
@@ -169,12 +153,12 @@ describe('<GasFeesDetails />', () => {
       expect(getByTestId('gas-fee-details-max-fee')).toBeInTheDocument();
     });
 
-    it('renders gas timing if userFeeLevel is CUSTOM even with simulation failure', async () => {
+    it('renders gas timing even when estimation failed', async () => {
       const { getByTestId } = renderWithConfirmContextProvider(
         <GasFeesDetails />,
         getStore({
           simulationFails: { debug: {} } as SimulationError,
-          userFeeLevel: UserFeeLevel.CUSTOM,
+          userFeeLevel: UserFeeLevel.MEDIUM,
         }),
       );
 
