@@ -36,14 +36,6 @@ yarn test:e2e:benchmark --preset performanceOnboardingNew --out results.json
 | `pageLoadBenchmark`            | Playwright benchmarks           | `page-load-benchmark.spec.ts`                                    |
 | `all`                          | All benchmarks                  | Everything above                                                 |
 
-### Benchmarks not in CI
-
-The following preset is available for local runs but is not included in the CI matrix due to setup requirements:
-
-| Preset                         | Reason                                                                |
-| ------------------------------ | --------------------------------------------------------------------- |
-| `performanceAccountManagement` | Requires `TEST_SRP_2` env var (12-word seed phrase) for second wallet |
-
 ### 1. Create a new file in the appropriate subdirectory
 
 Choose the category that best fits your benchmark:

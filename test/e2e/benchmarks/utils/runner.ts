@@ -81,6 +81,7 @@ export async function runBenchmarkWithIterations(
 
     if (result.success) {
       successfulRuns += 1;
+      // Generate report after each successful run (like Mocha's afterEach)
       const timerCount = performanceTracker.getTimerCount();
       if (timerCount > 0) {
         performanceTracker.generateReport(`${name} - iteration ${i + 1}`, name);
@@ -90,6 +91,7 @@ export async function runBenchmarkWithIterations(
     }
   }
 
+  // Aggregate timer results
   const timerMap = new Map<string, number[]>();
   for (const result of allResults) {
     if (result.success) {
@@ -130,12 +132,14 @@ export async function runBenchmarkWithIterations(
     }
   }
 
+  // Check overall run exclusion rate
   const overallExclusionCheck = checkExclusionRate(
     iterations,
     failedRuns,
     MAX_EXCLUSION_RATE,
   );
 
+  // Validate thresholds if configured
   const thresholdResult = thresholdConfig
     ? validateThresholds(timerStats, thresholdConfig)
     : undefined;
