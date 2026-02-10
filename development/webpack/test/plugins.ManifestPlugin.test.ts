@@ -923,5 +923,93 @@ describe('ManifestPlugin', () => {
         }
       }
     });
+
+    it('should only copy browser-specific assets in moveAssets', async () => {
+      // Set up mock entrypoints that simulate compiled output files
+      const mockEntrypoints = new Map<string, { getFiles: () => string[] }>();
+      mockEntrypoints.set('service-worker.ts', {
+        getFiles: () => ['service-worker.abc123.js'],
+      });
+      mockEntrypoints.set('scripts/contentscript.js', {
+        getFiles: () => ['scripts/contentscript.def456.js'],
+      });
+      mockEntrypoints.set('scripts/inpage.js', {
+        getFiles: () => ['scripts/inpage.ghi789.js'],
+      });
+      mockEntrypoints.set('vendor/trezor/content-script.js', {
+        getFiles: () => ['vendor/trezor/content-script.jkl012.js'],
+      });
+
+      const { compiler, compilation, promise } = mockWebpack(
+        [
+          'service-worker.abc123.js',
+          'scripts/contentscript.def456.js',
+          'scripts/inpage.ghi789.js',
+          'vendor/trezor/content-script.jkl012.js',
+          'shared.chunk.js',
+        ],
+        [
+          Buffer.from('sw'),
+          Buffer.from('cs'),
+          Buffer.from('ip'),
+          Buffer.from('tz'),
+          Buffer.from('shared'),
+        ],
+        [null, null, null, null, null],
+      );
+      // Override entrypoints with our mock
+      Object.defineProperty(compilation, 'entrypoints', {
+        value: mockEntrypoints,
+        writable: true,
+      });
+
+      const manifestPlugin = new ManifestPlugin({
+        appRoot: entriesContext,
+        browsers: ['chrome', 'firefox'],
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        zip: false,
+      });
+
+      manifestPlugin.apply(compiler);
+      await promise;
+
+      const assetNames = Object.keys(compilation.assets);
+
+      // Chrome should have service-worker output (it uses service_worker)
+      assert(
+        assetNames.includes('chrome/service-worker.abc123.js'),
+        'chrome should have service-worker output',
+      );
+      // Firefox should NOT have service-worker output (it uses background.page)
+      assert(
+        !assetNames.includes('firefox/service-worker.abc123.js'),
+        'firefox should NOT have service-worker output',
+      );
+
+      // Both browsers should have content script output (shared entry)
+      assert(
+        assetNames.includes('chrome/scripts/contentscript.def456.js'),
+        'chrome should have contentscript output',
+      );
+      assert(
+        assetNames.includes('firefox/scripts/contentscript.def456.js'),
+        'firefox should have contentscript output',
+      );
+
+      // Shared chunks should go to both browsers
+      assert(
+        assetNames.includes('chrome/shared.chunk.js'),
+        'chrome should have shared chunk',
+      );
+      assert(
+        assetNames.includes('firefox/shared.chunk.js'),
+        'firefox should have shared chunk',
+      );
+    });
   });
 });

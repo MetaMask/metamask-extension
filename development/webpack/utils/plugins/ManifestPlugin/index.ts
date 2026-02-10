@@ -124,16 +124,24 @@ export class ManifestPlugin<Z extends boolean> {
 
   private manifestScriptEntries: Set<string>;
 
+  /**
+   * Tracks which manifest script entries each browser needs, so that
+   * `moveAssets`/`zipAssets` can skip output files a browser doesn't use.
+   */
+  private browserEntries: Map<Browser, Set<string>>;
+
   constructor(options: ManifestPluginOptions<Z>) {
     validate(schema, options, { name: NAME });
     this.options = options;
     this.manifests = new Map();
 
     this.mergedManifests = this.buildMergedManifests();
-    const { entry, canBeChunked, manifestScripts } = this.collectEntries();
+    const { entry, canBeChunked, manifestScripts, browserEntries } =
+      this.collectEntries();
     this.entry = entry;
     this.canBeChunked = canBeChunked;
     this.manifestScriptEntries = manifestScripts;
+    this.browserEntries = browserEntries;
   }
 
   apply(compiler: Compiler) {
@@ -274,6 +282,7 @@ export class ManifestPlugin<Z extends boolean> {
     entry: EntryObject;
     canBeChunked: (chunk: { name?: string | null }) => boolean;
     manifestScripts: Set<string>;
+    browserEntries: Map<Browser, Set<string>>;
   } {
     const { appRoot } = this.options;
     const htmlPages = join(appRoot, 'html', 'pages');
@@ -283,6 +292,7 @@ export class ManifestPlugin<Z extends boolean> {
       'use-snow',
       'bootstrap',
     ]);
+    const browserEntries = new Map<Browser, Set<string>>();
 
     function addManifestScript(
       filename: string,
@@ -307,29 +317,41 @@ export class ManifestPlugin<Z extends boolean> {
       entry[parsedFileName] = join(htmlPages, filename);
     }
 
-    // Iterate over each browser's merged manifest and collect entries (union)
-    for (const manifest of this.mergedManifests.values()) {
+    // Iterate over each browser's merged manifest and collect entries (union),
+    // while tracking which entries belong to each browser.
+    for (const [browser, manifest] of this.mergedManifests.entries()) {
+      const browserScripts = new Set<string>();
+      browserEntries.set(browser, browserScripts);
+
       // add content_scripts to entries
       for (const contentScript of manifest.content_scripts ?? []) {
         for (const script of contentScript.js ?? []) {
+          browserScripts.add(script);
           addManifestScript(script);
         }
       }
 
-      // Handle background
-      if (manifest.background?.page) {
-        const parsedFileName = parse(manifest.background.page).name;
+      // Handle background — use `in` narrowing rather than manifest_version
+      // since Firefox MV3 overrides service_worker with background.page
+      const { background } = manifest;
+      if (background && 'page' in background && background.page) {
+        const parsedFileName = parse(background.page).name;
+        browserScripts.add(parsedFileName);
         if (!entry[parsedFileName]) {
-          addHtml(manifest.background.page);
+          addHtml(background.page);
         }
       }
-      if (manifest.background?.service_worker) {
-        addManifestScript(manifest.background.service_worker, {
+      if (background && 'service_worker' in background) {
+        browserScripts.add(background.service_worker);
+        addManifestScript(background.service_worker, {
           chunkLoading: 'import-scripts',
         });
       }
-      for (const script of manifest.background?.scripts ?? []) {
-        addManifestScript(script);
+      if (background && 'scripts' in background && background.scripts) {
+        for (const script of background.scripts) {
+          browserScripts.add(script);
+          addManifestScript(script);
+        }
       }
 
       // Handle web_accessible_resources (may be v2 string[] or v3 object[])
@@ -337,12 +359,14 @@ export class ManifestPlugin<Z extends boolean> {
         if (typeof resource === 'string') {
           // MV2 format
           if (resource.endsWith('.js')) {
+            browserScripts.add(resource);
             addManifestScript(resource);
           }
         } else {
           // MV3 format
           for (const filename of resource.resources) {
             if (filename.endsWith('.js')) {
+              browserScripts.add(filename);
               addManifestScript(filename);
             }
           }
@@ -375,7 +399,45 @@ export class ManifestPlugin<Z extends boolean> {
       return !name || !selfContainedScripts.has(name);
     }
 
-    return { entry, canBeChunked, manifestScripts: selfContainedScripts };
+    return {
+      entry,
+      canBeChunked,
+      manifestScripts: selfContainedScripts,
+      browserEntries,
+    };
+  }
+
+  /**
+   * Returns the set of asset filenames that should be excluded for a given
+   * browser. These are output files from manifest script entries that the
+   * browser doesn't reference in its merged manifest.
+   *
+   * @param browser
+   * @param compilation
+   */
+  private getExcludedAssets(
+    browser: Browser,
+    compilation: Compilation,
+  ): Set<string> {
+    const excluded = new Set<string>();
+    const browserScripts = this.browserEntries.get(browser);
+    if (!browserScripts) return excluded;
+
+    for (const entryName of this.manifestScriptEntries) {
+      // Skip hardcoded self-contained scripts that aren't from manifests
+      if (!compilation.entrypoints.has(entryName)) continue;
+      // If this browser needs this entry, don't exclude its files
+      if (browserScripts.has(entryName)) continue;
+
+      const ep = compilation.entrypoints.get(entryName);
+      if (ep) {
+        for (const file of ep.getFiles()) {
+          excluded.add(file);
+          excluded.add(`${file}.map`);
+        }
+      }
+    }
+    return excluded;
   }
 
   private async zipAssets(
@@ -400,6 +462,7 @@ export class ManifestPlugin<Z extends boolean> {
     // TODO(perf): run this in parallel. If you try without carefully optimizing the
     // process will run out of memory pretty quickly, and crash. Fun!
     for (const browser of browsers) {
+      const excluded = this.getExcludedAssets(browser, compilation);
       const manifest = this.manifests.get(browser) as sources.Source;
       const source = await new Promise<sources.Source>((resolve, reject) => {
         // since Zipping is async, a past chunk could cause an error after we've
@@ -420,7 +483,6 @@ export class ManifestPlugin<Z extends boolean> {
           }
         });
 
-        // add the browser's manifest.json file to the zip
         addAssetToZip(
           manifest.buffer(),
           'manifest.json',
@@ -438,6 +500,7 @@ export class ManifestPlugin<Z extends boolean> {
 
           const extName = extname(assetName);
           if (excludeExtensions.includes(extName)) continue;
+          if (excluded.has(assetName)) continue;
 
           addAssetToZip(
             asset.buffer(),
@@ -486,12 +549,14 @@ export class ManifestPlugin<Z extends boolean> {
     const { browsers } = options;
     const assetEntries = Object.entries(assets);
     browsers.forEach((browser) => {
+      const excluded = this.getExcludedAssets(browser, compilation);
       const manifest = this.manifests.get(browser) as sources.Source;
       compilation.emitAsset(join(browser, 'manifest.json'), manifest, {
         javascriptModule: false,
         contentType: 'application/json',
       });
       for (const [name, asset] of assetEntries) {
+        if (excluded.has(name)) continue;
         // move the assets to their final browser-relative locations
         const assetDetails = compilation.getAsset(name) as Readonly<Asset>;
         compilation.emitAsset(join(browser, name), asset, assetDetails.info);
@@ -505,6 +570,9 @@ export class ManifestPlugin<Z extends boolean> {
   /**
    * Resolves an entry script name to its actual output filename using the
    * compilation's entrypoints map.
+   *
+   * @param compilation
+   * @param scriptName
    */
   private resolveEntryFile(
     compilation: Compilation,
@@ -521,6 +589,8 @@ export class ManifestPlugin<Z extends boolean> {
   /**
    * Prepares final manifests for each browser by cloning the cached merged
    * manifests and resolving all script filenames from compilation entrypoints.
+   *
+   * @param compilation
    */
   private prepareManifests(compilation: Compilation): void {
     this.options.browsers.forEach((browser) => {
@@ -537,13 +607,22 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
+      // Resolve background script filenames — use `in` narrowing since
+      // Firefox MV3 overrides service_worker with background.page
+      const { background } = manifest;
+      if (background && 'scripts' in background && background.scripts) {
+        background.scripts = background.scripts.map((script: string) =>
+          this.resolveEntryFile(compilation, script),
+        );
+      }
+      if (background && 'service_worker' in background) {
+        background.service_worker = this.resolveEntryFile(
+          compilation,
+          background.service_worker,
+        );
+      }
+
       if (manifest.manifest_version === 2) {
-        // Resolve MV2 background.scripts filenames
-        if (manifest.background?.scripts) {
-          manifest.background.scripts = manifest.background.scripts.map(
-            (script: string) => this.resolveEntryFile(compilation, script),
-          );
-        }
         // Resolve MV2 web_accessible_resources JS filenames
         if (manifest.web_accessible_resources) {
           manifest.web_accessible_resources =
@@ -553,14 +632,25 @@ export class ManifestPlugin<Z extends boolean> {
                 : resource,
             );
         }
-      } else if (manifest.manifest_version === 3) {
-        // Resolve MV3 service worker filename
-        if (manifest.background?.service_worker) {
-          manifest.background.service_worker = this.resolveEntryFile(
-            compilation,
-            manifest.background.service_worker,
-          );
+
+        // Add source map files to web_accessible_resources if devtool is source-map
+        if (compilation.options.devtool === 'source-map') {
+          const sourceMapFiles: string[] = [];
+          for (const contentScript of manifest.content_scripts ?? []) {
+            for (const script of contentScript.js ?? []) {
+              sourceMapFiles.push(`${script}.map`);
+            }
+          }
+          if (sourceMapFiles.length > 0) {
+            manifest.web_accessible_resources = [
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              ...(manifest.web_accessible_resources || []),
+              ...sourceMapFiles,
+            ];
+          }
         }
+      } else if (manifest.manifest_version === 3) {
         // Resolve MV3 web_accessible_resources JS filenames
         if (manifest.web_accessible_resources) {
           for (const resource of manifest.web_accessible_resources) {
@@ -571,18 +661,16 @@ export class ManifestPlugin<Z extends boolean> {
             );
           }
         }
-      }
 
-      // Add source map files to web_accessible_resources if devtool is source-map
-      if (compilation.options.devtool === 'source-map') {
-        const sourceMapFiles: string[] = [];
-        for (const contentScript of manifest.content_scripts ?? []) {
-          for (const script of contentScript.js ?? []) {
-            sourceMapFiles.push(`${script}.map`);
+        // Add source map files to web_accessible_resources if devtool is source-map
+        if (compilation.options.devtool === 'source-map') {
+          const sourceMapFiles: string[] = [];
+          for (const contentScript of manifest.content_scripts ?? []) {
+            for (const script of contentScript.js ?? []) {
+              sourceMapFiles.push(`${script}.map`);
+            }
           }
-        }
-        if (sourceMapFiles.length > 0) {
-          if (manifest.manifest_version === 3) {
+          if (sourceMapFiles.length > 0) {
             manifest.web_accessible_resources =
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -600,13 +688,6 @@ export class ManifestPlugin<Z extends boolean> {
                 resources: sourceMapFiles,
               });
             }
-          } else {
-            manifest.web_accessible_resources = [
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              ...(manifest.web_accessible_resources || []),
-              ...sourceMapFiles,
-            ];
           }
         }
       }

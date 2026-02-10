@@ -1,7 +1,5 @@
 {
   "background": {
-    "page": "background.html",
-    "persistent": true
-  },
-  "manifest_version": 2
+    "page": "background.html"
+  }
 }
