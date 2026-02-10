@@ -59,12 +59,12 @@ export const ONBOARDING_IMPORT_THRESHOLDS: ThresholdConfig = {
     p95: { warn: 2800, fail: 3500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  confirmSrpToPasswordForm: {
+  confirmSrpToPwForm: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  passwordFormToMetricsScreen: {
+  pwFormToMetricsScreen: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
@@ -95,12 +95,12 @@ export const ONBOARDING_NEW_WALLET_THRESHOLDS: ThresholdConfig = {
     p95: { warn: 2800, fail: 3500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  srpButtonToPasswordForm: {
+  srpButtonToPwForm: {
     p75: { warn: 1800, fail: 2400 },
     p95: { warn: 2800, fail: 3500 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
   },
-  createPasswordToRecoveryScreen: {
+  createPwToRecoveryScreen: {
     p75: { warn: 2700, fail: 3500 },
     p95: { warn: 4200, fail: 5200 },
     ciMultiplier: DEFAULT_CI_MULTIPLIER,
