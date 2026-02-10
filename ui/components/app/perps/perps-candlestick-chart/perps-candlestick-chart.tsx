@@ -456,7 +456,8 @@ const PerpsCandlestickChart = forwardRef<
           const line = series.createPriceLine({
             price: pl.price,
             color: pl.color,
-            lineWidth: pl.lineWidth ?? 1,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            lineWidth: (pl.lineWidth ?? 1) as any,
             lineStyle: pl.lineStyle ?? 2, // Default: dashed
             axisLabelVisible: true,
             title: pl.label,
