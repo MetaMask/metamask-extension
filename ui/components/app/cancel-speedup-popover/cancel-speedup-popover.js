@@ -7,7 +7,6 @@ import {
   BoxFlexDirection,
   Text,
   TextButton,
-  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
@@ -96,6 +95,7 @@ const CancelSpeedupPopoverWrapped = () => {
       isOpen
       onClose={() => closeModal(['cancelSpeedUpTransaction'])}
       className="cancel-speedup-popover"
+      isClosedOnOutsideClick={false}
     >
       <ModalOverlay />
       <ModalContent>
