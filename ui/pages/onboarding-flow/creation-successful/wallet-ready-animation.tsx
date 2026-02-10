@@ -1,62 +1,29 @@
 import React, { useEffect } from 'react';
-import {
-  useRive,
-  Layout,
-  Fit,
-  Alignment,
-  useRiveFile,
-} from '@rive-app/react-canvas';
+import { Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import {
-  useRiveWasmContext,
-  useRiveWasmFile,
-} from '../../../contexts/rive-wasm';
+import { useRiveWasmAnimation } from '../../../contexts/rive-wasm';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WalletReadyAnimation() {
   const theme = useTheme();
-  const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError } = context;
-  const {
-    buffer,
-    error: bufferError,
-    loading: bufferLoading,
-  } = useRiveWasmFile('./images/riv_animations/wallet_ready.riv');
-
-  useEffect(() => {
-    if (wasmError) {
-      console.error('[Rive] Failed to load WASM:', wasmError);
-    }
-    if (bufferError) {
-      console.error('[Rive] Failed to load buffer:', bufferError);
-    }
-  }, [wasmError, bufferError]);
-
-  // Use the buffer parameter instead of src
-  const { riveFile, status } = useRiveFile({
-    buffer,
-  });
-
-  // Only initialize Rive after WASM is ready to avoid "source file required" error
-  // We always need to provide a valid config to useRive (hooks can't be conditional)
-  // but we control when to actually render the component
-  const { rive, RiveComponent } = useRive({
-    riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? 'OnboardingLoader' : undefined,
-    autoplay: false,
-    layout: new Layout({
-      fit: Fit.Contain,
-      alignment: Alignment.Center,
-    }),
+  const { rive, RiveComponent } = useRiveWasmAnimation({
+    url: './images/riv_animations/wallet_ready.riv',
+    riveParams: {
+      stateMachines: 'OnboardingLoader',
+      autoplay: false,
+      layout: new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+      }),
+    },
   });
 
   // Trigger the animation start when rive is loaded
   useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading && buffer) {
-      console.log('rive is loaded', rive);
+    if (rive) {
       const inputs = rive.stateMachineInputs('OnboardingLoader');
       if (inputs) {
         const darkToggle = inputs.find((input) => input.name === 'Dark mode');
@@ -75,16 +42,10 @@ export default function WalletReadyAnimation() {
         rive.play();
       }
     }
-  }, [rive, theme, isWasmReady, bufferLoading, buffer]);
+  }, [rive, theme]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
-  if (
-    !isWasmReady ||
-    bufferLoading ||
-    !buffer ||
-    status === 'loading' ||
-    status === 'failed'
-  ) {
+  if (!rive) {
     return <Box className="riv-animation__wallet-ready-container"></Box>;
   }
 

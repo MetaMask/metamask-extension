@@ -196,6 +196,11 @@ function getCopyTargets(
       pattern: '*.wasm',
       dest: isManifestV3 ? 'scripts/' : '',
     },
+    {
+      src: getPathInsideNodeModules('@rive-app/canvas', 'rive.wasm'),
+      dest: 'images/rive.wasm',
+      pattern: '',
+    },
     ...(isManifestV3
       ? [
           {

@@ -1,7 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import {
-  useRive,
-  useRiveFile,
   Layout,
   Fit,
   Alignment,
@@ -13,7 +11,7 @@ import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import {
   useRiveWasmContext,
-  useRiveWasmFile,
+  useRiveWasmAnimation,
 } from '../../../contexts/rive-wasm';
 
 type MetamaskWordMarkAnimationProps = {
@@ -39,12 +37,7 @@ export default function MetamaskWordMarkAnimation({
 }: MetamaskWordMarkAnimationProps) {
   const theme = useTheme();
   const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError, setIsAnimationCompleted } = context;
-  const {
-    buffer,
-    error: bufferError,
-    loading: bufferLoading,
-  } = useRiveWasmFile('./images/riv_animations/metamask_wordmark.riv');
+  const { setIsAnimationCompleted } = context;
 
   // Refs grouped together
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -55,53 +48,38 @@ export default function MetamaskWordMarkAnimation({
     start?: StateMachineInput;
   }>({});
 
-  useEffect(() => {
-    if (wasmError) {
-      console.error(
-        '[Rive - MetamaskWordMarkAnimation] Failed to load WASM:',
-        wasmError,
-      );
-      setIsAnimationComplete(true);
-    }
-    if (bufferError) {
-      console.error(
-        '[Rive - MetamaskWordMarkAnimation] Failed to load buffer:',
-        bufferError,
-      );
-      setIsAnimationComplete(true);
-    }
-  }, [wasmError, bufferError, setIsAnimationComplete]);
-
-  // Use the buffer parameter instead of src
-  const { riveFile, status } = useRiveFile({
-    buffer,
-  });
-
-  // Only initialize Rive after WASM is ready and riveFile is loaded
-  const { rive, RiveComponent } = useRive({
-    riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? 'WordmarkBuildUp' : undefined,
-    autoplay: false,
-    layout: new Layout({
-      fit: Fit.Contain,
-      alignment: Alignment.Center,
-    }),
-    onStateChange: (event) => {
-      // The event.data contains an array of state names
-      if (event.data && Array.isArray(event.data)) {
-        // Clear any existing timeout to avoid multiple triggers
-        if (animationTimeoutRef.current) {
-          clearTimeout(animationTimeoutRef.current);
-        }
-
-        // Set a timeout after state change to detect animation completion
-        // Adjust this timeout to match your animation's actual duration
-        animationTimeoutRef.current = setTimeout(() => {
-          if (!isAnimationComplete) {
-            setIsAnimationComplete(true);
+  const { rive, RiveComponent, hasFailed } = useRiveWasmAnimation({
+    url: './images/riv_animations/metamask_wordmark.riv',
+    riveParams: {
+      stateMachines: STATE_MACHINE_NAME,
+      autoplay: false,
+      layout: new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+      }),
+      onStateChange: (event) => {
+        // The event.data contains an array of state names
+        if (event.data && Array.isArray(event.data)) {
+          // Clear any existing timeout to avoid multiple triggers
+          if (animationTimeoutRef.current) {
+            clearTimeout(animationTimeoutRef.current);
           }
-        }, 1000); // Adjust this based on your animation duration (in milliseconds)
-      }
+
+          // Set a timeout after state change to detect animation completion
+          // Adjust this timeout to match your animation's actual duration
+          animationTimeoutRef.current = setTimeout(() => {
+            if (!isAnimationComplete) {
+              setIsAnimationComplete(true);
+            }
+          }, 1000); // Adjust this based on your animation duration (in milliseconds)
+        }
+      },
+      onLoadError: (error) => {
+        console.error(
+          '[Rive - MetamaskWordMarkAnimation] Failed to initialize animation:',
+          error,
+        );
+      },
     },
   });
 
@@ -127,8 +105,7 @@ export default function MetamaskWordMarkAnimation({
 
   // Trigger the animation start when rive is loaded and WASM is ready (only once)
   useEffect(() => {
-    const shouldInitialize =
-      rive && isWasmReady && !bufferLoading && buffer && !isInitialized;
+    const shouldInitialize = rive && !isInitialized;
 
     if (shouldInitialize && cacheInputs()) {
       const { dark, still, start } = inputsRef.current;
@@ -161,10 +138,7 @@ export default function MetamaskWordMarkAnimation({
     };
   }, [
     rive,
-    isWasmReady,
     skipTransition,
-    bufferLoading,
-    buffer,
     isInitialized,
     theme,
     cacheInputs,
@@ -188,9 +162,7 @@ export default function MetamaskWordMarkAnimation({
     prevThemeRef.current = theme;
   }, [rive, theme, isInitialized]);
 
-  const isLoading =
-    !isWasmReady || bufferLoading || !buffer || status === 'loading';
-  const hasFailed = status === 'failed';
+  const isLoading = !rive;
 
   // Trigger animation complete on failure
   useEffect(() => {
