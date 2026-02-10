@@ -33,6 +33,7 @@ import type {
   PerpsController,
 } from '@metamask/perps-controller';
 import { PerpsDataChannel } from './PerpsDataChannel';
+import { CandleStreamChannel } from './CandleStreamChannel';
 import { getPerpsController } from './getPerpsController';
 
 // Empty array constants for stable references
@@ -74,6 +75,9 @@ class PerpsStreamManager {
   account: PerpsDataChannel<AccountState | null>;
 
   markets: PerpsDataChannel<PerpsMarketData[]>;
+
+  // Candle stream channel (multiplexed by symbol+interval)
+  candles: CandleStreamChannel;
 
   // Internal state
   private controller: PerpsController | null = null;
@@ -117,6 +121,8 @@ class PerpsStreamManager {
       initialValue: EMPTY_MARKETS,
       name: 'markets',
     });
+
+    this.candles = new CandleStreamChannel();
   }
 
   /**
@@ -344,6 +350,9 @@ class PerpsStreamManager {
         };
       });
 
+      // Wire candle stream channel to controller
+      this.candles.setController(controller);
+
       console.log('[PerpsStreamManager] Initialized for address:', address);
     } catch (error) {
       console.error('[PerpsStreamManager] Initialization failed:', error);
@@ -423,6 +432,7 @@ class PerpsStreamManager {
     this.orders.clearCache();
     this.account.clearCache();
     this.markets.clearCache();
+    this.candles.clearAll();
   }
 
   /**
@@ -435,6 +445,7 @@ class PerpsStreamManager {
     this.orders.reset();
     this.account.reset();
     this.markets.reset();
+    this.candles.clearAll();
     this.controller = null;
     this.currentAddress = null;
     this.initPromise = null;

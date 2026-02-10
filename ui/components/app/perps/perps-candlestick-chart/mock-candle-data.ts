@@ -1,59 +1,17 @@
-import { brandColor } from '@metamask/design-tokens';
-
 /**
- * Time type for lightweight-charts (seconds since epoch)
- * Defined locally to avoid ESM import issues with lightweight-charts
+ * Mock candle data for development and Storybook.
+ * Format functions and types have moved to chart-utils.ts.
  */
-type Time = number & { readonly brand: unique symbol };
-
-/**
- * Candlestick data structure compatible with lightweight-charts
- */
-type CandlestickData<TTime> = {
-  time: TTime;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-};
-
-/**
- * Histogram data structure compatible with lightweight-charts
- */
-type HistogramData<TTime> = {
-  time: TTime;
-  value: number;
-  color: string;
-};
-
-/**
- * Raw candle data structure from the API/mock data
- */
-type RawCandle = {
-  time: number; // Timestamp in milliseconds
-  open: string;
-  high: string;
-  low: string;
-  close: string;
-  volume?: string;
-};
-
-/**
- * Candle data structure containing coin, interval, and candles array
- */
-export type CandleData = {
-  coin: string;
-  interval: string;
-  candles: RawCandle[];
-};
+import type { CandleData } from '@metamask/perps-controller';
+import { CandlePeriod } from '../constants/chartConfig';
 
 /**
  * Mock candle data for BTC 5m interval
- * This data is used for development and testing
+ * This data is used for development and testing only.
  */
 export const mockCandleData: CandleData = {
-  coin: 'BTC',
-  interval: '5m',
+  symbol: 'BTC',
+  interval: CandlePeriod.FiveMinutes,
   candles: [
     {
       time: 1768188300000,
@@ -618,93 +576,3 @@ export const mockCandleData: CandleData = {
   ],
 };
 
-/**
- * Formats raw candle data for use with lightweight-charts
- * Converts timestamps from milliseconds to seconds and parses OHLC values
- *
- * @param data - The candle data to format
- * @returns Formatted candlestick data array
- */
-export function formatCandleDataForChart(
-  data: CandleData,
-): CandlestickData<Time>[] {
-  if (!data?.candles) {
-    return [];
-  }
-
-  return data.candles
-    .map((candle) => {
-      // TradingView expects Unix timestamp in SECONDS
-      const timeInSeconds = Math.floor(candle.time / 1000) as Time;
-
-      const formatted: CandlestickData<Time> = {
-        time: timeInSeconds,
-        open: parseFloat(candle.open),
-        high: parseFloat(candle.high),
-        low: parseFloat(candle.low),
-        close: parseFloat(candle.close),
-      };
-
-      // Validate all values are valid numbers
-      const isValid =
-        !isNaN(formatted.open) &&
-        !isNaN(formatted.high) &&
-        !isNaN(formatted.low) &&
-        !isNaN(formatted.close) &&
-        formatted.open > 0 &&
-        formatted.high > 0 &&
-        formatted.low > 0 &&
-        formatted.close > 0;
-
-      if (!isValid) {
-        return null;
-      }
-
-      return formatted;
-    })
-    .filter((candle): candle is CandlestickData<Time> => candle !== null)
-    .sort((a, b) => (a.time as number) - (b.time as number));
-}
-
-/**
- * Formats raw candle data into volume histogram data for lightweight-charts
- * Transforms volume to USD notional value (volume × close price)
- * Colors bars based on candle direction (green = bullish, red = bearish)
- *
- * @param data - The candle data to format
- * @returns Formatted histogram data array for volume display
- */
-export function formatVolumeDataForChart(
-  data: CandleData,
-): HistogramData<Time>[] {
-  if (!data?.candles) {
-    return [];
-  }
-
-  return data.candles
-    .map((candle) => {
-      const timeInSeconds = Math.floor(candle.time / 1000) as Time;
-      const volume = parseFloat(candle.volume || '0');
-      const close = parseFloat(candle.close);
-      const open = parseFloat(candle.open);
-
-      // USD notional value = volume × close price
-      const value = volume * close;
-
-      // Color based on candle direction
-      const isBullish = close >= open;
-      const color = isBullish ? brandColor.lime100 : brandColor.red300;
-
-      if (isNaN(value) || value <= 0) {
-        return null;
-      }
-
-      return {
-        time: timeInSeconds,
-        value,
-        color,
-      };
-    })
-    .filter((item): item is HistogramData<Time> => item !== null)
-    .sort((a, b) => (a.time as number) - (b.time as number));
-}

@@ -60,7 +60,7 @@ export {
   type UsePerpsLiveFillsReturn,
 } from './usePerpsLiveFills';
 
-// Candle hooks
+// Candle hooks (enhanced with fetchMoreHistory and CandleStreamChannel)
 export {
   usePerpsLiveCandles,
   type UsePerpsLiveCandlesOptions,

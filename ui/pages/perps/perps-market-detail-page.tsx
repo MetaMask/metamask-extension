@@ -35,6 +35,7 @@ import {
   usePerpsLiveOrders,
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
+  usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import { getPerpsController } from '../../providers/perps';
 import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
@@ -47,6 +48,7 @@ import {
 import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
 import {
   CandlePeriod,
+  TimeDuration,
   ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
 import {
@@ -55,6 +57,7 @@ import {
   getChangeColor,
 } from '../../components/app/perps/utils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
+import { Skeleton } from '../../components/component-library/skeleton';
 import { useFormatters } from '../../hooks/useFormatters';
 import {
   OrderEntry,
@@ -229,6 +232,19 @@ const PerpsMarketDetailPage: React.FC = () => {
     CandlePeriod.FiveMinutes,
   );
   const chartRef = useRef<PerpsCandlestickChartRef>(null);
+
+  // Live candle data from CandleStreamChannel
+  const {
+    candleData,
+    isInitialLoading: isCandleLoading,
+    error: candleError,
+    fetchMoreHistory,
+  } = usePerpsLiveCandles({
+    symbol: decodedSymbol ?? '',
+    interval: selectedPeriod,
+    duration: TimeDuration.YearToDate,
+    throttleMs: 1000,
+  });
 
   // View state: 'detail' or 'order'
   const [currentView, setCurrentView] = useState<MarketDetailView>('detail');
@@ -934,6 +950,47 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
   };
 
+  // Render the chart area: skeleton during initial load, error state on failure,
+  // or the live chart once data is available.
+  const renderChartContent = () => {
+    if (isCandleLoading && !candleData) {
+      return (
+        <Skeleton className="h-[250px] w-full" borderRadius={BorderRadius.LG} />
+      );
+    }
+
+    if (candleError && !candleData) {
+      return (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          className="h-[250px] w-full rounded-lg bg-muted"
+          gap={2}
+        >
+          <Icon
+            name={IconName.Warning}
+            size={IconSize.Lg}
+            color={IconColor.IconAlternative}
+          />
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsChartLoadError') ?? 'Failed to load chart data'}
+          </Text>
+        </Box>
+      );
+    }
+
+    return (
+      <PerpsCandlestickChart
+        ref={chartRef}
+        height={250}
+        selectedPeriod={selectedPeriod}
+        candleData={candleData}
+        onNeedMoreHistory={fetchMoreHistory}
+      />
+    );
+  };
+
   return (
     <Box
       className="main-container asset__container"
@@ -1142,11 +1199,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         paddingRight={4}
         data-testid="perps-market-detail-chart"
       >
-        <PerpsCandlestickChart
-          ref={chartRef}
-          height={250}
-          selectedPeriod={selectedPeriod}
-        />
+        {renderChartContent()}
       </Box>
 
       {/* Candle Period Selector */}

@@ -57,6 +57,27 @@ jest.mock('../../hooks/perps/stream', () => ({
     markets: [...mockCryptoMarkets, ...mockHip3Markets],
     isInitialLoading: false,
   }),
+  usePerpsLiveCandles: () => ({
+    candleData: {
+      symbol: 'ETH',
+      interval: '5m',
+      candles: [
+        {
+          time: 1768188300000,
+          open: '2500.0',
+          high: '2520.0',
+          low: '2490.0',
+          close: '2510.0',
+          volume: '100.0',
+        },
+      ],
+    },
+    isInitialLoading: false,
+    isLoadingMore: false,
+    hasHistoricalData: true,
+    error: null,
+    fetchMoreHistory: jest.fn(),
+  }),
 }));
 
 // Mock usePerpsTransactionHistory hook to avoid controller dependency
