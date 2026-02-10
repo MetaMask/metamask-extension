@@ -39,11 +39,11 @@ describe('Deep Link - Parameter Handling & Security', function () {
   // route page this test can be re-enabled.
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip("passes params to the deep link's component", async function () {
-      await withFixtures(
-        await getConfig({
-          title: this.test?.fullTitle(),
-          deepLinkPublicKey,
-        }),
+    await withFixtures(
+      await getConfig({
+        title: this.test?.fullTitle(),
+        deepLinkPublicKey,
+      }),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -100,11 +100,11 @@ describe('Deep Link - Parameter Handling & Security', function () {
   });
 
   it('handles the skipDeepLinkInterstitial flag correctly', async function () {
-      await withFixtures(
-        await getConfig({
-          title: this.test?.fullTitle(),
-          deepLinkPublicKey,
-        }),
+    await withFixtures(
+      await getConfig({
+        title: this.test?.fullTitle(),
+        deepLinkPublicKey,
+      }),
       async ({ driver }: { driver: Driver }) => {
         // This `skipDeepLinkInterstitial` test:
         // 1. checks the the option only applies for signed and verified links,
@@ -170,11 +170,11 @@ describe('Deep Link - Parameter Handling & Security', function () {
   });
 
   it("does not allow the loading screen over the deep link's component", async function () {
-      await withFixtures(
-        await getConfig({
-          title: this.test?.fullTitle(),
-          deepLinkPublicKey,
-        }),
+    await withFixtures(
+      await getConfig({
+        title: this.test?.fullTitle(),
+        deepLinkPublicKey,
+      }),
       async ({
         driver,
         localNodes,
@@ -213,11 +213,11 @@ describe('Deep Link - Parameter Handling & Security', function () {
   });
 
   it('handles dapps that open MM via window.open', async function () {
-      await withFixtures(
-        await getConfig({
-          title: this.test?.fullTitle(),
-          deepLinkPublicKey,
-        }),
+    await withFixtures(
+      await getConfig({
+        title: this.test?.fullTitle(),
+        deepLinkPublicKey,
+      }),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -284,11 +284,11 @@ describe('Deep Link - Parameter Handling & Security', function () {
   });
 
   it('signed with sig_params only exposes foo (both) and bar, not baz', async function () {
-      await withFixtures(
-        await getConfig({
-          title: this.test?.fullTitle(),
-          deepLinkPublicKey,
-        }),
+    await withFixtures(
+      await getConfig({
+        title: this.test?.fullTitle(),
+        deepLinkPublicKey,
+      }),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -314,11 +314,11 @@ describe('Deep Link - Parameter Handling & Security', function () {
   });
 
   it('signed with empty sig_params, but url has extra params added, does not expose extra params', async function () {
-      await withFixtures(
-        await getConfig({
-          title: this.test?.fullTitle(),
-          deepLinkPublicKey,
-        }),
+    await withFixtures(
+      await getConfig({
+        title: this.test?.fullTitle(),
+        deepLinkPublicKey,
+      }),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -342,11 +342,11 @@ describe('Deep Link - Parameter Handling & Security', function () {
   });
 
   it('signed with sig_params, url has no extra params added, works', async function () {
-      await withFixtures(
-        await getConfig({
-          title: this.test?.fullTitle(),
-          deepLinkPublicKey,
-        }),
+    await withFixtures(
+      await getConfig({
+        title: this.test?.fullTitle(),
+        deepLinkPublicKey,
+      }),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -370,11 +370,11 @@ describe('Deep Link - Parameter Handling & Security', function () {
   });
 
   it('signed without sig_params exposes all params (foo, bar, baz)', async function () {
-      await withFixtures(
-        await getConfig({
-          title: this.test?.fullTitle(),
-          deepLinkPublicKey,
-        }),
+    await withFixtures(
+      await getConfig({
+        title: this.test?.fullTitle(),
+        deepLinkPublicKey,
+      }),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -400,11 +400,11 @@ describe('Deep Link - Parameter Handling & Security', function () {
   });
 
   it('unsigned flow exposes all params including duplicate values', async function () {
-      await withFixtures(
-        await getConfig({
-          title: this.test?.fullTitle(),
-          deepLinkPublicKey,
-        }),
+    await withFixtures(
+      await getConfig({
+        title: this.test?.fullTitle(),
+        deepLinkPublicKey,
+      }),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
