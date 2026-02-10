@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CANCEL_TYPES,
   PAYMENT_TYPES,
@@ -385,10 +385,23 @@ export const useSubscriptionCryptoApprovalTransaction = (
   }, [networkConfigurationsByChainId, selectedToken?.chainId]);
 
   // Get gas fee estimates for optimized gas sponsorship
+  // Use ref to avoid recreating handler callback on every gas estimate poll (~12s)
   const { gasFeeEstimates, gasEstimateType } = useGasFeeEstimates(
     networkClientId,
     Boolean(networkClientId),
   ) as unknown as { gasFeeEstimates: GasFeeEstimates; gasEstimateType: string };
+
+  const gasFeeEstimatesRef = useRef<{
+    estimates: GasFeeEstimates | undefined;
+    type: string | undefined;
+  }>({ estimates: gasFeeEstimates, type: gasEstimateType });
+
+  useEffect(() => {
+    gasFeeEstimatesRef.current = {
+      estimates: gasFeeEstimates,
+      type: gasEstimateType,
+    };
+  }, [gasFeeEstimates, gasEstimateType]);
 
   const hasPendingApprovals =
     useSelector(getUnapprovedConfirmations).length > 0;
@@ -434,19 +447,23 @@ export const useSubscriptionCryptoApprovalTransaction = (
     transactionParams.gas = await estimateGas(transactionParams);
 
     // Set optimized gas fees for gas sponsorship: min(2 * low, medium)
+    // Read from ref to get latest values without causing callback recreation
+    const currentGasFeeEstimates = gasFeeEstimatesRef.current.estimates;
+    const currentGasEstimateType = gasFeeEstimatesRef.current.type;
+
     if (
-      gasEstimateType === GasEstimateTypes.feeMarket &&
-      gasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas &&
-      gasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas &&
-      gasFeeEstimates?.estimatedBaseFee
+      currentGasEstimateType === GasEstimateTypes.feeMarket &&
+      currentGasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas &&
+      currentGasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas &&
+      currentGasFeeEstimates?.estimatedBaseFee
     ) {
       const lowPriority = Number(
-        gasFeeEstimates.low.suggestedMaxPriorityFeePerGas,
+        currentGasFeeEstimates.low.suggestedMaxPriorityFeePerGas,
       );
       const mediumPriority = Number(
-        gasFeeEstimates.medium.suggestedMaxPriorityFeePerGas,
+        currentGasFeeEstimates.medium.suggestedMaxPriorityFeePerGas,
       );
-      const baseFee = Number(gasFeeEstimates.estimatedBaseFee);
+      const baseFee = Number(currentGasFeeEstimates.estimatedBaseFee);
 
       // Skip optimization if any parsed value is NaN (malformed API response)
       if (
@@ -476,8 +493,6 @@ export const useSubscriptionCryptoApprovalTransaction = (
     evmInternalAccount,
     networkClientId,
     selectedToken,
-    gasFeeEstimates,
-    gasEstimateType,
   ]);
 
   return {

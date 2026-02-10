@@ -1991,7 +1991,7 @@ export async function addTransaction(
   txParams: TransactionParams,
   options: {
     method?: string;
-    networkClientId?: NetworkClientId;
+    networkClientId: NetworkClientId;
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
