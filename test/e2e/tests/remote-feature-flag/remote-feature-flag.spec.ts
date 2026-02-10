@@ -12,6 +12,20 @@ import {
   MOCK_META_METRICS_ID,
   MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
 } from '../../constants';
+import { Mockttp } from '../../mock-e2e';
+
+async function mockRemoteFeatureFlags(mockServer: Mockttp) {
+  return [
+    await mockServer
+      .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [MOCK_REMOTE_FEATURE_FLAGS_RESPONSE],
+        };
+      }),
+  ];
+}
 
 describe('Remote feature flag', function (this: Suite) {
   it('should be fetched with threshold value when basic functionality toggle is on', async function () {
@@ -24,6 +38,7 @@ describe('Remote feature flag', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockRemoteFeatureFlags,
       },
       async ({ driver }: TestSuiteArguments) => {
         await loginWithBalanceValidation(driver);
@@ -66,6 +81,7 @@ describe('Remote feature flag', function (this: Suite) {
           remoteFeatureFlags: MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
         },
         title: this.test?.fullTitle(),
+        testSpecificMock: mockRemoteFeatureFlags,
       },
       async ({ driver }: TestSuiteArguments) => {
         await loginWithBalanceValidation(driver);
