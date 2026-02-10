@@ -221,42 +221,16 @@ export class LedgerOffscreenHandler {
   }> {
     const app = await this.ensureApp();
 
-    try {
-      const result = await app.clearSignTransaction(hdPath, tx, {
-        // nft: true, // TODO: FIX ME: temporarily disabled because erc20 are being misidentified.
-        externalPlugins: true,
-        erc20: true,
-      });
-      return {
-        v: result.v,
-        r: result.r,
-        s: result.s,
-      };
-    } catch (error) {
-      // 0x6985 = "Condition of use not satisfied"
-      // This can occur when clear signing context is unavailable for the
-      // transaction (unrecognized contract/method). Fall back to blind signing.
-      const statusCode =
-        error instanceof Error &&
-        'statusCode' in error &&
-        typeof error.statusCode === 'number'
-          ? error.statusCode
-          : undefined;
-
-      if (statusCode === 0x6985) {
-        console.warn(
-          'Clear signing failed with 0x6985, falling back to blind signing',
-        );
-        const result = await app.signTransaction(hdPath, tx);
-        return {
-          v: result.v,
-          r: result.r,
-          s: result.s,
-        };
-      }
-
-      throw error;
-    }
+    const result = await app.clearSignTransaction(hdPath, tx, {
+      // nft: true, // TODO: FIX ME: temporarily disabled because erc20 are being misidentified.
+      externalPlugins: true,
+      erc20: true,
+    });
+    return {
+      v: result.v,
+      r: result.r,
+      s: result.s,
+    };
   }
 
   /**

@@ -42,7 +42,6 @@ export const isApprovalTxError = (error: unknown): boolean => {
 const isHardwareWalletUserRejection = (error: unknown): boolean => {
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
 
-  debugger;
   return (
     // Ledger rejection
     (errorMessage.includes('ledger') &&

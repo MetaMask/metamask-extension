@@ -78,9 +78,7 @@ export const BridgeCTAButton = ({
 
   const isTxSubmittable = useIsTxSubmittable();
 
-  // Optimized: Only subscribe to config (no rerenders on connection state changes)
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
-  // Optimized: Only subscribe to actions (stable, never rerenders)
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
 
