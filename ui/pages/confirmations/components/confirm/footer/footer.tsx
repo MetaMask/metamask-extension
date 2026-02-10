@@ -310,6 +310,7 @@ const Footer = () => {
       if (didConfirm && currentConfirmationId) {
         navigateNext(currentConfirmationId);
       }
+      resetTransactionState();
     } else {
       try {
         await dispatch(
