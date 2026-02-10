@@ -6,6 +6,7 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   Text,
+  TextButton,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -27,7 +28,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  TextButton,
 } from '../../component-library';
 
 const CancelSpeedupPopoverWrapped = () => {
