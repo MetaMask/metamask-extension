@@ -62,6 +62,7 @@ import {
   type OrderFormState,
   type OrderMode,
 } from '../../components/app/perps/order-entry';
+import { EditMarginExpandable } from '../../components/app/perps/edit-margin';
 import type { OrderType, OrderParams } from '../../components/app/perps/types';
 import { TextField, TextFieldSize } from '../../components/component-library';
 import {
@@ -254,6 +255,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Auto close card expansion state
   const [isAutoCloseExpanded, setIsAutoCloseExpanded] = useState(false);
+  const [isMarginExpanded, setIsMarginExpanded] = useState(false);
   const [editingTpPrice, setEditingTpPrice] = useState<string>('');
   const [editingSlPrice, setEditingSlPrice] = useState<string>('');
   const [isSavingTPSL, setIsSavingTPSL] = useState(false);
@@ -688,7 +690,15 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Handle auto close card toggle
   const handleAutoCloseToggle = useCallback(() => {
     setIsAutoCloseExpanded((prev) => !prev);
+    setIsMarginExpanded(false);
     setTpslError(null);
+  }, []);
+
+  // Handle margin card toggle (expand/collapse edit margin section)
+  const handleMarginToggle = useCallback(() => {
+    console.log('[Perps] handleMarginToggle called');
+    setIsMarginExpanded((prev) => !prev);
+    setIsAutoCloseExpanded(false);
   }, []);
 
   // Handle saving TP/SL changes
@@ -1289,9 +1299,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                   <Box
                     className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
                     flexDirection={BoxFlexDirection.Column}
-                    onClick={() => {
-                      // TODO: Handle margin card press
-                    }}
+                    onClick={handleMarginToggle}
                   >
                     <Box paddingBottom={1}>
                       <Text
@@ -1309,6 +1317,18 @@ const PerpsMarketDetailPage: React.FC = () => {
                     </Text>
                   </Box>
                 </Box>
+
+                {/* Edit Margin - Expandable (full width) */}
+                {position && selectedAddress && (
+                  <EditMarginExpandable
+                    position={position}
+                    account={account}
+                    currentPrice={currentPrice}
+                    selectedAddress={selectedAddress}
+                    isExpanded={isMarginExpanded}
+                    onToggle={handleMarginToggle}
+                  />
+                )}
 
                 {/* Third Row: Auto Close (Full Width) - Expandable */}
                 <Box

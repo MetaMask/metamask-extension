@@ -57,6 +57,10 @@ export type {
   AccountState,
 } from './types';
 
+// Edit Margin expandable
+export { EditMarginExpandable } from './edit-margin';
+export type { EditMarginExpandableProps } from './edit-margin';
+
 // Order Entry components
 export { OrderEntry } from './order-entry';
 export type {

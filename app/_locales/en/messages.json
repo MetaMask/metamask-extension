@@ -5338,6 +5338,27 @@
   "perpsMargin": {
     "message": "Margin"
   },
+  "perpsAddMargin": {
+    "message": "Add Margin"
+  },
+  "perpsRemoveMargin": {
+    "message": "Remove Margin"
+  },
+  "perpsAvailableBalance": {
+    "message": "Available balance"
+  },
+  "perpsMaxRemovable": {
+    "message": "Max removable"
+  },
+  "perpsLiquidationDistance": {
+    "message": "Liq. distance"
+  },
+  "perpsMarginRiskWarning": {
+    "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
+  },
+  "perpsMax": {
+    "message": "Max"
+  },
   "perpsMarket": {
     "message": "Market"
   },

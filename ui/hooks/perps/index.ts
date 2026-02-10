@@ -15,3 +15,10 @@ export type {
   UsePerpsTransactionHistoryParams,
   UsePerpsTransactionHistoryResult,
 } from './usePerpsTransactionHistory';
+
+export { usePerpsMarginCalculations } from './usePerpsMarginCalculations';
+export type {
+  UsePerpsMarginCalculationsParams,
+  UsePerpsMarginCalculationsReturn,
+  MarginRiskAssessment,
+} from './usePerpsMarginCalculations';

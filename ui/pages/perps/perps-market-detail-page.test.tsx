@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import {
@@ -292,6 +293,32 @@ describe('PerpsMarketDetailPage', () => {
       );
 
       expect(getByText('Learn the basics of perps')).toBeInTheDocument();
+    });
+
+    it('expands edit margin section when margin card is clicked', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      expect(screen.queryByText('Add Margin')).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByText('Margin'));
+
+      expect(screen.getByText('Add Margin')).toBeInTheDocument();
+      expect(screen.getByText('Remove Margin')).toBeInTheDocument();
+    });
+
+    it('collapses margin section when auto close is opened (mutual exclusion)', () => {
+      const store = mockStore(createMockState(true));
+
+      renderWithProvider(<PerpsMarketDetailPage />, store);
+
+      fireEvent.click(screen.getByText('Margin'));
+      expect(screen.getByText('Add Margin')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByText('Auto close'));
+      expect(screen.getByText('Take Profit')).toBeInTheDocument();
+      expect(screen.getByText('Stop Loss')).toBeInTheDocument();
     });
   });
 

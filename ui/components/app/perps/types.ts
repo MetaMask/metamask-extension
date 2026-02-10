@@ -25,6 +25,10 @@ export type {
   CancelOrderParams,
   CancelOrderResult,
 
+  // Margin adjustment types
+  UpdateMarginParams,
+  MarginResult,
+
   // Price and market data
   PriceUpdate,
 
