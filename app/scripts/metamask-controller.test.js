@@ -2011,7 +2011,7 @@ describe('MetaMaskController', () => {
       it('only checks for accounts in the keyring when comparing accountCount', async () => {
         await metamaskController.createNewVaultAndKeychain('password');
         // add a new hd keyring vault to simulate having multiple accounts from different keyrings
-        await metamaskController.generateNewMnemonicAndAddToVault();
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
         const numberOfAccounts = (
           await metamaskController.keyringController.getAccounts()
@@ -3637,28 +3637,6 @@ describe('MetaMaskController', () => {
           remoteFeatureFlags: {},
           cacheTimestamp: 0,
         });
-      });
-    });
-
-    describe('generateNewMnemonicAndAddToVault', () => {
-      it('generates a new hd keyring instance', async () => {
-        const password = 'what-what-what';
-        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
-
-        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
-
-        const previousKeyrings =
-          metamaskController.keyringController.state.keyrings;
-
-        await metamaskController.generateNewMnemonicAndAddToVault();
-
-        const currentKeyrings =
-          metamaskController.keyringController.state.keyrings;
-
-        expect(
-          currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
-        ).toHaveLength(2);
-        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
       });
     });
 

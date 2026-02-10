@@ -3111,8 +3111,6 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      generateNewMnemonicAndAddToVault:
-        this.generateNewMnemonicAndAddToVault.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
 
@@ -4860,37 +4858,6 @@ export default class MetamaskController extends EventEmitter {
       );
 
       throw error;
-    }
-  }
-
-  /**
-   * Generates a new mnemonic phrase and adds it to the vault, creating a new HD keyring.
-   * This method automatically creates one account associated with the new keyring.
-   * The method is protected by a mutex to prevent concurrent vault modifications.
-   *
-   * @async
-   * @returns {Promise<string>} The address of the newly created account
-   * @throws Will throw an error if keyring creation fails
-   */
-  async generateNewMnemonicAndAddToVault() {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      // addNewKeyring auto creates 1 account.
-      const { id } = await this.keyringController.addNewKeyring(
-        KeyringTypes.hd,
-      );
-      const [newAccount] = await this.keyringController.withKeyring(
-        { id },
-        async ({ keyring }) => keyring.getAccounts(),
-      );
-      const account = this.accountsController.getAccountByAddress(newAccount);
-      this.accountsController.setSelectedAccount(account.id);
-
-      // NOTE: No need to update balances here since we're generating a fresh seed.
-
-      return newAccount;
-    } finally {
-      releaseLock();
     }
   }
 
