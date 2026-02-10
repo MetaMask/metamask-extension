@@ -27,6 +27,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
+  TextButton,
 } from '../../component-library';
 
 const CancelSpeedupPopoverWrapped = () => {
@@ -121,22 +122,17 @@ const CancelSpeedupPopoverWrapped = () => {
                       editGasMode === EditGasModes.cancel
                         ? t('cancel')
                         : t('speedUp'),
-                    ])}{' '}
-                    <Text
-                      asChild
-                      variant={TextVariant.BodySm}
-                      color={TextColor.Primary}
-                      className="hover:text-primary-alternative cursor-pointer"
-                    >
-                      <a
-                        href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {t('learnMoreUpperCase')}
-                      </a>
-                    </Text>
+                    ])}
                   </Text>
+                  <TextButton asChild className="inline">
+                    <a
+                      href="https://support.metamask.io/manage-crypto/transactions/how-to-speed-up-or-cancel-a-pending-transaction"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('learnMoreUpperCase')}
+                    </a>
+                  </TextButton>
                 </>
               }
             />
