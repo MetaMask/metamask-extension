@@ -39,6 +39,7 @@ import {
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
+import type { PriceUpdate } from '../../hooks/perps/stream';
 import { getPerpsController } from '../../providers/perps';
 import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { OrderCard } from '../../components/app/perps/order-card';
@@ -71,10 +72,57 @@ import {
 import { EditMarginExpandable } from '../../components/app/perps/edit-margin';
 import type { OrderType, OrderParams } from '../../components/app/perps/types';
 import { TextField, TextFieldSize } from '../../components/component-library';
+import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../helpers/constants/design-system';
+
+/**
+ * Calculate the funding countdown string (time until next UTC hour).
+ * Funding on HyperLiquid is paid every hour on the hour (UTC).
+ *
+ * @returns Formatted countdown string, e.g. "00:23:45"
+ */
+function calculateFundingCountdown(): string {
+  const now = new Date();
+  let minutesRemaining = 59 - now.getUTCMinutes();
+  let secondsRemaining = 60 - now.getUTCSeconds();
+
+  // Handle rollover: if seconds hit 60, carry to minutes
+  if (secondsRemaining === 60) {
+    secondsRemaining = 0;
+    minutesRemaining += 1;
+  }
+
+  // Handle rollover: if minutes hit 60, display as 01:00:00
+  if (minutesRemaining === 60) {
+    return '01:00:00';
+  }
+
+  const hh = '00';
+  const mm = String(minutesRemaining).padStart(2, '0');
+  const ss = String(secondsRemaining).padStart(2, '0');
+  return `${hh}:${mm}:${ss}`;
+}
+
+/**
+ * Hook that returns a live funding countdown string, updated every second.
+ *
+ * @returns Formatted countdown string, e.g. "00:23:45"
+ */
+function useFundingCountdown(): string {
+  const [countdown, setCountdown] = useState(calculateFundingCountdown);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdown(calculateFundingCountdown());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return countdown;
+}
 
 // Preset percentage options for quick selection (matching AutoCloseSection)
 const TP_PRESETS = [10, 25, 50, 100];
@@ -166,8 +214,13 @@ const PerpsMarketDetailPage: React.FC = () => {
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
-  const { formatCurrencyWithMinThreshold, formatTokenQuantity, formatNumber } =
-    useFormatters();
+  const {
+    formatCurrencyWithMinThreshold,
+    formatTokenQuantity,
+    formatNumber,
+    formatPercentWithMinThreshold,
+  } = useFormatters();
+  const fundingCountdown = useFundingCountdown();
 
   // Use stream hooks for real-time data
   const { positions: allPositions } = usePerpsLivePositions();
@@ -183,6 +236,52 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
+
+  // Subscribe to live price data for current symbol (provides oracle price, live funding, OI)
+  // Uses getPerpsController (module singleton) since this page is outside PerpsControllerProvider
+  const [livePrice, setLivePrice] = useState<PriceUpdate | undefined>(
+    undefined,
+  );
+  useEffect(() => {
+    if (!decodedSymbol || !selectedAddress) {
+      setLivePrice(undefined);
+      return undefined;
+    }
+
+    let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
+
+    const subscribe = async () => {
+      try {
+        const controller = await getPerpsController(selectedAddress);
+        if (cancelled) {
+          return;
+        }
+        unsubscribe = controller.subscribeToPrices({
+          symbols: [decodedSymbol],
+          includeMarketData: true,
+          callback: (priceUpdates) => {
+            const update = priceUpdates.find(
+              (p) => p.symbol === decodedSymbol,
+            );
+            if (update) {
+              setLivePrice(update);
+            }
+          },
+          throttleMs: 1000,
+        });
+      } catch {
+        // Controller not ready yet, skip silently
+      }
+    };
+
+    subscribe();
+
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+  }, [decodedSymbol, selectedAddress]);
 
   // Find market data for the given symbol
   const market = useMemo(() => {
@@ -1418,8 +1517,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                           : TextColor.ErrorDefault
                       }
                     >
-                      {parseFloat(position.returnOnEquity) >= 0 ? '+' : ''}
-                      {position.returnOnEquity}%
+                      {formatPercentWithMinThreshold(
+                        parseFloat(position.returnOnEquity),
+                      )}
                     </Text>
                   </Box>
                 </Box>
@@ -1446,10 +1546,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      {formatTokenQuantity(
-                        Math.abs(parseFloat(position.size)),
-                        getDisplayName(position.symbol),
-                      )}
+                      {`${formatNumber(Math.abs(parseFloat(position.size)), { maximumSignificantDigits: 4 })} ${getDisplayName(position.symbol)}`}
                     </Text>
                   </Box>
 
@@ -1471,7 +1568,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      ${position.marginUsed}
+                      {formatCurrencyWithMinThreshold(
+                        parseFloat(position.marginUsed),
+                        'USD',
+                      )}
                     </Text>
                   </Box>
                 </Box>
@@ -2013,12 +2113,22 @@ const PerpsMarketDetailPage: React.FC = () => {
                   justifyContent={BoxJustifyContent.Between}
                   alignItems={BoxAlignItems.Center}
                 >
-                  <Text
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextAlternative}
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    gap={1}
                   >
-                    {t('perpsOpenInterest')}
-                  </Text>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsOpenInterest')}
+                    </Text>
+                    <InfoTooltip
+                      position="top"
+                      contentText={t('perpsOpenInterestTooltip')}
+                    />
+                  </Box>
                   <Text
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
@@ -2036,30 +2146,88 @@ const PerpsMarketDetailPage: React.FC = () => {
                   justifyContent={BoxJustifyContent.Between}
                   alignItems={BoxAlignItems.Center}
                 >
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    gap={1}
+                  >
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {t('perpsFundingRate')}
+                    </Text>
+                    <InfoTooltip
+                      position="top"
+                      contentText={t('perpsFundingRateTooltip')}
+                    />
+                  </Box>
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    alignItems={BoxAlignItems.Center}
+                    gap={1}
+                  >
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                      color={
+                        market.fundingRate >= 0
+                          ? TextColor.SuccessDefault
+                          : TextColor.ErrorDefault
+                      }
+                    >
+                      {market.fundingRate >= 0 ? '+' : ''}
+                      {formatNumber(market.fundingRate * 100, {
+                        minimumFractionDigits: 4,
+                        maximumFractionDigits: 4,
+                      })}
+                      %
+                    </Text>
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      ({fundingCountdown})
+                    </Text>
+                  </Box>
+                </Box>
+              )}
+
+              {/* Oracle Price Row */}
+              <Box
+                className="bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={1}
+                >
                   <Text
                     variant={TextVariant.BodySm}
                     color={TextColor.TextAlternative}
                   >
-                    {t('perpsFundingRate')}
+                    {t('perpsOraclePrice')}
                   </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                    color={
-                      market.fundingRate >= 0
-                        ? TextColor.SuccessDefault
-                        : TextColor.ErrorDefault
-                    }
-                  >
-                    {market.fundingRate >= 0 ? '+' : ''}
-                    {formatNumber(market.fundingRate * 100, {
-                      minimumFractionDigits: 4,
-                      maximumFractionDigits: 4,
-                    })}
-                    %
-                  </Text>
+                  <InfoTooltip
+                    position="top"
+                    contentText={t('perpsOraclePriceTooltip')}
+                  />
                 </Box>
-              )}
+                <Text
+                  variant={TextVariant.BodySm}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {livePrice?.markPrice
+                    ? formatCurrencyWithMinThreshold(
+                        parseFloat(livePrice.markPrice),
+                        'USD',
+                      )
+                    : '—'}
+                </Text>
+              </Box>
             </Box>
           </Box>
 
@@ -2287,25 +2455,20 @@ const PerpsMarketDetailPage: React.FC = () => {
             gap={3}
             data-testid="perps-position-cta-buttons"
           >
-            {/* Modify Button - Primary: Update TP/SL is the common action */}
+            {/* Modify Button - Dark neutral style */}
             <Button
-              variant={ButtonVariant.Primary}
+              variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               onClick={handleModifyPosition}
-              className={twMerge(
-                'flex-1',
-                parseFloat(position.size) >= 0
-                  ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
-                  : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
-              )}
+              className="flex-1"
               data-testid="perps-modify-cta-button"
             >
               {t('perpsModify')}
             </Button>
 
-            {/* Close Button - Secondary: Destructive action, less prominent */}
+            {/* Close Button - White / Primary style */}
             <Button
-              variant={ButtonVariant.Secondary}
+              variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={handleClosePosition}
               className="flex-1"
@@ -2330,10 +2493,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('long')}
-              className={twMerge(
-                'flex-1',
-                'bg-success-default hover:bg-success-hover active:bg-success-pressed',
-              )}
+              className="flex-1"
               data-testid="perps-long-cta-button"
             >
               {t('perpsLong')}
@@ -2344,10 +2504,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('short')}
-              className={twMerge(
-                'flex-1',
-                'bg-error-default hover:bg-error-hover active:bg-error-pressed',
-              )}
+              className="flex-1"
               data-testid="perps-short-cta-button"
             >
               {t('perpsShort')}
