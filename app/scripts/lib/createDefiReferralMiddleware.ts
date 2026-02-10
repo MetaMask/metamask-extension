@@ -2,7 +2,6 @@ import {
   createAsyncMiddleware,
   type AsyncJsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import { ValidPermission, type Caveat } from '@metamask/permission-controller';
 import type {
   Json,
   JsonRpcRequest,
@@ -53,9 +52,7 @@ export function createDefiReferralMiddleware(
   return createAsyncMiddleware(
     async (
       req: JsonRpcRequest,
-      res: PendingJsonRpcResponse<
-        ValidPermission<string, Caveat<string, Json>>[]
-      >,
+      res: PendingJsonRpcResponse<Json>,
       next: AsyncJsonRpcEngineNextCallback,
     ) => {
       // First, call next to process the request
@@ -84,7 +81,8 @@ export function createDefiReferralMiddleware(
       if (Array.isArray(res.result) && res.result.length > 0) {
         if (isWalletRequestPermissions) {
           // wallet_requestPermissions returns permission objects with parentCapability key
-          arePermissionsGranted = res.result.some(
+          const permissions = res.result as Array<{ parentCapability?: string }>;
+          arePermissionsGranted = permissions.some(
             (permission) => permission?.parentCapability === 'eth_accounts',
           );
         } else if (isEthRequestAccounts) {
