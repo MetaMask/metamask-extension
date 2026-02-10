@@ -163,6 +163,7 @@ export const RecipientInput = ({
           }
           onChange={onToChange}
           placeholder={t('recipientPlaceholderText')}
+          testId="recipient-address-input"
           ref={recipientInputRef}
           value={to}
           width={BlockSize.Full}

@@ -14,6 +14,8 @@ concurrency:
 
 jobs:
   identify-codeowners:
+    # Avoid running on forks since we need to write a PR comment
+    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: pr-comment
@@ -26,7 +28,6 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Identify codeowners
-        if: ${{ env.PR_COMMENT_TOKEN }}
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
         run: yarn tsx ./.github/scripts/identify-codeowners.ts
