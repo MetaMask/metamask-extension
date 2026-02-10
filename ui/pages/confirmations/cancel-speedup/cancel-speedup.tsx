@@ -92,10 +92,10 @@ const NetworkFeeRow = ({
           gap={1}
           className="flex"
         >
-          <Text className="text-default font-medium">{nativeFee}</Text>
           {showFiat && (
             <Text className="text-alternative font-medium">{fiatFee}</Text>
           )}
+          <Text className="text-default font-medium">{nativeFee}</Text>
         </Box>
       </Box>
     </ConfirmInfoRow>
@@ -131,7 +131,7 @@ const GasFeesSection = ({ transaction }: { transaction: TransactionMeta }) => {
   const { openModal } =
     useTransactionModalContext() as TransactionModalContextType;
 
-  const { maxFeePerGas, maxPriorityFeePerGas, minimumCostInHexWei } =
+  const { maxFeePerGas, maxPriorityFeePerGas, maximumCostInHexWei } =
     useGasFeeContext() as GasFeeContextType;
 
   const { showFiatInTestnets } = useSelector(getPreferences);
@@ -149,12 +149,12 @@ const GasFeesSection = ({ transaction }: { transaction: TransactionMeta }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
 
-  const [nativeFee] = useCurrencyDisplay(minimumCostInHexWei, {
+  const [nativeFee] = useCurrencyDisplay(maximumCostInHexWei, {
     numberOfDecimals: primaryNumberOfDecimals,
     currency: primaryCurrency,
   });
 
-  const [fiatFee] = useCurrencyDisplay(minimumCostInHexWei, {
+  const [fiatFee] = useCurrencyDisplay(maximumCostInHexWei, {
     numberOfDecimals: secondaryNumberOfDecimals,
     currency: secondaryCurrency,
   });
@@ -234,7 +234,7 @@ type GasFeeContextType = {
   updateTransactionUsingEstimate: (level: string) => void;
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
-  minimumCostInHexWei: string;
+  maximumCostInHexWei: string;
 };
 
 type TransactionModalContextType = {

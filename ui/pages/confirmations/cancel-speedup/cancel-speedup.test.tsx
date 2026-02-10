@@ -1,73 +1,101 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
-import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
-import { CancelSpeedup } from './cancel-speedup';
-import { useTransactionModalContext } from '../../../contexts/transaction-modal';
-import { useGasFeeContext } from '../../../contexts/gasFee';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
-import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
+import BigNumber from 'bignumber.js';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  EditGasModes,
+  GasEstimateTypes,
+} from '../../../../shared/constants/gas';
+import { useTransactionModalContext } from '../../../contexts/transaction-modal';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
+import { CancelSpeedup } from './cancel-speedup';
+import mockEstimates from '../../../../test/data/mock-estimates.json';
+import mockState from '../../../../test/data/mock-state.json';
+import {
+  decGWEIToHexWEI,
+  hexWEIToDecETH,
+} from '../../../../shared/modules/conversion.utils';
+import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
+import {
+  createCancelTransaction,
+  createSpeedUpTransaction,
+} from '../../../store/actions';
+import { MetaMaskReduxState } from '../../../selectors';
+
+jest.mock('../../../store/actions', () => ({
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>
+    Promise.resolve({
+      chainId: '0x5',
+    }),
+  ),
+  getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
+  updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
+  updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
+  createTransactionEventFragment: jest.fn(),
+  createSpeedUpTransaction: jest.fn(() => ({ type: 'SPEED_UP_TRANSACTION' })),
+  createCancelTransaction: jest.fn(() => ({ type: 'CANCEL_TRANSACTION' })),
+}));
 
 jest.mock('../../../contexts/transaction-modal', () => ({
   useTransactionModalContext: jest.fn(),
 }));
 
-jest.mock('../../../contexts/gasFee', () => ({
-  useGasFeeContext: jest.fn(),
-  GasFeeContextProvider: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-}));
+const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
+  mockState as unknown as MetaMaskReduxState,
+);
 
-jest.mock('../../../helpers/utils/gas', () => ({
-  gasEstimateGreaterThanGasUsedPlusTenPercent: jest.fn(),
-}));
+const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800'; // 100 GWEI in hex WEI
+const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN = new BigNumber(
+  MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX,
+  16,
+).times(21000, 10); // maxFeePerGas * gasLimit
+const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN_PLUS_TEN_PCT_HEX =
+  MAXGASCOST_ABOVE_MOCK_MEDIUM_BN.times(1.1, 10).toString(16); // adding 10%
 
-jest.mock('../../../hooks/useCurrencyDisplay', () => ({
-  useCurrencyDisplay: jest.fn(),
-}));
+const EXPECTED_ETH_FEE_1 = hexWEIToDecETH(
+  MAXGASCOST_ABOVE_MOCK_MEDIUM_BN_PLUS_TEN_PCT_HEX,
+); // converting back to ETH for display
 
-jest.mock('../../../hooks/useUserPreferencedCurrency', () => ({
-  useUserPreferencedCurrency: jest.fn(),
-}));
+const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_DEC_GWEI =
+  mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates.medium
+    .suggestedMaxFeePerGas; // 10 GWEI in decimal
+const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI = new BigNumber(
+  decGWEIToHexWEI(MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_DEC_GWEI),
+  16,
+); // converting to hex WEI and then to BN for calculations
+const MAXFEEPERGAS_BELOW_MOCK_MEDIUM_HEX =
+  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.div(10, 10).toString(16); // 1 GWEI in hex WEI, which is below the medium estimate
 
-jest.mock('../components/gas-timing/gas-timing.component', () => ({
-  __esModule: true,
-  default: () => <div data-testid="gas-timing">Gas Timing</div>,
-}));
+const EXPECTED_ETH_FEE_2 = hexWEIToDecETH(
+  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.times(21000, 10).toString(16),
+); // expected fee when using the medium estimate (10 GWEI * 21000 gasLimit)
 
-const mockTransaction = {
-  id: '1',
-  chainId: '0x1',
-  txParams: {
-    from: '0x123',
-    to: '0x456',
-    gas: '0x5208',
-  },
-  previousGas: null,
-} as unknown as TransactionMeta;
-
-const defaultGasFeeContext = {
-  transaction: mockTransaction,
-  maxFeePerGas: '0x3b9aca00',
-  maxPriorityFeePerGas: '0x3b9aca00',
-  minimumCostInHexWei: '0x2386f26fc10000',
-  cancelTransaction: jest.fn(),
-  speedUpTransaction: jest.fn(),
-  updateTransactionToTenPercentIncreasedGasFee: jest.fn(),
-  updateTransactionUsingEstimate: jest.fn(),
-  updateTransaction: jest.fn(),
-  gasFeeEstimates: { medium: { suggestedMaxFeePerGas: '10' } },
-  editGasMode: EditGasModes.speedUp,
-};
+const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
+  MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16); // 10 GWEI in hex WEI
+const mockTransaction =           {
+            id: '1',
+            chainId: '0x5',
+            networkClientId: 'goerli',
+            userFeeLevel: 'tenPercentIncreased',
+            txParams: {
+              from: mockSelectedInternalAccount.address,
+              gas: '0x5208',
+              maxFeePerGas: MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
+              maxPriorityFeePerGas: '0x2540be400',
+            },
+            gasLimitNoBuffer: '0x5208',
+          } as unknown as TransactionMeta
 
 describe('CancelSpeedup Component', () => {
   const mockCloseModal = jest.fn();
   const mockOpenModal = jest.fn();
-  let store: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -77,62 +105,71 @@ describe('CancelSpeedup Component', () => {
       closeModal: mockCloseModal,
       openModal: mockOpenModal,
     });
+  });
 
-    (useGasFeeContext as jest.Mock).mockReturnValue({
-      ...defaultGasFeeContext,
-      cancelTransaction: jest.fn(),
-      speedUpTransaction: jest.fn(),
-      updateTransactionToTenPercentIncreasedGasFee: jest.fn(),
-      updateTransactionUsingEstimate: jest.fn(),
-    });
-
-    (useCurrencyDisplay as jest.Mock).mockReturnValue(['0.001 ETH', '']);
-    (useUserPreferencedCurrency as jest.Mock).mockReturnValue({
-      currency: 'ETH',
-      numberOfDecimals: 6,
-    });
-
-    (gasEstimateGreaterThanGasUsedPlusTenPercent as jest.Mock).mockReturnValue(
-      false,
-    );
-
-    store = configureStore({
+  const render = (
+    props: Partial<React.ComponentProps<typeof CancelSpeedup>> = {},
+    maxFeePerGas = MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
+  ) => {
+    const store = configureStore({
       appState: {
         isLoading: false,
       },
       metamask: {
+        ...mockState.metamask,
+        isInitialized: true,
+        accounts: {
+          [mockSelectedInternalAccount.address]: {
+            address: mockSelectedInternalAccount.address,
+            balance: '0x1F4',
+          },
+        },
         preferences: {
           showFiatInTestnets: true,
         },
+        featureFlags: { advancedInlineGas: true },
+        gasFeeEstimates:
+          mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        gasFeeEstimatesByChainId: {
+          ...mockState.metamask.gasFeeEstimatesByChainId,
+          '0x5': {
+            ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+            gasFeeEstimates:
+              mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+          },
+        },
       },
     });
-  });
+
+    return renderWithProvider(
+      <CancelSpeedup
+        transaction={{ ...mockTransaction, txParams: {
+          ...mockTransaction.txParams,
+            maxFeePerGas,
+        } } as TransactionMeta}
+        editGasMode={EditGasModes.cancel}
+        {...props}
+      />,
+      store,
+    );
+  };
 
   it('renders nothing if currentModal is not cancelSpeedUpTransaction', () => {
     (useTransactionModalContext as jest.Mock).mockReturnValue({
       currentModal: 'none',
     });
 
-    const { container } = renderWithProvider(
-      <CancelSpeedup
-        transaction={mockTransaction}
-        editGasMode={EditGasModes.speedUp}
-      />,
-      store,
-    );
+    const { container } = render();
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders correctly in Speed Up mode', () => {
-    renderWithProvider(
-      <CancelSpeedup
-        transaction={mockTransaction}
-        editGasMode={EditGasModes.speedUp}
-      />,
-      store,
-    );
+  it('renders correctly in Speed Up mode', async () => {
+    render({ editGasMode: EditGasModes.speedUp });
 
-    expect(screen.getByText('Speed up transaction')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Speed up transaction')).toBeInTheDocument();
+    });
+
     expect(
       screen.getByText('This network fee will replace the original.'),
     ).toBeInTheDocument();
@@ -141,24 +178,16 @@ describe('CancelSpeedup Component', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Network fee')).toBeInTheDocument();
     expect(screen.getByText('Speed')).toBeInTheDocument();
-    expect(screen.getByTestId('gas-timing')).toBeInTheDocument();
+    expect(screen.getByTestId('gas-timing-time')).toBeInTheDocument();
   });
 
-  it('renders correctly in Cancel mode', () => {
-    (useGasFeeContext as jest.Mock).mockReturnValue({
-      ...defaultGasFeeContext,
-      editGasMode: EditGasModes.cancel,
+  it('renders correctly in Cancel mode', async () => {
+    render({ editGasMode: EditGasModes.cancel });
+
+    await waitFor(() => {
+      expect(screen.getByText('Cancel transaction')).toBeInTheDocument();
     });
 
-    renderWithProvider(
-      <CancelSpeedup
-        transaction={mockTransaction}
-        editGasMode={EditGasModes.cancel}
-      />,
-      store,
-    );
-
-    expect(screen.getByText('Cancel transaction')).toBeInTheDocument();
     expect(
       screen.getByText(
         'This transaction will be canceled and this network fee will replace the original.',
@@ -166,137 +195,81 @@ describe('CancelSpeedup Component', () => {
     ).toBeInTheDocument();
   });
 
-  it('calls updateTransactionToTenPercentIncreasedGasFee on mount when estimates are low', () => {
-    const mockUpdate = jest.fn();
-    (useGasFeeContext as jest.Mock).mockReturnValue({
-      ...defaultGasFeeContext,
-      updateTransactionToTenPercentIncreasedGasFee: mockUpdate,
+  it('calls speedUpTransaction and closes modal when confirming speed up', async () => {
+    render({ editGasMode: EditGasModes.speedUp });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
     });
-    (gasEstimateGreaterThanGasUsedPlusTenPercent as jest.Mock).mockReturnValue(
-      false,
-    );
-
-    renderWithProvider(
-      <CancelSpeedup
-        transaction={mockTransaction}
-        editGasMode={EditGasModes.speedUp}
-      />,
-      store,
-    );
-
-    expect(mockUpdate).toHaveBeenCalledWith(true);
-  });
-
-  it('calls updateTransactionUsingEstimate on mount when estimates are sufficient', () => {
-    const mockUpdateUsingEstimate = jest.fn();
-    (useGasFeeContext as jest.Mock).mockReturnValue({
-      ...defaultGasFeeContext,
-      updateTransactionUsingEstimate: mockUpdateUsingEstimate,
-    });
-    (gasEstimateGreaterThanGasUsedPlusTenPercent as jest.Mock).mockReturnValue(
-      true,
-    );
-
-    renderWithProvider(
-      <CancelSpeedup
-        transaction={mockTransaction}
-        editGasMode={EditGasModes.speedUp}
-      />,
-      store,
-    );
-
-    expect(mockUpdateUsingEstimate).toHaveBeenCalledWith(PriorityLevels.medium);
-  });
-
-  it('does NOT update transaction if transaction has previousGas', () => {
-    const mockUpdate = jest.fn();
-    (useGasFeeContext as jest.Mock).mockReturnValue({
-      ...defaultGasFeeContext,
-      updateTransactionToTenPercentIncreasedGasFee: mockUpdate,
-      transaction: { ...mockTransaction, previousGas: {} },
-    });
-
-    renderWithProvider(
-      <CancelSpeedup
-        transaction={{ ...mockTransaction, previousGas: {} } as any}
-        editGasMode={EditGasModes.speedUp}
-      />,
-      store,
-    );
-
-    expect(mockUpdate).not.toHaveBeenCalled();
-  });
-
-  it('calls speedUpTransaction and closes modal when confirming speed up', () => {
-    const mockSpeedUp = jest.fn();
-    (useGasFeeContext as jest.Mock).mockReturnValue({
-      ...defaultGasFeeContext,
-      speedUpTransaction: mockSpeedUp,
-    });
-
-    renderWithProvider(
-      <CancelSpeedup
-        transaction={mockTransaction}
-        editGasMode={EditGasModes.speedUp}
-      />,
-      store,
-    );
 
     fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
 
-    expect(mockSpeedUp).toHaveBeenCalledTimes(1);
-    expect(mockCloseModal).toHaveBeenCalledWith(['cancelSpeedUpTransaction']);
+    await waitFor(() => {
+      expect(createSpeedUpTransaction).toHaveBeenCalledTimes(1);
+      expect(mockCloseModal).toHaveBeenCalledWith(['cancelSpeedUpTransaction']);
+    });
   });
 
-  it('calls cancelTransaction and closes modal when confirming cancel', () => {
-    const mockCancel = jest.fn();
-    (useGasFeeContext as jest.Mock).mockReturnValue({
-      ...defaultGasFeeContext,
-      cancelTransaction: mockCancel,
-      editGasMode: EditGasModes.cancel,
-    });
+  it('calls cancelTransaction and closes modal when confirming cancel', async () => {
+    render({ editGasMode: EditGasModes.cancel });
 
-    renderWithProvider(
-      <CancelSpeedup
-        transaction={mockTransaction}
-        editGasMode={EditGasModes.cancel}
-      />,
-      store,
-    );
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
+    });
 
     fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
 
-    expect(mockCancel).toHaveBeenCalledTimes(1);
-    expect(mockCloseModal).toHaveBeenCalledWith(['cancelSpeedUpTransaction']);
+    await waitFor(() => {
+      expect(createCancelTransaction).toHaveBeenCalledTimes(1);
+      expect(mockCloseModal).toHaveBeenCalledWith(['cancelSpeedUpTransaction']);
+    });
   });
 
-  it('opens the edit gas modal when the edit icon is clicked', () => {
-    renderWithProvider(
-      <CancelSpeedup
-        transaction={mockTransaction}
-        editGasMode={EditGasModes.speedUp}
-      />,
-      store,
-    );
+  it('opens the edit gas modal when the edit icon is clicked', async () => {
+    render({ editGasMode: EditGasModes.speedUp });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('edit-gas-fee-icon')).toBeInTheDocument();
+    });
 
     fireEvent.click(screen.getByTestId('edit-gas-fee-icon'));
-    expect(mockOpenModal).toHaveBeenCalledWith('editGasFee');
+
+    await waitFor(() => {
+      expect(mockOpenModal).toHaveBeenCalledWith('editGasFee');
+    });
   });
 
-  it('displays correct fee values from useCurrencyDisplay', () => {
-    (useCurrencyDisplay as jest.Mock)
-      .mockReturnValueOnce(['0.05 ETH', 'ETH']) // native fee
-      .mockReturnValueOnce(['$100.00', 'USD']); // fiat fee
-
-    renderWithProvider(
-      <CancelSpeedup
-        transaction={mockTransaction}
-        editGasMode={EditGasModes.speedUp}
-      />,
-      store,
+  it('shows correct gas values, increased by 10%, when initial initial gas value is above estimated medium', async () => {
+    render(
+      {
+        editGasMode: EditGasModes.speedUp,
+      },
+      MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX,
     );
 
-    expect(screen.getByText('0.05 ETH')).toBeInTheDocument();
-    expect(screen.getByText('$100.00')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent(
+        `${EXPECTED_ETH_FEE_1} ETH`,
+      );
+    });
+  });
+
+  it('shows correct gas values, set to the estimated medium, when initial initial gas value is below estimated medium', async () => {
+    render(
+      {
+        editGasMode: EditGasModes.speedUp,
+      },
+      `0x${MAXFEEPERGAS_BELOW_MOCK_MEDIUM_HEX}`,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('edit-gas-fees-row')).toHaveTextContent(
+        `${EXPECTED_ETH_FEE_2} ETH`,
+      );
+    });
   });
 });
