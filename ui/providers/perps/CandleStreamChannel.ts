@@ -118,8 +118,14 @@ export class CandleStreamChannel {
     throttleMs?: number;
     onError?: (error: Error) => void;
   }): () => void {
-    const { symbol, interval, duration, callback, throttleMs = 0, onError } =
-      params;
+    const {
+      symbol,
+      interval,
+      duration,
+      callback,
+      throttleMs = 0,
+      onError,
+    } = params;
     const key = cacheKey(symbol, interval);
     const subscriberId = crypto.randomUUID();
 
@@ -213,10 +219,7 @@ export class CandleStreamChannel {
 
     // Calculate fetch limit
     const rawLimit = calculateCandleCount(duration, interval);
-    const limit = Math.min(
-      Math.max(rawLimit, LOAD_MORE_MIN),
-      LOAD_MORE_MAX,
-    );
+    const limit = Math.min(Math.max(rawLimit, LOAD_MORE_MIN), LOAD_MORE_MAX);
 
     try {
       const olderData = await this.controller.fetchHistoricalCandles(
