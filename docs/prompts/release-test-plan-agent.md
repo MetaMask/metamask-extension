@@ -6,7 +6,7 @@ Use this prompt with an AI agent (Cursor, ChatGPT, Claude, etc.) to turn the **d
 
 ## When is the plan generated?
 
-Whenever someone (or an agent) runs the script or an agent is asked to generate it—for example when a release branch or release PR is created. There is no GitHub workflow; the agent can do it all (see below).
+**No es automático:** no hay workflow ni trigger. El plan se genera cuando alguien ejecuta el script en local o **le pide al agente** que lo genere (p. ej. "genera el test plan para la release branch actual"). En local: `yarn generate:release-test-plan`.
 
 ## How the agent can do it (no workflow needed)
 

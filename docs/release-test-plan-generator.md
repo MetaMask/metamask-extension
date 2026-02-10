@@ -4,15 +4,19 @@ Release branches use the format **release/X.Y.Z** (e.g. `release/13.18.0`), and 
 
 ## Quick start
 
+**En local** (tú ejecutas el script):
+
 ```bash
-# Use latest release branch on origin (default)
+# Usar la última release branch en origin (por defecto)
 yarn generate:release-test-plan
 
-# Or specify the release branch
+# O indicar la release concreta
 yarn generate:release-test-plan --release-branch=release/13.18.0
 ```
 
-Output is written to `docs/exploratory-testing-plan-<version>.md` by default.
+El resultado se escribe en `docs/exploratory-testing-plan-<version>.md`. Luego puedes hacer commit y push tú mismo.
+
+**Con el agente:** pídele que genere el test plan (él ejecutará el mismo comando y, si quieres, puede ampliar los charters y hacer commit). No se ejecuta solo al crear la rama; alguien tiene que pedírselo al agente o ejecutar el comando en local.
 
 ## Options
 
