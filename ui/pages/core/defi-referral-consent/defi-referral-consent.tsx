@@ -52,7 +52,6 @@ const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
     <img
       src={`./images/${partnerId}-referral.png`}
       alt={`${partnerName} referral`}
-      width="full"
     />
   );
 };
