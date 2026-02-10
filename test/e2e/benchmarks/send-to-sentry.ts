@@ -137,7 +137,7 @@ async function main() {
           'ci.commitHash':
             process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
           'ci.logType': statType,
-          ...mapKeys(statData, (_, key) => `${key}`),
+          ...mapKeys(statData, (_, key) => `${type}.${statType}.${key}`),
         });
       }
       sentCount += 1;
