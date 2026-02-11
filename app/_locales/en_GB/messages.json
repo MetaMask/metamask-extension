@@ -1625,6 +1625,10 @@
   "connectAnAccountHeader": {
     "message": "Connect an account"
   },
+  "connectHardwareDevice": {
+    "message": "Connect $1",
+    "description": "$1 is the hardware wallet device name"
+  },
   "connectManually": {
     "message": "Manually connect to current site"
   },
@@ -3028,10 +3032,6 @@
   "getYourWalletReadyToUseWeb3": {
     "message": "Get your wallet ready to use web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
-  },
-  "gmxReferralSubtitle": {
-    "message": "Save up to 10% on trades with a MetaMask referral code.",
-    "description": "The subtitle of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Go to site"
