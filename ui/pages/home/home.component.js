@@ -201,12 +201,13 @@ export default class Home extends PureComponent {
   }
 
   /**
-   * Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect)
-   * If it should, set the redirect after default page and clear the pending redirect route.
-   * If it should not, clear the pending redirect route.
+   * Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect).
+   * Must only be called once per arrival of a new pendingRedirectRoute, because
+   * clearPendingRedirectRoute is an async thunk — the prop stays non-null across
+   * several render cycles, so calling this unconditionally in componentDidUpdate
+   * would create a re-render loop.
    */
   checkPendingRedirectRoute() {
-    // Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect)
     if (this.props.pendingRedirectRoute) {
       const { path, search, environmentType } = this.props.pendingRedirectRoute;
       const shouldRedirect =
@@ -219,15 +220,13 @@ export default class Home extends PureComponent {
       }
       this.props.clearPendingRedirectRoute();
     }
-
-    // Check for redirect after default page
-    this.checkRedirectAfterDefaultPage();
   }
 
   componentDidMount() {
     this.props.fetchBuyableChains();
 
     this.checkPendingRedirectRoute();
+    this.checkRedirectAfterDefaultPage();
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
     this.props.lookupSelectedNetworks();
@@ -246,7 +245,7 @@ export default class Home extends PureComponent {
     return null;
   }
 
-  componentDidUpdate(_prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const {
       attemptCloseNotificationPopup,
       newNetworkAddedConfigurationId,
@@ -262,7 +261,7 @@ export default class Home extends PureComponent {
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-    } = _prevProps;
+    } = prevProps;
     const { notificationClosing } = this.state;
 
     if (
@@ -289,7 +288,13 @@ export default class Home extends PureComponent {
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
 
-    this.checkPendingRedirectRoute();
+    // Only process pendingRedirectRoute when the prop first transitions from null to non-null
+    if (this.props.pendingRedirectRoute && !prevProps.pendingRedirectRoute) {
+      this.checkPendingRedirectRoute();
+    }
+
+    // clearRedirectAfterDefaultPage is a synchronous Redux action, so the guard condition flips before the next render.
+    this.checkRedirectAfterDefaultPage();
   }
 
   onRecoveryPhraseReminderClose = () => {
