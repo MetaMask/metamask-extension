@@ -1,14 +1,14 @@
 import {
-  WithRequired,
   DehydratedState,
   FetchInfiniteQueryOptions,
   FetchQueryOptions,
   InfiniteData,
   InvalidateOptions,
   InvalidateQueryFilters,
-  QueryFunctionContext,
   QueryClient,
+  QueryFunctionContext,
   QueryKey,
+  WithRequired,
   dehydrate,
   hashQueryKey,
 } from '@tanstack/query-core';
@@ -63,7 +63,7 @@ export class BaseDataService<
   >(
     options: WithRequired<
       FetchQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
-      'queryKey'
+      'queryKey' | 'queryFn'
     >,
   ): Promise<TData> {
     return this.#client.fetchQuery(options);
@@ -90,6 +90,7 @@ export class BaseDataService<
     if (query && context.pageParam) {
       const result = (await query.fetch(undefined, {
         meta: {
+          // TODO: Determine if this breaks when fetching backwards.
           fetchMore: {
             direction: 'forward',
             pageParam: context.pageParam,
@@ -129,6 +130,12 @@ export class BaseDataService<
       (queryKey: QueryKey, callback: SubscriptionCallback) => {
         return this.#handleUnsubscribe(queryKey, callback);
       },
+    );
+
+    this.#messenger.registerActionHandler(
+      // @ts-expect-error TODO.
+      `${this.name}:invalidateQueries`,
+      this.invalidateQueries.bind(this),
     );
   }
 

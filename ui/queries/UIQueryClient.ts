@@ -1,9 +1,18 @@
-import { hydrate, QueryClient } from '@tanstack/query-core';
+import {
+  hydrate,
+  QueryClient,
+  InvalidateQueryFilters,
+  InvalidateOptions,
+} from '@tanstack/query-core';
 import { Json } from '@metamask/utils';
 import { BackgroundRpcClient } from '../store/background-connection';
 import { DATA_SERVICES } from '../../shared/constants/data-services';
 
 export let uiQueryClient: QueryClient;
+
+function getServiceFromQueryKey(queryKey: string) {
+  return queryKey[0].split(':')[0];
+}
 
 export function createUIQueryClient(backgroundConnection: BackgroundRpcClient) {
   const activeSubscriptions = new Set<string>();
@@ -62,7 +71,7 @@ export function createUIQueryClient(backgroundConnection: BackgroundRpcClient) {
     const hash = query.queryHash;
     const observerCount = query.getObserversCount();
 
-    const service = query.queryKey[0].split(':')[0];
+    const service = getServiceFromQueryKey(query.queryKey);
 
     if (event.type === 'observerAdded' && observerCount === 1) {
       if (!activeSubscriptions.has(hash)) {
@@ -80,6 +89,26 @@ export function createUIQueryClient(backgroundConnection: BackgroundRpcClient) {
       }
     }
   });
+
+  const originalInvalidate = client.invalidateQueries.bind(client);
+  client.invalidateQueries = async (
+    filters?: InvalidateQueryFilters<unknown>,
+    options?: InvalidateOptions,
+  ) => {
+    const queries = client.getQueryCache().findAll(filters);
+    await Promise.all(
+      queries.map((query) => {
+        const service = getServiceFromQueryKey(query.queryKey);
+
+        return sendBackgroundRequest(`${service}:invalidateQueries`, [
+          filters,
+          options,
+        ]);
+      }),
+    );
+
+    return originalInvalidate(filters, options);
+  };
 
   // TODO: Cleanup this hack
   uiQueryClient = client;
