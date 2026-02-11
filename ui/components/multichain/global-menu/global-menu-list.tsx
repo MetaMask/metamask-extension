@@ -107,7 +107,7 @@ export const GlobalMenuList = ({
                 disabled={item.disabled}
                 showInfoDot={item.showInfoDot}
                 subtitle={item.subtitle}
-                data-testid={`global-menu-item-${item.id}`}
+                data-testid={item.id}
               >
                 {renderMenuItemContent(item.label, item.badge, showChevron)}
               </MenuItem>
