@@ -45,8 +45,6 @@ import {
   getShieldSubscription,
 } from '../../../../shared/lib/shield';
 import { SHIELD_ERROR } from '../../../../shared/modules/shield';
-import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
-import { createSentryError } from '../../../../shared/modules/error';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -74,18 +72,14 @@ export class SubscriptionService {
 
   #webAuthenticator: WebAuthenticator;
 
-  #captureException: (error: unknown) => void;
-
   constructor({
     messenger,
     platform,
     webAuthenticator,
-    captureException = sentryCaptureException,
   }: SubscriptionServiceOptions) {
     this.#messenger = messenger;
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
-    this.#captureException = captureException;
 
     this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
@@ -117,11 +111,22 @@ export class SubscriptionService {
 
       // skipping redirect and open new tab in test environment
       if (!process.env.IN_TEST) {
-        await this.#openAndWaitForTabToClose({
-          url: checkoutSessionUrl,
-          successUrl: redirectUrl,
-          cancelUrl,
-        });
+        try {
+          await this.#openAndWaitForTabToClose({
+            url: checkoutSessionUrl,
+            successUrl: redirectUrl,
+            cancelUrl,
+          });
+        } catch (error) {
+          const isTabClosed =
+            error instanceof Error &&
+            error.message.includes(SHIELD_ERROR.tabActionFailed);
+          // continue to refetch subscriptions if the tab is closed
+          // since stripe update payment method page doesn't automatically redirect to the success url
+          if (!isTabClosed) {
+            throw error;
+          }
+        }
 
         if (!currentTabId) {
           // open extension browser shield settings if open from pop up (no current tab)
@@ -135,12 +140,7 @@ export class SubscriptionService {
 
       return subscriptions;
     } catch (error) {
-      this.#captureException(
-        createSentryError(
-          'Failed to update subscription card payment method',
-          error as Error,
-        ),
-      );
+      log.error('Failed to update subscription card payment method', error);
       throw error;
     }
   }
@@ -165,12 +165,7 @@ export class SubscriptionService {
 
       return subscriptions;
     } catch (error) {
-      this.#captureException(
-        createSentryError(
-          'Failed to update subscription crypto payment method',
-          error as Error,
-        ),
-      );
+      log.error('Failed to update subscription crypto payment method', error);
       throw error;
     }
   }
@@ -244,17 +239,18 @@ export class SubscriptionService {
         },
       );
 
+      // Clear cached payment method after failed/cancelled payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
+      );
+
       // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
       if (errorMessage.toLocaleLowerCase().includes('already exists')) {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
 
-      this.#captureException(
-        createSentryError(
-          'Failed to start subscription with card',
-          error as Error,
-        ),
-      );
+      log.error('Failed to start subscription with card', error);
       throw error;
     }
   }
@@ -310,13 +306,6 @@ export class SubscriptionService {
       );
     } catch (error) {
       log.error('Failed to submit sponsorship intent', error);
-
-      this.#captureException(
-        createSentryError(
-          'Failed to submit sponsorship intent',
-          error as Error,
-        ),
-      );
     }
   }
 
@@ -350,13 +339,6 @@ export class SubscriptionService {
       }
     } catch (err) {
       log.error('Failed to link reward to existing subscription', err);
-
-      this.#captureException(
-        createSentryError(
-          'Failed to link reward to existing subscription',
-          err as Error,
-        ),
-      );
     }
   }
 
@@ -525,12 +507,12 @@ export class SubscriptionService {
         );
       }
 
-      this.#captureException(
-        createSentryError(
-          'Error on Shield subscription approval transaction',
-          error as Error,
-        ),
+      // Clear cached payment method after failed crypto payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
       );
+
       throw error;
     }
   }
@@ -736,10 +718,6 @@ export class SubscriptionService {
       }
     } catch (error) {
       log.error('Failed to assign post tx cohort', error);
-
-      this.#captureException(
-        createSentryError('Failed to assign post tx cohort', error as Error),
-      );
     }
   }
 

@@ -77,7 +77,7 @@ import BridgeStepList from './bridge-step-list';
 const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
 
   const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();

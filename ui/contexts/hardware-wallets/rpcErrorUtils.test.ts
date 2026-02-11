@@ -10,6 +10,8 @@ import {
   isJsonRpcHardwareWalletError,
   getHardwareWalletErrorCode,
   toHardwareWalletError,
+  isHardwareWalletError,
+  isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
 
 describe('rpcErrorUtils', () => {
@@ -54,14 +56,14 @@ describe('rpcErrorUtils', () => {
       expect(isJsonRpcHardwareWalletError(error)).toBe(false);
     });
 
-    it('returns false for JsonRpcError with string code (should be number)', () => {
+    it('returns true for JsonRpcError with string code (code can be string or number)', () => {
       const error = new JsonRpcError(1234, 'Some error', {
-        code: '3003', // String instead of number
+        code: '3003', // String code is valid
         severity: Severity.Err,
         category: Category.Connection,
       });
 
-      expect(isJsonRpcHardwareWalletError(error)).toBe(false);
+      expect(isJsonRpcHardwareWalletError(error)).toBe(true);
     });
 
     it('returns false for non-JsonRpcError', () => {
@@ -71,7 +73,7 @@ describe('rpcErrorUtils', () => {
     });
   });
 
-  describe('extractHardwareWalletErrorCode', () => {
+  describe('getHardwareWalletErrorCode', () => {
     it('extracts code from JsonRpcError with HardwareWalletError data', () => {
       const error = new JsonRpcError(1234, 'Hardware wallet error', {
         code: ErrorCode.DeviceDisconnected,
@@ -109,15 +111,15 @@ describe('rpcErrorUtils', () => {
       expect(result).toBe(ErrorCode.DeviceDisconnected);
     });
 
-    it('returns null for plain object with string code', () => {
+    it('extracts code from plain object with string code (maps to ErrorCode)', () => {
       const error = {
-        code: '3003', // String instead of number
+        code: '3003', // String code that maps to ErrorCode.DeviceDisconnected
         message: 'Device disconnected',
       };
 
       const result = getHardwareWalletErrorCode(error);
 
-      expect(result).toBe(null);
+      expect(result).toBe(ErrorCode.DeviceDisconnected);
     });
 
     it('returns null for object without code property', () => {
@@ -130,7 +132,7 @@ describe('rpcErrorUtils', () => {
       expect(result).toBe(null);
     });
 
-    it('returns null for plain object with invalid numeric code', () => {
+    it('returns ErrorCode.Unknown for plain object with invalid numeric code', () => {
       const error = {
         code: 12345, // Invalid ErrorCode value (not in VALID_ERROR_CODES)
         message: 'Invalid error code',
@@ -138,7 +140,7 @@ describe('rpcErrorUtils', () => {
 
       const result = getHardwareWalletErrorCode(error);
 
-      expect(result).toBe(null);
+      expect(result).toBe(ErrorCode.Unknown);
     });
 
     it('returns null for non-object error', () => {
@@ -153,7 +155,7 @@ describe('rpcErrorUtils', () => {
     });
   });
 
-  describe('reconstructHardwareWalletError', () => {
+  describe('toHardwareWalletError', () => {
     it('returns original HardwareWalletError instance unchanged', () => {
       const originalError = new HardwareWalletError('Device disconnected', {
         code: ErrorCode.DeviceDisconnected,
@@ -173,7 +175,7 @@ describe('rpcErrorUtils', () => {
         severity: Severity.Err,
         category: Category.Connection,
         userMessage: 'Device disconnected',
-        metadata: { deviceId: 'test-device' },
+        metadata: { transport: 'usb' },
       });
 
       const result = toHardwareWalletError(jsonRpcError, mockWalletType);
@@ -184,10 +186,23 @@ describe('rpcErrorUtils', () => {
       expect(result.category).toBe(Category.Connection);
       expect(result.userMessage).toBe('Device disconnected');
       expect(result.metadata).toEqual({
-        deviceId: 'test-device',
+        transport: 'usb',
         walletType: mockWalletType,
       });
       expect(result.message).toBe('Hardware wallet error');
+    });
+
+    it('maps Ledger status codes in JsonRpcError data to ErrorCode', () => {
+      const jsonRpcError = new JsonRpcError(1234, 'Ledger device error', {
+        code: 21781,
+      });
+
+      const result = toHardwareWalletError(
+        jsonRpcError,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result.code).toBe(ErrorCode.AuthenticationDeviceLocked);
     });
 
     it('preserves stack trace from JsonRpcError', () => {
@@ -220,7 +235,7 @@ describe('rpcErrorUtils', () => {
       expect(result.userMessage).toBe('Device disconnected');
     });
 
-    it('provides fallback values for missing severity and category', () => {
+    it('passes undefined for missing severity and category', () => {
       const jsonRpcError = new JsonRpcError(1234, 'Hardware wallet error', {
         code: ErrorCode.DeviceDisconnected,
         userMessage: 'Device disconnected',
@@ -231,8 +246,8 @@ describe('rpcErrorUtils', () => {
 
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.DeviceDisconnected);
-      expect(result.severity).toBe(Severity.Err);
-      expect(result.category).toBe(Category.Unknown);
+      expect(result.severity).toBeUndefined();
+      expect(result.category).toBeUndefined();
       expect(result.userMessage).toBe('Device disconnected');
     });
 
@@ -255,6 +270,143 @@ describe('rpcErrorUtils', () => {
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.Unknown);
       expect(result.message).toBe('42');
+    });
+  });
+
+  describe('isHardwareWalletError', () => {
+    it('returns true for HardwareWalletError instance', () => {
+      const error = new HardwareWalletError('Device disconnected', {
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: 'Device disconnected',
+      });
+
+      expect(isHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns true for JsonRpcError with valid HardwareWalletError data', () => {
+      const error = new JsonRpcError(1234, 'Hardware wallet error', {
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: 'Device disconnected',
+      });
+
+      expect(isHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns true for error with name HardwareWalletError', () => {
+      const error = {
+        name: 'HardwareWalletError',
+        message: 'some error',
+      };
+
+      expect(isHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns true for error with data.cause.name HardwareWalletError', () => {
+      const error = {
+        message: 'some error',
+        data: {
+          cause: {
+            name: 'HardwareWalletError',
+          },
+        },
+      };
+
+      expect(isHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns false for regular Error', () => {
+      const error = new Error('Some error');
+
+      expect(isHardwareWalletError(error)).toBe(false);
+    });
+
+    it('returns false for null', () => {
+      expect(isHardwareWalletError(null)).toBe(false);
+    });
+
+    it('returns false for undefined', () => {
+      expect(isHardwareWalletError(undefined)).toBe(false);
+    });
+
+    it('returns false for string', () => {
+      expect(isHardwareWalletError('some error')).toBe(false);
+    });
+
+    it('returns false for JsonRpcError without HardwareWalletError data', () => {
+      const error = new JsonRpcError(1234, 'Some error', {
+        someOtherField: 'value',
+      });
+
+      expect(isHardwareWalletError(error)).toBe(false);
+    });
+
+    it('returns false for plain object without HW error indicators', () => {
+      const error = {
+        message: 'some error',
+        code: 500,
+      };
+
+      expect(isHardwareWalletError(error)).toBe(false);
+    });
+  });
+
+  describe('isUserRejectedHardwareWalletError', () => {
+    it('returns true for UserRejected error code', () => {
+      const error = new HardwareWalletError('User rejected', {
+        code: ErrorCode.UserRejected,
+        severity: Severity.Warning,
+        category: Category.UserAction,
+        userMessage: 'User rejected the transaction',
+      });
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns true for UserCancelled error code', () => {
+      const error = new HardwareWalletError('User cancelled', {
+        code: ErrorCode.UserCancelled,
+        severity: Severity.Warning,
+        category: Category.UserAction,
+        userMessage: 'User cancelled the transaction',
+      });
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(true);
+    });
+
+    it('returns false for non-rejection hardware wallet error', () => {
+      const error = new HardwareWalletError('Device disconnected', {
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: 'Device disconnected',
+      });
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(false);
+    });
+
+    it('returns false for non-hardware wallet error', () => {
+      const error = new Error('Some random error');
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(false);
+    });
+
+    it('returns false for null', () => {
+      expect(isUserRejectedHardwareWalletError(null)).toBe(false);
+    });
+
+    it('returns true for JsonRpcError with UserRejected code', () => {
+      const error = new JsonRpcError(1234, 'User rejected', {
+        code: ErrorCode.UserRejected,
+        severity: Severity.Warning,
+        category: Category.UserAction,
+        userMessage: 'User rejected',
+      });
+
+      expect(isUserRejectedHardwareWalletError(error)).toBe(true);
     });
   });
 });
