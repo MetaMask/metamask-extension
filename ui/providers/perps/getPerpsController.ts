@@ -11,9 +11,28 @@ import {
 import type { MetaMaskReduxState } from '../../store/store';
 import { getReduxStorePromise } from '../..';
 
+const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
+const REMOTE_FEATURE_FLAG_STATE_CHANGE =
+  'RemoteFeatureFlagController:stateChange';
+
+/** State shape expected by PerpsController (RemoteFeatureFlagControllerState). */
+type RemoteFeatureFlagState = {
+  remoteFeatureFlags: Record<string, unknown>;
+  cacheTimestamp: number;
+};
+
+function getRemoteFeatureFlagState(
+  store: Store<MetaMaskReduxState>,
+): RemoteFeatureFlagState {
+  return {
+    remoteFeatureFlags: store.getState().metamask?.remoteFeatureFlags ?? {},
+    cacheTimestamp: 0,
+  };
+}
+
 /**
  * Unsubscribe from Redux store when controller is reset.
- * Used to stop bridging remote feature flag changes to the PerpsController.
+ * Used to stop publishing remote feature flag changes to the PerpsController.
  */
 let unsubscribeRemoteFeatureFlags: (() => void) | null = null;
 
@@ -35,117 +54,67 @@ let currentAddress: string | null = null;
 let initPromise: Promise<PerpsController> | null = null;
 
 /**
- * Initial remote feature flags for the stub RemoteFeatureFlagController:getState.
- * Set before creating PerpsController when store is available; read by the messenger wrapper.
- */
-let initialRemoteFeatureFlags: Record<string, unknown> = {};
-
-const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
-const REMOTE_FEATURE_FLAG_STATE_CHANGE =
-  'RemoteFeatureFlagController:stateChange';
-
-/**
- * Bridge remote feature flag state from Redux into the PerpsController.
- * The controller's messenger is standalone and cannot receive RemoteFeatureFlagController
- * events, so we push state changes when Redux metamask.remoteFeatureFlags updates.
- */
-const ELIGIBILITY_LOG_PREFIX = '[Perps Eligibility]';
-
-function bridgeRemoteFeatureFlagsToController(
-  controller: PerpsController,
-  store: Store<MetaMaskReduxState>,
-): void {
-  const pushState = () => {
-    const remoteFeatureFlags =
-      store.getState().metamask?.remoteFeatureFlags ?? {};
-    const geoFlag = remoteFeatureFlags.perpsPerpTradingGeoBlockedCountriesV2 as
-      | { blockedRegions?: string[] }
-      | undefined;
-    const blockedRegions = Array.isArray(geoFlag?.blockedRegions)
-      ? geoFlag.blockedRegions
-      : [];
-    console.log(ELIGIBILITY_LOG_PREFIX, 'Pushing remote feature flags', {
-      hasGeoFlag: geoFlag !== null,
-      blockedRegionsCount: blockedRegions.length,
-      blockedRegions: blockedRegions.length > 0 ? blockedRegions : '(none)',
-      note:
-        blockedRegions.length > 0
-          ? 'Controller will run eligibility check; if its geo fetch fails (e.g. from UI context) it defaults to eligible=true.'
-          : undefined,
-    });
-    (
-      controller as PerpsController & {
-        refreshEligibilityOnFeatureFlagChange: (state: {
-          remoteFeatureFlags: Record<string, unknown>;
-        }) => void;
-      }
-    ).refreshEligibilityOnFeatureFlagChange({ remoteFeatureFlags });
-  };
-
-  pushState();
-
-  if (unsubscribeRemoteFeatureFlags) {
-    unsubscribeRemoteFeatureFlags();
-  }
-  unsubscribeRemoteFeatureFlags = store.subscribe(pushState);
-}
-
-/**
- * Create a messenger for the PerpsController that satisfies RemoteFeatureFlagController
- * without registering non-PerpsController actions on the namespaced messenger.
+ * Create the RemoteFeatureFlagController-namespaced messenger and (when store is
+ * available) register getState and subscribe to Redux to publish stateChange.
+ * Then create the PerpsController messenger and delegate getState/stateChange to it.
  *
- * We wrap the real PerpsController-namespaced messenger and intercept
- * RemoteFeatureFlagController:getState (return initialRemoteFeatureFlags) and
- * RemoteFeatureFlagController:stateChange (no-op subscribe; we bridge from Redux).
- * All other call/subscribe delegate to the real messenger.
+ * @param storeToUse - Redux store for feature flags, or null to use empty flags.
+ * @returns The PerpsController messenger with delegated RemoteFeatureFlagController actions/events.
  */
-function createPerpsMessenger(): PerpsControllerMessenger {
-  const real = new Messenger({
+function createPerpsMessenger(
+  storeToUse: Store<MetaMaskReduxState> | null,
+): PerpsControllerMessenger {
+  const featureFlagMessenger = new Messenger({
+    namespace: 'RemoteFeatureFlagController',
+  });
+
+  const getState = (): RemoteFeatureFlagState =>
+    storeToUse
+      ? getRemoteFeatureFlagState(storeToUse)
+      : { remoteFeatureFlags: {}, cacheTimestamp: 0 };
+
+  const featureFlagMessengerTyped = featureFlagMessenger as unknown as {
+    registerActionHandler: (
+      action: string,
+      handler: () => RemoteFeatureFlagState,
+    ) => void;
+    publish: (event: string, payload: RemoteFeatureFlagState) => void;
+    delegate: (opts: {
+      actions: string[];
+      events: string[];
+      messenger: PerpsControllerMessenger;
+    }) => void;
+  };
+  featureFlagMessengerTyped.registerActionHandler(
+    REMOTE_FEATURE_FLAG_GET_STATE,
+    getState,
+  );
+
+  if (storeToUse) {
+    const publishStateChange = () => {
+      featureFlagMessengerTyped.publish(
+        REMOTE_FEATURE_FLAG_STATE_CHANGE,
+        getRemoteFeatureFlagState(storeToUse),
+      );
+    };
+    publishStateChange();
+    if (unsubscribeRemoteFeatureFlags) {
+      unsubscribeRemoteFeatureFlags();
+    }
+    unsubscribeRemoteFeatureFlags = storeToUse.subscribe(publishStateChange);
+  }
+
+  const perpsMessenger = new Messenger({
     namespace: 'PerpsController',
   }) as PerpsControllerMessenger;
 
-  const noopUnsubscribe = () => {
-    /* bridge from Redux instead */
-  };
-
-  const wrapper = new Proxy(real, {
-    get(target, prop: string) {
-      if (prop === 'call') {
-        return (actionType: string, ...params: unknown[]) => {
-          if (actionType === REMOTE_FEATURE_FLAG_GET_STATE) {
-            return { remoteFeatureFlags: initialRemoteFeatureFlags };
-          }
-          return (target.call as (a: string, ...p: unknown[]) => unknown)(
-            actionType,
-            ...params,
-          );
-        };
-      }
-      if (prop === 'subscribe') {
-        return (
-          eventType: string,
-          handler: (...args: unknown[]) => void,
-          selector?: unknown,
-        ) => {
-          if (eventType === REMOTE_FEATURE_FLAG_STATE_CHANGE) {
-            return noopUnsubscribe;
-          }
-          return target.subscribe(
-            eventType as never,
-            handler as never,
-            selector as never,
-          );
-        };
-      }
-      const value = (target as unknown as Record<string, unknown>)[prop];
-      if (typeof value === 'function') {
-        return value.bind(target);
-      }
-      return value;
-    },
+  featureFlagMessengerTyped.delegate({
+    actions: [REMOTE_FEATURE_FLAG_GET_STATE],
+    events: [REMOTE_FEATURE_FLAG_STATE_CHANGE],
+    messenger: perpsMessenger,
   });
 
-  return wrapper as unknown as PerpsControllerMessenger;
+  return perpsMessenger;
 }
 
 /**
@@ -224,26 +193,7 @@ export async function getPerpsController(
           // Store not ready (e.g. in tests)
         }
       }
-      if (storeToUse) {
-        initialRemoteFeatureFlags =
-          storeToUse.getState().metamask?.remoteFeatureFlags ?? {};
-        const geoFlag =
-          initialRemoteFeatureFlags?.perpsPerpTradingGeoBlockedCountriesV2 as
-            | { blockedRegions?: string[] }
-            | undefined;
-        const blocked = Array.isArray(geoFlag?.blockedRegions)
-          ? geoFlag.blockedRegions
-          : [];
-        console.log(
-          ELIGIBILITY_LOG_PREFIX,
-          'Stub getState will return flags for init',
-          {
-            blockedRegionsCount: blocked.length,
-            blockedRegions: blocked.length > 0 ? blocked : '(none)',
-          },
-        );
-      }
-      const messenger = createPerpsMessenger();
+      const messenger = createPerpsMessenger(storeToUse ?? null);
       const infrastructure = createPerpsInfrastructure(selectedAddress);
       const fallbackBlockedRegions = getFallbackBlockedRegions();
 
@@ -259,10 +209,6 @@ export async function getPerpsController(
       });
 
       await controller.init();
-
-      if (storeToUse) {
-        bridgeRemoteFeatureFlagsToController(controller, storeToUse);
-      }
 
       controllerInstance = controller;
       currentAddress = selectedAddress;
