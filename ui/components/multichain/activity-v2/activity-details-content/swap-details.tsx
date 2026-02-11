@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   Text,
-  AvatarNetwork,
-  AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
   TextVariant,
@@ -13,15 +11,15 @@ import {
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
-  mapChainInfo,
   getExplorerUrl,
-  formatDateTime,
   formatUnits,
 } from '../helpers';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { DateRow } from './date-row';
+import { NetworkRow } from './network-row';
 import { Row } from './row';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import { StatusRow } from './status-row';
 
 type Props = {
   transaction: TransactionViewModel;
@@ -32,11 +30,9 @@ export const SwapDetails = ({ transaction }: Props) => {
   const { formatToken } = useFormatters();
 
   const { chainId, hash, time, txParams } = transaction;
-  const { chainImageUrl, chainName } = mapChainInfo(chainId);
   const explorerUrl = hash
     ? getExplorerUrl(chainId, hash)
     : undefined;
-  const formattedDate = formatDateTime(time);
 
   const networkFeeWei =
     txParams.gasUsed && txParams.gasPrice
@@ -103,38 +99,10 @@ export const SwapDetails = ({ transaction }: Props) => {
       <div className="h-px bg-border-muted" />
 
       <div className="flex flex-col gap-2">
-        <Row
-          left={t('status')}
-          right={
-            <Text
-              variant={TextVariant.BodySm}
-              color={
-                transaction.status === TransactionStatus.confirmed
-                  ? TextColor.SuccessDefault
-                  : TextColor.ErrorDefault
-              }
-            >
-              {transaction.status === TransactionStatus.confirmed
-                ? t('confirmed')
-                : t('failed')}
-            </Text>
-          }
-        />
-        <Row left={t('date')} right={formattedDate} />
+        <StatusRow status={transaction.status} />
+        <DateRow time={time} />
         <Row left={t('account')} right={shortenAddress(txParams.from)} />
-        <Row
-          left={t('network')}
-          right={
-            <div className="flex items-center gap-2">
-              <AvatarNetwork
-                name={chainName}
-                src={chainImageUrl}
-                size={AvatarNetworkSize.Xs}
-              />
-              <Text className="font-medium">{chainName}</Text>
-            </div>
-          }
-        />
+        <NetworkRow chainId={chainId} />
         <Row left={t('networkFee')} right={formatToken(networkFeeEth, 'ETH')} />
         <Row left="Total amount" right={<div/>} />
       </div>
