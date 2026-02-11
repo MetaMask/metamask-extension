@@ -879,7 +879,7 @@
     "message": "This page needs Basic functionality to be turned on. Turn it on in Settings to use features like swaps, buy, and rewards."
   },
   "basicFunctionalityRequired_goToHome": {
-    "message": "Go to home"
+    "message": "Go to the home page"
   },
   "basicFunctionalityRequired_openSettings": {
     "message": "Open Settings"

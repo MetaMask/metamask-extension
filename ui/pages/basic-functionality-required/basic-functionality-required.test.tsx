@@ -22,7 +22,7 @@ jest.mock('../../hooks/useI18nContext', () => ({
     messages[I18N_KEYS.description] =
       'This page needs Basic functionality to be turned on.';
     messages[I18N_KEYS.openSettings] = 'Open Settings';
-    messages[I18N_KEYS.goToHome] = 'Go to home';
+    messages[I18N_KEYS.goToHome] = 'Go to the home page';
 
     if (key === I18N_KEYS.settingsHint && substitutions?.[0]) {
       return <>Go to Settings or use {substitutions[0]}.</>;
@@ -50,16 +50,16 @@ describe('BasicFunctionalityRequired', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders Go to home button', () => {
+  it('renders Go to the home page button', () => {
     render(<BasicFunctionalityRequired />);
 
     const goHomeButton = screen.getByTestId(
       'basic-functionality-required-go-home',
     );
-    expect(goHomeButton).toHaveTextContent('Go to home');
+    expect(goHomeButton).toHaveTextContent('Go to the home page');
   });
 
-  it('navigates to home when Go to home is clicked', () => {
+  it('navigates to home when Go to the home page is clicked', () => {
     const navigate = jest.fn();
     mockNavigate.mockReturnValue(navigate);
 
