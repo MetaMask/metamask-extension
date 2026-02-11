@@ -491,6 +491,9 @@ describe('util', () => {
     it('should return value in hours for milliseconds passed very high above 5400000', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
     });
+    it('should return sub-second value when milliseconds < 1000', () => {
+      expect(util.toHumanReadableTime(t, 200)).toStrictEqual('0.2 sec');
+    });
   });
   describe('sanitizeMessage', () => {
     let message;
