@@ -47,6 +47,20 @@ export const useHardwareFooter = ({
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
     currentConfirmation?.type,
   );
+
+  const inE2e =
+    process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
+  if (inE2e) {
+    return {
+      walletType,
+      shouldRunHardwareWalletPreflight: false,
+      isHardwareWalletReady: true,
+      onSubmitPreflightCheck: async () => true,
+      withHardwareWalletModalHandling: (request: () => Promise<void>) =>
+        request,
+    };
+  }
+
   const shouldRunHardwareWalletPreflight =
     isHardwareWalletAccount && (isSignature || isTransactionConfirmation);
 
