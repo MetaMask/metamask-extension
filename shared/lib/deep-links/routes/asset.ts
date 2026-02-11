@@ -25,12 +25,7 @@ export default new Route({
 
     const asset = parseCaipAssetType(assetId);
 
-    const {
-      chain,
-      chainId: caipChainId,
-      assetNamespace,
-      assetReference,
-    } = asset;
+    const { chain, chainId: caipChainId, assetReference } = asset;
 
     const isEvmNamespace = chain.namespace === KnownCaipNamespace.Eip155;
     const isNative = asset.assetNamespace === 'slip44';
