@@ -93,13 +93,6 @@ jest.mock('../../store/actions', () => ({
   getIsSeedlessOnboardingUserAuthenticated: jest.fn(() => Promise.resolve()),
 }));
 
-jest.mock('../../contexts/rive-wasm', () => ({
-  useRiveAnimationCompletion: () => ({
-    animationCompleted: {},
-    setIsAnimationCompleted: jest.fn(),
-  }),
-}));
-
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {

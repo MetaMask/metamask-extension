@@ -72,6 +72,14 @@ type RiveWasmContextValue = Pick<
   'animationCompleted' | 'setIsAnimationCompleted'
 >;
 
+// Safe no-op fallback for render paths that only read animation completion
+// state (for example isolated tests/storybook stories) without mounting the
+// full RiveWasmProvider.
+const DEFAULT_RIVE_WASM_ANIMATION_COMPLETION: RiveWasmContextValue = {
+  animationCompleted: {},
+  setIsAnimationCompleted: () => undefined,
+};
+
 const RiveWasmContext = createContext<InternalRiveWasmContextValue | undefined>(
   undefined,
 );
@@ -134,8 +142,12 @@ const useInternalRiveWasmContext = () => {
 };
 
 export const useRiveAnimationCompletion = (): RiveWasmContextValue => {
-  const { animationCompleted, setIsAnimationCompleted } =
-    useInternalRiveWasmContext();
+  const context = useContext(RiveWasmContext);
+  if (!context) {
+    return DEFAULT_RIVE_WASM_ANIMATION_COMPLETION;
+  }
+
+  const { animationCompleted, setIsAnimationCompleted } = context;
 
   return {
     animationCompleted,
