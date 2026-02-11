@@ -214,7 +214,9 @@ export function getAppIsLoading(state) {
  */
 export function getIsHardwareWalletErrorModalVisible(state) {
   return (
-    state.appState.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
+    // TODO: Modal is always in the appstate but many tests have not been updated to include it and therefore causing them to fail
+    // this will be fixed in a follow up PR.
+    state.appState?.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
   );
 }
 

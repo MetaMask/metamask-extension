@@ -51,6 +51,7 @@ jest.mock('../../../hooks/gas/useIsGaslessSupported');
 const mockOnTransactionConfirm = jest.fn();
 const ensureDeviceReadyMock = jest.fn();
 const showHardwareWalletErrorModalMock = jest.fn();
+const dismissHardwareWalletErrorModalMock = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
@@ -59,6 +60,8 @@ const mockIsHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn();
 const mockIsRetryableHardwareWalletError = jest.fn();
 const mockGetEnvironmentType = jest.fn();
+const mockNavigateNext = jest.fn();
+const mockNavigateToId = jest.fn();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let mockStore: any = null;
@@ -86,8 +89,8 @@ jest.mock('../../../../../store/background-connection', () => ({
 }));
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(() => ({
-    navigateNext: jest.fn(),
-    navigateToId: jest.fn(),
+    navigateNext: mockNavigateNext,
+    navigateToId: mockNavigateToId,
   })),
 }));
 jest.mock(
@@ -171,7 +174,6 @@ describe('ConfirmFooter', () => {
   const useAddEthereumChainMock = jest.mocked(useAddEthereumChain);
   const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
   const useUserSubscriptionsMock = jest.mocked(useUserSubscriptions);
-  let closeCurrentNotificationWindowSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -181,6 +183,9 @@ describe('ConfirmFooter', () => {
     mockOnTransactionConfirm.mockReset();
     ensureDeviceReadyMock.mockReset();
     showHardwareWalletErrorModalMock.mockReset();
+    dismissHardwareWalletErrorModalMock.mockReset();
+    mockNavigateNext.mockReset();
+    mockNavigateToId.mockReset();
     mockUseHardwareWalletState.mockReset();
     mockUseHardwareWalletConfig.mockReset();
     mockUseHardwareWalletActions.mockReset();
@@ -204,6 +209,7 @@ describe('ConfirmFooter', () => {
     });
     mockUseHardwareWalletError.mockReturnValue({
       showErrorModal: showHardwareWalletErrorModalMock,
+      dismissErrorModal: dismissHardwareWalletErrorModalMock,
     });
     mockIsHardwareWalletError.mockReturnValue(false);
     mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
@@ -236,16 +242,6 @@ describe('ConfirmFooter', () => {
       error: undefined,
     });
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
-
-    closeCurrentNotificationWindowSpy = jest
-      .spyOn(Actions, 'closeCurrentNotificationWindow')
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => (() => undefined) as any);
-  });
-
-  afterEach(() => {
-    closeCurrentNotificationWindowSpy.mockRestore();
   });
 
   it('should match snapshot with signature confirmation', () => {
@@ -409,6 +405,7 @@ describe('ConfirmFooter', () => {
 
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
+    expect(dismissHardwareWalletErrorModalMock).toHaveBeenCalled();
   });
 
   it('invoke required actions when submit button is clicked', async () => {
@@ -439,10 +436,10 @@ describe('ConfirmFooter', () => {
 
     expect(updateCustomNonceSpy).toHaveBeenCalledWith('');
     expect(setNextNonceSpy).toHaveBeenCalledWith('');
-    expect(closeCurrentNotificationWindowSpy).toHaveBeenCalled();
+    expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
   });
 
-  it('redirects to activity after signature success in sidepanel', async () => {
+  it('navigates to next confirmation after signature success in sidepanel', async () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
 
     const { getAllByRole } = render();
@@ -459,11 +456,11 @@ describe('ConfirmFooter', () => {
       expect(resolveSpy).toHaveBeenCalled();
     });
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
+    expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(
       `${DEFAULT_ROUTE}?tab=activity`,
       { replace: true },
     );
-    expect(closeCurrentNotificationWindowSpy).not.toHaveBeenCalled();
   });
 
   it('displays the "Confirm" button when there are danger alerts', async () => {
@@ -561,9 +558,7 @@ describe('ConfirmFooter', () => {
     });
 
     it('bypasses hardware wallet preflight for add chain confirmations', async () => {
-      const addEthereumChainSubmitMock = jest
-        .fn()
-        .mockResolvedValue(undefined);
+      const addEthereumChainSubmitMock = jest.fn().mockResolvedValue(undefined);
       useAddEthereumChainMock.mockReturnValue({
         onSubmit: addEthereumChainSubmitMock,
       });
@@ -592,7 +587,7 @@ describe('ConfirmFooter', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
-    it('closes popup on hardware wallet rejection', async () => {
+    it('navigates to next confirmation on hardware wallet rejection', async () => {
       const hardwareError = new Error('User rejected');
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
@@ -609,12 +604,6 @@ describe('ConfirmFooter', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .mockImplementation(() => () => Promise.reject(hardwareError) as any);
-      const closeWindowSpy = jest
-        .spyOn(Actions, 'closeCurrentNotificationWindow')
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockReturnValue((() => undefined) as any);
-
       const { getByTestId } = render(
         getMockPersonalSignConfirmStateForRequest({
           ...unapprovedPersonalSignMsg,
@@ -630,11 +619,11 @@ describe('ConfirmFooter', () => {
         expect(resolveSpy).toHaveBeenCalled();
       });
 
-      expect(closeWindowSpy).toHaveBeenCalled();
+      expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
       expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
     });
 
-    it('redirects to activity on hardware wallet rejection in sidepanel', async () => {
+    it('navigates to next confirmation on hardware wallet rejection in sidepanel', async () => {
       const hardwareError = new Error('User rejected');
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
       mockUseHardwareWalletConfig.mockReturnValue({
@@ -652,12 +641,6 @@ describe('ConfirmFooter', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .mockImplementation(() => () => Promise.reject(hardwareError) as any);
-      const closeWindowSpy = jest
-        .spyOn(Actions, 'closeCurrentNotificationWindow')
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .mockReturnValue((() => undefined) as any);
-
       const { getByTestId } = render(
         getMockPersonalSignConfirmStateForRequest({
           ...unapprovedPersonalSignMsg,
@@ -673,15 +656,15 @@ describe('ConfirmFooter', () => {
         expect(resolveSpy).toHaveBeenCalled();
       });
 
-      expect(closeWindowSpy).not.toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith(
+      expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
         `${DEFAULT_ROUTE}?tab=activity`,
         { replace: true },
       );
       expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
     });
 
-    it('shows error modal and navigates to recreated signature on retryable error', async () => {
+    it('shows error modal on retryable error', async () => {
       const hardwareError = {
         data: {
           metadata: {
@@ -723,7 +706,7 @@ describe('ConfirmFooter', () => {
       expect(showHardwareWalletErrorModalMock).toHaveBeenCalledWith(
         hardwareError,
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith(
+      expect(mockUseNavigate).not.toHaveBeenCalledWith(
         `${CONFIRM_TRANSACTION_ROUTE}/recreated-signature-id${SIGNATURE_REQUEST_PATH}`,
         {
           replace: true,
@@ -774,7 +757,7 @@ describe('ConfirmFooter', () => {
       [KEY_ALERT_KEY_MOCK]: false,
     });
 
-    it('renders the "confirm" button when there are unconfirmed alerts', () => {
+    it('renders the "review alerts" button when there are multiple unconfirmed alerts', () => {
       const stateWithMultipleDangerAlerts = createStateWithAlerts(
         [
           alertsMock[0],
@@ -786,10 +769,10 @@ describe('ConfirmFooter', () => {
         { [KEY_ALERT_KEY_MOCK]: false },
       );
       const { getByText } = render(stateWithMultipleDangerAlerts);
-      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText('Review alerts')).toBeInTheDocument();
     });
 
-    it('renders the "confirm" button when there are blocking alerts', () => {
+    it('renders the "review alerts" button when there are blocking field alerts', () => {
       const stateWithMultipleDangerAlerts = createStateWithAlerts(
         [
           alertsMock[0],
@@ -802,12 +785,12 @@ describe('ConfirmFooter', () => {
         { [KEY_ALERT_KEY_MOCK]: false },
       );
       const { getByText } = render(stateWithMultipleDangerAlerts);
-      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText('Review alerts')).toBeInTheDocument();
     });
 
-    it('renders the "confirm" button when there are unconfirmed alerts', () => {
+    it('renders the "review alert" button when there are unconfirmed alerts', () => {
       const { getByText } = render(stateWithAlertsMock);
-      expect(getByText('Confirm')).toBeInTheDocument();
+      expect(getByText('Review alert')).toBeInTheDocument();
     });
 
     it('renders the "confirm" button when there are confirmed danger alerts', () => {
@@ -836,7 +819,7 @@ describe('ConfirmFooter', () => {
       );
       const { getByText } = render(stateWithBannerDangerAlertMock);
       expect(getByText('Confirm')).toBeInTheDocument();
-      expect(getByText('Confirm')).not.toBeDisabled();
+      expect(getByText('Confirm')).toBeDisabled();
     });
 
     it('renders the "confirm" button when there are no alerts', () => {
@@ -844,10 +827,10 @@ describe('ConfirmFooter', () => {
       expect(getByText('Confirm')).toBeInTheDocument();
     });
 
-    it('does not show the alert modal when confirm is clicked', () => {
+    it('shows the alert modal when confirm is clicked with danger alerts', () => {
       const { getByTestId, queryByTestId } = render(stateWithAlertsMock);
       fireEvent.click(getByTestId('confirm-footer-button'));
-      expect(queryByTestId('alert-modal-button')).toBeNull();
+      expect(queryByTestId('alert-modal-button')).toBeInTheDocument();
     });
 
     describe('navigates to the next confirmation', () => {
