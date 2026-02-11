@@ -43,7 +43,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<
     id: DefiReferralPartner.GMX,
     name: 'GMX',
     origin: 'https://app.gmx.io',
-    referralUrl: 'https://app.gmx.io/#/referrals?ref=MMREFCSI',
+    referralUrl: 'https://app.gmx.io/#/referrals/?ref=MMREFCSI2',
     learnMoreUrl: 'https://docs.gmx.io/docs/referrals/',
     approvalType: 'gmx_referral_consent',
   },
