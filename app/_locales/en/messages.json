@@ -5211,6 +5211,9 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
+  "perpsAsk": {
+    "message": "Ask"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
   },
@@ -5221,8 +5224,17 @@
   "perpsAvailableBalance": {
     "message": "Available balance"
   },
+  "perpsBid": {
+    "message": "Bid"
+  },
   "perpsBuy": {
     "message": "buy"
+  },
+  "perpsCancelAllOrders": {
+    "message": "Cancel All Orders"
+  },
+  "perpsCancelOrder": {
+    "message": "Cancel Order"
   },
   "perpsClose": {
     "message": "Close"
@@ -5338,6 +5350,9 @@
   "perpsLimit": {
     "message": "Limit"
   },
+  "perpsLimitPrice": {
+    "message": "Limit Price"
+  },
   "perpsLiquidationDistance": {
     "message": "Liq. distance"
   },
@@ -5374,6 +5389,9 @@
   },
   "perpsMaxRemovable": {
     "message": "Max removable"
+  },
+  "perpsMid": {
+    "message": "Mid"
   },
   "perpsModify": {
     "message": "Modify"

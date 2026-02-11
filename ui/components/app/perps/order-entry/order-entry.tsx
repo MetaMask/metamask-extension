@@ -13,6 +13,7 @@ import { usePerpsOrderForm } from '../../../../hooks/perps';
 import type { OrderEntryProps } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
+import { LimitPriceInput } from './components/limit-price-input';
 import { LeverageSlider } from './components/leverage-slider';
 import { OrderSummary } from './components/order-summary';
 import { AutoCloseSection } from './components/auto-close-section';
@@ -57,6 +58,9 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   mode = 'new',
   existingPosition,
   orderType = 'market',
+  midPrice,
+  bidPrice,
+  askPrice,
 }) => {
   const t = useI18nContext();
 
@@ -72,6 +76,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     handleTakeProfitPriceChange,
     handleStopLossPriceChange,
     handleClosePercentChange,
+    handleLimitPriceChange,
     handleSubmit,
   } = usePerpsOrderForm({
     asset,
@@ -139,6 +144,19 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
+          />
+        )}
+
+        {/* Limit Orders: Show Limit Price Input below Order Amount */}
+        {mode !== 'close' && formState.type === 'limit' && (
+          <LimitPriceInput
+            limitPrice={formState.limitPrice}
+            onLimitPriceChange={handleLimitPriceChange}
+            currentPrice={currentPrice}
+            direction={formState.direction}
+            midPrice={midPrice}
+            bidPrice={bidPrice}
+            askPrice={askPrice}
           />
         )}
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -102,5 +102,58 @@ describe('OrderCard', () => {
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
     expect(screen.getByTestId('perps-token-logo-SOL')).toBeInTheDocument();
+  });
+
+  describe('cancel button', () => {
+    it('does not render cancel button when onCancel is not provided', () => {
+      const order = createMockOrder({ orderId: 'order-no-cancel' });
+      renderWithProvider(<OrderCard order={order} />, mockStore);
+
+      expect(
+        screen.queryByTestId('order-cancel-order-no-cancel'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders cancel button when onCancel is provided', () => {
+      const order = createMockOrder({ orderId: 'order-with-cancel' });
+      const onCancel = jest.fn();
+      renderWithProvider(
+        <OrderCard order={order} onCancel={onCancel} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('order-cancel-order-with-cancel'),
+      ).toBeInTheDocument();
+    });
+
+    it('calls onCancel with the order when cancel button is clicked', () => {
+      const order = createMockOrder({ orderId: 'order-cancel-test' });
+      const onCancel = jest.fn();
+      renderWithProvider(
+        <OrderCard order={order} onCancel={onCancel} />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('order-cancel-order-cancel-test'));
+
+      expect(onCancel).toHaveBeenCalledTimes(1);
+      expect(onCancel).toHaveBeenCalledWith(order);
+    });
+
+    it('does not trigger card click when cancel button is clicked', () => {
+      const order = createMockOrder({ orderId: 'order-stop-prop' });
+      const onClick = jest.fn();
+      const onCancel = jest.fn();
+      renderWithProvider(
+        <OrderCard order={order} onClick={onClick} onCancel={onCancel} />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('order-cancel-order-stop-prop'));
+
+      expect(onCancel).toHaveBeenCalledTimes(1);
+      expect(onClick).not.toHaveBeenCalled();
+    });
   });
 });
