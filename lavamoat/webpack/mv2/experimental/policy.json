@@ -2631,7 +2631,7 @@
         "define": true,
         "devicePixelRatio": true,
         "document": true,
-        "fetch": false,
+        "fetch": true,
         "h": "write",
         "importScripts": true,
         "location.href": true,
