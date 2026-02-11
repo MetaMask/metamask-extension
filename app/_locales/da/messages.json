@@ -401,9 +401,6 @@
   "next": {
     "message": "Næste"
   },
-  "noConversionRateAvailable": {
-    "message": "Ingen tilgængelig omregningskurs"
-  },
   "noWebcamFound": {
     "message": "Din computers webkamera blev ikke fundet. Prøv venligst igen."
   },
