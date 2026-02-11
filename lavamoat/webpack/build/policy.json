@@ -1618,7 +1618,7 @@
         "mockttp>body-parser>unpipe": true
       }
     },
-    "wait-on>axios>follow-redirects": {
+    "axios>follow-redirects": {
       "builtin": {
         "assert": true,
         "http": true,
@@ -1846,7 +1846,7 @@
       },
       "packages": {
         "@viem/anvil>http-proxy>eventemitter3": true,
-        "wait-on>axios>follow-redirects": true,
+        "axios>follow-redirects": true,
         "@viem/anvil>http-proxy>requires-port": true
       }
     },
