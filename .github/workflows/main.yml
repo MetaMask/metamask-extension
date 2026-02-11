@@ -329,7 +329,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: build-dist-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
@@ -437,7 +437,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: build-dist-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
@@ -487,7 +487,7 @@ jobs:
         if: ${{ env.BRANCH != 'main' }}
         id: download-changed-files
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: changed-files
           path: ./changed-files/
@@ -515,7 +515,7 @@ jobs:
 
       - name: Download artifact 'build-dist-browserify'
         if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: build-dist-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
