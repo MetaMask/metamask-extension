@@ -12,11 +12,15 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useUnreadNotificationsCounter } from '../../../hooks/metamask-notifications/useCounter';
+import {
+  useReadNotificationsCounter,
+  useUnreadNotificationsCounter,
+} from '../../../hooks/metamask-notifications/useCounter';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
+  DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
@@ -102,6 +106,7 @@ export function useGlobalMenuSections(
   const basicFunctionality = useSelector(getUseExternalServices);
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
+  const { notificationsReadCount } = useReadNotificationsCounter();
   const isMetamaskNotificationFeatureSeen = useSelector(
     selectIsMetamaskNotificationsFeatureSeen,
   );
@@ -178,6 +183,9 @@ export function useGlobalMenuSections(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         unread_count: notificationsUnreadCount,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        read_count: notificationsReadCount,
       },
     });
     navigate(NOTIFICATIONS_ROUTE);
@@ -191,6 +199,7 @@ export function useGlobalMenuSections(
     onClose,
     navigate,
     notificationsUnreadCount,
+    notificationsReadCount,
   ]);
 
   const handleSupportMenuClick = useCallback(() => {
@@ -390,7 +399,7 @@ export function useGlobalMenuSections(
 
     const section2Manage: GlobalMenuSection = {
       id: 'global-menu-section-manage',
-      title: 'MANAGE',
+      title: t('manage'),
       items: [
         {
           id: 'global-menu-connected-sites',
@@ -431,7 +440,7 @@ export function useGlobalMenuSections(
 
     const section3HelpAndSettings: GlobalMenuSection = {
       id: 'global-menu-section-help-settings',
-      title: 'HELP AND SETTINGS',
+      title: t('helpAndSettings'),
       items: [
         {
           id: 'global-menu-settings',
@@ -489,6 +498,7 @@ export function useGlobalMenuSections(
           textColor: TextColor.ErrorDefault,
           label: t('logOut'),
           onClick: () => {
+            navigate(DEFAULT_ROUTE);
             dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
             trackEvent({
               category: MetaMetricsEventCategory.Navigation,
@@ -523,6 +533,7 @@ export function useGlobalMenuSections(
     snapsUpdatesAvailable,
     showPriorityTag,
     notificationsUnreadCount,
+    notificationsReadCount,
     isMetamaskNotificationFeatureSeen,
     onClose,
     navigate,
