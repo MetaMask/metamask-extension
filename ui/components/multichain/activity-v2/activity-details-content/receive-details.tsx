@@ -1,14 +1,14 @@
 import React from 'react';
 import {
   Text,
-  TextButton,
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
   TextVariant,
-  TextColor,
   FontWeight,
+  TextColor,
+  TextButton,
 } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
@@ -19,7 +19,6 @@ import {
   formatDateTime,
   getTransferAmount,
 } from '../helpers';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Row } from './row';
 
@@ -27,8 +26,7 @@ type Props = {
   transaction: TransactionViewModel;
 };
 
-export const TransferDetails = ({ transaction }: Props) => {
-  const { formatToken } = useFormatters();
+export const ReceiveDetails = ({ transaction }: Props) => {
   const t = useI18nContext();
   const { amount, symbol } = getTransferAmount(transaction.amounts);
   const displayAmount = amount ? Number.parseFloat(amount) : 0;
@@ -40,17 +38,12 @@ export const TransferDetails = ({ transaction }: Props) => {
   const formattedDate = formatDateTime(transaction.time);
 
   const { txParams, hash } = transaction;
-  const networkFeeWei =
-    txParams.gasUsed && txParams.gasPrice
-      ? BigInt(txParams.gasUsed) * BigInt(txParams.gasPrice)
-      : BigInt(0);
-  const networkFeeEth = Number(networkFeeWei) / 10 ** 18;
 
   return (
     <>
       <div className="flex flex-col gap-2">
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('youSent')}
+          {t('youReceived')}
         </Text>
         <div className="flex items-center gap-3">
           <AvatarToken
@@ -58,11 +51,35 @@ export const TransferDetails = ({ transaction }: Props) => {
             name={symbol}
             size={AvatarTokenSize.Md}
           />
-          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Medium}>
+          <Text
+            variant={TextVariant.HeadingLg}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.SuccessDefault}
+          >
             {displayAmount > 0 ? '+' : ''}
             {displayAmount} {symbol}
           </Text>
         </div>
+      </div>
+
+      <div className="h-px bg-border-muted" />
+
+      <div className="flex flex-col gap-2">
+        <Row left={t('from')} right={shortenAddress(txParams.from)} />
+        <Row left={t('date')} right={formattedDate} />
+        <Row
+          left={t('network')}
+          right={
+            <div className="flex items-center gap-2">
+              <AvatarNetwork
+                name={chainName}
+                src={chainImageUrl}
+                size={AvatarNetworkSize.Xs}
+              />
+              <Text variant={TextVariant.BodySm}>{chainName}</Text>
+            </div>
+          }
+        />
       </div>
 
       <div className="h-px bg-border-muted" />
@@ -85,50 +102,27 @@ export const TransferDetails = ({ transaction }: Props) => {
             </Text>
           }
         />
-        <Row left={t('date')} right={formattedDate} />
-        <Row left={t('from')} right={shortenAddress(txParams.from)} />
-        <Row left={t('to')} right={shortenAddress(txParams.to)} />
+
         <Row
-          left={t('network')}
+          left="Transaction hash" // TODO: add translation
           right={
-            <div className="flex items-center gap-2">
-              <AvatarNetwork
-                name={chainName}
-                src={chainImageUrl}
-                size={AvatarNetworkSize.Xs}
-              />
-              <Text variant={TextVariant.BodySm}>{chainName}</Text>
-            </div>
+            explorerUrl ? (
+              <TextButton asChild>
+                <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+                  {t('viewOnExplorer')}
+                </a>
+              </TextButton>
+            ) : (
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+              >
+                {shortenAddress(hash)}
+              </Text>
+            )
           }
         />
-        <Row left={t('networkFee')} right={formatToken(networkFeeEth, 'ETH')} />
-        <Row
-          left="Total amount" // TODO: add translation
-          right={formatToken(networkFeeEth, 'ETH')}
-        />
       </div>
-
-      <div className="h-px bg-border-muted" />
-
-      <Row
-        left="Transaction hash" // TODO: add translation
-        right={
-          explorerUrl ? (
-            <TextButton asChild>
-              <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
-                {t('viewOnExplorer')}
-              </a>
-            </TextButton>
-          ) : (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {shortenAddress(hash)}
-            </Text>
-          )
-        }
-      />
     </>
   );
 };

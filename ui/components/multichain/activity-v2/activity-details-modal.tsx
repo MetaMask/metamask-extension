@@ -12,8 +12,10 @@ import {
   selectNetworkConfigurationByChainId,
 } from '../../../selectors/selectors';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { TransferDetails } from './activity-details-content/transfer-details';
 import { SwapDetails } from './activity-details-content/swap-details';
+import { ReceiveDetails } from './activity-details-content/receive-details';
 
 type Props = {
   isOpen: boolean;
@@ -37,13 +39,11 @@ export const ActivityDetailsModal = ({
     return null;
   }
 
-  const isSwap =
-    transaction.transactionType === 'SWAP' ||
-    transaction.transactionProtocol?.includes('SWAP');
+  const isSwap = transaction.transactionType === 'SWAP';
 
-  const isBridge =
-    transaction.transactionType === 'BRIDGE' ||
-    transaction.transactionProtocol?.includes('BRIDGE');
+  const isBridge = transaction.transactionType === 'BRIDGE';
+
+  const isReceive = transaction.category === TransactionGroupCategory.receive;
 
   const commonProps = {
     transaction,
@@ -59,7 +59,10 @@ export const ActivityDetailsModal = ({
         <ModalBody>
           <div className="flex flex-col gap-4">
             {(isSwap || isBridge) && <SwapDetails {...commonProps} />}
-            {!isSwap && !isBridge && <TransferDetails {...commonProps} />}
+            {isReceive && <ReceiveDetails {...commonProps} />}
+            {!isSwap && !isBridge && !isReceive && (
+              <TransferDetails {...commonProps} />
+            )}
           </div>
         </ModalBody>
       </ModalContent>
