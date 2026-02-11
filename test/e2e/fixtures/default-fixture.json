@@ -935,6 +935,7 @@
         "useSidePanelAsDefault": true
       },
       "referrals": {
+        "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,

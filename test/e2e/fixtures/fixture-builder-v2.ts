@@ -6,7 +6,7 @@ import type {
 import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
-  DEFAULT_FIXTURE_ACCOUNT,
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
@@ -56,7 +56,9 @@ class FixtureBuilderV2 {
     account?: string;
     useLocalhostHostname?: boolean;
   } = {}): this {
-    const selectedAccount = account || DEFAULT_FIXTURE_ACCOUNT;
+    const selectedAccount = account
+      ? account.toLowerCase()
+      : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const dappUrl = useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL;
 
     return this.withPermissionController({
