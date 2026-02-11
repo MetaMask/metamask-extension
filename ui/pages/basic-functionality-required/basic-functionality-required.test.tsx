@@ -7,20 +7,24 @@ jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
 }));
 
+const I18N_KEYS = {
+  title: 'basicFunctionalityRequired_title',
+  description: 'basicFunctionalityRequired_description',
+  openSettings: 'basicFunctionalityRequired_openSettings',
+  goToHome: 'basicFunctionalityRequired_goToHome',
+  settingsHint: 'basicFunctionalityRequired_settingsHint',
+} as const;
+
 jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, substitutions?: React.ReactNode[]) => {
     const messages: Record<string, string> = {};
-    messages['basicFunctionalityRequired_title'] =
-      "This feature isn't available";
-    messages['basicFunctionalityRequired_description'] =
+    messages[I18N_KEYS.title] = "This feature isn't available";
+    messages[I18N_KEYS.description] =
       'This page needs Basic functionality to be turned on.';
-    messages['basicFunctionalityRequired_openSettings'] = 'Open Settings';
-    messages['basicFunctionalityRequired_goToHome'] = 'Go to home';
+    messages[I18N_KEYS.openSettings] = 'Open Settings';
+    messages[I18N_KEYS.goToHome] = 'Go to home';
 
-    if (
-      key === 'basicFunctionalityRequired_settingsHint' &&
-      substitutions?.[0]
-    ) {
+    if (key === I18N_KEYS.settingsHint && substitutions?.[0]) {
       return <>Go to Settings or use {substitutions[0]}.</>;
     }
     return messages[key] ?? key;
