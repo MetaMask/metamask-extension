@@ -8,6 +8,9 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { useEstimationFailed } from './useEstimationFailed';
 
+jest.mock('../../../../../shared/modules/selectors');
+jest.mock('../../../../store/controller-actions/transaction-controller');
+
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
   chainId: '0x5',
 }) as TransactionMeta;
