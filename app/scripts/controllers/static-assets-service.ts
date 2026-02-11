@@ -1,6 +1,10 @@
 import type { IDisposable } from 'cockatiel';
 import type { CaipAssetType, Hex } from '@metamask/utils';
-import { isStrictHexString, parseCaipAssetType } from '@metamask/utils';
+import {
+  CaipAssetTypeStruct,
+  isStrictHexString,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import type { Messenger } from '@metamask/messenger';
 import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
 import { StaticIntervalPollingControllerOnly } from '@metamask/polling-controller';
@@ -15,6 +19,7 @@ import {
   CreateServicePolicyOptions,
   ServicePolicy,
 } from '@metamask/controller-utils';
+import { Infer, object, string, number, assert } from '@metamask/superstruct';
 import { createSentryError } from '../../../shared/modules/error';
 
 const SERVICE = 'StaticAssetsService' as const;
@@ -75,19 +80,27 @@ export type StaticAssetsServiceOptions = {
 };
 
 /**
- * The top asset type.
+ * The struct for the top asset.
  *
  * @see https://token.api.cx.metamask.io/v3/tokens/trending?chainIds=eip155%3A56&minVolume24hUsd=1&minLiquidity=1&minMarketCap=1
+ *
+ * This is the struct of the top assets that are fetched from the API.
+ * It is used to validate the top assets.
+ */
+const TopAssetStruct = object({
+  assetId: CaipAssetTypeStruct,
+  symbol: string(),
+  decimals: number(),
+  name: string(),
+});
+
+/**
+ * The top asset type.
  *
  * This is the type of the top assets that are fetched from the API.
  * It is used to transform the top assets to tokens.
  */
-type TopAsset = {
-  assetId: CaipAssetType;
-  symbol: string;
-  decimals: number;
-  name: string;
-};
+type TopAsset = Infer<typeof TopAssetStruct>;
 
 /**
  * Build the image URL for a token.
@@ -326,9 +339,14 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     const tokens: Token[] = [];
     const topX = this.#getTopX();
     const topAssets = await this.#fetchTopAssetsFromAPI(chainId);
-    if (topAssets.length > 0) {
+
+    if (Array.isArray(topAssets) && topAssets.length > 0) {
       for (const topAsset of topAssets) {
         try {
+          // We validate the top asset against the struct to ensure the data is valid.
+          // If the data is invalid, this token will be skipped.
+          assert(topAsset, TopAssetStruct);
+
           const asset = parseCaipAssetType(topAsset.assetId);
           if (
             // skip slip44 tokens.
@@ -361,7 +379,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
    * @param chainId - The chain ID.
    * @returns A promise that resolves to the top assets.
    */
-  async #fetchTopAssetsFromAPI(chainId: string): Promise<TopAsset[]> {
+  async #fetchTopAssetsFromAPI(chainId: string): Promise<unknown> {
     if (!isStrictHexString(chainId)) {
       return [];
     }
@@ -373,7 +391,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     url.searchParams.set('minLiquidity', '1');
     url.searchParams.set('minMarketCap', '1');
 
-    return await this.#policy.execute<TopAsset[]>(async () => {
+    return await this.#policy.execute(async () => {
       return this.#fetchFn(url, { method: 'GET' });
     });
   }
