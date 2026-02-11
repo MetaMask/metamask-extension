@@ -105,7 +105,6 @@ export function buildErrorContent(
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryUnlock1'),
           t('hardwareWalletErrorRecoveryUnlock2'),
-          t('hardwareWalletErrorRecoveryUnlock3'),
         ],
       };
 
