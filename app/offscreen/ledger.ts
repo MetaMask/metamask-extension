@@ -244,7 +244,7 @@ export class LedgerOffscreenHandler {
     // NFT_ONLY_SELECTORS, that way we can tell "token allowance" from "NFT allowance"
     // for every operation except approve().
     const selector = getTransactionSelector(tx);
-    const isNftTx = selector && NFT_ONLY_SELECTORS.has(selector);
+    const isNftTx = Boolean(selector && NFT_ONLY_SELECTORS.has(selector));
     const result = await app.clearSignTransaction(hdPath, tx, {
       externalPlugins: true,
       erc20: true,
