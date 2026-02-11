@@ -359,6 +359,7 @@ const assertAccountVisible = async (
   accountListPage: AccountListPage,
   accountName: string,
 ) => {
+  await headerNavbar.checkPageIsLoaded();
   await headerNavbar.openAccountMenu();
   await accountListPage.checkAccountDisplayedInAccountList(accountName);
   await accountListPage.closeMultichainAccountsPage();
