@@ -55,6 +55,7 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
@@ -363,6 +364,7 @@ const PrepareBridgePage = ({
   const [blockExplorerToken, setBlockExplorerToken] =
     useState<BridgeToken | null>(null);
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
+  const isInitialQuoteLoading = isLoading && !unvalidatedQuote;
 
   const getFromInputHeader = () => {
     return t('swapSelectToken');
@@ -632,7 +634,7 @@ const PrepareBridgePage = ({
 
         <Column
           justifyContent={
-            isLoading && !unvalidatedQuote
+            isInitialQuoteLoading
               ? JustifyContent.center
               : JustifyContent.flexEnd
           }
@@ -642,8 +644,8 @@ const PrepareBridgePage = ({
           paddingInline={4}
           paddingBottom={4}
         >
-          {isLoading && !unvalidatedQuote ? (
-            <>
+          {isInitialQuoteLoading ? (
+            <Column alignItems={AlignItems.center}>
               <Text
                 textAlign={TextAlign.Center}
                 color={TextColor.textAlternative}
@@ -651,7 +653,7 @@ const PrepareBridgePage = ({
                 {t('swapFetchingQuotes')}
               </Text>
               <MascotBackgroundAnimation height="64" width="64" />
-            </>
+            </Column>
           ) : (
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {
