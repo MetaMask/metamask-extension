@@ -3745,6 +3745,12 @@ export default class MetamaskController extends EventEmitter {
     this.shieldController.clearState();
     this.claimsController.clearState();
 
+    // clear contacts (address book)
+    this.addressBookController.clear();
+
+    // reset preferences to defaults
+    this.preferencesController.resetState();
+
     if (!restoreOnly) {
       // reset onboarding state
       this.onboardingController.resetOnboarding();

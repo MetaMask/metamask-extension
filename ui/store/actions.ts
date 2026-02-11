@@ -522,9 +522,7 @@ export function getSubscriptions(): ThunkAction<
       const subscriptions = await submitRequestToBackground('getSubscriptions');
       return subscriptions;
     } catch (error) {
-      captureException(
-        createSentryError('Failed to fetch subscriptions', error),
-      );
+      log.error('[getSubscriptions] error', error);
       throw error;
     }
   };
@@ -548,9 +546,7 @@ export function getSubscriptionPricing(): ThunkAction<
       );
       return pricing;
     } catch (error) {
-      captureException(
-        createSentryError('Failed to fetch subscription pricing', error),
-      );
+      log.error('[getSubscriptionPricing] error', error);
       throw error;
     }
   };
@@ -574,12 +570,7 @@ export async function getSubscriptionCryptoApprovalAmount(
     );
     return cryptoApprovalAmount;
   } catch (error) {
-    captureException(
-      createSentryError(
-        'Failed to get subscription crypto approval amount',
-        error,
-      ),
-    );
+    log.error('[getSubscriptionCryptoApprovalAmount] error', error);
     throw error;
   }
 }
@@ -654,9 +645,6 @@ export function cancelSubscription(params: {
       await submitRequestToBackground('cancelSubscription', [params]);
     } catch (error) {
       dispatch(displayWarning(error));
-      captureException(
-        createSentryError('Failed to cancel subscription', error),
-      );
 
       // rethrow the original error
       throw error;
@@ -674,7 +662,6 @@ export function unCancelSubscription(params: {
       const unCancelSubscriptionError = new Error(
         `Failed to uncancel subscription, ${getErrorMessage(error)}`,
       );
-      captureException(unCancelSubscriptionError);
       throw unCancelSubscriptionError;
     }
   };
@@ -693,13 +680,7 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       );
       return billingPortalUrl;
     } catch (error) {
-      captureException(
-        createSentryError(
-          'Failed to get subscription billing portal url',
-          error,
-        ),
-      );
-
+      log.error('[getSubscriptionBillingPortalUrl] error', error);
       // rethrow the original error
       throw error;
     }
