@@ -369,11 +369,6 @@ const ShieldPlan = () => {
     }
     return null;
   }, [shieldSubscriptionError]);
-  const shieldSubscriptionApiErrorMessage = shieldSubscriptionError?.message
-    .toLowerCase()
-    .includes(SHIELD_ERROR.payerAddressAlreadyUsed)
-    ? t('shieldErrorPayerAddressAlreadyUsed')
-    : undefined;
 
   const hasApiError =
     subscriptionsError ||
@@ -381,6 +376,12 @@ const ShieldPlan = () => {
     availableTokenBalancesError ||
     subscriptionResult.error ||
     shieldSubscriptionApiError;
+
+  const apiErrorMessage = hasApiError?.message
+    .toLowerCase()
+    .includes(SHIELD_ERROR.payerAddressAlreadyUsed)
+    ? t('shieldErrorPayerAddressAlreadyUsed')
+    : undefined;
 
   const plans: Plan[] = useMemo(
     () =>
@@ -482,7 +483,7 @@ const ShieldPlan = () => {
             className="shield-plan-page__error-content"
             error={hasApiError}
             location={ShieldUnexpectedErrorEventLocationEnum.ShieldPlanPage}
-            message={shieldSubscriptionApiErrorMessage} // show the error subscription error message if available
+            message={apiErrorMessage} // show the subscription error message if available
           />
         </Content>
       ) : (

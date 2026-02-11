@@ -364,11 +364,6 @@ const TransactionShield = () => {
     }
     return null;
   }, [shieldSubscriptionError]);
-  const shieldSubscriptionApiErrorMessage = shieldSubscriptionError?.message
-    .toLowerCase()
-    .includes(SHIELD_ERROR.payerAddressAlreadyUsed)
-    ? t('shieldErrorPayerAddressAlreadyUsed')
-    : undefined;
 
   const hasApiError =
     subscriptionsError ||
@@ -377,6 +372,11 @@ const TransactionShield = () => {
     updateSubscriptionCryptoPaymentMethodResult.error ||
     resultTriggerSubscriptionCheckInsufficientFunds.error ||
     shieldSubscriptionApiError;
+  const apiErrorMessage = hasApiError?.message
+    .toLowerCase()
+    .includes(SHIELD_ERROR.payerAddressAlreadyUsed)
+    ? t('shieldErrorPayerAddressAlreadyUsed')
+    : undefined;
 
   const loading =
     updateSubscriptionCardPaymentMethodResult.pending ||
@@ -462,7 +462,7 @@ const TransactionShield = () => {
           className="transaction-shield-page__error-content mx-auto"
           error={hasApiError}
           location={ShieldUnexpectedErrorEventLocationEnum.TransactionShieldTab}
-          message={shieldSubscriptionApiErrorMessage}
+          message={apiErrorMessage}
         />
       </Box>
     );
