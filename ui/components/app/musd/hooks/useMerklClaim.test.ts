@@ -10,7 +10,7 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
-jest.mock('../../../../../store/actions', () => ({
+jest.mock('../../../../store/actions', () => ({
   addTransactionAndRouteToConfirmationPage: jest.fn(),
   findNetworkClientIdByChainId: jest.fn(),
 }));
@@ -21,7 +21,7 @@ const { useSelector, useDispatch } = jest.requireMock('react-redux');
 const {
   addTransactionAndRouteToConfirmationPage,
   findNetworkClientIdByChainId,
-} = jest.requireMock('../../../../../store/actions');
+} = jest.requireMock('../../../../store/actions');
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TOKEN_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';

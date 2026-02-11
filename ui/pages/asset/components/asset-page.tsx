@@ -85,7 +85,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
-import { MerklRewards } from '../../../components/app/assets/merkl-rewards';
+import { MerklRewards } from '../../../components/app/musd';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';

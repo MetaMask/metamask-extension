@@ -7,7 +7,7 @@ import { usePendingMerklClaim } from './hooks/usePendingMerklClaim';
 jest.mock('./hooks/useMerklClaim');
 jest.mock('./hooks/usePendingMerklClaim');
 
-jest.mock('../../../../hooks/useI18nContext', () => ({
+jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
     const messages: Record<string, string> = {
       merklRewardsClaim: 'Claim',

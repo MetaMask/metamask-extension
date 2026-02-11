@@ -3,18 +3,18 @@ import { useSelector, useDispatch } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
-import { getSelectedInternalAccount } from '../../../../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import {
   addTransactionAndRouteToConfirmationPage,
   findNetworkClientIdByChainId,
-} from '../../../../../store/actions';
+} from '../../../../store/actions';
 import {
   DISTRIBUTOR_CLAIM_ABI,
   MERKL_CLAIM_CHAIN_ID,
   MERKL_DISTRIBUTOR_ADDRESS,
 } from '../constants';
 import { fetchMerklRewardsForAsset } from '../merkl-client';
-import type { MetaMaskReduxDispatch } from '../../../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../../store/store';
 
 type UseMerklClaimOptions = {
   tokenAddress: string;
@@ -106,15 +106,13 @@ export const useMerklClaim = ({
         chainId: claimChainId,
       };
 
-      // Create the transaction and navigate to confirmation page
+      // Create the transaction and navigate to confirmation page.
       await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {
           networkClientId,
-          type: TransactionType.contractInteraction,
+          type: TransactionType.musdClaim,
         }),
       );
-
-      setIsClaiming(false);
     } catch (e) {
       const err = e as Error;
 

@@ -14,8 +14,8 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import Tooltip from '../../../ui/tooltip';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Tooltip from '../../ui/tooltip';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type PendingMerklRewardsProps = {
   claimableReward: string | null;

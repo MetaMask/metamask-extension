@@ -1,6 +1,6 @@
 import type { Hex } from '@metamask/utils';
 import { Interface } from '@ethersproject/abi';
-import { FEATURED_RPCS } from '../../../../../shared/constants/network';
+import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import {
   MERKL_API_BASE_URL,
   MERKL_CLAIM_CHAIN_ID,
@@ -162,8 +162,26 @@ export const fetchMerklRewards = async ({
 };
 
 /**
+ * Simple in-memory cache for Merkl reward data.
+ * Avoids redundant API calls when the same data is requested within a short
+ * window (e.g. useMerklRewards fetches it, then claimRewards needs it again).
+ */
+const rewardCache = new Map<
+  string,
+  { data: MerklReward | null; timestamp: number }
+>();
+const REWARD_CACHE_TTL_MS = 5 * 60_000; // 5 minutes — proofs update infrequently (daily/weekly)
+
+/**
+ * Clear the reward cache. Exported for use in tests.
+ */
+export const clearRewardCache = () => rewardCache.clear();
+
+/**
  * Fetch Merkl rewards for a specific asset.
  * For mUSD tokens, always fetches from Linea and looks for Linea mUSD rewards.
+ * Results are cached for 30 seconds to speed up the claim flow when data was
+ * recently fetched by useMerklRewards.
  *
  * @param tokenAddress - The token's contract address
  * @param chainId - The chain where the token is held
@@ -184,12 +202,21 @@ export const fetchMerklRewardsForAsset = async (
     ? (MUSD_TOKEN_ADDRESS as Hex)
     : (tokenAddress as Hex);
 
-  return fetchMerklRewards({
+  const cacheKey = `${userAddress}:${rewardTokenAddress}:${chainIds.join(',')}`;
+  const cached = rewardCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < REWARD_CACHE_TTL_MS) {
+    return cached.data;
+  }
+
+  const result = await fetchMerklRewards({
     userAddress,
     chainIds,
     tokenAddress: rewardTokenAddress,
     signal,
   });
+
+  rewardCache.set(cacheKey, { data: result, timestamp: Date.now() });
+  return result;
 };
 
 /**

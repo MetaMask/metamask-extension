@@ -1,5 +1,5 @@
 import type { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 export const MERKL_API_BASE_URL = 'https://api.merkl.xyz/v4';
 
@@ -39,6 +39,7 @@ export const DISTRIBUTOR_CLAIMED_ABI = [
 export const ELIGIBLE_TOKENS: Record<string, string[]> = {
   [CHAIN_IDS.MAINNET]: [AGLAMERKL_ADDRESS_MAINNET, MUSD_TOKEN_ADDRESS],
   [CHAIN_IDS.LINEA_MAINNET]: [AGLAMERKL_ADDRESS_LINEA, MUSD_TOKEN_ADDRESS],
+  ['0xe709']: [AGLAMERKL_ADDRESS_LINEA, MUSD_TOKEN_ADDRESS],
 };
 
 /** Remote feature flag key for Merkl campaign claiming */
@@ -46,6 +47,3 @@ export const MERKL_FEATURE_FLAG_KEY = 'earnMerklCampaignClaiming';
 
 /** mUSD conversion bonus terms of use URL */
 export const MUSD_BONUS_TERMS_URL = 'https://consensys.io/terms-of-use';
-
-/** sessionStorage key used to scroll to the Merkl rewards section on asset page */
-export const SCROLL_TO_MERKL_REWARDS_KEY = 'scrollToMerklRewards';

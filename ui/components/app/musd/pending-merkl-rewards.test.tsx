@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import PendingMerklRewards from './pending-merkl-rewards';
 
-jest.mock('../../../../hooks/useI18nContext', () => ({
+jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, args?: string[]) => {
     const messages: Record<string, string> = {
       merklRewardsClaimableBonus: 'Claimable bonus',
@@ -14,7 +14,7 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
 }));
 
 // Mock Tooltip to avoid complex portal rendering
-jest.mock('../../../ui/tooltip', () => ({
+jest.mock('../../ui/tooltip', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => (

@@ -2,6 +2,7 @@ import {
   fetchMerklRewards,
   fetchMerklRewardsForAsset,
   getClaimedAmountFromContract,
+  clearRewardCache,
 } from './merkl-client';
 import {
   MERKL_API_BASE_URL,
@@ -15,8 +16,8 @@ const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
 // Mock FEATURED_RPCS to provide a resolved Infura URL (partial mock to keep CHAIN_IDS etc.)
-jest.mock('../../../../../shared/constants/network', () => ({
-  ...jest.requireActual('../../../../../shared/constants/network'),
+jest.mock('../../../../shared/constants/network', () => ({
+  ...jest.requireActual('../../../../shared/constants/network'),
   FEATURED_RPCS: [
     {
       chainId: '0xe708',
@@ -53,6 +54,7 @@ const createMockRewardData = (overrides: Record<string, unknown> = {}) => [
 describe('merkl-client', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    clearRewardCache();
   });
 
   describe('fetchMerklRewards', () => {

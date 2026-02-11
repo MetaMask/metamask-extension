@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback } from 'react';
 import type { Hex } from '@metamask/utils';
 import { Box, BoxBorderColor } from '@metamask/design-system-react';
 import {
@@ -6,7 +6,6 @@ import {
   useMerklRewards,
 } from './hooks/useMerklRewards';
 import { usePendingMerklClaim } from './hooks/usePendingMerklClaim';
-import { SCROLL_TO_MERKL_REWARDS_KEY } from './constants';
 import PendingMerklRewards from './pending-merkl-rewards';
 import ClaimMerklRewards from './claim-merkl-rewards';
 
@@ -45,34 +44,12 @@ const MerklRewards: React.FC<MerklRewardsProps> = ({
 
   usePendingMerklClaim({ onClaimConfirmed: handleClaimConfirmed });
 
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  // Scroll the Merkl rewards section into view if the user clicked
-  // the "Claim bonus" badge from the token list.
-  useEffect(() => {
-    if (
-      claimableReward &&
-      sessionStorage.getItem(SCROLL_TO_MERKL_REWARDS_KEY) === 'true'
-    ) {
-      sessionStorage.removeItem(SCROLL_TO_MERKL_REWARDS_KEY);
-      // Small delay to ensure the section is fully painted before scrolling
-      const timer = setTimeout(() => {
-        sectionRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'end',
-        });
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-    return undefined;
-  }, [claimableReward]);
-
   if (!isEligible || !isFeatureEnabled || !claimableReward) {
     return null;
   }
 
   return (
-    <div ref={sectionRef}>
+    <div>
       <Box
         borderColor={BoxBorderColor.BorderMuted}
         marginHorizontal={4}

@@ -1,11 +1,16 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import type { Hex } from '@metamask/utils';
 import {
   Text,
   TextVariant,
   TextColor,
   FontWeight,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import { useTokenDisplayInfo } from '../hooks';
 import {
@@ -29,11 +34,8 @@ import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
-import {
-  isEligibleForMerklRewards,
-  MERKL_FEATURE_FLAG_KEY,
-  SCROLL_TO_MERKL_REWARDS_KEY,
-} from '../merkl-rewards';
+import { isEligibleForMerklRewards } from '../../musd';
+import { useMerklClaim } from '../../musd/hooks/useMerklClaim';
 import {
   TokenCellTitle,
   TokenCellPercentChange,
@@ -50,6 +52,42 @@ export type TokenCellProps = {
   /** When true, hides the Merkl "Claim bonus" badge (e.g. on asset detail page). */
   hideMerklBadge?: boolean;
 };
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function ClaimBonusBadge({
+  isClaiming,
+  onClick,
+  label,
+}: {
+  isClaiming: boolean;
+  onClick: (e: React.MouseEvent) => void;
+  label: string;
+}) {
+  if (isClaiming) {
+    return (
+      <Icon
+        name={IconName.Loading}
+        size={IconSize.Sm}
+        color={IconColor.PrimaryDefault}
+        style={{ animation: 'spin 1.2s linear infinite' }}
+        data-testid="claim-bonus-spinner"
+      />
+    );
+  }
+
+  return (
+    <span onClick={onClick} style={{ cursor: 'pointer' }}>
+      <Text
+        variant={TextVariant.BodySm}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.PrimaryDefault}
+        data-testid="claim-bonus-badge"
+      >
+        {label}
+      </Text>
+    </span>
+  );
+}
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -75,10 +113,15 @@ export default function TokenCell({
   const showClaimBonusBadge = useMemo(
     () =>
       !hideMerklBadge &&
-      Boolean(remoteFeatureFlags?.[MERKL_FEATURE_FLAG_KEY]) &&
+      true && // Boolean(remoteFeatureFlags?.[MERKL_FEATURE_FLAG_KEY]) &&
       isEligibleForMerklRewards(token.chainId, token.address),
     [hideMerklBadge, remoteFeatureFlags, token.chainId, token.address],
   );
+
+  const { claimRewards, isClaiming } = useMerklClaim({
+    tokenAddress: token.address as string,
+    chainId: token.chainId as Hex,
+  });
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
@@ -97,15 +140,15 @@ export default function TokenCell({
     setShowScamWarningModal(arg);
   };
 
-  // When clicking specifically on the "Claim bonus" badge, set a flag so the
-  // MerklRewards section on the asset page scrolls into view automatically.
+  // Trigger the claim transaction directly, routing to the confirmation page.
   const handleBadgeClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      sessionStorage.setItem(SCROLL_TO_MERKL_REWARDS_KEY, 'true');
-      onClick?.();
+      claimRewards().catch(() => {
+        // Error state is managed by useMerklClaim
+      });
     },
-    [onClick],
+    [claimRewards],
   );
 
   if (!token.chainId) {
@@ -135,16 +178,11 @@ export default function TokenCell({
         }
         footerLeftDisplay={
           showClaimBonusBadge ? (
-            <span onClick={handleBadgeClick} style={{ cursor: 'pointer' }}>
-              <Text
-                variant={TextVariant.BodySm}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.PrimaryDefault}
-                data-testid="claim-bonus-badge"
-              >
-                {t('merklRewardsClaimBonus')}
-              </Text>
-            </span>
+            <ClaimBonusBadge
+              isClaiming={isClaiming}
+              onClick={handleBadgeClick}
+              label={t('merklRewardsClaimBonus')}
+            />
           ) : (
             <TokenCellPercentChange token={displayToken} />
           )

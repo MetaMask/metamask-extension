@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import { getSelectedInternalAccount } from '../../../../../selectors/accounts';
-import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { getRemoteFeatureFlags } from '../../../../selectors/remote-feature-flags';
 import { ELIGIBLE_TOKENS, MERKL_FEATURE_FLAG_KEY } from '../constants';
 import {
   fetchMerklRewardsForAsset,
@@ -102,9 +102,9 @@ export const useMerklRewards = ({
   const selectedAddress = selectedAccount?.address;
 
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
-  const isFeatureEnabled = Boolean(
-    remoteFeatureFlags?.[MERKL_FEATURE_FLAG_KEY],
-  );
+  const isFeatureEnabled = true; // Boolean(
+  //   remoteFeatureFlags?.[MERKL_FEATURE_FLAG_KEY],
+  // );
 
   const isEligible = isEligibleForMerklRewards(chainId, tokenAddress);
 

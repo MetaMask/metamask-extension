@@ -4,7 +4,7 @@ import {
   TransactionStatus,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { getTransactions } from '../../../../../selectors/transactions';
+import { getTransactions } from '../../../../selectors/transactions';
 import { MERKL_DISTRIBUTOR_ADDRESS } from '../constants';
 
 /**

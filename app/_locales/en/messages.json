@@ -4039,6 +4039,21 @@
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdClaimActivityTitle": {
+    "message": "mUSD Bonus Claim"
+  },
+  "musdClaimClaimingTo": {
+    "message": "Claiming to",
+    "description": "Label for the account row in the mUSD claim confirmation screen"
+  },
+  "musdClaimDescription": {
+    "message": "Bonus payout will be on Linea network.",
+    "description": "Subtitle shown on the mUSD claim confirmation screen explaining rewards are on Linea"
+  },
+  "musdClaimTitle": {
+    "message": "Claim bonus",
+    "description": "Title for the mUSD bonus claim confirmation screen"
+  },
   "musdConversionActivityTitle": {
     "message": "mUSD Conversion"
   },

@@ -1,12 +1,11 @@
 import React from 'react';
-import { render, act } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import MerklRewards from './merkl-rewards';
 import {
   isEligibleForMerklRewards,
   useMerklRewards,
 } from './hooks/useMerklRewards';
 import { usePendingMerklClaim } from './hooks/usePendingMerklClaim';
-import { SCROLL_TO_MERKL_REWARDS_KEY } from './constants';
 
 jest.mock('./hooks/useMerklRewards');
 jest.mock('./hooks/usePendingMerklClaim');
@@ -191,91 +190,4 @@ describe('MerklRewards', () => {
     expect(mockRefetch).toHaveBeenCalledTimes(1);
   });
 
-  describe('scroll to section', () => {
-    beforeEach(() => {
-      sessionStorage.clear();
-      jest.useFakeTimers();
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
-    });
-
-    it('scrolls into view when sessionStorage flag is set and claimableReward is available', () => {
-      const scrollIntoViewMock = jest.fn();
-      window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-
-      sessionStorage.setItem(SCROLL_TO_MERKL_REWARDS_KEY, 'true');
-
-      mockIsEligibleForMerklRewards.mockReturnValue(true);
-      mockUseMerklRewards.mockReturnValue(
-        createMockUseMerklRewardsReturn('1.50'),
-      );
-
-      render(
-        <MerklRewards
-          tokenAddress={MOCK_TOKEN_ADDRESS}
-          chainId={MOCK_CHAIN_ID}
-        />,
-      );
-
-      act(() => {
-        jest.advanceTimersByTime(100);
-      });
-
-      expect(scrollIntoViewMock).toHaveBeenCalledWith({
-        behavior: 'smooth',
-        block: 'end',
-      });
-      expect(sessionStorage.getItem(SCROLL_TO_MERKL_REWARDS_KEY)).toBeNull();
-    });
-
-    it('does not scroll when sessionStorage flag is not set', () => {
-      const scrollIntoViewMock = jest.fn();
-      window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-
-      mockIsEligibleForMerklRewards.mockReturnValue(true);
-      mockUseMerklRewards.mockReturnValue(
-        createMockUseMerklRewardsReturn('1.50'),
-      );
-
-      render(
-        <MerklRewards
-          tokenAddress={MOCK_TOKEN_ADDRESS}
-          chainId={MOCK_CHAIN_ID}
-        />,
-      );
-
-      act(() => {
-        jest.advanceTimersByTime(100);
-      });
-
-      expect(scrollIntoViewMock).not.toHaveBeenCalled();
-    });
-
-    it('does not scroll when claimableReward is null', () => {
-      const scrollIntoViewMock = jest.fn();
-      window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-
-      sessionStorage.setItem(SCROLL_TO_MERKL_REWARDS_KEY, 'true');
-
-      mockIsEligibleForMerklRewards.mockReturnValue(true);
-      mockUseMerklRewards.mockReturnValue(createMockUseMerklRewardsReturn(null));
-
-      render(
-        <MerklRewards
-          tokenAddress={MOCK_TOKEN_ADDRESS}
-          chainId={MOCK_CHAIN_ID}
-        />,
-      );
-
-      act(() => {
-        jest.advanceTimersByTime(100);
-      });
-
-      expect(scrollIntoViewMock).not.toHaveBeenCalled();
-      // Flag should remain since the effect didn't consume it yet
-      expect(sessionStorage.getItem(SCROLL_TO_MERKL_REWARDS_KEY)).toBe('true');
-    });
-  });
 });
