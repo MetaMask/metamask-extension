@@ -4279,9 +4279,6 @@
   "noConnectionDescription": {
     "message": "Для подключения к сайту найдите и нажмите кнопку «подключиться». Помните, что MetaMask может подключаться только к сайтам в web3"
   },
-  "noConversionRateAvailable": {
-    "message": "Нет доступного обменного курса"
-  },
   "noDomainResolution": {
     "message": "Разрешение для домена не предоставлено."
   },

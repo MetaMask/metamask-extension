@@ -1938,6 +1938,7 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
