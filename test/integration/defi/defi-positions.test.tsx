@@ -45,6 +45,7 @@ const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
 const withMetamaskConnectedToMainnet = {
   ...mockMetaMaskState,
+  useExternalServices: true,
   participateInMetaMetrics: true,
   dataCollectionForMarketing: false,
   selectedNetworkClientId: 'testNetworkConfigurationId',
