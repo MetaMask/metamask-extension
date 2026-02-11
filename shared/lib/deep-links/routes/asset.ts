@@ -10,7 +10,7 @@ export enum AssetQueryParams {
   AssetId = 'assetId',
 }
 
-export default new Route({
+export const asset = new Route({
   pathname: '/asset',
   getTitle: (_: URLSearchParams) => 'deepLink_theAssetPage',
   handler: function handler(params: URLSearchParams) {
