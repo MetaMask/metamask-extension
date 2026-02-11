@@ -2657,6 +2657,10 @@
       "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/hooks/gas/useEstimationFailed.test.ts": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/hooks/gas/useIsGaslessLoading.test.ts": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
