@@ -258,13 +258,23 @@ const KNOWN_PUBLIC_KEY_ADDRESSES = [
   },
 ];
 
-const buildMockKeyringBridge = (publicKeyPayload) =>
+const buildMockKeyringBridge = (
+  publicKeyPayload,
+  appConfiguration = {
+    arbitraryDataEnabled: 1,
+    erc20ProvisioningNecessary: 0,
+    starkEnabled: 0,
+    starkv2Supported: 0,
+    version: '1.0.0',
+  },
+) =>
   jest.fn(() => ({
     init: jest.fn(),
     dispose: jest.fn(),
     destroy: jest.fn(),
     updateTransportMethod: jest.fn(),
     getPublicKey: jest.fn(async () => publicKeyPayload),
+    getAppConfiguration: jest.fn(async () => appConfiguration),
   }));
 
 jest.mock('@metamask/eth-trezor-keyring', () => ({
@@ -310,6 +320,12 @@ jest.mock('@metamask/chain-agnostic-permission', () => ({
   getEthAccounts: jest.fn(),
 }));
 
+jest.mock('@metamask/core-backend', () => ({
+  ...jest.requireActual('@metamask/core-backend'),
+  createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
+}));
+
+const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -1766,6 +1782,44 @@ describe('MetaMaskController', () => {
             });
           },
         );
+      });
+
+      describe('getLedgerAppConfiguration', () => {
+        it('returns the app configuration from the Ledger bridge', async () => {
+          const mockConfiguration = {
+            arbitraryDataEnabled: 1,
+            erc20ProvisioningNecessary: 0,
+            starkEnabled: 0,
+            starkv2Supported: 0,
+            version: '1.0.0',
+          };
+
+          const mockKeyring = {
+            bridge: {
+              getAppConfiguration: jest
+                .fn()
+                .mockResolvedValue(mockConfiguration),
+            },
+            updateTransportMethod: jest.fn().mockResolvedValue(undefined),
+          };
+
+          const withKeyringSpy = jest
+            .spyOn(metamaskController.keyringController, 'withKeyring')
+            .mockImplementation(async (_selector, fn) => {
+              return await fn({ keyring: mockKeyring });
+            });
+
+          try {
+            const result = await metamaskController.getLedgerAppConfiguration();
+
+            expect(
+              mockKeyring.bridge.getAppConfiguration,
+            ).toHaveBeenCalledTimes(1);
+            expect(result).toStrictEqual(mockConfiguration);
+          } finally {
+            withKeyringSpy.mockRestore();
+          }
+        });
       });
 
       describe('getHardwareTypeForMetric', () => {

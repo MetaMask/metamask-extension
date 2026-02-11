@@ -15,6 +15,7 @@ import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
+import { createSentryError } from '../../modules/error';
 import { captureException } from '../sentry';
 import { HardwareDeviceNames } from '../../constants/hardware-wallets';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
@@ -224,12 +225,10 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
           });
           accounts.push(account);
         } catch (error) {
-          console.warn(
-            `Unable to create discovered account: ${derivationPath}:`,
-            error,
-          );
           // Still logging this one to sentry as this is a fairly new process for account discovery.
-          captureException(error);
+          captureException(
+            createSentryError('Unable to create discovered account', error),
+          );
         }
       }
     }

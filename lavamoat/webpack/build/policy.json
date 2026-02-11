@@ -310,7 +310,9 @@
         "node:fs.realpathSync": true,
         "node:path.dirname": true,
         "node:path.join": true,
-        "node:path.relative": true
+        "node:path.normalize": true,
+        "node:path.relative": true,
+        "node:path.sep": true
       },
       "packages": {
         "depcheck>resolve": true
@@ -540,6 +542,13 @@
     },
     "@swc/core>@swc/core-win32-x64-msvc": {
       "native": true
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false,
+        "document.visibilityState": true
+      }
     },
     "webpack>@webassemblyjs/ast": {
       "globals": {
@@ -1562,15 +1571,9 @@
     "copy-webpack-plugin>tinyglobby>fdir": {
       "builtin": {
         "fs": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.normalize": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true
+        "path": true
       },
       "globals": {
-        "AbortController": true,
         "process.platform": true
       },
       "packages": {
@@ -1778,7 +1781,7 @@
     "html-bundler-webpack-plugin>html-minifier-terser": {
       "packages": {
         "html-bundler-webpack-plugin>html-minifier-terser>clean-css": true,
-        "html-bundler-webpack-plugin>parse5>entities": true,
+        "html-bundler-webpack-plugin>html-minifier-terser>entities": true,
         "html-bundler-webpack-plugin>html-minifier-terser>relateurl": true,
         "terser": true
       }
@@ -3027,9 +3030,12 @@
     },
     "copy-webpack-plugin>tinyglobby": {
       "builtin": {
-        "path": true
+        "fs": true,
+        "path": true,
+        "url": true
       },
       "globals": {
+        "URL": true,
         "console.log": true,
         "process.cwd": true,
         "process.env.TINYGLOBBY_DEBUG": true,

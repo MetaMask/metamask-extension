@@ -990,7 +990,9 @@
         "node:fs.realpathSync": true,
         "node:path.dirname": true,
         "node:path.join": true,
-        "node:path.relative": true
+        "node:path.normalize": true,
+        "node:path.relative": true,
+        "node:path.sep": true
       },
       "packages": {
         "depcheck>resolve": true
@@ -1118,6 +1120,13 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
+      }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false,
+        "document.visibilityState": true
       }
     },
     "@typescript-eslint/eslint-plugin": {

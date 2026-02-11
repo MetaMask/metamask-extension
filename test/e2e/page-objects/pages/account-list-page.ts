@@ -258,7 +258,7 @@ class AccountListPage {
             css: this.addMultichainAccountButton,
             text: 'Add account',
           },
-          this.multichainAccountOptionsMenuButton,
+          this.addMultichainWalletButton,
         ],
         { timeout },
       );
