@@ -2533,6 +2533,13 @@ export default class MetamaskController extends EventEmitter {
           querySubscription,
         );
 
+      accumulator[`${dataService}:invalidateQueries`] = (filters, queries) =>
+        this.controllerMessenger.call(
+          `${dataService}:invalidateQueries`,
+          filters,
+          queries,
+        );
+
       return accumulator;
     }, {});
 
