@@ -12,7 +12,7 @@ on:
         description: The run ID to get builds from
     secrets:
       PR_COMMENT_TOKEN:
-        required: true
+        required: false
       INFURA_PROJECT_ID:
         required: false
 
@@ -107,39 +107,6 @@ jobs:
       test-artifacts-path: html-report
       builds-from-run: ${{ inputs.builds-from-run }}
 
-  test-e2e-chrome-api-specs-alert-on-failure:
-    needs:
-      - test-e2e-chrome-api-specs
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
-    environment: pr-comment
-    env:
-      GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-      OWNER: ${{ github.repository_owner }}
-      REPOSITORY: ${{ github.event.repository.name }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
-      HTML_REPORT_PATH: html-report
-      JOB_NAME: test-e2e-chrome-api-specs
-    steps:
-      - name: Download html report
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.JOB_NAME }}
-          path: ${{ env.HTML_REPORT_PATH }}
-
-      - name: Upload html report to S3
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ env.HTML_REPORT_PATH }}
-          path: ${{ env.HTML_REPORT_PATH }}
-
-      - name: Comment on PR with html report
-        run: |
-          gh pr comment "${PR_NUMBER}" --repo "${OWNER}/${REPOSITORY}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
-
   test-e2e-chrome-api-specs-multichain:
     uses: ./.github/workflows/run-e2e.yml
     with:
@@ -149,39 +116,6 @@ jobs:
       test-command: yarn test:api-specs-multichain
       test-artifacts-path: html-report-multichain
       builds-from-run: ${{ inputs.builds-from-run }}
-
-  test-e2e-chrome-api-specs-multichain-alert-on-failure:
-    needs:
-      - test-e2e-chrome-api-specs-multichain
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
-    environment: pr-comment
-    env:
-      GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-      OWNER: ${{ github.repository_owner }}
-      REPOSITORY: ${{ github.event.repository.name }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
-      HTML_REPORT_PATH: html-report-multichain
-      JOB_NAME: test-e2e-chrome-api-specs-multichain
-    steps:
-      - name: Download html report
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ env.JOB_NAME }}
-          path: ${{ env.HTML_REPORT_PATH }}
-
-      - name: Upload html report to S3
-        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
-        with:
-          aws-region: ${{ vars.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
-          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ env.HTML_REPORT_PATH }}
-          path: ${{ env.HTML_REPORT_PATH }}
-
-      - name: Comment on PR with html report
-        run: |
-          gh pr comment "${PR_NUMBER}" --repo "${OWNER}/${REPOSITORY}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
 
   test-e2e-chrome-report:
     needs:
@@ -212,7 +146,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Download test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: .
           pattern: test-e2e-chrome*
@@ -222,7 +156,7 @@ jobs:
         run: yarn tsx .github/scripts/create-e2e-test-report.ts
 
       - name: Upload test runs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-e2e-chrome-report
           path: ${{ env.TEST_RUNS_PATH }}
