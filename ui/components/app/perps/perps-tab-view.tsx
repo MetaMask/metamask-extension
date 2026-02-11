@@ -96,19 +96,7 @@ export const PerpsTabView: React.FC = () => {
   // - triggerPrice: any order with a trigger condition (TP/SL variant)
   // - detailedOrderType containing "Take Profit" or "Stop" (belt-and-suspenders)
   const orders = useMemo(() => {
-    return allOrders.filter((order) => {
-      if (order.status !== 'open') {
-        return false;
-      }
-      if (order.isTrigger || order.reduceOnly || order.triggerPrice) {
-        return false;
-      }
-      const detailed = order.detailedOrderType?.toLowerCase() ?? '';
-      if (detailed.includes('take profit') || detailed.includes('stop')) {
-        return false;
-      }
-      return true;
-    });
+    return allOrders.filter((order) => order.status === 'open');
   }, [allOrders]);
 
   const hasPositions = positions.length > 0;
@@ -453,23 +441,15 @@ export const PerpsTabView: React.FC = () => {
                   {t('perpsOpenOrders')}
                 </Text>
                 <Text
-                  as="button"
                   variant={TextVariant.BodySm}
-                  color={TextColor.PrimaryDefault}
-                  className="cursor-pointer"
-                  onClick={handleCancelAllOrders}
-                  data-testid="perps-cancel-all-orders"
+                  color={TextColor.TextAlternative}
                 >
                   {t('perpsCancelAllOrders')}
                 </Text>
               </Box>
               <Box flexDirection={BoxFlexDirection.Column}>
                 {orders.map((order) => (
-                  <OrderCard
-                    key={order.orderId}
-                    order={order}
-                    onCancel={handleCancelOrder}
-                  />
+                  <OrderCard key={order.orderId} order={order} />
                 ))}
               </Box>
             </Box>

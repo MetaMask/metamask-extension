@@ -5231,7 +5231,7 @@
     "message": "buy"
   },
   "perpsCancelAllOrders": {
-    "message": "Cancel All Orders"
+    "message": "Cancel all"
   },
   "perpsCancelOrder": {
     "message": "Cancel Order"
@@ -5414,12 +5414,6 @@
   "perpsOpenInterestTooltip": {
     "message": "The combined value of all open positions for this perp"
   },
-  "perpsOraclePrice": {
-    "message": "Oracle Price"
-  },
-  "perpsOraclePriceTooltip": {
-    "message": "The median of external prices reported by validators, used for computing funding rate"
-  },
   "perpsOpenLong": {
     "message": "Open Long $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
@@ -5433,6 +5427,12 @@
   },
   "perpsOpenedLong": {
     "message": "Opened long"
+  },
+  "perpsOraclePrice": {
+    "message": "Oracle Price"
+  },
+  "perpsOraclePriceTooltip": {
+    "message": "The median of external prices reported by validators, used for computing funding rate"
   },
   "perpsOrderAmount": {
     "message": "Order Amount"

@@ -70,14 +70,15 @@ const PerpsHomePage: React.FC = () => {
 
   const isLoading = positionsLoading || ordersLoading || marketsLoading;
 
-  // Filter positions (only crypto for now, limit to 3)
+  // Filter positions (only crypto for now)
   const positions = useMemo(() => {
-    return allPositions.filter((pos) => !pos.symbol.includes(':')).slice(0, 3);
+    return allPositions;
   }, [allPositions]);
 
-  // Filter open orders (limit to 5)
+  // Filter to user-placed limit orders resting on the orderbook.
+  // Excludes position-attached orders (TP/SL triggers, reduce-only, etc.)
   const openOrders = useMemo(() => {
-    return allOrders.filter((order) => order.status === 'open').slice(0, 5);
+    return allOrders.filter((order) => order.status === 'open');
   }, [allOrders]);
 
   // Filter crypto markets (limit to 5)
