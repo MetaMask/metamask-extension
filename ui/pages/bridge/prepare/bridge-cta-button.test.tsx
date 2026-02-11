@@ -13,6 +13,7 @@ import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quote
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import {
+  ConnectionStatus,
   HardwareConnectionPermissionState,
   HardwareWalletType,
 } from '../../../contexts/hardware-wallets';
@@ -20,11 +21,13 @@ import { BridgeCTAButton } from './bridge-cta-button';
 
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
 
 jest.mock('../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../contexts/hardware-wallets'),
   useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
 
 const baseHardwareWalletConfig = {
@@ -40,6 +43,9 @@ describe('BridgeCTAButton', () => {
     mockUseHardwareWalletConfig.mockReturnValue(baseHardwareWalletConfig);
     mockUseHardwareWalletActions.mockReturnValue({
       ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
     });
   });
 
