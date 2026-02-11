@@ -321,10 +321,10 @@ export class LedgerOffscreenHandler {
       }
     });
 
-    navigator.hid.addEventListener('disconnect', async ({ device }) => {
+    navigator.hid.addEventListener('disconnect', ({ device }) => {
       if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
         // Clean up transport state on disconnect
-        await this.closeTransport();
+        this.closeTransport();
 
         chrome.runtime.sendMessage({
           target: OffscreenCommunicationTarget.extension,
@@ -370,8 +370,8 @@ export class LedgerOffscreenHandler {
               },
             });
           })
-          .finally(async () => {
-            await this.closeTransport();
+          .finally(() => {
+            this.closeTransport();
           });
 
         // Return true to indicate we will send response asynchronously
