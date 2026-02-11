@@ -206,16 +206,6 @@ export function getAppIsLoading(state) {
 }
 
 /**
- * Used to prevent the popup from closing while a hardware wallet is signing.
- *
- * @param state - Redux state
- * @returns true when hardware wallet signing is pending
- */
-export function getPendingHardwareWalletSigning(state) {
-  return state.appState.pendingHardwareWalletSigning;
-}
-
-/**
  * Check if the hardware wallet error modal is currently visible.
  * Used to prevent auto-closing the notification popup when an error modal is shown.
  *
@@ -224,7 +214,9 @@ export function getPendingHardwareWalletSigning(state) {
  */
 export function getIsHardwareWalletErrorModalVisible(state) {
   return (
-    state.appState.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
+    // TODO: Modal is always in the appstate but many tests have not been updated to include it and therefore causing them to fail
+    // this will be fixed in a follow up PR.
+    state.appState?.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
   );
 }
 
