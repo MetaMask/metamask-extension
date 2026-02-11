@@ -493,6 +493,7 @@
     "@babel/preset-react": "^7.25.9",
     "@babel/preset-typescript": "^7.25.9",
     "@babel/register": "^7.25.9",
+    "@google/genai": "^1.0.0",
     "@jest/globals": "^29.7.0",
     "@lavamoat/allow-scripts": "^3.4.3",
     "@lavamoat/lavadome-core": "0.0.20",
@@ -798,11 +799,8 @@
       "ws>utf-8-validate": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@metamask/notification-services-controller>firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
-      "tsx>esbuild": true,
-      "ws>bufferutil": false,
-      "ws>utf-8-validate": false
+      "@google/genai>protobufjs": false,
+      "@metamask/notification-services-controller>firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
     }
   },
   "packageManager": "yarn@4.12.0",
