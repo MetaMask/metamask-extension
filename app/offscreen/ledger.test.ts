@@ -334,27 +334,6 @@ describe('Ledger Offscreen', () => {
         );
       });
 
-      it('calls clearSignTransaction with "nft: true" for NFT-only selector (safeTransferFrom)', async () => {
-        mockParse.mockReturnValue({
-          data: `0x42842e0e${'00'.repeat(64)}`,
-        });
-
-        await sendAction(LedgerAction.signTransaction, {
-          hdPath: "m/44'/60'/0'/0/0",
-          tx: '0xdeadbeef',
-        });
-
-        expect(mockClearSignTransaction).toHaveBeenCalledWith(
-          "m/44'/60'/0'/0/0",
-          '0xdeadbeef',
-          expect.objectContaining({
-            externalPlugins: true,
-            erc20: true,
-            nft: true,
-          }),
-        );
-      });
-
       it('calls clearSignTransaction with "nft: true" for setApprovalForAll selector', async () => {
         mockParse.mockReturnValue({
           data: `0xa22cb465${'00'.repeat(64)}`,

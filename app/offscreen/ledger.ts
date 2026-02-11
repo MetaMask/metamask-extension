@@ -19,7 +19,6 @@ type EIP712Message = Parameters<LedgerEth['signEIP712Message']>[1];
  */
 const NFT_ONLY_SELECTORS = new Set([
   '0xa22cb465', // setApprovalForAll (ERC721 + ERC1155)
-  '0x23b872dd', // transferFrom (ERC721)
   '0x42842e0e', // safeTransferFrom (ERC721)
   '0xb88d4fde', // safeTransferFrom(address,address,uint256,bytes) (ERC721)
   '0xf242432a', // safeTransferFrom (ERC1155)
