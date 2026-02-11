@@ -51,8 +51,12 @@ export class NonHardwareAdapter implements HardwareWalletAdapter {
   /**
    * Always returns true - regular accounts are always ready
    * since there's no hardware device state to check
+   *
+   * @param _options
    */
-  async ensureDeviceReady(_options?: EnsureDeviceReadyOptions): Promise<boolean> {
+  async ensureDeviceReady(
+    _options?: EnsureDeviceReadyOptions,
+  ): Promise<boolean> {
     return true;
   }
 }

@@ -31,6 +31,7 @@ const mockApproval = {
 };
 
 const mockBaseStore = {
+  appState: {},
   metamask: {
     pendingApprovals: {
       [mockApprovalId]: mockApproval,
@@ -44,6 +45,7 @@ const mockBaseStore = {
 describe('error template', () => {
   it('matches the snapshot', async () => {
     const testStore = {
+      ...mockBaseStore,
       metamask: {
         ...mockBaseStore.metamask,
         pendingApprovals: {
