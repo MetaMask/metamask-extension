@@ -39,7 +39,7 @@ const createMockRefs = (
   },
   adapterRef: { current: null },
   connectingPromiseRef: { current: null },
-  ensureDeviceReadyPromiseRef: { current: null },
+  ensureDeviceReadyPromiseRef: { current: new Map() },
   isConnectingRef: { current: false },
   hasAutoConnectedRef: { current: false },
   lastConnectedAccountRef: { current: null },
