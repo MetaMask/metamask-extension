@@ -10,13 +10,11 @@ import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmati
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 
 jest.mock('../../../../../hooks/gas/useEstimationFailed');
-
-jest.mock('../../../../../hooks/gas/useIsGaslessSupported', () => ({
-  useIsGaslessSupported: jest.fn(() => ({ isSupported: false, pending: false })),
-}));
+jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -32,23 +30,32 @@ jest.mock(
 );
 
 const mockUseEstimationFailed = jest.mocked(useEstimationFailed);
+const mockUseIsGaslessSupported = jest.mocked(useIsGaslessSupported);
 
 function render({
   gasFeeTokens,
   selectedGasFeeToken,
   estimationFailed = false,
+  isGaslessSupported = false,
 }: {
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
   estimationFailed?: boolean;
+  isGaslessSupported?: boolean;
 } = {}) {
   mockUseEstimationFailed.mockReturnValue(estimationFailed);
+  mockUseIsGaslessSupported.mockReturnValue({
+    isSupported: isGaslessSupported,
+    isSmartTransaction: false,
+    pending: false,
+  });
 
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       chainId: CHAIN_IDS.GOERLI,
       gasFeeTokens,
       selectedGasFeeToken,
+      isGasFeeSponsored: isGaslessSupported,
     }),
   );
 
@@ -120,6 +127,16 @@ describe('<EditGasFeesRow />', () => {
       });
 
       expect(queryByText('Unavailable')).toBeNull();
+    });
+
+    it('does not render "Unavailable" when gas fee is sponsored even if estimation failed', () => {
+      const { queryByText, getByTestId } = render({
+        estimationFailed: true,
+        isGaslessSupported: true,
+      });
+
+      expect(queryByText('Unavailable')).toBeNull();
+      expect(getByTestId('paid-by-meta-mask')).toBeInTheDocument();
     });
   });
 });

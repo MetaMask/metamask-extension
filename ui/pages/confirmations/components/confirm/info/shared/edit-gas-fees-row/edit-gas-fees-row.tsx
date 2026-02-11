@@ -110,7 +110,7 @@ export const EditGasFeesRow = ({
               </Text>
             )}
             {isGasFeeEditable && <EditGasIconButton />}
-            {estimationFailed && (
+            {estimationFailed && !isGasFeeSponsored && (
               <Text color={TextColor.textDefault}>{t('unavailable')}</Text>
             )}
             {!estimationFailed && (
