@@ -10,6 +10,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import BasicFunctionalityRequiredPage from '../../page-objects/pages/basic-functionality-required-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
+
 describe('Basic functionality required', function () {
   it('redirects to feature-unavailable page when opening a protected route with Basic functionality off', async function () {
     await withFixtures(
@@ -39,7 +40,9 @@ describe('Basic functionality required', function () {
 
         const descriptionText =
           await basicFunctionalityRequiredPage.getDescriptionText();
-        const normalizedDescription = descriptionText.replace(/\s+/gu, ' ').trim();
+        const normalizedDescription = descriptionText
+          .replace(/\s+/gu, ' ')
+          .trim();
         assert.strictEqual(
           normalizedDescription,
           'This page needs Basic functionality to be turned on. Turn it on in Settings to use features like swaps, buy, and rewards. Go to Settings > Security and privacy, or use Open Settings to open it now.',
