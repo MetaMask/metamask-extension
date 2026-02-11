@@ -16,7 +16,11 @@ import {
   BoxBorderColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { AlignItems, Display, FlexDirection } from '../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+} from '../../helpers/constants/design-system';
 import { Container } from '../../components/component-library/container/container';
 import { DEFAULT_ROUTE, SECURITY_ROUTE } from '../../helpers/constants/routes';
 
@@ -62,7 +66,11 @@ export const BasicFunctionalityRequired = () => {
           src="./images/logo/metamask-fox.svg"
           style={LOGO_STYLE}
         />
-        <Text asChild variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
+        <Text
+          asChild
+          variant={TextVariant.HeadingLg}
+          fontWeight={FontWeight.Bold}
+        >
           <h1 style={{ marginTop: 16, marginBottom: 16 }}>
             {t('basicFunctionalityRequired_title')}
           </h1>
@@ -75,7 +83,10 @@ export const BasicFunctionalityRequired = () => {
             {t('basicFunctionalityRequired_description')}
           </Text>
           <Box marginTop={2}>
-            <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
               {t('basicFunctionalityRequired_settingsHint', [
                 <TextButton
                   key="settings-link"
