@@ -797,7 +797,7 @@ export enum MetaMetricsEventName {
   NavPermissionsOpened = 'Permissions Opened',
   NetworkConnectionBannerShown = 'Network Connection Banner Shown',
   NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
-  NetworkConnectionBannerSwitchToInfuraClicked = 'Network Connection Banner Switch To Infura Clicked',
+  NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked = 'Network Connection Banner Switch To MetaMask Default RPC Clicked',
   NetworkConnectionBannerRpcUpdated = 'Network Connection Banner RPC Updated',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',

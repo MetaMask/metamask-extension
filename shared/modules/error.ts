@@ -72,8 +72,8 @@ export function isUserCancelledLoginError(error: Error | undefined): boolean {
  * @param cause - The cause of the error.
  * @returns The created error.
  */
-export function createSentryError(message: string, cause: Error): Error {
-  const error = new Error(message) as Error & { cause: Error };
+export function createSentryError(message: string, cause: unknown): Error {
+  const error = new Error(message) as Error & { cause: unknown };
   error.cause = cause;
   return error;
 }
