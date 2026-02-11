@@ -543,6 +543,13 @@
     "@swc/core>@swc/core-win32-x64-msvc": {
       "native": true
     },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false,
+        "document.visibilityState": true
+      }
+    },
     "webpack>@webassemblyjs/ast": {
       "globals": {
         "console.warn": true

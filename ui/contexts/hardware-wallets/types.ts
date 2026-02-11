@@ -74,6 +74,18 @@ export type DeviceEventPayload = {
 export type Unsubscribe = () => void;
 
 /**
+ * Options for ensureDeviceReady
+ */
+export type EnsureDeviceReadyOptions = {
+  /**
+   * Whether the operation requires blind signing to be enabled on the device.
+   * Defaults to true. Set to false for simple sends (plain native asset transfers)
+   * that don't involve contract interactions.
+   */
+  requireBlindSigning?: boolean;
+};
+
+/**
  * Adapter interface
  *
  * Note: This adapter manages connection state only.
@@ -91,10 +103,11 @@ export type HardwareWalletAdapter = {
    * Ensure the device is ready for operations
    * (e.g., Ledger requires the Ethereum app to be open)
    *
+   * @param options - Optional settings to control readiness checks
    * @returns true if ready
    * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
    */
-  ensureDeviceReady?(): Promise<boolean>;
+  ensureDeviceReady?(options?: EnsureDeviceReadyOptions): Promise<boolean>;
 
   /**
    * Check the current permission state for device access.
