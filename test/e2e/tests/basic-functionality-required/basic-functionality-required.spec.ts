@@ -45,14 +45,14 @@ describe('Basic functionality required', function () {
           .trim();
         assert.strictEqual(
           normalizedDescription,
-          'This page needs Basic functionality to be turned on. Turn it on in Settings to use features like swaps, buy, and rewards. Go to Settings > Security and privacy, or use Open Settings to open it now.',
+          "This feature isn't available while basic functionality is turned off. Turn it on in Settings > Security and privacy to continue.",
           'Description should exactly match the expected copy',
         );
       },
     );
   });
 
-  it('navigates to home when clicking Go to the home page', async function () {
+  it('navigates to home when clicking Back to home', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

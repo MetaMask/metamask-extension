@@ -80,24 +80,16 @@ export const BasicFunctionalityRequired = () => {
           paddingBottom={12}
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {t('basicFunctionalityRequired_description')}
+            {t('basicFunctionalityRequired_description', [
+              <TextButton
+                key="settings-link"
+                onClick={() => navigate(SECURITY_ROUTE)}
+                data-testid="basic-functionality-required-settings-link"
+              >
+                {t('basicFunctionalityRequired_settingsLinkText')}
+              </TextButton>,
+            ])}
           </Text>
-          <Box marginTop={2}>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-            >
-              {t('basicFunctionalityRequired_settingsHint', [
-                <TextButton
-                  key="settings-link"
-                  onClick={() => navigate(SECURITY_ROUTE)}
-                  data-testid="basic-functionality-required-settings-link"
-                >
-                  {t('basicFunctionalityRequired_openSettings')}
-                </TextButton>,
-              ])}
-            </Text>
-          </Box>
         </Box>
         <Box style={{ width: '100%', marginTop: 48 }}>
           <Button

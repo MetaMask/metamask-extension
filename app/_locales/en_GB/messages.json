@@ -876,20 +876,17 @@
     "message": "Turn on basic functionality"
   },
   "basicFunctionalityRequired_description": {
-    "message": "This page needs Basic functionality to be turned on. Turn it on in Settings to use features like swaps, buy, and rewards."
+    "message": "This feature isn't available while basic functionality is turned off. Turn it on in $1 to continue.",
+    "description": "$1 is a link with the text 'Settings > Security and privacy'"
   },
   "basicFunctionalityRequired_goToHome": {
-    "message": "Go to the home page"
+    "message": "Back to home"
   },
-  "basicFunctionalityRequired_openSettings": {
-    "message": "Open Settings"
-  },
-  "basicFunctionalityRequired_settingsHint": {
-    "message": "Go to Settings > Security and privacy, or use $1 to open it now.",
-    "description": "$1 is a link with the text from basicFunctionalityRequired_openSettings"
+  "basicFunctionalityRequired_settingsLinkText": {
+    "message": "Settings > Security and privacy"
   },
   "basicFunctionalityRequired_title": {
-    "message": "This feature isn't available"
+    "message": "Basic functionality is off"
   },
   "bestQuote": {
     "message": "Best quote"
