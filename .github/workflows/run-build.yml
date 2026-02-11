@@ -110,7 +110,7 @@ jobs:
         run: yarn mozilla-lint
 
       - name: Upload artifact '${{ inputs.build-name }}'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ inputs.build-name }}
           path: |

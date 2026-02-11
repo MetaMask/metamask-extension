@@ -98,6 +98,7 @@ describe('getSmartTransactionMetricsProperties', () => {
           statusMetadata: {
             cancellationFeeWei: 36777567771000,
             cancellationReason: 'not_cancelled',
+            originalTransactionStatus: 'pending',
             deadlineRatio: 0.6400288486480713,
             minedHash: txHash,
             timedOut: true,
@@ -129,6 +130,9 @@ describe('getSmartTransactionMetricsProperties', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       smart_transaction_timed_out: true,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      stx_original_transaction_status: 'pending',
     });
   });
 

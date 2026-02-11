@@ -28,7 +28,7 @@ jobs:
         run: yarn tsx .github/scripts/git-diff-default-branch.ts
 
       - name: Upload changed files artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: changed-files
           path: ./changed-files/
@@ -44,7 +44,7 @@ jobs:
 
       - name: Download test-e2e-chrome-report
         if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: test-e2e-chrome-report
           path: test/test-results/
@@ -53,7 +53,7 @@ jobs:
 
       - name: Download test-e2e-firefox-report
         if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: test-e2e-firefox-report
           path: test/test-results/
@@ -62,7 +62,7 @@ jobs:
 
       - name: Upload test-runs-for-splitting
         if: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW != 'null'}}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-runs-for-splitting
           path: test/test-results/test-runs-*.json
