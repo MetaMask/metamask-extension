@@ -175,9 +175,11 @@ function createControllerAccess(
         // Return Arbitrum mainnet as default for Hyperliquid
         return '0xa4b1' as `0x${string}`;
       },
-      findNetworkClientIdForChain: (_chainId) => {
-        // TODO: Wire to NetworkController
-        return undefined;
+      findNetworkClientIdForChain: async (chainId) => {
+        return await submitRequestToBackground<string>(
+          'findNetworkClientIdByChainId',
+          [chainId],
+        );
       },
       getSelectedNetworkClientId: () => {
         // TODO: Wire to NetworkController
@@ -186,19 +188,27 @@ function createControllerAccess(
     },
     transaction: {
       submit: async (txParams, options) => {
+        const networkClientId = await Promise.resolve(options.networkClientId);
+
+        if (!networkClientId) {
+          throw new Error('No network client found for Perps transaction');
+        }
+
         const transactionMeta = await submitRequestToBackground<{
           id: string;
           hash?: string;
-        }>('addTransactionAndWaitForPublish', [
+        }>('addTransaction', [
           txParams,
           {
             ...options,
+            networkClientId,
             origin: options.origin ?? 'metamask',
           },
         ]);
 
         return {
-          // Align with mobile flow by resolving only after publish/hash is available.
+          // PoC behavior: creation happens immediately so confirmations route can render.
+          // Full transaction lifecycle parity requires background-controller event wiring.
           result: Promise.resolve(transactionMeta.hash ?? ''),
           transactionMeta,
         };
