@@ -4,6 +4,7 @@ import {
   SimulationData,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import { useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
@@ -120,7 +121,12 @@ export function useSimulationMetrics({
     ),
   };
 
-  const sensitiveProperties = {};
+  const sensitiveProperties = {
+    simulation_receiving_assets_contract_address:
+      getContractAddresses(receivingAssets),
+    simulation_sending_assets_contract_address:
+      getContractAddresses(sendingAssets),
+  };
 
   const params = { properties, sensitiveProperties };
 
@@ -187,6 +193,20 @@ function useIncompleteAssetEvent(
 
     setProcessedAssets([...processedAssets, assetAddress]);
   }
+}
+
+/**
+ * Returns contract addresses from balance changes as an array of hex strings.
+ * Only token assets (ERC-20, ERC-721, ERC-1155) have contract addresses; native
+ * assets are omitted. Addresses are already in 0x-prefixed Hex format from the simulation.
+ *
+ * @param changes - Balance changes from simulation
+ * @returns Array of contract addresses (hex with 0x prefix)
+ */
+function getContractAddresses(changes: BalanceChange[]): string[] {
+  return changes
+    .map((change) => change.asset.address)
+    .filter((address): address is Hex => Boolean(address));
 }
 
 function getProperties(

@@ -528,6 +528,166 @@ describe('useSimulationMetrics', () => {
         );
       },
     );
+
+    describe('contract address properties (anon-only in sensitiveProperties)', () => {
+      const ADDRESS_1 = '0xabc123';
+      const ADDRESS_2 = '0xdef456';
+
+      it('includes empty arrays when no token assets', () => {
+        const nativeChange = {
+          ...BALANCE_CHANGE_MOCK,
+          asset: {
+            chainId: '0x1',
+            standard: TokenStandard.none,
+          },
+          amount: new BigNumber(-1),
+        } as unknown as BalanceChange;
+
+        useDisplayNamesMock.mockReturnValue([]);
+
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            { balanceChanges: [nativeChange] },
+            expect.objectContaining({
+              sensitiveProperties: expect.objectContaining({
+                simulation_receiving_assets_contract_address: [],
+                simulation_sending_assets_contract_address: [],
+              }),
+            }),
+          ),
+        );
+      });
+
+      it('includes receiving contract address for single token', () => {
+        const receivingChange = {
+          ...BALANCE_CHANGE_MOCK,
+          asset: { address: ADDRESS_1, standard: TokenStandard.ERC20 },
+          amount: new BigNumber(1),
+        } as unknown as BalanceChange;
+
+        useDisplayNamesMock.mockReturnValue([DISPLAY_NAME_UNKNOWN_MOCK]);
+
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            { balanceChanges: [receivingChange] },
+            expect.objectContaining({
+              sensitiveProperties: expect.objectContaining({
+                simulation_receiving_assets_contract_address: [ADDRESS_1],
+                simulation_sending_assets_contract_address: [],
+              }),
+            }),
+          ),
+        );
+      });
+
+      it('includes sending contract address for single token', () => {
+        const sendingChange = {
+          ...BALANCE_CHANGE_MOCK,
+          asset: { address: ADDRESS_1, standard: TokenStandard.ERC20 },
+          amount: new BigNumber(-1),
+        } as unknown as BalanceChange;
+
+        useDisplayNamesMock.mockReturnValue([DISPLAY_NAME_UNKNOWN_MOCK]);
+
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            { balanceChanges: [sendingChange] },
+            expect.objectContaining({
+              sensitiveProperties: expect.objectContaining({
+                simulation_receiving_assets_contract_address: [],
+                simulation_sending_assets_contract_address: [ADDRESS_1],
+              }),
+            }),
+          ),
+        );
+      });
+
+      it('includes multiple contract addresses for multiple assets', () => {
+        const receiving1 = {
+          ...BALANCE_CHANGE_MOCK,
+          asset: { address: ADDRESS_1, standard: TokenStandard.ERC20 },
+          amount: new BigNumber(1),
+        } as unknown as BalanceChange;
+        const receiving2 = {
+          ...BALANCE_CHANGE_MOCK,
+          asset: { address: ADDRESS_2, standard: TokenStandard.ERC721 },
+          amount: new BigNumber(1),
+        } as unknown as BalanceChange;
+
+        useDisplayNamesMock.mockReturnValue([
+          DISPLAY_NAME_UNKNOWN_MOCK,
+          DISPLAY_NAME_UNKNOWN_MOCK,
+        ]);
+
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            { balanceChanges: [receiving1, receiving2] },
+            expect.objectContaining({
+              sensitiveProperties: expect.objectContaining({
+                simulation_receiving_assets_contract_address: [
+                  ADDRESS_1,
+                  ADDRESS_2,
+                ],
+                simulation_sending_assets_contract_address: [],
+              }),
+            }),
+          ),
+        );
+      });
+
+      it('passes through contract addresses as-is (already 0x format from simulation)', () => {
+        const addressWithPrefix = '0xabc123';
+        const change = {
+          ...BALANCE_CHANGE_MOCK,
+          asset: {
+            address: addressWithPrefix,
+            standard: TokenStandard.ERC20,
+          },
+          amount: new BigNumber(-1),
+        } as unknown as BalanceChange;
+
+        useDisplayNamesMock.mockReturnValue([DISPLAY_NAME_UNKNOWN_MOCK]);
+
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            { balanceChanges: [change] },
+            expect.objectContaining({
+              sensitiveProperties: expect.objectContaining({
+                simulation_sending_assets_contract_address: [addressWithPrefix],
+              }),
+            }),
+          ),
+        );
+      });
+
+      it('does not add contract address properties to non-anon properties', () => {
+        const change = {
+          ...BALANCE_CHANGE_MOCK,
+          asset: { address: ADDRESS_1, standard: TokenStandard.ERC20 },
+          amount: new BigNumber(-1),
+        } as unknown as BalanceChange;
+
+        useDisplayNamesMock.mockReturnValue([DISPLAY_NAME_UNKNOWN_MOCK]);
+
+        renderHook(() =>
+          useSimulationMetrics({
+            enableMetrics: true,
+            balanceChanges: [change],
+            simulationData: undefined,
+            loading: false,
+            transactionId: TRANSACTION_ID_MOCK,
+          }),
+        );
+
+        const [params] = updateTransactionEventFragmentMock.mock.calls[0];
+        expect(params.properties).not.toHaveProperty(
+          'simulation_receiving_assets_contract_address',
+        );
+        expect(params.properties).not.toHaveProperty(
+          'simulation_sending_assets_contract_address',
+        );
+      });
+    });
   });
 
   describe('creates incomplete asset event', () => {
