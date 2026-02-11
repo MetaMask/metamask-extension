@@ -20,7 +20,10 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getPerpsStreamManager } from '../../../providers/perps';
+import {
+  getPerpsStreamManager,
+  getPerpsController,
+} from '../../../providers/perps';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   usePerpsLivePositions,
@@ -29,6 +32,7 @@ import {
 } from '../../../hooks/perps/stream';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
+import type { Order } from './types';
 import { PerpsTabControlBar } from './perps-tab-control-bar';
 import { StartTradeCta } from './start-trade-cta';
 import { PerpsRecentActivity } from './perps-recent-activity';
@@ -80,9 +84,32 @@ export const PerpsTabView: React.FC = () => {
   // Use stream hooks for real-time data
   const { positions, isInitialLoading: positionsLoading } =
     usePerpsLivePositions();
-  const { orders, isInitialLoading: ordersLoading } = usePerpsLiveOrders();
+  const { orders: allOrders, isInitialLoading: ordersLoading } =
+    usePerpsLiveOrders();
   const { cryptoMarkets: allCryptoMarkets, hip3Markets: allHip3Markets } =
     usePerpsLiveMarketData();
+
+  // Show only user-placed limit orders resting on the orderbook.
+  // Excludes all position-attached orders:
+  // - isTrigger: TP/SL trigger orders
+  // - reduceOnly: close/reduce orders tied to positions
+  // - triggerPrice: any order with a trigger condition (TP/SL variant)
+  // - detailedOrderType containing "Take Profit" or "Stop" (belt-and-suspenders)
+  const orders = useMemo(() => {
+    return allOrders.filter((order) => {
+      if (order.status !== 'open') {
+        return false;
+      }
+      if (order.isTrigger || order.reduceOnly || order.triggerPrice) {
+        return false;
+      }
+      const detailed = order.detailedOrderType?.toLowerCase() ?? '';
+      if (detailed.includes('take profit') || detailed.includes('stop')) {
+        return false;
+      }
+      return true;
+    });
+  }, [allOrders]);
 
   const hasPositions = positions.length > 0;
   const hasOrders = orders.length > 0;
@@ -115,6 +142,40 @@ export const PerpsTabView: React.FC = () => {
   const handleSeeAllPerps = useCallback(() => {
     navigate(PERPS_MARKET_LIST_ROUTE);
   }, [navigate]);
+
+  // Handle canceling a single open order
+  const handleCancelOrder = useCallback(
+    async (order: Order) => {
+      if (!selectedAddress) {
+        return;
+      }
+      try {
+        const controller = await getPerpsController(selectedAddress);
+        await controller.cancelOrder({
+          orderId: order.orderId,
+          symbol: order.symbol,
+        });
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error canceling order:', error);
+      }
+    },
+    [selectedAddress],
+  );
+
+  // Handle canceling all open orders
+  const handleCancelAllOrders = useCallback(async () => {
+    if (!selectedAddress) {
+      return;
+    }
+    try {
+      const controller = await getPerpsController(selectedAddress);
+      await controller.cancelOrders({ cancelAll: true });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error canceling all orders:', error);
+    }
+  }, [selectedAddress]);
 
   // Show loading state while initial data is being fetched
   if (isLoading) {
@@ -392,15 +453,23 @@ export const PerpsTabView: React.FC = () => {
                   {t('perpsOpenOrders')}
                 </Text>
                 <Text
+                  as="button"
                   variant={TextVariant.BodySm}
-                  color={TextColor.TextAlternative}
+                  color={TextColor.PrimaryDefault}
+                  className="cursor-pointer"
+                  onClick={handleCancelAllOrders}
+                  data-testid="perps-cancel-all-orders"
                 >
-                  {t('perpsCloseAll')}
+                  {t('perpsCancelAllOrders')}
                 </Text>
               </Box>
               <Box flexDirection={BoxFlexDirection.Column}>
                 {orders.map((order) => (
-                  <OrderCard key={order.orderId} order={order} />
+                  <OrderCard
+                    key={order.orderId}
+                    order={order}
+                    onCancel={handleCancelOrder}
+                  />
                 ))}
               </Box>
             </Box>

@@ -111,6 +111,12 @@ export type OrderEntryProps = {
   existingPosition?: ExistingPositionData;
   /** Order type: 'market' or 'limit' (defaults to 'market') */
   orderType?: OrderType;
+  /** Mid price from top-of-book for limit order presets */
+  midPrice?: number;
+  /** Best bid price from top-of-book for limit order presets */
+  bidPrice?: number;
+  /** Best ask price from top-of-book for limit order presets */
+  askPrice?: number;
 };
 
 /**

@@ -58,6 +58,8 @@ export type UsePerpsOrderFormReturn = {
   handleStopLossPriceChange: (stopLossPrice: string) => void;
   /** Handler for close percent changes (close mode only) */
   handleClosePercentChange: (percent: number) => void;
+  /** Handler for limit price changes (limit order mode) */
+  handleLimitPriceChange: (limitPrice: string) => void;
   /** Handler for form submission */
   handleSubmit: () => void;
 };
@@ -208,12 +210,24 @@ export function usePerpsOrderForm({
       };
     }
 
+    // For limit orders, use the user-specified limit price for calculations.
+    // Fall back to current market price if limit price is empty/invalid.
+    let effectivePrice = currentPrice;
+    if (formState.type === 'limit' && formState.limitPrice) {
+      const parsedLimitPrice = parseFloat(
+        formState.limitPrice.replace(/,/gu, ''),
+      );
+      if (!isNaN(parsedLimitPrice) && parsedLimitPrice > 0) {
+        effectivePrice = parsedLimitPrice;
+      }
+    }
+
     // User enters MARGIN amount. Position value = margin × leverage
     const positionValue = amount * formState.leverage;
-    const positionSize = calculatePositionSize(positionValue, currentPrice);
+    const positionSize = calculatePositionSize(positionValue, effectivePrice);
     const marginRequired = amount; // The entered amount IS the margin
     const liquidationPrice = estimateLiquidationPrice(
-      currentPrice,
+      effectivePrice,
       formState.leverage,
       formState.direction === 'long',
     );
@@ -231,6 +245,8 @@ export function usePerpsOrderForm({
     formState.amount,
     formState.leverage,
     formState.direction,
+    formState.type,
+    formState.limitPrice,
     currentPrice,
     mode,
     existingPosition,
@@ -265,6 +281,11 @@ export function usePerpsOrderForm({
     setFormState((prev) => ({ ...prev, stopLossPrice }));
   }, []);
 
+  // Limit price change handler (for limit order mode)
+  const handleLimitPriceChange = useCallback((limitPrice: string) => {
+    setFormState((prev) => ({ ...prev, limitPrice }));
+  }, []);
+
   // Close percent change handler (for close mode)
   const handleClosePercentChange = useCallback((percent: number) => {
     setClosePercent(percent);
@@ -286,6 +307,7 @@ export function usePerpsOrderForm({
     handleTakeProfitPriceChange,
     handleStopLossPriceChange,
     handleClosePercentChange,
+    handleLimitPriceChange,
     handleSubmit,
   };
 }

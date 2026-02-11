@@ -70,7 +70,11 @@ import {
   type OrderMode,
 } from '../../components/app/perps/order-entry';
 import { EditMarginExpandable } from '../../components/app/perps/edit-margin';
-import type { OrderType, OrderParams } from '../../components/app/perps/types';
+import type {
+  OrderType,
+  OrderParams,
+  Order,
+} from '../../components/app/perps/types';
 import { TextField, TextFieldSize } from '../../components/component-library';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import {
@@ -283,6 +287,58 @@ const PerpsMarketDetailPage: React.FC = () => {
     };
   }, [decodedSymbol, selectedAddress]);
 
+  // Subscribe to top-of-book data for limit price presets (bid, ask, mid)
+  // Uses the same getPerpsController async pattern as live price subscription
+  const [topOfBook, setTopOfBook] = useState<{
+    midPrice: number;
+    bidPrice: number;
+    askPrice: number;
+  } | null>(null);
+  useEffect(() => {
+    if (!decodedSymbol || !selectedAddress) {
+      setTopOfBook(null);
+      return undefined;
+    }
+
+    let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
+
+    const subscribe = async () => {
+      try {
+        const controller = await getPerpsController(selectedAddress);
+        if (cancelled) {
+          return;
+        }
+        unsubscribe = controller.subscribeToOrderBook({
+          symbol: decodedSymbol,
+          levels: 1,
+          callback: (orderBook) => {
+            if (
+              orderBook.bids.length > 0 &&
+              orderBook.asks.length > 0 &&
+              orderBook.midPrice
+            ) {
+              setTopOfBook({
+                midPrice: parseFloat(orderBook.midPrice),
+                bidPrice: parseFloat(orderBook.bids[0].price),
+                askPrice: parseFloat(orderBook.asks[0].price),
+              });
+            }
+          },
+        });
+      } catch {
+        // Controller not ready yet, skip silently
+      }
+    };
+
+    subscribe();
+
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+  }, [decodedSymbol, selectedAddress]);
+
   // Find market data for the given symbol
   const market = useMemo(() => {
     if (!decodedSymbol) {
@@ -318,16 +374,33 @@ const PerpsMarketDetailPage: React.FC = () => {
     positionRef.current = position;
   }, [position]);
 
-  // Find orders for this market
+  // Find user-placed limit orders resting on the orderbook for this market.
+  // Excludes all position-attached orders:
+  // - isTrigger: TP/SL trigger orders
+  // - reduceOnly: close/reduce orders tied to positions
+  // - triggerPrice: any order with a trigger condition (TP/SL variant)
+  // - detailedOrderType containing "Take Profit" or "Stop" (belt-and-suspenders)
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
     }
-    return allOrders.filter(
-      (order) =>
-        order.symbol.toLowerCase() === decodedSymbol.toLowerCase() &&
-        order.status === 'open',
-    );
+    return allOrders.filter((order) => {
+      if (order.symbol.toLowerCase() !== decodedSymbol.toLowerCase()) {
+        return false;
+      }
+      if (order.status !== 'open') {
+        return false;
+      }
+      // Exclude position-attached orders
+      if (order.isTrigger || order.reduceOnly || order.triggerPrice) {
+        return false;
+      }
+      const detailed = order.detailedOrderType?.toLowerCase() ?? '';
+      if (detailed.includes('take profit') || detailed.includes('stop')) {
+        return false;
+      }
+      return true;
+    });
   }, [decodedSymbol, allOrders]);
 
   // Candle period state and chart ref
@@ -373,6 +446,19 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Derived state: true when submitting OR waiting for position confirmation
   const isOrderPending = isSubmitting || pendingOrderSymbol !== null;
+
+  // Limit order validation: submit is disabled when limit price is empty or invalid
+  const isLimitPriceInvalid = useMemo(() => {
+    if (orderType !== 'limit' || !orderFormState) {
+      return false;
+    }
+    const cleaned = orderFormState.limitPrice?.replace(/,/gu, '') ?? '';
+    const parsed = parseFloat(cleaned);
+    return !cleaned || isNaN(parsed) || parsed <= 0;
+  }, [orderType, orderFormState]);
+
+  // Combined submit disabled state
+  const isSubmitDisabled = isOrderPending || isLimitPriceInvalid;
 
   // Auto close card expansion state
   const [isAutoCloseExpanded, setIsAutoCloseExpanded] = useState(false);
@@ -834,7 +920,15 @@ const PerpsMarketDetailPage: React.FC = () => {
           throw new Error(result.error || 'Failed to place order');
         }
 
-        // Set pending state - wait for position to appear in stream before navigating
+        if (orderFormState.type === 'limit') {
+          // Limit orders rest on the orderbook — return to detail view immediately.
+          // The resting order will appear in the orders section via usePerpsLiveOrders stream.
+          setCurrentView('detail');
+          setOrderMode('new');
+          return;
+        }
+
+        // Market orders — wait for position to appear in stream before navigating
         setPendingOrderSymbol(orderFormState.asset);
         return; // Don't navigate yet, wait for stream confirmation
       }
@@ -1022,6 +1116,30 @@ const PerpsMarketDetailPage: React.FC = () => {
   // No-op handler for order cards - orders on detail page are already
   // filtered to current market, so clicking should not navigate anywhere
   const handleOrderClick = useCallback(() => undefined, []);
+
+  // Handle canceling a single open order
+  const handleCancelOrder = useCallback(
+    async (order: Order) => {
+      if (!selectedAddress) {
+        return;
+      }
+      try {
+        const controller = await getPerpsController(selectedAddress);
+        const result = await controller.cancelOrder({
+          orderId: order.orderId,
+          symbol: order.symbol,
+        });
+        if (!result.success) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to cancel order:', result.error);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error canceling order:', error);
+      }
+    },
+    [selectedAddress],
+  );
 
   // Guard: redirect if perps feature is disabled
   if (!isPerpsEnabled) {
@@ -1444,6 +1562,9 @@ const PerpsMarketDetailPage: React.FC = () => {
             mode={orderMode}
             orderType={orderType}
             existingPosition={existingPositionForOrder}
+            midPrice={topOfBook?.midPrice}
+            bidPrice={topOfBook?.bidPrice}
+            askPrice={topOfBook?.askPrice}
           />
         </Box>
       )}
@@ -2064,6 +2185,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     order={order}
                     variant="muted"
                     onClick={handleOrderClick}
+                    onCancel={handleCancelOrder}
                   />
                 ))}
               </Box>
@@ -2433,13 +2555,10 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={handleOrderSubmit}
-              disabled={isOrderPending}
+              disabled={isSubmitDisabled}
               className={twMerge(
                 'w-full',
-                isLong
-                  ? 'bg-success-default hover:bg-success-hover active:bg-success-pressed'
-                  : 'bg-error-default hover:bg-error-hover active:bg-error-pressed',
-                isOrderPending && 'opacity-70 cursor-not-allowed',
+                isSubmitDisabled && 'opacity-70 cursor-not-allowed',
               )}
               data-testid="submit-order-button"
             >

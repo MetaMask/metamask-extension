@@ -10,6 +10,10 @@ import {
   TextColor,
   FontWeight,
   AvatarTokenSize,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -21,6 +25,8 @@ import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes'
 export type OrderCardProps = {
   order: Order;
   onClick?: (order: Order) => void;
+  /** Callback to cancel this order. When provided, a cancel button is shown. */
+  onCancel?: (order: Order) => void;
   variant?: 'default' | 'muted';
 };
 
@@ -36,6 +42,7 @@ export type OrderCardProps = {
 export const OrderCard: React.FC<OrderCardProps> = ({
   order,
   onClick,
+  onCancel,
   variant = 'default',
 }) => {
   const navigate = useNavigate();
@@ -53,6 +60,14 @@ export const OrderCard: React.FC<OrderCardProps> = ({
       );
     }
   }, [navigate, order, onClick]);
+
+  const handleCancel = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation(); // Prevent card click from firing
+      onCancel?.(order);
+    },
+    [onCancel, order],
+  );
 
   const baseStyles = 'cursor-pointer pt-2 pb-2 px-4 h-[62px]';
   const variantStyles =
@@ -104,18 +119,41 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         </Text>
       </Box>
 
-      {/* Right side: Price */}
+      {/* Right side: Price and optional cancel */}
       <Box
         className="shrink-0"
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.End}
-        gap={1}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={2}
       >
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-          {order.orderType === 'limit' && order.price !== '0'
-            ? `$${order.price}`
-            : t('perpsMarket')}
-        </Text>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.End}
+          gap={1}
+        >
+          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+            {order.orderType === 'limit' && order.price !== '0'
+              ? `$${order.price}`
+              : t('perpsMarket')}
+          </Text>
+        </Box>
+
+        {/* Cancel button - shown when onCancel is provided */}
+        {onCancel && (
+          <Box
+            as="button"
+            className="p-1 rounded-full hover:bg-hover active:bg-pressed cursor-pointer"
+            onClick={handleCancel}
+            data-testid={`order-cancel-${order.orderId}`}
+            aria-label={t('perpsCancelOrder')}
+          >
+            <Icon
+              name={IconName.Close}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+        )}
       </Box>
     </ButtonBase>
   );
