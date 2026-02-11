@@ -9,6 +9,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  IconColor,
   Text,
   TextVariant,
   TextColor,
@@ -32,11 +33,14 @@ type MenuItemProps = {
   // Legacy props from component-library (kept for backward compatibility)
   iconNameLegacy?: IconNameLegacy;
   iconColorLegacy?: IconColorLegacy;
+  iconSizeLegacy?: IconSizeLegacy;
   textVariantLegacy?: TextVariantLegacy;
   // New props from @metamask/design-system-react
   iconName?: IconName;
   iconSize?: IconSize;
+  iconColor?: IconColor;
   textVariant?: TextVariant;
+  textColor?: TextColor;
   to?: string;
   onClick?: () => void;
   subtitle?: string;
@@ -55,10 +59,13 @@ const MenuItem = React.forwardRef<
       'data-testid': dataTestId,
       iconNameLegacy,
       iconColorLegacy,
+      iconSizeLegacy,
       textVariantLegacy,
       iconName,
       iconSize,
+      iconColor,
       textVariant,
+      textColor,
       onClick,
       subtitle,
       disabled,
@@ -84,13 +91,14 @@ const MenuItem = React.forwardRef<
               <Icon
                 name={iconName}
                 size={iconSize || IconSize.Md}
+                color={iconColor}
                 className="mr-2"
               />
             )}
             {!useNewSystem && iconNameLegacy && (
               <IconLegacy
                 name={iconNameLegacy}
-                size={IconSizeLegacy.Sm}
+                size={iconSizeLegacy || IconSizeLegacy.Sm}
                 marginRight={2}
               />
             )}
@@ -102,13 +110,14 @@ const MenuItem = React.forwardRef<
               <Icon
                 name={iconName}
                 size={iconSize || IconSize.Md}
+                color={iconColor}
                 className="mr-3"
               />
             )}
             {!useNewSystem && iconNameLegacy && (
               <IconLegacy
                 name={iconNameLegacy}
-                size={IconSizeLegacy.Sm}
+                size={iconSizeLegacy || IconSizeLegacy.Sm}
                 marginRight={3}
                 color={iconColorLegacy}
               />
@@ -118,7 +127,7 @@ const MenuItem = React.forwardRef<
 
         <div>
           {textVariant && (
-            <Text variant={textVariant} asChild>
+            <Text variant={textVariant} color={textColor} asChild>
               <div>{children}</div>
             </Text>
           )}
@@ -127,7 +136,14 @@ const MenuItem = React.forwardRef<
               {children}
             </TextLegacy>
           )}
-          {!textVariant && !textVariantLegacy && <div>{children}</div>}
+          {!textVariant && !textVariantLegacy && textColor && (
+            <Text color={textColor} asChild>
+              <div>{children}</div>
+            </Text>
+          )}
+          {!textVariant && !textVariantLegacy && !textColor && (
+            <div>{children}</div>
+          )}
           {subtitle && (
             <Text
               variant={TextVariant.BodyXs}

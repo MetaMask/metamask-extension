@@ -4279,9 +4279,6 @@
   "noConnectionDescription": {
     "message": "サイトに接続するには、「接続」ボタンを見つけて選択します。MetaMaskはWeb3のサイトにしか接続できないのでご注意ください"
   },
-  "noConversionRateAvailable": {
-    "message": "利用可能な換算レートがありません"
-  },
   "noDomainResolution": {
     "message": "指定されたドメインの名前解決ができません。"
   },
