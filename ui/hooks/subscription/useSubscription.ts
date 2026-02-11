@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CANCEL_TYPES,
   PAYMENT_TYPES,
@@ -947,14 +947,18 @@ export const useSubscriptionError = (): {
   const t = useI18nContext();
   const shieldSubscriptionError = useSelector(getShieldSubscriptionError);
 
+  // Keep a ref so the unmount-only cleanup can read the latest value
+  const shieldSubscriptionErrorRef = useRef(shieldSubscriptionError);
+  shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+
   // Clear shield subscription error when unmounting
   useEffect(() => {
     return () => {
-      if (shieldSubscriptionError) {
+      if (shieldSubscriptionErrorRef.current) {
         setShieldSubscriptionError(null);
       }
     };
-  }, [shieldSubscriptionError]);
+  }, []);
 
   const shieldSubscriptionApiError = useMemo(() => {
     if (shieldSubscriptionError) {
