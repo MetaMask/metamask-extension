@@ -3127,7 +3127,7 @@
         "QueryCache": true,
         "QueryClient": true,
         "QueryObserver": true,
-        "addEventListener": true,
+        "addEventListener": false,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,

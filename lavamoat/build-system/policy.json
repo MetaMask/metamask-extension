@@ -1124,6 +1124,7 @@
     },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
+        "addEventListener": false,
         "document": false,
         "document.visibilityState": true
       }
