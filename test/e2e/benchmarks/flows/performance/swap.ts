@@ -79,9 +79,13 @@ async function mockGetQuoteStream(
 ): Promise<MockedEndpoint[]> {
   const REPEAT_GET_QUOTE_STREAM = 20;
   const endpoints: MockedEndpoint[] = [];
+  // Priority must exceed the bridge.api.cx.metamask.io catch-all (50)
+  // in performance-mocks so these SSE mocks are evaluated first.
+  const SSE_MOCK_PRIORITY = 100;
   for (let i = 0; i < REPEAT_GET_QUOTE_STREAM; i += 1) {
     const mock = await mockServer
       .forGet(/getQuoteStream/u)
+      .asPriority(SSE_MOCK_PRIORITY)
       .once()
       .thenStream(
         200,
