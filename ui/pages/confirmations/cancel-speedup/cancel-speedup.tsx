@@ -157,8 +157,8 @@ const SpeedRow = ({
       <Box alignItems={BoxAlignItems.Center} className="flex">
         <GasTiming
           chainId={chainId}
-          maxFeePerGas={maxFeePerGas}
-          maxPriorityFeePerGas={maxPriorityFeePerGas}
+          maxFeePerGas={maxFeePerGas as string}
+          maxPriorityFeePerGas={maxPriorityFeePerGas as string}
         />
       </Box>
     </ConfirmInfoRow>
