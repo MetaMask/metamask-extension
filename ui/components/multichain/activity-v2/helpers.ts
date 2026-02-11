@@ -145,9 +145,8 @@ export function getTransferAmount(amounts: TransactionViewModel['amounts']): {
   return {};
 }
 
-export function getExplorerUrl(chainId: number, hash: string): string | null {
-  const hexChainId = `0x${chainId.toString(16)}`;
-  const baseUrl = CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[hexChainId];
+export function getExplorerUrl(chainId: Hex, hash: string): string | null {
+  const baseUrl = CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId];
   return baseUrl ? `${baseUrl}tx/${hash}` : null;
 }
 
