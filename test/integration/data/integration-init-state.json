@@ -806,7 +806,6 @@
   "openSeaEnabled": false,
   "orderedNetworkList": [],
   "participateInMetaMetrics": false,
-  "useExternalServices": true,
   "pendingApprovalCount": 0,
   "pendingApprovals": {},
   "permissionHistory": {
@@ -2121,6 +2120,7 @@
   "useBlockie": false,
   "useCurrencyRateCheck": true,
   "useExternalNameSources": true,
+  "useExternalServices": true,
   "useMultiAccountBalanceChecker": false,
   "useNftDetection": false,
   "usePhishDetect": true,
