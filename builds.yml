@@ -389,6 +389,9 @@ env:
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
   - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
+  # Perps geoblock fallback (comma-separated region codes when remote flag unavailable)
+  - MM_PERPS_BLOCKED_REGIONS: null
+
   ###
   # Meta variables
   ###

@@ -26,6 +26,7 @@ import {
 import { getPerpsController } from '../../../../providers/perps';
 import { getPerpsStreamManager } from '../../../../providers/perps/PerpsStreamManager';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
 import type { Position, AccountState } from '../types';
 
@@ -62,6 +63,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
 }) => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
+  const { isEligible } = usePerpsEligibility();
 
   const [marginMode, setMarginMode] = useState<'add' | 'remove'>('add');
   const [marginAmount, setMarginAmount] = useState<string>('');
@@ -114,7 +116,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
   );
 
   const handleSaveMargin = useCallback(async () => {
-    if (!selectedAddress || !isValid) {
+    if (!isEligible || !selectedAddress || !isValid) {
       return;
     }
 
@@ -156,6 +158,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
       setIsSaving(false);
     }
   }, [
+    isEligible,
     selectedAddress,
     marginMode,
     marginAmount,
@@ -174,7 +177,11 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
     (riskAssessment.riskLevel === 'warning' ||
       riskAssessment.riskLevel === 'danger');
 
-  const confirmDisabled = !isValid || isSaving || parseFloat(marginAmount) <= 0;
+  const confirmDisabled =
+    !isEligible ||
+    !isValid ||
+    isSaving ||
+    parseFloat(marginAmount) <= 0;
 
   const getConfirmButtonLabel = () => {
     if (isSaving) {
@@ -457,6 +464,9 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
               size={ButtonSize.Md}
               onClick={handleSaveMargin}
               disabled={confirmDisabled}
+              title={
+                !isEligible ? t('perpsGeoBlockedTooltip') : undefined
+              }
               className={twMerge(
                 'w-full',
                 confirmDisabled && 'opacity-70 cursor-not-allowed',

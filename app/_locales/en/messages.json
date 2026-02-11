@@ -5251,6 +5251,9 @@
   "perpsCloseShort": {
     "message": "Close Short"
   },
+  "perpsGeoBlockedTooltip": {
+    "message": "Perpetual trading is not available in your region"
+  },
   "perpsClosedShort": {
     "message": "Closed short"
   },
