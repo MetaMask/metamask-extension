@@ -45,7 +45,7 @@ export const AccountDetailsDisplay = ({
   onExportClick,
 }) => {
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()
     : address;

@@ -86,7 +86,7 @@ jobs:
 
       - name: Restore .metamask folder
         id: restore-metamask
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .metamask
           key: .metamask-${{ hashFiles('yarn.lock') }}
@@ -100,7 +100,7 @@ jobs:
         if: ${{ inputs.build-artifact != '' }}
         id: download-build-artifact
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: ${{ inputs.build-artifact }}
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
@@ -117,7 +117,7 @@ jobs:
         if: ${{ env.BRANCH != 'main' }}
         id: download-changed-files
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: changed-files
           path: ./changed-files/
@@ -127,7 +127,7 @@ jobs:
         if: ${{ steps.download-changed-files.outcome == 'failure' }}
 
       - name: Download test-runs-for-splitting
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         continue-on-error: true
         with:
           name: test-runs-for-splitting
@@ -138,7 +138,7 @@ jobs:
         if: ${{ github.run_attempt > 1 }}
         id: download-previous-results
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: ${{ env.JOB_NAME }}
           path: ./previous-test-results/
@@ -161,7 +161,7 @@ jobs:
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.JOB_NAME }}
           path: ${{ inputs.test-artifacts-path }}
