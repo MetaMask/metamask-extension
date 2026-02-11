@@ -34,8 +34,9 @@ import {
 } from '../../../../helpers/constants/routes';
 import { useGatorPermissions } from '../../../../hooks/gator-permissions/useGatorPermissions';
 import {
-  AppState,
-  getAggregatedGatorPermissionsCountAcrossAllChains,
+  type AppState,
+  TOKEN_TRANSFER_GROUP,
+  getGatorPermissionCount,
   getTotalUniqueSitesCount,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionListItem } from './components/permission-list-item';
@@ -45,9 +46,11 @@ export const GatorPermissionsPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const totalGatorPermissions = useSelector((state: AppState) =>
-    getAggregatedGatorPermissionsCountAcrossAllChains(state, 'token-transfer'),
+    getGatorPermissionCount(state, TOKEN_TRANSFER_GROUP),
   );
-  const totalSitesConnections = useSelector(getTotalUniqueSitesCount);
+  const totalSitesConnections = useSelector((state: AppState) =>
+    getTotalUniqueSitesCount(state, TOKEN_TRANSFER_GROUP),
+  );
   const totalPermissions = totalGatorPermissions + totalSitesConnections;
 
   // Hook uses cache-first strategy: returns cached data immediately if available,

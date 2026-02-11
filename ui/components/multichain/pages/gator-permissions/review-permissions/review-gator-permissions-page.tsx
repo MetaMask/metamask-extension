@@ -20,10 +20,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import {
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import type { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -39,8 +36,8 @@ import { getMultichainNetworkConfigurationsByChainId } from '../../../../../sele
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 import {
   AppState,
-  getAggregatedGatorPermissionByChainId,
-  getAggregatedGatorPermissionByChainIdAndOrigin,
+  TOKEN_TRANSFER_GROUP,
+  getGatorPermissionsForChain,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from '../components';
 import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
@@ -110,16 +107,12 @@ export const ReviewGatorPermissionsPage = () => {
 
   // Get permissions - filtered by origin if provided, otherwise all
   const gatorPermissions = useSelector((state: AppState) =>
-    originDecoded
-      ? getAggregatedGatorPermissionByChainIdAndOrigin(state, {
-          aggregatedPermissionType: 'token-transfer',
-          chainId: chainId as Hex,
-          siteOrigin: originDecoded,
-        })
-      : getAggregatedGatorPermissionByChainId(state, {
-          aggregatedPermissionType: 'token-transfer',
-          chainId: chainId as Hex,
-        }),
+    getGatorPermissionsForChain(
+      state,
+      chainId as Hex,
+      TOKEN_TRANSFER_GROUP,
+      originDecoded,
+    ),
   );
 
   const { revokeGatorPermission } = useRevokeGatorPermissions({
@@ -127,9 +120,7 @@ export const ReviewGatorPermissionsPage = () => {
   });
 
   const handleRevokeClick = useCallback(
-    async (
-      permission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
-    ) => {
+    async (permission: PermissionInfoWithMetadata) => {
       const { context } = permission.permissionResponse;
 
       // Set pending state immediately to disable button and show "Pending..." text
@@ -160,9 +151,7 @@ export const ReviewGatorPermissionsPage = () => {
     [revokeGatorPermission, addPendingContext, removePendingContext],
   );
 
-  const renderGatorPermissions = (
-    permissions: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[],
-  ) =>
+  const renderGatorPermissions = (permissions: PermissionInfoWithMetadata[]) =>
     permissions.map((permission) => (
       <ReviewGatorPermissionItem
         key={`${permission.siteOrigin}-${permission.permissionResponse.context}`}

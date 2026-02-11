@@ -61,8 +61,9 @@ import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shar
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
 import {
   AppState,
-  getTokenTransferPermissionsByOrigin,
-  getPermissionMetaDataByOrigin,
+  TOKEN_TRANSFER_GROUP,
+  getGatorPermissionsByOrigin,
+  getGatorPermissionSummaryByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
@@ -265,13 +266,17 @@ export const MultichainReviewPermissions = () => {
     [activeTabOrigin, connectedChainIds, dispatch, supportedAccountGroups],
   );
 
-  const gatorPermissionsGroupMetaData = useSelector((state) =>
-    getPermissionMetaDataByOrigin(state as AppState, activeTabOrigin),
+  const gatorPermissionSummary = useSelector((state: AppState) =>
+    getGatorPermissionSummaryByOrigin(
+      state,
+      activeTabOrigin,
+      TOKEN_TRANSFER_GROUP,
+    ),
   );
 
   // Gator permissions revocation logic
   const tokenTransferPermissions = useSelector((state: AppState) =>
-    getTokenTransferPermissionsByOrigin(state, activeTabOrigin),
+    getGatorPermissionsByOrigin(state, activeTabOrigin, TOKEN_TRANSFER_GROUP),
   );
 
   // Group permissions by chain ID for proper revocation
@@ -301,20 +306,12 @@ export const MultichainReviewPermissions = () => {
     }));
   }, [tokenTransferPermissions]);
 
-  const shouldRenderGatorPermissionGroupDetails = useMemo(() => {
-    if (!gatorPermissionsGroupMetaData) {
-      return false;
-    }
-
-    const isPermissionGroupDetailsMapEmpty = Object.values(
-      gatorPermissionsGroupMetaData,
-    ).every((details) => details.count === 0);
-
-    return (
+  const shouldRenderGatorPermissionGroupDetails = useMemo(
+    () =>
       isGatorPermissionsRevocationFeatureEnabled() &&
-      !isPermissionGroupDetailsMapEmpty
-    );
-  }, [gatorPermissionsGroupMetaData]);
+      gatorPermissionSummary.count > 0,
+    [gatorPermissionSummary.count],
+  );
 
   const handleRemoveAllPermissions = async () => {
     try {
@@ -359,21 +356,17 @@ export const MultichainReviewPermissions = () => {
             />
           ) : null}
 
-          {shouldRenderGatorPermissionGroupDetails
-            ? Object.entries(gatorPermissionsGroupMetaData).map(
-                ([permissionGroupName, details]) => (
-                  <PermissionsCell
-                    key={permissionGroupName}
-                    nonTestNetworks={nonTestNetworks}
-                    testNetworks={testNetworks}
-                    totalCount={details.count}
-                    chainIds={details.chains}
-                    paddingTop={connectedAccountGroups.length === 0 ? 4 : 0}
-                    origin={activeTabOrigin}
-                  />
-                ),
-              )
-            : null}
+          {shouldRenderGatorPermissionGroupDetails ? (
+            <PermissionsCell
+              key="tokenTransfer"
+              nonTestNetworks={nonTestNetworks}
+              testNetworks={testNetworks}
+              totalCount={gatorPermissionSummary.count}
+              chainIds={gatorPermissionSummary.chains}
+              paddingTop={connectedAccountGroups.length === 0 ? 4 : 0}
+              origin={activeTabOrigin}
+            />
+          ) : null}
 
           {connectedAccountGroups.length === 0 &&
           !shouldRenderGatorPermissionGroupDetails ? (
@@ -390,10 +383,7 @@ export const MultichainReviewPermissions = () => {
 
                 // Check if there are token transfer permissions
                 const hasTokenTransferPermissions =
-                  gatorPermissionsGroupMetaData &&
-                  Object.values(gatorPermissionsGroupMetaData).some(
-                    (details) => details.count > 0,
-                  );
+                  gatorPermissionSummary.count > 0;
 
                 if (hasTokenTransferPermissions) {
                   setShowDisconnectPermissionsModal(true);

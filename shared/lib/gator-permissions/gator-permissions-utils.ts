@@ -364,6 +364,7 @@ export function formatGatorAmountLabel(params: {
   threshold?: number;
   numberFormatOptions?: Intl.NumberFormatOptions;
 }): string {
+  // TODO: This function is overly complex and permissive in its input types; it's polymorphic where it should be stricter
   const {
     amount,
     tokenSymbol,
