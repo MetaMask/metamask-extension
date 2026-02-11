@@ -13,18 +13,16 @@ import {
   mergeFixtureChanges,
   readFixtureFile,
 } from '../fixtures/fixture-validation';
-import OnboardingSrpPage from '../page-objects/pages/onboarding/onboarding-srp-page';
-import OnboardingPasswordPage from '../page-objects/pages/onboarding/onboarding-password-page';
-import OnboardingCompletePage from '../page-objects/pages/onboarding/onboarding-complete-page';
 import {
+  addCustomNetworkInOnboardingPrivacySettings,
   handleSidepanelPostOnboarding,
-  onboardingMetricsFlow,
+  importSRPOnboardingFlow,
 } from '../page-objects/flows/onboarding.flow';
+import {
+  enableNativeTokenAsMainBalance,
+  enableTestNetworks,
+} from '../page-objects/flows/settings.flow';
 import HomePage from '../page-objects/pages/home/homepage';
-import OnboardingPrivacySettingsPage from '../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import SettingsPage from '../page-objects/pages/settings/settings-page';
-import GeneralSettings from '../page-objects/pages/settings/general-settings';
-import AdvancedSettings from '../page-objects/pages/settings/advanced-settings';
 import { switchToNetworkFromNetworkSelect } from '../page-objects/flows/network.flow';
 
 type JsonLike = Record<string, unknown>;
@@ -159,64 +157,34 @@ describe('Wallet State', function () {
         );
 
         // Perform the onboarding manual steps with e2e SRP and password to generate the logged in state
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.importWallet();
-
-        const onboardingSrpPage = new OnboardingSrpPage(driver);
-        await onboardingSrpPage.checkPageIsLoaded();
-        await onboardingSrpPage.fillSrp(LOCAL_NODE_MNEMONIC);
-        await onboardingSrpPage.clickConfirmButton();
-
-        const onboardingPasswordPage = new OnboardingPasswordPage(driver);
-        await onboardingPasswordPage.checkPageIsLoaded();
-        await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-
-        await onboardingMetricsFlow(driver, {
+        await importSRPOnboardingFlow({
+          driver,
+          seedPhrase: LOCAL_NODE_MNEMONIC,
+          password: WALLET_PASSWORD,
           participateInMetaMetrics: true,
           dataCollectionForMarketing: true,
+          needNavigateToNewPage: false,
         });
 
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
-
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+        // Add custom network during onboarding privacy settings
+        await addCustomNetworkInOnboardingPrivacySettings({
           driver,
-        );
-
-        await onboardingPrivacySettingsPage.addCustomNetwork(
           networkName,
           chainId,
           currencySymbol,
           networkUrl,
-        );
-
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
-
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.completeOnboarding();
+        });
 
         // Handle sidepanel navigation if needed
         await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.headerNavbar.openSettingsPage();
 
         // Set the settings to match the desired fixture state:
-        // 1. enabled test networks and 2. enabled native balance
-        const generalSettings = new GeneralSettings(driver);
-        await generalSettings.checkPageIsLoaded();
-        await generalSettings.toggleShowNativeTokenAsMainBalance();
-
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.clickAdvancedTab();
-
-        const advancedSettings = new AdvancedSettings(driver);
-        await advancedSettings.checkPageIsLoaded();
-        await advancedSettings.toggleShowTestnets();
-        await settingsPage.closeSettingsPage();
+        // 1. enabled native balance and 2. enabled test networks
+        await enableNativeTokenAsMainBalance(driver);
+        await enableTestNetworks(driver);
 
         // Action needed to apply the changes in the balance as doesn't happen right away (potential bug)
         await switchToNetworkFromNetworkSelect(
