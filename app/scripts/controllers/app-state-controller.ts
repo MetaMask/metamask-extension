@@ -62,6 +62,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { PendingRedirectRoute } from '../../../shared/lib/app-state';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -151,7 +152,11 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
-  pendingRedirectRoute: { path: string; search?: string } | null;
+  /**
+   * The pending redirect route to be applied after the default page is loaded.
+   * If this is set, next time default page is loaded, the redirect will be applied.
+   */
+  pendingRedirectRoute: PendingRedirectRoute | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -1693,9 +1698,12 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setPendingRedirectRoute(
-    route: { path: string; search?: string } | null,
-  ): void {
+  /**
+   * Sets the pending redirect route to be applied after the default page is loaded.
+   *
+   * @param route - The pending redirect route.
+   */
+  setPendingRedirectRoute(route: PendingRedirectRoute | null): void {
     this.update((state) => {
       state.pendingRedirectRoute = route;
     });

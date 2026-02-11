@@ -163,6 +163,7 @@ export default class Home extends PureComponent {
     rewardsOnboardingEnabled: PropTypes.bool,
     rewardsOnboardingModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
+    envType: PropTypes.string,
     pendingRedirectRoute: PropTypes.object,
     clearPendingRedirectRoute: PropTypes.func,
   };
@@ -199,20 +200,34 @@ export default class Home extends PureComponent {
     }
   }
 
-  componentDidMount() {
-    this.props.fetchBuyableChains();
-
+  /**
+   * Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect)
+   * If it should, set the redirect after default page and clear the pending redirect route.
+   * If it should not, clear the pending redirect route.
+   */
+  checkPendingRedirectRoute() {
     // Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect)
     if (this.props.pendingRedirectRoute) {
-      const { path, search } = this.props.pendingRedirectRoute;
-      this.props.setRedirectAfterDefaultPage({
-        path: search ? `${path}${search}` : path,
-      });
+      const { path, search, environmentType } = this.props.pendingRedirectRoute;
+      const shouldRedirect =
+        !environmentType || environmentType === this.props.envType;
+
+      if (shouldRedirect) {
+        this.props.setRedirectAfterDefaultPage({
+          path: search ? `${path}${search}` : path,
+        });
+      }
       this.props.clearPendingRedirectRoute();
     }
 
     // Check for redirect after default page
     this.checkRedirectAfterDefaultPage();
+  }
+
+  componentDidMount() {
+    this.props.fetchBuyableChains();
+
+    this.checkPendingRedirectRoute();
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
     this.props.lookupSelectedNetworks();
@@ -274,8 +289,7 @@ export default class Home extends PureComponent {
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
 
-    // Check for redirect after default page on updates
-    this.checkRedirectAfterDefaultPage();
+    this.checkPendingRedirectRoute();
   }
 
   onRecoveryPhraseReminderClose = () => {

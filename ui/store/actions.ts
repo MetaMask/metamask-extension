@@ -198,6 +198,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
+import { PendingRedirectRoute } from '../../shared/lib/app-state';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -750,7 +751,7 @@ export function setShowShieldEntryModalOnceAction(payload: {
 }
 
 export function setPendingRedirectRoute(
-  route: { path: string; search?: string } | null,
+  route: PendingRedirectRoute | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {

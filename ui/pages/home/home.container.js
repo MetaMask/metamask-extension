@@ -135,6 +135,7 @@ const mapStateToProps = (state) => {
     forgottenPassword,
     swapsEnabled,
     shouldShowSeedPhraseReminder,
+    envType,
     isPopup,
     isNotification,
     dataCollectionForMarketing,
