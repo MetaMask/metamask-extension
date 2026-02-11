@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   getConnectionStateFromError,
@@ -38,8 +38,6 @@ export const useHardwareWalletConnection = ({
   handleDeviceEvent,
   handleDisconnect,
 }: UseHardwareWalletConnectionParams) => {
-  const ensureDeviceReadyRequireBlindSigningRef = useRef<boolean | null>(null);
-
   const resetAdapterForFreshConnection = useCallback(
     () => {
       if (refs.adapterRef.current) {
@@ -318,13 +316,9 @@ export const useHardwareWalletConnection = ({
   const ensureDeviceReady = useCallback(
     async (options?: EnsureDeviceReadyOptions): Promise<boolean> => {
       const requireBlindSigning = options?.requireBlindSigning ?? true;
-      const inFlightPromise = refs.ensureDeviceReadyPromiseRef.current;
-      const inFlightRequireBlindSigning =
-        ensureDeviceReadyRequireBlindSigningRef.current;
-      if (
-        inFlightPromise &&
-        inFlightRequireBlindSigning === requireBlindSigning
-      ) {
+      const inFlightPromise =
+        refs.ensureDeviceReadyPromiseRef.current.get(requireBlindSigning);
+      if (inFlightPromise) {
         return inFlightPromise;
       }
 
@@ -411,13 +405,16 @@ export const useHardwareWalletConnection = ({
         return false;
       })();
 
-      ensureDeviceReadyRequireBlindSigningRef.current = requireBlindSigning;
-      refs.ensureDeviceReadyPromiseRef.current = ensurePromise;
+      refs.ensureDeviceReadyPromiseRef.current.set(
+        requireBlindSigning,
+        ensurePromise,
+      );
 
       ensurePromise.finally(() => {
-        if (refs.ensureDeviceReadyPromiseRef.current === ensurePromise) {
-          refs.ensureDeviceReadyPromiseRef.current = null;
-          ensureDeviceReadyRequireBlindSigningRef.current = null;
+        const trackedPromise =
+          refs.ensureDeviceReadyPromiseRef.current.get(requireBlindSigning);
+        if (trackedPromise === ensurePromise) {
+          refs.ensureDeviceReadyPromiseRef.current.delete(requireBlindSigning);
         }
       });
 

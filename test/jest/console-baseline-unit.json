@@ -1249,6 +1249,9 @@
     "ui/contexts/hardware-wallets/HardwareWalletContext.test.tsx": {
       "Test errors: Uncaught Errors": 4
     },
+    "ui/contexts/hardware-wallets/HardwareWalletErrorProvider.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/contexts/metamask-notifications/metamask-notifications.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
