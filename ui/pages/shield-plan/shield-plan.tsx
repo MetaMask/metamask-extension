@@ -79,10 +79,7 @@ import {
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  getLastUsedShieldSubscriptionPaymentDetails,
-  getPendingRedirectRoute,
-} from '../../selectors/subscription';
+import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import {
   ShieldMetricsSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
@@ -101,6 +98,7 @@ import {
 } from '../../store/actions';
 import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
 import { getIntlLocale } from '../../ducks/locale/locale';
+import { getPendingRedirectRoute } from '../../selectors';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';
