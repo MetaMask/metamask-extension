@@ -378,6 +378,7 @@ describe('Shield Plan Stripe Integration', function () {
             });
           },
           ignoredConsoleErrors: [
+            'Failed to submit shield claim',
             'SubmitClaimError: This transaction is not done within MetaMask, hence it is not eligible for claims',
           ],
         },
@@ -437,6 +438,7 @@ describe('Shield Plan Stripe Integration', function () {
             });
           },
           ignoredConsoleErrors: [
+            'Failed to submit shield claim',
             'SubmitClaimError: A claim has already been submitted for this transaction hash.',
           ],
         },
