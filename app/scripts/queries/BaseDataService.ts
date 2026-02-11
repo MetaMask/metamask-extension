@@ -80,34 +80,31 @@ export class BaseDataService<
       'queryKey' | 'queryFn'
     >,
     context: QueryFunctionContext<TQueryKey>,
-  ): Promise<InfiniteData<TData>> {
+  ): Promise<TData> {
     assert(context, 'Context must be passed when using fetchInfiniteQuery.');
 
-    const queryData = await this.#client.ensureQueryData(options);
+    const query = this.#client
+      .getQueryCache()
+      .find<TQueryFnData, TError, TData>({ queryKey: options.queryKey });
 
-    if (context.pageParam) {
-      const query = this.#client
-        .getQueryCache()
-        .find({ queryKey: options.queryKey })!;
-
-      return query.fetch({
-        ...options,
-        behavior: {
-          onFetch: (fetchContext) => {
-            // Combine fetchContext with passed context, that may come from UI.
-            fetchContext.fetchFn = () =>
-              fetchContext.options.queryFn({
-                queryKey: fetchContext.queryKey,
-                signal: fetchContext.signal,
-                meta: context.meta,
-                pageParam: context.pageParam,
-              });
+    if (query && context.pageParam) {
+      const result = (await query.fetch(undefined, {
+        meta: {
+          fetchMore: {
+            direction: 'forward',
+            pageParam: context.pageParam,
           },
         },
-      });
+      })) as InfiniteData<TData>;
+
+      const pageIndex = result.pageParams.indexOf(context.pageParam);
+
+      return result.pages[pageIndex];
     }
 
-    return queryData;
+    const result = await this.#client.fetchInfiniteQuery(options);
+
+    return result.pages[0];
   }
 
   protected async invalidateQueries<TPageData = unknown>(

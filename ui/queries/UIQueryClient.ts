@@ -47,7 +47,7 @@ export function createUIQueryClient(backgroundConnection: BackgroundRpcClient) {
     if (method.endsWith('cacheUpdate')) {
       const { queryKeyHash, state } = params[0];
       if (activeSubscriptions.has(queryKeyHash)) {
-        console.log('Hydrated cache', queryKeyHash);
+        console.log('Hydrated cache', queryKeyHash, state);
         hydrate(client, state);
       }
     }
