@@ -291,10 +291,6 @@
     "allNftContracts": {},
     "allNfts": {},
     "allTokens": {},
-    "assetsBalance": {},
-    "assetsPrice": {},
-    "customAssets": {},
-    "assetPreferences": {},
     "announcements": {
       "8": {
         "date": "string",

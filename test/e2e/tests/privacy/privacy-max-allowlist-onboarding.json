@@ -1,6 +1,5 @@
 {
   "duringOnboarding": [
-    "accounts.api.cx.metamask.io",
     "accounts.google.com",
     "chainid.network",
     "firefox.settings.services.mozilla.com",
@@ -12,7 +11,6 @@
     "bridge.api.cx.metamask.io": "Should be removed - STX team - when move to remote feature flag"
   },
   "untilOnboardingComplete": [
-    "accounts.api.cx.metamask.io",
     "accounts.google.com",
     "arbitrum-mainnet.infura.io",
     "base-mainnet.infura.io",

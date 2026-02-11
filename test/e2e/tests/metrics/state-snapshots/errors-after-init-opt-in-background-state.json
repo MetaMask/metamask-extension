@@ -90,13 +90,6 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": "object"
   },
-  "AssetsController": {
-    "assetPreferences": "object",
-    "assetsBalance": "object",
-    "assetsMetadata": "object",
-    "assetsPrice": "object",
-    "customAssets": "object"
-  },
   "AuthenticationController": {
     "isSignedIn": "boolean",
     "srpSessionData": "object"
