@@ -359,8 +359,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
             asset.assetNamespace === 'slip44' ||
             // skip zero address tokens.
             asset.assetReference ===
-              '0x0000000000000000000000000000000000000000' ||
-            topAsset.decimals === null // skip tokens with no decimals
+              '0x0000000000000000000000000000000000000000'
           ) {
             continue;
           }
