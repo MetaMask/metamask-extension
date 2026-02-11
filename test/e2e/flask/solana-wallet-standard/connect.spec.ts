@@ -62,7 +62,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
 
-    // TODO: Need to fix this test from Chloe.
+    // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Should be able to cancel connection and connect again', async function () {
       await withSolanaAccountSnap(
@@ -96,6 +96,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await connectAccountConfirmation.cancelConnect();
           await testDapp.switchTo();
 
+          // TODO: Currently, the Status is "Not connected", but the expected status is "Disconnected", need to check and update the test if this is expected.
           // Verify we're not connected
           await header.verifyConnectionStatus('Disconnected');
 
@@ -109,7 +110,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
 
-    // TODO: Need to fix this test from Chloe.
+    // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Should not create session when Solana permissions are deselected', async function () {
       await withSolanaAccountSnap(
@@ -155,13 +156,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           // Switch back to test dapp
           await testDapp.switchTo();
 
+          // TODO: Currently, the Status is "Not connected", but the expected status is "Disconnected", need to check and update the test if this is expected.
           // Verify we're not connected
           await header.verifyConnectionStatus('Disconnected');
         },
       );
     });
 
-    // TODO: Need to fix this test from Chloe.
+    // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Should disconnect', async function () {
       await withSolanaAccountSnap(
@@ -182,13 +184,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           await header.disconnect();
 
+          // TODO: Currently, the Status is "Not connected", but the expected status is "Disconnected", need to check and update the test if this is expected.
           await header.verifyConnectionStatus('Disconnected');
         },
       );
     });
   });
   describe('Switch account', function () {
-    // TODO: Need to fix this test from Chloe.
+    // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Switching between 2 accounts should reflect in the dapp', async function () {
       await withSolanaAccountSnap(
@@ -206,6 +209,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           // Check that we're connected to the last selected account
           const header = await testDapp.getHeader();
+
+          // TODO: Currently, the account is "4tE7...Uxer", but the expected account is "ExTE...GNtt", need to check and update the test.
           await header.verifyAccount(account2Short);
 
           // Switch to the first account
@@ -223,7 +228,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
   });
 
   describe('Given I have connected to one of my two accounts', function () {
-    // TODO: Need to fix this test from Chloe.
+    // TODO: Need to check and update the test.
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Switching between them should NOT reflect in the dapp', async function () {
       await withSolanaAccountSnap(
@@ -239,6 +244,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           await connectSolanaTestDapp(driver, testDapp);
 
+          // TODO: Currently, the account is "4tE7...Uxer", but the expected account is "ExTE...GNtt", need to check and update the test.
           // Check that we're connected to the second account
           const header = await testDapp.getHeader();
           await header.verifyAccount(account2Short);
@@ -291,7 +297,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
       );
     });
 
-    // TODO: Need to fix these comments from Chloe.
+    // TODO: Need to check and update the test.
     // 1. the test title is With 2 accounts connected, refreshing the page should keep me connected to the last selected account, but in the test body, it only connected account 1 to dapp, not the account2, so the test itself is not testing the expected behaviour
     // 2. the method assertConnected is buggy, it checks connect status, then it uses status as account address to assert, which is very buggy and messy, so it could not do the correct assertions, need re-implement
     // eslint-disable-next-line mocha/no-skipped-tests
@@ -312,6 +318,8 @@ describe('Solana Wallet Standard - e2e tests', function () {
 
           await testDapp.checkPageIsLoaded();
           const header = await testDapp.getHeader();
+
+          // TODO: Currently, the account is "4tE7...Uxer", but the expected account is "ExTE...GNtt", need to check and update the test.
           await header.verifyAccount(account2Short);
         },
       );
