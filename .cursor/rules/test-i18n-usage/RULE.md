@@ -145,6 +145,7 @@ A fitness function test (`test/unit-global/locale-query-mismatch.test.ts`) preve
    - Baseline allowlist exists for legacy exceptions
 
 If the fitness function fails, either:
+
 - Fix the test to use i18n references
 - Fix the component to use i18n (preferred)
 - Add to baseline only if legacy code
