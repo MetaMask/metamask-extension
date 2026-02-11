@@ -818,5 +818,65 @@ describe('useHardwareWalletConnection', () => {
       expect(results).toStrictEqual([true, true]);
       expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalledTimes(1);
     });
+
+    it('does not reuse in-flight ensureDeviceReady promise when options differ', async () => {
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(true);
+      mockRefs.adapterRef.current = mockAdapter;
+
+      let resolveBlindSigningCheck:
+        | ((value: boolean | PromiseLike<boolean>) => void)
+        | undefined;
+      let resolveNonBlindSigningCheck:
+        | ((value: boolean | PromiseLike<boolean>) => void)
+        | undefined;
+
+      mockAdapter.ensureDeviceReadyMock.mockImplementation(
+        async (options?: { requireBlindSigning?: boolean }) =>
+          new Promise<boolean>((resolve) => {
+            if (options?.requireBlindSigning ?? true) {
+              resolveBlindSigningCheck = resolve;
+            } else {
+              resolveNonBlindSigningCheck = resolve;
+            }
+          }),
+      );
+
+      const { result } = setupHook();
+
+      const strictCheckPromise = result.current.ensureDeviceReady({
+        requireBlindSigning: true,
+      });
+      const simpleSendCheckPromise = result.current.ensureDeviceReady({
+        requireBlindSigning: false,
+      });
+
+      expect(strictCheckPromise).not.toBe(simpleSendCheckPromise);
+      expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalledTimes(2);
+      expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenNthCalledWith(1, {
+        requireBlindSigning: true,
+      });
+      expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenNthCalledWith(2, {
+        requireBlindSigning: false,
+      });
+
+      let results: [boolean, boolean] | undefined;
+      await act(async () => {
+        resolveBlindSigningCheck?.(false);
+        resolveNonBlindSigningCheck?.(true);
+        results = (await Promise.all([
+          strictCheckPromise,
+          simpleSendCheckPromise,
+        ])) as [boolean, boolean];
+      });
+
+      expect(results).toStrictEqual([false, true]);
+    });
   });
 });

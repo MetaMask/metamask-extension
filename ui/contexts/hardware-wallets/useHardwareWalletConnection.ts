@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   getConnectionStateFromError,
@@ -38,6 +38,8 @@ export const useHardwareWalletConnection = ({
   handleDeviceEvent,
   handleDisconnect,
 }: UseHardwareWalletConnectionParams) => {
+  const ensureDeviceReadyRequireBlindSigningRef = useRef<boolean | null>(null);
+
   const resetAdapterForFreshConnection = useCallback(
     () => {
       if (refs.adapterRef.current) {
@@ -315,8 +317,14 @@ export const useHardwareWalletConnection = ({
 
   const ensureDeviceReady = useCallback(
     async (options?: EnsureDeviceReadyOptions): Promise<boolean> => {
+      const requireBlindSigning = options?.requireBlindSigning ?? true;
       const inFlightPromise = refs.ensureDeviceReadyPromiseRef.current;
-      if (inFlightPromise) {
+      const inFlightRequireBlindSigning =
+        ensureDeviceReadyRequireBlindSigningRef.current;
+      if (
+        inFlightPromise &&
+        inFlightRequireBlindSigning === requireBlindSigning
+      ) {
         return inFlightPromise;
       }
 
@@ -373,7 +381,9 @@ export const useHardwareWalletConnection = ({
           }
 
           try {
-            const result = await adapter.ensureDeviceReady(options);
+            const result = await adapter.ensureDeviceReady({
+              requireBlindSigning,
+            });
             if (abortSignal?.aborted || isEnsureStale()) {
               return false;
             }
@@ -401,11 +411,13 @@ export const useHardwareWalletConnection = ({
         return false;
       })();
 
+      ensureDeviceReadyRequireBlindSigningRef.current = requireBlindSigning;
       refs.ensureDeviceReadyPromiseRef.current = ensurePromise;
 
       ensurePromise.finally(() => {
         if (refs.ensureDeviceReadyPromiseRef.current === ensurePromise) {
           refs.ensureDeviceReadyPromiseRef.current = null;
+          ensureDeviceReadyRequireBlindSigningRef.current = null;
         }
       });
 
