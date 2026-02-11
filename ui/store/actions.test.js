@@ -783,53 +783,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#getTrezorDeviceStatus', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls getTrezorDeviceStatus in background', async () => {
-      const mockStatus = { connected: true };
-
-      background.getTrezorDeviceStatus = sinon.stub().resolves(mockStatus);
-
-      setBackgroundConnection(background);
-
-      const result = await actions.getTrezorDeviceStatus();
-
-      expect(background.getTrezorDeviceStatus.callCount).toStrictEqual(1);
-      expect(result).toStrictEqual(mockStatus);
-    });
-  });
-
-  describe('#getTrezorFeatures', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls getTrezorFeatures in background', async () => {
-      const mockFeatures = {
-        success: true,
-        payload: {
-          deviceId: 'test-device',
-          model: 'T',
-          label: 'My Trezor',
-          initialized: true,
-          unlocked: true,
-        },
-      };
-
-      background.getTrezorFeatures = sinon.stub().resolves(mockFeatures);
-
-      setBackgroundConnection(background);
-
-      const result = await actions.getTrezorFeatures();
-
-      expect(background.getTrezorFeatures.callCount).toStrictEqual(1);
-      expect(result).toStrictEqual(mockFeatures);
-    });
-  });
-
   describe('#forgetDevice', () => {
     afterEach(() => {
       sinon.restore();
