@@ -27,7 +27,7 @@ export class AssetDataService extends BaseDataService<
   async getAssets(assets: string[]) {
     return this.fetchQuery({
       queryKey: [`${this.name}:getAssets`, ...assets],
-      queryFn: async ({ pageParam }) => {
+      queryFn: async () => {
         const url = new URL(
           `${this.#baseUrl}/v3/assets?assetIds=${assets.join(',')}`,
         );
