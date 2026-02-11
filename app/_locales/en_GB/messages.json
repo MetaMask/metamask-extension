@@ -3131,6 +3131,9 @@
   "hardwareWalletsMsg": {
     "message": "Select a hardware wallet you would like to use with MetaMask."
   },
+  "helpAndSettings": {
+    "message": "Help and settings"
+  },
   "here": {
     "message": "here",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -3716,6 +3719,9 @@
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
   },
+  "logOut": {
+    "message": "Log out"
+  },
   "loginErrorConnectButton": {
     "message": "Try again"
   },
@@ -3777,6 +3783,9 @@
   "makeSureNoOneWatching": {
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
+  "manage": {
+    "message": "Manage"
   },
   "manageDefaultSettings": {
     "message": "Manage default settings"
