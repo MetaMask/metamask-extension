@@ -619,6 +619,11 @@ describe('ConfirmFooter', () => {
         expect(resolveSpy).toHaveBeenCalled();
       });
 
+      expect(resolveSpy).toHaveBeenCalledWith(expect.any(String), undefined, {
+        fromAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        waitForResult: true,
+        walletType: HardwareWalletType.Ledger,
+      });
       expect(mockNavigateNext).toHaveBeenCalledWith(expect.any(String));
       expect(showHardwareWalletErrorModalMock).not.toHaveBeenCalled();
     });

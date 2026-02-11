@@ -278,9 +278,19 @@ const Footer = () => {
       } else {
         const resolveApprovalWithHardwareWalletHandling =
           withHardwareWalletModalHandling(async () => {
+            const resolveApprovalOptions = walletType
+              ? {
+                  fromAddress,
+                  waitForResult: true,
+                  walletType,
+                }
+              : {
+                  fromAddress,
+                };
+
             await dispatch(
               resolvePendingApproval(currentConfirmation.id, undefined, {
-                fromAddress,
+                ...resolveApprovalOptions,
               }),
             );
 
@@ -308,6 +318,7 @@ const Footer = () => {
     navigateNext,
     dispatch,
     fromAddress,
+    walletType,
     withHardwareWalletModalHandling,
   ]);
 

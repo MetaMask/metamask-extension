@@ -61,6 +61,7 @@ function createProviderWrapper(
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
+  const storeInstance = store ?? configureStore({});
   const mockMetaMetricsContext =
     createMockMetaMetricsContext(getMockTrackEvent);
 
@@ -81,7 +82,7 @@ function createProviderWrapper(
       </MemoryRouter>
     );
 
-    return store ? <Provider store={store}>{container}</Provider> : container;
+    return <Provider store={storeInstance}>{container}</Provider>;
   };
 
   Wrapper.propTypes = {
