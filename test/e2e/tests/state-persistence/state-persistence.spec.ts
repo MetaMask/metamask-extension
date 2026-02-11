@@ -8,6 +8,45 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { Mockttp } from 'mockttp';
+
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
+const NON_EVM_ACCOUNT_FLAG_OVERRIDES = {
+  bitcoinAccounts: { enabled: false, minimumVersion: '0.0.0' },
+  solanaAccounts: { enabled: false, minimumVersion: '0.0.0' },
+  tronAccounts: { enabled: false, minimumVersion: '0.0.0' },
+  enableMultichainAccounts: {
+    enabled: false,
+    featureVersion: null,
+    minimumVersion: null,
+  },
+  enableMultichainAccountsState2: {
+    enabled: false,
+    featureVersion: null,
+    minimumVersion: null,
+  },
+};
+
+export async function mockFeatureFlagsWithoutNonEvmAccounts(
+  mockServer: Mockttp,
+) {
+  const prodFlags = getProductionRemoteFlagApiResponse();
+  return [
+    await mockServer
+      .forGet(FEATURE_FLAGS_URL)
+      .withQuery({
+        client: 'extension',
+        distribution: 'main',
+        environment: 'dev',
+      })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [...prodFlags, NON_EVM_ACCOUNT_FLAG_OVERRIDES],
+      })),
+  ];
+}
 
 type DataStorage = {
   meta: {
@@ -54,6 +93,7 @@ const getFixtureOptions = (
       ...manifestTestingOverrides,
     },
   },
+  testSpecificMock: mockFeatureFlagsWithoutNonEvmAccounts,
 });
 
 const pausePersistence = async (driver: Driver) => {
