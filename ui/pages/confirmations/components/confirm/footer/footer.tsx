@@ -241,6 +241,8 @@ const Footer = () => {
     currentConfirmation?.type,
   );
   const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
+  const shouldRunHardwareWalletPreflight =
+    isHardwareWalletAccount && (isSignature || isTransactionConfirmation);
 
   // Simple sends (plain native asset transfers) don't require blind signing
   // on the Ledger device since they don't involve contract interactions.
@@ -307,9 +309,11 @@ const Footer = () => {
       return;
     }
 
-    const isReady = await onSubmitPreflightCheck();
-    if (!isReady) {
-      return;
+    if (shouldRunHardwareWalletPreflight) {
+      const isReady = await onSubmitPreflightCheck();
+      if (!isReady) {
+        return;
+      }
     }
 
     try {
@@ -356,6 +360,7 @@ const Footer = () => {
     currentConfirmation,
     currentConfirmationId,
     onSubmitPreflightCheck,
+    shouldRunHardwareWalletPreflight,
     isAddEthereumChain,
     isTransactionConfirmation,
     onAddEthereumChain,
@@ -425,7 +430,7 @@ const Footer = () => {
         />
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
           <CancelButton handleFooterCancel={handleFooterCancel} />
-          {isHardwareWalletAccount && !isHardwareWalletReady ? (
+          {shouldRunHardwareWalletPreflight && !isHardwareWalletReady ? (
             <Button
               block
               data-testid="reconnect-hardware-wallet-button"

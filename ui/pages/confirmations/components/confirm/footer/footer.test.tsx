@@ -39,6 +39,7 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { useAddEthereumChain } from '../../../hooks/useAddEthereumChain';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import Footer from './footer';
@@ -167,6 +168,7 @@ describe('ConfirmFooter', () => {
     useInsufficientBalanceAlerts,
   );
   const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
+  const useAddEthereumChainMock = jest.mocked(useAddEthereumChain);
   const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
   const useUserSubscriptionsMock = jest.mocked(useUserSubscriptions);
   let closeCurrentNotificationWindowSpy: jest.SpyInstance;
@@ -556,6 +558,38 @@ describe('ConfirmFooter', () => {
         });
       });
       expect(mockOnTransactionConfirm).not.toHaveBeenCalled();
+    });
+
+    it('bypasses hardware wallet preflight for add chain confirmations', async () => {
+      const addEthereumChainSubmitMock = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      useAddEthereumChainMock.mockReturnValue({
+        onSubmit: addEthereumChainSubmitMock,
+      });
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: addEthereumChainApproval,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+      } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Disconnected },
+      });
+
+      const { getByTestId, queryByTestId } = render();
+
+      expect(queryByTestId('reconnect-hardware-wallet-button')).toBeNull();
+      fireEvent.click(getByTestId('confirm-footer-button'));
+
+      await waitFor(() => {
+        expect(addEthereumChainSubmitMock).toHaveBeenCalledTimes(1);
+      });
+      expect(ensureDeviceReadyMock).not.toHaveBeenCalled();
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
     it('closes popup on hardware wallet rejection', async () => {
