@@ -1,7 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { MERKL_DISTRIBUTOR_ADDRESS } from '../constants';
-import { useMerklClaimStatus } from './useMerklClaimStatus';
+import { useMerklClaimStatus, MERKL_DISTRIBUTOR_ADDRESS } from './useMerklClaimStatus';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),

@@ -3850,10 +3850,6 @@
     "message": "Your mUSD bonus is here!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
   },
-  "merklRewardsUnexpectedError": {
-    "message": "Unexpected error. Please try again.",
-    "description": "Error message shown when claiming Merkl rewards fails"
-  },
   "message": {
     "message": "Message"
   },

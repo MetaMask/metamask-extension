@@ -5,7 +5,9 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { getTransactions } from '../../../../../selectors/transactions';
-import { MERKL_DISTRIBUTOR_ADDRESS } from '../constants';
+
+export const MERKL_DISTRIBUTOR_ADDRESS =
+  '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae' as const;
 
 /**
  * Transaction statuses that indicate a claim is "in flight":
