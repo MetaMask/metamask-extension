@@ -275,12 +275,6 @@
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "fast-xml-parser": "^5.3.4"
   },
-  "previewBuilds": {
-    "@metamask/subscription-controller": {
-      "type": "non-breaking",
-      "previewVersion": "5.4.2-preview-5ff83bad8"
-    }
-  },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
     "@blockaid/ppom_release": "^1.5.3",
