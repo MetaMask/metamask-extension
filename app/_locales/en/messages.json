@@ -5651,6 +5651,9 @@
   "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
     "message": "Your plan has been paused due to payment failure."
   },
+  "pushNotificationShieldSubscriptionPaymentSucceededDescriptionShort": {
+    "message": "Your payment was successful. Your plan is active."
+  },
   "pushNotificationShieldSubscriptionTitle": {
     "message": "MetaMask Transaction Shield"
   },

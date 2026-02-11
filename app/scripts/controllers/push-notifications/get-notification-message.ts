@@ -90,6 +90,8 @@ const shieldTranslations = {
     t('pushNotificationShieldSubscriptionCreatedDescriptionShort'),
   ShieldSubscriptionPaymentFailedDescriptionShort: () =>
     t('pushNotificationShieldSubscriptionPaymentFailedDescriptionShort'),
+  ShieldSubscriptionPaymentSucceededDescriptionShort: () =>
+    t('pushNotificationShieldSubscriptionPaymentSucceededDescriptionShort'),
   ShieldSubscriptionUpdatePaymentCta: () =>
     t('pushNotificationShieldUpdatePaymentCta'),
   ShieldSubscriptionLearnMoreCta: () => t('pushNotificationShieldLearnMoreCta'),
