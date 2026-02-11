@@ -64,7 +64,6 @@ export function buildErrorContent(
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryUnlock1'),
           t('hardwareWalletErrorRecoveryUnlock2'),
-          t('hardwareWalletErrorRecoveryUnlock3'),
         ],
       };
 
@@ -83,7 +82,6 @@ export function buildErrorContent(
         recoveryInstructions: [
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction1'),
           t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction2'),
-          t('hardwareWalletErrorTitleBlindSignNotSupportedInstruction3'),
         ],
       };
 
@@ -107,7 +105,6 @@ export function buildErrorContent(
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryUnlock1'),
           t('hardwareWalletErrorRecoveryUnlock2'),
-          t('hardwareWalletErrorRecoveryUnlock3'),
         ],
       };
 

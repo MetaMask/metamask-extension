@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "Para se conectar a um site, encontre e selecione o botão \"conectar\". Lembre-se de que a MetaMask só pode se conectar a sites na web3"
   },
-  "noConversionRateAvailable": {
-    "message": "Não há uma taxa de conversão disponível"
-  },
   "noDomainResolution": {
     "message": "Nenhuma resolução fornecida para o domínio."
   },

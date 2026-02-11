@@ -14,13 +14,17 @@ import LoginPage from '../../../page-objects/pages/login-page';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
-import { WITH_STATE_POWER_USER } from '../../utils';
+import {
+  BENCHMARK_PERSONA,
+  BENCHMARK_TYPE,
+  WITH_STATE_POWER_USER,
+} from '../../utils';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 const SECOND_SRP = process.env.TEST_SRP_2;
 
 export const testTitle = 'benchmark-import-srp-home-power-user';
-export const persona = 'powerUser';
+export const persona = BENCHMARK_PERSONA.POWER_USER;
 
 export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
   try {
@@ -84,7 +88,6 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
           await homePage.checkPageIsLoaded();
           const assetListPage = new AssetListPage(driver);
           await assetListPage.checkTokenListIsDisplayed();
-          await assetListPage.checkConversionRateDisplayed(120000);
           await assetListPage.checkTokenExistsInList('Ethereum');
           await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
         });
@@ -92,12 +95,17 @@ export async function runImportSrpHomeBenchmark(): Promise<BenchmarkRunResult> {
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }

@@ -230,6 +230,13 @@
         "navigator": false,
         "navigator.userAgent": true
       }
+    },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
     }
   }
 }
