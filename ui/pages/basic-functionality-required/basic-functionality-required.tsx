@@ -25,8 +25,8 @@ import { Container } from '../../components/component-library/container/containe
 import { DEFAULT_ROUTE, SECURITY_ROUTE } from '../../helpers/constants/routes';
 
 const CONTAINER_STYLE = { marginTop: '111px' } as const;
-const CARD_BOX_STYLE = { width: '446px', minHeight: '320px' } as const;
-const LOGO_STYLE = { width: '120px', height: '120px' } as const;
+const CARD_BOX_STYLE = { width: '446px', minHeight: '592px' } as const;
+const LOGO_STYLE = { width: '160px', height: '160px' } as const;
 
 /**
  * Shown when the user opens a route that requires Basic Functionality (e.g. swap, rewards)
@@ -52,7 +52,7 @@ export const BasicFunctionalityRequired = () => {
           ...CARD_BOX_STYLE,
           display: Display.Flex,
           textAlign: 'center',
-          borderRadius: '8px',
+          borderRadius: '6px',
           paddingLeft: 24,
           paddingRight: 24,
           paddingTop: 48,
@@ -77,7 +77,7 @@ export const BasicFunctionalityRequired = () => {
         </Text>
         <Box
           data-testid="basic-functionality-required-description"
-          paddingBottom={6}
+          paddingBottom={12}
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('basicFunctionalityRequired_description')}
@@ -99,7 +99,7 @@ export const BasicFunctionalityRequired = () => {
             </Text>
           </Box>
         </Box>
-        <Box style={{ width: '100%', marginTop: 32 }}>
+        <Box style={{ width: '100%', marginTop: 48 }}>
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
