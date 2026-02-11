@@ -2,19 +2,21 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
-import {
-  CHAIN_IDS,
-  GasFeeToken,
-  SimulationError,
-  UserFeeLevel,
-} from '@metamask/transaction-controller';
+import { CHAIN_IDS, GasFeeToken } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import * as DappSwapContext from '../../../../../context/dapp-swap';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 import { EditGasFeesRow } from './edit-gas-fees-row';
+
+jest.mock('../../../../../hooks/gas/useEstimationFailed');
+
+jest.mock('../../../../../hooks/gas/useIsGaslessSupported', () => ({
+  useIsGaslessSupported: jest.fn(() => ({ isSupported: false, pending: false })),
+}));
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -29,24 +31,24 @@ jest.mock(
   }),
 );
 
+const mockUseEstimationFailed = jest.mocked(useEstimationFailed);
+
 function render({
   gasFeeTokens,
   selectedGasFeeToken,
-  simulationFails,
-  userFeeLevel,
+  estimationFailed = false,
 }: {
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
-  simulationFails?: SimulationError;
-  userFeeLevel?: UserFeeLevel;
+  estimationFailed?: boolean;
 } = {}) {
+  mockUseEstimationFailed.mockReturnValue(estimationFailed);
+
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       chainId: CHAIN_IDS.GOERLI,
       gasFeeTokens,
       selectedGasFeeToken,
-      simulationFails,
-      userFeeLevel,
     }),
   );
 
@@ -102,10 +104,9 @@ describe('<EditGasFeesRow />', () => {
   });
 
   describe('estimationFailed', () => {
-    it('renders "Unavailable" when simulation fails and userFeeLevel is not CUSTOM', () => {
+    it('renders "Unavailable" when estimation failed', () => {
       const { getByText, queryByTestId } = render({
-        simulationFails: { debug: {} } as SimulationError,
-        userFeeLevel: UserFeeLevel.MEDIUM,
+        estimationFailed: true,
       });
 
       expect(getByText('Unavailable')).toBeInTheDocument();
@@ -113,19 +114,9 @@ describe('<EditGasFeesRow />', () => {
       expect(queryByTestId('first-gas-field')).toBeNull();
     });
 
-    it('does not render "Unavailable" when simulation fails but userFeeLevel is CUSTOM', () => {
+    it('does not render "Unavailable" when estimation has not failed', () => {
       const { queryByText } = render({
-        simulationFails: { debug: {} } as SimulationError,
-        userFeeLevel: UserFeeLevel.CUSTOM,
-      });
-
-      expect(queryByText('Unavailable')).toBeNull();
-    });
-
-    it('does not render "Unavailable" when simulation does not fail', () => {
-      const { queryByText } = render({
-        simulationFails: undefined,
-        userFeeLevel: UserFeeLevel.MEDIUM,
+        estimationFailed: false,
       });
 
       expect(queryByText('Unavailable')).toBeNull();
