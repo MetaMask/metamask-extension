@@ -16,6 +16,7 @@ import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
 import {
   HardwareWalletType,
   HardwareConnectionPermissionState,
+  type EnsureDeviceReadyOptions,
   type HardwareWalletConnectionState,
 } from './types';
 import { isWebHidAvailable, isWebUsbAvailable } from './webConnectionUtils';
@@ -43,7 +44,7 @@ export type HardwareWalletActionsContextType = {
   requestHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
-  ensureDeviceReady: () => Promise<boolean>;
+  ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
 };
 
 /**
@@ -68,7 +69,7 @@ export type HardwareWalletContextType = {
   requestHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
-  ensureDeviceReady: () => Promise<boolean>;
+  ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
 };
 
 const HardwareWalletContext = createContext<HardwareWalletContextType | null>(

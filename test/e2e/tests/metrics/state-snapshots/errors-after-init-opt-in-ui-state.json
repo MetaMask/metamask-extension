@@ -41,7 +41,6 @@
     "nextNonce": null,
     "onboardedInThisUISession": "boolean",
     "openMetaMaskTabs": "object",
-    "pendingHardwareWalletSigning": "boolean",
     "pendingTokens": "object",
     "qrCodeData": null,
     "removeNftMessage": "string",

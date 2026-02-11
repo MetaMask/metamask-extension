@@ -62,6 +62,10 @@ export const STABLECOIN_ASSET_IDS = new Set(
       '0xb88339CB7199b77E23DB6E890353E22632Ba630f', // USDC
       '0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb', // USD₮0
     ].map((address) => toAssetId(address, CHAIN_IDS.HYPE)),
+    toAssetId(
+      '0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb',
+      CHAIN_IDS.MEGAETH_MAINNET,
+    ), // USDT0
   ]
     .filter((assetId) => assetId !== undefined)
     .map((assetId) => assetId.toLowerCase()),
