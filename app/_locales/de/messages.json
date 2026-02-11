@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "MetaMask ist nicht mit dieser Website verbunden. Um zu beginnen, wählen Sie die Schaltfläche „Verbinden“ der Website."
   },
-  "noConversionRateAvailable": {
-    "message": "Kein Umrechnungskurs verfügbar"
-  },
   "noDomainResolution": {
     "message": "Keine Auflösung für die Domain angegeben."
   },
