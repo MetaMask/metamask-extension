@@ -668,7 +668,7 @@
         "@ethersproject/providers": true,
         "@metamask/account-api": true,
         "@metamask/controller-utils": true,
-        "@metamask/keyring-api": true,
+        "@metamask/assets-controllers>@metamask/keyring-api": true,
         "@metamask/utils": true,
         "bn.js": true,
         "@metamask/assets-controllers>multiformats": true,
@@ -1039,6 +1039,18 @@
         "@metamask/keyring-api>async-mutex": true,
         "bitcoin-address-validation": true,
         "@metamask/keyring-api>uuid": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/keyring-api": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/keyring-api>async-mutex": true,
+        "bitcoin-address-validation": true,
+        "@metamask/assets-controllers>@metamask/keyring-api>uuid": true
       }
     },
     "@metamask/keyring-controller": {

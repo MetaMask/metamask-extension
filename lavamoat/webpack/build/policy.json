@@ -1571,9 +1571,15 @@
     "copy-webpack-plugin>tinyglobby>fdir": {
       "builtin": {
         "fs": true,
-        "path": true
+        "path.basename": true,
+        "path.dirname": true,
+        "path.normalize": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true
       },
       "globals": {
+        "AbortController": true,
         "process.platform": true
       },
       "packages": {
@@ -3030,12 +3036,9 @@
     },
     "copy-webpack-plugin>tinyglobby": {
       "builtin": {
-        "fs": true,
-        "path": true,
-        "url": true
+        "path": true
       },
       "globals": {
-        "URL": true,
         "console.log": true,
         "process.cwd": true,
         "process.env.TINYGLOBBY_DEBUG": true,
