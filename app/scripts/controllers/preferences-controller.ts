@@ -255,6 +255,7 @@ export const getDefaultPreferencesControllerState =
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
     referrals: {
+      [DefiReferralPartner.GMX]: {},
       [DefiReferralPartner.Hyperliquid]: {},
     },
   });
