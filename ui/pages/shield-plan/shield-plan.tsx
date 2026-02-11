@@ -34,6 +34,7 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
+import log from 'loglevel';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
@@ -61,6 +62,7 @@ import {
 import {
   DEFAULT_ROUTE,
   SETTINGS_ROUTE,
+  SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import {
@@ -77,7 +79,10 @@ import {
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
+import {
+  getLastUsedShieldSubscriptionPaymentDetails,
+  getPendingRedirectRoute,
+} from '../../selectors/subscription';
 import {
   ShieldMetricsSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
@@ -90,7 +95,10 @@ import {
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
+import {
+  setLastUsedSubscriptionPaymentDetails,
+  setPendingRedirectRoute,
+} from '../../store/actions';
 import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
 import { getIntlLocale } from '../../ducks/locale/locale';
 import { ShieldPaymentModal } from './shield-payment-modal';
@@ -108,6 +116,7 @@ const ShieldPlan = () => {
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+  const pendingRedirectRoute = useSelector(getPendingRedirectRoute);
 
   const {
     isRewardsSeason,
@@ -407,7 +416,23 @@ const ShieldPlan = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRewardsModal, setShowRewardsModal] = useState(false);
 
-  const handleBack = () => {
+  useEffect(() => {
+    return () => {
+      (async () => {
+        // Clear pending redirect if it points to this page, so the user
+        // won't be redirected back here on next extension open
+        if (pendingRedirectRoute?.path.includes(SHIELD_PLAN_ROUTE)) {
+          try {
+            await dispatch(setPendingRedirectRoute(null));
+          } catch (error) {
+            log.error('[shield plan] clear pending redirect error', error);
+          }
+        }
+      })();
+    };
+  }, [pendingRedirectRoute, dispatch]);
+
+  const handleBack = async () => {
     const source = new URLSearchParams(search).get('source');
     if (source === ShieldMetricsSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page

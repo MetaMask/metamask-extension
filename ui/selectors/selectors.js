@@ -4143,3 +4143,13 @@ export function getNetworkConnectionBanner(state) {
 export function getIsDeviceOffline(state) {
   return state.metamask.connectivityStatus === 'offline';
 }
+
+/**
+ * Get the pending redirect route.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state
+ * @returns {object | null} The pending redirect route, or null if not available.
+ */
+export function getPendingRedirectRoute(state) {
+  return state.metamask?.pendingRedirectRoute ?? null;
+}

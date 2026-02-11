@@ -27,6 +27,7 @@ import {
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
+  getPendingRedirectRoute,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -64,7 +65,6 @@ import {
   selectOnboardingModalOpen,
 } from '../../ducks/rewards/selectors';
 import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
-import { getPendingRedirectRoute } from '../../selectors/subscription';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
