@@ -185,7 +185,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             return;
           }
 
-          // could continue if entrypointCohort is wallet_home and assignedCohort has not expired
+          // could continue if entrypointCohort is post_tx and assignedCohort has not expired
           // so we need to check hasExpired here before recording the event
           if (hasExpired) {
             // User has an assigned cohort but it has expired
