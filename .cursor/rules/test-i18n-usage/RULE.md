@@ -1,6 +1,6 @@
 ---
-description: i18n Usage Guidelines for Test Files
-globs: '*.test.*'
+description: i18n Usage Guidelines for Unit and E2E Test Files
+globs: '{*.test.*,*.spec.*}'
 alwaysApply: false
 ---
 
