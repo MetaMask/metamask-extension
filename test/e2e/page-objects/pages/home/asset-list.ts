@@ -155,8 +155,8 @@ class AssetListPage {
     '[data-testid="token-increase-decrease-value"]';
 
   private readonly noPriceAvailableMessage = {
-    css: 'p',
-    text: 'No conversion rate available',
+    css: '[data-testid="multichain-token-list-item-secondary-value"]',
+    text: '—',
   };
 
   private readonly modalCloseButton =
@@ -805,10 +805,10 @@ class AssetListPage {
   }
 
   /**
-   * Checks if the token list prices are displayed and no "No conversion rate available" message is displayed
+   * Checks if the token list prices are displayed and no "—" (em dash) placeholder is shown instead of a price
    *
    * @param timeout
-   * @throws Error if a "No conversion rate available" message is displayed
+   * @throws Error if a "—" placeholder is displayed instead of a conversion rate
    */
   async checkConversionRateDisplayed(timeout: number = 10000): Promise<void> {
     await this.driver.assertElementNotPresent(this.noPriceAvailableMessage, {
