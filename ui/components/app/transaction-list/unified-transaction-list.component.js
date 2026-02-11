@@ -112,7 +112,7 @@ const getTransactionGroupRecipientAddressFilter = (
 ) => {
   return ({ initialTransaction }) => {
     const { txParams = {}, chainId } = initialTransaction;
-    const { to, data } = txParams;
+    const { to, data, value } = txParams;
 
     const isNativeAssetActivityFilter =
       recipientAddress === NATIVE_TOKEN_ADDRESS ||
@@ -135,6 +135,30 @@ const getTransactionGroupRecipientAddressFilter = (
       swapContractForChain && isEqualCaseInsensitive(to, swapContractForChain);
 
     if (isSwapContract && data && isOnSameChain) {
+      const transferInfo = initialTransaction.transferInformation;
+      const isNativeFilter =
+        recipientAddress === NATIVE_TOKEN_ADDRESS ||
+        recipientAddress === POLYGON_NATIVE_TOKEN_ADDRESS;
+
+      // Native token: check if ETH was sent (has value field)
+      if (isNativeFilter && value && value !== '0x0') {
+        return true;
+      }
+
+      // ERC-20: check if transferInformation matches the filter token
+      if (transferInfo?.contractAddress) {
+        const isMatch = isEqualCaseInsensitive(
+          transferInfo.contractAddress,
+          recipientAddress,
+        );
+        if (isMatch) {
+          return true;
+        } else if (!isNativeFilter) {
+          // Reject mismatched ERC-20 (but let native tokens fall through)
+          return false;
+        }
+      }
+
       const normalizedRecipient = recipientAddress.slice(2).toLowerCase();
       const normalizedData = data.toLowerCase();
 
@@ -143,8 +167,7 @@ const getTransactionGroupRecipientAddressFilter = (
         return true;
       }
 
-      // Special case for Polygon: if filtering by Polygon native address (0x...1010),
-      // also check for standard zero address (0x...00) which is used in swap data
+      // Polygon: check for standard zero address in swap data
       if (
         isEqualCaseInsensitive(
           recipientAddress,
@@ -154,6 +177,9 @@ const getTransactionGroupRecipientAddressFilter = (
       ) {
         return true;
       }
+
+      // Accept all remaining swaps on same chain
+      return true;
     }
 
     return false;
