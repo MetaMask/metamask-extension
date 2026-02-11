@@ -8765,7 +8765,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} [options.waitForResult] - Whether to wait for the result
    */
   resolvePendingApproval = async (id, value, options = {}) => {
-    const { walletType, waitForResult } = options;
+    // RPC params may serialize an omitted argument as `null`, so normalize first
+    // before destructuring to avoid a runtime TypeError.
+    const normalizedOptions = options ?? {};
+    const { walletType, waitForResult } = normalizedOptions;
     const approvalOptions =
       typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
 
