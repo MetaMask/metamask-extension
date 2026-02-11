@@ -19,7 +19,7 @@ import {
   CreateServicePolicyOptions,
   ServicePolicy,
 } from '@metamask/controller-utils';
-import { Infer, object, string, number, assert } from '@metamask/superstruct';
+import { Infer, type, string, number, assert } from '@metamask/superstruct';
 import { createSentryError } from '../../../shared/modules/error';
 
 const SERVICE = 'StaticAssetsService' as const;
@@ -93,7 +93,7 @@ export type StaticAssetsServiceOptions = {
  * This is the struct of the top assets that are fetched from the API.
  * It is used to validate the top assets.
  */
-const TopAssetStruct = object({
+const TopAssetStruct = type({
   assetId: CaipAssetTypeStruct,
   symbol: string(),
   decimals: number(),
