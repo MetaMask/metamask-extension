@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
+import { Mockttp } from 'mockttp';
 import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -9,7 +10,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
-import { Mockttp } from 'mockttp';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -29,9 +29,7 @@ const NON_EVM_ACCOUNT_FLAG_OVERRIDES = {
   },
 };
 
-export async function mockFeatureFlagsWithoutNonEvmAccounts(
-  mockServer: Mockttp,
-) {
+async function mockFeatureFlagsWithoutNonEvmAccounts(mockServer: Mockttp) {
   const prodFlags = getProductionRemoteFlagApiResponse();
   return [
     await mockServer
