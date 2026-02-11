@@ -3,19 +3,25 @@ import { useSelector } from 'react-redux';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import type { Transaction } from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import {
-  getNonEvmTransactions,
+  getRawNonEvmTransactions,
   getPendingTransactionGroups,
   getRecentTransactionGroups,
   getFirstEvmAddress,
 } from '../../../selectors/activity';
-import { getUseExternalServices } from '../../../selectors/selectors';
+import {
+  getUseExternalServices,
+  getSelectedAccount,
+} from '../../../selectors/selectors';
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/acme-controller/queries';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
+import { MultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
@@ -24,11 +30,13 @@ import {
   isDateHeader,
   isPendingItem,
   isLocalCompletedItem,
+  isNonEvmItem,
   type FlattenedItem,
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModal } from './activity-details-modal';
 import { PendingActivityItem } from './pending-activity-item';
+import { NonEvmActivityListItem } from './non-evm-activity-list-item';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
@@ -41,12 +49,18 @@ export const ActivityList = () => {
   const [selectedItem, setSelectedItem] = useState<TransactionViewModel | null>(
     null,
   );
+  const [selectedNonEvmTransaction, setSelectedNonEvmTransaction] =
+    useState<Transaction | null>(null);
 
   // Activity tab should show ALL transactions regardless of selected chain/network
   const evmAddress = useSelector(getFirstEvmAddress) || '';
 
-  // Non-EVM transactions - not in API
-  const nonEvmTransactions = useSelector(getNonEvmTransactions);
+  // Non-EVM transactions (raw Keyring API Transaction objects)
+  const nonEvmTransactions = useSelector(getRawNonEvmTransactions);
+
+  // Network config and account for non-EVM transaction rendering
+  const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
+  const selectedAccount = useSelector(getSelectedAccount);
 
   // Pending transactions (unapproved/approved/submitted) - not in API
   const pendingTransactionGroups = useSelector(getPendingTransactionGroups);
@@ -70,23 +84,22 @@ export const ActivityList = () => {
     const evmTransactions =
       data?.pages?.flatMap((page) => page.data ?? []) ?? [];
 
-    // Combine API (EVM) + non-EVM transactions - both are TransactionViewModel[]
-    const allCompleted = [...evmTransactions, ...nonEvmTransactions];
-
     // Filter local completed transactions not yet in API (deduped by hash)
     const localCompletedNotInApi = filterLocalCompletedNotInApi(
       recentTransactionGroups,
       evmTransactions,
     );
 
-    // Merge all three types by time:
+    // Merge all four types by time:
     // - pending (TransactionGroup) → rendered by PendingActivityItem
     // - local-completed (TransactionGroup) → rendered by PendingActivityItem
     // - completed (TransactionViewModel) → rendered by ActivityListItem
+    // - non-evm (Transaction) → rendered by old MultichainTransactionListItem pattern
     const mergedByTime = mergeAllTransactionsByTime(
       pendingTransactionGroups,
       localCompletedNotInApi,
-      allCompleted,
+      evmTransactions,
+      nonEvmTransactions,
     );
 
     // Group by date and flatten for virtualization
@@ -153,6 +166,10 @@ export const ActivityList = () => {
     setSelectedItem(null);
   };
 
+  const handleNonEvmModalClose = () => {
+    setSelectedNonEvmTransaction(null);
+  };
+
   const renderItem = (item: FlattenedItem) => {
     if (isDateHeader(item)) {
       return (
@@ -181,6 +198,17 @@ export const ActivityList = () => {
         <PendingActivityItem
           transactionGroup={item.transactionGroup}
           earliestNonceByChain={earliestNonceByChain}
+        />
+      );
+    }
+
+    // Non-EVM transactions - render using old multichain pattern, details via MultichainTransactionDetailsModal
+    if (isNonEvmItem(item)) {
+      return (
+        <NonEvmActivityListItem
+          transaction={item.transaction}
+          networkConfig={networkConfig}
+          onClick={() => setSelectedNonEvmTransaction(item.transaction)}
         />
       );
     }
@@ -231,6 +259,15 @@ export const ActivityList = () => {
           onClose={handleModalClose}
           transaction={selectedItem}
         />
+
+        {selectedNonEvmTransaction && networkConfig && (
+          <MultichainTransactionDetailsModal
+            transaction={selectedNonEvmTransaction}
+            onClose={handleNonEvmModalClose}
+            userAddress={selectedAccount?.address ?? ''}
+            networkConfig={networkConfig}
+          />
+        )}
       </Box>
     );
   }

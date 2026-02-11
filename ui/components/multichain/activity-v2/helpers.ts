@@ -1,4 +1,5 @@
 import type { Hex } from 'viem';
+import type { Transaction } from '@metamask/keyring-api';
 import type {
   TransactionGroup,
   TransactionViewModel,
@@ -20,7 +21,8 @@ export type FlattenedItem =
   | { type: 'date-header'; date: number }
   | { type: 'pending'; transactionGroup: TransactionGroup; id: string }
   | { type: 'local-completed'; transactionGroup: TransactionGroup; id: string }
-  | { type: 'completed'; data: TransactionViewModel; id: string };
+  | { type: 'completed'; data: TransactionViewModel; id: string }
+  | { type: 'non-evm'; transaction: Transaction; id: string };
 
 export function isDateHeader(
   item: FlattenedItem,
@@ -38,6 +40,12 @@ export function isLocalCompletedItem(
   item: FlattenedItem,
 ): item is FlattenedItem & { type: 'local-completed' } {
   return item.type === 'local-completed';
+}
+
+export function isNonEvmItem(
+  item: FlattenedItem,
+): item is FlattenedItem & { type: 'non-evm' } {
+  return item.type === 'non-evm';
 }
 
 // TODO: Re-use existing
@@ -169,15 +177,18 @@ export function filterLocalCompletedNotInApi(
   });
 }
 
+type MergedItem =
+  | { type: 'pending'; group: TransactionGroup; time: number }
+  | { type: 'local-completed'; group: TransactionGroup; time: number }
+  | { type: 'completed'; tx: TransactionViewModel; time: number }
+  | { type: 'non-evm'; transaction: Transaction; time: number };
+
 export function mergeAllTransactionsByTime(
   pendingGroups: TransactionGroup[],
   localCompletedGroups: TransactionGroup[],
   apiTransactions: TransactionViewModel[],
-): (
-  | { type: 'pending'; group: TransactionGroup; time: number }
-  | { type: 'local-completed'; group: TransactionGroup; time: number }
-  | { type: 'completed'; tx: TransactionViewModel; time: number }
-)[] {
+  nonEvmTransactions: Transaction[] = [],
+): MergedItem[] {
   const pendingItems = pendingGroups.map((group) => ({
     type: 'pending' as const,
     group,
@@ -196,18 +207,23 @@ export function mergeAllTransactionsByTime(
     time: tx.time ?? 0,
   }));
 
+  const nonEvmItems = nonEvmTransactions.map((transaction) => ({
+    type: 'non-evm' as const,
+    transaction,
+    time: (transaction.timestamp ?? 0) * 1000,
+  }));
+
   // Sort all by time (newest first)
-  return [...pendingItems, ...localCompletedItems, ...completedItems].sort(
-    (a, b) => b.time - a.time,
-  );
+  return [
+    ...pendingItems,
+    ...localCompletedItems,
+    ...completedItems,
+    ...nonEvmItems,
+  ].sort((a, b) => b.time - a.time);
 }
 
 export function groupAndFlattenMergedTransactions(
-  mergedItems: (
-    | { type: 'pending'; group: TransactionGroup; time: number }
-    | { type: 'local-completed'; group: TransactionGroup; time: number }
-    | { type: 'completed'; tx: TransactionViewModel; time: number }
-  )[],
+  mergedItems: MergedItem[],
 ): FlattenedItem[] {
   if (mergedItems.length === 0) {
     return [];
@@ -237,6 +253,12 @@ export function groupAndFlattenMergedTransactions(
         type: 'local-completed',
         id: item.group.primaryTransaction.id,
         transactionGroup: item.group,
+      });
+    } else if (item.type === 'non-evm') {
+      flattened.push({
+        type: 'non-evm',
+        id: item.transaction.id,
+        transaction: item.transaction,
       });
     } else {
       flattened.push({

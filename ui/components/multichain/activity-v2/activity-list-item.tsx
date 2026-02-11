@@ -21,8 +21,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
   const currentCurrency = useSelector(getCurrentCurrency);
   const marketRates = useSelector(getMarketRates);
   const { formatTokenAmount, formatCurrencyWithMinThreshold } = useFormatters();
-  const { chainId, category } = transaction;
-  const { isError } = transaction as { isError?: boolean };
+  const { chainId, category, status } = transaction;
 
   const title = useGetTitle(transaction);
   const { amount, symbol } = getTransferAmount(transaction.amounts);
@@ -33,9 +32,10 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
     ? calculateFiatFromMarketRates(transaction, marketRates)
     : null;
 
-  const transactionStatus = isError
-    ? TransactionStatus.failed
-    : TransactionStatus.confirmed;
+  const transactionStatus =
+    status === TransactionStatus.failed
+      ? TransactionStatus.failed
+      : TransactionStatus.confirmed;
 
   return (
     <Box
