@@ -21,7 +21,6 @@ import { BENCHMARK_PERSONA, WITH_STATE_POWER_USER } from '../../utils';
 import { BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
-// Native ETH token identifier for price chart
 const ETH_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const testTitle = 'benchmark-asset-details-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
@@ -70,11 +69,12 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
         // Switch to Ethereum Mainnet network
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
 
-        // Only Ethereum network is selected so only 1 token visible
-        await assetListPage.checkTokenItemNumber(1);
+        // Wait for token list to refresh after network switch
+        await assetListPage.checkTokenListIsDisplayed();
+
+        await assetListPage.clickOnAsset('Ethereum');
 
         // Measure: Asset click to price chart loaded
-        await assetListPage.clickOnAsset('Ethereum');
         await timer.measure(async () => {
           await assetListPage.checkPriceChartIsShown();
           await assetListPage.checkPriceChartLoaded(ETH_TOKEN_ADDRESS);

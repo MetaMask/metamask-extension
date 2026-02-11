@@ -33,6 +33,29 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
         manifestFlags: {
+          remoteFeatureFlags: {
+            bridgeConfig: {
+              refreshRate: 30000,
+              maxRefreshCount: 5,
+              support: true,
+              sse: {
+                enabled: true,
+                minimumVersion: '13.2.0',
+              },
+              chains: {
+                '1': { isActiveSrc: true, isActiveDest: true },
+                '10': { isActiveSrc: true, isActiveDest: true },
+                '137': { isActiveSrc: true, isActiveDest: true },
+                '42161': { isActiveSrc: true, isActiveDest: true },
+                '8453': { isActiveSrc: true, isActiveDest: true },
+                '59144': { isActiveSrc: true, isActiveDest: true },
+                '1151111081099710': {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+              },
+            },
+          },
           testing: {
             disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
@@ -54,6 +77,11 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.waitForTokenToBeDisplayed('Ethereum');
         await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
+        // Wait for Solana balance to load before starting the swap flow
+        // In mocked mode, balance is 50 SOL; in real server mode skip this wait
+        if (shouldUseMockedRequests()) {
+          await assetListPage.checkTokenAmountIsDisplayed('50 SOL');
+        }
 
         // Measure: Open swap page
         await homePage.startSwapFlow();

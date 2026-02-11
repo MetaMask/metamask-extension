@@ -134,7 +134,7 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/benchmarks/${{ env.OUTPUT_NAME }}
           path: test-artifacts/benchmarks/${{ env.OUTPUT_NAME }}
 
-  # Webpack performance benchmarks - only on push to main/stable/release branches.
+  # Webpack performance benchmarks - only on push to main/release branches.
   # Compares webpack vs browserify performance before releasing webpack to production.
   benchmarks-webpack-perf:
     if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')) }}

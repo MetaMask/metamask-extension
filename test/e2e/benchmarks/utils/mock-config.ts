@@ -1,5 +1,5 @@
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { mockPowerUserPrices } from './performance-mocks';
+import { mockPowerUserPrices } from '../mocks/performance-mocks';
 
 /**
  * Check if mocked requests should be used for performance benchmarks.
