@@ -2981,6 +2981,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.SEI,
     CHAIN_IDS.MONAD,
     CHAIN_IDS.HYPE,
+    CHAIN_IDS.MEGAETH_MAINNET,
   ].includes(chainId);
 }
 
