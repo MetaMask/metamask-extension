@@ -334,7 +334,7 @@
     "selectedAddress": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedNetworkClientId": "string",
-    "shieldSubscriptionError": null,
+    "shieldSubscriptionError": "object",
     "shieldEndingToastLastClickedOrClosed": "object",
     "shieldPausedToastLastClickedOrClosed": "object",
     "showAccountBanner": true,
