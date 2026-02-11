@@ -1040,15 +1040,17 @@ export class PreferencesController extends BaseController<
    * This is used when the wallet is reset during the "Forgot Password" flow.
    */
   resetState(): void {
-    const defaultStateWithLocale = {
-      ...getDefaultPreferencesControllerState(),
+    const defaultState = getDefaultPreferencesControllerState();
+    const resetState = {
+      ...defaultState,
       currentLocale: FALLBACK_LOCALE,
       preferences: {
-        ...getDefaultPreferencesControllerState().preferences,
+        ...defaultState.preferences,
         autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+        showNativeTokenAsMainBalance: true,
       },
     };
-    this.update(() => defaultStateWithLocale);
+    this.update(() => resetState);
   }
 
   #handleAccountsControllerSync(

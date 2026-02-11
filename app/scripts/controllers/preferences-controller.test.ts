@@ -1489,7 +1489,7 @@ describe('preferences controller', () => {
         false,
       );
       expect(controller.state.preferences.showNativeTokenAsMainBalance).toBe(
-        false,
+        true,
       );
       expect(controller.state.preferences.autoLockTimeLimit).toBe(
         DEFAULT_AUTO_LOCK_TIME_LIMIT,
