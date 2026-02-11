@@ -4,13 +4,14 @@ on:
   workflow_call:
     secrets:
       STORYBOOK_TOKEN:
-        required: true
+        required: false
 
 jobs:
   build-storybook:
     name: Build storybook
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
