@@ -3137,6 +3137,7 @@
         "defaultShouldDehydrateQuery": true,
         "dehydrate": true,
         "document": false,
+        "document.visibilityState": true,
         "experimental_streamedQuery": true,
         "focusManager": true,
         "hashKey": true,
