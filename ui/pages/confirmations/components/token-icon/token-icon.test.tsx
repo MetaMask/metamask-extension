@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { useSendTokens } from '../../hooks/send/useSendTokens';
 import { TokenIcon } from './token-icon';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 jest.mock('../../hooks/send/useSendTokens');
 
@@ -20,7 +19,7 @@ function renderTokenIcon(props = {}) {
     metamask: {
       networkConfigurationsByChainId: {
         [CHAIN_ID_MOCK]: {
-          name: messages.mainnet.message,
+          name: 'Ethereum Mainnet',
           chainId: CHAIN_ID_MOCK,
         },
       },

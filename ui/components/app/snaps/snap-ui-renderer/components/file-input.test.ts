@@ -7,7 +7,6 @@ import {
   MOCK_SNAP_ID,
   renderInterface,
 } from '../test-utils';
-import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../../store/background-connection'),
@@ -25,7 +24,7 @@ describe('SnapUIFileInput', () => {
     const { container, getByRole } = renderInterface(
       Box({
         children: Form({
-          name: messages.form.message,
+          name: 'form',
           children: [
             Field({
               label: 'My Input',
@@ -132,7 +131,7 @@ describe('SnapUIFileInput', () => {
             method: ' ',
             params: {
               event: {
-                name: messages.form.message,
+                name: 'form',
                 type: 'FormSubmitEvent',
                 value: {
                   input: {

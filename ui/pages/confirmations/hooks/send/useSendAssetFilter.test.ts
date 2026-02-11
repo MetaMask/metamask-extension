@@ -2,12 +2,11 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-n
 import mockState from '../../../../../test/data/mock-state.json';
 import { type Asset } from '../../types/send';
 import { useSendAssetFilter } from './useSendAssetFilter';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 describe('useSendAssetFilter', () => {
   const mockTokens: Asset[] = [
     {
-      name: messages.networkNameEthereum.message,
+      name: 'Ethereum',
       symbol: 'ETH',
       chainId: '1',
     },
@@ -17,7 +16,7 @@ describe('useSendAssetFilter', () => {
       chainId: '1',
     },
     {
-      name: messages.networkNamePolygon.message,
+      name: 'Polygon',
       symbol: 'MATIC',
       chainId: '137',
     },

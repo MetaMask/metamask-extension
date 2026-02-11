@@ -95,35 +95,35 @@ describe('OrderCard', () => {
     });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText(messages.medium.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsMarket.message)).toBeInTheDocument();
   });
 
   it('displays open status correctly', () => {
     const order = createMockOrder({ status: 'open' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText(messages.perpsStatusOpen.message)).toBeInTheDocument();
+    expect(screen.getByText('Open')).toBeInTheDocument();
   });
 
   it('displays filled status correctly', () => {
     const order = createMockOrder({ status: 'filled' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText(messages.perpsStatusFilled.message)).toBeInTheDocument();
+    expect(screen.getByText('Filled')).toBeInTheDocument();
   });
 
   it('displays canceled status correctly', () => {
     const order = createMockOrder({ status: 'canceled' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText(messages.perpsStatusCanceled.message)).toBeInTheDocument();
+    expect(screen.getByText('Canceled')).toBeInTheDocument();
   });
 
   it('displays queued status correctly', () => {
     const order = createMockOrder({ status: 'queued' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText(messages.perpsStatusQueued.message)).toBeInTheDocument();
+    expect(screen.getByText('Queued')).toBeInTheDocument();
   });
 
   it('renders the token logo', () => {

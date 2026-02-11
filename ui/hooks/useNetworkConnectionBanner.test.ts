@@ -12,7 +12,6 @@ import mockState from '../../test/data/mock-state.json';
 import { MetaMetricsEventName } from '../../shared/constants/metametrics';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { useNetworkConnectionBanner } from './useNetworkConnectionBanner';
-import { enLocale as messages } from '../../test/lib/i18n-helpers';
 
 jest.mock('../../shared/constants/network', () => {
   return {
@@ -97,7 +96,7 @@ describe('useNetworkConnectionBanner', () => {
 
     mockGetNetworkConfigurationsByChainId.mockReturnValue({
       '0x1': {
-        name: messages.mainnet.message,
+        name: 'Ethereum Mainnet',
         chainId: '0x1',
         nativeCurrency: 'ETH',
         rpcEndpoints: [

@@ -28,7 +28,6 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../shared/lib/accounts';
 import * as selectors from './selectors';
-import { enLocale as messages } from '../../test/lib/i18n-helpers';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../shared/modules/selectors/networks'),
@@ -987,7 +986,7 @@ describe('Selectors', () => {
               type: KeyringType.ledger,
               accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
               metadata: {
-                name: messages.ledger.message,
+                name: 'Ledger',
                 id: 'ledger',
               },
             },

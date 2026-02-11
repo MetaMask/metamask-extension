@@ -146,7 +146,7 @@ describe('RewardsQRCode', () => {
 
     render(<RewardsQRCode />);
 
-    const closeButton = screen.getByRole('button', { name: messages.deprecatedNetworkButtonMsg.message });
+    const closeButton = screen.getByRole('button', { name: messages.gotIt.message });
     expect(closeButton).toBeInTheDocument();
     fireEvent.click(closeButton);
 

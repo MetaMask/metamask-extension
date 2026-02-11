@@ -5,7 +5,6 @@ import configureMockStore from 'redux-mock-store';
 import { createSwapsMockStore } from '../../../../../test/jest';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import ItemList from '.';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 const createProps = (customProps = {}) => {
   return {
@@ -32,7 +31,7 @@ const createProps = (customProps = {}) => {
         weight: 0.499,
       },
       {
-        name: messages.addressLabel.message,
+        name: 'address',
         weight: 0.002,
       },
     ],
