@@ -1,12 +1,12 @@
 /**
  * E2E tests for the "Basic functionality required" (feature-unavailable) flow.
  * When useExternalServices is off, protected routes (e.g. swap, notifications)
- * redirect to /feature-unavailable. Run `yarn build:test` before running these tests.
+ * redirect to /feature-unavailable.
  */
 import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import BasicFunctionalityRequiredPage from '../../page-objects/pages/basic-functionality-required-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
@@ -21,7 +21,7 @@ describe('Basic functionality required', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -61,7 +61,7 @@ describe('Basic functionality required', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -92,7 +92,7 @@ describe('Basic functionality required', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
