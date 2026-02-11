@@ -1195,6 +1195,132 @@ describe('MultichainAccountList', () => {
     });
   });
 
+  describe('Collapsible section headers', () => {
+    it('collapses wallet section when wallet header is clicked', async () => {
+      renderComponent();
+
+      // Both wallet accounts should be visible initially
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Click the first wallet header to collapse it
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1's account should no longer be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Wallet 2's account should still be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+
+    it('collapses pinned section when pinned header is clicked', async () => {
+      const walletsWithPinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+        [walletTwoId]: mockWallets[walletTwoId],
+      };
+
+      renderComponent({ wallets: walletsWithPinnedAccount });
+
+      // Pinned account should be visible initially
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+
+      // Click the pinned header to collapse it
+      const pinnedHeader = screen.getByTestId(
+        'multichain-account-tree-pinned-header',
+      );
+      await act(async () => {
+        fireEvent.click(pinnedHeader);
+      });
+
+      // Pinned account should no longer be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Wallet 2's account should still be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+
+    it('multiple sections can be collapsed independently', async () => {
+      renderComponent();
+
+      // Both wallet accounts should be visible initially
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+
+      // Collapse Wallet 1
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1 collapsed, Wallet 2 still visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Collapse Wallet 2
+      await act(async () => {
+        fireEvent.click(walletHeaders[1]);
+      });
+
+      // Both wallets now collapsed
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Expand Wallet 1 again
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1 now visible, Wallet 2 still collapsed
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe('Trace events', () => {
     it('ends AccountList and ShowAccountList traces on mount', () => {
       renderComponent();

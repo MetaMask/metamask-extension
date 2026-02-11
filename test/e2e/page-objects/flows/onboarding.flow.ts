@@ -406,6 +406,8 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   await onboardingCompletePage.completeOnboarding();
 
   await handleSidepanelPostOnboarding(driver);
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
 };
 
 /**
