@@ -1,12 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  AWAITING_SIGNATURES_ROUTE,
-} from '../../helpers/constants/routes';
-import {
   checkHardwareWalletPermission,
   getConnectedDevices,
   subscribeToWebHidEvents,
@@ -22,6 +16,7 @@ import {
   type HardwareWalletRefs,
 } from './HardwareWalletStateManager';
 import { ConnectionState } from './connectionState';
+import { isHardwareWalletRoute } from './utils';
 
 type UseHardwareWalletAutoConnectParams = {
   state: HardwareWalletState;
@@ -52,11 +47,7 @@ export const useHardwareWalletAutoConnect = ({
 }: UseHardwareWalletAutoConnectParams) => {
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
   const location = useLocation();
-  const isOnAutoConnectRoute =
-    location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
-    location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
-    location.pathname.startsWith(CROSS_CHAIN_SWAP_ROUTE) ||
-    location.pathname.startsWith(AWAITING_SIGNATURES_ROUTE);
+  const isOnAutoConnectRoute = isHardwareWalletRoute(location.pathname);
 
   const {
     adapterRef,

@@ -18,12 +18,6 @@ import {
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
-  CONFIRMATION_V_NEXT_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
-  AWAITING_SIGNATURES_ROUTE,
-} from '../../helpers/constants/routes';
-import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
   useHardwareWalletState,
@@ -35,19 +29,13 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
+import { isHardwareWalletRoute } from './utils';
 
 /**
  * Route prefixes where hardware wallet error modals should auto-show.
  * This restricts auto-shown errors to transaction, signing, and bridge pages.
  * Manually triggered errors (via showErrorModal) are not affected.
  */
-const ERROR_MODAL_ROUTE_PREFIXES = [
-  CONFIRM_TRANSACTION_ROUTE, // /confirm-transaction (transactions + signature requests)
-  CONFIRMATION_V_NEXT_ROUTE, // /confirmation (redesigned confirmation flow)
-  CROSS_CHAIN_SWAP_ROUTE, // /cross-chain (bridge pages)
-  AWAITING_SIGNATURES_ROUTE, // /swaps/awaiting-signatures
-];
-
 type HardwareWalletErrorContextType = {
   /**
    * Manually show the error modal with a specific error
@@ -107,10 +95,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
    * Only transaction, signing, and bridge pages should auto-show errors.
    */
   const isOnErrorModalRoute = useMemo(
-    () =>
-      ERROR_MODAL_ROUTE_PREFIXES.some((prefix) =>
-        location.pathname.startsWith(prefix),
-      ),
+    () => isHardwareWalletRoute(location.pathname),
     [location.pathname],
   );
 
@@ -132,7 +117,9 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   /**
    * Handle retry action from the modal
    */
-  const handleRetry = useCallback(() => undefined, []);
+  const handleRetry = useCallback(() => {
+    // Keep the modal open while the user retries on their device.
+  }, []);
 
   /**
    * Handle cancel/close action from the modal
