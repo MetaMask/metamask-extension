@@ -47,7 +47,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
-import { GlobalMenu } from '../global-menu';
+import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
@@ -425,10 +425,10 @@ export const AppHeaderUnlockedContent = ({
             />
           </Box>
         </Box>
-        <GlobalMenu
+        <GlobalMenuDrawerWithList
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          closeMenu={() => {
+          onClose={() => {
             setAccountOptionsMenuOpen(false);
           }}
         />
