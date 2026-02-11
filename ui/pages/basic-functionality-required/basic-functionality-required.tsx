@@ -1,28 +1,23 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  Box,
   Button,
   ButtonSize,
   ButtonVariant,
-} from '../../components/component-library/button';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  FontWeight,
-  TextAlign,
-  TextColor,
+  Text,
+  TextButton,
   TextVariant,
-} from '../../helpers/constants/design-system';
-import { Text } from '../../components/component-library/text/text';
-import { Box } from '../../components/component-library/box/box';
+  FontWeight,
+  TextColor,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxBackgroundColor,
+  BoxBorderColor,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { AlignItems, Display, FlexDirection } from '../../helpers/constants/design-system';
 import { Container } from '../../components/component-library/container/container';
-import { ButtonLink } from '../../components/component-library';
 import { DEFAULT_ROUTE, SECURITY_ROUTE } from '../../helpers/constants/routes';
 
 const CONTAINER_STYLE = { marginTop: '111px' } as const;
@@ -45,19 +40,21 @@ export const BasicFunctionalityRequired = () => {
       style={CONTAINER_STYLE}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        textAlign={TextAlign.Center}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderColor={BorderColor.borderMuted}
-        borderRadius={BorderRadius.MD}
-        style={CARD_BOX_STYLE}
-        paddingLeft={6}
-        paddingRight={6}
-        paddingTop={12}
-        paddingBottom={8}
-        borderWidth={1}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        borderColor={BoxBorderColor.BorderMuted}
+        style={{
+          ...CARD_BOX_STYLE,
+          display: Display.Flex,
+          textAlign: 'center',
+          borderRadius: '8px',
+          paddingLeft: 24,
+          paddingRight: 24,
+          paddingTop: 48,
+          paddingBottom: 32,
+          borderWidth: 1,
+        }}
       >
         <img
           className="metamask-basic-functionality-required-logo"
@@ -65,47 +62,39 @@ export const BasicFunctionalityRequired = () => {
           src="./images/logo/metamask-fox.svg"
           style={LOGO_STYLE}
         />
-        <Text
-          as="h1"
-          variant={TextVariant.headingLg}
-          fontWeight={FontWeight.Bold}
-          marginTop={4}
-          marginBottom={4}
-        >
-          {t('basicFunctionalityRequired_title')}
+        <Text asChild variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
+          <h1 style={{ marginTop: 16, marginBottom: 16 }}>
+            {t('basicFunctionalityRequired_title')}
+          </h1>
         </Text>
         <Box
-          as="div"
           data-testid="basic-functionality-required-description"
           paddingBottom={6}
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             {t('basicFunctionalityRequired_description')}
           </Text>
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            marginTop={2}
-          >
-            {t('basicFunctionalityRequired_settingsHint', [
-              <ButtonLink
-                key="settings-link"
-                as="button"
-                onClick={() => navigate(SECURITY_ROUTE)}
-                data-testid="basic-functionality-required-settings-link"
-              >
-                {t('basicFunctionalityRequired_openSettings')}
-              </ButtonLink>,
-            ])}
-          </Text>
+          <Box marginTop={2}>
+            <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+              {t('basicFunctionalityRequired_settingsHint', [
+                <TextButton
+                  key="settings-link"
+                  onClick={() => navigate(SECURITY_ROUTE)}
+                  data-testid="basic-functionality-required-settings-link"
+                >
+                  {t('basicFunctionalityRequired_openSettings')}
+                </TextButton>,
+              ])}
+            </Text>
+          </Box>
         </Box>
-        <Box width={BlockSize.Full} marginTop={8}>
+        <Box style={{ width: '100%', marginTop: 32 }}>
           <Button
-            width={BlockSize.Full}
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             data-testid="basic-functionality-required-go-home"
             onClick={() => navigate(DEFAULT_ROUTE)}
+            style={{ width: '100%' }}
           >
             {t('basicFunctionalityRequired_goToHome')}
           </Button>
