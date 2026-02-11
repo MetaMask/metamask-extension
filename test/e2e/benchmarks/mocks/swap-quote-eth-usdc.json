@@ -1,4 +1,5 @@
 {
+  "approval": null,
   "estimatedProcessingTimeInSeconds": 60,
   "quote": {
     "requestId": "0xmock-request-id-123456789",
@@ -69,7 +70,6 @@
       "totalFeeAmountUsd": "30.00"
     }
   },
-  "approval": null,
   "trade": {
     "chainId": 1,
     "to": "0x881D40237659C251811CEC9c364ef91dC08D300C",

@@ -11,7 +11,11 @@
     "infoURL": "https://ethereum.org",
     "shortName": "eth",
     "explorers": [
-      { "name": "etherscan", "url": "https://etherscan.io", "standard": "EIP3091" }
+      {
+        "name": "etherscan",
+        "url": "https://etherscan.io",
+        "standard": "EIP3091"
+      }
     ]
   },
   {
@@ -26,7 +30,11 @@
     "infoURL": "https://polygon.technology/",
     "shortName": "matic",
     "explorers": [
-      { "name": "polygonscan", "url": "https://polygonscan.com", "standard": "EIP3091" }
+      {
+        "name": "polygonscan",
+        "url": "https://polygonscan.com",
+        "standard": "EIP3091"
+      }
     ]
   },
   {
@@ -56,7 +64,11 @@
     "infoURL": "https://linea.build",
     "shortName": "linea",
     "explorers": [
-      { "name": "lineascan", "url": "https://lineascan.build", "standard": "EIP3091" }
+      {
+        "name": "lineascan",
+        "url": "https://lineascan.build",
+        "standard": "EIP3091"
+      }
     ]
   },
   {
@@ -71,7 +83,11 @@
     "infoURL": "https://base.org",
     "shortName": "base",
     "explorers": [
-      { "name": "basescan", "url": "https://basescan.org", "standard": "EIP3091" }
+      {
+        "name": "basescan",
+        "url": "https://basescan.org",
+        "standard": "EIP3091"
+      }
     ]
   },
   {
@@ -86,7 +102,11 @@
     "infoURL": "https://arbitrum.io",
     "shortName": "arb1",
     "explorers": [
-      { "name": "arbiscan", "url": "https://arbiscan.io", "standard": "EIP3091" }
+      {
+        "name": "arbiscan",
+        "url": "https://arbiscan.io",
+        "standard": "EIP3091"
+      }
     ]
   },
   {
@@ -101,7 +121,11 @@
     "infoURL": "https://optimism.io",
     "shortName": "oeth",
     "explorers": [
-      { "name": "optimistic etherscan", "url": "https://optimistic.etherscan.io", "standard": "EIP3091" }
+      {
+        "name": "optimistic etherscan",
+        "url": "https://optimistic.etherscan.io",
+        "standard": "EIP3091"
+      }
     ]
   }
 ]

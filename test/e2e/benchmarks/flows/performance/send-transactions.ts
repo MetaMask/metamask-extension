@@ -68,7 +68,11 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         await headerNavbar.openAccountMenu();
         await accountListPage.switchToAccount('Account 1');
         // Wait for Solana balance to load before starting the send flow
-        await assetListPage.checkTokenAmountIsDisplayed('50 SOL');
+        if (shouldUseMockedRequests()) {
+          await assetListPage.checkTokenAmountIsDisplayed('50 SOL');
+        } else {
+          await assetListPage.waitForTokenToBeDisplayed('SOL');
+        }
         // Measure: Open send page
         await homePage.startSendFlow();
         await timerOpenSendPage.measure(async () => {
