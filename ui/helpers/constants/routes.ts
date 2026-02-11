@@ -139,6 +139,10 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
+
+/** Shown when user opens a route that requires Basic Functionality (e.g. swap, rewards) but the setting is off. */
+export const BASIC_FUNCTIONALITY_REQUIRED_ROUTE = '/feature-unavailable';
+
 export const DEFI_ROUTE = '/defi';
 
 // Perps routes

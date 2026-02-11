@@ -2,6 +2,7 @@ import React, { ComponentType, ReactNode } from 'react';
 import type { RouteObject } from 'react-router-dom';
 import Authenticated from '../helpers/higher-order-components/authenticated/authenticated.container';
 import Initialized from '../helpers/higher-order-components/initialized';
+import RequireBasicFunctionality from '../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import type { RootLayout } from './root-layout';
 import type { LegacyLayout } from './legacy-layout';
 
@@ -15,6 +16,8 @@ export type RouteWithLayoutConfig = {
     | ComponentType<{ children: ReactNode }>;
   authenticated?: boolean;
   initialized?: boolean;
+  /** When true, redirects to the feature-unavailable screen if Basic Functionality (useExternalServices) is off. */
+  requireBasicFunctionality?: boolean;
   children?: ReactNode;
 };
 
@@ -29,6 +32,7 @@ export type RouteWithLayoutConfig = {
  * @param config.layout - The layout to use for the route
  * @param config.authenticated - Whether to wrap with the Authenticated component
  * @param config.initialized - Whether to wrap with the Initialized component
+ * @param config.requireBasicFunctionality - Whether to wrap with RequireBasicFunctionality (redirects when useExternalServices is off)
  * @param config.children - Nested route content
  * @returns RouteObject ready for useRoutes()
  */
@@ -42,6 +46,7 @@ export const createRouteWithLayout = (
     component: Component,
     authenticated,
     initialized,
+    requireBasicFunctionality,
     children,
   } = config;
 
@@ -57,6 +62,11 @@ export const createRouteWithLayout = (
   // Then wrap with Authenticated (inner guard)
   if (authenticated && content) {
     content = <Authenticated>{content}</Authenticated>;
+  }
+
+  // Then wrap with RequireBasicFunctionality when route depends on external services
+  if (requireBasicFunctionality && content) {
+    content = <RequireBasicFunctionality>{content}</RequireBasicFunctionality>;
   }
 
   // Finally wrap with Layout

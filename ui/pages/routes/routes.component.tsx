@@ -44,6 +44,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
   IMPORT_SRP_ROUTE,
+  BASIC_FUNCTIONALITY_REQUIRED_ROUTE,
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
   SMART_ACCOUNT_UPDATE,
@@ -299,6 +300,13 @@ const DeepLink = mmLazy(
   (() => import('../deep-link/deep-link.tsx')) as unknown as DynamicImportType,
 );
 
+const BasicFunctionalityRequired = mmLazy(
+  (() =>
+    import(
+      '../basic-functionality-required/basic-functionality-required.tsx'
+    )) as unknown as DynamicImportType,
+);
+
 const MultichainAccountDetailsPage = mmLazy(
   (() =>
     import(
@@ -522,6 +530,11 @@ export default function Routes() {
         layout: LegacyLayout,
       }),
       createRouteWithLayout({
+        path: BASIC_FUNCTIONALITY_REQUIRED_ROUTE,
+        component: BasicFunctionalityRequired,
+        layout: LegacyLayout,
+      }),
+      createRouteWithLayout({
         path: RESTORE_VAULT_ROUTE,
         component: RestoreVaultPage,
         layout: LegacyLayout,
@@ -555,18 +568,21 @@ export default function Routes() {
         component: NotificationsSettings,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: `${NOTIFICATIONS_ROUTE}/:uuid`,
         component: NotificationDetails,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: NOTIFICATIONS_ROUTE,
         component: Notifications,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: SNAPS_ROUTE,
@@ -609,12 +625,14 @@ export default function Routes() {
         component: CrossChainSwapTxDetails,
         layout: LegacyLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
         component: CrossChainSwap,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -675,6 +693,7 @@ export default function Routes() {
         component: DeFiPage,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: PERMISSIONS,
@@ -765,42 +784,49 @@ export default function Routes() {
         component: NonEvmBalanceCheck,
         layout: LegacyLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: SHIELD_PLAN_ROUTE,
         component: ShieldPlan,
         layout: LegacyLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: REWARDS_ROUTE,
         component: RewardsPage,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: PERPS_HOME_ROUTE,
         component: PerpsHomePage,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
         component: PerpsMarketDetailPage,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: PERPS_ACTIVITY_ROUTE,
         component: PerpsActivityPage,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: PERPS_MARKET_LIST_ROUTE,
         component: MarketListView,
         layout: RootLayout,
         authenticated: true,
+        requireBasicFunctionality: true,
       }),
       createRouteWithLayout({
         path: DEFAULT_ROUTE,
