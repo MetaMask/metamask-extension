@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "Το MetaMask δεν είναι συνδεδεμένο με αυτόν τον ιστότοπο. Για να ξεκινήσετε, επιλέξτε το κουμπί Σύνδεση του ιστότοπου."
   },
-  "noConversionRateAvailable": {
-    "message": "Δεν υπάρχει διαθέσιμη ισοτιμία μετατροπής"
-  },
   "noDomainResolution": {
     "message": "Δεν παρέχεται ανάλυση για τον τομέα."
   },

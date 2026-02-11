@@ -14,7 +14,7 @@ jobs:
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Determine whether this PR is from a fork
         id: is-fork
@@ -32,7 +32,7 @@ jobs:
     environment: default-branch
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: React to the comment
         run: |
@@ -59,7 +59,7 @@ jobs:
       BRANCH: ${{ steps.branch.outputs.BRANCH }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -113,7 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
       - name: Cache dist artifact
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: build-dist-browserify
           key: dist-${{ steps.commit-sha.outputs.COMMIT_SHA }}
@@ -131,7 +131,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ needs.prepare.outputs.BRANCH }}
 
@@ -144,7 +144,7 @@ jobs:
 
       - name: Restore .metamask folder
         id: restore-metamask
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .metamask
           key: .metamask-${{ hashFiles('yarn.lock') }}
@@ -155,7 +155,7 @@ jobs:
         run: yarn mm-foundryup
 
       - name: Restore dist artifact
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: build-dist-browserify
           key: dist-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -175,7 +175,7 @@ jobs:
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-artifacts-fixture-update
           path: |
@@ -183,7 +183,7 @@ jobs:
             ./test/test-results/e2e
 
       - name: Cache updated fixture
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: test/e2e/fixtures/onboarding-fixture.json
           key: fixture-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -200,7 +200,7 @@ jobs:
     environment: default-branch
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
@@ -211,7 +211,7 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Restore updated fixture
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: test/e2e/fixtures/onboarding-fixture.json
           key: fixture-${{ needs.prepare.outputs.COMMIT_SHA }}
@@ -278,7 +278,7 @@ jobs:
       - check-status
     environment: default-branch
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
