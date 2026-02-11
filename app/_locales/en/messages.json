@@ -3838,6 +3838,10 @@
   "memo": {
     "message": "memo"
   },
+  "merklRewardsToastFailed": {
+    "message": "Your mUSD bonus claim failed",
+    "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
+  },
   "merklRewardsToastInProgress": {
     "message": "Your mUSD bonus is processing",
     "description": "Toast message shown when a Merkl reward claim transaction is being processed"

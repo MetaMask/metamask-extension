@@ -41,8 +41,7 @@ export type MerklClaimToastState = 'in-progress' | 'success' | 'failed' | null;
  * - confirmed → success toast
  * - failed/dropped → failed toast
  *
- * @returns toastState - Current toast to display
- * @returns dismissToast - Function to dismiss the current completion toast
+ * @returns An object containing `toastState` (current toast to display) and `dismissToast` (function to dismiss the current completion toast).
  */
 export const useMerklClaimStatus = (): {
   toastState: MerklClaimToastState;

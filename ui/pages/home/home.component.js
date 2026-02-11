@@ -61,7 +61,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
-import { setEditedNetwork } from '../../store/actions';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
