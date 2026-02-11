@@ -9,6 +9,7 @@ import configureStore from '../../../../../../../store/store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
@@ -16,6 +17,7 @@ import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
 jest.mock('../../../../../../../../shared/modules/selectors');
+jest.mock('../../../../../hooks/gas/useEstimationFailed');
 jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 jest.mock(
   '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts',
@@ -45,6 +47,7 @@ function getStore({
 }
 
 describe('SelectedGasFeeToken', () => {
+  const useEstimationFailedMock = jest.mocked(useEstimationFailed);
   const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
   const useInsufficientBalanceAlertsMock = jest.mocked(
     useInsufficientBalanceAlerts,
@@ -52,6 +55,8 @@ describe('SelectedGasFeeToken', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useEstimationFailedMock.mockReturnValue(false);
 
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
@@ -169,6 +174,32 @@ describe('SelectedGasFeeToken', () => {
     );
 
     expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('does not render arrow icon if estimation failed', () => {
+    useEstimationFailedMock.mockReturnValue(true);
+
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore(),
+    );
+
+    expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('does not display modal on click if estimation failed', async () => {
+    useEstimationFailedMock.mockReturnValue(true);
+
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore(),
+    );
+
+    await act(async () => {
+      result.getByTestId('selected-gas-fee-token').click();
+    });
+
+    expect(result.queryByText('Select a token')).toBeNull();
   });
 
   it('displays modal on click', async () => {

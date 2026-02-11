@@ -22,6 +22,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../../../share
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 
@@ -32,6 +33,8 @@ export function SelectedGasFeeToken() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { chainId, gasFeeTokens } = currentConfirmation;
+
+  const estimationFailed = useEstimationFailed();
 
   const { isSupported: isGaslessSupported, isSmartTransaction } =
     useIsGaslessSupported();
@@ -46,6 +49,7 @@ export function SelectedGasFeeToken() {
 
   const hasGasFeeTokens =
     !isQuotedSwapDisplayedInInfo &&
+    !estimationFailed &&
     isGaslessSupported &&
     Boolean(gasFeeTokens?.length) &&
     (!hasOnlyFutureNativeToken || supportsFutureNative);
