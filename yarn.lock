@@ -15028,12 +15028,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/helpers@npm:^0.5.17":
-  version: 0.5.17
-  resolution: "@swc/helpers@npm:0.5.17"
+"@swc/helpers@npm:^0.5.11, @swc/helpers@npm:^0.5.17":
+  version: 0.5.18
+  resolution: "@swc/helpers@npm:0.5.18"
   dependencies:
     tslib: "npm:^2.8.0"
-  checksum: 10/1fc8312a78f1f99c8ec838585445e99763eeebff2356100738cdfdb8ad47d2d38df678ee6edd93a90fe319ac52da67adc14ac00eb82b606c5fb8ebc5d06ec2a2
+  checksum: 10/03c7efa3e62d965fddd0baea98ee7a4c3ba7fa58187f07f26ec8d86740572f5ffd6f7517578a1d3201f64c85399be1538eba4dd30cef79d073060ecb101d753c
   languageName: node
   linkType: hard
 
@@ -17132,7 +17132,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:8.3.4, @types/uuid@npm:^8.3.0":
+"@types/uuid@npm:8.3.4, @types/uuid@npm:^8.3.0, @types/uuid@npm:^8.3.4":
   version: 8.3.4
   resolution: "@types/uuid@npm:8.3.4"
   checksum: 10/6f11f3ff70f30210edaa8071422d405e9c1d4e53abbe50fdce365150d3c698fe7bbff65c1e71ae080cbfb8fded860dbb5e174da96fdbbdfcaa3fb3daa474d20f
@@ -17213,12 +17213,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:*, @types/ws@npm:^8.5.10":
-  version: 8.5.10
-  resolution: "@types/ws@npm:8.5.10"
+"@types/ws@npm:*, @types/ws@npm:^8.2.2, @types/ws@npm:^8.5.10":
+  version: 8.18.1
+  resolution: "@types/ws@npm:8.18.1"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10/9b414dc5e0b6c6f1ea4b1635b3568c58707357f68076df9e7cd33194747b7d1716d5189c0dbdd68c8d2521b148e88184cf881bac7429eb0e5c989b001539ed31
+  checksum: 10/1ce05e3174dcacf28dae0e9b854ef1c9a12da44c7ed73617ab6897c5cbe4fccbb155a20be5508ae9a7dde2f83bd80f5cf3baa386b934fc4b40889ec963e94f3a
   languageName: node
   linkType: hard
 
@@ -29062,7 +29062,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-cache-semantics@npm:^4.1.1":
+"http-cache-semantics@npm:^4.0.0, http-cache-semantics@npm:^4.1.1":
   version: 4.2.0
   resolution: "http-cache-semantics@npm:4.2.0"
   checksum: 10/4efd2dfcfeea9d5e88c84af450b9980be8a43c2c8179508b1c57c7b4421c855f3e8efe92fa53e0b3f4a43c85824ada930eabbc306d1b3beab750b6dcc5187693
@@ -35090,10 +35090,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"netmask@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "netmask@npm:2.0.1"
-  checksum: 10/8c7199475e0337050baffa4564f30e8dd0a53f6b55cbd2d1f3e85ae73d472d7c497e07373555e41d5fe051472b2068ac95b05e9b691fac238e5a0104d7acec94
+"netmask@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "netmask@npm:2.0.2"
+  checksum: 10/375cabe898a5832816958664f26206f0a1e9f3605aa1816bfce803e060ff20f9d6ce56a2377e46f1470938358c31c27b3a8086f4a5e3ef678896147884d63ffa
   languageName: node
   linkType: hard
 
@@ -40055,12 +40055,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpc-websockets@npm:^8.0.1":
-  version: 8.0.2
-  resolution: "rpc-websockets@npm:8.0.2"
+"rpc-websockets@npm:^9.0.2":
+  version: 9.3.3
+  resolution: "rpc-websockets@npm:9.3.3"
   dependencies:
+    "@swc/helpers": "npm:^0.5.11"
+    "@types/uuid": "npm:^8.3.4"
+    "@types/ws": "npm:^8.2.2"
+    buffer: "npm:^6.0.3"
     bufferutil: "npm:^4.0.1"
-    eventemitter3: "npm:^4.0.7"
+    eventemitter3: "npm:^5.0.1"
     utf-8-validate: "npm:^5.0.2"
     uuid: "npm:^8.3.2"
     ws: "npm:^8.5.0"
@@ -40069,7 +40073,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10/4cf0e376c009ad7fae1569f5cd4ee4557269600bf35184dab9b29b9a0d43ab3c121f95590675ce67e38789924efdc75b27b8bc254fd00f8424e6341c45ab2b22
+  checksum: 10/0d4e72bc7799e1d8329bc696f517ade34f52ef9244ceffe96a32d1567f04ae4746eae57bb6af7735e78c6040dce393b20add6b1c0cc8726f4677ee0f61e1d46c
   languageName: node
   linkType: hard
 
@@ -40897,7 +40901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sha.js@npm:^2.4.12":
+"sha.js@npm:^2.3.6, sha.js@npm:^2.4.0, sha.js@npm:^2.4.11, sha.js@npm:^2.4.8":
   version: 2.4.12
   resolution: "sha.js@npm:2.4.12"
   dependencies:
@@ -43059,7 +43063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tiny-secp256k1@npm:^1.1.7":
+"tiny-secp256k1@npm:^1.1.6":
   version: 1.1.7
   resolution: "tiny-secp256k1@npm:1.1.7"
   dependencies:

@@ -644,7 +644,6 @@ export function cancelSubscription(params: {
     try {
       await submitRequestToBackground('cancelSubscription', [params]);
     } catch (error) {
-      log.error('[cancelSubscription] error', error);
       dispatch(displayWarning(error));
 
       // rethrow the original error
@@ -660,7 +659,6 @@ export function unCancelSubscription(params: {
     try {
       await submitRequestToBackground('unCancelSubscription', [params]);
     } catch (error) {
-      log.error('[unCancelSubscription] error', error);
       const unCancelSubscriptionError = new Error(
         `Failed to uncancel subscription, ${getErrorMessage(error)}`,
       );
@@ -8078,7 +8076,6 @@ export async function submitShieldClaim(
     if (error instanceof SubmitClaimError) {
       throw error;
     }
-    log.error('[submitShieldClaim] Failed to submit shield claim:', error);
     throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }
 }
