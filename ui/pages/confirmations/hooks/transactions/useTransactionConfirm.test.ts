@@ -150,7 +150,7 @@ describe('useTransactionConfirm', () => {
       pending: false,
     });
 
-    updateAndApproveTxMock.mockReturnValue(() => Promise.resolve());
+    updateAndApproveTxMock.mockReturnValue(() => Promise.resolve(null));
     attemptCloseNotificationPopupMock.mockResolvedValue(undefined);
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
     mockIsHardwareWalletError.mockReturnValue(false);

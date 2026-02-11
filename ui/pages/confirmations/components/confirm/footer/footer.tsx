@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
@@ -42,16 +42,8 @@ import {
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
-import {
-  ConnectionStatus,
-  useHardwareWalletActions,
-  useHardwareWalletConfig,
-  useHardwareWalletState,
-  useHardwareWalletError,
-  isHardwareWalletError,
-  isUserRejectedHardwareWalletError,
-  type EnsureDeviceReadyOptions,
-} from '../../../../../contexts/hardware-wallets';
+import { useHardwareWalletError } from '../../../../../contexts/hardware-wallets';
+import { useHardwareFooter } from './useHardwareFooter';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
@@ -230,79 +222,37 @@ const Footer = () => {
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
 
-  const { connectionState } = useHardwareWalletState();
-  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
-  const { ensureDeviceReady } = useHardwareWalletActions();
-  const { showErrorModal, dismissErrorModal } = useHardwareWalletError();
-  const [hasPreflightSucceeded, setHasPreflightSucceeded] = useState(false);
+  const { dismissErrorModal } = useHardwareWalletError();
 
-  const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
     currentConfirmation?.type,
   );
-  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
-  const shouldRunHardwareWalletPreflight =
-    isHardwareWalletAccount && (isSignature || isTransactionConfirmation);
-
-  // Simple sends (plain native asset transfers) don't require blind signing
-  // on the Ledger device since they don't involve contract interactions.
-  const ensureDeviceReadyOptions = useMemo<EnsureDeviceReadyOptions>(
-    () => ({
-      requireBlindSigning:
-        currentConfirmation?.type !== TransactionType.simpleSend,
-    }),
-    [currentConfirmation?.type],
-  );
-
-  useEffect(() => {
-    if (!isHardwareWalletAccount) {
-      setHasPreflightSucceeded(false);
-      return;
+  const onUserRejectedHardwareWalletError = useCallback(async () => {
+    // User intentionally rejected on device; follow the cancel flow.
+    await onCancel({
+      location: MetaMetricsEventLocation.Confirmation,
+    });
+    if (currentConfirmationId) {
+      navigateNext(currentConfirmationId);
     }
+  }, [currentConfirmationId, navigateNext, onCancel]);
 
-    if (
-      connectionState.status === ConnectionStatus.Disconnected ||
-      connectionState.status === ConnectionStatus.ErrorState
-    ) {
-      setHasPreflightSucceeded(false);
-    }
-  }, [connectionState.status, isHardwareWalletAccount]);
+  const {
+    walletType,
+    shouldRunHardwareWalletPreflight,
+    isHardwareWalletReady,
+    onSubmitPreflightCheck,
+    withHardwareWalletModalHandling,
+  } = useHardwareFooter({
+    currentConfirmation,
+    currentConfirmationId,
+    onUserRejectedHardwareWalletError,
+  });
 
-  useEffect(() => {
-    setHasPreflightSucceeded(false);
-  }, [currentConfirmationId]);
-
-  const isHardwareWalletReady = useMemo(() => {
-    if (!isHardwareWalletAccount) {
-      return true;
-    }
-
-    if (hasPreflightSucceeded) {
-      return true;
-    }
-
-    return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
-      connectionState.status,
-    );
-  }, [connectionState.status, hasPreflightSucceeded, isHardwareWalletAccount]);
-
+  const isSignature = isSignatureTransactionType(currentConfirmation);
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
-
-  const onSubmitPreflightCheck = useCallback(async (): Promise<boolean> => {
-    if (!isHardwareWalletAccount) {
-      return true;
-    }
-
-    const isDeviceReady = await ensureDeviceReady(ensureDeviceReadyOptions);
-    setHasPreflightSucceeded(isDeviceReady);
-
-    if (!isDeviceReady) {
-      return false;
-    }
-
-    return true;
-  }, [isHardwareWalletAccount, ensureDeviceReady, ensureDeviceReadyOptions]);
 
   const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
@@ -326,32 +276,20 @@ const Footer = () => {
           navigateNext(currentConfirmationId);
         }
       } else {
-        try {
-          await dispatch(
-            resolvePendingApproval(currentConfirmation.id, undefined, {
-              fromAddress,
-            }),
-          );
-          if (currentConfirmationId) {
-            navigateNext(currentConfirmationId);
-          }
-        } catch (error) {
-          // Use isHardwareWalletError which handles duck typing for errors
-          // that lost their class type over the RPC boundary
-          if (!isHardwareWalletError(error)) {
-            // Non-hardware wallet error - rethrow
-            throw error;
-          }
-          if (isUserRejectedHardwareWalletError(error)) {
-            // User intentionally rejected on device; follow the cancel flow.
-            await onCancel({ location: MetaMetricsEventLocation.Confirmation });
+        const resolveApprovalWithHardwareWalletHandling =
+          withHardwareWalletModalHandling(async () => {
+            await dispatch(
+              resolvePendingApproval(currentConfirmation.id, undefined, {
+                fromAddress,
+              }),
+            );
+
             if (currentConfirmationId) {
               navigateNext(currentConfirmationId);
             }
-            return;
-          }
-          showErrorModal(error);
-        }
+          });
+
+        await resolveApprovalWithHardwareWalletHandling();
       }
     } finally {
       resetTransactionState();
@@ -366,12 +304,11 @@ const Footer = () => {
     onAddEthereumChain,
     navigate,
     resetTransactionState,
-    onCancel,
     onTransactionConfirm,
     navigateNext,
     dispatch,
-    showErrorModal,
     fromAddress,
+    withHardwareWalletModalHandling,
   ]);
 
   const handleFooterCancel = useCallback(async () => {
