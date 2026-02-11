@@ -7,12 +7,10 @@ import {
   TransactionType,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../constants/network';
 import { TransactionGroupCategory } from '../constants/transaction';
-import type {
-  TransactionResponse,
-  NormalizedGetAccountTransactionsResponse,
-} from './types';
+import type { NormalizedGetAccountTransactionsResponse } from './types';
 
 export function mapTransactionToCategory(transactionType?: string) {
   switch (transactionType) {
@@ -40,9 +38,9 @@ export function mapTransactionToCategory(transactionType?: string) {
 
 export function getTransferAmounts(
   accountAddress: string,
-  transaction: TransactionResponse,
+  transaction: V1TransactionByHashResponse,
 ) {
-  const { chainId, valueTransfers } = transaction;
+  const { chainId, valueTransfers = [] } = transaction;
   const address = accountAddress.toLowerCase();
   const hexChainId = toHex(
     chainId,
@@ -80,7 +78,7 @@ export function getTransferAmounts(
 // Ported from transaction-controller normalizeTransaction
 export async function normalizeTransaction(
   address: string,
-  transaction: TransactionResponse,
+  transaction: V1TransactionByHashResponse,
 ): Promise<TransactionMeta> {
   const { from, to, hash, methodId, isError } = transaction;
 
@@ -90,7 +88,7 @@ export async function normalizeTransaction(
     : TransactionStatus.confirmed;
 
   // Find token transfer that involves the current address
-  const valueTransfer = transaction.valueTransfers.find(
+  const valueTransfer = transaction.valueTransfers?.find(
     (vt) =>
       (vt.to.toLowerCase() === address.toLowerCase() ||
         vt.from.toLowerCase() === address.toLowerCase()) &&
