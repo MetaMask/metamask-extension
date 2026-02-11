@@ -3,8 +3,6 @@
  *
  * All response payloads live in mock-responses.ts and JSON fixture files.
  */
-import { Readable } from 'stream';
-import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Mockttp, MockedEndpoint, RequestRuleBuilder } from 'mockttp';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { POWER_USER_PRICES } from './price-data';
@@ -156,33 +154,6 @@ async function mockAuthAPICall(
         json,
       };
     });
-}
-
-const getEventId = (index: number) => `${Date.now().toString()}-${index}`;
-const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
-  controller.enqueue(Buffer.from(line));
-
-export function mockSseEventSource(
-  mockQuotes: unknown[],
-  delay: number = 100,
-): Readable {
-  let index = 0;
-  return Readable.fromWeb(
-    new ReadableStreamWeb({
-      async pull(controller) {
-        const quote = mockQuotes[index];
-        if (index === mockQuotes.length) {
-          controller.close();
-          return;
-        }
-        emitLine(controller, `event: quote\n`);
-        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
-        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        index += 1;
-      },
-    }),
-  );
 }
 
 const SOLANA_URL_REGEX = /^https:\/\/solana-mainnet\.infura\.io\/v3\/.*/u;
@@ -834,6 +805,7 @@ export async function mockPowerUserPrices(
       .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
       .always()
       .thenCallback(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         const sseBody = `event: quote\nid: ${Date.now()}-1\ndata: ${JSON.stringify(swapQuoteSolUsdc)}\n\n`;
         return {
           statusCode: 200,
