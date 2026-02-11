@@ -1,8 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-
 import { Modal } from './modal';
 
 describe('Modal', () => {
@@ -75,7 +73,7 @@ describe('Modal', () => {
       </Modal>,
     );
 
-    const closeButton = getByText(messages.close.message);
+    const closeButton = getByText('Close');
     fireEvent.click(closeButton);
 
     expect(onClose).toHaveBeenCalledTimes(1);

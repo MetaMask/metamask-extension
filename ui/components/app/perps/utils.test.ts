@@ -15,6 +15,7 @@ import {
   getTransactionStatusColor,
   getTransactionAmountColor,
 } from './utils';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
 import type { PerpsMarketData, PerpsTransaction } from './types';
 
@@ -280,7 +281,7 @@ describe('Perps Utils', () => {
       id: 'tx-001',
       type: 'trade',
       symbol: 'ETH',
-      title: 'Opened long',
+      title: messages.perpsOpenedLong.message,
       subtitle: '2.5 ETH @ $2,850.00',
       timestamp: Date.now(),
       status: 'confirmed',

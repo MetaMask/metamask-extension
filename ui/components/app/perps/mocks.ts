@@ -3,6 +3,7 @@
  * Used for building UI while PerpsController is being migrated to core
  */
 
+import en from '../../../../app/_locales/en/messages.json';
 import {
   AccountState,
   Order,
@@ -683,7 +684,7 @@ export const mockTransactions: PerpsTransaction[] = [
     id: 'tx-001',
     type: 'trade',
     symbol: 'ETH',
-    title: 'Opened long',
+    title: en.perpsOpenedLong.message,
     subtitle: '2.5 ETH @ $2,850.00',
     timestamp: Date.now() - 3600000, // 1 hour ago
     status: 'confirmed',
@@ -698,7 +699,7 @@ export const mockTransactions: PerpsTransaction[] = [
     id: 'tx-002',
     type: 'trade',
     symbol: 'BTC',
-    title: 'Closed short',
+    title: en.perpsClosedShort.message,
     subtitle: '0.5 BTC @ $45,250.00',
     timestamp: Date.now() - 7200000, // 2 hours ago
     status: 'confirmed',
@@ -812,7 +813,7 @@ export const mockTransactions: PerpsTransaction[] = [
     id: 'tx-006',
     type: 'trade',
     symbol: 'ARB',
-    title: 'Opened long',
+    title: en.perpsOpenedLong.message,
     subtitle: '1000 ARB @ $1.20',
     timestamp: Date.now() - 90000000, // ~1 day ago
     status: 'confirmed',
@@ -883,7 +884,7 @@ export const mockTransactions: PerpsTransaction[] = [
     id: 'tx-011',
     type: 'trade',
     symbol: 'xyz:TSLA',
-    title: 'Opened long',
+    title: en.perpsOpenedLong.message,
     subtitle: '10 TSLA @ $240.00',
     timestamp: Date.now() - 432000000, // 5 days ago
     status: 'confirmed',
