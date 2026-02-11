@@ -87,9 +87,10 @@ function shouldCloseNotificationPopup({
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
-  const isBlocked = isHardwareWalletErrorModalVisible;
+  const isHardwareWalletErrorModalBlockingClose =
+    isHardwareWalletErrorModalVisible;
 
-  const shouldClose = baseCondition && !isBlocked;
+  const shouldClose = baseCondition && !isHardwareWalletErrorModalBlockingClose;
 
   return shouldClose;
 }
