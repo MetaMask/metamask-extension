@@ -14,7 +14,6 @@ import {
   MetaMetricsContext,
   LegacyMetaMetricsProvider,
 } from '../../ui/contexts/metametrics';
-import { HardwareWalletErrorProvider } from '../../ui/contexts/hardware-wallets';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
 
@@ -70,11 +69,7 @@ function createProviderWrapper(
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
             <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-              <LegacyMetaMetricsProvider>
-                <HardwareWalletErrorProvider>
-                  {children}
-                </HardwareWalletErrorProvider>
-              </LegacyMetaMetricsProvider>
+              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
             </MetaMetricsContext.Provider>
           </LegacyI18nProvider>
         </I18nProvider>

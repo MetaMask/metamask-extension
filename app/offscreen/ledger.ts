@@ -200,13 +200,6 @@ export class LedgerOffscreenHandler {
    * Signs a transaction using clear signing, which displays human-readable
    * token/NFT information on the Ledger device screen.
    *
-   * Falls back to blind signing if clear signing context cannot be resolved
-   * (e.g., unrecognized contract or method). The fallback is triggered by
-   * status code 0x6985 ("Condition of use not satisfied"), which the device
-   * returns when clear signing metadata is unavailable. A genuine user
-   * rejection on the device will also produce 0x6985, but that will simply
-   * surface the same error from the blind-signing attempt.
-   *
    * @param hdPath - The HD derivation path.
    * @param tx - The raw transaction hex string.
    * @returns Signature components v, r, s.
@@ -220,7 +213,6 @@ export class LedgerOffscreenHandler {
     s: string;
   }> {
     const app = await this.ensureApp();
-
     const result = await app.clearSignTransaction(hdPath, tx, {
       // nft: true, // TODO: FIX ME: temporarily disabled because erc20 are being misidentified.
       externalPlugins: true,
