@@ -349,17 +349,23 @@ const PerpsActivityPage = mmLazy(
 // Perps pages wrapped with PerpsControllerProvider
 const WrappedPerpsHomePage = () => (
   <PerpsRouteWrapper>
-    <PerpsHomePage />
+    <PerpsControllerProvider>
+      <PerpsHomePage />
+    </PerpsControllerProvider>
   </PerpsRouteWrapper>
 );
 const WrappedPerpsMarketDetailPage = () => (
   <PerpsRouteWrapper>
-    <PerpsMarketDetailPage />
+    <PerpsControllerProvider>
+      <PerpsMarketDetailPage />
+    </PerpsControllerProvider>
   </PerpsRouteWrapper>
 );
 const WrappedMarketListView = () => (
   <PerpsRouteWrapper>
-    <MarketListView />
+    <PerpsControllerProvider>
+      <MarketListView />
+    </PerpsControllerProvider>
   </PerpsRouteWrapper>
 );
 const WrappedPerpsActivityPage = () => (

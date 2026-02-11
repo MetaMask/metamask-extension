@@ -9,6 +9,7 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/perps';
 import type { MetaMaskReduxState } from '../../store/store';
+import { getReduxStorePromise } from '../..';
 
 /**
  * Unsubscribe from Redux store when controller is reset.
@@ -34,10 +35,22 @@ let currentAddress: string | null = null;
 let initPromise: Promise<PerpsController> | null = null;
 
 /**
+ * Initial remote feature flags for the stub RemoteFeatureFlagController:getState.
+ * Set before creating PerpsController when store is available; read by the messenger wrapper.
+ */
+let initialRemoteFeatureFlags: Record<string, unknown> = {};
+
+const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
+const REMOTE_FEATURE_FLAG_STATE_CHANGE =
+  'RemoteFeatureFlagController:stateChange';
+
+/**
  * Bridge remote feature flag state from Redux into the PerpsController.
  * The controller's messenger is standalone and cannot receive RemoteFeatureFlagController
  * events, so we push state changes when Redux metamask.remoteFeatureFlags updates.
  */
+const ELIGIBILITY_LOG_PREFIX = '[Perps Eligibility]';
+
 function bridgeRemoteFeatureFlagsToController(
   controller: PerpsController,
   store: Store<MetaMaskReduxState>,
@@ -45,6 +58,21 @@ function bridgeRemoteFeatureFlagsToController(
   const pushState = () => {
     const remoteFeatureFlags =
       store.getState().metamask?.remoteFeatureFlags ?? {};
+    const geoFlag = remoteFeatureFlags.perpsPerpTradingGeoBlockedCountriesV2 as
+      | { blockedRegions?: string[] }
+      | undefined;
+    const blockedRegions = Array.isArray(geoFlag?.blockedRegions)
+      ? geoFlag.blockedRegions
+      : [];
+    console.log(ELIGIBILITY_LOG_PREFIX, 'Pushing remote feature flags', {
+      hasGeoFlag: geoFlag !== null,
+      blockedRegionsCount: blockedRegions.length,
+      blockedRegions: blockedRegions.length > 0 ? blockedRegions : '(none)',
+      note:
+        blockedRegions.length > 0
+          ? 'Controller will run eligibility check; if its geo fetch fails (e.g. from UI context) it defaults to eligible=true.'
+          : undefined,
+    });
     (
       controller as PerpsController & {
         refreshEligibilityOnFeatureFlagChange: (state: {
@@ -63,27 +91,61 @@ function bridgeRemoteFeatureFlagsToController(
 }
 
 /**
- * Create a standalone messenger for the PerpsController (PoC).
+ * Create a messenger for the PerpsController that satisfies RemoteFeatureFlagController
+ * without registering non-PerpsController actions on the namespaced messenger.
  *
- * In production, this should be a restricted messenger from the
- * root MetaMaskController messenger with access to:
- * - NetworkController actions
- * - AuthenticationController actions
- * - RemoteFeatureFlagController state
- *
- * For the PoC, we create a standalone messenger that won't have
- * access to other controllers, but can still work for basic
- * balance fetching via direct provider access.
+ * We wrap the real PerpsController-namespaced messenger and intercept
+ * RemoteFeatureFlagController:getState (return initialRemoteFeatureFlags) and
+ * RemoteFeatureFlagController:stateChange (no-op subscribe; we bridge from Redux).
+ * All other call/subscribe delegate to the real messenger.
  */
 function createPerpsMessenger(): PerpsControllerMessenger {
-  // For the PoC, create a simple messenger with the PerpsController namespace.
-  // This won't have cross-controller communication but is sufficient for
-  // testing balance fetching via the provider's WebSocket/HTTP clients.
-  const messenger = new Messenger({
+  const real = new Messenger({
     namespace: 'PerpsController',
   }) as PerpsControllerMessenger;
 
-  return messenger;
+  const noopUnsubscribe = () => {
+    /* bridge from Redux instead */
+  };
+
+  const wrapper = new Proxy(real, {
+    get(target, prop: string) {
+      if (prop === 'call') {
+        return (actionType: string, ...params: unknown[]) => {
+          if (actionType === REMOTE_FEATURE_FLAG_GET_STATE) {
+            return { remoteFeatureFlags: initialRemoteFeatureFlags };
+          }
+          return (target.call as (a: string, ...p: unknown[]) => unknown)(
+            actionType,
+            ...params,
+          );
+        };
+      }
+      if (prop === 'subscribe') {
+        return (
+          eventType: string,
+          handler: (...args: unknown[]) => void,
+          selector?: unknown,
+        ) => {
+          if (eventType === REMOTE_FEATURE_FLAG_STATE_CHANGE) {
+            return noopUnsubscribe;
+          }
+          return target.subscribe(
+            eventType as never,
+            handler as never,
+            selector as never,
+          );
+        };
+      }
+      const value = (target as unknown as Record<string, unknown>)[prop];
+      if (typeof value === 'function') {
+        return value.bind(target);
+      }
+      return value;
+    },
+  });
+
+  return wrapper as unknown as PerpsControllerMessenger;
 }
 
 /**
@@ -154,6 +216,33 @@ export async function getPerpsController(
   // Prevent race conditions during initialization
   if (!initPromise) {
     initPromise = (async () => {
+      let storeToUse = store;
+      if (!storeToUse) {
+        try {
+          storeToUse = await getReduxStorePromise();
+        } catch {
+          // Store not ready (e.g. in tests)
+        }
+      }
+      if (storeToUse) {
+        initialRemoteFeatureFlags =
+          storeToUse.getState().metamask?.remoteFeatureFlags ?? {};
+        const geoFlag =
+          initialRemoteFeatureFlags?.perpsPerpTradingGeoBlockedCountriesV2 as
+            | { blockedRegions?: string[] }
+            | undefined;
+        const blocked = Array.isArray(geoFlag?.blockedRegions)
+          ? geoFlag.blockedRegions
+          : [];
+        console.log(
+          ELIGIBILITY_LOG_PREFIX,
+          'Stub getState will return flags for init',
+          {
+            blockedRegionsCount: blocked.length,
+            blockedRegions: blocked.length > 0 ? blocked : '(none)',
+          },
+        );
+      }
       const messenger = createPerpsMessenger();
       const infrastructure = createPerpsInfrastructure(selectedAddress);
       const fallbackBlockedRegions = getFallbackBlockedRegions();
@@ -171,8 +260,8 @@ export async function getPerpsController(
 
       await controller.init();
 
-      if (store) {
-        bridgeRemoteFeatureFlagsToController(controller, store);
+      if (storeToUse) {
+        bridgeRemoteFeatureFlagsToController(controller, storeToUse);
       }
 
       controllerInstance = controller;

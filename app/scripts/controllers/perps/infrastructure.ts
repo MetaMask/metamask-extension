@@ -45,6 +45,8 @@ function createLogger(): PerpsLogger {
  */
 function createDebugLogger(): PerpsDebugLogger {
   const isDevelopment = process.env.METAMASK_DEBUG === 'true';
+  // Temporary: verify METAMASK_DEBUG is set in UI bundle (package logs depend on it)
+  console.log('[Perps DEBUG] METAMASK_DEBUG =', process.env.METAMASK_DEBUG);
   return {
     log: (...args: unknown[]) => {
       if (isDevelopment) {

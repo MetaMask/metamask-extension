@@ -26,12 +26,12 @@ function createMockController(initialEligible: boolean) {
 }
 
 jest.mock('../../providers/perps/PerpsControllerProvider', () => ({
-  usePerpsController: jest.fn(),
+  usePerpsControllerOrNull: jest.fn(),
 }));
 
-const mockUsePerpsController = jest.requireMock(
+const mockUsePerpsControllerOrNull = jest.requireMock(
   '../../providers/perps/PerpsControllerProvider',
-).usePerpsController as jest.Mock;
+).usePerpsControllerOrNull as jest.Mock;
 
 describe('usePerpsEligibility', () => {
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe('usePerpsEligibility', () => {
 
   it('returns isEligible from controller state', () => {
     const mockController = createMockController(true);
-    mockUsePerpsController.mockReturnValue(mockController);
+    mockUsePerpsControllerOrNull.mockReturnValue(mockController);
 
     const { result } = renderHook(() => usePerpsEligibility());
 
@@ -50,7 +50,7 @@ describe('usePerpsEligibility', () => {
 
   it('returns isEligible false when controller state is false', () => {
     const mockController = createMockController(false);
-    mockUsePerpsController.mockReturnValue(mockController);
+    mockUsePerpsControllerOrNull.mockReturnValue(mockController);
 
     const { result } = renderHook(() => usePerpsEligibility());
 
@@ -58,9 +58,18 @@ describe('usePerpsEligibility', () => {
     expect(result.current.isLoading).toBe(false);
   });
 
+  it('returns isEligible true when controller is null (fail-open)', () => {
+    mockUsePerpsControllerOrNull.mockReturnValue(null);
+
+    const { result } = renderHook(() => usePerpsEligibility());
+
+    expect(result.current.isEligible).toBe(true);
+    expect(result.current.isLoading).toBe(false);
+  });
+
   it('updates isEligible when controller state changes', () => {
     const mockController = createMockController(true);
-    mockUsePerpsController.mockReturnValue(mockController);
+    mockUsePerpsControllerOrNull.mockReturnValue(mockController);
 
     const { result } = renderHook(() => usePerpsEligibility());
 
@@ -81,7 +90,7 @@ describe('usePerpsEligibility', () => {
 
   it('unsubscribes from controller on unmount', () => {
     const mockController = createMockController(true);
-    mockUsePerpsController.mockReturnValue(mockController);
+    mockUsePerpsControllerOrNull.mockReturnValue(mockController);
 
     const { unmount } = renderHook(() => usePerpsEligibility());
 
