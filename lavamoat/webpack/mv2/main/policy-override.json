@@ -233,7 +233,8 @@
     },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
-        "document": false
+        "document": false,
+        "document.visibilityState": true
       }
     }
   }

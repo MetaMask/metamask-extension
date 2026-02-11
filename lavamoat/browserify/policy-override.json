@@ -64,7 +64,8 @@
     },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
-        "document": false
+        "document": false,
+        "document.visibilityState": true
       }
     },
     "@metamask/notification-services-controller>firebase>@firebase/messaging": {
