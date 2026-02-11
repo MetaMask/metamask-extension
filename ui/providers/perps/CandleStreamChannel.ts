@@ -2,14 +2,11 @@
  * CandleStreamChannel - Multiplexer/cache for candlestick data streams
  *
  * Sits between the PerpsController and React hooks. Provides:
- * - Subscription deduplication: multiple components subscribing to the same
- *   symbol+interval share one controller.subscribeToCandles() call
- * - Per-key caching: stores latest CandleData per "${symbol}-${interval}" key;
- *   new subscribers get cached data immediately (BehaviorSubject pattern)
+ * - Subscription deduplication: components sharing the same symbol+interval reuse one call
+ * - Per-key caching: stores latest CandleData per key; new subscribers get cached data immediately
  * - Throttling: per-subscriber configurable throttle (first update immediate)
  * - Load-more: fetchHistoricalCandles() merges older data into cache
- * - Auto-disconnect: tears down controller subscription when last subscriber
- *   for a key unsubscribes (cache is preserved for re-navigation)
+ * - Auto-disconnect: tears down controller subscription when last subscriber unsubscribes
  * - Reconnect: re-establishes all active subscriptions after WS reconnect
  *
  * Cache key format: "${symbol}-${interval}" (e.g., "BTC-1h")
@@ -118,8 +115,14 @@ export class CandleStreamChannel {
     throttleMs?: number;
     onError?: (error: Error) => void;
   }): () => void {
-    const { symbol, interval, duration, callback, throttleMs = 0, onError } =
-      params;
+    const {
+      symbol,
+      interval,
+      duration,
+      callback,
+      throttleMs = 0,
+      onError,
+    } = params;
     const key = cacheKey(symbol, interval);
     const subscriberId = crypto.randomUUID();
 
@@ -213,10 +216,7 @@ export class CandleStreamChannel {
 
     // Calculate fetch limit
     const rawLimit = calculateCandleCount(duration, interval);
-    const limit = Math.min(
-      Math.max(rawLimit, LOAD_MORE_MIN),
-      LOAD_MORE_MAX,
-    );
+    const limit = Math.min(Math.max(rawLimit, LOAD_MORE_MIN), LOAD_MORE_MAX);
 
     try {
       const olderData = await this.controller.fetchHistoricalCandles(

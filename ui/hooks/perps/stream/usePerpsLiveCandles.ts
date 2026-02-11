@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import type { CandleData } from '@metamask/perps-controller';
-import type { CandlePeriod, TimeDuration } from '../../../components/app/perps/constants/chartConfig';
+import type {
+  CandlePeriod,
+  TimeDuration,
+} from '../../../components/app/perps/constants/chartConfig';
 import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 
 /**
@@ -79,13 +82,7 @@ export type UsePerpsLiveCandlesReturn = {
 export function usePerpsLiveCandles(
   options: UsePerpsLiveCandlesOptions,
 ): UsePerpsLiveCandlesReturn {
-  const {
-    symbol,
-    interval,
-    duration,
-    throttleMs = 1000,
-    onError,
-  } = options;
+  const { symbol, interval, duration, throttleMs = 1000, onError } = options;
 
   const [candleData, setCandleData] = useState<CandleData | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);

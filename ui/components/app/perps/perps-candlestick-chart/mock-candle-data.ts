@@ -575,4 +575,3 @@ export const mockCandleData: CandleData = {
     },
   ],
 };
-

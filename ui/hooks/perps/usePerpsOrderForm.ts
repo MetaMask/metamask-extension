@@ -134,7 +134,7 @@ export function usePerpsOrderForm({
 
   // Reset form state when mode changes or when switching to a different position
   useEffect(() => {
-    const initKey = `${mode}-${existingPosition?.size ?? ''}-${existingPosition?.symbol ?? ''}`;
+    const initKey = `${mode}-${existingPosition?.size ?? ''}-${existingPosition?.entryPrice ?? ''}`;
     if (lastInitKeyRef.current === initKey) {
       return;
     }

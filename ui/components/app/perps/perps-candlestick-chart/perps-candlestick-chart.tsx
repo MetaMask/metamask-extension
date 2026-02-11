@@ -11,6 +11,7 @@ import {
   CandlestickSeries,
   HistogramSeries,
   ISeriesApi,
+  type LineWidth,
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
 import { brandColor } from '@metamask/design-tokens';
@@ -135,29 +136,26 @@ const PerpsCandlestickChart = forwardRef<
     }, []);
 
     // Apply zoom to show specific number of candles (matches mobile pattern)
-    const applyZoom = useCallback(
-      (candleCount: number, forceReset = false) => {
-        if (!chartRef.current || dataLengthRef.current === 0) {
-          return;
-        }
+    const applyZoom = useCallback((candleCount: number, forceReset = false) => {
+      if (!chartRef.current || dataLengthRef.current === 0) {
+        return;
+      }
 
-        const actualCount = Math.max(
-          ZOOM_CONFIG.MIN_CANDLES,
-          Math.min(ZOOM_CONFIG.MAX_CANDLES, candleCount),
-        );
+      const actualCount = Math.max(
+        ZOOM_CONFIG.MIN_CANDLES,
+        Math.min(ZOOM_CONFIG.MAX_CANDLES, candleCount),
+      );
 
-        const dataLength = dataLengthRef.current;
-        const from = Math.max(0, dataLength - actualCount);
-        const to = dataLength - 1 + 2; // +2 for right padding
+      const dataLength = dataLengthRef.current;
+      const from = Math.max(0, dataLength - actualCount);
+      const to = dataLength - 1 + 2; // +2 for right padding
 
-        chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
+      chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
 
-        if (forceReset) {
-          chartRef.current.timeScale().scrollToRealTime();
-        }
-      },
-      [],
-    );
+      if (forceReset) {
+        chartRef.current.timeScale().scrollToRealTime();
+      }
+    }, []);
 
     // Scroll to most recent candles
     const scrollToRealTime = useCallback(() => {
@@ -283,21 +281,19 @@ const PerpsCandlestickChart = forwardRef<
       }, 50);
 
       // Edge detection: request more history when user scrolls near left edge
-      chart
-        .timeScale()
-        .subscribeVisibleLogicalRangeChange((logicalRange) => {
-          if (!logicalRange || !onNeedMoreHistoryRef.current) {
-            return;
-          }
+      chart.timeScale().subscribeVisibleLogicalRangeChange((logicalRange) => {
+        if (!logicalRange || !onNeedMoreHistoryRef.current) {
+          return;
+        }
 
-          if (logicalRange.from <= EDGE_DETECTION_THRESHOLD) {
-            const now = Date.now();
-            if (now - lastLoadMoreTimeRef.current >= LOAD_MORE_COOLDOWN_MS) {
-              lastLoadMoreTimeRef.current = now;
-              onNeedMoreHistoryRef.current();
-            }
+        if (logicalRange.from <= EDGE_DETECTION_THRESHOLD) {
+          const now = Date.now();
+          if (now - lastLoadMoreTimeRef.current >= LOAD_MORE_COOLDOWN_MS) {
+            lastLoadMoreTimeRef.current = now;
+            onNeedMoreHistoryRef.current();
           }
-        });
+        }
+      });
 
       // Crosshair move: report hovered candle for OHLCV bar
       chart.subscribeCrosshairMove((param) => {
@@ -305,11 +301,7 @@ const PerpsCandlestickChart = forwardRef<
           return;
         }
 
-        if (
-          !param.time ||
-          !param.seriesData ||
-          param.seriesData.size === 0
-        ) {
+        if (!param.time || !param.seriesData || param.seriesData.size === 0) {
           // Crosshair left the chart area
           onCrosshairMoveRef.current(null);
           return;
@@ -360,7 +352,7 @@ const PerpsCandlestickChart = forwardRef<
         return;
       }
 
-      const candles = candleData.candles;
+      const { candles } = candleData;
       const currentCount = candles.length;
       const currentLastTime =
         currentCount > 0 ? candles[currentCount - 1].time : 0;
@@ -383,9 +375,7 @@ const PerpsCandlestickChart = forwardRef<
         currentLastTime === prevLastTime;
 
       const isAppend =
-        !periodChanged &&
-        prevCount > 0 &&
-        currentCount === prevCount + 1;
+        !periodChanged && prevCount > 0 && currentCount === prevCount + 1;
 
       if (isLiveTick || isAppend) {
         // Incremental update — only update the last candle
@@ -467,7 +457,7 @@ const PerpsCandlestickChart = forwardRef<
           const line = series.createPriceLine({
             price: pl.price,
             color: pl.color,
-            lineWidth: pl.lineWidth ?? 1,
+            lineWidth: (pl.lineWidth ?? 1) as LineWidth,
             lineStyle: pl.lineStyle ?? 2, // Default: dashed
             axisLabelVisible: true,
             title: pl.label,
