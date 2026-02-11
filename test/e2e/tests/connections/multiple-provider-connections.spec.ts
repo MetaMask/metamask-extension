@@ -323,7 +323,7 @@ describe('Multiple Standard Dapp Connections', function () {
             SEI_DISPLAY_NAME,
             'Solana',
             'Bitcoin',
-            'Tron'
+            'Tron',
           ],
           [EVM_ACCOUNT_LABEL_ONE, EVM_ACCOUNT_LABEL_TWO],
         );
@@ -376,7 +376,7 @@ describe('Multiple Standard Dapp Connections', function () {
             SEI_DISPLAY_NAME,
             'Bitcoin',
             'Solana',
-            'Tron'
+            'Tron',
           ],
           [EVM_ACCOUNT_LABEL_ONE],
         );
@@ -450,7 +450,7 @@ describe('Multiple Standard Dapp Connections', function () {
             SEI_DISPLAY_NAME,
             'Solana',
             'Bitcoin',
-            'Tron'
+            'Tron',
           ],
           [EVM_ACCOUNT_LABEL_TWO],
         );

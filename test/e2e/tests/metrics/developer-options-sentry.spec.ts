@@ -34,6 +34,7 @@ describe('Developer Options - Sentry', function (this: Suite) {
           .withPreferencesController({ pna25Acknowledged: true })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockSentryError,
         ignoredConsoleErrors: [
           'Unable to find value of key "developerOptions" for locale "en"',
         ],
