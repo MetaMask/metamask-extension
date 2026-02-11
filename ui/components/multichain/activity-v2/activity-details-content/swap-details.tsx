@@ -20,7 +20,6 @@ import {
 } from '../helpers';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useActivityTokenIconBySymbol } from '../hooks';
 import { Row } from './row';
 import { TransactionStatus } from '@metamask/transaction-controller';
 
@@ -29,7 +28,6 @@ type Props = {
 };
 
 export const SwapDetails = ({ transaction }: Props) => {
-  console.log("swap details", transaction);
   const t = useI18nContext();
   const { formatToken } = useFormatters();
 
@@ -61,15 +59,6 @@ export const SwapDetails = ({ transaction }: Props) => {
       ? parseFloat(formatUnits(BigInt(toData.amount), toData.decimal))
       : 0;
   const toSymbol = toData?.symbol || '';
-
-  const fromTokenIconUrl = useActivityTokenIconBySymbol(
-    transaction.chainId,
-    fromSymbol,
-  );
-  const toTokenIconUrl = useActivityTokenIconBySymbol(
-    transaction.chainId,
-    toSymbol,
-  );
 
   const isBridge =
     transaction.transactionType === 'BRIDGE';
@@ -132,6 +121,7 @@ export const SwapDetails = ({ transaction }: Props) => {
           }
         />
         <Row left={t('date')} right={formattedDate} />
+        <Row left={t('account')} right={shortenAddress(txParams.from)} />
         <Row
           left={t('network')}
           right={
