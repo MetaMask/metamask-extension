@@ -19,7 +19,7 @@ export const queries = {
       UseInfiniteQueryOptions<NormalizedGetAccountTransactionsResponse>
     >,
   ): UseInfiniteQueryOptions<NormalizedGetAccountTransactionsResponse> => ({
-    queryKey: [...transactionsQueryKey, accountAddress],
+    queryKey: [...transactionsQueryKey, accountAddress.toLowerCase()],
     queryFn: async ({ pageParam }) => {
       const response = await fetchV4MultiAccountTransactions({
         accountAddresses: accountAddress ? [accountAddress] : [],
@@ -33,10 +33,11 @@ export const queries = {
           ...(await normalizeTransaction(accountAddress, transaction)),
 
           // Goal is to return only usable information for the UI
+          // @ts-expect-error Add missing readable field to core-backend
           readable: transaction.readable,
           category: mapTransactionToCategory(transaction.transactionType),
           amounts: getTransferAmounts(accountAddress, transaction),
-          transactionType: transaction.transactionType,
+          transactionType: transaction.transactionType || '',
         })),
       );
 
