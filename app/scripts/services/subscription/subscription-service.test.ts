@@ -214,12 +214,10 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateNonce: jest.fn(),
 };
 const mockPlatform = new ExtensionPlatform();
-const mockCaptureException = jest.fn();
 const subscriptionService = new SubscriptionService({
   messenger,
   platform: mockPlatform,
   webAuthenticator: mockWebAuthenticator,
-  captureException: mockCaptureException,
 });
 // Mock environment variables
 const originalEnv = process.env;
