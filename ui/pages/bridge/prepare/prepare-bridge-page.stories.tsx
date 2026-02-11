@@ -1,7 +1,5 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import configureStore from '../../../store/store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -24,25 +22,16 @@ import { toBridgeToken } from '../../../ducks/bridge/utils';
 const storybook = {
   title: 'Pages/Bridge/CrossChainSwapPage',
   component: CrossChainSwap,
-};
-
-// Navigate to the correct route on mount
-const RouteNavigator = ({ to, children }) => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    navigate(to, { replace: true });
-  }, [navigate, to]);
-
-  return children;
+  parameters: {
+    initialEntries: [CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE],
+    backgrounds: {
+      default: 'dark',
+    },
+  },
 };
 
 const Wrapper = ({ children }) => (
-  <div style={{ width: '400px', height: '600px' }}>
-    <RouteNavigator to={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}>
-      {children}
-    </RouteNavigator>
-  </div>
+  <div style={{ width: '400px', height: '600px' }}>{children}</div>
 );
 
 const mockFeatureFlags = {
@@ -55,6 +44,11 @@ const mockFeatureFlags = {
     },
     maxRefreshCount: 5,
     support: true,
+    chainRanking: [
+      { chainId: 'eip155:1' as const, name: 'Ethereum' },
+      { chainId: 'eip155:10' as const, name: 'Optimism' },
+      { chainId: 'eip155:137' as const, name: 'Polygon' },
+    ],
     chains: {
       '0x1': {
         isActiveSrc: true,
@@ -79,7 +73,7 @@ const mockBridgeSlice = {
   fromTokenInputValue: '1',
 };
 export const DefaultStory = () => {
-  return <CrossChainSwap location={{ search: '' }} />;
+  return <CrossChainSwap />;
 };
 DefaultStory.storyName = 'Default';
 DefaultStory.decorators = [
@@ -119,7 +113,7 @@ DefaultStory.decorators = [
 ];
 
 export const LoadingStory = () => {
-  return <CrossChainSwap location={{ search: '' }} />;
+  return <CrossChainSwap />;
 };
 LoadingStory.storyName = 'Loading Quotes';
 LoadingStory.decorators = [
@@ -160,7 +154,7 @@ LoadingStory.decorators = [
 ];
 
 export const NoQuotesStory = () => {
-  return <CrossChainSwap location={{ search: '' }} />;
+  return <CrossChainSwap />;
 };
 NoQuotesStory.storyName = 'No Quotes';
 NoQuotesStory.decorators = [
@@ -213,7 +207,7 @@ NoQuotesStory.decorators = [
 ];
 
 export const QuotesFetchedStory = () => {
-  return <CrossChainSwap location={{ search: '' }} />;
+  return <CrossChainSwap />;
 };
 QuotesFetchedStory.storyName = 'Quotes Available';
 QuotesFetchedStory.decorators = [
@@ -258,7 +252,7 @@ const mockHardwareAccount = createMockInternalAccount({
   keyringType: KeyringTypes.ledger,
 });
 export const AlertsPresentStory = () => {
-  return <CrossChainSwap location={{ search: '' }} />;
+  return <CrossChainSwap />;
 };
 AlertsPresentStory.storyName = 'Alerts present';
 AlertsPresentStory.decorators = [
@@ -279,6 +273,8 @@ AlertsPresentStory.decorators = [
                 chainId: CHAIN_IDS.POLYGON,
                 address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
                 occurrences: 1,
+                assetId:
+                  'eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
               },
             },
             bridgeStateOverrides: {
