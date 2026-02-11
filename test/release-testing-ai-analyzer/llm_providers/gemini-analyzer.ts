@@ -57,7 +57,8 @@ export class GeminiAnalyzer implements LLMAnalyzer {
           `Gemini API key not found. Set ${getEnvKeyForProvider('gemini')} environment variable.`,
         );
       }
-      // Use dynamic import for ESM module
+      // Use dynamic import for ESM module (devDependency for release-testing tooling)
+      // eslint-disable-next-line import/no-extraneous-dependencies
       const { GoogleGenAI } = await import('@google/genai');
       this.client = new GoogleGenAI({ apiKey: this.apiKey }) as GoogleGenAI;
     }
