@@ -377,6 +377,9 @@ describe('Shield Plan Stripe Integration', function () {
               claimErrorCode: 'E102', // TRANSACTION_NOT_ELIGIBLE
             });
           },
+          ignoredConsoleErrors: [
+            'SubmitClaimError: This transaction is not done within MetaMask, hence it is not eligible for claims',
+          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
