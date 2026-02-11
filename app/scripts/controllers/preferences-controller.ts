@@ -18,8 +18,12 @@ import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { type PreferencesState } from '@metamask/preferences-controller';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
-import { ThemeType } from '../../../shared/constants/preferences';
+import {
+  DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  ThemeType,
+} from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
+import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
 
 /**
  * Referral status for an account
@@ -1036,7 +1040,15 @@ export class PreferencesController extends BaseController<
    * This is used when the wallet is reset during the "Forgot Password" flow.
    */
   resetState(): void {
-    this.update(() => getDefaultPreferencesControllerState());
+    const defaultStateWithLocale = {
+      ...getDefaultPreferencesControllerState(),
+      currentLocale: FALLBACK_LOCALE,
+      preferences: {
+        ...getDefaultPreferencesControllerState().preferences,
+        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+      },
+    };
+    this.update(() => defaultStateWithLocale);
   }
 
   #handleAccountsControllerSync(

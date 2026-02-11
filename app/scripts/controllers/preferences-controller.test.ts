@@ -16,8 +16,12 @@ import {
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
-import { ThemeType } from '../../../shared/constants/preferences';
+import {
+  DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  ThemeType,
+} from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
+import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
@@ -1467,7 +1471,7 @@ describe('preferences controller', () => {
       controller.resetState();
 
       // Verify state was reset to defaults
-      expect(controller.state.currentLocale).toBe('');
+      expect(controller.state.currentLocale).toBe(FALLBACK_LOCALE);
       expect(controller.state.useBlockie).toBe(false);
       expect(controller.state.theme).toBe(ThemeType.os);
       expect(controller.state.knownMethodData).toStrictEqual({});
@@ -1486,6 +1490,9 @@ describe('preferences controller', () => {
       );
       expect(controller.state.preferences.showNativeTokenAsMainBalance).toBe(
         false,
+      );
+      expect(controller.state.preferences.autoLockTimeLimit).toBe(
+        DEFAULT_AUTO_LOCK_TIME_LIMIT,
       );
     });
   });
