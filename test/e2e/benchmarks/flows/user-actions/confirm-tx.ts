@@ -8,11 +8,12 @@ import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 import { runUserActionBenchmark } from '../../utils/runner';
 
 export const testTitle = 'benchmark-user-actions-confirm-tx';
-export const persona = 'standard';
+export const persona = BENCHMARK_PERSONA.STANDARD;
 
 export async function run(): Promise<BenchmarkRunResult> {
   return runUserActionBenchmark(async () => {
@@ -55,5 +56,5 @@ export async function run(): Promise<BenchmarkRunResult> {
     );
 
     return [{ id: 'confirm_tx', duration: loadingTimes }];
-  });
+  }, BENCHMARK_TYPE.USER_ACTION);
 }
