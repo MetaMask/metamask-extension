@@ -3,6 +3,7 @@ import {
   QueryClient,
   InvalidateQueryFilters,
   InvalidateOptions,
+  QueryKey,
 } from '@tanstack/query-core';
 import { Json } from '@metamask/utils';
 import { BackgroundRpcClient } from '../store/background-connection';
@@ -10,12 +11,12 @@ import { DATA_SERVICES } from '../../shared/constants/data-services';
 
 export let uiQueryClient: QueryClient;
 
-function getServiceFromQueryKey(queryKey: string) {
+function getServiceFromQueryKey(queryKey: QueryKey) {
   return queryKey[0].split(':')[0];
 }
 
 export function createUIQueryClient(backgroundConnection: BackgroundRpcClient) {
-  const activeSubscriptions = new Set<string>();
+  const subscriptions = new Set<string>();
 
   async function sendBackgroundRequest(method: string, params: Json[]) {
     try {
@@ -53,12 +54,15 @@ export function createUIQueryClient(backgroundConnection: BackgroundRpcClient) {
 
   backgroundConnection.onNotification(async (data) => {
     const { method, params } = data;
-    if (method.endsWith('cacheUpdate')) {
-      const { queryKeyHash, state } = params[0];
-      if (activeSubscriptions.has(queryKeyHash)) {
-        console.log('Hydrated cache', queryKeyHash, state);
-        hydrate(client, state);
-      }
+
+    if (!method.endsWith('cacheUpdate')) {
+      return;
+    }
+
+    const { queryKeyHash, state } = params[0];
+    if (subscriptions.has(queryKeyHash)) {
+      console.log('Hydrated cache', queryKeyHash, state);
+      hydrate(client, state);
     }
   });
 
@@ -69,24 +73,30 @@ export function createUIQueryClient(backgroundConnection: BackgroundRpcClient) {
     }
 
     const hash = query.queryHash;
+    const hasSubscription = subscriptions.has(hash);
     const observerCount = query.getObserversCount();
 
     const service = getServiceFromQueryKey(query.queryKey);
 
-    if (event.type === 'observerAdded' && observerCount === 1) {
-      if (!activeSubscriptions.has(hash)) {
-        activeSubscriptions.add(hash);
-        sendBackgroundRequest(`${service}:subscribe`, [query.queryKey]).then(
-          (state) => {
-            hydrate(client, state);
-          },
-        );
-      }
-    } else if (event.type === 'observerRemoved' && observerCount === 0) {
-      if (activeSubscriptions.has(hash)) {
-        activeSubscriptions.delete(hash);
-        sendBackgroundRequest(`${service}:unsubscribe`, [query.queryKey]);
-      }
+    if (
+      !hasSubscription &&
+      event.type === 'observerAdded' &&
+      observerCount === 1
+    ) {
+      subscriptions.add(hash);
+
+      sendBackgroundRequest(`${service}:subscribe`, [query.queryKey]).then(
+        (state) => {
+          hydrate(client, state);
+        },
+      );
+    } else if (
+      event.type === 'observerRemoved' &&
+      observerCount === 0 &&
+      hasSubscription
+    ) {
+      subscriptions.delete(hash);
+      sendBackgroundRequest(`${service}:unsubscribe`, [query.queryKey]);
     }
   });
 
