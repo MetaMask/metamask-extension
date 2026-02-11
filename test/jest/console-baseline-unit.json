@@ -695,10 +695,6 @@
     "ui/components/app/user-preferenced-currency-input/user-preferenced-currency-input.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/user-preferenced-token-input/user-preferenced-token-input.test.js": {
-      "MetaMask: Background connection not initialized": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/wallet-overview/eth-overview.test.js": {
       "React: Act warnings (component updates not wrapped)": 2,
       "Reselect: Identity function warnings": 3,
@@ -1242,9 +1238,6 @@
       "MetaMask: Background connection not initialized": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/ui/token-input/token-input.component.test.js": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/ui/unit-input/unit-input.component.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1538,7 +1531,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 3,
+      "React: Act warnings (component updates not wrapped)": 6,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
