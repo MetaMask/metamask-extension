@@ -162,12 +162,6 @@ export async function getPerpsController(
     currentAddress !== null && currentAddress !== selectedAddress;
 
   if (addressChanged && controllerInstance) {
-    console.log(
-      '[Perps] Account changed, reinitializing controller:',
-      currentAddress,
-      '->',
-      selectedAddress,
-    );
     if (unsubscribeRemoteFeatureFlags) {
       unsubscribeRemoteFeatureFlags();
       unsubscribeRemoteFeatureFlags = null;
