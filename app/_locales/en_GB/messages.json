@@ -3134,7 +3134,7 @@
     "message": "Select a hardware wallet you would like to use with MetaMask."
   },
   "helpAndSettings": {
-    "message": "HELP AND SETTINGS"
+    "message": "Help and settings"
   },
   "here": {
     "message": "here",
@@ -3787,7 +3787,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manage": {
-    "message": "MANAGE"
+    "message": "Manage"
   },
   "manageDefaultSettings": {
     "message": "Manage default settings"
