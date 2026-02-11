@@ -22,11 +22,18 @@ jest.mock(
   }),
 );
 
+const withAppState = (state: Record<string, unknown>) => ({
+  ...state,
+  appState: {
+    ...(state.appState as Record<string, unknown> | undefined),
+  },
+});
+
 describe('NetworkRow', () => {
   const middleware = [thunk];
 
   it('does display network information of current confirmation', () => {
-    const state = getMockContractInteractionConfirmState();
+    const state = withAppState(getMockContractInteractionConfirmState());
     const mockStore = configureMockStore(middleware)(state);
     const { getByText } = renderWithConfirmContextProvider(
       <NetworkRow />,
@@ -37,7 +44,7 @@ describe('NetworkRow', () => {
   });
 
   it('does not display network if isShownWithAlertsOnly is true and there is no field alert', () => {
-    const state = getMockContractInteractionConfirmState();
+    const state = withAppState(getMockContractInteractionConfirmState());
     const mockStore = configureMockStore(middleware)(state);
     const { queryByText } = renderWithConfirmContextProvider(
       <NetworkRow isShownWithAlertsOnly />,
@@ -50,7 +57,7 @@ describe('NetworkRow', () => {
     const contractInteraction = genUnapprovedContractInteractionConfirmation({
       chainId: CHAIN_IDS.GOERLI,
     });
-    const state = {
+    const state = withAppState({
       ...getMockConfirmStateForTransaction(contractInteraction),
       confirmAlerts: {
         alerts: {
@@ -66,7 +73,7 @@ describe('NetworkRow', () => {
         },
         confirmed: {},
       },
-    };
+    });
 
     const mockStore = configureMockStore(middleware)(state);
     const { getByText } = renderWithConfirmContextProvider(

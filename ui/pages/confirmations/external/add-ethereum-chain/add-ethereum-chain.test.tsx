@@ -21,6 +21,13 @@ jest.mock('../../hooks/useCurrentConfirmation', () =>
   jest.fn(() => ({ currentConfirmation: mockConfirmation })),
 );
 
+const withAppState = (state: Record<string, unknown>) => ({
+  ...state,
+  appState: {
+    ...(state.appState as Record<string, unknown> | undefined),
+  },
+});
+
 function render(component: ReactNode, mockState: Record<string, unknown> = {}) {
   const mockMetrics = {
     trackAlertActionClicked: jest.fn(),
@@ -32,7 +39,7 @@ function render(component: ReactNode, mockState: Record<string, unknown> = {}) {
     <AlertMetricsProvider metrics={mockMetrics}>
       {component}
     </AlertMetricsProvider>,
-    configureMockStore([])(mockState),
+    configureMockStore([])(withAppState(mockState)),
   );
 }
 

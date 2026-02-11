@@ -150,6 +150,10 @@ export const getMockPersonalSignConfirmStateForRequest = (
 export const getMockConfirmState = (args: RootState = { metamask: {} }) => ({
   ...mockState,
   ...args,
+  appState: {
+    ...mockState.appState,
+    ...(args.appState as Record<string, unknown>),
+  },
   metamask: {
     ...mockState.metamask,
     ...args.metamask,

@@ -14,6 +14,7 @@ import {
   MetaMetricsContext,
   LegacyMetaMetricsProvider,
 } from '../../ui/contexts/metametrics';
+import { HardwareWalletErrorProvider } from '../../ui/contexts/hardware-wallets/HardwareWalletErrorProvider';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
 
@@ -60,6 +61,7 @@ function createProviderWrapper(
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
+  const storeInstance = store ?? configureStore({});
   const mockMetaMetricsContext =
     createMockMetaMetricsContext(getMockTrackEvent);
 
@@ -69,14 +71,18 @@ function createProviderWrapper(
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
             <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+              <HardwareWalletErrorProvider>
+                <LegacyMetaMetricsProvider>
+                  {children}
+                </LegacyMetaMetricsProvider>
+              </HardwareWalletErrorProvider>
             </MetaMetricsContext.Provider>
           </LegacyI18nProvider>
         </I18nProvider>
       </MemoryRouter>
     );
 
-    return store ? <Provider store={store}>{container}</Provider> : container;
+    return <Provider store={storeInstance}>{container}</Provider>;
   };
 
   Wrapper.propTypes = {
