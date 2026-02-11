@@ -460,6 +460,10 @@ describe('Bridge selectors', () => {
             "name": "HyperEVM",
           },
           {
+            "chainId": "eip155:4326",
+            "name": "MegaETH",
+          },
+          {
             "chainId": "eip155:324",
             "name": "zkSync",
           },
