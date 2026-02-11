@@ -1,14 +1,14 @@
+import {
+  isCaipAssetType,
+  KnownCaipNamespace,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../modules/conversion.utils';
-import { parseAssetID } from './helpers';
 import { ASSET_ROUTE, Route } from './route';
 
 export enum AssetQueryParams {
   AssetId = 'assetId',
 }
-
-const EVM_NAMESPACE = 'eip155';
-const EVM_NATIVE_NAMESPACE = 'slip44';
-const EVM_NFT_NAMESPACES = new Set(['erc721', 'erc1155']);
 
 export default new Route({
   pathname: '/asset',
@@ -19,46 +19,38 @@ export default new Route({
       throw new Error('Missing assetId parameter');
     }
 
-    const parsed = parseAssetID(assetId);
-    if (!parsed) {
+    if (!isCaipAssetType(assetId)) {
       throw new Error('Invalid assetId parameter');
     }
 
-    const { chainId, assetNamespace, assetReference, tokenId, assetType } =
-      parsed;
-    const resolvedChainId =
-      chainId.namespace === EVM_NAMESPACE
-        ? decimalToPrefixedHex(chainId.blockchainId)
-        : chainId.id;
+    const asset = parseCaipAssetType(assetId);
 
-    let assetParam: string;
-    let tokenIdParam: string | undefined;
+    const {
+      chain,
+      chainId: caipChainId,
+      assetNamespace,
+      assetReference,
+    } = asset;
 
-    if (chainId.namespace === EVM_NAMESPACE) {
-      if (assetNamespace === EVM_NATIVE_NAMESPACE) {
-        assetParam = '';
-      } else if (EVM_NFT_NAMESPACES.has(assetNamespace)) {
-        if (!tokenId) {
-          throw new Error('Missing tokenId parameter for NFT asset');
-        }
-        assetParam = assetReference;
-        tokenIdParam = tokenId;
-      } else if (assetNamespace === 'erc20') {
-        assetParam = assetReference;
-      } else {
-        throw new Error(`Unsupported asset namespace: ${assetNamespace}`);
+    const isEvmNamespace = chain.namespace === KnownCaipNamespace.Eip155;
+    const isNative = asset.assetNamespace === 'slip44';
+
+    const assetPath = () => {
+      // Asset Path Format: /asset/{hex-chainId}
+      if (isEvmNamespace && isNative) {
+        return `${ASSET_ROUTE}/${decimalToPrefixedHex(chain.reference)}`;
       }
-    } else {
-      assetParam = parsed.assetId ?? assetType;
-    }
 
-    const encodedAsset = encodeURIComponent(assetParam);
-    const path = tokenIdParam
-      ? `${ASSET_ROUTE}/${resolvedChainId}/${encodedAsset}/${encodeURIComponent(
-          tokenIdParam,
-        )}`
-      : `${ASSET_ROUTE}/${resolvedChainId}/${encodedAsset}`;
+      // Asset Path Format: /asset/{hex-chainId}/{hex-address}
+      if (isEvmNamespace && !isNative) {
+        return `${ASSET_ROUTE}/${decimalToPrefixedHex(chain.reference)}/${assetReference}`;
+      }
 
-    return { path, query: new URLSearchParams() };
+      // Non-EVM Asset Asset Path Format: /asset/{caip-chainId}/{caip-asset-type}
+      // Example: /asset/solana:XXX/encoded(solana:XXX/token:XXX)
+      return `${ASSET_ROUTE}/${caipChainId}/${encodeURIComponent(assetId)}`;
+    };
+
+    return { path: assetPath(), query: new URLSearchParams() };
   },
 });
