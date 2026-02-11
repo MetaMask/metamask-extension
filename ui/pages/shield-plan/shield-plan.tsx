@@ -99,6 +99,7 @@ import {
 import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
 import { getIntlLocale } from '../../ducks/locale/locale';
 import { getPendingRedirectRoute } from '../../selectors';
+import { PendingRedirectRoute } from '../../../shared/lib/app-state';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';
@@ -114,7 +115,9 @@ const ShieldPlan = () => {
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
-  const pendingRedirectRoute = useSelector(getPendingRedirectRoute);
+  const pendingRedirectRoute = useSelector(
+    getPendingRedirectRoute,
+  ) as PendingRedirectRoute | null;
 
   const {
     isRewardsSeason,
@@ -428,7 +431,7 @@ const ShieldPlan = () => {
         }
       })();
     };
-  }, [pendingRedirectRoute, dispatch]);
+  }, [dispatch, pendingRedirectRoute?.path]);
 
   const handleBack = async () => {
     const source = new URLSearchParams(search).get('source');
