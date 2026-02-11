@@ -70,7 +70,9 @@ describe('ConfirmTitle', () => {
         unapprovedPersonalMsgs: {},
       },
     };
-    const mockStore = configureMockStore([])(withAppState(mockStateWithNoConfirmation));
+    const mockStore = configureMockStore([])(
+      withAppState(mockStateWithNoConfirmation),
+    );
     const { container } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
       mockStore,
@@ -111,7 +113,9 @@ describe('ConfirmTitle', () => {
 
   it('should render the title and description for a NFT permit signature', () => {
     const mockStore = configureMockStore([])(
-      withAppState(getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg)),
+      withAppState(
+        getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg),
+      ),
     );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
