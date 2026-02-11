@@ -21,13 +21,15 @@ export function shouldUseMockedRequests(): boolean {
  * Returns the appropriate mock function based on the current branch.
  *
  * - For PRs and feature branches: returns mockPowerUserPrices function
- * - For main/release/* branches: returns undefined (no mocking, use real servers)
+ * - For main/release/* branches: returns a no-op function (no mocking, use real servers)
+ *
+ * Always returns a callable function so callers never receive undefined.
  */
-export function getTestSpecificMock():
-  | ((server: Mockttp) => Promise<MockedEndpoint[]>)
-  | undefined {
+export function getTestSpecificMock(): (
+  server: Mockttp,
+) => Promise<MockedEndpoint[]> {
   if (shouldUseMockedRequests()) {
     return async (server: Mockttp) => mockPowerUserPrices(server);
   }
-  return undefined;
+  return async () => [];
 }
