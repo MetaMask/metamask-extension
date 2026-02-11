@@ -820,6 +820,10 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    this.gatorPermissionsController.initialize().catch((err) => {
+      console.error('Error initializing gator permissions controller', err);
+    });
+
     // Record installation info if this is the first time the extension is running.
     // This captures the version and date when MetaMask was first installed.
     this.appMetadataController.maybeRecordFirstTimeInfo(version);

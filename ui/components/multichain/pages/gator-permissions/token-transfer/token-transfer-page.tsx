@@ -27,8 +27,8 @@ import {
 import { PermissionGroupListItem } from '../components';
 import {
   AppState,
-  getPermissionGroupMetaData,
-  getPermissionGroupMetaDataByOrigin,
+  TOKEN_TRANSFER_GROUP,
+  getGatorPermissionCountByChain,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { getDisplayOrigin, safeDecodeURIComponent } from '../helper';
 
@@ -45,12 +45,7 @@ export const TokenTransferPage = () => {
 
   // Get permissions - filtered by origin if provided, otherwise all
   const permissionGroupMetaData = useSelector((state: AppState) =>
-    origin
-      ? getPermissionGroupMetaDataByOrigin(state, {
-          permissionGroupName,
-          siteOrigin: origin,
-        })
-      : getPermissionGroupMetaData(state, permissionGroupName),
+    getGatorPermissionCountByChain(state, TOKEN_TRANSFER_GROUP, origin),
   );
 
   const handlePermissionGroupItemClick = (chainId: Hex) => {

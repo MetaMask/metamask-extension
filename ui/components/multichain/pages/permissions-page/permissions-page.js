@@ -38,7 +38,10 @@ import {
   getConnectedSitesListWithNetworkInfo,
   getPermissionSubjects,
 } from '../../../../selectors';
-import { getMergedConnectionsListWithGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
+import {
+  getMergedConnectionsListWithGatorPermissions,
+  TOKEN_TRANSFER_GROUP,
+} from '../../../../selectors/gator-permissions/gator-permissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import { removePermissionsFor } from '../../../../store/actions';
 import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
@@ -75,7 +78,11 @@ const PermissionsPage = () => {
     if (!isGatorPermissionsRevocationFeatureEnabled()) {
       return getConnectedSitesListWithNetworkInfo(state);
     }
-    return getMergedConnectionsListWithGatorPermissions(state);
+
+    return getMergedConnectionsListWithGatorPermissions(
+      state,
+      TOKEN_TRANSFER_GROUP,
+    );
   });
 
   const subjects = useSelector(getPermissionSubjects);
