@@ -226,7 +226,10 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
-import { toHardwareWalletError } from '../../shared/lib/hardware-wallets/rpcErrorUtils';
+import {
+  toHardwareWalletError,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../ui/contexts/hardware-wallets';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
