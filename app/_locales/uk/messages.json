@@ -413,9 +413,6 @@
   "next": {
     "message": "Далі"
   },
-  "noConversionRateAvailable": {
-    "message": "Немає доступного обмінного курсу"
-  },
   "noWebcamFound": {
     "message": "Веб-камеру комп’ютера не знайдено. Повторіть спробу."
   },

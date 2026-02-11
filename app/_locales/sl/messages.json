@@ -401,9 +401,6 @@
   "next": {
     "message": "Naprej"
   },
-  "noConversionRateAvailable": {
-    "message": "Menjalni tečaj ni na voljo"
-  },
   "noWebcamFound": {
     "message": "Spletna kamera ni najdena. Poskusite znova kasneje."
   },
