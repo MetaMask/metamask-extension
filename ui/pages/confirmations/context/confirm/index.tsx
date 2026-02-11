@@ -47,9 +47,8 @@ export const ConfirmContextProvider: React.FC<{
    */
   useEffect(() => {
     const wouldNavigate = previousConfirmation && !currentConfirmation;
-    const isBlocked = isHardwareWalletErrorModalVisible;
 
-    if (wouldNavigate && !isBlocked) {
+    if (wouldNavigate && !isHardwareWalletErrorModalVisible) {
       navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
     }
   }, [

@@ -8802,17 +8802,17 @@ export default class MetamaskController extends EventEmitter {
    * @throws {JsonRpcError} Always throws with hardware wallet error data
    */
   async #handleHardwareWalletError(error, walletType) {
-    const hwWalletError = toHardwareWalletError(error, walletType);
+    const hwError = toHardwareWalletError(error, walletType);
     // Throw a JsonRpcError with hardware wallet error data preserved
     // This ensures the error properties survive serialization across the RPC boundary
     throw rpcErrors.internal({
-      message: hwWalletError.message,
+      message: hwError.message,
       data: {
-        code: hwWalletError.code,
-        severity: hwWalletError.severity,
-        category: hwWalletError.category,
-        userMessage: hwWalletError.userMessage,
-        metadata: hwWalletError.metadata,
+        code: hwError.code,
+        severity: hwError.severity,
+        category: hwError.category,
+        userMessage: hwError.userMessage,
+        metadata: hwError.metadata,
       },
     });
   }

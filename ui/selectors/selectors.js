@@ -214,7 +214,7 @@ export function getAppIsLoading(state) {
  */
 export function getIsHardwareWalletErrorModalVisible(state) {
   return (
-    state.appState?.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
+    state.appState.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
   );
 }
 

@@ -387,9 +387,7 @@ export default function ConfirmationPage({
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations;
 
-    const isBlocked = isHardwareWalletErrorModalVisible;
-
-    if (wouldNavigate && !isBlocked) {
+    if (wouldNavigate && !isHardwareWalletErrorModalVisible) {
       const to = shouldShowActivity
         ? `${DEFAULT_ROUTE}?tab=activity`
         : DEFAULT_ROUTE;

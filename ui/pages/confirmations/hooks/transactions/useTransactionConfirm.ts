@@ -111,8 +111,7 @@ export function useTransactionConfirm() {
         newTransactionMeta,
       );
 
-      const isHwError = isHardwareWalletError(error);
-      if (!isHwError) {
+      if (!isHardwareWalletError(error)) {
         // Non-hardware wallet errors - just rethrow
         throw error;
       }
