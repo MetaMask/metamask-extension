@@ -346,7 +346,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     const topX = this.#getTopX();
     const topAssets = await this.#fetchTopAssetsFromAPI(chainId);
 
-    if (Array.isArray(topAssets) && topAssets.length > 0) {
+    if (topAssets && Array.isArray(topAssets) && topAssets.length > 0) {
       for (const topAsset of topAssets) {
         try {
           // We validate the top asset against the struct to ensure the data is valid.
