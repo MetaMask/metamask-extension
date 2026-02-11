@@ -53,6 +53,8 @@ export const useMerklClaimStatus = (): {
   const [completionState, setCompletionState] = useState<
     'success' | 'failed' | null
   >(null);
+  // Whether the user has manually dismissed the current toast
+  const [dismissed, setDismissed] = useState(false);
 
   // Track IDs of pending claims we've seen
   const pendingClaimIdsRef = useRef<Set<string>>(new Set());
@@ -86,6 +88,7 @@ export const useMerklClaimStatus = (): {
 
       if (tx.status === TransactionStatus.confirmed && wasPending) {
         setCompletionState('success');
+        setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
       } else if (
         (tx.status === TransactionStatus.failed ||
@@ -93,7 +96,16 @@ export const useMerklClaimStatus = (): {
         wasPending
       ) {
         setCompletionState('failed');
+        setDismissed(false);
         shownCompletionIdsRef.current.add(tx.id);
+      }
+    }
+
+    // Reset dismissed flag if a new pending claim appeared
+    for (const id of currentPendingIds) {
+      if (!pendingClaimIdsRef.current.has(id)) {
+        setDismissed(false);
+        break;
       }
     }
 
@@ -102,11 +114,14 @@ export const useMerklClaimStatus = (): {
 
   const dismissToast = useCallback(() => {
     setCompletionState(null);
+    setDismissed(true);
   }, []);
 
-  // Completion state takes priority over pending state
-  const toastState: MerklClaimToastState =
-    completionState ?? (hasPendingClaim ? 'in-progress' : null);
+  // Completion state takes priority over pending state.
+  // If the user dismissed the toast, hide it until a new state change resets `dismissed`.
+  const toastState: MerklClaimToastState = dismissed
+    ? null
+    : (completionState ?? (hasPendingClaim ? 'in-progress' : null));
 
   return { toastState, dismissToast };
 };

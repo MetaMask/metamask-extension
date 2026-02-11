@@ -1,6 +1,9 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { useMerklClaimStatus, MERKL_DISTRIBUTOR_ADDRESS } from './useMerklClaimStatus';
+import {
+  useMerklClaimStatus,
+  MERKL_DISTRIBUTOR_ADDRESS,
+} from './useMerklClaimStatus';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -242,6 +245,53 @@ describe('useMerklClaimStatus', () => {
     useSelector.mockReturnValue([
       createNonMerklTx('tx-other', TransactionStatus.confirmed),
       createMerklClaimTx('tx-1', TransactionStatus.submitted),
+    ]);
+
+    rerender();
+
+    expect(result.current.toastState).toBe('in-progress');
+  });
+
+  it('dismisses the in-progress toast when dismissToast is called', () => {
+    useSelector.mockReturnValue([
+      createMerklClaimTx('tx-1', TransactionStatus.submitted),
+    ]);
+
+    const { result, rerender } = renderHook(() => useMerklClaimStatus());
+
+    expect(result.current.toastState).toBe('in-progress');
+
+    // Dismiss while in-progress
+    act(() => {
+      result.current.dismissToast();
+    });
+
+    expect(result.current.toastState).toBeNull();
+
+    // Rerender with same pending tx - should stay dismissed
+    rerender();
+    expect(result.current.toastState).toBeNull();
+  });
+
+  it('re-shows toast when a new claim appears after dismissal', () => {
+    useSelector.mockReturnValue([
+      createMerklClaimTx('tx-1', TransactionStatus.submitted),
+    ]);
+
+    const { result, rerender } = renderHook(() => useMerklClaimStatus());
+
+    expect(result.current.toastState).toBe('in-progress');
+
+    // Dismiss
+    act(() => {
+      result.current.dismissToast();
+    });
+    expect(result.current.toastState).toBeNull();
+
+    // New claim appears
+    useSelector.mockReturnValue([
+      createMerklClaimTx('tx-1', TransactionStatus.submitted),
+      createMerklClaimTx('tx-2', TransactionStatus.submitted),
     ]);
 
     rerender();
