@@ -422,7 +422,7 @@ describe('BridgeInputGroup', () => {
       );
       await waitFor(() => {
         expect(networkPickerPopover).toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(4);
+        expect(abortSpy).toHaveBeenCalledTimes(5);
       });
 
       expect(networkPickerPopover).toMatchSnapshot();
@@ -437,8 +437,8 @@ describe('BridgeInputGroup', () => {
       });
       await waitFor(() => {
         expect(networkPickerPopover).not.toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(7);
-        expect(mockHandleFetch).toHaveBeenCalledTimes(3);
+        expect(abortSpy).toHaveBeenCalledTimes(8);
+        expect(mockHandleFetch).toHaveBeenCalledTimes(4);
       });
 
       expect(await localforage.keys()).toMatchSnapshot();
