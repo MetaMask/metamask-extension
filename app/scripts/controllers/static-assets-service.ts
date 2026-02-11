@@ -65,6 +65,12 @@ export type StaticAssetsServiceMessenger = Messenger<
   StaticAssetsServiceEvents
 >;
 
+export type FetchFunction = (
+  input: RequestInfo | URL | string,
+  init?: RequestInit,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+) => Promise<any>;
+
 export type StaticAssetsServiceOptions = {
   messenger: StaticAssetsServiceMessenger;
   /** The interval for the polling. */
@@ -74,7 +80,7 @@ export type StaticAssetsServiceOptions = {
   /** The top X assets to fetch. */
   getTopX: () => number;
   /** The fetch function to use. */
-  fetchFn: typeof fetch;
+  fetchFn: FetchFunction;
   /** The policy options to use. */
   policyOptions?: CreateServicePolicyOptions;
 };
@@ -128,7 +134,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
   readonly #getSupportedChains: () => Set<Hex>;
 
   /** The fetch function to use. */
-  readonly #fetchFn: typeof fetch;
+  readonly #fetchFn: FetchFunction;
 
   /** The top X assets to fetch. */
   readonly #getTopX: () => number;
