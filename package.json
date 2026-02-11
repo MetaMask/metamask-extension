@@ -249,7 +249,6 @@
     "which@npm:^1.3.1": "^4.0.0",
     "qs@npm:6.13.0": "^6.14.1",
     "@metamask/bridge-status-controller": "64.3.0",
-    "@metamask/accounts-controller@npm:^34.0.0": "npm:@metamask-previews/accounts-controller@35.0.2-preview-b55b07857",
     "@ledgerhq/hw-transport-webhid@npm:^6.31.0": "patch:@ledgerhq/hw-transport-webhid@npm%3A6.31.0#~/.yarn/patches/@ledgerhq-hw-transport-webhid-npm-6.31.0-efbecf27ab.patch",
     "fast-xml-parser": "^5.3.4",
     "@metamask/snaps-controllers": "^18.0.0"
@@ -282,7 +281,7 @@
     "@metamask/account-api": "^0.12.0",
     "@metamask/account-tree-controller": "^3.0.0",
     "@metamask/account-watcher": "^4.1.3",
-    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@35.0.2-preview-b55b07857",
+    "@metamask/accounts-controller": "^36.0.0",
     "@metamask/address-book-controller": "^7.0.1",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
