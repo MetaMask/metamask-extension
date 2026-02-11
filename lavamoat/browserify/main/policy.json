@@ -866,7 +866,7 @@
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/assets-controller>@metamask/core-backend": true,
+        "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/polling-controller": true,
         "@metamask/assets-controller>@metamask/snaps-utils": true,
@@ -902,8 +902,8 @@
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/assets-controllers>@metamask/keyring-api": true,
-        "@metamask/assets-controllers>@metamask/multichain-account-service>@metamask/keyring-snap-client": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/assets-controllers>@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
@@ -1122,26 +1122,13 @@
         "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/utils": true,
-        "uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/core-backend": {
-      "globals": {
-        "URL": true,
-        "WebSocket": true,
-        "clearTimeout": true,
         "fetch": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "@metamask/assets-controller>@metamask/core-backend>@tanstack/query-core": true,
+        "@metamask/core-backend>@tanstack/query-core": true,
         "uuid": true
       }
     },
@@ -1563,30 +1550,6 @@
         "@metamask/keyring-api>uuid": true
       }
     },
-    "@metamask/assets-controllers>@metamask/keyring-api": {
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
-        "bitcoin-address-validation": true,
-        "@metamask/assets-controllers>@metamask/keyring-api>uuid": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/multichain-account-service>@metamask/keyring-snap-client>@metamask/keyring-api": {
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/keyring-api>async-mutex": true,
-        "bitcoin-address-validation": true,
-        "@metamask/assets-controllers>@metamask/multichain-account-service>@metamask/keyring-snap-client>uuid": true
-      }
-    },
     "@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -1625,14 +1588,6 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/multichain-account-service>@metamask/keyring-snap-client": {
-      "packages": {
-        "@metamask/assets-controllers>@metamask/multichain-account-service>@metamask/keyring-snap-client>@metamask/keyring-api": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/assets-controllers>@metamask/multichain-account-service>@metamask/keyring-snap-client>uuid": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
@@ -3161,13 +3116,6 @@
     },
     "@metamask/core-backend>@tanstack/query-core": {
       "globals": {
-        "addEventListener": false,
-        "document": false,
-        "document.visibilityState": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/core-backend>@tanstack/query-core": {
-      "globals": {
         "AbortController": true,
         "CancelledError": true,
         "InfiniteQueryObserver": true,
@@ -3179,7 +3127,7 @@
         "QueryCache": true,
         "QueryClient": true,
         "QueryObserver": true,
-        "addEventListener": true,
+        "addEventListener": false,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -3188,7 +3136,8 @@
         "defaultShouldDehydrateMutation": true,
         "defaultShouldDehydrateQuery": true,
         "dehydrate": true,
-        "document": true,
+        "document": false,
+        "document.visibilityState": true,
         "experimental_streamedQuery": true,
         "focusManager": true,
         "hashKey": true,
@@ -6339,17 +6288,7 @@
         "crypto": true
       }
     },
-    "@metamask/assets-controllers>@metamask/keyring-api>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
     "@metamask/keyring-snap-client>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/multichain-account-service>@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
       }
