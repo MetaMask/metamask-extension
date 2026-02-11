@@ -95,6 +95,7 @@ const mockGetRewardSeasonMetadata = jest.fn();
 const mockGetHasAccountOptedIn = jest.fn();
 const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
+const mockClearLastSelectedPaymentMethod = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -171,6 +172,10 @@ rootMessenger.registerActionHandler(
   'SubscriptionController:submitShieldSubscriptionCryptoApproval',
   mockSubmitShieldSubscriptionCryptoApproval,
 );
+rootMessenger.registerActionHandler(
+  'SubscriptionController:clearLastSelectedPaymentMethod',
+  mockClearLastSelectedPaymentMethod,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -184,6 +189,7 @@ rootMessenger.delegate({
     'SubscriptionController:submitSponsorshipIntents',
     'SubscriptionController:linkRewards',
     'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+    'SubscriptionController:clearLastSelectedPaymentMethod',
     'TransactionController:getTransactions',
     'PreferencesController:getState',
     'AccountsController:getState',
@@ -208,12 +214,10 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateNonce: jest.fn(),
 };
 const mockPlatform = new ExtensionPlatform();
-const mockCaptureException = jest.fn();
 const subscriptionService = new SubscriptionService({
   messenger,
   platform: mockPlatform,
   webAuthenticator: mockWebAuthenticator,
-  captureException: mockCaptureException,
 });
 // Mock environment variables
 const originalEnv = process.env;
@@ -441,6 +445,10 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
         1000,
       ),
     ).rejects.toThrow(SHIELD_ERROR.subscriptionPollingTimedOut);
+
+    expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
+      PRODUCT_TYPES.SHIELD,
+    );
   });
 });
 

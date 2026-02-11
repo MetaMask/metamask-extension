@@ -48,7 +48,7 @@ jobs:
 
       - name: Find the associated PR
         if: ${{ startsWith(env.BRANCH, 'release/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const prs = await github.rest.pulls.list({
@@ -75,7 +75,7 @@ jobs:
 
       - name: Download page load benchmark results
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: page-load-benchmark-results
           path: test-artifacts/benchmarks
