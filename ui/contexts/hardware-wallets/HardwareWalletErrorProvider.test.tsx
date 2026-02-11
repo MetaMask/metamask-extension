@@ -82,6 +82,13 @@ const createMockState = (
       selectedAccount: 'account-1',
     },
   },
+  appState: {
+    modal: {
+      modalState: {
+        name: null,
+      },
+    },
+  },
 });
 
 const createWrapper =
@@ -215,7 +222,8 @@ describe('HardwareWalletErrorProvider', () => {
         await onRetry();
       });
 
-      expect(hideModal).toHaveBeenCalled();
+      expect(mocksetPendingHardwareWalletSigning).toHaveBeenCalledWith(false);
+      expect(mockHideModal).not.toHaveBeenCalled();
     });
 
     it('calls onCancel callback when cancel is triggered', () => {

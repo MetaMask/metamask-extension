@@ -28,25 +28,32 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
               class="mm-box mm-box--display-inline-flex"
             >
               <div
-                class="mm-box mm-badge-wrapper mm-box--display-block"
-                style="align-self: center;"
+                class="relative inline-flex self-start"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/received.svg');"
-                  />
-                </div>
-                <div
-                  class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+                  class="inline-flex"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network activity-tx__network-badge mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
-                    data-testid="activity-tx-network-badge"
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                   >
-                    G
+                    <span
+                      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/received.svg');"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="absolute"
+                  style="bottom: 0px; right: 0px;"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 border-2 border-background-default rounded-md"
+                  >
+                    <span
+                      class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                    >
+                      G
+                    </span>
                   </div>
                 </div>
               </div>

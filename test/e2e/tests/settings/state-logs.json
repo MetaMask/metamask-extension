@@ -897,6 +897,7 @@
     "recoveryPhraseReminderHasBeenShown": "boolean",
     "recoveryPhraseReminderLastShown": "number",
     "referrals": {
+      "gmx": {},
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {

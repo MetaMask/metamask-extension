@@ -169,6 +169,9 @@
   "accountsSmallCase": {
     "message": "accounts"
   },
+  "actionUnavailable": {
+    "message": "Action unavailable"
+  },
   "active": {
     "message": "Active"
   },
@@ -3026,6 +3029,10 @@
     "message": "Get your wallet ready to use web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Save up to 10% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Go to site"
   },
@@ -4372,9 +4379,6 @@
   },
   "noConnectionDescription": {
     "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
-  },
-  "noConversionRateAvailable": {
-    "message": "No conversion rate available"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -6926,6 +6930,15 @@
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
     "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelImmediateDetails": {
+    "message": "If you cancel, your wallet and transactions will not be covered."
+  },
+  "shieldTxCancelNotAllowed": {
+    "message": "Your subscription cannot be cancelled at the moment."
+  },
+  "shieldTxCancelNotAllowedPendingVerification": {
+    "message": "Your subscription cannot be cancelled due to pending verification."
   },
   "shieldTxCancelWhenPausedDetails": {
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."

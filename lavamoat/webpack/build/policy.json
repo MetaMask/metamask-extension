@@ -310,7 +310,9 @@
         "node:fs.realpathSync": true,
         "node:path.dirname": true,
         "node:path.join": true,
-        "node:path.relative": true
+        "node:path.normalize": true,
+        "node:path.relative": true,
+        "node:path.sep": true
       },
       "packages": {
         "depcheck>resolve": true
@@ -1778,7 +1780,7 @@
     "html-bundler-webpack-plugin>html-minifier-terser": {
       "packages": {
         "html-bundler-webpack-plugin>html-minifier-terser>clean-css": true,
-        "html-bundler-webpack-plugin>parse5>entities": true,
+        "html-bundler-webpack-plugin>html-minifier-terser>entities": true,
         "html-bundler-webpack-plugin>html-minifier-terser>relateurl": true,
         "terser": true
       }

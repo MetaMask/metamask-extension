@@ -81,7 +81,7 @@ const AssetOptions = ({
           onHide={() => setAssetOptionsOpen(false)}
         >
           <MenuItem
-            iconName={IconName.Export}
+            iconNameLegacy={IconName.Export}
             data-testid="asset-options__etherscan"
             onClick={
               blockExplorerLinkText.firstPart === 'addBlockExplorer'
@@ -98,7 +98,7 @@ const AssetOptions = ({
           </MenuItem>
           {!isNativeAsset && (
             <MenuItem
-              iconName={IconName.Trash}
+              iconNameLegacy={IconName.Trash}
               data-testid="asset-options__hide"
               onClick={handleRemoveToken}
             >
@@ -107,7 +107,7 @@ const AssetOptions = ({
           )}
           {isNativeAsset || !onViewTokenDetails ? null : (
             <MenuItem
-              iconName={IconName.Info}
+              iconNameLegacy={IconName.Info}
               data-testid="asset-options__token-details"
               onClick={() => {
                 setAssetOptionsOpen(false);

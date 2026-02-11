@@ -990,6 +990,13 @@
         "buffer": true
       }
     },
+    "@metamask/transaction-pay-controller>@metamask/bridge-controller": {
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -1260,6 +1267,7 @@
         "@ledgerhq/hw-app-eth": true,
         "@ledgerhq/hw-transport": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/hw-wallet-sdk": true,
         "@metamask/keyring-api": true,
         "@metamask/utils": true,
         "buffer": true,
@@ -2122,7 +2130,7 @@
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
-        "@metamask/snaps-controllers>@metamask/snaps-utils": true,
+        "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@swc/helpers": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
@@ -2228,41 +2236,6 @@
         "@metamask/snaps-utils>validate-npm-package-name": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/snaps-utils": {
-      "globals": {
-        "File": true,
-        "FileReader": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
-        "fetch": true,
-        "navigator": true
-      },
-      "packages": {
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-sdk": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@scure/base": true,
-        "@swc/helpers": true,
-        "chalk": true,
-        "cron-parser": true,
-        "fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>fast-xml-parser": true,
-        "luxon": true,
-        "@metamask/snaps-utils>marked": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "semver": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true
-      }
-    },
     "@metamask/storage-service": {
       "globals": {
         "console.error": true,
@@ -2274,9 +2247,9 @@
         "URL": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
+        "@metamask/utils": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
     },
@@ -2341,7 +2314,7 @@
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
-        "@metamask/bridge-controller": true,
+        "@metamask/transaction-pay-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/transaction-controller": true,
@@ -3362,6 +3335,7 @@
         "clearTimeout": true,
         "console.warn": true,
         "document": true,
+        "fetch": true,
         "importScripts": true,
         "location.href": true,
         "navigator": true,

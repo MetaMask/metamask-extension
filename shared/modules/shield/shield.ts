@@ -1,4 +1,6 @@
 import {
+  CANCEL_TYPES,
+  CancelType,
   PAYMENT_TYPES,
   ProductType,
   RECURRING_INTERVALS,
@@ -132,6 +134,21 @@ export function getIsTrialedSubscription(
   product: ProductType,
 ): boolean {
   return Boolean(trialProducts?.includes(product));
+}
+
+/**
+ * Check if subscription cancellation is not allowed based on cancel type
+ *
+ * @param cancelType - The cancel type from the subscription.
+ * @returns True if cancellation is not allowed, false otherwise.
+ */
+export function getIsSubscriptionCancelNotAllowed(
+  cancelType: CancelType,
+): boolean {
+  return (
+    cancelType === CANCEL_TYPES.NOT_ALLOWED ||
+    cancelType === CANCEL_TYPES.NOT_ALLOWED_PENDING_VERIFICATION
+  );
 }
 
 /**

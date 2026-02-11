@@ -171,14 +171,6 @@ export type ControllerInitRequest<
   removeAccount(address: string): Promise<string>;
 
   /**
-   * Close all connections for the given origin, and removes the references
-   * to them. Ignores unknown origins.
-   *
-   * @param origin - The origin for which to remove all connections.
-   */
-  removeAllConnections(origin: string): void;
-
-  /**
    * Create a multiplexed stream for connecting to an untrusted context like a
    * like a website, Snap, or other extension.
    *
