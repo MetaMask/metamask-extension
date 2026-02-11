@@ -1249,6 +1249,12 @@
     "ui/contexts/hardware-wallets/HardwareWalletContext.test.tsx": {
       "Test errors: Uncaught Errors": 4
     },
+    "ui/contexts/hardware-wallets/HardwareWalletErrorProvider.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/contexts/hardware-wallets/useHardwareWalletAutoConnect.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/contexts/metamask-notifications/metamask-notifications.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1524,6 +1530,7 @@
       "React: Act warnings (component updates not wrapped)": 4,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
+      "Test errors: Uncaught Errors": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-cta-button.test.tsx": {
@@ -1552,6 +1559,7 @@
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
+      "Test errors: Uncaught Errors": 3,
       "Test errors: Uncaught TypeErrors": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: Warning: A component is changing": 2,
@@ -2458,6 +2466,7 @@
       "React: Act warnings (component updates not wrapped)": 19,
       "Reselect: Identity function warnings": 9,
       "Reselect: Input stability warnings": 3,
+      "Test errors: Uncaught Errors": 8,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/confirmation/alerts/useAlertActions.test.ts": {
