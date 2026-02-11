@@ -859,7 +859,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": true,
         "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
+        "@metamask/keyring-api>async-mutex": true,
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
         "@metamask/eth-qr-keyring>uuid": true
@@ -1031,10 +1031,14 @@
     },
     "@metamask/keyring-api": {
       "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/eth-sig-util": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "bitcoin-address-validation": true
+        "@metamask/keyring-api>async-mutex": true,
+        "bitcoin-address-validation": true,
+        "@metamask/keyring-api>uuid": true
       }
     },
     "@metamask/keyring-controller": {
@@ -1048,7 +1052,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
+        "@metamask/keyring-api>async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "lodash": true,
         "@metamask/keyring-controller>ulid": true
@@ -2104,7 +2108,7 @@
         "browserify>util": true
       }
     },
-    "@metamask/eth-qr-keyring>async-mutex": {
+    "@metamask/keyring-api>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
