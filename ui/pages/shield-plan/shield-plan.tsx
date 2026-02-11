@@ -73,14 +73,12 @@ import {
 import {
   useHandleSubscription,
   useShieldRewards,
+  useSubscriptionError,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  getLastUsedShieldSubscriptionPaymentDetails,
-  getShieldSubscriptionError,
-} from '../../selectors/subscription';
+import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import {
   ShieldMetricsSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
@@ -90,14 +88,10 @@ import {
   isDevOrTestEnvironment,
   isDevOrUatBuild,
   getIsTrialedSubscription,
-  SHIELD_ERROR,
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import {
-  setLastUsedSubscriptionPaymentDetails,
-  setShieldSubscriptionError,
-} from '../../store/actions';
+import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
 import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
 import { getIntlLocale } from '../../ducks/locale/locale';
 import { ShieldPaymentModal } from './shield-payment-modal';
@@ -115,8 +109,8 @@ const ShieldPlan = () => {
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
-  // error processing subscription in background
-  const shieldSubscriptionError = useSelector(getShieldSubscriptionError);
+  const { shieldSubscriptionApiError, getSubscriptionErrorMessage } =
+    useSubscriptionError();
 
   const {
     isRewardsSeason,
@@ -154,15 +148,6 @@ const ShieldPlan = () => {
       navigate(TRANSACTION_SHIELD_ROUTE);
     }
   }, [navigate, shieldSubscription]);
-
-  // Clear shield subscription error when leaving the page
-  useEffect(() => {
-    return () => {
-      if (shieldSubscriptionError) {
-        setShieldSubscriptionError(null);
-      }
-    };
-  }, [shieldSubscriptionError]);
 
   const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
     lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
@@ -363,13 +348,6 @@ const ShieldPlan = () => {
     subscriptionResult.pending ||
     pendingShieldRewards;
 
-  const shieldSubscriptionApiError = useMemo(() => {
-    if (shieldSubscriptionError) {
-      return new Error(shieldSubscriptionError.message);
-    }
-    return null;
-  }, [shieldSubscriptionError]);
-
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
@@ -377,11 +355,7 @@ const ShieldPlan = () => {
     subscriptionResult.error ||
     shieldSubscriptionApiError;
 
-  const apiErrorMessage = hasApiError?.message
-    .toLowerCase()
-    .includes(SHIELD_ERROR.payerAddressAlreadyUsed)
-    ? t('shieldErrorPayerAddressAlreadyUsed')
-    : undefined;
+  const apiErrorMessage = getSubscriptionErrorMessage(hasApiError);
 
   const plans: Plan[] = useMemo(
     () =>

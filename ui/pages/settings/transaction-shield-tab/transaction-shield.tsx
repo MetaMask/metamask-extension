@@ -28,6 +28,7 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useShieldRewards,
+  useSubscriptionError,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -65,12 +66,7 @@ import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import {
-  linkRewardToShieldSubscription,
-  setShieldSubscriptionError,
-} from '../../../store/actions';
-import { getShieldSubscriptionError } from '../../../selectors/subscription';
-import { SHIELD_ERROR } from '../../../../shared/modules/shield';
+import { linkRewardToShieldSubscription } from '../../../store/actions';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import {
   ButtonRow,
@@ -88,8 +84,8 @@ const TransactionShield = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
-  // error processing subscription in background
-  const shieldSubscriptionError = useSelector(getShieldSubscriptionError);
+  const { shieldSubscriptionApiError, getSubscriptionErrorMessage } =
+    useSubscriptionError();
 
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
@@ -123,15 +119,6 @@ const TransactionShield = () => {
   const displayedShieldSubscription:
     | (Subscription & { rewardAccountId?: string }) // TODO: fix this type once we have controller released.
     | undefined = currentShieldSubscription ?? lastShieldSubscription;
-
-  // Clear shield subscription error when leaving the page
-  useEffect(() => {
-    return () => {
-      if (shieldSubscriptionError) {
-        setShieldSubscriptionError(null);
-      }
-    };
-  }, [shieldSubscriptionError]);
 
   const [timeoutCancelled, setTimeoutCancelled] = useState(false);
   useEffect(() => {
@@ -358,13 +345,6 @@ const TransactionShield = () => {
     onOpenAddFundsModal: () => setIsAddFundsModalOpen(true),
   });
 
-  const shieldSubscriptionApiError = useMemo(() => {
-    if (shieldSubscriptionError) {
-      return new Error(shieldSubscriptionError.message);
-    }
-    return null;
-  }, [shieldSubscriptionError]);
-
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
@@ -372,11 +352,7 @@ const TransactionShield = () => {
     updateSubscriptionCryptoPaymentMethodResult.error ||
     resultTriggerSubscriptionCheckInsufficientFunds.error ||
     shieldSubscriptionApiError;
-  const apiErrorMessage = hasApiError?.message
-    .toLowerCase()
-    .includes(SHIELD_ERROR.payerAddressAlreadyUsed)
-    ? t('shieldErrorPayerAddressAlreadyUsed')
-    : undefined;
+  const apiErrorMessage = getSubscriptionErrorMessage(hasApiError);
 
   const loading =
     updateSubscriptionCardPaymentMethodResult.pending ||
