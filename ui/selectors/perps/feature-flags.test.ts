@@ -1,4 +1,9 @@
-import { getHip3AllowedSources, getHip3AllowedSourcesSet } from './feature-flags';
+import type { RemoteFeatureFlagsState } from '../remote-feature-flags';
+import { getRemoteFeatureFlags } from '../remote-feature-flags';
+import {
+  getHip3AllowedSources,
+  getHip3AllowedSourcesSet,
+} from './feature-flags';
 
 // Mock the dependencies
 jest.mock('../../../shared/lib/perps-feature-flags', () => ({
@@ -9,8 +14,11 @@ jest.mock('../remote-feature-flags', () => ({
   getRemoteFeatureFlags: jest.fn(),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { getRemoteFeatureFlags } = require('../remote-feature-flags');
+const mockedGetRemoteFeatureFlags = jest.mocked(getRemoteFeatureFlags);
+
+// Helper to create a mock state that satisfies the RemoteFeatureFlagsState type
+const createMockState = (): RemoteFeatureFlagsState =>
+  ({}) as RemoteFeatureFlagsState;
 
 describe('perps feature-flags selectors', () => {
   beforeEach(() => {
@@ -21,8 +29,8 @@ describe('perps feature-flags selectors', () => {
 
   describe('getHip3AllowedSources', () => {
     it('returns empty array when flag is not configured', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({});
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({});
 
       const result = getHip3AllowedSources(state);
 
@@ -30,8 +38,8 @@ describe('perps feature-flags selectors', () => {
     });
 
     it('parses single wildcard pattern from string', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({
         perpsHip3AllowlistMarkets: 'xyz:*',
       });
 
@@ -41,8 +49,8 @@ describe('perps feature-flags selectors', () => {
     });
 
     it('parses comma-separated wildcard patterns', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({
         perpsHip3AllowlistMarkets: 'xyz:*,abc:*',
       });
 
@@ -52,8 +60,8 @@ describe('perps feature-flags selectors', () => {
     });
 
     it('parses plain source identifiers', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({
         perpsHip3AllowlistMarkets: 'xyz,abc',
       });
 
@@ -63,8 +71,8 @@ describe('perps feature-flags selectors', () => {
     });
 
     it('parses array of patterns', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({
         perpsHip3AllowlistMarkets: ['xyz:*', 'abc:*'],
       });
 
@@ -74,8 +82,8 @@ describe('perps feature-flags selectors', () => {
     });
 
     it('returns empty array for empty string', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({
         perpsHip3AllowlistMarkets: '  ',
       });
 
@@ -85,8 +93,8 @@ describe('perps feature-flags selectors', () => {
     });
 
     it('returns empty array for non-string non-array value', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({
         perpsHip3AllowlistMarkets: 42,
       });
 
@@ -96,8 +104,8 @@ describe('perps feature-flags selectors', () => {
     });
 
     it('filters out empty entries from comma-separated string', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({
         perpsHip3AllowlistMarkets: 'xyz:*,,abc:*',
       });
 
@@ -109,8 +117,8 @@ describe('perps feature-flags selectors', () => {
 
   describe('getHip3AllowedSourcesSet', () => {
     it('returns a Set from the allowed sources array', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({
         perpsHip3AllowlistMarkets: 'xyz:*,abc:*',
       });
 
@@ -123,8 +131,8 @@ describe('perps feature-flags selectors', () => {
     });
 
     it('returns empty Set when no sources configured', () => {
-      const state = {};
-      getRemoteFeatureFlags.mockReturnValue({});
+      const state = createMockState();
+      mockedGetRemoteFeatureFlags.mockReturnValue({});
 
       const result = getHip3AllowedSourcesSet(state);
 

@@ -2,6 +2,7 @@ import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { IconName } from '../../../component-library';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { IconColor } from '../../../../helpers/constants/design-system';
+import { getHardwareWalletErrorCode } from '../../../../contexts/hardware-wallets';
 import { buildErrorContent } from './error-content-builder';
 
 // Mock the getHardwareWalletErrorCode function
@@ -9,9 +10,9 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   getHardwareWalletErrorCode: jest.fn(),
 }));
 
-// Import the mock after jest.mock
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { getHardwareWalletErrorCode } = require('../../../../contexts/hardware-wallets');
+const mockedGetHardwareWalletErrorCode = jest.mocked(
+  getHardwareWalletErrorCode,
+);
 
 const mockT = (key: string, substitutions?: string[]) => {
   if (substitutions) {
@@ -26,7 +27,7 @@ describe('buildErrorContent', () => {
   });
 
   it('returns locked device content for AuthenticationDeviceLocked', () => {
-    getHardwareWalletErrorCode.mockReturnValue(
+    mockedGetHardwareWalletErrorCode.mockReturnValue(
       ErrorCode.AuthenticationDeviceLocked,
     );
 
@@ -49,7 +50,7 @@ describe('buildErrorContent', () => {
   });
 
   it('returns eth app closed content for DeviceStateEthAppClosed', () => {
-    getHardwareWalletErrorCode.mockReturnValue(
+    mockedGetHardwareWalletErrorCode.mockReturnValue(
       ErrorCode.DeviceStateEthAppClosed,
     );
 
@@ -60,9 +61,7 @@ describe('buildErrorContent', () => {
     );
 
     expect(result.variant).toBe('recovery');
-    expect(result.title).toContain(
-      'hardwareWalletErrorTitleConnectYourDevice',
-    );
+    expect(result.title).toContain('hardwareWalletErrorTitleConnectYourDevice');
     if (result.variant === 'recovery') {
       expect(result.recoveryInstructions).toHaveLength(1);
       expect(result.recoveryInstructions[0]).toBe(
@@ -72,7 +71,7 @@ describe('buildErrorContent', () => {
   });
 
   it('returns blind sign content for DeviceStateBlindSignNotSupported', () => {
-    getHardwareWalletErrorCode.mockReturnValue(
+    mockedGetHardwareWalletErrorCode.mockReturnValue(
       ErrorCode.DeviceStateBlindSignNotSupported,
     );
 
@@ -89,7 +88,9 @@ describe('buildErrorContent', () => {
   });
 
   it('returns disconnected content for DeviceDisconnected', () => {
-    getHardwareWalletErrorCode.mockReturnValue(ErrorCode.DeviceDisconnected);
+    mockedGetHardwareWalletErrorCode.mockReturnValue(
+      ErrorCode.DeviceDisconnected,
+    );
 
     const result = buildErrorContent(
       new Error('disconnected'),
@@ -107,7 +108,9 @@ describe('buildErrorContent', () => {
   });
 
   it('returns connection closed content for ConnectionClosed', () => {
-    getHardwareWalletErrorCode.mockReturnValue(ErrorCode.ConnectionClosed);
+    mockedGetHardwareWalletErrorCode.mockReturnValue(
+      ErrorCode.ConnectionClosed,
+    );
 
     const result = buildErrorContent(
       new Error('closed'),
@@ -125,7 +128,7 @@ describe('buildErrorContent', () => {
   });
 
   it('returns unknown error content for unrecognized error codes', () => {
-    getHardwareWalletErrorCode.mockReturnValue(null);
+    mockedGetHardwareWalletErrorCode.mockReturnValue(null);
 
     const result = buildErrorContent(
       new Error('unknown'),
@@ -145,7 +148,7 @@ describe('buildErrorContent', () => {
   });
 
   it('includes wallet type in title substitutions', () => {
-    getHardwareWalletErrorCode.mockReturnValue(
+    mockedGetHardwareWalletErrorCode.mockReturnValue(
       ErrorCode.AuthenticationDeviceLocked,
     );
 

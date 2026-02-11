@@ -34,10 +34,7 @@ describe('DirectionTabs', () => {
   it('calls onDirectionChange when switching from long to short', () => {
     const onDirectionChange = jest.fn();
     renderWithProvider(
-      <DirectionTabs
-        direction="long"
-        onDirectionChange={onDirectionChange}
-      />,
+      <DirectionTabs direction="long" onDirectionChange={onDirectionChange} />,
       mockStore,
     );
 
@@ -49,10 +46,7 @@ describe('DirectionTabs', () => {
   it('calls onDirectionChange when switching from short to long', () => {
     const onDirectionChange = jest.fn();
     renderWithProvider(
-      <DirectionTabs
-        direction="short"
-        onDirectionChange={onDirectionChange}
-      />,
+      <DirectionTabs direction="short" onDirectionChange={onDirectionChange} />,
       mockStore,
     );
 
@@ -64,10 +58,7 @@ describe('DirectionTabs', () => {
   it('does not call onDirectionChange when clicking already active direction', () => {
     const onDirectionChange = jest.fn();
     renderWithProvider(
-      <DirectionTabs
-        direction="long"
-        onDirectionChange={onDirectionChange}
-      />,
+      <DirectionTabs direction="long" onDirectionChange={onDirectionChange} />,
       mockStore,
     );
 
@@ -79,10 +70,7 @@ describe('DirectionTabs', () => {
   it('does not call onDirectionChange when clicking already active short', () => {
     const onDirectionChange = jest.fn();
     renderWithProvider(
-      <DirectionTabs
-        direction="short"
-        onDirectionChange={onDirectionChange}
-      />,
+      <DirectionTabs direction="short" onDirectionChange={onDirectionChange} />,
       mockStore,
     );
 

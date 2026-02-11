@@ -172,9 +172,7 @@ describe('chart-utils', () => {
     });
 
     it('returns empty array when data is null', () => {
-      const result = formatCandleDataForChart(
-        null as unknown as CandleData,
-      );
+      const result = formatCandleDataForChart(null as unknown as CandleData);
 
       expect(result).toEqual([]);
     });
@@ -245,9 +243,7 @@ describe('chart-utils', () => {
     });
 
     it('returns empty array when data is null', () => {
-      const result = formatVolumeDataForChart(
-        null as unknown as CandleData,
-      );
+      const result = formatVolumeDataForChart(null as unknown as CandleData);
 
       expect(result).toEqual([]);
     });
