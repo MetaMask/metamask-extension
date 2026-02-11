@@ -96,7 +96,7 @@ const mockGetHasAccountOptedIn = jest.fn();
 const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
 const mockClearLastSelectedPaymentMethod = jest.fn();
-const mockSetShieldCardCheckoutInProgress = jest.fn();
+const mockSetPendingRedirectRoute = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -178,8 +178,8 @@ rootMessenger.registerActionHandler(
   mockClearLastSelectedPaymentMethod,
 );
 rootMessenger.registerActionHandler(
-  'AppStateController:setShieldCardCheckoutInProgress',
-  mockSetShieldCardCheckoutInProgress,
+  'AppStateController:setPendingRedirectRoute',
+  mockSetPendingRedirectRoute,
 );
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
@@ -203,7 +203,7 @@ rootMessenger.delegate({
     'NetworkController:getState',
     'RemoteFeatureFlagController:getState',
     'AppStateController:getState',
-    'AppStateController:setShieldCardCheckoutInProgress',
+    'AppStateController:setPendingRedirectRoute',
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
     'KeyringController:getState',

@@ -48,6 +48,7 @@ import {
   setEditedNetwork,
   lookupSelectedNetworks,
   setPendingShieldCohort,
+  setPendingRedirectRoute,
 } from '../../store/actions';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
@@ -63,7 +64,7 @@ import {
   selectOnboardingModalOpen,
 } from '../../ducks/rewards/selectors';
 import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
-import { getShieldCardCheckoutInProgress } from '../../selectors/subscription';
+import { getPendingRedirectRoute } from '../../selectors/subscription';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -176,7 +177,7 @@ const mapStateToProps = (state) => {
     rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
     rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
-    shieldCardCheckoutInProgress: getShieldCardCheckoutInProgress(state),
+    pendingRedirectRoute: getPendingRedirectRoute(state),
   };
 };
 
@@ -234,6 +235,7 @@ const mapDispatchToProps = (dispatch) => {
     lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
+    clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
   };
 };
 

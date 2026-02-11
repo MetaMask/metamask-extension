@@ -14,7 +14,7 @@ import {
 export type SubscriptionState = {
   metamask: SubscriptionControllerState & {
     showShieldEntryModalOnce: boolean | null;
-    shieldCardCheckoutInProgress: boolean;
+    pendingRedirectRoute: { path: string; search?: string } | null;
   };
 };
 
@@ -44,10 +44,10 @@ export function getIsActiveShieldSubscription(
   return getIsShieldSubscriptionActive(state.metamask.subscriptions);
 }
 
-export function getShieldCardCheckoutInProgress(
+export function getPendingRedirectRoute(
   state: SubscriptionState,
-): boolean {
-  return state.metamask?.shieldCardCheckoutInProgress ?? false;
+): { path: string; search?: string } | null {
+  return state.metamask?.pendingRedirectRoute ?? null;
 }
 
 export function getHasShieldEntryModalShownOnce(

@@ -65,7 +65,7 @@
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
-    "shieldCardCheckoutInProgress": "boolean",
+    "pendingRedirectRoute": null,
     "shieldEndingToastLastClickedOrClosed": "object",
     "shieldPausedToastLastClickedOrClosed": "object",
     "showAccountBanner": true,

@@ -38,7 +38,7 @@
       "popupGasPollTokens": "object",
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
-      "shieldCardCheckoutInProgress": "boolean",
+      "pendingRedirectRoute": null,
       "showShieldEntryModalOnce": "boolean",
       "showTestnetMessageInDropdown": true,
       "snapsInstallPrivacyWarningShown": true,

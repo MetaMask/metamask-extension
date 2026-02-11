@@ -52,7 +52,6 @@ import {
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
-  SHIELD_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
@@ -164,7 +163,8 @@ export default class Home extends PureComponent {
     rewardsOnboardingEnabled: PropTypes.bool,
     rewardsOnboardingModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
-    shieldCardCheckoutInProgress: PropTypes.bool,
+    pendingRedirectRoute: PropTypes.object,
+    clearPendingRedirectRoute: PropTypes.func,
   };
 
   state = {
@@ -202,15 +202,17 @@ export default class Home extends PureComponent {
   componentDidMount() {
     this.props.fetchBuyableChains();
 
+    // Hydrate history duck from persisted pendingRedirectRoute (cross-session redirect)
+    if (this.props.pendingRedirectRoute) {
+      const { path, search } = this.props.pendingRedirectRoute;
+      this.props.setRedirectAfterDefaultPage({
+        path: search ? `${path}${search}` : path,
+      });
+      this.props.clearPendingRedirectRoute();
+    }
+
     // Check for redirect after default page
     this.checkRedirectAfterDefaultPage();
-
-    // Redirect to shield plan page if card checkout was abandoned mid-flow
-    if (this.props.shieldCardCheckoutInProgress) {
-      this.props.setRedirectAfterDefaultPage({
-        path: SHIELD_PLAN_ROUTE,
-      });
-    }
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
     this.props.lookupSelectedNetworks();

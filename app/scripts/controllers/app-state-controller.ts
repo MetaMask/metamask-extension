@@ -151,7 +151,7 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
-  shieldCardCheckoutInProgress: boolean;
+  pendingRedirectRoute: { path: string; search?: string } | null;
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
@@ -208,9 +208,9 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
-export type AppStateControllerSetShieldCardCheckoutInProgressAction = {
-  type: 'AppStateController:setShieldCardCheckoutInProgress';
-  handler: AppStateController['setShieldCardCheckoutInProgress'];
+export type AppStateControllerSetPendingRedirectRouteAction = {
+  type: 'AppStateController:setPendingRedirectRoute';
+  handler: AppStateController['setPendingRedirectRoute'];
 };
 
 /**
@@ -222,7 +222,7 @@ export type AppStateControllerActions =
   | AppStateControllerRequestQrCodeScanAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetPendingShieldCohortAction
-  | AppStateControllerSetShieldCardCheckoutInProgressAction;
+  | AppStateControllerSetPendingRedirectRouteAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -339,7 +339,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
-  shieldCardCheckoutInProgress: false,
+  pendingRedirectRoute: null,
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
@@ -694,7 +694,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  shieldCardCheckoutInProgress: {
+  pendingRedirectRoute: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -830,8 +830,8 @@ export class AppStateController extends BaseController<
     );
 
     this.messenger.registerActionHandler(
-      'AppStateController:setShieldCardCheckoutInProgress',
-      this.setShieldCardCheckoutInProgress.bind(this),
+      'AppStateController:setPendingRedirectRoute',
+      this.setPendingRedirectRoute.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -1693,9 +1693,11 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setShieldCardCheckoutInProgress(inProgress: boolean): void {
+  setPendingRedirectRoute(
+    route: { path: string; search?: string } | null,
+  ): void {
     this.update((state) => {
-      state.shieldCardCheckoutInProgress = inProgress;
+      state.pendingRedirectRoute = route;
     });
   }
 

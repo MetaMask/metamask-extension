@@ -213,11 +213,10 @@ export class SubscriptionService {
 
       // skipping redirect and open new tab in test environment
       if (!process.env.IN_TEST) {
-        // Mark checkout as in progress so the UI can redirect back to shield plan page if user abandons checkout
-        this.#messenger.call(
-          'AppStateController:setShieldCardCheckoutInProgress',
-          true,
-        );
+        // Set pending redirect so the UI navigates back to shield plan page if user abandons checkout
+        this.#messenger.call('AppStateController:setPendingRedirectRoute', {
+          path: '/shield-plan',
+        });
 
         await this.#openAndWaitForTabToClose({
           url: checkoutSessionUrl,
@@ -225,10 +224,10 @@ export class SubscriptionService {
           cancelUrl,
         });
 
-        // Clear the in-progress flag on successful checkout
+        // Clear pending redirect on successful checkout
         this.#messenger.call(
-          'AppStateController:setShieldCardCheckoutInProgress',
-          false,
+          'AppStateController:setPendingRedirectRoute',
+          null,
         );
 
         if (!currentTabId) {

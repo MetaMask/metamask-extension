@@ -927,7 +927,7 @@
     "showDownloadMobileAppSlide": "boolean",
     "showNetworkBanner": "boolean",
     "showPermissionsTour": "boolean",
-    "shieldCardCheckoutInProgress": "boolean",
+    "pendingRedirectRoute": "object",
     "showShieldEntryModalOnce": "boolean",
     "storageWriteErrorType": "null",
     "showTestnetMessageInDropdown": "boolean",

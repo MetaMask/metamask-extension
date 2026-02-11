@@ -34,7 +34,6 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
-import log from 'loglevel';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
@@ -78,10 +77,7 @@ import {
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  getLastUsedShieldSubscriptionPaymentDetails,
-  getShieldCardCheckoutInProgress,
-} from '../../selectors/subscription';
+import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import {
   ShieldMetricsSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
@@ -94,10 +90,7 @@ import {
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import {
-  setLastUsedSubscriptionPaymentDetails,
-  setShieldCardCheckoutInProgress,
-} from '../../store/actions';
+import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
 import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
 import { getIntlLocale } from '../../ducks/locale/locale';
 import { ShieldPaymentModal } from './shield-payment-modal';
@@ -114,10 +107,6 @@ const ShieldPlan = () => {
 
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
-  );
-
-  const shieldCardCheckoutInProgress = useSelector(
-    getShieldCardCheckoutInProgress,
   );
 
   const {
@@ -150,24 +139,12 @@ const ShieldPlan = () => {
     PRODUCT_TYPES.SHIELD,
   );
 
-  // redirect to subscription settings page if user already has a subscription
   useEffect(() => {
-    (async () => {
-      if (shieldSubscription) {
-        // Clear the checkout-in-progress flag before redirecting,
-        // otherwise the flag stays true and Home will keep redirecting back here.
-        try {
-          await dispatch(setShieldCardCheckoutInProgress(false));
-        } catch (error) {
-          log.error(
-            '[ShieldPlan] Failed to clear shieldCardCheckoutInProgress',
-            error,
-          );
-        }
-        navigate(TRANSACTION_SHIELD_ROUTE);
-      }
-    })();
-  }, [navigate, shieldSubscription, dispatch]);
+    if (shieldSubscription) {
+      // redirect to subscription settings page if user already has a subscription
+      navigate(TRANSACTION_SHIELD_ROUTE);
+    }
+  }, [navigate, shieldSubscription]);
 
   const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
     lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
@@ -430,16 +407,7 @@ const ShieldPlan = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRewardsModal, setShowRewardsModal] = useState(false);
 
-  const handleBack = async () => {
-    // Clear the checkout-in-progress flag when leaving the shield plan page
-    if (shieldCardCheckoutInProgress) {
-      try {
-        await dispatch(setShieldCardCheckoutInProgress(false));
-      } catch (error) {
-        log.error('[handleBack] error', error);
-      }
-    }
-
+  const handleBack = () => {
     const source = new URLSearchParams(search).get('source');
     if (source === ShieldMetricsSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page

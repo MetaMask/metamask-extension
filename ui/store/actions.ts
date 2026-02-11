@@ -749,17 +749,15 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
-export function setShieldCardCheckoutInProgress(
-  inProgress: boolean,
+export function setPendingRedirectRoute(
+  route: { path: string; search?: string } | null,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setShieldCardCheckoutInProgress', [
-        inProgress,
-      ]);
+      await submitRequestToBackground('setPendingRedirectRoute', [route]);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
-      log.error('[setShieldCardCheckoutInProgress] error', error);
+      log.error('[setPendingRedirectRoute] error', error);
       dispatch(displayWarning(error));
       throw error;
     }
