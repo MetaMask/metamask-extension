@@ -270,6 +270,8 @@ async function waitForRestart(driver: Driver) {
     // reload and check title as quickly a possible
     { interval: 100, timeout: 10000 },
   );
+
+  await driver.waitForControllersLoaded();
   await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
 }
 
