@@ -405,6 +405,14 @@ describe('BridgeInputGroup', () => {
 
       const networkPicker = getByTestId('multichain-asset-picker__network');
       await fillSearchInput('SD');
+      // Wait for the debounced search fetch to fire before clicking the
+      // network picker, which unmounts the asset list and cancels the debounce
+      await waitFor(() => {
+        expect(mockHandleFetch).toHaveBeenCalledWith(
+          expect.stringContaining('search'),
+          expect.anything(),
+        );
+      });
       await act(async () => {
         await networkPicker.click();
       });
