@@ -806,6 +806,7 @@
   "openSeaEnabled": false,
   "orderedNetworkList": [],
   "participateInMetaMetrics": false,
+  "useExternalServices": true,
   "pendingApprovalCount": 0,
   "pendingApprovals": {},
   "permissionHistory": {
