@@ -62,7 +62,7 @@ import {
   ClaimSubmitToastType,
   StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
-import { useMerklClaimStatus } from '../assets/merkl-rewards/hooks/useMerklClaimStatus';
+import { useMerklClaimStatus } from '../musd/hooks/useMerklClaimStatus';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
