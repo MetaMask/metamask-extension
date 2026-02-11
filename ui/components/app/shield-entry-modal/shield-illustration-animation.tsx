@@ -10,7 +10,7 @@ const ShieldIllustrationAnimation = ({
   containerClassName?: string;
   canvasClassName?: string;
 }) => {
-  const { rive, RiveComponent, canRenderRive } = useRiveWasmAnimation({
+  const { rive, RiveComponent, status } = useRiveWasmAnimation({
     url: './images/riv_animations/shield_illustration.riv',
     riveParams: {
       stateMachines: 'Shield_Illustration',
@@ -37,7 +37,7 @@ const ShieldIllustrationAnimation = ({
   }, [rive]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
-  if (!canRenderRive) {
+  if (status !== 'ready') {
     return <Box className={containerClassName}></Box>;
   }
 

@@ -10,7 +10,7 @@ import classnames from 'classnames';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import {
-  useRiveWasmContext,
+  useRiveAnimationCompletion,
   useRiveWasmAnimation,
 } from '../../../contexts/rive-wasm';
 
@@ -36,8 +36,7 @@ export default function MetamaskWordMarkAnimation({
   skipTransition = false,
 }: MetamaskWordMarkAnimationProps) {
   const theme = useTheme();
-  const context = useRiveWasmContext();
-  const { setIsAnimationCompleted } = context;
+  const { setIsAnimationCompleted } = useRiveAnimationCompletion();
 
   // Refs grouped together
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -48,41 +47,40 @@ export default function MetamaskWordMarkAnimation({
     start?: StateMachineInput;
   }>({});
 
-  const { rive, RiveComponent, hasFailed, canRenderRive } =
-    useRiveWasmAnimation({
-      url: './images/riv_animations/metamask_wordmark.riv',
-      riveParams: {
-        stateMachines: STATE_MACHINE_NAME,
-        autoplay: false,
-        layout: new Layout({
-          fit: Fit.Contain,
-          alignment: Alignment.Center,
-        }),
-        onStateChange: (event) => {
-          // The event.data contains an array of state names
-          if (event.data && Array.isArray(event.data)) {
-            // Clear any existing timeout to avoid multiple triggers
-            if (animationTimeoutRef.current) {
-              clearTimeout(animationTimeoutRef.current);
-            }
-
-            // Set a timeout after state change to detect animation completion
-            // Adjust this timeout to match your animation's actual duration
-            animationTimeoutRef.current = setTimeout(() => {
-              if (!isAnimationComplete) {
-                setIsAnimationComplete(true);
-              }
-            }, 1000); // Adjust this based on your animation duration (in milliseconds)
+  const { rive, RiveComponent, status } = useRiveWasmAnimation({
+    url: './images/riv_animations/metamask_wordmark.riv',
+    riveParams: {
+      stateMachines: STATE_MACHINE_NAME,
+      autoplay: false,
+      layout: new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+      }),
+      onStateChange: (event) => {
+        // The event.data contains an array of state names
+        if (event.data && Array.isArray(event.data)) {
+          // Clear any existing timeout to avoid multiple triggers
+          if (animationTimeoutRef.current) {
+            clearTimeout(animationTimeoutRef.current);
           }
-        },
-        onLoadError: (error) => {
-          console.error(
-            '[Rive - MetamaskWordMarkAnimation] Failed to initialize animation:',
-            error,
-          );
-        },
+
+          // Set a timeout after state change to detect animation completion
+          // Adjust this timeout to match your animation's actual duration
+          animationTimeoutRef.current = setTimeout(() => {
+            if (!isAnimationComplete) {
+              setIsAnimationComplete(true);
+            }
+          }, 1000); // Adjust this based on your animation duration (in milliseconds)
+        }
       },
-    });
+      onLoadError: (error) => {
+        console.error(
+          '[Rive - MetamaskWordMarkAnimation] Failed to initialize animation:',
+          error,
+        );
+      },
+    },
+  });
 
   // Track if animation has been initialized
   const [isInitialized, setIsInitialized] = useState(false);
@@ -163,21 +161,22 @@ export default function MetamaskWordMarkAnimation({
     prevThemeRef.current = theme;
   }, [rive, theme, isInitialized]);
 
-  const isLoading = !canRenderRive;
+  const isFailed = status === 'failed';
+  const isLoading = status === 'loading';
 
   // Trigger animation complete on failure
   useEffect(() => {
-    if (hasFailed && !isAnimationComplete) {
+    if (isFailed && !isAnimationComplete) {
       setIsAnimationComplete(true);
     }
-  }, [hasFailed, isAnimationComplete, setIsAnimationComplete]);
+  }, [isFailed, isAnimationComplete, setIsAnimationComplete]);
 
   // Don't render Rive component until ready or if loading/failed
-  if (isLoading || hasFailed) {
+  if (isLoading || isFailed) {
     return (
       <Box
         className={classnames('riv-animation__wordmark-container', {
-          'riv-animation__wordmark-container--complete': hasFailed,
+          'riv-animation__wordmark-container--complete': isFailed,
         })}
       />
     );

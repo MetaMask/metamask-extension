@@ -2900,7 +2900,7 @@
         "devicePixelRatio": true,
         "document": false,
         "document.createElement": true,
-        "fetch": true,
+        "fetch": false,
         "h": false,
         "importScripts": false,
         "location.href": false,

@@ -89,7 +89,7 @@
         "prompt": false,
         "readline": false,
         "webkitAudioContext": false,
-        "fetch": true,
+        "fetch": false,
         "XMLHttpRequest": false,
         "document": false,
         "document.createElement": true,
