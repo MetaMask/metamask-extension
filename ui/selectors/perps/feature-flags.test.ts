@@ -1,135 +1,135 @@
-import semver from 'semver';
-import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
-import { getIsPerpsEnabled } from './feature-flags';
+import { getHip3AllowedSources, getHip3AllowedSourcesSet } from './feature-flags';
 
-jest.mock('semver');
-jest.mock('../../../package.json', () => ({
-  version: '12.5.0',
+// Mock the dependencies
+jest.mock('../../../shared/lib/perps-feature-flags', () => ({
+  isPerpsFeatureEnabled: jest.fn().mockReturnValue(true),
 }));
 
-type MockState = {
-  metamask: {
-    remoteFeatureFlags: {
-      perpsEnabledVersion?: PerpsFeatureFlag;
-    };
-  };
-};
+jest.mock('../remote-feature-flags', () => ({
+  getRemoteFeatureFlags: jest.fn(),
+}));
 
-const getMockState = (perpsEnabledVersion?: PerpsFeatureFlag): MockState => ({
-  metamask: {
-    remoteFeatureFlags: {
-      perpsEnabledVersion,
-    },
-  },
-});
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { getRemoteFeatureFlags } = require('../remote-feature-flags');
 
-describe('Perps Feature Flags', () => {
-  const semverGteMock = semver.gte as jest.MockedFunction<typeof semver.gte>;
-
+describe('perps feature-flags selectors', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    // Reset memoization between tests
+    getHip3AllowedSources.resetRecomputations();
+    getHip3AllowedSourcesSet.resetRecomputations();
   });
 
-  describe('getIsPerpsEnabled', () => {
-    describe('undefined or missing flag', () => {
-      it('returns false when perpsEnabledVersion flag is undefined', () => {
-        const state = getMockState(undefined);
-        expect(getIsPerpsEnabled(state)).toBe(false);
-        expect(semverGteMock).not.toHaveBeenCalled();
-      });
+  describe('getHip3AllowedSources', () => {
+    it('returns empty array when flag is not configured', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({});
 
-      it('returns false when remoteFeatureFlags is empty', () => {
-        const state = { metamask: { remoteFeatureFlags: {} } };
-        expect(getIsPerpsEnabled(state)).toBe(false);
-        expect(semverGteMock).not.toHaveBeenCalled();
-      });
+      const result = getHip3AllowedSources(state);
+
+      expect(result).toEqual([]);
     });
 
-    describe('JSON flags with version gating', () => {
-      it('returns true when enabled is true and version check passes', () => {
-        semverGteMock.mockReturnValue(true);
-
-        const state = getMockState({
-          enabled: true,
-          minimumVersion: '12.0.0',
-        });
-
-        expect(getIsPerpsEnabled(state)).toBe(true);
-        expect(semverGteMock).toHaveBeenCalledTimes(1);
-        expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.0.0');
+    it('parses single wildcard pattern from string', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({
+        perpsHip3AllowlistMarkets: 'xyz:*',
       });
 
-      it('returns false when enabled is true but version check fails', () => {
-        semverGteMock.mockReturnValue(false);
+      const result = getHip3AllowedSources(state);
 
-        const state = getMockState({
-          enabled: true,
-          minimumVersion: '13.0.0',
-        });
-
-        expect(getIsPerpsEnabled(state)).toBe(false);
-        expect(semverGteMock).toHaveBeenCalledTimes(1);
-        expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '13.0.0');
-      });
-
-      it('returns false when enabled is false regardless of version', () => {
-        const state = getMockState({
-          enabled: false,
-          minimumVersion: '12.0.0',
-        });
-
-        expect(getIsPerpsEnabled(state)).toBe(false);
-        expect(semverGteMock).not.toHaveBeenCalled();
-      });
-
-      it('returns false when enabled is true but minimumVersion is missing', () => {
-        const state = getMockState({
-          enabled: true,
-        } as PerpsFeatureFlag);
-
-        expect(getIsPerpsEnabled(state)).toBe(false);
-        expect(semverGteMock).not.toHaveBeenCalled();
-      });
-
-      it('returns false when semver comparison throws an error', () => {
-        semverGteMock.mockImplementation(() => {
-          throw new Error('Invalid version');
-        });
-
-        const state = getMockState({
-          enabled: true,
-          minimumVersion: 'invalid-version',
-        });
-
-        expect(getIsPerpsEnabled(state)).toBe(false);
-        expect(semverGteMock).toHaveBeenCalledTimes(1);
-      });
+      expect(result).toEqual(['xyz']);
     });
 
-    describe('edge cases', () => {
-      it('handles exact version match', () => {
-        semverGteMock.mockReturnValue(true);
-
-        const state = getMockState({
-          enabled: true,
-          minimumVersion: '12.5.0',
-        });
-
-        expect(getIsPerpsEnabled(state)).toBe(true);
-        expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0');
+    it('parses comma-separated wildcard patterns', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({
+        perpsHip3AllowlistMarkets: 'xyz:*,abc:*',
       });
 
-      it('handles prerelease versions', () => {
-        semverGteMock.mockReturnValue(true);
+      const result = getHip3AllowedSources(state);
 
-        const state = getMockState({
-          enabled: true,
-          minimumVersion: '12.5.0-beta.1',
-        });
+      expect(result).toEqual(['xyz', 'abc']);
+    });
 
-        expect(getIsPerpsEnabled(state)).toBe(true);
-        expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0-beta.1');
+    it('parses plain source identifiers', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({
+        perpsHip3AllowlistMarkets: 'xyz,abc',
       });
+
+      const result = getHip3AllowedSources(state);
+
+      expect(result).toEqual(['xyz', 'abc']);
+    });
+
+    it('parses array of patterns', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({
+        perpsHip3AllowlistMarkets: ['xyz:*', 'abc:*'],
+      });
+
+      const result = getHip3AllowedSources(state);
+
+      expect(result).toEqual(['xyz', 'abc']);
+    });
+
+    it('returns empty array for empty string', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({
+        perpsHip3AllowlistMarkets: '  ',
+      });
+
+      const result = getHip3AllowedSources(state);
+
+      expect(result).toEqual([]);
+    });
+
+    it('returns empty array for non-string non-array value', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({
+        perpsHip3AllowlistMarkets: 42,
+      });
+
+      const result = getHip3AllowedSources(state);
+
+      expect(result).toEqual([]);
+    });
+
+    it('filters out empty entries from comma-separated string', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({
+        perpsHip3AllowlistMarkets: 'xyz:*,,abc:*',
+      });
+
+      const result = getHip3AllowedSources(state);
+
+      expect(result).toEqual(['xyz', 'abc']);
+    });
+  });
+
+  describe('getHip3AllowedSourcesSet', () => {
+    it('returns a Set from the allowed sources array', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({
+        perpsHip3AllowlistMarkets: 'xyz:*,abc:*',
+      });
+
+      const result = getHip3AllowedSourcesSet(state);
+
+      expect(result).toBeInstanceOf(Set);
+      expect(result.has('xyz')).toBe(true);
+      expect(result.has('abc')).toBe(true);
+      expect(result.size).toBe(2);
+    });
+
+    it('returns empty Set when no sources configured', () => {
+      const state = {};
+      getRemoteFeatureFlags.mockReturnValue({});
+
+      const result = getHip3AllowedSourcesSet(state);
+
+      expect(result).toBeInstanceOf(Set);
+      expect(result.size).toBe(0);
     });
   });
 });
