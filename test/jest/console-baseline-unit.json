@@ -1590,6 +1590,10 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/cancel-speedup/cancel-speedup.test.tsx": {
+      "React: PropTypes validation failures": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/UI/asset/asset.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
