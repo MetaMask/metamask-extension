@@ -5,6 +5,11 @@
  * library requires browser/canvas APIs that aren't available in the test environment.
  */
 
+const mockPriceLine = {
+  applyOptions: jest.fn(),
+  options: jest.fn().mockReturnValue({}),
+};
+
 const mockSeries = {
   setData: jest.fn(),
   update: jest.fn(),
@@ -12,6 +17,8 @@ const mockSeries = {
   priceScale: jest.fn().mockReturnValue({
     applyOptions: jest.fn(),
   }),
+  createPriceLine: jest.fn().mockReturnValue(mockPriceLine),
+  removePriceLine: jest.fn(),
 };
 
 const mockTimeScale = {
@@ -37,7 +44,14 @@ const createMockSeries = () => ({
   priceScale: jest.fn().mockReturnValue({
     applyOptions: jest.fn(),
   }),
+  createPriceLine: jest.fn().mockReturnValue({ ...mockPriceLine }),
+  removePriceLine: jest.fn(),
 });
+
+const mockPane = {
+  setHeight: jest.fn(),
+  getHeight: jest.fn().mockReturnValue(300),
+};
 
 const mockChart = {
   // v5 API: addSeries(SeriesType, options, paneIndex?)
@@ -54,6 +68,7 @@ const mockChart = {
   priceScale: jest.fn().mockReturnValue({
     applyOptions: jest.fn(),
   }),
+  panes: jest.fn().mockReturnValue([mockPane, mockPane]),
   applyOptions: jest.fn(),
   resize: jest.fn(),
   remove: jest.fn(),

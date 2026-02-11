@@ -10,6 +10,11 @@ import { PerpsTabView } from './perps-tab-view';
 jest.mock('../../../providers/perps', () => ({
   PerpsControllerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
+  getPerpsStreamManager: () => ({
+    init: jest.fn().mockResolvedValue(undefined),
+    prewarm: jest.fn(),
+    cleanupPrewarm: jest.fn(),
+  }),
 }));
 
 // Mock the perps stream hooks
@@ -25,6 +30,14 @@ jest.mock('../../../hooks/perps/stream', () => ({
   usePerpsLiveAccount: () => ({
     account: mocks.mockAccountState,
     isInitialLoading: false,
+  }),
+  usePerpsLiveMarketData: () => ({
+    markets: [],
+    cryptoMarkets: [],
+    hip3Markets: [],
+    isInitialLoading: false,
+    error: null,
+    refresh: jest.fn(),
   }),
 }));
 
