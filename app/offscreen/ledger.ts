@@ -4,6 +4,12 @@ import LedgerEth from '@ledgerhq/hw-app-eth';
 import { parse } from '@ethersproject/transactions';
 import { add0x } from '@metamask/utils';
 import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
+import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
@@ -119,9 +125,14 @@ export class LedgerOffscreenHandler {
     );
 
     if (ledgerDevices.length === 0) {
-      throw new Error(
-        'No permitted Ledger device found. User must grant permission from the UI first.',
-      );
+      const errorMessage =
+        'No permitted Ledger device found. User must grant permission from the UI first.';
+      throw new HardwareWalletError(errorMessage, {
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: errorMessage,
+      });
     }
 
     // Try to create a transport with the permitted device
@@ -447,6 +458,15 @@ export class LedgerOffscreenHandler {
           .toString('ascii');
         return { appName, version };
       }
+
+      case LedgerAction.getAppConfiguration:
+        if (!this.transport) {
+          await this.makeApp();
+        }
+        if (!this.transport) {
+          throw new Error('No transport available');
+        }
+        return this.ethApp?.getAppConfiguration();
 
       case LedgerAction.getPublicKey:
         if (!params?.hdPath || typeof params.hdPath !== 'string') {
