@@ -144,6 +144,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/gator-permissions-controller": "file:./gator-permissions-controller.2.0.0.rc0.tgz",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",

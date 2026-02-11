@@ -30,7 +30,10 @@ import {
   GATOR_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
 import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
-import { getMergedConnectionsListWithGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
+import {
+  getMergedConnectionsListWithGatorPermissions,
+  TOKEN_TRANSFER_GROUP,
+} from '../../../../selectors/gator-permissions/gator-permissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import { ConnectionListItem } from './connection-list-item';
 
@@ -45,7 +48,11 @@ const PermissionsPage = () => {
     if (!isGatorPermissionsRevocationFeatureEnabled()) {
       return getConnectedSitesListWithNetworkInfo(state);
     }
-    return getMergedConnectionsListWithGatorPermissions(state);
+
+    return getMergedConnectionsListWithGatorPermissions(
+      state,
+      TOKEN_TRANSFER_GROUP,
+    );
   });
 
   useEffect(() => {

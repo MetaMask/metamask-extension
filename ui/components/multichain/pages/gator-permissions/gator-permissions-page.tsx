@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Content, Header, Page } from '../page';
 import {
   ButtonIcon,
@@ -31,8 +32,9 @@ import {
   TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import {
-  AppState,
-  getAggregatedGatorPermissionsCountAcrossAllChains,
+  type AppState,
+  TOKEN_TRANSFER_GROUP,
+  getGatorPermissionCount,
   getTotalUniqueSitesCount,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { fetchAndUpdateGatorPermissions } from '../../../../store/controller-actions/gator-permissions-controller';
@@ -43,9 +45,11 @@ export const GatorPermissionsPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const totalGatorPermissions = useSelector((state: AppState) =>
-    getAggregatedGatorPermissionsCountAcrossAllChains(state, 'token-transfer'),
+    getGatorPermissionCount(state, TOKEN_TRANSFER_GROUP),
   );
-  const totalSitesConnections = useSelector(getTotalUniqueSitesCount);
+  const totalSitesConnections = useSelector((state: AppState) =>
+    getTotalUniqueSitesCount(state, TOKEN_TRANSFER_GROUP),
+  );
   const totalPermissions = totalGatorPermissions + totalSitesConnections;
 
   // We load gator permissions in a number of cases:

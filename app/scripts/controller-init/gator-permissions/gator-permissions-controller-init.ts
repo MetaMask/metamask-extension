@@ -1,44 +1,42 @@
 import {
   GatorPermissionsController,
-  GatorPermissionsControllerState,
+  type GatorPermissionsControllerConfig,
 } from '@metamask/gator-permissions-controller';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
 import { ControllerInitFunction } from '../types';
 import { getEnabledAdvancedPermissions } from '../../../../shared/modules/environment';
 import { GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
 
-const generateDefaultGatorPermissionsControllerState =
-  (): Partial<GatorPermissionsControllerState> => {
-    const gatorPermissionsProviderSnapId =
-      process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
+const createGatorPermissionsConfig = (): GatorPermissionsControllerConfig => {
+  const gatorPermissionsProviderSnapId =
+    process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
 
-    // if GATOR_PERMISSIONS_PROVIDER_SNAP_ID is not specified, GatorPermissionsController will initialize it's default
-    if (gatorPermissionsProviderSnapId !== undefined) {
-      try {
-        assertIsValidSnapId(gatorPermissionsProviderSnapId);
-      } catch (error) {
-        throw new Error(
-          'GATOR_PERMISSIONS_PROVIDER_SNAP_ID must be set to a valid snap id',
-          {
-            cause: error,
-          },
-        );
-      }
+  // if GATOR_PERMISSIONS_PROVIDER_SNAP_ID is not specified, GatorPermissionsController will initialize it's default
+  if (gatorPermissionsProviderSnapId !== undefined) {
+    try {
+      assertIsValidSnapId(gatorPermissionsProviderSnapId);
+    } catch (error) {
+      throw new Error(
+        'GATOR_PERMISSIONS_PROVIDER_SNAP_ID must be set to a valid snap id',
+        {
+          cause: error,
+        },
+      );
     }
+  }
 
-    const isGatorPermissionsEnabled =
-      getEnabledAdvancedPermissions().length > 0;
+  const supportedPermissionTypes = getEnabledAdvancedPermissions();
 
-    const state: Partial<GatorPermissionsControllerState> = {
-      isGatorPermissionsEnabled,
-    };
-
-    if (gatorPermissionsProviderSnapId) {
-      state.gatorPermissionsProviderSnapId = gatorPermissionsProviderSnapId;
-    }
-
-    return state;
+  const config: GatorPermissionsControllerConfig = {
+    supportedPermissionTypes,
   };
+
+  if (gatorPermissionsProviderSnapId) {
+    config.gatorPermissionsProviderSnapId = gatorPermissionsProviderSnapId;
+  }
+
+  return config;
+};
 
 export const GatorPermissionsControllerInit: ControllerInitFunction<
   GatorPermissionsController,
@@ -46,10 +44,8 @@ export const GatorPermissionsControllerInit: ControllerInitFunction<
 > = ({ controllerMessenger, persistedState }) => {
   const controller = new GatorPermissionsController({
     messenger: controllerMessenger,
-    state: {
-      ...generateDefaultGatorPermissionsControllerState(),
-      ...persistedState.GatorPermissionsController,
-    },
+    config: createGatorPermissionsConfig(),
+    state: persistedState.GatorPermissionsController,
   });
 
   return {
