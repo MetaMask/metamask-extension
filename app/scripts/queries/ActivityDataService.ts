@@ -24,25 +24,28 @@ export class ActivityDataService extends BaseDataService<
     );
   }
 
-  async getActivity(address: string, options: any) {
-    return this.fetchInfiniteQuery({
-      queryKey: [`${this.name}:getActivity`, address],
-      queryFn: async ({ pageParam }) => {
-        const caipAddress = `eip155:0:${address.toLowerCase()}`;
-        const url = new URL(
-          `${this.#baseUrl}/v4/multiaccount/transactions?limit=10&accountAddresses=${caipAddress}`,
-        );
+  async getActivity(address: string, context: any) {
+    return this.fetchInfiniteQuery(
+      {
+        queryKey: [`${this.name}:getActivity`, address],
+        queryFn: async ({ pageParam }) => {
+          const caipAddress = `eip155:0:${address.toLowerCase()}`;
+          const url = new URL(
+            `${this.#baseUrl}/v4/multiaccount/transactions?limit=10&accountAddresses=${caipAddress}`,
+          );
 
-        if (pageParam) {
-          url.searchParams.set('cursor', pageParam);
-        }
+          if (pageParam) {
+            url.searchParams.set('cursor', pageParam);
+          }
 
-        const response = await fetch(url);
+          const response = await fetch(url);
 
-        return response.json();
+          return response.json();
+        },
+        getNextPageParam: ({ pageInfo }: { pageInfo: any }) =>
+          pageInfo?.hasNextPage ? pageInfo.endCursor : undefined,
       },
-      getNextPageParam: ({ pageInfo }: { pageInfo: any }) =>
-        pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
-    });
+      context,
+    );
   }
 }
