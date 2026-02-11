@@ -33,6 +33,7 @@ export async function mockFeatureFlagsWithoutNonEvmAccounts(
         distribution: 'main',
         environment: 'dev',
       })
+      .always()
       .thenCallback(() => ({
         statusCode: 200,
         json: [...prodFlags, NON_EVM_ACCOUNT_FLAG_OVERRIDES],
