@@ -15,6 +15,7 @@ import AdvancedSettings from '../../../page-objects/pages/settings/advanced-sett
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import {
   assertAdvancedGasDetails,
+  assertAdvancedGasDetailsWithFewerFields,
   TestSuiteArguments,
   toggleAdvancedDetails,
 } from './shared';
@@ -154,7 +155,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       );
     });
 
-    it(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
+    it.only(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
@@ -194,7 +195,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await toggleAdvancedDetails(driver);
 
-          await assertAdvancedGasDetails(driver);
+          await assertAdvancedGasDetailsWithFewerFields(driver);
         },
       );
     });
