@@ -26,12 +26,13 @@ export function maskObject(object, mask) {
     // As typeof null (misleadingly) returns “object,” it would be more readable to display “null” instead of “object.”
     return object === null ? null : typeof object;
   }
-  let maskAllProperties = false;
-  if (Object.keys(mask).includes(AllProperties)) {
-    if (Object.keys(mask).length > 1) {
+  const maskKeys = Reflect.ownKeys(mask);
+  const maskAllProperties = maskKeys.includes(AllProperties);
+
+  if (maskAllProperties) {
+    if (maskKeys.length > 1) {
       throw new Error('AllProperties mask key does not support sibling keys');
     }
-    maskAllProperties = true;
   }
   return Object.keys(object).reduce((state, key) => {
     const maskKey = maskAllProperties ? mask[AllProperties] : mask[key];
