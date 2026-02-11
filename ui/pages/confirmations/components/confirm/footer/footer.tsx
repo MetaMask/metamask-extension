@@ -49,6 +49,7 @@ import {
   useHardwareWalletState,
   useHardwareWalletError,
   isHardwareWalletError,
+  isUserRejectedHardwareWalletError,
   type EnsureDeviceReadyOptions,
 } from '../../../../../contexts/hardware-wallets';
 import OriginThrottleModal from './origin-throttle-modal';
@@ -337,6 +338,14 @@ const Footer = () => {
             // Non-hardware wallet error - rethrow
             throw error;
           }
+          if (isUserRejectedHardwareWalletError(error)) {
+            // User intentionally rejected on device; follow the cancel flow.
+            await onCancel({ location: MetaMetricsEventLocation.Confirmation });
+            if (currentConfirmationId) {
+              navigateNext(currentConfirmationId);
+            }
+            return;
+          }
           showErrorModal(error);
         }
       }
@@ -352,6 +361,7 @@ const Footer = () => {
     onAddEthereumChain,
     navigate,
     resetTransactionState,
+    onCancel,
     onTransactionConfirm,
     navigateNext,
     dispatch,

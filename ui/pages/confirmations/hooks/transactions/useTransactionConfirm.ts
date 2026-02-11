@@ -14,6 +14,7 @@ import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import {
   isHardwareWalletError,
+  isUserRejectedHardwareWalletError,
   useHardwareWalletError,
 } from '../../../../contexts/hardware-wallets';
 import { useShieldConfirm } from './useShieldConfirm';
@@ -114,6 +115,10 @@ export function useTransactionConfirm() {
       if (!isHardwareWalletError(error)) {
         // Non-hardware wallet errors - just rethrow
         throw error;
+      }
+      if (isUserRejectedHardwareWalletError(error)) {
+        // User intentionally rejected on device; do not show hardware error modal.
+        return false;
       }
       showErrorModal(error);
       return false;

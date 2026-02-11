@@ -36,6 +36,7 @@ jest.mock('../../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
 }));
 const mockIsHardwareWalletError = jest.fn();
+const mockIsUserRejectedHardwareWalletError = jest.fn();
 jest.mock('../../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../../contexts/hardware-wallets'),
   useHardwareWalletError: jest.fn(() => ({
@@ -43,6 +44,8 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   })),
   isHardwareWalletError: (...args: unknown[]) =>
     mockIsHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+    mockIsUserRejectedHardwareWalletError(...args),
 }));
 jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),
@@ -151,6 +154,7 @@ describe('useTransactionConfirm', () => {
     attemptCloseNotificationPopupMock.mockResolvedValue(undefined);
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
     mockIsHardwareWalletError.mockReturnValue(false);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
     useHardwareWalletErrorMock.mockReturnValue({
       showErrorModal: jest.fn(),
       dismissErrorModal: jest.fn(),
@@ -560,6 +564,7 @@ describe('useTransactionConfirm', () => {
   it('returns false and shows error modal on hardware wallet error', async () => {
     const hwError = new Error('User rejected on device');
     mockIsHardwareWalletError.mockReturnValue(true);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
     updateAndApproveTxMock.mockReturnValue(() => Promise.reject(hwError));
 
     const showErrorModalMock = jest.fn();
@@ -575,6 +580,27 @@ describe('useTransactionConfirm', () => {
 
     expect(result).toBe(false);
     expect(showErrorModalMock).toHaveBeenCalledWith(hwError);
+  });
+
+  it('returns false and does not show error modal on hardware wallet user rejection', async () => {
+    const hwError = new Error('User rejected on device');
+    mockIsHardwareWalletError.mockReturnValue(true);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(hwError));
+
+    const showErrorModalMock = jest.fn();
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: showErrorModalMock,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+    });
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(showErrorModalMock).not.toHaveBeenCalled();
   });
 
   it('rethrows non-hardware wallet errors', async () => {
