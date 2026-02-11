@@ -2247,9 +2247,9 @@
         "URL": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
+        "@metamask/utils": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
     },
