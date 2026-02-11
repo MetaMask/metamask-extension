@@ -1031,6 +1031,14 @@ export class PreferencesController extends BaseController<
   }
   ///: END:ONLY_INCLUDE_IF
 
+  /**
+   * Resets the preferences state to the default values.
+   * This is used when the wallet is reset during the "Forgot Password" flow.
+   */
+  resetState(): void {
+    this.update(() => getDefaultPreferencesControllerState());
+  }
+
   #handleAccountsControllerSync(
     newAccountsControllerState: AccountsControllerState,
   ): void {

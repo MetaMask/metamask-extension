@@ -1419,4 +1419,74 @@ describe('preferences controller', () => {
       });
     });
   });
+
+  describe('resetState', () => {
+    it('resets the preferences state to the default values', () => {
+      const { controller } = setupController({
+        state: {
+          currentLocale: 'ja',
+          useBlockie: true,
+          theme: ThemeType.dark,
+          knownMethodData: { '0x12345678': 'transfer' },
+          advancedGasFee: { '0x1': { maxBaseFee: '100', priorityFee: '10' } },
+          preferences: {
+            autoLockTimeLimit: undefined,
+            avatarType: 'jazzicon',
+            showExtensionInFullSizeView: true,
+            privacyMode: true,
+            showFiatInTestnets: true,
+            showTestNetworks: true,
+            smartTransactionsMigrationApplied: false,
+            smartTransactionsOptInStatus: true,
+            useNativeCurrencyAsPrimaryCurrency: true,
+            useSidePanelAsDefault: false,
+            hideZeroBalanceTokens: true,
+            petnamesEnabled: false,
+            skipDeepLinkInterstitial: false,
+            dismissSmartAccountSuggestionEnabled: false,
+            featureNotificationsEnabled: true,
+            showConfirmationAdvancedDetails: true,
+            showMultiRpcModal: false,
+            showNativeTokenAsMainBalance: true,
+            smartAccountOptIn: true,
+            tokenSortConfig: {
+              key: 'tokenFiatAmount',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            tokenNetworkFilter: {},
+          },
+        },
+      });
+
+      // Verify state was customized
+      expect(controller.state.currentLocale).toBe('ja');
+      expect(controller.state.useBlockie).toBe(true);
+      expect(controller.state.theme).toBe(ThemeType.dark);
+
+      controller.resetState();
+
+      // Verify state was reset to defaults
+      expect(controller.state.currentLocale).toBe('');
+      expect(controller.state.useBlockie).toBe(false);
+      expect(controller.state.theme).toBe(ThemeType.os);
+      expect(controller.state.knownMethodData).toStrictEqual({});
+      expect(controller.state.advancedGasFee).toStrictEqual({});
+      expect(controller.state.preferences.avatarType).toBe('maskicon');
+      expect(controller.state.preferences.privacyMode).toBe(false);
+      expect(controller.state.preferences.showFiatInTestnets).toBe(false);
+      expect(controller.state.preferences.showTestNetworks).toBe(false);
+      expect(controller.state.preferences.hideZeroBalanceTokens).toBe(false);
+      expect(controller.state.preferences.petnamesEnabled).toBe(true);
+      expect(controller.state.preferences.featureNotificationsEnabled).toBe(
+        false,
+      );
+      expect(controller.state.preferences.showConfirmationAdvancedDetails).toBe(
+        false,
+      );
+      expect(controller.state.preferences.showNativeTokenAsMainBalance).toBe(
+        false,
+      );
+    });
+  });
 });
