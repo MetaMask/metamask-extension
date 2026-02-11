@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { RpcEndpointType } from '@metamask/network-controller';
 import NetworkListItem from './network-list-item';
 import '@testing-library/jest-dom';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 const mockStore = configureMockStore([thunk]);
 
@@ -52,7 +53,7 @@ describe('NetworkListItem', () => {
       },
     });
 
-    expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(screen.getByText(messages.mainnet.message)).toBeInTheDocument();
     expect(screen.getByText('Infura Mainnet')).toBeInTheDocument();
   });
 

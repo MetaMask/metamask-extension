@@ -56,7 +56,7 @@ describe('AccountDetailsDisplay', () => {
     const { getByText, queryByText } = renderComponent();
     expect(getByText('0x0dcd5d8865...e70be3e7bc')).toBeInTheDocument();
     expect(queryByText('Type')).not.toBeInTheDocument();
-    expect(queryByText('Details')).not.toBeInTheDocument();
+    expect(queryByText(messages.details.message)).not.toBeInTheDocument();
   });
 
   it('renders button to copy address', async () => {

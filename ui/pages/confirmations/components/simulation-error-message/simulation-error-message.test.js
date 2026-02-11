@@ -24,10 +24,10 @@ describe('Simulation Error Message', () => {
 
     expect(
       queryByText(
-        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
+        messages.simulationErrorMessageV2.message,
       ),
     ).toBeInTheDocument();
-    expect(queryByText('I want to proceed anyway')).toBeInTheDocument();
+    expect(queryByText(messages.proceedWithTransaction.message)).toBeInTheDocument();
   });
 
   it('should render SimulationErrorMessage component without I want to procced anyway link', () => {
@@ -39,10 +39,10 @@ describe('Simulation Error Message', () => {
 
     expect(
       queryByText(
-        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
+        messages.simulationErrorMessageV2.message,
       ),
     ).toBeInTheDocument();
-    expect(queryByText('I want to proceed anyway')).not.toBeInTheDocument();
+    expect(queryByText(messages.proceedWithTransaction.message)).not.toBeInTheDocument();
   });
 
   it('should render SimulationErrorMessage component with I want to proceed anyway and fire that event', () => {
@@ -54,7 +54,7 @@ describe('Simulation Error Message', () => {
 
     expect(
       queryByText(
-        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
+        messages.simulationErrorMessageV2.message,
       ),
     ).toBeInTheDocument();
     expect(

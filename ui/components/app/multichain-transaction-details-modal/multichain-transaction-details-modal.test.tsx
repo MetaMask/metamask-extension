@@ -28,6 +28,7 @@ import {
   getTransactionUrl,
   shortenTransactionId,
 } from './helpers';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -173,8 +174,8 @@ describe('MultichainTransactionDetailsModal', () => {
   it('renders the modal with transaction details', () => {
     renderComponent();
 
-    expect(screen.getByText('Send')).toBeInTheDocument();
-    expect(screen.getByText('Confirmed')).toBeInTheDocument();
+    expect(screen.getByText(messages.send.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.confirmed.message)).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '1.2 BTC',
     );
@@ -182,7 +183,7 @@ describe('MultichainTransactionDetailsModal', () => {
 
   it('displays the correct transaction status with appropriate color', () => {
     renderComponent();
-    const statusElement = screen.getByText('Confirmed');
+    const statusElement = screen.getByText(messages.confirmed.message);
     expect(statusElement).toHaveClass('mm-box--color-success-default');
   });
 
@@ -330,7 +331,7 @@ describe('MultichainTransactionDetailsModal', () => {
 
     renderComponent(swapProps);
 
-    expect(screen.getByText('Swap')).toBeInTheDocument();
+    expect(screen.getByText(messages.blockExplorerSwapAction.message)).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '-2.5 SOL',
     );

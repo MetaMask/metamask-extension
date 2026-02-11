@@ -101,7 +101,7 @@ describe('AddMultichainAccount', () => {
 
     fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
-    expect(screen.getByText('Adding account...')).toBeInTheDocument();
+    expect(screen.getByText(messages.createMultichainAccountButtonLoading.message)).toBeInTheDocument();
     expect(
       container.querySelector(addMultichainAccountIconClass),
     ).not.toBeInTheDocument();
@@ -141,7 +141,7 @@ describe('AddMultichainAccount', () => {
     fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
     // Verify we're in the loading state first
-    expect(screen.getByText('Adding account...')).toBeInTheDocument();
+    expect(screen.getByText(messages.createMultichainAccountButtonLoading.message)).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText(messages.addAccount.message)).toBeInTheDocument();
@@ -201,7 +201,7 @@ describe('AddMultichainAccount', () => {
         store,
       );
 
-      expect(getByText('Syncing...')).toBeInTheDocument();
+      expect(getByText(messages.syncing.message)).toBeInTheDocument();
     });
 
     it('shows creating account message when local loading is active', async () => {
@@ -220,7 +220,7 @@ describe('AddMultichainAccount', () => {
       fireEvent.click(getByText(messages.addAccount.message));
 
       await waitFor(() => {
-        expect(getByText('Adding account...')).toBeInTheDocument();
+        expect(getByText(messages.createMultichainAccountButtonLoading.message)).toBeInTheDocument();
       });
     });
 
@@ -237,10 +237,10 @@ describe('AddMultichainAccount', () => {
         store,
       );
 
-      fireEvent.click(getByText('Syncing...'));
+      fireEvent.click(getByText(messages.syncing.message));
 
       // Should still show syncing message, not creating account message
-      expect(getByText('Syncing...')).toBeInTheDocument();
+      expect(getByText(messages.syncing.message)).toBeInTheDocument();
     });
 
     it('shows spinner when any loading state is active', async () => {
@@ -257,7 +257,7 @@ describe('AddMultichainAccount', () => {
       );
 
       // When account syncing is in progress, should show spinner
-      expect(getByText('Syncing...')).toBeInTheDocument();
+      expect(getByText(messages.syncing.message)).toBeInTheDocument();
     });
 
     it('shows default Add account text when no loading states are active', () => {
@@ -300,7 +300,7 @@ describe('AddMultichainAccount', () => {
 
       rerender(<AddMultichainAccount walletId={mockWalletId} />);
 
-      expect(getByText('Syncing...')).toBeInTheDocument();
+      expect(getByText(messages.syncing.message)).toBeInTheDocument();
 
       // Simulate syncing completing
       mockUseAccountsOperationsLoadingStates.mockReturnValue({

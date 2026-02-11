@@ -234,7 +234,7 @@ describe('Transaction Details', () => {
         mockStore,
       );
       expect(getByText(messages.network.message)).toBeInTheDocument();
-      expect(getByText('Goerli')).toBeInTheDocument();
+      expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
     });
 
     describe('RecipientRow', () => {

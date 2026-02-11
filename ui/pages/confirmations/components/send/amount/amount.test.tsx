@@ -33,7 +33,7 @@ describe('Amount', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Amount')).toBeInTheDocument();
+    expect(getByText(messages.amount.message)).toBeInTheDocument();
   });
 
   it('call update value method when value is changed', () => {
@@ -332,7 +332,7 @@ describe('Amount', () => {
     });
 
     const { queryByText } = render();
-    expect(queryByText('Max')).not.toBeInTheDocument();
+    expect(queryByText(messages.max.message)).not.toBeInTheDocument();
   });
 
   describe('numeric input validation', () => {

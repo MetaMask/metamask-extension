@@ -15,6 +15,7 @@ import configureStore from '../../../store/store';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AccountDetailsKey } from './account-details-key';
 import { AccountDetails } from '.';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../store/actions.ts');
 
@@ -56,7 +57,7 @@ describe('AccountDetails', () => {
     const editButton = screen.getByTestId('editable-label-button');
     fireEvent.click(editButton);
 
-    const editableInput = screen.getByPlaceholderText('Account name');
+    const editableInput = screen.getByPlaceholderText(messages.accountName.message);
     const newAccountLabel = 'New Label';
 
     fireEvent.change(editableInput, { target: { value: newAccountLabel } });
@@ -76,8 +77,8 @@ describe('AccountDetails', () => {
       queryByText(shortenAddress(toChecksumHexAddress(address))),
     ).toBeInTheDocument();
 
-    expect(queryByText('Show private key')).toBeInTheDocument();
-    expect(queryByPlaceholderText('Password')).toBeInTheDocument();
+    expect(queryByText(messages.showPrivateKey.message)).toBeInTheDocument();
+    expect(queryByPlaceholderText(messages.password.message)).toBeInTheDocument();
   });
 
   it('attempts to validate password when submitted', async () => {
@@ -90,9 +91,9 @@ describe('AccountDetails', () => {
     );
     fireEvent.click(exportPrivateKeyButton);
 
-    queryByPlaceholderText('Password').focus();
+    queryByPlaceholderText(messages.password.message).focus();
     await userEvent.keyboard(password);
-    fireEvent.click(queryByText('Confirm'));
+    fireEvent.click(queryByText(messages.confirm.message));
 
     expect(exportAccount).toHaveBeenCalledWith(
       password,
@@ -125,7 +126,7 @@ describe('AccountDetails', () => {
   it('should call AccountDetails.onClose()', () => {
     render();
 
-    fireEvent.click(screen.getByLabelText('Close'));
+    fireEvent.click(screen.getByLabelText(messages.close.message));
 
     expect(screen.queryByText('Account 1')).toBeNull();
   });

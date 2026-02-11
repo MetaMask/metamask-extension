@@ -110,7 +110,7 @@ describe('PayWithModal', () => {
   it('calls onClose when close button is clicked', () => {
     renderWithProvider(<PayWithModal isOpen={true} onClose={onCloseMock} />);
 
-    const closeButton = screen.getByLabelText('Close');
+    const closeButton = screen.getByLabelText(messages.close.message);
     fireEvent.click(closeButton);
 
     expect(onCloseMock).toHaveBeenCalled();
@@ -146,7 +146,7 @@ describe('PayWithModal', () => {
   it('does not render when isOpen is false', () => {
     renderWithProvider(<PayWithModal isOpen={false} onClose={onCloseMock} />);
 
-    expect(screen.queryByText('Pay with')).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.payWith.message)).not.toBeInTheDocument();
   });
 
   it('does not call setPayToken when disabled token is selected', () => {

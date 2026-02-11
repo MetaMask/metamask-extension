@@ -5,6 +5,7 @@ import { mockNetworkState } from '../../../../../test/stub/networks';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import SnapPermissionsList from './snap-permissions-list';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 describe('Snap Permission List', () => {
   const mockSnapId = 'mock-snap-id';
@@ -62,7 +63,7 @@ describe('Snap Permission List', () => {
       store,
     );
     expect(
-      screen.getByText('Display dialog windows in MetaMask.'),
+      screen.getByText(messages.permission_dialog.message),
     ).toBeInTheDocument();
     expect(screen.getByText('Approved on 2023-04-05')).toBeInTheDocument();
   });

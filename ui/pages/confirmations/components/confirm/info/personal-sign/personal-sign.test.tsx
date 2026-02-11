@@ -137,10 +137,10 @@ describe('PersonalSignInfo', () => {
     );
 
     expect(
-      queryByText('This is the site asking for your signature.'),
+      queryByText(messages.requestFromInfo.message),
     ).toBeNull();
     expect(
-      queryByText('This is the Snap asking for your signature.'),
+      queryByText(messages.requestFromInfoSnap.message),
     ).toBeNull();
   });
 
@@ -163,7 +163,7 @@ describe('PersonalSignInfo', () => {
     );
 
     expect(
-      queryByText('This is the Snap asking for your signature.'),
+      queryByText(messages.requestFromInfoSnap.message),
     ).toBeDefined();
   });
 
@@ -185,7 +185,7 @@ describe('PersonalSignInfo', () => {
     );
 
     expect(
-      queryByText('This is the site asking for your signature.'),
+      queryByText(messages.requestFromInfo.message),
     ).toBeDefined();
   });
 
@@ -233,6 +233,6 @@ describe('PersonalSignInfo', () => {
       mockStore,
     );
     expect(getByText(messages.network.message)).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
   });
 });

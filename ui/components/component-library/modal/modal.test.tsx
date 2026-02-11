@@ -69,11 +69,11 @@ describe('Modal', () => {
     const { getByText } = render(
       <Modal isOpen={true} onClose={onClose}>
         <div>modal content</div>
-        <button onClick={() => onClose()}>Close</button>
+        <button onClick={() => onClose()}>Close modal</button>
       </Modal>,
     );
 
-    const closeButton = getByText('Close');
+    const closeButton = getByText('Close modal');
     fireEvent.click(closeButton);
 
     expect(onClose).toHaveBeenCalledTimes(1);

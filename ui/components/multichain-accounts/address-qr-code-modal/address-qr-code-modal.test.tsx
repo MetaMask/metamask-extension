@@ -193,7 +193,7 @@ describe('AddressQRCodeModal', () => {
     );
 
     const explorerButton = screen.getByRole('button', {
-      name: 'View on Etherscan',
+      name: messages.etherscanViewOn.message,
     });
 
     fireEvent.click(explorerButton);
@@ -218,7 +218,7 @@ describe('AddressQRCodeModal', () => {
       />,
     );
 
-    const closeButton = screen.getByLabelText('Close');
+    const closeButton = screen.getByLabelText(messages.close.message);
     fireEvent.click(closeButton);
 
     expect(onClose).toHaveBeenCalledTimes(1);

@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import RejectTransactionsModal from '.';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 describe('Reject Transactions Model', () => {
   const props = {
@@ -23,7 +24,7 @@ describe('Reject Transactions Model', () => {
       <RejectTransactionsModal.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('Cancel'));
+    fireEvent.click(queryByText(messages.cancel.message));
 
     expect(props.onSubmit).not.toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();
@@ -34,7 +35,7 @@ describe('Reject Transactions Model', () => {
       <RejectTransactionsModal.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('Reject all'));
+    fireEvent.click(queryByText(messages.rejectAll.message));
 
     await waitFor(() => {
       expect(props.onSubmit).toHaveBeenCalled();

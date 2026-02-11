@@ -72,13 +72,13 @@ describe('TypedSignInfo', () => {
       mockStore,
     );
 
-    const requestFromLabel = queryByText('Request from');
+    const requestFromLabel = queryByText(messages.requestFrom.message);
 
     await requestFromLabel?.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
     expect(
-      queryByText('This is the Snap asking for your signature.'),
+      queryByText(messages.requestFromInfoSnap.message),
     ).toBeDefined();
   });
 
@@ -95,13 +95,13 @@ describe('TypedSignInfo', () => {
       mockStore,
     );
 
-    const requestFromLabel = queryByText('Request from');
+    const requestFromLabel = queryByText(messages.requestFrom.message);
 
     await requestFromLabel?.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
     expect(
-      queryByText('This is the site asking for your signature.'),
+      queryByText(messages.requestFromInfo.message),
     ).toBeDefined();
   });
 
@@ -129,6 +129,6 @@ describe('TypedSignInfo', () => {
       mockStore,
     );
     expect(getByText(messages.network.message)).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
   });
 });

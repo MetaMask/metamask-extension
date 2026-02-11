@@ -364,7 +364,7 @@ describe('NameDetails', () => {
     );
 
     const { getByPlaceholderText, baseElement } = component;
-    const nameInput = getByPlaceholderText('Choose a nickname...');
+    const nameInput = getByPlaceholderText(messages.nameSetPlaceholder.message);
 
     await act(async () => {
       fireEvent.click(nameInput);

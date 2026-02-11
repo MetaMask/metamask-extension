@@ -143,6 +143,6 @@ describe('ConnectedSitePopover', () => {
 
   it('shows network name when connected', () => {
     const { getByText } = render();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
   });
 });

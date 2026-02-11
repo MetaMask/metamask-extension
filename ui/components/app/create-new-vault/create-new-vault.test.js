@@ -40,7 +40,7 @@ describe('CreateNewVault', () => {
     );
     expect(
       screen.getByText(
-        'You can paste your entire Secret Recovery Phrase into any field.',
+        messages.srpPasteTip.message,
       ),
     ).toBeInTheDocument();
   });
@@ -83,7 +83,7 @@ describe('CreateNewVault', () => {
 
     fireEvent.change(passwordInput, passwordEvent);
 
-    const passwordError = queryByText('Must be at least 8 characters');
+    const passwordError = queryByText(messages.passwordNotLongEnough.message);
 
     expect(passwordError).toBeInTheDocument();
 

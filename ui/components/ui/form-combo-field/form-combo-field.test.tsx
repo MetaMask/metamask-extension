@@ -3,6 +3,7 @@ import { act } from 'react-dom/test-utils';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import FormComboField, { FormComboFieldOption } from './form-combo-field';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 const VALUE_MOCK = 'TestValue';
 const PLACEHOLDER_MOCK = 'TestPlaceholder';
@@ -126,7 +127,7 @@ describe('FormComboField', () => {
       />,
     );
 
-    const clearButton = getByLabelText('Clear');
+    const clearButton = getByLabelText(messages.clear.message);
 
     await act(async () => {
       fireEvent.click(clearButton);

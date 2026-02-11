@@ -54,7 +54,7 @@ describe('NftEmptyState', () => {
     renderComponent();
 
     const importButton = screen.getByRole('button', {
-      name: 'Import NFT',
+      name: messages.importNFT.message,
     });
     fireEvent.click(importButton);
 

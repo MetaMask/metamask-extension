@@ -7,6 +7,7 @@ import {
 } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { TransactionDetailsModal } from './transaction-details-modal';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 
 const CHAIN_ID = '0x1';
 
@@ -76,20 +77,20 @@ describe('TransactionDetailsModal', () => {
 
   it('renders default title for simple send transactions', () => {
     const { getByRole } = render(TransactionType.simpleSend);
-    expect(getByRole('heading', { name: 'transaction' })).toBeInTheDocument();
+    expect(getByRole('heading', { name: messages.transaction.message })).toBeInTheDocument();
   });
 
   it('renders mUSD Conversion title for musdConversion transactions', () => {
     const { getByRole } = render(TransactionType.musdConversion);
     expect(
-      getByRole('heading', { name: 'mUSD Conversion' }),
+      getByRole('heading', { name: messages.musdConversionActivityTitle.message }),
     ).toBeInTheDocument();
   });
 
   it('renders Funded Perps title for perpsDeposit transactions', () => {
     const { getByRole } = render(TransactionType.perpsDeposit);
     expect(
-      getByRole('heading', { name: 'Funded perps account' }),
+      getByRole('heading', { name: messages.perpsDepositTitle.message }),
     ).toBeInTheDocument();
   });
 
@@ -100,7 +101,7 @@ describe('TransactionDetailsModal', () => {
 
   it('calls onClose when close button is clicked', () => {
     const { getByLabelText, onClose } = render();
-    fireEvent.click(getByLabelText('Close'));
+    fireEvent.click(getByLabelText(messages.close.message));
     expect(onClose).toHaveBeenCalled();
   });
 });

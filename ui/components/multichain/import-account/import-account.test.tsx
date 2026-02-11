@@ -39,7 +39,7 @@ describe('ImportAccount', () => {
 
       expect(getByText(messages.selectType.message)).toBeInTheDocument();
       expect(
-        getByLabelText('Enter your private key string here:'),
+        getByLabelText(messages.pastePrivateKey.message),
       ).toBeInTheDocument();
     });
 
@@ -47,7 +47,7 @@ describe('ImportAccount', () => {
       const { getByRole } = renderImportAccount();
 
       // Check that the help link is present
-      const helpLink = getByRole('link', { name: 'here' });
+      const helpLink = getByRole('link', { name: messages.here.message });
       expect(helpLink).toBeInTheDocument();
       expect(helpLink).toHaveAttribute(
         'href',
@@ -59,7 +59,7 @@ describe('ImportAccount', () => {
       const { getByLabelText } = renderImportAccount();
 
       expect(
-        getByLabelText('Enter your private key string here:'),
+        getByLabelText(messages.pastePrivateKey.message),
       ).toBeInTheDocument();
     });
   });
@@ -74,7 +74,7 @@ describe('ImportAccount', () => {
 
       await waitFor(() => {
         expect(
-          queryByLabelText('Enter your private key string here:'),
+          queryByLabelText(messages.pastePrivateKey.message),
         ).not.toBeInTheDocument();
         expect(getByTestId('file-input')).toBeInTheDocument();
       });
@@ -89,7 +89,7 @@ describe('ImportAccount', () => {
       const { getByLabelText, getByText, getByRole, queryByText } =
         renderImportAccount();
       const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
+        messages.pastePrivateKey.message,
       );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
@@ -121,7 +121,7 @@ describe('ImportAccount', () => {
       const { getByLabelText, getByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
+        messages.pastePrivateKey.message,
       );
       const testPrivateKey = '0xabcdef1234567890';
 
@@ -149,7 +149,7 @@ describe('ImportAccount', () => {
       const { getByLabelText, getByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
+        messages.pastePrivateKey.message,
       );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
@@ -172,7 +172,7 @@ describe('ImportAccount', () => {
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
+        messages.pastePrivateKey.message,
       );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
@@ -182,7 +182,7 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(queryByText('Error importing account.')).toBeInTheDocument();
+        expect(queryByText(messages.importAccountError.message)).toBeInTheDocument();
       });
     });
 
@@ -195,7 +195,7 @@ describe('ImportAccount', () => {
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
+        messages.pastePrivateKey.message,
       );
       fireEvent.change(privateKeyInput, {
         target: { value: 'invalid-key' },
@@ -220,7 +220,7 @@ describe('ImportAccount', () => {
       const { getByLabelText, getByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
+        messages.pastePrivateKey.message,
       );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
@@ -255,7 +255,7 @@ describe('ImportAccount', () => {
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
+        messages.pastePrivateKey.message,
       );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
@@ -281,7 +281,7 @@ describe('ImportAccount', () => {
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
+        messages.pastePrivateKey.message,
       );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
@@ -307,7 +307,7 @@ describe('ImportAccount', () => {
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
-        'Enter your private key string here:',
+        messages.pastePrivateKey.message,
       );
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },

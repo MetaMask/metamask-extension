@@ -67,7 +67,7 @@ describe('ImportNftsModal', () => {
     fireEvent.click(networkItem);
 
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(messages.nftTokenIdPlaceholder.message);
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
@@ -86,7 +86,7 @@ describe('ImportNftsModal', () => {
 
     // Fill in valid address and tokenId but don't select a network
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(messages.nftTokenIdPlaceholder.message);
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
@@ -114,7 +114,7 @@ describe('ImportNftsModal', () => {
     fireEvent.click(networkItem);
 
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(messages.nftTokenIdPlaceholder.message);
     fireEvent.change(addressInput, {
       target: { value: INVALID_ADDRESS },
     });
@@ -160,7 +160,7 @@ describe('ImportNftsModal', () => {
     fireEvent.click(customNetworkItem);
 
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(messages.nftTokenIdPlaceholder.message);
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
@@ -216,7 +216,7 @@ describe('ImportNftsModal', () => {
     fireEvent.click(networkItem);
 
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(messages.nftTokenIdPlaceholder.message);
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
@@ -292,7 +292,7 @@ describe('ImportNftsModal', () => {
 
     // Enter NFT details
     const addressInput = getByPlaceholderText('0x...');
-    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    const tokenIdInput = getByPlaceholderText(messages.nftTokenIdPlaceholder.message);
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });

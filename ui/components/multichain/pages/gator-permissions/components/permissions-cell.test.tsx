@@ -28,7 +28,7 @@ describe('PermissionsCell', () => {
   const mockNonTestNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] =
     [
       {
-        name: 'Ethereum Mainnet',
+        name: messages.mainnet.message,
         chainId: '0x1' as Hex,
         caipChainId: 'eip155:1' as CaipChainId,
         blockExplorerUrls: ['https://etherscan.io'],
@@ -44,7 +44,7 @@ describe('PermissionsCell', () => {
         ],
       },
       {
-        name: 'Polygon',
+        name: messages.networkNamePolygon.message,
         chainId: '0x89' as Hex,
         caipChainId: 'eip155:137' as CaipChainId,
         blockExplorerUrls: ['https://polygonscan.com'],

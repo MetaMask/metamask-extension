@@ -15,6 +15,7 @@ import {
   MultichainAccountList,
   MultichainAccountListProps,
 } from './multichain-account-list';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../shared/lib/trace', () => {
   const actual = jest.requireActual('../../../../shared/lib/trace');
@@ -410,7 +411,7 @@ describe('MultichainAccountList', () => {
 
     // Find the header text inside the modal
     if (modalHeader) {
-      const headerText = within(modalHeader as HTMLElement).getByText('Rename');
+      const headerText = within(modalHeader as HTMLElement).getByText(messages.rename.message);
       expect(headerText).toBeInTheDocument();
     }
 
@@ -429,7 +430,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Find and click the confirmation button
-    const confirmButton = screen.getByText('Confirm');
+    const confirmButton = screen.getByText(messages.confirm.message);
     expect(confirmButton).toBeInTheDocument();
 
     // The button should no longer be disabled after entering text
@@ -490,7 +491,7 @@ describe('MultichainAccountList', () => {
     expect(modalHeader).toBeInTheDocument();
 
     // Find the close button by aria-label
-    const closeButton = screen.getByLabelText('Close');
+    const closeButton = screen.getByLabelText(messages.close.message);
     expect(closeButton).toBeInTheDocument();
 
     await act(async () => {
@@ -909,7 +910,7 @@ describe('MultichainAccountList', () => {
       renderComponent({ wallets: walletsWithPinnedAccounts });
 
       // Pinned section header should be present
-      expect(screen.getByText('Pinned')).toBeInTheDocument();
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
 
       // Pinned accounts should be rendered
       expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
@@ -936,7 +937,7 @@ describe('MultichainAccountList', () => {
       renderComponent({ wallets: walletsWithOnePinnedAccount });
 
       // Pinned section header should be present even with just 1 pinned account
-      expect(screen.getByText('Pinned')).toBeInTheDocument();
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
       expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
     });
 
@@ -984,7 +985,7 @@ describe('MultichainAccountList', () => {
       );
 
       // Pinned section should exist
-      expect(screen.getByText('Pinned')).toBeInTheDocument();
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
 
       // Wallet headers should still be present
       const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
@@ -1042,7 +1043,7 @@ describe('MultichainAccountList', () => {
       expect(walletHeader).toBeInTheDocument();
       // Wallet name should be in the header
       expect(within(walletHeader).getByText('Wallet 1')).toBeInTheDocument();
-      expect(screen.getByText('Pinned')).toBeInTheDocument();
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
     });
   });
 

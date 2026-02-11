@@ -19,6 +19,7 @@ import {
 } from '../../../../../test/data/confirmations/token-approve';
 import { buildSetApproveForAllTransactionData } from '../../../../../test/data/confirmations/set-approval-for-all';
 import { useSpenderAlerts } from './useSpenderAlerts';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -154,7 +155,7 @@ function buildApproveTransaction({
 function buildPermitSignatureRequest({
   spender = MOCK_SPENDER_ADDRESS,
   value = '1000',
-  domain = { name: 'Token', version: '1' },
+  domain = { name: messages.token.message, version: '1' },
 }: {
   spender?: string;
   value?: string;

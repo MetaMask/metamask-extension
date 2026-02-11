@@ -34,7 +34,7 @@ describe('NetworkRow', () => {
       mockStore,
     );
     expect(getByText(messages.network.message)).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
   });
 
   it('does not display network if isShownWithAlertsOnly is true and there is no field alert', () => {
@@ -75,6 +75,6 @@ describe('NetworkRow', () => {
       mockStore,
     );
     expect(getByText(messages.network.message)).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
   });
 });

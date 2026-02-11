@@ -57,7 +57,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(getByTestId('delete-metametrics-data-button')).toBeInTheDocument();
-    expect(getAllByText('Delete MetaMetrics data')).toHaveLength(2);
+    expect(getAllByText(messages.deleteMetaMetricsData.message)).toHaveLength(2);
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,
@@ -212,7 +212,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     const deleteButton = getByRole('button', {
-      name: 'Delete MetaMetrics data',
+      name: messages.deleteMetaMetricsData.message,
     });
     fireEvent.click(deleteButton);
     expect(mockDispatch).toHaveBeenCalledWith(openDeleteMetaMetricsDataModal());

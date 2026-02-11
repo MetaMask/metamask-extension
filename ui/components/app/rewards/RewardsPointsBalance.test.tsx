@@ -13,6 +13,7 @@ import {
 } from '../../../ducks/rewards/selectors';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { RewardsPointsBalance } from './RewardsPointsBalance';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 // Mock dependencies
 jest.mock('react-redux', () => ({
@@ -228,7 +229,7 @@ describe('RewardsPointsBalance', () => {
     });
     render(<RewardsPointsBalance />);
     expect(screen.getByTestId('skeleton')).toBeInTheDocument();
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText(messages.loading.message)).toBeInTheDocument();
   });
 
   it('should render skeleton when candidateSubscriptionId is retry and no active subscription', () => {
@@ -239,7 +240,7 @@ describe('RewardsPointsBalance', () => {
     });
     render(<RewardsPointsBalance />);
     expect(screen.getByTestId('skeleton')).toBeInTheDocument();
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText(messages.loading.message)).toBeInTheDocument();
   });
 
   it('should not render skeleton when candidateSubscriptionId is pending but active subscription exists', () => {

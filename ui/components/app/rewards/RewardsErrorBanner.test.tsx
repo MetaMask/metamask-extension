@@ -2,6 +2,7 @@ import React, { Ref } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ButtonProps } from '@metamask/design-system-react';
 import RewardsErrorBanner from './RewardsErrorBanner';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 // Partially mock the design-system Button to expose `isLoading` for assertions,
 // while keeping other components unchanged.
@@ -47,7 +48,7 @@ describe('RewardsErrorBanner', () => {
 
     expect(screen.getByTestId('rewards-error-banner')).toBeInTheDocument();
     expect(screen.getByText('Error Title')).toBeInTheDocument();
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+    expect(screen.getByText(messages.hardwareWalletErrorUnknownErrorTitle.message)).toBeInTheDocument();
   });
 
   it('does not render action buttons when no handlers provided', () => {
@@ -62,7 +63,7 @@ describe('RewardsErrorBanner', () => {
       <RewardsErrorBanner title="T" description="D" onDismiss={onDismiss} />,
     );
 
-    const dismissButton = screen.getByRole('button', { name: 'Dismiss' });
+    const dismissButton = screen.getByRole('button', { name: messages.dismiss.message });
     expect(dismissButton).toBeInTheDocument();
 
     fireEvent.click(dismissButton);
@@ -75,7 +76,7 @@ describe('RewardsErrorBanner', () => {
       <RewardsErrorBanner title="T" description="D" onConfirm={onConfirm} />,
     );
 
-    const confirmButton = screen.getByRole('button', { name: 'Confirm' });
+    const confirmButton = screen.getByRole('button', { name: messages.confirm.message });
     expect(confirmButton).toBeInTheDocument();
 
     fireEvent.click(confirmButton);
@@ -108,7 +109,7 @@ describe('RewardsErrorBanner', () => {
       />,
     );
 
-    const confirmButton = screen.getByRole('button', { name: 'Confirm' });
+    const confirmButton = screen.getByRole('button', { name: messages.confirm.message });
     expect(confirmButton).toBeInTheDocument();
     // Assert the mocked Button exposes loading state via data-loading
     expect(confirmButton).toHaveAttribute('data-loading', 'true');

@@ -58,7 +58,7 @@ describe('MaxBaseFeeInput', () => {
   it('renders the GWEI unit', () => {
     const { getByText } = render();
 
-    expect(getByText('GWEI')).toBeInTheDocument();
+    expect(getByText(messages.gwei.message)).toBeInTheDocument();
   });
 
   it('calls onChange when value changes', () => {

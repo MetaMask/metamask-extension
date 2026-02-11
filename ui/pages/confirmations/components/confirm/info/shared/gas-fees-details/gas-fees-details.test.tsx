@@ -8,6 +8,7 @@ import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
 import configureStore from '../../../../../../../store/store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { GasFeesDetails } from './gas-fees-details';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../../store/actions'),
@@ -102,6 +103,6 @@ describe('<GasFeesDetails />', () => {
       // Intentionally empty
     });
 
-    expect(queryByText('Speed')).not.toBeInTheDocument();
+    expect(queryByText(messages.speed.message)).not.toBeInTheDocument();
   });
 });

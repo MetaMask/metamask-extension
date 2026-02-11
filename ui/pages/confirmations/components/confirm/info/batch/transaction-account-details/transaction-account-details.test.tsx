@@ -67,14 +67,14 @@ describe('TransactionAccountDetails', () => {
     });
 
     expect(getByText(messages.smartAccount.message)).toBeInTheDocument();
-    expect(queryByText('Now')).toBeNull();
+    expect(queryByText(messages.confirmInfoAccountNow.message)).toBeNull();
   });
 
   it('does not render if no authorization list', () => {
     const { queryByText } = render({});
 
     expect(queryByText('0x12345...67890')).toBeNull();
-    expect(queryByText('Smart account')).toBeNull();
+    expect(queryByText(messages.confirmAccountTypeSmartContract.message)).toBeNull();
   });
 
   it('renders Account Type when transaction is a batch transaction', () => {
@@ -129,7 +129,7 @@ describe('TransactionAccountDetails', () => {
           },
         ] as NestedTransactionMetadata[],
       });
-      expect(queryByText('Interacting with')).toBeNull();
+      expect(queryByText(messages.interactingWith.message)).toBeNull();
     });
   });
 });

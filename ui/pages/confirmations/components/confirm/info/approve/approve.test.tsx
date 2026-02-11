@@ -7,6 +7,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
 import ApproveInfo from './approve';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
@@ -100,7 +101,7 @@ describe('<ApproveInfo />', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Speed')).toBeInTheDocument();
+      expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
     });
 
     expect(container).toMatchSnapshot();

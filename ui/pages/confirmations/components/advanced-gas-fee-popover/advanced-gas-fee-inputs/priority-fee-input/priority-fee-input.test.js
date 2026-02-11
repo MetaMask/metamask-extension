@@ -16,6 +16,7 @@ import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
 import { getSelectedInternalAccountFromMockState } from '../../../../../../../test/jest/mocks';
 import PriorityfeeInput from './priority-fee-input';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 
 const LOW_PRIORITY_FEE = 0.000000001;
 
@@ -161,13 +162,13 @@ describe('PriorityfeeInput', () => {
       },
     });
     expect(
-      screen.queryByText('Priority fee must be greater than 0.'),
+      screen.queryByText(messages.editGasMaxPriorityFeeBelowMinimumV2.message),
     ).not.toBeInTheDocument();
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 0 },
     });
     expect(
-      screen.queryByText('Priority fee must be greater than 0.'),
+      screen.queryByText(messages.editGasMaxPriorityFeeBelowMinimumV2.message),
     ).not.toBeInTheDocument();
   });
 
@@ -178,7 +179,7 @@ describe('PriorityfeeInput', () => {
       },
     });
     expect(
-      screen.queryByText('Priority fee must be greater than 0.'),
+      screen.queryByText(messages.editGasMaxPriorityFeeBelowMinimumV2.message),
     ).not.toBeInTheDocument();
   });
 

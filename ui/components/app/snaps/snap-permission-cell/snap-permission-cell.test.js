@@ -53,7 +53,7 @@ describe('Snap Permission Cell', () => {
       mockStore,
     );
     expect(
-      screen.getByText('Display dialog windows in MetaMask.'),
+      screen.getByText(messages.permission_dialog.message),
     ).toBeInTheDocument();
     expect(
       screen.getByText(messages.permissionRequested.message),

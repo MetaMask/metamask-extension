@@ -5,6 +5,7 @@ import configureStore from '../../../../store/store';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import SnapPermissionAdapter from './snap-permission-adapter';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 describe('Snap Permission Adapter', () => {
   const mockSnapId = 'mock-snap-id';
@@ -80,7 +81,7 @@ describe('Snap Permission Adapter', () => {
       store,
     );
     expect(
-      screen.queryByText('Display dialog windows in MetaMask.'),
+      screen.queryByText(messages.permission_dialog.message),
     ).toBeInTheDocument();
     expect(
       screen.queryByText(

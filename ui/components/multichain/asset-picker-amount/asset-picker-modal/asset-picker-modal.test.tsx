@@ -39,6 +39,7 @@ import { MultichainNetworks } from '../../../../../shared/constants/multichain/n
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { AssetPickerModal } from './asset-picker-modal';
 import { ERC20Asset } from './types';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 const mockAssetList = jest.fn();
 jest.mock('./AssetList', () => (props: unknown) => {
@@ -296,7 +297,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Ethereum');
+    const modalContent = getByText(messages.networkNameEthereum.message);
     expect(modalContent).toBeInTheDocument();
   });
 

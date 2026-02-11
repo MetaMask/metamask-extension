@@ -11,6 +11,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../shared/lib/trace', () => {
   const actual = jest.requireActual('../../../../shared/lib/trace');
@@ -538,7 +539,7 @@ describe('MultichainAccountMenu', () => {
       expect(popover).toBeInTheDocument();
 
       const addressesItem = popover
-        ? within(popover as HTMLElement).getByText('Addresses')
+        ? within(popover as HTMLElement).getByText(messages.addresses.message)
         : null;
       expect(addressesItem).toBeInTheDocument();
 

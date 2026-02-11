@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import PageContainerHeader from '.';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 describe('Page Container Header', () => {
   const props = {
@@ -27,7 +28,7 @@ describe('Page Container Header', () => {
       <PageContainerHeader {...props} />,
     );
 
-    const backButton = queryByText('Back');
+    const backButton = queryByText(messages.back.message);
 
     fireEvent.click(backButton);
 

@@ -35,7 +35,7 @@ describe('Permission Cell', () => {
       mockStore,
     );
     expect(
-      screen.getByText('Access the Ethereum provider.'),
+      screen.getByText(messages.permission_ethereumProvider.message),
     ).toBeInTheDocument();
     expect(screen.getByText('Approved on 2023-03-30')).toBeInTheDocument();
   });
@@ -55,7 +55,7 @@ describe('Permission Cell', () => {
       mockStore,
     );
     expect(
-      screen.getByText('Access the Ethereum provider.'),
+      screen.getByText(messages.permission_ethereumProvider.message),
     ).toBeInTheDocument();
     expect(
       screen.getByText(messages.permissionRevoked.message),
@@ -75,7 +75,7 @@ describe('Permission Cell', () => {
       mockStore,
     );
     expect(
-      screen.getByText('Access the Ethereum provider.'),
+      screen.getByText(messages.permission_ethereumProvider.message),
     ).toBeInTheDocument();
     expect(
       screen.getByText(messages.permissionRequested.message),

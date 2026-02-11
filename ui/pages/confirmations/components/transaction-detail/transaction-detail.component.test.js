@@ -12,6 +12,7 @@ import configureStore from '../../../../store/store';
 
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import TransactionDetail from './transaction-detail.component';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -76,7 +77,7 @@ describe('TransactionDetail', () => {
   it('should render edit link with text low if low gas estimates are selected', async () => {
     await render({ contextProps: { transaction: { userFeeLevel: 'low' } } });
     expect(screen.queryByText('🐢')).toBeInTheDocument();
-    expect(screen.queryByText('Low')).toBeInTheDocument();
+    expect(screen.queryByText(messages.low.message)).toBeInTheDocument();
   });
 
   it('should render edit link with text edit for legacy transactions', async () => {
@@ -89,6 +90,6 @@ describe('TransactionDetail', () => {
       },
     });
     expect(screen.queryByText('🐢')).not.toBeInTheDocument();
-    expect(screen.queryByText('Edit')).toBeInTheDocument();
+    expect(screen.queryByText(messages.edit.message)).toBeInTheDocument();
   });
 });

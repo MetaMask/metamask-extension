@@ -6,6 +6,7 @@ import thunk from 'redux-thunk';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MultiRpcEditModal from './multi-rpc-edit-modal';
 import '@testing-library/jest-dom';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 const mockStore = configureStore([thunk]);
 
@@ -107,7 +108,7 @@ describe('MultiRpcEditModal', () => {
     });
 
     expect(screen.getByTestId('multi-rpc-edit-modal')).toBeInTheDocument();
-    expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(screen.getByText(messages.mainnet.message)).toBeInTheDocument();
     expect(screen.getByText('supportMultiRpcInformation')).toBeInTheDocument();
   });
 });

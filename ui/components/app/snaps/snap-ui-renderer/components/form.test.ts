@@ -13,6 +13,7 @@ import {
   MOCK_SNAP_ID,
   renderInterface,
 } from '../test-utils';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../../store/background-connection'),
@@ -30,7 +31,7 @@ describe('SnapUIForm', () => {
     const { container, getByRole } = renderInterface(
       Box({
         children: Form({
-          name: 'form',
+          name: messages.form.message,
           children: [
             Input({ name: 'input' }),
             Button({ type: 'submit', name: 'submit', children: 'Submit' }),
@@ -103,7 +104,7 @@ describe('SnapUIForm', () => {
             method: ' ',
             params: {
               event: {
-                name: 'form',
+                name: messages.form.message,
                 type: 'FormSubmitEvent',
                 value: {
                   input: 'abc',
@@ -124,7 +125,7 @@ describe('SnapUIForm', () => {
     const { container, getByRole } = renderInterface(
       Box({
         children: Form({
-          name: 'form',
+          name: messages.form.message,
           children: [
             Field({ label: 'My Input', children: Input({ name: 'input' }) }),
             Field({
@@ -234,7 +235,7 @@ describe('SnapUIForm', () => {
             method: ' ',
             params: {
               event: {
-                name: 'form',
+                name: messages.form.message,
                 type: 'FormSubmitEvent',
                 value: {
                   checkbox: true,
@@ -256,7 +257,7 @@ describe('SnapUIForm', () => {
     const { getByRole } = renderInterface(
       Box({
         children: Form({
-          name: 'form',
+          name: messages.form.message,
           children: [
             Field({ label: 'My Input', children: Input({ name: 'input' }) }),
             Field({
@@ -310,7 +311,7 @@ describe('SnapUIForm', () => {
             method: ' ',
             params: {
               event: {
-                name: 'form',
+                name: messages.form.message,
                 type: 'FormSubmitEvent',
                 value: {
                   checkbox: true,

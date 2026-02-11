@@ -87,7 +87,7 @@ describe('HexData', () => {
 
     const { queryByText } = render();
 
-    expect(queryByText('Hex data')).not.toBeInTheDocument();
+    expect(queryByText(messages.hexData.message)).not.toBeInTheDocument();
   });
 
   it('return null for NFT send', () => {
@@ -99,7 +99,7 @@ describe('HexData', () => {
 
     const { queryByText } = render();
 
-    expect(queryByText('Hex data')).not.toBeInTheDocument();
+    expect(queryByText(messages.hexData.message)).not.toBeInTheDocument();
   });
 
   it('return null if flag sendHexData is not set', () => {
@@ -120,6 +120,6 @@ describe('HexData', () => {
       },
     });
 
-    expect(queryByText('Hex data')).not.toBeInTheDocument();
+    expect(queryByText(messages.hexData.message)).not.toBeInTheDocument();
   });
 });

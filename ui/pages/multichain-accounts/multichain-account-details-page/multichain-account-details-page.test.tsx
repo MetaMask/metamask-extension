@@ -165,7 +165,7 @@ describe('MultichainAccountDetailsPage', () => {
 
     expect(screen.getByText(/rename/iu)).toBeInTheDocument();
 
-    const closeButton = screen.getByLabelText('Close');
+    const closeButton = screen.getByLabelText(messages.close.message);
     fireEvent.click(closeButton);
 
     expect(screen.queryByText(/rename/iu)).not.toBeInTheDocument();
@@ -199,7 +199,7 @@ describe('MultichainAccountDetailsPage', () => {
 
     expect(screen.getByText(/will be removed/iu)).toBeInTheDocument();
 
-    const closeButton = screen.getByLabelText('Close');
+    const closeButton = screen.getByLabelText(messages.close.message);
     fireEvent.click(closeButton);
 
     expect(screen.queryByText(/will be removed/iu)).not.toBeInTheDocument();

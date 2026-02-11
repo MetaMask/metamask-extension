@@ -233,7 +233,7 @@ describe('ConfirmAddSuggestedToken Component', () => {
         ),
       ).toBeInTheDocument();
       expect(
-        screen.getByRole('link', { name: 'scams and security risks.' }),
+        screen.getByRole('link', { name: messages.learnScamRisk.message }),
       ).toBeInTheDocument();
     });
   });
@@ -250,7 +250,7 @@ describe('ConfirmAddSuggestedToken Component', () => {
 
       expect(
         screen.getByText(
-          'A token here reuses a symbol from another token you watch, this can be confusing or deceptive.',
+          messages.reusedTokenNameWarning.message,
         ),
       ).toBeInTheDocument();
     });

@@ -9,6 +9,7 @@ import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/bl
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import ConfirmRemoveAccount from '.';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 // @ts-expect-error mocking platform
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
@@ -91,7 +92,7 @@ describe('Confirm Remove Account', () => {
       mockStore,
     );
 
-    fireEvent.click(queryByText('Nevermind'));
+    fireEvent.click(queryByText(messages.nevermind.message));
 
     expect(props.removeAccount).not.toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();
@@ -103,7 +104,7 @@ describe('Confirm Remove Account', () => {
       mockStore,
     );
 
-    fireEvent.click(queryByText('Remove'));
+    fireEvent.click(queryByText(messages.remove.message));
 
     expect(props.removeAccount).toHaveBeenCalledWith(props.account.address);
     expect(props.hideModal).toHaveBeenCalled();

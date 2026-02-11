@@ -4,6 +4,7 @@ import { ButtonIcon, ButtonIconSize } from '../../component-library';
 import { IconName } from '../../component-library/icon';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { AccountDetailsRow } from './account-details-row';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 describe('AccountDetailsRow', () => {
   const defaultProps = {
@@ -38,7 +39,7 @@ describe('AccountDetailsRow', () => {
       expect(screen.getByText('Test Label')).toBeInTheDocument();
       expect(screen.getByText('Test Value')).toBeInTheDocument();
       expect(screen.getByTestId('end-accessory-button')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit')).toBeInTheDocument();
+      expect(screen.getByLabelText(messages.edit.message)).toBeInTheDocument();
     });
 
     it('should render without endAccessory', () => {
@@ -106,7 +107,7 @@ describe('AccountDetailsRow', () => {
       );
 
       expect(screen.getByTestId('edit-button')).toBeInTheDocument();
-      expect(screen.getByLabelText('Edit account name')).toBeInTheDocument();
+      expect(screen.getByLabelText(messages.editAccountName.message)).toBeInTheDocument();
     });
 
     it('should render with arrow button accessory', () => {
@@ -129,7 +130,7 @@ describe('AccountDetailsRow', () => {
       );
 
       expect(screen.getByTestId('arrow-button')).toBeInTheDocument();
-      expect(screen.getByLabelText('View details')).toBeInTheDocument();
+      expect(screen.getByLabelText(messages.viewDetails.message)).toBeInTheDocument();
     });
 
     it('should handle click events on endAccessory buttons', () => {

@@ -341,7 +341,7 @@ describe('NetworkListMenu', () => {
     );
     expect(selectedNodes).toHaveLength(1);
 
-    expect(queryByText('Ethereum')).toBeInTheDocument();
+    expect(queryByText(messages.networkNameEthereum.message)).toBeInTheDocument();
   });
 
   it('narrows down search results', () => {
@@ -358,12 +358,12 @@ describe('NetworkListMenu', () => {
 
   it('enables the "Add a custom network" button when MetaMask is locked', () => {
     const { queryByText } = render({ isUnlocked: false });
-    expect(queryByText('Add a custom network')).toBeEnabled();
+    expect(queryByText(messages.addACustomNetwork.message)).toBeEnabled();
   });
 
   it('enables the "Add a custom network" button when MetaMask is true', () => {
     const { queryByText } = render({ isUnlocked: true });
-    expect(queryByText('Add a custom network')).toBeEnabled();
+    expect(queryByText(messages.addACustomNetwork.message)).toBeEnabled();
   });
 
   it('does not allow deleting networks when locked', () => {

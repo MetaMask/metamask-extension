@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { GasOption } from '../../types/gas';
 import { GasEstimateListItem } from './gas-estimate-list-item';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 const mockOption: GasOption = {
   estimatedTime: '15 sec',
@@ -21,7 +22,7 @@ describe('GasEstimateListItem', () => {
     );
 
     expect(getByTestId('gas-option-fast')).toBeInTheDocument();
-    expect(getByText('Fast')).toBeInTheDocument();
+    expect(getByText(messages.fast.message)).toBeInTheDocument();
     expect(getByText('15 sec')).toBeInTheDocument();
     expect(getByText('0.0001 ETH')).toBeInTheDocument();
     expect(getByText('$0.25')).toBeInTheDocument();

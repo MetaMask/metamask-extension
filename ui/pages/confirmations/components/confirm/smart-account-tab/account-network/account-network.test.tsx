@@ -65,7 +65,7 @@ describe('AccountNetwork', () => {
 
   it('click on switch should call upgradeAccount method for standard accounts', async () => {
     const { getByText } = renderComponent({ isSupported: false });
-    fireEvent.click(getByText('Switch'));
+    fireEvent.click(getByText(messages.switch.message));
 
     expect(mockUpgradeAccount).toHaveBeenCalled();
   });

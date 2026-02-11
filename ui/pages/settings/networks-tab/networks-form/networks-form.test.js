@@ -107,7 +107,7 @@ describe('NetworkForm Component', () => {
       .get('/chains.json')
       .reply(200, [
         {
-          name: 'Polygon',
+          name: messages.networkNamePolygon.message,
           chain: 'Polygon',
           rpc: [
             'https://polygon-rpc.com/',
@@ -316,7 +316,7 @@ describe('NetworkForm Component', () => {
     });
 
     expect(
-      await screen.findByText('Invalid number. Remove any leading zeros.'),
+      await screen.findByText(messages.invalidNumberLeadingZeros.message),
     ).toBeInTheDocument();
   });
 

@@ -161,7 +161,7 @@ describe('BatchSimulationDetails', () => {
 
     const { getByText } = render();
     expect(getByText(messages.youApprove.message)).toBeInTheDocument();
-    expect(getByText('Unlimited')).toBeInTheDocument();
+    expect(getByText(messages.unlimited.message)).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
@@ -194,7 +194,7 @@ describe('BatchSimulationDetails', () => {
 
     const { getByText } = render();
     expect(getByText(messages.youApprove.message)).toBeInTheDocument();
-    expect(getByText('All')).toBeInTheDocument();
+    expect(getByText(messages.all.message)).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
@@ -227,7 +227,7 @@ describe('BatchSimulationDetails', () => {
 
     const { getByText } = render();
     expect(getByText(messages.youApprove.message)).toBeInTheDocument();
-    expect(getByText('All')).toBeInTheDocument();
+    expect(getByText(messages.all.message)).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
@@ -245,7 +245,7 @@ describe('BatchSimulationDetails', () => {
 
   it('does not render approve row if no approve balance changes', () => {
     const { queryByText } = render();
-    expect(queryByText('You approve')).toBeNull();
+    expect(queryByText(messages.confirmSimulationApprove.message)).toBeNull();
   });
 
   it('shows edit modal on edit click', () => {
@@ -303,8 +303,8 @@ describe('BatchSimulationDetails', () => {
       value: [BALANCE_CHANGE_ERC20_MOCK],
     });
     const { queryByText, queryByTestId } = render();
-    expect(queryByText('Edit spending cap')).toBeNull();
+    expect(queryByText(messages.editSpendingCap.message)).toBeNull();
     expect(queryByTestId('balance-change-edit')).toBeNull();
-    expect(queryByText('You approve')).toBeNull();
+    expect(queryByText(messages.confirmSimulationApprove.message)).toBeNull();
   });
 });

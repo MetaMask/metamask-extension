@@ -13,6 +13,7 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import { AlertModal } from './alert-modal';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 const onProcessActionMock = jest.fn();
 
@@ -253,7 +254,7 @@ describe('AlertModal', () => {
       mockStore,
     );
 
-    fireEvent.click(getByLabelText('Close'));
+    fireEvent.click(getByLabelText(messages.close.message));
     expect(onCloseMock).toHaveBeenCalledTimes(1);
   });
 

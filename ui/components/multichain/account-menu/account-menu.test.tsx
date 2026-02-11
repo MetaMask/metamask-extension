@@ -173,7 +173,7 @@ describe('AccountMenu', () => {
       document.querySelector('button[aria-label="Close"]'),
     ).toBeInTheDocument();
 
-    const backButton = getByLabelText('Back');
+    const backButton = getByLabelText(messages.back.message);
     expect(backButton).toBeInTheDocument();
     backButton.click();
 

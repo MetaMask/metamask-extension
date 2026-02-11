@@ -15,6 +15,7 @@ import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmat
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { SignatureRequestType } from '../../../types/confirm';
 import LedgerInfo from './ledger-info';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 
 describe('LedgerInfo', () => {
   it('renders correctly if account is ledger account', () => {
@@ -69,7 +70,7 @@ describe('LedgerInfo', () => {
     );
     expect(
       getByText(
-        'Close any other software connected to your device and then click here to refresh.',
+        messages.ledgerConnectionInstructionCloseOtherApps.message,
       ),
     ).toBeInTheDocument();
   });
@@ -100,7 +101,7 @@ describe('LedgerInfo', () => {
       mockStore,
     );
     expect(
-      getByText('Go to full screen to connect your Ledger.'),
+      getByText(messages.openFullScreenForLedgerWebHid.message),
     ).toBeInTheDocument();
   });
 });

@@ -13,7 +13,28 @@
 
 import fs from 'fs';
 import path from 'path';
-import glob from 'glob';
+
+const TEST_FILE_PATTERN = /\.test\.(ts|tsx|js|jsx)$/u;
+
+/**
+ * Recursively find files matching a pattern under a directory.
+ *
+ * @param dir - Root directory to search.
+ * @param pattern - Regex to test against file names.
+ * @returns Absolute paths of matching files.
+ */
+function findFiles(dir: string, pattern: RegExp): string[] {
+  const results: string[] = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...findFiles(full, pattern));
+    } else if (pattern.test(entry.name)) {
+      results.push(full);
+    }
+  }
+  return results;
+}
 
 const enLocale: Record<string, { message: string }> =
   // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
@@ -47,11 +68,16 @@ const QUERY_FN_GROUP = QUERY_FN_NAMES.join('|');
 
 // --- Rule 1: Hardcoded JSX text queried via messages.xxx.message ---
 
-// Query using messages.xxx.message
-const LOCALE_QUERY_PATTERN = new RegExp(
-  `(?:${QUERY_FN_GROUP})\\s*\\(\\s*messages\\.(\\w+)\\.message`,
-  'gu',
-);
+// Query using messages.xxx.message as first arg or in { name: messages.xxx.message }
+const LOCALE_QUERY_PATTERNS = [
+  // Direct: getByText(messages.xxx.message)
+  new RegExp(
+    `(?:${QUERY_FN_GROUP})\\s*\\(\\s*messages\\.(\\w+)\\.message`,
+    'gu',
+  ),
+  // Role name option: getByRole('...', { name: messages.xxx.message })
+  /\{\s*name:\s*messages\.(\w+)\.message/gu,
+];
 
 // Hardcoded text between JSX tags: >SomeText<
 const HARDCODED_JSX_TEXT_PATTERN = />([A-Z][A-Za-z\s]{1,30})</gu;
@@ -83,29 +109,31 @@ function findRule1Violations(
     return [];
   }
 
-  // Find query calls using messages.xxx.message
+  // Find query calls using messages.xxx.message (direct arg or { name: ... })
   for (let i = 0; i < lines.length; i++) {
-    let match;
-    LOCALE_QUERY_PATTERN.lastIndex = 0;
-    while ((match = LOCALE_QUERY_PATTERN.exec(lines[i])) !== null) {
-      const messageKey = match[1];
-      const localeEntry = enLocale[messageKey];
-      if (!localeEntry) {
-        continue;
-      }
+    for (const pattern of LOCALE_QUERY_PATTERNS) {
+      let match;
+      pattern.lastIndex = 0;
+      while ((match = pattern.exec(lines[i])) !== null) {
+        const messageKey = match[1];
+        const localeEntry = enLocale[messageKey];
+        if (!localeEntry) {
+          continue;
+        }
 
-      const localeValue = localeEntry.message;
+        const localeValue = localeEntry.message;
 
-      if (hardcodedTexts.has(localeValue)) {
-        violations.push({
-          file: _filePath,
-          line: i + 1,
-          rule: 'Rule 1',
-          message:
-            `Query uses messages.${messageKey}.message ("${localeValue}") ` +
-            `but "${localeValue}" is hardcoded in JSX.\n` +
-            `    Fix: use getByText('${localeValue}') instead.`,
-        });
+        if (hardcodedTexts.has(localeValue)) {
+          violations.push({
+            file: _filePath,
+            line: i + 1,
+            rule: 'Rule 1',
+            message:
+              `Query uses messages.${messageKey}.message ("${localeValue}") ` +
+              `but "${localeValue}" is hardcoded in JSX.\n` +
+              `    Fix: use getByText('${localeValue}') instead.`,
+          });
+        }
       }
     }
   }
@@ -126,11 +154,18 @@ for (const [key, entry] of Object.entries(enLocale)) {
   }
 }
 
-// Match hardcoded strings in query calls: getByText("...") or getByText('...')
-const HARDCODED_QUERY_PATTERN = new RegExp(
-  `(?:${QUERY_FN_GROUP})\\s*\\(\\s*['"]([^'"]{3,})['"]`,
-  'gu',
-);
+// Match hardcoded strings in query calls:
+//   getByText("..."), getByText('...')
+//   getByRole('...', { name: '...' }), getByRole('...', { name: "..." })
+const HARDCODED_QUERY_PATTERNS_R2 = [
+  // Direct: getByText('Close')
+  new RegExp(
+    `(?:${QUERY_FN_GROUP})\\s*\\(\\s*['"]([^'"]{3,})['"]`,
+    'gu',
+  ),
+  // Role name option: { name: 'Close' }
+  /\{\s*name:\s*['"]([^'"]{3,})['"]/gu,
+];
 
 // Strings that are common test data, not real i18n values — skip these
 const IGNORED_STRINGS = new Set([
@@ -145,118 +180,7 @@ const IGNORED_STRINGS = new Set([
  * New violations are not allowed. Reduce counts as you fix files.
  * When a file reaches 0, remove it from this map.
  */
-const RULE_2_BASELINE: Record<string, number> = {
-  'ui/pages/confirmations/components/edit-gas-fee-popover/edit-gas-fee-popover.test.js': 22,
-  'ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/decoded-simulation/decoded-simulation.test.tsx': 20,
-  'ui/components/multichain-accounts/multichain-account-edit-modal/multichain-account-edit-modal.test.tsx': 14,
-  'ui/pages/confirmations/components/edit-gas-fee-button/edit-gas-fee-button.test.js': 10,
-  'ui/pages/multichain-accounts/account-list/account-list.test.tsx': 10,
-  'ui/components/multichain-accounts/add-multichain-account/add-multichain-account.test.tsx': 8,
-  'ui/components/app/assets/nfts/nfts-tab/nfts-tab.test.js': 7,
-  'ui/components/multichain-accounts/multichain-account-list/multichain-account-list.test.tsx': 7,
-  'ui/pages/confirmations/components/confirm/info/shared/batched-approval-function/batched-approval-function.test.tsx': 7,
-  'ui/pages/confirmations/components/edit-gas-fee-popover/edit-gas-item/edit-gas-item.test.js': 7,
-  'ui/pages/create-account/connect-hardware/index.test.tsx': 7,
-  'ui/components/multichain/account-details/account-details.test.js': 6,
-  'ui/components/multichain/import-nfts-modal/import-nfts-modal.test.js': 6,
-  'ui/pages/confirmations/components/confirm/info/batch/batch-simulation-details/batch-simulation-details.test.tsx': 6,
-  'ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/typed-sign-v4-simulation.test.tsx': 6,
-  'ui/components/app/perps/order-card/order-card.test.tsx': 5,
-  'ui/pages/confirmations/components/confirm/info/personal-sign/personal-sign.test.tsx': 5,
-  'ui/pages/confirmations/components/confirm/info/typed-sign-v1/typed-sign-v1.test.tsx': 5,
-  'ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign.test.tsx': 5,
-  'ui/pages/confirmations/components/gas-details-item/gas-details-item.test.js': 5,
-  'ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.test.tsx': 5,
-  'ui/components/app/multichain-transaction-details-modal/multichain-transaction-details-modal.test.tsx': 4,
-  'ui/components/multichain/import-account/import-account.test.tsx': 4,
-  'ui/pages/confirmations/components/confirm/info/base-transaction-info/base-transaction-info.test.tsx': 4,
-  'ui/pages/confirmations/components/send/asset-list/asset-list.test.tsx': 4,
-  'ui/pages/onboarding-flow/privacy-settings/privacy-settings.test.tsx': 4,
-  'ui/components/app/modals/customize-nonce/customize-nonce.test.js': 3,
-  'ui/components/app/permission-cell/permission-cell.test.js': 3,
-  'ui/components/app/snaps/keyring-snap-removal-warning/keyring-snap-removal-warning.test.tsx': 3,
-  'ui/components/multichain-accounts/account-details-row/account-details-row.test.tsx': 3,
-  'ui/components/multichain-accounts/account-show-private-key-row/account-show-private-key-row.test.tsx': 3,
-  'ui/components/multichain/edit-accounts-modal/edit-accounts-modal.test.tsx': 3,
-  'ui/components/multichain/edit-networks-modal/edit-networks-modal.test.js': 3,
-  'ui/components/multichain/network-list-menu/network-list-menu.test.tsx': 3,
-  'ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-gas-limit/advanced-gas-fee-gas-limit.test.js': 3,
-  'ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-inputs/base-fee-input/base-fee-input.test.js': 3,
-  'ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-inputs/priority-fee-input/priority-fee-input.test.js': 3,
-  'ui/pages/confirmations/components/confirm/header/header-info.test.tsx': 3,
-  'ui/pages/confirmations/components/confirm/info/batch/nested-transaction-data/nested-transaction-data.test.tsx': 3,
-  'ui/pages/confirmations/components/confirm/info/batch/transaction-account-details/transaction-account-details.test.tsx': 3,
-  'ui/pages/confirmations/components/send/hex-data/hex-data.test.tsx': 3,
-  'ui/components/app/cancel-speedup-popover/cancel-speedup-popover.test.js': 2,
-  'ui/components/app/modals/confirm-delete-network/confirm-delete-network.test.js': 2,
-  'ui/components/app/modals/confirm-remove-account/confirm-remove-account.test.js': 2,
-  'ui/components/app/modals/reject-transactions/reject-transactions.test.js': 2,
-  'ui/components/app/rewards/RewardsPointsBalance.test.tsx': 2,
-  'ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-network.test.tsx': 2,
-  'ui/pages/confirmations/components/advanced-gas-controls/advanced-gas-controls.test.js': 2,
-  'ui/pages/confirmations/components/confirm/info/shared/network-row/network-row.test.tsx': 2,
-  'ui/pages/confirmations/components/confirm/info/shared/quote-transaction-data/quoted-transaction-data.test.tsx': 2,
-  'ui/pages/confirmations/components/confirm/info/shared/transaction-data/transaction-data.test.tsx': 2,
-  'ui/pages/confirmations/components/fee-details-component/fee-details-component.test.js': 2,
-  'ui/pages/confirmations/components/gas-timing/gas-timing.component.test.js': 2,
-  'ui/pages/confirmations/components/modals/pay-with-modal/pay-with-modal.test.tsx': 2,
-  'ui/pages/confirmations/components/send/amount/amount.test.tsx': 2,
-  'ui/pages/confirmations/components/send/network-filter/network-filter.test.tsx': 2,
-  'ui/pages/confirmations/components/simulation-error-message/simulation-error-message.test.js': 2,
-  'ui/pages/confirmations/components/transaction-detail/transaction-detail.component.test.js': 2,
-  'ui/pages/keychains/reveal-seed.test.js': 2,
-  'ui/pages/multichain-accounts/multichain-account-details-page/multichain-account-details-page.test.tsx': 2,
-  'ui/pages/onboarding-flow/onboarding-flow.test.tsx': 2,
-  'ui/pages/settings/settings.test.js': 2,
-  'ui/components/app/alert-system/alert-modal/alert-modal.test.tsx': 1,
-  'ui/components/app/create-new-vault/create-new-vault.test.js': 1,
-  'ui/components/app/modals/keyring-snap-removal-modal/keyring-snap-removal-result-modal.test.tsx': 1,
-  'ui/components/app/multi-rpc-edit-modal/multi-rpc-edit-modal.test.tsx': 1,
-  'ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx': 1,
-  'ui/components/app/name/name-details/name-details.test.tsx': 1,
-  'ui/components/app/perps/order-entry/components/leverage-slider/leverage-slider.test.tsx': 1,
-  'ui/components/app/rewards/RewardsErrorBanner.test.tsx': 1,
-  'ui/components/app/snaps/snap-permission-adapter/snap-permission-adapter.test.js': 1,
-  'ui/components/app/snaps/snap-permission-cell/snap-permission-cell.test.js': 1,
-  'ui/components/app/snaps/snap-permissions-list/snap-permissions-list.test.js': 1,
-  'ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.test.js': 1,
-  'ui/components/app/transaction-list-item-details/transaction-list-item-details.component.test.js': 1,
-  'ui/components/component-library/modal/modal.test.tsx': 1,
-  'ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.test.tsx': 1,
-  'ui/components/multichain-accounts/multichain-account-menu/multichain-account-menu.test.tsx': 1,
-  'ui/components/multichain-accounts/smart-contract-account-toggle-section/smart-contract-account-toggle-section.test.tsx': 1,
-  'ui/components/multichain-accounts/smart-contract-account-toggle/smart-contract-account-toggle.test.tsx': 1,
-  'ui/components/multichain/account-details/account-details-display.test.tsx': 1,
-  'ui/components/multichain/account-menu/account-menu.test.tsx': 1,
-  'ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx': 1,
-  'ui/components/multichain/connected-site-popover/connected-site-popover.test.tsx': 1,
-  'ui/components/ui/form-combo-field/form-combo-field.test.tsx': 1,
-  'ui/components/ui/page-container/page-container-header/page-container-header.test.js': 1,
-  'ui/pages/confirmations/components/activity/transaction-details-modal/transaction-details-modal.test.tsx': 1,
-  'ui/pages/confirmations/components/advanced-gas-fee-popover/advanced-gas-fee-popover.test.js': 1,
-  'ui/pages/confirmations/components/confirm/info/approve/approve-details/approve-details.test.tsx': 1,
-  'ui/pages/confirmations/components/confirm/info/approve/approve.test.tsx': 1,
-  'ui/pages/confirmations/components/confirm/info/shared/gas-fees-details/gas-fees-details.test.tsx': 1,
-  'ui/pages/confirmations/components/confirm/info/shared/transaction-details/transaction-details.test.tsx': 1,
-  'ui/pages/confirmations/components/confirm/info/token-transfer/token-details-section.test.tsx': 1,
-  'ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/permit-simulation/permit-simulation.test.tsx': 1,
-  'ui/pages/confirmations/components/confirm/ledger-info/ledger-info.test.tsx': 1,
-  'ui/pages/confirmations/components/confirm/smart-account-tab/account-network/account-network.test.tsx': 1,
-  'ui/pages/confirmations/components/confirm/smart-account-update/smart-account-update-success.test.tsx': 1,
-  'ui/pages/confirmations/components/confirm/smart-account-update/smart-account-update.test.tsx': 1,
-  'ui/pages/confirmations/components/gas-estimate-list-item/gas-estimate-list-item.test.tsx': 1,
-  'ui/pages/confirmations/components/gas-price-input/gas-price-input.test.tsx': 1,
-  'ui/pages/confirmations/components/max-base-fee-input/max-base-fee-input.test.tsx': 1,
-  'ui/pages/confirmations/components/priority-fee-input/priority-fee-input.test.tsx': 1,
-  'ui/pages/confirmations/confirmation/templates/switch-ethereum-chain.test.js': 1,
-  'ui/pages/create-account/connect-hardware/account-list.test.js': 1,
-  'ui/pages/multichain-accounts/multichain-account-address-list-page/multichain-account-address-list-page.test.tsx': 1,
-  'ui/pages/onboarding-flow/recovery-phrase/review-recovery-phrase.test.tsx': 1,
-  'ui/pages/onboarding-flow/welcome/welcome-login.test.tsx': 1,
-  'ui/pages/settings/networks-tab/networks-form/networks-form.test.js': 1,
-  'ui/pages/settings/security-tab/delete-metametrics-data-button/delete-metametrics-data-button.test.tsx': 1,
-  'ui/pages/unlock-page/unlock-page.test.tsx': 1,
-};
+const RULE_2_BASELINE: Record<string, number> = {};
 
 function findRule2Violations(
   filePath: string,
@@ -265,26 +189,31 @@ function findRule2Violations(
   const violations: Violation[] = [];
 
   for (let i = 0; i < lines.length; i++) {
-    let match;
-    HARDCODED_QUERY_PATTERN.lastIndex = 0;
-    while ((match = HARDCODED_QUERY_PATTERN.exec(lines[i])) !== null) {
-      const hardcodedValue = match[1];
+    // Deduplicate across patterns (same line + same value = one violation)
+    const seen = new Set<string>();
+    for (const pattern of HARDCODED_QUERY_PATTERNS_R2) {
+      let match;
+      pattern.lastIndex = 0;
+      while ((match = pattern.exec(lines[i])) !== null) {
+        const hardcodedValue = match[1];
 
-      if (IGNORED_STRINGS.has(hardcodedValue)) {
-        continue;
-      }
+        if (IGNORED_STRINGS.has(hardcodedValue) || seen.has(hardcodedValue)) {
+          continue;
+        }
 
-      const messageKey = localeValueToKey.get(hardcodedValue);
-      if (messageKey) {
-        violations.push({
-          file: filePath,
-          line: i + 1,
-          rule: 'Rule 2',
-          message:
-            `Query uses hardcoded string "${hardcodedValue}" which matches ` +
-            `locale key "${messageKey}".\n` +
-            `    Fix: use messages.${messageKey}.message instead of "${hardcodedValue}".`,
-        });
+        const messageKey = localeValueToKey.get(hardcodedValue);
+        if (messageKey) {
+          seen.add(hardcodedValue);
+          violations.push({
+            file: filePath,
+            line: i + 1,
+            rule: 'Rule 2',
+            message:
+              `Query uses hardcoded string "${hardcodedValue}" which matches ` +
+              `locale key "${messageKey}".\n` +
+              `    Fix: use messages.${messageKey}.message instead of "${hardcodedValue}".`,
+          });
+        }
       }
     }
   }
@@ -296,10 +225,8 @@ function findRule2Violations(
 
 describe('Locale query mismatch fitness function', () => {
   it('should not use messages.xxx.message to query hardcoded JSX text (Rule 1)', () => {
-    const testFiles = glob.sync('ui/**/*.test.{ts,tsx,js,jsx}', {
-      cwd: path.resolve(__dirname, '../..'),
-      absolute: true,
-    });
+    const uiDir = path.resolve(__dirname, '../../ui');
+    const testFiles = findFiles(uiDir, TEST_FILE_PATTERN);
 
     const allViolations: Violation[] = [];
 
@@ -324,10 +251,8 @@ describe('Locale query mismatch fitness function', () => {
 
   it('should not use hardcoded strings that match locale values (Rule 2)', () => {
     const rootDir = path.resolve(__dirname, '../..');
-    const testFiles = glob.sync('ui/**/*.test.{ts,tsx,js,jsx}', {
-      cwd: rootDir,
-      absolute: true,
-    });
+    const uiDir = path.join(rootDir, 'ui');
+    const testFiles = findFiles(uiDir, TEST_FILE_PATTERN);
 
     const newViolations: Violation[] = [];
 

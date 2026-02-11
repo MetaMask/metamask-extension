@@ -54,7 +54,7 @@ describe('AccountList', () => {
     renderComponent();
 
     expect(screen.getByText(messages.accounts.message)).toBeInTheDocument();
-    expect(screen.getByLabelText('Back')).toBeInTheDocument();
+    expect(screen.getByLabelText(messages.back.message)).toBeInTheDocument();
 
     const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
 
@@ -68,7 +68,7 @@ describe('AccountList', () => {
   it('calls navigate when back button is clicked', () => {
     renderComponent();
 
-    const backButton = screen.getByLabelText('Back');
+    const backButton = screen.getByLabelText(messages.back.message);
     fireEvent.click(backButton);
 
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);
@@ -105,7 +105,7 @@ describe('AccountList', () => {
     expect(searchContainer).toBeInTheDocument();
 
     const searchInput = within(searchContainer).getByPlaceholderText(
-      'Search your accounts',
+      messages.searchYourAccounts.message,
     );
 
     expect(searchInput).toBeInTheDocument();
@@ -188,7 +188,7 @@ describe('AccountList', () => {
 
       const { getAllByText } = renderComponent();
 
-      expect(getAllByText('Syncing...')[0]).toBeInTheDocument();
+      expect(getAllByText(messages.syncing.message)[0]).toBeInTheDocument();
     });
 
     it('prioritizes syncing message over local loading', async () => {
@@ -200,10 +200,10 @@ describe('AccountList', () => {
 
       const { getAllByText } = renderComponent();
 
-      fireEvent.click(getAllByText('Syncing...')[0]);
+      fireEvent.click(getAllByText(messages.syncing.message)[0]);
 
       // Should still show syncing message, not creating account message
-      expect(getAllByText('Syncing...')[0]).toBeInTheDocument();
+      expect(getAllByText(messages.syncing.message)[0]).toBeInTheDocument();
     });
 
     it('shows spinner when any loading state is active', async () => {
@@ -216,7 +216,7 @@ describe('AccountList', () => {
       const { getAllByText } = renderComponent();
 
       // When account syncing is in progress, should show spinner
-      expect(getAllByText('Syncing...').length).toBeGreaterThanOrEqual(1);
+      expect(getAllByText(messages.syncing.message).length).toBeGreaterThanOrEqual(1);
     });
 
     it('shows default add wallet text when no loading states are active', () => {
@@ -227,7 +227,7 @@ describe('AccountList', () => {
       });
       const { getAllByText } = renderComponent();
 
-      expect(getAllByText('Add wallet').length).toBeGreaterThanOrEqual(1);
+      expect(getAllByText(messages.addWallet.message).length).toBeGreaterThanOrEqual(1);
     });
 
     it('handles loading state transitions correctly', () => {
@@ -240,7 +240,7 @@ describe('AccountList', () => {
 
       const { getAllByText, rerender } = renderComponent();
 
-      expect(getAllByText('Add wallet').length).toBeGreaterThanOrEqual(1);
+      expect(getAllByText(messages.addWallet.message).length).toBeGreaterThanOrEqual(1);
 
       // Simulate account syncing starting
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
@@ -251,7 +251,7 @@ describe('AccountList', () => {
 
       rerender(<AccountList />);
 
-      expect(getAllByText('Syncing...').length).toBeGreaterThanOrEqual(1);
+      expect(getAllByText(messages.syncing.message).length).toBeGreaterThanOrEqual(1);
 
       // Simulate syncing completing
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
@@ -262,7 +262,7 @@ describe('AccountList', () => {
 
       rerender(<AccountList />);
 
-      expect(getAllByText('Add wallet').length).toBeGreaterThanOrEqual(1);
+      expect(getAllByText(messages.addWallet.message).length).toBeGreaterThanOrEqual(1);
     });
   });
 });

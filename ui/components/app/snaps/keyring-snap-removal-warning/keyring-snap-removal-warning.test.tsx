@@ -97,7 +97,7 @@ describe('Keyring Snap Remove Warning', () => {
     });
 
     await waitFor(() => {
-      const removeSnapButton = getAllByText('Remove Snap')[1];
+      const removeSnapButton = getAllByText(messages.removeSnap.message)[1];
       expect(removeSnapButton).not.toBeDisabled();
       fireEvent.click(removeSnapButton);
       expect(mockOnSubmit).toBeCalled();
@@ -153,7 +153,7 @@ describe('Keyring Snap Remove Warning', () => {
         store,
       );
 
-      const backButton = getByLabelText('Back');
+      const backButton = getByLabelText(messages.back.message);
 
       fireEvent.click(backButton);
 
@@ -172,7 +172,7 @@ describe('Keyring Snap Remove Warning', () => {
 
       fireEvent.click(continueButton);
 
-      const backButton = getByLabelText('Back');
+      const backButton = getByLabelText(messages.back.message);
 
       fireEvent.click(backButton);
 

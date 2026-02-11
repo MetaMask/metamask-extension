@@ -8,6 +8,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 import GasTiming from '.';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../store/actions.ts', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -47,7 +48,7 @@ describe('Gas timing', () => {
     const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
 
     await waitFor(() => {
-      expect(screen.queryByText('Market')).toBeTruthy();
+      expect(screen.queryByText(messages.medium.message)).toBeTruthy();
       expect(screen.getByTestId('gas-timing-time')).toBeInTheDocument();
     });
   });
@@ -65,7 +66,7 @@ describe('Gas timing', () => {
     const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
 
     await waitFor(() => {
-      expect(screen.queryByText('10% increase')).toBeTruthy();
+      expect(screen.queryByText(messages.tenPercentIncreased.message)).toBeTruthy();
     });
   });
 });

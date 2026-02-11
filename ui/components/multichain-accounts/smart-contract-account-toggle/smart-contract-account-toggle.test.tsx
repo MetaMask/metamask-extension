@@ -8,6 +8,7 @@ import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hook
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { setToggleState } from '../../../ducks/smart-accounts/smart-accounts';
 import { SmartContractAccountToggle } from './smart-contract-account-toggle';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Account');
 jest.mock('../../../pages/confirmations/hooks/useBatchAuthorizationRequests');
@@ -122,7 +123,7 @@ describe('SmartContractAccountToggle', () => {
     it('displays network name and toggle button', () => {
       render();
 
-      expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+      expect(screen.getByText(messages.mainnet.message)).toBeInTheDocument();
       expect(screen.getByRole('checkbox')).toBeInTheDocument();
     });
 

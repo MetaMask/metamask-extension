@@ -170,7 +170,7 @@ describe('ConnectHardwareForm', () => {
         mockStoreWithU2F,
       );
 
-      const ledgerButton = getByLabelText('Ledger');
+      const ledgerButton = getByLabelText(messages.ledger.message);
       const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(ledgerButton);
@@ -206,7 +206,7 @@ describe('ConnectHardwareForm', () => {
         mockStoreWithU2F,
       );
 
-      const ledgerButton = getByLabelText('Ledger');
+      const ledgerButton = getByLabelText(messages.ledger.message);
       const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(ledgerButton);
@@ -235,12 +235,12 @@ describe('ConnectHardwareForm', () => {
       fireEvent.click(qrButton);
 
       await waitFor(() => {
-        expect(getByText('Keystone')).toBeInTheDocument();
-        expect(getByText('AirGap Vault')).toBeInTheDocument();
-        expect(getByText('CoolWallet')).toBeInTheDocument();
+        expect(getByText(messages.keystone.message)).toBeInTheDocument();
+        expect(getByText(messages.airgapVault.message)).toBeInTheDocument();
+        expect(getByText(messages.coolWallet.message)).toBeInTheDocument();
         expect(getByText("D'Cent")).toBeInTheDocument();
-        expect(getByText('imToken')).toBeInTheDocument();
-        expect(getByText('Ngrave Zero')).toBeInTheDocument();
+        expect(getByText(messages.imToken.message)).toBeInTheDocument();
+        expect(getByText(messages.QRHardwareWalletSteps2Description.message)).toBeInTheDocument();
       });
     });
   });

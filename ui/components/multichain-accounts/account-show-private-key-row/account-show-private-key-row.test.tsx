@@ -131,7 +131,7 @@ describe('AccountShowPrivateKeyRow', () => {
       );
 
       expect(screen.getByText(messages.privateKey.message)).toBeInTheDocument();
-      expect(screen.getByLabelText('Next')).toBeInTheDocument();
+      expect(screen.getByLabelText(messages.next.message)).toBeInTheDocument();
     });
 
     it('does not render for non-exportable account (hardware)', () => {
@@ -212,10 +212,10 @@ describe('AccountShowPrivateKeyRow', () => {
       }
 
       // Close modal
-      const closeButton = screen.getByLabelText('Close');
+      const closeButton = screen.getByLabelText(messages.close.message);
       fireEvent.click(closeButton);
 
-      expect(screen.queryByText('Show private key')).not.toBeInTheDocument();
+      expect(screen.queryByText(messages.showPrivateKey.message)).not.toBeInTheDocument();
     });
 
     it('closes modal when cancel button is clicked', () => {

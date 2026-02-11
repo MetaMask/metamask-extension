@@ -5,6 +5,7 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import AccountList from './account-list';
 import { LATTICE_HD_PATHS, LEDGER_HD_PATHS, TREZOR_HD_PATHS } from '.';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 const render = () => {
   const store = configureStore({
@@ -71,7 +72,7 @@ const render = () => {
 describe('AccountList', () => {
   it('renders AccountList component and shows Select HD path text', () => {
     render();
-    expect(screen.getByText('Select HD path')).toBeInTheDocument();
+    expect(screen.getByText(messages.selectHdPath.message)).toBeInTheDocument();
   });
 
   it('renders AccountList component and has two accounts selected', () => {

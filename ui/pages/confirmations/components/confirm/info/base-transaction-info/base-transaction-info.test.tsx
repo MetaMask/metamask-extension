@@ -89,10 +89,10 @@ describe('<BaseTransactionInfo />', () => {
       mockStore,
     );
     expect(getByText(messages.networkFee.message)).toBeInTheDocument();
-    expect(getByText('Speed')).toBeInTheDocument();
-    expect(queryByText('Origin')).toBeNull();
-    expect(queryByText('Amount')).toBeNull();
-    expect(queryByText('Token')).toBeNull();
+    expect(getByText(messages.speed.message)).toBeInTheDocument();
+    expect(queryByText(messages.origin.message)).toBeNull();
+    expect(queryByText(messages.amount.message)).toBeNull();
+    expect(queryByText(messages.token.message)).toBeNull();
     expect(queryByText('Gas fee')).toBeNull();
   });
 });

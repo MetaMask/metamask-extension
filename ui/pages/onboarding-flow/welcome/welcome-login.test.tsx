@@ -32,7 +32,7 @@ describe('Welcome login', () => {
     );
     expect(getByTestId('get-started')).toBeInTheDocument();
 
-    const importButton = getByText('I have an existing wallet');
+    const importButton = getByText(messages.onboardingImportWallet.message);
     expect(importButton).toBeInTheDocument();
 
     await act(async () => {

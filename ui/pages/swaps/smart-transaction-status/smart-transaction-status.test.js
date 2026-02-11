@@ -130,7 +130,7 @@ describe('SmartTransactionStatusLabel', () => {
     expect(getByText(messages.stxUnknown.message)).toBeInTheDocument();
     expect(
       getByText(
-        'A transaction has been successful but we’re unsure what it is. This may be due to submitting another transaction while this swap was processing.',
+        messages.stxUnknownDescription.message,
       ),
     ).toBeInTheDocument();
     expect(getByText(messages.close.message)).toBeInTheDocument();

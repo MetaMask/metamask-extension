@@ -10,6 +10,7 @@ import configureStore from '../../../store/store';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { EditAccountsModal } from '.';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 const mockKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
 
@@ -135,7 +136,7 @@ describe('EditAccountsModal', () => {
 
   it('shows select all button', async () => {
     const { getByLabelText } = render();
-    expect(getByLabelText('Select all')).toBeInTheDocument();
+    expect(getByLabelText(messages.selectAll.message)).toBeInTheDocument();
   });
 
   it('calls onSubmit with the selected account addresses when the connect button is clicked', async () => {
@@ -162,8 +163,8 @@ describe('EditAccountsModal', () => {
 
   it('shows the disconnect text button when nothing is selected', () => {
     const { getByLabelText, getByTestId } = render();
-    fireEvent.click(getByLabelText('Select all'));
-    fireEvent.click(getByLabelText('Select all'));
+    fireEvent.click(getByLabelText(messages.selectAll.message));
+    fireEvent.click(getByLabelText(messages.selectAll.message));
     expect(getByTestId('disconnect-accounts-button')).toHaveTextContent(
       'Disconnect',
     );

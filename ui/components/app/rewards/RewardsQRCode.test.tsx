@@ -10,6 +10,7 @@ import {
   SRP_ONBOARDING_URL,
   APPLE_ONBOARDING_URL,
 } from './utils/constants';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 // Mock react-redux hooks
 jest.mock('react-redux', () => ({
@@ -145,7 +146,7 @@ describe('RewardsQRCode', () => {
 
     render(<RewardsQRCode />);
 
-    const closeButton = screen.getByRole('button', { name: 'Got it' });
+    const closeButton = screen.getByRole('button', { name: messages.deprecatedNetworkButtonMsg.message });
     expect(closeButton).toBeInTheDocument();
     fireEvent.click(closeButton);
 

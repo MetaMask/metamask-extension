@@ -33,7 +33,7 @@ describe('TokenDetailsSection', () => {
       mockStore,
     );
     expect(getByText(messages.network.message)).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
     expect(getByText(messages.interactingWith.message)).toBeInTheDocument();
   });
 });
