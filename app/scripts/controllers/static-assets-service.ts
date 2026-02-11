@@ -1,3 +1,4 @@
+import type { IDisposable } from 'cockatiel';
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { isStrictHexString, parseCaipAssetType } from '@metamask/utils';
 import type { Messenger } from '@metamask/messenger';
@@ -59,19 +60,6 @@ export type StaticAssetsServiceMessenger = Messenger<
   StaticAssetsServiceEvents
 >;
 
-/**
- * The fetch function type.
- *
- * @param input - The input to fetch.
- * @param init - The init options to use.
- * @returns A promise that resolves to the response.
- */
-type FetchFunction = (
-  input: RequestInfo | URL | string,
-  init?: RequestInit,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-) => Promise<any>;
-
 export type StaticAssetsServiceOptions = {
   messenger: StaticAssetsServiceMessenger;
   /** The interval for the polling. */
@@ -81,7 +69,7 @@ export type StaticAssetsServiceOptions = {
   /** The top X assets to fetch. */
   getTopX: () => number;
   /** The fetch function to use. */
-  fetchFn: FetchFunction;
+  fetchFn: typeof fetch;
   /** The policy options to use. */
   policyOptions?: CreateServicePolicyOptions;
 };
@@ -127,7 +115,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
   readonly #getSupportedChains: () => Set<Hex>;
 
   /** The fetch function to use. */
-  readonly #fetchFn: FetchFunction;
+  readonly #fetchFn: typeof fetch;
 
   /** The top X assets to fetch. */
   readonly #getTopX: () => number;
@@ -413,5 +401,55 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     } catch (error) {
       return false;
     }
+  }
+
+  /**
+   * Registers a handler that will be called after a request returns a non-500
+   * response, causing a retry. Primarily useful in tests where timers are being
+   * mocked.
+   *
+   * @param listener - The handler to be called.
+   * @returns An object that can be used to unregister the handler. See
+   * {@link CockatielEvent}.
+   * @see {@link createServicePolicy}
+   */
+  onRetry(listener: Parameters<ServicePolicy['onRetry']>[0]): IDisposable {
+    return this.#policy.onRetry(listener);
+  }
+
+  /**
+   * Registers a handler that will be called after a set number of retry rounds
+   * prove that requests to the API endpoint consistently return a 5xx response.
+   *
+   * @param listener - The handler to be called.
+   * @returns An object that can be used to unregister the handler. See
+   * {@link CockatielEvent}.
+   * @see {@link createServicePolicy}
+   */
+  onBreak(listener: Parameters<ServicePolicy['onBreak']>[0]): IDisposable {
+    return this.#policy.onBreak(listener);
+  }
+
+  /**
+   * Registers a handler that will be called under one of two circumstances:
+   *
+   * 1. After a set number of retries prove that requests to the API
+   * consistently result in one of the following failures:
+   * - A connection initiation error
+   * - A connection reset error
+   * - A timeout error
+   * - A non-JSON response
+   * - A 502, 503, or 504 response
+   * 2. After a successful request is made to the API, but the response takes
+   * longer than a set duration to return.
+   *
+   * @param listener - The handler to be called.
+   * @returns An object that can be used to unregister the handler. See
+   * {@link CockatielEvent}.
+   */
+  onDegraded(
+    listener: Parameters<ServicePolicy['onDegraded']>[0],
+  ): IDisposable {
+    return this.#policy.onDegraded(listener);
   }
 }
