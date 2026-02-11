@@ -53,6 +53,13 @@ jest.mock('../../../../../store/actions', () => ({
   getContractMethodData: jest.fn().mockReturnValue({ type: 'dummy' }),
 }));
 
+const withAppState = (state: Record<string, unknown>) => ({
+  ...state,
+  appState: {
+    ...(state.appState as Record<string, unknown> | undefined),
+  },
+});
+
 describe('ConfirmTitle', () => {
   it('should render a skeleton loader when there is no current confirmation', () => {
     const mockStateWithNoConfirmation = {
@@ -63,7 +70,7 @@ describe('ConfirmTitle', () => {
         unapprovedPersonalMsgs: {},
       },
     };
-    const mockStore = configureMockStore([])(mockStateWithNoConfirmation);
+    const mockStore = configureMockStore([])(withAppState(mockStateWithNoConfirmation));
     const { container } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
       mockStore,
@@ -73,7 +80,9 @@ describe('ConfirmTitle', () => {
   });
 
   it('should render the title and description for a personal signature', () => {
-    const mockStore = configureMockStore([])(getMockPersonalSignConfirmState);
+    const mockStore = configureMockStore([])(
+      withAppState(getMockPersonalSignConfirmState()),
+    );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
       mockStore,
@@ -87,7 +96,7 @@ describe('ConfirmTitle', () => {
 
   it('should render the title and description for a permit signature', () => {
     const mockStore = configureMockStore([])(
-      getMockTypedSignConfirmStateForRequest(permitSignatureMsg),
+      withAppState(getMockTypedSignConfirmStateForRequest(permitSignatureMsg)),
     );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
@@ -102,7 +111,7 @@ describe('ConfirmTitle', () => {
 
   it('should render the title and description for a NFT permit signature', () => {
     const mockStore = configureMockStore([])(
-      getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg),
+      withAppState(getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg)),
     );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
@@ -117,8 +126,10 @@ describe('ConfirmTitle', () => {
 
   it('should render the title and description for smart account upgrade correctly', () => {
     const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmationOnly as Confirmation,
+      withAppState(
+        getMockConfirmStateForTransaction(
+          upgradeAccountConfirmationOnly as Confirmation,
+        ),
       ),
     );
     const { getByText } = renderWithConfirmContextProvider(
@@ -133,7 +144,9 @@ describe('ConfirmTitle', () => {
   });
 
   it('should render the title and description for typed signature', () => {
-    const mockStore = configureMockStore([])(getMockTypedSignConfirmState());
+    const mockStore = configureMockStore([])(
+      withAppState(getMockTypedSignConfirmState()),
+    );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
       mockStore,
@@ -147,7 +160,7 @@ describe('ConfirmTitle', () => {
 
   it('should render the title and description for a contract interaction transaction', () => {
     const mockStore = configureMockStore([])(
-      getMockContractInteractionConfirmState(),
+      withAppState(getMockContractInteractionConfirmState()),
     );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
@@ -160,7 +173,9 @@ describe('ConfirmTitle', () => {
   });
 
   it('should render the title and description for a approval transaction for NFTs', () => {
-    const mockStore = configureMockStore([])(getMockApproveConfirmState());
+    const mockStore = configureMockStore([])(
+      withAppState(getMockApproveConfirmState()),
+    );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
       mockStore,
@@ -182,7 +197,9 @@ describe('ConfirmTitle', () => {
       pending: false,
     }));
 
-    const mockStore = configureMockStore([])(getMockApproveConfirmState());
+    const mockStore = configureMockStore([])(
+      withAppState(getMockApproveConfirmState()),
+    );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
       mockStore,
@@ -198,7 +215,7 @@ describe('ConfirmTitle', () => {
 
   it('should render the title and description for a setApprovalForAll transaction', async () => {
     const mockStore = configureMockStore([])(
-      getMockSetApprovalForAllConfirmState(),
+      withAppState(getMockSetApprovalForAllConfirmState()),
     );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,
@@ -247,11 +264,13 @@ describe('ConfirmTitle', () => {
       });
     it('renders an alert banner if there is a danger alert', () => {
       const mockStore = configureMockStore([])(
-        mockAlertState({
-          alerts: {
-            [unapprovedPersonalSignMsg.id]: [alertMock as Alert],
-          },
-        }),
+        withAppState(
+          mockAlertState({
+            alerts: {
+              [unapprovedPersonalSignMsg.id]: [alertMock as Alert],
+            },
+          }),
+        ),
       );
       const { queryByText } = renderWithConfirmContextProvider(
         <ConfirmTitle />,
@@ -263,7 +282,7 @@ describe('ConfirmTitle', () => {
     });
 
     it('renders multiple alert banner when there are multiple alerts', () => {
-      const mockStore = configureMockStore([])(mockAlertState());
+      const mockStore = configureMockStore([])(withAppState(mockAlertState()));
 
       const { getByText } = renderWithConfirmContextProvider(
         <ConfirmTitle />,
@@ -305,7 +324,7 @@ describe('ConfirmTitle', () => {
         },
       });
 
-      const mockStore = configureMockStore([])(stateWithAlert);
+      const mockStore = configureMockStore([])(withAppState(stateWithAlert));
       const { queryByText } = renderWithConfirmContextProvider(
         <ConfirmTitle />,
         mockStore,

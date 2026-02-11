@@ -26,6 +26,14 @@ const mockApproval = {
     isBlockedUrl: mockIsBlockedUrl,
   },
 };
+
+const withAppState = (state) => ({
+  ...state,
+  appState: {
+    ...(state.appState ?? {}),
+  },
+});
+
 const mockBaseStore = {
   metamask: {
     pendingApprovals: {
@@ -51,7 +59,7 @@ describe('snap-account-redirect confirmation', () => {
         },
       },
     };
-    const store = configureMockStore(middleware)(testStore);
+    const store = configureMockStore(middleware)(withAppState(testStore));
     const { container, getByText } = renderWithProvider(
       <Confirmation />,
       store,
