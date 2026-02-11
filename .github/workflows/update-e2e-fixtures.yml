@@ -212,6 +212,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
+      - name: Restore updated fixtures
         uses: actions/cache/restore@v5
         with:
           path: |
