@@ -28,18 +28,19 @@ type Props = {
 };
 
 export const TransferDetails = ({ transaction }: Props) => {
+  console.log("transfer details", transaction)
   const { formatToken } = useFormatters();
   const t = useI18nContext();
   const { amount, symbol } = getTransferAmount(transaction.amounts);
   const displayAmount = amount ? Number.parseFloat(amount) : 0;
 
-  const { chainImageUrl, chainName } = mapChainInfo(transaction.chainId);
-  const explorerUrl = transaction.hash
-    ? getExplorerUrl(transaction.chainId, transaction.hash)
+  const { chainId, hash, time, txParams } = transaction;
+  const { chainImageUrl, chainName } = mapChainInfo(chainId);
+  const explorerUrl = hash
+    ? getExplorerUrl(chainId, hash)
     : undefined;
-  const formattedDate = formatDateTime(transaction.time);
+  const formattedDate = formatDateTime(time);
 
-  const { txParams, hash } = transaction;
   const networkFeeWei =
     txParams.gasUsed && txParams.gasPrice
       ? BigInt(txParams.gasUsed) * BigInt(txParams.gasPrice)

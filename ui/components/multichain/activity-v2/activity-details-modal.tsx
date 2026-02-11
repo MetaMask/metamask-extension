@@ -39,7 +39,8 @@ export const ActivityDetailsModal = ({
     return null;
   }
 
-  const isSwap = transaction.transactionType === 'SWAP';
+  const isSwap =
+    transaction.category === TransactionGroupCategory.swap;
 
   const isBridge = transaction.transactionType === 'BRIDGE';
 

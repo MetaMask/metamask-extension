@@ -5,6 +5,10 @@ import {
   AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
+  TextVariant,
+  TextColor,
+  FontWeight,
+  TextButton,
 } from '@metamask/design-system-react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
@@ -15,21 +19,30 @@ import {
   formatUnits,
 } from '../helpers';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useActivityTokenIconBySymbol } from '../hooks';
 import { Row } from './row';
+import { TransactionStatus } from '@metamask/transaction-controller';
 
 type Props = {
   transaction: TransactionViewModel;
 };
 
 export const SwapDetails = ({ transaction }: Props) => {
+  console.log("swap details", transaction);
+  const t = useI18nContext();
   const { formatToken } = useFormatters();
-  const { chainImageUrl, chainName } = mapChainInfo(transaction.chainId);
-  const explorerUrl = getExplorerUrl(transaction.chainId, transaction.hash);
-  const formattedDate = formatDateTime(transaction.time);
+
+  const { chainId, hash, time, txParams } = transaction;
+  const { chainImageUrl, chainName } = mapChainInfo(chainId);
+  const explorerUrl = hash
+    ? getExplorerUrl(chainId, hash)
+    : undefined;
+  const formattedDate = formatDateTime(time);
 
   const networkFeeWei =
-    transaction.gasUsed && transaction.effectiveGasPrice
-      ? BigInt(transaction.gasUsed) * BigInt(transaction.effectiveGasPrice)
+    txParams.gasUsed && txParams.gasPrice
+      ? BigInt(txParams.gasUsed) * BigInt(txParams.gasPrice)
       : BigInt(0);
   const networkFeeEth = Number(networkFeeWei) / 10 ** 18;
 
@@ -49,24 +62,32 @@ export const SwapDetails = ({ transaction }: Props) => {
       : 0;
   const toSymbol = toData?.symbol || '';
 
-  const { from, to, hash, isError } = transaction;
-  const status = isError ? 'Failed' : 'Confirmed';
-  const statusColor = isError ? 'text-error-default' : 'text-success-default';
+  const fromTokenIconUrl = useActivityTokenIconBySymbol(
+    transaction.chainId,
+    fromSymbol,
+  );
+  const toTokenIconUrl = useActivityTokenIconBySymbol(
+    transaction.chainId,
+    toSymbol,
+  );
 
   const isBridge =
-    transaction.transactionType === 'BRIDGE' ||
-    transaction.transactionProtocol?.includes('BRIDGE');
+    transaction.transactionType === 'BRIDGE';
 
   return (
     <>
-      {/* Amount Section */}
       <div className="flex flex-col gap-4">
         {/* You sent */}
         <div className="flex flex-col gap-2">
-          <Text className="text-text-alternative text-sm">You sent</Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('youSent')}
+          </Text>
           <div className="flex items-center gap-3">
             <AvatarToken src="" name={fromSymbol} size={AvatarTokenSize.Md} />
-            <Text className="text-2xl font-medium">
+            <Text
+              variant={TextVariant.HeadingLg}
+              fontWeight={FontWeight.Medium}
+            >
               -{Math.abs(fromAmount)} {fromSymbol}
             </Text>
           </div>
@@ -74,10 +95,16 @@ export const SwapDetails = ({ transaction }: Props) => {
 
         {/* You received */}
         <div className="flex flex-col gap-2">
-          <Text className="text-text-alternative text-sm">You received</Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('youReceived')}
+          </Text>{' '}
           <div className="flex items-center gap-3">
             <AvatarToken src="" name={toSymbol} size={AvatarTokenSize.Md} />
-            <Text className="text-2xl font-medium">
+            <Text
+              variant={TextVariant.HeadingLg}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.SuccessDefault}
+            >
               +{toAmount} {toSymbol}
             </Text>
           </div>
@@ -86,32 +113,43 @@ export const SwapDetails = ({ transaction }: Props) => {
 
       <div className="h-px bg-border-muted" />
 
-      <Row left="From" right={shortenAddress(from)} />
-      <Row left="To" right={shortenAddress(to)} />
-      <Row left="Date" right={formattedDate} />
-
-      <Row
-        left="Network"
-        right={
-          <div className="flex items-center gap-2">
-            <AvatarNetwork
-              name={chainName}
-              src={chainImageUrl}
-              size={AvatarNetworkSize.Xs}
-            />
-            <Text className="font-medium">{chainName}</Text>
-          </div>
-        }
-      />
-
-      <Row left="Network fee" right={formatToken(networkFeeEth, 'ETH')} />
+      <div className="flex flex-col gap-2">
+        <Row
+          left={t('status')}
+          right={
+            <Text
+              variant={TextVariant.BodySm}
+              color={
+                transaction.status === TransactionStatus.confirmed
+                  ? TextColor.SuccessDefault
+                  : TextColor.ErrorDefault
+              }
+            >
+              {transaction.status === TransactionStatus.confirmed
+                ? t('confirmed')
+                : t('failed')}
+            </Text>
+          }
+        />
+        <Row left={t('date')} right={formattedDate} />
+        <Row
+          left={t('network')}
+          right={
+            <div className="flex items-center gap-2">
+              <AvatarNetwork
+                name={chainName}
+                src={chainImageUrl}
+                size={AvatarNetworkSize.Xs}
+              />
+              <Text className="font-medium">{chainName}</Text>
+            </div>
+          }
+        />
+        <Row left={t('networkFee')} right={formatToken(networkFeeEth, 'ETH')} />
+        <Row left="Total amount" right={<div/>} />
+      </div>
 
       <div className="h-px bg-border-muted" />
-
-      <Row
-        left="Status"
-        right={<Text className={statusColor}>{status}</Text>}
-      />
 
       {isBridge ? (
         <>
@@ -119,14 +157,11 @@ export const SwapDetails = ({ transaction }: Props) => {
             left="Transaction hash #1"
             right={
               explorerUrl ? (
-                <a
-                  href={explorerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary-default hover:text-primary-default-hover"
-                >
-                  View on Explorer ↗
-                </a>
+                <TextButton asChild>
+                  <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+                    {t('viewOnExplorer')}
+                  </a>
+                </TextButton>
               ) : (
                 <Text className="text-xs text-text-alternative">
                   {shortenAddress(hash)}
@@ -138,14 +173,11 @@ export const SwapDetails = ({ transaction }: Props) => {
             left="Transaction hash #2"
             right={
               explorerUrl ? (
-                <a
-                  href={explorerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary-default hover:text-primary-default-hover"
-                >
-                  View on Lineascan ↗
-                </a>
+                <TextButton asChild>
+                  <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+                    {t('viewOnExplorer')}
+                  </a>
+                </TextButton>
               ) : (
                 <Text className="text-xs text-text-alternative">
                   {shortenAddress(hash)}
@@ -156,17 +188,14 @@ export const SwapDetails = ({ transaction }: Props) => {
         </>
       ) : (
         <Row
-          left="Transaction hash"
+          left="Transaction hash" // Todo: add translation
           right={
             explorerUrl ? (
-              <a
-                href={explorerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-default hover:text-primary-default-hover"
-              >
-                View on Explorer ↗
-              </a>
+              <TextButton asChild>
+                <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+                  {t('viewOnExplorer')}
+                </a>
+              </TextButton>
             ) : (
               <Text className="text-xs text-text-alternative">
                 {shortenAddress(hash)}
