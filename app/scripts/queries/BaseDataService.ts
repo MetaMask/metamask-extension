@@ -1,9 +1,12 @@
 import {
-  DefaultError,
+  WithRequired,
   DehydratedState,
   FetchInfiniteQueryOptions,
   FetchQueryOptions,
   InfiniteData,
+  InvalidateOptions,
+  InvalidateQueryFilters,
+  QueryFunctionContext,
   QueryClient,
   QueryKey,
   dehydrate,
@@ -14,7 +17,7 @@ import {
   ActionConstraint,
   EventConstraint,
 } from '@metamask/messenger';
-import { Json } from '@metamask/utils';
+import { assert, Json } from '@metamask/utils';
 
 type SubscriptionCallback = (payload: Json) => void;
 
@@ -53,39 +56,65 @@ export class BaseDataService<
   }
 
   protected async fetchQuery<
-    TQueryFnData,
-    TError = DefaultError,
+    TQueryFnData = unknown,
+    TError = unknown,
     TData = TQueryFnData,
     TQueryKey extends QueryKey = QueryKey,
-    TPageParam = never,
   >(
-    options: FetchQueryOptions<
-      TQueryFnData,
-      TError,
-      TData,
-      TQueryKey,
-      TPageParam
+    options: WithRequired<
+      FetchQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+      'queryKey'
     >,
   ): Promise<TData> {
-    return this.#client.ensureQueryData(options);
+    return this.#client.fetchQuery(options);
   }
 
   protected async fetchInfiniteQuery<
-    TQueryFnData,
-    TError = DefaultError,
+    TQueryFnData = unknown,
+    TError = unknown,
     TData = TQueryFnData,
     TQueryKey extends QueryKey = QueryKey,
-    TPageParam = unknown,
   >(
-    options: FetchInfiniteQueryOptions<
-      TQueryFnData,
-      TError,
-      TData,
-      TQueryKey,
-      TPageParam
+    options: WithRequired<
+      FetchInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+      'queryKey' | 'queryFn'
     >,
-  ): Promise<InfiniteData<TData, TPageParam>> {
-    return this.#client.ensureQueryData(options);
+    context: QueryFunctionContext<TQueryKey>,
+  ): Promise<InfiniteData<TData>> {
+    assert(context, 'Context must be passed when using fetchInfiniteQuery.');
+
+    const queryData = await this.#client.ensureQueryData(options);
+
+    if (context.pageParam) {
+      const query = this.#client
+        .getQueryCache()
+        .find({ queryKey: options.queryKey })!;
+
+      return query.fetch({
+        ...options,
+        behavior: {
+          onFetch: (fetchContext) => {
+            // Combine fetchContext with passed context, that may come from UI.
+            fetchContext.fetchFn = () =>
+              fetchContext.options.queryFn({
+                queryKey: fetchContext.queryKey,
+                signal: fetchContext.signal,
+                meta: context.meta,
+                pageParam: context.pageParam,
+              });
+          },
+        },
+      });
+    }
+
+    return queryData;
+  }
+
+  protected async invalidateQueries<TPageData = unknown>(
+    filters?: InvalidateQueryFilters<TPageData>,
+    options?: InvalidateOptions,
+  ): Promise<void> {
+    return this.#client.invalidateQueries(filters, options);
   }
 
   #registerMessageHandlers() {
