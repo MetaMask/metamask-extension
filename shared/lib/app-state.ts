@@ -1,4 +1,4 @@
-import { EnvironmentType } from "../constants/app";
+import { EnvironmentType } from '../constants/app';
 
 export type PendingRedirectRoute = {
   path: string;
