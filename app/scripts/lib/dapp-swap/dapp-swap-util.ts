@@ -1,4 +1,3 @@
-import log from 'loglevel';
 import { Hex, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import {
   GenericQuoteRequest,
@@ -19,6 +18,7 @@ import {
 import { DappSwapComparisonData } from '../../controllers/app-state-controller';
 import { SecurityAlertResponse } from '../ppom/types';
 import { DappSwapDecodingError } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-command-utils';
+import { createSentryError } from '../../../../shared/modules/error';
 
 export type DappSwapMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
@@ -145,8 +145,9 @@ export function getQuotesForConfirmation({
                 error: `Error fetching bridge quotes: ${error.message}`,
                 commands,
               });
-              log.error('Error fetching dapp swap quotes', error);
-              captureException(error);
+              captureException(
+                createSentryError('Error fetching dapp swap quotes', error),
+              );
             });
         }
       }
