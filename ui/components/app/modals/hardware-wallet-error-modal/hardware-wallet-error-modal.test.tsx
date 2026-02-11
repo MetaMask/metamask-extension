@@ -204,9 +204,6 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         getByText('[hardwareWalletErrorRecoveryUnlock2]'),
       ).toBeInTheDocument();
-      expect(
-        getByText('[hardwareWalletErrorRecoveryUnlock3]'),
-      ).toBeInTheDocument();
     });
 
     it('displays description for unknown errors', () => {

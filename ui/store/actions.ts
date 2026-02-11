@@ -109,7 +109,6 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  getPendingHardwareWalletSigning,
   getIsHardwareWalletErrorModalVisible,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
@@ -3904,14 +3903,12 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     const state = getState();
     const approvalFlows = getApprovalFlows(state);
-    const isPendingHardwareWalletSigning =
-      getPendingHardwareWalletSigning(state);
     const isHwErrorModalVisible = getIsHardwareWalletErrorModalVisible(state);
 
     // Don't close the popup if:
     // - Hardware wallet signing is in progress (error being handled)
     // - Hardware wallet error modal is visible (for retry functionality)
-    if (isPendingHardwareWalletSigning || isHwErrorModalVisible) {
+    if (isHwErrorModalVisible) {
       return;
     }
 

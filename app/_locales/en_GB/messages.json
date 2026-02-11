@@ -3073,12 +3073,9 @@
     "message": "Continue to make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Your Ledger is unlocked"
   },
-  "hardwareWalletErrorRecoveryUnlock3": {
+  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
