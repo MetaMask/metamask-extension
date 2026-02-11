@@ -1,5 +1,11 @@
+import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
 import {
   HardwareWalletType,
@@ -33,7 +39,7 @@ const createMockRefs = (
   },
   adapterRef: { current: null },
   connectingPromiseRef: { current: null },
-  ensureDeviceReadyPromiseRef: { current: null },
+  ensureDeviceReadyPromiseRef: { current: new Map() },
   isConnectingRef: { current: false },
   hasAutoConnectedRef: { current: false },
   lastConnectedAccountRef: { current: null },
@@ -43,6 +49,11 @@ const createMockRefs = (
   previousWalletTypeRef: { current: null },
   ...overrides,
 });
+
+const createWrapper =
+  (initialEntries: string[] = [CONFIRM_TRANSACTION_ROUTE]) =>
+  ({ children }: { children: React.ReactNode }) =>
+    React.createElement(MemoryRouter, { initialEntries }, children);
 
 describe('useHardwareWalletAutoConnect', () => {
   let mockSetHardwareConnectionPermissionState: jest.Mock;
@@ -66,22 +77,25 @@ describe('useHardwareWalletAutoConnect', () => {
   const setupHook = (
     stateOverrides: Partial<HardwareWalletState> = {},
     refsOverrides: Partial<HardwareWalletRefs> = {},
+    initialEntries: string[] = [CONFIRM_TRANSACTION_ROUTE],
   ) => {
-    return renderHook(() =>
-      useHardwareWalletAutoConnect({
-        state: createMockState(stateOverrides),
-        refs: createMockRefs(refsOverrides),
-        setHardwareConnectionPermissionState:
-          mockSetHardwareConnectionPermissionState,
-        updateConnectionState: mockUpdateConnectionState,
-        hardwareConnectionPermissionState:
-          HardwareConnectionPermissionState.Granted,
-        isWebHidAvailable: true,
-        isWebUsbAvailable: false,
-        handleDisconnect: mockHandleDisconnect,
-        resetAutoConnectState: mockResetAutoConnectState,
-        setAutoConnected: mockSetAutoConnected,
-      }),
+    return renderHook(
+      () =>
+        useHardwareWalletAutoConnect({
+          state: createMockState(stateOverrides),
+          refs: createMockRefs(refsOverrides),
+          setHardwareConnectionPermissionState:
+            mockSetHardwareConnectionPermissionState,
+          updateConnectionState: mockUpdateConnectionState,
+          hardwareConnectionPermissionState:
+            HardwareConnectionPermissionState.Granted,
+          isWebHidAvailable: true,
+          isWebUsbAvailable: false,
+          handleDisconnect: mockHandleDisconnect,
+          resetAutoConnectState: mockResetAutoConnectState,
+          setAutoConnected: mockSetAutoConnected,
+        }),
+      { wrapper: createWrapper(initialEntries) },
     );
   };
 
@@ -98,21 +112,23 @@ describe('useHardwareWalletAutoConnect', () => {
     });
 
     it('subscribes to WebUSB events for Trezor wallet with granted permissions', () => {
-      renderHook(() =>
-        useHardwareWalletAutoConnect({
-          state: createMockState({ walletType: HardwareWalletType.Trezor }),
-          refs: createMockRefs(),
-          setHardwareConnectionPermissionState:
-            mockSetHardwareConnectionPermissionState,
-          updateConnectionState: mockUpdateConnectionState,
-          hardwareConnectionPermissionState:
-            HardwareConnectionPermissionState.Granted,
-          isWebHidAvailable: false,
-          isWebUsbAvailable: true,
-          handleDisconnect: mockHandleDisconnect,
-          resetAutoConnectState: mockResetAutoConnectState,
-          setAutoConnected: mockSetAutoConnected,
-        }),
+      renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState({ walletType: HardwareWalletType.Trezor }),
+            refs: createMockRefs(),
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Granted,
+            isWebHidAvailable: false,
+            isWebUsbAvailable: true,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
       );
 
       expect(webConnectionUtils.subscribeToWebUsbEvents).toHaveBeenCalledWith(
@@ -131,42 +147,46 @@ describe('useHardwareWalletAutoConnect', () => {
     });
 
     it('does not subscribe when permissions are not granted', () => {
-      renderHook(() =>
-        useHardwareWalletAutoConnect({
-          state: createMockState(),
-          refs: createMockRefs(),
-          setHardwareConnectionPermissionState:
-            mockSetHardwareConnectionPermissionState,
-          updateConnectionState: mockUpdateConnectionState,
-          hardwareConnectionPermissionState:
-            HardwareConnectionPermissionState.Denied,
-          isWebHidAvailable: true,
-          isWebUsbAvailable: false,
-          handleDisconnect: mockHandleDisconnect,
-          resetAutoConnectState: mockResetAutoConnectState,
-          setAutoConnected: mockSetAutoConnected,
-        }),
+      renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState(),
+            refs: createMockRefs(),
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Denied,
+            isWebHidAvailable: true,
+            isWebUsbAvailable: false,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
       );
 
       expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
     });
 
     it('does not subscribe when WebHID is not available for Ledger', () => {
-      renderHook(() =>
-        useHardwareWalletAutoConnect({
-          state: createMockState(),
-          refs: createMockRefs(),
-          setHardwareConnectionPermissionState:
-            mockSetHardwareConnectionPermissionState,
-          updateConnectionState: mockUpdateConnectionState,
-          hardwareConnectionPermissionState:
-            HardwareConnectionPermissionState.Granted,
-          isWebHidAvailable: false,
-          isWebUsbAvailable: false,
-          handleDisconnect: mockHandleDisconnect,
-          resetAutoConnectState: mockResetAutoConnectState,
-          setAutoConnected: mockSetAutoConnected,
-        }),
+      renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState(),
+            refs: createMockRefs(),
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Granted,
+            isWebHidAvailable: false,
+            isWebUsbAvailable: false,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
       );
 
       expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
@@ -303,32 +323,42 @@ describe('useHardwareWalletAutoConnect', () => {
 
       expect(mockUnsubscribe).toHaveBeenCalled();
     });
+
+    it('does not subscribe outside confirmation routes', () => {
+      setupHook({}, {}, [DEFAULT_ROUTE]);
+
+      expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
+      expect(webConnectionUtils.subscribeToWebUsbEvents).not.toHaveBeenCalled();
+    });
   });
 
   describe('auto-connection effect', () => {
     const setupAutoConnectHook = (
       stateOverrides: Partial<HardwareWalletState> = {},
       refsOverrides: Partial<HardwareWalletRefs> = {},
+      initialEntries: string[] = [CONFIRM_TRANSACTION_ROUTE],
     ) => {
       const refs = createMockRefs({
         connectRef: { current: mockConnectRef },
         ...refsOverrides,
       });
-      const hook = renderHook(() =>
-        useHardwareWalletAutoConnect({
-          state: createMockState(stateOverrides),
-          refs,
-          setHardwareConnectionPermissionState:
-            mockSetHardwareConnectionPermissionState,
-          updateConnectionState: mockUpdateConnectionState,
-          hardwareConnectionPermissionState:
-            HardwareConnectionPermissionState.Granted,
-          isWebHidAvailable: true,
-          isWebUsbAvailable: false,
-          handleDisconnect: mockHandleDisconnect,
-          resetAutoConnectState: mockResetAutoConnectState,
-          setAutoConnected: mockSetAutoConnected,
-        }),
+      const hook = renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState(stateOverrides),
+            refs,
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Granted,
+            isWebHidAvailable: true,
+            isWebUsbAvailable: false,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper(initialEntries) },
       );
       return { hook, refs };
     };
@@ -353,21 +383,23 @@ describe('useHardwareWalletAutoConnect', () => {
     });
 
     it('does not auto-connect when permissions are not granted', () => {
-      renderHook(() =>
-        useHardwareWalletAutoConnect({
-          state: createMockState(),
-          refs: createMockRefs(),
-          setHardwareConnectionPermissionState:
-            mockSetHardwareConnectionPermissionState,
-          updateConnectionState: mockUpdateConnectionState,
-          hardwareConnectionPermissionState:
-            HardwareConnectionPermissionState.Denied,
-          isWebHidAvailable: true,
-          isWebUsbAvailable: false,
-          handleDisconnect: mockHandleDisconnect,
-          resetAutoConnectState: mockResetAutoConnectState,
-          setAutoConnected: mockSetAutoConnected,
-        }),
+      renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState(),
+            refs: createMockRefs(),
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Denied,
+            isWebHidAvailable: true,
+            isWebUsbAvailable: false,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
       );
 
       expect(mockConnectRef).not.toHaveBeenCalled();
@@ -389,6 +421,21 @@ describe('useHardwareWalletAutoConnect', () => {
       );
 
       expect(mockConnectRef).not.toHaveBeenCalled();
+    });
+
+    it('does not auto-connect outside confirmation routes', async () => {
+      (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
+        { productId: 123 },
+      ]);
+
+      setupAutoConnectHook({}, {}, [DEFAULT_ROUTE]);
+
+      await waitFor(() => {
+        expect(webConnectionUtils.getConnectedDevices).not.toHaveBeenCalled();
+      });
+
+      expect(mockConnectRef).not.toHaveBeenCalled();
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
     });
 
     it('auto-connects when account changes', async () => {
