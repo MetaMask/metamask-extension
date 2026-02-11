@@ -797,10 +797,7 @@
       "tsx>esbuild": true,
       "ws>bufferutil": false,
       "ws>utf-8-validate": false,
-      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
-      "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@google/genai>protobufjs": false,
-      "@metamask/notification-services-controller>firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
+      "@google/genai>protobufjs": false
     }
   },
   "packageManager": "yarn@4.12.0",
