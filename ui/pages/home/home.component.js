@@ -342,7 +342,7 @@ export default class Home extends PureComponent {
       setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
-      setEditedNetwork();
+      clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
     };
 
     const autoHideDelay = 5 * SECOND;

@@ -3874,6 +3874,18 @@
     "message": "Terms apply.",
     "description": "Link text for the terms of use in Merkl rewards"
   },
+  "merklRewardsToastFailed": {
+    "message": "Bonus claim failed",
+    "description": "Toast message shown when a Merkl reward claim transaction fails"
+  },
+  "merklRewardsToastInProgress": {
+    "message": "Your mUSD bonus is processing",
+    "description": "Toast message shown when a Merkl reward claim transaction is being processed"
+  },
+  "merklRewardsToastSuccess": {
+    "message": "Your mUSD bonus is here!",
+    "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
+  },
   "merklRewardsUnexpectedError": {
     "message": "Unexpected error. Please try again.",
     "description": "Error message shown when claiming Merkl rewards fails"
