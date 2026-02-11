@@ -12,7 +12,16 @@ import {
 } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { updateAndApproveTx } from '../../../../store/actions';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../../shared/constants/app';
+import {
+  attemptCloseNotificationPopup,
+  updateAndApproveTx,
+} from '../../../../store/actions';
+import { useHardwareWalletError } from '../../../../contexts/hardware-wallets';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import * as DappSwapContext from '../../context/dapp-swap';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
@@ -20,10 +29,32 @@ import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupported
 import { useTransactionConfirm } from './useTransactionConfirm';
 import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 
+const mockGetEnvironmentType = jest.fn();
+
 jest.mock('../../../../../shared/modules/selectors');
+jest.mock('../../../../../app/scripts/lib/util', () => ({
+  getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
+}));
+const mockIsHardwareWalletError = jest.fn();
+const mockIsUserRejectedHardwareWalletError = jest.fn();
+jest.mock('../../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../../contexts/hardware-wallets'),
+  useHardwareWalletError: jest.fn(() => ({
+    showErrorModal: jest.fn(),
+  })),
+  isHardwareWalletError: (...args: unknown[]) =>
+    mockIsHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+    mockIsUserRejectedHardwareWalletError(...args),
+}));
+jest.mock('../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(() => Promise.resolve()),
+}));
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
+  attemptCloseNotificationPopup: jest.fn(),
   updateAndApproveTx: jest.fn(),
 }));
 
@@ -40,6 +71,7 @@ jest.mock('../gas/useIsGaslessSupported');
 jest.mock('../gas/useGaslessSupportedSmartTransactions');
 
 const CUSTOM_NONCE_VALUE = '1234';
+const originalConsoleWarn = console.warn;
 
 const TRANSACTION_META_MOCK =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -73,14 +105,29 @@ function runHook({
 }
 
 describe('useTransactionConfirm', () => {
+  let consoleWarnSpy: jest.SpyInstance;
   const updateAndApproveTxMock = jest.mocked(updateAndApproveTx);
+  const attemptCloseNotificationPopupMock = jest.mocked(
+    attemptCloseNotificationPopup,
+  );
+  const useHardwareWalletErrorMock = jest.mocked(useHardwareWalletError);
   const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
     useGaslessSupportedSmartTransactions,
   );
-
   beforeEach(() => {
     jest.resetAllMocks();
+    consoleWarnSpy = jest
+      .spyOn(console, 'warn')
+      .mockImplementation((...args: unknown[]) => {
+        const message = args.map(String).join(' ');
+        if (
+          message.includes('MetaMask: Background connection not initialized')
+        ) {
+          return;
+        }
+        originalConsoleWarn(...args);
+      });
 
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
@@ -103,9 +150,20 @@ describe('useTransactionConfirm', () => {
       pending: false,
     });
 
-    updateAndApproveTxMock.mockReturnValue(() =>
-      Promise.resolve({} as TransactionMeta),
-    );
+    updateAndApproveTxMock.mockReturnValue(() => Promise.resolve(null));
+    attemptCloseNotificationPopupMock.mockResolvedValue(undefined);
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    mockIsHardwareWalletError.mockReturnValue(false);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: jest.fn(),
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+    });
+  });
+
+  afterEach(() => {
+    consoleWarnSpy.mockRestore();
   });
 
   it('dispatches update and approve action', async () => {
@@ -471,5 +529,87 @@ describe('useTransactionConfirm', () => {
           TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
       }),
     );
+  });
+
+  it('returns true after successful transaction in popup environment', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(true);
+    expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns true after successful transaction in sidepanel', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(true);
+    expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns true on successful transaction confirm', async () => {
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false and shows error modal on hardware wallet error', async () => {
+    const hwError = new Error('User rejected on device');
+    mockIsHardwareWalletError.mockReturnValue(true);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(hwError));
+
+    const showErrorModalMock = jest.fn();
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: showErrorModalMock,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+    });
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(showErrorModalMock).toHaveBeenCalledWith(hwError);
+  });
+
+  it('returns false and does not show error modal on hardware wallet user rejection', async () => {
+    const hwError = new Error('User rejected on device');
+    mockIsHardwareWalletError.mockReturnValue(true);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(hwError));
+
+    const showErrorModalMock = jest.fn();
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: showErrorModalMock,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+    });
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(showErrorModalMock).not.toHaveBeenCalled();
+  });
+
+  it('rethrows non-hardware wallet errors', async () => {
+    const genericError = new Error('Network error');
+    mockIsHardwareWalletError.mockReturnValue(false);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(genericError));
+
+    const { onTransactionConfirm } = runHook();
+
+    await expect(onTransactionConfirm()).rejects.toThrow('Network error');
   });
 });

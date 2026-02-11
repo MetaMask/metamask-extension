@@ -42,6 +42,7 @@ import {
   getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
+  getIsHardwareWalletErrorModalVisible,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import Callout from '../../../components/ui/callout';
@@ -241,6 +242,9 @@ export default function ConfirmationPage({
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
+  const isHardwareWalletErrorModalVisible = useSelector(
+    getIsHardwareWalletErrorModalVisible,
+  );
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
@@ -376,11 +380,14 @@ export default function ConfirmationPage({
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
-    if (
+    // Don't navigate away if:
+    // - Hardware wallet error modal is visible (for retry functionality)
+    const wouldNavigate =
       pendingConfirmations.length === 0 &&
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
-      redirectToHomeOnZeroConfirmations
-    ) {
+      redirectToHomeOnZeroConfirmations;
+
+    if (wouldNavigate && !isHardwareWalletErrorModalVisible) {
       const to = shouldShowActivity
         ? `${DEFAULT_ROUTE}?tab=activity`
         : DEFAULT_ROUTE;
@@ -394,6 +401,7 @@ export default function ConfirmationPage({
     navigate,
     redirectToHomeOnZeroConfirmations,
     shouldShowActivity,
+    isHardwareWalletErrorModalVisible,
   ]);
 
   useEffect(() => {
