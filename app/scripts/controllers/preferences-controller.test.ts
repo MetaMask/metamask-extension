@@ -991,6 +991,7 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
+            "gmx": {},
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
@@ -1075,6 +1076,7 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
+            "gmx": {},
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
@@ -1159,6 +1161,7 @@ describe('preferences controller', () => {
             "useSidePanelAsDefault": false,
           },
           "referrals": {
+            "gmx": {},
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
@@ -1295,6 +1298,7 @@ describe('preferences controller', () => {
                 [testAccount1]: ReferralStatus.Declined,
                 [testAccount2]: ReferralStatus.Declined,
               },
+              [DefiReferralPartner.GMX]: {},
             },
           },
         });
@@ -1317,6 +1321,7 @@ describe('preferences controller', () => {
               [DefiReferralPartner.Hyperliquid]: {
                 [testAccount1]: ReferralStatus.Declined,
               },
+              [DefiReferralPartner.GMX]: {},
             },
           },
         });
@@ -1356,6 +1361,7 @@ describe('preferences controller', () => {
               [DefiReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Declined,
               },
+              [DefiReferralPartner.GMX]: {},
             },
           },
         });
@@ -1377,6 +1383,7 @@ describe('preferences controller', () => {
               [DefiReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Approved,
               },
+              [DefiReferralPartner.GMX]: {},
             },
           },
         });
@@ -1395,30 +1402,33 @@ describe('preferences controller', () => {
         expect(
           controller.state.referrals[DefiReferralPartner.Hyperliquid],
         ).toStrictEqual({});
+        expect(
+          controller.state.referrals[DefiReferralPartner.GMX],
+        ).toStrictEqual({});
       });
 
-      it('deep merges referrals state to preserve new partners when existing user state is missing them', () => {
+      it('deep merges referrals state to add new partners while preserving existing data', () => {
+        // Simulate old user state that only has Hyperliquid
         const existingUserState = {
           referrals: {
             [DefiReferralPartner.Hyperliquid]: {
               '0x123': ReferralStatus.Approved,
-            } as Record<`0x${string}`, ReferralStatus>,
+            },
           },
         };
 
         const { controller } = setupController({
-          state: existingUserState as Partial<PreferencesControllerState>,
+          state:
+            existingUserState as unknown as Partial<PreferencesControllerState>,
         });
 
-        // Existing Hyperliquid data should be preserved
-        expect(
-          controller.state.referrals[DefiReferralPartner.Hyperliquid],
-        ).toStrictEqual({
-          '0x123': ReferralStatus.Approved,
-        });
-
+        // All partners from the enum should be present and correctly initialized
         Object.values(DefiReferralPartner).forEach((partnerId) => {
-          expect(controller.state.referrals[partnerId]).toBeDefined();
+          expect(controller.state.referrals[partnerId]).toStrictEqual(
+            partnerId === DefiReferralPartner.Hyperliquid
+              ? { '0x123': ReferralStatus.Approved }
+              : {},
+          );
         });
       });
     });
