@@ -26,12 +26,18 @@ export async function setupMockingPassThrough(
   let numNetworkReqs = 0;
 
   const mockedEndpoint = testSpecificMock ? await testSpecificMock(server) : [];
-  await server.forAnyRequest().thenPassThrough({
-    beforeRequest: (req) => {
-      console.log('Request going to a live server ============', req.url);
-      return {};
-    },
-  });
+
+  // Use lowest priority so test-specific mocks (e.g. getQuoteStream SSE)
+  // are always evaluated before falling through to live servers.
+  await server
+    .forAnyRequest()
+    .asPriority(-1)
+    .thenPassThrough({
+      beforeRequest: (req) => {
+        console.log('Request going to a live server ============', req.url);
+        return {};
+      },
+    });
 
   server.on('request-initiated', () => {
     numNetworkReqs += 1;

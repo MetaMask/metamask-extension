@@ -45,7 +45,6 @@ import {
   SOLANA_SIMULATE_TRANSACTION,
   SOLANA_GET_SIGNATURES_FOR_ADDRESS,
   solanaCatchAllResponse,
-  SSE_RESPONSE_HEADER,
 } from './mock-responses';
 
 const AuthMocks = AuthenticationController.Mocks;
@@ -797,22 +796,6 @@ export async function mockPowerUserPrices(
           return { statusCode: 200, json: [quote] };
         }),
       ),
-  );
-
-  endpoints.push(
-    await server
-      .forGet(/getQuoteStream/u)
-      .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
-      .always()
-      .thenCallback(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        const sseBody = `event: quote\nid: ${Date.now()}-1\ndata: ${JSON.stringify(swapQuoteSolUsdc)}\n\n`;
-        return {
-          statusCode: 200,
-          headers: SSE_RESPONSE_HEADER,
-          body: sseBody,
-        };
-      }),
   );
 
   endpoints.push(
