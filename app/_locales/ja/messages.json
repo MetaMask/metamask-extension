@@ -2060,9 +2060,6 @@
     "message": "お客様をこのページに誘導したのはMetaMask以外の第三者です。$1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
-  "deepLink_theAssetPage": {
-    "message": "the asset page"
-  },
   "deepLink_theBuyPage": {
     "message": "購入ページ"
   },

@@ -2054,9 +2054,6 @@
     "message": "Vous avez été envoyé ici par un tiers, pas par MetaMask. $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
-  "deepLink_theAssetPage": {
-    "message": "the asset page"
-  },
   "deepLink_theBuyPage": {
     "message": "la page d’achat"
   },
