@@ -436,6 +436,9 @@ describe('Shield Plan Stripe Integration', function () {
               claimErrorCode: 'E203', // DUPLICATE_CLAIM_EXISTS
             });
           },
+          ignoredConsoleErrors: [
+            'SubmitClaimError: This transaction is not done within MetaMask, hence it is not eligible for claims',
+          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
