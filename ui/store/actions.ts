@@ -5525,13 +5525,7 @@ export function resolvePendingApproval(
 
       if (isHardwareAccount(fromAccount)) {
         const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
-        return resolveHardwareWalletApproval(
-          dispatch,
-          id,
-          value,
-          { waitForResult: options?.waitForResult },
-          keyringType,
-        );
+        return resolveHardwareWalletApproval(dispatch, id, value, keyringType);
       }
     }
 
@@ -5547,18 +5541,24 @@ export function resolvePendingApproval(
  * @param id - The pending approval id
  * @param value - The value required to confirm a pending approval
  * @param options - Additional options for the approval
+ * @param options.fromAddress - The address of the account making the approval (ignored for background request)
  * @param options.waitForResult - Whether to wait for the approval result
  */
 async function resolveStandardApproval(
   dispatch: MetaMaskReduxDispatch,
   id: string,
   value: unknown,
-  options?: { waitForResult?: boolean },
+  options?: { fromAddress?: string; waitForResult?: boolean },
 ): Promise<void> {
+  const requestOptions =
+    typeof options?.waitForResult === 'boolean'
+      ? { waitForResult: options.waitForResult }
+      : undefined;
+
   await submitRequestToBackground('resolvePendingApproval', [
     id,
     value,
-    options,
+    requestOptions,
   ]);
   // Before closing the current window, check if any additional confirmations
   // are added as a result of this confirmation being accepted
@@ -5576,7 +5576,6 @@ async function resolveStandardApproval(
  * @param dispatch - Redux dispatch function
  * @param id - The pending approval id
  * @param value - The value required to confirm a pending approval
- * @param options - Additional options for the approval
  * @param keyringType - The keyring type for the hardware wallet account
  * @throws HardwareWalletError - When hardware wallet error occurs
  */
@@ -5584,7 +5583,6 @@ async function resolveHardwareWalletApproval(
   dispatch: MetaMaskReduxDispatch,
   id: string,
   value: unknown,
-  options: { waitForResult?: boolean } | undefined,
   keyringType: string,
 ): Promise<void> {
   dispatch(showLoadingIndication());
@@ -5593,14 +5591,15 @@ async function resolveHardwareWalletApproval(
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
 
   try {
+    const requestOptions = {
+      waitForResult: true,
+      walletType,
+    };
+
     await submitRequestToBackground('resolvePendingApproval', [
       id,
       value,
-      {
-        ...options,
-        waitForResult: true,
-        walletType,
-      },
+      requestOptions,
     ]);
 
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);

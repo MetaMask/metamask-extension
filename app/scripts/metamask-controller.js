@@ -8759,10 +8759,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} [options.waitForResult] - Whether to wait for the result
    */
   resolvePendingApproval = async (id, value, options = {}) => {
-    const { walletType } = options;
+    const { walletType, waitForResult } = options;
+    const approvalOptions =
+      typeof waitForResult === 'boolean' ? { waitForResult } : undefined;
 
     try {
-      await this.approvalController.accept(id, value, options);
+      await this.approvalController.accept(id, value, approvalOptions);
     } catch (error) {
       // Ignore if approval was already handled
       if (error instanceof ApprovalRequestNotFoundError) {
