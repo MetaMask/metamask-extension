@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import {
   EditGasModes,
   GasEstimateTypes,
@@ -21,7 +22,6 @@ import {
 } from '../../../store/actions';
 import { MetaMaskReduxState } from '../../../selectors';
 import { CancelSpeedup } from './cancel-speedup';
-import BigNumber from 'bignumber.js';
 
 jest.mock('../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest

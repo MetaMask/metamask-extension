@@ -21,6 +21,8 @@ import { useMultichainSelector } from './useMultichainSelector';
  *                                             when using ETH
  * @property {boolean} [shouldCheckShowNativeToken] - Boolean to know if checking the setting
  *                                                  show native token as main balance is needed
+ * @property {boolean} [showFiatOverride] - Boolean to override showFiat value from state
+ * @property {boolean} [showNativeOverride] - Boolean to override showNative value from state
  */
 
 /**

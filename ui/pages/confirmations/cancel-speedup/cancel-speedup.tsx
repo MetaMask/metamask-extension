@@ -172,26 +172,41 @@ const GasFeesSection = ({ transaction }: { transaction: TransactionMeta }) => {
   const { maxFeePerGas, maxPriorityFeePerGas, maximumCostInHexWei } =
     useGasFeeContext() as GasFeeContextType;
 
+  const { chainId } = transaction;
+
   const { showFiatInTestnets } = useSelector(getPreferences);
   const isTestnet = TEST_CHAINS.includes(
-    transaction?.chainId as (typeof TEST_CHAINS)[number],
+    chainId as (typeof TEST_CHAINS)[number],
   );
   const showFiat = !isTestnet || showFiatInTestnets;
 
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY);
+  } = useUserPreferencedCurrency(
+    PRIMARY,
+    {
+      ethNumberOfDecimals: 6,
+      shouldCheckShowNativeToken: true,
+      showNativeOverride: true,
+    },
+    chainId,
+  );
+
   const {
     currency: secondaryCurrency,
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [nativeFee, nativeFeeParts] = useCurrencyDisplay(maximumCostInHexWei, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  });
+  const [nativeFee, nativeFeeParts] = useCurrencyDisplay(
+    maximumCostInHexWei,
+    {
+      numberOfDecimals: primaryNumberOfDecimals,
+      currency: primaryCurrency,
+    },
+    chainId,
+  );
 
   const [fiatFee] = useCurrencyDisplay(maximumCostInHexWei, {
     numberOfDecimals: secondaryNumberOfDecimals,
