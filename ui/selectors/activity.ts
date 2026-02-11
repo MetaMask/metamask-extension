@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { Transaction } from '@metamask/keyring-api';
+import { isEvmAccountType, type Transaction } from '@metamask/keyring-api';
 import type { Hex } from 'viem';
 import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import type { MetaMaskReduxState } from '../store/store';
@@ -18,11 +18,7 @@ import {
   groupAndSortTransactionsByNonce,
 } from './transactions';
 import { getMarketData, getCurrencyRates } from './selectors';
-import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-  isNonEvmAccount,
-} from './accounts';
+import { getSelectedInternalAccount } from './accounts';
 import { getSelectedAccountGroupMultichainTransactions } from './multichain-transactions';
 import { EMPTY_ARRAY } from './shared';
 
@@ -225,9 +221,11 @@ export const getNonEvmTransactions = (
 };
 
 export const getFirstEvmAddress = createSelector(
-  getInternalAccounts,
-  (accounts): string | undefined => {
-    const evmAccount = accounts.find((account) => !isNonEvmAccount(account));
-    return evmAccount?.address;
+  getSelectedInternalAccount,
+  (account): string | undefined => {
+    if (account && isEvmAccountType(account.type)) {
+      return account.address;
+    }
+    return undefined;
   },
 );
