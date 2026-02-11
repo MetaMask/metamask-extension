@@ -85,6 +85,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountNetworkGroup } from '../../multichain-accounts/multichain-account-network-group';
+import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -425,10 +426,10 @@ export const AppHeaderUnlockedContent = ({
             />
           </Box>
         </Box>
-        <GlobalMenu
+        <GlobalMenuDrawerWithList
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          closeMenu={() => {
+          onClose={() => {
             setAccountOptionsMenuOpen(false);
           }}
         />
