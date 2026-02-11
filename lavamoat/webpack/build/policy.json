@@ -543,6 +543,13 @@
     "@swc/core>@swc/core-win32-x64-msvc": {
       "native": true
     },
+    "@metamask/core-backend>@tanstack/query-core": {
+      "globals": {
+        "addEventListener": false,
+        "document": false,
+        "document.visibilityState": true
+      }
+    },
     "webpack>@webassemblyjs/ast": {
       "globals": {
         "console.warn": true
@@ -1780,7 +1787,7 @@
     "html-bundler-webpack-plugin>html-minifier-terser": {
       "packages": {
         "html-bundler-webpack-plugin>html-minifier-terser>clean-css": true,
-        "html-bundler-webpack-plugin>parse5>entities": true,
+        "html-bundler-webpack-plugin>html-minifier-terser>entities": true,
         "html-bundler-webpack-plugin>html-minifier-terser>relateurl": true,
         "terser": true
       }

@@ -30,19 +30,19 @@ describe('PercentageChange Component - Percentage Display', () => {
     expect(valueElement).toBeInTheDocument();
   });
 
-  it('renders an empty string when value is null', () => {
+  it('renders a dash when value is null', () => {
     render(<PercentageChange value={null} address="0xAddress" />);
     const textElement = screen.getByTestId(
       'token-increase-decrease-percentage-0xAddress',
     );
-    expect(textElement).toHaveTextContent('');
+    expect(textElement).toHaveTextContent('-');
   });
 
-  it('renders an empty string when value is an invalid number', () => {
+  it('renders a dash when value is an invalid number', () => {
     render(<PercentageChange value={NaN} address="0xAddress" />);
     const textElement = screen.getByTestId(
       'token-increase-decrease-percentage-0xAddress',
     );
-    expect(textElement).toHaveTextContent('');
+    expect(textElement).toHaveTextContent('-');
   });
 });

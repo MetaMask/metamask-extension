@@ -3029,6 +3029,10 @@
     "message": "Get your wallet ready to use web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Save up to 10% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Go to site"
   },
@@ -3069,21 +3073,15 @@
     "message": "Continue to make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Your Ledger is unlocked"
   },
-  "hardwareWalletErrorRecoveryUnlock3": {
+  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
     "message": "The Ethereum app is open on your Ledger"
   },
-  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction3": {
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
     "message": "You’ve turned on Blind Signing in Settings"
   },
   "hardwareWalletErrorTitleConnectYourDevice": {
@@ -4375,9 +4373,6 @@
   },
   "noConnectionDescription": {
     "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
-  },
-  "noConversionRateAvailable": {
-    "message": "No conversion rate available"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
