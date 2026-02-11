@@ -410,6 +410,7 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   await handleSidepanelPostOnboarding(driver);
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
+  await homePage.waitForLoadingOverlayToDisappear();
 };
 
 /**
