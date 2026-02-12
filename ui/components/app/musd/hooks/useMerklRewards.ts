@@ -63,9 +63,6 @@ export const formatClaimableAmount = (
   }
 
   const displayAmount = totalAmount.toFixed(2);
-  if (displayAmount === '0.00') {
-    return null;
-  }
 
   return displayAmount;
 };
