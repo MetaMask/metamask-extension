@@ -6,6 +6,7 @@ import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { convertETHToHexGwei, withFixtures } from '../../../helpers';
+import { mockTransactions } from '../../../helpers/mock-server';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
@@ -41,7 +42,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer);
           mockSmartTransactionFeatureFlags(mockServer);
-          mockAccountsApi(mockServer);
+          mockTransactions(mockServer);
           mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
               price: 1700,
@@ -102,7 +103,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer, { success: false });
           mockSmartTransactionFeatureFlags(mockServer);
-          mockAccountsApi(mockServer);
+          mockTransactions(mockServer);
           mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
               price: 1700,
@@ -240,20 +241,6 @@ async function mockTransactionRelayStatus(
         },
       };
     });
-}
-
-async function mockAccountsApi(mockServer: MockttpServer) {
-  return mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
-    .withQuery({})
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        data: [],
-        pageInfo: { hasNextPage: false, count: 0 },
-      },
-    }));
 }
 
 async function mockSmartTransactionFeatureFlags(mockServer: MockttpServer) {

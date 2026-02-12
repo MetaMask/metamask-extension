@@ -3,6 +3,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
+import { mockTransactions } from '../../helpers/mock-server';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -93,29 +94,6 @@ const RESPONSE_OUTGOING_MOCK = {
   readable: 'Contract interaction',
 };
 
-async function mockAccountsApi(
-  mockServer: Mockttp,
-  { transactions }: { transactions?: Record<string, unknown>[] } = {},
-) {
-  return [
-    await mockServer
-      .forGet(
-        'https://accounts.api.cx.metamask.io/v4/multiaccount/transactions',
-      )
-
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          data: transactions ?? [
-            RESPONSE_STANDARD_MOCK,
-            RESPONSE_STANDARD_2_MOCK,
-          ],
-          pageInfo: { hasNextPage: false, count: 2 },
-        },
-      })),
-  ];
-}
-
 describe('Incoming Transactions', function () {
   it('adds standard incoming transactions', async function () {
     await withFixtures(
@@ -130,7 +108,12 @@ describe('Incoming Transactions', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApi,
+        testSpecificMock: (server: Mockttp) => [
+          mockTransactions(server, [
+            RESPONSE_STANDARD_MOCK,
+            RESPONSE_STANDARD_2_MOCK,
+          ]),
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
@@ -169,13 +152,12 @@ describe('Incoming Transactions', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) =>
-          mockAccountsApi(server, {
-            transactions: [
-              RESPONSE_STANDARD_MOCK,
-              RESPONSE_TOKEN_TRANSFER_MOCK,
-            ],
-          }),
+        testSpecificMock: (server: Mockttp) => [
+          mockTransactions(server, [
+            RESPONSE_STANDARD_MOCK,
+            RESPONSE_TOKEN_TRANSFER_MOCK,
+          ]),
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
@@ -196,10 +178,12 @@ describe('Incoming Transactions', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) =>
-          mockAccountsApi(server, {
-            transactions: [RESPONSE_STANDARD_MOCK, RESPONSE_OUTGOING_MOCK],
-          }),
+        testSpecificMock: (server: Mockttp) => [
+          mockTransactions(server, [
+            RESPONSE_STANDARD_MOCK,
+            RESPONSE_OUTGOING_MOCK,
+          ]),
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
@@ -227,7 +211,12 @@ describe('Incoming Transactions', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApi,
+        testSpecificMock: (server: Mockttp) => [
+          mockTransactions(server, [
+            RESPONSE_STANDARD_MOCK,
+            RESPONSE_STANDARD_2_MOCK,
+          ]),
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);

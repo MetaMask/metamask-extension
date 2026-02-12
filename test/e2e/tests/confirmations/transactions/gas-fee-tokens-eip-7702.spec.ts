@@ -8,6 +8,7 @@ import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
+import { mockTransactions } from '../../../helpers/mock-server';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
@@ -46,7 +47,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer);
           mockSmartTransactionFeatureFlags(mockServer);
-          mockAccountsApi(mockServer);
+          mockTransactions(mockServer);
           mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
               price: 1700,
@@ -119,7 +120,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer, { success: false });
           mockSmartTransactionFeatureFlags(mockServer);
-          mockAccountsApi(mockServer);
+          mockTransactions(mockServer);
           mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
               price: 1700,
@@ -159,19 +160,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
     );
   });
 });
-
-async function mockAccountsApi(mockServer: MockttpServer) {
-  return mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/transactions')
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        data: [],
-        pageInfo: { hasNextPage: false, count: 0 },
-      },
-    }));
-}
 
 async function mockSimulationResponse(mockServer: MockttpServer) {
   await mockServer

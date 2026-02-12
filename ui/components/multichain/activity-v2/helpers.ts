@@ -171,9 +171,11 @@ export function filterLocalCompletedNotInApi(
   );
 
   // Only include those NOT already in API
+  // Transactions without a hash (e.g. failed relay transactions) are always included
+  // since they can't exist in the API
   return localCompletedGroups.filter((group) => {
     const hash = group.primaryTransaction.hash?.toLowerCase();
-    return hash && !apiHashes.has(hash);
+    return !hash || !apiHashes.has(hash);
   });
 }
 

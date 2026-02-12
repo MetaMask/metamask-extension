@@ -1,5 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityList from '../../page-objects/pages/home/activity-list';
@@ -60,23 +61,6 @@ const SENT_TX_MOCK = {
   readable: 'Sent',
 };
 
-async function mockAccountsApi(mockServer: Mockttp) {
-  return [
-    await mockServer
-      .forGet(
-        'https://accounts.api.cx.metamask.io/v4/multiaccount/transactions',
-      )
-      .once()
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: {
-          data: [RECEIVED_TX_MOCK, SENT_TX_MOCK],
-          pageInfo: { hasNextPage: false, count: 2 },
-        },
-      })),
-  ];
-}
-
 describe('Clear account activity', function (this: Suite) {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // When user get stuck with pending transactions, one can reset the account by clicking the 'Clear activity tab data' //
@@ -95,7 +79,17 @@ describe('Clear account activity', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockAccountsApi,
+        testSpecificMock: (mockServer: Mockttp) => [
+          mockServer
+            .forGet(
+              `${ACCOUNTS_PROD_API_BASE_URL}/v4/multiaccount/transactions`,
+            )
+            .once()
+            .thenJson(200, {
+              data: [RECEIVED_TX_MOCK, SENT_TX_MOCK],
+              pageInfo: { hasNextPage: false, count: 2 },
+            }),
+        ],
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);

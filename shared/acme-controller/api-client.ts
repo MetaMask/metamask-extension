@@ -1,6 +1,6 @@
 import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
+import { ACCOUNTS_API_BASE_URL } from '../constants/accounts';
 
-const API_BASE_URL = 'https://accounts.api.cx.metamask.io';
 
 type Params = {
   accountAddresses: string[];
@@ -15,7 +15,7 @@ export async function fetchV4MultiAccountTransactions(
 ): Promise<V4MultiAccountTransactionsResponse> {
   const { accountAddresses = [], networks = [], cursor, limit = 50 } = params;
 
-  const url = new URL(`${API_BASE_URL}/v4/multiaccount/transactions`);
+  const url = new URL(`${ACCOUNTS_API_BASE_URL}/v4/multiaccount/transactions`);
 
   url.searchParams.set('limit', limit.toString());
   url.searchParams.set('includeTxMetadata', 'true');
