@@ -19,17 +19,16 @@ import {
   getSelectedAccount,
 } from '../../../selectors/selectors';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
-import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/acme-controller/queries';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
 import { MultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
 import MultichainBridgeTransactionListItem from '../../app/multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
+import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
   filterLocalCompletedNotInApi,
-  formatDate,
   isDateHeader,
   isPendingItem,
   isLocalCompletedItem,
@@ -61,8 +60,6 @@ export const ActivityList = () => {
   // Non-EVM transactions
   const nonEvmTransactions = useSelector(getRawNonEvmTransactions);
 
-  // Network config and account for non-EVM transaction rendering
-  const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
   const selectedAccount = useSelector(getSelectedAccount);
 
   // Pending transactions (unapproved/approved/submitted) - not in API
@@ -179,7 +176,7 @@ export const ActivityList = () => {
       return (
         <Box className="px-4 py-2 bg-background-default">
           <Text className="text-sm text-alternative">
-            {formatDate(item.date)}
+            {formatDateWithYearContext(item.date, 'MMM d, y', 'MMM d')}
           </Text>
         </Box>
       );
@@ -280,12 +277,11 @@ export const ActivityList = () => {
           transaction={selectedItem}
         />
 
-        {selectedNonEvmTransaction && networkConfig && (
+        {selectedNonEvmTransaction && (
           <MultichainTransactionDetailsModal
             transaction={selectedNonEvmTransaction}
             onClose={handleNonEvmModalClose}
             userAddress={selectedAccount?.address ?? ''}
-            networkConfig={networkConfig}
           />
         )}
       </Box>

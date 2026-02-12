@@ -50,15 +50,6 @@ function parseDate(timestamp: string | number): number {
 }
 
 // TODO: Re-use existing
-export function formatDate(timestamp: number) {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(timestamp);
-}
-
-// TODO: Re-use existing
 export function formatDateTime(timestamp: string | number): string {
   if (!timestamp) {
     return '';
