@@ -446,8 +446,9 @@ export const useSubscriptionCryptoApprovalTransaction = (
     };
     transactionParams.gas = await estimateGas(transactionParams);
 
-    // Set optimized gas fees for gas sponsorship: min(2 * low, medium)
-    // Read from ref to get latest values without causing callback recreation
+    // By default the transaction controller uses suggestedGasFees.medium.
+    // Subscription approvals may be gas-sponsored, so we optimize with
+    // min(2 × low, medium) to reduce the cost of sponsorship.
     const currentGasFeeEstimates = gasFeeEstimatesRef.current.estimates;
     const currentGasEstimateType = gasFeeEstimatesRef.current.type;
 
@@ -465,7 +466,6 @@ export const useSubscriptionCryptoApprovalTransaction = (
       );
       const baseFee = Number(currentGasFeeEstimates.estimatedBaseFee);
 
-      // Skip optimization if any parsed value is NaN (malformed API response)
       if (
         !Number.isNaN(lowPriority) &&
         !Number.isNaN(mediumPriority) &&
