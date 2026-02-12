@@ -295,17 +295,17 @@ class FixtureBuilder {
 
   withNetworkControllerOnMegaETH() {
     return this.withNetworkController({
-      selectedNetworkClientId: 'megaeth-testnet-v2',
+      selectedNetworkClientId: 'megaeth-mainnet',
       networkConfigurations: {
-        'megaeth-testnet-v2': {
-          chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
-          nickname: 'MegaETH Testnet',
-          rpcUrl: 'https://carrot.megaeth.com/rpc',
-          ticker: 'MegaETH',
+        'megaeth-mainnet': {
+          chainId: CHAIN_IDS.MEGAETH_MAINNET,
+          nickname: 'MegaETH',
+          rpcUrl: 'https://megaeth-mainnet.infura.io',
+          ticker: 'Ethereum',
           rpcPrefs: {
-            blockExplorerUrl: 'https://megaeth-testnet-v2.blockscout.com',
+            blockExplorerUrl: 'https://megaeth.blockscout.com',
           },
-          id: 'megaeth-testnet-v2',
+          id: 'megaeth-mainnet',
           type: 'rpc',
           isCustom: true,
         },
@@ -453,19 +453,19 @@ class FixtureBuilder {
     });
   }
 
-    withNetworkControllerOnMegaETH() {
+  withNetworkControllerOnMegaETHTestnet() {
     return this.withNetworkController({
-      selectedNetworkClientId: 'megaeth',
+      selectedNetworkClientId: 'megaethTestnet',
       networkConfigurations: {
-        megaeth: {
-          chainId: CHAIN_IDS.MEGAETH_MAINNET,
-          nickname: 'MegaETH',
-          rpcUrl: 'https://mainnet.megaeth.com/rpc',
-          ticker: 'ETH',
+        megaethTestnet: {
+          chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
+          nickname: 'MegaETH Testnet',
+          rpcUrl: 'https://carrot.megaeth.com/rpc',
+          ticker: 'MegaETH',
           rpcPrefs: {
-            blockExplorerUrl: 'https://megaeth.blockscout.com',
+            blockExplorerUrl: 'https://megaeth-testnet-v2.blockscout.com',
           },
-          id: 'megaeth',
+          id: 'megaethTestnet',
           type: 'rpc',
           isCustom: true,
         },

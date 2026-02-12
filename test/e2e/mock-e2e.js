@@ -84,7 +84,7 @@ const blocklistedHosts = [
   'rpc.xlayer.tech',
   'rpc.gobob.xyz',
   'public-node.rsk.co',
-  'mainnet.megaeth.com',
+  'megaeth-mainnet.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
