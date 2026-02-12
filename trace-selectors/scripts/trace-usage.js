@@ -131,10 +131,12 @@ function normalizedSymbols(symbolsStr) {
 
 function appendLayer(docPath, layerNum, entries, terminals) {
   const sorted = [...entries].sort((a, b) => a.path.localeCompare(b.path, 'en'));
-  const instances = entries.reduce((n, e) => n + countSymbolInstances(e.symbols), 0);
+  const nonTerminal = entries.filter((e) => !e.terminal);
+  const fileCount = nonTerminal.length;
+  const instances = nonTerminal.reduce((n, e) => n + countSymbolInstances(e.symbols), 0);
   const lines = [];
   lines.push('');
-  lines.push(`## Layer ${layerNum} - Files: ${entries.length}; Instances: ${instances}`);
+  lines.push(`## Layer ${layerNum} - Files: ${fileCount}; Instances: ${instances}`);
   lines.push('');
   lines.push('| Path | Uses | Type | Terminal |');
   lines.push('| --- | --- | --- | --- |');
