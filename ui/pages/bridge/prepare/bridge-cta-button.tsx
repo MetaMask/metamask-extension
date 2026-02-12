@@ -190,18 +190,20 @@ export const BridgeCTAButton = ({
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
-          // Verify hardware wallet device is ready before submitting
-          if (isHardwareWalletAccount) {
-            const isDeviceReady = await ensureDeviceReady();
-            if (!isDeviceReady) {
-              return;
-            }
-          }
+          // Set submitting state before async checks to prevent duplicate clicks.
+          setIsSubmitting(true);
 
           try {
+            // Verify hardware wallet device is ready before submitting.
+            if (isHardwareWalletAccount) {
+              const isDeviceReady = await ensureDeviceReady();
+              if (!isDeviceReady) {
+                return;
+              }
+            }
+
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
-            setIsSubmitting(true);
             await submitBridgeTransaction(activeQuote);
           } finally {
             if (mountedRef.current) {
