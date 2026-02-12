@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import MultiRpcEditModal from './multi-rpc-edit-modal';
 import '@testing-library/jest-dom';
 
@@ -16,7 +17,7 @@ const initialState = {
         blockExplorerUrls: [],
         chainId: '0x1',
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum Mainnet',
+        name: messages.mainnet.message,
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -107,7 +108,7 @@ describe('MultiRpcEditModal', () => {
     });
 
     expect(screen.getByTestId('multi-rpc-edit-modal')).toBeInTheDocument();
-    expect(screen.getByText('Ethereum Mainnet')).toBeInTheDocument();
+    expect(screen.getByText(messages.mainnet.message)).toBeInTheDocument();
     expect(screen.getByText('supportMultiRpcInformation')).toBeInTheDocument();
   });
 });

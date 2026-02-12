@@ -59,7 +59,7 @@ describe('Snap Permission Adapter', () => {
       },
     },
     {
-      label: 'Display dialog windows in MetaMask.',
+      label: messages.permission_dialog.message,
       description: {},
       leftIcon: 'messages',
       weight: 4,

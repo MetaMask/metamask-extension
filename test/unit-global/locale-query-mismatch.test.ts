@@ -175,17 +175,7 @@ const IGNORED_STRINGS = new Set([
  * When a file reaches 0, remove it from this map.
  */
 const RULE_2_BASELINE: Record<string, number> = {
-  // Prop-driven text: description, Dismiss, Confirm are hardcoded in component JSX
-  'ui/components/app/rewards/RewardsErrorBanner.test.tsx': 4,
-  // Snap-defined field labels/errors — external content, not MetaMask i18n
-  'ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts': 2,
-  // Hardcoded ariaLabel props in test JSX, not rendered via i18n
-  'ui/components/multichain-accounts/account-details-row/account-details-row.test.tsx': 3,
-  // Fixture network name from networkConfiguration.name prop
-  'ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx': 1,
-  'ui/components/app/multi-rpc-edit-modal/multi-rpc-edit-modal.test.tsx': 1,
-  // Mock-provided buttonText from getBlockExplorerInfo(), not i18n-rendered
-  'ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.test.tsx': 1,
+  // 🎉 All violations fixed! Keep this map for future baselines if needed.
 };
 
 function findRule2Violations(filePath: string, lines: string[]): Violation[] {
@@ -269,16 +259,16 @@ describe('Locale query mismatch fitness function', () => {
       const baselineCount = RULE_2_BASELINE[relPath] ?? 0;
 
       if (violations.length > baselineCount) {
-        // Only report the NEW violations (count above baseline)
-        const newCount = violations.length - baselineCount;
-        newViolations.push(...violations.slice(violations.length - newCount));
+        // Report ALL violations for this file so the developer can identify
+        // which ones are new (we can't know positionally which are "old").
+        newViolations.push(...violations);
       }
     }
 
     if (newViolations.length > 0) {
       const report = formatReport(newViolations);
       throw new Error(
-        `Found ${newViolations.length} NEW Rule 2 violation(s) — ` +
+        `Rule 2 violation count exceeds baseline — ` +
           `hardcoded query strings matching locale values:\n\n${report}\n\n` +
           `Prefer messages.xxx.message over hardcoded strings so tests ` +
           `stay in sync with translations.\n` +

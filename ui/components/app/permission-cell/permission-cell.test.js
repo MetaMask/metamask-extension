@@ -9,7 +9,7 @@ import PermissionCell from './permission-cell';
 
 describe('Permission Cell', () => {
   const mockPermissionData = {
-    label: 'Access the Ethereum provider.',
+    label: messages.permission_ethereumProvider.message,
     description:
       'Allow the snap to communicate with MetaMask direct…blockchain and suggest messages and transactions.',
     weight: 1,
@@ -57,9 +57,7 @@ describe('Permission Cell', () => {
     expect(
       screen.getByText(messages.permission_ethereumProvider.message),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.permissionRevoked.message),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Revoked')).toBeInTheDocument();
   });
 
   it('renders requested permission cell', () => {
@@ -77,8 +75,6 @@ describe('Permission Cell', () => {
     expect(
       screen.getByText(messages.permission_ethereumProvider.message),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.permissionRequested.message),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Requested')).toBeInTheDocument();
   });
 });

@@ -1,5 +1,6 @@
 import { Box, AddressInput, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderInterface } from '../test-utils';
 import { toEvmCaipAccountId } from '../../../../../../shared/lib/multichain/scope-utils';
 
@@ -80,7 +81,7 @@ describe('SnapUIAddressInput', () => {
       Box({
         children: [
           Field({
-            label: 'Address',
+            label: messages.nameAddressLabel.message,
             children: AddressInput({
               name: 'input',
               chainId: 'eip155:0',
@@ -92,7 +93,7 @@ describe('SnapUIAddressInput', () => {
 
     const input = getByRole('textbox') as HTMLInputElement;
     expect(input).toBeDefined();
-    const label = getByText('Address');
+    const label = getByText(messages.nameAddressLabel.message);
     expect(label).toBeDefined();
   });
 
@@ -213,8 +214,8 @@ describe('SnapUIAddressInput', () => {
     const { getByText, queryByText } = renderInterface(
       Box({
         children: Field({
-          label: 'Address',
-          error: 'Invalid address',
+          label: messages.nameAddressLabel.message,
+          error: messages.invalidAddress.message,
           children: AddressInput({
             name: 'input',
             chainId: 'eip155:0',
@@ -227,7 +228,7 @@ describe('SnapUIAddressInput', () => {
     const matchedAddressName = queryByText(MOCK_ACCOUNT_NAME);
     expect(matchedAddressName).toBeTruthy();
 
-    const error = getByText('Invalid address');
+    const error = getByText(messages.invalidAddress.message);
     expect(error).toBeDefined();
   });
 

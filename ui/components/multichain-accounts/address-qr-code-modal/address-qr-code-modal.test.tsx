@@ -107,7 +107,7 @@ describe('AddressQRCodeModal', () => {
       addressUrl:
         'https://etherscan.io/address/0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       name: 'Etherscan',
-      buttonText: 'View on Etherscan',
+      buttonText: messages.etherscanViewOn.message,
     });
 
     renderWithProvider(
@@ -122,7 +122,9 @@ describe('AddressQRCodeModal', () => {
       />,
     );
 
-    expect(screen.getByText('View on Etherscan')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.etherscanViewOn.message),
+    ).toBeInTheDocument();
   });
 
   it('should handle copy functionality when copy button is clicked', async () => {
@@ -175,7 +177,7 @@ describe('AddressQRCodeModal', () => {
     mockGetBlockExplorerInfo.mockReturnValue({
       addressUrl: `https://etherscan.io/address/${address}`,
       name: 'Etherscan',
-      buttonText: 'View on Etherscan',
+      buttonText: messages.etherscanViewOn.message,
     });
 
     renderWithProvider(
@@ -191,7 +193,7 @@ describe('AddressQRCodeModal', () => {
     );
 
     const explorerButton = screen.getByRole('button', {
-      name: 'View on Etherscan',
+      name: messages.etherscanViewOn.message,
     });
 
     fireEvent.click(explorerButton);
