@@ -56,14 +56,29 @@ export type TokenCellProps = {
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function ClaimBonusBadge({
-  isClaiming,
-  onClick,
   label,
+  tokenAddress,
+  chainId,
 }: {
-  isClaiming: boolean;
-  onClick: (e: React.MouseEvent) => void;
   label: string;
+  tokenAddress: string;
+  chainId: Hex;
 }) {
+  const { claimRewards, isClaiming } = useMerklClaim({
+    tokenAddress,
+    chainId,
+  });
+  // Trigger the claim transaction directly, routing to the confirmation page.
+  const handleBadgeClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      claimRewards().catch(() => {
+        // Error state is managed by useMerklClaim
+      });
+    },
+    [claimRewards],
+  );
+
   if (isClaiming) {
     return (
       <Icon
@@ -77,7 +92,7 @@ function ClaimBonusBadge({
   }
 
   return (
-    <span onClick={onClick} style={{ cursor: 'pointer' }}>
+    <span onClick={handleBadgeClick} style={{ cursor: 'pointer' }}>
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
@@ -119,11 +134,6 @@ export default function TokenCell({
     [hideMerklBadge, remoteFeatureFlags, token.chainId, token.address],
   );
 
-  const { claimRewards, isClaiming } = useMerklClaim({
-    tokenAddress: token.address as string,
-    chainId: token.chainId as Hex,
-  });
-
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
     fixCurrencyToUSD,
@@ -140,17 +150,6 @@ export default function TokenCell({
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
   };
-
-  // Trigger the claim transaction directly, routing to the confirmation page.
-  const handleBadgeClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      claimRewards().catch(() => {
-        // Error state is managed by useMerklClaim
-      });
-    },
-    [claimRewards],
-  );
 
   if (!token.chainId) {
     return null;
@@ -180,8 +179,8 @@ export default function TokenCell({
         footerLeftDisplay={
           showClaimBonusBadge ? (
             <ClaimBonusBadge
-              isClaiming={isClaiming}
-              onClick={handleBadgeClick}
+              tokenAddress={token.address as string}
+              chainId={token.chainId as Hex}
               label={t('merklRewardsClaimBonus')}
             />
           ) : (
