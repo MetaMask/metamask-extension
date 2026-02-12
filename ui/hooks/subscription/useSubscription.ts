@@ -455,8 +455,7 @@ export const useSubscriptionCryptoApprovalTransaction = (
     if (
       currentGasEstimateType === GasEstimateTypes.feeMarket &&
       currentGasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas &&
-      currentGasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas &&
-      currentGasFeeEstimates?.estimatedBaseFee
+      currentGasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas
     ) {
       const lowPriority = Number(
         currentGasFeeEstimates.low.suggestedMaxPriorityFeePerGas,
@@ -464,19 +463,11 @@ export const useSubscriptionCryptoApprovalTransaction = (
       const mediumPriority = Number(
         currentGasFeeEstimates.medium.suggestedMaxPriorityFeePerGas,
       );
-      const baseFee = Number(currentGasFeeEstimates.estimatedBaseFee);
 
-      if (
-        !Number.isNaN(lowPriority) &&
-        !Number.isNaN(mediumPriority) &&
-        !Number.isNaN(baseFee)
-      ) {
+      if (!Number.isNaN(lowPriority) && !Number.isNaN(mediumPriority)) {
         const priorityFee = Math.min(lowPriority * 2, mediumPriority);
         transactionParams.maxPriorityFeePerGas = addHexPrefix(
           decGWEIToHexWEI(priorityFee),
-        ) as Hex;
-        transactionParams.maxFeePerGas = addHexPrefix(
-          decGWEIToHexWEI(baseFee + priorityFee),
         ) as Hex;
       }
     }
