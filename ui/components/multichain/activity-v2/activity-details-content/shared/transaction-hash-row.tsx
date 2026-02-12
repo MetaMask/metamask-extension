@@ -6,9 +6,9 @@ import {
   TextColor,
   IconName,
 } from '@metamask/design-system-react';
-import { shortenAddress } from '../../../../helpers/utils/util';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Row } from './row';
+import { shortenAddress } from '../../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { Row } from '.';
 
 type Props = {
   label: string;

@@ -6,12 +6,14 @@ import { getExplorerUrl, formatUnits } from '../helpers';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useEvmTokenIconUrl } from '../hooks';
-import { DateRow } from './date-row';
-import { NetworkRow } from './network-row';
-import { Row } from './row';
-import { StatusRow } from './status-row';
-import { TokenAmountBlock } from './token-amount-block';
-import { TransactionHashRow } from './transaction-hash-row';
+import {
+  DateRow,
+  NetworkRow,
+  Row,
+  StatusRow,
+  TokenAmountBlock,
+  TransactionHashRow,
+} from './shared';
 
 type Props = {
   transaction: TransactionViewModel;

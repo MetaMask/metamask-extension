@@ -4,12 +4,14 @@ import { shortenAddress } from '../../../../helpers/utils/util';
 import { getExplorerUrl, getTransferAmount } from '../helpers';
 import { useEvmTokenIconUrl } from '../hooks';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { DateRow } from './date-row';
-import { NetworkRow } from './network-row';
-import { Row } from './row';
-import { StatusRow } from './status-row';
-import { TokenAmountBlock } from './token-amount-block';
-import { TransactionHashRow } from './transaction-hash-row';
+import {
+  DateRow,
+  NetworkRow,
+  Row,
+  StatusRow,
+  TokenAmountBlock,
+  TransactionHashRow,
+} from './shared';
 
 type Props = {
   transaction: TransactionViewModel;

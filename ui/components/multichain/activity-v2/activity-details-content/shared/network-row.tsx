@@ -6,9 +6,9 @@ import {
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
 import type { Hex } from 'viem';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { mapChainInfo } from '../helpers';
-import { Row } from './row';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { mapChainInfo } from '../../helpers';
+import { Row } from '.';
 
 type Props = {
   chainId: Hex;
