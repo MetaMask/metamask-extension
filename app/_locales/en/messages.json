@@ -4028,11 +4028,25 @@
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdBoostDescription": {
+    "message": "Convert your stablecoins to mUSD and receive up to a $1% bonus.",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBoostTitle": {
+    "message": "Get $1% on your stablecoins",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBuyMusd": {
+    "message": "Buy mUSD"
+  },
   "musdConversionActivityTitle": {
     "message": "mUSD Conversion"
   },
   "musdConversionTitle": {
     "message": "mUSD Conversion"
+  },
+  "musdConversionToastFailed": {
+    "message": "mUSD conversion failed"
   },
   "musdConversionToastInProgress": {
     "message": "Converting $1 → mUSD",
@@ -4041,55 +4055,19 @@
   "musdConversionToastSuccess": {
     "message": "Your mUSD is here!"
   },
-  "musdConversionToastFailed": {
-    "message": "mUSD conversion failed"
-  },
-  "musdGetBonusPercentage": {
-    "message": "Get $1% bonus",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdBuyMusd": {
-    "message": "Buy mUSD"
-  },
-  "musdGetMusd": {
-    "message": "Get mUSD"
+  "musdConvert": {
+    "message": "Convert"
   },
   "musdEarnBonusPercentage": {
     "message": "Earn a $1% bonus",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdBoostTitle": {
-    "message": "Get $1% on your stablecoins",
+  "musdGetBonusPercentage": {
+    "message": "Get $1% bonus",
     "description": "$1 is the bonus percentage (e.g., 3)"
   },
-  "musdBoostDescription": {
-    "message": "Convert your stablecoins to mUSD and receive up to a $1% bonus.",
-    "description": "$1 is the bonus percentage (e.g., 3)"
-  },
-  "musdConvert": {
-    "message": "Convert"
-  },
-  "musdConvertAndGetBonus": {
-    "message": "Convert and get 3%",
-    "description": "Header text for mUSD conversion confirmation showing the 3% bonus"
-  },
-  "musdBonusExplanation": {
-    "message": "Convert your stablecoins to mUSD, MetaMask's US dollar-backed stablecoin, and receive up to a $1% bonus. $2",
-    "description": "Tooltip explaining the mUSD conversion bonus. $1 is the bonus percentage (e.g., 3). $2 is a 'Terms apply' link"
-  },
-  "musdTermsApply": {
-    "message": "Terms apply.",
-    "description": "Link text for the mUSD bonus terms of use"
-  },
-  "musdEducationHeadline": {
-    "message": "GET $1% ON STABLECOINS",
-    "description": "Education screen headline. $1 is the bonus percentage (e.g., 3)"
-  },
-  "musdEducationGetStarted": {
-    "message": "Get started"
-  },
-  "musdEducationNotNow": {
-    "message": "Not now"
+  "musdGetMusd": {
+    "message": "Get mUSD"
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."

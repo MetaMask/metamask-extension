@@ -3,8 +3,8 @@
  */
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MusdAssetCta } from './musd-asset-cta';
 
 // Mock useI18nContext
