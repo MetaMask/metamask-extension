@@ -91,6 +91,39 @@ function formatTokenAmount(
   });
 }
 
+const dateTimeFormatCache: Record<string, Intl.DateTimeFormat> = {};
+
+function getCachedDateTimeFormat(
+  locale: string,
+  options: Intl.DateTimeFormatOptions = {},
+) {
+  const key = `${locale}_${JSON.stringify(options)}`;
+  if (!dateTimeFormatCache[key]) {
+    dateTimeFormatCache[key] = new Intl.DateTimeFormat(locale, options);
+  }
+  return dateTimeFormatCache[key];
+}
+
+// Format a timestamp as a localized date+time string (e.g. "Mar 15, 2024, 2:30 PM").
+function formatDateTime(
+  config: { locale: string },
+  timestamp: string | number,
+  options?: Intl.DateTimeFormatOptions,
+) {
+  if (!timestamp) {
+    return '';
+  }
+  return getCachedDateTimeFormat(config.locale, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+    ...options,
+  }).format(new Date(timestamp));
+}
+
 export function useFormatters() {
   const locale = useSelector(getIntlLocale);
 
@@ -110,6 +143,10 @@ export function useFormatters() {
        * Format token quantity without trailing zeros.
        */
       formatTokenAmount: formatTokenAmount.bind(null, base.formatToken),
+      /**
+       * Format a timestamp as a localized date+time string (e.g. "Mar 15, 2024, 2:30 PM").
+       */
+      formatDateTime: formatDateTime.bind(null, { locale }),
     };
   }, [locale]);
 }

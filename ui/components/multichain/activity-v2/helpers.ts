@@ -42,32 +42,10 @@ export function isNonEvmItem(
   return item.type === 'non-evm';
 }
 
-// TODO: Re-use existing
 function parseDate(timestamp: string | number): number {
   const date = new Date(timestamp);
   date.setHours(0, 0, 0, 0);
   return date.getTime();
-}
-
-// TODO: Re-use existing
-export function formatDateTime(timestamp: string | number): string {
-  if (!timestamp) {
-    return '';
-  }
-
-  const dateObj = new Date(timestamp);
-  const time = new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  }).format(dateObj);
-
-  const month = new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-  }).format(dateObj);
-
-  const date = `${month} ${dateObj.getDate()}, ${dateObj.getFullYear()}`;
-  return `${date} at ${time}`;
 }
 
 // TODO: Move
