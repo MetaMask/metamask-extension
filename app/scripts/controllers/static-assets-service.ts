@@ -68,8 +68,7 @@ export type StaticAssetsServiceMessenger = Messenger<
 export type FetchFunction = (
   input: RequestInfo | URL | string,
   init?: RequestInit,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-) => Promise<any>;
+) => Promise<unknown>;
 
 export type StaticAssetsServiceOptions = {
   messenger: StaticAssetsServiceMessenger;
