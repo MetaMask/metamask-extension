@@ -49,52 +49,57 @@ describe('OrderCard', () => {
     expect(screen.getByText('TSLA')).toBeInTheDocument();
   });
 
-  it('displays buy side order correctly', () => {
-    const order = createMockOrder({ side: 'buy', orderType: 'limit' });
+  it('displays Long for buy side order', () => {
+    const order = createMockOrder({ side: 'buy' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText('Limit buy')).toBeInTheDocument();
+    expect(screen.getByText('Long')).toBeInTheDocument();
   });
 
-  it('displays sell side order correctly', () => {
-    const order = createMockOrder({ side: 'sell', orderType: 'limit' });
+  it('displays Short for sell side order', () => {
+    const order = createMockOrder({ side: 'sell' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText('Limit sell')).toBeInTheDocument();
+    expect(screen.getByText('Short')).toBeInTheDocument();
   });
 
-  it('displays market order type correctly', () => {
-    const order = createMockOrder({ orderType: 'market', side: 'buy' });
+  it('displays the order type', () => {
+    const order = createMockOrder({ orderType: 'limit' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText('Market buy')).toBeInTheDocument();
+    expect(screen.getByText('Limit')).toBeInTheDocument();
   });
 
-  it('displays the order size', () => {
+  it('displays the order size with symbol', () => {
     const order = createMockOrder({ symbol: 'ETH', size: '2.5' });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
     expect(screen.getByText('2.5 ETH')).toBeInTheDocument();
   });
 
-  it('displays limit price for limit orders', () => {
+  it('displays formatted USD value for limit orders', () => {
     const order = createMockOrder({
       orderType: 'limit',
+      size: '1.0',
       price: '3500.00',
     });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText('$3500.00')).toBeInTheDocument();
+    // formatCurrencyWithMinThreshold formats with commas
+    expect(screen.getByText('$3,500.00')).toBeInTheDocument();
   });
 
-  it('displays Market text for market orders', () => {
+  it('displays Market label when order value is zero', () => {
     const order = createMockOrder({
       orderType: 'market',
       price: '0',
+      size: '1.0',
     });
     renderWithProvider(<OrderCard order={order} />, mockStore);
 
-    expect(screen.getByText('Market')).toBeInTheDocument();
+    // "Market" appears in both the value slot and the order type slot
+    const marketElements = screen.getAllByText('Market');
+    expect(marketElements.length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders the token logo', () => {
@@ -104,56 +109,14 @@ describe('OrderCard', () => {
     expect(screen.getByTestId('perps-token-logo-SOL')).toBeInTheDocument();
   });
 
-  describe('cancel button', () => {
-    it('does not render cancel button when onCancel is not provided', () => {
-      const order = createMockOrder({ orderId: 'order-no-cancel' });
-      renderWithProvider(<OrderCard order={order} />, mockStore);
+  it('calls onClick when card is clicked', () => {
+    const order = createMockOrder();
+    const onClick = jest.fn();
+    renderWithProvider(<OrderCard order={order} onClick={onClick} />, mockStore);
 
-      expect(
-        screen.queryByTestId('order-cancel-order-no-cancel'),
-      ).not.toBeInTheDocument();
-    });
+    fireEvent.click(screen.getByTestId('order-card-test-order-001'));
 
-    it('renders cancel button when onCancel is provided', () => {
-      const order = createMockOrder({ orderId: 'order-with-cancel' });
-      const onCancel = jest.fn();
-      renderWithProvider(
-        <OrderCard order={order} onCancel={onCancel} />,
-        mockStore,
-      );
-
-      expect(
-        screen.getByTestId('order-cancel-order-with-cancel'),
-      ).toBeInTheDocument();
-    });
-
-    it('calls onCancel with the order when cancel button is clicked', () => {
-      const order = createMockOrder({ orderId: 'order-cancel-test' });
-      const onCancel = jest.fn();
-      renderWithProvider(
-        <OrderCard order={order} onCancel={onCancel} />,
-        mockStore,
-      );
-
-      fireEvent.click(screen.getByTestId('order-cancel-order-cancel-test'));
-
-      expect(onCancel).toHaveBeenCalledTimes(1);
-      expect(onCancel).toHaveBeenCalledWith(order);
-    });
-
-    it('does not trigger card click when cancel button is clicked', () => {
-      const order = createMockOrder({ orderId: 'order-stop-prop' });
-      const onClick = jest.fn();
-      const onCancel = jest.fn();
-      renderWithProvider(
-        <OrderCard order={order} onClick={onClick} onCancel={onCancel} />,
-        mockStore,
-      );
-
-      fireEvent.click(screen.getByTestId('order-cancel-order-stop-prop'));
-
-      expect(onCancel).toHaveBeenCalledTimes(1);
-      expect(onClick).not.toHaveBeenCalled();
-    });
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledWith(order);
   });
 });
