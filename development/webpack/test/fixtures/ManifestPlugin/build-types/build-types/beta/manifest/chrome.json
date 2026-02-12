@@ -1,9 +1,0 @@
-{
-  "beta_chrome_property": "from_beta_chrome",
-  "browser_specific_settings": {
-    "chrome": {
-      "id": "beta-chrome-extension-id"
-    }
-  },
-  "chrome_property": "overridden_by_beta_chrome"
-}

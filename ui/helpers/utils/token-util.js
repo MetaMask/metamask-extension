@@ -1,11 +1,11 @@
 import log from 'loglevel';
-import { ERC20 } from '@metamask/controller-utils';
 import {
   getTokenStandardAndDetails,
   getTokenStandardAndDetailsByChain,
 } from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { TokenStandard } from '../../../shared/constants/transaction';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
@@ -345,7 +345,7 @@ export async function getAssetDetails(
 
   const decimals = tokenDecimals && Number(tokenDecimals?.toString(10));
 
-  if (tokenDetails?.standard === ERC20) {
+  if (tokenDetails?.standard === TokenStandard.ERC20) {
     tokenId = undefined;
   }
 

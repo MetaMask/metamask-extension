@@ -11,6 +11,7 @@ import { getMockedNotificationsState } from './data/notification-state';
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 }));
 
 const backgroundConnectionMocked = {

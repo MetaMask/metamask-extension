@@ -17,7 +17,6 @@ import {
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
-import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
 import {
   bridgeSlice,
   setSrcTokenExchangeRates,
@@ -73,7 +72,6 @@ export const resetBridgeState = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(resetInputFields());
     dispatch(callBridgeControllerMethod(BridgeBackgroundAction.RESET_STATE));
-    await clearAllBridgeCacheItems();
   };
 };
 

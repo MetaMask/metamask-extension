@@ -1,13 +1,12 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { AssertionError } from 'node:assert';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
+import { ENVIRONMENT } from '../../build/constants';
 import type { Variables } from '../../lib/variables';
 import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
-import { ENVIRONMENT, VARIABLES_REQUIRED_IN_PRODUCTION } from './constants';
 
 type Environment = (typeof ENVIRONMENT)[keyof typeof ENVIRONMENT];
 
@@ -166,7 +165,7 @@ export function getVariables(
   buildConfig: BuildTypesConfig,
 ) {
   const activeBuild = buildConfig.buildTypes[type];
-  const { required, variables } = loadConfigVars(activeBuild, buildConfig);
+  const variables = loadConfigVars(activeBuild, buildConfig);
   const version = getExtensionVersion(type, activeBuild, args.releaseVersion);
   const isDevBuild = env === 'development';
 
@@ -211,26 +210,6 @@ export function getVariables(
   variables.set('ENABLE_SNOW', args.snow.toString());
   variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
 
-  // Validate required production variables
-  if (args.validateEnv && environment === ENVIRONMENT.PRODUCTION) {
-    const requiredVars =
-      VARIABLES_REQUIRED_IN_PRODUCTION[
-        type as keyof typeof VARIABLES_REQUIRED_IN_PRODUCTION
-      ];
-    if (requiredVars) {
-      const undefinedVariables = requiredVars.filter(
-        (variable) =>
-          variables.get(variable) === null ||
-          variables.get(variable) === undefined,
-      );
-      if (undefinedVariables.length !== 0) {
-        throw new AssertionError({
-          message: `Some variables required to build production target are not defined.\n  - ${undefinedVariables.join('\n  - ')}`,
-        });
-      }
-    }
-  }
-
   // convert the variables to a format that can be used by SWC, which expects
   // values be JSON stringified, as it JSON.parses them internally.
   const safeVariables: Record<string, string> = {};
@@ -248,13 +227,7 @@ export function getVariables(
   // the `PPOM_URI` shouldn't be JSON stringified, as it's actually code
   safeVariables.PPOM_URI = variables.get('PPOM_URI') as string;
 
-  return {
-    variables,
-    safeVariables,
-    version,
-    environment,
-    buildEnvVarDeclarations: required,
-  };
+  return { variables, safeVariables, version, environment };
 }
 
 /**
@@ -278,22 +251,19 @@ function loadConfigVars(
   activeBuild: Pick<BuildType, 'env' | 'features'>,
   { env }: BuildTypesConfig,
 ) {
-  const variables = loadEnv();
-  const required = new Set<string>();
-
-  function addVars(pairs: Record<string, unknown> = {}): void {
-    Object.entries(pairs).forEach(([key, value]) => {
-      required.add(key);
-      if (value === undefined) return;
-      if (variables.has(key)) return;
-      variables.set(key, value);
-    });
-  }
-
-  addRc(variables, join(__dirname, '../../../.metamaskprodrc'));
-  addRc(variables, join(__dirname, '../../../.metamaskrc'));
+  const definitions = loadEnv();
+  addRc(definitions, join(__dirname, '../../../.metamaskprodrc'));
+  addRc(definitions, join(__dirname, '../../../.metamaskrc'));
   addVars(activeBuild.env);
   addVars(env);
 
-  return { required, variables };
+  function addVars(pairs: Record<string, unknown> = {}): void {
+    Object.entries(pairs).forEach(([key, value]) => {
+      if (value === undefined) return;
+      if (definitions.has(key)) return;
+      definitions.set(key, value);
+    });
+  }
+
+  return definitions;
 }

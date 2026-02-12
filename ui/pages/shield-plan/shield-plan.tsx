@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -257,23 +251,9 @@ const ShieldPlan = () => {
   }, [selectedPlan, setSelectedToken]);
 
   const selectedTokenAddress = selectedToken?.address;
-
-  // Track if initial payment method selection has been done
-  // This prevents auto-switching after payment cancel/failure when cache is cleared
-  const hasInitializedPaymentMethod = useRef(false);
-
   // set default selected payment method to crypto if selected token available
   // should only trigger if selectedTokenAddress change (shouldn't trigger again if selected token object updated but still same token)
   useEffect(() => {
-    // Skip auto-selection after initial setup to prevent switching after payment cancel
-    if (hasInitializedPaymentMethod.current) {
-      // Only handle the case when selectedTokenAddress becomes undefined (no tokens available)
-      if (!selectedTokenAddress) {
-        setSelectedPaymentMethod(PAYMENT_TYPES.byCard);
-      }
-      return;
-    }
-
     const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
     if (
       selectedTokenAddress &&
@@ -314,13 +294,6 @@ const ShieldPlan = () => {
     useTestClock: enableStripeTestClock,
     rewardPoints: claimedRewardsPoints ?? undefined,
   });
-
-  const onStartSubscription = useCallback(() => {
-    // set flag to prevent auto-switching payment method after payment cancel/failure
-    hasInitializedPaymentMethod.current = true;
-
-    handleSubscription();
-  }, [handleSubscription]);
 
   const handleUserChangeToken = useCallback(
     async (token: TokenWithApprovalAmount) => {
@@ -655,7 +628,7 @@ const ShieldPlan = () => {
                 size={ButtonSize.Lg}
                 variant={ButtonVariant.Primary}
                 isFullWidth
-                onClick={onStartSubscription}
+                onClick={handleSubscription}
                 data-testid="shield-plan-continue-button"
               >
                 {t('continue')}

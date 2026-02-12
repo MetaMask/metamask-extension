@@ -3,11 +3,15 @@ import { Driver } from '../../../webdriver/driver';
 class BitcoinReviewTxPage {
   private driver: Driver;
 
-  private readonly cancelButton =
-    '[data-testid="confirmation-cancel-snap-footer-button"]';
+  private readonly reviewPageTitle = {
+    text: 'Review',
+    tag: 'h4',
+  };
 
-  private readonly confirmButton =
-    '[data-testid="confirmation-confirm-snap-footer-button"]';
+  private readonly sendButton = {
+    text: 'Send',
+    tag: 'span',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -16,8 +20,8 @@ class BitcoinReviewTxPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.cancelButton,
-        this.confirmButton,
+        this.reviewPageTitle,
+        this.sendButton,
       ]);
     } catch (e) {
       console.log(
@@ -29,9 +33,19 @@ class BitcoinReviewTxPage {
     console.log('Bitcoin review tx page is loaded');
   }
 
-  async clickConfirmButton() {
-    console.log('Click confirm button on bitcoin review tx page');
-    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
+  async clickSendButton() {
+    console.log('Click send button on bitcoin review tx page');
+    await this.driver.clickElementAndWaitToDisappear(this.sendButton);
+  }
+
+  async checkFeeRateIsDisplayed(feeRate: string): Promise<void> {
+    console.log(
+      `Check if fee rate ${feeRate} is displayed on bitcoin review tx page`,
+    );
+    await this.driver.waitForSelector({
+      text: `${feeRate} sat/vB`,
+      tag: 'p',
+    });
   }
 
   async checkNetworkFeeIsDisplayed(fee: string): Promise<void> {
@@ -39,7 +53,7 @@ class BitcoinReviewTxPage {
       `Check if network fee ${fee} is displayed on bitcoin review tx page`,
     );
     await this.driver.waitForSelector({
-      text: `${fee} BTC`,
+      text: `${fee} sats`,
       tag: 'p',
     });
   }
@@ -49,8 +63,8 @@ class BitcoinReviewTxPage {
       `Check if send amount ${amount} is displayed on bitcoin review tx page`,
     );
     await this.driver.waitForSelector({
-      text: `-${amount} BTC`,
-      tag: 'p',
+      text: `${amount} BTC`,
+      tag: 'h2',
     });
   }
 
@@ -59,7 +73,7 @@ class BitcoinReviewTxPage {
       `Check if total amount ${total} is displayed on bitcoin review tx page`,
     );
     await this.driver.waitForSelector({
-      text: `${total} USD`,
+      text: `${total} BTC`,
       tag: 'p',
     });
   }

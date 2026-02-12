@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import ErrorBoundary from '../../app/error-boundary/error-boundary';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -34,6 +33,7 @@ import NftsTab from '../../app/assets/nfts/nfts-tab';
 import TransactionList from '../../app/transaction-list';
 import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
 import { PerpsTabView } from '../../app/perps';
+import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
@@ -60,7 +60,7 @@ export const AccountOverviewTabs = ({
 
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
 
@@ -166,13 +166,13 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Tokens}
             data-testid="account-overview__asset-tab"
           >
-            <ErrorBoundary key="tokens">
+            <Box marginBottom={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
                 safeChains={safeChains}
               />
-            </ErrorBoundary>
+            </Box>
           </Tab>
         )}
 
@@ -182,9 +182,7 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >
-            <ErrorBoundary key="perps">
-              <PerpsTabView />
-            </ErrorBoundary>
+            <PerpsTabView />
           </Tab>
         )}
 
@@ -194,13 +192,13 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.DeFi}
             data-testid="account-overview__defi-tab"
           >
-            <ErrorBoundary key="defi">
+            <Box>
               <DeFiTab
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
                 safeChains={safeChains}
               />
-            </ErrorBoundary>
+            </Box>
           </Tab>
         )}
 
@@ -210,9 +208,7 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Nfts}
             data-testid="account-overview__nfts-tab"
           >
-            <ErrorBoundary key="nfts">
-              <NftsTab />
-            </ErrorBoundary>
+            <NftsTab />
           </Tab>
         )}
 
@@ -222,13 +218,11 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Activity}
             data-testid="account-overview__activity-tab"
           >
-            <ErrorBoundary key="activity">
-              {showUnifiedTransactionList ? (
-                <UnifiedTransactionList />
-              ) : (
-                <TransactionList />
-              )}
-            </ErrorBoundary>
+            {showUnifiedTransactionList ? (
+              <UnifiedTransactionList />
+            ) : (
+              <TransactionList />
+            )}
           </Tab>
         )}
       </Tabs>

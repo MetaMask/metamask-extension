@@ -252,9 +252,8 @@ jobs:
     name: Check whether the fixture update succeeded
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: always()
     needs:
-      - is-fork-pull-request
       - commit-updated-fixture
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}

@@ -126,14 +126,14 @@ describe('CancelSpeedupPopover', () => {
     jest.clearAllMocks();
   });
 
-  it('should have Cancel in header if editGasMode is cancel', async () => {
+  it('should have ❌Cancel in header if editGasMode is cancel', async () => {
     await act(async () => render());
-    expect(screen.queryByText('Cancel')).toBeInTheDocument();
+    expect(screen.queryByText('❌Cancel')).toBeInTheDocument();
   });
 
-  it('should have Speed up in header if editGasMode is speedup', async () => {
+  it('should have 🚀Speed up in header if editGasMode is speedup', async () => {
     await act(async () => render({ editGasMode: EditGasModes.speedUp }));
-    expect(screen.queryByText('Speed up')).toBeInTheDocument();
+    expect(screen.queryByText('🚀Speed up')).toBeInTheDocument();
   });
 
   it('information tooltip should contain the correct text if editGasMode is cancel', async () => {

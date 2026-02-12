@@ -11,7 +11,6 @@ import {
   intersection,
 } from '@metamask/superstruct';
 import { CaipAssetTypeStruct, type CaipChainId } from '@metamask/utils';
-import { getCacheKey, updateCache, retrieveCachedResponse } from './cache';
 
 const MinimalAssetSchema = type({
   /**
@@ -63,35 +62,6 @@ export const validateMinimalAssetObject = (
   return is(data, MinimalAssetSchema);
 };
 
-const toMinimalAsset = (token: BridgeAssetV2): MinimalAsset => {
-  const { assetId, symbol, name, decimals } = token;
-  return { assetId, symbol, name, decimals };
-};
-
-const postWithCache = async (
-  url: Parameters<typeof handleFetch>[0],
-  requestParams: Parameters<typeof handleFetch>[1],
-  ...cacheParams: Parameters<typeof retrieveCachedResponse>
-) => {
-  const cachedResponse = await retrieveCachedResponse(...cacheParams);
-  if (cachedResponse) {
-    return cachedResponse;
-  }
-  // If this fetch returns a non-200 response, the cache will not be updated
-  const response = await handleFetch(url, requestParams);
-
-  await updateCache(response, ...cacheParams);
-  return response;
-};
-
-const getHeaders = (clientId: string, clientVersion?: string) => {
-  return {
-    'X-Client-Id': clientId,
-    ...(clientVersion ? { 'Client-Version': clientVersion } : {}),
-    'Content-Type': 'application/json',
-  };
-};
-
 /**
  * Fetches a list of tokens sorted by balance, popularity and other criteria from the bridge-api
  *
@@ -104,7 +74,7 @@ const getHeaders = (clientId: string, clientVersion?: string) => {
  * @param params.signal - The abort signal
  * @returns A list of sorted tokens
  */
-export const fetchPopularTokens = async ({
+export async function fetchPopularTokens({
   signal,
   chainIds,
   clientId,
@@ -117,38 +87,28 @@ export const fetchPopularTokens = async ({
   clientId: string;
   bridgeApiBaseUrl: string;
   clientVersion?: string;
-  assetsWithBalances?: BridgeAssetV2[];
-}): Promise<BridgeAssetV2[]> => {
+  assetsWithBalances?: MinimalAsset[];
+}): Promise<BridgeAssetV2[]> {
   const url = `${bridgeApiBaseUrl}/getTokens/popular`;
-  // Only the minimum asset fields are passed to the bridge-api to avoid creating a new cache entry if
-  // token sorting has not changed
-  const includeAssets =
-    assetsWithBalances && assetsWithBalances.length > 0
-      ? assetsWithBalances.map(toMinimalAsset)
-      : undefined;
-  const cacheKey = getCacheKey(url, {
-    chainIds,
-    includeAssets,
-  });
 
-  const tokens = await postWithCache(
-    url,
-    {
-      signal,
-      method: 'POST',
-      body: JSON.stringify({
-        chainIds,
-        includeAssets,
-      }),
-      headers: getHeaders(clientId, clientVersion),
+  const tokens = await handleFetch(url, {
+    signal,
+    method: 'POST',
+    body: JSON.stringify({
+      chainIds,
+      includeAssets: assetsWithBalances,
+    }),
+    headers: {
+      'X-Client-Id': clientId,
+      ...(clientVersion ? { 'Client-Version': clientVersion } : {}),
+      'Content-Type': 'application/json',
     },
-    cacheKey,
-  );
+  });
 
   return tokens
     .map((token: unknown) => (validateSwapsAssetV2Object(token) ? token : null))
     .filter(Boolean);
-};
+}
 
 /**
  * Fetches a list of matching tokens sorted by balance, popularity and other criteria from the bridge-api
@@ -164,7 +124,7 @@ export const fetchPopularTokens = async ({
  * @param params.signal - The abort signal
  * @returns A list of sorted tokens
  */
-export const fetchTokensBySearchQuery = async ({
+export async function fetchTokensBySearchQuery({
   signal,
   chainIds,
   query,
@@ -180,43 +140,29 @@ export const fetchTokensBySearchQuery = async ({
   clientId: string;
   bridgeApiBaseUrl: string;
   clientVersion?: string;
-  assetsWithBalances?: BridgeAssetV2[];
+  assetsWithBalances?: MinimalAsset[];
   after?: string;
 }): Promise<{
   hasNextPage: boolean;
   endCursor?: string;
   tokens: BridgeAssetV2[];
-}> => {
+}> {
   const url = `${bridgeApiBaseUrl}/getTokens/search`;
-  // Only the minimum asset fields are passed to the bridge-api to avoid creating a new cache entry if
-  // token sorting has not changed
-  const includeAssets =
-    assetsWithBalances && assetsWithBalances.length > 0
-      ? assetsWithBalances.map(toMinimalAsset)
-      : undefined;
-
-  const cacheKey = getCacheKey(url, {
-    chainIds,
-    includeAssets,
-    searchQuery: query,
-  });
-
-  const { data: tokens, pageInfo } = await postWithCache(
-    url,
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        chainIds,
-        includeAssets,
-        after,
-        query,
-      }),
-      signal,
-      headers: getHeaders(clientId, clientVersion),
+  const { data: tokens, pageInfo } = await handleFetch(url, {
+    method: 'POST',
+    body: JSON.stringify({
+      chainIds,
+      includeAssets: assetsWithBalances,
+      after,
+      query,
+    }),
+    signal,
+    headers: {
+      'X-Client-Id': clientId,
+      ...(clientVersion ? { 'Client-Version': clientVersion } : {}),
+      'Content-Type': 'application/json',
     },
-    cacheKey,
-    after,
-  );
+  });
   const { hasNextPage, endCursor } = pageInfo;
 
   return {
@@ -228,4 +174,4 @@ export const fetchTokensBySearchQuery = async ({
       )
       .filter(Boolean),
   };
-};
+}

@@ -424,7 +424,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
     </div>
     <div
       class="mm-box settings-page__content-row mm-box--display-flex mm-box--sm:gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-      data-testid="advanced-setting-show-testnets"
+      data-testid="advanced-setting-show-testnet-conversion"
     >
       <div
         class="settings-page__content-item"

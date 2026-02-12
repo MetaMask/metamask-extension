@@ -40,7 +40,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import { ControllerFlatState } from '../../controller-init/controller-list';
 import { getTransactionById } from '../transaction/util';
-import { getClientForTransactionMetadata, sanitizeOrigin } from './utils';
+import { getClientForTransactionMetadata } from './utils';
 
 const namespace = 'SmartTransactions';
 
@@ -481,7 +481,6 @@ class SmartTransactionHook {
             signedTx.metadata = {
               txType: transactionMeta.type,
               client: getClientForTransactionMetadata(),
-              origin: sanitizeOrigin(transactionMeta.origin),
             };
           }
           return signedTx;
@@ -494,7 +493,6 @@ class SmartTransactionHook {
           metadata: {
             txType: this.#transactionMeta.type,
             client: getClientForTransactionMetadata(),
-            origin: sanitizeOrigin(this.#transactionMeta.origin),
           },
         },
       ];
@@ -509,7 +507,6 @@ class SmartTransactionHook {
         metadata: {
           txType: this.#transactionMeta.type,
           client: getClientForTransactionMetadata(),
-          origin: sanitizeOrigin(this.#transactionMeta.origin),
         },
       }));
     }

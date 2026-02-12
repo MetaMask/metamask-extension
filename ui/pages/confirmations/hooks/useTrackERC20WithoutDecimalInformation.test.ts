@@ -25,12 +25,7 @@ describe('useTrackERC20WithoutDecimalInformation', () => {
   it('should invoke trackEvent method only once per instance of the hook', () => {
     useContextMock.mockImplementation((context) => {
       if (context === MetaMetricsContext) {
-        return {
-          trackEvent: trackEventMock,
-          bufferedTrace: jest.fn(),
-          bufferedEndTrace: jest.fn(),
-          onboardingParentContext: { current: null },
-        };
+        return trackEventMock;
       }
       return undefined;
     });

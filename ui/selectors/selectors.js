@@ -159,25 +159,24 @@ import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/modules/feature-flags';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import {
+  getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
+} from './transactions';
 // eslint-disable-next-line import/order
 import {
   getSelectedInternalAccount,
   getInternalAccounts,
   getInternalAccountByAddress,
 } from './accounts';
-import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
-import { getHasShieldEntryModalShownOnce } from './subscription';
-import { getApprovalRequestsByType } from './approvals';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
 } from './multichain/networks';
-import { getMultichainBalances, getMultichainNetwork } from './multichain';
-import {
-  getUnapprovedTransactions,
-  getCurrentNetworkTransactions,
-} from './transactions';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
+import { getApprovalRequestsByType } from './approvals';
+import { getHasShieldEntryModalShownOnce } from './subscription';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -203,29 +202,6 @@ export const getConfirmationExchangeRates = (state) => {
 
 export function getAppIsLoading(state) {
   return state.appState.isLoading;
-}
-
-/**
- * Used to prevent the popup from closing while a hardware wallet is signing.
- *
- * @param state - Redux state
- * @returns true when hardware wallet signing is pending
- */
-export function getPendingHardwareWalletSigning(state) {
-  return state.appState.pendingHardwareWalletSigning;
-}
-
-/**
- * Check if the hardware wallet error modal is currently visible.
- * Used to prevent auto-closing the notification popup when an error modal is shown.
- *
- * @param state - Redux state
- * @returns true if the hardware wallet error modal is open
- */
-export function getIsHardwareWalletErrorModalVisible(state) {
-  return (
-    state.appState.modal?.modalState?.name === HARDWARE_WALLET_ERROR_MODAL_NAME
-  );
 }
 
 export function getNftIsStillFetchingIndication(state) {

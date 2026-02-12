@@ -67,7 +67,6 @@
     "nextNonce": "null",
     "onboardedInThisUISession": "boolean",
     "openMetaMaskTabs": {},
-    "pendingHardwareWalletSigning": "boolean",
     "pendingTokens": {},
     "qrCodeData": "null",
     "removeNftMessage": "string",
@@ -541,10 +540,6 @@
     "featureFlags": {},
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
-    "firstTimeInfo": {
-      "date": "number",
-      "version": "string"
-    },
     "forgottenPassword": "boolean",
     "fragments": {},
     "fullScreenGasPollTokens": ["string"],
@@ -872,6 +867,7 @@
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
       "useSidePanelAsDefault": "boolean"
     },
+    "preventPollingOnNetworkRestart": "boolean",
     "previousAppVersion": "string",
     "previousMigrationVersion": "number",
     "productTour": "string",
@@ -909,7 +905,6 @@
     },
     "rewardsAccounts": {},
     "rewardsActiveAccount": "null",
-    "rewardsPointsEstimateHistory": [],
     "rewardsSeasons": {},
     "rewardsSeasonStatuses": {},
     "rewardsSubscriptions": {},
@@ -935,11 +930,12 @@
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
     "syncQueue": {
-      "01KG2PT3Y3FHYEM874K8J5SZ07": [
+      "null": [
         {
-          "address": "string",
-          "scopes": ["string"]
-        },
+          "address": "string"
+        }
+      ],
+      "01KBPCGKC0N982CH1VYK4WJ5BH": [
         {
           "address": "string",
           "scopes": ["string", "string", "string"]

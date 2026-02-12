@@ -31,9 +31,6 @@ class GeneralSettings {
     jazzicon: '[data-testid="jazz_icon"]',
   };
 
-  private readonly toggleNativeTokenAsMainBalance =
-    '[id="toggle-show-native-token-as-main-balance"] .toggle-button';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -109,10 +106,6 @@ class GeneralSettings {
 
   async toggleHideTokensWithoutBalance(): Promise<void> {
     await this.driver.clickElement(this.hideTokensWithoutBalanceToggle);
-  }
-
-  async toggleShowNativeTokenAsMainBalance(): Promise<void> {
-    await this.driver.clickElement(this.toggleNativeTokenAsMainBalance);
   }
 }
 

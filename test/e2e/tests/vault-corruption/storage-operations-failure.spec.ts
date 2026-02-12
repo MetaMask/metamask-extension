@@ -46,10 +46,8 @@ describe('Storage Operations Failure Recovery', function () {
             'Simulated storage.local.get failure for testing',
           ],
           additionalManifestFlags: {
-            testing: {
-              // Enable the simulation flag - it will only trigger after backup exists
-              simulateStorageGetFailure: true,
-            },
+            // Enable the simulation flag - it will only trigger after backup exists
+            simulateStorageGetFailure: true,
           },
         }),
         async ({ driver }: { driver: Driver }) => {
@@ -90,10 +88,8 @@ describe('Storage Operations Failure Recovery', function () {
             'Simulated storage.local.set failure for testing',
           ],
           additionalManifestFlags: {
-            testing: {
-              // Enable set failure - will trigger immediately
-              simulateStorageSetFailure: true,
-            },
+            // Enable set failure - will trigger immediately
+            simulateStorageSetFailure: true,
           },
         }),
         async ({ driver }: { driver: Driver }) => {

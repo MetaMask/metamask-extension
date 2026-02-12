@@ -446,31 +446,7 @@
     "ui/components/app/perps/order-card/order-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/app/perps/order-entry/components/amount-input/amount-input.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/perps/order-entry/components/auto-close-section/auto-close-section.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/perps/order-entry/components/close-amount-section/close-amount-section.test.tsx": {
-      "Material-UI: JSS warnings": 15,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/perps/order-entry/components/leverage-slider/leverage-slider.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/perps/order-entry/components/order-summary/order-summary.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/perps/order-entry/order-entry.test.tsx": {
-      "React: componentWill* lifecycle deprecations": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/components/app/perps/perps-empty-state/perps-empty-state.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/perps/perps-recent-activity/perps-recent-activity.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/perps-tab-control-bar/perps-tab-control-bar.test.tsx": {
@@ -486,9 +462,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/perps/start-trade-cta/start-trade-cta.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/components/app/perps/transaction-card/transaction-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/qr-hardware-popover/base-reader.test.js": {
@@ -1253,9 +1226,6 @@
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/contexts/hardware-wallets/HardwareWalletContext.test.tsx": {
-      "Test errors: Uncaught Errors": 4
-    },
     "ui/contexts/metamask-notifications/metamask-notifications.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1371,9 +1341,6 @@
     "ui/hooks/multi-srp/useHdKeyringsWithSnapAccounts.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/hooks/perps/usePerpsOrderForm.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/hooks/rewards/useCandidateSubscriptionId.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1465,9 +1432,6 @@
     "ui/hooks/useShouldShowSpeedUp.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/hooks/useStaticTokensPolling.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/hooks/useTheme.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1545,7 +1509,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2561,10 +2524,6 @@
       "Reselect: Input stability warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/hooks/alerts/transactions/useGasSponsorshipWarningAlerts.test.ts": {
-      "Reselect: Identity function warnings": 3,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/hooks/alerts/transactions/useGasTooLowAlerts.test.ts": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
@@ -2755,9 +2714,6 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/send/useSnapAmountOnInput.test.ts": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
-    "ui/pages/confirmations/hooks/tokens/useAddToken.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/tokens/useTokenFiatRates.test.ts": {
@@ -3223,9 +3179,6 @@
     "ui/pages/perps/market-list/index.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/perps/perps-activity-page.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3234,17 +3187,14 @@
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/remove-snap-account/snap-account-card.test.tsx": {
-      "Reselect: Identity function warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/routes/routes.component.test.js": {
       "MetaMask: Background connection not initialized": 10,
       "MetaMask: Balance not found warnings": 18,
-      "React: Act warnings (component updates not wrapped)": 22,
+      "MetaMask: Invalid theme warnings": 10,
+      "React: Act warnings (component updates not wrapped)": 24,
       "React: PropTypes validation failures": 2,
-      "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 4,
+      "Reselect: Identity function warnings": 7,
+      "Reselect: Input stability warnings": 6,
       "warn: Could not find asset type": 9,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3603,5 +3553,7 @@
     "ui/selectors/transactions.test.js": {
       "Reselect: Identity function warnings": 4
     }
-  }
+  },
+  "generated": "2026-01-29T10:30:07.782Z",
+  "nodeVersion": "v24.13.0"
 }

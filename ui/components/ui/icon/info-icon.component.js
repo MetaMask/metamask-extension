@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 
 /**
- * @deprecated This has been deprecated in favor of the `Icon` component from `@metamask/design-system-react`
- * See documentation for Icon here https://metamask.github.io/metamask-design-system/?path=/docs/react-components-icon--docs
+ * @deprecated This has been deprecated in favor of the `<Icon />` component in ./ui/components/component-library/icon/icon.js
+ * See storybook documentation for Icon here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-icon--default-story#icon
  */
 
 export default function InfoIcon({ severity }) {

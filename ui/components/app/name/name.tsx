@@ -73,7 +73,7 @@ const Name = memo(
     ...props
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const { trackEvent } = useContext(MetaMetricsContext);
+    const trackEvent = useContext(MetaMetricsContext);
 
     const { name, subtitle, isAccount } = useDisplayName({
       value,

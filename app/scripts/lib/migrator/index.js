@@ -97,13 +97,11 @@ export default class Migrator extends EventEmitter {
 
         log.info(`Migration ${migration.version} complete`);
       } catch (err) {
-        // use an AggregateError to add context without clobbering stack
-        const aggregateError = new AggregateError(
-          [err],
-          `MetaMask Migration Error #${migration.version}`,
-        );
+        // rewrite error message to add context without clobbering stack
+        const originalErrorMessage = err.message;
+        err.message = `MetaMask Migration Error #${migration.version}: ${originalErrorMessage}`;
         // emit error instead of throw so as to not break the run (gracefully fail)
-        this.emit('error', aggregateError);
+        this.emit('error', err);
         // stop migrating and use state as is
         break;
       }

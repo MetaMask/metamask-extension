@@ -1,5 +1,5 @@
 import { Json } from '@metamask/utils';
-import type { EnvironmentType, InstallType, Platform } from './app';
+import type { EnvironmentType } from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
 
 type JsonWithUndefined =
@@ -565,16 +565,6 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   rewards_referral_code_used?: string;
-  /**
-   * The platform (browser) where the extension is running.
-   */
-  platform?: Platform;
-  /**
-   * The installation type of the extension.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  install_type?: InstallType;
 };
 
 export enum MetaMetricsUserTrait {
@@ -691,14 +681,6 @@ export enum MetaMetricsUserTrait {
   HasRewardsOptedIn = 'has_rewards_opted_in',
   RewardsReferred = 'rewards_referred',
   RewardsReferralCodeUsed = 'rewards_referral_code_used',
-  /**
-   * The platform (browser) where the extension is running.
-   */
-  Platform = 'platform',
-  /**
-   * The installation type of the extension.
-   */
-  InstallType = 'install_type',
 }
 
 /**

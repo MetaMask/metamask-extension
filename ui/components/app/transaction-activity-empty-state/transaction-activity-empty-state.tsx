@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { twMerge } from '@metamask/design-system-react';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { EthMethod } from '@metamask/keyring-api';
 import { TabEmptyState } from '../../ui/tab-empty-state';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -13,19 +14,21 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
 
 export type TransactionActivityEmptyStateProps = {
   /**
    * Additional className to apply to the component
    */
   className?: string;
+  /**
+   * The account to use for swap logic
+   */
+  account: InternalAccount;
 };
 
 export const TransactionActivityEmptyState: React.FC<
   TransactionActivityEmptyStateProps
-> = ({ className }) => {
-  const account = useSelector(getSelectedInternalAccount);
+> = ({ className, account }) => {
   const t = useI18nContext();
   const theme = useTheme();
   const isSigningEnabled =

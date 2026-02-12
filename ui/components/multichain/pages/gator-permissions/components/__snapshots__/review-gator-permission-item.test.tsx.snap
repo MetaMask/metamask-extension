@@ -169,11 +169,11 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-5 h-5 text-inherit"
+              class="inline-block w-4 h-4 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -364,11 +364,11 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-5 h-5 text-inherit"
+              class="inline-block w-4 h-4 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -539,11 +539,11 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-5 h-5 text-inherit"
+              class="inline-block w-4 h-4 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -729,11 +729,11 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-5 h-5 text-inherit"
+              class="inline-block w-4 h-4 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -919,11 +919,11 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-5 h-5 text-inherit"
+              class="inline-block w-4 h-4 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -1109,11 +1109,11 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-5 h-5 text-inherit"
+              class="inline-block w-4 h-4 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"

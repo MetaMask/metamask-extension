@@ -52,7 +52,7 @@ export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
  * a reference to the original error that caused the persistence failure.
  */
 export class PersistenceError extends Error {
-  getBackup: () => object | null;
+  backup: object | null;
 
   /**
    * The type of vault corruption that occurred.
@@ -76,9 +76,7 @@ export class PersistenceError extends Error {
   ) {
     super(message);
     this.name = 'PersistenceError';
-    // closure around `backup` to prevent it from being serialized with the
-    // error in debug logs, error reporting, etc.
-    this.getBackup = () => backup;
+    this.backup = backup;
     this.corruptionType = corruptionType;
     this.cause = cause;
   }

@@ -36,11 +36,8 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 192,
-      "firstTimeInfo": {
-        "date": 0,
-        "version": "13.17.0"
-      },
+      "currentAppVersion": "13.17.0",
+      "currentMigrationVersion": 190,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -1973,8 +1970,7 @@
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
-      "rewardsSubscriptions": {},
-      "rewardsPointsEstimateHistory": []
+      "rewardsSubscriptions": {}
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
@@ -2122,6 +2118,9 @@
     "TokenBalancesController": {
       "tokenBalances": {}
     },
+    "TokenListController": {
+      "preventPollingOnNetworkRestart": false
+    },
     "TokenRatesController": {
       "marketData": {}
     },
@@ -2149,6 +2148,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 192
+    "version": 190
   }
 }

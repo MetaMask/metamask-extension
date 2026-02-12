@@ -25,6 +25,7 @@ import {
 } from '../../components/component-library';
 import { BorderColor } from '../../helpers/constants/design-system';
 import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
+import { TabName } from '../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -290,6 +291,7 @@ export const ShieldPaymentModal = ({
           }}
           header={t('shieldPlanSelectToken')}
           autoFocus={false}
+          visibleTabs={[TabName.TOKENS]}
           customTokenListGenerator={customTokenListGenerator}
           hideSearch
         />

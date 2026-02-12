@@ -1,7 +1,8 @@
-import { ApprovalType, ERC20 } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -13,6 +14,7 @@ import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -99,7 +101,6 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
-  addKnownMethodData: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -110,6 +111,12 @@ const setupSubmitRequestToBackgroundMocks = (
       ...advancedDetailsMockedRequests,
       ...mockRequests,
     }),
+  );
+
+  mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    createMockImplementation({ addKnownMethodData: {} }),
   );
 };
 
@@ -127,7 +134,7 @@ describe('ERC20 Approve Confirmation', () => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
       getTokenStandardAndDetailsByChain: {
-        standard: ERC20,
+        standard: TokenStandard.ERC20,
         decimals: '4',
       },
     });

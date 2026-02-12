@@ -1,0 +1,106 @@
+diff --git a/dist/CurrencyRateController.cjs b/dist/CurrencyRateController.cjs
+index 9329fa3772bad655112451929bd107d99d95b34e..57683eb3b5501085f8d12fabdf0720ced0479ba8 100644
+--- a/dist/CurrencyRateController.cjs
++++ b/dist/CurrencyRateController.cjs
+@@ -42,6 +42,7 @@ const defaultState = {
+         },
+     },
+ };
++const boundedPrecisionNumber = (value, precision = 9) => Number(value.toFixed(precision));
+ /**
+  * Controller that passively polls on a set interval for an exchange rate from the current network
+  * asset to the user's preferred currency.
+@@ -169,8 +170,12 @@ _CurrencyRateController_tokenPricesService = new WeakMap(), _CurrencyRateControl
+             const rate = priceApiExchangeRatesResponse[fetchedCurrency.toLowerCase()];
+             acc[nativeCurrency] = {
+                 conversionDate: rate !== undefined ? Date.now() / 1000 : null,
+-                conversionRate: rate?.value ? Number(1 / rate?.value) : null,
+-                usdConversionRate: rate?.usd ? Number(1 / rate?.usd) : null,
++                conversionRate: rate?.value
++                    ? boundedPrecisionNumber(1 / rate.value)
++                    : null,
++                usdConversionRate: rate?.usd
++                    ? boundedPrecisionNumber(1 / rate.usd)
++                    : null,
+             };
+             return acc;
+         }, {});
+@@ -211,7 +216,9 @@ _CurrencyRateController_tokenPricesService = new WeakMap(), _CurrencyRateControl
+             return {
+                 nativeCurrency,
+                 conversionDate: tokenPrice ? Date.now() / 1000 : null,
+-                conversionRate: tokenPrice?.price ?? null,
++                conversionRate: tokenPrice?.price
++                    ? boundedPrecisionNumber(tokenPrice.price)
++                    : null,
+                 usdConversionRate: null, // Token prices service doesn't provide USD rate in this context
+             };
+         }));
+@@ -232,8 +239,12 @@ _CurrencyRateController_tokenPricesService = new WeakMap(), _CurrencyRateControl
+         const ratesFromTokenPricesService = ratesFromTokenPrices.reduce((acc, rate) => {
+             acc[rate.nativeCurrency] = {
+                 conversionDate: rate.conversionDate,
+-                conversionRate: rate.conversionRate,
+-                usdConversionRate: rate.usdConversionRate,
++                conversionRate: rate.conversionRate
++                    ? boundedPrecisionNumber(rate.conversionRate)
++                    : null,
++                usdConversionRate: rate.usdConversionRate
++                    ? boundedPrecisionNumber(rate.usdConversionRate)
++                    : null,
+             };
+             return acc;
+         }, {});
+diff --git a/dist/CurrencyRateController.mjs b/dist/CurrencyRateController.mjs
+index d9c312e93b9ea6d37ad55321b2588248a61e5442..62280a33f6f67efcc173b5699b4f9bb13eea1c05 100644
+--- a/dist/CurrencyRateController.mjs
++++ b/dist/CurrencyRateController.mjs
+@@ -39,6 +39,7 @@ const defaultState = {
+         },
+     },
+ };
++const boundedPrecisionNumber = (value, precision = 9) => Number(value.toFixed(precision));
+ /**
+  * Controller that passively polls on a set interval for an exchange rate from the current network
+  * asset to the user's preferred currency.
+@@ -165,8 +166,12 @@ _CurrencyRateController_tokenPricesService = new WeakMap(), _CurrencyRateControl
+             const rate = priceApiExchangeRatesResponse[fetchedCurrency.toLowerCase()];
+             acc[nativeCurrency] = {
+                 conversionDate: rate !== undefined ? Date.now() / 1000 : null,
+-                conversionRate: rate?.value ? Number(1 / rate?.value) : null,
+-                usdConversionRate: rate?.usd ? Number(1 / rate?.usd) : null,
++                conversionRate: rate?.value
++                    ? boundedPrecisionNumber(1 / rate.value)
++                    : null,
++                usdConversionRate: rate?.usd
++                    ? boundedPrecisionNumber(1 / rate.usd)
++                    : null,
+             };
+             return acc;
+         }, {});
+@@ -207,7 +212,9 @@ _CurrencyRateController_tokenPricesService = new WeakMap(), _CurrencyRateControl
+             return {
+                 nativeCurrency,
+                 conversionDate: tokenPrice ? Date.now() / 1000 : null,
+-                conversionRate: tokenPrice?.price ?? null,
++                conversionRate: tokenPrice?.price
++                    ? boundedPrecisionNumber(tokenPrice.price)
++                    : null,
+                 usdConversionRate: null, // Token prices service doesn't provide USD rate in this context
+             };
+         }));
+@@ -228,8 +235,12 @@ _CurrencyRateController_tokenPricesService = new WeakMap(), _CurrencyRateControl
+         const ratesFromTokenPricesService = ratesFromTokenPrices.reduce((acc, rate) => {
+             acc[rate.nativeCurrency] = {
+                 conversionDate: rate.conversionDate,
+-                conversionRate: rate.conversionRate,
+-                usdConversionRate: rate.usdConversionRate,
++                conversionRate: rate.conversionRate
++                    ? boundedPrecisionNumber(rate.conversionRate)
++                    : null,
++                usdConversionRate: rate.usdConversionRate
++                    ? boundedPrecisionNumber(rate.usdConversionRate)
++                    : null,
+             };
+             return acc;
+         }, {});

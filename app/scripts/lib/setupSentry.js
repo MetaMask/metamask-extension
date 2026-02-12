@@ -8,7 +8,8 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
-import { getInstallType, initInstallType } from './install-type';
+
+let installType = 'unknown';
 
 const internalLog = createModuleLogger(log, 'internal');
 
@@ -49,10 +50,18 @@ export default function setupSentry() {
 
   log('Initializing');
 
-  // Initialize install type early - fire and forget.
-  // By the time errors are reported, the cache should be populated.
-  initInstallType();
-
+  // Normally this would be awaited, but getSelf should be available by the time the report is finalized.
+  // If it's not, we still get the extensionId, but the installType will default to "unknown"
+  browser.management
+    .getSelf()
+    .then((extensionInfo) => {
+      if (extensionInfo.installType) {
+        installType = extensionInfo.installType;
+      }
+    })
+    .catch((error) => {
+      log('Error getting extension installType', error);
+    });
   integrateLogging();
   setSentryClient();
 
@@ -404,8 +413,6 @@ export function rewriteReport(report) {
     if (!report.tags) {
       report.tags = {};
     }
-
-    const installType = getInstallType();
 
     Object.assign(report.extra, {
       appState,

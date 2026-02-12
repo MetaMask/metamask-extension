@@ -8,6 +8,7 @@ import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
 import type { BuildTypesConfig } from '../../lib/build-type';
+import { ENVIRONMENT } from '../../build/constants';
 import {
   Browsers,
   type Manifest,
@@ -15,7 +16,6 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
-import { ENVIRONMENT } from './constants';
 
 const environmentOptions = Object.values(ENVIRONMENT);
 const ENV_PREFIX = 'BUNDLE';
@@ -339,15 +339,6 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
-    validateEnv: {
-      array: false,
-      default: isProduction,
-      defaultDescription: prodDefaultDesc,
-      description:
-        'Validate environment variables against builds.yml declarations',
-      group: toOrange('Build options:'),
-      type: 'boolean',
-    },
 
     lavamoat: {
       alias: 'l',
@@ -443,7 +434,6 @@ Snow: ${args.snow}
 Sentry: ${args.sentry}
 React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
-Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}

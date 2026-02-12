@@ -7,211 +7,43 @@ import {
   ErrorCode,
   Severity,
   Category,
-  LEDGER_ERROR_MAPPINGS,
 } from '@metamask/hw-wallet-sdk';
-import {
-  is,
-  object,
-  type as superstructType,
-  string,
-  number,
-  literal,
-  enums,
-  optional,
-  record,
-  unknown,
-  union,
-  refine,
-  type Infer,
-} from '@metamask/superstruct';
-import { KeyringControllerError } from '@metamask/keyring-controller';
 import { HardwareWalletType } from './types';
 import { createHardwareWalletError } from './errors';
 
-/**
- * Structs for serialized HardwareWalletError cause objects.
- * This supports both legacy and extended shapes across the RPC boundary.
- *
- * We use exact `object()` structs so legacy and extended remain mutually
- * exclusive (extended includes extra fields that legacy does not accept).
- */
-const LegacySerializedHardwareWalletErrorCauseStruct = object({
-  name: literal('HardwareWalletError'),
-  message: string(),
-  stack: optional(string()),
-  code: number(),
-});
-
-const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
-  // Extended fields added by HardwareWalletError serialization.
-  category: string(),
-  severity: string(),
-  id: string(),
-  userMessage: string(),
-  // Preserve original error time for ordering/logging across the RPC boundary.
-  timestamp: string(),
-  // Legacy-compatible fields preserved for transport.
-  name: literal('HardwareWalletError'),
-  message: string(),
-  stack: optional(string()),
-  code: number(),
-});
-
-const SerializedHardwareWalletErrorCauseStruct = refine(
-  // Support both legacy and extended shapes, including the timestamp field.
-  union([
-    LegacySerializedHardwareWalletErrorCauseStruct,
-    ExtendedSerializedHardwareWalletErrorCauseStruct,
-  ]),
-  'SerializedHardwareWalletErrorCauseStruct',
-  (value) => {
-    // Validate against each shape explicitly for clarity and future changes.
-    const matchesLegacy = is(
-      value,
-      LegacySerializedHardwareWalletErrorCauseStruct,
-    );
-    const matchesExtended = is(
-      value,
-      ExtendedSerializedHardwareWalletErrorCauseStruct,
-    );
-
-    // Accept either shape; superstruct `union` handles the structural check.
-    return matchesLegacy || matchesExtended;
-  },
-);
-
-const HardwareWalletSeverityStruct = enums(Object.values(Severity));
-
-const HardwareWalletCategoryStruct = enums(Object.values(Category));
+type HardwareWalletErrorData = {
+  [key: string]: unknown;
+  code: ErrorCode;
+  severity?: string;
+  category?: string;
+  userMessage?: string;
+  metadata?: Record<string, unknown>;
+};
 
 /**
- * Struct for a serialized RPC error containing a HardwareWalletError.
- * The error is wrapped in data.cause after crossing the RPC boundary.
- * The data object may also contain additional metadata (like recreatedTxId)
- * that was attached when the error was thrown via rpcErrors.internal().
- *
- * Uses superstructType() instead of object() to allow additional properties.
+ * Known valid ErrorCode values from @metamask/hw-wallet-sdk
+ * This whitelist ensures we only accept valid error codes
  */
-const SerializedRpcHardwareWalletErrorStruct = superstructType({
-  data: superstructType({
-    cause: SerializedHardwareWalletErrorCauseStruct,
-    // Additional metadata from rpcErrors.internal({ data: { metadata: {...} } })
-    metadata: optional(record(string(), unknown())),
-  }),
-  code: number(),
-});
+const VALID_ERROR_CODES = new Set<number>([
+  ErrorCode.AuthenticationSecurityCondition,
+  ErrorCode.UserRejected,
+  ErrorCode.UserCancelled,
+  ErrorCode.Unknown,
+  ErrorCode.AuthenticationDeviceLocked,
+  ErrorCode.AuthenticationDeviceBlocked,
+  ErrorCode.DeviceStateEthAppClosed,
+  ErrorCode.ConnectionTransportMissing,
+  ErrorCode.ConnectionClosed,
+  ErrorCode.DeviceDisconnected,
+  ErrorCode.ConnectionTimeout,
+]);
 
-/**
- * Struct for HardwareWalletError data embedded in a JsonRpcError.
- * The code can be either a string ErrorCode name (e.g., "AuthenticationDeviceLocked")
- * or a numeric ErrorCode value (e.g., 1100) depending on how it was serialized.
- *
- * Uses superstructType() instead of object() to allow additional properties
- * that may be added by the RPC layer (e.g., cause).
- */
-const HardwareWalletErrorDataStruct = superstructType({
-  code: union([string(), number()]),
-  severity: optional(HardwareWalletSeverityStruct),
-  category: optional(HardwareWalletCategoryStruct),
-  userMessage: optional(string()),
-  metadata: optional(record(string(), unknown())),
-});
-
-/**
- * Struct for a deserialized JsonRpcError with HardwareWalletError data.
- * After RPC serialization, the error becomes a plain object.
- *
- * Uses superstructType() instead of object() to allow additional properties
- * that may be present on the deserialized error (e.g., name, cause).
- */
-const DeserializedJsonRpcHardwareWalletErrorStruct = superstructType({
-  message: optional(string()),
-  code: optional(number()),
-  stack: optional(string()),
-  data: HardwareWalletErrorDataStruct,
-});
-
-/**
- * Struct for a plain object with an ErrorCode property (string or number).
- *
- * Uses superstructType() instead of object() to allow additional properties
- * like message or metadata from serialized errors.
- */
-const PlainObjectWithErrorCodeStruct = superstructType({
-  code: union([string(), number()]),
-});
-
-/**
- * Type for the serialized HardwareWalletError cause
- */
-type SerializedHardwareWalletErrorCause = Infer<
-  typeof SerializedHardwareWalletErrorCauseStruct
->;
-
-/**
- * Type for the serialized RPC error containing a HardwareWalletError
- */
-type SerializedRpcHardwareWalletError = Infer<
-  typeof SerializedRpcHardwareWalletErrorStruct
->;
-
-/**
- * Type for HardwareWalletError data in a JsonRpcError
- */
-type HardwareWalletErrorData = Infer<typeof HardwareWalletErrorDataStruct>;
-
-/**
- * Type for a deserialized JsonRpcError with HardwareWalletError data
- */
-type DeserializedJsonRpcHardwareWalletError = Infer<
-  typeof DeserializedJsonRpcHardwareWalletErrorStruct
->;
-
-/**
- * Type for a plain object with an ErrorCode
- */
-type PlainObjectWithErrorCode = Infer<typeof PlainObjectWithErrorCodeStruct>;
-
-/**
- * Check if an error is a serialized RPC error containing a HardwareWalletError
- *
- * @param error - The error to check
- * @returns True if the error matches the serialized RPC HardwareWalletError structure
- */
-function isSerializedRpcHardwareWalletError(
-  error: unknown,
-): error is SerializedRpcHardwareWalletError {
-  return is(error, SerializedRpcHardwareWalletErrorStruct);
-}
-
-/**
- * Check if an error is a deserialized JsonRpcError with HardwareWalletError data
- *
- * @param error - The error to check
- * @returns True if the error matches the deserialized JsonRpcError structure
- */
-function isDeserializedJsonRpcHardwareWalletError(
-  error: unknown,
-): error is DeserializedJsonRpcHardwareWalletError {
-  return is(error, DeserializedJsonRpcHardwareWalletErrorStruct);
-}
-
-/**
- * Check if an error is a plain object with an ErrorCode
- *
- * @param error - The error to check
- * @returns True if the error is a plain object with a string code property
- */
-function isPlainObjectWithErrorCode(
-  error: unknown,
-): error is PlainObjectWithErrorCode {
-  return is(error, PlainObjectWithErrorCodeStruct);
+function isValidErrorCode(code: unknown): code is ErrorCode {
+  return typeof code === 'number' && VALID_ERROR_CODES.has(code);
 }
 
 /**
  * Type guard to check if error is a JsonRpcError with HardwareWalletError data
- * Handles both actual JsonRpcError instances AND plain objects that were
- * deserialized from JsonRpcError (which lose their class type across RPC boundary)
  *
  * @param error - The error to check
  * @returns True if the error is a JsonRpcError with HardwareWalletError data
@@ -221,225 +53,44 @@ export function isJsonRpcHardwareWalletError(
 ): error is JsonRpcError<HardwareWalletErrorData> & {
   data: HardwareWalletErrorData;
 } {
-  // Check for actual JsonRpcError instance
-  if (error instanceof JsonRpcError) {
-    return is(error.data, HardwareWalletErrorDataStruct);
-  }
-
-  // Check for deserialized JsonRpcError (plain object with data property)
-  return isDeserializedJsonRpcHardwareWalletError(error);
-}
-/**
- * Convert a serialized HardwareWalletError cause to a HardwareWalletError instance
- *
- * @param cause - The serialized cause object
- * @param walletType - The hardware wallet type
- * @param parentData - Optional parent data object that may contain additional metadata
- * @param parentData.metadata - Optional metadata from the parent error (e.g., recreatedTxId)
- * @returns A reconstructed HardwareWalletError instance
- */
-function convertSerializedCauseToHardwareWalletError(
-  cause: SerializedHardwareWalletErrorCause,
-  walletType: HardwareWalletType,
-  parentData?: { metadata?: Record<string, unknown> },
-): HardwareWalletError {
-  const errorCode = mapNumericCodeToErrorCode(cause.code);
-
-  // Extract metadata from parent data if available (e.g., recreatedTxId)
-  // This is needed because when the error crosses the RPC boundary, custom
-  // metadata like recreatedTxId is placed in the parent data object, not in data.cause
-  const metadata = parentData?.metadata;
-
-  const hwError = createHardwareWalletError(
-    errorCode,
-    walletType,
-    cause.message,
-    { metadata },
+  return (
+    error instanceof JsonRpcError &&
+    error.data !== null &&
+    error.data !== undefined &&
+    typeof error.data === 'object' &&
+    'code' in error.data &&
+    isValidErrorCode(error.data.code)
   );
-
-  // Preserve the original stack trace if available
-  if (cause.stack) {
-    hwError.stack = cause.stack;
-  }
-
-  return hwError;
 }
 
 /**
- * Convert HardwareWalletErrorData to a HardwareWalletError instance
- *
- * @param data - The hardware wallet error data
- * @param message - The error message
- * @param walletType - The hardware wallet type to include in metadata
- * @param stack - Optional stack trace
- * @returns A reconstructed HardwareWalletError instance
- */
-function convertDataToHardwareWalletError(
-  data: HardwareWalletErrorData,
-  message: string,
-  walletType: HardwareWalletType,
-  stack?: string,
-): HardwareWalletError {
-  // Handle both string and numeric error codes
-  let errorCode = mapCodeToErrorCode(data.code);
-
-  if (
-    errorCode === ErrorCode.Unknown &&
-    walletType === HardwareWalletType.Ledger
-  ) {
-    const numericCode =
-      typeof data.code === 'number' ? data.code : parseInt(data.code, 10);
-    if (!Number.isNaN(numericCode)) {
-      const hexStatusCode = `0x${numericCode.toString(16).padStart(4, '0')}`;
-      errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
-    }
-  }
-
-  // Preserve legacy behavior: empty RPC messages should fall back to userMessage.
-  const resolvedMessage =
-    message && message.length > 0
-      ? message
-      : (data.userMessage ?? 'Hardware wallet error');
-
-  const hwError = new HardwareWalletError(resolvedMessage, {
-    code: errorCode,
-    severity: data.severity as Severity,
-    category: data.category as Category,
-    userMessage: data.userMessage ?? '',
-    metadata: {
-      ...(data.metadata as Record<string, unknown>),
-      walletType,
-    },
-  });
-
-  if (stack) {
-    hwError.stack = stack;
-  }
-
-  return hwError;
-}
-
-/**
- * Map a numeric error code from serialized error to an ErrorCode enum value
- *
- * @param numericCode - The numeric error code
- * @returns The corresponding ErrorCode enum value
- */
-function mapNumericCodeToErrorCode(numericCode: number): ErrorCode {
-  const errorCodeValues = Object.values(ErrorCode).filter(
-    (v): v is number => typeof v === 'number',
-  );
-
-  if (errorCodeValues.includes(numericCode)) {
-    return numericCode as ErrorCode;
-  }
-
-  return ErrorCode.Unknown;
-}
-
-/**
- * Map a string error code name to an ErrorCode enum value
- * Handles cases where the code is serialized as the enum key name (e.g., "ConnectionClosed")
- *
- * @param stringCode - The string error code name
- * @returns The corresponding ErrorCode enum value
- */
-function mapStringCodeToErrorCode(stringCode: string): ErrorCode {
-  // Try parsing as a number first (in case it's a numeric string like "3003")
-  // This must come before checking for enum key names because numeric enums
-  // have reverse mappings (e.g., ErrorCode["3003"] = "DeviceDisconnected")
-  const numericCode = parseInt(stringCode, 10);
-  if (!Number.isNaN(numericCode)) {
-    return mapNumericCodeToErrorCode(numericCode);
-  }
-
-  // Check if it's a valid ErrorCode key name (e.g., "DeviceDisconnected")
-  const errorCodeKey = stringCode as keyof typeof ErrorCode;
-  if (errorCodeKey in ErrorCode) {
-    return ErrorCode[errorCodeKey];
-  }
-
-  return ErrorCode.Unknown;
-}
-
-/**
- * Extract a hex status code from an error message
- * Handles formats like "Locked device (0x5515)" or "Error 0x6982"
- *
- * @param message - The error message to parse
- * @returns The hex status code if found (e.g., "0x5515"), null otherwise
- */
-function extractHexStatusCodeFromMessage(message: string): string | null {
-  const hexMatch = message.match(/0x[\da-fA-F]{4}/u);
-  return hexMatch ? hexMatch[0].toLowerCase() : null;
-}
-
-/**
- * Map a Ledger status code (hex string) to an ErrorCode
- *
- * @param statusCode - The Ledger status code (e.g., "0x5515")
- * @returns The corresponding ErrorCode, or ErrorCode.Unknown if not found
- */
-function mapLedgerStatusCodeToErrorCode(statusCode: string): ErrorCode {
-  const mapping =
-    LEDGER_ERROR_MAPPINGS[statusCode as keyof typeof LEDGER_ERROR_MAPPINGS];
-  return mapping?.code ?? ErrorCode.Unknown;
-}
-
-/**
- * Map a code (string or number) to an ErrorCode
- *
- * @param code - The error code (string name or numeric value)
- * @returns The corresponding ErrorCode enum value
- */
-function mapCodeToErrorCode(code: string | number): ErrorCode {
-  return typeof code === 'number'
-    ? mapNumericCodeToErrorCode(code)
-    : mapStringCodeToErrorCode(code);
-}
-
-/**
- * Get HardwareWalletError code from a JsonRpcError
+ * Get the HardwareWalletError code from a JsonRpcError
  *
  * @param error - The error to extract from
  * @returns The ErrorCode if found, null otherwise
  */
 export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
-  // Check for serialized RPC error with cause
-  if (isSerializedRpcHardwareWalletError(error)) {
-    return mapNumericCodeToErrorCode(error.data.cause.code);
-  }
-
-  // Check for JsonRpcError with hardware wallet data
   if (isJsonRpcHardwareWalletError(error)) {
-    return mapCodeToErrorCode(error.data.code);
+    return error.data.code;
   }
 
-  // Check if it's already a HardwareWalletError instance
+  // Also check if it's already a HardwareWalletError
   if (error instanceof HardwareWalletError) {
     return error.code;
   }
 
-  // Check if it's a plain object with a code property
-  if (isPlainObjectWithErrorCode(error)) {
-    return mapCodeToErrorCode(error.code);
+  // Check if it's a plain object with a valid ErrorCode
+  if (
+    error &&
+    typeof error === 'object' &&
+    'code' in error &&
+    isValidErrorCode(error.code)
+  ) {
+    return error.code as ErrorCode;
   }
 
   return null;
 }
-
-// Helper to extract message from error (handles plain objects from RPC boundary)
-const getErrorMessage = (err: unknown): string => {
-  if (err instanceof Error) {
-    return err.message;
-  }
-  // Handle plain objects with message property (from RPC boundary)
-  const errObj = err as { message?: string };
-  if (errObj?.message && typeof errObj.message === 'string') {
-    return errObj.message;
-  }
-  return String(err);
-};
 
 /**
  * Reconstruct a HardwareWalletError from a JsonRpcError
@@ -455,64 +106,42 @@ export function toHardwareWalletError(
   error: unknown,
   walletType: HardwareWalletType,
 ): HardwareWalletError {
+  // Already a HardwareWalletError instance
   if (error instanceof HardwareWalletError) {
     return error;
   }
 
-  if (error instanceof KeyringControllerError) {
-    const errorCode = error?.code
-      ? mapStringCodeToErrorCode(error.code)
-      : ErrorCode.Unknown;
-    return createHardwareWalletError(errorCode, walletType, error.message, {
-      cause: error?.cause,
-    });
-  }
-
-  // Check for serialized RPC error with HardwareWalletError in data.cause
-  // Structure: { data: { cause: { name: 'HardwareWalletError', ... }, metadata?: {...} }, code: -32603 }
-  if (isSerializedRpcHardwareWalletError(error)) {
-    // Pass parent data which contains metadata like recreatedTxId
-    // When the error is thrown via rpcErrors.internal({ data: { metadata: { recreatedTxId } } }),
-    // the metadata is in error.data.metadata, not in error.data.cause
-    return convertSerializedCauseToHardwareWalletError(
-      error.data.cause,
-      walletType,
-      error.data,
-    );
-  }
-
-  // JsonRpcError with hardware wallet data (data.code is a string or numeric ErrorCode)
+  // JsonRpcError with hardware wallet data
   if (isJsonRpcHardwareWalletError(error)) {
-    const hwError = convertDataToHardwareWalletError(
-      error.data,
-      error.message ?? '',
-      walletType,
-      error.stack,
+    const hwError = new HardwareWalletError(
+      error.message ||
+        error.data.userMessage ||
+        'Hardware wallet error occurred',
+      {
+        code: error.data.code,
+        severity: (error?.data?.severity as Severity) ?? Severity.Err,
+        category: (error?.data?.category as Category) ?? Category.Unknown,
+        userMessage:
+          error?.data?.userMessage ?? 'Hardware wallet error occurred',
+        metadata: {
+          ...error?.data?.metadata,
+          walletType,
+        },
+      },
     );
+
+    // Preserve stack trace from the original error
+    if (error.stack) {
+      hwError.stack = error.stack;
+    }
 
     return hwError;
   }
 
-  // For Ledger errors, the status code might be in the error message
-  // (e.g., "Device is locked (Ledger device: Locked device (0x5515))")
-  if (walletType === HardwareWalletType.Ledger) {
-    const errorMessage = getErrorMessage(error);
-    const hexStatusCode = extractHexStatusCodeFromMessage(errorMessage);
-
-    if (hexStatusCode) {
-      const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
-
-      return createHardwareWalletError(errorCode, walletType, errorMessage, {
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
-  }
-
   // Fallback: use the error parser to create a HardwareWalletError
-  const fallbackMessage = getErrorMessage(error);
   return createHardwareWalletError(
     ErrorCode.Unknown,
     walletType,
-    fallbackMessage,
+    error instanceof Error ? error.message : String(error),
   );
 }

@@ -152,6 +152,9 @@ describe('MetaMask onboarding', function () {
         await onboardingSrpPage.checkPageIsLoaded();
 
         await onboardingSrpPage.fillSrp(wrongSeedPhrase);
+        await onboardingSrpPage.clickConfirmButtonWithSrpError();
+
+        // check the wrong SRP warning message is displayed
         await onboardingSrpPage.checkSrpError();
         await onboardingSrpPage.checkConfirmSrpButtonIsDisabled();
       },

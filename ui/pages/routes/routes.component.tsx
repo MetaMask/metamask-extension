@@ -66,7 +66,6 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
-  PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -139,7 +138,9 @@ import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccoun
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
+import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
@@ -279,14 +280,14 @@ const GatorPermissionsPage = mmLazy(
       '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
     )) as unknown as DynamicImportType,
 );
-const GatorPermissionsTokenTransferPermissionsPage = mmLazy(
+const TokenTransferPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
       '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
     )) as unknown as DynamicImportType,
 );
-const GatorPermissionsReviewPermissionsPage = mmLazy(
+const ReviewGatorPermissionsPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import(
@@ -341,11 +342,16 @@ const MarketListView = mmLazy(
   (() =>
     import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
 );
-const PerpsActivityPage = mmLazy(
-  (() =>
-    import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
-);
 // End Lazy Routes
+
+const MemoizedReviewPermissionsWrapper = React.memo(() => (
+  <State2Wrapper
+    state1Component={ReviewPermissions as React.ComponentType<unknown>}
+    state2Component={
+      MultichainReviewPermissions as React.ComponentType<unknown>
+    }
+  />
+));
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Routes() {
@@ -695,36 +701,36 @@ export default function Routes() {
       createRouteWithLayout({
         path: GATOR_PERMISSIONS,
         component: GatorPermissionsPage,
-        layout: RootLayout,
+        layout: LegacyLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: `${TOKEN_TRANSFER_ROUTE}/:origin`,
-        component: GatorPermissionsTokenTransferPermissionsPage,
-        layout: RootLayout,
+        component: TokenTransferPage,
+        layout: LegacyLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: TOKEN_TRANSFER_ROUTE,
-        component: GatorPermissionsTokenTransferPermissionsPage,
-        layout: RootLayout,
+        component: TokenTransferPage,
+        layout: LegacyLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`,
-        component: GatorPermissionsReviewPermissionsPage,
-        layout: RootLayout,
+        component: ReviewGatorPermissionsPage,
+        layout: LegacyLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
-        component: GatorPermissionsReviewPermissionsPage,
-        layout: RootLayout,
+        component: ReviewGatorPermissionsPage,
+        layout: LegacyLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: `${REVIEW_PERMISSIONS}/:origin`,
-        component: MultichainReviewPermissions,
+        component: MemoizedReviewPermissionsWrapper,
         layout: RootLayout,
         authenticated: true,
       }),
@@ -797,12 +803,6 @@ export default function Routes() {
       createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
         component: PerpsMarketDetailPage,
-        layout: RootLayout,
-        authenticated: true,
-      }),
-      createRouteWithLayout({
-        path: PERPS_ACTIVITY_ROUTE,
-        component: PerpsActivityPage,
         layout: RootLayout,
         authenticated: true,
       }),

@@ -836,6 +836,7 @@
       "sortCallback": "stringNumeric"
     }
   },
+  "preventPollingOnNetworkRestart": true,
   "previousAppVersion": "11.14.4",
   "previousMigrationVersion": 112,
   "remoteFeatureFlags": {

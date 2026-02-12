@@ -67,11 +67,6 @@ export type BaseManifestPluginOptions<Zip extends boolean> = {
    * Whether or not to zip the individual browser builds.
    */
   zip: Zip;
-
-  /**
-   * The build type of the build being created.
-   */
-  buildType: string;
 };
 
 export type ZipOptions = {

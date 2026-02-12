@@ -479,10 +479,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -526,10 +526,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -573,10 +573,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -620,10 +620,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -667,10 +667,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -714,10 +714,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -761,10 +761,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -808,10 +808,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -855,10 +855,10 @@ exports[`NetworkListMenu renders properly 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -1716,10 +1716,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -1763,10 +1763,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -1810,10 +1810,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -1857,10 +1857,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -1904,10 +1904,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -1951,10 +1951,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -1998,10 +1998,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -2045,10 +2045,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -2092,10 +2092,10 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     >
                       <button
                         aria-label="Add"
-                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                        class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                       >
                         <svg
-                          class="inline-block w-6 h-6 text-inherit"
+                          class="inline-block w-5 h-5 text-inherit"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"

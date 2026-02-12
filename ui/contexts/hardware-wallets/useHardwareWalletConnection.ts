@@ -259,11 +259,8 @@ export const useHardwareWalletConnection = ({
           updateConnectionState(ConnectionState.error(fallbackError));
         }
 
-        const failedAdapter = refs.adapterRef.current;
-        failedAdapter?.destroy();
-        if (refs.adapterRef.current === failedAdapter) {
-          refs.adapterRef.current = null;
-        }
+        refs.adapterRef.current?.destroy();
+        refs.adapterRef.current = null;
       }
     },
     // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps

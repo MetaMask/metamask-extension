@@ -20,7 +20,6 @@ import {
 } from '@metamask/design-system-react';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useFormatters } from '../../hooks/useFormatters';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -49,7 +48,6 @@ const LIST_ITEM_RADIUS =
  */
 const PerpsHomePage: React.FC = () => {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const navigate = useNavigate();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
@@ -279,10 +277,7 @@ const PerpsHomePage: React.FC = () => {
                 order.side === 'buy' ? t('perpsBuy') : t('perpsSell');
               const orderValue =
                 order.orderType === 'limit'
-                  ? formatCurrencyWithMinThreshold(
-                      parseFloat(order.size) * parseFloat(order.price),
-                      'USD',
-                    )
+                  ? `$${(parseFloat(order.size) * parseFloat(order.price)).toFixed(2)}`
                   : '-';
 
               return (

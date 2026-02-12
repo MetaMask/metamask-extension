@@ -26,8 +26,7 @@ class OnboardingSrpPage {
     css: '.import-srp__banner-alert-text',
   };
 
-  private readonly srpError =
-    '[data-testid="srp-input-import__invalid-checksum-error"]';
+  private readonly srpError = '[data-testid="import-srp-error"]';
 
   constructor(driver: Driver) {
     this.driver = driver;

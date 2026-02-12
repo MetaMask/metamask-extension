@@ -117,22 +117,11 @@ export class SubscriptionService {
 
       // skipping redirect and open new tab in test environment
       if (!process.env.IN_TEST) {
-        try {
-          await this.#openAndWaitForTabToClose({
-            url: checkoutSessionUrl,
-            successUrl: redirectUrl,
-            cancelUrl,
-          });
-        } catch (error) {
-          const isTabClosed =
-            error instanceof Error &&
-            error.message.includes(SHIELD_ERROR.tabActionFailed);
-          // continue to refetch subscriptions if the tab is closed
-          // since stripe update payment method page doesn't automatically redirect to the success url
-          if (!isTabClosed) {
-            throw error;
-          }
-        }
+        await this.#openAndWaitForTabToClose({
+          url: checkoutSessionUrl,
+          successUrl: redirectUrl,
+          cancelUrl,
+        });
 
         if (!currentTabId) {
           // open extension browser shield settings if open from pop up (no current tab)
@@ -253,12 +242,6 @@ export class SubscriptionService {
         {
           error: errorMessage,
         },
-      );
-
-      // Clear cached payment method after failed/cancelled payment - metrics already captured
-      this.#messenger.call(
-        'SubscriptionController:clearLastSelectedPaymentMethod',
-        PRODUCT_TYPES.SHIELD,
       );
 
       // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
@@ -541,12 +524,6 @@ export class SubscriptionService {
           },
         );
       }
-
-      // Clear cached payment method after failed crypto payment - metrics already captured
-      this.#messenger.call(
-        'SubscriptionController:clearLastSelectedPaymentMethod',
-        PRODUCT_TYPES.SHIELD,
-      );
 
       this.#captureException(
         createSentryError(

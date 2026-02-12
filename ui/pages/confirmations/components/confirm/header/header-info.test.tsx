@@ -86,14 +86,8 @@ describe('Header', () => {
     cases.forEach(({ description, store, expectedEvent }) => {
       it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric ${description}`, () => {
         const mockTrackEvent = jest.fn();
-        const mockMetaMetricsContext = {
-          trackEvent: mockTrackEvent,
-          bufferedTrace: jest.fn(),
-          bufferedEndTrace: jest.fn(),
-          onboardingParentContext: { current: null },
-        };
         const { getByLabelText } = renderWithConfirmContextProvider(
-          <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <MetaMetricsContext.Provider value={mockTrackEvent}>
             <HeaderInfo />
           </MetaMetricsContext.Provider>,
           configureStore(store),

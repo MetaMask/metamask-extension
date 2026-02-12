@@ -2,7 +2,6 @@ import React from 'react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import localforage from 'localforage';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -132,16 +131,11 @@ const openAssetPicker = async () => {
   });
 };
 
-const fillSearchInput = async (searchQuery: string, expectedValue?: string) => {
+const fillSearchInput = async (searchQuery: string) => {
   const searchInput = screen.getByTestId('bridge-asset-picker-search-input');
   await act(async () => {
     await searchInput.focus();
     await userEvent.keyboard(searchQuery);
-  });
-  await waitFor(() => {
-    expect(screen.getByTestId('bridge-asset-picker-search-input')).toHaveValue(
-      expectedValue ?? searchQuery,
-    );
   });
 };
 
@@ -152,7 +146,7 @@ const expectAssetListToMatch = (stringifiedSnapshot: string) => {
 };
 
 describe('BridgeInputGroup', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     mockUseVirtualizer.mockReturnValue({
       getVirtualItems: () =>
         tokens.map((token, index) => ({
@@ -163,10 +157,6 @@ describe('BridgeInputGroup', () => {
       getTotalSize: () => 78 * tokens.length,
       measureElement: () => 78,
     });
-    await act(async () => {
-      await localforage.clear();
-    });
-
     jest.clearAllMocks();
   });
 
@@ -198,7 +188,7 @@ describe('BridgeInputGroup', () => {
       );
     });
 
-    await fillSearchInput('SD', 'USD');
+    await fillSearchInput('SD');
     await waitFor(() => {
       expectAssetListToMatch(
         `
@@ -216,11 +206,11 @@ describe('BridgeInputGroup', () => {
       [
         [
           "https://bridge.api.cx.metamask.io/getTokens/popular",
-          "{"chainIds":["eip155:1"],"includeAssets":[{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
+          "{"chainIds":["eip155:1"],"includeAssets":[{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:1","iconUrl":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png","assetId":"eip155:1/slip44:60","balance":"0"},{"decimals":10,"symbol":"UNI","name":"Uniswap","chainId":"eip155:1","iconUrl":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png","assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","balance":"0.0000001848","tokenFiatAmount":0.0010728914112762384},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:1","iconUrl":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"0.000000001","tokenFiatAmount":0.0000030290553678041743}]}",
         ],
         [
           "https://bridge.api.cx.metamask.io/getTokens/search",
-          "{"chainIds":["eip155:1"],"query":"USD"}",
+          "{"chainIds":["eip155:1"],"includeAssets":[],"query":"USD"}",
         ],
       ]
     `);
@@ -304,7 +294,7 @@ describe('BridgeInputGroup', () => {
       [
         [
           "https://bridge.api.cx.metamask.io/getTokens/popular",
-          "{"chainIds":["eip155:1"],"includeAssets":[{"assetId":"eip155:1/slip44:60","symbol":"ETH","name":"Ether","decimals":18},{"assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","symbol":"UNI","name":"Uniswap","decimals":10},{"assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","symbol":"LINK","name":"Link","decimals":9}]}",
+          "{"chainIds":["eip155:1"],"includeAssets":[{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:1","iconUrl":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png","assetId":"eip155:1/slip44:60","balance":"0"},{"decimals":10,"symbol":"UNI","name":"Uniswap","chainId":"eip155:1","iconUrl":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png","assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","balance":"0.0000001848","tokenFiatAmount":0.0010728914112762384},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:1","iconUrl":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"0.000000001","tokenFiatAmount":0.0000030290553678041743}]}",
         ],
       ]
     `);
@@ -430,11 +420,20 @@ describe('BridgeInputGroup', () => {
       await waitFor(() => {
         expect(networkPickerPopover).not.toBeVisible();
         expect(abortSpy).toHaveBeenCalledTimes(7);
-        expect(mockHandleFetch).toHaveBeenCalledTimes(3);
       });
 
-      expect(await localforage.keys()).toMatchSnapshot();
       expect(mockHandleFetch.mock.calls).toMatchSnapshot();
+      expect(mockHandleFetch).toHaveBeenCalledTimes(3);
+
+      expect(abortSpy.mock.calls.flat()).toStrictEqual([
+        'Search query changed',
+        'Search query changed',
+        'Search query changed',
+        'Page unmounted',
+        'Search query changed',
+        'Asset balances changed',
+        'Asset balances changed',
+      ]);
     },
   );
 });

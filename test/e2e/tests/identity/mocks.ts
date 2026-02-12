@@ -31,22 +31,46 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
   // Storage
-  userStorageMockttpControllerInstance.setupPath(
-    USER_STORAGE_FEATURE_NAMES.accounts,
-    server,
-  );
-  userStorageMockttpControllerInstance.setupPath(
-    USER_STORAGE_FEATURE_NAMES.addressBook,
-    server,
-  );
-  userStorageMockttpControllerInstance.setupPath(
-    USER_STORAGE_WALLETS_FEATURE_KEY,
-    server,
-  );
-  userStorageMockttpControllerInstance.setupPath(
-    USER_STORAGE_GROUPS_FEATURE_KEY,
-    server,
-  );
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.accounts,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.accounts,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.addressBook,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.addressBook,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_WALLETS_FEATURE_KEY,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_WALLETS_FEATURE_KEY,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_GROUPS_FEATURE_KEY,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_GROUPS_FEATURE_KEY,
+      server,
+    );
+  }
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
@@ -139,6 +163,17 @@ export async function mockInfuraAndAccountSync(
 ): Promise<void> {
   const accounts = options.accountsToMockBalances ?? [];
 
+  // Set up User Storage / Account Sync mock
+  userStorageMockttpController.setupPath(
+    USER_STORAGE_WALLETS_FEATURE_KEY,
+    mockServer,
+  );
+
+  userStorageMockttpController.setupPath(
+    USER_STORAGE_GROUPS_FEATURE_KEY,
+    mockServer,
+  );
+
   // Account Balances
   if (accounts.length > 0) {
     accounts.forEach((account) => {
@@ -160,7 +195,7 @@ export async function mockInfuraAndAccountSync(
     });
   }
 
-  await mockIdentityServices(mockServer, userStorageMockttpController);
+  mockIdentityServices(mockServer, userStorageMockttpController);
 }
 
 /**

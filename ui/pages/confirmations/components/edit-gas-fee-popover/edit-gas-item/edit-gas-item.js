@@ -141,7 +141,7 @@ const EditGasItem = ({ priorityLevel }) => {
             <LoadingHeartBeat
               backgroundColor={
                 priorityLevel === estimateUsed
-                  ? 'var(--color-primary-muted)'
+                  ? 'var(--color-background-alternative)'
                   : 'var(--color-background-default)'
               }
               estimateUsed={priorityLevel}

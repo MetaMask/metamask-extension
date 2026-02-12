@@ -24,7 +24,6 @@
   "AppMetadataController": {
     "currentAppVersion": "string",
     "currentMigrationVersion": "number",
-    "firstTimeInfo": "object",
     "previousAppVersion": "",
     "previousMigrationVersion": 0
   },
@@ -330,7 +329,6 @@
   "RewardsController": {
     "rewardsAccounts": "object",
     "rewardsActiveAccount": null,
-    "rewardsPointsEstimateHistory": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
     "rewardsSubscriptionTokens": "object",
@@ -370,7 +368,6 @@
     "lastUpdated": "number",
     "signature": "string"
   },
-  "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "SwapsController": {
@@ -405,6 +402,7 @@
   },
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
+    "preventPollingOnNetworkRestart": false,
     "tokensChainsCache": { "0x539": "object" }
   },
   "TokenRatesController": { "marketData": "object" },

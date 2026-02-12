@@ -89,7 +89,7 @@ export const connectToBackground = (
   });
 };
 
-export async function launchMetamaskUi(opts) {
+export default async function launchMetamaskUi(opts) {
   const { backgroundConnection, initialState } = opts;
 
   const store = await startApp(initialState, opts);

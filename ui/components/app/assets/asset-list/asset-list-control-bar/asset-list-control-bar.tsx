@@ -73,6 +73,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../../shared/constants/app';
+import NetworkFilter from '../network-filter';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
@@ -94,21 +95,22 @@ import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
+  showTokenFiatBalance?: boolean;
   showImportTokenButton?: boolean;
   showSortControl?: boolean;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
+  showTokenFiatBalance,
   showImportTokenButton = true,
   showSortControl = true,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const navigate = useNavigate();
-  const sortButtonRef = useRef<HTMLButtonElement>(null);
-  const importButtonRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -134,6 +136,8 @@ const AssetListControlBar = ({
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
+    useState(false);
+  const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
 
@@ -225,6 +229,7 @@ const AssetListControlBar = ({
     windowType !== ENVIRONMENT_TYPE_POPUP;
 
   const toggleTokenSortPopover = () => {
+    setIsNetworkFilterPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
     setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
@@ -232,18 +237,21 @@ const AssetListControlBar = ({
 
   const toggleImportTokensPopover = () => {
     setIsTokenSortPopoverOpen(false);
+    setIsNetworkFilterPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
     setIsImportTokensPopoverOpen(!isImportTokensPopoverOpen);
   };
 
   const toggleImportNftPopover = () => {
     setIsTokenSortPopoverOpen(false);
+    setIsNetworkFilterPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(!isImportNftPopoverOpen);
   };
 
   const closePopover = () => {
     setIsTokenSortPopoverOpen(false);
+    setIsNetworkFilterPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
   };
@@ -362,7 +370,12 @@ const AssetListControlBar = ({
   }, [allEnabledNetworksForAllNamespaces, totalEnabledNetworkCount]);
 
   return (
-    <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
+    <Box
+      className="asset-list-control-bar"
+      marginLeft={4}
+      marginRight={4}
+      ref={popoverRef}
+    >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <ButtonBase
           data-testid="sort-by-networks"
@@ -371,7 +384,11 @@ const AssetListControlBar = ({
           onClick={handleNetworkManager}
           size={ButtonBaseSize.Sm}
           endIconName={IconName.ArrowDown}
-          backgroundColor={BackgroundColor.backgroundDefault}
+          backgroundColor={
+            isNetworkFilterPopoverOpen
+              ? BackgroundColor.backgroundPressed
+              : BackgroundColor.backgroundDefault
+          }
           color={TextColor.textDefault}
           marginRight={isFullScreen ? 2 : null}
           borderColor={BorderColor.borderMuted}
@@ -407,7 +424,6 @@ const AssetListControlBar = ({
               disabled={isTokenSortPopoverOpen}
             >
               <ButtonBase
-                ref={sortButtonRef}
                 data-testid="sort-by-popover-toggle"
                 className="asset-list-control-bar__button"
                 onClick={toggleTokenSortPopover}
@@ -428,7 +444,6 @@ const AssetListControlBar = ({
           {showImportTokenButton &&
             (isEvm ? (
               <ImportControl
-                ref={importButtonRef}
                 showTokensLinks={showTokensLinks}
                 onClick={
                   showTokensLinks
@@ -443,7 +458,6 @@ const AssetListControlBar = ({
                 distance={20}
               >
                 <ButtonBase
-                  ref={importButtonRef}
                   data-testid="importTokens-button"
                   className="asset-list-control-bar__button"
                   onClick={handleTokenImportModal}
@@ -463,11 +477,31 @@ const AssetListControlBar = ({
         </Box>
       </Box>
 
+      {/* Network Filter Popover */}
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={isNetworkFilterPopoverOpen}
+        position={PopoverPosition.BottomStart}
+        referenceElement={popoverRef.current}
+        matchWidth={false}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          minWidth: isFullScreen ? '250px' : '',
+        }}
+      >
+        <NetworkFilter
+          handleClose={closePopover}
+          showTokenFiatBalance={showTokenFiatBalance}
+        />
+      </Popover>
       <Popover
         onClickOutside={closePopover}
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={sortButtonRef.current}
+        referenceElement={popoverRef.current}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -485,7 +519,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={importButtonRef.current}
+        referenceElement={popoverRef.current}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -517,7 +551,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isImportNftPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={importButtonRef.current}
+        referenceElement={popoverRef.current}
         matchWidth={false}
         style={{
           zIndex: 10,

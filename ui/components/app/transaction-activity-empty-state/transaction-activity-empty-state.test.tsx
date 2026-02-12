@@ -47,7 +47,10 @@ const mockAccount = createAccount();
 const createStateOverrides = (
   metamaskOverrides: Record<string, unknown> = {},
 ) => ({
-  metamask: metamaskOverrides,
+  metamask: {
+    ...mockState.metamask,
+    ...metamaskOverrides,
+  },
 });
 
 const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
@@ -132,32 +135,15 @@ describe('TransactionActivityEmptyState', () => {
 
   const renderComponent = (
     props: Partial<TransactionActivityEmptyStateProps> = {},
-    stateOverrides: Record<string, unknown> = {},
-    account = mockAccount,
+    stateOverrides = {},
   ) => {
-    const state = {
+    const store = configureMockStore(middleware)({
       ...mockState,
       ...stateOverrides,
-      metamask: {
-        ...mockState.metamask,
-        ...(('metamask' in stateOverrides
-          ? stateOverrides.metamask
-          : {}) as Record<string, unknown>),
-        internalAccounts: {
-          ...mockState.metamask.internalAccounts,
-          selectedAccount: account.id,
-          accounts: {
-            ...mockState.metamask.internalAccounts.accounts,
-            [account.id]: account,
-          },
-        },
-      },
-    };
-
-    const store = configureMockStore(middleware)(state);
+    });
 
     return renderWithProvider(
-      <TransactionActivityEmptyState {...props} />,
+      <TransactionActivityEmptyState account={mockAccount} {...props} />,
       store,
     );
   };
@@ -215,36 +201,47 @@ describe('TransactionActivityEmptyState', () => {
     (describe as unknown as jest.Describe).each<
       [
         string,
-        InternalAccount,
+        Partial<TransactionActivityEmptyStateProps>,
         ReturnType<typeof createStateOverrides> | Record<string, never>,
       ]
     >([
-      ['not a swaps chain', accountWithSigning, createTestnetState()],
+      [
+        'not a swaps chain',
+        { account: accountWithSigning },
+        createTestnetState(),
+      ],
       [
         'external services are disabled',
-        accountWithSigning,
+        { account: accountWithSigning },
         createStateWithoutExternalServices(),
       ],
-      ['account cannot sign transactions', accountWithoutSigning, {}],
+      [
+        'account cannot sign transactions',
+        { account: accountWithoutSigning },
+        {},
+      ],
     ])(
       'disables swap button when %s',
       (
         _condition: string,
-        account: InternalAccount,
+        props: Partial<TransactionActivityEmptyStateProps>,
         stateOverrides:
           | ReturnType<typeof createStateOverrides>
           | Record<string, never>,
       ) => {
         it(`should disable swap button`, () => {
-          renderComponent({}, stateOverrides, account);
+          renderComponent(props, stateOverrides);
           expectSwapButtonState(false);
         });
       },
     );
 
     it('enables swap button when all conditions are met', () => {
+      const props: Partial<TransactionActivityEmptyStateProps> = {
+        account: accountWithSigning,
+      };
       const stateOverrides = createValidSwapState();
-      renderComponent({}, stateOverrides, accountWithSigning);
+      renderComponent(props, stateOverrides);
       expectSwapButtonState(true);
     });
 
@@ -255,14 +252,20 @@ describe('TransactionActivityEmptyState', () => {
           chainId: MultichainNetworks.SOLANA,
           isEvmNetwork: false,
         });
+      const props: Partial<TransactionActivityEmptyStateProps> = {
+        account: accountWithSigning,
+      };
       const stateOverrides = createTestnetState();
-      renderComponent({}, stateOverrides, accountWithSigning);
+      renderComponent(props, stateOverrides);
       expectSwapButtonState(true); // Should be enabled due to Solana logic
     });
 
     it('calls openBridgeExperience when swap button is clicked', () => {
+      const props: Partial<TransactionActivityEmptyStateProps> = {
+        account: accountWithSigning,
+      };
       const stateOverrides = createValidSwapState();
-      renderComponent({}, stateOverrides, accountWithSigning);
+      renderComponent(props, stateOverrides);
       const swapButton = expectSwapButtonState(true);
 
       fireEvent.click(swapButton);

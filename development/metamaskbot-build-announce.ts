@@ -256,12 +256,7 @@ async function start(): Promise<void> {
           for (const page of pages) {
             allPages.add(page);
             const pageBenchmark = buildBenchmark[page];
-            // Filter out metadata fields (testTitle, persona) - only process statistical measures (objects)
-            const measures = Object.keys(pageBenchmark).filter(
-              (key) =>
-                typeof pageBenchmark[key] === 'object' &&
-                pageBenchmark[key] !== null,
-            );
+            const measures = Object.keys(pageBenchmark);
             for (const measure of measures) {
               allMeasures.add(measure);
               const measureBenchmark = pageBenchmark[measure];

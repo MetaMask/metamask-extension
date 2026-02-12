@@ -15,7 +15,45 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
   describe('Submit an Approve transaction', function () {
-    it('submits an ERC721 approve transaction', async function () {
+    it('Sends a type 0 transaction (Legacy)', async function () {
+      await withFixtures(
+        {
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
+          smartContract,
+          testSpecificMock: mocks,
+          title: this.test?.fullTitle(),
+        },
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
+
+          await createMintTransaction(driver);
+          await confirmMintTransaction(driver);
+
+          await createApproveTransaction(driver);
+
+          await assertApproveDetails(driver);
+          await confirmApproveTransaction(driver);
+        },
+      );
+    });
+
+    it('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },

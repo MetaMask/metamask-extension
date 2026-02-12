@@ -152,7 +152,6 @@ export const DEFI_ROUTE = '/defi';
 export const PERPS_ROUTE = '/perps';
 export const PERPS_HOME_ROUTE = '/perps/home';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
-export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
@@ -174,11 +173,6 @@ export const ROUTES = [
   {
     path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
     label: 'Perps Market Detail',
-    trackInAnalytics: true,
-  },
-  {
-    path: PERPS_ACTIVITY_ROUTE,
-    label: 'Perps Activity',
     trackInAnalytics: true,
   },
   {

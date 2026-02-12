@@ -168,7 +168,7 @@ export const Dropdown = <OptionId extends string>({
         <Icon
           name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
           size={IconSize.Xs}
-          color={IconColor.IconDefault}
+          color={IconColor.IconAlternative}
           className="ml-auto"
         />
       </ButtonBase>
@@ -214,7 +214,7 @@ export const Dropdown = <OptionId extends string>({
                 <Icon
                   name={IconName.Check}
                   size={IconSize.Sm}
-                  color={IconColor.IconDefault}
+                  color={IconColor.PrimaryDefault}
                 />
               )}
             </ButtonBase>

@@ -15,12 +15,6 @@ import {
 } from './turn-on-backup-and-sync-modal';
 
 const mockTrackEvent = jest.fn();
-const mockMetaMetricsContext = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
 
 jest.mock('../../../../../hooks/useModalProps', () => ({
   useModalProps: jest.fn(),
@@ -94,7 +88,7 @@ describe('TurnOnBackupAndSyncModal', () => {
   it('sends a MetaMetrics event when the modal is dismissed', () => {
     const { getByLabelText } = render(
       <Redux.Provider store={mockStore(initialStore())}>
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <MetaMetricsContext.Provider value={mockTrackEvent}>
           <MetamaskIdentityProvider>
             <TurnOnBackupAndSyncModal />
           </MetamaskIdentityProvider>
@@ -170,7 +164,7 @@ describe('TurnOnBackupAndSyncModal', () => {
   it('sends a MetaMetrics event when the button is clicked', async () => {
     const { getByTestId } = render(
       <Redux.Provider store={mockStore(initialStore())}>
-        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <MetaMetricsContext.Provider value={mockTrackEvent}>
           <MetamaskIdentityProvider>
             <TurnOnBackupAndSyncModal />
           </MetamaskIdentityProvider>

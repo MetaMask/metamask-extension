@@ -188,11 +188,12 @@ const generateClassNames = memoize(
 );
 
 /**
- * @deprecated The `<Box />` component has been deprecated in favor of the `Box` component from `@metamask/design-system-react`.
- * Please update your code to use the `Box` component from `@metamask/design-system-react`.
- * You can find documentation for the Box component in the MetaMask Design System:
- * {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-box--docs}
- * If you would like to help with the replacement of the old Box component, please submit a pull request against this GitHub issue:
+ * @deprecated The JS version of the <Box /> component has been deprecated in favor of the new TS version from the component-library.
+ * Please update your code to use the new <Box> component instead
+ * import { Box } from '../../component-library';
+ * The component API is the same so you should only have to update the import statement but you can find documentation for the new Box component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-box--docs}
+ * If you would like to help with the replacement of the old Button component, please submit a pull request against this GitHub issue:
  * {@link https://github.com/MetaMask/metamask-extension/issues/19526}
  */
 const Box = React.forwardRef(function Box(

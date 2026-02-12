@@ -57,7 +57,6 @@ export default function SrpInputImport({
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
   const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
-  const [hasInvalidChecksum, setHasInvalidChecksum] = useState(false);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
   const onChangeRef = useRef(onChange);
@@ -309,21 +308,12 @@ export default function SrpInputImport({
 
       if (hasInvalidWords) {
         onChangeRef.current('');
-        setHasInvalidChecksum(false);
       } else {
         const stringSrp = draftSrp.map((word) => word.word).join(' ');
-        // Only pass valid mnemonic (with correct checksum) to parent
-        if (isValidMnemonic(stringSrp)) {
-          onChangeRef.current(stringSrp);
-          setHasInvalidChecksum(false);
-        } else {
-          onChangeRef.current('');
-          setHasInvalidChecksum(true);
-        }
+        onChangeRef.current(stringSrp);
       }
     } else {
       onChangeRef.current('');
-      setHasInvalidChecksum(false);
     }
   }, [draftSrp]);
 
@@ -449,7 +439,6 @@ export default function SrpInputImport({
               onClick={async () => {
                 setDraftSrp([]);
                 setMisSpelledWords([]);
-                setHasInvalidChecksum(false);
                 onClearCallback?.();
               }}
             >
@@ -470,17 +459,6 @@ export default function SrpInputImport({
         <Box marginTop={2}>
           <Text color={TextColor.errorDefault} variant={TextVariant.bodySm}>
             {t('onboardingSrpImportError')}
-          </Text>
-        </Box>
-      )}
-      {hasInvalidChecksum && misSpelledWords.length === 0 && (
-        <Box marginTop={2}>
-          <Text
-            color={TextColor.errorDefault}
-            variant={TextVariant.bodySm}
-            data-testid="srp-input-import__invalid-checksum-error"
-          >
-            {t('invalidSeedPhraseNotFound')}
           </Text>
         </Box>
       )}

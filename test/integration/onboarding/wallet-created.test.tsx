@@ -17,6 +17,7 @@ import {
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 }));
 
 jest.mock('../../../ui/ducks/bridge/actions', () => ({
@@ -54,7 +55,7 @@ const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
-  submitRequestToBackground: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 };
 
 const setupSubmitRequestToBackgroundMocks = (

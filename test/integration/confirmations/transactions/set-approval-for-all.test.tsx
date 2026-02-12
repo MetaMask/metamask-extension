@@ -1,7 +1,8 @@
-import { ApprovalType, ERC721 } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -12,6 +13,7 @@ import { getUnapprovedSetApprovalForAllTransaction } from './transactionDataHelp
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
+  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -98,7 +100,6 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'FourByte',
   },
-  addKnownMethodData: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -109,6 +110,12 @@ const setupSubmitRequestToBackgroundMocks = (
       ...advancedDetailsMockedRequests,
       ...mockRequests,
     }),
+  );
+
+  mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    createMockImplementation({ addKnownMethodData: {} }),
   );
 };
 
@@ -126,7 +133,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
       getTokenStandardAndDetails: {
-        standard: ERC721,
+        standard: TokenStandard.ERC721,
       },
     });
     const INCREASE_SET_APPROVAL_FOR_ALL_HEX_SIG = '0xa22cb465';

@@ -1,5 +1,0 @@
-{
-  "base_property": "overridden_by_flask",
-  "description": "Flask build type description",
-  "flask_property": "from_flask_base"
-}

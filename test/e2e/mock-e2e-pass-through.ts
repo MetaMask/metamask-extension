@@ -1,5 +1,5 @@
 import type { MockedEndpoint, Mockttp } from 'mockttp';
-import type { NetworkReport } from './benchmarks/utils/types';
+import { NetworkReport } from './benchmarks/types-generated';
 
 type SetupMockReturn = {
   mockedEndpoint: MockedEndpoint[];

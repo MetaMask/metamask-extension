@@ -464,7 +464,7 @@ export default function TransactionList({
     selectedAccount,
   );
 
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const selectedBridgeHistoryItem = useSelector((state) =>
@@ -577,7 +577,10 @@ export default function TransactionList({
                 )}
               </Box>
             ) : (
-              <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+              <TransactionActivityEmptyState
+                className="mx-auto mt-5 mb-6"
+                account={selectedAccount}
+              />
             )}
           </Box>
         </Box>
@@ -591,7 +594,10 @@ export default function TransactionList({
       <Box className="transaction-list" {...boxProps}>
         {groupedPendingTransactions.length === 0 &&
         groupedCompletedTransactions.length === 0 ? (
-          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+          <TransactionActivityEmptyState
+            className="mx-auto mt-5 mb-6"
+            account={selectedAccount}
+          />
         ) : (
           <Box className="transaction-list__transactions">
             {groupedPendingTransactions.length > 0 && (

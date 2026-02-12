@@ -76,7 +76,14 @@ import { Numeric } from '../../../../../shared/modules/Numeric';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 
 import { useAssetMetadata } from './hooks/useAssetMetadata';
-import type { ERC20Asset, NativeAsset, AssetWithDisplayData } from './types';
+import type {
+  ERC20Asset,
+  NativeAsset,
+  NFT,
+  AssetWithDisplayData,
+} from './types';
+import { AssetPickerModalTabs, TabName } from './asset-picker-modal-tabs';
+import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
@@ -87,7 +94,10 @@ type AssetPickerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   action?: 'send' | 'receive';
-  asset?: ERC20Asset | NativeAsset;
+  asset?:
+    | ERC20Asset
+    | NativeAsset
+    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>;
   onBack?: () => void;
   onAssetChange: (
     asset: AssetWithDisplayData<ERC20Asset> | AssetWithDisplayData<NativeAsset>,
@@ -115,9 +125,13 @@ type AssetPickerModalProps = {
   isDestinationToken?: boolean;
   hideSearch?: boolean;
 } & Pick<
-  React.ComponentProps<typeof AssetPickerModalNetwork>,
-  'network' | 'networks' | 'isMultiselectEnabled' | 'selectedChainIds'
->;
+  React.ComponentProps<typeof AssetPickerModalTabs>,
+  'visibleTabs' | 'defaultActiveTabKey'
+> &
+  Pick<
+    React.ComponentProps<typeof AssetPickerModalNetwork>,
+    'network' | 'networks' | 'isMultiselectEnabled' | 'selectedChainIds'
+  >;
 
 const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
@@ -142,6 +156,7 @@ export function AssetPickerModal({
   autoFocus,
   isDestinationToken = false,
   hideSearch = false,
+  ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
   const [showSolanaAccountCreatedToast, setShowSolanaAccountCreatedToast] =
@@ -640,31 +655,45 @@ export function AssetPickerModal({
           {needsSolanaAccount ? (
             <SolanaAccountCreationPrompt />
           ) : (
-            <>
-              {!hideSearch && (
-                <Search
-                  searchQuery={searchQuery}
-                  onChange={(value) => {
-                    // Cancel previous asset metadata fetch
-                    abortControllerRef.current?.abort();
-                    setSearchQuery(() => value);
+            <AssetPickerModalTabs {...tabProps}>
+              <React.Fragment key={TabName.TOKENS}>
+                {!hideSearch && (
+                  <Search
+                    searchQuery={searchQuery}
+                    onChange={(value) => {
+                      // Cancel previous asset metadata fetch
+                      abortControllerRef.current?.abort();
+                      setSearchQuery(() => value);
+                    }}
+                    autoFocus={autoFocus}
+                  />
+                )}
+                <AssetList
+                  network={network}
+                  handleAssetChange={handleAssetChange}
+                  asset={asset?.type === AssetType.NFT ? undefined : asset}
+                  tokenList={displayedTokens}
+                  isTokenListLoading={isTokenListLoading}
+                  assetItemProps={{
+                    isTitleNetworkName: false,
+                    isTitleHidden: false,
                   }}
-                  autoFocus={autoFocus}
+                  isDestinationToken={isDestinationToken}
                 />
-              )}
-              <AssetList
-                network={network}
-                handleAssetChange={handleAssetChange}
-                asset={asset}
-                tokenList={displayedTokens}
-                isTokenListLoading={isTokenListLoading}
-                assetItemProps={{
-                  isTitleNetworkName: false,
-                  isTitleHidden: false,
-                }}
-                isDestinationToken={isDestinationToken}
+              </React.Fragment>
+              <AssetPickerModalNftTab
+                key={TabName.NFTS}
+                searchQuery={searchQuery}
+                onClose={onClose}
+                renderSearch={() => (
+                  <Search
+                    isNFTSearch
+                    searchQuery={searchQuery}
+                    onChange={(value) => setSearchQuery(value)}
+                  />
+                )}
               />
-            </>
+            </AssetPickerModalTabs>
           )}
         </Box>
       </ModalContent>

@@ -1,8 +1,6 @@
 import assert from 'node:assert/strict';
-import { MockedEndpoint, MockttpServer } from 'mockttp';
-import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { WALLET_PASSWORD } from '../../constants';
-import { sentryRegEx, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
@@ -17,8 +15,6 @@ import { getConfig } from './helpers';
 
 describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
-
-  const WAIT_FOR_SENTRY_MS = 10000;
 
   /**
    * Script template to simulate a broken database.
@@ -55,47 +51,6 @@ describe('Vault Corruption', function () {
   const breakPrimaryDatabaseOnlyScript = createCorruptionScript(
     reloadAndCallbackScript,
   );
-
-  /**
-   * Script to retrieve the encrypted vault from the backup database.
-   */
-  const getBackupVaultScript = `
-    const callback = arguments[arguments.length - 1];
-    const request = globalThis.indexedDB.open('metamask-backup', 1);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains('store')) {
-        db.createObjectStore('store');
-      }
-    };
-    request.onsuccess = () => {
-      const db = request.result;
-      const transaction = db.transaction('store', 'readonly');
-      const store = transaction.objectStore('store');
-      const getRequest = store.get('KeyringController');
-      getRequest.onsuccess = () => {
-        const keyringController = getRequest.result;
-        callback(keyringController?.vault ?? null);
-      };
-      getRequest.onerror = () => callback(null);
-    };
-    request.onerror = () => callback(null);
-  `;
-
-  async function mockSentryMissingVaultError(
-    mockServer: MockttpServer,
-  ): Promise<MockedEndpoint> {
-    return await mockServer
-      .forPost(sentryRegEx)
-      .withBodyIncluding('{"type":"event"')
-      .withBodyIncluding(MISSING_VAULT_ERROR)
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {},
-        };
-      });
-  }
 
   /**
    * Script to break both the primary and backup databases.
@@ -150,77 +105,6 @@ describe('Vault Corruption', function () {
           restoredFirstAddress,
           initialFirstAddress,
           'Addresses should match',
-        );
-      },
-    );
-  });
-
-  it('does not serialize backup data in Sentry captureException payload', async function () {
-    const config = getConfig(this.test?.title);
-    await withFixtures(
-      {
-        ...config,
-        manifestFlags: {
-          ...config.manifestFlags,
-          sentry: {
-            ...(config.manifestFlags?.sentry ?? {}),
-            forceEnable: false,
-          },
-        },
-        testSpecificMock: mockSentryMissingVaultError,
-      },
-      async ({
-        driver,
-        mockedEndpoint,
-      }: {
-        driver: Driver;
-        mockedEndpoint: MockedEndpoint;
-      }) => {
-        await onboardThenTriggerCorruptionFlow(
-          driver,
-          breakPrimaryDatabaseOnlyScript,
-          {
-            participateInMetaMetrics: true,
-          },
-        );
-
-        const backupVault =
-          await driver.executeAsyncScript(getBackupVaultScript);
-        assert.ok(backupVault, 'Expected backup vault to exist');
-
-        await driver.wait(async () => {
-          const isPending = await mockedEndpoint.isPending();
-          return isPending === false;
-        }, WAIT_FOR_SENTRY_MS);
-
-        const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-        const mockTextBody = ((await mockedRequest.body.getText()) ?? '').split(
-          '\n',
-        );
-        const mockJsonBody = JSON.parse(mockTextBody[2]);
-        const mockPayload = JSON.stringify(mockJsonBody);
-        const escapedBackupVault = JSON.stringify(backupVault).slice(1, -1);
-
-        // check both escaped and unescaped versions of the vault
-        assert.equal(
-          mockPayload.includes(backupVault) ||
-            mockPayload.includes(escapedBackupVault),
-          false,
-          'Expected Sentry payload to exclude backup vault data',
-        );
-
-        // a smell test for bits of the vault structure:
-        assert.equal(
-          mockPayload.includes('keyMetadata'),
-          false,
-          'Expected Sentry payload to exclude vault property',
-        );
-        // make sure `keyMetadata` is a real property and we aren't using it in
-        // our test for no reason
-        assert.equal(
-          backupVault.includes('keyMetadata'),
-          true,
-          'Expected backup vault to include vault property',
         );
       },
     );

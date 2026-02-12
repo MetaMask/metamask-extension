@@ -154,6 +154,9 @@ export async function mockLedgerTransactionRequests(mockServer: MockttpServer) {
   // Mock price APIs - critical for swap functionality
   await mockPriceAPIs(mockServer);
 
+  // Mock Ledger iframe bridge - minimal mock to prevent catch-all redirect
+  await mockLedgerIframeBridge(mockServer);
+
   // Note: Smart Transaction APIs are NOT mocked because Smart Transactions are disabled in the test
 
   // Mock external accounts API for activity list - CRITICAL for activity list display
@@ -271,6 +274,36 @@ async function mockPriceAPIs(mockServer: MockttpServer) {
     .thenCallback(() => ({
       statusCode: 200,
       json: {},
+    }));
+}
+
+// Minimal Ledger iframe bridge mock - just to prevent catch-all redirect
+// The actual signing is handled by FakeLedgerBridge in background.js
+async function mockLedgerIframeBridge(mockServer: MockttpServer) {
+  await mockServer
+    .forGet('https://metamask.github.io/ledger-iframe-bridge/9.0.1/')
+    .thenCallback(() => ({
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'text/html',
+      },
+      body: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Ledger Bridge Mock</title>
+        </head>
+        <body>
+          <script>
+            // Minimal mock - just signal ready
+            // Actual transaction signing is handled by FakeLedgerBridge
+            window.parent.postMessage({
+              type: 'ledger-bridge-ready'
+            }, '*');
+          </script>
+        </body>
+        </html>
+      `,
     }));
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { isValidMnemonic } from '@ethersproject/hdnode';
 import {
   AlignItems,
   BlockSize,
@@ -66,7 +67,7 @@ export default function ImportSRP({
       navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
   }, [currentKeyring, navigate, isWalletResetInProgress]);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -79,7 +80,10 @@ export default function ImportSRP({
 
   const onContinue = useCallback(() => {
     let newSrpError = '';
-    if (hasUpperCase(secretRecoveryPhrase)) {
+    if (
+      hasUpperCase(secretRecoveryPhrase) ||
+      !isValidMnemonic(secretRecoveryPhrase)
+    ) {
       newSrpError = t('invalidSeedPhraseNotFound');
     }
 

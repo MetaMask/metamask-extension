@@ -1,8 +1,0 @@
-{
-  "browser_specific_settings": {
-    "chrome": {
-      "id": "chrome-extension-id-v3"
-    }
-  },
-  "chrome_property": "from_browser_chrome_v3"
-}

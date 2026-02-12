@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
+import { act } from '@testing-library/react';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -95,7 +96,9 @@ describe('NFTs options', () => {
     let tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
     expect(tooltipWrapper).toHaveAttribute('data-disabled', 'false');
 
-    fireEvent.click(sortButton);
+    await act(async () => {
+      fireEvent.click(sortButton);
+    });
 
     tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
     expect(tooltipWrapper).toHaveAttribute('data-disabled', 'true');
@@ -103,7 +106,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    fireEvent.click(actionButton);
+    actionButton.click();
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -143,7 +146,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    fireEvent.click(actionButton);
+    actionButton.click();
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -185,7 +188,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    fireEvent.click(actionButton);
+    actionButton.click();
 
     const autodetectButton = await findByTestId(
       'enable-autodetect-button__button',

@@ -1,7 +1,6 @@
 import React from 'react';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { ERC20 } from '@metamask/controller-utils';
 import * as bridgeControllerModule from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
@@ -256,7 +255,7 @@ describe('ImportTokensModal', () => {
             address: tokenAddress,
             chainId: CHAIN_IDS.GOERLI,
             decimals: Number(tokenPrecision),
-            standard: ERC20,
+            standard: TokenStandard.ERC20,
             symbol: tokenSymbol,
             name: '',
           },

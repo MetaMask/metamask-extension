@@ -180,12 +180,9 @@ export default function OnboardingWelcome() {
     isSocialLoginFLow,
   ]);
 
-  const {
-    trackEvent,
-    bufferedTrace,
-    bufferedEndTrace,
-    onboardingParentContext,
-  } = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
+  const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
+    trackEvent;
 
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);

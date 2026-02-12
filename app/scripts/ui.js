@@ -29,8 +29,7 @@ import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
 import { ExtensionPortStream } from 'extension-port-stream';
-import {
-  launchMetamaskUi,
+import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
   connectToBackground,
   displayCriticalErrorMessage,
@@ -236,20 +235,19 @@ async function loadPhishingWarningPage() {
 }
 
 async function initializeUiWithTab(
-  activeTab,
-  backgroundConnection,
+  tab,
+  connectionStream,
   windowType,
   traceContext,
   initialState,
 ) {
   try {
-    const store = await launchMetamaskUi({
-      activeTab,
-      container,
-      backgroundConnection,
+    const store = await initializeUi(
+      tab,
+      connectionStream,
       traceContext,
       initialState,
-    });
+    );
 
     endTrace({ name: TraceName.UIStartup });
 
@@ -315,6 +313,21 @@ async function queryCurrentActiveTab(windowType) {
   }
 
   return { id, title, origin, protocol, url };
+}
+
+async function initializeUi(
+  activeTab,
+  backgroundConnection,
+  traceContext,
+  initialState,
+) {
+  return await launchMetaMaskUi({
+    activeTab,
+    container,
+    backgroundConnection,
+    traceContext,
+    initialState,
+  });
 }
 
 /**

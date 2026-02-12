@@ -51,19 +51,13 @@ describe('BackupAndSyncToggle', () => {
 
   it('tracks the toggle event', () => {
     const mockTrackEvent = jest.fn();
-    const mockMetaMetricsContext = {
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    };
     const store = initialStore();
 
     store.metamask.isBackupAndSyncEnabled = true;
     arrangeMocks();
 
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <BackupAndSyncToggle />
       </MetaMetricsContext.Provider>,
       mockStore(store),

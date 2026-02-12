@@ -41,9 +41,6 @@ class AdvancedSettings {
   private readonly showConversionOnTestnetsToggle =
     '.show-fiat-on-testnets-toggle';
 
-  private readonly showTestnetsToggle =
-    '[data-testid="advanced-setting-show-testnets"] .toggle-button';
-
   private readonly smartTransactionsToggle =
     '[data-testid="settings-page-stx-opt-in-toggle"]';
 
@@ -126,11 +123,6 @@ class AdvancedSettings {
   async toggleShowConversionOnTestnets(): Promise<void> {
     console.log('Toggling show conversion on testnets in advanced settings');
     await this.driver.clickElement(this.showConversionOnTestnetsToggle);
-  }
-
-  async toggleShowTestnets(): Promise<void> {
-    console.log('Toggling show testnets in advanced settings');
-    await this.driver.clickElement(this.showTestnetsToggle);
   }
 
   async toggleSmartTransactions(): Promise<void> {

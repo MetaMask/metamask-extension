@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -72,8 +72,8 @@ const NFTGridItem = (props: {
   );
 };
 
-// Container width threshold for switching between 3 and 4 columns
-const CONTAINER_WIDTH_THRESHOLD = 640;
+// Breakpoint matches design-system $screen-md-max (768px - 1px)
+const SCREEN_MD_MAX = 767;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -86,35 +86,25 @@ export default function NftGrid({
   handleNftClick: (nft: NFT) => void;
   privacyMode?: boolean;
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
 
-  // Detect container width for virtualization grouping only
-  const [itemsPerRow, setItemsPerRow] = useState(3);
+  // Detect screen size to match CSS Grid column count
+  // 4 columns for large screens, 3 columns for medium and below
+  const [itemsPerRow, setItemsPerRow] = useState(() =>
+    window.innerWidth > SCREEN_MD_MAX ? 4 : 3,
+  );
 
   useEffect(() => {
-    if (process.env.IN_TEST) {
-      return;
-    }
+    const mediaQuery = window.matchMedia(`(max-width: ${SCREEN_MD_MAX}px)`);
 
-    const container = containerRef.current;
-    if (!container || typeof ResizeObserver === 'undefined') {
-      return;
-    }
+    const handleResize = (e: MediaQueryListEvent) => {
+      setItemsPerRow(e.matches ? 3 : 4);
+    };
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (entry) {
-        const containerWidth = entry.contentRect.width;
-        setItemsPerRow(containerWidth > CONTAINER_WIDTH_THRESHOLD ? 4 : 3);
-      }
-    });
-
-    resizeObserver.observe(container);
-    return () => resizeObserver.disconnect();
+    mediaQuery.addEventListener('change', handleResize);
+    return () => mediaQuery.removeEventListener('change', handleResize);
   }, []);
 
   const loadingFooter = nftsStillFetchingIndication ? (
@@ -140,16 +130,14 @@ export default function NftGrid({
     return rows;
   }, [nfts, itemsPerRow]);
 
-  const gridClassName = itemsPerRow === 4 ? 'grid-cols-4' : 'grid-cols-3';
-
   return (
-    <Box ref={containerRef} style={{ margin: 16 }}>
+    <Box style={{ margin: 16 }}>
       <VirtualizedList
         data={nftRows}
         estimatedItemSize={200}
         listFooterComponent={loadingFooter}
         renderItem={({ item, index: rowIndex }) => (
-          <Box className={`grid gap-4 pb-4 ${gridClassName}`}>
+          <Box className="nft-items__wrapper grid gap-4 pb-4">
             {item.map((nft, index) => (
               <NFTGridItemErrorBoundary
                 key={`${rowIndex}-${index}`}

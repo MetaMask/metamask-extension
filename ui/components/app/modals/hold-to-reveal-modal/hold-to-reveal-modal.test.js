@@ -22,12 +22,6 @@ describe('Hold to Reveal Modal', () => {
   const onCloseStub = jest.fn();
   const onLongPressStub = jest.fn();
   const mockTrackEvent = jest.fn();
-  const mockMetaMetricsContext = {
-    trackEvent: mockTrackEvent,
-    bufferedTrace: jest.fn(),
-    bufferedEndTrace: jest.fn(),
-    onboardingParentContext: { current: null },
-  };
 
   afterEach(() => {
     jest.resetAllMocks();
@@ -35,7 +29,7 @@ describe('Hold to Reveal Modal', () => {
 
   function render(holdToRevealType = 'SRP') {
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <HoldToRevealModal
           isOpen
           onClose={onCloseStub}

@@ -15,12 +15,7 @@ import { MultichainSiteCell } from './multichain-site-cell';
 jest.mock('../../../contexts/metametrics', () => {
   const { createContext } = jest.requireActual('react');
   return {
-    MetaMetricsContext: createContext({
-      trackEvent: jest.fn(),
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    }),
+    MetaMetricsContext: createContext(jest.fn()),
   };
 });
 

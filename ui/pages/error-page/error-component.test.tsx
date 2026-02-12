@@ -34,12 +34,6 @@ jest.mock('react-redux', () => ({
 describe('ErrorPage', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const mockTrackEvent = jest.fn();
-  const mockMetaMetricsContext = {
-    trackEvent: mockTrackEvent,
-    bufferedTrace: jest.fn(),
-    bufferedEndTrace: jest.fn(),
-    onboardingParentContext: { current: null },
-  };
   const MockError = new Error(
     "Cannot read properties of undefined (reading 'message')",
   ) as Error & { code?: string };
@@ -75,7 +69,7 @@ describe('ErrorPage', () => {
 
   it('should render the error message, code, and name if provided', () => {
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -97,7 +91,7 @@ describe('ErrorPage', () => {
     const error = {};
 
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={error} />
       </MetaMetricsContext.Provider>,
     );
@@ -110,7 +104,7 @@ describe('ErrorPage', () => {
 
   it('should render sentry user feedback form and submit sentry report successfully when metrics is opted in', () => {
     const { getByTestId, queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -149,7 +143,7 @@ describe('ErrorPage', () => {
       return undefined;
     });
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -162,7 +156,7 @@ describe('ErrorPage', () => {
 
   it('should reload the extension when the "Try Again" button is clicked', () => {
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
     );
@@ -176,7 +170,7 @@ describe('ErrorPage', () => {
     const store = configureMockState([thunk])(mockState);
 
     const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
       store,

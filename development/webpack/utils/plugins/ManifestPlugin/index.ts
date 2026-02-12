@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs';
 import { extname, join } from 'node:path/posix';
+import { readFileSync } from 'node:fs';
 import {
   sources,
   ProgressPlugin,
@@ -246,70 +246,32 @@ export class ManifestPlugin<Z extends boolean> {
     );
     // Load the base manifest
     const basePath = join(manifestPath, `_base.json`);
-    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
-
-    const buildTypeManifestPath = join(
-      context,
-      'build-types',
-      this.options.buildType,
-      'manifest',
-    );
-    // Load the build type base manifest if it exists for the specific build type
-    const buildTypeBasePath = join(buildTypeManifestPath, `_base.json`);
-    let buildTypeBaseManifest: Partial<Manifest> = {};
-    try {
-      buildTypeBaseManifest = JSON.parse(
-        readFileSync(buildTypeBasePath, 'utf-8'),
-      );
-    } catch {
-      // File doesn't exist or is invalid, use empty object
-    }
+    const baseManifest: Manifest = JSON.parse(readFileSync(basePath, 'utf8'));
 
     const { transform } = this.options;
     const resources = this.options.web_accessible_resources;
-    const baseDescription =
-      buildTypeBaseManifest.description ?? baseManifest.description;
     const description = this.options.description
-      ? `${baseDescription} – ${this.options.description}`
-      : baseDescription;
+      ? `${baseManifest.description} – ${this.options.description}`
+      : baseManifest.description;
     const { version } = this.options;
 
     this.options.browsers.forEach((browser) => {
-      let manifest = structuredClone({
-        ...baseManifest,
-        ...buildTypeBaseManifest,
-        description,
-        version,
-      }) as Manifest;
+      let manifest: Manifest = { ...baseManifest, description, version };
 
       if (browser !== 'firefox') {
         // version_name isn't used by FireFox, but is by Chrome, et al.
         manifest.version_name = this.options.versionName;
       }
 
-      const browserManifestPath = join(manifestPath, `${browser}.json`);
       try {
+        const browserManifestPath = join(manifestPath, `${browser}.json`);
         // merge browser-specific overrides into the browser manifest
         manifest = {
           ...manifest,
-          ...JSON.parse(readFileSync(browserManifestPath, 'utf-8')),
+          ...require(browserManifestPath),
         };
       } catch {
-        // File doesn't exist or is invalid, skip merging
-      }
-
-      const buildTypeBrowserManifestPath = join(
-        buildTypeManifestPath,
-        `${browser}.json`,
-      );
-      try {
-        // merge browser-specific build type overrides into the browser manifest
-        manifest = {
-          ...manifest,
-          ...JSON.parse(readFileSync(buildTypeBrowserManifestPath, 'utf-8')),
-        };
-      } catch {
-        // File doesn't exist or is invalid, skip merging
+        // ignore if the file doesn't exist, as some browsers might not need overrides
       }
 
       // merge provided `web_accessible_resources`
@@ -356,9 +318,10 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
-      // allow the user to `transform` the manifest
+      // allow the user to `transform` the manifest. Use a copy of the manifest
+      // so modifications for one browser don't affect other browsers.
       if (transform) {
-        manifest = transform(manifest, browser);
+        manifest = transform?.(JSON.parse(JSON.stringify(manifest)), browser);
       }
 
       // Add the manifest file to the assets

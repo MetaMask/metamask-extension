@@ -58,8 +58,7 @@ const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
-const { variables, safeVariables, version, buildEnvVarDeclarations } =
-  getVariables(args, buildTypes);
+const { variables, safeVariables, version } = getVariables(args, buildTypes);
 const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
@@ -121,7 +120,7 @@ const plugins: WebpackPluginInstance[] = [
     // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: MANIFEST_VERSION,
     description: commitHash
-      ? `${args.type} build for ${args.env} from git id: ${commitHash.substring(0, 8)}`
+      ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
       : null,
     version: version.version,
     versionName: version.versionName,
@@ -143,7 +142,6 @@ const plugins: WebpackPluginInstance[] = [
           },
         }
       : {}),
-    buildType: args.type,
   }),
   // use ProvidePlugin to polyfill *global* node variables
   new ProvidePlugin({
@@ -235,12 +233,6 @@ const reactCompilerLoader = getReactCompilerLoader(
   args.reactCompilerVerbose,
   args.reactCompilerDebug,
 );
-const envValidationLoader = args.validateEnv
-  ? {
-      loader: require.resolve('./utils/loaders/envValidationLoader'),
-      options: { declarations: buildEnvVarDeclarations },
-    }
-  : null;
 
 const config = {
   entry,
@@ -352,13 +344,13 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, envValidationLoader, codeFenceLoader],
+        use: [tsxLoader, codeFenceLoader],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, envValidationLoader, codeFenceLoader],
+        use: [jsxLoader, codeFenceLoader],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.

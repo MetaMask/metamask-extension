@@ -26,7 +26,7 @@ export function withTransactionEnvelopeTypeFixtures(
   transactionEnvelopeType: TransactionEnvelopeType,
   testFunction: Parameters<typeof withFixtures>[1],
   mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
-  smartContract?: (typeof SMART_CONTRACTS)[keyof typeof SMART_CONTRACTS],
+  smartContract?: typeof SMART_CONTRACTS,
 ) {
   const combinedMocks = async (
     mockServer: Mockttp,
