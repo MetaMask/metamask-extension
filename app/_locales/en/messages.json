@@ -4008,6 +4008,31 @@
   "musdConversionTitle": {
     "message": "mUSD Conversion"
   },
+  "musdGetBonusPercentage": {
+    "message": "Get $1% bonus",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBuyMusd": {
+    "message": "Buy mUSD"
+  },
+  "musdGetMusd": {
+    "message": "Get mUSD"
+  },
+  "musdEarnBonusPercentage": {
+    "message": "Earn a $1% bonus",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBoostTitle": {
+    "message": "Get $1% on your stablecoins",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdBoostDescription": {
+    "message": "Convert your stablecoins to mUSD and receive up to a $1% bonus.",
+    "description": "$1 is the bonus percentage (e.g., 3)"
+  },
+  "musdConvert": {
+    "message": "Convert"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },

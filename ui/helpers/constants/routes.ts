@@ -151,6 +151,22 @@ export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
 
+// MUSD Conversion routes
+export const MUSD_CONVERSION_ROUTE = '/musd-conversion';
+export const MUSD_CONVERSION_EDUCATION_ROUTE = '/musd-conversion/education';
+export const MUSD_CONVERSION_PREPARE_ROUTE = '/musd-conversion/prepare';
+export const MUSD_CONVERSION_ROUTES = {
+  BASE: MUSD_CONVERSION_ROUTE,
+  EDUCATION: {
+    FULL: MUSD_CONVERSION_EDUCATION_ROUTE,
+    RELATIVE: '/education',
+  },
+  PREPARE: {
+    FULL: MUSD_CONVERSION_PREPARE_ROUTE,
+    RELATIVE: '/prepare',
+  },
+} as const;
+
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
@@ -591,6 +607,24 @@ export const ROUTES = [
     label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },
+  // MUSD Conversion routes
+  ///: BEGIN:ONLY_INCLUDE_IF(musd-conversion)
+  {
+    path: MUSD_CONVERSION_ROUTE,
+    label: 'MUSD Conversion',
+    trackInAnalytics: true,
+  },
+  {
+    path: MUSD_CONVERSION_EDUCATION_ROUTE,
+    label: 'MUSD Conversion Education',
+    trackInAnalytics: true,
+  },
+  {
+    path: MUSD_CONVERSION_PREPARE_ROUTE,
+    label: 'MUSD Conversion Prepare',
+    trackInAnalytics: true,
+  },
+  ///: END:ONLY_INCLUDE_IF
 ] as const satisfies AppRoute[];
 
 export type AppRoutes = (typeof ROUTES)[number];

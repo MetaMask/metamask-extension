@@ -61,6 +61,8 @@ export type TokenWithFiatAmount = Token &
     title: string;
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
     accountType?: KeyringAccountType;
+    /** Whether this token can be converted to mUSD */
+    isMusdConvertible?: boolean;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;

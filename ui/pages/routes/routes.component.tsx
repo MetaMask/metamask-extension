@@ -60,6 +60,7 @@ import {
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   REWARDS_ROUTE,
+  MUSD_CONVERSION_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
@@ -340,6 +341,10 @@ const MarketListView = mmLazy(
 const PerpsActivityPage = mmLazy(
   (() =>
     import('../perps/perps-activity-page.tsx')) as unknown as DynamicImportType,
+);
+const MusdConversionPage = mmLazy(
+  (() =>
+    import('../musd-conversion/index.tsx')) as unknown as DynamicImportType,
 );
 // End Lazy Routes
 
@@ -802,6 +807,14 @@ export default function Routes() {
         layout: RootLayout,
         authenticated: true,
       }),
+      ///: BEGIN:ONLY_INCLUDE_IF(musd-conversion)
+      createRouteWithLayout({
+        path: `${MUSD_CONVERSION_ROUTE}/*`,
+        component: MusdConversionPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      ///: END:ONLY_INCLUDE_IF
       createRouteWithLayout({
         path: DEFAULT_ROUTE,
         component: Home,
