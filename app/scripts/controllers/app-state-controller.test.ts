@@ -1014,6 +1014,7 @@ describe('AppStateController', () => {
               "nftsDetectionNoticeDismissed": false,
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
               "productTour": "accountIcon",

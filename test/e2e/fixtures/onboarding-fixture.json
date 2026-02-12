@@ -66,6 +66,7 @@
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
@@ -1939,6 +1940,7 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
