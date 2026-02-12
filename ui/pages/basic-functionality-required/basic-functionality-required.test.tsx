@@ -11,6 +11,29 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(),
 }));
 
+// Avoid unit test warning, by adding a mock for ToggleButton so we don't mount react-toggle-button (which uses deprecated componentWillReceiveProps via react-motion).
+jest.mock('react-toggle-button', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  function mockToggle({
+    value,
+    onToggle,
+    passThroughInputProps,
+  }: {
+    value: boolean;
+    onToggle: (v: boolean) => void;
+    passThroughInputProps?: { 'data-testid'?: string };
+  }) {
+    return ReactActual.createElement('input', {
+      type: 'checkbox',
+      checked: value,
+      'data-testid': passThroughInputProps?.['data-testid'],
+      onChange: () => onToggle(!value),
+      readOnly: true,
+    });
+  }
+  return mockToggle;
+});
+
 const mockUseLocation = jest.mocked(useLocation);
 
 const I18N_KEYS = {
