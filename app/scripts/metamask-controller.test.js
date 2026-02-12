@@ -320,6 +320,11 @@ jest.mock('@metamask/chain-agnostic-permission', () => ({
   getEthAccounts: jest.fn(),
 }));
 
+jest.mock('@metamask/core-backend', () => ({
+  ...jest.requireActual('@metamask/core-backend'),
+  createApiPlatformClient: jest.fn().mockReturnValue({ mockApiClient: true }),
+}));
+
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
