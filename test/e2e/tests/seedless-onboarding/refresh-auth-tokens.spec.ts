@@ -9,7 +9,6 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { AuthServer } from '../../helpers/seedless-onboarding/constants';
-import AccountListPage from '../../page-objects/pages/account-list-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -68,17 +67,17 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
           driver,
         });
 
-        // Go to Account Menu
-        // Simulate the token expiration
-
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
 
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
+        // Go to the Privacy & Security Settings
+        // Trigger the token refresh before locking the wallet
+        await headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.goToPrivacySettings();
 
         let mockedRequests = await getMockedRequests(driver, mockedEndpoints);
 
@@ -89,8 +88,10 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         // Assert that the token request API is called twice, first for social authentication and second for refresh token
         assert.strictEqual(authServiceTokenRequests.length, 2);
 
+        // close the settings page
+        await settingsPage.closeSettingsPage();
+
         // Lock the wallet
-        await accountListPage.closeMultichainAccountsPage();
         await headerNavbar.lockMetaMask();
 
         // Unlock the wallet
@@ -99,7 +100,7 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
 
         // Go to the Privacy & Security Settings
         await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
+        // const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
@@ -111,7 +112,7 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         const marketingOptInRequests = mockedRequests.filter((req) =>
           req.url.includes(AuthServer.GetMarketingOptInStatus),
         );
-        assert.strictEqual(marketingOptInRequests.length, 2);
+        assert.strictEqual(marketingOptInRequests.length, 3);
 
         // Extract the access token from the authorization header
         const marketingOptInRequestAfterTokenRefresh =
