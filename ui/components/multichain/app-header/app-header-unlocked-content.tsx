@@ -398,14 +398,13 @@ export const AppHeaderUnlockedContent = ({
       >
         <Box display={Display.Flex} gap={2}>
           {showConnectedStatus && (
-            <Box ref={menuRef} data-testid="connection-menu" margin="auto">
+            <Box data-testid="connection-menu" margin="auto">
               <ConnectedStatusIndicator
                 onClick={() => handleConnectionsRoute()}
               />
             </Box>
           )}{' '}
           <Box
-            ref={menuRef}
             display={Display.Flex}
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
@@ -417,6 +416,7 @@ export const AppHeaderUnlockedContent = ({
               </Box>
             )}
             <ButtonIcon
+              ref={menuRef}
               iconName={IconNameDeprecated.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}

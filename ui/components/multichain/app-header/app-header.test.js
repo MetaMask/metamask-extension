@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
@@ -99,9 +99,7 @@ describe('App Header', () => {
         '[data-testid="account-options-menu-button"]',
       );
       expect(settingsButton).toBeInTheDocument();
-      await act(async () => {
-        fireEvent.click(settingsButton);
-      });
+      fireEvent.click(settingsButton);
 
       await waitFor(() => {
         const settingsMenu = document.querySelector(
@@ -127,9 +125,7 @@ describe('App Header', () => {
         const settingsButton = container.querySelector(
           '[data-testid="account-options-menu-button"]',
         );
-        await act(async () => {
-          fireEvent.click(settingsButton);
-        });
+        fireEvent.click(settingsButton);
 
         // Menu is in portaled drawer; wait for Support button to be in document
         let globalMenuSupportButton;
@@ -141,9 +137,7 @@ describe('App Header', () => {
             throw new Error('Support button not found');
           }
         });
-        await act(async () => {
-          fireEvent.click(globalMenuSupportButton);
-        });
+        fireEvent.click(globalMenuSupportButton);
         // Wait for consent modal to be open so drawer-close and modal-open updates are flushed (avoids Act warnings)
         await waitFor(() => {
           if (
@@ -173,9 +167,7 @@ describe('App Header', () => {
           );
           expect(acceptButton).toBeInTheDocument();
         });
-        await act(async () => {
-          fireEvent.click(acceptButton);
-        });
+        fireEvent.click(acceptButton);
 
         await waitFor(() => {
           expect(openWindow).toHaveBeenCalled();
@@ -190,9 +182,7 @@ describe('App Header', () => {
           );
           expect(rejectButton).toBeInTheDocument();
         });
-        await act(async () => {
-          fireEvent.click(rejectButton);
-        });
+        fireEvent.click(rejectButton);
 
         await waitFor(() => {
           expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);

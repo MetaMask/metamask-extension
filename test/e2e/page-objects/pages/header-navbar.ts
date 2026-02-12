@@ -119,10 +119,6 @@ class HeaderNavbar {
   }
 
   async clickDrawerBackButton(): Promise<void> {
-    console.log('Click drawer back button to close menu');
-    await this.driver.waitForSelector(this.drawerBackButton, {
-      state: 'visible',
-    });
     await this.driver.clickElement(this.drawerBackButton);
   }
 
