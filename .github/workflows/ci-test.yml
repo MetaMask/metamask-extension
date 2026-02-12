@@ -1,4 +1,4 @@
-name: myworkflow
+name: ci-test
 on:
   pull_request:
   workflow_dispatch:
