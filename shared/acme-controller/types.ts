@@ -19,19 +19,17 @@ export type TransactionGroup = {
   transactions: TransactionMeta[];
 };
 
+export type TokenAmount = {
+  amount: bigint;
+  decimal: number;
+  symbol?: string;
+};
+
 export type TransactionViewModel = TransactionMeta & {
   readable?: string;
   amounts?: {
-    from?: {
-      amount: bigint;
-      decimal: number;
-      symbol?: string;
-    };
-    to?: {
-      amount: bigint;
-      decimal: number;
-      symbol?: string;
-    };
+    from?: TokenAmount;
+    to?: TokenAmount;
   };
   transactionType: string;
   category: TransactionGroupCategory;

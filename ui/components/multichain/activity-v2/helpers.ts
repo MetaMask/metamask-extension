@@ -1,6 +1,7 @@
 import type { Hex } from 'viem';
 import type { Transaction } from '@metamask/keyring-api';
 import type {
+  TokenAmount,
   TransactionGroup,
   TransactionViewModel,
 } from '../../../../shared/acme-controller/types';
@@ -48,7 +49,6 @@ function parseDate(timestamp: string | number): number {
   return date.getTime();
 }
 
-// TODO: Move
 export function formatUnits(value: bigint, decimals: number) {
   let display = value.toString();
   const negative = display.startsWith('-');
@@ -70,46 +70,32 @@ export function formatUnits(value: bigint, decimals: number) {
 // - For swaps (has both from and to): returns the "from" amount (negative)
 // - For sends: returns the "from" amount
 // - For receives: returns the "to" amount
-export function getTransferAmount(amounts: TransactionViewModel['amounts']): {
+export function getTransferAmount(amounts: {
+  from?: TokenAmount;
+  to?: TokenAmount;
+}): {
   amount?: `${number}`;
   symbol?: string;
 } {
-  const fromAmount = amounts?.from?.amount;
-  const fromDecimal = amounts?.from?.decimal;
-  const toAmount = amounts?.to?.amount;
-  const toDecimal = amounts?.to?.decimal;
+  const { from, to } = amounts;
+  const hasFrom = from?.amount !== undefined && from?.decimal !== undefined;
+  const hasTo = to?.amount !== undefined && to?.decimal !== undefined;
 
-  const hasFrom = fromAmount !== undefined && fromDecimal !== undefined;
-  const hasTo = toAmount !== undefined && toDecimal !== undefined;
-  const isSwap = hasFrom && hasTo;
-
-  // For swaps, show the sent amount (from) as negative
-  if (isSwap) {
-    const formatted = formatUnits(fromAmount, fromDecimal);
-
-    // Guard against double negative - API may already provide signed amounts
-    const amount = formatted.startsWith('-') ? formatted : `-${formatted}`;
-    return {
-      amount: amount as `${number}`,
-      symbol: amounts?.from?.symbol,
-    };
-  }
-
-  // For outgoing transactions, use from with negative sign
+  // For swaps or outgoing transactions, show the sent amount (from) as negative
   if (hasFrom) {
-    const formatted = formatUnits(fromAmount, fromDecimal);
+    const formatted = formatUnits(from.amount, from.decimal);
     const amount = formatted.startsWith('-') ? formatted : `-${formatted}`;
     return {
       amount: amount as `${number}`,
-      symbol: amounts?.from?.symbol,
+      symbol: from.symbol,
     };
   }
 
   // For incoming transactions, use to
   if (hasTo) {
     return {
-      amount: formatUnits(toAmount, toDecimal) as `${number}`,
-      symbol: amounts?.to?.symbol,
+      amount: formatUnits(to.amount, to.decimal) as `${number}`,
+      symbol: to.symbol,
     };
   }
 
