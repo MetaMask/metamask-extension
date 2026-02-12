@@ -39,9 +39,13 @@ export type HardwareWalletRefs = {
    */
   connectingPromiseRef: React.MutableRefObject<Promise<void> | null>;
   /**
-   * Stores the pending ensureDeviceReady promise to prevent overlapping checks.
+   * Stores pending ensureDeviceReady promises keyed by requireBlindSigning.
+   * This prevents duplicate checks for the same option while allowing different
+   * option sets to run independently.
    */
-  ensureDeviceReadyPromiseRef: React.MutableRefObject<Promise<boolean> | null>;
+  ensureDeviceReadyPromiseRef: React.MutableRefObject<
+    Map<boolean, Promise<boolean>>
+  >;
   /**
    * Flag to prevent concurrent connection attempts.
    * Used to synchronously check-and-set before any async work.
@@ -87,7 +91,9 @@ export const useHardwareWalletStateManager = () => {
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const connectingPromiseRef = useRef<Promise<void> | null>(null);
-  const ensureDeviceReadyPromiseRef = useRef<Promise<boolean> | null>(null);
+  const ensureDeviceReadyPromiseRef = useRef<Map<boolean, Promise<boolean>>>(
+    new Map(),
+  );
   const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
@@ -156,7 +162,7 @@ export const useHardwareWalletStateManager = () => {
        */
       resetConnectionRefs: () => {
         connectingPromiseRef.current = null;
-        ensureDeviceReadyPromiseRef.current = null;
+        ensureDeviceReadyPromiseRef.current.clear();
         currentConnectionIdRef.current = null;
         isConnectingRef.current = false;
       },
