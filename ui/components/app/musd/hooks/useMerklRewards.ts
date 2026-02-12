@@ -109,7 +109,7 @@ export const useMerklRewards = ({
   const isEligible = isEligibleForMerklRewards(chainId, tokenAddress);
 
   const fetchClaimableRewards = useCallback(
-    async (abortController?: AbortController) => {
+    async (abortController: AbortController) => {
       if (
         !tokenAddress ||
         !isEligible ||
@@ -120,17 +120,15 @@ export const useMerklRewards = ({
         return;
       }
 
-      const controller = abortController || new AbortController();
-
       try {
         const matchingReward = await fetchMerklRewardsForAsset(
           tokenAddress,
           chainId,
           selectedAddress,
-          controller.signal,
+          abortController.signal,
         );
 
-        if (controller.signal.aborted) {
+        if (abortController.signal.aborted) {
           return;
         }
 
@@ -149,7 +147,7 @@ export const useMerklRewards = ({
           rewardTokenAddress,
         );
 
-        if (controller.signal.aborted) {
+        if (abortController.signal.aborted) {
           return;
         }
 
@@ -168,7 +166,7 @@ export const useMerklRewards = ({
           tokenDecimals,
         );
 
-        if (!controller.signal.aborted) {
+        if (!abortController.signal.aborted) {
           setClaimableReward(displayAmount);
         }
       } catch (error) {
@@ -184,9 +182,13 @@ export const useMerklRewards = ({
     [tokenAddress, chainId, selectedAddress, isEligible, isFeatureEnabled],
   );
 
+  // Calling refetch just updates a Fetch Key, which in turn triggers a use effect.
+  // This means that we can easily share request aborting logic between the initial
+  // call and later refetches
+  const [fetchKey, setFetchKey] = useState(0);
   const refetch = useCallback(() => {
-    fetchClaimableRewards();
-  }, [fetchClaimableRewards]);
+    setFetchKey((k) => k + 1);
+  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -194,7 +196,7 @@ export const useMerklRewards = ({
     return () => {
       abortController.abort();
     };
-  }, [fetchClaimableRewards]);
+  }, [fetchClaimableRewards, fetchKey]);
 
   return {
     claimableReward,
