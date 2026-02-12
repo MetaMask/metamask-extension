@@ -102,9 +102,9 @@ export const useMerklRewards = ({
   const selectedAddress = selectedAccount?.address;
 
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
-  const isFeatureEnabled = true; // Boolean(
-  //   remoteFeatureFlags?.[MERKL_FEATURE_FLAG_KEY],
-  // );
+  const isFeatureEnabled = Boolean(
+    remoteFeatureFlags?.[MERKL_FEATURE_FLAG_KEY],
+  );
 
   const isEligible = isEligibleForMerklRewards(chainId, tokenAddress);
 
