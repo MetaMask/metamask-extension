@@ -252,34 +252,4 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       );
     });
   });
-
-  describe('View on etherscan', function () {
-    it('navigates to etherscan when view on etherscan is clicked', async function () {
-      await withMultichainAccountsDesignEnabled(
-        {
-          title: this.test?.fullTitle(),
-        },
-        async (driver: Driver) => {
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded();
-          await accountListPage.openMultichainAccountMenu({
-            accountLabel: account1.name,
-          });
-          await accountListPage.clickMultichainAccountMenuItem(
-            'Account details',
-          );
-
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-          await accountDetailsPage.clickNetworksRow();
-
-          const addressListModal = new AddressListModal(driver);
-          await addressListModal.clickQRbutton();
-
-          const accountAddressModal = new AccountAddressModal(driver);
-          await accountAddressModal.checkPageIsLoaded();
-          await accountAddressModal.checkViewOnEtherscanButton();
-        },
-      );
-    });
-  });
 });

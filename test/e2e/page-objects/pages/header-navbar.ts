@@ -51,6 +51,8 @@ class HeaderNavbar {
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
 
+  private readonly drawerBackButton = '[data-testid="drawer-close-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -114,6 +116,14 @@ class HeaderNavbar {
   async mouseClickOnThreeDotMenu(): Promise<void> {
     console.log('Clicking three dot menu using mouse move');
     await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+  }
+
+  async clickDrawerBackButton(): Promise<void> {
+    console.log('Click drawer back button to close menu');
+    await this.driver.waitForSelector(this.drawerBackButton, {
+      state: 'visible',
+    });
+    await this.driver.clickElement(this.drawerBackButton);
   }
 
   /**
