@@ -2076,6 +2076,9 @@
     "message": "You were sent here by a third party, not MetaMask. $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
+  "deepLink_theAssetPage": {
+    "message": "the asset page"
+  },
   "deepLink_theBuyPage": {
     "message": "the buy page"
   },

@@ -1,3 +1,4 @@
+import asset from './asset';
 import buy from './buy';
 import card from './card';
 import home from './home';
@@ -53,3 +54,4 @@ addRoute(perps);
 addRoute(predict);
 addRoute(rewards);
 addRoute(shield);
+addRoute(asset);
