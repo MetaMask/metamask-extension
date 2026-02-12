@@ -16,7 +16,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
-  MultichainProviderConfig,
   SOLANA_BLOCK_EXPLORER_URL,
 } from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
@@ -158,7 +157,6 @@ describe('MultichainTransactionDetailsModal', () => {
       transaction: Transaction;
       onClose: jest.Mock;
       userAddress: string;
-      networkConfig: MultichainProviderConfig;
     } = mockProps,
   ) => {
     const store = configureStore(mockState.metamask);
