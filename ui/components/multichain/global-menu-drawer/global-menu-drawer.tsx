@@ -299,7 +299,7 @@ export const GlobalMenuDrawer = ({
                     <Box className="flex flex-row items-center justify-start p-4 w-full overflow-hidden">
                       <ButtonIcon
                         iconName={IconName.ArrowLeft}
-                        size={ButtonIconSize.Lg}
+                        size={ButtonIconSize.Sm}
                         ariaLabel={title || t('close')}
                         onClick={onClose}
                         data-testid="drawer-close-button"
