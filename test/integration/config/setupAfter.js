@@ -1,7 +1,7 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
 import nock from 'nock';
 import { jestPreviewConfigure } from 'jest-preview';
-import { ACCOUNTS_API_BASE_URL } from '../constants/accounts';
+import { ACCOUNTS_API_BASE_URL } from '../../../shared/constants/accounts';
 import '../config/assets/index.css';
 import '../../helpers/setup-after-helper';
 
