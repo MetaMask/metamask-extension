@@ -126,7 +126,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           {orderValueUsd ?? t('perpsMarket')}
         </Text>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {formatOrderType(order.orderType)}{' '}
+          {formatOrderType(order.orderType)}
         </Text>
       </Box>
     </ButtonBase>
