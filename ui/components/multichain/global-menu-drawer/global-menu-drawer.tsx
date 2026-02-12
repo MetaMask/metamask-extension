@@ -54,11 +54,11 @@ export const GlobalMenuDrawer = ({
     null,
   );
   const [contentTopOffset, setContentTopOffset] = useState(0);
+  const [readyToReveal, setReadyToReveal] = useState(false);
+  const revealFrameRef = useRef<number | null>(null);
   const rootLayoutRef = useRef<HTMLElement | null>(null);
   const appContainerRef = useRef<HTMLElement | null>(null);
   const resizeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
-  const prevIsOpenRef = useRef(false);
-  const wasHiddenUntilPositionedRef = useRef(false);
 
   // Fullscreen and sidepanel: portal into .app and position over root layout (same pattern)
   // useLayoutEffect + sync updatePosition so we have position before paint (avoids flicker)
@@ -165,7 +165,6 @@ export const GlobalMenuDrawer = ({
     if (isOpen) {
       updatePosition();
     }
-    prevIsOpenRef.current = isOpen;
 
     const handleResize = () => {
       if (resizeTimeoutRef.current) {
@@ -197,6 +196,33 @@ export const GlobalMenuDrawer = ({
     }
   }, [isOpen, isFullscreen]);
 
+  // Delay revealing by one frame after we have position so Headless UI can apply
+  // enterFrom (translate-x-full) before we show — avoids a flash of the final position.
+  const hasPosition = Object.keys(drawerStyle).length > 0;
+  useEffect(() => {
+    if (!isOpen) {
+      setReadyToReveal(false);
+      if (revealFrameRef.current !== null) {
+        cancelAnimationFrame(revealFrameRef.current);
+        revealFrameRef.current = null;
+      }
+      return;
+    }
+    if (!hasPosition) {
+      return;
+    }
+    revealFrameRef.current = requestAnimationFrame(() => {
+      revealFrameRef.current = null;
+      setReadyToReveal(true);
+    });
+    return () => {
+      if (revealFrameRef.current !== null) {
+        cancelAnimationFrame(revealFrameRef.current);
+        revealFrameRef.current = null;
+      }
+    };
+  }, [isOpen, hasPosition]);
+
   const usePortal = isFullscreen || (isSidepanel && Boolean(anchorElement));
   // Avoid null frame: when open in portal mode use .app as fallback target so we can render hidden until position is ready
   const portalTarget =
@@ -205,14 +231,8 @@ export const GlobalMenuDrawer = ({
       ? (document.querySelector('.app') as HTMLElement)
       : null);
 
-  const hasPosition = Object.keys(drawerStyle).length > 0;
-  const justOpened = isOpen && !prevIsOpenRef.current;
   const hideUntilPositioned =
-    usePortal && isOpen && (!hasPosition || justOpened);
-
-  if (hideUntilPositioned) {
-    wasHiddenUntilPositionedRef.current = true;
-  }
+    usePortal && isOpen && (!hasPosition || !readyToReveal);
 
   // Dialog: fixed inset-0 for popup; absolute + drawerStyle when portaled
   const dialogPositionClass = portalTarget ? 'absolute' : 'fixed inset-0';
@@ -246,10 +266,10 @@ export const GlobalMenuDrawer = ({
         }}
       >
         <Transition.Child
-          enter="transition-opacity duration-1000 ease-linear"
+          enter="transition-opacity duration-300 ease-linear"
           enterFrom="opacity-0"
           enterTo="opacity-100"
-          leave="transition-opacity duration-1000 ease-linear"
+          leave="transition-opacity duration-300 ease-linear"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
@@ -278,10 +298,10 @@ export const GlobalMenuDrawer = ({
               ? { zIndex: 1, top: `${contentTopOffset}px` }
               : { zIndex: 1 }
           }
-          enter="transition ease-in-out duration-1000 transform"
+          enter="transition ease-in-out duration-300 transform"
           enterFrom="translate-x-full"
-          enterTo="translate-x-full"
-          leave="transition ease-in-out duration-1000 transform"
+          enterTo="translate-x-0"
+          leave="transition ease-in-out duration-300 transform"
           leaveFrom="translate-x-0"
           leaveTo="translate-x-full"
         >
