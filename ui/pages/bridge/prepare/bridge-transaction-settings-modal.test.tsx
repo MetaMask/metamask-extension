@@ -12,6 +12,21 @@ import { waitForElementById } from '../../../../test/integration/helpers';
 import { setSlippage } from '../../../ducks/bridge/actions';
 import { sanitizeAmountInput } from '../utils/quote';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import {
+  ConnectionStatus,
+  HardwareConnectionPermissionState,
+} from '../../../contexts/hardware-wallets';
+
+const mockUseHardwareWalletConfig = jest.fn();
+const mockUseHardwareWalletActions = jest.fn();
+const mockUseHardwareWalletState = jest.fn();
+
+jest.mock('../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../contexts/hardware-wallets'),
+  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+  useHardwareWalletState: () => mockUseHardwareWalletState(),
+}));
 
 setBackgroundConnection({
   // @ts-expect-error - setSlippage is valid
@@ -99,6 +114,20 @@ describe('BridgeTransactionSettingsModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(bridgeSelectors, 'getIsSolanaSwap').mockReturnValue(true);
+    mockUseHardwareWalletConfig.mockReturnValue({
+      isHardwareWalletAccount: false,
+      walletType: null,
+      hardwareConnectionPermissionState:
+        HardwareConnectionPermissionState.Unknown,
+      isWebHidAvailable: false,
+      isWebUsbAvailable: false,
+    });
+    mockUseHardwareWalletActions.mockReturnValue({
+      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
   });
 
   it('should render the component, with initial state', async () => {
