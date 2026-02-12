@@ -9,11 +9,11 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   showModal,
   hideModal,
-  setPendingHardwareWalletSigning,
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
@@ -29,7 +29,13 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
+import { isHardwareWalletRoute } from './utils';
 
+/**
+ * Route prefixes where hardware wallet error modals should auto-show.
+ * This restricts auto-shown errors to transaction, signing, and bridge pages.
+ * Manually triggered errors (via showErrorModal) are not affected.
+ */
 type HardwareWalletErrorContextType = {
   /**
    * Manually show the error modal with a specific error
@@ -74,6 +80,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );
@@ -82,6 +89,15 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
   const { clearError } = useHardwareWalletActions();
+
+  /**
+   * Check if the current route is one where auto-shown error modals are allowed.
+   * Only transaction, signing, and bridge pages should auto-show errors.
+   */
+  const isOnErrorModalRoute = useMemo(
+    () => isHardwareWalletRoute(location.pathname),
+    [location.pathname],
+  );
 
   // Store the current error to display (independent of connection state)
   const [displayedError, setDisplayedError] = useState<unknown | null>(null);
@@ -96,16 +112,14 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     isManuallyShownRef.current = false;
     setDisplayedError(null);
     dispatch(hideModal());
-    dispatch(setPendingHardwareWalletSigning(false));
   }, [dispatch]);
 
   /**
    * Handle retry action from the modal
    */
   const handleRetry = useCallback(() => {
-    // Clear pending signing so the user can retry after success.
-    dispatch(setPendingHardwareWalletSigning(false));
-  }, [dispatch]);
+    // Keep the modal open while the user retries on their device.
+  }, []);
 
   /**
    * Handle cancel/close action from the modal
@@ -162,8 +176,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
           setDisplayedError(null);
           dispatch(hideModal());
         }
-        // Clear pendingHardwareWalletSigning and close the popup
-        dispatch(setPendingHardwareWalletSigning(false));
         dispatch(closeCurrentNotificationWindow());
         return;
       }
@@ -216,9 +228,10 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       isModalOpenRef.current
     ) {
       resetModalState();
+      clearError();
     }
     wasModalVisibleRef.current = isHardwareWalletErrorModalVisible;
-  }, [isHardwareWalletErrorModalVisible, resetModalState]);
+  }, [clearError, isHardwareWalletErrorModalVisible, resetModalState]);
 
   useEffect(() => {
     // Don't dismiss manually shown modals based on selected account.
@@ -236,6 +249,12 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     }
 
     if (!isHardwareWalletAccount) {
+      return;
+    }
+
+    // Only auto-show errors on transaction, signing, and bridge pages.
+    // Other pages (e.g. home) should not show auto-triggered error modals.
+    if (!isOnErrorModalRoute) {
       return;
     }
 
@@ -263,6 +282,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   }, [
     connectionState,
     isHardwareWalletAccount,
+    isOnErrorModalRoute,
     showErrorModalInternal,
     dispatch,
     displayedError,
@@ -276,7 +296,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     return () => {
       if (isModalOpenRef.current) {
         dispatch(hideModal());
-        dispatch(setPendingHardwareWalletSigning(false));
         isModalOpenRef.current = false;
         setDisplayedError(null);
       }

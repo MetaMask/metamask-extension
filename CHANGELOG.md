@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.18.0]
+
+### Added
+
+- Add sanitized origin to sentinel metadata (#39765)
+- Fixed Ledger connectivity issues by replacing the iframe bridge with direct WebHID transport (#39537)
+- Shield notification in app navigation (#39788)
+- Add disconnect all button to dapp connections main screen (#39791)
+- Added a static assets polling controller (#39448)
+- Added a warning message when gas sponsorship is unavailable due to reserve balance requirements (#39284)
+- Implements transaction history UI for perps (#39445)
+- Added static perps order entry behind ff (#39659)
+- Added points estimate history tracking to state logs for Customer Support diagnostics (#39641)
+- Reset shield default payment method to most suitable one (crypto) if available after payment flow cancel (#39695)
+- Cache bridge getToken responses (#39541)
+- Added deeplinking to the NFT tab (#39669)
+- Added tempo testnet native and network token IDs and images (#39491)
+- Added Keycard Shell to the list of QR-based hardware wallets (#36911)
+- Added network picker deeplink (#39676)
+
+### Changed
+
+- Check MM feeData amount to determine swap MM fee disclaimer visibility (#39653)
+
+### Fixed
+
+- Updated Activity Log header to use arrow disclosure variant for better UX consistency (#39767)
+- Increased clickable area to close buttons in asset list control bar (#39823)
+- Missing token activity in details page (#39753)
+- Fixed camera permissions issue with Keystone HW wallet in sidebar mode (#39438)
+- Handle subscription reload when user close shield card payment update stripe tab (#39814)
+- Fixed fullscreen rendering of Dapp Connections pages by updating layout from "LegacyLayout" to "DefaultLayout" (#39801)
+- Fixed a bug where EIP-7702 delegation publish transactions are being dropped by removing nonce from txParams (#39516)
+- Fixed cancel and speedup modal UI by removing emojis, standardizing button width, and migrating to current component versions (#39661)
+- Snap account creation now uses account group names instead of old account names (#39488)
+- Wait for input value and fetch calls during unit test execution (swaps) (#39747)
+- Fixed edit gas fee popover UI by removing black backgrounds and migrating to Modal component (#39690)
+- Add SRP validation during import (#39679)
+- Restore swap quote only when using extension in popup mode (#39654)
+- Fixed critical performance issue slowing down all user actions by stabilizing props references used in routes (#39311)
+- Calling the RPC method `metamask_sendDomainMetadata` no longer has any effect (#39642)
+- Fixed MetaMetrics context causing cascade re-renders of 149 subscribers on every navigation (#39310)
+
 ## [13.17.0]
 
 ### Added
@@ -1714,7 +1757,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...HEAD
+[13.18.0]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...v13.18.0
 [13.17.0]: https://github.com/MetaMask/metamask-extension/compare/v13.16.3...v13.17.0
 [13.16.3]: https://github.com/MetaMask/metamask-extension/compare/v13.16.2...v13.16.3
 [13.16.2]: https://github.com/MetaMask/metamask-extension/compare/v13.16.1...v13.16.2
