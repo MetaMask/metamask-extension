@@ -67,7 +67,7 @@
     "recoveryPhraseReminderLastShown": "number",
     "shieldEndingToastLastClickedOrClosed": "object",
     "shieldPausedToastLastClickedOrClosed": "object",
-    "shieldSubscriptionError": null,
+    "shieldSubscriptionError": "object",
     "showAccountBanner": true,
     "showBetaHeader": false,
     "showDownloadMobileAppSlide": "boolean",
