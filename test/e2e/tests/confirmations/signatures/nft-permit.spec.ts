@@ -11,22 +11,22 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import {
+  openDappAndTriggerDeploy,
+  copyAddressAndPasteWalletAddress,
+  triggerSignature,
+} from '../../../page-objects/flows/signature-confirmation.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertPastedAddress,
-  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  initializePages,
-  openDappAndTriggerDeploy,
+  WALLET_ADDRESS,
   SignatureType,
-  triggerSignature,
 } from './signature-helpers';
 
-describe('Confirmation Signature - NFT Permit', function (this: Suite) {
+describe.only('Confirmation Signature - NFT Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
     await withSignatureFixtures(
       this.test?.fullTitle(),
@@ -37,7 +37,8 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
-        await initializePages(driver);
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
 
         await openDappAndTriggerDeploy(driver);
         await driver.delay(1000);
@@ -46,12 +47,12 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.delay(1000);
-        await triggerSignature(SignatureType.NFTPermit);
+        await triggerSignature(driver, SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await clickHeaderInfoBtn(driver);
+        await confirmation.clickHeaderAccountDetailsButton();
         await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress();
+        await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await assertInfoValues(driver);
@@ -89,8 +90,9 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new PermitConfirmation(driver);
+        const testDapp = new TestDapp(driver);
+
         await openDappAndTriggerDeploy(driver);
         await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -98,14 +100,14 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.delay(1000);
-        await triggerSignature(SignatureType.NFTPermit);
+        await triggerSignature(driver, SignatureType.NFTPermit);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
 
         await assertSignatureRejectedMetrics({
           driver,

@@ -11,22 +11,23 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import {
+  openDappAndTriggerSignature,
+  copyAddressAndPasteWalletAddress,
+} from '../../../page-objects/flows/signature-confirmation.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertHeaderInfoBalance,
-  assertPastedAddress,
-  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  initializePages,
-  openDappAndTriggerSignature,
+  WALLET_ADDRESS,
+  WALLET_ETH_BALANCE,
   SignatureType,
 } from './signature-helpers';
 
-describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
+describe.only('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withSignatureFixtures(
       this.test?.fullTitle(),
@@ -37,18 +38,21 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
-        await initializePages(driver);
+        const testDapp = new TestDapp(driver);
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
 
         await openDappAndTriggerSignature(
           driver,
           SignatureType.SignTypedDataV3,
         );
 
-        await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
 
         await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress();
+        await testDapp.assertEip747ContractAddressInputValue(WALLET_ADDRESS);
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -79,8 +83,8 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new SignTypedData(driver);
+        const testDapp = new TestDapp(driver);
 
         await openDappAndTriggerSignature(
           driver,
@@ -99,7 +103,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
       },
       mockSignatureRejected,
     );

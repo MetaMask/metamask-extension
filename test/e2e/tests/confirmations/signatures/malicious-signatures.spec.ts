@@ -9,26 +9,26 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import {
+  openDappAndTriggerSignature,
+  assertVerifiedSiweMessage,
+} from '../../../page-objects/flows/signature-confirmation.flow';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
-  assertRejectedSignature,
   assertSignatureRejectedMetrics,
-  assertVerifiedSiweMessage,
-  initializePages,
-  openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
 
-describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
+describe.only('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
     await withSignatureFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new Confirmation(driver);
         const alertModal = new ConfirmAlertModal(driver);
 
@@ -58,15 +58,15 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new Confirmation(driver);
+        const testDapp = new TestDapp(driver);
 
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
 
         await assertSignatureRejectedMetrics({
           driver,
@@ -116,8 +116,8 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const alertModal = new ConfirmAlertModal(driver);
+        const testDapp = new TestDapp(driver);
 
         await openDappAndTriggerSignature(driver, SignatureType.SIWE_BadDomain);
 
@@ -130,7 +130,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
         await assertSignatureRejectedMetrics({
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
