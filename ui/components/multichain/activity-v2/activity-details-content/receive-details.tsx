@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text, TextButton, TextVariant, TextColor } from '@metamask/design-system-react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { getExplorerUrl, getTransferAmount } from '../helpers';
@@ -10,6 +9,7 @@ import { NetworkRow } from './network-row';
 import { Row } from './row';
 import { StatusRow } from './status-row';
 import { TokenAmountBlock } from './token-amount-block';
+import { TransactionHashRow } from './transaction-hash-row';
 
 type Props = {
   transaction: TransactionViewModel;
@@ -55,25 +55,10 @@ export const ReceiveDetails = ({ transaction }: Props) => {
 
       <div className="flex flex-col gap-2">
         <StatusRow status={transaction.status} />
-
-        <Row
-          left="Transaction hash" // TODO: add translation
-          right={
-            explorerUrl ? (
-              <TextButton asChild>
-                <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
-                  {t('viewOnExplorer')}
-                </a>
-              </TextButton>
-            ) : (
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {shortenAddress(hash)}
-              </Text>
-            )
-          }
+        <TransactionHashRow
+          label="Transaction hash" // TODO: Add translation
+          explorerUrl={explorerUrl ?? undefined}
+          hash={hash}
         />
       </div>
     </>

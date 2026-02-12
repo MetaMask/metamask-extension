@@ -11,6 +11,7 @@ import { NetworkRow } from './network-row';
 import { Row } from './row';
 import { StatusRow } from './status-row';
 import { TokenAmountBlock } from './token-amount-block';
+import { TransactionHashRow } from './transaction-hash-row';
 
 type Props = {
   transaction: TransactionViewModel;
@@ -83,63 +84,24 @@ export const SwapDetails = ({ transaction }: Props) => {
 
       {isBridge ? (
         <>
-          <Row
-            left="Transaction hash #1"
-            right={
-              explorerUrl ? (
-                <TextButton asChild>
-                  <a
-                    href={explorerUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('viewOnExplorer')}
-                  </a>
-                </TextButton>
-              ) : (
-                <Text className="text-xs text-text-alternative">
-                  {shortenAddress(hash)}
-                </Text>
-              )
+          <TransactionHashRow
+            label="Transaction hash #1" // TODO: Add translation
+            explorerUrl={explorerUrl ?? undefined}
+            hash={hash
+
             }
           />
-          <Row
-            left="Transaction hash #2"
-            right={
-              explorerUrl ? (
-                <TextButton asChild>
-                  <a
-                    href={explorerUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('viewOnExplorer')}
-                  </a>
-                </TextButton>
-              ) : (
-                <Text className="text-xs text-text-alternative">
-                  {shortenAddress(hash)}
-                </Text>
-              )
-            }
+          <TransactionHashRow
+            label="Transaction hash #2" // TODO: Add translation
+            explorerUrl={explorerUrl ?? undefined}
+            hash={hash}
           />
         </>
       ) : (
-        <Row
-          left="Transaction hash" // Todo: add translation
-          right={
-            explorerUrl ? (
-              <TextButton asChild>
-                <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
-                  {t('viewOnExplorer')}
-                </a>
-              </TextButton>
-            ) : (
-              <Text className="text-xs text-text-alternative">
-                {shortenAddress(hash)}
-              </Text>
-            )
-          }
+        <TransactionHashRow
+          label="Transaction hash" // TODO: Add translation
+          explorerUrl={explorerUrl ?? undefined}
+          hash={hash}
         />
       )}
     </>
