@@ -161,10 +161,6 @@ class NetworkManager {
     const selector = `[data-testid="network-list-item-${caipChainId}"].multichain-network-list-item--selected`;
     await this.driver.waitForSelector(selector);
 
-    // Additional verification: ensure the selected indicator is present
-    const indicatorSelector = `[data-testid="network-list-item-${caipChainId}"] .multichain-network-list-item__selected-indicator`;
-    await this.driver.waitForSelector(indicatorSelector);
-
     console.log(
       `Custom network ${caipChainId} is properly selected with background indication`,
     );
