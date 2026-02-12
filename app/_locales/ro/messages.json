@@ -376,9 +376,6 @@
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nu se pot trimite sume negative de ETH."
-  },
   "networkName": {
     "message": "Numele rețelei"
   },
@@ -406,9 +403,6 @@
   },
   "next": {
     "message": "Înainte"
-  },
-  "noConversionRateAvailable": {
-    "message": "Nici o rată de conversie disponibilă"
   },
   "noWebcamFound": {
     "message": "Webcam-ul computerului dvs. nu a fost găsit. Vă rugăm să încercați din nou."

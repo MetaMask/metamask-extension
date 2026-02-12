@@ -20,12 +20,17 @@ import {
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
 
-// We need to mock `dispatch` since we use it for `setDefaultHomeActiveTabName`.
-const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => mockDispatch,
-}));
+// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
+// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
@@ -123,7 +128,6 @@ describe('EthOverview', () => {
       enabledNetworkMap: {
         eip155: {
           [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.SEPOLIA]: true,
         },
       },
       useExternalServices: true,
@@ -413,10 +417,16 @@ describe('EthOverview', () => {
 
   it('sends an event when clicking the Buy button: %s', () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
 
     const mockedStore = configureMockStore([thunk])(mockStore);
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <EthOverview />
       </MetaMetricsContext.Provider>,
       mockedStore,
@@ -498,6 +508,12 @@ describe('EthOverview', () => {
     CHAIN_IDS.SEPOLIA,
   ])('sends an event when clicking the Send button: %s', (chainId) => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const mockedStoreWithSpecificChainId = {
       ...mockStore,
       metamask: {
@@ -510,7 +526,7 @@ describe('EthOverview', () => {
       mockedStoreWithSpecificChainId,
     );
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <EthOverview />
       </MetaMetricsContext.Provider>,
       mockedStore,

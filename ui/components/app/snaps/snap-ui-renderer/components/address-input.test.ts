@@ -1,6 +1,9 @@
 import { Box, AddressInput, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
 import { renderInterface } from '../test-utils';
+import { toEvmCaipAccountId } from '../../../../../../shared/lib/multichain/scope-utils';
+
+const MOCK_ACCOUNT_NAME = 'Account 1';
 
 describe('SnapUIAddressInput', () => {
   it('will render', () => {
@@ -110,7 +113,7 @@ describe('SnapUIAddressInput', () => {
       },
     });
 
-    const matchedAddressName = getByText('Test Account');
+    const matchedAddressName = getByText(MOCK_ACCOUNT_NAME);
     const matchedAddress = getByText(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
@@ -133,7 +136,7 @@ describe('SnapUIAddressInput', () => {
           displayAvatar: true,
         }),
       }),
-      { state: { input: `eip155:0:${testAddress}` } },
+      { state: { input: toEvmCaipAccountId(testAddress) } },
     );
 
     const matchedAddress = getByDisplayValue(testAddress);
@@ -154,7 +157,7 @@ describe('SnapUIAddressInput', () => {
           displayAvatar: false,
         }),
       }),
-      { state: { input: `eip155:0:${testAddress}` } },
+      { state: { input: toEvmCaipAccountId(testAddress) } },
     );
 
     const matchedAddress = getByDisplayValue(testAddress);
@@ -195,7 +198,7 @@ describe('SnapUIAddressInput', () => {
       { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
     );
 
-    const matchedAddressName = getByText('Test Account');
+    const matchedAddressName = getByText(MOCK_ACCOUNT_NAME);
     expect(matchedAddressName).toBeDefined();
 
     const matchedAccountInfo = container.querySelector(
@@ -221,7 +224,7 @@ describe('SnapUIAddressInput', () => {
       { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
     );
 
-    const matchedAddressName = queryByText('Test Account');
+    const matchedAddressName = queryByText(MOCK_ACCOUNT_NAME);
     expect(matchedAddressName).toBeTruthy();
 
     const error = getByText('Invalid address');
@@ -267,7 +270,7 @@ describe('SnapUIAddressInput', () => {
       { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
     );
 
-    const matchedAddressName = getByText('Test Account');
+    const matchedAddressName = getByText(MOCK_ACCOUNT_NAME);
     expect(matchedAddressName).toBeDefined();
 
     const clearIcon = container.querySelector(
@@ -277,7 +280,7 @@ describe('SnapUIAddressInput', () => {
 
     fireEvent.click(clearIcon as Element);
 
-    const matchedAddressNameAfterClick = getByText('Test Account');
+    const matchedAddressNameAfterClick = getByText(MOCK_ACCOUNT_NAME);
     expect(matchedAddressNameAfterClick).toBeDefined();
   });
 });

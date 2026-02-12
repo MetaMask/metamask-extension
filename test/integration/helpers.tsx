@@ -1,5 +1,27 @@
 import nock from 'nock';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { parseAccountGroupId } from '@metamask/account-api';
+import { AccountsControllerState } from '@metamask/accounts-controller';
+import { AccountTreeControllerState } from '@metamask/account-tree-controller';
+
+// Used to "relax" (widen) types that are too strict. This can be useful when using mocked data from JSON
+// files. As some of the literal strings are being interpreted as general strings, this can cause some
+// type mismatches. (This could be moved to `@metamask/utils`)
+type WidenDeep<Type> = Type extends string
+  ? string
+  : Type extends number
+    ? number
+    : Type extends boolean
+      ? boolean
+      : Type extends bigint
+        ? bigint
+        : Type extends symbol
+          ? symbol
+          : Type extends readonly (infer U)[]
+            ? readonly WidenDeep<U>[]
+            : Type extends object
+              ? { [Key in keyof Type]: WidenDeep<Type[Key]> }
+              : Type;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -42,6 +64,41 @@ export function mock4byte(hexSignature: string, textSignature?: string) {
     });
   return mockEndpoint;
 }
+
+export const getSelectedAccountGroup = <
+  State extends WidenDeep<AccountTreeControllerState>,
+>(
+  state: State,
+) => {
+  const groupId = state.accountTree.selectedAccountGroup;
+  const {
+    wallet: { id: walletId },
+  } = parseAccountGroupId(state.accountTree.selectedAccountGroup);
+  const wallet =
+    state.accountTree.wallets[
+      walletId as keyof typeof state.accountTree.wallets
+    ];
+  return wallet.groups[groupId as keyof typeof wallet.groups];
+};
+
+export const getSelectedAccountGroupName = <
+  State extends WidenDeep<AccountTreeControllerState>,
+>(
+  state: State,
+) => {
+  return getSelectedAccountGroup(state).metadata.name;
+};
+
+export const getSelectedAccountGroupAccounts = <
+  State extends WidenDeep<AccountTreeControllerState> &
+    WidenDeep<AccountsControllerState>,
+>(
+  state: State,
+) => {
+  const group = getSelectedAccountGroup(state);
+
+  return group.accounts.map((id) => state.internalAccounts.accounts[id]);
+};
 
 /**
  * Clicks on an element identified by the given test ID.

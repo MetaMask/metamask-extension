@@ -6,5 +6,9 @@ export type ShieldEnvConfig = {
   claimsEnv: ClaimsEnv;
   gatewayUrl: string;
   ruleEngineUrl: string;
-  claimUrl: string;
+};
+
+export type ShieldSubscriptionError = {
+  message: string;
+  code?: string;
 };

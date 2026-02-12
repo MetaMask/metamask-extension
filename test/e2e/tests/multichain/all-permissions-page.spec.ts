@@ -1,5 +1,9 @@
-import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import {
+  DAPP_HOST_ADDRESS,
+  DEFAULT_FIXTURE_ACCOUNT,
+  WINDOW_TITLES,
+} from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -8,6 +12,7 @@ import PermissionListPage from '../../page-objects/pages/permission/permission-l
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Permissions Page', function () {
   it('should show connected site permissions when a single dapp is connected', async function () {
@@ -21,7 +26,7 @@ describe('Permissions Page', function () {
         await loginWithoutBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
 

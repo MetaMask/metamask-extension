@@ -34,9 +34,9 @@ export const AccountTreeControllerInit: ControllerInitFunction<
           initMessenger.call('MetaMetricsController:trackEvent', {
             category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.ProfileActivityUpdated,
+            // @ts-expect-error events coming from the controller are typed and this conflicts with the expected Record<string, Json> type
             properties: {
-              // @ts-expect-error events coming from the controller are typed and this conflicts with the expected Record<string, Json> type
-              event,
+              ...event,
             },
           });
         },

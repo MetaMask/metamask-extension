@@ -62,7 +62,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         <p
           class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
         >
-          Transfer Window
+          Transfer window
         </p>
         <div
           class="flex flex-row gap-2 items-center justify-end"
@@ -165,15 +165,15 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-4 h-4 text-inherit"
+              class="inline-block w-5 h-5 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -360,15 +360,15 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-4 h-4 text-inherit"
+              class="inline-block w-5 h-5 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -535,15 +535,15 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-4 h-4 text-inherit"
+              class="inline-block w-5 h-5 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -725,15 +725,15 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-4 h-4 text-inherit"
+              class="inline-block w-5 h-5 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -812,7 +812,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         <p
           class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
         >
-          Transfer Window
+          Transfer window
         </p>
         <div
           class="flex flex-row gap-2 items-center justify-end"
@@ -915,15 +915,15 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-4 h-4 text-inherit"
+              class="inline-block w-5 h-5 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -1105,15 +1105,15 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
-            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             color="text-icon-muted"
           >
             <svg
-              class="inline-block w-4 h-4 text-inherit"
+              class="inline-block w-5 h-5 text-inherit"
               fill="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"

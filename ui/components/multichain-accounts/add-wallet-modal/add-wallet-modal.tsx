@@ -88,7 +88,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   const institutionalWalletsEnabled = useSelector(
     getManageInstitutionalWallets,
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const isAddWatchEthereumAccountEnabled = useSelector(
@@ -158,7 +158,14 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
         getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
       ) {
-        global.platform.openExtensionInBrowser?.(option.route);
+        // Keep sidepanel open when opening hardware wallet in expanded view
+        const keepWindowOpen =
+          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+        global.platform.openExtensionInBrowser?.(
+          option.route,
+          null,
+          keepWindowOpen,
+        );
       } else {
         navigate(option.route);
       }

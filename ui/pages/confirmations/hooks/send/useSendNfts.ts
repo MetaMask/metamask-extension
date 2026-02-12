@@ -32,11 +32,13 @@ export const useSendNfts = () => {
         (accountGroup) => accountGroup.id === selectedAccountGroup,
       )?.accounts;
 
-    return transformNftsToAssets(
+    const allNfts = transformNftsToAssets(
       nftsOwnedByAccounts,
       selectedAccountGroupWithInternalAccounts as InternalAccount[],
       chainNetworkNAmeAndImageMap,
     );
+
+    return allNfts;
   }, [
     // using accountGroupWithInternalAccounts as dependency is somehow causing repeated renders
     accountGroupWithInternalAccounts?.length,

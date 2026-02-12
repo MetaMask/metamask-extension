@@ -25,6 +25,7 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
+import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -45,6 +46,7 @@ import {
   AccountOverviewTabKey,
   CarouselSlide,
   NetworkConnectionBanner,
+  StorageWriteErrorType,
 } from '../../../shared/constants/app-state';
 import type {
   ThrottledOrigins,
@@ -60,6 +62,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { ShieldSubscriptionError } from '../../../shared/modules/shield';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -140,6 +143,7 @@ export type AppStateControllerState = {
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
+  shieldSubscriptionError: ShieldSubscriptionError | null;
   shieldEndingToastLastClickedOrClosed: number | null;
   shieldPausedToastLastClickedOrClosed: number | null;
   termsOfUseLastAgreed?: number;
@@ -166,6 +170,13 @@ export type AppStateControllerState = {
    * Whether the wallet reset is in progress.
    */
   isWalletResetInProgress: boolean;
+
+  /**
+   * The type of storage write error that occurred, or null if no error.
+   * When not null, indicates the storage error toast should be shown.
+   * Used to show specific error messages (e.g., disk space vs general error).
+   */
+  storageWriteErrorType: StorageWriteErrorType | null;
 };
 
 const controllerName = 'AppStateController';
@@ -198,6 +209,11 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
+export type AppStateControllerSetShieldSubscriptionErrorAction = {
+  type: 'AppStateController:setShieldSubscriptionError';
+  handler: AppStateController['setShieldSubscriptionError'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
@@ -206,7 +222,8 @@ export type AppStateControllerActions =
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
-  | AppStateControllerSetPendingShieldCohortAction;
+  | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetShieldSubscriptionErrorAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -215,7 +232,8 @@ export type AllowedActions =
   | AddApprovalRequest
   | AcceptRequest
   | KeyringControllerGetStateAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | ProfileMetricsControllerSkipInitialDelayAction;
 
 /**
  * Event emitted when the state of the {@link AppStateController} changes.
@@ -314,6 +332,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showTestnetMessageInDropdown: true,
   slides: [],
   surveyLinkLastClickedOrClosed: null,
+  shieldSubscriptionError: null,
   shieldEndingToastLastClickedOrClosed: null,
   shieldPausedToastLastClickedOrClosed: null,
   throttledOrigins: {},
@@ -326,6 +345,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
+  storageWriteErrorType: null,
   ...getInitialStateOverrides(),
 });
 
@@ -621,6 +641,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  shieldSubscriptionError: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   shieldEndingToastLastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
@@ -677,7 +703,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   },
   pendingShieldCohort: {
     includeInStateLogs: true,
-    persist: false,
+    persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -709,6 +735,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInStateLogs: false,
     persist: false,
     includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  storageWriteErrorType: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
 };
@@ -796,6 +828,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setPendingShieldCohort',
       this.setPendingShieldCohort.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setShieldSubscriptionError',
+      this.setShieldSubscriptionError.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -920,10 +957,13 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setPna25Acknowledged(acknowledged: boolean): void {
+  setPna25Acknowledged(acknowledged: boolean, disableDelay = false): void {
     this.update((state) => {
       state.pna25Acknowledged = acknowledged;
     });
+    if (disableDelay && acknowledged) {
+      this.messenger.call('ProfileMetricsController:skipInitialDelay');
+    }
   }
 
   setShieldPausedToastLastClickedOrClosed(time: number): void {
@@ -935,6 +975,32 @@ export class AppStateController extends BaseController<
   setShieldEndingToastLastClickedOrClosed(time: number): void {
     this.update((state) => {
       state.shieldEndingToastLastClickedOrClosed = time;
+    });
+  }
+
+  /**
+   * Sets a generic shield API error.
+   * When set to a non-null object, a toast is shown on the homepage with the error.
+   * Setting to null clears/dismisses the error.
+   *
+   * @param error - The error object with message and optional code, or null to clear
+   */
+  setShieldSubscriptionError(error: ShieldSubscriptionError | null): void {
+    this.update((state) => {
+      state.shieldSubscriptionError = error;
+    });
+  }
+
+  /**
+   * Sets the storage write error type, which controls whether to show the storage error toast.
+   * When errorType is not null, the toast will be shown with the appropriate message.
+   * This is called when set operations fail (storage.local or IndexedDB).
+   *
+   * @param errorType - The type of storage write error, or null to hide the toast
+   */
+  setStorageWriteErrorType(errorType: StorageWriteErrorType | null): void {
+    this.update((state) => {
+      state.storageWriteErrorType = errorType;
     });
   }
 
@@ -1623,6 +1689,15 @@ export class AppStateController extends BaseController<
   }): void {
     this.update((state) => {
       state.appActiveTab = tabData;
+    });
+  }
+
+  /**
+   * Clears the active tab information by setting appActiveTab to undefined.
+   */
+  clearAppActiveTab(): void {
+    this.update((state) => {
+      state.appActiveTab = undefined;
     });
   }
 

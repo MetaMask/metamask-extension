@@ -8,10 +8,27 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  PLATFORM_BRAVE,
   PLATFORM_CHROME,
+  PLATFORM_CHROMIUM,
+  PLATFORM_COCCOC,
   PLATFORM_EDGE,
+  PLATFORM_EDGE_ANDROID,
   PLATFORM_FIREFOX,
+  PLATFORM_KIWI,
+  PLATFORM_LEMUR,
+  PLATFORM_MAXTHON,
+  PLATFORM_MISES,
   PLATFORM_OPERA,
+  PLATFORM_OTHER,
+  PLATFORM_PUFFIN,
+  PLATFORM_QQBROWSER,
+  PLATFORM_SAMSUNG,
+  PLATFORM_SILK,
+  PLATFORM_UCBROWSER,
+  PLATFORM_VIVALDI,
+  PLATFORM_WHALE,
+  PLATFORM_YANDEX,
 } from '../../../shared/constants/app';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import * as FourBiteUtils from '../../../shared/lib/four-byte';
@@ -24,11 +41,14 @@ import {
   getPlatform,
   getValidUrl,
   isWebUrl,
+  isWebOrigin,
   getMethodDataName,
   getBooleanFlag,
   extractRpcDomain,
   isKnownDomain,
   initializeRpcProviderDomains,
+  isPublicEndpointUrl,
+  isSpecialUseDomain,
 } from './util';
 
 // Mock the module
@@ -121,6 +141,31 @@ describe('app utils', () => {
       expect(getValidUrl('https://exa%20mple.com')).toStrictEqual(null);
       expect(getValidUrl('')).toStrictEqual(null);
     });
+
+    it('should test isWebOrigin', () => {
+      // Valid web origins
+      expect(isWebOrigin('http://example.com')).toStrictEqual(true);
+      expect(isWebOrigin('https://example.com')).toStrictEqual(true);
+      expect(isWebOrigin('http://localhost:8545')).toStrictEqual(true);
+      expect(isWebOrigin('https://metamask.io')).toStrictEqual(true);
+
+      // Non-web origins (browser internal pages)
+      expect(isWebOrigin('chrome://newtab')).toStrictEqual(false);
+      expect(isWebOrigin('chrome://settings')).toStrictEqual(false);
+      expect(isWebOrigin('about:blank')).toStrictEqual(false);
+      expect(isWebOrigin('about:debugging')).toStrictEqual(false);
+
+      // Extension pages
+      expect(isWebOrigin('chrome-extension://abc123')).toStrictEqual(false);
+      expect(isWebOrigin('moz-extension://abc123')).toStrictEqual(false);
+
+      // Edge cases
+      expect(isWebOrigin(null)).toStrictEqual(false);
+      expect(isWebOrigin(undefined)).toStrictEqual(false);
+      expect(isWebOrigin('')).toStrictEqual(false);
+      expect(isWebOrigin('file:///path/to/file')).toStrictEqual(false);
+      expect(isWebOrigin('ftp://example.com')).toStrictEqual(false);
+    });
   });
 
   describe('isPrefixedFormattedHexString', () => {
@@ -204,6 +249,15 @@ describe('app utils', () => {
       expect(getPlatform()).toStrictEqual(PLATFORM_EDGE);
     });
 
+    it('detects Edge Android', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36 EdgA/144.0.0.0',
+        );
+      expect(getPlatform()).toStrictEqual(PLATFORM_EDGE_ANDROID);
+    });
+
     it('should detect Opera', () => {
       setBrowserSpecificWindow('opera');
       expect(getPlatform()).toStrictEqual(PLATFORM_OPERA);
@@ -212,6 +266,230 @@ describe('app utils', () => {
     it('should detect Chrome', () => {
       setBrowserSpecificWindow('chrome');
       expect(getPlatform()).toStrictEqual(PLATFORM_CHROME);
+    });
+
+    // Parameterized tests for browsers detected via User-Agent string
+    // Note: Lemur and Mises are NOT included here because they don't expose
+    // their identity in UA strings - they're detected via userAgentData.brands
+    it.each([
+      [
+        'Vivaldi',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Vivaldi/7.7.3851.58',
+        PLATFORM_VIVALDI,
+      ],
+      [
+        'Samsung Internet',
+        'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Mobile Safari/537.36 SamsungBrowser/23.0',
+        PLATFORM_SAMSUNG,
+      ],
+      [
+        'Yandex',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 YaBrowser/23.7.0 Safari/537.36',
+        PLATFORM_YANDEX,
+      ],
+      [
+        'Whale',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Whale/3.21.192.18 Safari/537.36',
+        PLATFORM_WHALE,
+      ],
+      [
+        'Puffin',
+        'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36 Puffin/9.7.0.51573AP',
+        PLATFORM_PUFFIN,
+      ],
+      [
+        'Silk',
+        'Mozilla/5.0 (Linux; Android 9; KFMAWI) AppleWebKit/537.36 (KHTML, like Gecko) Silk/112.4.2 like Chrome/112.0.5615.136 Safari/537.36',
+        PLATFORM_SILK,
+      ],
+      [
+        'UC Browser',
+        'Mozilla/5.0 (Linux; U; Android 10; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.108 UCBrowser/13.4.0.1306 Mobile Safari/537.36',
+        PLATFORM_UCBROWSER,
+      ],
+      [
+        'Maxthon',
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36 Maxthon/5.2.7.5000',
+        PLATFORM_MAXTHON,
+      ],
+      [
+        'Chromium',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chromium/116.0.5845.96 Safari/537.36',
+        PLATFORM_CHROMIUM,
+      ],
+      [
+        'Cốc Cốc',
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) coc_coc_browser/83.0.138 Chrome/77.0.3865.138 Safari/537.36',
+        PLATFORM_COCCOC,
+      ],
+      [
+        'QQ Browser (desktop)',
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3715.128 Safari/537.36 Core/1.70.3722.400 QQBrowser/10.5.3739.400',
+        PLATFORM_QQBROWSER,
+      ],
+      [
+        'QQ Browser (mobile)',
+        'Mozilla/5.0 (Linux; U; Android 13; zh-cn) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/109.0.5414.86 MQQBrowser/16.2 Mobile Safari/537.36',
+        PLATFORM_QQBROWSER,
+      ],
+      [
+        'Kiwi',
+        'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36 Kiwi Chrome/116.0.0.0',
+        PLATFORM_KIWI,
+      ],
+      [
+        'Unknown (no Chrome)',
+        'Mozilla/5.0 (compatible; SomeUnknownBrowser/1.0)',
+        PLATFORM_OTHER,
+      ],
+    ])('detects %s browser from UA string', (_name, ua, expected) => {
+      jest.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(ua);
+      expect(getPlatform()).toStrictEqual(expected);
+    });
+
+    describe('hybrid detection (UA + brands fallback)', () => {
+      let originalUserAgentData;
+
+      beforeEach(() => {
+        originalUserAgentData = window.navigator.userAgentData;
+      });
+
+      afterEach(() => {
+        // Restore original userAgentData
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: originalUserAgentData,
+          writable: true,
+          configurable: true,
+        });
+      });
+
+      // Browsers that hide their identity in UA string but expose it via brands
+      it.each([
+        ['Brave', 'Brave', PLATFORM_BRAVE],
+        ['Lemur', 'Lemur', PLATFORM_LEMUR],
+        ['Mises', 'Mises', PLATFORM_MISES],
+      ])(
+        'detects %s from brands when UA looks like Chrome',
+        (_name, brandName, expectedPlatform) => {
+          // UA looks like regular Chrome (no browser-specific identifier)
+          jest
+            .spyOn(window.navigator, 'userAgent', 'get')
+            .mockReturnValue(
+              'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36',
+            );
+
+          // But brands includes the specific browser
+          Object.defineProperty(window.navigator, 'userAgentData', {
+            value: {
+              brands: [
+                { brand: 'Chromium', version: '136' },
+                { brand: brandName, version: '136' },
+                { brand: 'Not.A/Brand', version: '99' },
+              ],
+              mobile: true,
+              platform: 'Android',
+            },
+            writable: true,
+            configurable: true,
+          });
+
+          expect(getPlatform()).toStrictEqual(expectedPlatform);
+        },
+      );
+
+      it('prioritizes UA detection over brands when UA identifies a specific browser', () => {
+        // Edge is detected in UA
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(
+            'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36 EdgA/144.0.0.0',
+          );
+
+        // Brands also includes Edge (should not matter since UA detection succeeds)
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: {
+            brands: [
+              { brand: 'Chromium', version: '144' },
+              { brand: 'Microsoft Edge', version: '144' },
+              { brand: 'Not.A/Brand', version: '99' },
+            ],
+            mobile: true,
+            platform: 'Android',
+          },
+          writable: true,
+          configurable: true,
+        });
+
+        // Should use UA detection (Edge Android) not brands
+        expect(getPlatform()).toStrictEqual(PLATFORM_EDGE_ANDROID);
+      });
+
+      it('returns Chrome when brands contains Google Chrome', () => {
+        // Generic Chrome UA
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
+          );
+
+        // Brands contains "Google Chrome" which maps to PLATFORM_CHROME
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: {
+            brands: [
+              { brand: 'Chromium', version: '94' },
+              { brand: 'Google Chrome', version: '94' },
+              { brand: 'Not.A/Brand', version: '99' },
+            ],
+            mobile: false,
+            platform: 'macOS',
+          },
+          writable: true,
+          configurable: true,
+        });
+
+        expect(getPlatform()).toStrictEqual(PLATFORM_CHROME);
+      });
+
+      it('returns Other when UA is unknown and brands is unavailable', () => {
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue('Mozilla/5.0 (compatible; SomeUnknownBrowser/1.0)');
+
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: undefined,
+          writable: true,
+          configurable: true,
+        });
+
+        expect(getPlatform()).toStrictEqual(PLATFORM_OTHER);
+      });
+
+      it('returns discovered brand even when not yet mapped in our codebase', () => {
+        // UA looks like Chrome
+        jest
+          .spyOn(window.navigator, 'userAgent', 'get')
+          .mockReturnValue(
+            'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/136.0.0.0 Mobile Safari/537.36',
+          );
+
+        // Brands includes a browser not yet in our mapping
+        Object.defineProperty(window.navigator, 'userAgentData', {
+          value: {
+            brands: [
+              { brand: 'Chromium', version: '136' },
+              { brand: 'DiscoveredBrowser', version: '1' },
+              { brand: 'Not.A/Brand', version: '99' },
+            ],
+            mobile: true,
+            platform: 'Android',
+          },
+          writable: true,
+          configurable: true,
+        });
+
+        // Should return the brand name as-is for analytics discovery
+        expect(getPlatform()).toStrictEqual('DiscoveredBrowser');
+      });
     });
   });
 
@@ -580,6 +858,147 @@ describe('app utils', () => {
       expect(extractRpcDomain(null)).toBe('invalid');
       expect(extractRpcDomain('http://')).toBe('invalid');
       expect(extractRpcDomain('https://')).toBe('invalid');
+    });
+  });
+
+  describe('isPublicEndpointUrl', () => {
+    const MOCK_INFURA_PROJECT_ID = 'test-project-id';
+
+    it('should return true for Infura URLs', () => {
+      expect(
+        isPublicEndpointUrl(
+          `https://mainnet.infura.io/v3/${MOCK_INFURA_PROJECT_ID}`,
+          MOCK_INFURA_PROJECT_ID,
+        ),
+      ).toBe(true);
+    });
+
+    it('should return false for unknown URLs', () => {
+      expect(
+        isPublicEndpointUrl(
+          'https://unknown.example.com',
+          MOCK_INFURA_PROJECT_ID,
+        ),
+      ).toBe(false);
+    });
+
+    describe('localhost and IP addresses', () => {
+      it('should return false for localhost', () => {
+        expect(
+          isPublicEndpointUrl('http://localhost:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+      });
+
+      it('should return false for any IPv4 address', () => {
+        // Loopback
+        expect(
+          isPublicEndpointUrl('http://127.0.0.1:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+        // Private ranges
+        expect(
+          isPublicEndpointUrl('http://10.0.0.1:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+        expect(
+          isPublicEndpointUrl(
+            'http://192.168.1.1:8545',
+            MOCK_INFURA_PROJECT_ID,
+          ),
+        ).toBe(false);
+        // Public IPs should also return false (public providers use domain names)
+        expect(
+          isPublicEndpointUrl('http://8.8.8.8:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+      });
+
+      it('should return false for any IPv6 address', () => {
+        expect(
+          isPublicEndpointUrl('http://[::1]:8545', MOCK_INFURA_PROJECT_ID),
+        ).toBe(false);
+        expect(
+          isPublicEndpointUrl(
+            'http://[2001:db8::1]:8545',
+            MOCK_INFURA_PROJECT_ID,
+          ),
+        ).toBe(false);
+      });
+    });
+  });
+
+  describe('isSpecialUseDomain', () => {
+    describe('RFC 6761 special-use TLDs', () => {
+      it('should return true for .test TLD', () => {
+        expect(isSpecialUseDomain('myapp.test')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.test')).toBe(true);
+      });
+
+      it('should return true for .localhost TLD', () => {
+        expect(isSpecialUseDomain('myapp.localhost')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.localhost')).toBe(true);
+      });
+
+      it('should return true for .invalid TLD', () => {
+        expect(isSpecialUseDomain('myapp.invalid')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.invalid')).toBe(true);
+      });
+
+      it('should return true for .example TLD', () => {
+        expect(isSpecialUseDomain('myapp.example')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.example')).toBe(true);
+      });
+
+      it('should return true for .local TLD', () => {
+        expect(isSpecialUseDomain('myapp.local')).toBe(true);
+        expect(isSpecialUseDomain('rpc.myapp.local')).toBe(true);
+      });
+    });
+
+    describe('RFC 6761 reserved example domains', () => {
+      it('should return true for example.com', () => {
+        expect(isSpecialUseDomain('example.com')).toBe(true);
+        expect(isSpecialUseDomain('rpc.example.com')).toBe(true);
+        expect(isSpecialUseDomain('api.rpc.example.com')).toBe(true);
+      });
+
+      it('should return true for example.net', () => {
+        expect(isSpecialUseDomain('example.net')).toBe(true);
+        expect(isSpecialUseDomain('rpc.example.net')).toBe(true);
+        expect(isSpecialUseDomain('api.rpc.example.net')).toBe(true);
+      });
+
+      it('should return true for example.org', () => {
+        expect(isSpecialUseDomain('example.org')).toBe(true);
+        expect(isSpecialUseDomain('rpc.example.org')).toBe(true);
+        expect(isSpecialUseDomain('api.rpc.example.org')).toBe(true);
+      });
+    });
+
+    describe('case insensitivity', () => {
+      it('should be case insensitive', () => {
+        expect(isSpecialUseDomain('EXAMPLE.COM')).toBe(true);
+        expect(isSpecialUseDomain('MyApp.TEST')).toBe(true);
+        expect(isSpecialUseDomain('RPC.Example.Org')).toBe(true);
+      });
+    });
+
+    describe('valid public domains', () => {
+      it('should return false for regular domains', () => {
+        expect(isSpecialUseDomain('infura.io')).toBe(false);
+        expect(isSpecialUseDomain('mainnet.infura.io')).toBe(false);
+        expect(isSpecialUseDomain('alchemy.com')).toBe(false);
+        expect(isSpecialUseDomain('rpc.ankr.com')).toBe(false);
+      });
+
+      it('should return false for domains containing but not ending with special TLDs', () => {
+        expect(isSpecialUseDomain('test-rpc.com')).toBe(false);
+        expect(isSpecialUseDomain('example-provider.io')).toBe(false);
+        expect(isSpecialUseDomain('localhost-rpc.net')).toBe(false);
+      });
+    });
+
+    describe('edge cases', () => {
+      it('should return false for empty string', () => {
+        expect(isSpecialUseDomain('')).toBe(false);
+      });
     });
   });
 });

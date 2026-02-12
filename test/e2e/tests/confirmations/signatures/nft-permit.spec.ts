@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApprovedWithDecoding,
@@ -9,7 +9,7 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {

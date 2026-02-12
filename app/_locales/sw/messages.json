@@ -367,9 +367,6 @@
     "message": "Unapaswa kuchagua faili la kuhamisha.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Haiwezi kutuma viwango hasi vya ETH."
-  },
   "networkName": {
     "message": "Jina la mtandao"
   },
@@ -397,9 +394,6 @@
   },
   "next": {
     "message": "Inayofuata"
-  },
-  "noConversionRateAvailable": {
-    "message": "Hakuna Kiwango cha Ubadilishaji"
   },
   "noWebcamFound": {
     "message": "Kamera yako ya kumpyuta haikupatikana. Tafadhali jaribu tena."

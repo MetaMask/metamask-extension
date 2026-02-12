@@ -17,6 +17,7 @@ import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snap
 import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
 ///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
+import { createSentryError } from '../../modules/error';
 import { captureException } from '../sentry';
 import { HardwareDeviceNames } from '../../constants/hardware-wallets';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
@@ -32,32 +33,6 @@ type SUPPORTED_WALLET_SNAP_ID =
   | typeof SOLANA_WALLET_SNAP_ID
   | typeof BITCOIN_WALLET_SNAP_ID
   | typeof TRON_WALLET_SNAP_ID;
-
-/**
- * Get the next available account name based on the suggestion and the list of
- * accounts.
- *
- * @param accounts - The list of accounts to check for name availability
- * @param nameSuggestion - The suggested name for the account
- * @returns The next available account name based on the suggestion
- */
-export function getUniqueAccountName(
-  accounts: InternalAccount[],
-  nameSuggestion: string,
-): string {
-  let suffix = 1;
-  let candidateName = nameSuggestion;
-
-  const isNameTaken = (name: string) =>
-    accounts.some((account) => account.metadata.name === name);
-
-  while (isNameTaken(candidateName)) {
-    suffix += 1;
-    candidateName = `${nameSuggestion} ${suffix}`;
-  }
-
-  return candidateName;
-}
 
 export type SnapAccountNameOptions = {
   chainId?: CaipChainId;
@@ -256,12 +231,10 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
           });
           accounts.push(account);
         } catch (error) {
-          console.warn(
-            `Unable to create discovered account: ${derivationPath}:`,
-            error,
-          );
           // Still logging this one to sentry as this is a fairly new process for account discovery.
-          captureException(error);
+          captureException(
+            createSentryError('Unable to create discovered account', error),
+          );
         }
       }
     }

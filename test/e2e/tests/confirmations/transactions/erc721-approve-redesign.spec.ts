@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -14,45 +15,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
   describe('Submit an Approve transaction', function () {
-    it('Sends a type 0 transaction (Legacy)', async function () {
-      await withFixtures(
-        {
-          dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
-          localNodeOptions: {
-            hardfork: 'muirGlacier',
-          },
-          smartContract,
-          testSpecificMock: mocks,
-          title: this.test?.fullTitle(),
-        },
-        async ({
-          driver,
-          contractRegistry,
-          localNodes,
-        }: TestSuiteArguments) => {
-          const contractAddress =
-            await contractRegistry?.getContractAddress(smartContract);
-
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
-          const testDapp = new TestDapp(driver);
-          await testDapp.openTestDappPage({ contractAddress });
-          await testDapp.checkPageIsLoaded();
-
-          await createMintTransaction(driver);
-          await confirmMintTransaction(driver);
-
-          await createApproveTransaction(driver);
-
-          await assertApproveDetails(driver);
-          await confirmApproveTransaction(driver);
-        },
-      );
-    });
-
-    it('Sends a type 2 transaction (EIP1559)', async function () {
+    it('submits an ERC721 approve transaction', async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },

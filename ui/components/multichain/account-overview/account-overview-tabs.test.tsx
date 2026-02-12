@@ -8,9 +8,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { AccountOverviewTabs } from './account-overview-tabs';
+
+jest.mock('../../../store/actions', () => ({
+  setDefaultHomeActiveTabName: jest.fn(),
+}));
 
 jest.mock('../../app/assets/asset-list', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -47,6 +50,12 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
 
 describe('AccountOverviewTabs - event metrics', () => {
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -69,10 +78,8 @@ describe('AccountOverviewTabs - event metrics', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <AccountOverviewTabs
-          onTabClick={jest.fn()}
-          defaultHomeActiveTabName={AccountOverviewTabKey.Activity}
           showTokens={true}
           showNfts={false}
           showActivity={true}
@@ -81,6 +88,7 @@ describe('AccountOverviewTabs - event metrics', () => {
         />
       </MetaMetricsContext.Provider>,
       store,
+      '/?tab=activity',
     );
 
     // Click a tab to trigger event

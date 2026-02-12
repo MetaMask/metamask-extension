@@ -5,6 +5,7 @@ import {
   PRODUCT_TYPES,
   StartSubscriptionRequest,
   Subscription,
+  SubscriptionServiceError,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
 import {
@@ -91,59 +92,83 @@ export class SubscriptionService {
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'card' }>,
     currentTabId?: number,
   ) {
-    const { paymentType } = params;
-    if (paymentType !== PAYMENT_TYPES.byCard) {
-      throw new Error('Only card payment type is supported');
-    }
-
-    const redirectUrl = this.#webAuthenticator.getRedirectURL();
-
-    const { redirectUrl: checkoutSessionUrl } = (await this.#messenger.call(
-      'SubscriptionController:updatePaymentMethod',
-      {
-        ...params,
-        successUrl: redirectUrl,
-      },
-    )) as { redirectUrl: string };
-
-    // skipping redirect and open new tab in test environment
-    if (!process.env.IN_TEST) {
-      await this.#openAndWaitForTabToClose({
-        url: checkoutSessionUrl,
-        successUrl: redirectUrl,
-      });
-
-      if (!currentTabId) {
-        // open extension browser shield settings if open from pop up (no current tab)
-        this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+    try {
+      const { paymentType } = params;
+      if (paymentType !== PAYMENT_TYPES.byCard) {
+        throw new Error('Only card payment type is supported');
       }
+
+      const redirectUrl = this.#webAuthenticator.getRedirectURL();
+      const cancelUrl = this.#getCancelUrl(redirectUrl);
+
+      const { redirectUrl: checkoutSessionUrl } = (await this.#messenger.call(
+        'SubscriptionController:updatePaymentMethod',
+        {
+          ...params,
+          successUrl: redirectUrl,
+          cancelUrl,
+        },
+      )) as { redirectUrl: string };
+
+      // skipping redirect and open new tab in test environment
+      if (!process.env.IN_TEST) {
+        try {
+          await this.#openAndWaitForTabToClose({
+            url: checkoutSessionUrl,
+            successUrl: redirectUrl,
+            cancelUrl,
+          });
+        } catch (error) {
+          const isTabClosed =
+            error instanceof Error &&
+            error.message.includes(SHIELD_ERROR.tabActionFailed);
+          // continue to refetch subscriptions if the tab is closed
+          // since stripe update payment method page doesn't automatically redirect to the success url
+          if (!isTabClosed) {
+            throw error;
+          }
+        }
+
+        if (!currentTabId) {
+          // open extension browser shield settings if open from pop up (no current tab)
+          this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+        }
+      }
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      return subscriptions;
+    } catch (error) {
+      log.error('Failed to update subscription card payment method', error);
+      throw error;
     }
-
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-
-    return subscriptions;
   }
 
   async updateSubscriptionCryptoPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
   ) {
-    const { paymentType } = params;
-    if (paymentType !== PAYMENT_TYPES.byCrypto) {
-      throw new Error('Only crypto payment type is supported');
+    try {
+      const { paymentType } = params;
+      if (paymentType !== PAYMENT_TYPES.byCrypto) {
+        throw new Error('Only crypto payment type is supported');
+      }
+
+      await this.#messenger.call(
+        'SubscriptionController:updatePaymentMethod',
+        params,
+      );
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      return subscriptions;
+    } catch (error) {
+      log.error('Failed to update subscription crypto payment method', error);
+      throw error;
     }
-
-    await this.#messenger.call(
-      'SubscriptionController:updatePaymentMethod',
-      params,
-    );
-
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-
-    return subscriptions;
   }
 
   async startSubscriptionWithCard(
@@ -156,6 +181,7 @@ export class SubscriptionService {
       await this.#getCurrentShieldSubscription();
     try {
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
+      const cancelUrl = this.#getCancelUrl(redirectUrl);
 
       // check if the account is opted in to rewards
       const rewardAccountId = await this.#getRewardCaipAccountId();
@@ -165,6 +191,7 @@ export class SubscriptionService {
         {
           ...params,
           successUrl: redirectUrl,
+          cancelUrl,
           rewardAccountId,
         },
       );
@@ -174,6 +201,7 @@ export class SubscriptionService {
         await this.#openAndWaitForTabToClose({
           url: checkoutSessionUrl,
           successUrl: redirectUrl,
+          cancelUrl,
         });
 
         if (!currentTabId) {
@@ -212,10 +240,18 @@ export class SubscriptionService {
         },
       );
 
+      // Clear cached payment method after failed/cancelled payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
+      );
+
       // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
       if (errorMessage.toLocaleLowerCase().includes('already exists')) {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
+
+      log.error('Failed to start subscription with card', error);
       throw error;
     }
   }
@@ -302,33 +338,40 @@ export class SubscriptionService {
           rewardPoints,
         );
       }
-    } catch (error) {
-      log.error('Failed to link reward to existing subscription', error);
+    } catch (err) {
+      log.error('Failed to link reward to existing subscription', err);
     }
   }
 
-  async #openAndWaitForTabToClose(params: { url: string; successUrl: string }) {
+  async #openAndWaitForTabToClose(params: {
+    url: string;
+    successUrl: string;
+    cancelUrl: string;
+  }) {
     const openedTab = await this.#platform.openTab({ url: params.url });
 
     await new Promise<void>((resolve, reject) => {
       let succeeded = false;
+      let cancelled = false;
       // Set up a listener to watch for navigation on that specific tab
       const onTabUpdatedListener = (
         tabId: number,
         changeInfo: { url: string },
       ) => {
         // We only care about updates to our specific checkout tab
-        if (
-          tabId === openedTab.id &&
-          changeInfo.url?.startsWith(params.successUrl)
-        ) {
-          // Payment was successful!
-          succeeded = true;
-
-          // Clean up: close the tab
-          this.#platform.closeTab(tabId);
+        if (tabId === openedTab.id) {
+          if (changeInfo.url?.startsWith(params.cancelUrl)) {
+            // Payment was cancelled!
+            cancelled = true;
+            // Clean up: close the tab
+            this.#platform.closeTab(tabId);
+          } else if (changeInfo.url?.startsWith(params.successUrl)) {
+            // Payment was successful!
+            succeeded = true;
+            // Clean up: close the tab
+            this.#platform.closeTab(tabId);
+          }
         }
-        // TODO: handle cancel url ?
       };
       this.#platform.addTabUpdatedListener(onTabUpdatedListener);
 
@@ -342,6 +385,8 @@ export class SubscriptionService {
           cleanupListeners();
           if (succeeded) {
             resolve();
+          } else if (cancelled) {
+            reject(new Error(SHIELD_ERROR.stripePaymentCancelled));
           } else {
             reject(new Error(SHIELD_ERROR.tabActionFailed));
           }
@@ -441,6 +486,9 @@ export class SubscriptionService {
       log.error('Error on Shield subscription approval transaction', error);
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
+      const cause =
+        error instanceof SubscriptionServiceError ? error.cause : undefined;
+
       if (currentShieldSubscription && isCurrentShieldSubscriptionActive) {
         // If there is an active subscription, we can assume this is a Payment Method Change request
         this.#trackPaymentMethodChangeRequestEvent(
@@ -449,6 +497,7 @@ export class SubscriptionService {
           txMeta,
           {
             error: errorMessage,
+            cause: cause?.message ?? '',
           },
         );
       } else {
@@ -459,9 +508,23 @@ export class SubscriptionService {
           txMeta,
           {
             error: errorMessage,
+            cause: cause?.message ?? '',
           },
         );
       }
+
+      // Clear cached payment method after failed crypto payment - metrics already captured
+      this.#messenger.call(
+        'SubscriptionController:clearLastSelectedPaymentMethod',
+        PRODUCT_TYPES.SHIELD,
+      );
+
+      // Surface subscription error to UI
+      const subscriptionErrorMessage = cause?.message ?? errorMessage;
+      this.#messenger.call('AppStateController:setShieldSubscriptionError', {
+        message: subscriptionErrorMessage,
+      });
+
       throw error;
     }
   }
@@ -475,6 +538,7 @@ export class SubscriptionService {
         ...this.#messenger.call('PreferencesController:getState'),
         ...this.#messenger.call('SmartTransactionsController:getState'),
         ...this.#messenger.call('NetworkController:getState'),
+        ...this.#messenger.call('RemoteFeatureFlagController:getState'),
       },
     };
     // @ts-expect-error Smart transaction selector types does not match controller state
@@ -484,6 +548,8 @@ export class SubscriptionService {
     return isSendBundleSupportedChain && isSmartTransaction;
   }
 
+  // Deprecated: remove in follow-up clean up task
+  // Clean-up task https://consensyssoftware.atlassian.net/browse/STX-371
   async #getSwapsFeatureFlagsFromNetwork(): Promise<
     SwapsControllerState | undefined
   > {
@@ -638,7 +704,9 @@ export class SubscriptionService {
 
       const { pendingShieldCohort, shieldSubscriptionMetricsProps } =
         this.#messenger.call('AppStateController:getState');
-      if (isPostTxTransaction && !pendingShieldCohort) {
+      const hasSetPostTxPendingCohort =
+        pendingShieldCohort === COHORT_NAMES.POST_TX;
+      if (isPostTxTransaction && !hasSetPostTxPendingCohort) {
         this.#messenger.call(
           'AppStateController:setPendingShieldCohort',
           COHORT_NAMES.POST_TX,
@@ -806,5 +874,15 @@ export class SubscriptionService {
       'SubscriptionController:getSubscriptions',
     );
     return getShieldSubscription(subscriptions);
+  }
+
+  /**
+   * Get the cancel URL for stripe checkout session (when user press back/cancel button) not to confuse with cancel subscription request.
+   *
+   * @param redirectUrl - The redirect URL.
+   * @returns The cancel URL.
+   */
+  #getCancelUrl(redirectUrl: string): string {
+    return `${redirectUrl}?cancel=true`;
   }
 }

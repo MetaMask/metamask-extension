@@ -1,13 +1,10 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import {
-  WINDOW_TITLES,
-  withFixtures,
-  ACCOUNT_1,
-  ACCOUNT_2,
-} from '../../../helpers';
+import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';
@@ -471,7 +468,7 @@ describe('Multichain API', function () {
               await driver.clickElement(`input[name="${scope}"]`),
           );
           await testDapp.initCreateSessionScopes(NEW_SCOPES, [
-            `eip155:0:${TREZOR_ACCOUNT}`,
+            toEvmCaipAccountId(TREZOR_ACCOUNT),
           ]);
 
           const connectAccountConfirmation = new ConnectAccountConfirmation(

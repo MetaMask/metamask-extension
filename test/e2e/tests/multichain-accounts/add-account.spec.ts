@@ -1,5 +1,5 @@
 import { E2E_SRP } from '../../fixtures/default-fixture';
-import { WALLET_PASSWORD } from '../../helpers';
+import { WALLET_PASSWORD } from '../../constants';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';

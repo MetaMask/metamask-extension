@@ -44,6 +44,8 @@ import {
 import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
+  getParticipateInMetaMetrics,
+  getPreferences,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -77,10 +79,13 @@ export default function CreationSuccessful() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
+  const preferences = useSelector(getPreferences);
+  const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -208,8 +213,36 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
+    // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
+    // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
+    // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
+    if (!isOnboardingCompleted) {
+      // before onboarding completion, we track the MetricsOptIn/Out event
+
+      trackEvent(
+        {
+          category: MetaMetricsEventCategory.Onboarding,
+          event: participateInMetaMetrics
+            ? MetaMetricsEventName.MetricsOptIn
+            : MetaMetricsEventName.MetricsOptOut,
+          properties: {},
+        },
+        {
+          isOptIn: !participateInMetaMetrics, // Force the event to be tracked even if participateInMetaMetrics is false
+        },
+      );
+    }
+
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
+      // If useSidePanelAsDefault is already true, side panel is already set up
+      // Just complete onboarding and redirect to home page
+      if (isSidePanelSetAsDefault) {
+        await dispatch(setCompletedOnboarding());
+        navigate(DEFAULT_ROUTE);
+        return;
+      }
+
       try {
         // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
         const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -248,6 +281,8 @@ export default function CreationSuccessful() {
     firstTimeFlowType,
     isFromSettingsSecurity,
     isSidePanelEnabled,
+    isSidePanelSetAsDefault,
+    participateInMetaMetrics,
   ]);
 
   const renderDoneButton = () => {

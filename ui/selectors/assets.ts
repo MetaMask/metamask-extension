@@ -7,7 +7,7 @@ import {
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
-import { CaipAssetId } from '@metamask/keyring-api';
+import { CaipAssetId, isEvmAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import {
   CaipAssetType,
@@ -62,7 +62,10 @@ import {
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
 } from './selectors';
-import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getSelectedMultichainNetworkConfiguration,
+} from './multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
 export type AssetsState = {
@@ -290,6 +293,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
             tokensWithBalance.push({
               ...token,
               address: token.address as CaipAssetType,
+              assetId: token.assetId as CaipAssetType | undefined,
               balance,
               tokenFiatAmount,
               chainId: chainId as CaipChainId,
@@ -1331,6 +1335,26 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
     selectAssetsBySelectedAccountGroup(assetListState),
+);
+
+export const selectAccountSupportsEnabledNetworks = createSelector(
+  [getSelectedInternalAccount, getAllEnabledNetworksForAllNamespaces],
+  (selectedAccount, enabledNetworks) => {
+    if (!selectedAccount || enabledNetworks.length === 0) {
+      return true;
+    }
+
+    if (isEvmAccountType(selectedAccount.type)) {
+      return enabledNetworks.some((chainId) =>
+        isEvmChainId(chainId as Hex | CaipChainId),
+      );
+    }
+
+    const accountScopes = selectedAccount.scopes || [];
+    return enabledNetworks.some((chainId) =>
+      accountScopes.includes(chainId as CaipChainId),
+    );
+  },
 );
 
 // TODO Unified Assets Controller State Access (2)

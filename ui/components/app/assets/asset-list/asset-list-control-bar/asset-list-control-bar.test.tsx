@@ -11,6 +11,26 @@ import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import AssetListControlBar from './asset-list-control-bar';
 
+type TooltipProps = {
+  children: React.ReactNode;
+  disabled?: boolean;
+  title?: string;
+};
+
+jest.mock('../../../../ui/tooltip', () => {
+  const MockTooltip = ({ children, disabled, title }: TooltipProps) => (
+    <div data-testid="tooltip" data-disabled={disabled} data-title={title}>
+      {children}
+    </div>
+  );
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: MockTooltip,
+  };
+});
+
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
@@ -71,10 +91,19 @@ describe('NFTs options', () => {
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
 
+    const sortButton = await findByTestId('sort-by-popover-toggle');
+    let tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
+    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'false');
+
+    fireEvent.click(sortButton);
+
+    tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
+    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'true');
+
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -114,7 +143,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -156,7 +185,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const autodetectButton = await findByTestId(
       'enable-autodetect-button__button',

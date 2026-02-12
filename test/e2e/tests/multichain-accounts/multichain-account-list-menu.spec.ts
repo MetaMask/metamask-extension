@@ -10,8 +10,8 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { DAPP_PATH } from '../../constants';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { mockPriceApi } from '../tokens/utils/mocks';
 import { AccountType, withMultichainAccountsDesignEnabled } from './common';
 

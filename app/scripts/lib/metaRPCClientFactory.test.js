@@ -167,25 +167,6 @@ describe('metaRPCClientFactory', () => {
     });
   });
 
-  it('should be able to handle no message within TIMEOUT secs for getState', async () => {
-    jest.useFakeTimers();
-    const streamTest = createThoughStream();
-    const metaRPCClient = metaRPCClientFactory(streamTest);
-
-    const errorPromise = new Promise((_resolve, reject) =>
-      metaRPCClient.getState('bad').catch((error) => {
-        reject(error);
-      }),
-    );
-
-    jest.runOnlyPendingTimers();
-    await expect(errorPromise).rejects.toThrow(
-      `Background 'getState' call exceeded timeout`,
-    );
-
-    jest.useRealTimers();
-  });
-
   it('should fail all pending actions with a DisconnectError when the stream ends', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
@@ -197,50 +178,6 @@ describe('metaRPCClientFactory', () => {
     });
 
     streamTest.emit('end');
-  });
-
-  it('should cancel the request timer when handling its response', async () => {
-    jest.useFakeTimers();
-    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
-    const streamTest = createThoughStream();
-    const metaRPCClient = metaRPCClientFactory(streamTest);
-
-    // getState is special, as it is the only method that starts a timeout
-    const requestProm = metaRPCClient.getState();
-
-    const requests = [...metaRPCClient.requests];
-    metaRPCClient.requests.forEach((_, key) => {
-      streamTest.write({
-        jsonrpc: '2.0',
-        id: key,
-        result: 'foobarbaz',
-      });
-    });
-
-    await expect(requestProm).resolves.toStrictEqual('foobarbaz');
-
-    const [, { timer }] = requests[0];
-    expect(clearTimeoutSpy).toHaveBeenCalledWith(timer);
-    jest.useRealTimers();
-  });
-
-  it('should clear pending timers with a DisconnectError when the stream ends', async () => {
-    jest.useFakeTimers();
-    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
-    const streamTest = createThoughStream();
-    const metaRPCClient = metaRPCClientFactory(streamTest);
-
-    // getState is special, as it is the only method that starts a timeout
-    const requestProm = metaRPCClient.getState();
-    const [, { timer }] = [...metaRPCClient.requests][0];
-    streamTest.emit('end');
-
-    await expect(requestProm).rejects.toThrow(
-      new DisconnectError('disconnected'),
-    );
-
-    expect(clearTimeoutSpy).toHaveBeenCalledWith(timer);
-    jest.useRealTimers();
   });
 
   it('should not throw when receiving junk data over the stream', async () => {

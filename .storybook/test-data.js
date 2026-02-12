@@ -1,4 +1,3 @@
-import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
@@ -364,6 +363,26 @@ const state = {
             },
           },
         },
+        'snap:npm:@metamask/test-snap-bip44': {
+          id: 'snap:npm:@metamask/test-snap-bip44',
+          type: 'snap',
+          groups: {
+            'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0': {
+              id: 'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+              type: 'single-account',
+              accounts: ['64f9d02e-47e6-4dfd-8232-f3518606cad3'],
+              metadata: {
+                name: 'Snap Account 1',
+              },
+            },
+          },
+          metadata: {
+            name: 'BIP-44',
+            snap: {
+              id: 'npm:@metamask/test-snap-bip44',
+            },
+          }
+        },
       },
     },
     internalAccounts: {
@@ -431,6 +450,25 @@ const state = {
             name: 'Test Account 1',
             keyring: {
               type: 'Test Keyring',
+            },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
+        },
+        '64f9d02e-47e6-4dfd-8232-f3518606cad3': {
+          address: '0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+          id: '64f9d02e-47e6-4dfd-8232-f3518606cad3',
+          metadata: {
+            name: 'Snap Account 1',
+            keyring: {
+              type: 'Snap Keyring',
+            },
+            snap: {
+              enabled: true,
+              id: 'npm:@metamask/test-snap-bip44',
+              name: 'BIP-44',
             },
           },
           options: {},
@@ -694,27 +732,6 @@ const state = {
     balances: {},
     conversionRates: {},
     networkConfigurationsByChainId: {},
-    send: {
-      gasLimit: '0xcb28',
-      gasPrice: null,
-      gasTotal: null,
-      tokenBalance: '8.7a73149c048545a3fe58',
-      from: '',
-      to: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      amount: '3782dace9d900000',
-      memo: '',
-      errors: {},
-      maxModeOn: false,
-      editingTransactionId: null,
-      toNickname: 'Account 2',
-      domainResolution: null,
-      domainResolutionError: '',
-      token: {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-        symbol: 'DAI',
-        decimals: 18,
-      },
-    },
     useBlockie: false,
     featureFlags: {},
     slides: [],
@@ -1258,6 +1275,14 @@ const state = {
           name: '',
         },
       },
+      {
+        type: KeyringType.snap,
+        accounts: ['0xde939393DDe455081fFb3Dfd027E189919F04BD0'],
+        metadata: {
+          id: '',
+          name: '',
+        },
+      },
     ],
     ...mockNetworkState(
       {
@@ -1646,7 +1671,6 @@ const state = {
     coverageResults: {},
   },
   appState: {
-    isAccountMenuOpen: false,
     welcomeScreenSeen: false,
     pendingTokens: {},
     confirmationExchangeRates: {},
@@ -1699,26 +1723,6 @@ const state = {
   },
   history: {
     mostRecentOverviewPage: '/',
-  },
-  send: {
-    toDropdownOpen: false,
-    gasButtonGroupShown: true,
-    errors: {},
-    asset: {
-      type: 'NATIVE',
-      balance: '0x0',
-      details: null,
-    },
-    gas: { error: 'gas' },
-    amount: {
-      error: 'amount',
-    },
-    currentTransactionUUID: 'test-uuid',
-    draftTransactions: {
-      'test-uuid': {
-        ...draftTransactionInitialState,
-      },
-    },
   },
   confirmTransaction: {
     txData: {

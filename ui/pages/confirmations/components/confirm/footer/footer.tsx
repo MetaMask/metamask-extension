@@ -245,18 +245,22 @@ const Footer = () => {
       return;
     }
 
-    if (isAddEthereumChain) {
-      await onAddEthereumChain();
-      navigate(DEFAULT_ROUTE);
-    } else if (isTransactionConfirmation) {
-      await onTransactionConfirm();
-      navigateNext(currentConfirmation.id);
-    } else {
-      await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-      navigateNext(currentConfirmation.id);
+    try {
+      if (isAddEthereumChain) {
+        await onAddEthereumChain();
+        navigate(DEFAULT_ROUTE);
+      } else if (isTransactionConfirmation) {
+        await onTransactionConfirm();
+        navigateNext(currentConfirmation.id);
+      } else {
+        await dispatch(
+          resolvePendingApproval(currentConfirmation.id, undefined),
+        );
+        navigateNext(currentConfirmation.id);
+      }
+    } finally {
+      resetTransactionState();
     }
-
-    resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
@@ -294,6 +298,10 @@ const Footer = () => {
   ]);
 
   const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
+
+  if (!currentConfirmation) {
+    return null;
+  }
 
   return (
     <>

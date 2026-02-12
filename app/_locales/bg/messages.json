@@ -385,9 +385,6 @@
     "message": "Трябва да изберете файл за импортиране.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Не може да изпраща отрицателни суми от ETH."
-  },
   "networkName": {
     "message": "Име на мрежата"
   },
@@ -415,9 +412,6 @@
   },
   "next": {
     "message": "Напред"
-  },
-  "noConversionRateAvailable": {
-    "message": "Няма наличен процент на преобръщане"
   },
   "noWebcamFound": {
     "message": "Уеб камерата на компютърa Ви не беше намерена. Моля, опитайте отново."

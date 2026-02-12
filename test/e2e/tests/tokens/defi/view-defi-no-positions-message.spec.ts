@@ -8,13 +8,12 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { Driver } from '../../../webdriver/driver';
 import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 
 describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
@@ -32,7 +31,7 @@ describe('Check DeFi empty state when no defi positions', function () {
         await defiTab.checkNoPositionsMessageIsDisplayed();
 
         // switch network
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
 
         await defiTab.checkNoPositionsMessageIsDisplayed();
       },

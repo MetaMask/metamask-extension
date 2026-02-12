@@ -3,6 +3,7 @@ const consoleReporterRules = require('./test/jest/console-reporter-rules-unit');
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.(js|ts|tsx)',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
@@ -11,10 +12,22 @@ module.exports = {
   coverageDirectory: './coverage/unit',
   coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
+  moduleNameMapper: {
+    // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
+    '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
+  },
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
   reporters: [
+    // Console baseline reporter MUST be first to capture raw console messages
+    // before jest-clean-console-reporter processes them
+    [
+      '<rootDir>/test/jest/console-baseline-reporter.js',
+      {
+        testType: 'unit',
+      },
+    ],
     [
       'jest-clean-console-reporter',
       {
@@ -41,12 +54,14 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.test.(js|ts|tsx)',
     '<rootDir>/shared/**/*.test.(js|ts|tsx)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,
@@ -59,4 +74,7 @@ module.exports = {
     customExportConditions: ['node', 'node-addons'],
   },
   workerIdleMemoryLimit: '500MB',
+  // Ensure console output is buffered (not streamed) so reporters can access testResult.console
+  // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
+  verbose: false,
 };

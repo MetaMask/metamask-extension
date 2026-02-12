@@ -17,15 +17,12 @@ import {
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
+import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import MetaMaskController from './metamask-controller';
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
-
-const ganacheServer = new Ganache();
-
-const browserPolyfillMock = {
+jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
@@ -38,11 +35,20 @@ const browserPolyfillMock = {
   },
   storage: {
     local: {
-      get: jest.fn().mockReturnValue({}),
-      set: jest.fn(),
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
+      remove: jest.fn().mockResolvedValue(undefined),
     },
   },
-};
+}));
+
+// Use the actual mocked module so all code importing webextension-polyfill
+// shares the same mock instance
+const browserPolyfillMock = jest.mocked(browser);
+
+const { Ganache } = require('../../test/e2e/seeder/ganache');
+
+const ganacheServer = new Ganache();
 
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
@@ -516,6 +522,8 @@ describe('MetaMaskController', function () {
     });
 
     it('should return false if firstTimeFlowType is seedless and password is not outdated', async function () {
+      // We now need the Snap keyring after onboarding the wallet.
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
       metamaskController.onboardingController.setFirstTimeFlowType(
         FirstTimeFlowType.socialCreate,
       );
@@ -534,6 +542,8 @@ describe('MetaMaskController', function () {
     });
 
     it('should return true if firstTimeFlowType is seedless and password is outdated', async function () {
+      // We now need the Snap keyring after onboarding the wallet.
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
       metamaskController.onboardingController.setFirstTimeFlowType(
         FirstTimeFlowType.socialCreate,
       );

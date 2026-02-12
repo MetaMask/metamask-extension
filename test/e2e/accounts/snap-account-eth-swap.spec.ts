@@ -1,4 +1,5 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import {
@@ -11,7 +12,6 @@ import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
-import { DAPP_PATH } from '../constants';
 import { mockSnapSimpleKeyringAndSite } from '../tests/account/snap-keyring-site-mocks';
 
 const DAI = 'DAI';

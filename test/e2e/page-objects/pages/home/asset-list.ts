@@ -155,8 +155,8 @@ class AssetListPage {
     '[data-testid="token-increase-decrease-value"]';
 
   private readonly noPriceAvailableMessage = {
-    css: 'p',
-    text: 'No conversion rate available',
+    css: '[data-testid="multichain-token-list-item-secondary-value"]',
+    text: '—',
   };
 
   private readonly modalCloseButton =
@@ -207,6 +207,11 @@ class AssetListPage {
   async clickSendButton(): Promise<void> {
     console.log(`Clicking on the send button`);
     await this.driver.clickElement(this.sendButton);
+  }
+
+  async clickMultichainTokenListButton(): Promise<void> {
+    console.log('Clicking on multichain token list button');
+    await this.driver.clickElement(this.multichainTokenListButton);
   }
 
   /**
@@ -371,9 +376,10 @@ class AssetListPage {
     await this.driver.waitForSelector(this.importTokenModalTitle);
 
     for (const name of tokenNames) {
-      await this.driver.fill(this.tokenSearchInput, name);
+      await this.driver.pasteIntoField(this.tokenSearchInput, name);
       await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
+      await this.driver.waitForSelector(this.tokenSearchSelected);
     }
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.clickElementAndWaitToDisappear(
@@ -799,12 +805,15 @@ class AssetListPage {
   }
 
   /**
-   * Checks if the token list prices are displayed and no "No conversion rate available" message is displayed
+   * Checks if the token list prices are displayed and no "—" (em dash) placeholder is shown instead of a price
    *
-   * @throws Error if a "No conversion rate available" message is displayed
+   * @param timeout
+   * @throws Error if a "—" placeholder is displayed instead of a conversion rate
    */
-  async checkConversionRateDisplayed(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
+  async checkConversionRateDisplayed(timeout: number = 10000): Promise<void> {
+    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage, {
+      timeout,
+    });
   }
 
   async waitUntilTokenSearchMatch(numberOfMatches: number) {

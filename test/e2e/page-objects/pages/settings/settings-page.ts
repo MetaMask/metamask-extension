@@ -17,7 +17,7 @@ class SettingsPage {
   };
 
   private readonly developerOptionsButton = {
-    text: 'Developer Options',
+    text: 'Developer options',
     css: '.tab-bar__tab__content__title',
   };
 
@@ -138,7 +138,7 @@ class SettingsPage {
   }
 
   async goToDeveloperOptions(): Promise<void> {
-    console.log('Navigating to Developer Options page');
+    console.log('Navigating to Developer options page');
     await this.driver.clickElement(this.developerOptionsButton);
   }
 

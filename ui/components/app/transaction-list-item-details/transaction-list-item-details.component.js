@@ -7,6 +7,7 @@ import { Button, ButtonSize } from '@metamask/design-system-react';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import Disclosure from '../../ui/disclosure';
+import { DisclosureVariant } from '../../ui/disclosure/disclosure.constants';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
 import Tooltip from '../../ui/tooltip';
@@ -45,7 +46,6 @@ export default class TransactionListItemDetails extends PureComponent {
     title: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     recipientAddress: PropTypes.string,
-    recipientName: PropTypes.string,
     senderAddress: PropTypes.string.isRequired,
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
@@ -154,7 +154,6 @@ export default class TransactionListItemDetails extends PureComponent {
       showSpeedUp,
       // showRetry,
       recipientAddress,
-      recipientName,
       senderAddress,
       isEarliestNonce,
       senderNickname,
@@ -255,30 +254,9 @@ export default class TransactionListItemDetails extends PureComponent {
                 variant={DEFAULT_VARIANT}
                 addressOnly
                 recipientAddress={recipientAddress}
-                recipientName={recipientName}
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 chainId={chainId}
-                onRecipientClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Copied "To" Address',
-                    properties: {
-                      action: 'Activity Log',
-                      legacy_event: true,
-                    },
-                  });
-                }}
-                onSenderClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Copied "From" Address',
-                    properties: {
-                      action: 'Activity Log',
-                      legacy_event: true,
-                    },
-                  });
-                }}
               />
             </div>
             <div className="transaction-list-item-details__cards-container">
@@ -299,6 +277,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   <Disclosure
                     title={t('activityLog')}
                     size="small"
+                    variant={DisclosureVariant.Arrow}
                     isScrollToBottomOnOpen
                   >
                     <TransactionActivityLog

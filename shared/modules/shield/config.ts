@@ -21,12 +21,6 @@ const SHIELD_RULE_ENGINE_URL = {
   [ENV.prd]: 'https://ruleset-engine.api.cx.metamask.io',
 } as const;
 
-const SHIELD_CLAIMS_API_URL = {
-  [ENV.dev]: 'https://claims.dev-api.cx.metamask.io',
-  [ENV.uat]: 'https://claims.uat-api.cx.metamask.io',
-  [ENV.prd]: 'https://claims.api.cx.metamask.io',
-} as const;
-
 const BUILD_TYPE = {
   experimental: 'experimental',
   main: 'main',
@@ -44,42 +38,36 @@ export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
     claimsEnv: ClaimsEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
-    claimUrl: SHIELD_CLAIMS_API_URL[ENV.prd],
   },
   [BUILD_TYPE.flask]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
-    claimUrl: SHIELD_CLAIMS_API_URL[ENV.prd],
   },
   [BUILD_TYPE.beta]: {
     subscriptionEnv: SubscriptionEnv.UAT,
     claimsEnv: ClaimsEnv.UAT,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.uat],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.uat],
-    claimUrl: SHIELD_CLAIMS_API_URL[ENV.uat],
   },
   [BUILD_TYPE.experimental]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.prd],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.prd],
-    claimUrl: SHIELD_CLAIMS_API_URL[ENV.prd],
   },
   [BUILD_TYPE.dev]: {
     subscriptionEnv: SubscriptionEnv.DEV,
     claimsEnv: ClaimsEnv.DEV,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.dev],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.dev],
-    claimUrl: SHIELD_CLAIMS_API_URL[ENV.dev],
   },
   [BUILD_TYPE.uat]: {
     subscriptionEnv: SubscriptionEnv.UAT,
     claimsEnv: ClaimsEnv.UAT,
     gatewayUrl: SHIELD_GATEWAY_URL[ENV.uat],
     ruleEngineUrl: SHIELD_RULE_ENGINE_URL[ENV.uat],
-    claimUrl: SHIELD_CLAIMS_API_URL[ENV.uat],
   },
 };
 
@@ -116,13 +104,12 @@ export function loadShieldConfig(): ShieldEnvConfig {
   const buildType = process.env.METAMASK_BUILD_TYPE;
 
   let buildTypeEnv: BuildType = BUILD_TYPE.main;
-  if (isDevOrTestEnvironment()) {
-    buildTypeEnv = BUILD_TYPE.dev;
-  } else if (buildType === 'experimental') {
+  if (buildType === 'experimental') {
     buildTypeEnv = BUILD_TYPE.experimental;
   } else if (buildType === 'flask') {
     buildTypeEnv = BUILD_TYPE.flask;
-  } else if (buildType === 'beta') {
+    // `uat` build type for uat environment only build
+  } else if (buildType === 'beta' || buildType === 'uat') {
     buildTypeEnv = BUILD_TYPE.beta;
   }
 

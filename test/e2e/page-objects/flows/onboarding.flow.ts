@@ -10,6 +10,7 @@ import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
 import { WALLET_PASSWORD } from '../../constants';
 import { E2E_SRP } from '../../fixtures/default-fixture';
+import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
@@ -27,9 +28,7 @@ export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
   // Only run when sidepanel is actually enabled on Chrome
-  const isSidepanelEnabled =
-    process.env.SELENIUM_BROWSER === 'chrome' &&
-    process.env.IS_SIDEPANEL === 'true';
+  const isSidepanelEnabled = process.env.SELENIUM_BROWSER === 'chrome';
 
   if (!isSidepanelEnabled) {
     return;
@@ -43,7 +42,8 @@ export const handleSidepanelPostOnboarding = async (
   await driver.driver.get(`${driver.extensionUrl}/home.html`);
 
   // Wait for the home page to fully load
-  await driver.waitForSelector('[data-testid="account-menu-icon"]');
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.checkPageIsLoaded();
 };
 
 /**
@@ -70,7 +70,6 @@ const goToOnboardingWelcomeLoginPage = async ({
   if (needNavigateToNewPage) {
     await driver.navigate();
   }
-
   if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
     await onboardingMetricsFlow(driver, {
       participateInMetaMetrics,
@@ -409,6 +408,8 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   await onboardingCompletePage.completeOnboarding();
 
   await handleSidepanelPostOnboarding(driver);
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
 };
 
 /**

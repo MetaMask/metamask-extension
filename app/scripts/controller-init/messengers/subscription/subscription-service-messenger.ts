@@ -42,8 +42,10 @@ export function getSubscriptionServiceMessenger(
       'SubscriptionController:getState',
       'SubscriptionController:submitShieldSubscriptionCryptoApproval',
       'SubscriptionController:linkRewards',
+      'SubscriptionController:clearLastSelectedPaymentMethod',
       'AppStateController:getState',
       'AppStateController:setPendingShieldCohort',
+      'AppStateController:setShieldSubscriptionError',
       'AuthenticationController:getBearerToken',
       'TransactionController:getTransactions',
       'AccountsController:getState',
@@ -51,6 +53,7 @@ export function getSubscriptionServiceMessenger(
       'SmartTransactionsController:getState',
       'NetworkController:getState',
       'SwapsController:getState',
+      'RemoteFeatureFlagController:getState',
       'MetaMetricsController:trackEvent',
       'KeyringController:getState',
       // Rewards Integration

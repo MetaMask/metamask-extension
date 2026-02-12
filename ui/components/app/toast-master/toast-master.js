@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
+  REVEAL_SEED_ROUTE,
   REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -53,6 +54,7 @@ import { SurveyToast } from '../../ui/survey-toast';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
@@ -77,6 +79,11 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/settings/transaction-shield-tab/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
@@ -94,6 +101,9 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
+  selectShowStorageErrorToast,
+  selectStorageWriteErrorType,
+  selectShowInfuraSwitchToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -104,6 +114,7 @@ import {
   setShowPasswordChangeToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
+  setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
 } from './utils';
@@ -114,14 +125,22 @@ export function ToastMaster() {
     getIsMultichainAccountsState2Enabled,
   );
 
+  // Check if storage error toast should be shown (needed for conditional rendering on other screens)
+  // The selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const shouldShowStorageErrorToast = useSelector(selectShowStorageErrorToast);
+
   // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
+  // Storage error toast should show on ALL screens
+  const storageErrorToast = <StorageErrorToast />;
+
   if (onHomeScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <SurveyToast />
         {isMultichainAccountsFeatureState2Enabled ? (
           <ConnectAccountGroupToast />
@@ -133,6 +152,7 @@ export function ToastMaster() {
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
+        <InfuraSwitchToast />
         <CopyAddressToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
@@ -143,10 +163,17 @@ export function ToastMaster() {
   if (onSettingsScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
+  }
+
+  // On other screens, only render ToastContainer if storage error toast should show
+  // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
+  if (shouldShowStorageErrorToast) {
+    return <ToastContainer>{storageErrorToast}</ToastContainer>;
   }
 
   return null;
@@ -492,6 +519,30 @@ function NewSrpAddedToast() {
   );
 }
 
+function InfuraSwitchToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showInfuraSwitchToast = useSelector(selectShowInfuraSwitchToast);
+  const autoHideDelay = 5 * SECOND;
+
+  return (
+    showInfuraSwitchToast && (
+      <Toast
+        key="infura-switch-toast"
+        dataTestId="infura-switch-toast"
+        text={t('updatedToMetaMaskDefault')}
+        startAdornment={
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowInfuraSwitchToast(false))}
+        autoHideTime={autoHideDelay}
+        onAutoHideToast={() => dispatch(setShowInfuraSwitchToast(false))}
+      />
+    )
+  );
+}
+
 const PasswordChangeToast = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -568,40 +619,114 @@ const ClaimSubmitToast = () => {
   const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
   const autoHideToastDelay = 5 * SECOND;
 
+  const isSuccess = showClaimSubmitToast === ClaimSubmitToastType.Success;
+  const isDraftSaved = showClaimSubmitToast === ClaimSubmitToastType.DraftSaved;
+  const isDraftSaveFailed =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftSaveFailed;
+  const isErrored = showClaimSubmitToast === ClaimSubmitToastType.Errored;
+  const isDraftDeleted =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleted;
+  const isDraftDeleteFailed =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleteFailed;
+
   const description = useMemo(() => {
-    if (showClaimSubmitToast === ClaimSubmitToastType.Success) {
+    if (isSuccess) {
       return t('shieldClaimSubmitSuccessDescription');
     }
-    if (showClaimSubmitToast === ClaimSubmitToastType.Errored) {
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSavedDescription');
+    }
+    if (isDraftSaveFailed) {
+      return t('shieldClaimDraftSaveFailedDescription');
+    }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeleteDraftDescription');
+    }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailedDescription');
+    }
+    if (isErrored) {
       return '';
     }
     return showClaimSubmitToast;
-  }, [showClaimSubmitToast, t]);
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isErrored,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+    showClaimSubmitToast,
+    t,
+  ]);
+
+  const toastText = useMemo(() => {
+    if (isSuccess) {
+      return t('shieldClaimSubmitSuccess');
+    }
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSaved');
+    }
+    if (isDraftSaveFailed) {
+      return t('shieldClaimDraftSaveFailed');
+    }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeletedDraft');
+    }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailed');
+    }
+    return t('shieldClaimSubmitError');
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+    t,
+  ]);
+
+  const dataTestId = useMemo(() => {
+    if (isSuccess) {
+      return 'claim-submit-toast-success';
+    }
+    if (isDraftSaved) {
+      return 'claim-draft-saved-toast';
+    }
+    if (isDraftSaveFailed) {
+      return 'claim-draft-save-failed-toast';
+    }
+    if (isDraftDeleted) {
+      return 'claim-draft-deleted-toast';
+    }
+    if (isDraftDeleteFailed) {
+      return 'claim-draft-delete-failed-toast';
+    }
+    return 'claim-submit-toast-error';
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+  ]);
 
   return (
     showClaimSubmitToast !== null && (
       <Toast
-        dataTestId={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? 'claim-submit-toast-success'
-            : 'claim-submit-toast-error'
-        }
+        dataTestId={dataTestId}
         key="claim-submit-toast"
-        text={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? t('shieldClaimSubmitSuccess')
-            : t('shieldClaimSubmitError')
-        }
+        text={toastText}
         description={description}
         startAdornment={
           <Icon
             name={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
+              isSuccess || isDraftSaved || isDraftDeleted
                 ? IconName.CheckBold
                 : IconName.CircleX
             }
             color={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
+              isSuccess || isDraftSaved || isDraftDeleted
                 ? IconColor.successDefault
                 : IconColor.errorDefault
             }
@@ -746,6 +871,86 @@ function ShieldEndingToast() {
           />
         }
         onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
+      />
+    )
+  );
+}
+
+function StorageErrorToast() {
+  const t = useI18nContext();
+  const navigate = useNavigate();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const [hasTrackedView, setHasTrackedView] = useState(false);
+
+  // Selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
+  const storageWriteErrorType = useSelector(selectStorageWriteErrorType);
+
+  // Only show toast if selector returns true and user hasn't dismissed it
+  const shouldShow = showStorageErrorToast && !isDismissed;
+
+  // Show disk space-specific message when error is due to no space
+  const isNoSpaceError =
+    storageWriteErrorType === StorageWriteErrorType.FileErrorNoSpace;
+  const description = isNoSpaceError
+    ? t('storageErrorDescriptionNoSpace')
+    : t('storageErrorDescriptionDefault');
+
+  // Track "Viewed" event when toast becomes visible
+  useEffect(() => {
+    if (shouldShow && !hasTrackedView) {
+      trackEvent({
+        event: MetaMetricsEventName.StorageErrorToastViewed,
+        category: MetaMetricsEventCategory.Error,
+      });
+      setHasTrackedView(true);
+    }
+  }, [shouldShow, hasTrackedView, trackEvent]);
+
+  const handleRevealSrpClick = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
+      category: MetaMetricsEventCategory.Error,
+    });
+    setIsDismissed(true);
+    navigate(REVEAL_SEED_ROUTE);
+  };
+
+  const handleClose = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastDismissed,
+      category: MetaMetricsEventCategory.Error,
+    });
+    setIsDismissed(true);
+  };
+
+  // Only show action button for default errors (not for no-space errors)
+  const actionProps = isNoSpaceError
+    ? {}
+    : {
+        actionText: t('storageErrorAction'),
+        onActionClick: handleRevealSrpClick,
+      };
+
+  return (
+    shouldShow && (
+      <Toast
+        key="storage-error-toast"
+        dataTestId="storage-error-toast"
+        startAdornment={
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Lg}
+          />
+        }
+        text={t('storageErrorTitle')}
+        description={description}
+        {...actionProps}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        onClose={handleClose}
       />
     )
   );

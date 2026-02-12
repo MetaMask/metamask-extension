@@ -8,48 +8,45 @@ import {
   size,
   sum,
 } from 'lodash';
-import { bufferToHex, keccak } from 'ethereumjs-util';
+import { keccak256 } from 'ethereum-cryptography/keccak';
 import { v4 as uuidv4 } from 'uuid';
-import { NameControllerState, NameType } from '@metamask/name-controller';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import { NameType } from '@metamask/name-controller';
 import {
+  bytesToHex,
   getErrorMessage,
-  Hex,
+  type Hex,
   isErrorWithMessage,
   isErrorWithStack,
 } from '@metamask/utils';
-import {
+import type {
   NetworkClientId,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
-  NetworkState,
 } from '@metamask/network-controller';
-import { Browser } from 'webextension-polyfill';
-import {
-  Nft,
-  NftControllerState,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
+import type { Browser } from 'webextension-polyfill';
+import type { Nft } from '@metamask/assets-controllers';
 import {
   BaseController,
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-  StateMetadata,
+  type ControllerGetStateAction,
+  type ControllerStateChangeEvent,
+  type StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json } from '@metamask/utils';
-import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import { AddressBookControllerState } from '@metamask/address-book-controller';
-import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_BACKGROUND,
+  PLATFORM_FIREFOX,
+} from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventFragment,
   MetaMetricsUserTrait,
+} from '../../../shared/constants/metametrics';
+import type {
+  MetaMetricsEventFragment,
   MetaMetricsUserTraits,
   SegmentEventPayload,
   MetaMetricsContext,
@@ -63,19 +60,24 @@ import {
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
+import {
+  checkAlarmExists,
+  generateRandomId,
+  getInstallType,
+  getPlatform,
+  isValidDate,
+} from '../lib/util';
 import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import Analytics from '../lib/segment/analytics';
 import {
   trace,
   endTrace,
-  TraceRequest,
-  EndTraceRequest,
-  TraceCallback,
+  type TraceRequest,
+  type EndTraceRequest,
+  type TraceCallback,
 } from '../../../shared/lib/trace';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -84,8 +86,8 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
+import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
 import type {
-  PreferencesControllerState,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
@@ -166,37 +168,36 @@ type BufferedTrace = {
   parentTraceName?: string;
 };
 
-// TODO: Complete MetaMaskState by adding the full state definition and relocate it after the background is converted to TypeScript.
-export type MetaMaskState = {
-  ledgerTransportType: LedgerTransportTypes;
-  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
-  internalAccounts: AccountsControllerState['internalAccounts'];
-  allNfts: NftControllerState['allNfts'];
-  allTokens: TokensControllerState['allTokens'];
-  theme: string;
-  participateInMetaMetrics: boolean;
-  dataCollectionForMarketing: boolean;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ShowNativeTokenAsMainBalance: boolean;
-  useNftDetection: PreferencesControllerState['useNftDetection'];
-  openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
-  securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
-  useTokenDetection: PreferencesControllerState['useTokenDetection'];
-  tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
-  names: NameControllerState['names'];
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  security_providers: string[];
-  addressBook: AddressBookControllerState['addressBook'];
-  currentCurrency: string;
-  preferences: {
-    privacyMode: PreferencesControllerState['preferences']['privacyMode'];
-    tokenNetworkFilter: string[];
-  };
-  srpSessionData: AuthenticationControllerState['srpSessionData'];
-  keyrings: { type: string; accounts: string[] }[];
-  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
+export type MetaMaskState = Pick<
+  FlattenedBackgroundStateProxy,
+  | 'ledgerTransportType'
+  | 'networkConfigurationsByChainId'
+  | 'internalAccounts'
+  | 'allNfts'
+  | 'allTokens'
+  | 'theme'
+  | 'participateInMetaMetrics'
+  | 'dataCollectionForMarketing'
+  | 'useNftDetection'
+  | 'openSeaEnabled'
+  | 'securityAlertsEnabled'
+  | 'useTokenDetection'
+  | 'names'
+  | 'addressBook'
+  | 'currentCurrency'
+  | 'srpSessionData'
+  | 'keyrings'
+  | 'multichainNetworkConfigurationsByChainId'
+  // TODO: Remove as this is no longer a top-level property of the flattened background state object.
+  // | 'security_providers'
+> & {
+  preferences: Pick<
+    FlattenedBackgroundStateProxy['preferences'],
+    | 'privacyMode'
+    | 'tokenNetworkFilter'
+    | 'showNativeTokenAsMainBalance'
+    | 'tokenSortConfig'
+  >;
 };
 
 /**
@@ -636,8 +637,8 @@ export default class MetaMetricsController extends BaseController<
   }
 
   generateMetaMetricsId(): string {
-    return bufferToHex(
-      keccak(
+    return bytesToHex(
+      keccak256(
         Buffer.from(
           String(Date.now()) +
             String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
@@ -925,10 +926,9 @@ export default class MetaMetricsController extends BaseController<
   ): Promise<string | null> {
     const { metaMetricsId: existingMetaMetricsId } = this.state;
 
-    const metaMetricsId =
-      participateInMetaMetrics && !existingMetaMetricsId
-        ? this.generateMetaMetricsId()
-        : existingMetaMetricsId;
+    // regardless of the Opt In/Out status, we want to generate metaMetricsId if it doesn't exist
+    // this is to assign the id to the `Metrics Opt Out` event (in which participateInMetaMetrics is null/false)
+    const metaMetricsId = existingMetaMetricsId ?? this.generateMetaMetricsId();
 
     this.update((state) => {
       state.participateInMetaMetrics = participateInMetaMetrics;
@@ -1057,8 +1057,25 @@ export default class MetaMetricsController extends BaseController<
     payload: MetaMetricsEventPayload,
     options?: MetaMetricsEventOptions,
   ): Promise<void> {
-    if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
+    const { useExternalServices } = this.messenger.call(
+      'PreferencesController:getState',
+    );
+    const isBasicFunctionalityDisabled = !useExternalServices;
+    if (isBasicFunctionalityDisabled) {
+      // If basic functionality is disabled, we block all events
       return;
+    }
+
+    const { participateInMetaMetrics, metaMetricsId } = this.state;
+    if (!participateInMetaMetrics && !options?.isOptIn) {
+      return;
+    }
+
+    const isMetricsOptOutEvent =
+      payload.event === MetaMetricsEventName.MetricsOptOut;
+    if (isMetricsOptOutEvent && options?.isOptIn) {
+      // For the `Metrics Opt Out` event, we want to track it with the user's `metaMetricsId`
+      options.metaMetricsId = metaMetricsId ?? undefined;
     }
 
     // We might track multiple events if sensitiveProperties is included, this array will hold
@@ -1369,6 +1386,7 @@ export default class MetaMetricsController extends BaseController<
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
     const { traits } = this.state;
+    const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
 
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
@@ -1378,6 +1396,9 @@ export default class MetaMetricsController extends BaseController<
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
+      ...(storageKindTrait
+        ? { [MetaMetricsUserTrait.StorageKind]: storageKindTrait }
+        : {}),
       [MetaMetricsUserTrait.LedgerConnectionType]:
         metamaskState.ledgerTransportType,
       [MetaMetricsUserTrait.NetworksAdded]: Object.values(
@@ -1419,7 +1440,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.ShowNativeTokenAsMainBalance,
+        metamaskState.preferences.showNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
@@ -1430,7 +1451,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.tokenSortConfig?.key || '',
+        metamaskState.preferences.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.preferences.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
@@ -1439,6 +1460,8 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
       )?.[0]?.[1]?.profile?.profileId,
+      [MetaMetricsUserTrait.Platform]: getPlatform(),
+      [MetaMetricsUserTrait.InstallType]: getInstallType(),
     };
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
@@ -1699,24 +1722,46 @@ export default class MetaMetricsController extends BaseController<
     });
   }
 
-  /*
+  /**
    * Method below submits the request to analytics SDK.
    * It will also add event to controller store
    * and pass a callback to remove it from store once request is submitted to segment
    * Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
    * even if service worker terminates before events are submitted to segment.
+   *
+   * @param eventType - The type of event to track
+   * @param payload - The payload to track
+   * @param callback - The callback to call when the event is submitted
    */
   #submitSegmentAPICall(
     eventType: SegmentEventType,
     payload: Partial<SegmentEventPayload>,
     callback?: (result: unknown) => unknown,
   ): void {
+    const { useExternalServices } = this.messenger.call(
+      'PreferencesController:getState',
+    );
+    const isBasicFunctionalityDisabled = !useExternalServices;
+    if (isBasicFunctionalityDisabled) {
+      // If basic functionality is disabled, we block all events
+      return;
+    }
+
     const {
       metaMetricsId,
       latestNonAnonymousEventTimestamp,
       participateInMetaMetrics,
     } = this.state;
-    if (!participateInMetaMetrics || !metaMetricsId) {
+
+    const userOptedOut = !participateInMetaMetrics || !metaMetricsId;
+    const isMetricsOptOutEvent =
+      payload.event === MetaMetricsEventName.MetricsOptOut;
+    const isFireFox = getPlatform() === PLATFORM_FIREFOX;
+    const shouldTrackMetricsOptOutEvent = isMetricsOptOutEvent && !isFireFox;
+
+    // Block events when user opted out. Exception: MetricsOptOut events are still sent on
+    // non-Firefox browsers to record the opt-out action (Firefox privacy policies prohibit this).
+    if (userOptedOut && !shouldTrackMetricsOptOutEvent) {
       return;
     }
 

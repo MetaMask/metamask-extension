@@ -86,6 +86,15 @@ class HomePage {
     testId: 'refreshList',
   };
 
+  private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
+
+  private readonly storageErrorToastBackupButton = {
+    text: 'Back up Secret Recovery Phrase',
+    tag: 'span',
+  };
+
+  private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
+
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   private readonly tokensTab = {
@@ -107,8 +116,6 @@ class HomePage {
 
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
-
-  private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
 
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
@@ -207,11 +214,6 @@ class HomePage {
     );
   }
 
-  async clickBackupRemindMeLaterButtonSafe(): Promise<void> {
-    await this.driver.clickElementSafe(this.backupRemindMeLaterButton);
-    await this.driver.assertElementNotPresent(this.backupRemindMeLaterButton);
-  }
-
   async closeSurveyToast(surveyName: string): Promise<void> {
     console.log(`Close survey toast for ${surveyName}`);
     await this.driver.waitForSelector({
@@ -219,6 +221,27 @@ class HomePage {
       text: surveyName,
     });
     await this.driver.clickElement(this.closeSurveyToastBannerButton);
+  }
+
+  /**
+   * Checks if the storage error toast is displayed.
+   * This toast appears when storage.local.set() operations fail.
+   */
+  async checkStorageErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check storage error toast is displayed on homepage');
+    await this.driver.waitForSelector(this.storageErrorToast);
+  }
+
+  /**
+   * Clicks the "Back up Secret Recovery Phrase" button on the storage error toast
+   * and verifies navigation to the reveal SRP page.
+   */
+  async clickStorageErrorToastBackupButton(): Promise<void> {
+    console.log(
+      'Click backup button on storage error toast to navigate to reveal SRP page',
+    );
+    await this.driver.clickElement(this.storageErrorToastBackupButton);
+    await this.driver.waitForSelector(this.revealSrpPasswordInput);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {
@@ -316,6 +339,19 @@ class HomePage {
     await this.driver.assertElementNotPresent(
       this.backupSecretRecoveryPhraseNotification,
     );
+  }
+
+  /**
+   * Checks that balance is displayed with ETH symbol.
+   * We verify the element contains "ETH" rather than exact values since gas fees vary.
+   */
+  async checkBalanceIsDisplayed(): Promise<void> {
+    console.log('Check balance element is displayed on homepage');
+    await this.driver.waitForSelector({
+      css: this.balance,
+      text: 'ETH',
+    });
+    console.log('Balance is displayed in correct format');
   }
 
   async checkBasicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {

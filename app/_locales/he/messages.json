@@ -382,9 +382,6 @@
     "message": "יש לבחור קובץ לייצוא.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "לא ניתן לשלוח סכומים שליליים של ETH."
-  },
   "networkName": {
     "message": "שם רשת"
   },
@@ -412,9 +409,6 @@
   },
   "next": {
     "message": "הבא"
-  },
-  "noConversionRateAvailable": {
-    "message": "אין שער המרה זמין"
   },
   "noWebcamFound": {
     "message": "מצלמת הרשת של מחשבך לא נמצאה. נא לנסות שוב."

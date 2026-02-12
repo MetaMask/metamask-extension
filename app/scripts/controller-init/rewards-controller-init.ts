@@ -14,6 +14,21 @@ import {
 import { ControllerInitFunction } from './types';
 
 /**
+ * Helper function to resolve a feature flag value.
+ *
+ * @param flag - The feature flag value to resolve.
+ * @returns The resolved boolean value.
+ */
+const resolveFlag = (flag: unknown) => {
+  if (typeof flag === 'boolean') {
+    return flag;
+  }
+  return Boolean(
+    validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
+  );
+};
+
+/**
  * Initialize the RewardsController.
  *
  * @param request - The request object.
@@ -43,14 +58,6 @@ export const RewardsControllerInit: ControllerInitFunction<
       // Seed with manifest override first; fallback to remote flag
       const manifestFlag =
         getManifestFlags().remoteFeatureFlags?.rewardsEnabled;
-      const resolveFlag = (flag: unknown) => {
-        if (typeof flag === 'boolean') {
-          return flag;
-        }
-        return Boolean(
-          validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
-        );
-      };
       const featureFlagEnabled =
         manifestFlag === undefined
           ? resolveFlag(rewardsFeatureFlag)
@@ -61,6 +68,44 @@ export const RewardsControllerInit: ControllerInitFunction<
         'PreferencesController:getState',
       );
       return !featureFlagEnabled || !useExternalServices;
+    },
+    isBitcoinDisabled: () => {
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      const bitcoinFeatureFlag =
+        remoteFeatureFlags?.rewardsBitcoinEnabledExtension as
+          | VersionGatedFeatureFlag
+          | undefined;
+
+      // Seed with manifest override first; fallback to remote flag
+      const manifestFlag =
+        getManifestFlags().remoteFeatureFlags?.rewardsBitcoinEnabledExtension;
+      const featureFlagEnabled =
+        manifestFlag === undefined
+          ? resolveFlag(bitcoinFeatureFlag)
+          : resolveFlag(manifestFlag);
+
+      return !featureFlagEnabled;
+    },
+    isTronDisabled: () => {
+      const { remoteFeatureFlags } = initMessenger.call(
+        'RemoteFeatureFlagController:getState',
+      );
+      const tronFeatureFlag =
+        remoteFeatureFlags?.rewardsTronEnabledExtension as
+          | VersionGatedFeatureFlag
+          | undefined;
+
+      // Seed with manifest override first; fallback to remote flag
+      const manifestFlag =
+        getManifestFlags().remoteFeatureFlags?.rewardsTronEnabledExtension;
+      const featureFlagEnabled =
+        manifestFlag === undefined
+          ? resolveFlag(tronFeatureFlag)
+          : resolveFlag(manifestFlag);
+
+      return !featureFlagEnabled;
     },
   });
 

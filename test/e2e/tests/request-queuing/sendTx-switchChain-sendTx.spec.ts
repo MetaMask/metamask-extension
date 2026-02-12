@@ -1,12 +1,13 @@
 import { Suite } from 'mocha';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import AlertModal from '../../page-objects/pages/confirmations/redesign/alert-modal';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import AlertModal from '../../page-objects/pages/confirmations/alert-modal';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
@@ -44,6 +45,9 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
 
         // Dapp Send Button
         await testDapp.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
 
         // Navigate back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -66,7 +70,6 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.clickNextPage();
 
         // Confirm Switch Chain

@@ -1,14 +1,10 @@
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-  largeDelayMs,
-} from '../../helpers';
+import { withFixtures, largeDelayMs } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Request Queuing for Multiple Dapps and Txs on same networks', function () {
   it('should put confirmation txs for different dapps on same networks in same queue', async function () {
@@ -51,7 +47,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await testDapp.checkPageIsLoaded();
 
         // Connect to dapp 1
-        await testDapp.connectAccount({});
+        await connectAccountToTestDapp(driver);
         await driver.switchToWindowWithUrl(DAPP_URL);
         await testDapp.checkPageIsLoaded();
 
@@ -82,7 +78,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
         switchEthereumChainRequest = JSON.stringify({

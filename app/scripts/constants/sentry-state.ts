@@ -91,8 +91,10 @@ export const SENTRY_BACKGROUND_STATE = {
     isUpdateAvailable: true,
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,
+    shieldSubscriptionError: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
+    storageWriteErrorType: true,
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
@@ -128,6 +130,9 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   BridgeStatusController: {
     txHistory: false,
+  },
+  ConnectivityController: {
+    connectivityStatus: true,
   },
   CronjobController: {
     events: false,
@@ -279,6 +284,7 @@ export const SENTRY_BACKGROUND_STATE = {
     rewardsSeasons: false,
     rewardsSeasonStatuses: false,
     rewardsSubscriptionTokens: false,
+    rewardsPointsEstimateHistory: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
@@ -321,6 +327,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdated: false,
     databaseUnavailable: false,
   },
+  StaticAssetsController: {},
   SubjectMetadataController: {
     subjectMetadata: false,
   },
@@ -358,7 +365,6 @@ export const SENTRY_BACKGROUND_STATE = {
     [AllProperties]: false,
   },
   TokenListController: {
-    preventPollingOnNetworkRestart: true,
     tokensChainsCache: {
       [AllProperties]: false,
     },
@@ -416,7 +422,6 @@ export const SENTRY_UI_STATE = {
   history: true,
   appState: {
     customNonceValue: true,
-    isAccountMenuOpen: true,
     isNetworkMenuOpen: true,
     nextNonce: true,
     pendingTokens: false,

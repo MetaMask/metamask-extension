@@ -385,9 +385,6 @@
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "نمیتوان مبالغ منفی ETH را ارسال کرد."
-  },
   "networkName": {
     "message": "نام شبکه"
   },
@@ -415,9 +412,6 @@
   },
   "next": {
     "message": "بعدی"
-  },
-  "noConversionRateAvailable": {
-    "message": "هیچ نرخ تغییر موجود نمیباشد"
   },
   "noWebcamFound": {
     "message": "وب کم کمپیوتر تان پیدا نشد. لطفًا دوباره کوشش کنید."

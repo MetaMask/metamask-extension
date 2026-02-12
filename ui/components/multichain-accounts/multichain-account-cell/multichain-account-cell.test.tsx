@@ -13,6 +13,7 @@ import {
 } from './multichain-account-cell';
 
 jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
   isInternalAccountInPermittedAccountIds: jest.fn(),
   getCaip25CaveatFromPermission: jest.fn(),
   getCaipAccountIdsFromCaip25CaveatValue: jest.fn(),
@@ -48,12 +49,6 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByText('Test Account')).toBeInTheDocument();
     expect(screen.getByText('$2,400.00')).toBeInTheDocument();
     expect(screen.getByTestId('end-accessory')).toBeInTheDocument();
-
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
   });
 
   it('shows selection state correctly and applies proper styling', () => {
@@ -62,11 +57,10 @@ describe('MultichainAccountCell', () => {
       store,
     );
 
-    expect(
-      screen.getByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
-      ),
-    ).toBeInTheDocument();
+    const cellElement = screen.getByTestId(
+      `multichain-account-cell-${defaultProps.accountId}`,
+    );
+    expect(cellElement).toHaveClass('is-selected');
   });
 
   it('handles click events and applies pointer cursor when onClick is provided', () => {
@@ -128,15 +122,11 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByText('Complete Account')).toBeInTheDocument();
     expect(screen.getByText('$1,234.56')).toBeInTheDocument();
     expect(screen.getByTestId('end-accessory')).toBeInTheDocument();
-    expect(
-      screen.getByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
-      ),
-    ).toBeInTheDocument();
 
     const cellElement = screen.getByTestId(
       `multichain-account-cell-${defaultProps.accountId}`,
     );
+    expect(cellElement).toHaveClass('is-selected');
     expect(cellElement.style.cursor).toBe('pointer');
 
     fireEvent.click(cellElement);
@@ -160,7 +150,7 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByText('Start')).toBeInTheDocument();
   });
 
-  it('hides selected bar when startAccessory is present', () => {
+  it('renders with startAccessory when provided', () => {
     // Arrange
     const startAccessoryElement = (
       <span data-testid="start-accessory">Start</span>
@@ -176,11 +166,6 @@ describe('MultichainAccountCell', () => {
     );
 
     expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
   });
 
   it('hides balance value when privacy mode is enabled', () => {

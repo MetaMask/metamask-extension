@@ -12,7 +12,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-import WhatsNewModal from '../../components/app/whats-new-modal';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
@@ -73,18 +72,25 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
+import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
+  isHardwareWalletErrorModalVisible,
 }) {
-  const shouldClose =
+  const baseCondition =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
+
+  const isHardwareWalletErrorModalBlockingClose =
+    isHardwareWalletErrorModalVisible;
+
+  const shouldClose = baseCondition && !isHardwareWalletErrorModalBlockingClose;
 
   return shouldClose;
 }
@@ -106,9 +112,6 @@ export default class Home extends PureComponent {
     showTermsOfUsePopup: PropTypes.bool.isRequired,
     firstTimeFlowType: PropTypes.string,
     completedOnboarding: PropTypes.bool,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
     onboardedInThisUISession: PropTypes.bool,
     showMultiRpcModal: PropTypes.bool.isRequired,
     showUpdateModal: PropTypes.bool.isRequired,
@@ -116,9 +119,7 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
-    defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
-    onTabClick: PropTypes.func.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
     location: PropTypes.object,
@@ -137,6 +138,9 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool,
+    // This prop is used in the `shouldCloseNotificationPopup` function
+    // eslint-disable-next-line react/no-unused-prop-types
+    isHardwareWalletErrorModalVisible: PropTypes.bool,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,
@@ -232,7 +236,6 @@ export default class Home extends PureComponent {
       clearNewNetworkAdded,
       pendingShieldCohort,
       evaluateCohortEligibility,
-      setPendingShieldCohort,
       isSignedIn,
     } = this.props;
 
@@ -262,7 +265,6 @@ export default class Home extends PureComponent {
       evaluateCohortEligibility &&
       isSignedIn
     ) {
-      setPendingShieldCohort(null);
       evaluateCohortEligibility(pendingShieldCohort);
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
@@ -765,8 +767,6 @@ export default class Home extends PureComponent {
 
   render() {
     const {
-      defaultHomeActiveTabName,
-      onTabClick,
       useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
@@ -776,11 +776,8 @@ export default class Home extends PureComponent {
       isPopup,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      showWhatsNewPopup,
-      hideWhatsNewPopup,
       completedOnboarding,
       onboardedInThisUISession,
-      announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
@@ -807,23 +804,11 @@ export default class Home extends PureComponent {
         firstTimeFlowType === FirstTimeFlowType.import) &&
       !newNetworkAddedConfigurationId;
 
-    const showWhatsNew =
-      canSeeModals &&
-      announcementsToShow &&
-      showWhatsNewPopup &&
-      !process.env.IN_TEST;
-
     const showMultiRpcEditModal =
-      canSeeModals &&
-      showMultiRpcModal &&
-      !showWhatsNew &&
-      !process.env.IN_TEST;
+      canSeeModals && showMultiRpcModal && !process.env.IN_TEST;
 
     const displayUpdateModal =
-      canSeeModals &&
-      showUpdateModal &&
-      !showWhatsNew &&
-      !showMultiRpcEditModal;
+      canSeeModals && showUpdateModal && !showMultiRpcEditModal;
 
     const showTermsOfUse =
       completedOnboarding &&
@@ -832,16 +817,13 @@ export default class Home extends PureComponent {
       !isSocialLoginFlow;
 
     const showRecoveryPhrase =
-      !showWhatsNew &&
-      showRecoveryPhraseReminder &&
-      !isPrimarySeedPhraseBackedUp;
+      showRecoveryPhraseReminder && !isPrimarySeedPhraseBackedUp;
 
     const showRewardsModal =
       rewardsEnabled &&
       rewardsOnboardingEnabled &&
       canSeeModals &&
       !showTermsOfUse &&
-      !showWhatsNew &&
       !showMultiRpcEditModal &&
       !displayUpdateModal &&
       !isSeedlessPasswordOutdated &&
@@ -852,7 +834,6 @@ export default class Home extends PureComponent {
       showPna25Modal &&
       canSeeModals &&
       !showTermsOfUse &&
-      !showWhatsNew &&
       !showMultiRpcEditModal &&
       !displayUpdateModal &&
       !isSeedlessPasswordOutdated &&
@@ -890,7 +871,6 @@ export default class Home extends PureComponent {
           {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
-          {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
           {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}
@@ -907,11 +887,9 @@ export default class Home extends PureComponent {
             : null}
           <div className="home__main-view">
             <AccountOverview
-              onTabClick={onTabClick}
               ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               onSupportLinkClick={this.onSupportLinkClick}
               ///: END:ONLY_INCLUDE_IF
-              defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
             />
@@ -932,6 +910,9 @@ export default class Home extends PureComponent {
           </div>
           {this.renderNotifications()}
         </div>
+
+        {/* Ghost component that manages the useHomeDeepLinkEffects */}
+        <HomeDeepLinkActions />
       </ScrollContainer>
     );
   }

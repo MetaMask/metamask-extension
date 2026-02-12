@@ -1,19 +1,16 @@
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  DAPP_ONE_URL,
-  DAPP_URL,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue send tx after switch network confirmation and transaction should target the correct network after switch is confirmed', async function () {
@@ -95,7 +92,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithUrl(DAPP_URL);
 
@@ -233,7 +230,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithUrl(DAPP_URL);
         await testDapp.checkPageIsLoaded();

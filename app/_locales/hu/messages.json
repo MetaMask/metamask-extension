@@ -382,9 +382,6 @@
     "message": "Ki kell választania az importálni kívánt fájlt.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nem lehet negatív mennyiségű ETH-t küldeni."
-  },
   "networkName": {
     "message": "Hálózat neve"
   },
@@ -412,9 +409,6 @@
   },
   "next": {
     "message": "Következő"
-  },
-  "noConversionRateAvailable": {
-    "message": "Nincs elérhető átváltási díj"
   },
   "noWebcamFound": {
     "message": "Nem található számítógéped webkamerája. Kérünk, próbáld újra."

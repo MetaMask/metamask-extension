@@ -1,5 +1,9 @@
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
+import {
+  DAPP_HOST_ADDRESS,
+  DEFAULT_FIXTURE_ACCOUNT,
+  WINDOW_TITLES,
+} from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -7,6 +11,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Edit Networks Permissions', function () {
   it('should be able to edit networks', async function () {
@@ -22,7 +27,7 @@ describe('Edit Networks Permissions', function () {
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
         await driver.switchToWindowWithTitle(

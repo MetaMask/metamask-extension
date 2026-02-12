@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+/* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import {
@@ -170,11 +172,8 @@ describe('useShieldCoverageAlert', () => {
     expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
       expect.objectContaining({
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result: 'covered',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertCovered',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result_response_latency_ms: 150,
         },
       }),
@@ -188,11 +187,8 @@ describe('useShieldCoverageAlert', () => {
     expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
       expect.objectContaining({
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result: 'not_covered_malicious',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertMessagePotentialRisks',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result_response_latency_ms: 'N/A',
         },
       }),
@@ -206,11 +202,8 @@ describe('useShieldCoverageAlert', () => {
     expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
       expect.objectContaining({
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result: 'not_covered',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertMessagePotentialRisks',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result_response_latency_ms: 'N/A',
         },
       }),
@@ -224,11 +217,8 @@ describe('useShieldCoverageAlert', () => {
     expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
       expect.objectContaining({
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result: 'loading',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertMessagePotentialRisks',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result_response_latency_ms: 'N/A',
         },
       }),
@@ -243,11 +233,8 @@ describe('useShieldCoverageAlert', () => {
     expect(updateSignatureEventFragmentMock).toHaveBeenCalledWith(
       expect.objectContaining({
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result: 'covered',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_reason: 'shieldCoverageAlertCovered',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           shield_result_response_latency_ms: 200,
         },
       }),

@@ -45,11 +45,13 @@ export const AccountDetailsDisplay = ({
   onExportClick,
 }) => {
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()
     : address;
-  const [copied, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const handleClick = useCallback(() => {
     handleCopy(formatedAddress);
   }, [formatedAddress, handleCopy]);

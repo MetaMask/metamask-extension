@@ -385,9 +385,6 @@
     "message": "Jums jāatlasa fails, ko importēt",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nav iespējams nosūtīt negatīvu ETH summu."
-  },
   "networkName": {
     "message": "Tīkla nosaukums"
   },
@@ -415,9 +412,6 @@
   },
   "next": {
     "message": "Nākamais"
-  },
-  "noConversionRateAvailable": {
-    "message": "Konversijas kurss nav pieejams"
   },
   "noWebcamFound": {
     "message": "Jūsu datora tīmekļa kamera netika atrasta. Lūdzu, mēģiniet vēlreiz."

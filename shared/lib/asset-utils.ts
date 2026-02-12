@@ -9,17 +9,20 @@ import {
   isStrictHexString,
   parseCaipAssetType,
   KnownCaipNamespace,
+  numberToHex,
 } from '@metamask/utils';
-
+import log from 'loglevel';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import {
   getNativeAssetForChainId,
   isNativeAddress,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { Asset } from '@metamask/assets-controllers';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
+import { MultichainNetworks } from '../constants/multichain/networks';
 import {
   TRON_RESOURCE_SYMBOLS_SET,
   TronResourceSymbol,
@@ -31,21 +34,45 @@ const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
-  chainId: CaipChainId,
+  chainId?: CaipChainId | Hex,
 ): CaipAssetType | undefined => {
+  let addressToUse = address;
+  let chainIdToUse = isStrictHexString(chainId)
+    ? toEvmCaipChainId(chainId)
+    : chainId;
+
+  // Use chainId and address from caip assetId if provided
   if (isCaipAssetType(address)) {
-    return address;
+    const { assetReference, chainId: chainIdFromCaipAssetId } =
+      parseCaipAssetType(address);
+    addressToUse = assetReference;
+    chainIdToUse = chainIdFromCaipAssetId;
   }
-  if (isNativeAddress(address)) {
-    return getNativeAssetForChainId(chainId)?.assetId;
+  if (!chainIdToUse) {
+    return undefined;
   }
-  if (chainId === MultichainNetwork.Solana) {
-    return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
+
+  if (isNativeAddress(addressToUse)) {
+    try {
+      return getNativeAssetForChainId(chainIdToUse)?.assetId;
+    } catch {
+      // Return undefined for unsupported chains (e.g., custom networks)
+      // This allows the send flow to work for custom networks even if they're not in the swaps map
+      // Format normalization in isEvmChainId should prevent most errors, but this is a defensive fallback
+      return undefined;
+    }
+  }
+  if (chainIdToUse === MultichainNetworks.SOLANA) {
+    return CaipAssetTypeStruct.create(`${chainIdToUse}/token:${addressToUse}`);
+  }
+  if (chainIdToUse === MultichainNetworks.TRON) {
+    return CaipAssetTypeStruct.create(`${chainIdToUse}/trc20:${addressToUse}`);
   }
   // EVM assets
-  if (isStrictHexString(address)) {
+  const checksummedAddress = toChecksumHexAddress(addressToUse) ?? addressToUse;
+  if (isStrictHexString(checksummedAddress)) {
     return CaipAssetTypeStruct.create(
-      `${chainId}/erc20:${address.toLowerCase()}`,
+      `${chainIdToUse}/erc20:${checksummedAddress}`,
     );
   }
   return undefined;
@@ -59,22 +86,28 @@ export const toAssetId = (
  * @returns The image url for the asset
  */
 export const getAssetImageUrl = (
-  assetId: CaipAssetType | string,
+  assetId: CaipAssetType | Hex | string,
   chainId: CaipChainId | Hex,
 ) => {
-  const chainIdInCaip = isCaipChainId(chainId)
-    ? chainId
-    : toEvmCaipChainId(chainId);
-
-  const assetIdInCaip = toAssetId(assetId, chainIdInCaip);
-  if (!assetIdInCaip) {
+  try {
+    const assetIdInCaip = toAssetId(assetId, chainId);
+    if (!assetIdInCaip) {
+      return undefined;
+    }
+    const normalizedAssetId = (
+      isNonEvmChainId(chainId) ? assetIdInCaip : assetIdInCaip.toLowerCase()
+    ).replaceAll(':', '/');
+    return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
+      normalizedAssetId
+    }.png`;
+  } catch (error) {
+    log.error('Failed to get asset image URL', {
+      error: error instanceof Error ? error.message : String(error),
+      assetId,
+      chainId,
+    });
     return undefined;
   }
-
-  return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetIdInCaip.replaceAll(
-    ':',
-    '/',
-  )}.png`;
 };
 
 export type AssetMetadata = {
@@ -98,11 +131,7 @@ export const fetchAssetMetadata = async (
   abortSignal?: AbortSignal,
 ) => {
   try {
-    const chainIdInCaip = isCaipChainId(chainId)
-      ? chainId
-      : toEvmCaipChainId(chainId);
-
-    const assetId = toAssetId(address, chainIdInCaip);
+    const assetId = toAssetId(address, chainId);
 
     if (!assetId) {
       return undefined;
@@ -123,11 +152,11 @@ export const fetchAssetMetadata = async (
     const commonFields = {
       symbol: assetMetadata.symbol,
       decimals: assetMetadata.decimals,
-      image: getAssetImageUrl(assetId, chainIdInCaip),
+      image: getAssetImageUrl(assetId, chainId),
       assetId,
     };
 
-    if (chainId === MultichainNetwork.Solana && assetId) {
+    if (isNonEvmChainId(chainId) && assetId) {
       const { assetReference } = parseCaipAssetType(assetId);
       return {
         ...commonFields,
@@ -137,11 +166,13 @@ export const fetchAssetMetadata = async (
       };
     }
 
-    const { reference } = parseCaipChainId(chainIdInCaip);
+    const hexChainId = isStrictHexString(chainId)
+      ? chainId
+      : decimalToPrefixedHex(parseCaipChainId(chainId).reference);
     return {
       ...commonFields,
       address: address.toLowerCase(),
-      chainId: decimalToPrefixedHex(reference),
+      chainId: hexChainId,
     };
   } catch (error) {
     return undefined;
@@ -207,9 +238,23 @@ export const fetchAssetMetadataForAssetIds = async (
  * @returns `true` if the chain ID is an EVM chain ID, `false` otherwise.
  */
 export const isEvmChainId = (chainId: CaipChainId | Hex) => {
-  const chainIdInCaip = isCaipChainId(chainId)
-    ? chainId
-    : toEvmCaipChainId(chainId);
+  let chainIdInCaip: CaipChainId;
+
+  if (isCaipChainId(chainId)) {
+    chainIdInCaip = chainId;
+  } else if (isStrictHexString(chainId)) {
+    chainIdInCaip = toEvmCaipChainId(chainId);
+  } else {
+    // Before converting decimal strings to hex, check if it's a non-EVM chainId
+    // This prevents misidentifying non-EVM chains (e.g., Solana, Bitcoin, Tron) as EVM
+    if (isNonEvmChainId(chainId)) {
+      return false;
+    }
+    // Handle decimal strings by converting to hex first
+    // This fixes issues where chainIds are passed as decimal strings (e.g., '1439' for Injective testnet)
+    // instead of hex format (e.g., '0x59f')
+    chainIdInCaip = toEvmCaipChainId(numberToHex(Number(chainId)));
+  }
 
   // TODO Replace with isEvmCaipChainId from @metamask/multichain-network-controller when it is exported
   const { namespace } = parseCaipChainId(chainIdInCaip);

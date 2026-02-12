@@ -21,6 +21,7 @@ import { MetaMaskReduxState } from '../../../store/store';
 import {
   PasswordChangeToastType,
   ClaimSubmitToastType,
+  StorageWriteErrorType,
 } from '../../../../shared/constants/app-state';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
@@ -36,6 +37,7 @@ type State = {
       | 'showPasswordChangeToast'
       | 'showCopyAddressToast'
       | 'showClaimSubmitToast'
+      | 'showInfuraSwitchToast'
     >
   >;
   metamask: Partial<
@@ -51,6 +53,8 @@ type State = {
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
       | 'completedOnboarding'
+      | 'storageWriteErrorType'
+      | 'isUnlocked'
     >
   >;
 };
@@ -116,6 +120,7 @@ export function selectShowConnectAccountToast(
   account: InternalAccount,
 ): boolean {
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
+  const activeTabOrigin = getOriginOfCurrentTab(state);
   const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
 
   // We only support connection with EVM or Solana accounts
@@ -127,12 +132,12 @@ export function selectShowConnectAccountToast(
   const showConnectAccountToast =
     allowShowAccountSetting &&
     account &&
-    state.activeTab.origin &&
+    activeTabOrigin &&
     isConnectableAccount &&
     connectedAccounts.length > 0 &&
     !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
 
-  return showConnectAccountToast;
+  return Boolean(showConnectAccountToast);
 }
 
 // If there is more than one connected account to activeTabOrigin,
@@ -162,11 +167,11 @@ export function selectShowConnectAccountGroupToast(
     allowShowAccountSetting &&
     accountGroup &&
     isAccountSupported &&
-    state.activeTab.origin &&
+    activeTabOrigin &&
     connectedAccounts.length > 0 &&
     !isConnected;
 
-  return showConnectAccountToast;
+  return Boolean(showConnectAccountToast);
 }
 
 /**
@@ -216,6 +221,18 @@ export function selectClaimSubmitToast(
 }
 
 /**
+ * Retrieves user preference to see the "Updated to MetaMask default" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowInfuraSwitchToast(
+  state: Pick<State, 'appState'>,
+): boolean {
+  return Boolean(state.appState.showInfuraSwitchToast);
+}
+
+/**
  * Retrieves user preference to see the "Shield Payment Declined" toast
  *
  * @param state - Redux state object.
@@ -237,6 +254,38 @@ export function selectShowShieldEndingToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
   return !state.metamask.shieldEndingToastLastClickedOrClosed;
+}
+
+/**
+ * Determines if the storage error toast should be shown based on:
+ * - storageWriteErrorType is set (not null/undefined, indicates an error occurred)
+ * - User has completed onboarding
+ * - Wallet is unlocked
+ *
+ * @param state - Redux state object.
+ * @returns Boolean indicating whether to show the toast
+ */
+export function selectShowStorageErrorToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  const { storageWriteErrorType, completedOnboarding, isUnlocked } =
+    state.metamask || {};
+
+  // Check for truthy value to handle both null and undefined as "no error"
+  return Boolean(storageWriteErrorType && completedOnboarding && isUnlocked);
+}
+
+/**
+ * Returns the type of storage write error that occurred.
+ * Used to show specific error messages (e.g., disk space vs default error).
+ *
+ * @param state - Redux state object.
+ * @returns The storage write error type or null if no error
+ */
+export function selectStorageWriteErrorType(
+  state: Pick<State, 'metamask'>,
+): StorageWriteErrorType | null {
+  return state.metamask?.storageWriteErrorType ?? null;
 }
 
 /**

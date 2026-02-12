@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import { unlockWallet } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -9,7 +10,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import {
@@ -19,7 +20,6 @@ import {
 } from './shared';
 
 const { hexToNumber } = require('@metamask/utils');
-const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
 const {
   KNOWN_PUBLIC_KEY_ADDRESSES,
 } = require('../../../../stub/keyring-bridge');
@@ -57,6 +57,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.checkPageIsLoaded();
 
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickFooterConfirmButton();
@@ -87,6 +88,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickFooterConfirmButton();
@@ -134,6 +136,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickFooterConfirmButton();
@@ -172,8 +175,12 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mockOptimismOracle,
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
           await createLayer2Transaction(driver);
 
           const contractAddress = await (
@@ -216,6 +223,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickFooterConfirmButton();
@@ -245,6 +253,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickAdvancedDetailsButton();
@@ -278,6 +287,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickAdvancedDetailsButton();
@@ -319,6 +329,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await testDapp.checkPageIsLoaded();
 
           await testDapp.createDepositTransaction();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const transactionConfirmation = new TransactionConfirmation(driver);
           await transactionConfirmation.checkPageIsLoaded();
           await transactionConfirmation.clickAdvancedDetailsButton();

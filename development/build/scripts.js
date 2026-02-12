@@ -1014,7 +1014,6 @@ function setupBundlerDefaults(
             './**/node_modules/@firebase',
             './**/node_modules/marked',
             './**/node_modules/@solana',
-            './**/node_modules/axios',
             // Ocap Kernel
             './**/node_modules/@endo',
             './**/node_modules/@agoric',
@@ -1024,6 +1023,14 @@ function setupBundlerDefaults(
             './**/node_modules/@metamask/snaps-rpc-methods',
             './**/node_modules/@metamask/snaps-sdk',
             './**/node_modules/@metamask/snaps-utils',
+            // Charting library (ESM-only)
+            './**/node_modules/lightweight-charts',
+            './**/node_modules/fancy-canvas',
+            // Ledger WebHID transport
+            './**/node_modules/@ledgerhq/hw-transport-webhid',
+            './**/node_modules/@ledgerhq/hw-transport',
+            './**/node_modules/@ledgerhq/hw-app-eth',
+            './**/node_modules/@ledgerhq/devices',
           ],
           global: true,
         },

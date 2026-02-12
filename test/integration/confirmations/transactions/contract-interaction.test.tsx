@@ -17,7 +17,12 @@ import * as backgroundConnection from '../../../../ui/store/background-connectio
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
-import { createMockImplementation, mock4byte } from '../../helpers';
+import {
+  createMockImplementation,
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
+  mock4byte,
+} from '../../helpers';
 import {
   getMaliciousUnapprovedTransaction,
   getUnapprovedContractInteractionTransaction,
@@ -28,7 +33,6 @@ jest.setTimeout(30_000);
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -121,6 +125,7 @@ const advancedDetailsMockedRequests = {
     ],
     source: 'Sourcify',
   },
+  setPreference: {},
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -162,13 +167,8 @@ describe('Contract Interaction Confirmation', () => {
   });
 
   it('displays the header account modal with correct data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedContractInteraction({
         accountAddress: account.address,
@@ -190,7 +190,7 @@ describe('Contract Interaction Confirmation', () => {
       accountName,
     );
     expect(
-      await screen.findByTestId('header-network-display-name'),
+      await screen.findByTestId('confirmation__details-network-name'),
     ).toHaveTextContent('Sepolia');
 
     await act(async () => {
@@ -335,12 +335,6 @@ describe('Contract Interaction Confirmation', () => {
   });
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
-    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      createMockImplementation({ setPreference: {} }),
-    );
-
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -366,22 +360,15 @@ describe('Contract Interaction Confirmation', () => {
 
     await waitFor(() => {
       expect(
-        mockedBackgroundConnection.callBackgroundMethod,
-      ).toHaveBeenCalledWith(
-        'setPreference',
-        ['showConfirmationAdvancedDetails', true],
-        expect.anything(),
-      );
+        mockedBackgroundConnection.submitRequestToBackground,
+      ).toHaveBeenCalledWith('setPreference', [
+        'showConfirmationAdvancedDetails',
+        true,
+      ]);
     });
   });
 
   it('displays the advanced transaction details section', async () => {
-    mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      createMockImplementation({ setPreference: {} }),
-    );
-
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts

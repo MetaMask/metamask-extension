@@ -36,6 +36,7 @@ export enum ShieldMetricsSourceEnum {
   Settings = 'settings',
   Marketing = 'marketing', // from marketing campaign
   PostTransaction = 'post_transaction', // after a transaction
+  ShieldSettings = 'shield_settings', // from shield settings page
 }
 
 export enum ShieldUserAccountCategoryEnum {
@@ -87,3 +88,11 @@ export enum ShieldUnexpectedErrorEventLocationEnum {
   ShieldPlanPage = 'shield_plan_page',
   Other = 'other',
 }
+
+/**
+ * The input used to poll for subscriptions.
+ *
+ * We need to provide this value to compute the subscription requests polling `key` in the polling controller.
+ * We need to provide this value to start/stop the polling for subscriptions.
+ */
+export const SUBSCRIPTIONS_POLLING_INPUT = 'subscriptionsPollingInput';

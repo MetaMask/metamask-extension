@@ -373,9 +373,6 @@
     "message": "Has de seleccionar un arxiu per a importar.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "No es poden enviar quantitats negatives de ETH."
-  },
   "networkName": {
     "message": "Nom de la xarxa"
   },
@@ -403,9 +400,6 @@
   },
   "next": {
     "message": "Següent"
-  },
-  "noConversionRateAvailable": {
-    "message": "No hi ha cap tarifa de conversió disponible"
   },
   "noWebcamFound": {
     "message": "No s'ha trovat la webcam del teu ordinador. Si us plau prova de nou."

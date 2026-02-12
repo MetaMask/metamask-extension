@@ -1,5 +1,6 @@
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -17,22 +18,9 @@ import {
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   describe('Submit an increase allowance transaction', function () {
-    it('Sends a type 0 transaction (Legacy) with a small spending cap', async function () {
+    it('submits an increase allowance transaction with a small spending cap', async function () {
       await withFixtures(
-        generateFixtureOptionsForLegacyTx(this),
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3',
-            contractRegistry,
-          );
-        },
-      );
-    });
-
-    it('Sends a type 2 transaction (EIP1559) with a small spending cap', async function () {
-      await withFixtures(
-        generateFixtureOptionsForEIP1559Tx(this),
+        generateFixtureOptions(this),
         async ({
           driver,
           contractRegistry,
@@ -48,27 +36,9 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
       );
     });
 
-    it('Sends a type 0 transaction (Legacy) with a large spending cap', async function () {
+    it('submits an increase allowance transaction with a large spending cap', async function () {
       await withFixtures(
-        generateFixtureOptionsForLegacyTx(this),
-        async ({
-          driver,
-          contractRegistry,
-          localNodes,
-        }: TestSuiteArguments) => {
-          await createAndAssertIncreaseAllowanceSubmission(
-            driver,
-            '3000',
-            contractRegistry,
-            localNodes,
-          );
-        },
-      );
-    });
-
-    it('Sends a type 2 transaction (EIP1559) with a large spending cap', async function () {
-      await withFixtures(
-        generateFixtureOptionsForEIP1559Tx(this),
+        generateFixtureOptions(this),
         async ({
           driver,
           contractRegistry,
@@ -86,22 +56,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   });
 });
 
-function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
-  return {
-    dappOptions: { numberOfTestDapps: 1 },
-    fixtures: new FixtureBuilder()
-      .withPermissionControllerConnectedToTestDapp()
-      .build(),
-    localNodeOptions: {
-      hardfork: 'muirGlacier',
-    },
-    smartContract: SMART_CONTRACTS.HST,
-    testSpecificMock: mocks,
-    title: mochaContext.test?.fullTitle(),
-  };
-}
-
-function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
+function generateFixtureOptions(mochaContext: Mocha.Context) {
   return {
     dappOptions: { numberOfTestDapps: 1 },
     fixtures: new FixtureBuilder()

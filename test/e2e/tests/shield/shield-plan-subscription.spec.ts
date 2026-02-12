@@ -288,7 +288,7 @@ describe('Shield Subscription Tests', function () {
             const shieldDetailPage = new ShieldDetailPage(driver);
             await shieldDetailPage.checkPageIsLoaded();
             await shieldDetailPage.validateShieldDetailPage({
-              charges: '80 USDC (Annual)',
+              charges: '80 USDC/year',
               nextBillingDate: 'Nov 3, 2025',
               paymentMethod: 'USDC',
             });
@@ -345,7 +345,7 @@ describe('Shield Subscription Tests', function () {
             const shieldDetailPage = new ShieldDetailPage(driver);
             await shieldDetailPage.checkPageIsLoaded();
             await shieldDetailPage.validateShieldDetailPage({
-              charges: '8 USDC (Monthly)',
+              charges: '8 USDC/month',
               nextBillingDate: 'Nov 20, 2025',
               paymentMethod: 'USDC',
             });

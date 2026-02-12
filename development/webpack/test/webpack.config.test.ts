@@ -138,7 +138,7 @@ ${Object.entries(env)
     ]);
     assert.deepStrictEqual(
       manifestPlugin.options.description,
-      `development build from git id: ${getLatestCommit().hash()}`,
+      `main build for development from git id: ${getLatestCommit().hash()}`,
     );
     assert(manifestPlugin.options.transform);
     const transformedManifest = manifestPlugin.options.transform(
@@ -154,7 +154,7 @@ ${Object.entries(env)
           { js: ['scripts/contentscript.js', 'scripts/inpage.js'] },
         ],
       },
-      'brave',
+      'chrome',
     );
     console.log('transformedManifest', transformedManifest);
     assert.deepStrictEqual(transformedManifest, {

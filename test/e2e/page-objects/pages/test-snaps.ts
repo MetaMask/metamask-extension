@@ -24,6 +24,8 @@ const inputLocator = {
   backgroundEventDateInput: '#backgroundEventDate',
   backgroundEventDurationInput: '#backgroundEventDuration',
   cancelBackgroundEventInput: '#backgroundEventId',
+  signMessageMultichainInput: '#signMessageMultichain',
+  signTypedDataMultichainInput: '#signTypedDataMultichain',
 } satisfies Record<string, string>;
 
 export const buttonLocator = {
@@ -53,6 +55,7 @@ export const buttonLocator = {
   connectUpdateNewButton: '#connectUpdateNew',
   connectWasmButton: '#connectwasm',
   connectNotificationButton: '#connectnotifications',
+  connectMultichainProviderButton: '#connectmultichain-provider',
   confirmationButton: '#sendConfirmationButton',
   createDialogButton: '#createDialogButton',
   createDialogDisabledButton: '#createDisabledDialogButton',
@@ -71,12 +74,17 @@ export const buttonLocator = {
   personalSignButton: '#signPersonalSignMessage',
   publicKeyBip44Button: '#sendBip44Test',
   connectNetworkAccessButton: '#connectnetwork-access',
+  sendCreateSessionButton: '#sendCreateSession',
+  sendMultichainChainIdButton: '#sendMultichainChainId',
+  sendMultichainGetGenesisHashButton: '#sendMultichainGetGenesisHash',
+  sendMultichainGetAccountsButton: '#sendMultichainAccounts',
   sendErrorButton: '#sendError',
   sendExpandedViewNotificationButton: '#sendExpandedViewNotification',
   sendInAppNotificationButton: '#sendInAppNotification',
   sendGetFileBase64Button: '#sendGetFileBase64Button',
   sendGetFileHexButton: '#sendGetFileHexButton',
   sendGetFileTextButton: '#sendGetFileTextButton',
+  sendGenesisBlockEthProvider: '#sendGenesisBlockEthProvider',
   sendInsightButton: '#sendInsights',
   sendGetStateButton: '#sendGetState',
   sendNetworkAccessTestButton: '#sendNetworkAccessTest',
@@ -90,6 +98,8 @@ export const buttonLocator = {
   signEd25519Bip32MessageButton: '#sendBip32-ed25519Bip32',
   signEd25519MessageButton: '#sendBip32-ed25519',
   signEntropyMessageButton: '#signEntropyMessage',
+  signMessageMultichainButton: '#signMessageMultichainButton',
+  signTypedDataMultichainButton: '#signTypedDataMultichainButton',
   signTypedDataButton: '#signTypedDataButton',
   submitClientStatusButton: '#sendClientStatusTest',
   trackErrorButton: '#trackError',
@@ -135,9 +145,12 @@ const spanLocator = {
   personalSignResultSpan: '#personalSignResult',
   preferencesResultSpan: '#preferencesResult',
   providerVersionResultSpan: '#ethproviderResult',
+  multichainProviderResultSpan: '#multichainProviderResult',
   sendManageStateResultSpan: '#sendManageStateResult',
   snapUIRenderer: '.snap-ui-renderer__content',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
+  signMessageMultichainResultSpan: '#signMessageMultichainResult',
+  signTypedDataMultichainResultSpan: '#signTypedDataMultichainResult',
   signTypedDataResultSpan: '#signTypedDataResult',
   retrieveManageStateResultSpan: '#retrieveManageStateResult',
   retrieveManageStateUnencryptedResultSpan:
@@ -156,6 +169,7 @@ const dropDownLocator = {
   bip44EntropyDropDown: '#bip44-entropy-selector',
   getEntropyDropDown: '#get-entropy-entropy-selector',
   networkDropDown: '#select-chain',
+  multichainNetworkDropdown: '#select-multichain-chain',
 } satisfies Record<string, string>;
 
 export class TestSnaps {
@@ -285,11 +299,16 @@ export class TestSnaps {
     spanSelectorId: keyof typeof spanLocator,
     partialMessage: string,
   ) {
-    const element = await this.driver.findElement(spanLocator[spanSelectorId]);
-    const spanText = await element.getAttribute('textContent');
-    if (!spanText.includes(partialMessage)) {
-      throw new Error(`Expected partial message "${partialMessage}" not found`);
-    }
+    await this.driver.waitUntil(
+      async () => {
+        const element = await this.driver.findElement(
+          spanLocator[spanSelectorId],
+        );
+        const spanText = await element.getAttribute('textContent');
+        return spanText.includes(partialMessage);
+      },
+      { timeout: veryLargeDelayMs * 2, interval: 200 },
+    );
   }
 
   async checkCount(expectedCount: string) {
@@ -368,7 +387,7 @@ export class TestSnaps {
    */
   async scrollAndSelectNetwork(
     dropDownName: keyof typeof dropDownLocator,
-    name: 'Ethereum' | 'Linea' | 'Sepolia',
+    name: 'Ethereum' | 'Linea' | 'Sepolia' | 'Solana',
   ) {
     const locator = dropDownLocator[dropDownName];
     console.log(`Select ${name} network`);

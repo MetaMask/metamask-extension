@@ -83,3 +83,6 @@ export const FIELD_ERROR_MESSAGE_KEY_MAP: Partial<
   [SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS]:
     'shieldClaimInvalidWalletAddress',
 };
+
+export const MAX_PENDING_CLAIMS = 3;
+export const MAX_DRAFT_CLAIMS = 3;

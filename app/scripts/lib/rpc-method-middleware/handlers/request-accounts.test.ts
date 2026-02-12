@@ -29,22 +29,21 @@ const createMockedHandler = () => {
   const metamaskState = {
     permissionHistory: {},
     metaMetricsId: 'metaMetricsId',
-    accountsByChainId: {
-      '0x1': {
-        '0x01': {
-          address: '0x01',
-          balance: 'null',
-        },
+    identities: {
+      '0x01': {
+        address: '0x01',
+        name: 'Account 1',
+        lastSelected: 0,
       },
-      '0x2': {
-        '0x02': {
-          address: '0x02',
-          balance: 'null',
-        },
-        '0x03': {
-          address: '0x03',
-          balance: 'null',
-        },
+      '0x02': {
+        address: '0x02',
+        name: 'Account 2',
+        lastSelected: 0,
+      },
+      '0x03': {
+        address: '0x03',
+        name: 'Account 3',
+        lastSelected: 0,
       },
     },
   };

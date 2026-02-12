@@ -6,7 +6,6 @@ import {
   getSelectedAccount,
   getTokenSortConfig,
 } from '../../../../selectors';
-import { useNetworkFilter } from '../hooks';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import {
@@ -23,7 +22,8 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';
-import { isGlobalNetworkSelectorRemoved } from '../../../../selectors/selectors';
+import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
+import { ASSET_CELL_HEIGHT } from '../constants';
 import { DeFiErrorMessage } from './cells/defi-error-message';
 import { DeFiEmptyStateMessage } from './cells/defi-empty-state';
 import DefiProtocolCell from './cells/defi-protocol-cell';
@@ -36,7 +36,6 @@ type DefiListProps = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DefiList({ onClick }: DefiListProps) {
   const t = useI18nContext();
-  const { networkFilter } = useNetworkFilter();
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const tokenSortConfig = useSelector(getTokenSortConfig);
@@ -93,9 +92,7 @@ export default function DefiList({ onClick }: DefiListProps) {
     const filteredAssets = filterAssets(defiProtocolCells, [
       {
         key: 'chainId',
-        opts: isGlobalNetworkSelectorRemoved
-          ? enabledNetworksByNamespace
-          : networkFilter,
+        opts: enabledNetworksByNamespace,
         filterCallback: 'inclusive',
       },
     ]);
@@ -105,7 +102,6 @@ export default function DefiList({ onClick }: DefiListProps) {
   }, [
     allDefiPositions,
     formatCurrencyWithMinThreshold,
-    networkFilter,
     selectedAccount,
     tokenSortConfig,
     enabledNetworksByNamespace,
@@ -134,20 +130,15 @@ export default function DefiList({ onClick }: DefiListProps) {
   }
 
   return (
-    <>
-      {sortedFilteredDefi && sortedFilteredDefi.length > 0 ? (
-        sortedFilteredDefi.map((position: DeFiProtocolPosition) => {
-          return (
-            <DefiProtocolCell
-              key={`${position.protocolId}#${position.chainId}`}
-              position={position}
-              onClick={onClick}
-            />
-          );
-        })
-      ) : (
-        <DeFiEmptyStateMessage />
+    <VirtualizedList
+      data={sortedFilteredDefi}
+      estimatedItemSize={ASSET_CELL_HEIGHT}
+      overscan={10}
+      keyExtractor={(position) => `${position.protocolId}#${position.chainId}`}
+      renderItem={({ item: position }) => (
+        <DefiProtocolCell position={position} onClick={onClick} />
       )}
-    </>
+      listEmptyComponent={<DeFiEmptyStateMessage />}
+    />
   );
 }

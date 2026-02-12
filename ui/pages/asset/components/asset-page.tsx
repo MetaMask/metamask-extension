@@ -309,6 +309,7 @@ const AssetPage = ({
           balance,
           secondary: balance ? Number(balance) : 0,
           accountType: bip44Asset?.accountType,
+          assetId: bip44Asset?.assetId ?? assetId,
         }
       : {
           ...mutichainTokenWithFiatAmount,
@@ -327,19 +328,19 @@ const AssetPage = ({
   const showTronResources = isTron && type === AssetType.native;
 
   return (
-    <Box marginTop={4} className="asset__content">
+    <Box className="asset__content">
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        paddingTop={1}
         paddingBottom={3}
         paddingLeft={2}
         paddingRight={4}
+        className="pt-4 sticky top-0 z-10 bg-background-default"
       >
         <Box display={Display.Flex}>
           <ButtonIcon
-            color={IconColor.iconAlternative}
+            color={IconColor.iconDefault}
             marginRight={1}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
@@ -378,10 +379,11 @@ const AssetPage = ({
               isSwapsChain,
               isBridgeChain,
               chainId,
+              disableSendForNonEvm: true,
             }}
           />
         ) : (
-          <TokenButtons token={updatedAsset} account={selectedAccount} />
+          <TokenButtons token={updatedAsset} disableSendForNonEvm />
         )}
       </Box>
       <Box
@@ -527,13 +529,11 @@ const AssetPage = ({
             {showUnifiedTransactionList ? (
               <UnifiedTransactionList
                 tokenAddress={address}
-                hideNetworkFilter
                 tokenChainIdOverride={chainId}
               />
             ) : (
               <TransactionList
                 tokenAddress={address}
-                hideNetworkFilter
                 overrideFilterForCurrentChain={type === AssetType.native}
               />
             )}

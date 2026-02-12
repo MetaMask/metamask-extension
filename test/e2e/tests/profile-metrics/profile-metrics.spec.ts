@@ -34,11 +34,6 @@ const mockSendFeatureFlag = (enabled: boolean) => (mockServer: Mockttp) =>
         json: [
           {
             extensionUxPna25: enabled,
-            enableMultichainAccountsState2: {
-              enabled: true,
-              featureVersion: '2',
-              minimumVersion: '12.19.0',
-            },
           },
         ],
       };
@@ -82,10 +77,9 @@ async function waitForEndpointToBeCalled(
 
 describe('Profile Metrics', function () {
   describe('when MetaMetrics is enabled, the feature flag is on, and the user acknowledged the privacy change', function () {
-    it('sends exising accounts to the API on wallet unlock after activating MetaMetrics', async function () {
+    it('sends existing accounts to the API on wallet unlock after activating MetaMetrics and an initial delay', async function () {
       await withFixtures(
         {
-          forceBip44Version: false,
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
@@ -111,7 +105,10 @@ describe('Profile Metrics', function () {
           await driver.delay(1000);
 
           const [authCall] = mockedEndpoint;
-          await waitForEndpointToBeCalled(driver, authCall);
+          // There are 2 PUT requests:
+          // 1. One for default EVM Account 1 alone
+          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added)
+          await waitForEndpointToBeCalled(driver, authCall, 2);
 
           const requests = await authCall.getSeenRequests();
           assert.equal(
@@ -126,7 +123,6 @@ describe('Profile Metrics', function () {
     it('sends new accounts to the API when they are created after wallet unlock', async function () {
       await withFixtures(
         {
-          forceBip44Version: false,
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
@@ -155,13 +151,20 @@ describe('Profile Metrics', function () {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
           await accountListPage.addMultichainAccount();
+          await accountListPage.checkAccountDisplayedInAccountList('Account 2');
+          await accountListPage.closeMultichainAccountsPage();
           const [authCall] = mockedEndpoint;
-          await waitForEndpointToBeCalled(driver, authCall, 2);
+
+          // There are 3 PUT requests:
+          // 1. One for default EVM Account 1 alone
+          // 2. One for default Solana Account 1 (which is generated after the EVM Account is added)
+          // 3. One for Account 2 (Solana + EVM Accounts in one request)
+          await waitForEndpointToBeCalled(driver, authCall, 3);
 
           const requests = await authCall.getSeenRequests();
           assert.equal(
             requests.length,
-            2,
+            3,
             'Expected two requests to the auth API.',
           );
         },

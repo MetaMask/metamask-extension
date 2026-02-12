@@ -54,10 +54,10 @@ describe('Header', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('contains network name and account name', () => {
+  it('contains wallet name and account name', () => {
     const { getByText } = render();
-    expect(getByText('Test Account')).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText('Account 1')).toBeInTheDocument();
+    expect(getByText('Wallet 1')).toBeInTheDocument();
   });
 
   it('contains account info icon', async () => {

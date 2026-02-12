@@ -372,9 +372,6 @@
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Tidak boleh hantar amaun ETH negatif."
-  },
   "networkName": {
     "message": "Nama Rangkaian"
   },
@@ -402,9 +399,6 @@
   },
   "next": {
     "message": "Seterusnya"
-  },
-  "noConversionRateAvailable": {
-    "message": "Tiada Kadar Penukaran yang Tersedia"
   },
   "noWebcamFound": {
     "message": "Webcam komputer anda tidak dijumpai. Sila cuba semula."

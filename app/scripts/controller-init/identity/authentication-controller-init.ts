@@ -8,6 +8,7 @@ import {
   AuthenticationControllerInitMessenger,
   AuthenticationControllerMessenger,
 } from '../messengers/identity';
+import { loadAuthenticationConfig } from '../../../../shared/modules/authentication';
 
 /**
  * Initialize the Authentication controller.
@@ -23,6 +24,7 @@ export const AuthenticationControllerInit: ControllerInitFunction<
   AuthenticationControllerMessenger,
   AuthenticationControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
+  const env = loadAuthenticationConfig();
   const controller = new AuthenticationController({
     messenger: controllerMessenger,
     state:
@@ -33,6 +35,9 @@ export const AuthenticationControllerInit: ControllerInitFunction<
         'MetaMetricsController:getMetaMetricsId',
       ),
       agent: Platform.EXTENSION,
+    },
+    config: {
+      env,
     },
   });
 

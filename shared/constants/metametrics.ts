@@ -1,5 +1,5 @@
 import { Json } from '@metamask/utils';
-import type { EnvironmentType } from './app';
+import type { EnvironmentType, InstallType, Platform } from './app';
 import { LedgerTransportTypes } from './hardware-wallets';
 
 type JsonWithUndefined =
@@ -504,19 +504,25 @@ export type MetaMetricsUserTraits = {
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  is_metrics_opted_in?: boolean;
+  is_metrics_opted_in?: boolean | null;
   /**
    * Does the user accepted marketing consent
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  has_marketing_consent?: boolean;
+  has_marketing_consent?: boolean | null;
   /**
    * The date the extension was installed.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   install_date_ext?: string;
+  /**
+   * The persistence storage kind currently in use.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  storage_kind?: 'data' | 'split';
   /**
    * Whether the security provider feature has been enabled.
    */
@@ -559,6 +565,16 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   rewards_referral_code_used?: string;
+  /**
+   * The platform (browser) where the extension is running.
+   */
+  platform?: Platform;
+  /**
+   * The installation type of the extension.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  install_type?: InstallType;
 };
 
 export enum MetaMetricsUserTrait {
@@ -578,6 +594,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user installed the extension.
    */
   InstallDateExt = 'install_date_ext',
+  /**
+   * Identifies which persistence storage kind is in use.
+   */
+  StorageKind = 'storage_kind',
   /**
    * Identified when the Ledger Live connection type is changed.
    */
@@ -671,6 +691,14 @@ export enum MetaMetricsUserTrait {
   HasRewardsOptedIn = 'has_rewards_opted_in',
   RewardsReferred = 'rewards_referred',
   RewardsReferralCodeUsed = 'rewards_referral_code_used',
+  /**
+   * The platform (browser) where the extension is running.
+   */
+  Platform = 'platform',
+  /**
+   * The installation type of the extension.
+   */
+  InstallType = 'install_type',
 }
 
 /**
@@ -705,6 +733,8 @@ export enum MetaMetricsEventName {
   AccountImportFailed = 'Account Import Failed',
   AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
+  AccountPinned = 'Account Pinned',
+  AccountHidden = 'Account Hidden',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
@@ -743,6 +773,9 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
+  ForceUpgradeUpdateNeededPromptViewed = 'Force Upgrade Update Needed Prompt Viewed',
+  ForceUpgradeSkipped = 'Force Upgrade Skipped',
+  ForceUpgradeClickedUpdateToLatestVersion = 'Force Upgrade Clicked Update to Latest Version',
   ImportSecretRecoveryPhrase = 'Import Secret Recovery Phrase',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
@@ -764,9 +797,18 @@ export enum MetaMetricsEventName {
   NavPermissionsOpened = 'Permissions Opened',
   NetworkConnectionBannerShown = 'Network Connection Banner Shown',
   NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
+  NetworkConnectionBannerSwitchToMetaMaskDefaultRpcClicked = 'Network Connection Banner Switch To MetaMask Default RPC Clicked',
   NetworkConnectionBannerRpcUpdated = 'Network Connection Banner RPC Updated',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
+  StorageErrorToastViewed = 'Storage Error Toast Viewed',
+  StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
+  StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  StateMigrationSucceeded = 'State Migration Succeeded',
+  StateMigrationFailed = 'State Migration Failed',
+  VaultCorruptionDetected = 'Vault Corruption Detected',
+  VaultCorruptionRestoreWalletScreenViewed = 'Vault Corruption Restore Wallet Screen Viewed',
+  VaultCorruptionRestoreWalletButtonPressed = 'Vault Corruption Restore Wallet Button Pressed',
   ViewPermissionedNetworks = 'View Permissioned Networks',
   ViewPermissionedAccounts = 'View Permissioned Accounts',
   NavNetworkMenuOpened = 'Network Menu Opened',
@@ -886,6 +928,7 @@ export enum MetaMetricsEventName {
   DeFiScreenOpened = 'DeFi Screen Opened',
   DeFiDetailsOpened = 'DeFi Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
+  PerpsScreenOpened = 'Perps Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
@@ -1032,6 +1075,7 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
+  StateMigration = 'State Migration',
   Banner = 'Banner',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */

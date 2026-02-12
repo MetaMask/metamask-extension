@@ -14,7 +14,7 @@ import {
 import CancelButton from '../cancel-button';
 import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
 import TransactionListItemDetails from '../transaction-list-item-details';
-import { ActivityListItem } from '../../multichain';
+import { ActivityListItem } from '../../multichain/activity-list-item';
 import {
   AvatarNetwork,
   AvatarNetworkSize,

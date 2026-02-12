@@ -330,9 +330,6 @@
     "message": "Dapat kang pumili ng file na ii-import.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Hindi makakapagpadala ng mga negative na halaga ng ETH."
-  },
   "networkName": {
     "message": "Pangalan ng Network"
   },
@@ -356,9 +353,6 @@
   },
   "next": {
     "message": "Susunod"
-  },
-  "noConversionRateAvailable": {
-    "message": "Walang Presyo ng Palitan na Available"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukang muli."

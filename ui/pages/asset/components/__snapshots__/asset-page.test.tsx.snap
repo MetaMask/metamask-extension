@@ -3,17 +3,17 @@
 exports[`AssetPage should render a native asset 1`] = `
 <div>
   <div
-    class="mm-box asset__content mm-box--margin-top-4"
+    class="mm-box asset__content"
   >
     <div
-      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
       >
         <button
           aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -118,8 +118,8 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/dollar.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -137,7 +137,7 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/swap-vertical.svg');"
             />
             <span
@@ -156,8 +156,8 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/send.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -175,8 +175,8 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/scan-barcode.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/received.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -289,7 +289,9 @@ exports[`AssetPage should render a native asset 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="token-increase-decrease-percentage-0x0000000000000000000000000000000000000000"
-                />
+                >
+                  -
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
@@ -422,17 +424,17 @@ exports[`AssetPage should render a native asset 1`] = `
 exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 <div>
   <div
-    class="mm-box asset__content mm-box--margin-top-4"
+    class="mm-box asset__content"
   >
     <div
-      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
       >
         <button
           aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -614,7 +616,11 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
             >
-              T
+              <img
+                alt="static-logo"
+                class="mm-avatar-token__token-image"
+                src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x309375769e79382befdec5bdab51063aebdc4936.png"
+              />
             </div>
             <div
               class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
@@ -668,7 +674,9 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="token-increase-decrease-percentage-0x309375769E79382beFDEc5bdab51063AeBDC4936"
-                />
+                >
+                  -
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
@@ -869,17 +877,17 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 exports[`AssetPage should render an ERC20 token with prices 1`] = `
 <div>
   <div
-    class="mm-box asset__content mm-box--margin-top-4"
+    class="mm-box asset__content"
   >
     <div
-      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
       >
         <button
           aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -1058,7 +1066,11 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
             >
-              T
+              <img
+                alt="static-logo"
+                class="mm-avatar-token__token-image"
+                src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xe4246b1ac0ba6839d9efa41a8a30ae3007185f55.png"
+              />
             </div>
             <div
               class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
@@ -1112,7 +1124,9 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="token-increase-decrease-percentage-0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55"
-                />
+                >
+                  -
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"

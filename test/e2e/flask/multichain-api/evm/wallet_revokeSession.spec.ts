@@ -1,14 +1,10 @@
 import { strict as assert } from 'assert';
 import { pick } from 'lodash';
-import {
-  ACCOUNT_1,
-  ACCOUNT_2,
-  largeDelayMs,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
+import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../constants';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
+import { largeDelayMs, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -20,7 +16,10 @@ import {
 
 describe('Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
-  const CAIP_ACCOUNT_IDS = [`eip155:0:${ACCOUNT_1}`, `eip155:0:${ACCOUNT_2}`];
+  const CAIP_ACCOUNT_IDS = [
+    toEvmCaipAccountId(ACCOUNT_1),
+    toEvmCaipAccountId(ACCOUNT_2),
+  ];
   it('Should return empty object from `wallet_getSession` call', async function () {
     await withFixtures(
       {

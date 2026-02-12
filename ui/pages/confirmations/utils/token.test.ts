@@ -8,6 +8,7 @@ import {
   fetchAllTokenDetails,
   fetchErc20Decimals,
   getTokenValueFromRecord,
+  memoizedGetTokenStandardAndDetailsByChain,
 } from './token';
 
 const MOCK_ADDRESS = '0x514910771af9ca656af840dff83e8264ecf986ca';
@@ -53,6 +54,79 @@ describe('fetchErc20Decimals', () => {
 
     await fetchErc20Decimals('0xDifferentAddress');
     expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('memoizedGetTokenStandardAndDetailsByChain', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Clear the memoization cache by resetting the module
+    memoizedGetTokenStandardAndDetailsByChain.cache.clear?.();
+  });
+
+  it('should return empty object if no token address is provided', async () => {
+    const result = await memoizedGetTokenStandardAndDetailsByChain(undefined);
+    expect(result).toEqual({});
+    expect(getTokenStandardAndDetailsByChain).not.toHaveBeenCalled();
+  });
+
+  it('should return token details for a given token address and chainId', async () => {
+    const mockDetails = {
+      decimals: '6',
+      standard: 'ERC20',
+      symbol: 'USDC',
+    };
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue(
+      mockDetails,
+    );
+
+    const result = await memoizedGetTokenStandardAndDetailsByChain(
+      MOCK_ADDRESS,
+      MOCK_CHAIN_ID,
+    );
+
+    expect(result).toEqual(mockDetails);
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
+      MOCK_ADDRESS,
+      undefined,
+      undefined,
+      MOCK_CHAIN_ID,
+    );
+  });
+
+  it('should use different cache entries for same address on different chains', async () => {
+    const mockDetailsChain1 = { decimals: '6', standard: 'ERC20' };
+    const mockDetailsChain2 = { decimals: '18', standard: 'ERC20' };
+
+    (getTokenStandardAndDetailsByChain as jest.Mock)
+      .mockResolvedValueOnce(mockDetailsChain1)
+      .mockResolvedValueOnce(mockDetailsChain2);
+
+    const result1 = await memoizedGetTokenStandardAndDetailsByChain(
+      MOCK_ADDRESS,
+      '0x1',
+    );
+    const result2 = await memoizedGetTokenStandardAndDetailsByChain(
+      MOCK_ADDRESS,
+      '0x38',
+    );
+
+    expect(result1).toEqual(mockDetailsChain1);
+    expect(result2).toEqual(mockDetailsChain2);
+    expect(getTokenStandardAndDetailsByChain).toHaveBeenCalledTimes(2);
+  });
+
+  it('should return empty object when getTokenStandardAndDetailsByChain throws', async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockRejectedValue(
+      new Error('Network error'),
+    );
+
+    const result = await memoizedGetTokenStandardAndDetailsByChain(
+      MOCK_ADDRESS,
+      MOCK_CHAIN_ID,
+    );
+
+    expect(result).toEqual({});
   });
 });
 

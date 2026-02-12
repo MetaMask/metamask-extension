@@ -56,6 +56,8 @@ import {
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
   getNetworkEnablementControllerInitMessenger,
+  getAssetsControllerMessenger,
+  getAssetsControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -93,6 +95,7 @@ import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
 } from './subscription';
+import { getConnectivityControllerMessenger } from './connectivity';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -112,6 +115,10 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
 } from './token-balances-controller-messenger';
+import {
+  getStaticAssetsControllerInitMessenger,
+  getStaticAssetsControllerMessenger,
+} from './static-assets-controller-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
 import {
   getCurrencyRateControllerInitMessenger,
@@ -206,6 +213,7 @@ import {
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
+import { getStorageServiceMessenger } from './storage-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -276,6 +284,8 @@ export {
 } from './ens-controller-messenger';
 export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
+export type { StorageServiceMessenger } from './storage-service-messenger';
+export { getStorageServiceMessenger } from './storage-service-messenger';
 export type {
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger,
@@ -298,10 +308,7 @@ export type { MetaMetricsControllerMessenger } from './metametrics-controller-me
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { MetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
-export type {
-  NetworkControllerMessenger,
-  NetworkControllerInitMessenger,
-} from './network-controller-messenger';
+export type { NetworkControllerInitMessenger } from './network-controller-messenger';
 export {
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
@@ -374,6 +381,14 @@ export {
   getTokenBalancesControllerMessenger,
   getTokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
+export type {
+  StaticAssetsControllerMessenger,
+  StaticAssetsControllerInitMessenger,
+} from './static-assets-controller-messenger';
+export {
+  getStaticAssetsControllerMessenger,
+  getStaticAssetsControllerInitMessenger,
+} from './static-assets-controller-messenger';
 export type {
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
@@ -451,6 +466,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getAppStateControllerMessenger,
     getInitMessenger: noop,
   },
+  AssetsController: {
+    getMessenger: getAssetsControllerMessenger,
+    getInitMessenger: getAssetsControllerInitMessenger,
+  },
   AuthenticationController: {
     getMessenger: getAuthenticationControllerMessenger,
     getInitMessenger: getAuthenticationControllerInitMessenger,
@@ -461,6 +480,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   BridgeStatusController: {
     getMessenger: getBridgeStatusControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ConnectivityController: {
+    getMessenger: getConnectivityControllerMessenger,
     getInitMessenger: noop,
   },
   ClaimsController: {
@@ -509,6 +532,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ErrorReportingService: {
     getMessenger: getErrorReportingServiceMessenger,
+    getInitMessenger: noop,
+  },
+  StorageService: {
+    getMessenger: getStorageServiceMessenger,
     getInitMessenger: noop,
   },
   ExecutionService: {
@@ -656,6 +683,10 @@ export const CONTROLLER_MESSENGERS = {
   SnapKeyringBuilder: {
     getMessenger: getSnapKeyringBuilderMessenger,
     getInitMessenger: getSnapKeyringBuilderInitMessenger,
+  },
+  StaticAssetsController: {
+    getMessenger: getStaticAssetsControllerMessenger,
+    getInitMessenger: getStaticAssetsControllerInitMessenger,
   },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,

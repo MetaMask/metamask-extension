@@ -34,15 +34,16 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
+import { getVariables, resolveEnvironment } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
-import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
 if (args.dryRun) {
-  console.error(getDryRunMessage(args, features));
+  const resolvedEnv = resolveEnvironment(args);
+  console.error(getDryRunMessage(args, features, resolvedEnv));
   exit(0);
 }
 
@@ -57,7 +58,8 @@ const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
-const { variables, safeVariables, version } = getVariables(args, buildTypes);
+const { variables, safeVariables, version, buildEnvVarDeclarations } =
+  getVariables(args, buildTypes);
 const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
@@ -119,7 +121,7 @@ const plugins: WebpackPluginInstance[] = [
     // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: MANIFEST_VERSION,
     description: commitHash
-      ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
+      ? `${args.type} build for ${args.env} from git id: ${commitHash.substring(0, 8)}`
       : null,
     version: version.version,
     versionName: version.versionName,
@@ -141,6 +143,7 @@ const plugins: WebpackPluginInstance[] = [
           },
         }
       : {}),
+    buildType: args.type,
   }),
   // use ProvidePlugin to polyfill *global* node variables
   new ProvidePlugin({
@@ -232,6 +235,12 @@ const reactCompilerLoader = getReactCompilerLoader(
   args.reactCompilerVerbose,
   args.reactCompilerDebug,
 );
+const envValidationLoader = args.validateEnv
+  ? {
+      loader: require.resolve('./utils/loaders/envValidationLoader'),
+      options: { declarations: buildEnvVarDeclarations },
+    }
+  : null;
 
 const config = {
   entry,
@@ -343,13 +352,13 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, codeFenceLoader],
+        use: [tsxLoader, envValidationLoader, codeFenceLoader],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, codeFenceLoader],
+        use: [jsxLoader, envValidationLoader, codeFenceLoader],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.

@@ -51,8 +51,7 @@ const SwapTabs = React.memo(
 
     return (
       <Tabs
-        defaultActiveTabKey={activeTabKey}
-        activeTabKey={activeTabKey}
+        activeTab={activeTabKey}
         onTabClick={onTabClick}
         tabListProps={{
           className: 'dapp-swap__tabs',
@@ -177,6 +176,7 @@ const DappSwapComparisonInner = ({
           padding={3}
           role="button"
           onClick={updateSwapToSelectedQuote}
+          data-testid="dapp-swap-banner"
         >
           {dappTypeSelected && (
             <>

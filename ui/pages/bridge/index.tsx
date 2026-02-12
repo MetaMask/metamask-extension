@@ -44,6 +44,7 @@ import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
+import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -69,6 +70,9 @@ const CrossChainSwap = () => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
+
+  // Refresh smart transactions liveness for the source chain
+  useRefreshSmartTransactionsLiveness(fromChain?.chainId);
 
   // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
   const shouldFetchGasEstimates =

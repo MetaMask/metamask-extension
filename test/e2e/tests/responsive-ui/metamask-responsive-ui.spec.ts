@@ -12,8 +12,6 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
-
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
   it('Creating a new wallet', async function () {
@@ -67,6 +65,9 @@ describe('MetaMask Responsive UI', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: { showTestNetworks: true },
+          })
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.LOCALHOST]: true,
@@ -85,23 +86,21 @@ describe('MetaMask Responsive UI', function (this: Suite) {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           amount: '1',
         });
-        await new HomePage(driver).checkPageIsLoaded();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.goToTokensTab();
 
         // Network Selector
-        if (isGlobalNetworkSelectorRemoved) {
-          await driver.clickElement('[data-testid="sort-by-networks"]');
-          await driver.clickElement({
-            text: 'Custom',
-            tag: 'button',
-          });
-          await driver.clickElement('[data-testid="Localhost 8545"]');
-          await driver.clickElement(
-            '[data-testid="modal-header-close-button"]',
-          );
-        }
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="Localhost 8545"]');
 
         // check confirmed transaction is displayed in activity list
         const activityList = new ActivityListPage(driver);
+        await activityList.openActivityTab();
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAmountInActivity('-1 ETH');
       },

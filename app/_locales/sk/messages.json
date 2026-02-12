@@ -360,9 +360,6 @@
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Nelze odeslat zápornou částku ETH."
-  },
   "networkName": {
     "message": "Názov siete"
   },
@@ -390,9 +387,6 @@
   },
   "next": {
     "message": "Další"
-  },
-  "noConversionRateAvailable": {
-    "message": "Nie je k dispozícii žiadna sadzba konverzie"
   },
   "noWebcamFound": {
     "message": "Webová kamera vášho počítača sa nenašla. Skúste znova."

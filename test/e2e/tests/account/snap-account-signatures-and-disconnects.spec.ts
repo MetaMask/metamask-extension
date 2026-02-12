@@ -1,14 +1,15 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import { DAPP_PATH } from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import {
   signTypedDataV3WithSnapAccount,
   signTypedDataV4WithSnapAccount,
@@ -50,14 +51,16 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         // Open the Test Dapp and connect
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.connectAccount({ publicAddress: newPublicKey });
+        await connectAccountToTestDapp(driver, {
+          publicAddress: newPublicKey,
+        });
 
         // SignedTypedDataV3 with Test Dapp
         await signTypedDataV3WithSnapAccount(driver, newPublicKey, false, true);
 
         // Disconnect from Test Dapp and reconnect to Test Dapp
         await testDapp.disconnectAccount(newPublicKey);
-        await testDapp.connectAccount({
+        await connectAccountToTestDapp(driver, {
           publicAddress: newPublicKey,
         });
 

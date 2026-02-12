@@ -48,7 +48,7 @@ const CreatePasswordForm = ({
   const [password, setPassword] = useState('');
   const [termsChecked, setTermsChecked] = useState(false);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

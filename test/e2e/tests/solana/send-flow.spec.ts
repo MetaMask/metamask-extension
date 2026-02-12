@@ -2,10 +2,9 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 
 import SendPage from '../../page-objects/pages/send/send-page';
-import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { mockSendRedesignFeatureFlag } from '../send/common';
 import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
@@ -18,7 +17,6 @@ describe('Send flow', function (this: Suite) {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockZeroBalance: true,
-        withCustomMocks: mockSendRedesignFeatureFlag,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -54,7 +52,6 @@ describe('Send flow', function (this: Suite) {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: false,
         mockGetTransactionSuccess: true,
-        withCustomMocks: mockSendRedesignFeatureFlag,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -102,7 +99,6 @@ describe('Send flow', function (this: Suite) {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockGetTransactionSuccess: true,
-        withCustomMocks: mockSendRedesignFeatureFlag,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -150,7 +146,6 @@ describe('Send flow', function (this: Suite) {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockGetTransactionFailed: true,
-        withCustomMocks: mockSendRedesignFeatureFlag,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
