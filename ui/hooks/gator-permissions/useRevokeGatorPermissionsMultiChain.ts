@@ -6,8 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
+  PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
 import {
   addTransaction,
@@ -30,7 +29,7 @@ export type RevokeGatorPermissionsMultiChainResults = Record<
   Hex,
   {
     revoked: TransactionMeta[];
-    skipped: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[];
+    skipped: PermissionInfoWithMetadata[];
     errors: Error[];
   }
 >;
@@ -63,7 +62,7 @@ export function useRevokeGatorPermissionsMultiChain({
     async (
       permissionsByChain: Record<
         Hex,
-        StoredGatorPermissionSanitized<PermissionTypesWithCustom>[]
+        PermissionInfoWithMetadata[]
       >,
     ): Promise<RevokeGatorPermissionsMultiChainResults> => {
       const results: RevokeGatorPermissionsMultiChainResults = {};

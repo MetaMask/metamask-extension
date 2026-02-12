@@ -23,8 +23,7 @@ import {
   Erc20TokenStreamPermission,
   NativeTokenPeriodicPermission,
   NativeTokenStreamPermission,
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
+  PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
@@ -118,7 +117,7 @@ type ReviewGatorPermissionItemProps = {
   /**
    * The gator permission to display
    */
-  gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>;
+  gatorPermission: PermissionInfoWithMetadata;
 
   /**
    * The function to call when the revoke is clicked

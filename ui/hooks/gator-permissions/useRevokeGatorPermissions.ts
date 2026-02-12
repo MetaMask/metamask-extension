@@ -6,8 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
-  PermissionTypesWithCustom,
-  StoredGatorPermissionSanitized,
+  PermissionInfoWithMetadata,
 } from '@metamask/gator-permissions-controller';
 import { getInternalAccountByAddress } from '../../selectors';
 import {
@@ -51,29 +50,38 @@ export function useRevokeGatorPermissions({
   const store = useStore();
 
   /**
-   * Asserts that the gator permission(s) is not empty.
-   * When an single permission is provided, empty means undefined.
-   * When an array of permissions is provided, empty means an empty array.
+   * Asserts that the gator permissions array is not empty.
    *
-   * @param dataToAssert - The gator permission(s) to assert.
-   * @throws An error if the gator permission(s) is empty.
+   * @param gatorPermissions - The gator permissions array to assert.
+   * @throws An error if the gator permissions array is empty, or if any of the gator permissions are undefined.
+   */
+  const assertNotEmptyGatorPermissionArray = useCallback(
+    (
+      gatorPermissions: PermissionInfoWithMetadata[],
+    ) => {
+
+      if(!gatorPermissions || gatorPermissions.length === 0 ) {
+        throw new Error('No gator permissions provided');
+      }
+
+      gatorPermissions.forEach(assertNotEmptyGatorPermission);
+    },
+    [],
+  );
+
+  /**
+   * Asserts that the gator permission is defined.
+  *
+   * @param dataToAssert - The gator permission to assert.
+   * @throws An error if the gator permission is empty.
    */
   const assertNotEmptyGatorPermission = useCallback(
     (
       dataToAssert:
-        | StoredGatorPermissionSanitized<PermissionTypesWithCustom>
-        | StoredGatorPermissionSanitized<PermissionTypesWithCustom>[],
+      PermissionInfoWithMetadata,
     ) => {
-      if (Array.isArray(dataToAssert)) {
-        if (dataToAssert.length === 0) {
-          throw new Error('No gator permissions provided');
-        }
 
-        // Make sure all gator permissions are not empty
-        for (const gatorPermission of dataToAssert) {
-          assertNotEmptyGatorPermission(gatorPermission);
-        }
-      } else if (!dataToAssert) {
+      if(!dataToAssert) {
         throw new Error('No gator permission provided');
       }
     },
@@ -88,7 +96,7 @@ export function useRevokeGatorPermissions({
    */
   const assertCorrectChainId = useCallback(
     (
-      gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
+      gatorPermission: PermissionInfoWithMetadata,
     ) => {
       if (gatorPermission.permissionResponse.chainId !== chainId) {
         throw new Error('Chain ID does not match');
@@ -105,7 +113,7 @@ export function useRevokeGatorPermissions({
    */
   const buildRevokeGatorPermissionArgs = useCallback(
     (
-      gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
+      gatorPermission: PermissionInfoWithMetadata,
     ): RevokeGatorPermissionArgs => {
       const { permissionResponse } = gatorPermission;
       const internalAccount = getInternalAccountByAddress(
@@ -134,7 +142,7 @@ export function useRevokeGatorPermissions({
    */
   const addRevokeGatorPermissionTransaction = useCallback(
     async (
-      gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
+      gatorPermission: PermissionInfoWithMetadata,
     ): Promise<TransactionMeta | null> => {
       const permissionChainId = gatorPermission.permissionResponse.chainId;
 
@@ -213,7 +221,7 @@ export function useRevokeGatorPermissions({
    */
   const revokeGatorPermission = useCallback(
     async (
-      gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
+      gatorPermission: PermissionInfoWithMetadata,
     ): Promise<TransactionMeta | null> => {
       assertNotEmptyGatorPermission(gatorPermission);
       assertCorrectChainId(gatorPermission);
@@ -242,9 +250,9 @@ export function useRevokeGatorPermissions({
    */
   const revokeGatorPermissionBatch = useCallback(
     async (
-      gatorPermissions: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[],
+      gatorPermissions: PermissionInfoWithMetadata[],
     ): Promise<TransactionMeta[]> => {
-      assertNotEmptyGatorPermission(gatorPermissions);
+      assertNotEmptyGatorPermissionArray(gatorPermissions);
 
       // Make sure all gator permissions are on the same chain before revoking
       for (const gatorPermission of gatorPermissions) {
