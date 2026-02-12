@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable react-compiler/react-compiler */
 import React, {
   useCallback,
   useContext,
@@ -5,10 +7,13 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { upperFirst } from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { KeyringObject } from '@metamask/keyring-controller';
 import * as actions from '../../../store/actions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getErrorMessage as toErrorMessage } from '../../../../shared/modules/error';
 import {
   getMetaMaskAccounts,
   getRpcPrefsForCurrentProvider,
@@ -51,14 +56,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
-import { KeyringObject } from '@metamask/keyring-controller';
-import { capitalizeStr, toErrorMessage } from './utils';
-
-type HardwareAccount = {
-  address: string;
-  balance: string;
-  index: number;
-};
 
 export const LEDGER_HD_PATHS = [
   { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
@@ -89,6 +86,12 @@ const HD_PATHS: Record<string, { name: string; value: string }[]> = {
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
   oneKey: TREZOR_HD_PATHS,
+};
+
+type HardwareAccount = {
+  address: string;
+  balance: string;
+  index: number;
 };
 
 const getErrorMessage = (
@@ -184,7 +187,7 @@ const ConnectHardwareForm = () => {
   }, [dispatch, t]);
 
   const getPage = useCallback(
-    (
+    async (
       deviceName: string,
       page: number,
       hdPath: string,
@@ -193,83 +196,78 @@ const ConnectHardwareForm = () => {
       // The actions.ts type declares `page` as string, but the background
       // handler expects a number (0 = first, 1 = next, -1 = previous).
       // The original JS code always passed numbers.
-      dispatch(
-        actions.connectHardware(
-          deviceName as HardwareDeviceNames,
-          page as unknown as string,
-          hdPath,
-          loadHid ?? false,
-          t as (key: string) => string,
-        ),
-      )
-        .then(
-          (nextAccounts: { address: string; index?: number }[]) => {
-            if (nextAccounts.length) {
-              if (hardwareAccounts.length === 0 && !unlocked) {
-                showTemporaryAlert();
-              }
+      try {
+        const nextAccounts = (await dispatch(
+          actions.connectHardware(
+            deviceName as HardwareDeviceNames,
+            page as unknown as string,
+            hdPath,
+            loadHid ?? false,
+            t as (key: string) => string,
+          ),
+        )) as { address: string; index?: number }[];
 
-              const newAccounts: HardwareAccount[] = nextAccounts.map(
-                (account, idx) => {
-                  const normalizedAddress = account.address.toLowerCase();
-                  const balanceValue =
-                    accounts[normalizedAddress]?.balance || null;
-                  return {
-                    address: account.address,
-                    index: account.index ?? idx,
-                    balance: balanceValue
-                      ? formatBalance(balanceValue, 6)
-                      : '...',
-                  };
-                },
-              );
-
-              setHardwareAccounts(newAccounts);
-              setUnlocked(true);
-              setDevice(deviceName);
-              setError(null);
-            }
-          },
-        )
-        .catch((e: unknown) => {
-          const errorMessage = toErrorMessage(e);
-          const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
-            (errorCode) => errorMessage.includes(errorCode),
-          );
-          if (errorMessage === 'Window blocked') {
-            setBrowserSupported(false);
-            setError(null);
-          } else if (errorMessage.includes(U2F_ERROR)) {
-            setError(U2F_ERROR);
-          } else if (
-            errorMessage === 'LEDGER_LOCKED' ||
-            errorMessage === 'LEDGER_WRONG_APP'
-          ) {
-            setError(t('ledgerLocked') as string);
-          } else if (errorMessage.includes('timeout')) {
-            setError(t('ledgerTimeout') as string);
-          } else if (ledgerErrorCode) {
-            setError(
-              `${errorMessage} - ${getErrorMessage(ledgerErrorCode, t as (key: string) => string)}`,
-            );
-          } else if (
-            errorMessage
-              .toLowerCase()
-              .includes(
-                'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
-              )
-          ) {
-            setError(t('QRHardwarePubkeyAccountOutOfRange') as string);
-          } else if (
-            errorMessage !== 'Window closed' &&
-            errorMessage !== 'Popup closed' &&
-            !errorMessage
-              .toLowerCase()
-              .includes('KeystoneError#sync_cancel'.toLowerCase())
-          ) {
-            setError(errorMessage);
+        if (nextAccounts.length) {
+          if (hardwareAccounts.length === 0 && !unlocked) {
+            showTemporaryAlert();
           }
-        });
+
+          const newAccounts: HardwareAccount[] = nextAccounts.map(
+            (account, idx) => {
+              const normalizedAddress = account.address.toLowerCase();
+              const balanceValue = accounts[normalizedAddress]?.balance || null;
+              return {
+                address: account.address,
+                index: account.index ?? idx,
+                balance: balanceValue ? formatBalance(balanceValue, 6) : '...',
+              };
+            },
+          );
+
+          setHardwareAccounts(newAccounts);
+          setUnlocked(true);
+          setDevice(deviceName);
+          setError(null);
+        }
+      } catch (e: unknown) {
+        const errorMessage = toErrorMessage(e);
+        const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
+          (errorCode) => errorMessage.includes(errorCode),
+        );
+        if (errorMessage === 'Window blocked') {
+          setBrowserSupported(false);
+          setError(null);
+        } else if (errorMessage.includes(U2F_ERROR)) {
+          setError(U2F_ERROR);
+        } else if (
+          errorMessage === 'LEDGER_LOCKED' ||
+          errorMessage === 'LEDGER_WRONG_APP'
+        ) {
+          setError(t('ledgerLocked') as string);
+        } else if (errorMessage.includes('timeout')) {
+          setError(t('ledgerTimeout') as string);
+        } else if (ledgerErrorCode) {
+          setError(
+            `${errorMessage} - ${getErrorMessage(ledgerErrorCode, t as (key: string) => string)}`,
+          );
+        } else if (
+          errorMessage
+            .toLowerCase()
+            .includes(
+              'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
+            )
+        ) {
+          setError(t('QRHardwarePubkeyAccountOutOfRange') as string);
+        } else if (
+          errorMessage !== 'Window closed' &&
+          errorMessage !== 'Popup closed' &&
+          !errorMessage
+            .toLowerCase()
+            .includes('KeystoneError#sync_cancel'.toLowerCase())
+        ) {
+          setError(errorMessage);
+        }
+      }
     },
     [
       accounts,
@@ -301,10 +299,10 @@ const ConnectHardwareForm = () => {
       }
     };
 
-    if (/Firefox/.test(window.navigator.userAgent)) {
+    if (/Firefox/u.test(window.navigator.userAgent)) {
       setIsFirefox(true);
     }
-    void checkIfUnlocked();
+    checkIfUnlocked().catch(() => undefined);
     // We only want this to run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -321,7 +319,7 @@ const ConnectHardwareForm = () => {
       trackEvent({
         event: MetaMetricsEventName.ConnectHardwareWalletClicked,
         properties: {
-          device_type: capitalizeStr(nextDevice),
+          device_type: upperFirst(nextDevice),
           connected_device_count: deviceCount,
         },
       });
@@ -370,14 +368,12 @@ const ConnectHardwareForm = () => {
   const onForgetDevice = useCallback(
     async (deviceName: string, hdPath: string) => {
       try {
-        await dispatch(
-          actions.forgetDevice(deviceName as HardwareDeviceNames),
-        );
+        await dispatch(actions.forgetDevice(deviceName as HardwareDeviceNames));
 
         trackEvent({
           event: MetaMetricsEventName.HardwareWalletForgotten,
           properties: {
-            device_type: capitalizeStr(deviceName),
+            device_type: upperFirst(deviceName),
           },
         });
 
@@ -392,7 +388,7 @@ const ConnectHardwareForm = () => {
           event: MetaMetricsEventName.HardwareWalletConnectionFailed,
           properties: {
             hd_path: hdPath,
-            device_type: capitalizeStr(deviceName),
+            device_type: upperFirst(deviceName),
             error: errorMessage,
           },
         });
@@ -441,15 +437,13 @@ const ConnectHardwareForm = () => {
         const isAlreadyConnected = connectedDevices.some(
           (keyring) =>
             keyring.type ===
-            DEVICE_KEYRING_MAP[
-              deviceName as keyof typeof DEVICE_KEYRING_MAP
-            ],
+            DEVICE_KEYRING_MAP[deviceName as keyof typeof DEVICE_KEYRING_MAP],
         );
 
         trackEvent({
           event: MetaMetricsEventName.HardwareWalletAccountConnected,
           properties: {
-            device_type: capitalizeStr(deviceName),
+            device_type: upperFirst(deviceName),
             hd_path: path,
             connected_device_count: isAlreadyConnected
               ? deviceCount
@@ -477,7 +471,7 @@ const ConnectHardwareForm = () => {
           event: MetaMetricsEventName.HardwareWalletConnectionFailed,
           properties: {
             hd_path: path,
-            device_type: capitalizeStr(deviceName),
+            device_type: upperFirst(deviceName),
             error: errorMessage,
           },
         });
@@ -555,10 +549,7 @@ const ConnectHardwareForm = () => {
       );
     }
     return error ? (
-      <Text
-        color={TextColor.errorDefault}
-        className="hw-connect__error"
-      >
+      <Text color={TextColor.errorDefault} className="hw-connect__error">
         {error}
       </Text>
     ) : null;

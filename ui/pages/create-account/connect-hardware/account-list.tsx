@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { upperFirst } from 'lodash';
 
 import {
   Box,
@@ -21,9 +22,7 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import {
   AlignItems,
   Display,
-  FlexDirection,
   IconColor,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
@@ -33,7 +32,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { capitalizeStr } from './utils';
 
 type HardwareAccount = {
   address: string;
@@ -89,12 +87,11 @@ const AccountList = ({
     trackEvent({
       event: MetaMetricsEventName.ConnectHardwareWalletAccountSelectorViewed,
       properties: {
-        device_type: capitalizeStr(device),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        device_type: upperFirst(device),
       },
     });
-    // Only fire on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [device, trackEvent]);
 
   const goToNextPage = useCallback(() => {
     // If we have < 5 accounts, it's restricted by BIP-44
@@ -127,11 +124,7 @@ const AccountList = ({
       >
         {t('selectHdPath')}
       </Text>
-      <Text
-        as="p"
-        variant={TextVariant.bodyMd}
-        className="hw-connect__msg"
-      >
+      <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
         {t('selectPathHelp')}
       </Text>
       <Box className="hw-connect__hdPath">
@@ -235,7 +228,9 @@ const AccountList = ({
                   event: 'Clicked Block Explorer Link',
                   properties: {
                     actions: 'Hardware Connect',
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     link_type: 'Account Tracker',
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     block_explorer_domain: blockExplorerDomain,
                   },
                 });
@@ -260,10 +255,7 @@ const AccountList = ({
   );
 
   const renderPagination = () => (
-    <Box
-      display={Display.Flex}
-      className="hw-list-pagination"
-    >
+    <Box display={Display.Flex} className="hw-list-pagination">
       <Button
         variant={ButtonVariant.Link}
         className="hw-list-pagination__button"

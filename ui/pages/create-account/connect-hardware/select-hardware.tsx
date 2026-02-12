@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import React, { useCallback, useContext, useState } from 'react';
+import { upperFirst } from 'lodash';
 import {
   Text,
   Box,
@@ -43,7 +44,6 @@ import {
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { capitalizeStr } from './utils';
 
 // Not all browsers have usb support. In particular, Firefox does
 // not support usb. More information on that can be found here:
@@ -60,8 +60,6 @@ const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 const LEDGER_FIREFOX_NOT_SUPPORTED_URL =
   'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/';
-
-// ─── Data-driven configuration ─────────────────────────────────────────────
 
 type DeviceButtonConfig = {
   device: HardwareDeviceNames;
@@ -225,8 +223,6 @@ const QR_BRAND_CONFIG: QrBrandConfig[] = [
   },
 ];
 
-// ─── Component ──────────────────────────────────────────────────────────────
-
 type SelectHardwareProps = {
   onCancel: () => void;
   connectToHardwareWallet: (device: string) => void;
@@ -250,8 +246,10 @@ const SelectHardware = ({
       trackEvent({
         event: MetaMetricsEventName.HardwareWalletMarketingButtonClicked,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           button_type: type,
-          device_type: capitalizeStr(device),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          device_type: upperFirst(device),
         },
       });
     },
@@ -282,8 +280,6 @@ const SelectHardware = ({
     }
     return null;
   }, [connectToHardwareWallet, selectedDevice]);
-
-  // ─── Reusable sub-components ────────────────────────────────────────────
 
   const renderDeviceButton = ({
     device: deviceName,
@@ -375,8 +371,6 @@ const SelectHardware = ({
       </Button>
     </>
   );
-
-  // ─── Section renderers ──────────────────────────────────────────────────
 
   const renderDeviceButtons = () => (
     <>
@@ -572,11 +566,7 @@ const SelectHardware = ({
           config.buyLink,
           config.tutorialLink,
         )}
-        <Text
-          as="p"
-          variant={TextVariant.bodyMd}
-          className="hw-connect__msg"
-        >
+        <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
           {t(config.messageKey, [
             <ButtonLink
               className="hw-connect__msg-link"
@@ -612,11 +602,7 @@ const SelectHardware = ({
         >
           {t('QRHardwareWalletSteps1Title')}
         </Text>
-        <Text
-          as="p"
-          variant={TextVariant.bodyMd}
-          className="hw-connect__msg"
-        >
+        <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
           {t('QRHardwareWalletSteps1Description')}
         </Text>
       </Box>
