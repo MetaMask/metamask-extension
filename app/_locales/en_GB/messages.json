@@ -3073,21 +3073,15 @@
     "message": "Continue to make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Your Ledger is unlocked"
   },
-  "hardwareWalletErrorRecoveryUnlock3": {
+  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
     "message": "The Ethereum app is open on your Ledger"
   },
-  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction3": {
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
     "message": "You’ve turned on Blind Signing in Settings"
   },
   "hardwareWalletErrorTitleConnectYourDevice": {
@@ -3136,6 +3130,9 @@
   },
   "hardwareWalletsMsg": {
     "message": "Select a hardware wallet you would like to use with MetaMask."
+  },
+  "helpAndSettings": {
+    "message": "Help and settings"
   },
   "here": {
     "message": "here",
@@ -3722,6 +3719,9 @@
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
   },
+  "logOut": {
+    "message": "Log out"
+  },
   "loginErrorConnectButton": {
     "message": "Try again"
   },
@@ -3783,6 +3783,9 @@
   "makeSureNoOneWatching": {
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
+  "manage": {
+    "message": "Manage"
   },
   "manageDefaultSettings": {
     "message": "Manage default settings"
