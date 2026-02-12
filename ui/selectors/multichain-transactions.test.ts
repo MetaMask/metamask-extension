@@ -1,6 +1,6 @@
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { Transaction } from '@metamask/keyring-api';
-import { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/store';
 import { getSelectedAccountGroupMultichainTransactions } from './multichain-transactions';
 
 // Mock account-tree selectors used by the selector under test

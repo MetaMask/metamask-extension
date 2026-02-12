@@ -15,6 +15,7 @@ import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
+import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
 import ErrorPage from './error-page/error-page.component';
 
 import Routes from './routes';
@@ -61,11 +62,13 @@ class Index extends PureComponent {
                     <AssetPollingProvider>
                       <MetamaskIdentityProvider>
                         <MetamaskNotificationsProvider>
-                          <ShieldSubscriptionProvider>
-                            <RiveWasmProvider>
-                              <Routes />
-                            </RiveWasmProvider>
-                          </ShieldSubscriptionProvider>
+                          <HardwareWalletErrorProvider>
+                            <ShieldSubscriptionProvider>
+                              <RiveWasmProvider>
+                                <Routes />
+                              </RiveWasmProvider>
+                            </ShieldSubscriptionProvider>
+                          </HardwareWalletErrorProvider>
                         </MetamaskNotificationsProvider>
                       </MetamaskIdentityProvider>
                     </AssetPollingProvider>

@@ -1,4 +1,4 @@
-name: Update onboarding fixture
+name: Update E2E fixtures
 
 on:
   issue_comment:
@@ -118,8 +118,8 @@ jobs:
           path: build-dist-browserify
           key: dist-${{ steps.commit-sha.outputs.COMMIT_SHA }}
 
-  update-onboarding-fixture:
-    name: Update onboarding fixture
+  update-fixtures:
+    name: Update E2E fixtures
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
@@ -167,7 +167,7 @@ jobs:
           cp -R build-dist-browserify/dist ./dist
           cp -R build-dist-browserify/builds ./builds
 
-      - name: Update onboarding fixture
+      - name: Update E2E fixtures
         run: |
           Xvfb -ac :99 -screen 0 1280x1024x16 &
           yarn test:e2e:single test/e2e/dist/wallet-fixture-export.spec.ts --browser chrome --retries 1
@@ -185,17 +185,19 @@ jobs:
       - name: Cache updated fixture
         uses: actions/cache/save@v5
         with:
-          path: test/e2e/fixtures/onboarding-fixture.json
-          key: fixture-${{ needs.prepare.outputs.COMMIT_SHA }}
+          path: |
+            test/e2e/fixtures/onboarding-fixture.json
+            test/e2e/fixtures/default-fixture.json
+          key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
 
-  commit-updated-fixture:
-    name: Commit the updated onboarding fixture
+  commit-updated-fixtures:
+    name: Commit the updated E2E fixtures
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
       - prepare
       - is-fork-pull-request
-      - update-onboarding-fixture
+      - update-fixtures
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     environment: default-branch
     steps:
@@ -210,38 +212,40 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
-      - name: Restore updated fixture
+      - name: Restore updated fixtures
         uses: actions/cache/restore@v5
         with:
-          path: test/e2e/fixtures/onboarding-fixture.json
-          key: fixture-${{ needs.prepare.outputs.COMMIT_SHA }}
+          path: |
+            test/e2e/fixtures/onboarding-fixture.json
+            test/e2e/fixtures/default-fixture.json
+          key: fixtures-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
 
       - name: Check whether there are fixture changes
         id: fixture-changes
         run: |
-          if git diff --exit-code test/e2e/fixtures/onboarding-fixture.json
+          if git diff --exit-code test/e2e/fixtures/onboarding-fixture.json test/e2e/fixtures/default-fixture.json
           then
             echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
           else
             echo "HAS_CHANGES=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit the updated fixture
+      - name: Commit the updated fixtures
         if: steps.fixture-changes.outputs.HAS_CHANGES == 'true'
         run: |
           git config --global user.name 'MetaMask Bot'
           git config --global user.email 'metamaskbot@users.noreply.github.com'
-          git commit -am "Update onboarding fixture"
+          git commit -am "Update E2E fixtures"
           git push
 
       - name: Post comment
         run: |
           if [[ $HAS_CHANGES == 'true' ]]
           then
-            gh pr comment "${PR_NUMBER}" --body 'Onboarding fixture updated.'
+            gh pr comment "${PR_NUMBER}" --body 'E2E fixtures updated.'
           else
-            gh pr comment "${PR_NUMBER}" --body 'No onboarding fixture changes detected.'
+            gh pr comment "${PR_NUMBER}" --body 'No E2E fixture changes detected.'
           fi
         env:
           HAS_CHANGES: ${{ steps.fixture-changes.outputs.HAS_CHANGES }}
@@ -249,27 +253,27 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
 
   check-status:
-    name: Check whether the fixture update succeeded
+    name: Check whether the fixtures update succeeded
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     needs:
       - is-fork-pull-request
-      - commit-updated-fixture
+      - commit-updated-fixtures
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
       - name: Set PASSED output
         id: set-output
         run: |
-          if [[ "${{ needs.commit-updated-fixture.result }}" == "success" ]]; then
+          if [[ "${{ needs.commit-updated-fixtures.result }}" == "success" ]]; then
             echo "PASSED=true" >> "$GITHUB_OUTPUT"
           else
             echo "PASSED=false" >> "$GITHUB_OUTPUT"
           fi
 
   failure-comment:
-    name: Comment about the fixture update failure
+    name: Comment about the fixtures update failure
     if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -286,7 +290,7 @@ jobs:
         run: |
           passed="${{ needs.check-status.outputs.PASSED }}"
           if [[ $passed != "true" ]]; then
-            gh pr comment "${PR_NUMBER}" --body "Onboarding fixture update failed. You can [review the logs or retry the fixture update here](${ACTION_RUN_URL})"
+            gh pr comment "${PR_NUMBER}" --body "E2E fixtures update failed. You can [review the logs or retry the fixture update here](${ACTION_RUN_URL})"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
