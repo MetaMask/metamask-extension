@@ -410,9 +410,6 @@
   "next": {
     "message": "Következő"
   },
-  "noConversionRateAvailable": {
-    "message": "Nincs elérhető átváltási díj"
-  },
   "noWebcamFound": {
     "message": "Nem található számítógéped webkamerája. Kérünk, próbáld újra."
   },

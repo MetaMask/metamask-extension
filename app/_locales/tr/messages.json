@@ -4279,9 +4279,6 @@
   "noConnectionDescription": {
     "message": "MetaMask bu siteye bağlı değil. Başlamak için sitenin Bağla düğmesini seçin."
   },
-  "noConversionRateAvailable": {
-    "message": "Dönüşüm oranı mevcut değil"
-  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },

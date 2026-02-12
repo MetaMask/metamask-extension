@@ -91,6 +91,7 @@ export const SENTRY_BACKGROUND_STATE = {
     pendingExtensionVersion: true,
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,
+    shieldSubscriptionError: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
     storageWriteErrorType: true,

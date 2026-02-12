@@ -19,7 +19,6 @@ import {
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../../selectors';
 import { TokenFiatDisplayInfo } from '../../types';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../../../../shared/modules/selectors/networks';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
@@ -43,7 +42,6 @@ export const TokenCellSecondaryDisplay = React.memo(
     handleScamWarningModal,
     privacyMode,
   }: TokenCellSecondaryDisplayProps) => {
-    const t = useI18nContext();
     const isEvm = isEvmChainId(token.chainId);
     const { type, rpcUrl } = useSelector(getProviderConfig);
 
@@ -63,7 +61,7 @@ export const TokenCellSecondaryDisplay = React.memo(
     );
 
     const secondaryDisplayText = useCurrencyRateCheck
-      ? token.secondary || t('noConversionRateAvailable')
+      ? token.secondary || '—'
       : '';
 
     // show scam warning
@@ -91,7 +89,7 @@ export const TokenCellSecondaryDisplay = React.memo(
         isLoading={
           !anyEnabledNetworksAreAvailable &&
           isZeroAmount(secondaryDisplayText) &&
-          secondaryDisplayText !== t('noConversionRateAvailable')
+          secondaryDisplayText !== '—'
         }
         marginBottom={1}
       >
