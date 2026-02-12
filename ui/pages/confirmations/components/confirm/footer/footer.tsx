@@ -224,10 +224,12 @@ const Footer = () => {
 
   const { dismissErrorModal } = useHardwareWalletError();
 
-  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
+  const isSignature = isSignatureTransactionType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
     currentConfirmation?.type,
   );
+  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
+
   const onUserRejectedHardwareWalletError = useCallback(async () => {
     // User intentionally rejected on device; follow the cancel flow.
     await onCancel({
@@ -250,7 +252,6 @@ const Footer = () => {
     onUserRejectedHardwareWalletError,
   });
 
-  const isSignature = isSignatureTransactionType(currentConfirmation);
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) || isGaslessLoading;
 
