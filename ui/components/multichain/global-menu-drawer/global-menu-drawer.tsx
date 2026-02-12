@@ -7,6 +7,7 @@ import {
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
+  IconColor,
   IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -328,6 +329,7 @@ export const GlobalMenuDrawer = ({
                     ariaLabel={title || t('close')}
                     onClick={onClose}
                     data-testid="drawer-close-button"
+                    iconProps={{ color: IconColor.IconAlternative }}
                   />
                   {title && (
                     <Dialog.Title className="sr-only">{title}</Dialog.Title>
