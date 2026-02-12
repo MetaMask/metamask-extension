@@ -67,6 +67,7 @@
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
       "pendingRedirectRoute": null,
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
@@ -1939,6 +1940,7 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,

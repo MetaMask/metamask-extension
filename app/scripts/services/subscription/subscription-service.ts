@@ -45,8 +45,6 @@ import {
   getShieldSubscription,
 } from '../../../../shared/lib/shield';
 import { SHIELD_ERROR } from '../../../../shared/modules/shield';
-import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
-import { createSentryError } from '../../../../shared/modules/error';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -74,18 +72,14 @@ export class SubscriptionService {
 
   #webAuthenticator: WebAuthenticator;
 
-  #captureException: (error: unknown) => void;
-
   constructor({
     messenger,
     platform,
     webAuthenticator,
-    captureException = sentryCaptureException,
   }: SubscriptionServiceOptions) {
     this.#messenger = messenger;
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
-    this.#captureException = captureException;
 
     this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
@@ -146,12 +140,7 @@ export class SubscriptionService {
 
       return subscriptions;
     } catch (error) {
-      this.#captureException(
-        createSentryError(
-          'Failed to update subscription card payment method',
-          error as Error,
-        ),
-      );
+      log.error('Failed to update subscription card payment method', error);
       throw error;
     }
   }
@@ -176,12 +165,7 @@ export class SubscriptionService {
 
       return subscriptions;
     } catch (error) {
-      this.#captureException(
-        createSentryError(
-          'Failed to update subscription crypto payment method',
-          error as Error,
-        ),
-      );
+      log.error('Failed to update subscription crypto payment method', error);
       throw error;
     }
   }
@@ -277,12 +261,7 @@ export class SubscriptionService {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
 
-      this.#captureException(
-        createSentryError(
-          'Failed to start subscription with card',
-          error as Error,
-        ),
-      );
+      log.error('Failed to start subscription with card', error);
       throw error;
     }
   }
@@ -337,12 +316,7 @@ export class SubscriptionService {
         },
       );
     } catch (error) {
-      this.#captureException(
-        createSentryError(
-          'Failed to submit sponsorship intent',
-          error as Error,
-        ),
-      );
+      log.error('Failed to submit sponsorship intent', error);
     }
   }
 
@@ -375,12 +349,7 @@ export class SubscriptionService {
         );
       }
     } catch (err) {
-      this.#captureException(
-        createSentryError(
-          'Failed to link reward to existing subscription',
-          err as Error,
-        ),
-      );
+      log.error('Failed to link reward to existing subscription', err);
     }
   }
 
@@ -555,12 +524,6 @@ export class SubscriptionService {
         PRODUCT_TYPES.SHIELD,
       );
 
-      this.#captureException(
-        createSentryError(
-          'Error on Shield subscription approval transaction',
-          error as Error,
-        ),
-      );
       throw error;
     }
   }
@@ -740,7 +703,9 @@ export class SubscriptionService {
 
       const { pendingShieldCohort, shieldSubscriptionMetricsProps } =
         this.#messenger.call('AppStateController:getState');
-      if (isPostTxTransaction && !pendingShieldCohort) {
+      const hasSetPostTxPendingCohort =
+        pendingShieldCohort === COHORT_NAMES.POST_TX;
+      if (isPostTxTransaction && !hasSetPostTxPendingCohort) {
         this.#messenger.call(
           'AppStateController:setPendingShieldCohort',
           COHORT_NAMES.POST_TX,
@@ -765,9 +730,7 @@ export class SubscriptionService {
         });
       }
     } catch (error) {
-      this.#captureException(
-        createSentryError('Failed to assign post tx cohort', error as Error),
-      );
+      log.error('Failed to assign post tx cohort', error);
     }
   }
 

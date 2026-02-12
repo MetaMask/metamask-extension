@@ -59,7 +59,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "pendingRedirectRoute": null,
-    "pendingShieldCohort": null,
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
