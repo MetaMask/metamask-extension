@@ -34,7 +34,7 @@ import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 

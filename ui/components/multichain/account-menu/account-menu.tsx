@@ -64,7 +64,7 @@ import {
   IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
@@ -72,7 +72,7 @@ import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
 ///: END:ONLY_INCLUDE_IF
 

@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import log from 'loglevel';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
   MetaMetricsEventCategory,

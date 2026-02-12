@@ -15,7 +15,7 @@ import {
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
 import { useFormatters } from '../../../hooks/useFormatters';
 import {

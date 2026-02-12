@@ -6,7 +6,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getURLHostName } from '../../../ui/helpers/utils/util';
 import { t } from '../../../shared/lib/translate';
 

@@ -77,7 +77,7 @@ import { Numeric } from '../../../../../../shared/modules/Numeric';
 import {
   addUrlProtocolPrefix,
   isWebUrl,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../../../app/scripts/lib/util';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import { getImageForChainId } from '../../../../../selectors/multichain';

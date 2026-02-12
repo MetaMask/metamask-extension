@@ -55,13 +55,13 @@ if (false) {
   require('@babel/eslint-plugin');
   require('@metamask/eslint-config');
   require('@metamask/eslint-config-nodejs');
-  // eslint-disable-next-line import/no-unresolved
+  // eslint-disable-next-line import-x/no-unresolved
   require('@typescript-eslint/parser');
   require('eslint');
   require('eslint-config-prettier');
   require('eslint-import-resolver-node');
   require('eslint-import-resolver-typescript');
-  require('eslint-plugin-import');
+  require('eslint-plugin-import-x');
   require('eslint-plugin-jsdoc');
   require('eslint-plugin-n');
   require('eslint-plugin-prettier');

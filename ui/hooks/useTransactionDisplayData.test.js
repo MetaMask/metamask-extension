@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import mockState from '../../test/data/mock-state.json';
 import transactions from '../../test/data/transaction-data.json';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { KeyringType } from '../../shared/constants/keyring';

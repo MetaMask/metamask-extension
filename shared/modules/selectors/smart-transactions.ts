@@ -14,12 +14,12 @@ import {
   getPreferences,
   selectDefaultRpcEndpointByChainId,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/selectors/remote-feature-flags';
 import { isProduction } from '../environment';
 import { getCurrentChainId, type NetworkState } from './networks';

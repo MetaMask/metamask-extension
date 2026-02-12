@@ -2,7 +2,7 @@ import React from 'react';
 import { waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import enLocale from '../../../../app/_locales/en/messages.json';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers';
 import SrpInput from '.';

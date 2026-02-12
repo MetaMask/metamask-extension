@@ -89,7 +89,7 @@ import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
 
-/* eslint-enable import/first */
+/* eslint-enable import-x/first */
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {

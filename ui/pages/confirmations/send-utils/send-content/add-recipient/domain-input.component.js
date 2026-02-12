@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { isHexString } from '@metamask/utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import {

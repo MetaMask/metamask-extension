@@ -9,7 +9,7 @@ import {
   BROKEN_PRERENDER_BROWSER_VERSIONS,
   FIXED_PRERENDER_BROWSER_VERSIONS,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui/helpers/constants/common';
 
 /**

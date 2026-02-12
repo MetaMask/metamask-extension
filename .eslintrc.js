@@ -51,7 +51,7 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       settings: {
-        'import/resolver': {
+        'import-x/resolver': {
           // When determining the location of a `require()` call, use Node's
           // resolution algorithm, then fall back to TypeScript's. This allows
           // TypeScript files (which Node's algorithm doesn't recognize) to be
@@ -100,7 +100,7 @@ module.exports = {
         sourceType: 'module',
       },
       settings: {
-        'import/resolver': {
+        'import-x/resolver': {
           // When determining the location of an `import`, use Node's resolution
           // algorithm, then fall back to TypeScript's. This allows TypeScript
           // files (which Node's algorithm doesn't recognize) to be imported
@@ -125,7 +125,7 @@ module.exports = {
       parserOptions: {
         project: tsconfigPath,
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
-        tsconfigRootDir: path.dirname(tsconfigPath),
+        tsconfigRootDir: __dirname,
       },
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
@@ -148,6 +148,7 @@ module.exports = {
               'Lock',
               'Notification',
               'CSS',
+              'Props',
             ],
           },
         ],
@@ -157,24 +158,13 @@ module.exports = {
         '@typescript-eslint/parameter-properties': 'error',
         // Turn these off, as it's recommended by typescript-eslint.
         // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
-        'import/named': 'off',
-        'import/namespace': 'off',
-        'import/default': 'off',
-        'import/no-named-as-default-member': 'off',
+        'import-x/named': 'off',
+        'import-x/namespace': 'off',
+        'import-x/default': 'off',
+        'import-x/no-named-as-default-member': 'off',
         // Set to ban interfaces due to their incompatibility with Record<string, unknown>.
         // See: <https://github.com/Microsoft/TypeScript/issues/15300#issuecomment-702872440>
         '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-        // Modified to include the 'ignoreRestSiblings' option.
-        // TODO: Migrate this rule change back into `@metamask/eslint-config`
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          {
-            vars: 'all',
-            args: 'all',
-            argsIgnorePattern: '[_]+',
-            ignoreRestSiblings: true,
-          },
-        ],
         // This rule temporarily applies the latest `@typescript-eslint/naming-convention` config found in `@metamask/eslint-config`.
         // TODO: Remove once `@metamask/eslint-config` is updated to `^14.0.0`.
         '@typescript-eslint/naming-convention': [
@@ -252,9 +242,12 @@ module.exports = {
         //
         // TODO: Remove these modifications after the ESLint v9 update
         '@typescript-eslint/await-thenable': 'off',
+        '@typescript-eslint/consistent-type-exports': 'off',
         '@typescript-eslint/consistent-type-imports': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/no-base-to-string': 'off',
         '@typescript-eslint/no-duplicate-type-constituents': 'off',
+        '@typescript-eslint/no-empty-object-type': 'off',
         '@typescript-eslint/no-floating-promises': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-redundant-type-constituents': 'off',
@@ -263,15 +256,22 @@ module.exports = {
         '@typescript-eslint/no-unnecessary-type-arguments': 'off',
         '@typescript-eslint/no-unsafe-enum-comparison': 'off',
         '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
+        '@typescript-eslint/no-unsafe-function-type': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
+        '@typescript-eslint/only-throw-error': 'off',
         '@typescript-eslint/prefer-enum-initializers': 'off',
         '@typescript-eslint/prefer-includes': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
+        '@typescript-eslint/prefer-optional-chain': 'off',
+        '@typescript-eslint/prefer-promise-reject-errors': 'off',
         '@typescript-eslint/prefer-readonly': 'off',
         '@typescript-eslint/prefer-reduce-type-parameter': 'off',
         '@typescript-eslint/prefer-string-starts-ends-with': 'off',
         '@typescript-eslint/promise-function-async': 'off',
         '@typescript-eslint/restrict-plus-operands': 'off',
+        '@typescript-eslint/switch-exhaustiveness-check': 'off',
         '@typescript-eslint/unbound-method': 'off',
+        'import-x/no-named-as-default': 'off',
         'no-restricted-syntax': [
           'error',
           {
@@ -294,7 +294,7 @@ module.exports = {
         ],
       },
       settings: {
-        'import/resolver': {
+        'import-x/resolver': {
           // When determining the location of an `import`, prefer TypeScript's
           // resolution algorithm. Note that due to how we've configured
           // TypeScript in `tsconfig.json`, we are able to import JavaScript
@@ -513,8 +513,8 @@ module.exports = {
         sourceType: 'module',
       },
       rules: {
-        'import/unambiguous': 'off',
-        'import/named': 'off',
+        'import-x/unambiguous': 'off',
+        'import-x/named': 'off',
 
         // Static hex values are only discouraged in application code, using them in tests is OK.
         '@metamask/design-tokens/color-no-hex': 'off',
@@ -568,7 +568,7 @@ module.exports = {
       files: ['app/scripts/migrations/*.js'],
       rules: {
         // Disable various rules that our legacy migrations don't follow
-        'import/no-anonymous-default-export': 'off',
+        'import-x/no-anonymous-default-export': 'off',
       },
     },
     /**
@@ -610,7 +610,7 @@ module.exports = {
       extends: ['plugin:storybook/recommended'],
       rules: {
         // Anonymous object exports are conventional for Storybook files
-        'import/no-anonymous-default-export': [
+        'import-x/no-anonymous-default-export': [
           'error',
           {
             allowObject: true,
@@ -665,7 +665,7 @@ module.exports = {
     {
       files: ['**/*.d.ts'],
       rules: {
-        'import/unambiguous': 'off',
+        'import-x/unambiguous': 'off',
       },
     },
     /**
