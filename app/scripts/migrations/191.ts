@@ -1,38 +1,44 @@
-import { hasProperty } from '@metamask/utils';
-import type { Migrate } from './types';
+import { hasProperty, isObject } from '@metamask/utils';
+
+type VersionedData = {
+  meta: { version: number };
+  data: Record<string, unknown>;
+};
 
 export const version = 191;
 
 /**
- * Migration that removes `null` seedWords and forgottenPassword values from the persisted state.
+ * This migration removes the `preventPollingOnNetworkRestart` property from
+ * TokenListController state.
  *
- * If the `seedWords` property exists on the data object and its value is
- * `null`, this migration deletes the property and records `seedWords` in
- * the set of changed keys.
+ * Background:
+ * - The `preventPollingOnNetworkRestart` property was used to control polling behavior
+ * - This property has been removed from the TokenListController
+ * - This migration cleans up the obsolete property from persisted state
  *
- * If the `forgottenPassword` property exists on the data object and its value is
- * `null`, this migration deletes the property and records `forgottenPassword` in
- * the set of changed keys.
- *
- * @param versionedData - The versioned data object to migrate.
- * @param changedKeys - A set used to record keys that were modified.
+ * @param versionedData - Versioned MetaMask extension state
+ * @param changedControllers - Set of controller names that were modified
  */
-export const migrate = (async (versionedData, changedKeys) => {
+export async function migrate(
+  versionedData: VersionedData,
+  changedControllers: Set<string>,
+): Promise<void> {
   versionedData.meta.version = version;
 
-  if (
-    hasProperty(versionedData.data, 'seedWords') &&
-    versionedData.data.seedWords === null
-  ) {
-    delete versionedData.data.seedWords;
-    changedKeys.add('seedWords');
+  const state = versionedData.data;
+
+  if (!hasProperty(state, 'TokenListController')) {
+    return;
   }
 
-  if (
-    hasProperty(versionedData.data, 'forgottenPassword') &&
-    versionedData.data.forgottenPassword === null
-  ) {
-    delete versionedData.data.forgottenPassword;
-    changedKeys.add('forgottenPassword');
+  const tokenListControllerState = state.TokenListController;
+
+  if (!isObject(tokenListControllerState)) {
+    return;
   }
-}) satisfies Migrate;
+
+  if (hasProperty(tokenListControllerState, 'preventPollingOnNetworkRestart')) {
+    delete tokenListControllerState.preventPollingOnNetworkRestart;
+    changedControllers.add('TokenListController');
+  }
+}
