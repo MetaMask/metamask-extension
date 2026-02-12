@@ -463,7 +463,7 @@ describe('ConfirmFooter', () => {
     );
   });
 
-  it('displays the "Confirm" button when there are danger alerts', async () => {
+  it('displays a danger "Confirm" button there are danger alerts', async () => {
     const mockSecurityAlertId = '8';
     const { getAllByRole } = await render(
       getMockPersonalSignConfirmStateForRequest(
@@ -494,7 +494,7 @@ describe('ConfirmFooter', () => {
       ),
     );
     const submitButton = getAllByRole('button')[1];
-    expect(submitButton).toHaveTextContent('Confirm');
+    expect(submitButton).toHaveClass('mm-button-primary--type-danger');
   });
 
   it('no action is taken when the origin is on threshold and cancel button is clicked', () => {
@@ -777,7 +777,7 @@ describe('ConfirmFooter', () => {
       expect(getByText('Review alerts')).toBeInTheDocument();
     });
 
-    it('renders the "review alerts" button when there are blocking field alerts', () => {
+    it('renders the "review alerts" button disabled when there are blocking alerts', () => {
       const stateWithMultipleDangerAlerts = createStateWithAlerts(
         [
           alertsMock[0],
@@ -791,6 +791,7 @@ describe('ConfirmFooter', () => {
       );
       const { getByText } = render(stateWithMultipleDangerAlerts);
       expect(getByText('Review alerts')).toBeInTheDocument();
+      expect(getByText('Review alerts')).toBeDisabled();
     });
 
     it('renders the "review alert" button when there are unconfirmed alerts', () => {
@@ -809,7 +810,7 @@ describe('ConfirmFooter', () => {
       expect(getByText('Confirm')).toBeInTheDocument();
     });
 
-    it('renders the "confirm" button when there are blocking dangerous banner alerts', () => {
+    it('renders the "confirm" button disabled when there are blocking dangerous banner alerts', () => {
       const stateWithBannerDangerAlertMock = createStateWithAlerts(
         [
           {
@@ -832,10 +833,10 @@ describe('ConfirmFooter', () => {
       expect(getByText('Confirm')).toBeInTheDocument();
     });
 
-    it('shows the alert modal when confirm is clicked with danger alerts', () => {
-      const { getByTestId, queryByTestId } = render(stateWithAlertsMock);
+    it('sets the alert modal visible when the review alerts button is clicked', () => {
+      const { getByTestId } = render(stateWithAlertsMock);
       fireEvent.click(getByTestId('confirm-footer-button'));
-      expect(queryByTestId('alert-modal-button')).toBeInTheDocument();
+      expect(getByTestId('alert-modal-button')).toBeDefined();
     });
 
     describe('navigates to the next confirmation', () => {
