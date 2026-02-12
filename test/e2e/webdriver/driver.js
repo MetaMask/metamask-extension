@@ -436,7 +436,7 @@ class Driver {
     }
     if (state === 'visible') {
       element = await this.driver.wait(
-        until.elementIsVisible(this.buildLocator(rawLocator)),
+        until.elementLocated(this.buildLocator(rawLocator)),
         timeout,
       );
     } else if (state === 'detached') {
