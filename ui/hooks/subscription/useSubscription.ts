@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CANCEL_TYPES,
   PAYMENT_TYPES,
@@ -19,7 +19,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { getUserSubscriptions } from '../../selectors/subscription';
+import {
+  getShieldSubscriptionError,
+  getUserSubscriptions,
+} from '../../selectors/subscription';
 import {
   addTransaction,
   cancelSubscription,
@@ -32,6 +35,7 @@ import {
   getSubscriptionsEligibilities,
   setDefaultSubscriptionPaymentOptions,
   setLastUsedSubscriptionPaymentDetails,
+  setShieldSubscriptionError,
   startSubscriptionWithCard,
   unCancelSubscription,
   updateSubscriptionCardPaymentMethod,
@@ -72,7 +76,9 @@ import {
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
   isNonUISubscriptionError,
+  SHIELD_ERROR,
 } from '../../../shared/modules/shield';
+import { useI18nContext } from '../useI18nContext';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
@@ -920,5 +926,63 @@ export const useShieldRewards = (): {
     pointsYearly: pointsValue?.yearly ?? null,
     isRewardsSeason: isRewardsSeason ?? false,
     hasAccountOptedIn: hasAccountOptedInResultValue ?? false,
+  };
+};
+
+/**
+ * Hook to manage shield subscription errors from background processing.
+ * Reads the error from Redux state, converts it to an Error object for use in
+ * API error handling, provides a translated error message for known errors,
+ * and clears the error on unmount.
+ *
+ * @returns An object with `shieldSubscriptionApiError` (Error or null) and
+ * `getSubscriptionErrorMessage` (returns translated message for known errors).
+ */
+export const useSubscriptionError = (): {
+  shieldSubscriptionApiError: Error | null;
+  getSubscriptionErrorMessage: (
+    error: Error | null | undefined,
+  ) => string | undefined;
+} => {
+  const t = useI18nContext();
+  const shieldSubscriptionError = useSelector(getShieldSubscriptionError);
+
+  // Keep a ref so the unmount-only cleanup can read the latest value
+  const shieldSubscriptionErrorRef = useRef(shieldSubscriptionError);
+  shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+
+  // Clear shield subscription error when unmounting
+  useEffect(() => {
+    return () => {
+      if (shieldSubscriptionErrorRef.current) {
+        setShieldSubscriptionError(null);
+      }
+    };
+  }, []);
+
+  const shieldSubscriptionApiError = useMemo(() => {
+    if (shieldSubscriptionError) {
+      return new Error(shieldSubscriptionError.message);
+    }
+    return null;
+  }, [shieldSubscriptionError]);
+
+  const getSubscriptionErrorMessage = useCallback(
+    (error: Error | null | undefined): string | undefined => {
+      if (
+        error?.message
+          .toLowerCase()
+          .includes(SHIELD_ERROR.payerAddressAlreadyUsed)
+      ) {
+        return t('shieldErrorPayerAddressAlreadyUsed');
+      }
+      return undefined;
+    },
+    [t],
+  );
+
+  return {
+    shieldSubscriptionApiError,
+    getSubscriptionErrorMessage,
   };
 };

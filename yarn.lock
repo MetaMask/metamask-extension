@@ -6523,9 +6523,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.6.1":
-  version: 0.6.1
-  resolution: "@metamask/design-system-react@npm:0.6.1"
+"@metamask/design-system-react@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/design-system-react@npm:0.7.0"
   dependencies:
     "@metamask/design-system-shared": "npm:^0.1.2"
     "@metamask/jazzicon": "npm:^2.0.0"
@@ -6538,7 +6538,7 @@ __metadata:
     "@metamask/utils": ^11.9.0
     react: ^17.0.0 || ^18.0.0
     react-dom: ^17.0.0 || ^18.0.0
-  checksum: 10/ce95f6374915fa8cea645c7692afac1cbb2ca9562e87d31d24acc93c57a1ea082b2bccfd568a345a804370af887ffd95f554ba848efe934a783737ee7e4bd590
+  checksum: 10/38a94b5540c44f69037d187eed8975c0da69457d96dfa1883e5ff80e2e20d4624788d0f7c9f1c4e9765631f2f764e12449277a258fff995a576a92e9e8d25ee9
   languageName: node
   linkType: hard
 
@@ -33864,7 +33864,7 @@ __metadata:
     "@metamask/delegation-controller": "npm:^1.0.0"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.15.0"
-    "@metamask/design-system-react": "npm:^0.6.1"
+    "@metamask/design-system-react": "npm:^0.7.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/eip-5792-middleware": "npm:^2.1.0"
