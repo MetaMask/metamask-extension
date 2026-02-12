@@ -513,6 +513,48 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setShieldSubscriptionError', () => {
+    it('sets the error object with message and code', async () => {
+      await withController(({ controller }) => {
+        controller.setShieldSubscriptionError({
+          message: 'payer address is already used',
+          code: 'payer_address_already_used',
+        });
+        expect(controller.state.shieldSubscriptionError).toStrictEqual({
+          message: 'payer address is already used',
+          code: 'payer_address_already_used',
+        });
+      });
+    });
+
+    it('sets the error object with message only', async () => {
+      await withController(({ controller }) => {
+        controller.setShieldSubscriptionError({
+          message: 'some error',
+        });
+        expect(controller.state.shieldSubscriptionError).toStrictEqual({
+          message: 'some error',
+        });
+      });
+    });
+
+    it('clears the error when set to null', async () => {
+      await withController(({ controller }) => {
+        controller.setShieldSubscriptionError({ message: 'some error' });
+        expect(controller.state.shieldSubscriptionError).not.toBeNull();
+
+        controller.setShieldSubscriptionError(null);
+        expect(controller.state.shieldSubscriptionError).toBeNull();
+      });
+    });
+
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.shieldSubscriptionError).toBeNull();
+      });
+    });
+  });
+
   describe('isUpdateAvailable', () => {
     it('defaults to false', async () => {
       await withController(({ controller }) => {
@@ -802,6 +844,7 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldSubscriptionError": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
@@ -896,6 +939,7 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldSubscriptionError": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
@@ -971,6 +1015,7 @@ describe('AppStateController', () => {
               "nftsDetectionNoticeDismissed": false,
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
               "pna25Acknowledged": false,
               "productTour": "accountIcon",
@@ -1070,6 +1115,7 @@ describe('AppStateController', () => {
               "recoveryPhraseReminderLastShown": 1000,
               "shieldEndingToastLastClickedOrClosed": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldSubscriptionError": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,

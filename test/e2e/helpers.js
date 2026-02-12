@@ -372,6 +372,7 @@ async function withFixtures(options, testSuite) {
                 `${new Date().toISOString()} [driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
                 ).slice(0, 224)}`, // limit the length of the log entry to 224 characters
+                false,
               );
               return originalProperty.bind(target)(...args);
             };

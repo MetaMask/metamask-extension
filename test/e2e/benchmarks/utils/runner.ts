@@ -21,6 +21,7 @@ import type {
   BenchmarkResults,
   BenchmarkRunResult,
   BenchmarkSummary,
+  BenchmarkType,
   Metrics,
   ThresholdConfig,
   TimerResult,
@@ -143,6 +144,8 @@ export async function runBenchmarkWithIterations(
     ? validateThresholds(timerStats, thresholdConfig)
     : undefined;
 
+  const benchmarkType = allResults.find((r) => r.benchmarkType)?.benchmarkType;
+
   return {
     name,
     iterations,
@@ -157,6 +160,7 @@ export async function runBenchmarkWithIterations(
       thresholdViolations: thresholdResult.violations,
       thresholdsPassed: thresholdResult.passed,
     }),
+    benchmarkType,
   };
 }
 
@@ -232,15 +236,17 @@ export async function runPageLoadBenchmark(
 
 export async function runUserActionBenchmark(
   measureFn: () => Promise<TimerResult[]>,
+  benchmarkType?: BenchmarkType,
 ): Promise<BenchmarkRunResult> {
   try {
     const timers = await measureFn();
-    return { timers, success: true };
+    return { timers, success: true, benchmarkType };
   } catch (error) {
     return {
       timers: [],
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType,
     };
   }
 }

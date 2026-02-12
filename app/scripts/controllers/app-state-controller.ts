@@ -62,6 +62,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import { ShieldSubscriptionError } from '../../../shared/modules/shield';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type {
   Preferences,
@@ -143,6 +144,7 @@ export type AppStateControllerState = {
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
+  shieldSubscriptionError: ShieldSubscriptionError | null;
   shieldEndingToastLastClickedOrClosed: number | null;
   shieldPausedToastLastClickedOrClosed: number | null;
   termsOfUseLastAgreed?: number;
@@ -209,6 +211,11 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
+export type AppStateControllerSetShieldSubscriptionErrorAction = {
+  type: 'AppStateController:setShieldSubscriptionError';
+  handler: AppStateController['setShieldSubscriptionError'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
@@ -217,7 +224,8 @@ export type AppStateControllerActions =
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction
-  | AppStateControllerSetPendingShieldCohortAction;
+  | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetShieldSubscriptionErrorAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -326,6 +334,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showTestnetMessageInDropdown: true,
   slides: [],
   surveyLinkLastClickedOrClosed: null,
+  shieldSubscriptionError: null,
   shieldEndingToastLastClickedOrClosed: null,
   shieldPausedToastLastClickedOrClosed: null,
   throttledOrigins: {},
@@ -634,6 +643,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  shieldSubscriptionError: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   shieldEndingToastLastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
@@ -690,7 +705,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   },
   pendingShieldCohort: {
     includeInStateLogs: true,
-    persist: false,
+    persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
@@ -821,6 +836,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setPendingShieldCohort',
       this.setPendingShieldCohort.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setShieldSubscriptionError',
+      this.setShieldSubscriptionError.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -963,6 +983,19 @@ export class AppStateController extends BaseController<
   setShieldEndingToastLastClickedOrClosed(time: number): void {
     this.update((state) => {
       state.shieldEndingToastLastClickedOrClosed = time;
+    });
+  }
+
+  /**
+   * Sets a generic shield API error.
+   * When set to a non-null object, a toast is shown on the homepage with the error.
+   * Setting to null clears/dismisses the error.
+   *
+   * @param error - The error object with message and optional code, or null to clear
+   */
+  setShieldSubscriptionError(error: ShieldSubscriptionError | null): void {
+    this.update((state) => {
+      state.shieldSubscriptionError = error;
     });
   }
 
