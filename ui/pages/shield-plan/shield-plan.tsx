@@ -433,7 +433,7 @@ const ShieldPlan = () => {
     };
   }, [dispatch, pendingRedirectRoute?.path]);
 
-  const handleBack = async () => {
+  const handleBack = () => {
     const source = new URLSearchParams(search).get('source');
     if (source === ShieldMetricsSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page
