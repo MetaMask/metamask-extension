@@ -27,7 +27,7 @@ async function mockSegment(mockServer: Mockttp) {
 }
 
 describe('Segment User Traits', function () {
-  it('sends identify event when user opts in both metrics and data collection during onboarding TEST', async function () {
+  it('sends identify event when user opts in both metrics and data collection during onboarding', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
