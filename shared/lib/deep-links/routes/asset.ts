@@ -23,12 +23,12 @@ export const asset = new Route({
       throw new Error('Invalid assetId parameter');
     }
 
-    const asset = parseCaipAssetType(assetId);
+    const selectedAsset = parseCaipAssetType(assetId);
 
-    const { chain, chainId: caipChainId, assetReference } = asset;
+    const { chain, chainId: caipChainId, assetReference } = selectedAsset;
 
     const isEvmNamespace = chain.namespace === KnownCaipNamespace.Eip155;
-    const isNative = asset.assetNamespace === 'slip44';
+    const isNative = selectedAsset.assetNamespace === 'slip44';
 
     const assetPath = () => {
       // Asset Path Format: /asset/{hex-chainId}
