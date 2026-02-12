@@ -557,7 +557,7 @@ export async function mockPowerUserPrices(
   endpoints.push(
     await server
       .forGet(
-        /https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates$/u,
+        /https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates(?:$|\?)/u,
       )
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()

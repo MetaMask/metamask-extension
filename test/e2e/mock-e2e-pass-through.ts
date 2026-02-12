@@ -9,6 +9,33 @@ type SetupMockReturn = {
 };
 
 /**
+ * A callback that can intercept a request inside `thenPassThrough()`.
+ * Return an object with a `response` property to short-circuit the
+ * request. Return `null` or `undefined` to let it pass through.
+ */
+export type PassThroughInterceptor = (req: {
+  url: string;
+  method: string;
+}) => { response: Record<string, unknown> } | null | undefined;
+
+/**
+ * Attach a request interceptor to the mock server that will be
+ * evaluated inside the pass-through `beforeRequest` callback.
+ * Call this from `testSpecificMock` before `setupMockingPassThrough`
+ * registers the catch-all handler.
+ *
+ * @param server - The mock server
+ * @param interceptor - The interceptor function
+ */
+export function setPassThroughInterceptor(
+  server: Mockttp,
+  interceptor: PassThroughInterceptor,
+): void {
+  (server as unknown as Record<string, unknown>).__passThroughInterceptor =
+    interceptor;
+}
+
+/**
  * Setup E2E network mocks that just passes through requests
  *
  * @param server - The mock server used for network mocks.
@@ -27,14 +54,23 @@ export async function setupMockingPassThrough(
 
   const mockedEndpoint = testSpecificMock ? await testSpecificMock(server) : [];
 
-  // Use lowest priority so test-specific mocks (e.g. getQuoteStream SSE)
-  // are always evaluated before falling through to live servers.
+  // Retrieve any interceptor set by testSpecificMock
+  const interceptor = (server as unknown as Record<string, unknown>)
+    .__passThroughInterceptor as PassThroughInterceptor | undefined;
+
+  // Single catch-all: pass every request through to the live server,
+  // but first check if a test-specific interceptor wants to handle it.
   await server
     .forAnyRequest()
     .asPriority(-1)
     .thenPassThrough({
       beforeRequest: (req) => {
-        console.log('Request going to a live server ============', req.url);
+        if (interceptor) {
+          const result = interceptor(req);
+          if (result?.response) {
+            return result;
+          }
+        }
         return {};
       },
     });

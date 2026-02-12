@@ -390,7 +390,7 @@ export const ACCOUNTS_BALANCES = {
 };
 
 /** 50 SOL in lamports (1 SOL = 1,000,000,000 lamports) */
-export const SOL_BALANCE_LAMPORTS = 50_000_000_000;
+const SOL_BALANCE_LAMPORTS = 50_000_000_000;
 
 export function solanaGetBalanceResponse(id: string | number = '1337') {
   return {
@@ -517,5 +517,3 @@ export function solanaCatchAllResponse(id: string | number = '1337') {
     },
   };
 }
-
-export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };
