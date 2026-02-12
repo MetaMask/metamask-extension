@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-query';
 import Box from '../../ui/box/box';
 import { Button } from '../../component-library';
+import { useDataService } from '../../../queries/useDataService';
 
 export const TestTab = () => {
   const queryClient = useQueryClient();
@@ -28,8 +29,8 @@ export const TestTab = () => {
     ],
   ];
 
-  const query = useQuery({
-    queryKey: assetsQueryKey,
+  const query = useDataService({
+    key: assetsQueryKey,
   });
 
   const handleFetchNextPage = () => {

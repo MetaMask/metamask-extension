@@ -3,15 +3,15 @@ import { BaseDataService } from './BaseDataService';
 
 const serviceName = 'AssetDataService';
 
-type ExampleMessenger = Messenger<typeof serviceName, any, any>;
+type AssetDataServiceMessenger = Messenger<typeof serviceName, any, any>;
 
 export class AssetDataService extends BaseDataService<
   typeof serviceName,
-  ExampleMessenger
+  AssetDataServiceMessenger
 > {
   #baseUrl = 'https://tokens.api.cx.metamask.io';
 
-  constructor(messenger: ExampleMessenger) {
+  constructor(messenger: AssetDataServiceMessenger) {
     super({
       name: serviceName,
       messenger,
@@ -25,9 +25,9 @@ export class AssetDataService extends BaseDataService<
   }
 
   async getAssets(assets: string[]) {
-    return this.fetchQuery({
-      queryKey: [`${this.name}:getAssets`, ...assets],
-      queryFn: async () => {
+    return this.fetch({
+      key: [`${this.name}:getAssets`, assets],
+      fn: async () => {
         const url = new URL(
           `${this.#baseUrl}/v3/assets?assetIds=${assets.join(',')}`,
         );

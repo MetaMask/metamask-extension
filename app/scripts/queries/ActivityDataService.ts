@@ -3,15 +3,15 @@ import { BaseDataService } from './BaseDataService';
 
 const serviceName = 'ActivityDataService';
 
-type ExampleMessenger = Messenger<typeof serviceName, any, any>;
+type ActivityDataServiceMessenger = Messenger<typeof serviceName, any, any>;
 
 export class ActivityDataService extends BaseDataService<
   typeof serviceName,
-  ExampleMessenger
+  ActivityDataServiceMessenger
 > {
   #baseUrl = 'https://accounts.api.cx.metamask.io';
 
-  constructor(messenger: ExampleMessenger) {
+  constructor(messenger: ActivityDataServiceMessenger) {
     super({
       name: serviceName,
       messenger,
@@ -24,11 +24,12 @@ export class ActivityDataService extends BaseDataService<
     );
   }
 
-  async getActivity(address: string, context: any) {
-    return this.fetchInfiniteQuery(
+  async getActivity(address: string, pageParam?: string) {
+    return this.fetchPaged(
       {
-        queryKey: [`${this.name}:getActivity`, address],
-        queryFn: async ({ pageParam }) => {
+        key: [`${this.name}:getActivity`, address],
+        pageParam,
+        fn: async ({ pageParam }) => {
           const caipAddress = `eip155:0:${address.toLowerCase()}`;
           const url = new URL(
             `${this.#baseUrl}/v4/multiaccount/transactions?limit=10&accountAddresses=${caipAddress}`,
@@ -42,10 +43,9 @@ export class ActivityDataService extends BaseDataService<
 
           return response.json();
         },
-        getNextPageParam: ({ pageInfo }: { pageInfo: any }) =>
-          pageInfo?.hasNextPage ? pageInfo.endCursor : undefined,
+        // getNextPageParam: ({ pageInfo }: { pageInfo: any }) =>
+        // pageInfo?.hasNextPage ? pageInfo.endCursor : undefined,
       },
-      context,
     );
   }
 }

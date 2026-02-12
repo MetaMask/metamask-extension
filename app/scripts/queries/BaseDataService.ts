@@ -1,25 +1,52 @@
 import {
-  DehydratedState,
-  FetchInfiniteQueryOptions,
-  FetchQueryOptions,
-  InfiniteData,
-  InvalidateOptions,
-  InvalidateQueryFilters,
-  QueryClient,
-  QueryFunctionContext,
-  QueryKey,
-  WithRequired,
-  dehydrate,
-  hashQueryKey,
-} from '@tanstack/query-core';
-import {
   Messenger,
   ActionConstraint,
   EventConstraint,
 } from '@metamask/messenger';
-import { assert, Json } from '@metamask/utils';
+import { assert, Duration, inMilliseconds, Json } from '@metamask/utils';
+import { isCacheExpired, withRetry } from './utils';
 
-type SubscriptionCallback = (payload: Json) => void;
+export type SubscriptionCallback = (payload: Json) => void;
+
+export type Key = [string, ...Json[]];
+
+export type FetchFunctionParameters = {
+  pageParam?: Json;
+};
+
+export type FetchFunction<ResultType extends Json> = () => Promise<ResultType>;
+
+export type FetchFunctionPaged<ResultType extends Json> = (
+  params: FetchFunctionParameters,
+) => Promise<ResultType>;
+
+export type FetchOptions<ResultType extends Json> = {
+  key: Key;
+  fn: FetchFunction<ResultType>;
+  cacheTime?: number;
+  staleTime?: number;
+  retries?: number;
+};
+
+export type FetchPagedOptions<ResultType extends Json> =
+  FetchOptions<ResultType> & {
+    fn: FetchFunctionPaged<ResultType>;
+    pageParam?: Json;
+  };
+
+export type CacheEntry = {
+  status: 'pending' | 'error' | 'success';
+  data?: Json;
+  error?: unknown;
+  promise?: Promise<Json>;
+  dataUpdated?: number;
+};
+
+export type PassableCacheEntry = Omit<CacheEntry, 'promise'>;
+
+function hashKey(key: Key) {
+  return JSON.stringify(key);
+}
 
 export class BaseDataService<
   ServiceName extends string,
@@ -37,7 +64,7 @@ export class BaseDataService<
 
   #messenger: ServiceMessenger;
 
-  #client = new QueryClient();
+  #cache: Map<Key, CacheEntry> = new Map();
 
   #subscriptions: Map<string, Set<SubscriptionCallback>> = new Map();
 
@@ -52,112 +79,142 @@ export class BaseDataService<
     this.#messenger = messenger;
 
     this.#registerMessageHandlers();
-    this.#setupCacheListener();
   }
 
-  protected async fetchQuery<
-    TQueryFnData = unknown,
-    TError = unknown,
-    TData = TQueryFnData,
-    TQueryKey extends QueryKey = QueryKey,
-  >(
-    options: WithRequired<
-      FetchQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
-      'queryKey' | 'queryFn'
-    >,
-  ): Promise<TData> {
-    return this.#client.fetchQuery(options);
-  }
+  protected async fetch<ResultType extends Json>(
+    options: FetchOptions<ResultType>,
+  ): Promise<ResultType> {
+    const { key, cacheTime = inMilliseconds(1, Duration.Minute) } = options;
 
-  protected async fetchInfiniteQuery<
-    TQueryFnData = unknown,
-    TError = unknown,
-    TData = TQueryFnData,
-    TQueryKey extends QueryKey = QueryKey,
-  >(
-    options: WithRequired<
-      FetchInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
-      'queryKey' | 'queryFn'
-    >,
-    context: QueryFunctionContext<TQueryKey>,
-  ): Promise<TData> {
-    assert(context, 'Context must be passed when using fetchInfiniteQuery.');
+    const cached = this.#getCached<ResultType>(key, cacheTime);
 
-    const query = this.#client
-      .getQueryCache()
-      .find<TQueryFnData, TError, TData>({ queryKey: options.queryKey });
-
-    if (query && context.pageParam) {
-      const result = (await query.fetch(undefined, {
-        meta: {
-          // TODO: Determine if this breaks when fetching backwards.
-          fetchMore: {
-            direction: 'forward',
-            pageParam: context.pageParam,
-          },
-        },
-      })) as InfiniteData<TData>;
-
-      const pageIndex = result.pageParams.indexOf(context.pageParam);
-
-      return result.pages[pageIndex];
+    if (cached) {
+      return cached;
     }
 
-    const result = await this.#client.fetchInfiniteQuery(options);
+    const promise = this.#fetch(options.fn, options);
+    this.#updateCache(key, { status: 'pending', promise });
 
-    return result.pages[0];
+    return promise;
   }
 
-  protected async invalidateQueries<TPageData = unknown>(
-    filters?: InvalidateQueryFilters<TPageData>,
-    options?: InvalidateOptions,
-  ): Promise<void> {
-    return this.#client.invalidateQueries(filters, options);
+  protected async fetchPaged<ResultType extends Json>(
+    options: FetchPagedOptions<ResultType>,
+  ): Promise<ResultType> {
+    const {
+      key,
+      cacheTime = inMilliseconds(1, Duration.Minute),
+      pageParam,
+    } = options;
+
+    const cached = this.#getCached<ResultType>(key, cacheTime);
+
+    if (cached) {
+      return cached;
+    }
+
+    const promise = this.#fetch(() => options.fn({ pageParam }), options);
+    this.#updateCache(key, { status: 'pending', promise });
+
+    return promise;
+  }
+
+  #getCached<ResultType extends Json>(
+    key: Key,
+    cacheTime: number,
+  ): Promise<ResultType> | ResultType | null {
+    const cached = this.#cache.get(key);
+
+    if (!cached) {
+      return null;
+    }
+
+    // Pending status is used for deduping requests
+    if (cached.status === 'pending') {
+      return cached.promise as Promise<ResultType>;
+    }
+
+    if (cached.status !== 'success') {
+      return null;
+    }
+
+    // @ts-expect-error Missing type narrowing.
+    if (isCacheExpired(cached, cacheTime)) {
+      return null;
+    }
+
+    // TODO: Check stale time
+
+    return cached.data as ResultType;
+  }
+
+  async #fetch<ResultType extends Json>(
+    fn: () => Promise<ResultType>,
+    { key, retries = 1 }: FetchOptions<ResultType>,
+  ): Promise<ResultType> {
+    try {
+      const data = (await withRetry(fn, retries)) as ResultType;
+
+      this.#updateCache(key, {
+        status: 'success',
+        data,
+        dataUpdated: Date.now(),
+      });
+
+      return data;
+    } catch (error) {
+      this.#updateCache(key, {
+        status: 'error',
+        error,
+        dataUpdated: Date.now(),
+      });
+      throw error;
+    }
+  }
+
+  #updateCache(key: Key, entry: CacheEntry) {
+    this.#cache.set(key, entry);
+
+    // TODO: Slow?
+    const hash = hashKey(key);
+    if (this.#subscriptions.has(hash)) {
+      this.#broadcastCache(key);
+    }
+  }
+
+  protected async invalidate(keys: Key[]): Promise<void> {
+    // return this.#client.invalidateQueries(filters, options);
   }
 
   #registerMessageHandlers() {
     this.#messenger.registerActionHandler(
       // @ts-expect-error TODO.
       `${this.name}:subscribe`,
-      (queryKey: QueryKey, callback: SubscriptionCallback) => {
-        return this.#handleSubscribe(queryKey, callback);
+      (key: Key, callback: SubscriptionCallback) => {
+        return this.#handleSubscribe(key, callback);
       },
     );
 
     this.#messenger.registerActionHandler(
       // @ts-expect-error TODO.
       `${this.name}:unsubscribe`,
-      (queryKey: QueryKey, callback: SubscriptionCallback) => {
-        return this.#handleUnsubscribe(queryKey, callback);
+      (key: Key, callback: SubscriptionCallback) => {
+        return this.#handleUnsubscribe(key, callback);
       },
     );
 
     this.#messenger.registerActionHandler(
       // @ts-expect-error TODO.
-      `${this.name}:invalidateQueries`,
-      this.invalidateQueries.bind(this),
+      `${this.name}:invalidate`,
+      this.invalidate.bind(this),
     );
   }
 
-  #setupCacheListener() {
-    this.#client.getQueryCache().subscribe((event) => {
-      if (!event.query) {
-        return;
-      }
-
-      const queryKeyHash = event.query.queryHash;
-
-      if (this.#subscriptions.has(queryKeyHash)) {
-        this.#broadcastQueryState(event.query.queryKey);
-      }
-    });
-  }
-
   #handleSubscribe(
-    queryKey: QueryKey,
+    key: Key,
     subscription: SubscriptionCallback,
-  ): DehydratedState {
-    const hash = hashQueryKey(queryKey);
+  ): PassableCacheEntry | null {
+    const hash = hashKey(key);
 
     if (!this.#subscriptions.has(hash)) {
       this.#subscriptions.set(hash, new Set());
@@ -165,14 +222,11 @@ export class BaseDataService<
 
     this.#subscriptions.get(hash)!.add(subscription);
 
-    return this.#getDehydratedStateForQuery(queryKey);
+    return this.#cache.get(key) ?? null;
   }
 
-  #handleUnsubscribe(
-    queryKey: QueryKey,
-    subscription: SubscriptionCallback,
-  ): void {
-    const hash = hashQueryKey(queryKey);
+  #handleUnsubscribe(key: Key, subscription: SubscriptionCallback): void {
+    const hash = hashKey(key);
     const subscribers = this.#subscriptions.get(hash);
 
     if (!subscribers) {
@@ -185,21 +239,14 @@ export class BaseDataService<
     }
   }
 
-  #getDehydratedStateForQuery(queryKey: QueryKey): DehydratedState {
-    const hash = hashQueryKey(queryKey);
-    return dehydrate(this.#client, {
-      shouldDehydrateQuery: (query) => query.queryHash === hash,
-    });
-  }
-
-  #broadcastQueryState(queryKey: QueryKey) {
-    const hash = hashQueryKey(queryKey);
-    const state = this.#getDehydratedStateForQuery(queryKey);
+  #broadcastCache(key: Key) {
+    const hash = hashKey(key);
+    const state = this.#cache.get(key) ?? null;
 
     const subscribers = this.#subscriptions.get(hash)!;
     subscribers.forEach((subscriber) =>
       subscriber({
-        queryKeyHash: hash,
+        hash,
         state,
       } as unknown as Json),
     );

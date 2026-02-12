@@ -16,6 +16,8 @@ import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { uiQueryClient } from '../queries/UIQueryClient';
+import { DataServiceProvider } from '../queries/DataServiceProvider';
+import { background } from '../store/background-connection';
 import ErrorPage from './error-page/error-page.component';
 import Routes from './routes';
 
@@ -63,7 +65,11 @@ class Index extends PureComponent {
                         <ShieldSubscriptionProvider>
                           <RiveWasmProvider>
                             <QueryClientProvider client={uiQueryClient}>
-                              <Routes />
+                              <DataServiceProvider
+                                backgroundConnection={background}
+                              >
+                                <Routes />
+                              </DataServiceProvider>
                             </QueryClientProvider>
                           </RiveWasmProvider>
                         </ShieldSubscriptionProvider>
