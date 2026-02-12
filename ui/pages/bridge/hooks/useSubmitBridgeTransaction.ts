@@ -96,7 +96,16 @@ export default function useSubmitBridgeTransaction() {
     }
 
     if (hardwareWalletUsed) {
-      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
+      const {
+        quote: { requestId },
+      } = quoteResponse;
+      // Preserve requestId across popup -> fullscreen transitions (QR flow).
+      const awaitingUrl = requestId
+        ? `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}?requestId=${encodeURIComponent(
+            requestId,
+          )}`
+        : `${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`;
+      navigate(awaitingUrl);
     }
 
     // Execute transaction(s)

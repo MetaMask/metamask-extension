@@ -1,7 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import { isCrossChain } from '@metamask/bridge-controller';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import {
   isHardwareWallet,
@@ -32,22 +33,55 @@ import {
   getToToken,
   getToChain,
 } from '../../../ducks/bridge/selectors';
+import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AwaitingSignatures() {
   const t = useI18nContext();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);
   const fromAmount = activeQuote?.sentAmount?.amount;
   const fromToken = useSelector(getFromToken, isEqual);
   const toToken = useSelector(getToToken, isEqual);
   const fromChain = useSelector(getFromChain, isEqual);
   const toChain = useSelector(getToChain, isEqual);
+  const bridgeHistory = useSelector(selectBridgeHistoryForAccountGroup);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = Boolean(activeQuote?.approval);
   const { trackEvent } = useContext(MetaMetricsContext);
+
+  // Use requestId from URL when popup state is lost (QR fullscreen flow).
+  const requestIdFromLocation = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get('requestId') || undefined;
+  }, [location.search]);
+
+  const hasSubmittedBridgeTx = useMemo(() => {
+    const requestId =
+      activeQuote?.quote?.requestId ?? requestIdFromLocation ?? undefined;
+    if (!requestId) {
+      return false;
+    }
+
+    return Object.values(bridgeHistory).some(
+      (historyItem) => historyItem?.quote?.requestId === requestId,
+    );
+  }, [activeQuote?.quote?.requestId, bridgeHistory, requestIdFromLocation]);
+
+  useEffect(() => {
+    if (!hasSubmittedBridgeTx) {
+      return;
+    }
+
+    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      state: { stayOnHomePage: true },
+    });
+  }, [hasSubmittedBridgeTx, navigate]);
 
   useEffect(() => {
     trackEvent({
