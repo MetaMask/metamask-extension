@@ -48,7 +48,7 @@ const render = () => {
       '0x27d17...a5B52E',
       '0x5E2003....98f417b',
     ].map((a) => a.toLowerCase()),
-    selectedAccounts: [],
+    selectedAccounts: [] as number[],
     chainId: '0x1',
     rpcPrefs: {},
     hdPaths: {

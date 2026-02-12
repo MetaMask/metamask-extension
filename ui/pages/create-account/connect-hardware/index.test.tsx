@@ -19,6 +19,13 @@ const mockCheckHardwareStatus = jest.fn().mockResolvedValue(false);
 jest.mock('../../../store/actions', () => ({
   connectHardware: () => mockConnectHardware,
   checkHardwareStatus: () => mockCheckHardwareStatus,
+  forgetDevice: () => jest.fn(),
+  showAlert: () => ({ type: 'SHOW_ALERT', payload: '' }),
+  hideAlert: () => ({ type: 'HIDE_ALERT' }),
+  unlockHardwareWalletAccounts: () => jest.fn(),
+  setHardwareWalletDefaultHdPath: () => ({
+    type: 'SET_HARDWARE_WALLET_DEFAULT_HD_PATH',
+  }),
 }));
 
 jest.mock('../../../selectors', () => ({
@@ -56,20 +63,6 @@ jest.mock('react-router-dom', () => ({
   useParams: () => ({}),
 }));
 
-const mockTrackEvent = jest.fn();
-
-const mockProps = {
-  forgetDevice: () => jest.fn(),
-  showAlert: () => jest.fn(),
-  hideAlert: () => jest.fn(),
-  unlockHardwareWalletAccount: () => jest.fn(),
-  setHardwareWalletDefaultHdPath: () => jest.fn(),
-  connectHardware: () => mockConnectHardware,
-  defaultHdPath: "m/44'/60'/0'/0",
-  mostRecentOverviewPage: MOCK_RECENT_PAGE,
-  trackEvent: () => mockTrackEvent,
-};
-
 const mockState = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -90,6 +83,7 @@ const mockState = {
         accounts: ['0x0000000000000000000000000000000000000000'],
       },
     ],
+    ledgerTransportType: LedgerTransportTypes.webhid,
   },
   appState: {
     networkDropdownOpen: false,
@@ -128,9 +122,9 @@ describe('ConnectHardwareForm', () => {
     jest.clearAllMocks();
   });
 
-  it('matchs snapshot', () => {
+  it('matches snapshot', () => {
     const { container } = renderWithProvider(
-      <ConnectHardwareForm {...mockProps} />,
+      <ConnectHardwareForm />,
       mockStore,
     );
 
@@ -138,7 +132,6 @@ describe('ConnectHardwareForm', () => {
   });
 
   it('verifies mocks are working', () => {
-    // Test that our mock is working
     const navigate = useNavigate();
     navigate('/test');
     expect(mockUseNavigate).toHaveBeenCalledWith('/test');
@@ -146,7 +139,7 @@ describe('ConnectHardwareForm', () => {
 
   it('closes the form when close button is clicked', () => {
     const { getByTestId } = renderWithProvider(
-      <ConnectHardwareForm {...mockProps} />,
+      <ConnectHardwareForm />,
       mockStore,
     );
 
@@ -165,7 +158,7 @@ describe('ConnectHardwareForm', () => {
       mockStateWithU2F.appState.ledgerTransportType = LedgerTransportTypes.u2f;
       const mockStoreWithU2F = configureMockStore([thunk])(mockStateWithU2F);
       const { getByText, getByLabelText, queryByText } = renderWithProvider(
-        <ConnectHardwareForm {...mockProps} />,
+        <ConnectHardwareForm />,
         mockStoreWithU2F,
       );
 
@@ -201,7 +194,7 @@ describe('ConnectHardwareForm', () => {
       mockStateWithU2F.appState.ledgerTransportType = LedgerTransportTypes.u2f;
       const mockStoreWithU2F = configureMockStore([thunk])(mockStateWithU2F);
       const { getByText, getByLabelText } = renderWithProvider(
-        <ConnectHardwareForm {...mockProps} />,
+        <ConnectHardwareForm />,
         mockStoreWithU2F,
       );
 
@@ -225,7 +218,7 @@ describe('ConnectHardwareForm', () => {
   describe('QR Hardware Wallet Steps', () => {
     it('renders the QR hardware wallet steps', async () => {
       const { getByText, getByLabelText } = renderWithProvider(
-        <ConnectHardwareForm {...mockProps} />,
+        <ConnectHardwareForm />,
         mockStore,
       );
 
@@ -249,7 +242,7 @@ describe('ConnectHardwareForm', () => {
       window.open = jest.fn();
 
       const { getByLabelText, getByTestId } = renderWithProvider(
-        <ConnectHardwareForm {...mockProps} />,
+        <ConnectHardwareForm />,
         mockStore,
       );
 
@@ -283,7 +276,7 @@ describe('ConnectHardwareForm', () => {
       ];
       mockConnectHardware.mockResolvedValue(mockAccounts);
 
-      renderWithProvider(<ConnectHardwareForm {...mockProps} />, mockStore);
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
 
       const hdPath = "m/44'/60'/0'/0";
       const deviceName = 'ledger';
@@ -316,7 +309,7 @@ describe('ConnectHardwareForm', () => {
       ];
       mockConnectHardware.mockResolvedValue(mockAccounts);
 
-      renderWithProvider(<ConnectHardwareForm {...mockProps} />, mockStore);
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
 
       const hdPath = "m/44'/60'/0'/0";
       const deviceName = 'ledger';
@@ -345,7 +338,7 @@ describe('ConnectHardwareForm', () => {
       mockConnectHardware.mockReset();
       mockConnectHardware.mockRejectedValue(testError);
 
-      renderWithProvider(<ConnectHardwareForm {...mockProps} />, mockStore);
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
 
       await expect(mockConnectHardware()).rejects.toThrow('Test Error');
     });

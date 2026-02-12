@@ -1,10 +1,12 @@
-'use no memo';
-// TODO: Enable React Compiler once this has been migrated to a functional component.
-
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import * as actions from '../../../store/actions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -17,7 +19,6 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   HardwareDeviceNames,
-  LedgerTransportTypes,
   U2F_ERROR,
   LEDGER_ERRORS_CODES,
   LEDGER_LIVE_PATH,
@@ -29,25 +30,35 @@ import {
   TREZOR_TESTNET_PATH,
   DEVICE_KEYRING_MAP,
 } from '../../../../shared/constants/hardware-wallets';
+import type { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import {
-  BUTTON_VARIANT,
-  BUTTON_SIZES,
   Button,
+  ButtonVariant,
+  ButtonSize,
   Text,
 } from '../../../components/component-library';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { MetaMaskReduxDispatch } from '../../../store/store';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';
-import { capitalizeStr } from './utils';
+import { KeyringObject } from '@metamask/keyring-controller';
+import { capitalizeStr, toErrorMessage } from './utils';
+
+type HardwareAccount = {
+  address: string;
+  balance: string;
+  index: number;
+};
 
 export const LEDGER_HD_PATHS = [
   { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
@@ -73,304 +84,367 @@ export const TREZOR_HD_PATHS = [
   { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
 ];
 
-const HD_PATHS = {
+const HD_PATHS: Record<string, { name: string; value: string }[]> = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
   oneKey: TREZOR_HD_PATHS,
 };
 
-const getErrorMessage = (errorCode, t) => {
-  const errorCodeLocalized = LEDGER_ERRORS_CODES[errorCode];
+const getErrorMessage = (
+  errorCode: string,
+  t: (key: string) => string,
+): string => {
+  const errorCodeLocalized =
+    LEDGER_ERRORS_CODES[errorCode as keyof typeof LEDGER_ERRORS_CODES];
   if (errorCodeLocalized !== undefined) {
     return t(errorCodeLocalized);
   }
-
   return errorCode;
 };
 
-class ConnectHardwareForm extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+const ConnectHardwareForm = () => {
+  const t = useI18nContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const dispatch: MetaMaskReduxDispatch = useDispatch();
+  const navigate = useNavigate();
 
-  state = {
-    error: null,
-    selectedAccounts: [],
-    accounts: [],
-    browserSupported: true,
-    unlocked: false,
-    device: null,
-    isFirefox: false,
-  };
+  // Selectors
+  const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const accounts = useSelector(getMetaMaskAccounts) as Record<
+    string,
+    { balance?: string }
+  >;
+  const connectedAccounts = useSelector(
+    getMetaMaskAccountsConnected,
+  ) as string[];
+  const defaultHdPaths = useSelector(
+    (state: { appState: { defaultHdPaths: Record<string, string> } }) =>
+      state.appState.defaultHdPaths,
+  );
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const ledgerTransportType = useSelector(
+    (state: { metamask: { ledgerTransportType: LedgerTransportTypes } }) =>
+      state.metamask.ledgerTransportType,
+  );
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const keyrings = useSelector(
+    (state: { metamask: { keyrings: KeyringObject[] } }) =>
+      state.metamask.keyrings,
+  );
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const { accounts } = nextProps;
-    const newAccounts = this.state.accounts.map((a) => {
-      const normalizedAddress = a.address.toLowerCase();
-      const balanceValue = accounts[normalizedAddress]?.balance || null;
-      a.balance = balanceValue ? formatBalance(balanceValue, 6) : '...';
-      return a;
-    });
+  // Local state
+  const [error, setError] = useState<string | null>(null);
+  const [selectedAccounts, setSelectedAccounts] = useState<number[]>([]);
+  const [hardwareAccounts, setHardwareAccounts] = useState<HardwareAccount[]>(
+    [],
+  );
+  const [browserSupported, setBrowserSupported] = useState(true);
+  const [unlocked, setUnlocked] = useState(false);
+  const [device, setDevice] = useState<string | null>(null);
+  const [isFirefox, setIsFirefox] = useState(false);
 
-    this.setState({ accounts: newAccounts });
-  }
+  const hardwareWalletKeyrings = useMemo(
+    () =>
+      keyrings.filter(
+        (keyring) =>
+          (
+            [
+              KeyringType.ledger,
+              KeyringType.trezor,
+              KeyringType.lattice,
+              KeyringType.qr,
+              KeyringType.oneKey,
+            ] as string[]
+          ).includes(keyring.type) && keyring.accounts.length > 0,
+      ),
+    [keyrings],
+  );
 
-  componentDidMount() {
-    this.checkIfUnlocked();
-    const useAgent = window.navigator.userAgent;
-    if (/Firefox/u.test(useAgent)) {
-      this.setState({ isFirefox: true });
-    }
-  }
-
-  /**
-   * We use this method to get all connected hardware wallets. This is just a workaround for
-   * the moment since, ideally, we should record all connected devices because we can have
-   * multiple devices using the same keyring.
-   *
-   * @returns {Array} Array of hardware wallet keyrings
-   */
-  getHardwareWalletKeyrings() {
-    const { keyrings } = this.props;
-    return keyrings.filter(
-      (keyring) =>
-        [
-          KeyringType.ledger,
-          KeyringType.trezor,
-          KeyringType.lattice,
-          KeyringType.qr,
-          KeyringType.oneKey,
-        ].includes(keyring.type) && keyring.accounts.length > 0,
+  // Update balances when accounts change
+  useEffect(() => {
+    setHardwareAccounts((prev) =>
+      prev.map((account) => {
+        const normalizedAddress = account.address.toLowerCase();
+        const balanceValue = accounts[normalizedAddress]?.balance || null;
+        return {
+          ...account,
+          balance: balanceValue ? formatBalance(balanceValue, 6) : '...',
+        };
+      }),
     );
-  }
+  }, [accounts]);
 
-  async checkIfUnlocked() {
-    for (const device of [
-      HardwareDeviceNames.trezor,
-      HardwareDeviceNames.oneKey,
-      HardwareDeviceNames.ledger,
-      HardwareDeviceNames.lattice,
-    ]) {
-      const path = this.props.defaultHdPaths[device];
-      const unlocked = await this.props.checkHardwareStatus(device, path);
-      if (unlocked && this.state.device) {
-        this.setState({ unlocked: true });
-        this.getPage(device, 0, path);
-      }
-    }
-  }
-
-  connectToHardwareWallet = (device) => {
-    this.setState({ device });
-    if (this.state.accounts.length) {
-      return;
-    }
-
-    // Default values
-    const deviceCount = this.getHardwareWalletKeyrings().length;
-
-    this.context.trackEvent({
-      event: MetaMetricsEventName.ConnectHardwareWalletClicked,
-      properties: {
-        device_type: capitalizeStr(device),
-        connected_device_count: deviceCount,
-      },
-    });
-
-    this.getPage(device, 0, this.props.defaultHdPaths[device], true);
-  };
-
-  onPathChange = (path) => {
-    this.props.setHardwareWalletDefaultHdPath({
-      device: this.state.device,
-      path,
-    });
-    this.setState({
-      selectedAccounts: [],
-    });
-    this.getPage(this.state.device, 0, path);
-  };
-
-  onAccountChange = (account) => {
-    let { selectedAccounts } = this.state;
-    if (selectedAccounts.includes(account)) {
-      selectedAccounts = selectedAccounts.filter((acc) => account !== acc);
-    } else {
-      selectedAccounts.push(account);
-    }
-    this.setState({ selectedAccounts, error: null });
-  };
-
-  onAccountRestriction = () => {
-    this.setState({ error: this.context.t('ledgerAccountRestriction') });
-  };
-
-  showTemporaryAlert() {
-    this.props.showAlert(this.context.t('hardwareWalletConnected'));
-    // Autohide the alert after 5 seconds
-    setTimeout((_) => {
-      this.props.hideAlert();
+  const showTemporaryAlert = useCallback(() => {
+    dispatch(actions.showAlert(t('hardwareWalletConnected') as string));
+    setTimeout(() => {
+      dispatch(actions.hideAlert());
     }, SECOND * 5);
-  }
+  }, [dispatch, t]);
 
-  getPage = (device, page, hdPath, loadHid) => {
-    this.props
-      .connectHardware(device, page, hdPath, loadHid, this.context.t)
-      .then((accounts) => {
-        if (accounts.length) {
-          // If we just loaded the accounts for the first time
-          // (device previously locked) show the global alert
-          if (this.state.accounts.length === 0 && !this.state.unlocked) {
-            this.showTemporaryAlert();
+  const getPage = useCallback(
+    (
+      deviceName: string,
+      page: number,
+      hdPath: string,
+      loadHid?: boolean,
+    ) => {
+      // The actions.ts type declares `page` as string, but the background
+      // handler expects a number (0 = first, 1 = next, -1 = previous).
+      // The original JS code always passed numbers.
+      dispatch(
+        actions.connectHardware(
+          deviceName as HardwareDeviceNames,
+          page as unknown as string,
+          hdPath,
+          loadHid ?? false,
+          t as (key: string) => string,
+        ),
+      )
+        .then(
+          (nextAccounts: { address: string; index?: number }[]) => {
+            if (nextAccounts.length) {
+              if (hardwareAccounts.length === 0 && !unlocked) {
+                showTemporaryAlert();
+              }
+
+              const newAccounts: HardwareAccount[] = nextAccounts.map(
+                (account, idx) => {
+                  const normalizedAddress = account.address.toLowerCase();
+                  const balanceValue =
+                    accounts[normalizedAddress]?.balance || null;
+                  return {
+                    address: account.address,
+                    index: account.index ?? idx,
+                    balance: balanceValue
+                      ? formatBalance(balanceValue, 6)
+                      : '...',
+                  };
+                },
+              );
+
+              setHardwareAccounts(newAccounts);
+              setUnlocked(true);
+              setDevice(deviceName);
+              setError(null);
+            }
+          },
+        )
+        .catch((e: unknown) => {
+          const errorMessage = toErrorMessage(e);
+          const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
+            (errorCode) => errorMessage.includes(errorCode),
+          );
+          if (errorMessage === 'Window blocked') {
+            setBrowserSupported(false);
+            setError(null);
+          } else if (errorMessage.includes(U2F_ERROR)) {
+            setError(U2F_ERROR);
+          } else if (
+            errorMessage === 'LEDGER_LOCKED' ||
+            errorMessage === 'LEDGER_WRONG_APP'
+          ) {
+            setError(t('ledgerLocked') as string);
+          } else if (errorMessage.includes('timeout')) {
+            setError(t('ledgerTimeout') as string);
+          } else if (ledgerErrorCode) {
+            setError(
+              `${errorMessage} - ${getErrorMessage(ledgerErrorCode, t as (key: string) => string)}`,
+            );
+          } else if (
+            errorMessage
+              .toLowerCase()
+              .includes(
+                'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
+              )
+          ) {
+            setError(t('QRHardwarePubkeyAccountOutOfRange') as string);
+          } else if (
+            errorMessage !== 'Window closed' &&
+            errorMessage !== 'Popup closed' &&
+            !errorMessage
+              .toLowerCase()
+              .includes('KeystoneError#sync_cancel'.toLowerCase())
+          ) {
+            setError(errorMessage);
           }
+        });
+    },
+    [
+      accounts,
+      dispatch,
+      hardwareAccounts.length,
+      showTemporaryAlert,
+      t,
+      unlocked,
+    ],
+  );
 
-          // Map accounts with balances
-          const newAccounts = accounts.map((account) => {
-            const normalizedAddress = account.address.toLowerCase();
-            const balanceValue =
-              this.props.accounts[normalizedAddress]?.balance || null;
-            account.balance = balanceValue
-              ? formatBalance(balanceValue, 6)
-              : '...';
-            return account;
-          });
-
-          this.setState({
-            accounts: newAccounts,
-            unlocked: true,
-            device,
-            error: null,
-          });
-        }
-      })
-      .catch((e) => {
-        const errorMessage = typeof e === 'string' ? e : e.message;
-        const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
-          (errorCode) => errorMessage.includes(errorCode),
+  // Check if device is already unlocked on mount
+  useEffect(() => {
+    const checkIfUnlocked = async () => {
+      for (const deviceName of [
+        HardwareDeviceNames.trezor,
+        HardwareDeviceNames.oneKey,
+        HardwareDeviceNames.ledger,
+        HardwareDeviceNames.lattice,
+      ]) {
+        const path = defaultHdPaths[deviceName];
+        const isUnlocked = await dispatch(
+          actions.checkHardwareStatus(deviceName, path),
         );
-        if (errorMessage === 'Window blocked') {
-          this.setState({ browserSupported: false, error: null });
-        } else if (errorMessage.includes(U2F_ERROR)) {
-          this.setState({ error: U2F_ERROR });
-        } else if (
-          errorMessage === 'LEDGER_LOCKED' ||
-          errorMessage === 'LEDGER_WRONG_APP'
-        ) {
-          this.setState({
-            error: this.context.t('ledgerLocked'),
-          });
-        } else if (errorMessage.includes('timeout')) {
-          this.setState({
-            error: this.context.t('ledgerTimeout'),
-          });
-        } else if (ledgerErrorCode) {
-          this.setState({
-            error: `${errorMessage} - ${getErrorMessage(ledgerErrorCode)}`,
-          });
-        } else if (
-          errorMessage
-            .toLowerCase()
-            .includes(
-              'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
-            )
-        ) {
-          this.setState({
-            error: this.context.t('QRHardwarePubkeyAccountOutOfRange'),
-          });
-        } else if (
-          errorMessage !== 'Window closed' &&
-          errorMessage !== 'Popup closed' &&
-          errorMessage
-            .toLowerCase()
-            .includes('KeystoneError#sync_cancel'.toLowerCase()) === false
-        ) {
-          this.setState({
-            error: errorMessage,
-          });
+        if (isUnlocked && device) {
+          setUnlocked(true);
+          getPage(deviceName, 0, path);
         }
+      }
+    };
+
+    if (/Firefox/.test(window.navigator.userAgent)) {
+      setIsFirefox(true);
+    }
+    void checkIfUnlocked();
+    // We only want this to run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const connectToHardwareWallet = useCallback(
+    (nextDevice: string) => {
+      setDevice(nextDevice);
+      if (hardwareAccounts.length) {
+        return;
+      }
+
+      const deviceCount = hardwareWalletKeyrings.length;
+
+      trackEvent({
+        event: MetaMetricsEventName.ConnectHardwareWalletClicked,
+        properties: {
+          device_type: capitalizeStr(nextDevice),
+          connected_device_count: deviceCount,
+        },
       });
-  };
 
-  onForgetDevice = (device, hdPath) => {
-    const { trackEvent } = this.context;
-    const { forgetDevice } = this.props;
+      getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
+    },
+    [
+      defaultHdPaths,
+      getPage,
+      hardwareAccounts.length,
+      hardwareWalletKeyrings.length,
+      trackEvent,
+    ],
+  );
 
-    forgetDevice(device)
-      .then((_) => {
+  const onPathChange = useCallback(
+    (path: string) => {
+      if (!device) {
+        return;
+      }
+      dispatch(
+        actions.setHardwareWalletDefaultHdPath({
+          device: device as HardwareDeviceNames,
+          path,
+        }),
+      );
+      setSelectedAccounts([]);
+      getPage(device, 0, path);
+    },
+    [device, dispatch, getPage],
+  );
+
+  const onAccountChange = useCallback((accountIndex: number) => {
+    setSelectedAccounts((prev) =>
+      prev.includes(accountIndex)
+        ? prev.filter((acc) => accountIndex !== acc)
+        : [...prev, accountIndex],
+    );
+    setError(null);
+  }, []);
+
+  const onAccountRestriction = useCallback(() => {
+    setError(t('ledgerAccountRestriction') as string);
+  }, [t]);
+
+  const onForgetDevice = useCallback(
+    async (deviceName: string, hdPath: string) => {
+      try {
+        await dispatch(
+          actions.forgetDevice(deviceName as HardwareDeviceNames),
+        );
+
         trackEvent({
           event: MetaMetricsEventName.HardwareWalletForgotten,
           properties: {
-            device_type: capitalizeStr(device),
+            device_type: capitalizeStr(deviceName),
           },
         });
 
-        this.setState({
-          error: null,
-          selectedAccounts: [],
-          accounts: [],
-          unlocked: false,
-        });
-      })
-      .catch((e) => {
+        setError(null);
+        setSelectedAccounts([]);
+        setHardwareAccounts([]);
+        setUnlocked(false);
+      } catch (e) {
+        const errorMessage = toErrorMessage(e);
+
         trackEvent({
           event: MetaMetricsEventName.HardwareWalletConnectionFailed,
           properties: {
             hd_path: hdPath,
-            device_type: capitalizeStr(device),
-            error: e.message,
+            device_type: capitalizeStr(deviceName),
+            error: errorMessage,
           },
         });
 
-        this.setState({ error: e.message });
-      });
-  };
+        setError(errorMessage);
+      }
+    },
+    [dispatch, trackEvent],
+  );
 
-  onUnlockAccounts = async (deviceName, path) => {
-    const {
-      navigate,
-      mostRecentOverviewPage,
-      unlockHardwareWalletAccounts,
-      hdEntropyIndex,
-    } = this.props;
-    const { selectedAccounts } = this.state;
-    const { trackEvent } = this.context;
+  const onUnlockAccounts = useCallback(
+    async (deviceName: string, path: string) => {
+      if (selectedAccounts.length === 0) {
+        setError(t('accountSelectionRequired') as string);
+        return;
+      }
 
-    if (selectedAccounts.length === 0) {
-      this.setState({ error: this.context.t('accountSelectionRequired') });
-    }
+      const description =
+        MEW_PATH === path
+          ? (t('hardwareWalletLegacyDescription') as string)
+          : '';
 
-    const description =
-      MEW_PATH === path
-        ? this.context.t('hardwareWalletLegacyDescription')
-        : '';
+      try {
+        await dispatch(
+          actions.unlockHardwareWalletAccounts(
+            selectedAccounts.map(String),
+            deviceName as HardwareDeviceNames,
+            path || '',
+            description,
+          ),
+        );
 
-    return unlockHardwareWalletAccounts(
-      selectedAccounts,
-      deviceName,
-      path || null,
-      description,
-    )
-      .then((_) => {
-        // Legacy event. Keeping it in case we have dashboards depending on it.
-        this.context.trackEvent({
+        // Legacy event
+        trackEvent({
           category: MetaMetricsEventCategory.Accounts,
           event: MetaMetricsEventName.AccountAdded,
           properties: {
             account_type: MetaMetricsEventAccountType.Hardware,
-            // For now we keep using the device name to avoid any discrepancies with our current metrics.
-            // TODO: This will be addressed later, see: https://github.com/MetaMask/metamask-extension/issues/29777
             account_hardware_type: deviceName,
             is_suggested_name: true,
           },
         });
 
-        const connectedDevices = this.getHardwareWalletKeyrings();
+        const connectedDevices = hardwareWalletKeyrings;
         const deviceCount = connectedDevices.length;
-
-        const isAlreadyConnected = connectedDevices.some((keyring) => {
-          return keyring.type === DEVICE_KEYRING_MAP[deviceName];
-        });
+        const isAlreadyConnected = connectedDevices.some(
+          (keyring) =>
+            keyring.type ===
+            DEVICE_KEYRING_MAP[
+              deviceName as keyof typeof DEVICE_KEYRING_MAP
+            ],
+        );
 
         trackEvent({
           event: MetaMetricsEventName.HardwareWalletAccountConnected,
@@ -384,17 +458,17 @@ class ConnectHardwareForm extends Component {
         });
 
         navigate(mostRecentOverviewPage);
-      })
-      .catch((e) => {
-        // Legacy event. Keeping it in case we have dashboards depending on it.
-        this.context.trackEvent({
+      } catch (e) {
+        const errorMessage = toErrorMessage(e);
+
+        // Legacy event
+        trackEvent({
           category: MetaMetricsEventCategory.Accounts,
           event: MetaMetricsEventName.AccountAddFailed,
           properties: {
             account_type: MetaMetricsEventAccountType.Hardware,
-            // See comment above about `account_hardware_type`.
             account_hardware_type: deviceName,
-            error: e.message,
+            error: errorMessage,
             hd_entropy_index: hdEntropyIndex,
           },
         });
@@ -404,200 +478,135 @@ class ConnectHardwareForm extends Component {
           properties: {
             hd_path: path,
             device_type: capitalizeStr(deviceName),
-            error: e.message,
+            error: errorMessage,
           },
         });
-        this.setState({ error: e.message });
-      });
-  };
+        setError(errorMessage);
+      }
+    },
+    [
+      dispatch,
+      hardwareWalletKeyrings,
+      hdEntropyIndex,
+      mostRecentOverviewPage,
+      navigate,
+      selectedAccounts,
+      t,
+      trackEvent,
+    ],
+  );
 
-  onCancel = () => {
-    const { navigate, mostRecentOverviewPage } = this.props;
+  const onCancel = useCallback(() => {
     navigate(mostRecentOverviewPage);
-  };
+  }, [mostRecentOverviewPage, navigate]);
 
-  renderError() {
-    if (this.state.error === U2F_ERROR) {
-      if (this.state.device === 'ledger' && this.state.isFirefox) {
+  const renderError = () => {
+    if (error === U2F_ERROR) {
+      if (device === 'ledger' && isFirefox) {
         return (
           <>
             <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
-              {this.context.t('troubleConnectingToLedgerU2FOnFirefox', [
+              {t('troubleConnectingToLedgerU2FOnFirefox', [
                 <Button
-                  variant={BUTTON_VARIANT.LINK}
+                  variant={ButtonVariant.Link}
                   href={ZENDESK_URLS.HARDWARE_CONNECTION}
-                  size={BUTTON_SIZES.INHERIT}
+                  size={ButtonSize.Inherit}
                   key="u2f-error-1"
                   as="a"
                   block={false}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {this.context.t('troubleConnectingToLedgerU2FOnFirefox2')}
+                  {t('troubleConnectingToLedgerU2FOnFirefox2')}
                 </Button>,
               ])}
             </Text>
             <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
-              {this.context.t(
-                'troubleConnectingToLedgerU2FOnFirefoxLedgerSolution',
-                [
-                  <Button
-                    variant={BUTTON_VARIANT.LINK}
-                    href={ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE}
-                    size={BUTTON_SIZES.INHERIT}
-                    key="u2f-error-1"
-                    as="a"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {this.context.t(
-                      'troubleConnectingToLedgerU2FOnFirefoxLedgerSolution2',
-                    )}
-                  </Button>,
-                ],
-              )}
+              {t('troubleConnectingToLedgerU2FOnFirefoxLedgerSolution', [
+                <Button
+                  variant={ButtonVariant.Link}
+                  href={ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE}
+                  size={ButtonSize.Inherit}
+                  key="u2f-error-2"
+                  as="a"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('troubleConnectingToLedgerU2FOnFirefoxLedgerSolution2')}
+                </Button>,
+              ])}
             </Text>
           </>
         );
       }
       return (
         <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
-          {this.context.t('troubleConnectingToWallet', [
-            this.state.device,
-
+          {t('troubleConnectingToWallet', [
+            device,
             <Button
-              variant={BUTTON_VARIANT.LINK}
+              variant={ButtonVariant.Link}
               href={ZENDESK_URLS.HARDWARE_CONNECTION}
               key="u2f-error-1"
             >
-              {this.context.t('walletConnectionGuide')}
+              {t('walletConnectionGuide')}
             </Button>,
           ])}
         </Text>
       );
     }
-    return this.state.error ? (
-      <span className="hw-connect__error">{this.state.error}</span>
+    return error ? (
+      <Text
+        color={TextColor.errorDefault}
+        className="hw-connect__error"
+      >
+        {error}
+      </Text>
     ) : null;
-  }
+  };
 
-  renderContent() {
-    if (!this.state.accounts.length) {
+  const renderContent = () => {
+    if (!hardwareAccounts.length) {
       return (
         <SelectHardware
-          connectToHardwareWallet={this.connectToHardwareWallet}
-          browserSupported={this.state.browserSupported}
-          ledgerTransportType={this.props.ledgerTransportType}
-          onCancel={this.onCancel}
+          connectToHardwareWallet={connectToHardwareWallet}
+          browserSupported={browserSupported}
+          ledgerTransportType={ledgerTransportType}
+          onCancel={onCancel}
         />
       );
     }
 
+    if (!device) {
+      return null;
+    }
+
     return (
       <AccountList
-        onPathChange={this.onPathChange}
-        selectedPath={this.props.defaultHdPaths[this.state.device]}
-        device={this.state.device}
-        accounts={this.state.accounts}
-        connectedAccounts={this.props.connectedAccounts}
-        selectedAccounts={this.state.selectedAccounts}
-        onAccountChange={this.onAccountChange}
-        chainId={this.props.chainId}
-        rpcPrefs={this.props.rpcPrefs}
-        getPage={this.getPage}
-        onUnlockAccounts={this.onUnlockAccounts}
-        onForgetDevice={this.onForgetDevice}
-        onCancel={this.onCancel}
-        onAccountRestriction={this.onAccountRestriction}
+        onPathChange={onPathChange}
+        selectedPath={defaultHdPaths[device]}
+        device={device}
+        accounts={hardwareAccounts}
+        connectedAccounts={connectedAccounts}
+        selectedAccounts={selectedAccounts}
+        onAccountChange={onAccountChange}
+        chainId={chainId}
+        rpcPrefs={rpcPrefs}
+        getPage={getPage}
+        onUnlockAccounts={onUnlockAccounts}
+        onForgetDevice={onForgetDevice}
+        onCancel={onCancel}
+        onAccountRestriction={onAccountRestriction}
         hdPaths={HD_PATHS}
       />
     );
-  }
-
-  render() {
-    return (
-      <>
-        {this.renderError()}
-        {this.renderContent()}
-      </>
-    );
-  }
-}
-
-ConnectHardwareForm.propTypes = {
-  connectHardware: PropTypes.func,
-  checkHardwareStatus: PropTypes.func,
-  forgetDevice: PropTypes.func,
-  showAlert: PropTypes.func,
-  hideAlert: PropTypes.func,
-  unlockHardwareWalletAccounts: PropTypes.func,
-  setHardwareWalletDefaultHdPath: PropTypes.func,
-  navigate: PropTypes.func,
-  chainId: PropTypes.string,
-  rpcPrefs: PropTypes.object,
-  accounts: PropTypes.object,
-  connectedAccounts: PropTypes.array.isRequired,
-  defaultHdPaths: PropTypes.object,
-  mostRecentOverviewPage: PropTypes.string.isRequired,
-  ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
-  hdEntropyIndex: PropTypes.number,
-  keyrings: PropTypes.array.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-  chainId: getCurrentChainId(state),
-  rpcPrefs: getRpcPrefsForCurrentProvider(state),
-  accounts: getMetaMaskAccounts(state),
-  connectedAccounts: getMetaMaskAccountsConnected(state),
-  defaultHdPaths: state.appState.defaultHdPaths,
-  mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  ledgerTransportType: state.metamask.ledgerTransportType,
-  hdEntropyIndex: getHDEntropyIndex(state),
-  keyrings: state.metamask.keyrings,
-});
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setHardwareWalletDefaultHdPath: ({ device, path }) => {
-      return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }));
-    },
-    connectHardware: (deviceName, page, hdPath, loadHid, t) => {
-      return dispatch(
-        actions.connectHardware(deviceName, page, hdPath, loadHid, t),
-      );
-    },
-    checkHardwareStatus: (deviceName, hdPath) => {
-      return dispatch(actions.checkHardwareStatus(deviceName, hdPath));
-    },
-    forgetDevice: (deviceName) => {
-      return dispatch(actions.forgetDevice(deviceName));
-    },
-    unlockHardwareWalletAccounts: (
-      indexes,
-      deviceName,
-      hdPath,
-      hdPathDescription,
-    ) => {
-      return dispatch(
-        actions.unlockHardwareWalletAccounts(
-          indexes,
-          deviceName,
-          hdPath,
-          hdPathDescription,
-        ),
-      );
-    },
-    showAlert: (msg) => dispatch(actions.showAlert(msg)),
-    hideAlert: () => dispatch(actions.hideAlert()),
   };
+
+  return (
+    <>
+      {renderError()}
+      {renderContent()}
+    </>
+  );
 };
 
-ConnectHardwareForm.contextTypes = {
-  t: PropTypes.func,
-  trackEvent: PropTypes.func,
-};
-
-export default compose(
-  withRouterHooks,
-  connect(mapStateToProps, mapDispatchToProps),
-)(ConnectHardwareForm);
+export default ConnectHardwareForm;

@@ -10,3 +10,19 @@ export const capitalizeStr = (str: string) => {
   }
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
+
+/**
+ * Extracts a human-readable error message from an unknown error value.
+ *
+ * @param error - The error value to extract a message from
+ * @returns The error message string
+ */
+export const toErrorMessage = (error: unknown): string => {
+  if (typeof error === 'string') {
+    return error;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return String(error);
+};

@@ -1,6 +1,5 @@
 import classnames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import {
   Text,
   Box,
@@ -8,9 +7,11 @@ import {
   ButtonIconSize,
   ButtonIcon,
   Button,
-  BUTTON_SIZES,
-  BUTTON_VARIANT,
+  ButtonLink,
+  ButtonSize,
+  ButtonVariant,
   BannerAlert,
+  BannerAlertSeverity,
 } from '../../../components/component-library';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
@@ -19,12 +20,12 @@ import LogoLattice from '../../../components/ui/logo/logo-lattice';
 
 import {
   HardwareDeviceNames,
-  LedgerTransportTypes,
   HardwareAffiliateLinks,
   HardwareAffiliateTutorialLinks,
   MarketingActionNames,
   QrHardwareDeviceNames,
 } from '../../../../shared/constants/hardware-wallets';
+import type { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { openWindow } from '../../../helpers/utils/window';
@@ -40,6 +41,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { capitalizeStr } from './utils';
 
 // Not all browsers have usb support. In particular, Firefox does
@@ -58,43 +61,207 @@ const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 const LEDGER_FIREFOX_NOT_SUPPORTED_URL =
   'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/';
 
-export default class SelectHardware extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
-  };
+// ─── Data-driven configuration ─────────────────────────────────────────────
 
-  static propTypes = {
-    onCancel: PropTypes.func.isRequired,
-    connectToHardwareWallet: PropTypes.func.isRequired,
-    browserSupported: PropTypes.bool.isRequired,
-    ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
-  };
+type DeviceButtonConfig = {
+  device: HardwareDeviceNames;
+  testId: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  logo: React.ComponentType<{ className: string; ariaLabel: string }>;
+  ariaLabel: string;
+};
 
-  state = {
-    selectedDevice: null,
-    trezorRequestDevicePending: false,
-  };
+const DEVICE_BUTTONS: DeviceButtonConfig[] = [
+  {
+    device: HardwareDeviceNames.ledger,
+    testId: 'connect-ledger-btn',
+    logo: LogoLedger as DeviceButtonConfig['logo'],
+    ariaLabel: 'Ledger',
+  },
+  {
+    device: HardwareDeviceNames.trezor,
+    testId: 'connect-trezor-btn',
+    logo: LogoTrezor as DeviceButtonConfig['logo'],
+    ariaLabel: 'Trezor',
+  },
+  {
+    device: HardwareDeviceNames.lattice,
+    testId: 'connect-lattice-btn',
+    logo: LogoLattice as DeviceButtonConfig['logo'],
+    ariaLabel: 'Lattice',
+  },
+  {
+    device: HardwareDeviceNames.qr,
+    testId: 'connect-qr-btn',
+    logo: LogoQRBased as DeviceButtonConfig['logo'],
+    ariaLabel: 'QRCode',
+  },
+];
 
-  trackMarketingEvent = (type, device) => {
-    const { trackEvent } = this.context;
-    trackEvent({
-      event: MetaMetricsEventName.HardwareWalletMarketingButtonClicked,
-      properties: {
-        button_type: type,
-        device_type: capitalizeStr(device),
-      },
-    });
-  };
+type TutorialStepConfig = {
+  titleKey: string;
+  messageKey: string;
+  asset: string;
+  dimensions: { width: string; height: string };
+  deviceName: string;
+  buyLink: string;
+  tutorialLink: string;
+};
 
-  connect = async () => {
-    const { selectedDevice } = this.state;
+const DEVICE_TUTORIAL_CONFIG: Partial<Record<string, TutorialStepConfig>> = {
+  [HardwareDeviceNames.ledger]: {
+    titleKey: 'step2LedgerWallet',
+    messageKey: 'step2LedgerWalletMsg',
+    asset: 'plug-in-wallet',
+    dimensions: { width: '225px', height: '75px' },
+    deviceName: HardwareDeviceNames.ledger,
+    buyLink: HardwareAffiliateLinks.Ledger,
+    tutorialLink: HardwareAffiliateTutorialLinks.Ledger,
+  },
+  [HardwareDeviceNames.trezor]: {
+    titleKey: 'step1TrezorWallet',
+    messageKey: 'step1TrezorWalletMsg',
+    asset: 'plug-in-wallet',
+    dimensions: { width: '225px', height: '75px' },
+    deviceName: HardwareDeviceNames.trezor,
+    buyLink: HardwareAffiliateLinks.Trezor,
+    tutorialLink: HardwareAffiliateTutorialLinks.Trezor,
+  },
+  [HardwareDeviceNames.lattice]: {
+    titleKey: 'step1LatticeWallet',
+    messageKey: 'step1LatticeWalletMsg',
+    asset: 'connect-lattice',
+    dimensions: { width: '225px', height: '75px' },
+    deviceName: HardwareDeviceNames.lattice,
+    buyLink: HardwareAffiliateLinks.GridPlus,
+    tutorialLink: HardwareAffiliateTutorialLinks.GridPlus,
+  },
+};
 
+type QrBrandConfig = {
+  labelKey: string;
+  deviceName: string;
+  primaryLabelKey: string;
+  primaryLink: string;
+  primaryAction: string;
+  secondaryLabelKey: string;
+  secondaryLink: string;
+  testIdPrefix?: string;
+};
+
+const QR_BRAND_CONFIG: QrBrandConfig[] = [
+  {
+    labelKey: 'keystone',
+    deviceName: QrHardwareDeviceNames.Keystone,
+    primaryLabelKey: 'learnMoreKeystone',
+    primaryLink: HardwareAffiliateLinks.Keystone,
+    primaryAction: MarketingActionNames.LearnMore,
+    secondaryLabelKey: 'tutorial',
+    secondaryLink: HardwareAffiliateTutorialLinks.Keystone,
+  },
+  {
+    labelKey: 'airgapVault',
+    deviceName: QrHardwareDeviceNames.AirGap,
+    primaryLabelKey: 'downloadNow',
+    primaryLink: HardwareAffiliateLinks.AirGap,
+    primaryAction: MarketingActionNames.BuyNow,
+    secondaryLabelKey: 'tutorial',
+    secondaryLink: HardwareAffiliateTutorialLinks.AirGap,
+  },
+  {
+    labelKey: 'coolWallet',
+    deviceName: QrHardwareDeviceNames.CoolWallet,
+    primaryLabelKey: 'buyNow',
+    primaryLink: HardwareAffiliateLinks.CoolWallet,
+    primaryAction: MarketingActionNames.BuyNow,
+    secondaryLabelKey: 'tutorial',
+    secondaryLink: HardwareAffiliateTutorialLinks.CoolWallet,
+  },
+  {
+    labelKey: 'dcent',
+    deviceName: QrHardwareDeviceNames.DCent,
+    primaryLabelKey: 'buyNow',
+    primaryLink: HardwareAffiliateLinks.DCent,
+    primaryAction: MarketingActionNames.BuyNow,
+    secondaryLabelKey: 'tutorial',
+    secondaryLink: HardwareAffiliateTutorialLinks.DCent,
+  },
+  {
+    labelKey: 'imToken',
+    deviceName: QrHardwareDeviceNames.ImToken,
+    primaryLabelKey: 'downloadNow',
+    primaryLink: HardwareAffiliateLinks.ImToken,
+    primaryAction: MarketingActionNames.BuyNow,
+    secondaryLabelKey: 'tutorial',
+    secondaryLink: HardwareAffiliateTutorialLinks.ImToken,
+  },
+  {
+    labelKey: 'oneKey',
+    deviceName: HardwareDeviceNames.oneKey,
+    primaryLabelKey: 'buyNow',
+    primaryLink: HardwareAffiliateLinks.OneKey,
+    primaryAction: MarketingActionNames.BuyNow,
+    secondaryLabelKey: 'tutorial',
+    secondaryLink: HardwareAffiliateTutorialLinks.OneKey,
+  },
+  {
+    labelKey: 'QRHardwareWalletSteps2Description',
+    deviceName: QrHardwareDeviceNames.Ngrave,
+    primaryLabelKey: 'buyNow',
+    primaryLink: HardwareAffiliateLinks.Ngrave,
+    primaryAction: MarketingActionNames.BuyNow,
+    secondaryLabelKey: 'learnMoreUpperCase',
+    secondaryLink: HardwareAffiliateTutorialLinks.Ngrave,
+    testIdPrefix: 'ngrave-brand',
+  },
+  {
+    labelKey: 'keycardShell',
+    deviceName: QrHardwareDeviceNames.KShell,
+    primaryLabelKey: 'buyNow',
+    primaryLink: HardwareAffiliateLinks.KShell,
+    primaryAction: MarketingActionNames.BuyNow,
+    secondaryLabelKey: 'tutorial',
+    secondaryLink: HardwareAffiliateTutorialLinks.KShell,
+  },
+];
+
+// ─── Component ──────────────────────────────────────────────────────────────
+
+type SelectHardwareProps = {
+  onCancel: () => void;
+  connectToHardwareWallet: (device: string) => void;
+  browserSupported: boolean;
+  ledgerTransportType?: LedgerTransportTypes;
+};
+
+const SelectHardware = ({
+  onCancel,
+  connectToHardwareWallet,
+  browserSupported,
+}: SelectHardwareProps) => {
+  const t = useI18nContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
+  const [trezorRequestDevicePending, setTrezorRequestDevicePending] =
+    useState(false);
+
+  const trackMarketingEvent = useCallback(
+    (type: string, device: string) => {
+      trackEvent({
+        event: MetaMetricsEventName.HardwareWalletMarketingButtonClicked,
+        properties: {
+          button_type: type,
+          device_type: capitalizeStr(device),
+        },
+      });
+    },
+    [trackEvent],
+  );
+
+  const connect = useCallback(async () => {
     if (selectedDevice) {
       if (selectedDevice === HardwareDeviceNames.trezor && isUSBSupported) {
-        this.setState({
-          trezorRequestDevicePending: true,
-        });
+        setTrezorRequestDevicePending(true);
         try {
           await window.navigator.usb.requestDevice({
             filters: [
@@ -104,873 +271,393 @@ export default class SelectHardware extends Component {
             ],
           });
         } catch (e) {
-          if (!e.message.match('No device selected')) {
+          if (!(e instanceof Error) || !e.message.match('No device selected')) {
             throw e;
           }
         } finally {
-          this.setState({ trezorRequestDevicePending: false });
+          setTrezorRequestDevicePending(false);
         }
       }
-      this.props.connectToHardwareWallet(selectedDevice);
+      connectToHardwareWallet(selectedDevice);
     }
     return null;
-  };
+  }, [connectToHardwareWallet, selectedDevice]);
 
-  renderConnectToTrezorButton() {
-    return (
-      <button
-        data-testid="connect-trezor-btn"
-        className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === HardwareDeviceNames.trezor,
-        })}
-        onClick={(_) =>
-          this.setState({ selectedDevice: HardwareDeviceNames.trezor })
-        }
-      >
-        <LogoTrezor className="hw-connect__btn__img" ariaLabel="Trezor" />
-      </button>
-    );
-  }
+  // ─── Reusable sub-components ────────────────────────────────────────────
 
-  renderConnectToLatticeButton() {
-    return (
-      <button
-        data-testid="connect-lattice-btn"
-        className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === HardwareDeviceNames.lattice,
-        })}
-        onClick={(_) =>
-          this.setState({ selectedDevice: HardwareDeviceNames.lattice })
-        }
-      >
-        <LogoLattice className="hw-connect__btn__img" ariaLabel="Lattice" />
-      </button>
-    );
-  }
+  const renderDeviceButton = ({
+    device: deviceName,
+    testId,
+    logo: LogoComponent,
+    ariaLabel,
+  }: DeviceButtonConfig) => (
+    <Box
+      as="button"
+      data-testid={testId}
+      className={classnames('hw-connect__btn', {
+        selected: selectedDevice === deviceName,
+      })}
+      onClick={() => setSelectedDevice(deviceName)}
+      key={deviceName}
+    >
+      <LogoComponent className="hw-connect__btn__img" ariaLabel={ariaLabel} />
+    </Box>
+  );
 
-  renderConnectToLedgerButton() {
-    return (
-      <button
-        data-testid="connect-ledger-btn"
-        className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === HardwareDeviceNames.ledger,
-        })}
-        onClick={(_) =>
-          this.setState({ selectedDevice: HardwareDeviceNames.ledger })
-        }
-      >
-        <LogoLedger className="hw-connect__btn__img" ariaLabel="Ledger" />
-      </button>
-    );
-  }
-
-  renderConnectToQRButton() {
-    return (
-      <button
-        data-testid="connect-qr-btn"
-        className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === HardwareDeviceNames.qr,
-        })}
-        onClick={(_) =>
-          this.setState({ selectedDevice: HardwareDeviceNames.qr })
-        }
-      >
-        <LogoQRBased className="hw-connect__btn__img" ariaLabel="QRCode" />
-      </button>
-    );
-  }
-
-  renderButtons() {
-    return (
-      <>
-        <div className="hw-connect__btn-wrapper">
-          {this.renderConnectToLedgerButton()}
-          {this.renderConnectToTrezorButton()}
-        </div>
-        <div
-          className="hw-connect__btn-wrapper"
-          style={{ margin: '10px 0 0 0' }}
-        >
-          {this.renderConnectToLatticeButton()}
-          {this.renderConnectToQRButton()}
-        </div>
-      </>
-    );
-  }
-
-  renderContinueButton() {
-    return (
+  const renderMarketingButtons = (
+    deviceName: string,
+    buyLink: string,
+    tutorialLink: string,
+  ) => (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      justifyContent={JustifyContent.center}
+      marginBottom={2}
+    >
       <Button
-        variant={BUTTON_VARIANT.PRIMARY}
-        size={BUTTON_SIZES.LG}
-        className="hw-connect__connect-btn"
-        onClick={this.connect}
-        disabled={
-          !this.state.selectedDevice ||
-          this.state.trezorRequestDevicePending ||
-          (this.state.selectedDevice === HardwareDeviceNames.ledger &&
-            isFirefox)
-        }
+        className="hw-connect__external-btn-first"
+        variant={ButtonVariant.Secondary}
+        onClick={() => {
+          trackMarketingEvent(MarketingActionNames.BuyNow, deviceName);
+          openWindow(buyLink);
+        }}
       >
-        {this.context.t('continue')}
+        {t('buyNow')}
       </Button>
-    );
-  }
+      <Button
+        className="hw-connect__external-btn"
+        variant={ButtonVariant.Secondary}
+        onClick={() => {
+          trackMarketingEvent(MarketingActionNames.Tutorial, deviceName);
+          openWindow(tutorialLink);
+        }}
+      >
+        {t('tutorial')}
+      </Button>
+    </Box>
+  );
 
-  renderFooter() {
-    return (
+  const renderQrBrandSection = (brand: QrBrandConfig) => (
+    <>
       <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodySm}
-        textAlign={TextAlign.Center}
-        as="h6"
-        marginTop={4}
-        className="new-external-account-form footer"
+        as="p"
+        variant={TextVariant.bodyMdBold}
+        className="hw-connect__QR-subtitle"
       >
-        {this.context.t('hardwareWalletsInfo')}
+        {t(brand.labelKey)}
       </Text>
-    );
-  }
-
-  renderUnsupportedBrowser() {
-    return (
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        className="new-external-account-form unsupported-browser"
+      <Button
+        className="hw-connect__external-btn-first"
+        variant={ButtonVariant.Secondary}
+        onClick={() => {
+          trackMarketingEvent(brand.primaryAction, brand.deviceName);
+          openWindow(brand.primaryLink);
+        }}
+        {...(brand.testIdPrefix
+          ? { 'data-testid': `${brand.testIdPrefix}-buy-now-btn` }
+          : {})}
       >
-        <Box
-          className="hw-connect"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-        >
-          <Text
-            className="hw-connect__title"
-            variant={TextVariant.headingMd}
-            as="h3"
-            fontWeight={FontWeight.Bold}
-            marginTop={6}
-            marginBottom={3}
-          >
-            {this.context.t('browserNotSupported')}
-          </Text>
-          <Text
-            className="hw-connect__msg"
-            variant={TextVariant.bodyMd}
-            as="h5"
-            marginTop={3}
-            marginBottom={5}
-          >
-            {this.context.t('chromeRequiredForHardwareWallets')}
-          </Text>
-        </Box>
-        <Button
-          variant={BUTTON_VARIANT.PRIMARY}
-          size={BUTTON_SIZES.LG}
-          onClick={() =>
-            global.platform.openTab({
-              url: 'https://google.com/chrome',
-            })
-          }
-        >
-          {this.context.t('downloadGoogleChrome')}
-        </Button>
+        {t(brand.primaryLabelKey)}
+      </Button>
+      <Button
+        className="hw-connect__external-btn"
+        variant={ButtonVariant.Secondary}
+        onClick={() => {
+          trackMarketingEvent(MarketingActionNames.Tutorial, brand.deviceName);
+          openWindow(brand.secondaryLink);
+        }}
+        {...(brand.testIdPrefix
+          ? { 'data-testid': `${brand.testIdPrefix}-learn-more-btn` }
+          : {})}
+      >
+        {t(brand.secondaryLabelKey)}
+      </Button>
+    </>
+  );
+
+  // ─── Section renderers ──────────────────────────────────────────────────
+
+  const renderDeviceButtons = () => (
+    <>
+      <Box className="hw-connect__btn-wrapper">
+        {renderDeviceButton(DEVICE_BUTTONS[0])}
+        {renderDeviceButton(DEVICE_BUTTONS[1])}
       </Box>
-    );
-  }
+      <Box className="hw-connect__btn-wrapper" marginTop={2}>
+        {renderDeviceButton(DEVICE_BUTTONS[2])}
+        {renderDeviceButton(DEVICE_BUTTONS[3])}
+      </Box>
+    </>
+  );
 
-  renderHeader() {
-    return (
+  const renderContinueButton = () => (
+    <Button
+      variant={ButtonVariant.Primary}
+      size={ButtonSize.Lg}
+      className="hw-connect__connect-btn"
+      onClick={connect}
+      disabled={
+        !selectedDevice ||
+        trezorRequestDevicePending ||
+        (selectedDevice === HardwareDeviceNames.ledger && isFirefox)
+      }
+    >
+      {t('continue')}
+    </Button>
+  );
+
+  const renderFooter = () => (
+    <Text
+      color={TextColor.textAlternative}
+      variant={TextVariant.bodySm}
+      textAlign={TextAlign.Center}
+      as="h6"
+      marginTop={4}
+      className="new-external-account-form footer"
+    >
+      {t('hardwareWalletsInfo')}
+    </Text>
+  );
+
+  const renderUnsupportedBrowser = () => (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      className="new-external-account-form unsupported-browser"
+    >
       <Box
-        className="hw-connect__header"
+        className="hw-connect"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
-        {this.state.selectedDevice === HardwareDeviceNames.ledger &&
-          !isFirefox && (
-            <Box>
-              <BannerAlert
-                marginTop={6}
-                title={this.context.t(
-                  'ledgerMultipleDevicesUnsupportedInfoTitle',
-                )}
-              >
-                {this.context.t(
-                  'ledgerMultipleDevicesUnsupportedInfoDescription',
-                )}
-              </BannerAlert>
-            </Box>
-          )}
-        {this.state.selectedDevice === HardwareDeviceNames.ledger &&
-          isFirefox && (
-            <Box>
-              <BannerAlert
-                marginTop={6}
-                severity="warning"
-                title={this.context.t('ledgerFirefoxNotSupportedTitle')}
-              >
-                {this.context.t('ledgerFirefoxNotSupportedDescription1')}
-                <a
-                  className="hw-connect__href-link"
-                  href={LEDGER_FIREFOX_NOT_SUPPORTED_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {this.context.t('ledgerFirefoxNotSupportedLink')}
-                </a>
-                {this.context.t('ledgerFirefoxNotSupportedDescription2')}
-                <br />
-                {this.context.t('ledgerFirefoxNotSupportedDescription3')}
-              </BannerAlert>
-            </Box>
-          )}
-
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          className="hw-connect__header__title-wrapper"
-          marginTop={6}
-        >
-          <Text
-            variant={TextVariant.headingMd}
-            as="h3"
-            fontWeight={FontWeight.Bold}
-            marginLeft="auto"
-          >
-            {this.context.t('hardwareWallets')}
-          </Text>
-          <ButtonIcon
-            iconName={IconName.Close}
-            ariaLabel={this.context.t('close')}
-            onClick={this.props.onCancel}
-            size={ButtonIconSize.Sm}
-            marginLeft="auto"
-            data-testid="hardware-connect-close-btn"
-          />
-        </Box>
-
         <Text
-          className="hw-connect__header__msg"
-          variant={TextVariant.bodyMd}
-          as="h5"
-          marginTop={5}
+          className="hw-connect__title"
+          variant={TextVariant.headingMd}
+          as="h3"
+          fontWeight={FontWeight.Bold}
+          marginTop={6}
           marginBottom={3}
         >
-          {this.context.t('hardwareWalletsMsg')}
+          {t('browserNotSupported')}
+        </Text>
+        <Text
+          className="hw-connect__msg"
+          variant={TextVariant.bodyMd}
+          as="h5"
+          marginTop={3}
+          marginBottom={5}
+        >
+          {t('chromeRequiredForHardwareWallets')}
         </Text>
       </Box>
-    );
-  }
+      <Button
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Lg}
+        onClick={() =>
+          global.platform.openTab({
+            url: 'https://google.com/chrome',
+          })
+        }
+      >
+        {t('downloadGoogleChrome')}
+      </Button>
+    </Box>
+  );
 
-  renderTutorialSteps() {
-    switch (this.state.selectedDevice) {
-      case HardwareDeviceNames.ledger:
-        return this.renderLedgerTutorialSteps();
-      case HardwareDeviceNames.trezor:
-        return this.renderTrezorTutorialSteps();
-      case HardwareDeviceNames.lattice:
-        return this.renderLatticeTutorialSteps();
-      case HardwareDeviceNames.qr:
-        return this.renderQRHardwareWalletSteps();
-      default:
-        return '';
-    }
-  }
-
-  renderLedgerTutorialSteps() {
-    const steps = [];
-    if (this.props.ledgerTransportType === LedgerTransportTypes.live) {
-      steps.push({
-        renderButtons: false,
-        title: this.context.t('step1LedgerWallet'),
-        message: this.context.t('step1LedgerWalletMsg', [
-          <a
-            className="hw-connect__msg-link"
-            href="https://www.ledger.com/ledger-live"
-            rel="noopener noreferrer"
-            target="_blank"
-            key="ledger-live-app-link"
+  const renderHeader = () => (
+    <Box
+      className="hw-connect__header"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.center}
+    >
+      {selectedDevice === HardwareDeviceNames.ledger && !isFirefox && (
+        <Box>
+          <BannerAlert
+            marginTop={6}
+            title={t('ledgerMultipleDevicesUnsupportedInfoTitle')}
           >
-            {this.context.t('ledgerLiveApp')}
-          </a>,
-        ]),
-      });
-    }
-
-    steps.push({
-      renderButtons: true,
-      asset: 'plug-in-wallet',
-      dimensions: { width: '225px', height: '75px' },
-      title: this.context.t('step2LedgerWallet'),
-      message: this.context.t('step2LedgerWalletMsg', [
-        <a
-          className="hw-connect__msg-link"
-          href={ZENDESK_URLS.HARDWARE_CONNECTION}
-          rel="noopener noreferrer"
-          target="_blank"
-          key="ledger-support-link"
-        >
-          {this.context.t('hardwareWalletSupportLinkConversion')}
-        </a>,
-      ]),
-    });
-
-    return (
-      <div className="hw-tutorial">
-        {steps.map((step, index) => (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            className="hw-connect"
-            key={index}
+            {t('ledgerMultipleDevicesUnsupportedInfoDescription')}
+          </BannerAlert>
+        </Box>
+      )}
+      {selectedDevice === HardwareDeviceNames.ledger && isFirefox && (
+        <Box>
+          <BannerAlert
+            marginTop={6}
+            severity={BannerAlertSeverity.Warning}
+            title={t('ledgerFirefoxNotSupportedTitle')}
           >
-            <h3 className="hw-connect__title">{step.title}</h3>
-            {step.renderButtons ? (
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-                justifyContent={JustifyContent.center}
-                marginBottom={2}
-              >
-                <Button
-                  className="hw-connect__external-btn-first"
-                  variant={BUTTON_VARIANT.SECONDARY}
-                  onClick={() => {
-                    this.trackMarketingEvent(
-                      MarketingActionNames.BuyNow,
-                      HardwareDeviceNames.ledger,
-                    );
-                    openWindow(HardwareAffiliateLinks.Ledger);
-                  }}
-                >
-                  {this.context.t('buyNow')}
-                </Button>
-                <Button
-                  className="hw-connect__external-btn"
-                  variant={BUTTON_VARIANT.SECONDARY}
-                  onClick={() => {
-                    this.trackMarketingEvent(
-                      MarketingActionNames.Tutorial,
-                      HardwareDeviceNames.ledger,
-                    );
-                    openWindow(HardwareAffiliateTutorialLinks.Ledger);
-                  }}
-                >
-                  {this.context.t('tutorial')}
-                </Button>
-              </Box>
-            ) : null}
-            <p className="hw-connect__msg">{step.message}</p>
-            {step.asset && (
-              <img
-                className="hw-connect__step-asset"
-                src={`images/${step.asset}.svg`}
-                {...step.dimensions}
-                alt=""
-              />
-            )}
-          </Box>
-        ))}
-      </div>
-    );
-  }
+            {t('ledgerFirefoxNotSupportedDescription1')}
+            <ButtonLink
+              className="hw-connect__href-link"
+              href={LEDGER_FIREFOX_NOT_SUPPORTED_URL}
+              externalLink
+            >
+              {t('ledgerFirefoxNotSupportedLink')}
+            </ButtonLink>
+            {t('ledgerFirefoxNotSupportedDescription2')}
+            <br />
+            {t('ledgerFirefoxNotSupportedDescription3')}
+          </BannerAlert>
+        </Box>
+      )}
 
-  renderLatticeTutorialSteps() {
-    const steps = [
-      {
-        asset: 'connect-lattice',
-        dimensions: { width: '225px', height: '75px' },
-        title: this.context.t('step1LatticeWallet'),
-        message: this.context.t('step1LatticeWalletMsg', [
-          <a
-            className="hw-connect__msg-link"
-            href={ZENDESK_URLS.HARDWARE_CONNECTION}
-            rel="noopener noreferrer"
-            target="_blank"
-            key="lattice-setup-link"
-          >
-            {this.context.t('hardwareWalletSupportLinkConversion')}
-          </a>,
-        ]),
-      },
-    ];
-
-    return (
-      <div className="hw-tutorial">
-        {steps.map((step, index) => (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            className="hw-connect"
-            key={index}
-          >
-            <h3 className="hw-connect__title">{step.title}</h3>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.center}
-              marginBottom={2}
-            >
-              <Button
-                className="hw-connect__external-btn-first"
-                variant={BUTTON_VARIANT.SECONDARY}
-                onClick={() => {
-                  this.trackMarketingEvent(
-                    MarketingActionNames.BuyNow,
-                    HardwareDeviceNames.lattice,
-                  );
-                  openWindow(HardwareAffiliateLinks.GridPlus);
-                }}
-              >
-                {this.context.t('buyNow')}
-              </Button>
-              <Button
-                className="hw-connect__external-btn"
-                variant={BUTTON_VARIANT.SECONDARY}
-                onClick={() => {
-                  this.trackMarketingEvent(
-                    MarketingActionNames.Tutorial,
-                    HardwareDeviceNames.lattice,
-                  );
-                  openWindow(HardwareAffiliateTutorialLinks.GridPlus);
-                }}
-              >
-                {this.context.t('tutorial')}
-              </Button>
-            </Box>
-            <p className="hw-connect__msg">{step.message}</p>
-            {step.asset && (
-              <img
-                className="hw-connect__step-asset"
-                src={`images/${step.asset}.svg`}
-                {...step.dimensions}
-                alt=""
-              />
-            )}
-          </Box>
-        ))}
-      </div>
-    );
-  }
-
-  renderTrezorTutorialSteps() {
-    const steps = [
-      {
-        asset: 'plug-in-wallet',
-        dimensions: { width: '225px', height: '75px' },
-        title: this.context.t('step1TrezorWallet'),
-        message: this.context.t('step1TrezorWalletMsg', [
-          <a
-            className="hw-connect__msg-link"
-            href={ZENDESK_URLS.HARDWARE_CONNECTION}
-            rel="noopener noreferrer"
-            target="_blank"
-            key="trezor-support-link"
-          >
-            {this.context.t('hardwareWalletSupportLinkConversion')}
-          </a>,
-        ]),
-      },
-    ];
-
-    return (
-      <div className="hw-tutorial">
-        {steps.map((step, index) => (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            className="hw-connect"
-            key={index}
-          >
-            <h3 className="hw-connect__title">{step.title}</h3>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.center}
-              marginBottom={2}
-            >
-              <Button
-                className="hw-connect__external-btn-first"
-                variant={BUTTON_VARIANT.SECONDARY}
-                onClick={() => {
-                  this.trackMarketingEvent(
-                    MarketingActionNames.BuyNow,
-                    HardwareDeviceNames.trezor,
-                  );
-                  openWindow(HardwareAffiliateLinks.Trezor);
-                }}
-              >
-                {this.context.t('buyNow')}
-              </Button>
-              <Button
-                className="hw-connect__external-btn"
-                variant={BUTTON_VARIANT.SECONDARY}
-                onClick={() => {
-                  this.trackMarketingEvent(
-                    MarketingActionNames.Tutorial,
-                    HardwareDeviceNames.trezor,
-                  );
-                  openWindow(HardwareAffiliateTutorialLinks.Trezor);
-                }}
-              >
-                {this.context.t('tutorial')}
-              </Button>
-            </Box>
-
-            <p className="hw-connect__msg">{step.message}</p>
-            {step.asset && (
-              <img
-                className="hw-connect__step-asset"
-                src={`images/${step.asset}.svg`}
-                {...step.dimensions}
-                alt=""
-              />
-            )}
-          </Box>
-        ))}
-      </div>
-    );
-  }
-
-  renderQRHardwareWalletSteps() {
-    const steps = [];
-    steps.push(
-      {
-        title: this.context.t('QRHardwareWalletSteps1Title'),
-        message: this.context.t('QRHardwareWalletSteps1Description'),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">
-              {this.context.t('keystone')}
-            </p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.LearnMore,
-                  QrHardwareDeviceNames.Keystone,
-                );
-                openWindow(HardwareAffiliateLinks.Keystone);
-              }}
-            >
-              {this.context.t('learnMoreKeystone')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.Keystone,
-                );
-                openWindow(HardwareAffiliateTutorialLinks.Keystone);
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
-          </>
-        ),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">
-              {this.context.t('airgapVault')}
-            </p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.BuyNow,
-                  QrHardwareDeviceNames.AirGap,
-                );
-                openWindow(HardwareAffiliateLinks.AirGap);
-              }}
-            >
-              {this.context.t('downloadNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.AirGap,
-                );
-                openWindow(HardwareAffiliateTutorialLinks.AirGap);
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
-          </>
-        ),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">
-              {this.context.t('coolWallet')}
-            </p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.BuyNow,
-                  QrHardwareDeviceNames.CoolWallet,
-                );
-                openWindow(HardwareAffiliateLinks.CoolWallet);
-              }}
-            >
-              {this.context.t('buyNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.CoolWallet,
-                );
-                openWindow(HardwareAffiliateTutorialLinks.CoolWallet);
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
-          </>
-        ),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">{this.context.t('dcent')}</p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.BuyNow,
-                  QrHardwareDeviceNames.DCent,
-                );
-                openWindow(HardwareAffiliateLinks.DCent);
-              }}
-            >
-              {this.context.t('buyNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.DCent,
-                );
-                openWindow(HardwareAffiliateTutorialLinks.DCent);
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
-          </>
-        ),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">
-              {this.context.t('imToken')}
-            </p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.BuyNow,
-                  QrHardwareDeviceNames.ImToken,
-                );
-                openWindow(HardwareAffiliateLinks.ImToken);
-              }}
-            >
-              {this.context.t('downloadNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.ImToken,
-                );
-                openWindow(HardwareAffiliateTutorialLinks.ImToken);
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
-          </>
-        ),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">
-              {this.context.t('oneKey')}
-            </p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.BuyNow,
-                  HardwareDeviceNames.oneKey,
-                );
-                openWindow(HardwareAffiliateLinks.OneKey);
-              }}
-            >
-              {this.context.t('buyNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.Tutorial,
-                  HardwareDeviceNames.oneKey,
-                );
-                openWindow(HardwareAffiliateTutorialLinks.OneKey);
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
-          </>
-        ),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">
-              {this.context.t('QRHardwareWalletSteps2Description')}
-            </p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.BuyNow,
-                  QrHardwareDeviceNames.Ngrave,
-                );
-                openWindow(HardwareAffiliateLinks.Ngrave);
-              }}
-              data-testid="ngrave-brand-buy-now-btn"
-            >
-              {this.context.t('buyNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.Ngrave,
-                );
-                openWindow(HardwareAffiliateTutorialLinks.Ngrave);
-              }}
-              data-testid="ngrave-brand-learn-more-btn"
-            >
-              {this.context.t('learnMoreUpperCase')}
-            </Button>
-          </>
-        ),
-      },
-      {
-        message: (
-          <>
-            <p className="hw-connect__QR-subtitle">
-              {this.context.t('keycardShell')}
-            </p>
-            <Button
-              className="hw-connect__external-btn-first"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.BuyNow,
-                  QrHardwareDeviceNames.KShell,
-                );
-                openWindow(HardwareAffiliateLinks.KShell);
-              }}
-            >
-              {this.context.t('buyNow')}
-            </Button>
-            <Button
-              className="hw-connect__external-btn"
-              variant={BUTTON_VARIANT.SECONDARY}
-              onClick={() => {
-                this.trackMarketingEvent(
-                  MarketingActionNames.Tutorial,
-                  QrHardwareDeviceNames.KShell,
-                );
-                openWindow(HardwareAffiliateTutorialLinks.KShell);
-              }}
-            >
-              {this.context.t('tutorial')}
-            </Button>
-          </>
-        ),
-      },
-    );
-    return (
-      <div className="hw-tutorial">
-        {steps.map((step, index) => (
-          <div className="hw-connect" key={index}>
-            {step.title && <h3 className="hw-connect__title">{step.title}</h3>}
-            <div className="hw-connect__msg">{step.message}</div>
-            {step.asset && (
-              <img
-                className="hw-connect__step-asset"
-                src={`images/${step.asset}.svg`}
-                {...step.dimensions}
-                alt=""
-              />
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  renderConnectScreen() {
-    return (
       <Box
-        className="new-external-account-form"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        className="hw-connect__header__title-wrapper"
+        marginTop={6}
+      >
+        <Text
+          variant={TextVariant.headingMd}
+          as="h3"
+          fontWeight={FontWeight.Bold}
+          marginLeft="auto"
+        >
+          {t('hardwareWallets')}
+        </Text>
+        <ButtonIcon
+          iconName={IconName.Close}
+          ariaLabel={t('close') as string}
+          onClick={onCancel}
+          size={ButtonIconSize.Sm}
+          marginLeft="auto"
+          data-testid="hardware-connect-close-btn"
+        />
+      </Box>
+
+      <Text
+        className="hw-connect__header__msg"
+        variant={TextVariant.bodyMd}
+        as="h5"
+        marginTop={5}
+        marginBottom={3}
+      >
+        {t('hardwareWalletsMsg')}
+      </Text>
+    </Box>
+  );
+
+  /**
+   * Renders tutorial steps for Ledger, Trezor, or Lattice using a shared layout.
+   * Each device has a single step with buy/tutorial marketing buttons,
+   * a message with a support link, and an asset image.
+   *
+   * @param config - The tutorial step configuration for the device
+   */
+  const renderDeviceTutorialSteps = (config: TutorialStepConfig) => (
+    <Box className="hw-tutorial">
+      <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        className="hw-connect"
       >
-        {this.renderHeader()}
-        {this.renderButtons()}
-        {this.state.selectedDevice ? this.renderTutorialSteps() : null}
-        {this.renderContinueButton()}
-        {this.renderFooter()}
+        <Text
+          as="h3"
+          variant={TextVariant.headingSm}
+          className="hw-connect__title"
+        >
+          {t(config.titleKey)}
+        </Text>
+        {renderMarketingButtons(
+          config.deviceName,
+          config.buyLink,
+          config.tutorialLink,
+        )}
+        <Text
+          as="p"
+          variant={TextVariant.bodyMd}
+          className="hw-connect__msg"
+        >
+          {t(config.messageKey, [
+            <ButtonLink
+              className="hw-connect__msg-link"
+              href={ZENDESK_URLS.HARDWARE_CONNECTION}
+              externalLink
+              key={`${config.deviceName}-support-link`}
+            >
+              {t('hardwareWalletSupportLinkConversion')}
+            </ButtonLink>,
+          ])}
+        </Text>
+        <img
+          className="hw-connect__step-asset"
+          src={`images/${config.asset}.svg`}
+          {...config.dimensions}
+          alt=""
+        />
       </Box>
-    );
-  }
+    </Box>
+  );
 
-  render() {
-    if (this.props.browserSupported) {
-      return this.renderConnectScreen();
+  /**
+   * Renders the QR hardware wallet section with a title step
+   * followed by all supported QR-based wallet brands.
+   */
+  const renderQRHardwareWalletSteps = () => (
+    <Box className="hw-tutorial">
+      <Box className="hw-connect">
+        <Text
+          as="h3"
+          variant={TextVariant.headingSm}
+          className="hw-connect__title"
+        >
+          {t('QRHardwareWalletSteps1Title')}
+        </Text>
+        <Text
+          as="p"
+          variant={TextVariant.bodyMd}
+          className="hw-connect__msg"
+        >
+          {t('QRHardwareWalletSteps1Description')}
+        </Text>
+      </Box>
+      {QR_BRAND_CONFIG.map((brand) => (
+        <Box className="hw-connect" key={brand.deviceName}>
+          <Box className="hw-connect__msg">{renderQrBrandSection(brand)}</Box>
+        </Box>
+      ))}
+    </Box>
+  );
+
+  const renderTutorialSteps = () => {
+    if (selectedDevice === HardwareDeviceNames.qr) {
+      return renderQRHardwareWalletSteps();
     }
-    return this.renderUnsupportedBrowser();
+    const config = selectedDevice
+      ? DEVICE_TUTORIAL_CONFIG[selectedDevice]
+      : undefined;
+    return config ? renderDeviceTutorialSteps(config) : null;
+  };
+
+  const renderConnectScreen = () => (
+    <Box
+      className="new-external-account-form"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+    >
+      {renderHeader()}
+      {renderDeviceButtons()}
+      {selectedDevice ? renderTutorialSteps() : null}
+      {renderContinueButton()}
+      {renderFooter()}
+    </Box>
+  );
+
+  if (browserSupported) {
+    return renderConnectScreen();
   }
-}
+  return renderUnsupportedBrowser();
+};
+
+export default SelectHardware;

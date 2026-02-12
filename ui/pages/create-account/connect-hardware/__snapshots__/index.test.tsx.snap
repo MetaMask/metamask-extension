@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ConnectHardwareForm matchs snapshot 1`] = `
+exports[`ConnectHardwareForm matches snapshot 1`] = `
 <div>
   <div
     class="mm-box new-external-account-form mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
@@ -34,10 +34,10 @@ exports[`ConnectHardwareForm matchs snapshot 1`] = `
       </h5>
     </div>
     <div
-      class="hw-connect__btn-wrapper"
+      class="mm-box hw-connect__btn-wrapper"
     >
       <button
-        class="hw-connect__btn"
+        class="mm-box hw-connect__btn"
         data-testid="connect-ledger-btn"
       >
         <svg
@@ -54,7 +54,7 @@ exports[`ConnectHardwareForm matchs snapshot 1`] = `
         </svg>
       </button>
       <button
-        class="hw-connect__btn"
+        class="mm-box hw-connect__btn"
         data-testid="connect-trezor-btn"
       >
         <svg
@@ -90,11 +90,10 @@ exports[`ConnectHardwareForm matchs snapshot 1`] = `
       </button>
     </div>
     <div
-      class="hw-connect__btn-wrapper"
-      style="margin: 10px 0px 0px 0px;"
+      class="mm-box hw-connect__btn-wrapper mm-box--margin-top-2"
     >
       <button
-        class="hw-connect__btn"
+        class="mm-box hw-connect__btn"
         data-testid="connect-lattice-btn"
       >
         <svg
@@ -113,7 +112,7 @@ exports[`ConnectHardwareForm matchs snapshot 1`] = `
         </svg>
       </button>
       <button
-        class="hw-connect__btn"
+        class="mm-box hw-connect__btn"
         data-testid="connect-qr-btn"
       >
         <svg
