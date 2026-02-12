@@ -168,6 +168,8 @@ export function usePerpsController(): PerpsController {
       return;
     }
 
+    let isMounted = true;
+
     const streamManager = getPerpsStreamManager();
 
     // Initialize stream manager if needed
@@ -175,11 +177,22 @@ export function usePerpsController(): PerpsController {
       .init(selectedAddress)
       .then(() => {
         // Get controller via getPerpsController (stream manager uses same singleton)
-        getPerpsController(selectedAddress).then(setStreamManagerController);
+        return getPerpsController(selectedAddress);
+      })
+      .then((ctrl) => {
+        if (isMounted) {
+          setStreamManagerController(ctrl);
+        }
       })
       .catch((err) => {
-        console.error('[PerpsControllerProvider] Init failed:', err);
+        if (isMounted) {
+          console.error('[usePerpsController] Init failed:', err);
+        }
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [contextController, selectedAddress]);
 
   // Prefer context controller, fall back to stream manager controller
