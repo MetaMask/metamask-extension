@@ -10,10 +10,7 @@ import {
 } from '@metamask/design-system-react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import {
-  getExplorerUrl,
-  getTransferAmount,
-} from '../helpers';
+import { getExplorerUrl, getTransferAmount } from '../helpers';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { DateRow } from './date-row';
@@ -32,9 +29,7 @@ export const TransferDetails = ({ transaction }: Props) => {
   const displayAmount = amount ? Number.parseFloat(amount) : 0;
 
   const { chainId, hash, time, txParams } = transaction;
-  const explorerUrl = hash
-    ? getExplorerUrl(chainId, hash)
-    : undefined;
+  const explorerUrl = hash ? getExplorerUrl(chainId, hash) : undefined;
 
   const networkFeeWei =
     txParams.gasUsed && txParams.gasPrice
@@ -49,11 +44,7 @@ export const TransferDetails = ({ transaction }: Props) => {
           {t('youSent')}
         </Text>
         <div className="flex items-center gap-3">
-          <AvatarToken
-            src=""
-            name={symbol}
-            size={AvatarTokenSize.Md}
-          />
+          <AvatarToken src="" name={symbol} size={AvatarTokenSize.Md} />
           <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Medium}>
             {displayAmount > 0 ? '+' : ''}
             {displayAmount} {symbol}

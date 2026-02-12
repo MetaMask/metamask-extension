@@ -10,10 +10,7 @@ import {
 } from '@metamask/design-system-react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import {
-  getExplorerUrl,
-  formatUnits,
-} from '../helpers';
+import { getExplorerUrl, formatUnits } from '../helpers';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { DateRow } from './date-row';
@@ -30,9 +27,7 @@ export const SwapDetails = ({ transaction }: Props) => {
   const { formatToken } = useFormatters();
 
   const { chainId, hash, time, txParams } = transaction;
-  const explorerUrl = hash
-    ? getExplorerUrl(chainId, hash)
-    : undefined;
+  const explorerUrl = hash ? getExplorerUrl(chainId, hash) : undefined;
 
   const networkFeeWei =
     txParams.gasUsed && txParams.gasPrice
@@ -56,8 +51,7 @@ export const SwapDetails = ({ transaction }: Props) => {
       : 0;
   const toSymbol = toData?.symbol || '';
 
-  const isBridge =
-    transaction.transactionType === 'BRIDGE';
+  const isBridge = transaction.transactionType === 'BRIDGE';
 
   return (
     <>
@@ -104,7 +98,7 @@ export const SwapDetails = ({ transaction }: Props) => {
         <Row left={t('account')} right={shortenAddress(txParams.from)} />
         <NetworkRow chainId={chainId} />
         <Row left={t('networkFee')} right={formatToken(networkFeeEth, 'ETH')} />
-        <Row left="Total amount" right={<div/>} />
+        <Row left="Total amount" right={<div />} />
       </div>
 
       <div className="h-px bg-border-muted" />
@@ -116,7 +110,11 @@ export const SwapDetails = ({ transaction }: Props) => {
             right={
               explorerUrl ? (
                 <TextButton asChild>
-                  <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={explorerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {t('viewOnExplorer')}
                   </a>
                 </TextButton>
@@ -132,7 +130,11 @@ export const SwapDetails = ({ transaction }: Props) => {
             right={
               explorerUrl ? (
                 <TextButton asChild>
-                  <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={explorerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {t('viewOnExplorer')}
                   </a>
                 </TextButton>

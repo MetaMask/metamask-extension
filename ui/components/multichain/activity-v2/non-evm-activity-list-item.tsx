@@ -16,7 +16,7 @@ import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multich
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
-import { ActivityListItem } from '../../multichain/activity-list-item';
+import { ActivityListItem } from '../activity-list-item';
 import {
   BadgeWrapper,
   AvatarNetwork,

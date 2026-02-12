@@ -10,10 +10,7 @@ import {
 } from '@metamask/design-system-react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import {
-  getExplorerUrl,
-  getTransferAmount,
-} from '../helpers';
+import { getExplorerUrl, getTransferAmount } from '../helpers';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { DateRow } from './date-row';
 import { NetworkRow } from './network-row';
@@ -42,11 +39,7 @@ export const ReceiveDetails = ({ transaction }: Props) => {
           {t('youReceived')}
         </Text>
         <div className="flex items-center gap-3">
-          <AvatarToken
-            src=""
-            name={symbol}
-            size={AvatarTokenSize.Md}
-          />
+          <AvatarToken src="" name={symbol} size={AvatarTokenSize.Md} />
           <Text
             variant={TextVariant.HeadingLg}
             fontWeight={FontWeight.Medium}
