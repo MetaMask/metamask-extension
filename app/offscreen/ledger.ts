@@ -214,7 +214,7 @@ export class LedgerOffscreenHandler {
   }> {
     const app = await this.ensureApp();
     const result = await app.clearSignTransaction(hdPath, tx, {
-      nft: true,
+      // nft: true, // TODO: FIX ME: temporarily disabled because erc20 are being misidentified.
       externalPlugins: true,
       erc20: true,
     });
