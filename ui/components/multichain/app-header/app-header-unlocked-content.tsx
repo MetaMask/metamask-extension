@@ -3,7 +3,6 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import browser from 'webextension-polyfill';
@@ -51,7 +50,6 @@ import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
   getOriginOfCurrentTab,
-  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -76,8 +74,6 @@ import {
   getShowSupportDataConsentModal,
   setShowCopyAddressToast,
 } from '../../../ducks/app/app';
-import { PreferredAvatar } from '../../app/preferred-avatar';
-import { AccountIconTour } from '../../app/account-icon-tour/account-icon-tour';
 import {
   getAccountListStats,
   getMultichainAccountGroupById,
@@ -101,10 +97,6 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const tourAnchorRef = useRef<HTMLDivElement>(null);
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
   const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
   const selectedMultichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
@@ -116,9 +108,7 @@ export const AppHeaderUnlockedContent = ({
   const shortenedAddress =
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
-  const accountName = isMultichainAccountsState2Enabled
-    ? (selectedMultichainAccount?.metadata.name ?? '')
-    : (internalAccount?.metadata.name ?? '');
+  const accountName = selectedMultichainAccount?.metadata.name ?? '';
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
@@ -261,7 +251,7 @@ export const AppHeaderUnlockedContent = ({
             paddingLeft={2}
             paddingRight={2}
           />
-          <>{!isMultichainAccountsState2Enabled && CopyButton}</>
+          <>{CopyButton}</>
         </Text>
         {selectedMultichainAccountId && (
           <Box
@@ -303,76 +293,6 @@ export const AppHeaderUnlockedContent = ({
     disableAccountPicker,
     selectedMultichainAccountId,
     navigate,
-    isMultichainAccountsState2Enabled,
-    trackEvent,
-    accountListStats,
-  ]);
-
-  // TODO: [Multichain-Accounts-MUL-849] Delete this method once multichain accounts is released
-  const AppContent = useMemo(() => {
-    const handleAccountMenuClick = () => {
-      trace({
-        name: TraceName.ShowAccountList,
-        op: TraceOperation.AccountUi,
-      });
-      navigate(ACCOUNT_LIST_PAGE_ROUTE);
-    };
-
-    return (
-      <>
-        <div ref={tourAnchorRef} className="flex">
-          {internalAccount && (
-            <PreferredAvatar address={internalAccount.address} />
-          )}
-        </div>
-
-        {internalAccount && (
-          <Text
-            as="div"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexStart}
-            ellipsis
-          >
-            <AccountPicker
-              address={internalAccount.address}
-              name={accountName}
-              showAvatarAccount={false}
-              onClick={() => {
-                handleAccountMenuClick();
-
-                trackEvent({
-                  event: MetaMetricsEventName.NavAccountMenuOpened,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    pinned_count: accountListStats.pinnedCount,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    hidden_count: accountListStats.hiddenCount,
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                    total_accounts: accountListStats.totalAccounts,
-                  },
-                });
-              }}
-              disabled={disableAccountPicker}
-              paddingLeft={2}
-              paddingRight={2}
-            />
-            <>{CopyButton}</>
-          </Text>
-        )}
-      </>
-    );
-  }, [
-    internalAccount,
-    accountName,
-    disableAccountPicker,
-    CopyButton,
-    navigate,
     trackEvent,
     accountListStats,
   ]);
@@ -386,9 +306,7 @@ export const AppHeaderUnlockedContent = ({
         gap={2}
         className="min-w-0"
       >
-        {isMultichainAccountsState2Enabled
-          ? multichainAccountAppContent
-          : AppContent}
+        {multichainAccountAppContent}
       </Box>
       <Box
         display={Display.Flex}
@@ -437,10 +355,6 @@ export const AppHeaderUnlockedContent = ({
           onClose={() => dispatch(setShowSupportDataConsentModal(false))}
         />
       </Box>
-
-      {!isMultichainAccountsState2Enabled && (
-        <AccountIconTour anchorElement={tourAnchorRef.current} />
-      )}
     </>
   );
 };
