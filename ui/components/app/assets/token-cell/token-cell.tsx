@@ -36,6 +36,7 @@ import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { isEligibleForMerklRewards } from '../../musd';
 import { useMerklClaim } from '../../musd/hooks/useMerklClaim';
+import { MERKL_FEATURE_FLAG_KEY } from '../../musd/constants';
 import {
   TokenCellTitle,
   TokenCellPercentChange,

@@ -8,8 +8,9 @@ import {
   ButtonSize,
   ButtonVariant,
   Text,
+  TextButton,
+  TextButtonSize,
   TextVariant,
-  TextColor,
   TextAlign,
 } from '@metamask/design-system-react';
 import {
@@ -91,21 +92,14 @@ const MerklClaimModal: React.FC<MerklClaimModalProps> = ({
             />
             <Text variant={TextVariant.BodySm} textAlign={TextAlign.Center}>
               {t('merklRewardsClaimOnLineaDescription')}{' '}
-              <Text
-                asChild
-                variant={TextVariant.BodySm}
-                color={TextColor.PrimaryDefault}
+              <TextButton
+                size={TextButtonSize.BodySm}
+                className="text-primary-default"
+                onClick={handleTermsClick}
+                data-testid="claim-on-linea-terms-link"
               >
-                <span
-                  className="merkl-rewards__terms-link cursor-pointer"
-                  onClick={handleTermsClick}
-                  role="link"
-                  tabIndex={0}
-                  data-testid="claim-on-linea-terms-link"
-                >
-                  {t('merklRewardsTermsApply')}
-                </span>
-              </Text>
+                {t('merklRewardsTermsApply')}
+              </TextButton>
             </Text>
           </Box>
         </ModalBody>
