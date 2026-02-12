@@ -271,7 +271,8 @@ jobs:
     with:
       build-name: build-test-webpack
       build-command: yarn build:test:webpack
-      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+      validate-source-maps: false
+      validate-source-maps-webpack: true
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
