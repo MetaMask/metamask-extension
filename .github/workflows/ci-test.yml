@@ -1,4 +1,4 @@
-name: CI Test
+name: CI Test2
 on:
   push:
     branches:
