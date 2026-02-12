@@ -22,8 +22,19 @@ import type {
   PerpsTraceName,
   PerpsTraceValue,
 } from '@metamask/perps-controller';
-// eslint-disable-next-line import/no-restricted-paths
-import { submitRequestToBackground } from '../../../../ui/store/background-connection';
+
+/**
+ * Options for creating perps infrastructure.
+ */
+export type CreatePerpsInfrastructureOptions = {
+  /** The currently selected account address */
+  selectedAddress: string;
+  /** Function to sign EIP-712 typed data via KeyringController */
+  signTypedMessage: (
+    msgParams: { from: string; data: unknown },
+    version: unknown,
+  ) => Promise<string>;
+};
 
 /**
  * Create a stubbed logger for error reporting.
@@ -34,7 +45,6 @@ function createLogger(): PerpsLogger {
     error: (error, options) => {
       console.error('[Perps Error]', error, options);
       // TODO: Integrate with Sentry when ready
-      // captureException(error, { tags: options?.tags, extra: options?.extras });
     },
   };
 }
@@ -66,7 +76,6 @@ function createMetrics(): PerpsMetrics {
       _properties: PerpsAnalyticsProperties,
     ) => {
       // TODO: Integrate with MetaMetrics when ready
-      // trackEvent({ event: _event, properties: _properties });
     },
   };
 }
@@ -94,7 +103,6 @@ function createTracer(): PerpsTracer {
       data?: Record<string, PerpsTraceValue>;
     }) => {
       // TODO: Integrate with Sentry tracing when ready
-      // Sentry.startSpan({ name: params.name, op: params.op, data: params.data });
     },
     endTrace: (_params: {
       name: PerpsTraceName;
@@ -131,15 +139,17 @@ function createStreamManager(): PerpsStreamManager {
  * Create stubbed controller access.
  * These should be wired to real extension controllers for trading operations.
  *
- * @param selectedAddress - The currently selected account address from the UI
+ * @param options - Configuration options
+ * @param options.selectedAddress - The currently selected account address
+ * @param options.signTypedMessage - Function to sign EIP-712 typed data
  */
 function createControllerAccess(
-  selectedAddress: string,
+  options: CreatePerpsInfrastructureOptions,
 ): PerpsControllerAccess {
+  const { selectedAddress, signTypedMessage } = options;
   return {
     accounts: {
       getSelectedEvmAccount: () => {
-        // Address passed from UI via selector - wire to AccountsController in production
         return { address: selectedAddress };
       },
       formatAccountToCaipId: (address: string, chainId: string) => {
@@ -147,13 +157,8 @@ function createControllerAccess(
       },
     },
     keyring: {
-      signTypedMessage: async (msgParams, _version) => {
-        // Call the background API to sign typed data via KeyringController
-        // The background handles EIP-712 V4 signing for Hyperliquid orders
-        const signature = await submitRequestToBackground<string>(
-          'perpsSignTypedData',
-          [msgParams],
-        );
+      signTypedMessage: async (msgParams, version) => {
+        const signature = await signTypedMessage(msgParams, version);
         return signature;
       },
     },
@@ -196,26 +201,13 @@ function createControllerAccess(
 /**
  * Create the complete PerpsPlatformDependencies for the extension.
  *
- * @param selectedAddress - The currently selected account address from the UI
+ * @param options - Configuration options
+ * @param options.selectedAddress - The currently selected account address
+ * @param options.signTypedMessage - Function to sign EIP-712 typed data via background
  * @returns PerpsPlatformDependencies object ready for PerpsController
- * @example
- * ```typescript
- * import { PerpsController } from '@metamask/perps-controller';
- * import { createPerpsInfrastructure } from './infrastructure';
- * import { getSelectedInternalAccount } from '../../selectors/accounts';
- * import { store } from '../../store/store';
- *
- * const state = store.getState();
- * const selectedAccount = getSelectedInternalAccount(state);
- * const infrastructure = createPerpsInfrastructure(selectedAccount.address);
- * const controller = new PerpsController({
- *   messenger,
- *   infrastructure,
- * });
- * ```
  */
 export function createPerpsInfrastructure(
-  selectedAddress: string,
+  options: CreatePerpsInfrastructureOptions,
 ): PerpsPlatformDependencies {
   return {
     logger: createLogger(),
@@ -224,6 +216,6 @@ export function createPerpsInfrastructure(
     performance: createPerformance(),
     tracer: createTracer(),
     streamManager: createStreamManager(),
-    controllers: createControllerAccess(selectedAddress),
+    controllers: createControllerAccess(options),
   };
 }

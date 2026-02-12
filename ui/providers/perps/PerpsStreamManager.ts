@@ -258,12 +258,6 @@ class PerpsStreamManager {
 
     // Address changed - clear caches and reinitialize
     if (this.currentAddress !== null && this.currentAddress !== address) {
-      console.log(
-        '[PerpsStreamManager] Address changed, clearing caches:',
-        this.currentAddress,
-        '->',
-        address,
-      );
       this.clearAllCaches();
       this.cleanupPrewarm();
     }
@@ -353,7 +347,6 @@ class PerpsStreamManager {
       // Wire candle stream channel to controller
       this.candles.setController(controller);
 
-      console.log('[PerpsStreamManager] Initialized for address:', address);
     } catch (error) {
       console.error('[PerpsStreamManager] Initialization failed:', error);
       this.initPromise = null;
@@ -390,8 +383,6 @@ class PerpsStreamManager {
       return;
     }
 
-    console.log('[PerpsStreamManager] Starting prewarm');
-
     this.prewarmCleanups = [
       this.positions.prewarm(),
       this.orders.prewarm(),
@@ -409,8 +400,6 @@ class PerpsStreamManager {
     if (this.prewarmCleanups.length === 0) {
       return;
     }
-
-    console.log('[PerpsStreamManager] Cleaning up prewarm');
 
     this.prewarmCleanups.forEach((cleanup) => cleanup());
     this.prewarmCleanups = [];

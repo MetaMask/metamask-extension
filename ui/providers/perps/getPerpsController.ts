@@ -9,6 +9,7 @@ import {
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/perps';
 import type { MetaMaskReduxState } from '../../store/store';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { getReduxStorePromise } from '../..';
 
 const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
@@ -188,7 +189,11 @@ export async function getPerpsController(
         }
       }
       const messenger = createPerpsMessenger(storeToUse ?? null);
-      const infrastructure = createPerpsInfrastructure(selectedAddress);
+      const infrastructure = createPerpsInfrastructure({
+        selectedAddress,
+        signTypedMessage: (msgParams) =>
+          submitRequestToBackground<string>('perpsSignTypedData', [msgParams]),
+      });
       const fallbackBlockedRegions = getFallbackBlockedRegions();
 
       const controller = new PerpsController({
