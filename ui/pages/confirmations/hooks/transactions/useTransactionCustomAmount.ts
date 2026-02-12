@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { debounce, type DebouncedFunc } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { setIsMaxAmount } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
@@ -82,6 +85,44 @@ export function useTransactionCustomAmount({
         .toString(10),
     [amountFiat, tokenFiatRate],
   );
+
+  useEffect(() => {
+    if (transactionMeta?.type !== TransactionType.perpsDeposit) {
+      return;
+    }
+
+    console.info('[PerpsDepositDebug] custom-amount state', {
+      transactionId,
+      amountFiat,
+      amountHuman,
+      amountHumanDebounced,
+      tokenAddress,
+      chainId,
+      tokenFiatRate,
+      payTokenBalanceUsd: balanceUsd,
+      primaryRequiredToken: primaryRequiredToken
+        ? {
+            address: primaryRequiredToken.address,
+            chainId: primaryRequiredToken.chainId,
+            amountUsd: primaryRequiredToken.amountUsd,
+            decimals: primaryRequiredToken.decimals,
+          }
+        : null,
+      isMaxAmount,
+    });
+  }, [
+    amountFiat,
+    amountHuman,
+    amountHumanDebounced,
+    balanceUsd,
+    chainId,
+    isMaxAmount,
+    primaryRequiredToken,
+    tokenAddress,
+    tokenFiatRate,
+    transactionId,
+    transactionMeta?.type,
+  ]);
 
   useEffect(() => {
     debounceSetAmountDelayed(amountHuman);

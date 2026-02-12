@@ -29,6 +29,11 @@ import type {
   PerpsTraceName,
   PerpsTraceValue,
 } from '@metamask/perps-controller';
+// eslint-disable-next-line import/no-restricted-paths
+import {
+  submitRequestToBackground,
+  generateActionId,
+} from '../../../../ui/store/background-connection';
 
 /**
  * Options for creating perps infrastructure.
@@ -42,6 +47,7 @@ export type CreatePerpsInfrastructureOptions = {
     version: unknown,
   ) => Promise<string>;
 };
+
 
 /**
  * Create a stubbed logger for error reporting.
@@ -194,15 +200,23 @@ function createControllerAccess(
           throw new Error('No network client found for Perps transaction');
         }
 
+        const {
+          // Extension confirmations rely on initial estimation to populate
+          // Transaction Pay source-fee state used by custom-amount validation.
+          skipInitialGasEstimate: _skipInitialGasEstimate,
+          ...forwardOptions
+        } = options;
+
         const transactionMeta = await submitRequestToBackground<{
           id: string;
           hash?: string;
         }>('addTransaction', [
           txParams,
           {
-            ...options,
+            ...forwardOptions,
             networkClientId,
             origin: options.origin ?? 'metamask',
+            actionId: generateActionId(),
           },
         ]);
 

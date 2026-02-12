@@ -43,7 +43,15 @@ export function usePerpsDepositTrigger(
   const isInFlightRef = useRef(false);
 
   const trigger = useCallback(async () => {
+    console.info('[PerpsDepositDebug] trigger:start', {
+      selectedAddress: selectedAccount?.address,
+      returnTo,
+      isInFlight: isInFlightRef.current,
+      isLoading,
+    });
+
     if (isInFlightRef.current || isLoading) {
+      console.info('[PerpsDepositDebug] trigger:skipped-in-flight');
       return null;
     }
 
@@ -58,6 +66,9 @@ export function usePerpsDepositTrigger(
     try {
       const { transactionId } = await preparePerpsDepositTransaction({
         fromAddress: selectedAccount.address,
+      });
+      console.info('[PerpsDepositDebug] trigger:tx-created', {
+        transactionId,
       });
 
       const search = new URLSearchParams({
@@ -75,6 +86,10 @@ export function usePerpsDepositTrigger(
       );
 
       onCreated?.(transactionId);
+      console.info('[PerpsDepositDebug] trigger:navigated', {
+        transactionId,
+        route: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}?${search}`,
+      });
 
       return { transactionId };
     } catch (error) {
