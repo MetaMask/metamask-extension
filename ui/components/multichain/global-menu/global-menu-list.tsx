@@ -4,6 +4,7 @@ import {
   Text,
   TextColor,
   TextVariant,
+  FontWeight,
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
@@ -84,6 +85,7 @@ export const GlobalMenuList = ({
             >
               <Text
                 variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
                 color={TextColor.TextAlternative}
               >
                 {section.title}
@@ -101,6 +103,8 @@ export const GlobalMenuList = ({
                 iconName={item.iconName}
                 iconSize={item.iconSize ?? IconSize.Lg}
                 iconColor={item.iconColor ?? IconColor.IconAlternative}
+                textVariant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
                 textColor={item.textColor}
                 to={isRouteItem(item) ? item.to : undefined}
                 onClick={item.onClick}

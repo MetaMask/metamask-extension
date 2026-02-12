@@ -13,6 +13,7 @@ import {
   Text,
   TextVariant,
   TextColor,
+  FontWeight,
   twMerge,
 } from '@metamask/design-system-react';
 import {
@@ -40,6 +41,7 @@ type MenuItemProps = {
   iconSize?: IconSize;
   iconColor?: IconColor;
   textVariant?: TextVariant;
+  fontWeight?: FontWeight;
   textColor?: TextColor;
   to?: string;
   onClick?: () => void;
@@ -65,6 +67,7 @@ const MenuItem = React.forwardRef<
       iconSize,
       iconColor,
       textVariant,
+      fontWeight,
       textColor,
       onClick,
       subtitle,
@@ -127,7 +130,12 @@ const MenuItem = React.forwardRef<
 
         <div>
           {textVariant && (
-            <Text variant={textVariant} color={textColor} asChild>
+            <Text
+              variant={textVariant}
+              fontWeight={fontWeight}
+              color={textColor}
+              asChild
+            >
               <div>{children}</div>
             </Text>
           )}
