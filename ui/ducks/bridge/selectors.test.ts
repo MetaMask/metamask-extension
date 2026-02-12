@@ -206,7 +206,7 @@ describe('Bridge selectors', () => {
       `);
     });
 
-    it('returns empty list when bridgeFeatureFlags are not set', () => {
+    it('returns all enabledchains when bridgeFeatureFlags are not set (uses fallback)', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -216,7 +216,31 @@ describe('Bridge selectors', () => {
       });
       const result = getFromChains(state as never);
 
-      expect(result).toHaveLength(0);
+      expect(result).toHaveLength(5);
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "chainId": "eip155:1",
+            "name": "Ethereum",
+          },
+          {
+            "chainId": "bip122:000000000019d6689c085ae165831e93",
+            "name": "BTC",
+          },
+          {
+            "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+            "name": "Solana",
+          },
+          {
+            "chainId": "eip155:59144",
+            "name": "Linea",
+          },
+          {
+            "chainId": "eip155:10",
+            "name": "Optimism",
+          },
+        ]
+      `);
     });
 
     it('returns sorted fromChains list when chainRanking is set', () => {
@@ -317,7 +341,7 @@ describe('Bridge selectors', () => {
   });
 
   describe('getToChains', () => {
-    it('includes selected providerConfig and disabled chains from options', () => {
+    it('includes selected providerConfig and disabled chains', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -365,7 +389,7 @@ describe('Bridge selectors', () => {
       expect(result).not.toContain(null);
     });
 
-    it('returns empty list when bridgeFeatureFlags are not set', () => {
+    it('returns all supported chains when bridgeFeatureFlags are not set (uses fallback)', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -375,7 +399,76 @@ describe('Bridge selectors', () => {
       });
       const result = getToChains(state as never);
 
-      expect(result).toHaveLength(0);
+      expect(result).toHaveLength(16);
+      expect(result.map(({ name, chainId }) => ({ name, chainId })))
+        .toMatchInlineSnapshot(`
+        [
+          {
+            "chainId": "eip155:1",
+            "name": "Ethereum",
+          },
+          {
+            "chainId": "eip155:56",
+            "name": "BNB",
+          },
+          {
+            "chainId": "bip122:000000000019d6689c085ae165831e93",
+            "name": "BTC",
+          },
+          {
+            "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+            "name": "Solana",
+          },
+          {
+            "chainId": "tron:728126428",
+            "name": "Tron",
+          },
+          {
+            "chainId": "eip155:8453",
+            "name": "Base",
+          },
+          {
+            "chainId": "eip155:42161",
+            "name": "Arbitrum",
+          },
+          {
+            "chainId": "eip155:59144",
+            "name": "Linea",
+          },
+          {
+            "chainId": "eip155:137",
+            "name": "Polygon",
+          },
+          {
+            "chainId": "eip155:43114",
+            "name": "Avalanche",
+          },
+          {
+            "chainId": "eip155:10",
+            "name": "Optimism",
+          },
+          {
+            "chainId": "eip155:143",
+            "name": "Monad",
+          },
+          {
+            "chainId": "eip155:1329",
+            "name": "Sei",
+          },
+          {
+            "chainId": "eip155:999",
+            "name": "HyperEVM",
+          },
+          {
+            "chainId": "eip155:4326",
+            "name": "MegaETH",
+          },
+          {
+            "chainId": "eip155:324",
+            "name": "zkSync",
+          },
+        ]
+      `);
     });
 
     it('returns sorted toChains list when chainRanking is set', () => {
@@ -491,7 +584,7 @@ describe('Bridge selectors', () => {
         balance: '0',
         chainId: 'eip155:1',
         decimals: 18,
-        image:
+        iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
@@ -528,7 +621,7 @@ describe('Bridge selectors', () => {
           "balance": "0",
           "chainId": "eip155:1",
           "decimals": 18,
-          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x567.png",
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x567.png",
           "name": "DEST",
           "rwaData": undefined,
           "symbol": "DEST",
@@ -557,7 +650,7 @@ describe('Bridge selectors', () => {
         balance: '0',
         chainId: 'eip155:1',
         decimals: 6,
-        image:
+        iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
         name: 'MetaMask USD',
         symbol: 'mUSD',
@@ -624,7 +717,7 @@ describe('Bridge selectors', () => {
         balance: '0',
         chainId: 'eip155:1',
         decimals: 18,
-        image:
+        iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',

@@ -44,6 +44,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const prettier = require('prettier');
 const {
   categorizeUnitTestMessage,
   categorizeIntegrationTestMessage,
@@ -177,7 +178,7 @@ class ConsoleBaselineReporter {
    * In ratchet mode (default): only increases counts, never decreases.
    * In strict mode: strictly matches current test run, allows decreases.
    */
-  #writeBaseline() {
+  async #writeBaseline() {
     const baselinePath = this.#resolveBaselinePath();
 
     // Start with baseline files (to preserve files that didn't run)
@@ -234,16 +235,22 @@ class ConsoleBaselineReporter {
 
     const baseline = {
       files: mergedFiles,
-      generated: new Date().toISOString(),
-      nodeVersion: process.version,
     };
 
     if (JSON.stringify(mergedFiles) === JSON.stringify(this.baseline.files)) {
       console.log(`\n✅ Baseline is up-to-date, no changes needed.\n`);
     } else {
-      // Write JSON with 2-space indentation and trailing newline (matches Prettier)
-      const jsonString = `${JSON.stringify(baseline, null, 2)}\n`;
-      fs.writeFileSync(baselinePath, jsonString);
+      // Write JSON with Prettier formatting
+      const prettierOptions = await prettier.resolveConfig(baselinePath);
+      const formatted = await prettier.format(
+        `${JSON.stringify(baseline, null, 2)}\n`,
+        {
+          // get options from .prettierrc
+          ...prettierOptions,
+          filepath: baselinePath,
+        },
+      );
+      fs.writeFileSync(baselinePath, formatted);
 
       const filesUpdated = Object.keys(this.warningsByFile).length;
       const totalFilesInBaseline = Object.keys(mergedFiles).length;
@@ -340,7 +347,7 @@ class ConsoleBaselineReporter {
    * Called once after ALL tests complete.
    * Handles both capture and enforce modes.
    */
-  onRunComplete() {
+  async onRunComplete() {
     const { updateBaseline } = this.#options;
 
     // Update baseline (ratchet or strict)
@@ -348,7 +355,7 @@ class ConsoleBaselineReporter {
       updateBaseline === UpdateBaselineMode.RATCHET ||
       updateBaseline === UpdateBaselineMode.STRICT
     ) {
-      this.#writeBaseline();
+      await this.#writeBaseline();
     } else if (updateBaseline === undefined) {
       // Do not update baseline, just compare against baseline
       this.#enforceBaseline();

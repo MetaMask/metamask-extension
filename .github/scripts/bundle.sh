@@ -42,6 +42,7 @@ export ANALYTICS_DATA_DELETION_SOURCE_ID=""
 export ANALYTICS_DATA_DELETION_ENDPOINT=""
 export SENTRY_DSN=""
 export SENTRY_DSN_DEV=""
+export SENTRY_DSN_PERFORMANCE=""
 export TZ="UTC"
 export VAPID_KEY=""
 export ENABLE_MV3="false"
@@ -62,5 +63,5 @@ corepack enable
 # 5. Install dependencies
 yarn
 
-# 6. Run the production build command
-yarn build prod
+# 6. Run the production build command with 4GB of heap space
+NODE_OPTIONS='--max-old-space-size=4096' yarn build prod

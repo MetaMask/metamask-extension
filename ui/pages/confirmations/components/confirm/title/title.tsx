@@ -4,10 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 
-import {
-  EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
-  TokenStandard,
-} from '../../../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -35,13 +32,17 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { getPermissionDescription } from '../info/typed-sign/typed-sign-permission/typed-sign-permission-util';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigationOptions,
+} from '../../../hooks/useConfirmationNavigation';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 const TRANSACTION_TYPES_HIDE_BANNER: string[] = [
+  TransactionType.musdConversion,
   TransactionType.perpsDeposit,
   TransactionType.predictDeposit,
   TransactionType.predictWithdraw,
-  EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
 ];
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -270,6 +271,7 @@ const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const { loader } = useConfirmationNavigationOptions();
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
@@ -340,6 +342,10 @@ const ConfirmTitle: React.FC = memo(() => {
   );
 
   if (!currentConfirmation) {
+    if (loader && loader !== ConfirmationLoader.Default) {
+      return null;
+    }
+
     return <TitleSkeleton />;
   }
 
