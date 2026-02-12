@@ -130,7 +130,10 @@ export default class ConnectedAccountsList extends PureComponent {
         onShowOptions={this.showAccountOptions.bind(null, address)}
         show={accountWithOptionsShown === address}
       >
-        <MenuItem iconName={IconName.Logout} onClick={this.disconnectAccount}>
+        <MenuItem
+          iconNameLegacy={IconName.Logout}
+          onClick={this.disconnectAccount}
+        >
           {t('disconnectThisAccount')}
         </MenuItem>
       </ConnectedAccountsListOptions>

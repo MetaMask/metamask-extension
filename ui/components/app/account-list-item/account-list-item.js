@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export default function AccountListItem({
   account,
@@ -10,17 +12,14 @@ export default function AccountListItem({
   displayAddress = false,
   handleClick,
   icon = null,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  hideDefaultMismatchWarning = false,
-  ///: END:ONLY_INCLUDE_IF
 }) {
-  const { name, address, balance } = account || {};
+  const {
+    metadata: { name },
+    address,
+    balance,
+  } = account;
 
-  let showDefaultMismatchWarning = true;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  showDefaultMismatchWarning = !hideDefaultMismatchWarning;
-  ///: END:ONLY_INCLUDE_IF
+  const showDefaultMismatchWarning = true;
 
   return (
     <div
@@ -49,7 +48,7 @@ export default function AccountListItem({
       </div>
       {displayAddress && name && (
         <div className="account-list-item__account-address">
-          {toChecksumHexAddress(address)}
+          {normalizeSafeAddress(address)}
         </div>
       )}
     </div>
@@ -61,10 +60,21 @@ AccountListItem.propTypes = {
    * An account object that has name, address, and balance data
    */
   account: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
-    balance: PropTypes.string,
-    name: PropTypes.string,
-  }),
+    balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
+  }).isRequired,
   /**
    * Additional className to add to the root div element of AccountListItem
    */
@@ -81,10 +91,4 @@ AccountListItem.propTypes = {
    * Pass icon component to be displayed. Currently not used
    */
   icon: PropTypes.node,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * MMI Prop, will hide the default AccountMismatchWarning when needed
-   */
-  hideDefaultMismatchWarning: PropTypes.bool,
-  ///: END:ONLY_INCLUDE_IF
 };

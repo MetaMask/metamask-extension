@@ -1,26 +1,31 @@
 import { v4 as uuid } from 'uuid';
-import { sha256FromString } from 'ethereumjs-util';
-import { EthMethod, InternalAccount } from '@metamask/keyring-api';
+import { sha256 } from '@noble/hashes/sha2';
+import { hexToBytes } from '@metamask/utils';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { migrate } from './105';
+import type { Identity, InternalAccountV1 } from './105';
 
 const MOCK_ADDRESS = '0x0';
 const MOCK_ADDRESS_2 = '0x1';
 
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  startSession: jest.fn(),
+  endSession: jest.fn(),
+  toggleSession: jest.fn(),
+  captureException: sentryCaptureExceptionMock,
+};
+
 function addressToUUID(address: string): string {
   return uuid({
-    random: sha256FromString(address).slice(0, 16),
+    random: sha256(hexToBytes(address)).slice(0, 16),
   });
 }
 
-interface Identity {
-  name: string;
-  address: string;
-  lastSelected?: number;
-}
-
-interface Identities {
+type Identities = {
   [key: string]: Identity;
-}
+};
 
 function createMockPreferenceControllerState(
   identities: Identity[] = [{ name: 'Account 1', address: MOCK_ADDRESS }],
@@ -52,7 +57,7 @@ function expectedInternalAccount(
   address: string,
   nickname: string,
   lastSelected?: number,
-): InternalAccount {
+): InternalAccountV1 {
   return {
     address,
     id: addressToUUID(address),
@@ -62,9 +67,10 @@ function expectedInternalAccount(
         type: 'HD Key Tree',
       },
       lastSelected: lastSelected ? expect.any(Number) : undefined,
+      importTime: 0,
     },
     options: {},
-    methods: [...Object.values(EthMethod)],
+    methods: ETH_EOA_METHODS,
     type: 'eip155:eoa',
   };
 }
@@ -85,7 +91,7 @@ function createMockState(
 describe('migration #105', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: 103 },
+      meta: { version: 104 },
       data: createMockState(),
     };
 
@@ -99,7 +105,7 @@ describe('migration #105', () => {
       const oldData = createMockState();
 
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
 
@@ -130,7 +136,7 @@ describe('migration #105', () => {
       const oldData = createMockState();
 
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
 
@@ -142,7 +148,7 @@ describe('migration #105', () => {
             accounts: {
               [expectedUUID]: expectedInternalAccount(
                 MOCK_ADDRESS,
-                `Account 1`,
+                'Account 1',
               ),
             },
             selectedAccount: expectedUUID,
@@ -159,7 +165,7 @@ describe('migration #105', () => {
         ]),
       );
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
       const newStorage = await migrate(oldStorage);
@@ -170,7 +176,7 @@ describe('migration #105', () => {
             accounts: {
               [expectedUUID]: expectedInternalAccount(
                 MOCK_ADDRESS,
-                `a random name`,
+                'a random name',
               ),
             },
             selectedAccount: expectedUUID,
@@ -189,7 +195,7 @@ describe('migration #105', () => {
       });
 
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
 
@@ -201,11 +207,11 @@ describe('migration #105', () => {
             accounts: {
               [expectedUUID]: expectedInternalAccount(
                 MOCK_ADDRESS,
-                `Account 1`,
+                'Account 1',
               ),
               [expectedUUID2]: expectedInternalAccount(
                 MOCK_ADDRESS_2,
-                `Account 2`,
+                'Account 2',
               ),
             },
             selectedAccount: expectedUUID,
@@ -217,10 +223,14 @@ describe('migration #105', () => {
   });
 
   describe('createSelectedAccountForAccountsController', () => {
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
     it('should select the same account as the selected address', async () => {
       const oldData = createMockState();
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
       const newStorage = await migrate(oldStorage);
@@ -243,7 +253,7 @@ describe('migration #105', () => {
         },
       };
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
       const newStorage = await migrate(oldStorage);
@@ -253,6 +263,61 @@ describe('migration #105', () => {
           internalAccounts: {
             accounts: expect.any(Object),
             selectedAccount: '',
+          },
+        },
+      });
+    });
+
+    it('captures an exception if the selectedAddress state is invalid', async () => {
+      const oldData = {
+        PreferencesController: {
+          identities: {},
+          selectedAddress: undefined,
+        },
+      };
+      const oldStorage = {
+        meta: { version: 104 },
+        data: oldData,
+      };
+      await migrate(oldStorage);
+
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error(`state.PreferencesController?.selectedAddress is undefined`),
+      );
+    });
+
+    it('recovers from invalid selectedAddress state', async () => {
+      const expectedUUID = addressToUUID(MOCK_ADDRESS);
+
+      const oldData = {
+        PreferencesController: {
+          identities: {
+            [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
+          },
+          selectedAddress: undefined,
+        },
+      };
+      const oldStorage = {
+        meta: { version: 104 },
+        data: oldData,
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
+        PreferencesController: expect.objectContaining({
+          selectedAddress: MOCK_ADDRESS,
+        }),
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              [expectedUUID]: expectedInternalAccount(
+                MOCK_ADDRESS,
+                'Account 1',
+              ),
+            },
+            selectedAccount: expectedUUID,
           },
         },
       });

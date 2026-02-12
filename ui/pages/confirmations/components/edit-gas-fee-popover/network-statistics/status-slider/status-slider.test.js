@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { GasFeeContext } from '../../../../../../contexts/gasFee';
 import configureStore from '../../../../../../store/store';
 
@@ -34,13 +34,13 @@ describe('StatusSlider', () => {
     expect(getByText('Stable')).toBeInTheDocument();
   });
 
-  it('should show "Busy" when networkCongestion is 0.66', () => {
-    const { getByText } = renderComponent({ networkCongestion: 0.66 });
+  it('should show "Busy" when networkCongestion is 0.9', () => {
+    const { getByText } = renderComponent({ networkCongestion: 0.9 });
     expect(getByText('Busy')).toBeInTheDocument();
   });
 
-  it('should show "Busy" when networkCongestion is greater than 0.66', () => {
-    const { getByText } = renderComponent({ networkCongestion: 0.67 });
+  it('should show "Busy" when networkCongestion is greater than 0.9', () => {
+    const { getByText } = renderComponent({ networkCongestion: 0.91 });
     expect(getByText('Busy')).toBeInTheDocument();
   });
 
@@ -82,8 +82,8 @@ describe('StatusSlider', () => {
   it('should color the arrow and label for the middle position if networkCongestion has not been set yet', () => {
     const { getByTestId } = renderComponent({});
     expect(getByTestId('status-slider-arrow')).toHaveStyle(
-      'border-top-color: #6A5D92',
+      'border-top-color: #6D5C90',
     );
-    expect(getByTestId('status-slider-label')).toHaveStyle('color: #6A5D92');
+    expect(getByTestId('status-slider-label')).toHaveStyle('color: #6D5C90');
   });
 });

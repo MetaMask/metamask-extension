@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Inline Alert renders alert with danger severity 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex"
+  >
+    <div
+      class="mm-box inline-alert inline-alert__danger inline-alert__transparent-background mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--rounded-sm"
+      data-testid="inline-alert"
+      style="cursor: pointer;"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/danger.svg');"
+      />
+      <span
+        class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-right.svg');"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Inline Alert renders alert with informative severity 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex"
+  >
+    <div
+      class="mm-box inline-alert inline-alert__info inline-alert__transparent-background mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--rounded-sm"
+      data-testid="inline-alert"
+      style="cursor: pointer;"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/info.svg');"
+      />
+      <span
+        class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-right.svg');"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Inline Alert renders alert with warning severity 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex"
+  >
+    <div
+      class="mm-box inline-alert inline-alert__warning inline-alert__transparent-background mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--rounded-sm"
+      data-testid="inline-alert"
+      style="cursor: pointer;"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/info.svg');"
+      />
+      <span
+        class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-right.svg');"
+      />
+    </div>
+  </div>
+</div>
+`;

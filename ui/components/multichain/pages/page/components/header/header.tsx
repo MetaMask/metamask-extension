@@ -6,15 +6,19 @@ import {
   Display,
   TextAlign,
   TextVariant,
+  JustifyContent,
+  AlignItems,
 } from '../../../../../../helpers/constants/design-system';
 
 import type { StyleUtilityProps } from '../../../../../component-library/box';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface HeaderProps extends StyleUtilityProps {
   /**
    * Elements that go in the page footer
    */
-  children: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode | React.ReactNode[];
   /**
    * Elements that go in the header end accessory
    */
@@ -27,6 +31,10 @@ interface HeaderProps extends StyleUtilityProps {
    * Additional CSS class provided to the footer
    */
   className?: string;
+  /**
+   * Additional props to pass to the text
+   */
+  textProps?: React.ComponentProps<typeof Text>;
 }
 
 export const Header = ({
@@ -34,12 +42,15 @@ export const Header = ({
   endAccessory = null,
   startAccessory = null,
   className = '',
+  textProps,
   ...props
 }: HeaderProps) => {
   return (
     <HeaderBase
       padding={4}
       width={BlockSize.Full}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
       className={classnames('multichain-page-header', className)}
       startAccessory={startAccessory}
       endAccessory={endAccessory}
@@ -49,9 +60,10 @@ export const Header = ({
         display={Display.Block}
         variant={TextVariant.bodyMdBold}
         textAlign={TextAlign.Center}
-        paddingInlineStart={8}
-        paddingInlineEnd={8}
+        paddingInlineStart={2}
+        paddingInlineEnd={2}
         ellipsis
+        {...textProps}
       >
         {children}
       </Text>

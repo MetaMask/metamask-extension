@@ -1,0 +1,219 @@
+import { Messenger } from '@metamask/messenger';
+import {
+  ExecuteSnapAction,
+  TerminateSnapAction,
+  TerminateAllSnapsAction,
+  HandleRpcRequestAction,
+  GetResult,
+  GetMetadata,
+  Update,
+  ResolveVersion,
+  CreateInterface,
+  GetInterface,
+  ErrorMessageEvent,
+  OutboundRequest,
+  OutboundResponse,
+  SetClientActive,
+  SnapsRegistryStateChangeEvent,
+} from '@metamask/snaps-controllers';
+import {
+  GetEndowments,
+  GetPermissions,
+  HasPermission,
+  HasPermissions,
+  RequestPermissions,
+  RevokeAllPermissions,
+  RevokePermissions,
+  RevokePermissionForAllSubjects,
+  GetSubjects,
+  GrantPermissions,
+  GetSubjectMetadata,
+  AddSubjectMetadata,
+  UpdateCaveat,
+} from '@metamask/permission-controller';
+import {
+  AddApprovalRequest,
+  UpdateRequestState,
+} from '@metamask/approval-controller';
+import {
+  KeyringControllerGetKeyringsByTypeAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
+import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
+import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
+import {
+  StorageServiceClearAction,
+  StorageServiceGetItemAction,
+  StorageServiceRemoveItemAction,
+  StorageServiceSetItemAction,
+} from '@metamask/storage-service';
+import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '../../../lib/messenger';
+import {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../../controllers/onboarding';
+
+type Actions =
+  | GetEndowments
+  | GetPermissions
+  | HasPermission
+  | HasPermissions
+  | RequestPermissions
+  | RevokeAllPermissions
+  | RevokePermissions
+  | RevokePermissionForAllSubjects
+  | GetSubjects
+  | AddApprovalRequest
+  | UpdateRequestState
+  | GrantPermissions
+  | GetSubjectMetadata
+  | UpdateCaveat
+  | AddSubjectMetadata
+  | ExecuteSnapAction
+  | TerminateSnapAction
+  | TerminateAllSnapsAction
+  | HandleRpcRequestAction
+  | GetResult
+  | GetMetadata
+  | Update
+  | ResolveVersion
+  | CreateInterface
+  | GetInterface
+  | SelectedNetworkControllerGetNetworkClientIdForDomainAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | StorageServiceSetItemAction
+  | StorageServiceGetItemAction
+  | StorageServiceRemoveItemAction
+  | StorageServiceClearAction;
+
+type Events =
+  | ErrorMessageEvent
+  | OutboundRequest
+  | OutboundResponse
+  | KeyringControllerLockEvent
+  | SnapsRegistryStateChangeEvent;
+
+export type SnapControllerMessenger = ReturnType<
+  typeof getSnapControllerMessenger
+>;
+
+/**
+ * Get a restricted messenger for the Snap controller. This is scoped to the
+ * actions and events that the Snap controller is allowed to handle.
+ *
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
+ */
+export function getSnapControllerMessenger(
+  messenger: RootMessenger<Actions, Events>,
+) {
+  const controllerMessenger = new Messenger<
+    'SnapController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'SnapController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
+      'ExecutionService:unhandledError',
+      'ExecutionService:outboundRequest',
+      'ExecutionService:outboundResponse',
+      'KeyringController:lock',
+      'SnapsRegistry:stateChange',
+    ],
+    actions: [
+      'PermissionController:getEndowments',
+      'PermissionController:getPermissions',
+      'PermissionController:hasPermission',
+      'PermissionController:hasPermissions',
+      'PermissionController:requestPermissions',
+      'PermissionController:revokeAllPermissions',
+      'PermissionController:revokePermissions',
+      'PermissionController:revokePermissionForAllSubjects',
+      'PermissionController:getSubjectNames',
+      'PermissionController:updateCaveat',
+      'ApprovalController:addRequest',
+      'ApprovalController:updateRequestState',
+      'PermissionController:grantPermissions',
+      'SubjectMetadataController:getSubjectMetadata',
+      'SubjectMetadataController:addSubjectMetadata',
+      'ExecutionService:executeSnap',
+      'ExecutionService:terminateSnap',
+      'ExecutionService:terminateAllSnaps',
+      'ExecutionService:handleRpcRequest',
+      'NetworkController:getNetworkClientById',
+      'SelectedNetworkController:getNetworkClientIdForDomain',
+      'SnapsRegistry:get',
+      'SnapsRegistry:getMetadata',
+      'SnapsRegistry:update',
+      'SnapsRegistry:resolveVersion',
+      'SnapInterfaceController:createInterface',
+      'SnapInterfaceController:getInterface',
+      'StorageService:setItem',
+      'StorageService:getItem',
+      'StorageService:removeItem',
+      'StorageService:clear',
+    ],
+  });
+  return controllerMessenger;
+}
+
+type InitActions =
+  | KeyringControllerGetKeyringsByTypeAction
+  | PreferencesControllerGetStateAction
+  | MetaMetricsControllerTrackEventAction
+  | SetClientActive
+  | OnboardingControllerGetStateAction;
+
+type InitEvents =
+  | KeyringControllerUnlockEvent
+  | KeyringControllerLockEvent
+  | OnboardingControllerStateChangeEvent;
+
+export type SnapControllerInitMessenger = ReturnType<
+  typeof getSnapControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for the Snap controller init. This is scoped to
+ * the actions and events that the Snap controller init is allowed to handle.
+ *
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
+ */
+export function getSnapControllerInitMessenger(
+  messenger: RootMessenger<InitActions, InitEvents>,
+) {
+  const controllerInitMessenger = new Messenger<
+    'SnapControllerInit',
+    InitActions,
+    InitEvents,
+    typeof messenger
+  >({
+    namespace: 'SnapControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
+      'KeyringController:getKeyringsByType',
+      'PreferencesController:getState',
+      'MetaMetricsController:trackEvent',
+      'SnapController:setClientActive',
+      'OnboardingController:getState',
+    ],
+    events: [
+      'KeyringController:lock',
+      'KeyringController:unlock',
+      'OnboardingController:stateChange',
+    ],
+  });
+  return controllerInitMessenger;
+}

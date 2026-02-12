@@ -2,17 +2,18 @@
 
 .tippy-popper {
   .tippy-tooltip.tippy-tooltip--mm-custom-theme {
-    background: var(--color-background-default);
+    background: var(--color-background-section);
     color: var(--color-text-default);
     box-shadow: var(--shadow-size-md) var(--color-shadow-default);
-    padding: 12px 16px;
-    padding-bottom: 11px;
+    padding: 10px 14px;
+    padding-bottom: 12px;
+    border-radius: 8px;
 
     .tippy-tooltip-content {
-      @include design-system.H7;
+      @include design-system.H6;
 
       text-align: left;
-      color: var(--color-text-alternative);
+      color: var(--color-text-default);
 
       a {
         color: var(--color-primary-default);

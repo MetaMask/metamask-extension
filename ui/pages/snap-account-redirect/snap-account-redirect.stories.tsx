@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../helpers/constants/common';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../../test/e2e/constants';
 import SnapAccountRedirect from './snap-account-redirect';
 
 export default {

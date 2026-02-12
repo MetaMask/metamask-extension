@@ -1,10 +1,3 @@
-export {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  AvatarAccountDiameter,
-} from './avatar-account';
-export type { AvatarAccountProps } from './avatar-account';
 export { AvatarFavicon, AvatarFaviconSize } from './avatar-favicon';
 export type { AvatarFaviconProps } from './avatar-favicon';
 export { AvatarIcon, AvatarIconSize } from './avatar-icon';
@@ -69,6 +62,8 @@ export { TagUrl } from './tag-url';
 export type { TagUrlProps } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
 export type { TextProps } from './text';
+export { SensitiveText, SensitiveTextLength } from './sensitive-text';
+export type { SensitiveTextProps } from './sensitive-text';
 export { Input, InputType } from './input';
 export type { InputProps } from './input';
 export { TextField, TextFieldType, TextFieldSize } from './text-field';

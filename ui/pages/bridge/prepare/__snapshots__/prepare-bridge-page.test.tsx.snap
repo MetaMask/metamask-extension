@@ -1,0 +1,463 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PrepareBridgePage should render the component, with initial state 1`] = `
+<div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined prepare-bridge-page mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+  >
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+          style="min-width: 96px; max-width: 190px;"
+        >
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-text--text-align-start mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="from-amount"
+            focused="true"
+            placeholder="0"
+            style="font-weight: 400; font-size: 36px; transition: font-size 0.1s; padding: 0px;"
+            type="text"
+            value=""
+          />
+        </div>
+        <button
+          class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          data-testid="bridge-source-button"
+          style="padding: 8px 11px 8px 8px; min-width: fit-content;"
+        >
+          <div
+            class="relative inline-flex self-start"
+            style="margin-right: 2px;"
+          >
+            <div
+              class="inline-flex"
+            >
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+              >
+                <img
+                  alt="ETH"
+                  class="size-full object-contain"
+                  src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
+                />
+              </div>
+            </div>
+            <div
+              class="absolute"
+              style="bottom: 0px; right: 0px;"
+            >
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                style="border-width: 1px; border-radius: 6px;"
+              >
+                <img
+                  alt="Ethereum"
+                  class="size-full object-contain"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <span
+            class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+          >
+            <label
+              class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            >
+              ETH
+            </label>
+          </span>
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"
+          />
+        </button>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        style="height: 24px;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      style="position: relative;"
+    >
+      <div
+        class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-section"
+        style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
+      >
+        <button
+          aria-label="switch-tokens"
+          class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="switch-tokens"
+          disabled=""
+          style="align-self: center; border-radius: 100%; width: 100%; height: 100%;"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/swap-vertical.svg');"
+          />
+        </button>
+      </div>
+      <div
+        class="mm-box mm-box--padding-inline-4"
+        style="margin-top: -16px;"
+      />
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+      >
+        <div
+          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            style="min-width: 96px; max-width: 190px; opacity: 1;"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-text--text-align-start mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              data-testid="to-amount"
+              disabled=""
+              focused="false"
+              placeholder="0"
+              readonly=""
+              style="font-weight: 400; font-size: 36px; transition: font-size 0.1s; padding: 0px;"
+              type="text"
+              value="0"
+            />
+          </div>
+          <button
+            class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+            data-testid="bridge-destination-button"
+            style="padding: 8px 11px 8px 8px; min-width: fit-content;"
+          >
+            <div
+              class="relative inline-flex self-start"
+              style="margin-right: 2px;"
+            >
+              <div
+                class="inline-flex"
+              >
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                >
+                  <img
+                    alt="mUSD"
+                    class="size-full object-contain"
+                    src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
+                  />
+                </div>
+              </div>
+              <div
+                class="absolute"
+                style="bottom: 0px; right: 0px;"
+              >
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                  style="border-width: 1px; border-radius: 6px;"
+                >
+                  <img
+                    alt="Ethereum"
+                    class="size-full object-contain"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
+              </div>
+            </div>
+            <span
+              class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            >
+              <label
+                class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              >
+                mUSD
+              </label>
+            </span>
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"
+            />
+          </button>
+        </div>
+        <div
+          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          style="height: 24px;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
+          />
+          <a
+            class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative"
+            style="cursor: pointer; text-decoration: underline;"
+          >
+            0xac...35DA
+          </a>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--height-full"
+      >
+        <div
+          style="display: contents;"
+        >
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
+            >
+              Select amount
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  >
+    <div />
+  </div>
+</div>
+`;
+
+exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
+<div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined prepare-bridge-page mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
+  >
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+    >
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+          style="min-width: 96px; max-width: 190px;"
+        >
+          <input
+            autocomplete="off"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-text--text-align-start mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+            data-testid="from-amount"
+            focused="true"
+            placeholder="0"
+            style="font-weight: 400; font-size: 36px; transition: font-size 0.1s; padding: 0px;"
+            type="text"
+            value="1"
+          />
+        </div>
+        <button
+          class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          data-testid="bridge-source-button"
+          style="padding: 8px 11px 8px 8px; min-width: fit-content;"
+        >
+          <div
+            class="relative inline-flex self-start"
+            style="margin-right: 2px;"
+          >
+            <div
+              class="inline-flex"
+            >
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+              >
+                <img
+                  alt="ETH"
+                  class="size-full object-contain"
+                  src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
+                />
+              </div>
+            </div>
+            <div
+              class="absolute"
+              style="bottom: 0px; right: 0px;"
+            >
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                style="border-width: 1px; border-radius: 6px;"
+              >
+                <img
+                  alt="Ethereum"
+                  class="size-full object-contain"
+                  src="./images/eth_logo.svg"
+                />
+              </div>
+            </div>
+          </div>
+          <span
+            class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+          >
+            <label
+              class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            >
+              ETH
+            </label>
+          </span>
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"
+          />
+        </button>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        style="height: 24px;"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      style="position: relative;"
+    >
+      <div
+        class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-section"
+        style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
+      >
+        <button
+          aria-label="switch-tokens"
+          class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+          data-testid="switch-tokens"
+          disabled=""
+          style="align-self: center; border-radius: 100%; width: 100%; height: 100%;"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/swap-vertical.svg');"
+          />
+        </button>
+      </div>
+      <div
+        class="mm-box mm-box--padding-inline-4"
+        style="margin-top: -16px;"
+      />
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+      >
+        <div
+          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            style="min-width: 96px; max-width: 190px; opacity: 1;"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-text--text-align-start mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              data-testid="to-amount"
+              disabled=""
+              focused="false"
+              placeholder="0"
+              readonly=""
+              style="font-weight: 400; font-size: 36px; transition: font-size 0.1s; padding: 0px;"
+              type="text"
+              value="0"
+            />
+          </div>
+          <button
+            class="mm-box mm-text mm-select-button mm-select-button--size-lg mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+            data-testid="bridge-destination-button"
+            style="padding: 8px 11px 8px 8px; min-width: fit-content;"
+          >
+            <div
+              class="relative inline-flex self-start"
+              style="margin-right: 2px;"
+            >
+              <div
+                class="inline-flex"
+              >
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                >
+                  <img
+                    alt="mUSD"
+                    class="size-full object-contain"
+                    src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
+                  />
+                </div>
+              </div>
+              <div
+                class="absolute"
+                style="bottom: 0px; right: 0px;"
+              >
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-[18px] w-[18px] border-background-default border"
+                  style="border-width: 1px; border-radius: 6px;"
+                >
+                  <img
+                    alt="Ethereum"
+                    class="size-full object-contain"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
+              </div>
+            </div>
+            <span
+              class="mm-box mm-select-button__content mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            >
+              <label
+                class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              >
+                mUSD
+              </label>
+            </span>
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-down.svg'); display: none;"
+            />
+          </button>
+        </div>
+        <div
+          class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+          style="height: 24px;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
+          />
+          <a
+            class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative"
+            style="cursor: pointer; text-decoration: underline;"
+          >
+            0xac...35DA
+          </a>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--justify-content-flex-end mm-box--width-full mm-box--height-full"
+      >
+        <div
+          style="display: contents;"
+        >
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
+            >
+              Select amount
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
+  >
+    <div />
+  </div>
+</div>
+`;

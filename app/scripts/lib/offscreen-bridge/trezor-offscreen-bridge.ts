@@ -30,6 +30,8 @@ import {
 export class TrezorOffscreenBridge implements TrezorBridge {
   model: string | undefined;
 
+  minorVersion: number | undefined;
+
   init(
     settings: {
       manifest: Manifest;
@@ -40,7 +42,8 @@ export class TrezorOffscreenBridge implements TrezorBridge {
         msg.target === OffscreenCommunicationTarget.extension &&
         msg.event === OffscreenCommunicationEvents.trezorDeviceConnect
       ) {
-        this.model = msg.payload;
+        this.model = msg.payload.model;
+        this.minorVersion = msg.payload.minorVersion;
       }
     });
 
@@ -117,6 +120,8 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     }) as TrezorResponse<PROTO.MessageSignature>;
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
     params: Params<EthereumSignTypedHash<T>>,
   ) {

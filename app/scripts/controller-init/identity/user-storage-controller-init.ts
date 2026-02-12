@@ -1,0 +1,103 @@
+import {
+  UserStorageControllerMessenger,
+  UserStorageControllerState,
+  Controller as UserStorageController,
+} from '@metamask/profile-sync-controller/user-storage';
+import { ControllerInitFunction } from '../types';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { trace } from '../../../../shared/lib/trace';
+import { captureException } from '../../../../shared/lib/sentry';
+import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
+import { loadAuthenticationConfig } from '../../../../shared/modules/authentication';
+
+/**
+ * Initialize the UserStorage controller.
+ *
+ * @param request - The request object.
+ * @param request.controllerMessenger - The messenger to use for the controller.
+ * @param request.persistedState - The persisted state of the extension.
+ * @returns The initialized controller.
+ */
+export const UserStorageControllerInit: ControllerInitFunction<
+  UserStorageController,
+  UserStorageControllerMessenger,
+  UserStorageControllerInitMessenger
+> = (request) => {
+  // The environment must be the same used by AuthenticationController.
+  const env = loadAuthenticationConfig();
+  const { controllerMessenger, initMessenger, persistedState } = request;
+  const controller = new UserStorageController({
+    messenger: controllerMessenger,
+    state: persistedState.UserStorageController as UserStorageControllerState,
+    // @ts-expect-error Controller uses string for names rather than enum
+    trace,
+    config: {
+      env,
+      contactSyncing: {
+        onContactUpdated: (profileId) => {
+          initMessenger.call('MetaMetricsController:trackEvent', {
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
+            properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              profile_id: profileId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Contact Updated',
+            },
+          });
+        },
+        onContactDeleted: (profileId) => {
+          initMessenger.call('MetaMetricsController:trackEvent', {
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
+            properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              profile_id: profileId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Contact Deleted',
+            },
+          });
+        },
+        onContactSyncErroneousSituation: (
+          profileId,
+          situationMessage,
+          sentryContext,
+        ) => {
+          captureException(
+            new Error(`Contact sync - ${situationMessage}`),
+            sentryContext,
+          );
+          initMessenger.call('MetaMetricsController:trackEvent', {
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
+            properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              profile_id: profileId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Erroneous Situation',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              additional_description: situationMessage,
+            },
+          });
+        },
+      },
+    },
+  });
+
+  return {
+    controller,
+  };
+};

@@ -1,0 +1,65 @@
+diff --git a/lib/modules/EIP712/index.js b/lib/modules/EIP712/index.js
+index 24251b4584b04fd138b8892f027ccad60b14fc9e..4b99b94cf2327042b53687b4e2b076bd0cb8fba1 100644
+--- a/lib/modules/EIP712/index.js
++++ b/lib/modules/EIP712/index.js
+@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.signEIP712HashedMessage = exports.signEIP712Message = void 0;
+ /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
+ const semver_1 = __importDefault(require("semver"));
+-const index_1 = require("@ledgerhq/evm-tools/message/EIP712/index");
++const index_1 = require("@ledgerhq/evm-tools/lib/message/EIP712/index");
+ const erc20_1 = require("../../services/ledger/erc20");
+ const utils_1 = require("../../utils");
+ const loadConfig_1 = require("../../services/ledger/loadConfig");
+diff --git a/lib/modules/EIP712/utils.js b/lib/modules/EIP712/utils.js
+index 4f09ea8a24ae4f175f1a4d2d40999d36ffa2a915..38225b98bc124d8648d1ff110570293f165bd2a6 100644
+--- a/lib/modules/EIP712/utils.js
++++ b/lib/modules/EIP712/utils.js
+@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.getPayloadForFilterV2 = exports.getFilterDisplayNameAndSigBuffers = exports.getAppAndVersion = exports.getCoinRefTokensMap = exports.makeTypeEntryStructBuffer = exports.constructTypeDescByteString = exports.destructTypeFromString = exports.EIP712_TYPE_ENCODERS = exports.EIP712_TYPE_PROPERTIES = void 0;
+ const bignumber_js_1 = __importDefault(require("bignumber.js"));
+-const index_1 = require("@ledgerhq/evm-tools/message/index");
++const index_1 = require("@ledgerhq/evm-tools/lib/message/index");
+ const utils_1 = require("../../utils");
+ /**
+  * @ignore for the README
+diff --git a/lib/services/ledger/erc20.js b/lib/services/ledger/erc20.js
+index 8fdedf8037b2684ab6d48fd279a0c014b074b676..90ce6589407c1b8719550c21251f3f247fcef085 100644
+--- a/lib/services/ledger/erc20.js
++++ b/lib/services/ledger/erc20.js
+@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.byContractAddressAndChainId = exports.findERC20SignaturesInfo = void 0;
+ const axios_1 = __importDefault(require("axios"));
+ const logs_1 = require("@ledgerhq/logs");
+-const index_1 = require("@ledgerhq/cryptoassets-evm-signatures/data/evm/index");
++const index_1 = require("@ledgerhq/cryptoassets-evm-signatures/lib/data/evm/index");
+ const loadConfig_1 = require("./loadConfig");
+ const asContractAddress = (addr) => {
+     const a = addr.toLowerCase();
+diff --git a/lib/services/ledger/index.js b/lib/services/ledger/index.js
+index 86db9973e63e1ac7c0e7f67e53ca8f05aa809805..29ebceeab40cdad75092d8af747d770411f8a605 100644
+--- a/lib/services/ledger/index.js
++++ b/lib/services/ledger/index.js
+@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ const transactions_1 = require("@ethersproject/transactions");
+ const abi_1 = require("@ethersproject/abi");
+ const logs_1 = require("@ledgerhq/logs");
+-const index_1 = require("@ledgerhq/domain-service/signers/index");
++const index_1 = require("@ledgerhq/domain-service/lib/signers/index");
+ const constants_1 = require("../../modules/Uniswap/constants");
+ const erc20_1 = require("./erc20");
+ const Uniswap_1 = require("../../modules/Uniswap");
+diff --git a/lib/utils.js b/lib/utils.js
+index 6c5f58439116b2c6b5844f5e17d0eb876a436f41..e719e9840d33721ef79bb12232991621c828b501 100644
+--- a/lib/utils.js
++++ b/lib/utils.js
+@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.safeChunkTransaction = exports.getV = exports.getChainIdAsUint32 = exports.getParity = exports.mergeResolutions = exports.nftSelectors = exports.tokenSelectors = exports.intAsHexBytes = exports.maybeHexBuffer = exports.hexBuffer = exports.splitPath = exports.padHexString = exports.ERC1155_CLEAR_SIGNED_SELECTORS = exports.ERC721_CLEAR_SIGNED_SELECTORS = exports.ERC20_CLEAR_SIGNED_SELECTORS = void 0;
+ const bignumber_js_1 = require("bignumber.js");
+ const rlp = __importStar(require("@ethersproject/rlp"));
+-const index_1 = require("@ledgerhq/evm-tools/selectors/index");
++const index_1 = require("@ledgerhq/evm-tools/lib/selectors/index");
+ Object.defineProperty(exports, "ERC20_CLEAR_SIGNED_SELECTORS", { enumerable: true, get: function () { return index_1.ERC20_CLEAR_SIGNED_SELECTORS; } });
+ Object.defineProperty(exports, "ERC721_CLEAR_SIGNED_SELECTORS", { enumerable: true, get: function () { return index_1.ERC721_CLEAR_SIGNED_SELECTORS; } });
+ Object.defineProperty(exports, "ERC1155_CLEAR_SIGNED_SELECTORS", { enumerable: true, get: function () { return index_1.ERC1155_CLEAR_SIGNED_SELECTORS; } });

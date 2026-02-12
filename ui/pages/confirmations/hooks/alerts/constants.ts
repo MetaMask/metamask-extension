@@ -1,0 +1,16 @@
+export enum AlertsName {
+  GasEstimateFailed = 'gasEstimateFailed',
+  GasFeeLow = 'gasFeeLow',
+  GasTooLow = 'gasTooLow',
+  InsufficientBalance = 'insufficientBalance',
+  InsufficientPayTokenBalance = 'insufficientPayTokenBalance',
+  InsufficientPayTokenNative = 'insufficientPayTokenNative',
+  InsufficientPayTokenFees = 'insufficientPayTokenFees',
+  NetworkBusy = 'networkBusy',
+  NoGasPrice = 'noGasPrice',
+  NoPayTokenQuotes = 'noPayTokenQuotes',
+  PendingTransaction = 'pendingTransactions',
+  PayHardwareAccount = 'payHardwareAccount',
+  SigningOrSubmitting = 'signingOrSubmitting',
+  Blockaid = 'blockaid',
+}

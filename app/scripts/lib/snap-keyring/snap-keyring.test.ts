@@ -1,0 +1,447 @@
+import { Messenger } from '@metamask/messenger';
+import {
+  EthAccountType,
+  EthScope,
+  KeyringRpcMethod,
+} from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { SnapId } from '@metamask/snaps-sdk';
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { getRootMessenger } from '../messenger';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
+import { getSnapName } from '../../../../shared/lib/accounts/snaps';
+import { showAccountCreationDialog, snapKeyringBuilder } from './snap-keyring';
+import {
+  SnapKeyringBuilderAllowActions,
+  SnapKeyringBuilderMessenger,
+} from './types';
+
+const mockAddRequest = jest.fn();
+const mockStartFlow = jest.fn();
+const mockEndFlow = jest.fn();
+const mockShowSuccess = jest.fn();
+const mockShowError = jest.fn();
+const mockGetAccounts = jest.fn();
+const mockSnapId = 'local:http://localhost:8080' as SnapId;
+const mockSnapName = 'mock-snap';
+const mockPersistKeyringHelper = jest.fn();
+const mockSetSelectedAccount = jest.fn();
+const mockSetAccountName = jest.fn();
+const mockRemoveAccountHelper = jest.fn();
+const mockTrackEvent = jest.fn();
+const mockGetAccountByAddress = jest.fn();
+const mockListMultichainAccounts = jest.fn();
+const mockLocale = 'en';
+const mockPreferencesControllerGetState = jest.fn();
+const mockSnapControllerGet = jest.fn();
+const mockSnapControllerHandleRequest = jest.fn();
+const mockRemoteFeatureFlagsGetStateRequest = jest.fn();
+
+const mockFlowId = '123';
+const address = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
+const accountNameSuggestion = 'Suggested Account Name';
+const mockAccount = {
+  type: EthAccountType.Eoa,
+  id: '3afa663e-0600-4d93-868a-61c2e553013b',
+  address,
+  methods: [],
+  scopes: [EthScope.Eoa],
+  options: {},
+};
+const mockInternalAccount = {
+  ...mockAccount,
+  metadata: {
+    snap: {
+      enabled: true,
+      id: mockSnapId,
+      name: mockSnapName,
+    },
+    name: accountNameSuggestion,
+    keyring: {
+      type: '',
+    },
+    importTime: 0,
+  },
+};
+
+// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
+// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
+
+jest.mock('../../../../shared/lib/snaps/snaps', () => ({
+  ...jest.requireActual('../../../../shared/lib/snaps/snaps'),
+  isSnapPreinstalled: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/accounts/snaps', () => ({
+  ...jest.requireActual('../../../../shared/lib/accounts/snaps'),
+  getSnapName: jest.fn(),
+}));
+
+const createControllerMessenger = ({
+  account = mockInternalAccount,
+}: {
+  account?: InternalAccount;
+} = {}): SnapKeyringBuilderMessenger => {
+  const rootMessenger = getRootMessenger();
+  const messenger = new Messenger<
+    'SnapKeyring',
+    SnapKeyringBuilderAllowActions,
+    never,
+    typeof rootMessenger
+  >({
+    namespace: 'SnapKeyring',
+    parent: rootMessenger,
+  });
+  rootMessenger.delegate({
+    messenger,
+    actions: [
+      'ApprovalController:addRequest',
+      'ApprovalController:acceptRequest',
+      'ApprovalController:rejectRequest',
+      'ApprovalController:startFlow',
+      'ApprovalController:endFlow',
+      'ApprovalController:showSuccess',
+      'ApprovalController:showError',
+      'PhishingController:maybeUpdateState',
+      'KeyringController:getAccounts',
+      'AccountsController:setSelectedAccount',
+      'AccountsController:getAccountByAddress',
+      'AccountsController:listMultichainAccounts',
+      'PreferencesController:getState',
+      'SnapController:get',
+      'SnapController:handleRequest',
+      'RemoteFeatureFlagController:getState',
+    ],
+  });
+
+  jest.spyOn(messenger, 'call').mockImplementation((...args) => {
+    // This mock implementation does not have a nice discriminate union where types/parameters can be correctly inferred
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [actionType, ...params]: any[] = args;
+
+    switch (actionType) {
+      case 'ApprovalController:addRequest':
+        return mockAddRequest(params);
+
+      case 'ApprovalController:startFlow':
+        return mockStartFlow.mockReturnValue({ id: mockFlowId })();
+
+      case 'ApprovalController:endFlow':
+        return mockEndFlow.mockReturnValue(true)(params);
+
+      case 'ApprovalController:showSuccess':
+        return mockShowSuccess();
+
+      case 'ApprovalController:showError':
+        return mockShowError();
+
+      case 'KeyringController:getAccounts':
+        return mockGetAccounts.mockResolvedValue([])();
+
+      case 'AccountsController:getAccountByAddress':
+        return mockGetAccountByAddress.mockReturnValue(account)(params);
+
+      case 'AccountsController:listMultichainAccounts':
+        return mockListMultichainAccounts.mockReturnValue([])();
+
+      case 'AccountsController:setSelectedAccount':
+        return mockSetSelectedAccount(params);
+
+      case 'AccountsController:setAccountName':
+        return mockSetAccountName.mockReturnValue(null)(params);
+
+      case 'PreferencesController:getState':
+        return mockPreferencesControllerGetState.mockReturnValue({
+          locale: mockLocale,
+        })(params);
+
+      case 'SnapController:get':
+        return mockSnapControllerGet.mockReturnValue({
+          id: mockSnapId,
+          manifest: {
+            proposedName: mockSnapName,
+          },
+        })(params);
+
+      case 'SnapController:handleRequest':
+        return mockSnapControllerHandleRequest(params);
+
+      case 'RemoteFeatureFlagController:getState':
+        return mockRemoteFeatureFlagsGetStateRequest(params);
+
+      default:
+        throw new Error(
+          `MOCK_FAIL - unsupported messenger call: ${actionType}`,
+        );
+    }
+  });
+
+  return messenger;
+};
+
+const createSnapKeyringBuilder = ({
+  snapName = mockSnapName,
+  snapPreinstalled = true,
+}: {
+  snapName?: string;
+  snapPreinstalled?: boolean;
+} = {}) => {
+  jest.mocked(isSnapPreinstalled).mockReturnValue(snapPreinstalled);
+  jest.mocked(getSnapName).mockReturnValue(snapName);
+
+  // Needed now to know if state 2 is enabled or not.
+  mockRemoteFeatureFlagsGetStateRequest.mockReturnValue({
+    remoteFeatureFlags: {},
+  } as RemoteFeatureFlagControllerState);
+
+  return snapKeyringBuilder(createControllerMessenger(), {
+    persistKeyringHelper: mockPersistKeyringHelper,
+    removeAccountHelper: mockRemoveAccountHelper,
+    trackEvent: mockTrackEvent,
+  });
+};
+
+/**
+ * Utility function that waits for all pending promises to be resolved.
+ * This is necessary when testing asynchronous execution flows that are
+ * initiated by synchronous calls.
+ *
+ * @returns A promise that resolves when all pending promises are completed.
+ */
+async function waitForAllPromises(): Promise<void> {
+  // Wait for next tick to flush all pending promises. It's requires since
+  // we are testing some asynchronous execution flows that are started by
+  // synchronous calls.
+  await new Promise(process.nextTick);
+}
+
+describe('Snap Keyring Methods', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  describe('helpers', () => {
+    describe('showAccountCreationDialog', () => {
+      it('shows account creation dialog and return true on user confirmation', async () => {
+        const controllerMessenger = createControllerMessenger();
+        controllerMessenger.call('ApprovalController:startFlow');
+
+        await showAccountCreationDialog(mockSnapId, controllerMessenger);
+
+        expect(mockAddRequest).toHaveBeenCalledTimes(1);
+        expect(mockAddRequest).toHaveBeenCalledWith([
+          {
+            origin: mockSnapId,
+            type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+          },
+          true,
+        ]);
+      });
+    });
+  });
+
+  describe('addAccount', () => {
+    beforeEach(() => {
+      mockAddRequest.mockReturnValue(true).mockReturnValue({ success: true });
+    });
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('handles account creation with confirmations', async () => {
+      const builder = createSnapKeyringBuilder();
+      await builder().handleKeyringSnapMessage(mockSnapId, {
+        method: 'notify:accountCreated',
+        params: {
+          account: mockAccount,
+          displayConfirmation: true,
+        },
+      });
+
+      // 1. Account creation confirmation dialogs
+      // 2. Account creation summary dialog
+      expect(mockStartFlow).toHaveBeenCalledTimes(2);
+      // 1. Account creation confirmation dialog
+      expect(mockAddRequest).toHaveBeenCalledTimes(1);
+      expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
+        {
+          origin: mockSnapId,
+          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+        },
+        true,
+      ]);
+      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(3);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AddSnapAccountSuccessViewed,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_name: mockSnapName,
+        },
+      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AddSnapAccountSuccessClicked,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_name: mockSnapName,
+        },
+      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AccountAdded,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_suggested_name: false,
+        },
+      });
+      expect(mockShowSuccess).toHaveBeenCalledTimes(1);
+      expect(mockSetAccountName).not.toHaveBeenCalled();
+      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
+    });
+
+    it('handles account creation with skipping confirmation', async () => {
+      const builder = createSnapKeyringBuilder();
+
+      await builder().handleKeyringSnapMessage(mockSnapId, {
+        method: 'notify:accountCreated',
+        params: {
+          account: mockAccount,
+          displayConfirmation: false,
+        },
+      });
+
+      // Skipping confirmations means no dialogs are shown, so no confirmations flows are started.
+      expect(mockStartFlow).toHaveBeenCalledTimes(0);
+      expect(mockAddRequest).toHaveBeenCalledTimes(0);
+      expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AccountAdded,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_suggested_name: false,
+        },
+      });
+      expect(mockSetAccountName).not.toHaveBeenCalled();
+      expect(mockEndFlow).toHaveBeenCalledTimes(0);
+    });
+
+    it('still accepts accountNameSuggestion and displayAccountNameSuggestion params (for retro-compatibility)', async () => {
+      const builder = createSnapKeyringBuilder();
+      await expect(
+        builder().handleKeyringSnapMessage(mockSnapId, {
+          method: 'notify:accountCreated',
+          params: {
+            account: mockAccount,
+            displayConfirmation: false,
+            accountNameSuggestion: 'Not used anymore',
+            displayAccountNameSuggestion: true,
+          },
+        }),
+      ).resolves.toBeNull(); // No throw.
+    });
+
+    it('ends approval flow on error', async () => {
+      const consoleSpy = jest.spyOn(console, 'error');
+
+      const errorMessage = 'save error';
+      mockPersistKeyringHelper.mockRejectedValue(new Error(errorMessage));
+      mockSnapControllerHandleRequest.mockImplementation((params) => {
+        expect(params).toStrictEqual([
+          {
+            snapId: mockSnapId,
+            origin: 'metamask',
+            handler: 'onKeyringRequest',
+            request: {
+              jsonrpc: '2.0',
+              id: expect.any(String),
+              method: KeyringRpcMethod.DeleteAccount,
+              params: {
+                id: mockAccount.id,
+              },
+            },
+          },
+        ]);
+
+        // We must return `null` when removing an account.
+        return null;
+      });
+      const builder = createSnapKeyringBuilder();
+      await builder().handleKeyringSnapMessage(mockSnapId, {
+        method: 'notify:accountCreated',
+        params: {
+          account: mockAccount,
+          displayConfirmation: true,
+        },
+      });
+
+      // ! This no longer throws an error, but instead, we log it. Since this part
+      // ! of the flow is not awaited, so we await for it explicitly here:
+      await waitForAllPromises();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Error occurred while creating snap account:',
+        errorMessage,
+      );
+
+      expect(mockStartFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
+      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
+    });
+  });
+});

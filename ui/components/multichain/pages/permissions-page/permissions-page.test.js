@@ -1,8 +1,13 @@
 import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { PermissionsPage } from './permissions-page';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import * as actions from '../../../../store/actions';
+import PermissionsPage from './permissions-page';
 
 mockState.metamask.subjectMetadata = {
   'https://metamask.github.io': {
@@ -33,17 +38,27 @@ mockState.metamask.subjects = {
   'https://metamask.github.io': {
     origin: 'https://metamask.github.io',
     permissions: {
-      eth_accounts: {
+      'endowment:caip25': {
         caveats: [
           {
-            type: 'restrictReturnedAccounts',
-            value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+            type: 'authorizedScopes',
+            value: {
+              requiredScopes: {},
+              optionalScopes: {
+                'eip155:1': {
+                  accounts: [
+                    'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                  ],
+                },
+              },
+              isMultichainOrigin: false,
+            },
           },
         ],
         date: 1698071087770,
         id: 'BIko27gpEajmo_CcNYPxD',
         invoker: 'https://metamask.github.io',
-        parentCapability: 'eth_accounts',
+        parentCapability: 'endowment:caip25',
       },
     },
   },
@@ -78,9 +93,32 @@ mockState.metamask.snaps = {
     },
   },
 };
-let store = configureStore(mockState);
+
+mockState.metamask.domains = {
+  'https://metamask.github.io': 'mainnet',
+  'npm:@metamask/testSnap1': 'mainnet',
+  'npm:@metamask/testSnap2': 'mainnet',
+  'npm:@metamask/testSnap3': 'mainnet',
+};
+
+let store = configureStore({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+  },
+});
+
+jest.mock('../../../../../shared/modules/environment');
 
 describe('All Connections', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest
+      .mocked(isGatorPermissionsRevocationFeatureEnabled)
+      .mockReturnValue(false);
+  });
+
   describe('render', () => {
     it('renders correctly', () => {
       const { container, getByTestId } = renderWithProvider(
@@ -92,52 +130,6 @@ describe('All Connections', () => {
       expect(getByTestId('permissions-page')).toBeInTheDocument();
     });
 
-    it('renders sections when user has 5 or less connections', () => {
-      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
-      expect(getByTestId('sites-connections')).toBeInTheDocument();
-      expect(getByTestId('snaps-connections')).toBeInTheDocument();
-    });
-
-    it('renders tabs when user has more than 5 connections', () => {
-      mockState.metamask.snaps = {
-        ...mockState.metamask.snaps,
-        'npm:@metamask/testSnap4': {
-          id: 'npm:@metamask/testSnap4',
-          origin: 'npm:@metamask/testSnap4',
-          version: '5.1.2',
-          iconUrl: null,
-          initialPermissions: {
-            'endowment:ethereum-provider': {},
-          },
-        },
-        'npm:@metamask/testSnap5': {
-          id: 'npm:@metamask/testSnap5',
-          origin: 'npm:@metamask/testSnap5',
-          version: '5.1.2',
-          iconUrl: null,
-          initialPermissions: {
-            'endowment:ethereum-provider': {},
-          },
-        },
-      };
-      mockState.metamask.subjectMetadata = {
-        ...mockState.metamask.subjectMetadata,
-        'npm:@metamask/testSnap4': {
-          name: 'Test Snap 4',
-          version: '1.2.3',
-          subjectType: 'snap',
-        },
-        'npm:@metamask/testSnap5': {
-          name: 'Test Snap 5',
-          version: '1.2.3',
-          subjectType: 'snap',
-        },
-      };
-      store = configureStore(mockState);
-      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
-      expect(getByTestId('permissions-page-sites-tab')).toBeInTheDocument();
-      expect(getByTestId('permissions-page-snaps-tab')).toBeInTheDocument();
-    });
     it('renders no connections message when user has no connections', () => {
       mockState.metamask.snaps = {};
       mockState.metamask.subjectMetadata = {};
@@ -145,6 +137,154 @@ describe('All Connections', () => {
       store = configureStore(mockState);
       const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
       expect(getByTestId('no-connections')).toBeInTheDocument();
+    });
+
+    it('renders permissions title when Gator Permissions feature is disabled', () => {
+      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
+      expect(getByTestId('permissions-page-title')).toHaveTextContent(
+        'Dapp Connections',
+      );
+    });
+
+    it('renders sites title when Gator Permissions feature is enabled', () => {
+      jest
+        .mocked(isGatorPermissionsRevocationFeatureEnabled)
+        .mockReturnValue(true);
+      const { getByTestId } = renderWithProvider(<PermissionsPage />, store);
+      expect(getByTestId('permissions-page-title')).toHaveTextContent('Sites');
+    });
+  });
+
+  describe('Disconnect All functionality', () => {
+    let storeWithConnections;
+
+    beforeEach(() => {
+      const stateWithConnections = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+          subjectMetadata: {
+            'https://metamask.github.io': {
+              iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+              name: 'E2E Test Dapp',
+              subjectType: 'website',
+              origin: 'https://metamask.github.io',
+              extensionId: null,
+            },
+          },
+          subjects: {
+            'https://metamask.github.io': {
+              origin: 'https://metamask.github.io',
+              permissions: {
+                'endowment:caip25': {
+                  caveats: [
+                    {
+                      type: 'authorizedScopes',
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {
+                          'eip155:1': {
+                            accounts: [
+                              'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                            ],
+                          },
+                        },
+                        isMultichainOrigin: false,
+                      },
+                    },
+                  ],
+                  date: 1698071087770,
+                  id: 'BIko27gpEajmo_CcNYPxD',
+                  invoker: 'https://metamask.github.io',
+                  parentCapability: 'endowment:caip25',
+                },
+              },
+            },
+          },
+        },
+      };
+      storeWithConnections = configureStore(stateWithConnections);
+    });
+
+    it('renders Disconnect All button when there are connections', () => {
+      const { getByTestId } = renderWithProvider(
+        <PermissionsPage />,
+        storeWithConnections,
+      );
+      expect(getByTestId('disconnect-all-button')).toBeInTheDocument();
+    });
+
+    it('does not render Disconnect All button when there are no connections', () => {
+      const stateWithNoConnections = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET, id: 'mainnet' }),
+          subjectMetadata: {},
+          subjects: {},
+          snaps: {},
+        },
+      };
+      const emptyStore = configureStore(stateWithNoConnections);
+      const { queryByTestId } = renderWithProvider(
+        <PermissionsPage />,
+        emptyStore,
+      );
+      expect(queryByTestId('disconnect-all-button')).not.toBeInTheDocument();
+    });
+
+    it('opens Disconnect All Sites modal when button is clicked', () => {
+      const { getByTestId } = renderWithProvider(
+        <PermissionsPage />,
+        storeWithConnections,
+      );
+
+      fireEvent.click(getByTestId('disconnect-all-button'));
+
+      expect(getByTestId('disconnect-all-sites-modal')).toBeInTheDocument();
+    });
+
+    it('closes modal when close button is clicked', async () => {
+      const { getByTestId, queryByTestId, getByRole } = renderWithProvider(
+        <PermissionsPage />,
+        storeWithConnections,
+      );
+
+      fireEvent.click(getByTestId('disconnect-all-button'));
+      expect(getByTestId('disconnect-all-sites-modal')).toBeInTheDocument();
+
+      // Click the close button in the modal header
+      const closeButton = getByRole('button', { name: /close/iu });
+      fireEvent.click(closeButton);
+
+      await waitFor(() => {
+        expect(
+          queryByTestId('disconnect-all-sites-modal'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it('calls removePermissionsFor when confirm is clicked', () => {
+      // Mock removePermissionsFor to return a no-op thunk to avoid
+      // calling the background method (which isn't initialized in tests)
+      const removePermissionsForMock = jest
+        .spyOn(actions, 'removePermissionsFor')
+        .mockImplementation(() => () => undefined);
+
+      const { getByTestId } = renderWithProvider(
+        <PermissionsPage />,
+        storeWithConnections,
+      );
+
+      fireEvent.click(getByTestId('disconnect-all-button'));
+      fireEvent.click(getByTestId('disconnect-all-sites-confirm'));
+
+      expect(removePermissionsForMock).toHaveBeenCalledWith({
+        'https://metamask.github.io': ['endowment:caip25'],
+      });
+
+      removePermissionsForMock.mockRestore();
     });
   });
 });

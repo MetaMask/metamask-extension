@@ -1,26 +1,29 @@
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
-import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
+import { Messenger } from '@metamask/messenger';
+import {
+  KeyringControllerGetKeyringForAccountAction,
+  KeyringControllerGetStateAction,
+} from '@metamask/keyring-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { GetSnap } from '@metamask/snaps-controllers';
-// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { Snap } from '@metamask/snaps-utils';
+import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 
 type AllowedActions =
   | GetSnap
   | KeyringControllerGetKeyringForAccountAction
-  | AccountsControllerGetSelectedAccountAction;
+  | AccountsControllerGetSelectedAccountAction
+  | KeyringControllerGetStateAction;
 
-export type SnapAndHardwareMessenger = RestrictedControllerMessenger<
+export type SnapAndHardwareMessenger = Messenger<
   'SnapAndHardwareMessenger',
   AllowedActions,
-  never,
-  AllowedActions['type'],
   never
 >;
 
 export async function getSnapAndHardwareInfoForMetrics(
   getAccountType: (address: string) => Promise<string>,
   getDeviceModel: (address: string) => Promise<string>,
+  getHardwareTypeForMetric: (address: string) => Promise<HardwareKeyringType>,
   messenger: SnapAndHardwareMessenger,
 ) {
   // If it's coming from a unit test, there's no messenger
@@ -31,7 +34,6 @@ export async function getSnapAndHardwareInfoForMetrics(
 
   const account = messenger.call('AccountsController:getSelectedAccount');
   const selectedAddress = account.address;
-  const { keyring } = account.metadata;
 
   let snap;
   if (account.metadata.snap?.id) {
@@ -41,19 +43,37 @@ export async function getSnapAndHardwareInfoForMetrics(
     ) as Snap;
   }
 
-  async function getHardwareWalletType() {
-    if (keyring?.type?.includes('Hardware')) {
-      return keyring.type;
-    }
+  let keyringAccountInfo = {};
+  const { isUnlocked } = messenger.call('KeyringController:getState');
+  if (isUnlocked) {
+    keyringAccountInfo = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      account_type: await getAccountType(selectedAddress),
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      device_model: await getDeviceModel(selectedAddress),
+    };
 
-    return undefined;
+    const hardwareType = await getHardwareTypeForMetric(selectedAddress);
+
+    if (hardwareType) {
+      keyringAccountInfo = {
+        ...keyringAccountInfo,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_hardware_type: hardwareType,
+      };
+    }
   }
 
   return {
-    account_type: await getAccountType(selectedAddress),
-    device_model: await getDeviceModel(selectedAddress),
-    account_hardware_type: await getHardwareWalletType(),
+    ...keyringAccountInfo,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     account_snap_type: snap?.id,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     account_snap_version: snap?.version,
   };
 }

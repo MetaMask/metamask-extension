@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
 import { ApprovalType } from '@metamask/controller-utils';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import Confirmation from '../confirmation';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
@@ -37,6 +37,7 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
+    snaps: {},
   },
 };
 
@@ -50,9 +51,6 @@ describe('success template', () => {
             ...mockApproval,
             type: ApprovalType.ResultSuccess,
           },
-        },
-        providerConfig: {
-          chainId: '0x1',
         },
         transactions: [],
       },

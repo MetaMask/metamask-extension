@@ -1,0 +1,27 @@
+.multichain-account-cell {
+  &__account-avatar {
+    width: 40px;
+    height: 40px;
+    border-width: 2.2px;
+    flex-shrink: 0;
+  }
+
+  &__account-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__account-balance {
+    flex-shrink: 0;
+  }
+
+  &:hover:not(.multichain-account-cell--no-hover):not(.is-selected) {
+    background: var(--color-background-default-hover);
+
+    .multichain-account-cell__account-name {
+      color: var(--color-primary-default);
+    }
+  }
+}

@@ -83,9 +83,11 @@ export type StylePropValueType =
   | IconColorArray
   | undefined;
 
-export interface ClassNamesObject {
+export type ClassNamesObject = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
-}
+};
 
 export type FlexDirectionArray = [
   FlexDirection,
@@ -184,6 +186,8 @@ export type IconColorArray = [IconColor, IconColor?, IconColor?, IconColor?];
 /**
  * Uses generic type C to create polymorphic ref type
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type PolymorphicRef<C extends React.ElementType> =
   React.ComponentPropsWithRef<C>['ref'];
 
@@ -191,6 +195,8 @@ export type PolymorphicRef<C extends React.ElementType> =
  * Uses generic type C to define the type for the polymorphic "as" prop
  * "as" can be used to override the default HTML element
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type AsProp<C extends React.ElementType> = {
   /**
    * An override of the default HTML tag.
@@ -202,12 +208,16 @@ type AsProp<C extends React.ElementType> = {
 /**
  * Omits the as prop and props from component definition
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P);
 
 /**
  * Accepts 2 generic types: C which represents the as prop and the component props - Props
  */
 type PolymorphicComponentProp<
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType,
   // eslint-disable-next-line @typescript-eslint/ban-types
   Props = {},
@@ -215,6 +225,8 @@ type PolymorphicComponentProp<
   Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>;
 
 export type PolymorphicComponentPropWithRef<
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType,
   // eslint-disable-next-line @typescript-eslint/ban-types
   Props = {},
@@ -223,7 +235,7 @@ export type PolymorphicComponentPropWithRef<
 /**
  * Includes all style utility props. This should be used to extend the props of a component.
  */
-export interface StyleUtilityProps {
+export type StyleUtilityProps = {
   /**
    * The flex direction of the component.
    * Use the FlexDirection enum from '../../../helpers/constants/design-system';
@@ -422,10 +434,12 @@ export interface StyleUtilityProps {
    * TODO: Allow data- attributes.
    */
   'data-testid'?: string;
-}
+};
 /**
  * Box component props.
  */
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface Props extends StyleUtilityProps {
   /**
    * The content of the Box component.
@@ -437,9 +451,13 @@ interface Props extends StyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BoxProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, Props>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BoxComponent = <C extends React.ElementType = 'span'>(
   props: BoxProps<C>,
 ) => React.ReactElement | null;

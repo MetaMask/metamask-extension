@@ -5,14 +5,6 @@ const { capitalize } = require('lodash');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 
-const BUILD_TYPES_TO_SVG_LOGO_PATH = {
-  main: './app/images/logo/metamask-fox.svg',
-  beta: './app/build-types/beta/images/logo/metamask-fox.svg',
-  flask: './app/build-types/flask/images/logo/metamask-fox.svg',
-  mmi: './app/build-types/mmi/images/logo/mmi-logo.svg',
-  desktop: './app/build-types/desktop/images/logo/metamask-fox.svg',
-};
-
 /**
  * Returns whether the current build is a development build or not.
  *
@@ -35,6 +27,49 @@ function isTestBuild(buildTarget) {
   return (
     buildTarget === BUILD_TARGETS.TEST || buildTarget === BUILD_TARGETS.TEST_DEV
   );
+}
+
+/**
+ * Task prefix to build target mapping.
+ * Used to extract the build target from task names like 'scripts:core:test:standardEntryPoints'.
+ * Sorted by prefix length (longest first) to ensure 'test-live' matches before 'test'.
+ */
+const TASK_PREFIX_TO_BUILD_TARGET = [
+  ['scripts:core:test-live', BUILD_TARGETS.TEST_DEV],
+  ['scripts:core:dist', BUILD_TARGETS.DIST],
+  ['scripts:core:prod', BUILD_TARGETS.PROD],
+  ['scripts:core:test', BUILD_TARGETS.TEST],
+  ['scripts:core:dev', BUILD_TARGETS.DEV],
+];
+
+/**
+ * Extract the build target from a task name.
+ *
+ * Task names follow patterns like:
+ * - 'dev' -> 'dev' (already a build target)
+ * - 'scripts:core:test:standardEntryPoints' -> 'test'
+ * - 'scripts:core:test-live:sentry' -> 'testDev'
+ *
+ * @param {string} taskName - The task name or build target.
+ * @returns {BUILD_TARGETS} The extracted build target, or the original
+ * taskName if it couldn't be mapped (for backwards compatibility).
+ */
+function getBuildTargetFromTask(taskName) {
+  // If it's already a valid build target, return it
+  const validTargets = Object.values(BUILD_TARGETS);
+  if (validTargets.includes(taskName)) {
+    return taskName;
+  }
+
+  // Check task prefixes to extract the build target
+  for (const [prefix, buildTarget] of TASK_PREFIX_TO_BUILD_TARGET) {
+    if (taskName.startsWith(prefix)) {
+      return buildTarget;
+    }
+  }
+
+  // Return original for backwards compatibility with unknown task names
+  return taskName;
 }
 
 /**
@@ -78,10 +113,38 @@ function getBrowserVersionMap(platforms, version) {
     const versionParts = [major, minor, patch];
     const browserSpecificVersion = {};
     if (prerelease) {
-      if (platform === 'firefox') {
-        versionParts[2] = `${versionParts[2]}${buildType}${buildVersion}`;
-      } else {
-        versionParts.push(buildVersion);
+      const { id } = loadBuildTypesConfig().buildTypes[buildType];
+      if (id < 10 || id > 64 || buildVersion < 0 || buildVersion > 999) {
+        throw new Error(
+          `Build id must be 10-64 and release version must be 0-999
+(inclusive). Received an id of '${id}' and a release version of
+'${buildVersion}'.
+
+Wait, but that seems so arbitrary?
+==================================
+
+We encode the build id and the release version into the extension version by
+concatenating the two numbers together. The maximum value for the concatenated
+number is 65535 (a Chromium limitation). The value cannot start with a '0'. We
+utilize 2 digits for the build id and 3 for the release version. This affords us
+55 release types and 1000 releases per 'version' + build type (for a minimum
+value of 10000 and a maximum value of 64999).
+
+Okay, so how do I fix it?
+=========================
+
+You'll need to adjust the build 'id' (in builds.yml) or the release version to
+fit within these limits or bump the version number in package.json and start the
+release version number over from 0. If you can't do that you'll need to come up
+with a new way of encoding this information, or re-evaluate the need for this
+metadata.
+
+Good luck on your endeavors.`,
+        );
+      }
+      versionParts.push(`${id}${buildVersion}`);
+      if (platform !== 'firefox') {
+        // firefox doesn't support `version_name`
         browserSpecificVersion.version_name = version;
       }
     }
@@ -99,6 +162,7 @@ function getBrowserVersionMap(platforms, version) {
  * @returns {ENVIRONMENT} The current build environment.
  */
 function getEnvironment({ buildTarget }) {
+  const branch = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME;
   // get environment slug
   if (buildTarget === BUILD_TARGETS.PROD) {
     return ENVIRONMENT.PRODUCTION;
@@ -106,13 +170,11 @@ function getEnvironment({ buildTarget }) {
     return ENVIRONMENT.DEVELOPMENT;
   } else if (isTestBuild(buildTarget)) {
     return ENVIRONMENT.TESTING;
-  } else if (
-    /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)
-  ) {
+  } else if (/^release\/(\d+)[.](\d+)[.](\d+)/u.test(branch)) {
     return ENVIRONMENT.RELEASE_CANDIDATE;
-  } else if (process.env.CIRCLE_BRANCH === 'develop') {
+  } else if (branch === 'main') {
     return ENVIRONMENT.STAGING;
-  } else if (process.env.CIRCLE_PULL_REQUEST) {
+  } else if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
     return ENVIRONMENT.PULL_REQUEST;
   }
   return ENVIRONMENT.OTHER;
@@ -235,7 +297,7 @@ function getPathInsideNodeModules(packageName, pathToFiles) {
  * @param {string} options.buildType - The build type of the current build.
  * @param {boolean} options.applyLavaMoat - Flag if lavamoat was applied.
  * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included in the build name.
- * @param {boolean} options.shouldIncludeMV3 - Flag if mv3 should be included in the build name.
+ * @param {boolean} options.isManifestV3 - Flag if mv3 should be included in the build name.
  * @param options.environment
  * @returns {string} The build name.
  */
@@ -244,7 +306,7 @@ function getBuildName({
   buildType,
   applyLavaMoat,
   shouldIncludeSnow,
-  shouldIncludeMV3,
+  isManifestV3,
 }) {
   const config = loadBuildTypesConfig();
 
@@ -253,7 +315,7 @@ function getBuildName({
     `MetaMask ${capitalize(buildType)}`;
 
   if (environment !== ENVIRONMENT.PRODUCTION) {
-    const mv3Str = shouldIncludeMV3 ? ' MV3' : '';
+    const mv3Str = isManifestV3 ? ' MV3' : '';
     const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
     const snowStr = shouldIncludeSnow ? ' snow' : '';
     name += `${mv3Str}${lavamoatStr}${snowStr}`;
@@ -261,32 +323,6 @@ function getBuildName({
   return name;
 }
 
-/**
- * Get the app ID for the current build. Should be valid reverse FQDN.
- *
- * @param {object} options - The build options.
- * @param {string} options.buildType - The build type of the current build.
- * @returns {string} The build app ID.
- */
-function getBuildAppId({ buildType }) {
-  const baseDomain = 'io.metamask';
-  return buildType === 'main' ? baseDomain : `${baseDomain}.${buildType}`;
-}
-
-/**
- * Get the image data uri for the svg icon for the current build.
- *
- * @param {object} options - The build options.
- * @param {string} options.buildType - The build type of the current build.
- * @returns {string} The image data uri for the icon.
- */
-function getBuildIcon({ buildType }) {
-  const svgLogoPath =
-    BUILD_TYPES_TO_SVG_LOGO_PATH[buildType] ||
-    BUILD_TYPES_TO_SVG_LOGO_PATH.main;
-  const svg = readFileSync(svgLogoPath, 'utf8');
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-}
 /**
  * Takes the given JavaScript file at `filePath` and replaces its contents with
  * a script that injects the original file contents into the document in which
@@ -306,8 +342,7 @@ function makeSelfInjecting(filePath) {
 module.exports = {
   getBrowserVersionMap,
   getBuildName,
-  getBuildAppId,
-  getBuildIcon,
+  getBuildTargetFromTask,
   getEnvironment,
   isDevBuild,
   isTestBuild,

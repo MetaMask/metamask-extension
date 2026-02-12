@@ -1,8 +1,8 @@
 import React from 'react';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../test/jest';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../helpers/constants/common';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../../test/e2e/constants';
 import SnapAccountRedirect from './snap-account-redirect';
 
 const store = configureStore({
@@ -12,6 +12,7 @@ const store = configureStore({
 });
 
 // If you're using some kind of global variable (like `global.platform` in your component), you might want to mock it.
+// @ts-expect-error mocking platform
 global.platform = {
   openTab: jest.fn(),
   closeCurrentWindow: jest.fn(),
@@ -106,8 +107,8 @@ describe('<SnapAccountRedirect />', () => {
     const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
         snapId={mockSnapId}
-        url={''}
-        snapName={''}
+        url=""
+        snapName=""
         isBlockedUrl={false}
         message=""
       />,

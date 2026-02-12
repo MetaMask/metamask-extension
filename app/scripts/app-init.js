@@ -1,14 +1,33 @@
-/* global chrome */
 // This file is used only for manifest version 3
+
+// We don't usually `import` files into `app-init.js` because we need to load
+// "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
+// small we won't ever have a problem with these two files being "split".
+import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
+
+const { chrome } = globalThis;
+
+// this needs to be run early so we can begin listening to these browser events
+// as soon as possible
+const lazyListener = new ExtensionLazyListener(chrome, {
+  runtime: ['onInstalled', 'onConnect'],
+});
+
+/**
+ * @type {import('../../types/global').StateHooks}
+ */
+globalThis.stateHooks = globalThis.stateHooks || {};
+
+// Set the lazy listener on globalThis.stateHooks so that other bundles can
+// access it.
+globalThis.stateHooks.lazyListener = lazyListener;
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
 let scriptsLoadInitiated = false;
-
 const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
-
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
@@ -51,33 +70,41 @@ function importAllScripts() {
 
   const startImportScriptsTime = Date.now();
 
+  // value of useSnow below is dynamically replaced at build time with actual value
+  const useSnow = process.env.USE_SNOW;
+  if (typeof useSnow !== 'boolean') {
+    throw new Error('Missing USE_SNOW environment variable');
+  }
+
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = process.env.APPLY_LAVAMOAT;
   if (typeof applyLavaMoat !== 'boolean') {
     throw new Error('Missing APPLY_LAVAMOAT environment variable');
   }
 
-  loadFile('./sentry-install.js');
+  loadFile('../scripts/sentry-install.js');
 
-  // eslint-disable-next-line no-undef
-  const isWorker = !self.document;
-  if (!isWorker) {
-    loadFile('./snow.js');
+  if (useSnow) {
+    // eslint-disable-next-line no-undef
+    const isWorker = !self.document;
+    if (!isWorker) {
+      loadFile('../scripts/snow.js');
+    }
+
+    loadFile('../scripts/use-snow.js');
   }
-
-  loadFile('./use-snow.js');
 
   // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
   if (testMode || applyLavaMoat) {
-    loadFile('./runtime-lavamoat.js');
-    loadFile('./lockdown-more.js');
-    loadFile('./policy-load.js');
+    loadFile('../scripts/runtime-lavamoat.js');
+    loadFile('../scripts/lockdown-more.js');
+    loadFile('../scripts/policy-load.js');
   } else {
-    loadFile('./init-globals.js');
-    loadFile('./lockdown-install.js');
-    loadFile('./lockdown-run.js');
-    loadFile('./lockdown-more.js');
-    loadFile('./runtime-cjs.js');
+    loadFile('../scripts/init-globals.js');
+    loadFile('../scripts/lockdown-install.js');
+    loadFile('../scripts/lockdown-run.js');
+    loadFile('../scripts/lockdown-more.js');
+    loadFile('../scripts/runtime-cjs.js');
   }
 
   // This environment variable is set to a string of comma-separated relative file paths.
@@ -121,69 +148,16 @@ function importAllScripts() {
 self.addEventListener('install', importAllScripts);
 
 /*
- * A keepalive message listener to prevent Service Worker getting shut down due to inactivity.
- * UI sends the message periodically, in a setInterval.
- * Chrome will revive the service worker if it was shut down, whenever a new message is sent, but only if a listener was defined here.
- *
- * chrome below needs to be replaced by cross-browser object,
- * but there is issue in importing webextension-polyfill into service worker.
- * chrome does seems to work in at-least all chromium based browsers
+ * If the service worker is stopped and restarted, then the 'install' event will not occur
+ * and the chrome.runtime.onMessage will only occur if it was a message that restarted the
+ * the service worker. To ensure that importAllScripts is called, we need to call it in module
+ * scope as below. To avoid having `importAllScripts()` called before installation, we only
+ * call it if the serviceWorker state is 'activated'. More on service worker states here:
+ * https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/state. Testing also shows
+ * that whenever the already installed service worker is stopped and then restarted, the state
+ * is 'activated'.
  */
-chrome.runtime.onMessage.addListener(() => {
+// eslint-disable-next-line no-undef
+if (self.serviceWorker.state === 'activated') {
   importAllScripts();
-  return false;
-});
-
-/*
- * This content script is injected programmatically because
- * MAIN world injection does not work properly via manifest
- * https://bugs.chromium.org/p/chromium/issues/detail?id=634381
- */
-const registerInPageContentScript = async () => {
-  try {
-    await chrome.scripting.registerContentScripts([
-      {
-        id: 'inpage',
-        matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-        js: ['inpage.js'],
-        runAt: 'document_start',
-        world: 'MAIN',
-      },
-    ]);
-  } catch (err) {
-    /**
-     * An error occurs when app-init.js is reloaded. Attempts to avoid the duplicate script error:
-     * 1. registeringContentScripts inside runtime.onInstalled - This caused a race condition
-     *    in which the provider might not be loaded in time.
-     * 2. await chrome.scripting.getRegisteredContentScripts() to check for an existing
-     *    inpage script before registering - The provider is not loaded on time.
-     */
-    console.warn(`Dropped attempt to register inpage content script. ${err}`);
-  }
-};
-
-registerInPageContentScript();
-
-/**
- * Creates an offscreen document that can be used to load additional scripts
- * and iframes that can communicate with the extension through the chrome
- * runtime API. Only one offscreen document may exist, so any iframes required
- * by extension can be embedded in the offscreen.html file. See the offscreen
- * folder for more details.
- */
-async function createOffscreen() {
-  if (await chrome.offscreen.hasDocument()) {
-    return;
-  }
-
-  await chrome.offscreen.createDocument({
-    url: './offscreen.html',
-    reasons: ['IFRAME_SCRIPTING'],
-    justification:
-      'Used for Hardware Wallet and Snaps scripts to communicate with the extension.',
-  });
-
-  console.debug('Offscreen iframe loaded');
 }
-
-createOffscreen();

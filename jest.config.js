@@ -1,32 +1,40 @@
+const consoleReporterRules = require('./test/jest/console-reporter-rules-unit');
+
 module.exports = {
   collectCoverageFrom: [
-    '<rootDir>/app/scripts/constants/error-utils.js',
-    '<rootDir>/app/scripts/controllers/permissions/**/*.js',
-    '<rootDir>/app/scripts/controllers/sign.ts',
-    '<rootDir>/app/scripts/controllers/decrypt-message.ts',
-    '<rootDir>/app/scripts/controllers/transactions/etherscan.ts',
-    '<rootDir>/app/scripts/controllers/transactions/EtherscanRemoteTransactionSource.ts',
-    '<rootDir>/app/scripts/controllers/transactions/IncomingTransactionHelper.ts',
-    '<rootDir>/app/scripts/controllers/preferences.js',
-    '<rootDir>/app/scripts/controllers/detect-tokens.test.js',
-    '<rootDir>/app/scripts/flask/**/*.js',
-    '<rootDir>/app/scripts/lib/**/*.(js|ts)',
-    '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.js',
-    '<rootDir>/app/scripts/metamask-controller.js',
-    '<rootDir>/app/scripts/migrations/*.js',
-    '<rootDir>/app/scripts/migrations/*.ts',
-    '!<rootDir>/app/scripts/migrations/*.test.(js|ts)',
-    '<rootDir>/app/scripts/platforms/*.js',
+    '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.(js|ts|tsx)',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
-    '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
-    '<rootDir>/test/e2e/helpers.test.js',
+    '<rootDir>/development/build/transforms/**/*.js',
+    '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
-  coverageDirectory: './coverage',
-  coveragePathIgnorePatterns: ['.stories.*', '.snap'],
+  coverageDirectory: './coverage/unit',
+  coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
+  moduleNameMapper: {
+    // Mock lightweight-charts since it requires browser/canvas APIs not available in Jest
+    '^lightweight-charts$': '<rootDir>/test/mocks/lightweight-charts.js',
+  },
+  // The path to the Prettier executable used to format snapshots
+  // Jest doesn't support Prettier 3 yet, so we use Prettier 2
+  prettierPath: require.resolve('prettier-2'),
   reporters: [
-    'default',
+    // Console baseline reporter MUST be first to capture raw console messages
+    // before jest-clean-console-reporter processes them
+    [
+      '<rootDir>/test/jest/console-baseline-reporter.js',
+      {
+        testType: 'unit',
+      },
+    ],
+    [
+      'jest-clean-console-reporter',
+      {
+        rules: consoleReporterRules,
+      },
+    ],
+    'summary',
     [
       'jest-junit',
       {
@@ -38,40 +46,35 @@ module.exports = {
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
-  setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
+  setupFiles: [
+    'jest-canvas-mock',
+    '<rootDir>/test/setup.js',
+    '<rootDir>/test/env.js',
+  ],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
-    '<rootDir>/app/scripts/constants/error-utils.test.js',
-    '<rootDir>/app/scripts/controllers/app-state.test.js',
-    '<rootDir>/app/scripts/controllers/transactions/etherscan.test.ts',
-    '<rootDir>/app/scripts/controllers/transactions/EtherscanRemoteTransactionSource.test.ts',
-    '<rootDir>/app/scripts/controllers/transactions/IncomingTransactionHelper.test.ts',
-    '<rootDir>/app/scripts/controllers/mmi-controller.test.js',
-    '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
-    '<rootDir>/app/scripts/controllers/preferences.test.js',
-    '<rootDir>/app/scripts/controllers/sign.test.ts',
-    '<rootDir>/app/scripts/controllers/decrypt-message.test.ts',
-    '<rootDir>/app/scripts/flask/**/*.test.js',
-    '<rootDir>/app/scripts/lib/**/*.test.(js|ts)',
-    '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
-    '<rootDir>/app/scripts/metamask-controller.test.js',
-    '<rootDir>/app/scripts/controllers/detect-tokens.test.js',
-    '<rootDir>/app/scripts/migrations/*.test.(js|ts)',
-    '<rootDir>/app/scripts/platforms/*.test.js',
-    '<rootDir>/app/scripts/translate.test.ts',
-    '<rootDir>/shared/**/*.test.(js|ts)',
+    '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
+    '<rootDir>/app/offscreen/**/*.test.(js|ts|tsx)',
+    '<rootDir>/shared/**/*.test.(js|ts|tsx)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
-    '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
+    '<rootDir>/development/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
+    '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
   ],
+  testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
   // head of the file. So it may be worthwhile to switch to 'node' in any
-  // background tests.
-  testEnvironment: 'jsdom',
+  // background tests. `jest-fixed-jsdom` is an improved version of jsdom.
+  testEnvironment: 'jest-fixed-jsdom',
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],
   },
   workerIdleMemoryLimit: '500MB',
+  // Ensure console output is buffered (not streamed) so reporters can access testResult.console
+  // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
+  verbose: false,
 };

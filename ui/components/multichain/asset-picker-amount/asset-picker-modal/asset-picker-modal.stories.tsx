@@ -1,10 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Asset } from '../../../../ducks/send';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from './asset-picker-modal';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import type { Asset } from './types';
+import { ERC20Asset } from './types';
 
 const storybook = {
   title: 'Components/Multichain/AssetPickerModal',
@@ -15,17 +17,37 @@ const props = {
   isOpen: true,
   onClose: () => ({}),
   asset: {
-    balance: null,
-    details: null,
-    error: null,
+    address: '0xAddress',
+    symbol: 'TOKEN',
+    image: 'image.png',
     type: AssetType.token,
-  } as unknown as Asset,
+  } as ERC20Asset,
 };
-export const DefaultStory = () => <AssetPickerModal {...props} />;
+export const DefaultStory = () => {
+  const t = useI18nContext();
+  return (
+    <AssetPickerModal
+      header={t('sendSelectSendAsset')}
+      onAssetChange={() => ({})}
+      autoFocus={false}
+      {...props}
+    />
+  );
+};
 
 DefaultStory.storyName = 'Default';
 
-export const TokenStory = () => <AssetPickerModal {...props} />;
+export const TokenStory = () => {
+  const t = useI18nContext();
+  return (
+    <AssetPickerModal
+      header={t('sendSelectSendAsset')}
+      onAssetChange={() => ({})}
+      autoFocus={false}
+      {...props}
+    />
+  );
+};
 
 TokenStory.storyName = 'Modal With Balance';
 

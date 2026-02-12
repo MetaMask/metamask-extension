@@ -8,7 +8,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import { SnapAccountRedirectProps } from '../snap-account-redirect';
+import type { SnapAccountRedirectProps } from '../snap-account-redirect';
 import {
   AlignItems,
   Display,
@@ -29,7 +29,7 @@ const SnapAccountRedirectContent = ({
 }: SnapAccountRedirectProps) => {
   const t = useI18nContext();
   const learnMoreAboutBlockedUrls =
-    'https://support.metamask.io/hc/en-us/articles/4428045875483--Deceptive-site-ahead-when-trying-to-connect-to-a-site';
+    'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/';
 
   return (
     <Box
@@ -48,6 +48,7 @@ const SnapAccountRedirectContent = ({
           data-testid="snap-account-redirect-content-title"
           textAlign={TextAlign.Center}
           variant={TextVariant.headingLg}
+          paddingBottom={2}
         >
           {t('snapAccountRedirectFinishSigningTitle')}
         </Text>

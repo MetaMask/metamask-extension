@@ -4,15 +4,4 @@
       font-style: revert;
     }
   }
-
-  &__link {
-    & > span:last-child {
-      margin-inline-start: 2px;
-    }
-
-    & .mm-icon--size-inherit {
-      // Fixes the icon misalignment in ButtonLink when using ButtonLinkSize.Inherit
-      top: 0.1em;
-    }
-  }
 }

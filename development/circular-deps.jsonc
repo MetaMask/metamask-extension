@@ -1,0 +1,61 @@
+// This is a machine-generated file that tracks circular dependencies in the codebase.
+// To understand changes in this file:
+// - Each array represents a cycle of imports where the last file imports the first
+// - The cycles are sorted alphabetically for consistent diffs
+// - To update this file, run: yarn circular-deps:update
+// - To prevent new circular dependencies, ensure your changes don't add new cycles
+// - For more information contact the Extension Platform team.
+
+[
+  [
+    "shared/modules/selectors/account.ts",
+    "shared/modules/selectors/index.ts",
+    "ui/ducks/metamask/metamask.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts"
+  ],
+  [
+    "ui/components/app/metamask-template-renderer/index.js",
+    "ui/components/app/metamask-template-renderer/metamask-template-renderer.js",
+    "ui/components/app/metamask-template-renderer/safe-component-list.js",
+    "ui/components/app/metamask-translation/index.js",
+    "ui/components/app/metamask-translation/metamask-translation.js"
+  ],
+  [
+    "ui/ducks/metamask/metamask.js",
+    "ui/selectors/confirm-transaction.js",
+    "ui/selectors/custom-gas.js",
+    "ui/selectors/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts"
+  ],
+  [
+    "ui/ducks/metamask/metamask.js",
+    "ui/selectors/confirm-transaction.js",
+    "ui/selectors/custom-gas.js",
+    "ui/selectors/index.js",
+    "ui/store/actions.ts"
+  ],
+  [
+    "ui/ducks/metamask/metamask.js",
+    "ui/selectors/confirm-transaction.js",
+    "ui/selectors/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts"
+  ],
+  [
+    "ui/ducks/metamask/metamask.js",
+    "ui/selectors/confirm-transaction.js",
+    "ui/selectors/index.js",
+    "ui/store/actions.ts"
+  ],
+  [
+    "ui/ducks/metamask/metamask.js",
+    "ui/selectors/index.js",
+    "ui/selectors/selectors.js",
+    "ui/store/actions.ts"
+  ],
+  ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"],
+  ["ui/ducks/metamask/metamask.js", "ui/store/actions.ts"],
+  ["ui/selectors/multichain.ts", "ui/selectors/selectors.js"]
+]

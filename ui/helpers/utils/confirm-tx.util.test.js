@@ -88,5 +88,19 @@ describe('Confirm Transaction utils', () => {
       const value = utils.formatCurrency('123.45', 'usd');
       expect(value).toStrictEqual('$123.45');
     });
+
+    it('should support different precision', () => {
+      const value = '123.1234';
+
+      // If precision is omitted, use the currency's default
+      expect(utils.formatCurrency(value, 'usd')).toStrictEqual('$123.12');
+
+      expect(utils.formatCurrency(value, 'usd', 0)).toStrictEqual('$123');
+      expect(utils.formatCurrency(value, 'usd', 1)).toStrictEqual('$123.1');
+      expect(utils.formatCurrency(value, 'usd', 2)).toStrictEqual('$123.12');
+      expect(utils.formatCurrency(value, 'usd', 3)).toStrictEqual('$123.123');
+      expect(utils.formatCurrency(value, 'usd', 4)).toStrictEqual('$123.1234');
+      expect(utils.formatCurrency(value, 'usd', 5)).toStrictEqual('$123.12340');
+    });
   });
 });

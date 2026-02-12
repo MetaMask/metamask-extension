@@ -8,7 +8,7 @@ export default {
     hexValue: {
       control: 'text',
     },
-    featureSecondary: {
+    isFiatPreferred: {
       control: 'boolean',
     },
     onChange: {

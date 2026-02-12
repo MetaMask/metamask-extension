@@ -7,8 +7,8 @@ import { Button } from '../button';
 import { Text } from '../text';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
-
-import { SelectWrapper, useSelectContext } from '.';
+import { SelectWrapper } from './select-wrapper';
+import { useSelectContext } from './select-wrapper.context';
 
 export default {
   title: 'Components/ComponentLibrary/SelectWrapper',
@@ -172,8 +172,9 @@ UncontrolledValue.args = {
 };
 
 export const UseSelectContext: StoryFn<typeof SelectWrapper> = (args) => {
-  // Note that the SelectContext is being used inside a component, because the SelectContext needs to be called within the SelectWrapper component and not before
   const CustomClose = () => {
+    // Note that the SelectContext is being used inside a component, because the SelectContext needs to be called within the SelectWrapper component and not before
+    // eslint-disable-next-line react-compiler/react-compiler
     const { toggleUncontrolledOpen } = useSelectContext();
 
     return (

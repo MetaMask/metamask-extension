@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CopyIcon should match snapshot 1`] = `
+<div>
+  <button
+    aria-label="copy-button"
+    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+    style="cursor: pointer; position: absolute; right: 0px; top: 2px;"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+      style="mask-image: url('./images/icons/copy.svg');"
+    />
+  </button>
+</div>
+`;

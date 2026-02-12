@@ -1,0 +1,43 @@
+import { withFixtures } from '../../../helpers';
+import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import Homepage from '../../../page-objects/pages/home/homepage';
+import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
+import NftListPage from '../../../page-objects/pages/home/nft-list';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { Driver } from '../../../webdriver/driver';
+
+describe('View NFT details', function () {
+  const smartContract = SMART_CONTRACTS.NFTS;
+
+  it('user should be able to view ERC721 NFT details', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        smartContract,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithoutBalanceValidation(driver);
+
+        // Click to open the NFT details page and check title
+        await new Homepage(driver).goToNftTab();
+        const nftListPage = new NftListPage(driver);
+        await nftListPage.clickNFTIconOnActivityList();
+
+        // Check the NFT details are correctly displayed on NFT details page
+        const nftDetailsPage = new NFTDetailsPage(driver);
+        await nftDetailsPage.checkPageIsLoaded();
+        await nftDetailsPage.checkNftNameIsDisplayed('Test Dapp NFTs #1');
+        await nftDetailsPage.checkNftDescriptionIsDisplayed(
+          'Test Dapp NFTs for testing.',
+        );
+        await nftDetailsPage.checkNftImageContainerIsDisplayed();
+        await nftDetailsPage.checkNftDetailsAddressIsDisplayed(
+          '0x581c3...45947',
+        );
+      },
+    );
+  });
+});

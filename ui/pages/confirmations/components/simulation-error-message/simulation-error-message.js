@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { BannerAlert } from '../../../../components/component-library';
-import { SEVERITIES } from '../../../../helpers/constants/design-system';
+import { Severity } from '../../../../helpers/constants/design-system';
 
 import { I18nContext } from '../../../../../.storybook/i18n';
 import {
@@ -17,7 +17,7 @@ export default function SimulationErrorMessage({
 }) {
   const t = useContext(I18nContext);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
     trackEvent({
@@ -32,12 +32,12 @@ export default function SimulationErrorMessage({
   }, []);
 
   return userAcknowledgedGasMissing === true ? (
-    <BannerAlert severity={SEVERITIES.DANGER}>
+    <BannerAlert severity={Severity.Danger}>
       {t('simulationErrorMessageV2')}
     </BannerAlert>
   ) : (
     <BannerAlert
-      severity={SEVERITIES.DANGER}
+      severity={Severity.Danger}
       actionButtonLabel={t('proceedWithTransaction')}
       actionButtonOnClick={setUserAcknowledgedGasMissing}
     >

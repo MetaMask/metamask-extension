@@ -1,13 +1,18 @@
 import type { TrezorBridge } from '@metamask/eth-trezor-keyring';
-import type { LedgerBridge } from '@metamask/eth-ledger-bridge-keyring';
-import { KeyringClass, Json } from '@metamask/utils';
+import type {
+  LedgerBridge,
+  LedgerBridgeOptions,
+} from '@metamask/eth-ledger-bridge-keyring';
+import { KeyringClass } from '@metamask/keyring-utils';
+import { FakeKeyringBridge } from '../../../test/stub/keyring-bridge';
 
 /**
  * A transport bridge between the keyring and the hardware device.
  */
 export type HardwareTransportBridgeClass =
   | (new () => TrezorBridge)
-  | (new () => LedgerBridge);
+  | (new () => LedgerBridge<LedgerBridgeOptions>)
+  | (new () => FakeKeyringBridge);
 
 /**
  * Get builder function for Hardware keyrings which require an additional `opts`
@@ -20,7 +25,7 @@ export type HardwareTransportBridgeClass =
  * @returns A builder function for the given Keyring.
  */
 export function hardwareKeyringBuilderFactory(
-  Keyring: KeyringClass<Json>,
+  Keyring: KeyringClass,
   Bridge: HardwareTransportBridgeClass,
 ) {
   const builder = () => new Keyring({ bridge: new Bridge() });

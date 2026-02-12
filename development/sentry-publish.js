@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
+const fs = require('node:fs/promises');
+const path = require('node:path');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
+const { getSentryRelease } = require('../shared/lib/sentry-release');
 const { runCommand, runInShell } = require('./lib/run-command');
 const { getVersion } = require('./lib/get-version');
 const { loadBuildTypesConfig } = require('./lib/build-type');
@@ -37,10 +40,20 @@ async function start() {
           default: 0,
           description: 'The MetaMask extension build version',
           type: 'number',
+        })
+        .option('dist', {
+          description:
+            'The MetaMask extension build distribution (typically for MV2 builds, omit for MV3)',
+          type: 'string',
+        })
+        .option('dist-directory', {
+          default: 'dist',
+          description: 'The MetaMask extension build dist directory path',
+          type: 'string',
         }),
   );
 
-  const { buildType, buildVersion, org, project } = argv;
+  const { buildType, buildVersion, dist, distDirectory, org, project } = argv;
 
   process.env.SENTRY_ORG = org;
   process.env.SENTRY_PROJECT = project;
@@ -51,48 +64,42 @@ async function start() {
   }
 
   const version = getVersion(buildType, buildVersion);
+  const release = getSentryRelease('production', version);
 
-  // check if version exists or not
-  const versionAlreadyExists = await checkIfVersionExists(version);
+  // check if release exists or not
+  const releaseAlreadyExists = await checkIfReleaseExists(release);
   // abort if versions exists
-  if (versionAlreadyExists) {
+  if (releaseAlreadyExists) {
     console.log(
-      `Version "${version}" already exists on Sentry, skipping version creation`,
+      `Release "${release}" already exists on Sentry, skipping creation`,
     );
   } else {
     // create sentry release
-    console.log(`creating Sentry release for "${version}"...`);
-    await runCommand('sentry-cli', ['releases', 'new', version]);
+    console.log(`creating Sentry release for "${release}"...`);
+    await runCommand('sentry-cli', ['releases', 'new', release]);
     console.log(
-      `removing any existing files from Sentry release "${version}"...`,
+      `removing any existing files from Sentry release "${release}"...`,
     );
     await runCommand('sentry-cli', [
       'releases',
       'files',
-      version,
+      release,
       'delete',
       '--all',
     ]);
   }
 
-  // check if version has artifacts or not
-  const versionHasArtifacts =
-    versionAlreadyExists && (await checkIfVersionHasArtifacts(version));
-  if (versionHasArtifacts) {
-    console.log(
-      `Version "${version}" already has artifacts on Sentry, skipping sourcemap upload`,
-    );
-    return;
-  }
+  const absoluteDistDirectory = path.resolve(__dirname, '../', distDirectory);
+  await assertIsNonEmptyDirectory(absoluteDistDirectory);
 
-  const additionalUploadArgs = [];
-  if (buildType !== loadBuildTypesConfig().default) {
-    additionalUploadArgs.push('--dist-directory', `dist-${buildType}`);
+  const additionalUploadArgs = ['--dist-directory', distDirectory];
+  if (dist) {
+    additionalUploadArgs.push('--dist', dist);
   }
   // upload sentry source and sourcemaps
   await runInShell('./development/sentry-upload-artifacts.sh', [
     '--release',
-    version,
+    release,
     ...additionalUploadArgs,
   ]);
 }
@@ -103,21 +110,10 @@ async function checkIfAuthWorks() {
   );
 }
 
-async function checkIfVersionExists(version) {
+async function checkIfReleaseExists(release) {
   return await doesNotFail(() =>
-    runCommand('sentry-cli', ['releases', 'info', version]),
+    runCommand('sentry-cli', ['releases', 'info', release]),
   );
-}
-
-async function checkIfVersionHasArtifacts(version) {
-  const [artifact] = await runCommand('sentry-cli', [
-    'releases',
-    'files',
-    version,
-    'list',
-  ]);
-  // When there's no artifacts, we get a response from the shell like this ['', '']
-  return artifact?.length > 0;
 }
 
 async function doesNotFail(asyncFn) {
@@ -127,6 +123,41 @@ async function doesNotFail(asyncFn) {
   } catch (error) {
     if (error.message === `Exited with code '1'`) {
       return false;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Assert that the given path exists, and is a non-empty directory.
+ *
+ * @param {string} directoryPath - The path to check.
+ */
+async function assertIsNonEmptyDirectory(directoryPath) {
+  await assertIsDirectory(directoryPath);
+
+  const files = await fs.readdir(directoryPath);
+  if (!files.length) {
+    throw new Error(`Directory empty: '${directoryPath}'`);
+  }
+}
+
+/**
+ * Assert that the given path exists, and is a directory.
+ *
+ * @param {string} directoryPath - The path to check.
+ */
+async function assertIsDirectory(directoryPath) {
+  try {
+    const directoryStats = await fs.stat(directoryPath);
+    if (!directoryStats.isDirectory()) {
+      throw new Error(`Invalid path '${directoryPath}'; must be a directory`);
+    }
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      throw new Error(`Directory '${directoryPath}' not found`, {
+        cause: error,
+      });
     }
     throw error;
   }

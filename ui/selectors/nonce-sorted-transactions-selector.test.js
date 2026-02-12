@@ -1,10 +1,12 @@
 import { head, last } from 'lodash';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
+import { mockNetworkState } from '../../test/stub/networks';
 import { nonceSortedTransactionsSelector } from './transactions';
 
 const RECIPIENTS = {
@@ -26,13 +28,15 @@ const INCOMING_TX = {
     to: SENDERS.ONE,
   },
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const SIGNING_REQUEST = {
-  type: TransactionType.sign,
+  type: TransactionType.personalSign,
   id: '0-signing',
   status: TransactionStatus.unapproved,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const SIMPLE_SEND_TX = {
@@ -43,6 +47,7 @@ const SIMPLE_SEND_TX = {
   },
   type: TransactionType.simpleSend,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const TOKEN_SEND_TX = {
@@ -55,6 +60,7 @@ const TOKEN_SEND_TX = {
   },
   type: TransactionType.tokenMethodTransfer,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const RETRY_TX = {
@@ -62,6 +68,7 @@ const RETRY_TX = {
   id: '0-retry',
   type: TransactionType.retry,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const CANCEL_TX = {
@@ -73,20 +80,17 @@ const CANCEL_TX = {
   },
   type: TransactionType.cancel,
   chainId: CHAIN_IDS.MAINNET,
+  networkClientId: 'mainnet',
 };
 
 const getStateTree = ({
   txList = [],
   incomingTxList = [],
-  unapprovedMsgs = [],
+  unapprovedTypedMessages = [],
 } = {}) => ({
   metamask: {
-    providerConfig: {
-      nickname: 'mainnet',
-      chainId: CHAIN_IDS.MAINNET,
-    },
-    unapprovedMsgs,
-    selectedAddress: SENDERS.ONE,
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    unapprovedTypedMessages,
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -99,7 +103,7 @@ const getStateTree = ({
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -107,7 +111,6 @@ const getStateTree = ({
     },
     featureFlags: {},
     transactions: [...incomingTxList, ...txList],
-    incomingTransactionsPreferences: {},
   },
 });
 
@@ -274,7 +277,7 @@ describe('nonceSortedTransactionsSelector', () => {
   });
 
   it('should display a signing request', () => {
-    const state = getStateTree({ unapprovedMsgs: [SIGNING_REQUEST] });
+    const state = getStateTree({ unapprovedTypedMessages: [SIGNING_REQUEST] });
 
     const result = nonceSortedTransactionsSelector(state);
 

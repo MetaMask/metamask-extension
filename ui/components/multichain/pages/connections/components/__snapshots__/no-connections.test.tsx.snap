@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`No Connections Content should render correctly 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-3 items-center justify-center bg-default max-w-56 connections-page__no-site-connected-content h-full mx-auto"
+  >
+    <img
+      alt="MetaMask isn't connected to this site. To get started, select the site's Connect button."
+      height="72"
+      src="/images/empty-state-permissions-light.png"
+      width="72"
+    />
+    <p
+      class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+      data-testid="no-connection-description"
+    >
+      MetaMask isn't connected to this site. To get started, select the site's Connect button.
+    </p>
+  </div>
+</div>
+`;

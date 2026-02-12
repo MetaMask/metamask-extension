@@ -1,0 +1,13 @@
+.token-cell {
+  &--outdated .list-item__heading {
+    color: var(--color-text-alternative);
+  }
+}
+
+.token-cell-title {
+  &--ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}

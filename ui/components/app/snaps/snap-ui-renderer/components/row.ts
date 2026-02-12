@@ -1,18 +1,26 @@
-import { Row } from '@metamask/snaps-sdk';
+import type { JSXElement, RowElement } from '@metamask/snaps-sdk/jsx';
 
 import { mapToTemplate } from '../utils';
 import { UIComponentFactory } from './types';
 
-export const row: UIComponentFactory<Row> = ({ element, ...params }) => ({
+export const row: UIComponentFactory<RowElement> = ({
+  element,
+  ...params
+}) => ({
   element: 'ConfirmInfoRow',
-  children: [mapToTemplate({ element: element.value, ...params })],
+  children: [
+    mapToTemplate({ ...params, element: element.props.children as JSXElement }),
+  ],
   props: {
-    label: element.label,
-    variant: element.variant,
+    label: element.props.label,
+    variant: element.props.variant,
+    tooltip: element.props.tooltip,
     style: {
       // We do this to cause an overhang with certain confirmation row variants
       marginLeft: '-8px',
       marginRight: '-8px',
+      marginTop: '0px',
+      marginBottom: '0px',
     },
   },
 });

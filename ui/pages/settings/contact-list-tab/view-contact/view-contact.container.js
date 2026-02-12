@@ -1,7 +1,10 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { getAddressBookEntry } from '../../../../selectors';
+import withRouterHooks from '../../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
+import {
+  getAddressBookEntry,
+  getInternalAccountByAddress,
+} from '../../../../selectors';
 import {
   CONTACT_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -10,17 +13,18 @@ import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-ut
 import ViewContact from './view-contact.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { location } = ownProps;
-  const { pathname } = location;
-  const pathNameTail = pathname.match(/[^/]+$/u)[0];
+  const { location, params } = ownProps;
+  const pathNameTail = location.pathname.match(/[^/]+$/u)[0];
   const pathNameTailIsAddress = pathNameTail.includes('0x');
   const address = pathNameTailIsAddress
     ? pathNameTail.toLowerCase()
-    : ownProps.match.params.id;
+    : params.id;
 
-  const contact =
-    getAddressBookEntry(state, address) || state.metamask.identities[address];
-  const { memo, name } = contact || {};
+  const internalAccount = getInternalAccountByAddress(state, address);
+
+  const contact = getAddressBookEntry(state, address);
+  const { memo } = contact || {};
+  const name = contact?.name || internalAccount.metadata.name;
 
   return {
     name,
@@ -32,4 +36,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default compose(withRouter, connect(mapStateToProps))(ViewContact);
+export default compose(withRouterHooks, connect(mapStateToProps))(ViewContact);

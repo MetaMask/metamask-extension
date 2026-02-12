@@ -1,0 +1,69 @@
+import { Suite } from 'mocha';
+import { Driver } from '../../webdriver/driver';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+
+// Pin/unpin is not available in BIP44 stage 2
+// eslint-disable-next-line
+describe.skip('Account list - pin/unpin functionality', function (this: Suite) {
+  it('pin and unpin account by clicking the pin/unpin button', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
+        new HeaderNavbar(driver).openAccountMenu();
+
+        // pin account
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.openAccountOptionsMenu();
+        await accountListPage.pinAccount();
+        await accountListPage.checkAccountIsPinned();
+
+        // unpin account
+        await accountListPage.openAccountOptionsMenu();
+        await accountListPage.unpinAccount();
+        await accountListPage.checkAccountIsUnpinned();
+      },
+    );
+  });
+
+  it('account once hidden should be unpinned and remain so even if revealed again', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
+        new HeaderNavbar(driver).openAccountMenu();
+
+        // pin account
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.openAccountOptionsMenu();
+        await accountListPage.pinAccount();
+        await accountListPage.checkAccountIsPinned();
+
+        // hide the same account and check the account is unpinned automatically
+        await accountListPage.openAccountOptionsMenu();
+        await accountListPage.hideAccount();
+        await accountListPage.checkHiddenAccountsListExists();
+        await accountListPage.checkAccountIsUnpinned();
+
+        // unhide the same account and check the account is still unpinned
+        await accountListPage.openHiddenAccountsList();
+        await accountListPage.openHiddenAccountOptions();
+        await accountListPage.unhideAccount();
+        await accountListPage.checkAccountDisplayedInAccountList();
+        await accountListPage.checkAccountIsUnpinned();
+      },
+    );
+  });
+});

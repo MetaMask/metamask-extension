@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getNfts, getTokens } from '../../../ducks/metamask/metamask';
+import { getTokensByChainId } from '../../../ducks/metamask/metamask';
 import { getAssetDetails } from '../../../helpers/utils/token-util';
 import {
   hideLoadingIndication,
@@ -10,12 +10,23 @@ import {
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
+import { selectNftsByChainId } from '../../../selectors';
 
-export function useAssetDetails(tokenAddress, userAddress, transactionData) {
+export function useAssetDetails(
+  tokenAddress,
+  userAddress,
+  transactionData,
+  chainId,
+) {
+  const isMounted = useRef(false);
   const dispatch = useDispatch();
+
   // state selectors
-  const nfts = useSelector(getNfts);
-  const tokens = useSelector(getTokens, isEqual);
+  const nfts = useSelector((state) => selectNftsByChainId(state, chainId));
+  const tokens = useSelector(
+    (state) => getTokensByChainId(state, chainId),
+    isEqual,
+  );
   const currentToken = tokens.find((token) =>
     isEqualCaseInsensitive(token.address, tokenAddress),
   );
@@ -33,15 +44,36 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const prevTokenBalance = usePrevious(tokensWithBalances);
 
   useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!tokenAddress && !userAddress && !transactionData) {
+      return;
+    }
+
     async function getAndSetAssetDetails() {
       dispatch(showLoadingIndication());
-      const assetDetails = await getAssetDetails(
-        tokenAddress,
-        userAddress,
-        transactionData,
-        nfts,
-      );
-      setCurrentAsset(assetDetails);
+      try {
+        const assetDetails = await getAssetDetails(
+          tokenAddress,
+          userAddress,
+          transactionData,
+          nfts,
+          chainId,
+        );
+        if (isMounted.current) {
+          setCurrentAsset(assetDetails);
+        }
+      } catch (e) {
+        console.warn('Unable to set asset details', {
+          error: e,
+          transactionData,
+        });
+      }
       dispatch(hideLoadingIndication());
     }
     if (
@@ -53,6 +85,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       getAndSetAssetDetails();
     }
   }, [
+    chainId,
     dispatch,
     prevTokenAddress,
     prevTransactionData,
@@ -65,6 +98,10 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     prevTokenBalance,
   ]);
 
+  if (!tokenAddress && !userAddress && !transactionData) {
+    return {};
+  }
+
   if (currentAsset) {
     const {
       standard,
@@ -76,6 +113,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       toAddress,
       tokenAmount,
       decimals,
+      tokenURI,
     } = currentAsset;
 
     return {
@@ -89,6 +127,7 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
       tokenImage: image,
       userBalance: balance,
       assetName: name,
+      tokenURI,
     };
   }
 

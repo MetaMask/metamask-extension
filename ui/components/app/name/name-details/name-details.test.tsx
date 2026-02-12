@@ -1,16 +1,23 @@
-import React from 'react';
 import { NameType } from '@metamask/name-controller';
-import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { useDispatch } from 'react-redux';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { setName, updateProposedNames } from '../../../../store/actions';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useDispatch, useSelector } from 'react-redux';
+import configureStore from 'redux-mock-store';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getDomainResolutions } from '../../../../ducks/domains';
+import { getNames, getNameSources } from '../../../../selectors';
+import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
+import { setName, updateProposedNames } from '../../../../store/actions';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { useDisplayName } from '../../../../hooks/useDisplayName';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -21,6 +28,11 @@ jest.mock('../../../../store/actions', () => ({
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: jest.fn(),
+  useSelector: jest.fn(),
+}));
+
+jest.mock('../../../../hooks/useDisplayName', () => ({
+  useDisplayName: jest.fn(),
 }));
 
 jest.useFakeTimers();
@@ -35,12 +47,11 @@ const SOURCE_ID_MOCK = 'ens';
 const SOURCE_ID_2_MOCK = 'some_snap';
 const PROPOSED_NAME_MOCK = 'TestProposedName';
 const PROPOSED_NAME_2_MOCK = 'TestProposedName2';
+const VARIATION_MOCK = CHAIN_ID_MOCK;
 
 const STATE_MOCK = {
   metamask: {
-    providerConfig: {
-      chainId: CHAIN_ID_MOCK,
-    },
+    ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
     nameSources: {
       [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
     },
@@ -84,13 +95,17 @@ const STATE_MOCK = {
       },
     },
     useTokenDetection: true,
-    tokenList: {
-      '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
-        address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
-        symbol: 'IUSD',
-        name: 'iZUMi Bond USD',
-        iconUrl:
-          'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+    tokensChainsCache: {
+      [VARIATION_MOCK]: {
+        data: {
+          '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
+            address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
+            symbol: 'IUSD',
+            name: 'iZUMi Bond USD',
+            iconUrl:
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+          },
+        },
       },
     },
   },
@@ -99,9 +114,10 @@ const STATE_MOCK = {
 async function saveNameUsingDropdown(
   component: ReturnType<typeof renderWithProvider>,
   name: string,
+  placeholder: string = 'Choose a nickname...',
 ) {
   const { getByPlaceholderText, getByText } = component;
-  const nameInput = getByPlaceholderText('Choose a nickname...');
+  const nameInput = getByPlaceholderText(placeholder);
   const saveButton = getByText('Save');
 
   await act(async () => {
@@ -122,9 +138,10 @@ async function saveNameUsingDropdown(
 async function saveNameUsingTextField(
   component: ReturnType<typeof renderWithProvider>,
   name: string,
+  placeholder: string = 'Choose a nickname...',
 ) {
   const { getByPlaceholderText, getByText } = component;
-  const nameInput = getByPlaceholderText('Choose a nickname...');
+  const nameInput = getByPlaceholderText(placeholder);
   const saveButton = getByText('Save');
 
   await act(async () => {
@@ -145,17 +162,138 @@ describe('NameDetails', () => {
   const setNameMock = jest.mocked(setName);
   const updateProposedNamesMock = jest.mocked(updateProposedNames);
   const useDispatchMock = jest.mocked(useDispatch);
+  const useSelectorMock = jest.mocked(useSelector);
+  const useDisplayNameMock = jest.mocked(useDisplayName);
 
   beforeEach(() => {
     jest.resetAllMocks();
     useDispatchMock.mockReturnValue(jest.fn());
+
+    useDisplayNameMock.mockReturnValue({
+      name: null,
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      isAccount: false,
+    });
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getNames) {
+        return {
+          [NameType.ETHEREUM_ADDRESS]: {
+            [ADDRESS_SAVED_NAME_MOCK]: {
+              [VARIATION_MOCK]: {
+                name: SAVED_NAME_MOCK,
+                proposedNames: {
+                  [SOURCE_ID_MOCK]: {
+                    proposedNames: [PROPOSED_NAME_MOCK],
+                    lastRequestTime: null,
+                    retryDelay: null,
+                  },
+                  [SOURCE_ID_2_MOCK]: {
+                    proposedNames: [PROPOSED_NAME_2_MOCK],
+                    lastRequestTime: null,
+                    retryDelay: null,
+                  },
+                },
+              },
+            },
+            [ADDRESS_NO_NAME_MOCK]: {
+              [VARIATION_MOCK]: {
+                name: SAVED_NAME_MOCK,
+                proposedNames: {
+                  [SOURCE_ID_MOCK]: {
+                    proposedNames: [PROPOSED_NAME_MOCK],
+                    lastRequestTime: null,
+                    retryDelay: null,
+                  },
+                  [SOURCE_ID_2_MOCK]: {
+                    proposedNames: [PROPOSED_NAME_2_MOCK],
+                    lastRequestTime: null,
+                    retryDelay: null,
+                  },
+                },
+              },
+            },
+          },
+        };
+      } else if (selector === getNftContractsByAddressByChain) {
+        return {
+          [VARIATION_MOCK]: {
+            [ADDRESS_RECOGNIZED_MOCK]: {
+              name: 'iZUMi Bond USD',
+            },
+          },
+        };
+      } else if (selector === getDomainResolutions) {
+        return [
+          {
+            resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+            domainName: 'Domain name',
+          },
+        ];
+      } else if (selector === getNameSources) {
+        return {
+          [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+        };
+      }
+      return undefined;
+    });
+  });
+
+  it('renders when no address value is passed', () => {
+    const { baseElement } = renderWithProvider(
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={''}
+        variation={VARIATION_MOCK}
+        onClose={() => undefined}
+      />,
+      store,
+    );
+
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('renders with no saved name', () => {
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getNames) {
+        return {
+          [NameType.ETHEREUM_ADDRESS]: {},
+        };
+      } else if (selector === getNftContractsByAddressByChain) {
+        return {
+          [VARIATION_MOCK]: {
+            [ADDRESS_RECOGNIZED_MOCK]: {
+              name: 'iZUMi Bond USD',
+            },
+          },
+        };
+      } else if (selector === getDomainResolutions) {
+        return [
+          {
+            resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+          },
+        ];
+      } else if (selector === getNameSources) {
+        return {
+          [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+        };
+      }
+      return undefined;
+    });
+
+    useDisplayNameMock.mockReturnValue({
+      name: null,
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      isAccount: false,
+    });
+
     const { baseElement } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -165,10 +303,18 @@ describe('NameDetails', () => {
   });
 
   it('renders with saved name', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+      isAccount: false,
+    });
+
     const { baseElement } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -178,10 +324,18 @@ describe('NameDetails', () => {
   });
 
   it('renders with recognized name', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: 'iZUMi Bond USD',
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Recognized,
+      isAccount: false,
+    });
+
     const { baseElement } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_RECOGNIZED_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -191,10 +345,18 @@ describe('NameDetails', () => {
   });
 
   it('renders proposed names', async () => {
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+      isAccount: false,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -211,16 +373,28 @@ describe('NameDetails', () => {
   });
 
   it('saves current name on save button click', async () => {
+    useDisplayNameMock.mockReturnValue({
+      name: 'TestName',
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      isAccount: false,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
     );
 
-    await saveNameUsingTextField(component, SAVED_NAME_MOCK);
+    await saveNameUsingTextField(
+      component,
+      SAVED_NAME_MOCK,
+      'Suggested: TestName',
+    );
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -233,16 +407,28 @@ describe('NameDetails', () => {
   });
 
   it('saves selected source on save button click', async () => {
+    useDisplayNameMock.mockReturnValue({
+      name: 'TestName',
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      isAccount: false,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
     );
 
-    await saveNameUsingDropdown(component, PROPOSED_NAME_MOCK);
+    await saveNameUsingDropdown(
+      component,
+      PROPOSED_NAME_MOCK,
+      'Suggested: TestName',
+    );
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -255,16 +441,24 @@ describe('NameDetails', () => {
   });
 
   it('clears current name on save button click if name is empty', async () => {
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+      isAccount: false,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
     );
 
-    await saveNameUsingTextField(component, '');
+    await saveNameUsingTextField(component, '', 'Choose a nickname...');
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -277,16 +471,28 @@ describe('NameDetails', () => {
   });
 
   it('clears selected source when name changed', async () => {
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+      isAccount: false,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
     );
 
-    await saveNameUsingTextField(component, SAVED_NAME_2_MOCK);
+    await saveNameUsingTextField(
+      component,
+      SAVED_NAME_2_MOCK,
+      'Choose a nickname...',
+    );
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -303,6 +509,7 @@ describe('NameDetails', () => {
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
@@ -317,23 +524,60 @@ describe('NameDetails', () => {
     });
   });
 
-  it('updates proposed names on regular interval', () => {
+  it('updates proposed names on regular interval', async () => {
     renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
         value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
         onClose={() => undefined}
       />,
       store,
     );
 
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(1999);
+    await act(async () => {
+      jest.advanceTimersByTime(1999);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(1);
+    await act(async () => {
+      jest.advanceTimersByTime(1);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(2);
-    jest.advanceTimersByTime(2000);
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not reset polling interval during rerenders', () => {
+    const nameDetails = (
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
+        onClose={() => undefined}
+      />
+    );
+
+    const component = renderWithProvider(nameDetails, store);
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+
+    // Simulate frequent rerenders (e.g. redux updates) before the polling delay elapses.
+    act(() => {
+      for (let index = 0; index < 50; index++) {
+        component.rerender(nameDetails);
+      }
+    });
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(2);
   });
 
   describe('metrics', () => {
@@ -353,12 +597,27 @@ describe('NameDetails', () => {
         }),
       );
 
+      useDisplayNameMock.mockReturnValue({
+        name: SAVED_NAME_MOCK,
+        hasPetname: true,
+        displayState: TrustSignalDisplayState.Petname,
+        isAccount: false,
+      });
+
+      const mockMetaMetricsContext = {
+        trackEvent: trackEventMock,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
       await act(async () => {
         renderWithProvider(
-          <MetaMetricsContext.Provider value={trackEventMock}>
+          <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
             <NameDetails
               type={NameType.ETHEREUM_ADDRESS}
               value={ADDRESS_SAVED_NAME_MOCK}
+              variation={VARIATION_MOCK}
               onClose={() => undefined}
             />
           </MetaMetricsContext.Provider>,
@@ -370,21 +629,85 @@ describe('NameDetails', () => {
         event: MetaMetricsEventName.PetnameModalOpened,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_petname: true,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: NameType.ETHEREUM_ADDRESS,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
         },
       });
     });
 
     it('sends created event', async () => {
+      useSelectorMock.mockImplementation((selector) => {
+        if (selector === getNames) {
+          return {
+            [NameType.ETHEREUM_ADDRESS]: {
+              [ADDRESS_NO_NAME_MOCK]: {
+                [VARIATION_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                },
+              },
+            },
+          };
+        } else if (selector === getNftContractsByAddressByChain) {
+          return {
+            [VARIATION_MOCK]: {
+              [ADDRESS_RECOGNIZED_MOCK]: {
+                name: 'iZUMi Bond USD',
+              },
+            },
+          };
+        } else if (selector === getDomainResolutions) {
+          return [
+            {
+              resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+            },
+          ];
+        } else if (selector === getNameSources) {
+          return {
+            [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+          };
+        }
+        return undefined;
+      });
+
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Unknown,
+        isAccount: false,
+      });
+
       const trackEventMock = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: trackEventMock,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_NO_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
@@ -393,70 +716,355 @@ describe('NameDetails', () => {
 
       await saveNameUsingDropdown(component, PROPOSED_NAME_MOCK);
 
-      expect(trackEventMock).toHaveBeenCalledWith({
+      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
         event: MetaMetricsEventName.PetnameCreated,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: NameType.ETHEREUM_ADDRESS,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_source: SOURCE_ID_MOCK,
         },
       });
     });
 
     it('sends updated event', async () => {
+      useSelectorMock.mockImplementation((selector) => {
+        if (selector === getNames) {
+          return {
+            [NameType.ETHEREUM_ADDRESS]: {
+              [ADDRESS_SAVED_NAME_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                  name: SAVED_NAME_MOCK,
+                  sourceId: SOURCE_ID_MOCK,
+                },
+              },
+              [ADDRESS_NO_NAME_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                  name: null,
+                },
+              },
+            },
+          };
+        } else if (selector === getNftContractsByAddressByChain) {
+          return {
+            [VARIATION_MOCK]: {
+              [ADDRESS_RECOGNIZED_MOCK]: {
+                name: 'iZUMi Bond USD',
+              },
+            },
+          };
+        } else if (selector === getDomainResolutions) {
+          return [
+            {
+              resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+            },
+          ];
+        } else if (selector === getNameSources) {
+          return {
+            [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+          };
+        }
+        return undefined;
+      });
+
+      useDisplayNameMock.mockReturnValue({
+        name: SAVED_NAME_MOCK,
+        hasPetname: true,
+        displayState: TrustSignalDisplayState.Petname,
+        isAccount: false,
+      });
+
       const trackEventMock = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: trackEventMock,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
         store,
       );
 
-      await saveNameUsingDropdown(component, PROPOSED_NAME_2_MOCK);
+      await saveNameUsingDropdown(
+        component,
+        PROPOSED_NAME_2_MOCK,
+        'Choose a nickname...',
+      );
 
-      expect(trackEventMock).toHaveBeenCalledWith({
+      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
         event: MetaMetricsEventName.PetnameUpdated,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: NameType.ETHEREUM_ADDRESS,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_source: SOURCE_ID_2_MOCK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_previous_source: SOURCE_ID_MOCK,
         },
       });
     });
 
     it('sends deleted event', async () => {
+      useSelectorMock.mockImplementation((selector) => {
+        if (selector === getNames) {
+          return {
+            [NameType.ETHEREUM_ADDRESS]: {
+              [ADDRESS_SAVED_NAME_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                  name: SAVED_NAME_MOCK,
+                  sourceId: SOURCE_ID_MOCK,
+                },
+              },
+              [ADDRESS_NO_NAME_MOCK]: {
+                [CHAIN_ID_MOCK]: {
+                  proposedNames: {
+                    [SOURCE_ID_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                    [SOURCE_ID_2_MOCK]: {
+                      proposedNames: [PROPOSED_NAME_2_MOCK],
+                      lastRequestTime: null,
+                      retryDelay: null,
+                    },
+                  },
+                  name: null,
+                },
+              },
+            },
+          };
+        } else if (selector === getNftContractsByAddressByChain) {
+          return {
+            [VARIATION_MOCK]: {
+              [ADDRESS_RECOGNIZED_MOCK]: {
+                name: 'iZUMi Bond USD',
+              },
+            },
+          };
+        } else if (selector === getDomainResolutions) {
+          return [
+            {
+              resolvedAddress: ADDRESS_SAVED_NAME_MOCK,
+            },
+          ];
+        } else if (selector === getNameSources) {
+          return {
+            [SOURCE_ID_2_MOCK]: { label: 'Super Name Resolution Snap' },
+          };
+        }
+        return undefined;
+      });
+
+      useDisplayNameMock.mockReturnValue({
+        name: SAVED_NAME_MOCK,
+        hasPetname: true,
+        displayState: TrustSignalDisplayState.Petname,
+        isAccount: false,
+      });
+
       const trackEventMock = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: trackEventMock,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
 
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <NameDetails
             type={NameType.ETHEREUM_ADDRESS}
             value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
             onClose={() => undefined}
           />
         </MetaMetricsContext.Provider>,
         store,
       );
 
-      await saveNameUsingTextField(component, '');
+      await saveNameUsingTextField(component, '', 'Choose a nickname...');
 
-      expect(trackEventMock).toHaveBeenCalledWith({
+      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
         event: MetaMetricsEventName.PetnameDeleted,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: NameType.ETHEREUM_ADDRESS,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_previous_source: SOURCE_ID_MOCK,
         },
       });
+    });
+  });
+
+  describe('trust signal display states', () => {
+    it('renders malicious state correctly', () => {
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Malicious,
+        isAccount: false,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      expect(getByText('Malicious address')).toBeInTheDocument();
+    });
+
+    it('renders warning state correctly', () => {
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Warning,
+        isAccount: false,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      expect(getByText('Address needs review')).toBeInTheDocument();
+    });
+
+    it('renders verified state correctly', () => {
+      useDisplayNameMock.mockReturnValue({
+        name: 'Verified Contract',
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Verified,
+        isAccount: false,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      expect(getByText('Verified address')).toBeInTheDocument();
+    });
+
+    it('shows footer warning for malicious state', () => {
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Malicious,
+        isAccount: false,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
+    });
+
+    it('shows footer warning for warning state', () => {
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Warning,
+        isAccount: false,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
     });
   });
 });

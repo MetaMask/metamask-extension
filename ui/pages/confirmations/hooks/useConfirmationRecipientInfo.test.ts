@@ -1,39 +1,69 @@
-import mockState from '../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import {
+  getMockTypedSignConfirmState,
+  getMockConfirmState,
+} from '../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import {
+  getInternalAccountByAddress,
+  getIsMultichainAccountsState2Enabled,
+} from '../../../selectors';
 import useConfirmationRecipientInfo from './useConfirmationRecipientInfo';
 
-const RecipientAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const SenderAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+jest.mock('../../../selectors', () => {
+  const originalModule = jest.requireActual('../../../selectors');
+  return {
+    ...originalModule,
+    getIsMultichainAccountsState2Enabled: jest.fn(),
+  };
+});
 
 describe('useConfirmationRecipientInfo', () => {
-  describe('when the current confirimation is a signature', () => {
+  describe('when the current confirmation is a signature', () => {
     it('returns the account name of the from address as the recipient name', () => {
-      const { result } = renderHookWithProvider(
+      const mockState = getMockTypedSignConfirmState();
+      const { result } = renderHookWithConfirmContextProvider(
         () => useConfirmationRecipientInfo(),
-        {
-          ...mockState,
-          confirm: {
-            currentConfirmation: {
-              id: '1',
-              msgParams: { from: RecipientAddress },
-            },
-          },
-        },
+        mockState,
       );
 
-      expect(result.current.recipientAddress).toBe(RecipientAddress);
-      expect(result.current.recipientName).toBe(
-        mockState.metamask.identities[RecipientAddress].name,
+      const expectedAccount = getInternalAccountByAddress(
+        mockState,
+        SenderAddress,
       );
+
+      expect(result.current.senderAddress).toBe(SenderAddress);
+      expect(result.current.senderName).toBe(expectedAccount?.metadata.name);
+      expect(result.current.walletName).toBe('Wallet 1');
     });
   });
 
   it('returns empty strings if there if current confirmation is not defined', () => {
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationRecipientInfo(),
-      mockState,
+      getMockConfirmState(),
     );
 
-    expect(result.current.recipientAddress).toBe('');
-    expect(result.current.recipientName).toBe('');
+    expect(result.current.senderAddress).toBe('');
+    expect(result.current.senderName).toBe('');
+  });
+
+  describe('when isMultichainAccountsState2Enabled is enabled', () => {
+    it('returns the metadata.name as the recipient name from the account group', () => {
+      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);
+      const mockState = getMockTypedSignConfirmState();
+
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useConfirmationRecipientInfo(),
+        mockState,
+      );
+
+      expect(result.current.senderAddress).toBe(SenderAddress);
+      expect(result.current.senderName).toBe('Account 1'); // Resolved from AccountGroup.metadata.name
+      expect(result.current.walletName).toBe('Wallet 1');
+      expect(result.current.isBIP44).toBe(true);
+      expect(result.current.hasMoreThanOneWallet).toBe(true);
+    });
   });
 });

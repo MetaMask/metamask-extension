@@ -6,14 +6,18 @@ import {
   AlignItems,
   JustifyContent,
   TextColor,
-  BorderColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import type { AvatarTokenComponent } from './avatar-token.types';
 import { AvatarTokenProps, AvatarTokenSize } from './avatar-token.types';
 
+/**
+ * @deprecated Please update your code to use `AvatarToken` from `@metamask/design-system-react`
+ */
 export const AvatarToken: AvatarTokenComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       size = AvatarTokenSize.Md,
@@ -22,7 +26,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
       showHalo,
       color = TextColor.textDefault,
       backgroundColor = BackgroundColor.backgroundAlternative,
-      borderColor = BorderColor.transparent,
+      borderColor,
       className = '',
       ...props
     }: AvatarTokenProps<C>,
@@ -80,7 +84,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
               }
               onError={handleOnError}
               src={src}
-              alt={`${name} logo` || 'token logo'}
+              alt={`${name} logo`}
             />
           </>
         )}

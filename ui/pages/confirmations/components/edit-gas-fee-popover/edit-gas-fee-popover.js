@@ -1,28 +1,44 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
+import {
+  Box,
+  Text,
+  TextButton,
+  TextVariant,
+  BoxFlexDirection,
+  FontWeight,
+  TextColor,
+  BoxBorderColor,
+  TextAlign,
+} from '@metamask/design-system-react';
 import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
-import Box from '../../../../components/ui/box';
-import ErrorMessage from '../../../../components/ui/error-message';
-import Popover from '../../../../components/ui/popover';
 
-import {
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import {
+  GasFeeContextProvider,
+  useGasFeeContext,
+} from '../../../../contexts/gasFee';
 import AppLoadingSpinner from '../../../../components/app/app-loading-spinner';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { Text } from '../../../../components/component-library';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+} from '../../../../components/component-library';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
 
-const EditGasFeePopover = () => {
+const EditGasFeePopoverWrapped = () => {
   const { balanceError, editGasMode } = useGasFeeContext();
   const t = useI18nContext();
   const { closeAllModals, closeModal, currentModal, openModalCount } =
@@ -40,78 +56,118 @@ const EditGasFeePopover = () => {
   }
 
   return (
-    <Popover
-      title={t(popupTitle)}
-      // below logic ensures that back button is visible only if there are other modals open before this.
-      onBack={
-        openModalCount === 1 ? undefined : () => closeModal(['editGasFee'])
-      }
-      onClose={closeAllModals}
-      className="edit-gas-fee-popover"
-    >
-      <>
+    <Modal isOpen onClose={closeAllModals}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader
+          onClose={closeAllModals}
+          // below logic ensures that back button is visible only if there are other modals open before this.
+          onBack={
+            openModalCount === 1 ? undefined : () => closeModal(['editGasFee'])
+          }
+        >
+          {t(popupTitle)}
+        </ModalHeader>
+
         <AppLoadingSpinner />
-        <div className="edit-gas-fee-popover__wrapper">
-          <div className="edit-gas-fee-popover__content">
-            <Box>
-              {balanceError && (
-                <ErrorMessage errorKey={INSUFFICIENT_FUNDS_ERROR_KEY} />
-              )}
-              <div className="edit-gas-fee-popover__content__header">
-                <span className="edit-gas-fee-popover__content__header-option">
-                  {t('gasOption')}
-                </span>
-                <span className="edit-gas-fee-popover__content__header-time">
-                  {editGasMode !== EditGasModes.swaps && t('time')}
-                </span>
-                <span className="edit-gas-fee-popover__content__header-max-fee">
-                  {t('maxFee')}
-                </span>
-              </div>
-              {(editGasMode === EditGasModes.cancel ||
-                editGasMode === EditGasModes.speedUp) && (
-                <EditGasItem
-                  priorityLevel={PriorityLevels.tenPercentIncreased}
-                />
-              )}
-              {editGasMode === EditGasModes.modifyInPlace && (
-                <EditGasItem priorityLevel={PriorityLevels.low} />
-              )}
-              <EditGasItem priorityLevel={PriorityLevels.medium} />
-              <EditGasItem priorityLevel={PriorityLevels.high} />
-              <div className="edit-gas-fee-popover__content__separator" />
-              {editGasMode === EditGasModes.modifyInPlace && (
-                <EditGasItem priorityLevel={PriorityLevels.dAppSuggested} />
-              )}
-              <EditGasItem priorityLevel={PriorityLevels.custom} />
-            </Box>
-            <Box>
-              <NetworkStatistics />
+        <ModalBody className="flex flex-col justify-between">
+          <Box flexDirection={BoxFlexDirection.Column}>
+            {balanceError && (
+              <BannerAlert
+                severity={BannerAlertSeverity.Danger}
+                description={t(INSUFFICIENT_FUNDS_ERROR_KEY)}
+                marginBottom={1}
+              />
+            )}
+            <Box flexDirection={BoxFlexDirection.Row} marginHorizontal={3}>
               <Text
-                className="edit-gas-fee-popover__know-more"
-                align="center"
-                color={TextColor.textAlternative}
-                tag={TextVariant.bodyMd}
-                variant={TextVariant.bodySm}
-                as="h6"
+                variant={TextVariant.BodyXs}
+                fontWeight={FontWeight.Bold}
+                color={TextColor.TextAlternative}
+                className="inline-block w-[36%]"
               >
-                {t('learnMoreAboutGas', [
-                  <a
-                    key="learnMoreLink"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={ZENDESK_URLS.USER_GUIDE_GAS}
-                  >
-                    {t('learnMore')}
-                  </a>,
-                ])}
+                {t('gasOption')}
+              </Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                fontWeight={FontWeight.Bold}
+                color={TextColor.TextAlternative}
+                className="inline-block w-[24%]"
+              >
+                {editGasMode !== EditGasModes.swaps && t('time')}
+              </Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                fontWeight={FontWeight.Bold}
+                color={TextColor.TextAlternative}
+                className="inline-block w-[30%]"
+              >
+                {t('maxFee')}
               </Text>
             </Box>
-          </div>
-        </div>
-      </>
-    </Popover>
+            {(editGasMode === EditGasModes.cancel ||
+              editGasMode === EditGasModes.speedUp) && (
+              <EditGasItem priorityLevel={PriorityLevels.tenPercentIncreased} />
+            )}
+            {editGasMode === EditGasModes.modifyInPlace && (
+              <EditGasItem priorityLevel={PriorityLevels.low} />
+            )}
+            <EditGasItem priorityLevel={PriorityLevels.medium} />
+            <EditGasItem priorityLevel={PriorityLevels.high} />
+            <Box
+              className="border-t"
+              borderColor={BoxBorderColor.BorderDefault}
+              marginVertical={2}
+              marginHorizontal={3}
+            />
+            {editGasMode === EditGasModes.modifyInPlace && (
+              <EditGasItem priorityLevel={PriorityLevels.dAppSuggested} />
+            )}
+            <EditGasItem priorityLevel={PriorityLevels.custom} />
+          </Box>
+          <Box flexDirection={BoxFlexDirection.Column} marginTop={9}>
+            <NetworkStatistics />
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              textAlign={TextAlign.Center}
+            >
+              {t('learnMoreAboutGas', [
+                <TextButton asChild key="learnMoreLink" className="inline">
+                  <a
+                    href={ZENDESK_URLS.USER_GUIDE_GAS}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('learnMore')}
+                  </a>
+                </TextButton>,
+              ])}
+            </Text>
+          </Box>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
+};
+
+const EditGasFeePopover = ({ transaction, editGasMode }) => {
+  const { currentModal } = useTransactionModalContext();
+
+  if (currentModal !== 'editGasFee') {
+    return null;
+  }
+
+  return (
+    <GasFeeContextProvider transaction={transaction} editGasMode={editGasMode}>
+      <EditGasFeePopoverWrapped />
+    </GasFeeContextProvider>
+  );
+};
+
+EditGasFeePopover.propTypes = {
+  transaction: PropTypes.object.isRequired,
+  editGasMode: PropTypes.string,
 };
 
 export default EditGasFeePopover;

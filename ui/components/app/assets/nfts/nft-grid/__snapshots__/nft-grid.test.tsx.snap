@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NftGrid matches the snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="mm-box"
+    style="margin: 16px;"
+  >
+    <div>
+      <div
+        class="mm-box grid gap-4 pb-4 grid-cols-3"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;

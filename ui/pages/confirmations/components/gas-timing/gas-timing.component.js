@@ -1,29 +1,28 @@
-import React, { useContext, useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { Box, Text } from '../../../../components/component-library';
-import {
-  Display,
-  FONT_WEIGHT,
-  TextColor,
-  TextVariant,
-  TypographyVariant,
-} from '../../../../helpers/constants/design-system';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { I18nContext } from '../../../../contexts/i18n';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
+  getGasFeeEstimatesByChainId,
   getIsGasEstimatesLoading,
 } from '../../../../ducks/metamask/metamask';
-
+import {
+  Display,
+  FlexWrap,
+  FontWeight,
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
-import { I18nContext } from '../../../../contexts/i18n';
-import Typography from '../../../../components/ui/typography/typography';
-import { getGasFeeTimeEstimate } from '../../../../store/actions';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
 
 // Once we reach this second threshold, we switch to minutes as a unit
@@ -38,14 +37,19 @@ const toHumanReadableTime = (milliseconds = 1, t) => {
   return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
 };
 export default function GasTiming({
-  maxFeePerGas = 0,
-  maxPriorityFeePerGas = 0,
+  chainId,
+  maxFeePerGas = '0',
+  maxPriorityFeePerGas = '0',
   gasWarnings,
 }) {
   const gasEstimateType = useSelector(getGasEstimateType);
-  const gasFeeEstimates = useSelector(getGasFeeEstimates);
+  const chainGasFeeEstimates = useSelector((state) =>
+    getGasFeeEstimatesByChainId(state, chainId),
+  );
+  const gasFeeEstimatesFromRoot = useSelector(getGasFeeEstimates);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
+  const gasFeeEstimates = chainGasFeeEstimates || gasFeeEstimatesFromRoot;
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
   const { estimateUsed } = useGasFeeContext();
@@ -65,6 +69,7 @@ export default function GasTiming({
   const previousIsUnknownLow = usePrevious(isUnknownLow);
 
   useEffect(() => {
+    let isMounted = true;
     const priority = maxPriorityFeePerGas;
     const fee = maxFeePerGas;
 
@@ -78,7 +83,11 @@ export default function GasTiming({
         new BigNumber(priority, 10).toString(10),
         new BigNumber(fee, 10).toString(10),
       ).then((result) => {
-        if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
+        if (
+          maxFeePerGas === fee &&
+          maxPriorityFeePerGas === priority &&
+          isMounted
+        ) {
           setCustomEstimatedTime(result);
         }
       });
@@ -87,6 +96,10 @@ export default function GasTiming({
     if (isUnknownLow !== false && previousIsUnknownLow === true) {
       setCustomEstimatedTime(null);
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [
     maxPriorityFeePerGas,
     maxFeePerGas,
@@ -101,13 +114,14 @@ export default function GasTiming({
     gasWarnings?.maxFee === GAS_FORM_ERRORS.MAX_FEE_TOO_LOW
   ) {
     return (
-      <Typography
-        variant={TypographyVariant.H7}
-        fontWeight={FONT_WEIGHT.BOLD}
+      <Text
+        variant={TextVariant.bodySm}
+        fontWeight={FontWeight.Bold}
+        color={TextColor.textAlternative}
         className={classNames('gas-timing', 'gas-timing--negative')}
       >
         {t('editGasTooLow')}
-      </Typography>
+      </Text>
     );
   }
 
@@ -120,13 +134,11 @@ export default function GasTiming({
 
   const estimateToUse =
     estimateUsed || transactionData.userFeeLevel || 'medium';
-  let text = t(estimateToUse);
-  let time = '';
-  let attitude = 'positive';
 
-  if (estimateToUse === 'low') {
-    text = t('gasTimingLow');
-  }
+  const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
+  let text = t(textTKey);
+  let time = '';
+  let timeMs = 0;
 
   // Anything medium or faster is positive
   if (
@@ -137,18 +149,17 @@ export default function GasTiming({
       Number(maxPriorityFeePerGas) < Number(high.suggestedMaxPriorityFeePerGas)
     ) {
       // Medium
-      time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+      timeMs = low.maxWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     } else {
       // High
-      time = toHumanReadableTime(high.minWaitTimeEstimate, t);
+      timeMs = high.minWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     }
   } else if (isUnknownLow) {
     // If the user has chosen a value less than our low estimate,
     // calculate a potential wait time
 
-    if (estimateToUse === 'low') {
-      attitude = 'negative';
-    }
     // If we didn't get any useful information, show the
     // "unknown processing time" message
     if (
@@ -157,48 +168,40 @@ export default function GasTiming({
       customEstimatedTime?.upperTimeBound === 'unknown'
     ) {
       text = t('editGasTooLow');
-      attitude = 'negative';
     } else {
-      time = toHumanReadableTime(
-        Number(customEstimatedTime?.upperTimeBound),
-        t,
-      );
+      timeMs = Number(customEstimatedTime?.upperTimeBound);
+      time = toHumanReadableTime(timeMs, t);
     }
   } else {
-    time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+    timeMs = low.maxWaitTimeEstimate;
+    time = toHumanReadableTime(timeMs, t);
   }
 
-  const getColorFromAttitude = () => {
-    switch (attitude) {
-      case 'positive':
-        return TextColor.successDefault;
-      case 'warning':
-        return TextColor.warningDefault;
-      case 'negative':
-        return TextColor.errorDefault;
-      default:
-        return TextColor.successDefault;
-    }
-  };
-
   return (
-    <Box display={Display.Flex}>
-      <Text color={TextColor.textMuted} variant={TextVariant.bodyXs}>
-        {text}
-      </Text>
+    <Box display={Display.Flex} marginBottom={1} flexWrap={FlexWrap.Wrap}>
+      {text && (
+        <Text
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodyMd}
+          paddingInlineEnd={2}
+        >
+          {text}
+        </Text>
+      )}
 
-      <Text
-        variant={TextVariant.bodyXs}
-        marginLeft={1}
-        color={getColorFromAttitude()}
-      >
-        <span data-testid="gas-timing-time">~{time}</span>
-      </Text>
+      {time && (
+        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+          <span data-testid="gas-timing-time">
+            {timeMs > 0 && timeMs < 1000 ? `<${time}` : `~${time}`}
+          </span>
+        </Text>
+      )}
     </Box>
   );
 }
 
 GasTiming.propTypes = {
+  chainId: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
   maxFeePerGas: PropTypes.string,
   gasWarnings: PropTypes.object,

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmInfoSection should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+  >
+    Test Content
+  </div>
+</div>
+`;
+
+exports[`ConfirmInfoSection should match snapshot without padding 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--padding-inline-0 mm-box--background-color-background-section mm-box--rounded-lg"
+  >
+    Test Content
+  </div>
+</div>
+`;

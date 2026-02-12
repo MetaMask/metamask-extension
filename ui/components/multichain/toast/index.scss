@@ -1,0 +1,23 @@
+@use "design-system";
+
+.toasts-container {
+  position: fixed;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: design-system.$toast-z-index;
+  display: flex;
+  gap: 10px;
+  width: 90%;
+  flex-direction: column;
+
+  &__banner-base {
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  }
+}
+
+.toast-text {
+  word-break: break-word;
+}

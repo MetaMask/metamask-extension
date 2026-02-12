@@ -1,14 +1,19 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+
 import Modal, { ModalContent } from '../../modal';
 
 export default class ConfirmDeleteNetwork extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
-    removeNetworkConfiguration: PropTypes.func.isRequired,
+    removeNetwork: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
-    target: PropTypes.string.isRequired,
     networkNickname: PropTypes.string.isRequired,
+    chainId: PropTypes.string.isRequired,
+    isChainToDeleteSelected: PropTypes.bool,
+    switchToEthereumNetwork: PropTypes.func,
+    isMultichainAccountsFeatureEnabled: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -16,9 +21,28 @@ export default class ConfirmDeleteNetwork extends PureComponent {
   };
 
   handleDelete = async () => {
-    await this.props.removeNetworkConfiguration(this.props.target);
-    this.props.onConfirm();
-    this.props.hideModal();
+    const {
+      chainId,
+      onConfirm,
+      hideModal,
+      removeNetwork,
+      isChainToDeleteSelected,
+      switchToEthereumNetwork,
+      isMultichainAccountsFeatureEnabled,
+    } = this.props;
+
+    // NOTE: We only support EVM networks removal, so the conversion is safe here.
+    const caipChainId = toEvmCaipChainId(chainId);
+
+    // NOTE: ensure that we are not deleting a selected evm chain
+    if (isChainToDeleteSelected) {
+      await switchToEthereumNetwork?.(isMultichainAccountsFeatureEnabled);
+    }
+
+    await removeNetwork(caipChainId);
+
+    onConfirm();
+    hideModal();
   };
 
   render() {

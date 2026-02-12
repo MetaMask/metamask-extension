@@ -2,13 +2,20 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
-import * as Sentry from '@sentry/browser';
+import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
   MetaMetricsProvider,
   LegacyMetaMetricsProvider,
 } from '../contexts/metametrics';
-import ErrorPage from './error';
+import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
+import { AssetPollingProvider } from '../contexts/assetPolling';
+import { MetamaskIdentityProvider } from '../contexts/identity';
+import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
+import RiveWasmProvider from '../contexts/rive-wasm';
+import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
+import ErrorPage from './error-page/error-page.component';
+
 import Routes from './routes';
 
 class Index extends PureComponent {
@@ -19,33 +26,49 @@ class Index extends PureComponent {
   }
 
   componentDidCatch(error) {
-    Sentry.captureException(error);
+    captureException(error);
   }
 
   render() {
-    const { error, errorId } = this.state;
+    const { error } = this.state;
     const { store } = this.props;
 
     if (error) {
       return (
         <Provider store={store}>
-          <I18nProvider>
-            <LegacyI18nProvider>
-              <ErrorPage error={error} errorId={errorId} />
-            </LegacyI18nProvider>
-          </I18nProvider>
+          <HashRouter>
+            <MetaMetricsProvider>
+              <I18nProvider>
+                <LegacyI18nProvider>
+                  <ErrorPage error={error} />
+                </LegacyI18nProvider>
+              </I18nProvider>
+            </MetaMetricsProvider>
+          </HashRouter>
         </Provider>
       );
     }
 
     return (
       <Provider store={store}>
-        <HashRouter hashType="noslash">
+        <HashRouter>
           <MetaMetricsProvider>
             <LegacyMetaMetricsProvider>
               <I18nProvider>
                 <LegacyI18nProvider>
-                  <Routes />
+                  <AssetPollingProvider>
+                    <MetamaskIdentityProvider>
+                      <MetamaskNotificationsProvider>
+                        <HardwareWalletErrorProvider>
+                          <ShieldSubscriptionProvider>
+                            <RiveWasmProvider>
+                              <Routes />
+                            </RiveWasmProvider>
+                          </ShieldSubscriptionProvider>
+                        </HardwareWalletErrorProvider>
+                      </MetamaskNotificationsProvider>
+                    </MetamaskIdentityProvider>
+                  </AssetPollingProvider>
                 </LegacyI18nProvider>
               </I18nProvider>
             </LegacyMetaMetricsProvider>

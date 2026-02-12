@@ -1,31 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import Box from '../../../../components/ui/box/box';
 import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Identicon from '../../../../components/ui/identicon';
-import Typography from '../../../../components/ui/typography/typography';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import {
-  FONT_WEIGHT,
-  TypographyVariant,
+  Text,
+  ButtonIcon,
+  IconName,
+} from '../../../../components/component-library';
+import {
+  TextVariant,
   DISPLAY,
   AlignItems,
   JustifyContent,
   TextColor,
   Color,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { ButtonIcon, IconName } from '../../../../components/component-library';
 
 export default function ContractTokenValues({
   address,
   tokenName,
   chainId,
-  rpcPrefs,
+  blockExplorerUrl,
 }) {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies a public address
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
 
   return (
     <Box
@@ -35,16 +41,16 @@ export default function ContractTokenValues({
       justifyContent={JustifyContent.center}
       gap={2}
     >
-      <Identicon address={address} diameter={24} />
-      <Typography
-        variant={TypographyVariant.H2}
-        fontWeight={FONT_WEIGHT.BOLD}
+      <PreferredAvatar address={address} size={AvatarAccountSize.Sm} />
+      <Text
+        variant={TextVariant.headingLg}
+        fontWeight={FontWeight.Bold}
         color={TextColor.textAlternative}
         marginTop={0}
         marginBottom={0}
       >
         {tokenName}
-      </Typography>
+      </Text>
       <Tooltip
         position="top"
         title={copied ? t('copiedExclamation') : t('copyToClipboard')}
@@ -66,7 +72,7 @@ export default function ContractTokenValues({
               address,
               chainId,
               {
-                blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                blockExplorerUrl: blockExplorerUrl ?? null,
               },
               null,
             );
@@ -95,7 +101,7 @@ ContractTokenValues.propTypes = {
    */
   chainId: PropTypes.string,
   /**
-   * RPC prefs
+   * URL for the block explorer
    */
-  rpcPrefs: PropTypes.object,
+  blockExplorerUrl: PropTypes.string,
 };

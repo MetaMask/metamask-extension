@@ -1,7 +1,10 @@
 import {
   BaseController,
-  RestrictedControllerMessenger,
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';
@@ -15,6 +18,11 @@ export type AccountAddress = string;
 export type AccountOrderControllerState = {
   pinnedAccountList: AccountAddress[];
   hiddenAccountList: AccountAddress[];
+};
+
+export type AccountOrderControllerGetStateAction = {
+  type: 'AccountOrderController:getState';
+  handler: () => AccountOrderControllerState;
 };
 
 // Describes the action for updating the accounts list
@@ -31,16 +39,21 @@ export type AccountOrderControllerhideAccountsListAction = {
 
 // Union of all possible actions for the messenger
 export type AccountOrderControllerMessengerActions =
+  | ControllerGetStateAction<typeof controllerName, AccountOrderControllerState>
   | AccountOrderControllerupdateAccountsListAction
-  | AccountOrderControllerhideAccountsListAction;
+  | AccountOrderControllerhideAccountsListAction
+  | AccountOrderControllerGetStateAction;
+
+export type AccountOrderControllerMessengerEvents = ControllerStateChangeEvent<
+  typeof controllerName,
+  AccountOrderControllerState
+>;
 
 // Type for the messenger of AccountOrderController
-export type AccountOrderControllerMessenger = RestrictedControllerMessenger<
+export type AccountOrderControllerMessenger = Messenger<
   typeof controllerName,
   AccountOrderControllerMessengerActions,
-  never,
-  never,
-  never
+  AccountOrderControllerMessengerEvents
 >;
 
 // Default state for the controller
@@ -50,14 +63,18 @@ const defaultState = {
 };
 
 // Metadata for the controller state
-const metadata = {
+const metadata: StateMetadata<AccountOrderControllerState> = {
   pinnedAccountList: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   hiddenAccountList: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
 };
 
@@ -83,7 +100,7 @@ export class AccountOrderController extends BaseController<
     state,
   }: {
     messenger: AccountOrderControllerMessenger;
-    state?: AccountOrderControllerState;
+    state?: Partial<AccountOrderControllerState>;
   }) {
     // Call the constructor of BaseControllerV2
     super({

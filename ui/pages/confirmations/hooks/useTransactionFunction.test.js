@@ -22,6 +22,7 @@ useGasEstimates.mockImplementation(() => FEE_MARKET_ESTIMATE_RETURN_VALUE);
 
 jest.mock('../../../selectors', () => ({
   checkNetworkAndAccountSupports1559: () => true,
+  getCurrentChainId: jest.fn().mockReturnValue('0x1'),
 }));
 
 const wrapper = ({ children }) => (
@@ -162,5 +163,17 @@ describe('useMaxPriorityFeePerGasInput', () => {
       userEditedGasLimit: undefined,
       userFeeLevel: 'dappSuggested',
     });
+  });
+
+  it('returns early when gasFeeEstimates is undefined', () => {
+    const mockUpdateTransaction = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: '' }));
+
+    const { result } = renderUseTransactionFunctions({
+      gasFeeEstimates: undefined,
+    });
+    result.current.updateTransactionUsingEstimate(GasRecommendations.low);
+    expect(mockUpdateTransaction).not.toHaveBeenCalled();
   });
 });

@@ -1,15 +1,16 @@
 const { Web3Provider } = require('@ethersproject/providers');
-const { ContractFactory } = require('@ethersproject/contracts');
+const { ContractFactory, Contract } = require('@ethersproject/contracts');
 
+const { ENTRYPOINT, LOCAL_NODE_ACCOUNT } = require('../constants');
 const { SMART_CONTRACTS, contractConfiguration } = require('./smart-contracts');
-const GanacheContractAddressRegistry = require('./ganache-contract-address-registry');
+const ContractAddressRegistry = require('./contract-address-registry');
 
 /*
  * Ganache seeder is used to seed initial smart contract or set initial blockchain state.
  */
 class GanacheSeeder {
   constructor(ganacheProvider) {
-    this.smartContractRegistry = new GanacheContractAddressRegistry();
+    this.smartContractRegistry = new ContractAddressRegistry();
     this.ganacheProvider = ganacheProvider;
   }
 
@@ -20,9 +21,9 @@ class GanacheSeeder {
    */
 
   async deploySmartContract(contractName) {
-    const ethersProvider = new Web3Provider(this.ganacheProvider, 'any');
-    const signer = ethersProvider.getSigner();
+    const signer = this.#getSigner();
     const fromAddress = await signer.getAddress();
+
     const contractFactory = new ContractFactory(
       contractConfiguration[contractName].abi,
       contractConfiguration[contractName].bytecode,
@@ -38,11 +39,20 @@ class GanacheSeeder {
         contractConfiguration[SMART_CONTRACTS.HST].decimalUnits,
         contractConfiguration[SMART_CONTRACTS.HST].tokenSymbol,
       );
+    } else if (contractName === SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY) {
+      contract = await contractFactory.deploy(ENTRYPOINT);
+    } else if (contractName === SMART_CONTRACTS.VERIFYING_PAYMASTER) {
+      contract = await contractFactory.deploy(ENTRYPOINT, LOCAL_NODE_ACCOUNT);
     } else {
       contract = await contractFactory.deploy();
     }
 
-    await contract.deployTransaction.wait();
+    const receipt = await contract.deployTransaction.wait();
+
+    console.log('Deployed smart contract', {
+      contractName,
+      contractAddress: receipt.contractAddress,
+    });
 
     if (contractName === SMART_CONTRACTS.NFTS) {
       const transaction = await contract.mintNFTs(1, {
@@ -60,7 +70,42 @@ class GanacheSeeder {
       );
       await transaction.wait();
     }
+
     this.storeSmartContractAddress(contractName, contract.address);
+  }
+
+  async transfer(to, value) {
+    const signer = this.#getSigner();
+
+    const transaction = await signer.sendTransaction({
+      to,
+      value,
+    });
+
+    await transaction.wait();
+
+    console.log('Completed transfer', { to, value });
+  }
+
+  async paymasterDeposit(amount) {
+    const paymasterAddress = this.smartContractRegistry.getContractAddress(
+      SMART_CONTRACTS.VERIFYING_PAYMASTER,
+    );
+
+    const paymasterFactory = new Contract(
+      paymasterAddress,
+      contractConfiguration[SMART_CONTRACTS.VERIFYING_PAYMASTER].abi,
+      this.#getSigner(),
+    );
+
+    const transaction = await paymasterFactory.deposit({
+      value: amount,
+      gasLimit: '0xFFFFF',
+    });
+
+    await transaction.wait();
+
+    console.log('Completed paymaster deposit', { amount });
   }
 
   /**
@@ -80,10 +125,15 @@ class GanacheSeeder {
   /**
    * Return an instance of the currently used smart contract registry.
    *
-   * @returns GanacheContractAddressRegistry
+   * @returns ContractAddressRegistry
    */
   getContractRegistry() {
     return this.smartContractRegistry;
+  }
+
+  #getSigner() {
+    const ethersProvider = new Web3Provider(this.ganacheProvider, 'any');
+    return ethersProvider.getSigner();
   }
 }
 

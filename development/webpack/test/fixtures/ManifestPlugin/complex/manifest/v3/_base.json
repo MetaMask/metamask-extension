@@ -1,0 +1,10 @@
+{
+  "description": "base description",
+  "manifest_version": 3,
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["file.png"]
+    }
+  ]
+}

@@ -5,35 +5,43 @@ import {
   rejectPendingApproval,
   resolvePendingApproval,
   setNewNetworkAdded,
-  upsertNetworkConfiguration,
+  addNetwork,
 } from '../../../../store/actions';
+import {
+  HYPERLIQUID_APPROVAL_TYPE,
+  ASTERDEX_APPROVAL_TYPE,
+  GMX_APPROVAL_TYPE,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+} from '../../../../../shared/constants/app';
+import smartTransactionStatusPage from './smart-transaction-status-page';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import createSnapAccount from './create-snap-account';
 import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
 ///: END:ONLY_INCLUDE_IF
-import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
 import error from './error';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
-///: END:ONLY_INCLUDE_IF
+import snapDefault from './snaps/snap-default/snap-default';
+import defiReferralConsent from './defi-referral-consent';
 
 const APPROVAL_TEMPLATES = {
-  [ApprovalType.AddEthereumChain]: addEthereumChain,
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
   // Use ApprovalType from utils controller
   [ApprovalType.ResultSuccess]: success,
   [ApprovalType.ResultError]: error,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  [SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage]:
+    smartTransactionStatusPage,
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
-  ///: END:ONLY_INCLUDE_IF
+  [ApprovalType.SnapDialogDefault]: snapDefault,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
     createSnapAccount,
@@ -42,6 +50,9 @@ const APPROVAL_TEMPLATES = {
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
     snapAccountRedirect,
   ///: END:ONLY_INCLUDE_IF
+  [HYPERLIQUID_APPROVAL_TYPE]: defiReferralConsent,
+  [ASTERDEX_APPROVAL_TYPE]: defiReferralConsent,
+  [GMX_APPROVAL_TYPE]: defiReferralConsent,
 };
 
 export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
@@ -50,11 +61,13 @@ export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
 const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
   'content',
+  'onLoad',
   'onCancel',
   'onSubmit',
   'networkDisplay',
   'submitText',
   'loadingText',
+  'hideSubmitButton',
 ];
 
 /**
@@ -134,8 +147,7 @@ function getAttenuatedDispatch(dispatch) {
       dispatch(rejectPendingApproval(...args)),
     resolvePendingApproval: (...args) =>
       dispatch(resolvePendingApproval(...args)),
-    upsertNetworkConfiguration: (...args) =>
-      dispatch(upsertNetworkConfiguration(...args)),
+    addNetwork: (...args) => dispatch(addNetwork(...args)),
     setNewNetworkAdded: (...args) => dispatch(setNewNetworkAdded(...args)),
     deleteInterface: (...args) => dispatch(deleteInterface(...args)),
   };
@@ -148,9 +160,17 @@ function getAttenuatedDispatch(dispatch) {
  * @param {Function} t - Translation function.
  * @param {Function} dispatch - Redux dispatch function.
  * @param {object} history - The application's history object.
- * @param {object} data - The data object passed into the template from the confimation page.
+ * @param {object} data - The data object passed into the template from the confirmation page.
+ * @param {object} contexts - Contexts objects passed into the template from the confirmation page.
  */
-export function getTemplateValues(pendingApproval, t, dispatch, history, data) {
+export function getTemplateValues(
+  pendingApproval,
+  t,
+  dispatch,
+  history,
+  data,
+  contexts,
+) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
     throw new Error(
@@ -159,7 +179,7 @@ export function getTemplateValues(pendingApproval, t, dispatch, history, data) {
   }
 
   const safeActions = getAttenuatedDispatch(dispatch);
-  const values = fn(pendingApproval, t, safeActions, history, data);
+  const values = fn(pendingApproval, t, safeActions, history, data, contexts);
   const extraneousKeys = omit(values, ALLOWED_TEMPLATE_KEYS);
   const safeValues = pick(values, ALLOWED_TEMPLATE_KEYS);
   if (extraneousKeys.length > 0) {

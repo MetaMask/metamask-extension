@@ -1,0 +1,156 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { debounce } from 'lodash';
+
+import {
+  isSolanaAddress,
+  isBtcMainnetAddress,
+  isTronAddress,
+} from '../../../../../shared/lib/multichain/accounts';
+import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { isResolvableName } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { RecipientValidationResult } from '../../types/send';
+import {
+  validateBtcAddress,
+  validateEvmHexAddress,
+  validateSolanaAddress,
+  validateTronAddress,
+} from '../../utils/sendValidations';
+import { useSendContext } from '../../context/send';
+import { useSendType } from './useSendType';
+import { useNameValidation } from './useNameValidation';
+
+const VALIDATION_DEBOUNCE_MS = 500;
+
+export const useRecipientValidation = () => {
+  const t = useI18nContext();
+  const { asset, chainId, to } = useSendContext();
+  const { isBitcoinSendType, isEvmSendType, isSolanaSendType, isTronSendType } =
+    useSendType();
+  const { validateName } = useNameValidation();
+  const [result, setResult] = useState<RecipientValidationResult>({});
+  const prevAddressValidated = useRef<string>();
+  const prevChainIdValidated = useRef<string>();
+  const unmountedRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Use ref to hold the latest validation function to avoid recreating the debounced function
+  // when dependencies change. This prevents pending validations from being cancelled.
+  const validateRecipientRef =
+    useRef<
+      (
+        toAddress: string,
+        signal?: AbortSignal,
+      ) => Promise<RecipientValidationResult>
+    >();
+
+  useEffect(() => {
+    return () => {
+      unmountedRef.current = true;
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
+  // Update the ref whenever dependencies change
+  useEffect(() => {
+    validateRecipientRef.current = async (
+      toAddress: string,
+      signal?: AbortSignal,
+    ): Promise<RecipientValidationResult> => {
+      if (!toAddress || !chainId) {
+        return {};
+      }
+
+      if (signal?.aborted) {
+        return {};
+      }
+
+      if (isEvmSendType && isValidHexAddress(toAddress)) {
+        return await validateEvmHexAddress(toAddress, chainId, asset?.address);
+      }
+
+      if (isSolanaSendType && isSolanaAddress(toAddress)) {
+        return validateSolanaAddress(toAddress);
+      }
+
+      if (isBitcoinSendType && isBtcMainnetAddress(toAddress)) {
+        return validateBtcAddress(toAddress);
+      }
+
+      if (isTronSendType && isTronAddress(toAddress)) {
+        return validateTronAddress(toAddress);
+      }
+
+      if (isResolvableName(toAddress)) {
+        return await validateName(chainId, toAddress, signal);
+      }
+
+      return {
+        error: 'invalidAddress',
+      };
+    };
+  }, [
+    asset,
+    chainId,
+    isBitcoinSendType,
+    isEvmSendType,
+    isSolanaSendType,
+    isTronSendType,
+    validateName,
+  ]);
+
+  // Create debounced function only once - it calls through the ref to get latest validation logic
+  const debouncedValidateRecipient = useMemo(
+    () =>
+      debounce(async (toAddress: string, validationChainId: string) => {
+        abortControllerRef.current?.abort();
+        abortControllerRef.current = new AbortController();
+
+        const validationResult = await validateRecipientRef.current?.(
+          toAddress,
+          abortControllerRef.current.signal,
+        );
+
+        if (
+          !unmountedRef.current &&
+          prevAddressValidated.current === toAddress &&
+          prevChainIdValidated.current === validationChainId
+        ) {
+          setResult({
+            ...validationResult,
+            toAddressValidated: toAddress,
+          });
+        }
+      }, VALIDATION_DEBOUNCE_MS),
+    [],
+  );
+
+  useEffect(() => {
+    const addressUnchanged = prevAddressValidated.current === to;
+    const chainIdUnchanged = prevChainIdValidated.current === chainId;
+
+    // Skip if nothing changed or no address to validate
+    if (!to || !chainId || (addressUnchanged && chainIdUnchanged)) {
+      return;
+    }
+
+    prevAddressValidated.current = to;
+    prevChainIdValidated.current = chainId;
+    debouncedValidateRecipient(to, chainId);
+  }, [to, chainId, debouncedValidateRecipient]);
+
+  useEffect(() => {
+    return () => {
+      debouncedValidateRecipient.cancel();
+    };
+  }, [debouncedValidateRecipient]);
+
+  return {
+    recipientConfusableCharacters: result?.confusableCharacters,
+    recipientError: result?.error ? t(result?.error) : undefined,
+    recipientResolvedLookup: result?.resolvedLookup,
+    recipientWarning: result?.warning ? t(result?.warning) : undefined,
+    resolutionProtocol: result?.protocol,
+    toAddressValidated: result?.toAddressValidated,
+  };
+};

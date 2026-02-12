@@ -1,9 +1,11 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { AlignItems, Display } from '../../../helpers/constants/design-system';
-import { IconName, Box } from '..';
 import README from './README.mdx';
-import { ButtonSecondary, ButtonSecondarySize } from '.';
+import { ButtonSecondary } from './button-secondary';
+import { IconName } from '../icon';
+import { ButtonSecondarySize } from './button-secondary.types';
+import { Box } from '../box';
 
 const marginSizeControlOptions = [
   undefined,
@@ -24,7 +26,7 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/ButtonSecondary',
+  title: 'Components/ComponentLibrary/ButtonSecondary (deprecated)',
 
   component: ButtonSecondary,
   parameters: {

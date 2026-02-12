@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import txHelper from '../helpers/utils/tx-helper';
 import {
-  roundExponential,
   getTransactionFee,
   addFiat,
   addEth,
@@ -11,7 +10,6 @@ import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
-  getProviderConfig,
 } from '../ducks/metamask/metamask';
 import {
   GasEstimateTypes,
@@ -21,115 +19,84 @@ import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import {
   decGWEIToHexWEI,
   getValueFromWeiHex,
   sumHexes,
 } from '../../shared/modules/conversion.utils';
+import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
-import { getCurrentChainId } from './selectors';
 import {
   checkNetworkAndAccountSupports1559,
+  getMetaMaskAccounts,
+} from './selectors';
+import {
   getUnapprovedTransactions,
-} from '.';
-
-const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
-const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
-const unapprovedPersonalMsgsSelector = (state) =>
-  state.metamask.unapprovedPersonalMsgs;
-const unapprovedDecryptMsgsSelector = (state) =>
-  state.metamask.unapprovedDecryptMsgs;
-const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
-  state.metamask.unapprovedEncryptionPublicKeyMsgs;
-const unapprovedTypedMessagesSelector = (state) =>
-  state.metamask.unapprovedTypedMessages;
-
-export const unconfirmedTransactionsListSelector = createSelector(
-  unapprovedTxsSelector,
-  unapprovedMsgsSelector,
+  selectTransactionMetadata,
+  selectTransactionSender,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  getCurrentChainId,
+} from './transactions';
+
+const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
+
+export const unconfirmedTransactionsListSelector = createSelector(
+  unapprovedTxsSelector,
+  unapprovedPersonalMsgsSelector,
+  unapprovedDecryptMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedTypedMessagesSelector,
   (
     unapprovedTxs = {},
-    unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    chainId,
   ) =>
     txHelper(
       unapprovedTxs,
-      unapprovedMsgs,
       unapprovedPersonalMsgs,
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      chainId,
     ) || [],
 );
 
 export const unconfirmedTransactionsHashSelector = createSelector(
   unapprovedTxsSelector,
-  unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  getCurrentChainId,
   (
     unapprovedTxs = {},
-    unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    chainId,
-  ) => {
-    const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce(
-      (acc, address) => {
-        const transactions = { ...acc };
-
-        if (unapprovedTxs[address].chainId === chainId) {
-          transactions[address] = unapprovedTxs[address];
-        }
-
-        return transactions;
-      },
-      {},
-    );
-
-    return {
-      ...filteredUnapprovedTxs,
-      ...unapprovedMsgs,
-      ...unapprovedPersonalMsgs,
-      ...unapprovedDecryptMsgs,
-      ...unapprovedEncryptionPublicKeyMsgs,
-      ...unapprovedTypedMessages,
-    };
-  },
+  ) => ({
+    ...unapprovedTxs,
+    ...unapprovedPersonalMsgs,
+    ...unapprovedDecryptMsgs,
+    ...unapprovedEncryptionPublicKeyMsgs,
+    ...unapprovedTypedMessages,
+  }),
 );
 
 export const unconfirmedMessagesHashSelector = createSelector(
-  unapprovedMsgsSelector,
   unapprovedPersonalMsgsSelector,
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
   (
-    unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
   ) => {
     return {
-      ...unapprovedMsgs,
       ...unapprovedPersonalMsgs,
       ...unapprovedDecryptMsgs,
       ...unapprovedEncryptionPublicKeyMsgs,
@@ -137,28 +104,13 @@ export const unconfirmedMessagesHashSelector = createSelector(
     };
   },
 );
-export const use4ByteResolutionSelector = (state) =>
+export const getUse4ByteResolution = (state) =>
   state.metamask.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
   state.metamask.currentCurrency;
 export const conversionRateSelector = (state) =>
   state.metamask.currencyRates[getProviderConfig(state).ticker]?.conversionRate;
 export const txDataSelector = (state) => state.confirmTransaction.txData;
-const tokenDataSelector = (state) => state.confirmTransaction.tokenData;
-const tokenPropsSelector = (state) => state.confirmTransaction.tokenProps;
-
-const contractExchangeRatesSelector = (state) =>
-  state.metamask.contractExchangeRates;
-
-const tokenDecimalsSelector = createSelector(
-  tokenPropsSelector,
-  (tokenProps) => tokenProps && tokenProps.decimals,
-);
-
-const tokenDataArgsSelector = createSelector(
-  tokenDataSelector,
-  (tokenData) => (tokenData && tokenData.args) || [],
-);
 
 const txParamsSelector = createSelector(
   txDataSelector,
@@ -168,48 +120,6 @@ const txParamsSelector = createSelector(
 export const tokenAddressSelector = createSelector(
   txParamsSelector,
   (txParams) => txParams && txParams.to,
-);
-
-const TOKEN_PARAM_TO = '_to';
-const TOKEN_PARAM_VALUE = '_value';
-
-export const sendTokenTokenAmountAndToAddressSelector = createSelector(
-  tokenDataArgsSelector,
-  tokenDecimalsSelector,
-  (args, tokenDecimals) => {
-    let toAddress = '';
-    let tokenAmount = '0';
-
-    // Token params here are ethers BigNumbers, which have a different
-    // interface than bignumber.js
-    if (args && args.length) {
-      toAddress = args[TOKEN_PARAM_TO];
-      let value = args[TOKEN_PARAM_VALUE].toString();
-
-      if (tokenDecimals) {
-        // bignumber.js return value
-        value = calcTokenAmount(value, tokenDecimals).toFixed();
-      }
-
-      tokenAmount = roundExponential(value);
-    }
-
-    return {
-      toAddress,
-      tokenAmount,
-    };
-  },
-);
-
-export const contractExchangeRateSelector = createSelector(
-  contractExchangeRatesSelector,
-  tokenAddressSelector,
-  (contractExchangeRates, tokenAddress) =>
-    contractExchangeRates[
-      Object.keys(contractExchangeRates).find((address) =>
-        isEqualCaseInsensitive(address, tokenAddress),
-      )
-    ],
 );
 
 export const transactionFeeSelector = function (state, txData) {
@@ -223,6 +133,7 @@ export const transactionFeeSelector = function (state, txData) {
 
   const gasEstimationObject = {
     gasLimit: txData.txParams?.gas ?? '0x0',
+    gasLimitNoBuffer: txData.gasLimitNoBuffer,
   };
 
   if (networkAndAccountSupportsEIP1559) {
@@ -253,6 +164,7 @@ export const transactionFeeSelector = function (state, txData) {
     }
   } else {
     switch (gasEstimateType) {
+      case GasEstimateTypes.feeMarket:
       case GasEstimateTypes.none:
         gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? '0x0';
         break;
@@ -264,8 +176,6 @@ export const transactionFeeSelector = function (state, txData) {
       case GasEstimateTypes.legacy:
         gasEstimationObject.gasPrice =
           txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
-        break;
-      case GasEstimateTypes.feeMarket:
         break;
       default:
         break;
@@ -340,3 +250,32 @@ export const transactionFeeSelector = function (state, txData) {
     gasEstimationObject,
   };
 };
+
+export function selectTransactionFeeById(state, transactionId) {
+  const transactionMetadata = selectTransactionMetadata(state, transactionId);
+  return transactionFeeSelector(state, transactionMetadata ?? {});
+}
+
+// Cannot use createSelector due to circular dependency caused by getMetaMaskAccounts.
+// chainId is optional parameter here
+export function selectTransactionAvailableBalance(
+  state,
+  transactionId,
+  chainId,
+) {
+  const accounts = getMetaMaskAccounts(state, chainId);
+  const sender = selectTransactionSender(state, transactionId);
+
+  return accounts[sender]?.balance;
+}
+
+export function selectIsMaxValueEnabled(state, transactionId) {
+  return state.confirmTransaction.maxValueMode?.[transactionId] ?? false;
+}
+
+const maxValueModeSelector = (state) => state.confirmTransaction.maxValueMode;
+
+export function selectMaxValueModeForTransaction(state, transactionId) {
+  const maxValueModes = maxValueModeSelector(state);
+  return maxValueModes[transactionId];
+}

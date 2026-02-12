@@ -1,11 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import { render } from '@testing-library/react';
 import {
-  FontStyle,
   FontWeight,
-  OverflowWrap,
-  TextAlign,
+  FontStyle,
+  FontFamily,
   TextColor,
+  TextAlign,
+  OverflowWrap,
   TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -67,7 +68,7 @@ describe('Text', () => {
   });
 
   it('should render the Text with proper variant class name', () => {
-    const { getByText, container } = render(
+    const { getByText } = render(
       <>
         <Text variant={TextVariant.displayMd}>display-md</Text>
         <Text variant={TextVariant.headingLg}>heading-lg</Text>
@@ -98,7 +99,6 @@ describe('Text', () => {
     expect(getByText('body-sm-bold')).toHaveClass('mm-text--body-sm-bold');
     expect(getByText('body-xs')).toHaveClass('mm-text--body-xs');
     expect(getByText('body-xs-medium')).toHaveClass('mm-text--body-xs-medium');
-    expect(container).toMatchSnapshot();
   });
 
   it('should render the Text with proper font weight class name', () => {
@@ -112,6 +112,19 @@ describe('Text', () => {
     expect(getByText('bold')).toHaveClass('mm-text--font-weight-bold');
     expect(getByText('medium')).toHaveClass('mm-text--font-weight-medium');
     expect(getByText('normal')).toHaveClass('mm-text--font-weight-normal');
+  });
+
+  it('should render the Text with proper font family class name', () => {
+    const { getByText } = render(
+      <>
+        <Text fontFamily={FontFamily.Default}>default</Text>
+        <Text fontFamily={FontFamily.Accent}>accent</Text>
+        <Text fontFamily={FontFamily.Hero}>hero</Text>
+      </>,
+    );
+    expect(getByText('default')).toHaveClass('mm-text--font-family-default');
+    expect(getByText('accent')).toHaveClass('mm-text--font-family-accent');
+    expect(getByText('hero')).toHaveClass('mm-text--font-family-hero');
   });
 
   it('should render the Text with proper text color class name', () => {

@@ -1,43 +1,40 @@
 import { connect } from 'react-redux';
 import {
   setCurrentCurrency,
-  setUseBlockie,
+  setAvatarType,
   updateCurrentLocale,
-  setUseNativeCurrencyAsPrimaryCurrencyPreference,
   setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
   setTheme,
+  setShowNativeTokenAsMainBalancePreference,
 } from '../../../store/actions';
-import { getTokenList, getPreferences, getTheme } from '../../../selectors';
+import {
+  getTokenList,
+  getPreferences,
+  getTheme,
+  getSelectedInternalAccount,
+} from '../../../selectors';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import SettingsTab from './settings-tab.component';
 
-const mapStateToProps = (state, ownProps) => {
-  const {
-    appState: { warning },
-    metamask,
-  } = state;
-  const {
-    currentCurrency,
-    providerConfig: { ticker: nativeCurrency },
-    useBlockie,
-    currentLocale,
-    selectedAddress,
-  } = metamask;
-  const { useNativeCurrencyAsPrimaryCurrency, hideZeroBalanceTokens } =
+const mapStateToProps = (state) => {
+  const { metamask } = state;
+  const { currentCurrency, useBlockie, currentLocale } = metamask;
+  const { ticker: nativeCurrency } = getProviderConfig(state);
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { hideZeroBalanceTokens, showNativeTokenAsMainBalance, avatarType } =
     getPreferences(state);
 
-  const { lastFetchedConversionDate } = ownProps;
   const tokenList = getTokenList(state);
 
   return {
-    warning,
     currentLocale,
     currentCurrency,
     nativeCurrency,
     useBlockie,
-    useNativeCurrencyAsPrimaryCurrency,
+    avatarType,
+    showNativeTokenAsMainBalance,
     hideZeroBalanceTokens,
-    lastFetchedConversionDate,
     selectedAddress,
     tokenList,
     theme: getTheme(state),
@@ -47,10 +44,10 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setCurrentCurrency: (currency) => dispatch(setCurrentCurrency(currency)),
-    setUseBlockie: (value) => dispatch(setUseBlockie(value)),
+    setAvatarType: (value) => dispatch(setAvatarType(value)),
     updateCurrentLocale: (key) => dispatch(updateCurrentLocale(key)),
-    setUseNativeCurrencyAsPrimaryCurrencyPreference: (value) => {
-      return dispatch(setUseNativeCurrencyAsPrimaryCurrencyPreference(value));
+    setShowNativeTokenAsMainBalancePreference: (value) => {
+      return dispatch(setShowNativeTokenAsMainBalancePreference(value));
     },
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),

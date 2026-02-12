@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { getAccountLink } from '@metamask/etherscan-link';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import {
+  InternalAccountPropType,
+  MultichainNetworkPropType,
+} from '../../../../selectors/multichain';
 
 export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
-    identity: PropTypes.object.isRequired,
-    chainId: PropTypes.string.isRequired,
-    rpcPrefs: PropTypes.object.isRequired,
+    account: InternalAccountPropType.isRequired,
+    network: MultichainNetworkPropType.isRequired,
   };
 
   static contextTypes = {
@@ -23,7 +27,7 @@ export default class ConfirmRemoveAccount extends Component {
 
   handleRemove = () => {
     this.props
-      .removeAccount(this.props.identity.address)
+      .removeAccount(this.props.account.address)
       .then(() => this.props.hideModal());
   };
 
@@ -33,33 +37,38 @@ export default class ConfirmRemoveAccount extends Component {
 
   renderSelectedAccount() {
     const { t } = this.context;
-    const { identity, rpcPrefs, chainId } = this.props;
+    const { account, network } = this.props;
+
     return (
       <div className="confirm-remove-account__account">
         <div className="confirm-remove-account__account__identicon">
-          <Identicon address={identity.address} diameter={32} />
+          <Identicon address={account.address} diameter={32} />
         </div>
         <div className="confirm-remove-account__account__name">
           <span className="confirm-remove-account__account__label">
             {t('name')}
           </span>
-          <span className="account_value">{identity.name}</span>
+          <span className="account_value">{account.metadata.name}</span>
         </div>
         <div className="confirm-remove-account__account__address">
           <span className="confirm-remove-account__account__label">
             {t('publicAddress')}
           </span>
           <span className="account_value">
-            {addressSummary(identity.address, 4, 4)}
+            {addressSummary(
+              account.address,
+              4,
+              4,
+              isEvmAccountType(account.type),
+            )}
           </span>
         </div>
         <div className="confirm-remove-account__account__link">
           <a
             onClick={() => {
-              const accountLink = getAccountLink(
-                identity.address,
-                chainId,
-                rpcPrefs,
+              const accountLink = getMultichainAccountUrl(
+                account.address,
+                network,
               );
               this.context.trackEvent({
                 category: MetaMetricsEventCategory.Accounts,
@@ -77,6 +86,7 @@ export default class ConfirmRemoveAccount extends Component {
             target="_blank"
             rel="noopener noreferrer"
             title={t('etherscanView')}
+            data-testid="explorer-link"
           >
             <i
               className="fa fa-share-square"

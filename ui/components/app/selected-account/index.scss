@@ -11,27 +11,6 @@
     width: 100%;
   }
 
-  &__name {
-    @include design-system.H5;
-
-    width: 100%;
-    font-weight: 500;
-    color: var(--color-text-default);
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    text-align: center;
-    margin-bottom: 4px;
-  }
-
-  &__address {
-    @include design-system.H7;
-
-    color: var(--color-text-alternative);
-    display: flex;
-    align-items: center;
-  }
-
   &__clickable {
     display: flex;
     flex-direction: column;

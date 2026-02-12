@@ -2,7 +2,7 @@ import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
 import { Box } from './box';
 
-# Box
+# Box (deprecated use @metamask/design-system-react)
 
 The `Box` is a utility component that accepts many helper props to make styling easier.
 
@@ -142,9 +142,7 @@ import {
 import Box from '../ui/box';
 
 <Box backgroundColor={BackgroundColor.backgroundDefault}>
-  <Typography color={TextColor.textDefault}>
-    BackgroundColor.backgroundDefault
-  </Typography>
+  <Text color={TextColor.textDefault}>BackgroundColor.backgroundDefault</Text>
 </Box>;
 ```
 
@@ -170,9 +168,7 @@ import Box from '../ui/box';
   backgroundColor={BackgroundColor.backgroundDefault}
   borderColor={BorderColor.borderDefault}
 >
-  <Typography color={TextColor.textDefault}>
-    BorderColor.borderDefault
-  </Typography>
+  <Text color={TextColor.textDefault}>BorderColor.borderDefault</Text>
 </Box>;
 ```
 

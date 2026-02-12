@@ -1,0 +1,47 @@
+import { AnnouncementMap } from '@metamask/announcement-controller';
+
+type NotificationImage = {
+  src: string;
+  width?: string;
+  height?: string;
+};
+
+export type TranslationFunction = (key: string) => string;
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export type ModalComponent<T> = {
+  component: React.ComponentType<T>;
+  props?: Partial<T>;
+};
+
+export type ModalHeaderProps = {
+  onClose: () => void;
+  image?: NotificationImage;
+};
+export type ModalBodyProps = { title: string };
+export type ModalFooterProps = {
+  onAction: () => void | Promise<void>;
+  onCancel: () => void | Promise<void>;
+};
+
+export type TranslatedUINotification = {
+  id: number;
+  date: string | null;
+  image?: NotificationImage;
+  title: string;
+  description: string[] | string;
+  actionText?: string;
+  modal?: {
+    header?: ModalComponent<ModalHeaderProps>;
+    body?: ModalComponent<ModalBodyProps>;
+    footer?: ModalComponent<ModalFooterProps>;
+  };
+};
+
+export type TranslatedUINotifications = {
+  [key: number | string]: TranslatedUINotification;
+};
+
+// If in the future we need to add a new notification, we can do it here
+export const UI_NOTIFICATIONS: AnnouncementMap = {};

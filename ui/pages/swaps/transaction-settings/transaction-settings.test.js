@@ -1,12 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
-import {
-  renderWithProvider,
-  fireEvent,
-  createSwapsMockStore,
-} from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { fireEvent, createSwapsMockStore } from '../../../../test/jest';
 import { Slippage } from '../../../../shared/constants/swaps';
 import TransactionSettings from './transaction-settings';
 
@@ -56,33 +52,6 @@ describe('TransactionSettings', () => {
       'aria-checked',
       'true',
     );
-  });
-
-  it('renders the component with the smart transaction opt-in button available, opt into STX', async () => {
-    const setSmartTransactionsOptInStatus = jest.fn();
-    const { getByText, getByTestId } = renderWithProvider(
-      <TransactionSettings
-        {...createProps({
-          smartTransactionsEnabled: true,
-          setSmartTransactionsOptInStatus,
-        })}
-      />,
-      store,
-    );
-    expect(getByText('2%')).toBeInTheDocument();
-    expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('custom')).toBeInTheDocument();
-    expect(
-      document.querySelector('.transaction-settings__header'),
-    ).toMatchSnapshot();
-    expect(
-      document.querySelector('.transaction-settings__button-group'),
-    ).toMatchSnapshot();
-    expect(getByText('Smart Swaps')).toBeInTheDocument();
-    expect(document.querySelector('.toggle-button--off')).toBeInTheDocument();
-    await fireEvent.click(document.querySelector('.toggle-button'));
-    await fireEvent.click(getByTestId('update-transaction-settings-button'));
-    expect(setSmartTransactionsOptInStatus).toHaveBeenCalledWith(true);
   });
 
   it('renders slippage with a custom value', () => {

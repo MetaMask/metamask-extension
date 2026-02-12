@@ -1,0 +1,44 @@
+name: Merge Previous Release Branches
+
+permissions:
+  pull-requests: write
+  contents: write
+  issues: write
+
+on:
+  create:
+    # Trigger when a branch is created, filter for release/* happens in the job
+
+jobs:
+  validate-branch:
+    name: Validate release branch format
+    runs-on: ubuntu-latest
+    # Only run for branch creation (not tags)
+    if: github.event.ref_type == 'branch'
+    outputs:
+      is-valid: ${{ steps.check.outputs.is-valid }}
+    steps:
+      - name: Check branch name format
+        id: check
+        env:
+          BRANCH: ${{ github.event.ref }}
+        run: |
+          if [[ "$BRANCH" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Branch '$BRANCH' matches release/X.Y.Z format"
+            echo "is-valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Branch '$BRANCH' does not match release/X.Y.Z format. Skipping."
+            echo "is-valid=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  merge-previous-releases:
+    name: Merge previous release branches
+    needs: validate-branch
+    if: needs.validate-branch.outputs.is-valid == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge previous releases
+        uses: metamask/github-tools/.github/actions/merge-previous-releases@v1.2.0
+        with:
+          new-release-branch: ${{ github.event.ref }}
+          github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}

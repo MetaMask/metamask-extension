@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
+import { getInternalAccounts } from '../../../selectors';
 import ContactListTab from './contact-list-tab.component';
 
 // Using Test Data For Redux
@@ -13,7 +14,7 @@ export default {
 
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
   argsTypes: {
-    addressBook: { control: 'object' },
+    internalAccounts: { control: 'object' },
     hideAddressBook: { control: 'boolean' },
     selectedAddress: { control: 'select' },
     history: { action: 'history' },
@@ -22,6 +23,8 @@ export default {
 
 const { metamask } = store.getState();
 const { addresses } = metamask;
+
+const internalAccounts = getInternalAccounts(store.getState());
 
 export const DefaultStory = (args) => {
   return (
@@ -33,7 +36,9 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
+  completeAddressBook: addresses,
   addressBook: addresses,
+  internalAccounts,
   hideAddressBook: false,
   selectedAddress: addresses.map(({ address }) => address),
 };

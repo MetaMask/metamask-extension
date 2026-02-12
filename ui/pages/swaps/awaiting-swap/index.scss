@@ -16,6 +16,13 @@
     padding-right: 32px;
   }
 
+  &__mascot {
+    margin-bottom: 16px;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+  }
+
   div {
     text-align: center;
     display: flex;

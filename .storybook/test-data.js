@@ -1,10 +1,18 @@
-import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
-import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../shared/constants/network';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import {
+  CHAIN_IDS,
+  LINEA_MAINNET_DISPLAY_NAME,
+} from '../shared/constants/network';
 import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
+import { FirstTimeFlowType } from '../shared/constants/onboarding';
+import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
+import {
+  mockNetworkState,
+  mockMultichainNetworkState,
+} from '../test/stub/networks';
 
 const state = {
   invalidCustomNetwork: {
@@ -22,6 +30,13 @@ const state = {
     url: 'https://metamask.github.io/test-dapp/',
   },
   metamask: {
+    remoteFeatureFlags: {
+      bridgeConfig: {
+        support: true,
+        minimumVersion: '0.0.0',
+      },
+    },
+    txHistory: {},
     announcements: {
       22: {
         id: 22,
@@ -29,162 +44,168 @@ const state = {
       },
     },
     orderedNetworkList: [],
-    pinnedAccountList: [],
-    hiddenAccountList: [],
-    tokenList: {
-      '0x514910771af9ca656af840dff83e8264ecf986ca': {
-        address: '0x514910771af9ca656af840dff83e8264ecf986ca',
-        symbol: 'LINK',
-        decimals: 18,
-        name: 'ChainLink Token',
-        iconUrl: 'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
-        aggregators: [
-          'Aave',
-          'Bancor',
-          'CMC',
-          'Crypto.com',
-          'CoinGecko',
-          '1inch',
-          'Paraswap',
-          'PMM',
-          'Zapper',
-          'Zerion',
-          '0x',
-        ],
-        occurrences: 12,
-        unlisted: false,
-      },
-      '0xc00e94cb662c3520282e6f5717214004a7f26888': {
-        address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
-        symbol: 'COMP',
-        decimals: 18,
-        name: 'Compound',
-        iconUrl: 'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
-        aggregators: [
-          'Bancor',
-          'CMC',
-          'Crypto.com',
-          'CoinGecko',
-          '1inch',
-          'Paraswap',
-          'PMM',
-          'Zapper',
-          'Zerion',
-          '0x',
-        ],
-        occurrences: 12,
-        unlisted: false,
-      },
-      '0xfffffffff15abf397da76f1dcc1a1604f45126db': {
-        address: '0xfffffffff15abf397da76f1dcc1a1604f45126db',
-        symbol: 'FSW',
-        decimals: 18,
-        name: 'Falconswap',
-        iconUrl:
-          'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
-        aggregators: ['CoinGecko', '1inch', 'Lifi'],
-        occurrences: 3,
-        unlisted: false,
-      },
-      '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
-        address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
-        symbol: 'SNX',
-        decimals: 18,
-        name: 'Synthetix Network Token',
-        iconUrl: 'https://assets.coingecko.com/coins/images/3406/large/SNX.png',
-        aggregators: [
-          'Aave',
-          'Bancor',
-          'CMC',
-          'Crypto.com',
-          'CoinGecko',
-          '1inch',
-          'Paraswap',
-          'PMM',
-          'Synthetix',
-          'Zapper',
-          'Zerion',
-          '0x',
-        ],
-        occurrences: 12,
-        unlisted: false,
-      },
-      '0x6b175474e89094c44da98b954eedeac495271d0f': {
-        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        symbol: 'ETH',
-        decimals: 18,
-        image: './images/eth_logo.svg',
-        unlisted: false,
-      },
-      '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
-        address: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
-        symbol: '0X',
-        decimals: 18,
-        image: '0x.svg',
-        unlisted: false,
-      },
-      '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-        symbol: 'AST',
-        decimals: 18,
-        image: 'ast.png',
-        unlisted: false,
-      },
-      '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2': {
-        address: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
-        symbol: 'BAT',
-        decimals: 18,
-        image: 'BAT_icon.svg',
-        unlisted: false,
-      },
-      '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1': {
-        address: '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1',
-        symbol: 'CVL',
-        decimals: 18,
-        image: 'CVL_token.svg',
-        unlisted: false,
-      },
-      '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': {
-        address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
-        symbol: 'GLA',
-        decimals: 18,
-        image: 'gladius.svg',
-        unlisted: false,
-      },
-      '0x467Bccd9d29f223BcE8043b84E8C8B282827790F': {
-        address: '0x467Bccd9d29f223BcE8043b84E8C8B282827790F',
-        symbol: 'GNO',
-        decimals: 18,
-        image: 'gnosis.svg',
-        unlisted: false,
-      },
-      '0xff20817765cb7f73d4bde2e66e067e58d11095c2': {
-        address: '0xff20817765cb7f73d4bde2e66e067e58d11095c2',
-        symbol: 'OMG',
-        decimals: 18,
-        image: 'omg.jpg',
-        unlisted: false,
-      },
-      '0x8e870d67f660d95d5be530380d0ec0bd388289e1': {
-        address: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
-        symbol: 'WED',
-        decimals: 18,
-        image: 'wed.png',
-        unlisted: false,
+    enabledNetworkMap: {
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0x539': true,
       },
     },
+    pinnedAccountList: [],
+    hiddenAccountList: [],
+    tokensChainsCache: {
+      [CHAIN_IDS.MAINNET]: {
+        data: {
+          '0x514910771af9ca656af840dff83e8264ecf986ca': {
+            address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+            symbol: 'LINK',
+            decimals: 18,
+            name: 'ChainLink Token',
+            iconUrl:
+              'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+            aggregators: [
+              'Aave',
+              'Bancor',
+              'CMC',
+              'Crypto.com',
+              'CoinGecko',
+              '1inch',
+              'Paraswap',
+              'PMM',
+              'Zapper',
+              'Zerion',
+              '0x',
+            ],
+            occurrences: 12,
+            unlisted: false,
+          },
+          '0xc00e94cb662c3520282e6f5717214004a7f26888': {
+            address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
+            symbol: 'COMP',
+            decimals: 18,
+            name: 'Compound',
+            iconUrl:
+              'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
+            aggregators: [
+              'Bancor',
+              'CMC',
+              'Crypto.com',
+              'CoinGecko',
+              '1inch',
+              'Paraswap',
+              'PMM',
+              'Zapper',
+              'Zerion',
+              '0x',
+            ],
+            occurrences: 12,
+            unlisted: false,
+          },
+          '0xfffffffff15abf397da76f1dcc1a1604f45126db': {
+            address: '0xfffffffff15abf397da76f1dcc1a1604f45126db',
+            symbol: 'FSW',
+            decimals: 18,
+            name: 'Falconswap',
+            iconUrl:
+              'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
+            aggregators: ['CoinGecko', '1inch', 'Lifi'],
+            occurrences: 3,
+            unlisted: false,
+          },
+          '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f': {
+            address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
+            symbol: 'SNX',
+            decimals: 18,
+            name: 'Synthetix Network Token',
+            iconUrl:
+              'https://assets.coingecko.com/coins/images/3406/large/SNX.png',
+            aggregators: [
+              'Aave',
+              'Bancor',
+              'CMC',
+              'Crypto.com',
+              'CoinGecko',
+              '1inch',
+              'Paraswap',
+              'PMM',
+              'Synthetix',
+              'Zapper',
+              'Zerion',
+              '0x',
+            ],
+            occurrences: 12,
+            unlisted: false,
+          },
+          '0x6b175474e89094c44da98b954eedeac495271d0f': {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'ETH',
+            decimals: 18,
+            image: './images/eth_logo.svg',
+            unlisted: false,
+          },
+          '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
+            address: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
+            symbol: '0X',
+            decimals: 18,
+            image: '0x.svg',
+            unlisted: false,
+          },
+          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+            address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+            symbol: 'AST',
+            decimals: 18,
+            image: 'ast.png',
+            unlisted: false,
+          },
+          '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2': {
+            address: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
+            symbol: 'BAT',
+            decimals: 18,
+            image: 'BAT_icon.svg',
+            unlisted: false,
+          },
+          '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1': {
+            address: '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1',
+            symbol: 'CVL',
+            decimals: 18,
+            image: 'CVL_token.svg',
+            unlisted: false,
+          },
+          '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': {
+            address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
+            symbol: 'GLA',
+            decimals: 18,
+            image: 'gladius.svg',
+            unlisted: false,
+          },
+          '0x467Bccd9d29f223BcE8043b84E8C8B282827790F': {
+            address: '0x467Bccd9d29f223BcE8043b84E8C8B282827790F',
+            symbol: 'GNO',
+            decimals: 18,
+            image: 'gnosis.svg',
+            unlisted: false,
+          },
+          '0xff20817765cb7f73d4bde2e66e067e58d11095c2': {
+            address: '0xff20817765cb7f73d4bde2e66e067e58d11095c2',
+            symbol: 'OMG',
+            decimals: 18,
+            image: 'omg.jpg',
+            unlisted: false,
+          },
+          '0x8e870d67f660d95d5be530380d0ec0bd388289e1': {
+            address: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
+            symbol: 'WED',
+            decimals: 18,
+            image: 'wed.png',
+            unlisted: false,
+          },
+        },
+      },
+    },
+
     networkDetails: {
       EIPS: {
         1559: true,
-      },
-    },
-    selectedNetworkClientId: NetworkType.mainnet,
-    networksMetadata: {
-      [NetworkType.mainnet]: {
-        EIPS: {
-          1559: true,
-        },
-        status: NetworkStatus.Available,
       },
     },
     gasFeeEstimates: '0x5208',
@@ -280,18 +301,15 @@ const state = {
     },
     interfaces: {
       'test-interface': {
-        content: panel([
-          heading('Foo bar'),
-          text('Description'),
-          divider(),
-          text('More text'),
-          copyable('Text you can copy'),
-        ]),
-        state: {},
-        snapId: 'local:http://localhost:8080/',
-      },
-      'error-interface': {
-        content: 'foo',
+        content: getJsxElementFromComponent(
+          panel([
+            heading('Foo bar'),
+            text('Description'),
+            divider(),
+            text('More text'),
+            copyable('Text you can copy'),
+          ]),
+        ),
         state: {},
         snapId: 'local:http://localhost:8080/',
       },
@@ -313,8 +331,60 @@ const state = {
     connectedAccounts: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
     isInitialized: true,
     isUnlocked: true,
-    isAccountMenuOpen: false,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
+    accountTree: {
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      wallets: {
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+          type: 'entropy',
+          groups: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+              id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+              type: 'multichain-account',
+              accounts: [
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              ],
+              metadata: {
+                name: 'Account 1',
+                entropy: {
+                  groupIndex: 0,
+                },
+                hidden: false,
+                pinned: false,
+              },
+            },
+          },
+          metadata: {
+            name: 'Wallet 1',
+            entropy: {
+              id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+            },
+          },
+        },
+        'snap:npm:@metamask/test-snap-bip44': {
+          id: 'snap:npm:@metamask/test-snap-bip44',
+          type: 'snap',
+          groups: {
+            'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0': {
+              id: 'snap:npm:@metamask/test-snap-bip44/0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+              type: 'single-account',
+              accounts: ['64f9d02e-47e6-4dfd-8232-f3518606cad3'],
+              metadata: {
+                name: 'Snap Account 1',
+              },
+            },
+          },
+          metadata: {
+            name: 'BIP-44',
+            snap: {
+              id: 'npm:@metamask/test-snap-bip44',
+            },
+          }
+        },
+      },
+    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -327,8 +397,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
           address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
@@ -340,8 +411,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
         '15e69915-2a1a-4019-93b3-916e11fd432f': {
           address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
@@ -353,8 +425,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
         '784225f4-d30b-4e77-a900-c8bbce735b88': {
           address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
@@ -366,8 +439,42 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
+        },
+        'b990b846-b384-4508-93d9-587461f1123e': {
+          address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+          id: 'b990b846-b384-4508-93d9-587461f1123e',
+          metadata: {
+            name: 'Test Account 1',
+            keyring: {
+              type: 'Test Keyring',
+            },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
+        },
+        '64f9d02e-47e6-4dfd-8232-f3518606cad3': {
+          address: '0xde939393DDe455081fFb3Dfd027E189919F04BD0',
+          id: '64f9d02e-47e6-4dfd-8232-f3518606cad3',
+          metadata: {
+            name: 'Snap Account 1',
+            keyring: {
+              type: 'Snap Keyring',
+            },
+            snap: {
+              enabled: true,
+              id: 'npm:@metamask/test-snap-bip44',
+              name: 'BIP-44',
+            },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
         },
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -386,56 +493,7 @@ const state = {
         address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
       },
     },
-    transactions: [
-      {
-        id: 3111025347726181,
-        time: 1620710815484,
-        status: 'unapproved',
-        msgParams: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        chainId: '0x5',
-        loadingDefaults: false,
-        txParams: {
-          from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-          to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-          value: '0x0',
-          data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
-          gas: '0xcb28',
-          gasPrice: '0x77359400',
-        },
-        type: 'standard',
-        origin: 'metamask',
-        transactionCategory: 'transfer',
-        history: [
-          {
-            id: 7786962153682822,
-            time: 1620710815484,
-            status: 'unapproved',
-            chainId: '0x5',
-            loadingDefaults: true,
-            txParams: {
-              from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-              to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-              value: '0x0',
-              data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
-              gas: '0xcb28',
-              gasPrice: '0x77359400',
-            },
-            type: 'standard',
-            origin: 'metamask',
-            transactionCategory: 'transfer',
-          },
-          [
-            {
-              op: 'replace',
-              path: '/loadingDefaults',
-              value: false,
-              note: 'Added new unapproved transaction.',
-              timestamp: 1620710815497,
-            },
-          ],
-        ],
-      },
-    ],
+    transactionBatches: {},
     addressBook: {
       undefined: {
         0: {
@@ -457,8 +515,55 @@ const state = {
         isEns: true,
       },
     ],
-    contractExchangeRates: {
-      '0xaD6D458402F60fD3Bd25163575031ACDce07538D': 0,
+    marketData: {
+      '0xaa36a7': {
+        '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
+          price: 0,
+          contractPercentChange1d: 0.004,
+          priceChange1d: 0.00004,
+        },
+      },
+      '0x1': {
+        '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
+          price: 0,
+          contractPercentChange1d: 0.004,
+          priceChange1d: 0.00004,
+        },
+      },
+      '0x5': {
+        '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
+          price: 0,
+          contractPercentChange1d: 0.004,
+          priceChange1d: 0.00004,
+        },
+      },
+    },
+    allTokens: {
+      '0x1': {
+        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': [
+          {
+            address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            aggregators: [],
+            decimals: 6,
+            symbol: 'USDC',
+          },
+          {
+            address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
+            aggregators: [],
+            decimals: 18,
+            symbol: 'YFI',
+          },
+        ],
+      },
+    },
+    allIgnoredTokens: {},
+    tokenBalances: {
+      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
+        '0x1': {
+          '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+          '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+        },
+      },
     },
     tokens: [
       {
@@ -621,43 +726,26 @@ const state = {
         ],
       },
     ],
-    pendingTokens: {},
-    customNonceValue: '',
-    send: {
-      gasLimit: '0xcb28',
-      gasPrice: null,
-      gasTotal: null,
-      tokenBalance: '8.7a73149c048545a3fe58',
-      from: '',
-      to: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      amount: '3782dace9d900000',
-      memo: '',
-      errors: {},
-      maxModeOn: false,
-      editingTransactionId: null,
-      toNickname: 'Account 2',
-      domainResolution: null,
-      domainResolutionError: '',
-      token: {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-        symbol: 'DAI',
-        decimals: 18,
-      },
-    },
+    accountsAssets: {},
+    assetsMetadata: {},
+    allIgnoredAssets: {},
+    balances: {},
+    conversionRates: {},
+    networkConfigurationsByChainId: {},
     useBlockie: false,
     featureFlags: {},
-    welcomeScreenSeen: false,
+    slides: [],
     currentLocale: 'en',
     preferences: {
-      useNativeCurrencyAsPrimaryCurrency: true,
+      showNativeTokenAsMainBalance: true,
+      tokenSortConfig: {
+        key: 'token-sort-key',
+        order: 'dsc',
+        sortCallback: 'stringNumeric',
+      },
+      tokenNetworkFilter: {},
     },
-    incomingTransactionsPreferences: {
-      [CHAIN_IDS.MAINNET]: true,
-      [CHAIN_IDS.GOERLI]: false,
-      [CHAIN_IDS.OPTIMISM_TESTNET]: false,
-      [CHAIN_IDS.AVALANCHE_TESTNET]: true,
-    },
-    firstTimeFlowType: 'create',
+    firstTimeFlowType: FirstTimeFlowType.create,
     completedOnboarding: true,
     knownMethodData: {
       '0x60806040': {
@@ -668,58 +756,29 @@ const state = {
       },
     },
     participateInMetaMetrics: true,
-    nextNonce: 71,
     connectedStatusPopoverHasBeenShown: true,
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
-    providerConfig: {
-      type: 'sepolia',
-      ticker: 'ETH',
-      nickname: 'Sepolia',
-      rpcUrl: '',
-      chainId: '0xaa36a7',
-    },
     network: '5',
-    accounts: {
-      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        balance: '0x176e5b6f173ebe66',
-      },
-      '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-        balance: '0x2d3142f5000',
-      },
-      '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-        address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
-        balance: '0x15f6f0b9d4f8d000',
-      },
-    },
     accountsByChainId: {
       '0x1': {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': { balance: '0x0' },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+        '0x64A845a5b02460ACf8a3D84503b0D68d028B4bb4': { balance: '0x0' },
+        '0xb19Ac54EfA18CC3A14A5B821bFeC73d284Bf0c5e': {
           balance: '0xcaf5317161f400',
         },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': { balance: '0x0' },
+        '0x9D0ba4DDAC06032527B140912EC808ab9451b788': { balance: '0x0' },
       },
       '0x5': {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-          address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+        '0x64A845a5b02460ACf8a3D84503b0D68d028B4bb4': {
           balance: '0x176e5b6f173ebe66',
         },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+        '0xb19Ac54EfA18CC3A14A5B821bFeC73d284Bf0c5e': {
           balance: '0x2d3142f5000',
         },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-          address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+        '0x9D0ba4DDAC06032527B140912EC808ab9451b788': {
           balance: '0x15f6f0b9d4f8d000',
         },
       },
-    },
-    currentBlockGasLimit: '0x793af4',
-    currentBlockGasLimitByChainId: {
-      '0x5': '0x793af4',
     },
     transactions: [
       {
@@ -1171,8 +1230,6 @@ const state = {
         v: '0x93',
       },
     ],
-    unapprovedMsgs: {},
-    unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
     unapprovedPersonalMsgCount: 0,
     unapprovedDecryptMsgs: {},
@@ -1185,6 +1242,14 @@ const state = {
         status: 'unapproved',
         type: 'eth_getEncryptionPublicKey',
         origin: 'https://metamask.github.io',
+        txParams: {
+          from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+          value: '0x0',
+          data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
+          gas: '0xcb28',
+          gasPrice: '0x77359400',
+        },
       },
     },
     unapprovedEncryptionPublicKeyMsgCount: 0,
@@ -1197,27 +1262,60 @@ const state = {
           '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
         ],
+        metadata: {
+          id: '01JN08SYECPZHFHB3K0J1NHJ4H',
+          name: '',
+        },
       },
       {
         type: KeyringType.ledger,
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
+        metadata: {
+          id: '01JN08T38HEXPYQX2HKP1FCRMZ',
+          name: '',
+        },
+      },
+      {
+        type: KeyringType.snap,
+        accounts: ['0xde939393DDe455081fFb3Dfd027E189919F04BD0'],
+        metadata: {
+          id: '',
+          name: '',
+        },
       },
     ],
-    networkConfigurations: {
-      'test-networkConfigurationId-1': {
+    ...mockNetworkState(
+      {
+        id: 'test-networkConfigurationId-1',
         rpcUrl: 'https://testrpc.com',
         chainId: '0x1',
         nickname: 'mainnet',
-        rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+        name: 'mainnet',
+        blockExplorerUrl: 'https://etherscan.io',
+        metadata: {
+          EIPS: { 1559: true },
+          status: NetworkStatus.Available,
+        },
       },
-      'test-networkConfigurationId-2': {
+      {
+        id: 'test-networkConfigurationId-2',
+        rpcUrl: 'https://testrpc2.com',
+        chainId: '0xe708',
+        nickname: LINEA_MAINNET_DISPLAY_NAME,
+        name: LINEA_MAINNET_DISPLAY_NAME,
+        blockExplorerUrl: 'https://lineascan.build',
+        metadata: { EIPS: { 1559: true }, status: NetworkStatus.Available },
+      },
+      {
+        id: 'test-networkConfigurationId-3',
         rpcUrl: 'http://localhost:8545',
         chainId: '0x539',
+        name: 'test network',
         ticker: 'ETH',
         nickname: 'Localhost 8545',
-        rpcPrefs: {},
       },
-    },
+    ),
+    ...mockMultichainNetworkState(),
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': [
@@ -1252,7 +1350,6 @@ const state = {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': './sai.svg',
     },
     hiddenTokens: [],
-    useNonceField: false,
     usePhishDetect: true,
     useTokenDetection: true,
     useCurrencyRateCheck: true,
@@ -1261,6 +1358,7 @@ const state = {
     ipfsGateway: 'dweb.link',
     migratedPrivacyMode: false,
     selectedAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+    selectedNetworkClientId: 'test-networkConfigurationId-1',
     metaMetricsId:
       '0xc2377d11fec1c3b7dd88c4854240ee5e3ed0d9f63b00456d98d80320337b827f',
     currentCurrency: 'usd',
@@ -1358,17 +1456,27 @@ const state = {
     subjects: {
       'https://app.uniswap.org': {
         permissions: {
-          eth_accounts: {
-            invoker: 'https://app.uniswap.org',
-            parentCapability: 'eth_accounts',
-            id: 'a7342e4b-beae-4525-a36c-c0635fd03359',
-            date: 1620710693178,
+          'endowment:caip25': {
             caveats: [
               {
-                type: 'restrictReturnedAccounts',
-                value: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
+                type: 'authorizedScopes',
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {
+                    'eip155:1': {
+                      accounts: [
+                        'eip155:1:0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+                      ],
+                    },
+                  },
+                  isMultichainOrigin: false,
+                },
               },
             ],
+            invoker: 'https://app.uniswap.org',
+            id: 'a7342e4b-beae-4525-a36c-c0635fd03359',
+            date: 1620710693178,
+            parentCapability: 'endowment:caip25',
           },
         },
       },
@@ -1451,7 +1559,19 @@ const state = {
       },
     },
     ensResolutionsByAddress: {},
-    pendingApprovals: {},
+    pendingApprovals: {
+      '741bad30-45b6-11ef-b6ec-870d18dd6c01': {
+        id: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        origin: 'http://127.0.0.1:8080',
+        type: 'transaction',
+        time: 1721383540624,
+        requestData: {
+          txId: '741bad30-45b6-11ef-b6ec-870d18dd6c01',
+        },
+        requestState: null,
+        expectsResult: true,
+      },
+    },
     pendingApprovalCount: 0,
     subjectMetadata: {
       'http://localhost:8080': {
@@ -1544,8 +1664,18 @@ const state = {
         },
       },
     },
+    openSeaEnabled: true,
+    networkConnectionBanner: {
+      status: 'unknown',
+    },
+    coverageResults: {},
   },
   appState: {
+    welcomeScreenSeen: false,
+    pendingTokens: {},
+    confirmationExchangeRates: {},
+    customNonceValue: '',
+    nextNonce: 71,
     shouldClose: false,
     menuOpen: false,
     modal: {
@@ -1581,7 +1711,6 @@ const state = {
     isLoading: false,
     warning: null,
     buyView: {},
-    gasIsLoading: false,
     defaultHdPaths: {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'/0/0",
@@ -1594,26 +1723,6 @@ const state = {
   },
   history: {
     mostRecentOverviewPage: '/',
-  },
-  send: {
-    toDropdownOpen: false,
-    gasButtonGroupShown: true,
-    errors: {},
-    asset: {
-      type: 'NATIVE',
-      balance: '0x0',
-      details: null,
-    },
-    gas: { error: 'gas' },
-    amount: {
-      error: 'amount',
-    },
-    currentTransactionUUID: 'test-uuid',
-    draftTransactions: {
-      'test-uuid': {
-        ...draftTransactionInitialState,
-      },
-    },
   },
   confirmTransaction: {
     txData: {
@@ -1766,7 +1875,7 @@ export const networkList = [
   {
     blockExplorerUrl: 'https://etherscan.io',
     chainId: '0x1',
-    iconColor: 'var(--mainnet)',
+    iconColor: 'var(--color-primary-default)',
     isATestNetwork: false,
     labelKey: 'mainnet',
     providerType: 'mainnet',

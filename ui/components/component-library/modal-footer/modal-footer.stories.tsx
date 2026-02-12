@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Box, Container, Checkbox, ContainerMaxWidth } from '..';
 import {
   BackgroundColor,
   Display,
@@ -10,6 +9,9 @@ import {
 import { ModalFooter } from './modal-footer';
 
 import README from './README.mdx';
+import { Box } from '../box';
+import { Container, ContainerMaxWidth } from '../container';
+import { Checkbox } from '../checkbox';
 
 const meta: Meta<typeof ModalFooter> = {
   title: 'Components/ComponentLibrary/ModalFooter',
@@ -144,7 +146,7 @@ export const Children: Story = {
   args: {
     children: 'Lorem ipsum dolor sit ',
   },
-  render: (args) => {
+  render: function Render(args) {
     const [checked, setChecked] = React.useState(false);
     const handleCheckboxChange = () => setChecked(!checked);
     return (

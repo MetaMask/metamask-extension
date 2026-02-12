@@ -60,9 +60,6 @@
   "approved": {
     "message": "Apwouve"
   },
-  "attemptingConnect": {
-    "message": "Eseye konekte nan blockchain."
-  },
   "attributions": {
     "message": "Atribisyon"
   },
@@ -150,15 +147,8 @@
   "etherscanView": {
     "message": "Gade kont sou Etherscan"
   },
-  "expandView": {
-    "message": "Elaji Wè"
-  },
   "failed": {
     "message": "Tonbe"
-  },
-  "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
   },
   "fileImportFail": {
     "message": "Enpòte dosye ki pa travay? Klike la a!",
@@ -170,17 +160,11 @@
   "from": {
     "message": "Soti nan"
   },
-  "functionType": {
-    "message": "Kalite Fonksyon"
-  },
   "gasLimit": {
     "message": "Limit gaz"
   },
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
-  },
-  "gasPrice": {
-    "message": "Pri gaz (GWEI)"
   },
   "gasUsed": {
     "message": "Gaz yo Itilize"
@@ -214,9 +198,6 @@
     "message": "Pòte",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Pòte Kont"
-  },
   "importAccountMsg": {
     "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
   },
@@ -238,9 +219,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Moun ki resevwa adrès la pa valab"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Block Explorer URI pa valab"
   },
   "invalidRPC": {
     "message": "RPC URI pa valab"
@@ -270,9 +248,6 @@
   "loading": {
     "message": "Telechaje..."
   },
-  "loadingTokens": {
-    "message": "Telechaje Tokens..."
-  },
   "lock": {
     "message": "Dekonekte"
   },
@@ -294,9 +269,6 @@
   "needImportFile": {
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Pa ka voye kantite lajan negatif ETH."
   },
   "networks": {
     "message": "Rezo"
@@ -320,15 +292,6 @@
   "next": {
     "message": "Aprè sa"
   },
-  "noAddressForName": {
-    "message": "Pa gen adrès ki etabli pou non sa a."
-  },
-  "noConversionRateAvailable": {
-    "message": "Pa gen okenn Konvèsyon Disponib"
-  },
-  "noTransactions": {
-    "message": "Pa gen tranzaksyon"
-  },
   "noWebcamFound": {
     "message": "Nou pakay jwenn webcam òdinatè ou. Tanpri eseye ankò."
   },
@@ -340,9 +303,6 @@
   },
   "origin": {
     "message": "Orijin"
-  },
-  "parameters": {
-    "message": "Paramèt"
   },
   "password": {
     "message": "Modpas"
@@ -365,12 +325,6 @@
   },
   "prev": {
     "message": "Avan"
-  },
-  "primaryCurrencySetting": {
-    "message": "Lajan ou itilize pi plis la"
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Chwazi ETH pou bay priyorite montre valè nan ETH. Chwazi Fiat priyorite montre valè nan lajan ou chwazi a."
   },
   "privacyMsg": {
     "message": "Règleman sou enfòmasyon prive"
@@ -395,10 +349,10 @@
     "message": "Rejte Tout"
   },
   "rejectTxsDescription": {
-    "message": "Ou se sou rejte $ 1 yon anpil nan tranzaksyon yo."
+    "message": "Ou se sou rejte $1 yon anpil nan tranzaksyon yo."
   },
   "rejectTxsN": {
-    "message": "Rejete $ 1 tranzaksyon"
+    "message": "Rejete $1 tranzaksyon"
   },
   "rejected": {
     "message": "Rejete"
@@ -458,9 +412,6 @@
   "send": {
     "message": "Voye"
   },
-  "sendTokens": {
-    "message": "Voye Tokens"
-  },
   "settings": {
     "message": "Paramèt"
   },
@@ -469,9 +420,6 @@
   },
   "showHexDataDescription": {
     "message": "Pran sa pouw ka montre chan entèfas hex data a"
-  },
-  "sigRequest": {
-    "message": "Demann Siyati"
   },
   "sign": {
     "message": "Siyen"
@@ -548,20 +496,11 @@
   "unknown": {
     "message": "Enkoni"
   },
-  "unknownNetwork": {
-    "message": "Rezo Prive Enkoni"
-  },
   "unknownQrCode": {
     "message": "Erè: Nou pa t kapab idantifye QR kòd sa"
   },
   "unlock": {
     "message": "Debloke"
-  },
-  "unlockMessage": {
-    "message": "Entènèt desantralize a ap tann"
-  },
-  "updatedWithDate": {
-    "message": "Mete ajou $1"
   },
   "urlErrorMsg": {
     "message": "URIs mande pou apwopriye prefiks HTTP / HTTPS a."
@@ -577,9 +516,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
-  },
-  "youSign": {
-    "message": "Ou ap siyen kounya"
   },
   "yourPrivateSeedPhrase": {
     "message": "Seed fraz prive ou a"

@@ -10,16 +10,16 @@ Usually each file or directory contains information about its scope / usage.
 
 To start the [Mock Segment API](./mock-segment.js):
 
--   Add/replace the `SEGMENT_HOST` and `SEGMENT_WRITE_KEY` variables in `.metamaskrc`
-    ```
-    SEGMENT_HOST='http://localhost:9090'
-    SEGMENT_WRITE_KEY='FAKE'
-    ```
--   Build the project to the `./dist/` folder with `yarn dist`
--   Run the Mock Segment API from the command line
-    ```
-    node development/mock-segment.js
-    ```
+- Add/replace the `SEGMENT_HOST` and `SEGMENT_WRITE_KEY` variables in `.metamaskrc`
+  ```
+  SEGMENT_HOST='http://localhost:9090'
+  SEGMENT_WRITE_KEY='FAKE'
+  ```
+- Build the project to the `./dist/` folder with `yarn dist`
+- Run the Mock Segment API from the command line
+  ```
+  node development/mock-segment.js
+  ```
 
 Events triggered whilst using the extension will be logged to the console of the Mock Segment API.
 
@@ -33,18 +33,19 @@ To debug in a production Segment environment:
 - Create a New Workspace
 - Add a Source (Node.js)
 - Copy the `Write Key` from the API Keys section under Settings
--   Add/replace the `SEGMENT_HOST` and `SEGMENT_WRITE_KEY` variables in `.metamaskrc`
-    ```
-    SEGMENT_HOST='https://api.segment.io'
-    SEGMENT_WRITE_KEY='COPIED_WRITE_KEY'
-    ```
--   Build the project to the `./dist/` folder with `yarn dist`
+- Add/replace the `SEGMENT_HOST` and `SEGMENT_WRITE_KEY` variables in `.metamaskrc`
+  ```
+  SEGMENT_HOST='https://api.segment.io'
+  SEGMENT_WRITE_KEY='COPIED_WRITE_KEY'
+  ```
+- Build the project to the `./dist/` folder with `yarn dist`
 
 Events triggered whilst using the extension will be displayed in Segment's Debugger.
 
 ### Debugging Segment requests in MetaMask
 
 To opt in to MetaMetrics;
+
 - Unlock the extension
 - Open the Account menu
 - Click the `Settings` menu item
@@ -57,26 +58,142 @@ or `https://api.segment.io/v1/batch` respectively.
 
 ## Sentry
 
-### Debugging in Sentry
+### Overview
 
-To debug in a production Sentry environment:
+MetaMask uses Sentry for error tracking and performance monitoring. Events are
+automatically categorized by environment based on build target and GitHub context.
 
-- If you have not already got a Sentry account, you can create a free account on [Sentry](https://sentry.io/)
-- Create a New Sentry Organization
-    - If you already have an existing Sentry account and workspace, open the sidebar drop down menu, then click `Switch organization` followed by `Create a new organization`
-- Create a New Project
-- Copy the `Public Key` and `Project ID` from the Client Keys section under your projects Settings
-    - Select `Settings` in the sidebar menu, then select `Projects` in the secondary menu. Click your project then select `Client Keys (DSN)` from the secondary menu. Click the `Configure` button on the `Client Keys` page and copy your `Project Id` and `Public Key`
--   Add/replace the `SENTRY_DSN` and `SENTRY_DSN_DEV` variables in `.metamaskrc`
-    ```
-    SENTRY_DSN_DEV=https://{SENTRY_PUBLIC_KEY}@sentry.io/{SENTRY_PROJECT_ID}
-    SENTRY_DSN=https://{SENTRY_PUBLIC_KEY}@sentry.io/{SENTRY_PROJECT_ID}
-    ```
--   Build the project to the `./dist/` folder with `yarn dist`
+### Sentry Projects
 
-Errors reported whilst using the extension will be displayed in Sentry's `Issues` page.
+| Project                  | Purpose                                 | DSN Variable             |
+| ------------------------ | --------------------------------------- | ------------------------ |
+| **test-metamask**        | Local dev and one-off QA testing        | `SENTRY_DSN_DEV`         |
+| **metamask-performance** | CI/CD and automated performance testing | `SENTRY_DSN_PERFORMANCE` |
+| **metamask-extension**   | Production events only                  | `SENTRY_DSN`             |
 
-To debug in test build we need to comment out the IF condition https://github.com/MetaMask/metamask-extension/blob/develop/app/scripts/lib/setupSentry.js#L392
+> ⚠️ **Important**: Never use `SENTRY_DSN` (production) for local development or CI/CD builds.
+> Use `SENTRY_DSN_DEV` for local development and manual QA testing.
+> Use `SENTRY_DSN_PERFORMANCE` for CI/CD pipelines to send performance metrics to Sentry.
+
+### Environments
+
+| Environment         | When Used           | Build Command     | Webpack Command                                                | Branch/Context       |
+| ------------------- | ------------------- | ----------------- | -------------------------------------------------------------- | -------------------- |
+| `production`        | Production releases | `yarn build prod` | `yarn webpack --env production --targetEnvironment production` | `stable` branch      |
+| `staging`           | Main branch builds  | `yarn build dist` | `yarn webpack --env production`                                | `main` branch        |
+| `development`       | Local development   | `yarn start`      | `yarn webpack --env development --watch`                       | Local                |
+| `testing`           | E2E test builds     | `yarn build:test` | `yarn webpack --env production --test`                         | Any                  |
+| `pull-request`      | PR builds           | `yarn build dist` | `yarn webpack --env production`                                | `pull_request` event |
+| `release-candidate` | Release branches    | `yarn build dist` | `yarn webpack --env production`                                | `release/*` branches |
+| `other`             | Local dist builds   | `yarn build dist` | `yarn webpack --env production`                                | Local builds         |
+
+For non-main build types (beta, flask, experimental), the environment includes the build type suffix:
+
+- `staging-beta`, `staging-flask`, `staging-experimental`
+- `development-beta`, `development-flask`, etc.
+- `testing-flask`, etc.
+
+### Environment Determination Logic
+
+Environments are determined by `development/build/utils.js:getEnvironment()`:
+
+1. **Build target** (highest priority):
+   - `prod` → `production`
+   - `dev` or `testDev` → `development`
+   - `test` → `testing`
+
+2. **Branch name** (for `dist` builds):
+   - `release/*` → `release-candidate`
+   - `main` → `staging`
+
+3. **GitHub event** (fallback):
+   - `pull_request` → `pull-request`
+
+4. **Default**: `other` (local dist builds)
+
+### DSN Selection Logic
+
+The Sentry target DSN is determined by `app/scripts/lib/setupSentry.js:getSentryTarget()`:
+
+```
+if (IN_TEST && !SENTRY_DSN_DEV)     → SENTRY_DSN_FAKE (no events sent)
+if (METAMASK_ENVIRONMENT !== 'production') → SENTRY_DSN_DEV (test-metamask)
+if (METAMASK_ENVIRONMENT === 'production') → SENTRY_DSN (production project)
+```
+
+> **Note**: `SENTRY_DSN_PERFORMANCE` is used by CI/CD pipelines to send performance metrics
+> and benchmark data to Sentry. It is configured in GitHub Actions secrets.
+
+### Querying Sentry
+
+Common Sentry search queries:
+
+| What you want      | Sentry Query                                          |
+| ------------------ | ----------------------------------------------------- |
+| Development errors | `environment:development OR environment:pull-request` |
+| Staging errors     | `environment:staging OR environment:staging-*`        |
+| Test failures      | `environment:testing OR environment:testing-*`        |
+| Production only    | `environment:production`                              |
+| Flask builds       | `environment:*-flask`                                 |
+| Beta builds        | `environment:*-beta`                                  |
+
+### Local Development Setup
+
+To enable Sentry error reporting for local development:
+
+1. Copy the example config and set the DSN:
+
+   ```bash
+   cp .metamaskrc.dist .metamaskrc
+   # Uncomment SENTRY_DSN_DEV in .metamaskrc
+   ```
+
+2. Enable Sentry debug logs (optional): add `DEBUG=metamask:sentry:*` to `.metamaskrc`
+
+3. Enable MetaMetrics via `Settings > Security & privacy > Participate in MetaMetrics`
+
+4. To test Sentry errors:
+   - Add `ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true` to `.metamaskrc` and use Developer Options in Settings
+   - Or call `window.stateHooks.throwTestError()` in the browser console
+
+### Debugging the Publish Release Flow
+
+#### Sentry UI Setup
+
+1. Go to Sentry and Create an Organization, by clicking `Account Menu > Switch organization > Create a new organization`
+2. Create a Javascript Project, by clicking `Projects > Create Project > Javascript`
+3. Create a User Auth Token, by clicking `Account Menu > User auth tokens`
+4. Select your newly created project and grant all permissions to your token
+5. Copy your token to your clipboard
+
+[<img src="../docs/assets/sentry-auth-token.png">](sentry-auth-token.png)
+
+#### Sentry-Cli Setup
+
+1. Go to your terminal, inside the `metamask-extension` project
+2. Login to Sentry using the command line `yarn sentry-cli login --auth-token YOUR_TOKEN`
+3. List your organizations and copy the id for the organization you want to see `yarn sentry-cli organizations list`
+4. List your organization projects and copy the id for the you created `yarn sentry-cli projects list --org YOUR_ORG_ID`
+
+[<img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/f49d82308cb9a5c31ed0d0ec333a90b4bb774bc9/docs/assets/sentry-cli-release-process.gif">](sentry-cli.png)
+
+#### Publish a Release to Sentry
+
+1.  Build your desired MetaMask project. Examples:
+    1.  `yarn dist` to create an MV3 build
+    2.  `yarn dist:mv2` to create an MV2 build
+    3.  (and so on)
+2.  Move the build to its corresponding folder. Ie: `mv dist dist-mv2` (skip this step, if you did the regular MV3 build)
+3.  Publish the release to Sentry:
+    1.  If it's an MV3 build `yarn sentry:publish --org YOUR_ORG_ID --project YOUR_PROJECT_ID`
+    2.  If it's an MV2 build `yarn sentry:publish --dist mv2 --org YOUR_ORG_ID --project YOUR_PROJECT_ID`
+4.  See build files and source maps are uploaded
+5.  Go to Sentry
+6.  Check the Source Maps have been uploaded correctly in Sentry: go to `Settings > Projects > Project Name > Source Maps`
+
+[<img src="../docs/assets/sentry-source-maps.png">](sentry-source-maps.png)
+
+Extra Note: if you already uploaded one version, you can change the `package.json` version and run again the publish step, to test the complete flow.
 
 ## Source Maps
 
@@ -89,14 +206,18 @@ To unbundle the extensions compiled and minified JavaScript using Source Maps:
 - In the Sources tab, click on the `Page` panel
 - Expand the file directory in the Page panel until you see the source files you're after
 - Select a source file in the Page panel
+
 ```
 chrome-extension://{EXTENSION_ID}/common-0.js
 ```
+
 - Double click the source file to open it in the Workspace
 - Right click in the body of the source file and select `Add source map...`
 - Enter the path to the corresponding source map file, and Click `Add`
+
 ```
 file:///{LOCAL_FILE_SYSTEM}/metamask-extension/dist/sourcemaps/common-0.js.map
 ```
+
 - Repeat the steps above as necessary adding all the relevant source map files
 - Your source maps should now be added to the DevTools Console, and you should be able to see your original source files when you debug your code

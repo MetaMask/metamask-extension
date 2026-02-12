@@ -1,13 +1,32 @@
 {
-  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Used for tailwind intellisense
+  "editor.quickSuggestions": {
+    "strings": true
+  },
   "editor.tabSize": 2,
+  "files.associations": {
+    "app/*.html": "ejs"
+  },
+  "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
+  "gitlens.advanced.blame.customArguments": [
+    "--ignore-revs-file .git-blame-ignore-revs"
+  ],
   "javascript.preferences.importModuleSpecifier": "relative",
   "json.schemas": [
     {
       "fileMatch": ["app/manifest/*/*.json"],
       "url": "https://json.schemastore.org/chrome-manifest"
+    },
+    {
+      // apply our package.json schema to our our root `package.json` only
+      "fileMatch": ["package.json", "!node_modules/**/package.json"],
+      "url": "./.vscode/package.json-schema.json"
     }
   ],
+  "tailwindCSS.classFunctions": ["classnames", "classNames"],
+  "tailwindCSS.lint.cssConflict": "error",
+  "tailwindCSS.validate": true,
   "typescript.tsdk": "node_modules/typescript/lib"
 }

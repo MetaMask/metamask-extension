@@ -1,13 +1,9 @@
-import React, {
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IF
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import semver from 'semver';
+import { isSnapId } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -37,13 +33,10 @@ import {
   getSnaps,
   getSubjectsWithSnapPermission,
   getPermissions,
-  getTargetSubjectMetadata,
   getSnapLatestVersion,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  getMemoizedMetaMaskIdentities,
-  ///: END:ONLY_INCLUDE_IF
+  getSnapMetadata,
+  getInternalAccounts,
 } from '../../../selectors';
-import { getSnapName } from '../../../helpers/utils/util';
 import {
   Box,
   Button,
@@ -61,8 +54,8 @@ import { ShowMore } from '../../../components/app/snaps/show-more';
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF
 
-function SnapSettings({ snapId }) {
-  const history = useHistory();
+function SnapSettings({ snapId, initRemove, resetInitRemove }) {
+  const navigate = useNavigate();
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
   const dispatch = useDispatch();
@@ -78,7 +71,7 @@ function SnapSettings({ snapId }) {
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  const identities = useSelector(getMemoizedMetaMaskIdentities);
+  const internalAccounts = useSelector(getInternalAccounts);
   ///: END:ONLY_INCLUDE_IF
 
   const connectedSubjects = useSelector((state) =>
@@ -87,8 +80,9 @@ function SnapSettings({ snapId }) {
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
   );
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snap?.id),
+
+  const { name: snapName, description } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
 
   let isKeyringSnap = false;
@@ -99,20 +93,18 @@ function SnapSettings({ snapId }) {
     if (isKeyringSnap) {
       (async () => {
         const addresses = await getSnapAccountsById(snap.id);
-        const snapIdentities = Object.values(identities).filter((identity) =>
-          addresses.includes(identity.address.toLowerCase()),
+        const snapIdentities = internalAccounts.filter((internalAccount) =>
+          addresses.includes(internalAccount.address.toLowerCase()),
         );
         setKeyringAccounts(snapIdentities);
       })();
     }
-  }, [snap?.id, identities, isKeyringSnap]);
+  }, [snap?.id, internalAccounts, isKeyringSnap]);
   ///: END:ONLY_INCLUDE_IF
 
   const onDisconnect = (connectedOrigin) => {
     dispatch(disconnectOriginFromSnap(connectedOrigin, snap.id));
   };
-
-  const snapName = getSnapName(snap.id, targetSubjectMetadata);
 
   const latestRegistryVersion = useSelector((state) =>
     snap ? getSnapLatestVersion(state, snap?.id) : null,
@@ -131,9 +123,25 @@ function SnapSettings({ snapId }) {
     const approvalId = await dispatch(updateSnap('MetaMask', snapToInstall));
 
     if (approvalId) {
-      history.push(`${CONNECT_ROUTE}/${approvalId}`);
+      navigate(`${CONNECT_ROUTE}/${approvalId}`);
     }
   };
+
+  const connectedTitle = () => {
+    if (connectedSubjects.every((subject) => isSnapId(subject.origin))) {
+      return t('connectedSnaps');
+    } else if (connectedSubjects.some((subject) => isSnapId(subject.origin))) {
+      return t('connectedSitesAndSnaps');
+    }
+    return t('connectedSites');
+  };
+
+  useEffect(() => {
+    if (initRemove) {
+      setIsShowingRemoveWarning(true);
+      resetInitRemove();
+    }
+  }, [initRemove, resetInitRemove]);
 
   return (
     <Box>
@@ -148,22 +156,25 @@ function SnapSettings({ snapId }) {
       <Box className="snap-view__content__description" marginTop={[4, 7]}>
         <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
           <ShowMore buttonBackground={BackgroundColor.backgroundDefault}>
-            <Text>{snap?.manifest.description}</Text>
+            <Text>{description}</Text>
           </ShowMore>
         </SnapDelineator>
       </Box>
       <Box className="snap-view__content__permissions" marginTop={12}>
-        <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
+        <Text variant={TextVariant.bodyLgMedium} marginBottom={1}>
+          {t('permissions')}
+        </Text>
         <SnapPermissionsList
           snapId={snapId}
+          snapName={snapName}
           permissions={permissions ?? {}}
-          targetSubjectMetadata={targetSubjectMetadata}
           showOptions
+          showAllPermissions
         />
       </Box>
       <Box className="snap-view__content__connected-sites" marginTop={12}>
         <Text variant={TextVariant.bodyLgMedium} marginBottom={2}>
-          {t('connectedSites')}
+          {connectedTitle()}
         </Text>
         <ConnectedSitesList
           connectedSubjects={connectedSubjects}
@@ -192,6 +203,7 @@ function SnapSettings({ snapId }) {
             size={ButtonSize.Lg}
             onClick={() => setIsShowingRemoveWarning(true)}
             data-testid="remove-snap-button"
+            disabled={snap.preinstalled && snap.removable === false}
           >
             <Text
               color={TextColor.inherit}
@@ -267,6 +279,8 @@ function SnapSettings({ snapId }) {
 
 SnapSettings.propTypes = {
   snapId: PropTypes.string.isRequired,
+  initRemove: PropTypes.bool,
+  resetInitRemove: PropTypes.func,
 };
 
 export default SnapSettings;

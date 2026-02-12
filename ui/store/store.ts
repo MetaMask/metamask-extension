@@ -1,13 +1,10 @@
-import { StoreEnhancer } from 'redux';
+import { Reducer, StoreEnhancer } from 'redux';
+import { type TypedUseSelectorHook, useSelector } from 'react-redux';
 import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
-import { ApprovalControllerState } from '@metamask/approval-controller';
-import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { InternalAccount } from '@metamask/keyring-api';
 import rootReducer from '../ducks';
-import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
-import type { NetworkStatus } from '../../shared/constants/network';
+import type { AppSliceState } from '../ducks/app/app';
+import type { FlattenedBackgroundStateProxy } from '../../shared/types/background';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file
@@ -17,95 +14,44 @@ import type { NetworkStatus } from '../../shared/constants/network';
  *
  * TODO: Replace this
  */
-export interface TemporaryMessageDataType {
+export type TemporaryMessageDataType = {
   id: string;
   type: string;
   msgParams: {
     metamaskId: string;
     data: string;
   };
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  metadata?: {
-    custodyId?: string;
-  };
-  status?: string;
-  ///: END:ONLY_INCLUDE_IF
-}
+};
 
-export interface MessagesIndexedById {
+export type MessagesIndexedById = {
   [id: string]: TemporaryMessageDataType;
-}
-
-/**
- * This interface is a temporary interface to describe the state tree that is
- * sent from the background. Ideally we can build this using Types in the
- * backend when we compose the stores, then we can import it here and use it.
- *
- * Some of this is duplicated in the metamask redux duck. In *most* cases the
- * state received from the background takes precedence over anything in the
- * metamask reducer.
- */
-interface TemporaryBackgroundState {
-  addressBook: {
-    [chainId: string]: {
-      name: string;
-    }[];
-  };
-  providerConfig: {
-    chainId: string;
-  };
-  transactions: TransactionMeta[];
-  selectedAddress: string;
-  identities: {
-    [address: string]: {
-      balance: string;
-    };
-  };
-  ledgerTransportType: LedgerTransportTypes;
-  unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedMsgs: MessagesIndexedById;
-  unapprovedPersonalMsgs: MessagesIndexedById;
-  unapprovedTypedMessages: MessagesIndexedById;
-  networksMetadata: {
-    [NetworkClientId: string]: {
-      EIPS: { [eip: string]: boolean };
-      status: NetworkStatus;
-    };
-  };
-  selectedNetworkClientId: string;
-  pendingApprovals: ApprovalControllerState['pendingApprovals'];
-  approvalFlows: ApprovalControllerState['approvalFlows'];
-  knownMethodData?: {
-    [fourBytePrefix: string]: Record<string, unknown>;
-  };
-  gasFeeEstimates: GasFeeEstimates;
-  gasEstimateType: GasEstimateType;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyAccountDetails?: { [key: string]: any };
-  ///: END:ONLY_INCLUDE_IF
-  internalAccounts: {
-    accounts: {
-      [key: string]: InternalAccount;
-    };
-    selectedAccount: string;
-  };
-}
+};
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
 
-export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
+/**
+ * `ReduxState` overrides incorrectly typed properties of `RootReducerReturnType`, and is only intended to be used as an input for `configureStore`.
+ * The `MetaMaskReduxState` type (derived from the returned output of `configureStore`) is to be used consistently as the single source-of-truth and representation of Redux state shape.
+ *
+ * Redux slice reducers that are passed an `AnyAction`-type `action` parameter are inferred to have a return type of `never`.
+ * TODO: Supply exhaustive action types to all Redux slices (specifically `metamask` and `appState`)
+ */
+type ReduxState = {
   activeTab: {
     origin: string;
   };
-  metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
-};
+  metamask: FlattenedBackgroundStateProxy;
+  appState: AppSliceState['appState'];
+} & Omit<RootReducerReturnType, 'activeTab' | 'metamask' | 'appState'>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
-  const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);
-  const isDev = debugModeEnabled && !process.env.IN_TEST;
+  const reduxDevtoolsEnabled = process.env.METAMASK_REACT_REDUX_DEVTOOLS;
+  const runningTests = process.env.IN_TEST;
   const enhancers: StoreEnhancer[] = [];
 
-  if (isDev) {
+  if (reduxDevtoolsEnabled && !runningTests) {
     enhancers.push(
       devtoolsEnhancer({
         name: 'MetaMask',
@@ -117,7 +63,7 @@ export default function configureStore(preloadedState: any) {
   }
 
   return baseConfigureStore({
-    reducer: rootReducer as () => CombinedBackgroundAndReduxState,
+    reducer: rootReducer as unknown as Reducer<ReduxState>,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         /**
@@ -132,16 +78,10 @@ export default function configureStore(preloadedState: any) {
         serializableCheck: false,
         /**
          * immutableCheck controls whether we get warnings about mutation of
-         * state, which will be true in dev. However in test lavamoat complains
-         * about something the middleware is doing. It would be good to figure
-         * that out and enable this in test environments so that mutation
-         * causes E2E failures.
+         * state, this is turned off by default for now since it heavily affects
+         * performance due to the Redux state growing larger.
          */
-        immutableCheck: isDev
-          ? {
-              warnAfter: 100,
-            }
-          : false,
+        immutableCheck: false,
       }),
     devTools: false,
     enhancers,
@@ -151,3 +91,5 @@ export default function configureStore(preloadedState: any) {
 type Store = ReturnType<typeof configureStore>;
 export type MetaMaskReduxState = ReturnType<Store['getState']>;
 export type MetaMaskReduxDispatch = Store['dispatch'];
+export const useAppSelector: TypedUseSelectorHook<MetaMaskReduxState> =
+  useSelector;

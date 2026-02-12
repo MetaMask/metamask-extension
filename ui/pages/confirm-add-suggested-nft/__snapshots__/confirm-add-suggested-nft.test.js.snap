@@ -9,7 +9,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
     />
     <div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="mm-box confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
       >
         <div
           class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
@@ -42,7 +42,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                         <rect
                           fill="#18CDF2"
                           height="32"
-                          transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                          transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                           width="32"
                           x="0"
                           y="0"
@@ -50,7 +50,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                         <rect
                           fill="#035E56"
                           height="32"
-                          transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                          transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                           width="32"
                           x="0"
                           y="0"
@@ -58,7 +58,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                         <rect
                           fill="#F26602"
                           height="32"
-                          transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                          transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                           width="32"
                           x="0"
                           y="0"
@@ -69,9 +69,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 </div>
                 <div
                   class="network-account-balance-header__network-account__ident-icon-ethereum"
+                  style="height: 16px; width: 16px;"
                 >
                   <img
-                    alt="Ethereum Mainnet"
+                    alt="Ethereum"
                     src="./images/eth_logo.svg"
                     style="height: 16px; width: 16px;"
                   />
@@ -82,8 +83,9 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               >
                 <h6
                   class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                  data-testid="signature-request-network-display"
                 >
-                  Ethereum Mainnet
+                  Ethereum
                 </h6>
                 <h6
                   class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
@@ -124,6 +126,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 >
                   <div
                     class=""
+                    style="height: 24px; width: 24px;"
                   >
                     <span
                       class="icon-with-fallback__fallback"
@@ -133,7 +136,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                   </div>
                 </div>
                 <span
-                  class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                  class="mm-box mm-text chip__label mm-text--body-sm mm-box--color-text-alternative"
                 >
                   https://www.opensea.io
                 </span>
@@ -156,7 +159,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box confirm-add-suggested-nft__content"
+          class="mm-box page-container__content confirm-add-suggested-nft__content"
         >
           <div
             class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
@@ -168,7 +171,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 class="mm-box confirm-add-suggested-nft__nft-single mm-box--margin-0 mm-box--padding-0 mm-box--rounded-md"
               >
                 <div
-                  class="mm-box confirm-add-suggested-nft__nft-single-image-default nft-default mm-box--display-flex mm-box--rounded-lg"
+                  class="mm-box confirm-add-suggested-nft__nft-single-image-default nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
                   data-testid="nft-default-image"
                   tabindex="0"
                 />
@@ -178,12 +181,14 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                   <div
                     class="mm-box confirm-add-suggested-nft__nft-single-sub-details mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-nowrap mm-box--justify-content-space-evenly mm-box--width-full"
                   >
-                    <p
-                      class="mm-box mm-text confirm-add-suggested-nft__nft-name mm-text--body-md mm-box--color-text-default"
+                    <a
+                      class="mm-box mm-text mm-button-base confirm-add-suggested-nft__nft-name mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                      href="https://localhost/blockExplorer/0x1/token/0x8b175474e89094c44da98b954eedeac495271d0a"
+                      target="_blank"
                       title="0x8b175474e89094c44da98b954eedeac495271d0a"
                     >
                       CryptoKitty
-                    </p>
+                    </a>
                     <p
                       class="mm-box mm-text confirm-add-suggested-nft__nft-tokenId mm-text--body-md mm-box--color-text-alternative"
                     >
@@ -201,13 +206,13 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
         >
           <footer>
             <button
-              class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
               data-testid="page-container-footer-cancel"
             >
               Cancel
             </button>
             <button
-              class="button btn--rounded btn-primary page-container__footer-button"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
               data-testid="page-container-footer-next"
             >
               Add NFT
@@ -219,7 +224,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
   </body>,
   "container": <div>
     <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      class="mm-box confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
     >
       <div
         class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
@@ -252,7 +257,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                       <rect
                         fill="#18CDF2"
                         height="32"
-                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -260,7 +265,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                       <rect
                         fill="#035E56"
                         height="32"
-                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -268,7 +273,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                       <rect
                         fill="#F26602"
                         height="32"
-                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                         width="32"
                         x="0"
                         y="0"
@@ -279,9 +284,10 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               </div>
               <div
                 class="network-account-balance-header__network-account__ident-icon-ethereum"
+                style="height: 16px; width: 16px;"
               >
                 <img
-                  alt="Ethereum Mainnet"
+                  alt="Ethereum"
                   src="./images/eth_logo.svg"
                   style="height: 16px; width: 16px;"
                 />
@@ -292,8 +298,9 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
             >
               <h6
                 class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                data-testid="signature-request-network-display"
               >
-                Ethereum Mainnet
+                Ethereum
               </h6>
               <h6
                 class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
@@ -334,6 +341,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               >
                 <div
                   class=""
+                  style="height: 24px; width: 24px;"
                 >
                   <span
                     class="icon-with-fallback__fallback"
@@ -343,7 +351,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 </div>
               </div>
               <span
-                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                class="mm-box mm-text chip__label mm-text--body-sm mm-box--color-text-alternative"
               >
                 https://www.opensea.io
               </span>
@@ -366,7 +374,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
         </p>
       </div>
       <div
-        class="mm-box confirm-add-suggested-nft__content"
+        class="mm-box page-container__content confirm-add-suggested-nft__content"
       >
         <div
           class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
@@ -378,7 +386,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               class="mm-box confirm-add-suggested-nft__nft-single mm-box--margin-0 mm-box--padding-0 mm-box--rounded-md"
             >
               <div
-                class="mm-box confirm-add-suggested-nft__nft-single-image-default nft-default mm-box--display-flex mm-box--rounded-lg"
+                class="mm-box confirm-add-suggested-nft__nft-single-image-default nft-default mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
                 data-testid="nft-default-image"
                 tabindex="0"
               />
@@ -388,12 +396,14 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 <div
                   class="mm-box confirm-add-suggested-nft__nft-single-sub-details mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-nowrap mm-box--justify-content-space-evenly mm-box--width-full"
                 >
-                  <p
-                    class="mm-box mm-text confirm-add-suggested-nft__nft-name mm-text--body-md mm-box--color-text-default"
+                  <a
+                    class="mm-box mm-text mm-button-base confirm-add-suggested-nft__nft-name mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                    href="https://localhost/blockExplorer/0x1/token/0x8b175474e89094c44da98b954eedeac495271d0a"
+                    target="_blank"
                     title="0x8b175474e89094c44da98b954eedeac495271d0a"
                   >
                     CryptoKitty
-                  </p>
+                  </a>
                   <p
                     class="mm-box mm-text confirm-add-suggested-nft__nft-tokenId mm-text--body-md mm-box--color-text-alternative"
                   >
@@ -411,13 +421,13 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
       >
         <footer>
           <button
-            class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
             data-testid="page-container-footer-cancel"
           >
             Cancel
           </button>
           <button
-            class="button btn--rounded btn-primary page-container__footer-button"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
             data-testid="page-container-footer-next"
           >
             Add NFT

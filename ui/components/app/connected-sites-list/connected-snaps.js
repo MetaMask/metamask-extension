@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, IconName, IconSize, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MenuItem } from '../../ui/menu';
-import SnapAvatar from '../snaps/snap-avatar';
 import {
   AlignItems,
   BlockSize,
@@ -18,11 +17,12 @@ import ConnectedAccountsListOptions from '../connected-accounts-list/connected-a
 import { getOriginOfCurrentTab } from '../../../selectors';
 import { disconnectOriginFromSnap } from '../../../store/actions';
 import { getSnapRoute } from '../../../helpers/utils/util';
+import { SnapIcon } from '../snaps/snap-icon';
 
 export default function ConnectedSnaps({ connectedSubjects }) {
   const [showOptions, setShowOptions] = useState();
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
 
@@ -38,7 +38,7 @@ export default function ConnectedSnaps({ connectedSubjects }) {
         show={showOptions === snapId}
       >
         <MenuItem
-          iconName={IconName.Logout}
+          iconNameLegacy={IconName.Logout}
           onClick={(e) => {
             e.preventDefault();
             onDisconnect(snapId);
@@ -47,8 +47,8 @@ export default function ConnectedSnaps({ connectedSubjects }) {
           {t('disconnect')}
         </MenuItem>
         <MenuItem
-          iconName={IconName.Setting}
-          onClick={() => history.push(getSnapRoute(snapId))}
+          iconNameLegacy={IconName.Setting}
+          onClick={() => navigate(getSnapRoute(snapId))}
         >
           {t('snapsSettings')}
         </MenuItem>
@@ -74,11 +74,7 @@ export default function ConnectedSnaps({ connectedSubjects }) {
             display={Display.Flex}
             alignItems={AlignItems.center}
           >
-            <SnapAvatar
-              snapId={subject.origin}
-              badgeSize={IconSize.Xs}
-              avatarSize={IconSize.Md}
-            />
+            <SnapIcon snapId={subject.origin} avatarSize={IconSize.Md} />
             <Text
               variant={TextVariant.bodyLgMedium}
               className="connected-accounts-list__account-name"

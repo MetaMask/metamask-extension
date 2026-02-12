@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { LavaDome as LavaDomeReact } from '@lavamoat/lavadome-react';
+import {
+  LavaDome as LavaDomeReact,
+  toLavaDomeToken,
+} from '@lavamoat/lavadome-react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
@@ -23,6 +26,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { MINUTE } from '../../../../shared/constants/time';
 
 const inTest = Boolean(process.env.IN_TEST);
 
@@ -30,7 +34,11 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
   const t = useI18nContext();
 
   const [showSelectDisableWarn, setShowDisableSelectWarn] = useState(false);
-  const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies your private key
+  const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard({
+    clearDelayMs: MINUTE,
+  });
 
   return (
     <>
@@ -57,7 +65,10 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           style={{ wordBreak: 'break-word' }}
           onClick={() => setShowDisableSelectWarn(true)}
         >
-          <LavaDomeReact unsafeOpenModeShadow={inTest} text={privateKey} />
+          <LavaDomeReact
+            unsafeOpenModeShadow={inTest}
+            text={toLavaDomeToken(privateKey)}
+          />
         </Text>
         <ButtonIcon
           onClick={() =>

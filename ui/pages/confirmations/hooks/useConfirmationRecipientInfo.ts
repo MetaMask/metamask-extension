@@ -1,33 +1,53 @@
 import { useSelector } from 'react-redux';
-
+import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
+import { getConfirmationSender } from '../components/confirm/utils';
+import { useConfirmContext } from '../context/confirm';
+import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
-  accountsWithSendEtherInfoSelector,
-  currentConfirmationSelector,
-} from '../../../selectors';
-import { getAccountByAddress } from '../../../helpers/utils/util';
+  selectAccountGroupNameByInternalAccount,
+  selectInternalAccountNameByAddress,
+} from '../selectors/accounts';
+import { RootState } from '../selectors/preferences';
+import {
+  getWalletIdAndNameByAccountAddress,
+  getWalletsWithAccounts,
+} from '../../../selectors/multichain-accounts/account-tree';
 
 function useConfirmationRecipientInfo() {
-  const currentConfirmation = useSelector(currentConfirmationSelector);
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+  const { currentConfirmation } = useConfirmContext();
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
 
-  let recipientAddress = '';
-  let recipientName = '';
+  const { from } = getConfirmationSender(currentConfirmation);
+  const senderAddress = from ?? '';
 
-  if (currentConfirmation) {
-    const { msgParams } = currentConfirmation;
-    // url for all signature requests
-    if (msgParams) {
-      recipientAddress = msgParams.from;
-      const fromAccount = getAccountByAddress(allAccounts, recipientAddress);
-      recipientName = fromAccount?.name;
-    }
-    // TODO: as we add support for more transaction code to find recipient address for different
-    // transaction types will come here
-  }
+  const accountGroupName = useSelector((state: MultichainAccountsState) =>
+    selectAccountGroupNameByInternalAccount(state, senderAddress),
+  );
+
+  const internalAccountName = useSelector((state: RootState) =>
+    selectInternalAccountNameByAddress(state, senderAddress),
+  );
+
+  const walletInfo = useSelector((state: RootState) =>
+    getWalletIdAndNameByAccountAddress(state, senderAddress),
+  );
+
+  const walletsWithAccounts = useSelector(getWalletsWithAccounts);
+
+  const senderName = isMultichainAccountsState2Enabled
+    ? accountGroupName
+    : internalAccountName;
+
+  const hasMoreThanOneWallet = Object.keys(walletsWithAccounts).length > 1;
 
   return {
-    recipientAddress,
-    recipientName,
+    hasMoreThanOneWallet,
+    isBIP44: isMultichainAccountsState2Enabled,
+    senderAddress,
+    senderName: senderName ?? '',
+    walletName: walletInfo?.name ?? '',
   };
 }
 

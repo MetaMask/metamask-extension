@@ -27,7 +27,7 @@
     }
 
     &--active {
-      background-color: var(--color-primary-default);
+      background-color: var(--color-icon-default);
       color: var(--color-primary-inverse);
     }
 
@@ -38,7 +38,7 @@
 }
 
 .radio-button-group {
-  .radio-button {
+  &__button {
     @include design-system.H7;
 
     color: var(--color-text-alternative);

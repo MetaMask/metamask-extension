@@ -75,9 +75,6 @@
   "asset": {
     "message": "Ressurs"
   },
-  "attemptingConnect": {
-    "message": "Prøver å opprette forbindelse med blokkjede"
-  },
   "attributions": {
     "message": "Henvisninger"
   },
@@ -205,9 +202,6 @@
   "delete": {
     "message": "Slett"
   },
-  "deleteNetwork": {
-    "message": "Slette nettverk? "
-  },
   "details": {
     "message": "Detaljer"
   },
@@ -229,20 +223,11 @@
   "editContact": {
     "message": "Rediger kontakt"
   },
-  "ensRegistrationError": {
-    "message": "Feil i ENS-navneregistrering"
-  },
   "enterPasswordContinue": {
     "message": "Skriv inn passord for å fortsette"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum offentlig adresse"
-  },
   "etherscanView": {
     "message": "Vis konto på Etherscan "
-  },
-  "expandView": {
-    "message": "Utvid visning"
   },
   "failed": {
     "message": "Mislyktes"
@@ -260,26 +245,11 @@
   "from": {
     "message": "Fra "
   },
-  "functionType": {
-    "message": "Funksjonstype "
-  },
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Datakraftgrense er det maksimale antall datakraft du er vilig til å benytte. "
-  },
   "gasLimitTooLow": {
     "message": "Datakraftsgrense må være minst 21000"
-  },
-  "gasPrice": {
-    "message": "Bensinpris (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Datakraftspris ekstremt lav "
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Datakraftpris angir mengden Ether du er villig til å betale for hver datakraftenhet."
   },
   "gasUsed": {
     "message": "Brukt datakraft "
@@ -316,9 +286,6 @@
     "message": "Importer",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importér konto"
-  },
   "importAccountMsg": {
     "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
   },
@@ -343,12 +310,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Mottaksadresse er ugyldig "
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Ikke ETH-nettverk, bruk små bokstaver"
-  },
-  "invalidBlockExplorerURL": {
-    "message": "Ugyldig Block Explorer URL"
   },
   "invalidRPC": {
     "message": "Ugyldig RPC URL"
@@ -384,9 +345,6 @@
   "loading": {
     "message": "Laster inn ..."
   },
-  "loadingTokens": {
-    "message": "Laster tokener ..."
-  },
   "localhost": {
     "message": "Lokalvert 8545"
   },
@@ -414,9 +372,6 @@
   "needImportFile": {
     "message": "Du må velge en fil å importere.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Kan ikke sende negative beløp av ETH. "
   },
   "networkName": {
     "message": "Nettverksnavn "
@@ -446,15 +401,6 @@
   "next": {
     "message": "Neste"
   },
-  "noAddressForName": {
-    "message": "Ingen adresse har blitt angitt for dette navnet. "
-  },
-  "noConversionRateAvailable": {
-    "message": "Ingen konverteringsrate tilgjengelig "
-  },
-  "noTransactions": {
-    "message": "Du har ingen transaksjoner"
-  },
   "noWebcamFound": {
     "message": "Datamaskinens webkamera ble ikke funnet. Vennligst prøv igjen."
   },
@@ -478,9 +424,6 @@
   },
   "origin": {
     "message": "Opprinnelse"
-  },
-  "parameters": {
-    "message": "Parametre"
   },
   "participateInMetaMetrics": {
     "message": "Delta i MetaMetrics "
@@ -510,12 +453,6 @@
   "prev": {
     "message": "Tidligere"
   },
-  "primaryCurrencySetting": {
-    "message": "Hovedvaluta "
-  },
-  "primaryCurrencySettingDescription": {
-    "message": "Velg nasjonal for å prioritere å vise verdier i nasjonal valuta i kjeden (f.eks. ETH). Velg Fiat for å prioritere visning av verdier i den valgte fiat-valutaen."
-  },
   "privacyMsg": {
     "message": "Personvernerklæring"
   },
@@ -531,9 +468,6 @@
   },
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
-  },
-  "recipientAddressPlaceholder": {
-    "message": "Søk, offentlig adresse (0x) eller ENS"
   },
   "reject": {
     "message": "Avslå"
@@ -558,9 +492,6 @@
   },
   "removeAccountDescription": {
     "message": "Denne kontoen blir fjernet fra lommeboken din. Forsikre deg om at du har den originale mnemoniske gjenopprettingsfrasen eller den private nøkkelen for denne importerte kontoen før du fortsetter. Du kan importere eller opprette kontoer igjen fra nedtrekksmenyen."
-  },
-  "requestsAwaitingAcknowledgement": {
-    "message": "forespørsler venter på godkjenning"
   },
   "required": {
     "message": "Påkrevd "
@@ -611,9 +542,6 @@
   "selectType": {
     "message": "Velg type "
   },
-  "sendTokens": {
-    "message": "Send tokener"
-  },
   "settings": {
     "message": "Innstillinger"
   },
@@ -628,9 +556,6 @@
   },
   "showHexDataDescription": {
     "message": "Velg dette for å vise hex-datafeltet på sendskjermen"
-  },
-  "sigRequest": {
-    "message": "Signaturforespørsel "
   },
   "sign": {
     "message": "Undertegn"
@@ -667,9 +592,6 @@
   },
   "supportCenter": {
     "message": "Besøk brukerstøtte"
-  },
-  "switchNetworks": {
-    "message": "Bytt nettverk "
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolet må være 11 tegn eller færre."
@@ -722,9 +644,6 @@
   "transactionErrored": {
     "message": "Det oppsto en feil under transaksjonen."
   },
-  "transactionFee": {
-    "message": "Transaksjonsavgift"
-  },
   "transactionResubmitted": {
     "message": "Transaksjonen som ble sendt inn igjen med bensinavgift økte til $1 på $2"
   },
@@ -752,20 +671,11 @@
   "unknown": {
     "message": "Ukjent"
   },
-  "unknownNetwork": {
-    "message": "Ukjent privat nettverk"
-  },
   "unknownQrCode": {
     "message": "Feil: Vi kunne ikke gjenkjenne denne QR-koden"
   },
   "unlock": {
     "message": "Lås opp"
-  },
-  "unlockMessage": {
-    "message": "Det desentraliserte internett venter deg"
-  },
-  "updatedWithDate": {
-    "message": "Oppdatert $1"
   },
   "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
@@ -788,13 +698,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Du må gi kameratilgang for å bruke denne funksjonen."
   },
-  "youSign": {
-    "message": "Du signerer"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Din private frøfrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Null bensinpris for fremskynding"
   }
 }

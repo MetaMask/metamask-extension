@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import 'jest-canvas-mock';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { AccountPicker } from '.';
@@ -17,9 +17,6 @@ const render = (props = {}, state = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      providerConfig: {
-        chainId: '0x99',
-      },
       ...state,
     },
   });
@@ -35,16 +32,9 @@ describe('AccountPicker', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('displays a blockie per the setting', () => {
-    const { container } = render({}, { useBlockie: true });
-    const img = container.querySelector('img');
-    expect(img).toBeDefined();
-    expect(img.src.startsWith('data:image/svg+xml')).toBe(true);
-  });
-
-  it('displays a jazzicon per the setting', () => {
-    const { container } = render({}, { useBlockie: false });
-    expect(container.querySelector('svg')).toBeDefined();
+  it('should show the address in the account button for multichain', () => {
+    const { getByText } = render({ showAddress: true });
+    expect(getByText('0x0DCD5...3E7bc')).toBeInTheDocument();
   });
 
   it('should allow for an additional class name via className prop', () => {

@@ -1,0 +1,32 @@
+{
+  "excludeRegExp": [
+    "/.[^/]*/test/.[^/]*/u"
+  ],
+  "fileExtensions": [
+    "js",
+    "jsx",
+    "ts",
+    "tsx"
+  ],
+  "tsConfig": "tsconfig.json",
+  "detectiveOptions": {
+    "es6": {
+      "skipTypeImports": true
+    },
+    "ts": {
+      "skipTypeImports": true,
+      "skipAsyncImports": true
+    },
+    "tsx": {
+      "skipTypeImports": true,
+      "skipAsyncImports": true
+    }
+  },
+  "allowedCircularGlob": [
+    "ui/ducks/**",
+    "ui/selectors/**",
+    "ui/store/**",
+    "ui/components/app/**",
+    "shared/modules/selectors/**"
+  ]
+}

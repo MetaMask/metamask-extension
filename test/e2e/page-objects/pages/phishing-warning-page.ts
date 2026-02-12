@@ -1,0 +1,90 @@
+import { WebElement } from 'selenium-webdriver';
+import { Driver } from '../../webdriver/driver';
+
+class PhishingWarningPage {
+  private readonly driver: Driver;
+
+  private readonly backToSafetyButton = {
+    text: 'Back to safety',
+  };
+
+  private readonly iframeSelector = 'iframe';
+
+  private readonly openWarningInNewTabLink = '#open-self-in-new-tab';
+
+  private readonly phishingWarningPageTitle = {
+    text: 'This website might be harmful',
+  };
+
+  private readonly proceedAnywayButton = {
+    testId: 'unsafe-continue-loaded',
+  };
+
+  private readonly reportDetectionProblemLink = {
+    text: 'report a detection problem.',
+  };
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.phishingWarningPageTitle);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Phishing Warning page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Phishing Warning page is loaded');
+  }
+
+  async clickBackToSafetyButton(): Promise<void> {
+    console.log('Clicking back to safety button on phishing warning page');
+    await this.driver.clickElementAndWaitToDisappear(this.backToSafetyButton);
+  }
+
+  async clickOpenWarningInNewTabLinkOnIframe(): Promise<void> {
+    console.log(
+      'Clicking open warning in new tab link on phishing warning page',
+    );
+    // Switch to iframe and wait for content to load with waitUntil()
+    // to mitigate a race condition where we search in a stale iframe context if that's replaced on load
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const iframe = (await this.driver.findElement(
+            this.iframeSelector,
+          )) as WebElement;
+          await this.driver.switchToFrame(iframe as unknown as string);
+          await this.checkPageIsLoaded();
+          return true;
+        } catch {
+          // Switch back to default content before retrying, in case we're stuck in the iframe context that was replaced on load
+          await this.driver.switchToDefaultContent();
+          return false;
+        }
+      },
+      { interval: 1000, timeout: 10000 },
+    );
+    await this.driver.clickElement(this.openWarningInNewTabLink);
+  }
+
+  async clickProceedAnywayButton(): Promise<void> {
+    console.log('Clicking proceed anyway button on phishing warning page');
+    await this.driver.clickElement(this.proceedAnywayButton);
+  }
+
+  async clickReportDetectionProblemLink(): Promise<void> {
+    console.log(
+      'Clicking report detection problem link on phishing warning page',
+    );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.reportDetectionProblemLink,
+    );
+  }
+}
+
+export default PhishingWarningPage;

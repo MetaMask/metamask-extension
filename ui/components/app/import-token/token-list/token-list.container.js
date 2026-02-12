@@ -2,9 +2,10 @@ import { connect } from 'react-redux';
 import TokenList from './token-list.component';
 
 const mapStateToProps = (state) => {
-  const { tokens } = state.metamask;
+  const { allTokens, accountsAssets } = state.metamask;
   return {
-    tokens,
+    allTokens,
+    accountsAssets,
   };
 };
 

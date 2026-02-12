@@ -38,8 +38,12 @@ export class ResultTemplate {
   }
 
   getValues(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     pendingApproval: ApprovalRequest<any>,
     t: (key: string) => string,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     actions: any,
   ) {
     const content = this.#getContent(pendingApproval.requestData || {}, t);
@@ -58,8 +62,12 @@ export class ResultTemplate {
 
   #getContent(
     requestData: SuccessOptions | ErrorOptions,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     t: any,
   ): (undefined | string | TemplateRendererComponent)[] {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error, header, icon, message, title } = requestData as any;
     const isSuccess = this.#type === ApprovalType.ResultSuccess;
 

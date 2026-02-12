@@ -8,16 +8,16 @@ import {
   FlexDirection,
 } from '../../helpers/constants/design-system';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
-import { SnapAccountRedirectContent } from './components';
+import SnapAccountRedirectContent from './components/snap-account-redirect-context';
 
-export interface SnapAccountRedirectProps {
+export type SnapAccountRedirectProps = {
   url: string;
   snapId: string;
   snapName: string;
   isBlockedUrl: boolean;
   message: string;
   onSubmit?: () => void;
-}
+};
 
 const SnapAccountRedirect = ({
   url,
@@ -42,8 +42,7 @@ const SnapAccountRedirect = ({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         height={BlockSize.Full}
-        paddingLeft={4}
-        paddingRight={4}
+        padding={4}
       >
         <SnapAccountRedirectContent
           url={url}

@@ -2,24 +2,24 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import SettingsTab from '.';
 import 'jest-canvas-mock';
 
 const mockSetCurrentCurrency = jest.fn();
 const mockUpdateCurrentLocale = jest.fn();
-const mockSetUseNativeCurrencyAsPrimaryCurrencyPreference = jest.fn();
-const mockSetUseBlockie = jest.fn();
+const mockSetAvatarType = jest.fn();
 const mockSetHideZeroBalanceTokens = jest.fn();
+const mockSetShowNativeTokenAsMainBalance = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setCurrentCurrency: () => mockSetCurrentCurrency,
   updateCurrentLocale: () => mockUpdateCurrentLocale,
-  setUseNativeCurrencyAsPrimaryCurrencyPreference: () =>
-    mockSetUseNativeCurrencyAsPrimaryCurrencyPreference,
-  setUseBlockie: () => mockSetUseBlockie,
+  setAvatarType: (value) => () => mockSetAvatarType(value),
   setHideZeroBalanceTokens: () => mockSetHideZeroBalanceTokens,
+  setShowNativeTokenAsMainBalancePreference: () =>
+    mockSetShowNativeTokenAsMainBalance,
 }));
 
 describe('Settings Tab', () => {
@@ -28,7 +28,7 @@ describe('Settings Tab', () => {
   afterEach(() => {
     mockSetCurrentCurrency.mockReset();
     mockUpdateCurrentLocale.mockReset();
-    mockSetUseNativeCurrencyAsPrimaryCurrencyPreference.mockReset();
+    mockSetAvatarType.mockReset();
   });
 
   it('selects currency', async () => {
@@ -51,53 +51,52 @@ describe('Settings Tab', () => {
     expect(mockUpdateCurrentLocale).toHaveBeenCalled();
   });
 
-  it('sets fiat primary currency', async () => {
-    const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
-
-    const fiatCurrencyToggle = queryByTestId('toggle-fiat-currency');
-
-    fireEvent.click(fiatCurrencyToggle);
-
-    expect(
-      mockSetUseNativeCurrencyAsPrimaryCurrencyPreference,
-    ).toHaveBeenCalled();
-  });
-
-  it('should display currency symbol for native token', async () => {
-    const { getByText } = renderWithProvider(<SettingsTab />, mockStore);
-
-    const textElement = getByText('ETH');
-
-    expect(textElement).toBeInTheDocument();
-  });
-
   it('clicks jazzicon', () => {
     const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
-
     const jazziconToggle = queryByTestId('jazz_icon');
 
     fireEvent.click(jazziconToggle);
 
-    expect(mockSetUseBlockie).toHaveBeenCalled();
+    expect(mockSetAvatarType).toHaveBeenCalledWith('jazzicon');
   });
 
   it('clicks blockies icon', () => {
     const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
-
     const blockieToggle = queryByTestId('blockie_icon');
 
     fireEvent.click(blockieToggle);
 
-    expect(mockSetUseBlockie).toHaveBeenCalled();
+    expect(mockSetAvatarType).toHaveBeenCalledWith('blockies');
+  });
+
+  it('clicks maskicon', () => {
+    const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
+    const maskiconToggle = queryByTestId('maskicon_icon');
+
+    fireEvent.click(maskiconToggle);
+
+    expect(mockSetAvatarType).toHaveBeenCalledWith('maskicon');
   });
 
   it('toggles hiding zero balance', () => {
-    const { getByRole } = renderWithProvider(<SettingsTab />, mockStore);
+    const { getAllByRole } = renderWithProvider(<SettingsTab />, mockStore);
 
-    const hideZerBalanceTokens = getByRole('checkbox');
+    const allCheckBoxes = getAllByRole('checkbox');
+    const hideZerBalanceTokens = allCheckBoxes[1];
 
     fireEvent.click(hideZerBalanceTokens);
 
     expect(mockSetHideZeroBalanceTokens).toHaveBeenCalled();
+  });
+
+  it('toggles showing native token as main balance', () => {
+    const { getAllByRole } = renderWithProvider(<SettingsTab />, mockStore);
+
+    const allCheckBoxes = getAllByRole('checkbox');
+    const showNativeTokenAsMainBalance = allCheckBoxes[0];
+
+    fireEvent.click(showNativeTokenAsMainBalance);
+
+    expect(mockSetShowNativeTokenAsMainBalance).toHaveBeenCalled();
   });
 });

@@ -2,17 +2,47 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
 import Jazzicon from '../jazzicon';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
-import BlockieIdenticon from './blockieIdenticon';
 
 const getStyles = (diameter) => ({
   height: diameter,
   width: diameter,
   borderRadius: diameter / 2,
 });
+const getImage = async (image, ipfsGateway) => {
+  return await getAssetImageURL(image, ipfsGateway);
+};
 
+const mapDiameterToSize = (diameter) => {
+  if (diameter <= 16) {
+    return AvatarAccountSize.Xs;
+  }
+  if (diameter <= 24) {
+    return AvatarAccountSize.Sm;
+  }
+  if (diameter <= 32) {
+    return AvatarAccountSize.Md;
+  }
+  if (diameter <= 40) {
+    return AvatarAccountSize.Lg;
+  }
+  if (diameter <= 48) {
+    return AvatarAccountSize.Xl;
+  }
+
+  return AvatarAccountSize.Md;
+};
+
+/**
+ * @deprecated Use PreferredAvatar instead
+ */
 export default class Identicon extends Component {
   static propTypes = {
     /**
@@ -57,10 +87,15 @@ export default class Identicon extends Component {
      * User preferred IPFS gateway
      */
     ipfsGateway: PropTypes.string,
+    /**
+     * Watched NFT contract data keyed by address
+     */
+    watchedNftContracts: PropTypes.object,
   };
 
   state = {
     imageLoadingError: false,
+    imageUrl: '',
   };
 
   static defaultProps = {
@@ -72,11 +107,28 @@ export default class Identicon extends Component {
     useBlockie: false,
     alt: '',
     tokenList: {},
+    watchedNftContracts: {},
   };
 
+  loadImage = async () => {
+    const result = await getImage(this.props.image, this.props.ipfsGateway);
+    this.setState({ imageUrl: result });
+  };
+
+  async componentDidMount() {
+    this.loadImage();
+  }
+
+  async componentDidUpdate(prevProps) {
+    if (prevProps.image !== this.props.image) {
+      this.loadImage();
+    }
+  }
+
   renderImage() {
-    const { className, diameter, alt, imageBorder, ipfsGateway } = this.props;
+    const { className, diameter, alt, imageBorder } = this.props;
     let { image } = this.props;
+    const { imageUrl } = this.state;
 
     if (Array.isArray(image) && image.length) {
       image = image[0];
@@ -86,7 +138,7 @@ export default class Identicon extends Component {
       typeof image === 'string' &&
       image.toLowerCase().startsWith('ipfs://')
     ) {
-      image = getAssetImageURL(image, ipfsGateway);
+      image = imageUrl;
     }
 
     return (
@@ -105,7 +157,9 @@ export default class Identicon extends Component {
   }
 
   renderJazzicon() {
-    const { address, className, diameter, alt, tokenList } = this.props;
+    const { address, className, diameter, alt } = this.props;
+    const tokenList = this.getTokenList();
+
     return (
       <Jazzicon
         address={address}
@@ -126,7 +180,12 @@ export default class Identicon extends Component {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
       >
-        <BlockieIdenticon address={address} diameter={diameter} alt={alt} />
+        <AvatarAccount
+          variant={AvatarAccountVariant.Blockies}
+          address={address}
+          size={mapDiameterToSize(diameter)}
+          alt={alt}
+        />
       </div>
     );
   }
@@ -141,8 +200,33 @@ export default class Identicon extends Component {
     return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
   }
 
+  getTokenImage() {
+    const { address, tokenList } = this.props;
+    return tokenList[address?.toLowerCase()]?.iconUrl;
+  }
+
+  getNftImage() {
+    const { address, watchedNftContracts } = this.props;
+    return watchedNftContracts[address?.toLowerCase()]?.logo;
+  }
+
+  getTokenList() {
+    const { address } = this.props;
+    const tokenImage = this.getTokenImage();
+    const nftImage = this.getNftImage();
+    const iconUrl = tokenImage || nftImage;
+
+    if (!iconUrl) {
+      return {};
+    }
+
+    return {
+      [address.toLowerCase()]: { iconUrl },
+    };
+  }
+
   render() {
-    const { address, image, addBorder, diameter, tokenList } = this.props;
+    const { address, image, addBorder, diameter } = this.props;
     const { imageLoadingError } = this.state;
     const size = diameter + 8;
 
@@ -155,7 +239,7 @@ export default class Identicon extends Component {
     }
 
     if (address) {
-      if (tokenList[address.toLowerCase()]?.iconUrl) {
+      if (this.getTokenImage() || this.getNftImage()) {
         return this.renderJazzicon();
       }
 

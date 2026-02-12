@@ -10,13 +10,13 @@ import {
 
 import { Box } from '../box';
 
-import { IconName } from '..';
-
 import README from './README.mdx';
-import { AvatarIcon, AvatarIconSize } from '.';
+import { AvatarIcon } from './avatar-icon';
+import { IconName } from '../icon';
+import { AvatarIconSize } from './avatar-icon.types';
 
 export default {
-  title: 'Components/ComponentLibrary/AvatarIcon',
+  title: 'Components/ComponentLibrary/AvatarIcon (deprecated)',
   component: AvatarIcon,
   parameters: {
     docs: {

@@ -11,15 +11,18 @@ import '../ui/css/index.scss';
 import localeList from '../app/_locales/index.json';
 import * as allLocales from './locales';
 import { I18nProvider, LegacyI18nProvider } from './i18n';
-import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { setBackgroundConnection } from '../ui/store/background-connection';
 import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
-import { useDarkMode } from 'storybook-dark-mode';
 import { themes } from '@storybook/theming';
+import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
+import './index.css';
+
+// eslint-disable-next-line
+/* @ts-expect-error: Avoids error from window property not existing */
+window.metamaskFeatureFlags = {};
 
 export const parameters = {
   backgrounds: {
@@ -31,7 +34,13 @@ export const parameters = {
   },
   docs: {
     container: (context) => {
-      const isDark = useDarkMode();
+      const theme = context?.globals?.theme || 'both';
+      const systemPrefersDark = window.matchMedia(
+        '(prefers-color-scheme: dark)',
+      ).matches;
+
+      const isDark =
+        theme === 'dark' || (theme === 'both' && systemPrefersDark);
 
       const props = {
         ...context,
@@ -77,6 +86,19 @@ export const globalTypes = {
       }),
     },
   },
+  theme: {
+    name: 'Color Theme',
+    description: 'The color theme for the component',
+    defaultValue: 'both',
+    toolbar: {
+      items: [
+        { value: 'light', title: 'Light', icon: 'sun' },
+        { value: 'dark', title: 'Dark', icon: 'moon' },
+        { value: 'both', title: 'Light/Dark', icon: 'paintbrush' },
+      ],
+      dynamicTitle: true,
+    },
+  },
 };
 
 export const getNewState = (state, props) => {
@@ -84,7 +106,6 @@ export const getNewState = (state, props) => {
 };
 
 export const store = configureStore(testData);
-const history = createBrowserHistory();
 const proxiedBackground = new Proxy(
   {},
   {
@@ -99,7 +120,13 @@ const proxiedBackground = new Proxy(
 setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
-  const isDark = useDarkMode();
+  const { theme } = context.globals;
+  const systemPrefersDark = window.matchMedia(
+    '(prefers-color-scheme: dark)',
+  ).matches;
+
+  const isDark = theme === 'dark' || (theme === 'both' && systemPrefersDark);
+
   const currentLocale = context.globals.locale;
   const current = allLocales[currentLocale];
 
@@ -116,21 +143,88 @@ const metamaskDecorator = (story, context) => {
     }
   }, [isDark]);
 
+  // Get initial entries from story parameters, default to ['/'] if not provided
+  const initialEntries = context.parameters?.initialEntries || ['/'];
+  const path = context.parameters?.path || '*';
+
+  // Wrap story in a component to defer execution until route matches
+  const StoryComponent = () => story();
+
   return (
     <Provider store={store}>
-      <Router history={history}>
-        <MetaMetricsProviderStorybook>
+      <MemoryRouter initialEntries={initialEntries}>
+        <AlertMetricsProvider
+          metrics={{
+            trackAlertActionClicked: () => undefined,
+            trackAlertRender: () => undefined,
+            trackInlineAlertClicked: () => undefined,
+          }}
+        >
           <I18nProvider
             currentLocale={currentLocale}
             current={current}
             en={allLocales.en}
           >
-            <LegacyI18nProvider>{story()}</LegacyI18nProvider>
+            <LegacyI18nProvider>
+              <Routes>
+                <Route path={path} element={<StoryComponent />} />
+              </Routes>
+            </LegacyI18nProvider>
           </I18nProvider>
-        </MetaMetricsProviderStorybook>
-      </Router>
+        </AlertMetricsProvider>
+      </MemoryRouter>
     </Provider>
   );
 };
 
-export const decorators = [metamaskDecorator];
+// Add the withColorScheme decorator
+const withColorScheme = (Story, context) => {
+  const { theme } = context.globals;
+  const systemPrefersDark = window.matchMedia(
+    '(prefers-color-scheme: dark)',
+  ).matches;
+
+  const isDark = theme === 'dark' || (theme === 'both' && systemPrefersDark);
+
+  function Wrapper(props) {
+    return (
+      <div
+        {...props}
+        style={{
+          padding: '1rem',
+          backgroundColor: 'var(--color-background-default)',
+          color: 'var(--color-text-default)',
+        }}
+      />
+    );
+  }
+
+  if (theme === 'light') {
+    return (
+      <Wrapper data-theme="light">
+        <Story />
+      </Wrapper>
+    );
+  }
+
+  if (theme === 'dark') {
+    return (
+      <Wrapper data-theme="dark">
+        <Story />
+      </Wrapper>
+    );
+  }
+
+  return (
+    <div data-theme={isDark ? 'dark' : 'light'}>
+      <Wrapper data-theme="light">
+        <Story />
+      </Wrapper>
+      <Wrapper data-theme="dark">
+        <Story />
+      </Wrapper>
+    </div>
+  );
+};
+
+export const decorators = [metamaskDecorator, withColorScheme];

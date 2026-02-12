@@ -1,4 +1,6 @@
 import browser from 'webextension-polyfill';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { t } from '../../../shared/lib/translate';
 import ExtensionPlatform from './extension';
 
 const TEST_URL =
@@ -17,14 +19,23 @@ jest.mock('webextension-polyfill', () => {
 });
 
 describe('extension platform', () => {
+  const metamaskVersion = process.env.METAMASK_VERSION;
   beforeEach(() => {
     // TODO: Delete this an enable 'resetMocks' in `jest.config.js` instead
     jest.resetAllMocks();
   });
 
+  afterEach(() => {
+    // reset `METAMASK_VERSION` env var
+    process.env.METAMASK_VERSION = metamaskVersion;
+  });
+
   describe('getVersion', () => {
     it('should return non-prerelease version', () => {
-      browser.runtime.getManifest.mockReturnValue({ version: '1.2.3' });
+      process.env.METAMASK_VERSION = 'should.not.return.me';
+      browser.runtime.getManifest.mockReturnValue({
+        version: '1.2.3',
+      });
       const extensionPlatform = new ExtensionPlatform();
 
       const version = extensionPlatform.getVersion();
@@ -33,7 +44,10 @@ describe('extension platform', () => {
     });
 
     it('should return rollback version', () => {
-      browser.runtime.getManifest.mockReturnValue({ version: '1.2.3.1' });
+      process.env.METAMASK_VERSION = 'should.not.return.me';
+      browser.runtime.getManifest.mockReturnValue({
+        version: '1.2.3.1',
+      });
       const extensionPlatform = new ExtensionPlatform();
 
       const version = extensionPlatform.getVersion();
@@ -41,61 +55,16 @@ describe('extension platform', () => {
       expect(version).toBe('1.2.3.1');
     });
 
-    it('should return SemVer-formatted version for Chrome style manifest of prerelease', () => {
+    it('should return SemVer-formatted version manifest of prerelease', () => {
+      process.env.METAMASK_VERSION = 'should.not.return.me';
       browser.runtime.getManifest.mockReturnValue({
-        version: '1.2.3.0',
-        version_name: '1.2.3-beta.0',
+        version: '1.2.3-beta.0',
       });
       const extensionPlatform = new ExtensionPlatform();
 
       const version = extensionPlatform.getVersion();
 
       expect(version).toBe('1.2.3-beta.0');
-    });
-
-    it('should return SemVer-formatted version for Firefox style manifest of prerelease', () => {
-      browser.runtime.getManifest.mockReturnValue({
-        version: '1.2.3beta0',
-      });
-      const extensionPlatform = new ExtensionPlatform();
-
-      const version = extensionPlatform.getVersion();
-
-      expect(version).toBe('1.2.3-beta.0');
-    });
-
-    it('should throw error if build version is missing from Chrome style prerelease manifest', () => {
-      browser.runtime.getManifest.mockReturnValue({
-        version: '1.2.3',
-        version_name: '1.2.3-beta.0',
-      });
-      const extensionPlatform = new ExtensionPlatform();
-
-      expect(() => extensionPlatform.getVersion()).toThrow(
-        'Version missing build number:',
-      );
-    });
-
-    it('should throw error if build version is missing from Firefox style prerelease manifest', () => {
-      browser.runtime.getManifest.mockReturnValue({
-        version: '1.2.3beta',
-      });
-      const extensionPlatform = new ExtensionPlatform();
-
-      expect(() => extensionPlatform.getVersion()).toThrow(
-        'Version contains invalid prerelease:',
-      );
-    });
-
-    it('should throw error if patch is missing from Firefox style prerelease manifest', () => {
-      browser.runtime.getManifest.mockReturnValue({
-        version: '1.2.beta0',
-      });
-      const extensionPlatform = new ExtensionPlatform();
-
-      expect(() => extensionPlatform.getVersion()).toThrow(
-        'Version contains invalid prerelease:',
-      );
     });
   });
 
@@ -164,23 +133,30 @@ describe('extension platform', () => {
         `Transaction 1 failed! ${errorMessage}`,
       );
     });
+  });
 
-    it('should show failed transaction without nonce', async () => {
+  describe('showTransactionNotification', () => {
+    it('shows failed transaction with EthAppNftNotSupported error message', async () => {
       const txMeta = {
-        txParams: {},
-        error: { message: 'Error message' },
+        status: TransactionStatus.failed,
+        txParams: { nonce: '0x1' },
+        error: { message: 'EthAppNftNotSupported' },
+      };
+      const rpcPrefs = {
+        chainId: 1,
       };
       const extensionPlatform = new ExtensionPlatform();
       const showNotificationSpy = jest.spyOn(
         extensionPlatform,
         '_showNotification',
       );
+      const expectedErrorMessage = t('ledgerEthAppNftNotSupportedNotification');
 
-      await extensionPlatform._showFailedTransaction(txMeta);
+      await extensionPlatform.showTransactionNotification(txMeta, rpcPrefs);
 
       expect(showNotificationSpy).toHaveBeenCalledWith(
         'Failed transaction',
-        `Transaction failed! ${txMeta.error.message}`,
+        `Transaction 1 failed! ${expectedErrorMessage}`,
       );
     });
   });

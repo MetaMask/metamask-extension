@@ -38,6 +38,7 @@ export const SnapDelineator = ({
   children,
   onClick,
   boxProps,
+  disablePadding = false,
 }) => {
   const t = useI18nContext();
   const isError =
@@ -83,7 +84,7 @@ export const SnapDelineator = ({
           />
           <Text
             variant={TextVariant.bodySm}
-            color={isError ? TextColor.textDefault : TextColor.textAlternative}
+            color={TextColor.textDefault}
             className="snap-delineator__header__text"
             marginLeft={1}
             marginTop={0}
@@ -107,7 +108,7 @@ export const SnapDelineator = ({
 
       <Box
         className="snap-delineator__content"
-        padding={4}
+        padding={!disablePadding || isLoading ? 4 : 0}
         display={isCollapsable && isCollapsed ? Display.None : Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={isLoading && AlignItems.center}
@@ -129,4 +130,5 @@ SnapDelineator.propTypes = {
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
   children: PropTypes.node,
+  disablePadding: PropTypes.bool,
 };

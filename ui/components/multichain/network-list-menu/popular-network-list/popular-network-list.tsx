@@ -1,0 +1,207 @@
+import React, { useState, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { AddNetworkFields } from '@metamask/network-controller';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  Box,
+  Text,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  ButtonLinkSize,
+  ButtonLink,
+  Popover,
+  PopoverPosition,
+} from '../../../component-library';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
+import {
+  setEnabledNetworks,
+  toggleNetworkMenu,
+  addNetwork,
+} from '../../../../store/actions';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import {
+  AlignItems,
+  BackgroundColor,
+  Display,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+  BorderColor,
+} from '../../../../helpers/constants/design-system';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+
+const PopularNetworkList = ({
+  searchAddNetworkResults,
+}: {
+  searchAddNetworkResults: AddNetworkFields[];
+}) => {
+  const t = useI18nContext();
+  const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+  const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsOpen(false);
+  };
+
+  const [referenceElement, setReferenceElement] = useState();
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const setBoxRef = (ref: any) => {
+    setReferenceElement(ref);
+  };
+
+  // Memoize the popover content so it only updates when searchAddNetworkResults changes
+  const popoverContent = useMemo(() => {
+    if (searchAddNetworkResults.length === 0) {
+      return null;
+    }
+
+    return (
+      <Box
+        marginTop={4}
+        marginBottom={4}
+        display={Display.Flex}
+        justifyContent={JustifyContent.spaceBetween}
+      >
+        <Box display={Display.InlineFlex}>
+          <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
+            {t('additionalNetworks')}
+          </Text>
+
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            onMouseEnter={handleMouseEnter}
+          >
+            <Box marginLeft={2} display={Display.Flex}>
+              <Icon
+                className="add-network__warning-icon"
+                name={IconName.Info}
+                color={IconColor.IconMuted}
+                size={IconSize.Sm}
+              />
+            </Box>
+            <Popover
+              referenceElement={referenceElement}
+              position={PopoverPosition.TopStart}
+              paddingTop={3}
+              paddingBottom={3}
+              offset={[16, 12]}
+              isOpen={isOpen}
+              flip
+              backgroundColor={BackgroundColor.backgroundSection}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                width: '326px',
+              }}
+            >
+              <Text variant={TextVariant.bodyMd}>
+                {' '}
+                {t('popularNetworkAddToolTip')}{' '}
+              </Text>
+              <Box key="learn-more-link">
+                <ButtonLink
+                  size={ButtonLinkSize.Auto}
+                  externalLink
+                  onClick={() => {
+                    global.platform.openTab({
+                      url: ZENDESK_URLS.UNKNOWN_NETWORK,
+                    });
+                  }}
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+              </Box>
+            </Popover>
+          </Box>
+        </Box>
+      </Box>
+    );
+  }, [searchAddNetworkResults, referenceElement, isOpen, t]);
+
+  return (
+    <Box className="new-network-list__networks-container">
+      <Box
+        marginTop={isPopUp ? 0 : 4}
+        marginBottom={1}
+        paddingLeft={4}
+        paddingRight={4}
+        ref={setBoxRef}
+      >
+        {popoverContent}
+        {searchAddNetworkResults.map((network) => (
+          <Box
+            key={network.chainId}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
+            paddingBottom={4}
+            paddingTop={4}
+            className="new-network-list__list-of-networks"
+            data-testid={`popular-network-${network.chainId}`}
+            onMouseEnter={handleMouseLeave}
+          >
+            <Box display={Display.Flex} alignItems={AlignItems.center}>
+              <AvatarNetwork
+                borderColor={BorderColor.backgroundDefault}
+                size={AvatarNetworkSize.Sm}
+                src={
+                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                    network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                  ]
+                }
+                name={network.name}
+              />
+              <Box marginLeft={4}>
+                <Text
+                  color={TextColor.textDefault}
+                  backgroundColor={BackgroundColor.transparent}
+                  ellipsis
+                >
+                  {network.name}
+                </Text>
+              </Box>
+            </Box>
+            <Box data-testid="test-add-button">
+              <ButtonIcon
+                iconName={IconName.Add}
+                size={ButtonIconSize.Md}
+                ariaLabel={t('add')}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={async () => {
+                  dispatch(toggleNetworkMenu());
+
+                  // First add the network to user's configuration
+                  await dispatch(addNetwork(network));
+
+                  // Then enable it in the network list
+                  await dispatch(setEnabledNetworks(network.chainId));
+                }}
+              />
+            </Box>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+};
+
+export default PopularNetworkList;

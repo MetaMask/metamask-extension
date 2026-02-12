@@ -1,0 +1,33 @@
+// This file is for Jest-specific setup only and runs before our Jest tests.
+import { jestPreviewConfigure } from 'jest-preview';
+import '../config/assets/index.css';
+import '../../helpers/setup-after-helper';
+
+// Should be path from root of your project
+jestPreviewConfigure({
+  publicFolder: 'test/integration/config/assets', // No need to configure if `publicFolder` is `public`
+});
+
+// Mock Pay-related components to avoid importing large dependency trees
+// These components are not used by existing integration tests
+jest.mock(
+  '../../../ui/pages/confirmations/components/confirm/info/perps-deposit-info',
+  () => ({
+    PerpsDepositInfo: () => null,
+  }),
+);
+
+jest.mock(
+  '../../../ui/pages/confirmations/components/confirm/info/musd-conversion-info',
+  () => ({
+    MusdConversionInfo: () => null,
+  }),
+);
+
+jest.mock(
+  '../../../ui/pages/confirmations/components/info/custom-amount-info',
+  () => ({
+    CustomAmountInfo: () => null,
+    CustomAmountInfoSkeleton: () => null,
+  }),
+);

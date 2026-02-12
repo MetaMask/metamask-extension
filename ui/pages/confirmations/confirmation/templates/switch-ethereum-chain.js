@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import {
   JustifyContent,
   SEVERITIES,
@@ -59,6 +59,14 @@ function getValues(pendingApproval, t, actions) {
         },
       },
       {
+        element: 'OriginPill',
+        key: 'origin-pill',
+        props: {
+          origin: pendingApproval.origin,
+          dataTestId: 'signature-origin-pill',
+        },
+      },
+      {
         element: 'Box',
         key: 'status-box',
         props: {
@@ -85,7 +93,7 @@ function getValues(pendingApproval, t, actions) {
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
-        ethErrors.provider.userRejectedRequest().serialize(),
+        providerErrors.userRejectedRequest().serialize(),
       ),
     networkDisplay: true,
   };

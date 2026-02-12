@@ -1,0 +1,47 @@
+.notification-list-item {
+  position: relative;
+  background-color: transparent;
+
+  &:hover {
+    background: var(--color-background-default-hover);
+  }
+}
+
+.notification-list-item__icon {
+  padding-top: 6px;
+}
+
+.notification-list-item--unread {
+  [data-theme='light'] & {
+    --item-background: rgba(3, 118, 201, 0.05);
+  }
+
+  [data-theme='dark'] & {
+    --item-background: rgba(3, 118, 201, 0.1);
+  }
+
+  background-color: var(--item-background);
+}
+
+.notification-list-item__unread-dot__wrapper {
+  position: absolute;
+  top: 24px;
+  left: 11px;
+}
+
+.notification-list-item__unread-dot__wrapper--snap {
+  position: absolute;
+  top: 22px;
+  left: 11px;
+}
+
+.notification-list-item__unread-dot__dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-info-default);
+  border-radius: 100vh;
+}
+
+.notification-list-item__right-container {
+  flex-shrink: 0;
+}

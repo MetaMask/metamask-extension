@@ -43,9 +43,14 @@ jest.mock('react-redux', () => {
   };
 });
 
+jest.mock('../../../hooks/useMultichainSelector', () => ({
+  useMultichainSelector: jest.fn(),
+}));
+
 const mockTransaction = {
   status: TransactionStatus.unapproved,
   type: TransactionType.simpleSend,
+  networkClientId: '2',
   txParams: {
     from: '0x000000000000000000000000000000000000dead',
     type: '0x2',
@@ -90,6 +95,7 @@ describe('useGasFeeInputs', () => {
           checkNetworkAndAccountSupports1559Response: false,
         }),
       );
+
       const { result } = renderHook(() => useGasFeeInputs());
       expect(result.current.gasPrice).toBe(
         LEGACY_GAS_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium,
@@ -179,13 +185,24 @@ describe('useGasFeeInputs', () => {
             ...mockTransaction.txParams,
             gas: '0x5208',
           },
+          gasLimitNoBuffer: '0x5208',
         }),
       );
       expect(result.current.balanceError).toBe(true);
     });
+
+    it('should call useGasFeeEstimates with correct networkClientId', () => {
+      renderHook(() => useGasFeeInputs(null, mockTransaction));
+      expect(useGasFeeEstimates).not.toHaveBeenCalledWith('2');
+    });
   });
 
   describe('editGasMode', () => {
+    beforeEach(() => {
+      useGasFeeEstimates.mockImplementation(
+        () => HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE,
+      );
+    });
     it('should return editGasMode passed', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(undefined, undefined, undefined, EditGasModes.swaps),

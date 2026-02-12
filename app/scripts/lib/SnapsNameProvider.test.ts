@@ -1,6 +1,5 @@
 import { NameType } from '@metamask/name-controller';
-// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import {
   GetAllSnaps,
   GetSnap,
@@ -40,6 +39,13 @@ const SNAP_MOCK_3 = {
   },
 };
 
+const SNAP_MOCK_4 = {
+  id: 'testSnap4',
+  manifest: {
+    proposedName: 'Test Snap 4',
+  },
+};
+
 function createMockMessenger({
   getAllSnaps,
   getSnap,
@@ -54,27 +60,51 @@ function createMockMessenger({
   >;
 } = {}): SnapsNameProviderMessenger {
   const getAllSnapsMock =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getAllSnaps ||
-    jest.fn().mockReturnValue([SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3]);
+    jest
+      .fn()
+      .mockReturnValue([SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3, SNAP_MOCK_4]);
 
   const getSnapMock =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getSnap ||
     jest
       .fn()
       .mockImplementation((snapId) =>
-        [SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3].find(({ id }) => id === snapId),
+        [SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3, SNAP_MOCK_4].find(
+          ({ id }) => id === snapId,
+        ),
       );
 
   const handleSnapRequestMock =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     handleSnapRequest || jest.fn().mockResolvedValue(Promise.resolve());
 
   const getPermissionControllerStateMock =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getPermissionControllerState ||
     jest.fn().mockReturnValue({
       subjects: {
-        [SNAP_MOCK.id]: { permissions: { 'endowment:name-lookup': true } },
-        [SNAP_MOCK_2.id]: { permissions: { 'endowment:name-lookup': true } },
+        [SNAP_MOCK.id]: { permissions: { 'endowment:name-lookup': {} } },
+        [SNAP_MOCK_2.id]: { permissions: { 'endowment:name-lookup': {} } },
         [SNAP_MOCK_3.id]: { permissions: {} },
+        [SNAP_MOCK_4.id]: {
+          permissions: {
+            'endowment:name-lookup': {
+              caveats: [
+                {
+                  type: SnapCaveatType.ChainIds,
+                  value: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+                },
+              ],
+            },
+          },
+        },
       },
     });
 
@@ -95,6 +125,8 @@ function createMockMessenger({
 
   return {
     call: callMock,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
 
@@ -113,12 +145,17 @@ describe('SnapsNameProvider', () => {
       const { sourceIds, sourceLabels } = metadata;
 
       expect(sourceIds).toStrictEqual({
-        [NameType.ETHEREUM_ADDRESS]: [SNAP_MOCK.id, SNAP_MOCK_2.id],
+        [NameType.ETHEREUM_ADDRESS]: [
+          SNAP_MOCK.id,
+          SNAP_MOCK_2.id,
+          SNAP_MOCK_4.id,
+        ],
       });
 
       expect(sourceLabels).toStrictEqual({
         [SNAP_MOCK.id]: SNAP_MOCK.manifest.proposedName,
         [SNAP_MOCK_2.id]: SNAP_MOCK_2.manifest.proposedName,
+        [SNAP_MOCK_4.id]: SNAP_MOCK_4.manifest.proposedName,
       });
     });
   });
@@ -166,7 +203,7 @@ describe('SnapsNameProvider', () => {
       for (const snapId of [SNAP_MOCK.id, SNAP_MOCK_2.id]) {
         expect(handleSnapRequest).toHaveBeenCalledWith({
           snapId,
-          origin: '',
+          origin: 'metamask',
           handler: HandlerType.OnNameLookup,
           request: {
             jsonrpc: '2.0',

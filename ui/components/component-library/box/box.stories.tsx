@@ -16,7 +16,7 @@ import {
   FlexWrap,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '..';
+import { Text } from '../text';
 
 import { Box } from './box';
 
@@ -41,7 +41,7 @@ const sizeControlOptions = [
 const marginSizeControlOptions = [...sizeControlOptions, 'auto'];
 
 export default {
-  title: 'Components/ComponentLibrary/Box',
+  title: 'Components/ComponentLibrary/Box (deprecated)',
   component: Box,
   parameters: {
     docs: {
@@ -390,9 +390,29 @@ export const BackgroundColorStory = () => {
           BackgroundColor.backgroundAlternative
         </Text>
       </Box>
+      <Box padding={3} backgroundColor={BackgroundColor.backgroundSection}>
+        <Text color={TextColor.textDefault}>
+          BackgroundColor.backgroundSection
+        </Text>
+      </Box>
+      <Box padding={3} backgroundColor={BackgroundColor.backgroundSubsection}>
+        <Text color={TextColor.textDefault}>
+          BackgroundColor.backgroundSubsection
+        </Text>
+      </Box>
+      <Box padding={3} backgroundColor={BackgroundColor.backgroundMuted}>
+        <Text color={TextColor.textDefault}>
+          BackgroundColor.backgroundMuted (transparent)
+        </Text>
+      </Box>
       <Box padding={3} backgroundColor={BackgroundColor.overlayDefault}>
         <Text color={TextColor.overlayInverse}>
           BackgroundColor.overlayDefault
+        </Text>
+      </Box>
+      <Box padding={3} backgroundColor={BackgroundColor.overlayAlternative}>
+        <Text color={TextColor.overlayInverse}>
+          BackgroundColor.overlayAlternative
         </Text>
       </Box>
       <Box padding={3} backgroundColor={BackgroundColor.primaryDefault}>

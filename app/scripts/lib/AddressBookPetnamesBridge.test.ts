@@ -7,9 +7,14 @@ import {
 } from '@metamask/name-controller';
 import {
   AddressBookController,
-  AddressBookState,
+  AddressBookControllerState,
 } from '@metamask/address-book-controller';
-import { AddressBookPetnamesBridge } from './AddressBookPetnamesBridge';
+import {
+  AddressBookPetnamesBridge,
+  AddressBookPetnamesBridgeActions,
+  AddressBookPetnamesBridgeEvens,
+  AddressBookPetnamesBridgeMessenger,
+} from './AddressBookPetnamesBridge';
 import { PetnamesBridgeMessenger } from './AbstractPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
@@ -18,10 +23,9 @@ const NAME_2_MOCK = 'testName2';
 const CHAIN_ID_MOCK = '0x1';
 
 function createAddressBookControllerMock(
-  state: AddressBookState,
+  state: AddressBookControllerState,
 ): jest.Mocked<AddressBookController> & {
-  // Override the definition of state. Otherwise state is readonly.
-  state: AddressBookState;
+  state: AddressBookControllerState;
 } {
   return {
     state,
@@ -37,13 +41,13 @@ function createNameControllerMock(
   return {
     state,
     setName: jest.fn(),
-  } as any;
+  } as unknown as jest.Mocked<NameController>;
 }
 
-function createMessengerMock(): jest.Mocked<PetnamesBridgeMessenger> {
+function createMessengerMock(): jest.Mocked<AddressBookPetnamesBridgeMessenger> {
   return {
     subscribe: jest.fn(),
-  } as any;
+  } as unknown as jest.Mocked<AddressBookPetnamesBridgeMessenger>;
 }
 
 const EMPTY_NAME_STATE: NameControllerState = {
@@ -77,7 +81,7 @@ function createNameState(address: string, name: string): NameControllerState {
   };
 }
 
-const EMPTY_ADDRESS_BOOK_STATE: AddressBookState = {
+const EMPTY_ADDRESS_BOOK_STATE: AddressBookControllerState = {
   addressBook: {},
 };
 
@@ -92,7 +96,7 @@ function createAddressBookState(
   address: string,
   name: string,
   isEns: boolean,
-): AddressBookState {
+): AddressBookControllerState {
   return {
     ...EMPTY_ADDRESS_BOOK_STATE,
     addressBook: {
@@ -110,12 +114,20 @@ function createAddressBookState(
 }
 
 describe('AddressBookPetnamesBridge', () => {
-  let messenger: jest.Mocked<PetnamesBridgeMessenger>;
+  let messenger: jest.Mocked<
+    PetnamesBridgeMessenger<
+      AddressBookPetnamesBridgeEvens,
+      AddressBookPetnamesBridgeActions
+    >
+  >;
 
   beforeEach(() => {
     jest.resetAllMocks();
-
     messenger = createMessengerMock();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   describe('NameController', () => {
@@ -135,8 +147,8 @@ describe('AddressBookPetnamesBridge', () => {
         NAME_MOCK,
         true,
       );
-      const listener = addressBookController.subscribe.mock
-        .calls[0][0] as () => void;
+
+      const listener = messenger.subscribe.mock.calls[1][1] as () => void;
       listener();
 
       expect(nameController.setName).toHaveBeenCalledTimes(1);
@@ -169,8 +181,7 @@ describe('AddressBookPetnamesBridge', () => {
         NAME_2_MOCK,
         false,
       );
-      const listener = addressBookController.subscribe.mock
-        .calls[0][0] as () => void;
+      const listener = messenger.subscribe.mock.calls[1][1] as () => void;
       listener();
 
       expect(nameController.setName).toHaveBeenCalledTimes(1);
@@ -199,8 +210,7 @@ describe('AddressBookPetnamesBridge', () => {
 
       addressBookController.state = EMPTY_ADDRESS_BOOK_STATE;
 
-      const listener = addressBookController.subscribe.mock
-        .calls[0][0] as () => void;
+      const listener = messenger.subscribe.mock.calls[1][1] as () => void;
       listener();
 
       expect(nameController.setName).toHaveBeenCalledTimes(1);

@@ -1,9 +1,11 @@
 import {
+  File as FileObject,
   FormState,
   InterfaceState,
+  State,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
-import { debounce } from 'lodash';
+import { encodeBase64 } from '@metamask/snaps-utils';
 import React, {
   FunctionComponent,
   createContext,
@@ -11,25 +13,44 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getMemoizedInterface } from '../../selectors';
-import { handleSnapRequest, updateInterfaceState } from '../../store/actions';
+import { useDispatch } from 'react-redux';
+import {
+  handleSnapRequest as handleSnapRequestFunction,
+  updateInterfaceState,
+  forceUpdateMetamaskState,
+} from '../../store/actions';
 import { mergeValue } from './utils';
 
-export type HandleEvent = (event: UserInputEventType, name?: string) => void;
+export type HandleEvent = <Type extends State>(args: {
+  event: UserInputEventType;
+  name?: string;
+  value?: Type | null;
+}) => void;
 
-export type HandleInputChange = (
+export type HandleInputChange = <Type extends State>(
   name: string,
-  value: string | null,
+  value: Type | null,
   form?: string,
 ) => void;
 
-export type GetValue = (name: string, form?: string) => string | undefined;
+export type GetValue = (name: string, form?: string) => State | undefined;
+
+export type HandleFileChange = (
+  name: string,
+  file: File | null,
+  form?: string,
+) => void;
+
+export type SetCurrentInputFocus = (name: string | null) => void;
 
 export type SnapInterfaceContextType = {
   handleEvent: HandleEvent;
   getValue: GetValue;
   handleInputChange: HandleInputChange;
+  handleFileChange: HandleFileChange;
+  setCurrentFocusedInput: SetCurrentInputFocus;
+  focusedInput: string | null;
+  snapId: string;
 };
 
 export const SnapInterfaceContext =
@@ -38,6 +59,7 @@ export const SnapInterfaceContext =
 export type SnapInterfaceContextProviderProps = {
   interfaceId: string;
   snapId: string;
+  initialState: InterfaceState;
 };
 
 /**
@@ -47,70 +69,84 @@ export type SnapInterfaceContextProviderProps = {
  * @param params.children - The childrens to wrap with the context provider.
  * @param params.interfaceId - The interface ID to use.
  * @param params.snapId - The Snap ID that requested the interface.
+ * @param params.initialState - The initial state of the interface.
  * @returns The context provider.
  */
 export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
-> = ({ children, interfaceId, snapId }) => {
+> = ({ children, interfaceId, snapId, initialState }) => {
   const dispatch = useDispatch();
-  const { state: initialState } = useSelector(
-    (state) => getMemoizedInterface(state, interfaceId),
-    // Prevents the selector update.
-    // We do this to avoid useless re-renders.
-    () => true,
-  );
 
-  // We keep an internal copy of the state to speed-up the state update in the UI.
-  // It's kept in a ref to avoid useless re-rendering of the entire tree of components.
+  // We keep an internal copy of the state to speed up the state update in the
+  // UI. It's kept in a ref to avoid useless re-rendering of the entire tree of
+  // components.
   const internalState = useRef<InterfaceState>(initialState ?? {});
+  const focusedInput = useRef<string | null>(null);
 
-  // Since the internal state is kept in a reference, it won't update when the interface is updated.
-  // We have to manually update it
+  // Since the internal state is kept in a reference, it won't update when the
+  // interface is updated. We have to manually update it.
   useEffect(() => {
     internalState.current = initialState;
   }, [initialState]);
 
-  // The submittion of user input events is debounced to avoid crashing the snap if
-  // there's too much events sent at the same time
-  const snapRequestDebounced: HandleEvent = debounce(
-    (event, name) =>
-      handleSnapRequest({
-        snapId,
-        origin: '',
-        handler: 'onUserInput',
-        request: {
-          jsonrpc: '2.0',
-          method: ' ',
-          params: {
-            event: {
-              type: event,
-              name,
-              value: internalState.current[name],
-            },
-            id: interfaceId,
+  const handleSnapRequest = (
+    event: UserInputEventType,
+    name?: string,
+    value?: unknown,
+  ) => {
+    handleSnapRequestFunction<Parameters<HandleEvent>[0]>({
+      snapId,
+      origin: 'metamask',
+      handler: 'onUserInput',
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: event,
+            ...(name === undefined ? {} : { name }),
+            // Ensure `value` is always stripped for button clicks as buttons do not have a value (null is also disallowed).
+            ...(event === UserInputEventType.ButtonClickEvent ||
+            value === undefined
+              ? {}
+              : { value }),
           },
+          id: interfaceId,
         },
-      }),
-    200,
-  );
+      },
+    })
+      .then(() => forceUpdateMetamaskState(dispatch))
+      .catch((error) => {
+        console.error(
+          `Failed to handle Snap request to "${snapId}" for event "${event}" with name "${name}":`,
+          error,
+        );
+      });
+  };
 
-  // The update of the state is debounced to avoid crashes due to too much
-  // updates in a short amount of time.
-  const updateStateDebounced = debounce(
-    (state) => dispatch(updateInterfaceState(interfaceId, state)),
-    200,
-  );
+  const updateState = (state: InterfaceState) =>
+    dispatch(updateInterfaceState(interfaceId, state));
 
   /**
    * Handle the submission of an user input event to the Snap.
    *
-   * @param event - The event object.
-   * @param name - The name of the component emmitting the event.
+   * @param options - An options bag.
+   * @param options.event - The event type.
+   * @param options.name - The name of the component emitting the event.
+   * @param options.value - The value of the component emitting the event.
    */
-  const handleEvent: HandleEvent = (event, name) => {
-    updateStateDebounced.flush();
-    snapRequestDebounced(event, name);
-  };
+  const handleEvent: HandleEvent = ({
+    event,
+    name,
+    value = name ? internalState.current[name] : null,
+  }) => handleSnapRequest(event, name, value);
+
+  const submitInputChange = (name: string, value: State | null) =>
+    handleEvent({
+      event: UserInputEventType.InputChangeEvent,
+      name,
+      value,
+    });
 
   /**
    * Handle the value change of an input.
@@ -124,7 +160,71 @@ export const SnapInterfaceContextProvider: FunctionComponent<
     const state = mergeValue(internalState.current, name, value, form);
 
     internalState.current = state;
-    updateStateDebounced(state);
+    updateState(state);
+    submitInputChange(name, value);
+  };
+
+  const uploadFile = (name: string, file: FileObject | null) => {
+    handleSnapRequestFunction<Parameters<HandleEvent>[0]>({
+      snapId,
+      origin: 'metamask',
+      handler: 'onUserInput',
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.FileUploadEvent,
+            ...(name === undefined ? {} : { name }),
+            ...(file === undefined ? {} : { file }),
+          },
+          id: interfaceId,
+        },
+      },
+    }).then(() => forceUpdateMetamaskState(dispatch));
+  };
+
+  /**
+   * Handle the file change of an input.
+   *
+   * @param name - The name of the input.
+   * @param file - The file to upload.
+   * @param form - The name of the form containing the input.
+   */
+  const handleFileChange: HandleFileChange = (name, file, form) => {
+    if (file) {
+      file
+        .arrayBuffer()
+        .then((arrayBuffer) => new Uint8Array(arrayBuffer))
+        .then((uint8Array) => encodeBase64(uint8Array))
+        .then((base64) => {
+          const fileObject: FileObject = {
+            name: file.name,
+            size: file.size,
+            contentType: file.type,
+            contents: base64 as string,
+          };
+
+          const state = mergeValue(
+            internalState.current,
+            name,
+            fileObject,
+            form,
+          );
+
+          internalState.current = state;
+          updateState(state);
+          uploadFile(name, fileObject);
+        });
+
+      return;
+    }
+
+    const state = mergeValue(internalState.current, name, null, form);
+
+    internalState.current = state;
+    updateState(state);
+    uploadFile(name, null);
   };
 
   /**
@@ -140,16 +240,27 @@ export const SnapInterfaceContextProvider: FunctionComponent<
       ? (initialState[form] as FormState)?.[name]
       : (initialState as FormState)?.[name];
 
-    if (value) {
+    if (value !== undefined && value !== null) {
       return value;
     }
 
     return undefined;
   };
 
+  const setCurrentFocusedInput: SetCurrentInputFocus = (name) =>
+    (focusedInput.current = name);
+
   return (
     <SnapInterfaceContext.Provider
-      value={{ handleEvent, getValue, handleInputChange }}
+      value={{
+        handleEvent,
+        getValue,
+        handleInputChange,
+        handleFileChange,
+        setCurrentFocusedInput,
+        focusedInput: focusedInput.current,
+        snapId,
+      }}
     >
       {children}
     </SnapInterfaceContext.Provider>

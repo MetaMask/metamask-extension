@@ -6,16 +6,16 @@ import {
   EditGasModes,
   GasEstimateTypes,
 } from '../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
 import InfoTooltip from '../../ui/info-tooltip';
 import {
   decGWEIToHexWEI,
   hexWEIToDecETH,
 } from '../../../../shared/modules/conversion.utils';
+import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import CancelSpeedupPopover from './cancel-speedup-popover';
 
 const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800';
@@ -48,11 +48,16 @@ const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI =
   MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_BN_WEI.toString(16);
 
 jest.mock('../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
-  getGasFeeEstimatesAndStartPolling: jest
+  gasFeeStartPollingByNetworkClientId: jest
     .fn()
-    .mockImplementation(() => Promise.resolve()),
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>
+    Promise.resolve({
+      chainId: '0x5',
+    }),
+  ),
+  getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
   updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
@@ -69,6 +74,9 @@ jest.mock('../../../contexts/transaction-modal', () => ({
 
 jest.mock('../../ui/info-tooltip', () => jest.fn(() => null));
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 const render = (
   props,
   maxFeePerGas = MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
@@ -77,19 +85,27 @@ const render = (
     metamask: {
       ...mockState.metamask,
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [mockSelectedInternalAccount.address]: {
+          address: mockSelectedInternalAccount.address,
           balance: '0x1F4',
         },
       },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+      gasFeeEstimatesByChainId: {
+        ...mockState.metamask.gasFeeEstimatesByChainId,
+        '0x5': {
+          ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+          gasFeeEstimates:
+            mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates,
+        },
+      },
     },
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider
+    <CancelSpeedupPopover
       transaction={{
         userFeeLevel: 'tenPercentIncreased',
         txParams: {
@@ -100,9 +116,7 @@ const render = (
       }}
       editGasMode={EditGasModes.cancel}
       {...props}
-    >
-      <CancelSpeedupPopover />
-    </GasFeeContextProvider>,
+    />,
     store,
   );
 };
@@ -112,14 +126,14 @@ describe('CancelSpeedupPopover', () => {
     jest.clearAllMocks();
   });
 
-  it('should have ❌Cancel in header if editGasMode is cancel', async () => {
+  it('should have Cancel in header if editGasMode is cancel', async () => {
     await act(async () => render());
-    expect(screen.queryByText('❌Cancel')).toBeInTheDocument();
+    expect(screen.queryByText('Cancel')).toBeInTheDocument();
   });
 
-  it('should have 🚀Speed up in header if editGasMode is speedup', async () => {
+  it('should have Speed up in header if editGasMode is speedup', async () => {
     await act(async () => render({ editGasMode: EditGasModes.speedUp }));
-    expect(screen.queryByText('🚀Speed up')).toBeInTheDocument();
+    expect(screen.queryByText('Speed up')).toBeInTheDocument();
   });
 
   it('information tooltip should contain the correct text if editGasMode is cancel', async () => {

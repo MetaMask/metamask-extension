@@ -1,22 +1,25 @@
-import {
-  EthAccountType,
-  InternalAccount,
-  EthMethod,
-} from '@metamask/keyring-api';
-import { sha256FromString } from 'ethereumjs-util';
+import { EthAccountType } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { sha256 } from '@noble/hashes/sha2';
+import { hexToBytes } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import { cloneDeep } from 'lodash';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-interface Identity {
+export type Identity = {
   name: string;
   address: string;
   lastSelected?: number;
-}
+};
+
+// The `InternalAccount` has been updated with `@metamask/keyring-api@13.0.0`, so we
+// omit the new field to re-use the original type for that migration.
+export type InternalAccountV1 = Omit<InternalAccount, 'scopes'>;
 
 export const version = 105;
 
@@ -48,16 +51,40 @@ function migrateData(state: Record<string, unknown>): void {
   createSelectedAccountForAccountsController(state);
 }
 
+function findInternalAccountByAddress(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state: Record<string, any>,
+  address: string,
+): InternalAccountV1 | undefined {
+  return Object.values<InternalAccountV1>(
+    state.AccountsController.internalAccounts.accounts,
+  ).find(
+    (account: InternalAccountV1) =>
+      account.address.toLowerCase() === address.toLowerCase(),
+  );
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createDefaultAccountsController(state: Record<string, any>) {
-  state.AccountsController = {
-    internalAccounts: {
-      accounts: {},
-      selectedAccount: '',
-    },
-  };
+  // FIXME: Our e2e tests are always going through this migration, which makes it
+  // impossible to define default accounts in our fixtures as they are getting
+  // overwritten here.
+  // So we check for existing state before creating a default one.
+  if (!state.AccountsController) {
+    state.AccountsController = {
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
+    };
+  }
 }
 
 function createInternalAccountsForAccountsController(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
   const identities: {
@@ -68,50 +95,86 @@ function createInternalAccountsForAccountsController(
     return;
   }
 
-  const accounts: Record<string, InternalAccount> = {};
-
   Object.values(identities).forEach((identity) => {
     const expectedId = uuid({
-      random: sha256FromString(identity.address).slice(0, 16),
+      random: sha256(hexToBytes(identity.address)).slice(0, 16),
     });
 
-    accounts[expectedId] = {
-      address: identity.address,
-      id: expectedId,
-      options: {},
-      metadata: {
-        name: identity.name,
-        lastSelected: identity.lastSelected ?? undefined,
-        keyring: {
-          // This is default HD Key Tree type because the keyring is encrypted
-          // during migration, the type will get updated when the during the
-          // initial updateAccounts call.
-          type: 'HD Key Tree',
+    // FIXME: Our e2e tests are always going through this migration, which makes it
+    // impossible to define default accounts in our fixtures as they are getting
+    // overwritten here.
+    // So we check for existing state before creating a default one.
+    if (!state.AccountsController.internalAccounts.accounts[expectedId]) {
+      state.AccountsController.internalAccounts.accounts[expectedId] = {
+        address: identity.address,
+        id: expectedId,
+        options: {},
+        metadata: {
+          name: identity.name,
+          lastSelected: identity.lastSelected ?? undefined,
+          importTime: 0,
+          keyring: {
+            // This is default HD Key Tree type because the keyring is encrypted
+            // during migration, the type will get updated when the during the
+            // initial updateAccounts call.
+            type: 'HD Key Tree',
+          },
         },
-      },
-      methods: [...Object.values(EthMethod)],
-      type: EthAccountType.Eoa,
-    };
+        methods: ETH_EOA_METHODS,
+        type: EthAccountType.Eoa,
+      };
+    }
   });
+}
 
-  state.AccountsController.internalAccounts.accounts = accounts;
+function getFirstAddress(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state: Record<string, any>,
+) {
+  const [firstAddress] = Object.keys(
+    state.PreferencesController?.identities || {},
+  );
+  return firstAddress;
 }
 
 function createSelectedAccountForAccountsController(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
-  const selectedAddress = state.PreferencesController?.selectedAddress;
+  // FIXME: Our e2e tests are always going through this migration, which makes it
+  // impossible to define default accounts in our fixtures as they are getting
+  // overwritten here.
+  // So we check for existing state before creating a default one.
+  if (
+    !state.AccountsController.internalAccounts.selectedAccount ||
+    !state.PreferencesController?.selectedAddress
+  ) {
+    let selectedAddress = state.PreferencesController?.selectedAddress;
 
-  const selectedAccount = Object.values<InternalAccount>(
-    state.AccountsController.internalAccounts.accounts,
-  ).find((account: InternalAccount) => {
-    return account.address.toLowerCase() === selectedAddress.toLowerCase();
-  }) as InternalAccount;
+    if (typeof selectedAddress !== 'string') {
+      global.sentry?.captureException?.(
+        new Error(
+          `state.PreferencesController?.selectedAddress is ${selectedAddress}`,
+        ),
+      );
 
-  if (selectedAccount) {
-    state.AccountsController.internalAccounts = {
-      ...state.AccountsController.internalAccounts,
-      selectedAccount: selectedAccount.id ?? '',
-    };
+      // Get the first account if selectedAddress is not a string
+      selectedAddress = getFirstAddress(state);
+    }
+
+    const selectedAccount = findInternalAccountByAddress(
+      state,
+      selectedAddress,
+    );
+    if (selectedAccount) {
+      // Required in case there was no address selected
+      state.PreferencesController.selectedAddress = selectedAccount.address;
+      state.AccountsController.internalAccounts = {
+        ...state.AccountsController.internalAccounts,
+        selectedAccount: selectedAccount.id,
+      };
+    }
   }
 }

@@ -2,11 +2,13 @@ import React from 'react';
 import type { ContainerProps } from '../container';
 
 import type {
-  StyleUtilityProps,
   PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
 } from '../box';
 import type { ButtonProps } from '../button';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ModalFooterStyleUtilityProps extends StyleUtilityProps {
   /**
    * Additional className to add to the ModalFooter
@@ -38,9 +40,13 @@ export interface ModalFooterStyleUtilityProps extends StyleUtilityProps {
   containerProps?: ContainerProps<'div'>;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalFooterProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ModalFooterStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalFooterComponent = <C extends React.ElementType = 'footer'>(
   props: ModalFooterProps<C>,
 ) => React.ReactElement | null;

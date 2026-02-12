@@ -1,6 +1,30 @@
 import { GitHub } from '@actions/github/lib/utils';
 
 import { LabelableType, Labelable } from './labelable';
+import { retrieveRepo } from './repo';
+
+interface RawIssue {
+  id: string;
+  title: string;
+  number: number;
+  createdAt: string;
+  body: string;
+  author: {
+    login: string;
+  };
+  labels: {
+    nodes: {
+      id: string;
+      name: string;
+    }[];
+  };
+  repository: {
+    name: string;
+    owner: {
+      login: string;
+    };
+  };
+}
 
 // This function retrieves an issue on a specific repo
 export async function retrieveIssue(
@@ -14,6 +38,8 @@ export async function retrieveIssue(
         repository(owner: $repoOwner, name: $repoName) {
           issue(number: $issueNumber) {
             id
+            title
+            number
             createdAt
             body
             author {
@@ -25,6 +51,12 @@ export async function retrieveIssue(
                 name
               }
             }
+            repository {
+              name
+              owner {
+                login
+              }
+            }
           }
         }
       }
@@ -32,20 +64,7 @@ export async function retrieveIssue(
 
   const retrieveIssueResult: {
     repository: {
-      issue: {
-        id: string;
-        createdAt: string;
-        body: string;
-        author: {
-          login: string;
-        };
-        labels: {
-          nodes: {
-            id: string;
-            name: string;
-          }[];
-        };
-      };
+      issue: RawIssue;
     };
   } = await octokit.graphql(retrieveIssueQuery, {
     repoOwner,
@@ -68,6 +87,78 @@ export async function retrieveIssue(
   return issue;
 }
 
+// This function retrieves an issue by title on a specific repo
+export async function retrieveIssueByTitle(
+  octokit: InstanceType<typeof GitHub>,
+  repoOwner: string,
+  repoName: string,
+  issueTitle: string,
+): Promise<Labelable | undefined> {
+  const searchQuery = `repo:${repoOwner}/${repoName} type:issue in:title ${issueTitle}`;
+
+  const retrieveIssueByTitleQuery = `
+      query GetIssueByTitle($searchQuery: String!) {
+        search(
+            query: $searchQuery
+            type: ISSUE
+            first: 10
+        ) {
+            nodes {
+                ... on Issue {
+                    id
+                    title
+                    number
+                    createdAt
+                    body
+                    author {
+                      login
+                    }
+                    labels(first: 100) {
+                      nodes {
+                        id
+                        name
+                      }
+                    }
+                    repository {
+                      name
+                      owner {
+                        login
+                      }
+                    }
+                }
+            }
+            issueCount
+        }
+      }
+    `;
+
+  const retrieveIssueByTitleResult: {
+    search: {
+      nodes: RawIssue[];
+    };
+  } = await octokit.graphql(retrieveIssueByTitleQuery, {
+    searchQuery,
+  });
+
+  const issueWithSameTitle = retrieveIssueByTitleResult?.search?.nodes?.find(rawIssue => rawIssue.title === issueTitle);
+
+  const issue: Labelable | undefined = issueWithSameTitle
+    ? {
+        id: issueWithSameTitle?.id,
+        type: LabelableType.Issue,
+        number: issueWithSameTitle?.number,
+        repoOwner: repoOwner,
+        repoName: repoName,
+        createdAt: issueWithSameTitle?.createdAt,
+        body: issueWithSameTitle?.body,
+        author: issueWithSameTitle?.author?.login,
+        labels: issueWithSameTitle?.labels?.nodes,
+      }
+    : undefined;
+
+  return issue;
+}
+
 // This function retrieves the list of linked issues for a pull request
 export async function retrieveLinkedIssues(
   octokit: InstanceType<typeof GitHub>,
@@ -75,6 +166,7 @@ export async function retrieveLinkedIssues(
   repoName: string,
   prNumber: number,
 ): Promise<Labelable[]> {
+
   // We assume there won't be more than 100 linked issues
   const retrieveLinkedIssuesQuery = `
   query ($repoOwner: String!, $repoName: String!, $prNumber: Int!) {
@@ -83,6 +175,7 @@ export async function retrieveLinkedIssues(
         closingIssuesReferences(first: 100) {
           nodes {
             id
+            title
             number
             createdAt
             body
@@ -112,27 +205,7 @@ export async function retrieveLinkedIssues(
     repository: {
       pullRequest: {
         closingIssuesReferences: {
-          nodes: Array<{
-            id: string;
-            number: number;
-            createdAt: string;
-            body: string;
-            author: {
-              login: string;
-            };
-            labels: {
-              nodes: {
-                id: string;
-                name: string;
-              }[];
-            };
-            repository: {
-              name: string;
-              owner: {
-                login: string;
-              };
-            };
-          }>;
+          nodes: RawIssue[];
         };
       };
     };
@@ -144,27 +217,7 @@ export async function retrieveLinkedIssues(
 
   const linkedIssues: Labelable[] =
     retrieveLinkedIssuesResult?.repository?.pullRequest?.closingIssuesReferences?.nodes?.map(
-      (issue: {
-        id: string;
-        number: number;
-        createdAt: string;
-        body: string;
-        author: {
-          login: string;
-        };
-        labels: {
-          nodes: {
-            id: string;
-            name: string;
-          }[];
-        };
-        repository: {
-          name: string;
-          owner: {
-            login: string;
-          };
-        };
-      }) => {
+      (issue: RawIssue) => {
         return {
           id: issue?.id,
           type: LabelableType.Issue,
@@ -180,4 +233,61 @@ export async function retrieveLinkedIssues(
     ) || [];
 
   return linkedIssues;
+}
+
+// This function creates an issue on a specific repo
+export async function createIssue(
+  octokit: InstanceType<typeof GitHub>,
+  repoOwner: string,
+  repoName: string,
+  issueTitle: string,
+  issueBody: string,
+  labelIds: string[],
+): Promise<string> {
+  // Retrieve PR's repo
+  const repoId = await retrieveRepo(octokit, repoOwner, repoName);
+
+  const createIssueMutation = `
+      mutation CreateIssue($repoId: ID!, $issueTitle: String!, $issueBody: String!, $labelIds: [ID!]) {
+        createIssue(input: {repositoryId: $repoId, title: $issueTitle, body: $issueBody, labelIds: $labelIds}) {
+          issue {
+            id
+            title
+            number
+            createdAt
+            body
+            author {
+                login
+            }
+            labels(first: 100) {
+                nodes {
+                    id
+                    name
+                }
+            }
+            repository {
+              name
+              owner {
+                login
+              }
+            }
+          }
+        }
+      }
+    `;
+
+  const createIssueResult: {
+    createIssue: {
+      issue: RawIssue;
+    };
+  } = await octokit.graphql(createIssueMutation, {
+    repoId,
+    issueTitle,
+    issueBody,
+    labelIds,
+  });
+
+  const issueId = createIssueResult?.createIssue?.issue?.id;
+
+  return issueId;
 }

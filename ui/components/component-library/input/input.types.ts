@@ -13,6 +13,8 @@ export enum InputType {
   Search = 'search',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface InputStyleProps extends StyleUtilityProps {
   /**
    * Autocomplete allows the browser to predict the value based on earlier typed values
@@ -99,9 +101,13 @@ export interface InputStyleProps extends StyleUtilityProps {
   value?: string | number;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type InputProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, InputStyleProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type InputComponent = <C extends React.ElementType = 'input'>(
   props: InputProps<C>,
 ) => React.ReactElement | null;

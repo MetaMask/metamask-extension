@@ -26,6 +26,7 @@ export const DefaultStory: StoryFn<typeof SRPQuiz> = () => {
         <SRPQuiz
           isOpen={isShowingModal}
           onClose={() => updateArgs({ isShowingModal: false })}
+          navigate={() => {}}
         />
       )}
     </>

@@ -1,0 +1,22 @@
+Steps,Test Steps,Preconditions,Test Data,Expected Result,Notes
+1,Open the extension.,,,"The ""Welcome Back"" screen is shown.",
+2,Proceed to unlock the wallet.,,password (8 characters min),"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.",
+3,Switch networks to a test network.,,e. g. Sepolia,The Sepolia balance is shown on the overview. The wallet address is shown on the overview. The selected network is Sepolia.,
+4,Open the test dapp in another tab.,,https://metamask.github.io/test-dapp/,,
+5,"Click ""Connect"".",,,"The MetaMask popup is opened with the ""Connect with MetaMask"" screen displayed.
+Your wallet account is selected.",
+6,"Click ""Next"" and connect with the wallet account.",,,"The MetaMask popup is closed.
+You are connected to the test dapp.",
+7,"Click ""Create token"" to deploy a token contract.",,,The info modal with contract deployment fees is displayed.,
+8,"Click ""Confirm"" and wait for the contract deployment transaction to be confirmed.",,,The MetaMask popup is closed.,Custom token contract deployment time can vary for different networks.
+9,"Switch to the MetaMask wallet and click on the latest transaction in the ""Activity"" tab.",,,"The contract deployment transaction status, nonce, amount, gas and total fees are shown in the transaction details.",
+10,"Click on ""View on block explorer"" in the transaction details modal.",,,The block explorer opens in a new tab.,
+11,Switch to the test dapp in another tab.,,," ""Approve tokens"" button is active.",
+12,"Click ""Approve tokens"".",,,"The MetaMask popup with the request for setting a spending cap on the tokens will appear. Within the 'Custom Spending Cap' field, a value of ""7"" is displayed.",
+13,"Remove the value of ""7"" and enter ""2"" as the new custom spending cap.",,,"""2"" is shown in the ""Custom Spending Cap"" field on the MetaMask popup.",
+14,"Click ""Next"".",,,"The MetaMask popup with the request for a spending cap for ""2"" tokens and estimated gas fees will appear.",
+15,"Click ""Approve"".",,,The Metamask popup is closed.,
+16,"Switch to the MetaMask ""Activity"" tab.",,,"""Approve TST spending cap"" transaction is displayed as ""Pending"" in the ""Activity"" tab.",
+17,"Wait for the transaction status change to 'Confirmed"".",,,"""Approve TST spending cap"" transaction is displayed as ""Confirmed"" in the ""Activity"" tab.",
+18,Proceed to view the transaction on block explorer.,,,"Click on ""View on block explorer"" in the transaction details modal. The block explorer opens in a new tab.",

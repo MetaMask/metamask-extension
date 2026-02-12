@@ -13,10 +13,14 @@ import type { ButtonIconProps } from '../button-icon';
  * Makes all props optional so that if a prop object is used not ALL required props need to be passed
  * TODO: Move to appropriate place in app as this will be highly reusable
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type MakePropsOptional<T> = {
   [K in keyof T]?: T[K];
 };
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * The title of the BannerBase
@@ -62,7 +66,7 @@ export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
    * The onClick handler for the close button
    * When passed this will allow for the close button to show
    */
-  onClose?: () => void;
+  onClose?: (e: React.MouseEvent<HTMLElement>) => void;
   /**
    * The props to pass to the close button
    */
@@ -73,9 +77,13 @@ export interface BannerBaseStyleUtilityProps extends StyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerBaseProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, BannerBaseStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerBaseComponent = <C extends React.ElementType = 'div'>(
   props: BannerBaseProps<C>,
 ) => React.ReactElement | null;

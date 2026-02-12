@@ -1,12 +1,28 @@
+@use "design-system";
+
 .snap-ui-renderer {
-  &__error {
-    margin-top: 0 !important;
+  $height-screen-sm-min: 720px;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  &__container {
+    height: 100%;
+  }
+
+  &__container > &__panel {
+    gap: 16px;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+
+  &__content {
+    flex: 1 1 auto;
   }
 
   &__spinner {
     width: 30px;
-    margin-top: 4px;
-    margin-bottom: 4px;
   }
 
   &__divider {
@@ -14,31 +30,99 @@
     height: 1px;
   }
 
+  &__input > .mm-text-field {
+    min-height: 48px;
+    border-radius: 8px;
+    border-color: var(--color-border-muted);
+
+    & .mm-icon {
+      top: 0;
+    }
+
+    .mm-text--overflow-wrap-anywhere {
+      overflow-wrap: normal;
+    }
+
+    .snap-ui-renderer__image {
+      min-width: 24px;
+      max-width: 36px;
+      min-height: 24px;
+      max-height: 36px;
+    }
+  }
+
+  &__address-input > .mm-text-field {
+    border-color: var(--color-border-muted);
+  }
+
   &__panel {
-    height: 100%;
+    gap: 8px;
   }
 
-  &__content > *:first-child {
-    margin-top: 0;
+  &__text {
+    i {
+      font-style: revert;
+    }
+
+    b {
+      font-weight: revert;
+    }
+
+    span {
+      font-style: inherit;
+      font-weight: inherit;
+    }
   }
 
-  &__content > &__panel > *:first-child {
-    margin-top: 0;
+  &__image {
+    max-width: 100%;
   }
 
-  &__content > &__form > *:first-child {
-    margin-top: 0;
+  &__footer {
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+    height: 80px;
+    margin-top: auto;
+    transition: bottom 0.3s ease-in-out;
   }
 
-  &__content > *:last-child {
-    margin-bottom: 0;
+  &__panel.box--flex-direction-row {
+    .snap-ui-renderer__field {
+      flex: 1 1 50%; // Ensure that adjacent form elements take up to 50% width
+
+      // Asset Selector small state
+      .snap-ui-renderer__asset-selector {
+        padding-left: 8px;
+        padding-right: 8px;
+
+        .snap-ui-renderer__asset-selector-option__balance {
+          display: none; // Hide the balance in the asset selector selected value
+        }
+      }
+    }
+  }
+}
+
+// Additional adjustments for interactive components disabled states
+.snap-ui-renderer,
+.snap-ui-renderer__content {
+  [disabled] {
+    cursor: not-allowed !important;
   }
 
-  &__content > &__panel > *:last-child {
-    margin-bottom: 0;
+  .mm-text-field--disabled,
+  .toggle-button--disabled,
+  .toggle-button--disabled *div {
+    cursor: not-allowed;
   }
 
-  &__content > &__form > *:last-child {
-    margin-bottom: 0;
+  // Override DS text field component's disabled state (we deliberately do not want to adjust opacity on labels)
+  .mm-form-text-field--disabled label {
+    opacity: 1;
   }
+}
+
+.snap-ui-snap-ui-renderer__file-input__drop-zone--disabled,
+.snap-ui-renderer__radio-label--disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
 }

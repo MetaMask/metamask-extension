@@ -1,0 +1,18 @@
+.confirm-footer {
+  &_page-footer {
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+    z-index: 1;
+  }
+}
+
+.riv-animation {
+  &__shield-icon-container {
+    height: 16px;
+    width: 16px;
+  }
+
+  &__canvas {
+    height: 100%;
+    width: 100%;
+  }
+}

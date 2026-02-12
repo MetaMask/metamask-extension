@@ -1,0 +1,20 @@
+@use "design-system";
+
+@import 'prepare/index';
+@import 'prepare/components/index';
+@import 'prepare/components/bridge-asset-picker/index';
+@import 'quotes/index';
+@import 'transaction-details/index';
+@import 'awaiting-signatures/index';
+
+
+
+// TODO add to design-tokens package
+.mm-avatar-base--size-xxs {
+  --size: 12px;
+}
+
+.bridge__container {
+  height: 100%;
+  overflow-y: scroll;
+}

@@ -1,0 +1,321 @@
+const { mockNetworkStateOld } = require('../../stub/networks');
+const { CHAIN_IDS } = require('../../../shared/constants/network');
+const { FirstTimeFlowType } = require('../../../shared/constants/onboarding');
+
+// TODO: Should we bump this?
+// The e2e tests currently configure state in the schema of migration 74.
+// This requires us to specify network state in the old schema, so it can run through the migrations.
+// We could bump this to latest, but it breaks too many other things to handle right now.
+const FIXTURE_STATE_METADATA_VERSION = 74;
+
+const E2E_SRP =
+  'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
+
+function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
+  return {
+    data: {
+      AuthenticationController: {
+        isSignedIn: true,
+      },
+      NotificationServicesController: {
+        subscriptionAccountsSeen: [],
+        isFeatureAnnouncementsEnabled: false,
+        isNotificationServicesEnabled: false,
+        isMetamaskNotificationsFeatureSeen: false,
+        metamaskNotificationsList: [],
+        metamaskNotificationsReadList: [],
+      },
+      AccountsController: {
+        internalAccounts: {
+          selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              metadata: {
+                name: 'Account 1',
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {
+                entropySource: '01KG2PT3Y3FHYEM874K8J5SZ07', // Can be found in the vault.
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01KG2PT3Y3FHYEM874K8J5SZ07', // Can be found in the vault.
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [
+                'personal_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+            },
+          },
+        },
+      },
+      AlertController: {
+        alertEnabledness: {
+          unconnectedAccount: true,
+          web3ShimUsage: true,
+        },
+        unconnectedAccountAlertShownOrigins: {},
+        web3ShimUsageOrigins: {},
+      },
+      AnnouncementController: {
+        announcements: {
+          8: {
+            date: '2021-11-01',
+            id: 8,
+            isShown: false,
+          },
+        },
+      },
+      AppMetadataController: {
+        currentAppVersion: '',
+        previousAppVersion: '',
+        currentMigrationVersion: 0,
+        previousMigrationVersion: 0,
+        firstTimeInfo: {
+          date: 1665507600000,
+          version: '10.21.0',
+        },
+      },
+      NetworkOrderController: {
+        orderedNetworkList: [
+          {
+            networkId: '0x1',
+            networkRpcUrl:
+              'https://mainnet.infura.io/v3/00000000000000000000000000000000',
+          },
+          {
+            networkId: '0xe708',
+            networkRpcUrl:
+              'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
+          },
+          {
+            networkId: inputChainId,
+            networkRpcUrl: 'http://localhost:8545',
+          },
+        ],
+      },
+      NetworkEnablementController: {
+        enabledNetworkMap: {
+          eip155: {
+            [inputChainId]: true,
+          },
+          solana: {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+          },
+          tron: {
+            'tron:728126428': true,
+          },
+          bip122: {
+            'bip122:000000000019d6689c085ae165831e93': true,
+          },
+        },
+        nativeAssetIdentifiers: {},
+      },
+      AccountOrderController: {
+        pinnedAccountList: [],
+        hiddenAccountList: [],
+      },
+      AppStateController: {
+        browserEnvironment: {},
+        nftsDropdownState: {},
+        connectedStatusPopoverHasBeenShown: true,
+        termsOfUseLastAgreed:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
+        defaultHomeActiveTabName: null,
+        fullScreenGasPollTokens: [],
+        notificationGasPollTokens: [],
+        popupGasPollTokens: [],
+        recoveryPhraseReminderHasBeenShown: true,
+        pna25Acknowledged: false,
+        recoveryPhraseReminderLastShown:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
+        showTestnetMessageInDropdown: true,
+        trezorModel: null,
+        isRampCardClosed: false,
+        newPrivacyPolicyToastClickedOrClosed: true,
+        newPrivacyPolicyToastShownDate: Date.now(),
+        snapsInstallPrivacyWarningShown: true,
+        hasShownMultichainAccountsIntroModal: true,
+        showShieldEntryModalOnce: false,
+        pendingShieldCohort: null,
+        pendingShieldCohortTxType: null,
+        appActiveTab: {
+          id: 1,
+          title: 'E2E Test Dapp',
+          origin: 'http://127.0.0.1:8080',
+          protocol: 'http:',
+          url: 'http://127.0.0.1:8080',
+          host: '127.0.0.1:8080',
+          href: 'http://127.0.0.1:8080',
+        },
+      },
+      BridgeController: {},
+      CurrencyController: {
+        currentCurrency: 'usd',
+        currencyRates: {
+          ETH: {
+            conversionDate: 1665507600.0,
+            conversionRate: 1700.0,
+            usdConversionRate: 1700.0,
+          },
+          MON: {
+            conversionDate: 1665507600.0,
+            conversionRate: 0.2,
+            usdConversionRate: 0.2,
+          },
+        },
+      },
+      GasFeeController: {
+        estimatedGasFeeTimeBounds: {},
+        gasEstimateType: 'none',
+        gasFeeEstimates: {},
+      },
+      KeyringController: {
+        vault:
+          '{"data":"5VhA+4ipgCG+XHdD+pQRUBhb6ZOFwnM+Mw6Bb1LJ9Ue96Jkp8w8myd92zQKPHoQZO8J5YiOqLP8h4sDdxSZSgt7fZJTa4L16MjOP+FDNmgK6A5Iu+u8l8zZKGn+A1qPYgUmgFrQYqrilrjrgJJts5u8RjUJIthjV2QjCog3zVUF7h9UT+6L+nSwior4y1TOnycVxv26jJzjszQRNqYMoltEtMwUzArdTrsUzYZ/5baaYdsc1v/LzcZDET0aRGhw1Sn2IVjTtrRUDrN8YdYcwqCcsTEP96WcBg8SI5tCR+xhEBbAH7GtLa+2tEJursftrqP9YDyA9ZQt6ShQKBxgflrPRNhpNBY3aV0tB/vXxxrZXJPrk4SrALd4A6u3+PECD6oRrsUXulWH7kWpTrvPw4jldFWKI1pB+4twCsbiGuP2pxTy1DDAJihkt+pruMMaItK4dtAjZijhCY1j4n2690Zkqk2mC0VjI41dRQ3cBLx/FwCCoS12NNXBgOS+mE9JQ7bfK2goqvfX7LPtlHhofmpMx3md2Vy+S41gKhrMY7zaFX4PILCSPLmj2G0XbSIvXiTqyhZlljFl0owR5GBrm/lU/iTc7VPEVVKelZQ==","iv":"2gQo/hRW1U3zlW9PdJR/dw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"naUac92J74qqtaBU8XqJ2sW0wMqb7KzChs/eO2KnOPg="}',
+      },
+      MetaMetricsController: {
+        eventsBeforeMetricsOptIn: [],
+        tracesBeforeMetricsOptIn: [],
+        fragments: {},
+        metaMetricsId: null,
+        participateInMetaMetrics: false,
+        dataCollectionForMarketing: false,
+        traits: {},
+        latestNonAnonymousEventTimestamp: 0,
+      },
+      MetaMetricsDataDeletionController: {
+        metaMetricsDataDeletionId: null,
+        metaMetricsDataDeletionTimestamp: 0,
+      },
+      NetworkController: {
+        ...mockNetworkStateOld({
+          id: 'networkConfigurationId',
+          chainId: inputChainId,
+          nickname: 'Localhost 8545',
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          blockExplorerUrl: undefined,
+        }),
+        providerConfig: { id: 'networkConfigurationId' },
+      },
+      OnboardingController: {
+        completedOnboarding: true,
+        firstTimeFlowType: FirstTimeFlowType.import,
+        onboardingTabs: {},
+        seedPhraseBackedUp: true,
+      },
+      PermissionController: {
+        subjects: {},
+      },
+      PreferencesController: {
+        advancedGasFee: null,
+        currentLocale: 'en',
+        useExternalServices: true,
+        dismissSeedBackUpReminder: true,
+        overrideContentSecurityPolicyHeader: true,
+        featureFlags: {},
+        forgottenPassword: false,
+        identities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+        },
+        ipfsGateway: 'dweb.link',
+        knownMethodData: {},
+        ledgerTransportType: 'webhid',
+        lostIdentities: {},
+        openSeaEnabled: false,
+        preferences: {
+          hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
+          showFiatInTestnets: false,
+          showTestNetworks: false,
+          smartTransactionsOptInStatus: true,
+          showNativeTokenAsMainBalance: true,
+          petnamesEnabled: true,
+          showMultiRpcModal: false,
+          showConfirmationAdvancedDetails: false,
+          tokenSortConfig: {
+            key: 'tokenFiatAmount',
+            order: 'dsc',
+            sortCallback: 'stringNumeric',
+          },
+          shouldShowAggregatedBalancePopover: true,
+          tokenNetworkFilter: {},
+          avatarType: 'maskicon',
+        },
+        selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        theme: 'light',
+        useBlockie: false,
+        useNftDetection: false,
+        usePhishDetect: true,
+        useTokenDetection: false,
+        useCurrencyRateCheck: true,
+        useMultiAccountBalanceChecker: true,
+        isMultiAccountBalancesEnabled: true,
+        referrals: {
+          hyperliquid: {},
+        },
+      },
+      SelectedNetworkController: {
+        domains: {},
+      },
+      SmartTransactionsController: {
+        smartTransactionsState: {
+          fees: {},
+          feesByChainId: {},
+          liveness: true,
+          livenessByChainId: {},
+          smartTransactions: {
+            [CHAIN_IDS.MAINNET]: [],
+          },
+        },
+      },
+      SubjectMetadataController: {
+        subjectMetadata: {
+          'https://metamask.github.io': {
+            extensionId: null,
+            iconUrl: null,
+            name: 'MetaMask < = > Ledger Bridge',
+            origin: 'https://metamask.github.io',
+            subjectType: 'website',
+          },
+        },
+      },
+      StaticAssetsController: {},
+      TokensController: {
+        allDetectedTokens: {},
+        allIgnoredTokens: {},
+        allTokens: {},
+      },
+      MultichainAccountService: {},
+      TransactionController: {
+        transactions: {},
+      },
+      ProfileMetricsController: {
+        initialEnqueueCompleted: false,
+        syncQueue: {},
+      },
+      config: {},
+    },
+  };
+}
+
+module.exports = { defaultFixture, FIXTURE_STATE_METADATA_VERSION, E2E_SRP };

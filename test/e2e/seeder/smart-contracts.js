@@ -12,6 +12,15 @@ const {
   multisigAbi,
   multisigBytecode,
 } = require('@metamask/test-dapp/dist/constants.json');
+const { entrypointAbi, entrypointBytecode } = require('./contracts/entrypoint');
+const {
+  simpleAccountFactoryAbi,
+  simpleAccountFactoryBytecode,
+} = require('./contracts/simpleAccountFactory');
+const {
+  verifyingPaymasterAbi,
+  verifyingPaymasterBytecode,
+} = require('./contracts/verifyingPaymaster');
 
 const hstFactory = {
   initialAmount: 10,
@@ -47,6 +56,21 @@ const multisigFactory = {
   abi: multisigAbi,
 };
 
+const entrypointFactory = {
+  bytecode: entrypointBytecode,
+  abi: entrypointAbi,
+};
+
+const simpleAccountFactory = {
+  abi: simpleAccountFactoryAbi,
+  bytecode: simpleAccountFactoryBytecode,
+};
+
+const verifyingPaymasterFactory = {
+  abi: verifyingPaymasterAbi,
+  bytecode: verifyingPaymasterBytecode,
+};
+
 const SMART_CONTRACTS = {
   HST: 'hst',
   NFTS: 'nfts',
@@ -54,6 +78,9 @@ const SMART_CONTRACTS = {
   PIGGYBANK: 'piggybank',
   FAILING: 'failing',
   MULTISIG: 'multisig',
+  ENTRYPOINT: 'entrypoint',
+  SIMPLE_ACCOUNT_FACTORY: 'simpleAccountFactory',
+  VERIFYING_PAYMASTER: 'verifyingPaymaster',
 };
 
 const contractConfiguration = {
@@ -63,6 +90,9 @@ const contractConfiguration = {
   [SMART_CONTRACTS.PIGGYBANK]: piggybankFactory,
   [SMART_CONTRACTS.FAILING]: failingContract,
   [SMART_CONTRACTS.MULTISIG]: multisigFactory,
+  [SMART_CONTRACTS.ENTRYPOINT]: entrypointFactory,
+  [SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY]: simpleAccountFactory,
+  [SMART_CONTRACTS.VERIFYING_PAYMASTER]: verifyingPaymasterFactory,
 };
 
 module.exports = { SMART_CONTRACTS, contractConfiguration };

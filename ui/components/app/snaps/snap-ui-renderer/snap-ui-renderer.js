@@ -1,127 +1,167 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { isComponent } from '@metamask/snaps-sdk';
-import { nanoid } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
+import { Container } from '@metamask/snaps-sdk/jsx';
 
 import { isEqual } from 'lodash';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import LuxonUtils from '@date-io/luxon';
+import { ThemeProvider } from '@material-ui/core/styles';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { TextVariant } from '../../../../helpers/constants/design-system';
-import { SnapDelineator } from '../snap-delineator';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-
-import { getSnapName } from '../../../../helpers/utils/util';
-import {
-  getMemoizedInterfaceContent,
-  getMemoizedTargetSubjectMetadata,
-} from '../../../../selectors';
-import { Box, FormTextField, Text } from '../../../component-library';
-import { Copyable } from '../copyable';
-import { DelineatorType } from '../../../../helpers/constants/snaps';
+import { getMemoizedInterface } from '../../../../selectors';
+import { Box } from '../../../component-library';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
-import { mapToTemplate } from './utils';
+import PulseLoader from '../../../ui/pulse-loader';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  Display,
+  JustifyContent,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import {
+  mapToExtensionCompatibleColor,
+  mapToTemplate,
+  muiPickerTheme,
+} from './utils';
+import { COMPONENT_MAPPING } from './components';
+
+// Component for tracking the number of re-renders
+// DO NOT USE IN PRODUCTION
+const PerformanceTracker = () => {
+  const rendersRef = useRef(0);
+  rendersRef.current += 1;
+
+  return <span data-testid="performance" data-renders={rendersRef.current} />;
+};
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
   snapId,
-  delineatorType = DelineatorType.Content,
-  isCollapsable = false,
-  isCollapsed = false,
   isLoading = false,
   // This is a workaround while we have the prompt dialog type since we can't inject the SnapUIRenderer in the template renderer.
   isPrompt = false,
   inputValue,
   onInputChange,
   placeholder,
-  onClick,
-  boxProps,
   interfaceId,
+  useFooter = false,
+  onCancel,
+  contentBackgroundColor,
+  PERF_DEBUG,
 }) => {
+  // eslint-disable-next-line react-compiler/react-compiler
+  'use no memo';
+
+  const scrollableContainerRef = useRef(null);
+  const scrollRef = useRef(null);
+
   const t = useI18nContext();
-  const targetSubjectMetadata = useSelector((state) =>
-    getMemoizedTargetSubjectMetadata(state, snapId),
+  const locale = useSelector(getIntlLocale);
+
+  const interfaceState = useSelector(
+    (state) => getMemoizedInterface(state, interfaceId),
+    // We only want to update the state if the content has changed.
+    // We do this to avoid useless re-renders.
+    (oldState, newState) => isEqual(oldState.content, newState.content),
   );
 
-  const snapName = getSnapName(snapId, targetSubjectMetadata);
+  useEffect(() => {
+    if (scrollableContainerRef.current) {
+      scrollableContainerRef.current.scrollTo?.(0, scrollRef.current);
+    }
+  }, [interfaceState?.content]);
 
-  const content = useSelector((state) =>
-    getMemoizedInterfaceContent(state, interfaceId),
+  /**
+   * Sets the scroll position to the current scroll position of the scrollable container.
+   * This is used to restore the scroll position when the content changes.
+   */
+  const setScroll = () => {
+    if (scrollableContainerRef.current) {
+      scrollRef.current = scrollableContainerRef.current.scrollTop;
+    }
+  };
+
+  const rawContent = interfaceState?.content;
+  const content =
+    rawContent?.type === 'Container' || !rawContent
+      ? rawContent
+      : Container({ children: rawContent });
+
+  const promptLegacyProps = useMemo(
+    () =>
+      isPrompt && {
+        inputValue,
+        onInputChange,
+        placeholder,
+      },
+    [inputValue, onInputChange, placeholder, isPrompt],
   );
 
-  const isValidComponent = content && isComponent(content);
+  const backgroundColor =
+    contentBackgroundColor ??
+    mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
+    BackgroundColor.backgroundAlternative;
 
-  const elementKeyIndex = { value: 0 };
-
-  // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
     () =>
-      isValidComponent &&
+      content &&
       mapToTemplate({
+        map: {},
         element: content,
-        rootKey: nanoid(),
-        elementKeyIndex,
+        onCancel,
+        useFooter,
+        promptLegacyProps,
+        t,
+        contentBackgroundColor: backgroundColor,
+        componentMap: COMPONENT_MAPPING,
+        setScroll,
+        scrollableContainerRef,
       }),
-    [content, isValidComponent, elementKeyIndex],
+    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
   );
 
   if (isLoading || !content) {
     return (
-      <SnapDelineator
-        snapName={snapName}
-        type={delineatorType}
-        isCollapsable={isCollapsable}
-        isCollapsed={isCollapsed}
-        onClick={onClick}
-        boxProps={boxProps}
-        isLoading={isLoading}
-      />
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+      >
+        <PulseLoader />
+      </Box>
     );
   }
 
-  if (!isValidComponent) {
-    return (
-      <SnapDelineator
-        isCollapsable={isCollapsable}
-        isCollapsed={isCollapsed}
-        snapName={snapName}
-        type={DelineatorType.Error}
-        onClick={onClick}
-        boxProps={boxProps}
-      >
-        <Text variant={TextVariant.bodySm} marginBottom={4}>
-          {t('snapsUIError', [<b key="0">{snapName}</b>])}
-        </Text>
-        <Copyable text={t('snapsInvalidUIError')} />
-      </SnapDelineator>
-    );
-  }
+  const { state: initialState } = interfaceState;
 
   return (
-    <SnapDelineator
-      snapName={snapName}
-      type={delineatorType}
-      isCollapsable={isCollapsable}
-      isCollapsed={isCollapsed}
-      onClick={onClick}
-      boxProps={boxProps}
+    <SnapInterfaceContextProvider
+      snapId={snapId}
+      interfaceId={interfaceId}
+      initialState={initialState}
     >
-      <Box className="snap-ui-renderer__content">
-        <SnapInterfaceContextProvider snapId={snapId} interfaceId={interfaceId}>
-          <MetaMaskTemplateRenderer sections={sections} />
-        </SnapInterfaceContextProvider>
-        {isPrompt && (
-          <FormTextField
-            marginTop={4}
-            className="snap-prompt-input"
-            maxLength={300}
-            value={inputValue}
-            onChange={onInputChange}
-            placeholder={placeholder}
-          />
-        )}
-      </Box>
-    </SnapDelineator>
+      <ThemeProvider theme={muiPickerTheme}>
+        <MuiPickersUtilsProvider utils={LuxonUtils} locale={locale}>
+          <Box
+            className="snap-ui-renderer__content"
+            height={BlockSize.Full}
+            backgroundColor={backgroundColor}
+            style={{
+              overflowY: 'auto',
+            }}
+          >
+            <MetaMaskTemplateRenderer sections={sections} />
+            {PERF_DEBUG && <PerformanceTracker />}
+          </Box>
+        </MuiPickersUtilsProvider>
+      </ThemeProvider>
+    </SnapInterfaceContextProvider>
   );
 };
 
@@ -133,15 +173,14 @@ export const SnapUIRenderer = memo(
 
 SnapUIRendererComponent.propTypes = {
   snapId: PropTypes.string,
-  delineatorType: PropTypes.string,
-  isCollapsable: PropTypes.bool,
-  isCollapsed: PropTypes.bool,
   isLoading: PropTypes.bool,
   isPrompt: PropTypes.bool,
   inputValue: PropTypes.string,
   onInputChange: PropTypes.func,
   placeholder: PropTypes.string,
-  onClick: PropTypes.func,
-  boxProps: PropTypes.object,
   interfaceId: PropTypes.string,
+  useFooter: PropTypes.bool,
+  onCancel: PropTypes.func,
+  contentBackgroundColor: PropTypes.string,
+  PERF_DEBUG: PropTypes.bool, // DO NOT USE THIS IN PRODUCTION
 };

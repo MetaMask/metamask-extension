@@ -7,7 +7,7 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { withFixtures, tinyDelayMs } = require('./helpers');
-const FixtureBuilder = require('./fixture-builder');
+const FixtureBuilder = require('./fixtures/fixture-builder');
 
 async function measurePage() {
   let metrics;
@@ -110,9 +110,8 @@ async function main() {
   let existingParentDirectory;
   if (out) {
     outputDirectory = path.dirname(out);
-    existingParentDirectory = await getFirstParentDirectoryThatExists(
-      outputDirectory,
-    );
+    existingParentDirectory =
+      await getFirstParentDirectoryThatExists(outputDirectory);
     if (!(await isWritable(existingParentDirectory))) {
       throw new Error('Specified output file directory is not writable');
     }

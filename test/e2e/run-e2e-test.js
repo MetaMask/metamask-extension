@@ -14,19 +14,15 @@ async function main() {
       (_yargs) =>
         _yargs
           .option('browser', {
-            default: process.env.SELENIUM_BROWSER,
-            description: `Set the browser used; either 'chrome' or 'firefox'.`,
+            default: process.env.SELENIUM_BROWSER || 'all',
+            description: `Set the browser to be used; specify 'chrome', 'firefox', 'all' or leave unset to run on 'all' by default.`,
             type: 'string',
-            choices: ['chrome', 'firefox'],
+            choices: ['chrome', 'firefox', 'all'],
           })
           .option('debug', {
-            default: process.env.E2E_DEBUG === 'true',
+            default: true,
             description:
               'Run tests in debug mode, logging each driver interaction',
-            type: 'boolean',
-          })
-          .option('mmi', {
-            description: 'Run only mmi related tests',
             type: 'boolean',
           })
           .option('retries', {
@@ -35,7 +31,7 @@ async function main() {
               'Set how many times the test should be retried upon failure.',
             type: 'number',
           })
-          .option('retry-until-failure', {
+          .option('stop-after-one-failure', {
             default: false,
             description: 'Retries until the test fails',
             type: 'boolean',
@@ -70,90 +66,149 @@ async function main() {
   const {
     browser,
     debug,
-    mmi,
     e2eTestPath,
     retries,
-    retryUntilFailure,
+    stopAfterOneFailure,
     leaveRunning,
     updateSnapshot,
     updatePrivacySnapshot,
   } = argv;
 
-  if (!browser) {
-    exitWithError(
-      `"The browser must be set, via the '--browser' flag or the SELENIUM_BROWSER environment variable`,
-    );
-    return;
-  } else if (browser !== process.env.SELENIUM_BROWSER) {
-    process.env.SELENIUM_BROWSER = browser;
-  }
-
-  try {
-    const stat = await fs.stat(e2eTestPath);
-    if (!stat.isFile()) {
-      exitWithError('Test path must be a file');
-      return;
-    }
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      exitWithError('Test path specified does not exist');
-      return;
-    } else if (error.code === 'EACCES') {
+  const runTestsOnSingleBrowser = async (selectedBrowserForRun) => {
+    if (!selectedBrowserForRun) {
       exitWithError(
-        'Access to test path is forbidden by file access permissions',
+        `"The browser must be set, via the '--browser' flag or the SELENIUM_BROWSER environment variable`,
       );
       return;
+    } else if (selectedBrowserForRun !== process.env.SELENIUM_BROWSER) {
+      process.env.SELENIUM_BROWSER = selectedBrowserForRun;
     }
-    throw error;
+    try {
+      const stat = await fs.stat(e2eTestPath);
+      if (!stat.isFile()) {
+        exitWithError('Test path must be a file');
+        return;
+      }
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        exitWithError('Test path specified does not exist');
+        return;
+      } else if (error.code === 'EACCES') {
+        exitWithError(
+          'Access to test path is forbidden by file access permissions',
+        );
+        return;
+      }
+      throw error;
+    }
+
+    if (debug) {
+      process.env.E2E_DEBUG = 'true';
+    }
+
+    let testTimeoutInMilliseconds = 80 * 1000;
+    let exit = '--exit';
+
+    if (leaveRunning) {
+      process.env.E2E_LEAVE_RUNNING = 'true';
+      testTimeoutInMilliseconds = 0;
+      exit = '--no-exit';
+    }
+
+    if (updateSnapshot) {
+      process.env.UPDATE_SNAPSHOTS = 'true';
+    }
+
+    if (updatePrivacySnapshot) {
+      process.env.UPDATE_PRIVACY_SNAPSHOT = 'true';
+    }
+
+    const configFile = path.join(__dirname, '.mocharc.js');
+    const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
+
+    const dir = 'test/test-results/e2e';
+    fs.mkdir(dir, { recursive: true });
+
+    console.log(`Running tests on ${selectedBrowserForRun}`);
+
+    // Use enhanced spec reporter for readable console output with colors and summary
+    // Only add junit reporter in CI environments
+    const isCI =
+      process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+    // Use enhanced reporter by default, allow override via E2E_REPORTER env var
+    const consoleReporter =
+      process.env.E2E_REPORTER ||
+      path.join(__dirname, 'reporters/enhanced-spec-reporter.js');
+    const reporters = [`--reporter=${consoleReporter}`];
+    const reporterOptions = [];
+
+    if (isCI) {
+      reporters.push('--reporter=mocha-junit-reporter');
+      reporterOptions.push(
+        '--reporter-options',
+        `mochaFile=test/test-results/e2e/[hash].xml,toConsole=false`,
+      );
+    }
+
+    try {
+      await retry({ retries, stopAfterOneFailure }, async () => {
+        const mochaArgs = [
+          'mocha',
+          `--config=${configFile}`,
+          `--timeout=${testTimeoutInMilliseconds}`,
+          '--color',
+          ...reporters,
+          ...reporterOptions,
+          ...extraArgs,
+          e2eTestPath,
+          exit,
+        ];
+
+        await runInShell('yarn', mochaArgs);
+      });
+    } catch (error) {
+      // If the file path includes 'tolerate-failure', we log and tolerate the failure
+      if (e2eTestPath.includes('tolerate-failure')) {
+        console.log(
+          `Failure on TestFile ${e2eTestPath}, but we will log and tolerate this failure`,
+        );
+      } else {
+        exitWithError(
+          `Error occurred while running tests on ${selectedBrowserForRun}: ${error}`,
+        );
+      }
+    }
+  };
+
+  const allBrowsers = ['chrome', 'firefox'];
+  if (browser === 'all') {
+    for (const currentBrowser of allBrowsers) {
+      console.log(`Running tests on ${currentBrowser}`);
+      try {
+        await runTestsOnSingleBrowser(currentBrowser);
+      } catch (error) {
+        exitWithError(
+          `Error occurred while running tests on ${currentBrowser}: ${error}`,
+        );
+      }
+    }
+  } else {
+    console.log(`Running tests on ${browser}`);
+    try {
+      await runTestsOnSingleBrowser(browser);
+    } catch (error) {
+      exitWithError(
+        `Error occurred while running tests on ${browser}: ${error}`,
+      );
+    }
   }
 
-  if (debug) {
-    process.env.E2E_DEBUG = 'true';
-  }
-
-  let testTimeoutInMilliseconds = 80 * 1000;
-  let exit = '--exit';
-
-  if (leaveRunning) {
-    process.env.E2E_LEAVE_RUNNING = 'true';
-    testTimeoutInMilliseconds = 0;
-    exit = '--no-exit';
-  }
-
-  if (updateSnapshot) {
-    process.env.UPDATE_SNAPSHOTS = 'true';
-  }
-
-  if (updatePrivacySnapshot) {
-    process.env.UPDATE_PRIVACY_SNAPSHOT = 'true';
-  }
-
-  const configFile = path.join(__dirname, '.mocharc.js');
-  const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
-
-  // If mmi flag is passed
-  if (mmi) {
-    // Tests that contains `@no-mmi` will be grep (-g) and inverted (-i)
-    // meaning that all tests with @no-mmi in the title will be ignored
-    extraArgs.push('-g', '@no-mmi', '-i');
-  }
-
-  const dir = 'test/test-results/e2e';
-  fs.mkdir(dir, { recursive: true });
-
-  await retry({ retries, retryUntilFailure }, async () => {
-    await runInShell('yarn', [
-      'mocha',
-      `--config=${configFile}`,
-      `--timeout=${testTimeoutInMilliseconds}`,
-      '--reporter=mocha-junit-reporter',
-      '--reporter-options',
-      `mochaFile=test/test-results/e2e/[hash].xml,toConsole=true`,
-      ...extraArgs,
-      e2eTestPath,
-      exit,
-    ]);
-  });
+  // In CI we sometimes get to this point without being ready to properly
+  // terminate the process. We haven't been able to figure out what is
+  // holding up the process. But this is a quick fix to ensure more
+  // stable CI going forward.
+  // eslint-disable-next-line node/no-process-exit
+  process.exit();
 }
 
 main().catch((error) => {

@@ -11,6 +11,10 @@
     },
     "default_title": "MetaMask Flask"
   },
+  "externally_connectable": {
+    "matches": ["http://*/*", "https://*/*"],
+    "ids": ["*"]
+  },
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",

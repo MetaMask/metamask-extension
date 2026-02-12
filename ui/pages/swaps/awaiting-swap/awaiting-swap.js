@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
@@ -12,16 +12,20 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentChainId,
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
   isHardwareWallet,
   getHardwareWalletType,
   getFullTxData,
 } from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+import {
+  getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
+} from '../../../../shared/modules/selectors';
 
 import {
   getUsedQuote,
@@ -29,11 +33,9 @@ import {
   getApproveTxParams,
   getUsedSwapsGasPrice,
   fetchQuotesAndSetQuoteState,
-  navigateBackToBuildQuote,
+  navigateBackToPrepareSwap,
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
-  getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getMaxSlippage,
@@ -46,16 +48,14 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../shared/constants/swaps';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/modules/swaps.utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import {
-  stopPollingForQuotes,
-  setDefaultHomeActiveTabName,
-} from '../../../store/actions';
+import { stopPollingForQuotes } from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
@@ -76,9 +76,10 @@ export default function AwaitingSwap({
   txId,
 }) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const animationEventEmitter = useRef(new EventEmitter());
   const { swapMetaData } =
     useSelector((state) => getFullTxData(state, txId)) || {};
@@ -95,6 +96,9 @@ export default function AwaitingSwap({
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] =
     useState(false);
 
+  const destinationTokenSymbol =
+    usedQuote?.destinationTokenInfo?.symbol || swapMetaData?.token_to;
+
   let feeinUnformattedFiat;
 
   if (usedQuote && swapsGasPrice) {
@@ -105,7 +109,7 @@ export default function AwaitingSwap({
       currentCurrency,
       conversionRate: usdConversionRate,
       tradeValue: usedQuote?.trade?.value,
-      sourceSymbol: swapMetaData?.token_from,
+      sourceSymbol: usedQuote?.sourceTokenInfo?.symbol,
       sourceAmount: usedQuote.sourceAmount,
       chainId,
     });
@@ -115,19 +119,20 @@ export default function AwaitingSwap({
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const swapSlippage = swapMetaData?.slippage || usedQuote?.slippage;
   const sensitiveProperties = {
-    token_from: swapMetaData?.token_from,
+    token_from: swapMetaData?.token_from || usedQuote?.sourceTokenInfo?.symbol,
     token_from_amount: swapMetaData?.token_from_amount,
-    token_to: swapMetaData?.token_to,
+    token_to: destinationTokenSymbol,
     request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-    slippage: swapMetaData?.slippage,
-    custom_slippage: swapMetaData?.slippage === 2,
+    slippage: swapSlippage,
+    custom_slippage: swapSlippage === 2,
     gas_fees: feeinUnformattedFiat,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
@@ -135,10 +140,9 @@ export default function AwaitingSwap({
     current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
-
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
-    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
   const blockExplorerUrl = getBlockExplorerLink(
     { hash: txHash, chainId },
@@ -205,6 +209,9 @@ export default function AwaitingSwap({
         event: 'Quotes Timed Out',
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties,
+        properties: {
+          hd_entropy_index: hdEntropyIndex,
+        },
       });
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {
@@ -232,7 +239,7 @@ export default function AwaitingSwap({
         className="awaiting-swap__amount-and-symbol"
         data-testid="awaiting-swap-amount-and-symbol"
       >
-        {swapMetaData?.token_to}
+        {destinationTokenSymbol}
       </span>,
     ]);
     content = blockExplorerUrl && (
@@ -250,7 +257,7 @@ export default function AwaitingSwap({
         key="swapTokenAvailable-2"
         className="awaiting-swap__amount-and-symbol"
       >
-        {`${tokensReceived || ''} ${swapMetaData?.token_to}`}
+        {`${tokensReceived || ''} ${destinationTokenSymbol}`}
       </span>,
     ]);
     content = blockExplorerUrl && (
@@ -268,16 +275,34 @@ export default function AwaitingSwap({
     }
   }, [dispatch, errorKey]);
 
+  const renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <div className="awaiting-swap__mascot">
+          <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+        </div>
+      );
+    }
+    if (isBeta()) {
+      return (
+        <div className="awaiting-swap__mascot">
+          <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+        </div>
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="90"
+        height="90"
+      />
+    );
+  };
+
   return (
     <div className="awaiting-swap">
       <div className="awaiting-swap__content">
-        {!(swapComplete || errorKey) && (
-          <Mascot
-            animationEventEmitter={animationEventEmitter.current}
-            width="90"
-            height="90"
-          />
-        )}
+        {!(swapComplete || errorKey) && renderMascot()}
         <div className="awaiting-swap__status-image">{statusImage}</div>
         <div
           className="awaiting-swap__header"
@@ -301,30 +326,31 @@ export default function AwaitingSwap({
           /* istanbul ignore next */
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
             await dispatch(prepareToLeaveSwaps());
-            history.push(DEFAULT_ROUTE);
+            navigate(DEFAULT_ROUTE);
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes());
             await dispatch(
               fetchQuotesAndSetQuoteState(
-                history,
+                navigate,
                 fromTokenInputValue,
                 maxSlippage,
                 trackEvent,
               ),
             );
           } else if (errorKey) {
-            await dispatch(navigateBackToBuildQuote(history));
+            await dispatch(navigateBackToPrepareSwap(navigate));
           } else if (
-            isSwapsDefaultTokenSymbol(swapMetaData?.token_to, chainId) ||
+            isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
             swapComplete
           ) {
-            history.push(DEFAULT_ROUTE);
+            navigate(DEFAULT_ROUTE);
           } else {
-            await dispatch(setDefaultHomeActiveTabName('activity'));
-            history.push(DEFAULT_ROUTE);
+            navigate(`${DEFAULT_ROUTE}?tab=activity`);
           }
         }}
-        onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
+        onCancel={async () =>
+          await dispatch(navigateBackToPrepareSwap(navigate))
+        }
         submitText={submitText}
         disabled={submittingSwap}
         hideCancel={errorKey !== QUOTES_EXPIRED_ERROR}

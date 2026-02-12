@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { Copyable } from './copyable';
 
 jest.mock('../../../../hooks/useCopyToClipboard');

@@ -1,3 +1,4 @@
+import { renderHook } from '@testing-library/react-hooks';
 import {
   FALLBACK_VARIATION,
   NameControllerState,
@@ -5,25 +6,27 @@ import {
   NameOrigin,
   NameType,
 } from '@metamask/name-controller';
-import { getCurrentChainId, getNames } from '../selectors';
+import { getNames } from '../selectors';
 import { useName } from './useName';
 
 jest.mock('react-redux', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useSelector: (selector: any) => selector(),
 }));
 
 jest.mock('../selectors', () => ({
-  getCurrentChainId: jest.fn(),
   getNames: jest.fn(),
 }));
 
-const CHAIN_ID_MOCK = '0x1';
-const CHAIN_ID_2_MOCK = '0x2';
+const VARIATION_MOCK = '0x1';
+const VARIATION_2_MOCK = '0x2';
 const VALUE_MOCK = '0xabc123';
 const TYPE_MOCK = NameType.ETHEREUM_ADDRESS;
 const NAME_MOCK = 'TestName';
 const SOURCE_ID_MOCK = 'TestSourceId';
 const ORIGIN_MOCK = NameOrigin.API;
+
 const PROPOSED_NAMES_MOCK = {
   [SOURCE_ID_MOCK]: {
     proposedNames: ['TestProposedName', 'TestProposedName2'],
@@ -33,26 +36,27 @@ const PROPOSED_NAMES_MOCK = {
 };
 
 describe('useName', () => {
-  const getCurrentChainIdMock = jest.mocked(getCurrentChainId);
   const getNamesMock =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.mocked<(state: any) => NameControllerState['names']>(getNames);
 
   beforeEach(() => {
     jest.resetAllMocks();
-
-    getCurrentChainIdMock.mockReturnValue(CHAIN_ID_MOCK);
   });
 
   it('returns default values if no state', () => {
     getNamesMock.mockReturnValue({} as NameControllerState['names']);
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK);
+    renderHook(() => {
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: null,
-      sourceId: null,
-      origin: null,
-      proposedNames: {},
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: null,
+        sourceId: null,
+        origin: null,
+        proposedNames: {},
+      });
     });
   });
 
@@ -60,7 +64,7 @@ describe('useName', () => {
     getNamesMock.mockReturnValue({
       [TYPE_MOCK]: {
         [VALUE_MOCK]: {
-          [CHAIN_ID_2_MOCK]: {
+          [VARIATION_2_MOCK]: {
             name: NAME_MOCK,
             proposedNames: PROPOSED_NAMES_MOCK,
             sourceId: SOURCE_ID_MOCK,
@@ -70,13 +74,15 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK);
+    renderHook(() => {
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: null,
-      sourceId: null,
-      origin: null,
-      proposedNames: {},
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: null,
+        sourceId: null,
+        origin: null,
+        proposedNames: {},
+      });
     });
   });
 
@@ -84,7 +90,7 @@ describe('useName', () => {
     getNamesMock.mockReturnValue({
       [TYPE_MOCK]: {
         [VALUE_MOCK]: {
-          [CHAIN_ID_MOCK]: {
+          [VARIATION_MOCK]: {
             name: NAME_MOCK,
             proposedNames: PROPOSED_NAMES_MOCK,
             sourceId: SOURCE_ID_MOCK,
@@ -94,13 +100,15 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK);
+    renderHook(() => {
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: NAME_MOCK,
-      sourceId: SOURCE_ID_MOCK,
-      proposedNames: PROPOSED_NAMES_MOCK,
-      origin: ORIGIN_MOCK,
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: NAME_MOCK,
+        sourceId: SOURCE_ID_MOCK,
+        proposedNames: PROPOSED_NAMES_MOCK,
+        origin: ORIGIN_MOCK,
+      });
     });
   });
 
@@ -108,7 +116,7 @@ describe('useName', () => {
     getNamesMock.mockReturnValue({
       [TYPE_MOCK]: {
         [VALUE_MOCK]: {
-          [CHAIN_ID_2_MOCK]: {
+          [VARIATION_2_MOCK]: {
             name: NAME_MOCK,
             proposedNames: PROPOSED_NAMES_MOCK,
             sourceId: SOURCE_ID_MOCK,
@@ -118,13 +126,15 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, CHAIN_ID_2_MOCK);
+    renderHook(() => {
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: NAME_MOCK,
-      sourceId: SOURCE_ID_MOCK,
-      proposedNames: PROPOSED_NAMES_MOCK,
-      origin: ORIGIN_MOCK,
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: NAME_MOCK,
+        sourceId: SOURCE_ID_MOCK,
+        proposedNames: PROPOSED_NAMES_MOCK,
+        origin: ORIGIN_MOCK,
+      });
     });
   });
 
@@ -143,13 +153,15 @@ describe('useName', () => {
         },
       });
 
-      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, CHAIN_ID_2_MOCK);
+      renderHook(() => {
+        const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
 
-      expect(nameEntry).toStrictEqual<NameEntry>({
-        name: NAME_MOCK,
-        sourceId: SOURCE_ID_MOCK,
-        proposedNames: PROPOSED_NAMES_MOCK,
-        origin: ORIGIN_MOCK,
+        expect(nameEntry).toStrictEqual<NameEntry>({
+          name: NAME_MOCK,
+          sourceId: SOURCE_ID_MOCK,
+          proposedNames: PROPOSED_NAMES_MOCK,
+          origin: ORIGIN_MOCK,
+        });
       });
     });
 
@@ -157,7 +169,7 @@ describe('useName', () => {
       getNamesMock.mockReturnValue({
         [TYPE_MOCK]: {
           [VALUE_MOCK]: {
-            [CHAIN_ID_2_MOCK]: {
+            [VARIATION_2_MOCK]: {
               name: null,
               proposedNames: PROPOSED_NAMES_MOCK,
               sourceId: null,
@@ -173,40 +185,16 @@ describe('useName', () => {
         },
       });
 
-      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, CHAIN_ID_2_MOCK);
+      renderHook(() => {
+        const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
 
-      expect(nameEntry).toStrictEqual<NameEntry>({
-        name: NAME_MOCK,
-        proposedNames: {},
-        sourceId: SOURCE_ID_MOCK,
-        origin: ORIGIN_MOCK,
+        expect(nameEntry).toStrictEqual<NameEntry>({
+          name: NAME_MOCK,
+          proposedNames: {},
+          sourceId: SOURCE_ID_MOCK,
+          origin: ORIGIN_MOCK,
+        });
       });
-    });
-  });
-
-  it('uses empty string as variation if not specified and type is not address', () => {
-    const alternateType = 'alternateType' as NameType;
-
-    getNamesMock.mockReturnValue({
-      [alternateType]: {
-        [VALUE_MOCK]: {
-          '': {
-            name: NAME_MOCK,
-            proposedNames: PROPOSED_NAMES_MOCK,
-            sourceId: SOURCE_ID_MOCK,
-            origin: ORIGIN_MOCK,
-          },
-        },
-      },
-    });
-
-    const nameEntry = useName(VALUE_MOCK, alternateType);
-
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: NAME_MOCK,
-      sourceId: SOURCE_ID_MOCK,
-      proposedNames: PROPOSED_NAMES_MOCK,
-      origin: ORIGIN_MOCK,
     });
   });
 
@@ -214,7 +202,7 @@ describe('useName', () => {
     getNamesMock.mockReturnValue({
       [TYPE_MOCK]: {
         [VALUE_MOCK]: {
-          [CHAIN_ID_MOCK]: {
+          [VARIATION_MOCK]: {
             name: NAME_MOCK,
             proposedNames: PROPOSED_NAMES_MOCK,
             sourceId: SOURCE_ID_MOCK,
@@ -224,13 +212,15 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName('0xAbC123', TYPE_MOCK);
+    renderHook(() => {
+      const nameEntry = useName('0xAbC123', TYPE_MOCK, VARIATION_MOCK);
 
-    expect(nameEntry).toStrictEqual<NameEntry>({
-      name: NAME_MOCK,
-      sourceId: SOURCE_ID_MOCK,
-      proposedNames: PROPOSED_NAMES_MOCK,
-      origin: ORIGIN_MOCK,
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: NAME_MOCK,
+        sourceId: SOURCE_ID_MOCK,
+        proposedNames: PROPOSED_NAMES_MOCK,
+        origin: ORIGIN_MOCK,
+      });
     });
   });
 });

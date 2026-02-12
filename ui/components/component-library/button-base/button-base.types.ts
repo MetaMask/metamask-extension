@@ -5,6 +5,9 @@ import { TextDirection, TextProps, TextStyleUtilityProps } from '../text';
 import { IconName } from '../icon';
 import type { IconProps } from '../icon';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonBaseSize {
   Sm = 'sm',
   Md = 'md',
@@ -13,6 +16,8 @@ export enum ButtonBaseSize {
 
 export type ValidButtonTagType = 'button' | 'a';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ButtonBaseStyleUtilityProps
   extends Omit<TextStyleUtilityProps, 'as' | 'children' | 'ellipsis'> {
   /**
@@ -52,7 +57,7 @@ export interface ButtonBaseStyleUtilityProps
   /**
    * iconProps accepts all the props from Icon
    */
-  startIconProps?: IconProps<'span'>;
+  startIconProps?: Partial<IconProps<'span'>>;
   /**
    * Add icon to end (right side) of button text passing icon name
    * The name of the icon to display. Should be one of IconName
@@ -61,11 +66,11 @@ export interface ButtonBaseStyleUtilityProps
   /**
    * iconProps accepts all the props from Icon
    */
-  endIconProps?: IconProps<'span'>;
+  endIconProps?: Partial<IconProps<'span'>>;
   /**
    * iconLoadingProps accepts all the props from Icon
    */
-  iconLoadingProps?: IconProps<'span'>;
+  iconLoadingProps?: Partial<IconProps<'span'>>;
   /**
    * Boolean to show loading spinner in button
    */
@@ -98,10 +103,14 @@ export interface ButtonBaseStyleUtilityProps
   textDirection?: TextDirection;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ButtonBaseProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ButtonBaseStyleUtilityProps>;
 
 export type ButtonBaseComponent = <
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType = 'button' | 'a',
 >(
   props: ButtonBaseProps<C>,

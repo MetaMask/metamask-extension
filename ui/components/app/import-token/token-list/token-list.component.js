@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { checkExistingAddresses } from '../../../../helpers/utils/util';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
+import { checkExistingAllTokens } from '../../../../helpers/utils/util';
 import {
   Box,
   Text,
@@ -17,7 +18,12 @@ import {
   TextColor,
   TextVariant,
   FontWeight,
+  FlexDirection,
+  FlexWrap,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
+import { toAssetId } from '../../../../../shared/lib/asset-utils';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import TokenListPlaceholder from './token-list-placeholder';
 
 export default class TokenList extends Component {
@@ -26,25 +32,27 @@ export default class TokenList extends Component {
   };
 
   static propTypes = {
-    tokens: PropTypes.array,
+    allTokens: PropTypes.object,
     results: PropTypes.array,
     selectedTokens: PropTypes.object,
     onToggleToken: PropTypes.func,
     currentNetwork: PropTypes.object,
     testNetworkBackgroundColor: PropTypes.object,
+    accountAddress: PropTypes.string,
+    accountsAssets: PropTypes.object,
   };
 
   render() {
     const {
       results = [],
       selectedTokens = {},
-
       onToggleToken,
-      tokens = [],
+      allTokens = {},
+      accountAddress,
       currentNetwork,
       testNetworkBackgroundColor,
+      accountsAssets = {},
     } = this.props;
-
     return (
       <Box className="token-list">
         {results.length === 0 ? (
@@ -56,25 +64,54 @@ export default class TokenList extends Component {
             <TokenListPlaceholder />
           </Box>
         ) : (
-          <Box className="token-list__tokens-container">
-            {Array(12)
+          <Box
+            className="token-list__tokens-container"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+          >
+            {Array(Math.min(12, results.length))
               .fill(undefined)
               .map((_, i) => {
-                const { symbol, name, address } = results[i] || {};
-                const tokenAlreadyAdded = checkExistingAddresses(
-                  address,
-                  tokens,
-                );
+                const { symbol, name, address, chainId } = results[i] || {};
+                const uniqueKey = `${address || 'unknown'}-${chainId || 'nochain'}-${i}-${symbol || 'nosymbol'}-${name || 'noname'}`;
+                let tokenAlreadyAdded = false;
+
+                if (isNonEvmChainId(chainId)) {
+                  const assetsForAccount =
+                    accountsAssets?.[accountAddress] || [];
+
+                  tokenAlreadyAdded = assetsForAccount.some(
+                    (asset) => asset === toAssetId(address, chainId),
+                  );
+                } else {
+                  tokenAlreadyAdded = checkExistingAllTokens(
+                    address,
+                    chainId,
+                    accountAddress,
+                    allTokens,
+                  );
+                }
+
                 const onClick = () =>
                   !tokenAlreadyAdded && onToggleToken(results[i]);
                 return (
                   Boolean(results[i]?.iconUrl || symbol || name) && (
                     <Box
-                      key={address}
+                      key={uniqueKey}
                       display={Display.Flex}
+                      alignItems={AlignItems.center}
+                      flexDirection={FlexDirection.Row}
+                      flexWrap={FlexWrap.NoWrap}
+                      paddingLeft={4}
+                      paddingRight={4}
+                      paddingTop={2}
+                      paddingBottom={2}
+                      backgroundColor={
+                        selectedTokens[address]
+                          ? BackgroundColor.primaryMuted
+                          : BackgroundColor.transparent
+                      }
                       className={classnames('token-list__token_component', {
-                        'token-list__token_component--selected':
-                          selectedTokens[address],
                         'token-list__token_component--disabled':
                           tokenAlreadyAdded,
                       })}
@@ -88,7 +125,7 @@ export default class TokenList extends Component {
                           isChecked={
                             selectedTokens[address] || tokenAlreadyAdded
                           }
-                          marginRight={2}
+                          marginRight={4}
                           onClick={onClick}
                         />
 
@@ -98,8 +135,14 @@ export default class TokenList extends Component {
                               <AvatarNetwork
                                 size={AvatarNetworkSize.Xs}
                                 name={currentNetwork?.nickname}
-                                src={currentNetwork?.rpcPrefs?.imageUrl}
+                                src={
+                                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                    currentNetwork?.chainId
+                                  ]
+                                }
                                 backgroundColor={testNetworkBackgroundColor}
+                                borderWidth={2}
+                                className="token-list__token_component__network-badge"
                               />
                             }
                             marginRight={4}
@@ -108,7 +151,6 @@ export default class TokenList extends Component {
                             <AvatarToken
                               name={symbol}
                               src={results[i]?.iconUrl}
-                              showHalo
                             />
                           </BadgeWrapper>
                         </Box>

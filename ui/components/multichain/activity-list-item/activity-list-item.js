@@ -9,6 +9,7 @@ import {
   FlexDirection,
   FlexWrap,
   FontWeight,
+  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -43,7 +44,9 @@ export const ActivityListItem = ({
         }
       }}
       data-testid={dataTestId}
-      padding={4}
+      paddingInline={4}
+      paddingTop={3}
+      paddingBottom={3}
       display={Display.Flex}
       width={BlockSize.Full}
       flexWrap={FlexWrap.Wrap}
@@ -51,7 +54,7 @@ export const ActivityListItem = ({
     >
       {topContent && (
         <Text
-          variant={TextVariant.bodyMd}
+          variant={TextVariant.bodyMdMedium}
           color={TextColor.textDefault}
           display={Display.Flex}
           width={BlockSize.Full}
@@ -69,30 +72,36 @@ export const ActivityListItem = ({
         <Box
           display={Display.InlineFlex}
           width={BlockSize.Full}
+          justifyContent={JustifyContent.spaceBetween}
           className="activity-list-item__content-container"
         >
           <Box
             display={Display.InlineFlex}
-            width={[BlockSize.OneThird, BlockSize.SevenTwelfths]}
             flexDirection={FlexDirection.Column}
             className="activity-list-item__detail-container"
+            minWidth="0"
           >
-            <Text
-              ellipsis
-              textAlign={TextAlign.Left}
-              variant={TextVariant.bodyLgMedium}
-              fontWeight={FontWeight.Medium}
-              data-testid="activity-list-item-action"
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.center}
             >
-              {title}
-            </Text>
+              <Text
+                ellipsis
+                textAlign={TextAlign.Left}
+                variant={TextVariant.bodyMdMedium}
+                fontWeight={FontWeight.Medium}
+                data-testid="activity-list-item-action"
+              >
+                {title}
+              </Text>
+            </Box>
             {subtitle && (
               <Text
                 as="div"
                 ellipsis
                 textAlign={TextAlign.Left}
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Normal}
+                variant={TextVariant.bodySmMedium}
               >
                 {subtitle}
               </Text>
@@ -113,7 +122,6 @@ export const ActivityListItem = ({
           {rightContent && (
             <Box
               display={Display.InlineFlex}
-              width={BlockSize.Full}
               height={BlockSize.Min}
               flexDirection={FlexDirection.Column}
               alignItems={AlignItems.flexEnd}

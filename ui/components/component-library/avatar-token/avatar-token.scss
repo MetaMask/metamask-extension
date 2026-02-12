@@ -7,7 +7,8 @@
     width: 100%;
 
     &--blurred {
-      filter: blur(20px);
+      filter: blur(8px);
+      opacity: 0.5;
     }
 
     &--size-reduced {

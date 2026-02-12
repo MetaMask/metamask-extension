@@ -1,10 +1,8 @@
 .disclosure {
-  margin: 12px 0;
   font-size: 14px;
 
   &__summary {
     position: relative;
-    padding-bottom: 10px;
     font-weight: bold;
     display: flex;
     cursor: pointer;
@@ -17,7 +15,8 @@
   }
 
   &__content {
-    margin-left: 12px;
+    padding-top: 10px;
+    margin-inline-start: 12px;
     font-size: 14px;
 
     &.small {

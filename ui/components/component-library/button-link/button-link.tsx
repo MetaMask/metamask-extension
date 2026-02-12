@@ -1,16 +1,21 @@
 import React from 'react';
 import classnames from 'classnames';
-import { ButtonBase, IconSize } from '..';
 import {
   BackgroundColor,
   Color,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
-import type { ButtonBaseProps } from '../button-base';
+import { ButtonBase, type ButtonBaseProps } from '../button-base';
+import { IconSize } from '../icon';
 import type { ButtonLinkProps } from './button-link.types';
 import { ButtonLinkSize, ButtonLinkComponent } from './button-link.types';
 
+/**
+ * @deprecated Please update your code to use `TextButton` from `@metamask/design-system-react`
+ */
 export const ButtonLink: ButtonLinkComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button' | 'a'>(
     {
       className = '',
@@ -19,6 +24,8 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
       disabled = false,
       loading = false,
       size = ButtonLinkSize.Auto,
+      endIconProps,
+      startIconProps,
       ...props
     }: ButtonLinkProps<C>,
     ref?: PolymorphicRef<C>,
@@ -36,19 +43,41 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
         paddingRight={0}
         size={size === ButtonLinkSize.Inherit ? null : size}
         backgroundColor={BackgroundColor.transparent}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         color={color || (danger ? Color.errorDefault : Color.primaryDefault)}
         borderRadius={null}
         startIconProps={{
           size:
             size === ButtonLinkSize.Inherit ? IconSize.Inherit : IconSize.Sm,
+          ...startIconProps,
+          className:
+            size === ButtonLinkSize.Inherit
+              ? `mm-button-link--size-inherit__icon ${
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  startIconProps?.className || ''
+                }`
+              : '',
         }}
         endIconProps={{
           size:
             size === ButtonLinkSize.Inherit ? IconSize.Inherit : IconSize.Sm,
+          ...endIconProps,
+          className:
+            size === ButtonLinkSize.Inherit
+              ? `mm-button-link--size-inherit__icon ${
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  endIconProps?.className || ''
+                }`
+              : '',
         }}
         iconLoadingProps={{
           size:
             size === ButtonLinkSize.Inherit ? IconSize.Inherit : IconSize.Md,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           color: color || (danger ? Color.errorDefault : Color.primaryDefault),
         }}
         ref={ref}

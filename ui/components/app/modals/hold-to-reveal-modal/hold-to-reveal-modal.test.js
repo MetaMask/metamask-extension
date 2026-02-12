@@ -9,9 +9,11 @@ import {
   holdToRevealContent4,
   holdToRevealContent5,
   holdToRevealSRPTitle,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import HoldToRevealModal from '.';
 
@@ -20,6 +22,12 @@ describe('Hold to Reveal Modal', () => {
   const onCloseStub = jest.fn();
   const onLongPressStub = jest.fn();
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
 
   afterEach(() => {
     jest.resetAllMocks();
@@ -27,7 +35,7 @@ describe('Hold to Reveal Modal', () => {
 
   function render(holdToRevealType = 'SRP') {
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <HoldToRevealModal
           isOpen
           onClose={onCloseStub}

@@ -1,0 +1,22 @@
+.multichain-account-cell-popover-menu-button {
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+
+  &:hover {
+    background: var(--color-primary-muted);
+
+    .multichain-account-cell-popover-menu-button-icon {
+      background-color: var(--color-primary-default);
+    }
+  }
+}
+
+.multichain-account-cell-popover-menu {
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+}

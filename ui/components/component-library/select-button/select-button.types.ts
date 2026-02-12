@@ -12,6 +12,8 @@ export enum SelectButtonSize {
   Lg = 'lg',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
   /*
    * Additional classNames to be added to the SelectButton component
@@ -32,6 +34,9 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    *   endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
    * }
    */
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   placeholder?: any;
   /*
    * Value for `SelectButton` component
@@ -43,6 +48,9 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    *   endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
    * }
    */
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: any;
   /*
    * DefaultValue for SelectButton component
@@ -54,6 +62,9 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    *   endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
    * }
    */
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultValue?: any;
   /*
    * isBlock boolean prop for SelectButton component to set display to block
@@ -101,9 +112,13 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
   caretIconProps?: IconProps<'span'>;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectButtonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, SelectButtonStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectButtonComponent = <C extends React.ElementType = 'div'>(
   props: SelectButtonProps<C>,
 ) => React.ReactElement | null;

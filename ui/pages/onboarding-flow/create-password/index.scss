@@ -6,47 +6,15 @@
   }
 
   &__average {
-    color: var(--color-warning-alternative);
+    color: var(--color-warning-default);
   }
 
   &__strong {
-    color: var(--color-success-alternative);
-  }
-
-  &__wrapper {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
+    color: var(--color-success-default);
   }
 
   &__link-text {
     color: var(--color-primary-default);
-  }
-
-  &__form {
-    @include design-system.screen-sm-min {
-      max-width: 320px;
-    }
-
-    &--password-button {
-      color: var(--color-primary-default);
-    }
-
-    &--checkmark {
-      i {
-        color: var(--color-success-default);
-      }
-    }
-
-    &__terms-label {
-      display: flex;
-    }
-
-    .form-field__input {
-      height: 50px;
-      width: 100%;
-    }
   }
 
   &__analytics-iframe {

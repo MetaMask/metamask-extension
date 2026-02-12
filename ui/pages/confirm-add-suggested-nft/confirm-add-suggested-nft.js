@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 import { PageContainerFooter } from '../../components/ui/page-container';
@@ -27,8 +27,8 @@ import {
   Box,
   Text,
 } from '../../components/component-library';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getSuggestedNfts,
   getIpfsGateway,
@@ -37,7 +37,7 @@ import {
   getSelectedAccountCachedBalance,
   getAddressBookEntryOrAccountName,
 } from '../../selectors';
-import NftDefaultImage from '../../components/app/nft-default-image/nft-default-image';
+import NftDefaultImage from '../../components/app/assets/nfts/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
 import {
   AlignItems,
@@ -59,11 +59,24 @@ import { PRIMARY } from '../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { Nav } from '../confirmations/components/confirm/nav';
+import { hideAppHeader } from '../routes/utils';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
+
+  const classNames = classnames(
+    'confirm-add-suggested-nft page-container h-full',
+    {
+      'confirm-add-suggested-nft--has-app-header-multichain': hasAppHeader,
+    },
+  );
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedNftsNotSorted = useSelector(getSuggestedNfts);
@@ -73,13 +86,14 @@ const ConfirmAddSuggestedNFT = () => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
   const ipfsGateway = useSelector(getIpfsGateway);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const accountName = useSelector((state) =>
     getAddressBookEntryOrAccountName(state, selectedAddress),
   );
+  const [suggestedNftsWithImages, setSuggestedNftsWithImages] = useState([]);
 
   const networkName = NETWORK_TO_NAME_MAP[chainId] || networkIdentifier;
 
@@ -94,6 +108,7 @@ const ConfirmAddSuggestedNFT = () => {
   });
 
   const originMetadata = useOriginMetadata(suggestedNfts[0]?.origin) || {};
+  const approvalId = suggestedNfts[0]?.id;
 
   const handleAddNftsClick = useCallback(async () => {
     await Promise.all(
@@ -114,8 +129,8 @@ const ConfirmAddSuggestedNFT = () => {
         });
       }),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedNfts]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedNfts]);
 
   const handleCancelNftClick = useCallback(async () => {
     await Promise.all(
@@ -123,22 +138,22 @@ const ConfirmAddSuggestedNFT = () => {
         return dispatch(
           rejectPendingApproval(
             id,
-            serializeError(ethErrors.provider.userRejectedRequest()),
+            serializeError(providerErrors.userRejectedRequest()),
           ),
         );
       }),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, mostRecentOverviewPage, suggestedNfts]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, mostRecentOverviewPage, suggestedNfts]);
 
   useEffect(() => {
     const goBackIfNoSuggestedNftsOnFirstRender = () => {
       if (!suggestedNfts.length) {
-        history.push(mostRecentOverviewPage);
+        navigate(mostRecentOverviewPage);
       }
     };
     goBackIfNoSuggestedNftsOnFirstRender();
-  }, [history, mostRecentOverviewPage, suggestedNfts]);
+  }, [navigate, mostRecentOverviewPage, suggestedNfts]);
 
   let origin;
   let link;
@@ -152,13 +167,41 @@ const ConfirmAddSuggestedNFT = () => {
     }
   }
 
+  useEffect(() => {
+    const addImageUrlToSuggestedNFTs = async () => {
+      const suggestedNftWithImages = await Promise.all(
+        suggestedNfts.map(async (item) => {
+          const imgUrl = await getAssetImageURL(
+            item.requestData.asset.image,
+            ipfsGateway,
+          );
+          return {
+            ...item,
+            requestData: {
+              ...item.requestData,
+              asset: {
+                ...item.requestData.asset,
+                assetImageUrl: imgUrl,
+              },
+            },
+          };
+        }),
+      );
+      setSuggestedNftsWithImages(suggestedNftWithImages);
+    };
+
+    addImageUrlToSuggestedNFTs();
+  }, [suggestedNfts, ipfsGateway]); // rerender when suggestedNfts or ipfsGateway changes
+
   return (
     <Box
+      className={classNames}
       height={BlockSize.Full}
       width={BlockSize.Full}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >
+      <Nav confirmationId={approvalId} />
       <Box paddingBottom={2} className="confirm-add-suggested-nft__header">
         <NetworkAccountBalanceHeader
           accountName={accountName}
@@ -208,7 +251,7 @@ const ConfirmAddSuggestedNFT = () => {
           ])}
         </Text>
       </Box>
-      <Box className="confirm-add-suggested-nft__content">
+      <Box className="page-container__content confirm-add-suggested-nft__content">
         <Box
           className="confirm-add-suggested-nft__card"
           padding={2}
@@ -223,10 +266,21 @@ const ConfirmAddSuggestedNFT = () => {
               ({
                 id,
                 requestData: {
-                  asset: { address, tokenId, symbol, image, name },
+                  asset: { address, tokenId, symbol, name },
                 },
               }) => {
-                const nftImageURL = getAssetImageURL(image, ipfsGateway);
+                const found = suggestedNftsWithImages.find(
+                  (elm) =>
+                    elm.requestData.asset.tokenId === tokenId &&
+                    isEqualCaseInsensitive(
+                      elm.requestData.asset.address,
+                      address,
+                    ),
+                );
+
+                const nftImageURL = found
+                  ? found.requestData.asset.assetImageUrl
+                  : '';
                 const blockExplorerLink = getTokenTrackerLink(
                   address,
                   chainId,
@@ -381,7 +435,7 @@ const ConfirmAddSuggestedNFT = () => {
                           rejectPendingApproval(
                             id,
                             serializeError(
-                              ethErrors.provider.userRejectedRequest(),
+                              providerErrors.userRejectedRequest(),
                             ),
                           ),
                         );

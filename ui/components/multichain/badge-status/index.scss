@@ -7,7 +7,8 @@
     z-index: 1;
   }
 
-  .mm-badge-wrapper__badge-container { //Need to override the zIndex, can't do it with badgeProps.
+  .mm-badge-wrapper__badge-container {
+    //Need to override the zIndex, can't do it with badgeProps.
     z-index: 1;
   }
 

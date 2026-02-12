@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
@@ -10,14 +10,17 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
 import {
-  getCurrentChainId,
+  getAllDetectedTokensForSelectedAddress,
+  getCurrentNetwork,
   getDetectedTokensInCurrentNetwork,
+  getIsTokenNetworkFilterEqualCurrentNetwork,
 } from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
-import Button from '../../../ui/button';
+import { Button, ButtonVariant } from '../../../component-library';
 import DetectedTokenDetails from '../detected-token-details/detected-token-details';
+import { trace, endTrace, TraceName } from '../../../../../shared/lib/trace';
 
 const DetectedTokenSelectionPopover = ({
   tokensListDetected,
@@ -28,15 +31,38 @@ const DetectedTokenSelectionPopover = ({
   sortingBasedOnTokenSelection,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const chainId = useSelector(getCurrentChainId);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
+  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
+    getIsTokenNetworkFilterEqualCurrentNetwork,
+  );
+
+  const currentNetwork = useSelector(getCurrentNetwork);
+
+  const detectedTokensMultichain = useSelector(
+    getAllDetectedTokensForSelectedAddress,
+  );
+
+  const totalTokens = useMemo(() => {
+    return isTokenNetworkFilterEqualCurrentNetwork
+      ? detectedTokens.length
+      : Object.values(detectedTokensMultichain).reduce(
+          (count, tokenArray) => count + tokenArray.length,
+          0,
+        );
+  }, [
+    detectedTokensMultichain,
+    detectedTokens,
+    isTokenNetworkFilterEqualCurrentNetwork,
+  ]);
+
   const { selected: selectedTokens = [] } =
     sortingBasedOnTokenSelection(tokensListDetected);
 
   const onClose = () => {
+    const chainIds = Object.keys(detectedTokensMultichain);
+
     setShowDetectedTokens(false);
     const eventTokensDetails = detectedTokens.map(
       ({ address, symbol }) => `${symbol} - ${address}`,
@@ -46,8 +72,8 @@ const DetectedTokenSelectionPopover = ({
       category: MetaMetricsEventCategory.Wallet,
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
-        chain_id: chainId,
         tokens: eventTokensDetails,
+        chain_ids: chainIds,
       },
     });
   };
@@ -56,15 +82,21 @@ const DetectedTokenSelectionPopover = ({
     <>
       <Button
         className="detected-token-selection-popover__ignore-button"
-        type="secondary"
+        variant={ButtonVariant.Secondary}
+        block
         onClick={() => onIgnoreAll()}
       >
         {t('ignoreAll')}
       </Button>
       <Button
         className="detected-token-selection-popover__import-button"
-        type="primary"
-        onClick={onImport}
+        variant={ButtonVariant.Primary}
+        block
+        onClick={() => {
+          endTrace({ name: TraceName.AccountOverviewAssetListTab });
+          trace({ name: TraceName.AccountOverviewAssetListTab });
+          onImport();
+        }}
         disabled={selectedTokens.length === 0}
       >
         {t('importWithCount', [`(${selectedTokens.length})`])}
@@ -76,25 +108,44 @@ const DetectedTokenSelectionPopover = ({
     <Popover
       className="detected-token-selection-popover"
       title={
-        detectedTokens.length === 1
+        totalTokens === 1
           ? t('tokenFoundTitle')
-          : t('tokensFoundTitle', [detectedTokens.length])
+          : t('tokensFoundTitle', [totalTokens])
       }
       onClose={onClose}
       footer={footer}
     >
-      <Box margin={3}>
-        {detectedTokens.map((token, index) => {
-          return (
-            <DetectedTokenDetails
-              key={index}
-              token={token}
-              handleTokenSelection={handleTokenSelection}
-              tokensListDetected={tokensListDetected}
-            />
-          );
-        })}
-      </Box>
+      {isTokenNetworkFilterEqualCurrentNetwork ? (
+        <Box margin={3}>
+          {detectedTokens.map((token, index) => {
+            return (
+              <DetectedTokenDetails
+                key={index}
+                token={token}
+                handleTokenSelection={handleTokenSelection}
+                tokensListDetected={tokensListDetected}
+                chainId={currentNetwork.chainId}
+              />
+            );
+          })}
+        </Box>
+      ) : (
+        <Box margin={3}>
+          {Object.entries(detectedTokensMultichain).map(
+            ([networkId, tokens]) => {
+              return tokens.map((token, index) => (
+                <DetectedTokenDetails
+                  key={`${networkId}-${index}`}
+                  token={token}
+                  chainId={networkId}
+                  handleTokenSelection={handleTokenSelection}
+                  tokensListDetected={tokensListDetected}
+                />
+              ));
+            },
+          )}
+        </Box>
+      )}
     </Popover>
   );
 };

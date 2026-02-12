@@ -1,7 +1,5 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
-
-import nock from 'nock';
-import '@testing-library/jest-dom';
+import '../helpers/setup-after-helper';
 
 jest.mock('webextension-polyfill', () => {
   return {
@@ -11,9 +9,25 @@ jest.mock('webextension-polyfill', () => {
   };
 });
 
-jest.mock('../../ui/hooks/usePetnamesEnabled', () => ({
-  usePetnamesEnabled: () => false,
-}));
+/**
+ * Mock the BrowserStorageAdapter to use an InMemoryStorageAdapter globally for all unit tests.
+ * This is necessary because the BrowserStorageAdapter uses the browser.storage.local API,
+ * which is not available in the test environment.
+ * The InMemoryStorageAdapter is a simple in-memory storage adapter that can be used in the test environment.
+ *
+ * Note: Tests that specifically need to test BrowserStorageAdapter itself should use
+ * jest.unmock() or jest.requireActual() to access the real implementation.
+ */
+jest.mock('../../app/scripts/lib/stores/browser-storage-adapter', () => {
+  const { InMemoryStorageAdapter } = jest.requireActual(
+    '@metamask/storage-service',
+  );
+
+  // Return InMemoryStorageAdapter as the BrowserStorageAdapter
+  return {
+    BrowserStorageAdapter: InMemoryStorageAdapter,
+  };
+});
 
 const UNRESOLVED = Symbol('timedOut');
 
@@ -37,11 +51,6 @@ function treatUnresolvedAfter(duration) {
     originalSetTimeout(resolve, duration, UNRESOLVED);
   });
 }
-
-/* eslint-disable-next-line jest/require-top-level-describe */
-beforeEach(() => {
-  nock.cleanAll();
-});
 
 expect.extend({
   /**
@@ -131,6 +140,3 @@ expect.extend({
         };
   },
 });
-
-// Setup window.prompt
-global.prompt = () => undefined;

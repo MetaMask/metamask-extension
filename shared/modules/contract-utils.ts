@@ -1,25 +1,23 @@
-import pify from 'pify';
+import type { Provider } from '@metamask/network-controller';
+import { addHexPrefix, padToEven } from 'ethereumjs-util';
+import type { JsonRpcParams } from '@metamask/utils';
 
 export type Contract = {
   contractCode: string | null;
   isContractAddress: boolean;
 };
 
-// Note(@dbrans): This is a simplified version of the 'EthQuery' interface specific to this file.
-type EthQueryWithGetCode = {
-  getCode: (
-    address: string,
-    cb: (err: Error, contractCode: string) => void,
-  ) => void;
-};
-
 export const readAddressAsContract = async (
-  ethQuery: EthQueryWithGetCode,
+  provider: Provider,
   address: string,
 ): Promise<Contract> => {
-  let contractCode: string | null;
+  let contractCode: string | null = null;
   try {
-    contractCode = await pify(ethQuery.getCode.bind(ethQuery))(address);
+    const result = await provider.request<JsonRpcParams, string>({
+      method: 'eth_getCode',
+      params: [address, 'latest'],
+    });
+    contractCode = addHexPrefix(padToEven(result.slice(2)));
   } catch (err) {
     // TODO(@dbrans): Dangerous to swallow errors here.
     contractCode = null;

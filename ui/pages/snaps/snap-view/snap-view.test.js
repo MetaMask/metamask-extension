@@ -2,7 +2,7 @@ import * as React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import SnapView from './snap-view';
 
@@ -40,7 +40,7 @@ describe('SnapView', () => {
       renderWithProvider(<SnapView />, mockStore);
 
     // Snap name & Snap authorship component
-    expect(getAllByText('BIP-44 Test Snap')).toHaveLength(2);
+    expect(getAllByText('BIP-44 Test Snap')).toHaveLength(3);
     expect(
       container.getElementsByClassName('snaps-authorship-expanded')?.length,
     ).toBe(1);
@@ -50,9 +50,9 @@ describe('SnapView', () => {
     ).toBeDefined();
     // Snap website
     await waitFor(() => {
-      const websiteElement = screen.queryByText('https://snaps.consensys.io/');
+      const websiteElement = screen.queryByText('snaps.consensys.io');
       expect(websiteElement).toBeDefined();
-      expect(getByText('https://snaps.consensys.io/')).toBeDefined();
+      expect(getByText('snaps.consensys.io')).toBeDefined();
     });
     // Snap version info
     expect(getByText('5.1.2')).toBeDefined();

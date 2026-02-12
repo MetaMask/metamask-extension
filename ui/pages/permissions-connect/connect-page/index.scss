@@ -1,0 +1,18 @@
+@use "design-system";
+
+.connect-page {
+  .multichain-page-content {
+    overflow: hidden;
+  }
+
+  .multichain-account-list-item {
+    &:hover,
+    &:focus-within {
+      background: var(--color-background-default);
+    }
+  }
+
+  &__accounts-empty {
+    min-height: 200px;
+  }
+}

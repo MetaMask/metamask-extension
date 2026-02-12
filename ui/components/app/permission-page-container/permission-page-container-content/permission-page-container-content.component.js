@@ -1,14 +1,30 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SubjectType } from '@metamask/permission-controller';
-///: END:ONLY_INCLUDE_IF
-import PermissionsConnectHeader from '../../permissions-connect-header';
-import Tooltip from '../../../ui/tooltip';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  getPermittedEthChainIds,
+} from '@metamask/chain-agnostic-permission';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  FontWeight,
+  JustifyContent,
+  TextAlign,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import { Box, Text } from '../../../component-library';
+import { getURLHost } from '../../../../helpers/utils/util';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
+    request: PropTypes.object,
     subjectMetadata: PropTypes.shape({
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
@@ -17,126 +33,123 @@ export default class PermissionPageContainerContent extends PureComponent {
       iconUrl: PropTypes.string,
     }),
     selectedPermissions: PropTypes.object.isRequired,
-    selectedIdentities: PropTypes.array,
-    allIdentitiesSelected: PropTypes.bool,
+    selectedAccounts: PropTypes.array,
+    requestedChainIds: PropTypes.array,
+    /** CAIP chain IDs for multichain permission display (e.g., 'solana:...') */
+    selectedCaipChainIds: PropTypes.array,
   };
 
   static defaultProps = {
-    selectedIdentities: [],
-    allIdentitiesSelected: false,
+    request: {},
+    selectedAccounts: [],
+    requestedChainIds: [],
+    selectedCaipChainIds: null,
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  renderRequestedPermissions() {
-    const { selectedPermissions, subjectMetadata } = this.props;
-
-    return (
-      <div className="permission-approval-container__content__requested">
-        <PermissionsConnectPermissionList
-          permissions={selectedPermissions}
-          targetSubjectMetadata={subjectMetadata}
-        />
-      </div>
-    );
-  }
-
-  renderAccountTooltip(textContent) {
-    const { selectedIdentities } = this.props;
-    const { t } = this.context;
-
-    return (
-      <Tooltip
-        key="all-account-connect-tooltip"
-        position="bottom"
-        wrapperClassName="permission-approval-container__bold-title-elements"
-        html={
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {selectedIdentities.slice(0, 6).map((identity, index) => {
-              return (
-                <div key={`tooltip-identity-${index}`}>
-                  {identity.addressLabel}
-                </div>
-              );
-            })}
-            {selectedIdentities.length > 6
-              ? t('plusXMore', [selectedIdentities.length - 6])
-              : null}
-          </div>
-        }
-      >
-        {textContent}
-      </Tooltip>
-    );
-  }
-
-  getTitle() {
-    const {
-      subjectMetadata,
-      selectedIdentities,
-      allIdentitiesSelected,
-      selectedPermissions,
-    } = this.props;
-    const { t } = this.context;
-
-    if (subjectMetadata.extensionId) {
-      return t('externalExtension', [subjectMetadata.extensionId]);
-    } else if (!selectedPermissions.eth_accounts) {
-      return t('permissionRequestCapitalized');
-    } else if (allIdentitiesSelected) {
-      return t('connectToAll', [
-        this.renderAccountTooltip(t('connectToAllAccounts')),
-      ]);
-    } else if (selectedIdentities.length > 1) {
-      return t('connectToMultiple', [
-        this.renderAccountTooltip(
-          t('connectToMultipleNumberOfAccounts', [selectedIdentities.length]),
-        ),
-      ]);
-    }
-    return t('connectTo', [selectedIdentities[0]?.addressLabel]);
-  }
-
-  getHeaderText() {
-    const { subjectMetadata } = this.props;
-    const { t } = this.context;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-    if (subjectMetadata.subjectType === SubjectType.Snap) {
-      return t('allowThisSnapTo');
-    }
-    ///: END:ONLY_INCLUDE_IF
-
-    return subjectMetadata.extensionId
-      ? t('allowExternalExtensionTo', [subjectMetadata.extensionId])
-      : t('allowThisSiteTo');
-  }
-
   render() {
-    const { subjectMetadata } = this.props;
+    const { t } = this.context;
 
-    const title = this.getTitle();
+    const {
+      selectedPermissions,
+      selectedAccounts,
+      subjectMetadata,
+      requestedChainIds,
+      selectedCaipChainIds,
+      request,
+    } = this.props;
 
-    const headerText = this.getHeaderText();
+    const accounts = selectedAccounts.reduce((accumulator, account) => {
+      accumulator.push({
+        avatarValue: account.address,
+        avatarName: account.label,
+      });
+      return accumulator;
+    }, []);
+    const { origin, subjectType } = subjectMetadata;
+    const displayOrigin =
+      subjectType === SubjectType.Website ? getURLHost(origin) : origin;
 
+    // permissionDiffMap is expected to be present when an incremental permission request is made
+    // This occurs when a "wallet_switchEthereumChain" request comes in and we already have a set of permissions
+    const permissionDiffMap = request.diff?.permissionDiffMap;
+    // Extract the requested chain IDs from the permission diff, specifically from the CAIP-25 endowment permission
+    // This represents the new chains being requested in addition to existing permissions
+    const permissionDiffRequestedChainIds = getPermittedEthChainIds(
+      permissionDiffMap?.[Caip25EndowmentPermissionName]?.[
+        Caip25CaveatType
+      ] ?? {
+        requiredScopes: {},
+        optionalScopes: {},
+      },
+    );
     return (
-      <div className="permission-approval-container__content">
-        <div className="permission-approval-container__content-container">
-          <PermissionsConnectHeader
-            iconUrl={subjectMetadata.iconUrl}
-            iconName={subjectMetadata.name}
-            headerTitle={title}
-            headerText={headerText}
-            siteOrigin={subjectMetadata.origin}
-            subjectType={subjectMetadata.subjectType}
+      <Box
+        className="permission-page-container-content"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.flexStart}
+        alignItems={AlignItems.center}
+        height={BlockSize.Full}
+        paddingLeft={4}
+        paddingRight={4}
+        backgroundColor={BackgroundColor.backgroundDefault}
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          paddingTop={4}
+          paddingBottom={4}
+        >
+          <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
+            {t('reviewPermissions')}
+          </Text>
+          <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+            {t('nativeNetworkPermissionRequestDescription', [
+              <Text
+                as="span"
+                key={`description_key_${displayOrigin}`}
+                fontWeight={FontWeight.Medium}
+                className="break-all"
+              >
+                {displayOrigin}
+              </Text>,
+            ])}
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          backgroundColor={BackgroundColor.backgroundDefault}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={2}
+          paddingBottom={2}
+          borderRadius={BorderRadius.XL}
+        >
+          <PermissionsConnectPermissionList
+            isRequestApprovalPermittedChains={Boolean(
+              request.diff?.permissionDiffMap,
+            )}
+            permissions={selectedPermissions}
+            subjectName={subjectMetadata.origin}
+            accounts={accounts}
+            // On an incremental permission request, we only want to render the newly requested chains in the UI
+            // permissionDiffRequestedChainIds will only have content when an incremental permission request is made
+            // Otherwise, we fall back to the original requestedChainIds for initial permission requests
+            requestedChainIds={
+              permissionDiffRequestedChainIds.length > 0
+                ? permissionDiffRequestedChainIds
+                : requestedChainIds
+            }
+            caipChainIds={selectedCaipChainIds}
           />
-          <section className="permission-approval-container__permissions-container">
-            {this.renderRequestedPermissions()}
-          </section>
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
   }
 }

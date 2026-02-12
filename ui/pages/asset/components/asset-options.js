@@ -1,9 +1,10 @@
 import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { ERC20 } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -13,27 +14,54 @@ import {
   IconName,
 } from '../../../components/component-library';
 import { Color } from '../../../helpers/constants/design-system';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+  MetaMetricsEventLocation,
+} from '../../../../shared/constants/metametrics';
+import { AssetType } from '../../../../shared/constants/transaction';
 
 const AssetOptions = ({
   onRemove,
   onClickBlockExplorer,
   onViewTokenDetails,
-  tokenSymbol,
+  token,
   isNativeAsset,
 }) => {
   const t = useContext(I18nContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const ref = useRef(false);
 
   const routeToAddBlockExplorerUrl = () => {
-    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+    navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
   };
 
   const openBlockExplorer = () => {
     setAssetOptionsOpen(false);
     onClickBlockExplorer();
+  };
+
+  const handleRemoveToken = () => {
+    // Track the TokenHidden event before calling onRemove
+    trackEvent({
+      event: MetaMetricsEventName.TokenHidden,
+      category: MetaMetricsEventCategory.Wallet,
+      sensitiveProperties: {
+        token_symbol: token?.symbol,
+        token_contract_address: token?.address,
+        token_decimal_precision: token?.decimals,
+        location: MetaMetricsEventLocation.TokenDetails,
+        token_standard: ERC20,
+        asset_type: AssetType.token,
+        chain_id: token?.chainId,
+      },
+    });
+
+    setAssetOptionsOpen(false);
+    onRemove();
   };
 
   return (
@@ -53,7 +81,7 @@ const AssetOptions = ({
           onHide={() => setAssetOptionsOpen(false)}
         >
           <MenuItem
-            iconName={IconName.Export}
+            iconNameLegacy={IconName.Export}
             data-testid="asset-options__etherscan"
             onClick={
               blockExplorerLinkText.firstPart === 'addBlockExplorer'
@@ -68,21 +96,18 @@ const AssetOptions = ({
                 : [t('blockExplorerAssetAction')],
             )}
           </MenuItem>
-          {isNativeAsset ? null : (
+          {!isNativeAsset && (
             <MenuItem
-              iconName={IconName.Trash}
+              iconNameLegacy={IconName.Trash}
               data-testid="asset-options__hide"
-              onClick={() => {
-                setAssetOptionsOpen(false);
-                onRemove();
-              }}
+              onClick={handleRemoveToken}
             >
-              {t('hideTokenSymbol', [tokenSymbol])}
+              {t('hideTokenSymbol', [token?.symbol])}
             </MenuItem>
           )}
-          {isNativeAsset ? null : (
+          {isNativeAsset || !onViewTokenDetails ? null : (
             <MenuItem
-              iconName={IconName.Info}
+              iconNameLegacy={IconName.Info}
               data-testid="asset-options__token-details"
               onClick={() => {
                 setAssetOptionsOpen(false);
@@ -112,21 +137,10 @@ AssetOptions.propTypes = {
       );
     }
   },
-  onViewTokenDetails: (props) => {
-    if (props.isNativeAsset === false && isNotFunc(props.onViewTokenDetails)) {
-      throw new Error(
-        'When isNativeAsset is true, onViewTokenDetails is a required prop',
-      );
-    }
-  },
-  tokenSymbol: (props) => {
-    if (
-      props.isNativeAsset === false &&
-      typeof props.tokenSymbol !== 'string'
-    ) {
-      throw new Error(
-        'When isNativeAsset is true, tokenSymbol is a required prop',
-      );
+  onViewTokenDetails: PropTypes.func,
+  token: (props) => {
+    if (props.isNativeAsset === false && typeof props.token !== 'object') {
+      throw new Error('When isNativeAsset is false, token is a required prop');
     }
   },
 };

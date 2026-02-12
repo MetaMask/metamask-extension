@@ -1,29 +1,21 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IF
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentChainId,
   getHardwareWalletType,
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getOriginOfCurrentTab,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getMetaMaskAccountsOrdered,
-  ///: END:ONLY_INCLUDE_IF
+  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-///: END:ONLY_INCLUDE_IF
-import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
+
 import { MenuItem } from '../../ui/menu';
 import {
-  Box,
   IconName,
   ModalFocus,
   Popover,
@@ -36,14 +28,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  addPermittedAccount,
   showModal,
   updateAccountsList,
   updateHiddenAccountsList,
 } from '../../../store/actions';
-import { Display, TextVariant } from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -52,35 +44,29 @@ export const AccountListItemMenu = ({
   onClose,
   closeMenu,
   isRemovable,
-  identity,
+  account,
   isOpen,
   isPinned,
   isHidden,
-  isConnected,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
 
   const chainId = useSelector(getCurrentChainId);
 
   const deviceName = useSelector(getHardwareWalletType);
 
-  const keyring = useSelector((state) =>
-    findKeyringForAddress(state, identity.address),
+  const isMultichainAccountsState1Enabled = useSelector(
+    getIsMultichainAccountsState1Enabled,
   );
+
+  const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
   const hiddenAccountList = useSelector(getHiddenAccountsList);
-  const shouldRenderConnectAccount = process.env.MULTICHAIN && !isConnected;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
-
-  const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IF
 
   // Handle Tab key press for accessibility inside the popover and will close the popover on the last MenuItem
   const lastItemRef = useRef(null);
@@ -97,7 +83,6 @@ export const AccountListItemMenu = ({
     } else {
       lastItemRef.current = accountDetailsItemRef.current;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     removeJWTItemRef.current,
     removeAccountItemRef.current,
@@ -150,6 +135,12 @@ export const AccountListItemMenu = ({
   };
 
   const handleHidding = (address) => {
+    // If the account is already hidden, we do not add it again
+    // TODO: The controller should handle this logic
+    if (hiddenAccountList.includes(address)) {
+      return;
+    }
+
     const updatedHiddenAccountList = [...hiddenAccountList, address];
     if (pinnedAccountList.includes(address)) {
       handleUnpinning(address);
@@ -163,8 +154,6 @@ export const AccountListItemMenu = ({
     );
     dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
   };
-
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
 
   return (
     <Popover
@@ -181,44 +170,28 @@ export const AccountListItemMenu = ({
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-          {shouldRenderConnectAccount ? (
-            <Box display={[Display.Flex, Display.None]}>
-              <MenuItem
-                data-testid="account-list-menu-connect-account"
-                onClick={() => {
-                  dispatch(
-                    addPermittedAccount(activeTabOrigin, identity.address),
-                  );
-                  onClose();
-                }}
-                iconName={IconName.UserCircleLink}
-              >
-                <Text variant={TextVariant.bodySm}>{t('connectAccount')}</Text>
-              </MenuItem>
-            </Box>
-          ) : null}
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            address={identity.address}
+            address={account.address}
             textProps={{ variant: TextVariant.bodySm }}
           />
           <ViewExplorerMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
             textProps={{ variant: TextVariant.bodySm }}
-            address={identity.address}
+            account={account}
           />
           {isHidden ? null : (
             <MenuItem
               data-testid="account-list-menu-pin"
               onClick={() => {
                 isPinned
-                  ? handleUnpinning(identity.address)
-                  : handlePinning(identity.address);
+                  ? handleUnpinning(account.address)
+                  : handlePinning(account.address);
                 onClose();
               }}
-              iconName={isPinned ? IconName.Unpin : IconName.Pin}
+              iconNameLegacy={isPinned ? IconName.Unpin : IconName.Pin}
             >
               <Text variant={TextVariant.bodySm}>
                 {isPinned ? t('unpin') : t('pinToTop')}
@@ -229,17 +202,17 @@ export const AccountListItemMenu = ({
             data-testid="account-list-menu-hide"
             onClick={() => {
               isHidden
-                ? handleUnhidding(identity.address)
-                : handleHidding(identity.address);
+                ? handleUnhidding(account.address)
+                : handleHidding(account.address);
               onClose();
             }}
-            iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
+            iconNameLegacy={isHidden ? IconName.Eye : IconName.EyeSlash}
           >
             <Text variant={TextVariant.bodySm}>
               {isHidden ? t('showAccount') : t('hideAccount')}
             </Text>
           </MenuItem>
-          {isRemovable ? (
+          {isRemovable && !isMultichainAccountsState1Enabled ? (
             <MenuItem
               ref={removeAccountItemRef}
               data-testid="account-list-menu-remove"
@@ -247,7 +220,7 @@ export const AccountListItemMenu = ({
                 dispatch(
                   showModal({
                     name: 'CONFIRM_REMOVE_ACCOUNT',
-                    identity,
+                    account,
                   }),
                 );
                 trackEvent({
@@ -257,53 +230,18 @@ export const AccountListItemMenu = ({
                     account_hardware_type: deviceName,
                     chain_id: chainId,
                     account_type: accountType,
+                    hd_entropy_index: hdEntropyIndex,
+                    caip_chain_id: formatChainIdToCaip(chainId),
                   },
                 });
                 onClose();
                 closeMenu?.();
               }}
-              iconName={IconName.Trash}
+              iconNameLegacy={IconName.Trash}
             >
               <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
             </MenuItem>
           ) : null}
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            isCustodial ? (
-              <MenuItem
-                ref={removeJWTItemRef}
-                data-testid="account-options-menu__remove-jwt"
-                onClick={async () => {
-                  const token = await dispatch(
-                    mmiActions.getCustodianToken(identity.address),
-                  );
-
-                  const custodyAccountDetails = await dispatch(
-                    mmiActions.getAllCustodianAccountsWithToken(
-                      keyring.type.split(' - ')[1],
-                      token,
-                    ),
-                  );
-
-                  dispatch(
-                    showModal({
-                      name: 'CONFIRM_REMOVE_JWT',
-                      token,
-                      custodyAccountDetails,
-                      accounts,
-                      selectedAddress: toChecksumHexAddress(identity.address),
-                    }),
-                  );
-                  onClose();
-                  closeMenu?.();
-                }}
-                iconName={IconName.Trash}
-              >
-                <Text variant={TextVariant.bodySm}>{t('removeJWT')}</Text>
-              </MenuItem>
-            ) : null
-            ///: END:ONLY_INCLUDE_IF
-          }
         </div>
       </ModalFocus>
     </Popover>
@@ -342,15 +280,22 @@ AccountListItemMenu.propTypes = {
    */
   isHidden: PropTypes.bool,
   /**
-   * Represents connected status
+   * An account object that has name, address, and balance data
    */
-  isConnected: PropTypes.bool,
-  /**
-   * Identity of the account
-   */
-  identity: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+  account: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
 };

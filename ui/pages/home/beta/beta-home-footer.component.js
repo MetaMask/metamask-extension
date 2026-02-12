@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 
-import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import {
+  SUPPORT_LINK,
+  SUPPORT_REQUEST_LINK,
+} from '../../../helpers/constants/common';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsContextProp,
@@ -11,10 +14,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const BetaHomeFooter = () => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const SUPPORT_LINK =
-    'https://docs.google.com/forms/d/e/1FAIpQLSfpkpeVMvfFw_1CWzrs5M3TEqE9VPMSspLPJgk1u4ZyUkQRbg/viewform?usp=sharing';
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   return (
     <>
@@ -40,10 +40,6 @@ const BetaHomeFooter = () => {
         }}
       >
         {t('needHelpSubmitTicket')}
-      </a>{' '}
-      |{' '}
-      <a href={SUPPORT_LINK} target="_blank" rel="noopener noreferrer">
-        {t('needHelpFeedback')}
       </a>
     </>
   );

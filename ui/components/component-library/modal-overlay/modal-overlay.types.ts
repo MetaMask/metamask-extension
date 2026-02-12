@@ -4,6 +4,8 @@ import type {
   PolymorphicComponentPropWithRef,
 } from '../box';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ModalOverlayStyleUtilityProps extends StyleUtilityProps {
   /**
    * onClick handler for the overlay
@@ -16,9 +18,13 @@ export interface ModalOverlayStyleUtilityProps extends StyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalOverlayProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ModalOverlayStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalOverlayComponent = <C extends React.ElementType = 'div'>(
   props: ModalOverlayProps<C>,
 ) => React.ReactElement | null;

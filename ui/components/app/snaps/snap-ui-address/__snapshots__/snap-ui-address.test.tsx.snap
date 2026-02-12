@@ -1,0 +1,768 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapUIAddress renders Bitcoin address 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(35, 83, 225);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#03475E"
+              height="32"
+              transform="translate(2.93051364518973 1.22614695259726) rotate(127.9 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#F95801"
+              height="32"
+              transform="translate(7.17183210118496 11.07980552300802) rotate(153.0 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#017B8E"
+              height="32"
+              transform="translate(8.45143442708077 22.46860174935927) rotate(146.6 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      128Lkh3...Mp8p6
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Bitcoin address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(35, 83, 225);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#03475E"
+              height="32"
+              transform="translate(2.93051364518973 1.22614695259726) rotate(127.9 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#F95801"
+              height="32"
+              transform="translate(7.17183210118496 11.07980552300802) rotate(153.0 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#017B8E"
+              height="32"
+              transform="translate(8.45143442708077 22.46860174935927) rotate(146.6 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      128Lkh3...Mp8p6
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Cosmos address 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 59, 94);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#2339E1"
+              height="32"
+              transform="translate(-10.57709536850356 1.27788532664115) rotate(258.6 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#FB182B"
+              height="32"
+              transform="translate(5.67733727066244 9.94368742032136) rotate(189.4 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#EDF500"
+              height="32"
+              transform="translate(-25.62998642818306 -17.79040578649136) rotate(296.0 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      cosmos1...6hdc0
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Cosmos address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 59, 94);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#2339E1"
+              height="32"
+              transform="translate(-10.57709536850356 1.27788532664115) rotate(258.6 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#FB182B"
+              height="32"
+              transform="translate(5.67733727066244 9.94368742032136) rotate(189.4 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#EDF500"
+              height="32"
+              transform="translate(-25.62998642818306 -17.79040578649136) rotate(296.0 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      cosmos1...6hdc0
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Ethereum address 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 83);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#F29602"
+              height="32"
+              transform="translate(-2.81750896228304 4.95191654400623) rotate(230.4 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#236CE1"
+              height="32"
+              transform="translate(-13.49865029263281 -9.44191867669309) rotate(245.3 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#018E8E"
+              height="32"
+              transform="translate(18.42469405222943 23.24877720627808) rotate(173.9 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      0xab16a...Bfcdb
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Ethereum address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 83);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#F29602"
+              height="32"
+              transform="translate(-2.81750896228304 4.95191654400623) rotate(230.4 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#236CE1"
+              height="32"
+              transform="translate(-13.49865029263281 -9.44191867669309) rotate(245.3 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#018E8E"
+              height="32"
+              transform="translate(18.42469405222943 23.24877720627808) rotate(173.9 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      0xab16a...Bfcdb
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Hedera address 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(251, 24, 81);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#C81441"
+              height="32"
+              transform="translate(7.89293039869636 3.81505315001625) rotate(81.4 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#F95001"
+              height="32"
+              transform="translate(-15.11553225410416 5.65823114066517) rotate(249.8 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#034A5E"
+              height="32"
+              transform="translate(18.78211641009715 -20.96644138082799) rotate(321.3 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      0.0.123...zbhlt
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Hedera address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(251, 24, 81);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#C81441"
+              height="32"
+              transform="translate(7.89293039869636 3.81505315001625) rotate(81.4 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#F95001"
+              height="32"
+              transform="translate(-15.11553225410416 5.65823114066517) rotate(249.8 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#034A5E"
+              height="32"
+              transform="translate(18.78211641009715 -20.96644138082799) rotate(321.3 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      0.0.123...zbhlt
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Polkadot address 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 198, 242);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#238CE1"
+              height="32"
+              transform="translate(-0.93263597805800 -0.77609792173980) rotate(228.7 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#018E77"
+              height="32"
+              transform="translate(14.63385912762450 0.17102681763595) rotate(175.0 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#F26E02"
+              height="32"
+              transform="translate(22.33401116585189 0.64465270748203) rotate(17.6 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      5hmuyxw...egmfy
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Polkadot address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 198, 242);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#238CE1"
+              height="32"
+              transform="translate(-0.93263597805800 -0.77609792173980) rotate(228.7 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#018E77"
+              height="32"
+              transform="translate(14.63385912762450 0.17102681763595) rotate(175.0 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#F26E02"
+              height="32"
+              transform="translate(22.33401116585189 0.64465270748203) rotate(17.6 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      5hmuyxw...egmfy
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Starknet address 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 162, 0);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#03405E"
+              height="32"
+              transform="translate(2.06481943493039 4.67251827463514) rotate(110.8 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#FB1836"
+              height="32"
+              transform="translate(-11.72229395562091 -7.60164355296404) rotate(323.2 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#F96C01"
+              height="32"
+              transform="translate(-21.47761817022074 15.26919418349953) rotate(281.7 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      0x02dd1...0ab57
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders Starknet address with blockie 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 162, 0);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#03405E"
+              height="32"
+              transform="translate(2.06481943493039 4.67251827463514) rotate(110.8 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#FB1836"
+              height="32"
+              transform="translate(-11.72229395562091 -7.60164355296404) rotate(323.2 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#F96C01"
+              height="32"
+              transform="translate(-21.47761817022074 15.26919418349953) rotate(281.7 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      0x02dd1...0ab57
+    </p>
+  </div>
+</div>
+`;
+
+exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__address mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+    data-testid="snap-ui-address"
+  >
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+    >
+      <div
+        class="flex [&>div]:!rounded-none"
+      >
+        <div
+          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(200, 20, 83);"
+        >
+          <svg
+            height="32"
+            width="32"
+            x="0"
+            y="0"
+          >
+            <rect
+              fill="#F29602"
+              height="32"
+              transform="translate(-2.81750896228304 4.95191654400623) rotate(230.4 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#236CE1"
+              height="32"
+              transform="translate(-13.49865029263281 -9.44191867669309) rotate(245.3 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+            <rect
+              fill="#018E8E"
+              height="32"
+              transform="translate(18.42469405222943 23.24877720627808) rotate(173.9 16.00000000000000 16.00000000000000)"
+              width="32"
+              x="0"
+              y="0"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+      style="line-break: anywhere;"
+    >
+      0xab16a...Bfcdb
+    </p>
+  </div>
+</div>
+`;

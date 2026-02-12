@@ -1,3 +1,6 @@
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockNetworkState } from '../../../../test/stub/networks';
+
 /* eslint-disable import/unambiguous */
 let mapStateToProps;
 
@@ -20,10 +23,11 @@ describe('TransactionActivityLog container', () => {
               conversionRate: 280.45,
             },
           },
-          networkConfigurations: {},
-          providerConfig: {
-            ticker: 'ETH',
-          },
+
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
+            blockExplorerUrl: undefined,
+          }),
         },
       };
 
@@ -42,18 +46,11 @@ describe('TransactionActivityLog container', () => {
               conversionRate: 280.45,
             },
           },
-          networkConfigurations: {
-            networkConfigurationId: {
-              rpcUrl: 'https://customnetwork.com/',
-            },
-          },
-          providerConfig: {
+          ...mockNetworkState({
+            chainId: CHAIN_IDS.MAINNET,
             rpcUrl: 'https://customnetwork.com/',
-            ticker: 'ETH',
-            rpcPrefs: {
-              blockExplorerUrl: 'https://customblockexplorer.com/',
-            },
-          },
+            blockExplorerUrl: 'https://customblockexplorer.com/',
+          }),
         },
       };
 

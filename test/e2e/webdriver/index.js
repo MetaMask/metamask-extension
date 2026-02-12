@@ -3,15 +3,35 @@ const { Driver } = require('./driver');
 const ChromeDriver = require('./chrome');
 const FirefoxDriver = require('./firefox');
 
-async function buildWebDriver({ openDevToolsForTabs, port, timeOut } = {}) {
+async function buildWebDriver({
+  responsive,
+  openDevToolsForTabs,
+  constrainWindowSize,
+  port,
+  timeOut,
+  proxyPort,
+  disableServerMochaToBackground,
+} = {}) {
   const browser = process.env.SELENIUM_BROWSER;
 
   const {
     driver: seleniumDriver,
     extensionId,
     extensionUrl,
-  } = await buildBrowserWebDriver(browser, { openDevToolsForTabs, port });
-  const driver = new Driver(seleniumDriver, browser, extensionUrl, timeOut);
+  } = await buildBrowserWebDriver(browser, {
+    responsive,
+    openDevToolsForTabs,
+    port,
+    constrainWindowSize,
+    proxyPort,
+  });
+  const driver = new Driver({
+    driver: seleniumDriver,
+    browser,
+    extensionUrl,
+    timeout: timeOut,
+    disableServerMochaToBackground,
+  });
 
   return {
     driver,

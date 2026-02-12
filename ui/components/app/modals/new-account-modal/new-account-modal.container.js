@@ -1,23 +1,28 @@
 import { connect } from 'react-redux';
-import * as actions from '../../../../store/actions';
+import {
+  addNewAccount,
+  setAccountLabel,
+  forceUpdateMetamaskState,
+  hideModal,
+} from '../../../../store/actions';
 import NewAccountModal from './new-account-modal.component';
 
 function mapStateToProps(state) {
   return {
-    ...(state.appState.modal.modalState.props || {}),
+    ...state.appState.modal.modalState.props,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    hideModal: () => dispatch(actions.hideModal()),
-    createAccount: (newAccountName) => {
-      return dispatch(actions.addNewAccount()).then((newAccountAddress) => {
-        if (newAccountName) {
-          dispatch(actions.setAccountLabel(newAccountAddress, newAccountName));
-        }
-        return newAccountAddress;
-      });
+    hideModal: () => dispatch(hideModal()),
+    createAccount: async (newAccountName) => {
+      const { address: newAccountAddress } = await dispatch(addNewAccount());
+      if (newAccountName) {
+        dispatch(setAccountLabel(newAccountAddress, newAccountName));
+      }
+      await forceUpdateMetamaskState(dispatch);
+      return newAccountAddress;
     },
   };
 }
@@ -30,9 +35,9 @@ function mergeProps(stateProps, dispatchProps) {
     ...stateProps,
     ...dispatchProps,
     onSave: (newAccountName) => {
-      return createAccount(newAccountName).then((newAccountAddress) =>
-        onCreateNewAccount(newAccountAddress),
-      );
+      return createAccount(newAccountName).then((newAccountAddress) => {
+        onCreateNewAccount(newAccountAddress);
+      });
     },
   };
 }

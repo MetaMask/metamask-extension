@@ -75,6 +75,7 @@ const Popover = ({
   showScrollDown,
   onScrollDownButtonClick,
   centerTitle,
+  wrapTitle,
   headerProps = defaultHeaderProps,
   contentProps = defaultContentProps,
   footerProps = defaultFooterProps,
@@ -95,7 +96,7 @@ const Popover = ({
         })}
         marginBottom={2}
       >
-        {onBack ? (
+        {onBack && (
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             ariaLabel={t('back')}
@@ -103,9 +104,13 @@ const Popover = ({
             color={Color.iconDefault}
             size={Size.SM}
           />
-        ) : null}
+        )}
+        {!onBack && centerTitle && <div className="size-6" />}
         <Text
           textAlign={centerTitle ? TextAlign.Center : TextAlign.Start}
+          className={classnames('flex-1', {
+            'popover-header__title-wrap': wrapTitle,
+          })}
           ellipsis
           variant={TextVariant.headingSm}
           as="h2"
@@ -121,7 +126,9 @@ const Popover = ({
             onClick={onClose}
             size={Size.SM}
           />
-        ) : null}
+        ) : (
+          <div className="size-6" />
+        )}
       </Box>
       {subtitle ? <Text variant={TextVariant.bodySm}>{subtitle}</Text> : null}
     </Box>
@@ -184,6 +191,10 @@ const Popover = ({
 };
 
 Popover.propTypes = {
+  /**
+   * Avoid wrapping title
+   */
+  wrapTitle: PropTypes.bool,
   /**
    * Show title of the popover
    */

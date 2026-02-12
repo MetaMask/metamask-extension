@@ -1,14 +1,16 @@
 const pify = require('pify');
 const gulp = require('gulp');
 const autoprefixer = require('autoprefixer');
-const gulpStylelint = require('gulp-stylelint');
 const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
+const discardFonts = require('postcss-discard-font-face');
 const postcss = require('gulp-postcss');
-const pump = pify(require('pump'));
+const tailwindcss = require('tailwindcss');
+const pipeline = pify(require('readable-stream').pipeline);
 const sass = require('sass-embedded');
 const gulpSass = require('gulp-sass')(sass);
+const tailwindConfig = require('../../tailwind.config');
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
 
@@ -35,16 +37,7 @@ function createStyleTasks({ livereload }) {
     }),
   );
 
-  const lint = createTask(TASKS.LINT_SCSS, function () {
-    return gulp.src('ui/css/itcss/**/*.scss').pipe(
-      gulpStylelint({
-        reporters: [{ formatter: 'string', console: true }],
-        fix: true,
-      }),
-    );
-  });
-
-  return { prod, dev, lint };
+  return { prod, dev };
 
   function createScssBuildTask({ src, dest, devMode, pattern }) {
     return async function () {
@@ -64,7 +57,7 @@ function createStyleTasks({ livereload }) {
 }
 
 async function buildScssPipeline(src, dest, devMode) {
-  await pump(
+  await pipeline(
     ...[
       // pre-process
       gulp.src(src),
@@ -83,7 +76,12 @@ async function buildScssPipeline(src, dest, devMode) {
           '-mm-fa-path()': () => new sass.SassString('./fonts/fontawesome'),
         },
       }).on('error', gulpSass.logError),
-      postcss([autoprefixer(), rtlcss()]),
+      postcss([
+        tailwindcss(tailwindConfig),
+        autoprefixer(),
+        rtlcss(),
+        discardFonts(['woff2']),
+      ]),
       devMode && sourcemaps.write(),
       gulp.dest(dest),
     ].filter(Boolean),

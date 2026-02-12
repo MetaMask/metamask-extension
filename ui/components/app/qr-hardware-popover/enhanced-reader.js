@@ -42,7 +42,6 @@ const EnhancedReader = ({ handleScan }) => {
         })
         .catch(log.info);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -55,7 +54,7 @@ const EnhancedReader = ({ handleScan }) => {
           filter: 'blur(4px)',
         }}
       />
-      {canplay ? null : <Spinner color="var(--color-warning-default)" />}
+      {canplay ? null : <Spinner />}
     </div>
   );
 };

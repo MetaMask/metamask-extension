@@ -7,6 +7,8 @@ export enum BannerTipLogoType {
   Chat = 'chat',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface BannerTipStyleUtilityProps
   extends BannerBaseStyleUtilityProps {
   /**
@@ -32,9 +34,13 @@ export interface BannerTipStyleUtilityProps
   startAccessory?: React.ReactNode;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerTipProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, BannerTipStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BannerTipComponent = <C extends React.ElementType = 'div'>(
   props: BannerTipProps<C>,
 ) => React.ReactElement | null;

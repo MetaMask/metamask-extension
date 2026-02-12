@@ -8,16 +8,11 @@ import {
   Display,
   BlockSize,
   TextVariant,
-  IconColor,
+  BorderRadius,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  Text,
-  Box,
-  IconName,
-  IconSize,
-  Icon,
-} from '../../../component-library';
-import SnapAvatar from '../snap-avatar';
+import { Text, Box } from '../../../component-library';
+import { SnapIcon } from '../snap-icon';
 
 const SnapListItem = ({
   name,
@@ -45,13 +40,19 @@ const SnapListItem = ({
         width={BlockSize.Full}
       >
         <Box>
-          <SnapAvatar snapId={snapId} />
+          <SnapIcon snapId={snapId} />
         </Box>
-        <Box paddingLeft={4} paddingRight={4} width={BlockSize.Full}>
+        <Box
+          paddingLeft={4}
+          paddingRight={4}
+          width={BlockSize.Full}
+          style={{ overflow: 'hidden' }}
+        >
           <Text
             className="snap-list-item__title"
             color={Color.textDefault}
             variant={TextVariant.bodyMd}
+            ellipsis
           >
             {name}
           </Text>
@@ -59,19 +60,19 @@ const SnapListItem = ({
             className="snap-list-item__url"
             color={Color.textAlternative}
             variant={TextVariant.bodySm}
+            ellipsis
           >
             {packageName}
           </Text>
         </Box>
       </Box>
       {showUpdateDot && (
-        <Box display={Display.Flex}>
-          <Icon
-            name={IconName.FullCircle}
-            size={IconSize.Xs}
-            color={IconColor.primaryDefault}
-          />
-        </Box>
+        <Box
+          display={Display.Flex}
+          style={{ width: '10px', height: '10px', content: '' }}
+          borderRadius={BorderRadius.full}
+          backgroundColor={BackgroundColor.primaryDefault}
+        />
       )}
     </Box>
   );

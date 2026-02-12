@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GeneralAlert renders general alert 1`] = `
+<div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
+      >
+        Security Alert
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      >
+        This is a security alert
+      </p>
+    </div>
+  </div>
+</div>
+`;

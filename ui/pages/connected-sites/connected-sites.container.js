@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import {
   getOpenMetamaskTabsIds,
-  requestAccountsPermissionWithId,
+  requestAccountsAndChainPermissionsWithId,
   removePermissionsFor,
   removePermittedAccount,
 } from '../../store/actions';
@@ -61,8 +61,8 @@ const mapDispatchToProps = (dispatch) => {
         }),
       );
     },
-    requestAccountsPermissionWithId: (origin) =>
-      dispatch(requestAccountsPermissionWithId(origin)),
+    requestAccountsAndChainPermissionsWithId: (origin) =>
+      dispatch(requestAccountsAndChainPermissionsWithId(origin)),
   };
 };
 
@@ -78,11 +78,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     disconnectAccount,
     disconnectAllAccounts,
     // eslint-disable-next-line no-shadow
-    requestAccountsPermissionWithId,
+    requestAccountsAndChainPermissionsWithId,
   } = dispatchProps;
-  const { history } = ownProps;
+  const { navigate } = ownProps;
 
-  const closePopover = () => history.push(mostRecentOverviewPage);
+  const closePopover = () => navigate(mostRecentOverviewPage);
 
   return {
     ...ownProps,
@@ -102,8 +102,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       }
     },
     requestAccountsPermission: async () => {
-      const id = await requestAccountsPermissionWithId(tabToConnect.origin);
-      history.push(`${CONNECT_ROUTE}/${id}`);
+      const id = await requestAccountsAndChainPermissionsWithId(
+        tabToConnect.origin,
+      );
+      navigate(`${CONNECT_ROUTE}/${id}`);
     },
   };
 };

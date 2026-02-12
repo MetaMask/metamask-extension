@@ -8,6 +8,8 @@ import {
 
 import type { StyleUtilityProps } from '../../../../../component-library/box';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface FooterProps extends StyleUtilityProps {
   /**
    * Elements that go in the page footer
@@ -17,6 +19,10 @@ interface FooterProps extends StyleUtilityProps {
    * Additional CSS class provided to the footer
    */
   className?: string;
+  /**
+   * Additional CSS style provided to the footer
+   */
+  style?: React.CSSProperties;
 }
 
 export const Footer = ({ children, className = '', ...props }: FooterProps) => {

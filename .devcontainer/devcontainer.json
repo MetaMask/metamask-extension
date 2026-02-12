@@ -2,16 +2,18 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "dbaeumer.vscode-eslint",
         "eamodio.gitlens",
+        "esbenp.prettier-vscode",
         "github.codespaces",
         "github.copilot",
         "github.copilot-chat",
         "ms-azuretools.vscode-docker",
-        "rvest.vs-code-prettier-eslint"
+        "streetsidesoftware.code-spell-checker",
+        "DigitalBrainstem.javascript-ejs-support"
       ],
       "settings": {
         "editor.formatOnSave": true,
-        "git.autofetch": true,
         "git.ignoreRebaseWarning": true,
         "git.rebaseWhenSync": true,
         "gitlens.showWelcomeOnInstall": false
@@ -46,7 +48,7 @@
     }
   },
 
-  "postAttachCommand": "/usr/local/share/desktop-init.sh && git pull --rebase; yarn download-builds",
+  "postAttachCommand": "/usr/local/share/desktop-init.sh && git pull; yarn download-builds",
 
   // This is a working Infura key, but it's on the Free Plan and has very limited requests per second
   // If you want to use your own INFURA_PROJECT_ID, follow the instructions in README.md
@@ -54,5 +56,5 @@
 
   "runArgs": ["--shm-size=1g"],
 
-  "updateContentCommand": "sudo .devcontainer/install.sh && yarn --immutable && yarn tsx .devcontainer/setup-browsers.ts && echo 'export DISPLAY=:1' >> ~/.bashrc"
+  "updateContentCommand": "sudo .devcontainer/install.sh && corepack enable && COREPACK_ENABLE_DOWNLOAD_PROMPT=0 yarn --immutable && yarn tsx .devcontainer/setup-browsers.ts && echo 'export DISPLAY=:1' >> ~/.bashrc"
 }

@@ -6,6 +6,9 @@ import {
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { TextStyleUtilityProps } from '../text';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum AvatarBaseSize {
   Xs = 'xs',
   Sm = 'sm',
@@ -14,6 +17,8 @@ export enum AvatarBaseSize {
   Xl = 'xl',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface AvatarBaseStyleUtilityProps extends TextStyleUtilityProps {
   /**
    * The size of the AvatarBase.
@@ -47,9 +52,13 @@ export interface AvatarBaseStyleUtilityProps extends TextStyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarBaseProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, AvatarBaseStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarBaseComponent = <C extends React.ElementType = 'span'>(
   props: AvatarBaseProps<C>,
 ) => React.ReactElement | null;

@@ -1,0 +1,68 @@
+import { strict as assert } from 'assert';
+import { PermissionConstraint } from '@metamask/permission-controller';
+import { withFixtures } from '../helpers';
+import FixtureBuilder from '../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import TestDapp from '../page-objects/pages/test-dapp';
+import { Driver } from '../webdriver/driver';
+import { WINDOW_TITLES } from '../constants';
+import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
+
+describe('wallet_requestPermissions', function () {
+  it('executes a request permissions on eth_accounts event', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.title,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+
+        // wallet_requestPermissions
+        const requestPermissionsRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_requestPermissions',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          params: [{ eth_accounts: {} }],
+        });
+        await driver.executeScript(
+          `window.ethereum.request(${requestPermissionsRequest})`,
+        );
+
+        // confirm connect account
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
+
+        // Switch back to TestDApp window before executing scripts
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        const getPermissionsRequest = JSON.stringify({
+          method: 'wallet_getPermissions',
+        });
+        const getPermissions = await driver.executeScript(
+          `return window.ethereum.request(${getPermissionsRequest})`,
+        );
+
+        const grantedPermissionNames = getPermissions
+          .map(
+            (permission: PermissionConstraint) => permission.parentCapability,
+          )
+          .sort();
+
+        assert.deepStrictEqual(grantedPermissionNames, [
+          'endowment:permitted-chains',
+          'eth_accounts',
+        ]);
+      },
+    );
+  });
+});

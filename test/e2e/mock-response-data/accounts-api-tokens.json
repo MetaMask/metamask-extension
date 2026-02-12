@@ -1,0 +1,13 @@
+[
+  {
+    "name": "Ethereum",
+    "symbol": "ETH",
+    "decimals": 18,
+    "address": "0x0000000000000000000000000000000000000000",
+    "iconUrl": "https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg",
+    "occurrences": 100,
+    "sources": [],
+    "chainId": 1,
+    "coingeckoId": "ethereum"
+  }
+]

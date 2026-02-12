@@ -4,7 +4,11 @@ import {
   NameType,
   SetNameRequest,
 } from '@metamask/name-controller';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import {
+  Messenger,
+  ActionConstraint,
+  EventConstraint,
+} from '@metamask/messenger';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
 export type PetnameEntry = SetNameRequest & {
@@ -21,22 +25,23 @@ export enum ChangeType {
 }
 
 enum SyncDirection {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOURCE_TO_PETNAMES = 'Source->Petnames',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   PETNAMES_TO_SOURCE = 'Petnames->Source',
 }
 
 // A list of changes, grouped by type.
 type ChangeList = Record<ChangeType, PetnameEntry[]>;
 
-type AllowedEvents = NameStateChange;
+type PetnamesBridgeAllowedEvents = NameStateChange;
 
-export type PetnamesBridgeMessenger = RestrictedControllerMessenger<
-  'PetnamesBridge',
-  never,
-  AllowedEvents,
-  never,
-  AllowedEvents['type']
->;
+export type PetnamesBridgeMessenger<
+  Event extends EventConstraint = never,
+  Action extends ActionConstraint = never,
+> = Messenger<'PetnamesBridge', Action, PetnamesBridgeAllowedEvents | Event>;
 
 /**
  * Get a string key for the given entry.
@@ -56,14 +61,17 @@ function getKey({ type, variation, value }: PetnameEntry): string {
  * Abstract class representing a bridge between petnames and a data source.
  * Provides methods for synchronizing petnames with the data source and handling changes.
  */
-export abstract class AbstractPetnamesBridge {
+export abstract class AbstractPetnamesBridge<
+  Event extends EventConstraint = never,
+  Action extends ActionConstraint = never,
+> {
   #isTwoWay: boolean;
 
   #nameController: NameController;
 
   #synchronizingDirection: SyncDirection | null = null;
 
-  #messenger: PetnamesBridgeMessenger;
+  protected messenger: PetnamesBridgeMessenger<Event, Action>;
 
   /**
    * @param options
@@ -78,17 +86,17 @@ export abstract class AbstractPetnamesBridge {
   }: {
     isTwoWay: boolean;
     nameController: NameController;
-    messenger: PetnamesBridgeMessenger;
+    messenger: PetnamesBridgeMessenger<Event, Action>;
   }) {
     this.#isTwoWay = isTwoWay;
     this.#nameController = nameController;
-    this.#messenger = messenger;
+    this.messenger = messenger;
   }
 
   // Initializes listeners
   init(): void {
     if (this.#isTwoWay) {
-      this.#messenger.subscribe('NameController:stateChange', () =>
+      this.messenger.subscribe('NameController:stateChange', () =>
         this.#synchronize(SyncDirection.PETNAMES_TO_SOURCE),
       );
     }

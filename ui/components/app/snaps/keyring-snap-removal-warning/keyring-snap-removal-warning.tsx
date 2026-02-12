@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
-// @ts-expect-error see: https://github.com/MetaMask/snaps/pull/2174
 import { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
-  Button,
-  ButtonSize,
   ButtonVariant,
   Modal,
   ModalOverlay,
   Text,
   TextField,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
+
 import {
-  BlockSize,
   Display,
   FlexDirection,
   FontWeight,
@@ -26,9 +25,11 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import InfoTooltip from '../../../ui/info-tooltip';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function KeyringRemovalSnapWarning({
   snap,
   keyringAccounts,
@@ -51,7 +52,7 @@ export default function KeyringRemovalSnapWarning({
   const [confirmedRemoval, setConfirmedRemoval] = useState(false);
   const [confirmationInput, setConfirmationInput] = useState('');
   const [error, setError] = useState(false);
-  const { chainId } = useSelector(getProviderConfig);
+  const chainId = useSelector(getCurrentChainId);
 
   useEffect(() => {
     setShowConfirmation(keyringAccounts.length === 0);
@@ -92,46 +93,39 @@ export default function KeyringRemovalSnapWarning({
           >
             {t('removeSnap')}
           </ModalHeader>
-          {showConfirmation === false ? (
-            <>
-              <BannerAlert severity={BannerAlertSeverity.Warning} className="">
-                {t('backupKeyringSnapReminder')}
-              </BannerAlert>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text>{t('removeKeyringSnap')}</Text>
-                <InfoTooltip
-                  contentText={t('removeKeyringSnapToolTip')}
-                  position="top"
-                />
-              </Box>
-              {keyringAccounts.map((account, index) => {
-                return (
-                  <KeyringAccountListItem
-                    key={index}
-                    account={account}
-                    snapUrl={getAccountLink(account.address, chainId)}
-                  />
-                );
-              })}
-            </>
-          ) : (
-            <>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                marginTop={6}
-              >
-                <BannerAlert
-                  severity={BannerAlertSeverity.Warning}
-                  className=""
-                  marginBottom={4}
+          <ModalBody
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
+          >
+            <BannerAlert severity={BannerAlertSeverity.Warning}>
+              {t('backupKeyringSnapReminder')}
+            </BannerAlert>
+            {showConfirmation === false ? (
+              <>
+                <Box
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.spaceBetween}
                 >
-                  {t('backupKeyringSnapReminder')}
-                </BannerAlert>
-                <Text marginBottom={4}>
+                  <Text>{t('removeKeyringSnap')}</Text>
+                  <InfoTooltip
+                    contentText={t('removeKeyringSnapToolTip')}
+                    position="top"
+                  />
+                </Box>
+                {keyringAccounts.map((account, index) => {
+                  return (
+                    <KeyringAccountListItem
+                      key={index}
+                      account={account}
+                      snapUrl={getAccountLink(account.address, chainId)}
+                    />
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                <Text>
                   {t('keyringSnapRemoveConfirmation', [
                     <Text
                       key="keyringSnapRemoveConfirmation2"
@@ -145,7 +139,6 @@ export default function KeyringRemovalSnapWarning({
                 {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                 {/* @ts-ignore TODO: fix TextField props */}
                 <TextField
-                  marginBottom={4}
                   value={confirmationInput}
                   onChange={(e: { target: { value: string } }) => {
                     setConfirmationInput(e.target.value);
@@ -153,42 +146,41 @@ export default function KeyringRemovalSnapWarning({
                       validateConfirmationInput(e.target.value),
                     );
                   }}
+                  onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+                    e.preventDefault();
+                  }}
                   error={error}
                   inputProps={{
                     'data-testid': 'remove-snap-confirmation-input',
                   }}
                 />
-              </Box>
-            </>
-          )}
-          <Box width={BlockSize.Full} display={Display.Flex} gap={4}>
-            <Button
-              block
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              onClick={onCancel}
-            >
-              {t('cancel')}
-            </Button>
-            <Button
-              block
-              size={ButtonSize.Lg}
-              id="popoverRemoveSnapButton"
-              danger={showConfirmation}
-              disabled={showConfirmation && !confirmedRemoval}
-              onClick={async () => {
-                if (!showConfirmation) {
-                  setShowConfirmation(true);
-                  return;
-                }
-                if (confirmedRemoval) {
-                  onSubmit();
-                }
-              }}
-            >
-              {showConfirmation ? t('removeSnap') : t('continue')}
-            </Button>
-          </Box>
+              </>
+            )}
+          </ModalBody>
+          <ModalFooter
+            onCancel={onCancel}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onSubmit={async () => {
+              if (!showConfirmation) {
+                setShowConfirmation(true);
+                return;
+              }
+              if (confirmedRemoval) {
+                onSubmit();
+              }
+            }}
+            submitButtonProps={{
+              id: 'popoverRemoveSnapButton',
+              danger: showConfirmation,
+              disabled: showConfirmation && !confirmedRemoval,
+              children: showConfirmation ? t('removeSnap') : t('continue'),
+            }}
+            cancelButtonProps={{
+              variant: ButtonVariant.Secondary,
+              children: t('cancel'),
+            }}
+          />
         </ModalContent>
       </Modal>
     </>

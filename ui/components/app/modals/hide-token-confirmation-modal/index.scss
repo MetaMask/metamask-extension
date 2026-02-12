@@ -43,16 +43,4 @@
     color: var(--color-text-alternative);
     text-align: center;
   }
-
-  &__buttons {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 15px;
-    width: 100%;
-  }
-
-  &__button {
-    margin: 0 5px;
-  }
 }

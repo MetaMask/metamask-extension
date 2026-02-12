@@ -1,11 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
-import {
-  renderWithProvider,
-  createSwapsMockStore,
-} from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -137,7 +134,9 @@ describe('SwapsBannerAlert', () => {
     );
     expect(getByText('No quotes available')).toBeInTheDocument();
     expect(
-      getByText('Reduce the size of your trade or use a different token.'),
+      getByText(
+        "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option.",
+      ),
     ).toBeInTheDocument();
     expect(getByText('Learn more about Swaps')).toBeInTheDocument();
   });

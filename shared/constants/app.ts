@@ -1,6 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { DialogType } from '@metamask/snaps-sdk';
-///: END:ONLY_INCLUDE_IF
+import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -14,17 +12,84 @@ export type EnvironmentType =
   | 'popup'
   | 'notification'
   | 'fullscreen'
-  | 'background';
+  | 'background'
+  | 'sidepanel';
 export const ENVIRONMENT_TYPE_POPUP = 'popup';
 export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
 export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
+export const ENVIRONMENT_TYPE_SIDEPANEL = 'sidepanel';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
+export const PLATFORM_CHROMIUM = 'Chromium';
+export const PLATFORM_COCCOC = 'CocCoc';
 export const PLATFORM_EDGE = 'Edge';
+export const PLATFORM_EDGE_ANDROID = 'EdgeAndroid';
 export const PLATFORM_FIREFOX = 'Firefox';
+export const PLATFORM_KIWI = 'Kiwi';
+export const PLATFORM_LEMUR = 'Lemur';
+export const PLATFORM_MAXTHON = 'Maxthon';
+export const PLATFORM_MISES = 'Mises';
 export const PLATFORM_OPERA = 'Opera';
+export const PLATFORM_OTHER = 'Other';
+export const PLATFORM_PUFFIN = 'Puffin';
+export const PLATFORM_QQBROWSER = 'QQBrowser';
+export const PLATFORM_SAMSUNG = 'Samsung';
+export const PLATFORM_SILK = 'Silk';
+export const PLATFORM_UCBROWSER = 'UCBrowser';
+export const PLATFORM_VIVALDI = 'Vivaldi';
+export const PLATFORM_WHALE = 'Whale';
+export const PLATFORM_YANDEX = 'Yandex';
+
+/**
+ * Object containing all platform constants for type-safe usage.
+ */
+export const PLATFORM = {
+  BRAVE: PLATFORM_BRAVE,
+  CHROME: PLATFORM_CHROME,
+  CHROMIUM: PLATFORM_CHROMIUM,
+  COCCOC: PLATFORM_COCCOC,
+  EDGE: PLATFORM_EDGE,
+  EDGE_ANDROID: PLATFORM_EDGE_ANDROID,
+  FIREFOX: PLATFORM_FIREFOX,
+  KIWI: PLATFORM_KIWI,
+  LEMUR: PLATFORM_LEMUR,
+  MAXTHON: PLATFORM_MAXTHON,
+  MISES: PLATFORM_MISES,
+  OPERA: PLATFORM_OPERA,
+  OTHER: PLATFORM_OTHER,
+  PUFFIN: PLATFORM_PUFFIN,
+  QQBROWSER: PLATFORM_QQBROWSER,
+  SAMSUNG: PLATFORM_SAMSUNG,
+  SILK: PLATFORM_SILK,
+  UCBROWSER: PLATFORM_UCBROWSER,
+  VIVALDI: PLATFORM_VIVALDI,
+  WHALE: PLATFORM_WHALE,
+  YANDEX: PLATFORM_YANDEX,
+} as const;
+
+export type Platform = (typeof PLATFORM)[keyof typeof PLATFORM];
+
+/**
+ * The type of installation of the extension.
+ * - 'normal' means installed from official store (Chrome Web Store, Firefox Add-ons, etc.)
+ * - 'development' means loaded unpacked in developer mode
+ * - 'sideload' means installed by other software
+ * - 'admin' means installed by admin policy (enterprise)
+ * - 'other' means other installation type
+ * - 'unknown' means the value hasn't been fetched yet or fetch failed
+ */
+export const INSTALL_TYPE = {
+  ADMIN: 'admin',
+  DEVELOPMENT: 'development',
+  NORMAL: 'normal',
+  SIDELOAD: 'sideload',
+  OTHER: 'other',
+  UNKNOWN: 'unknown',
+} as const;
+
+export type InstallType = (typeof INSTALL_TYPE)[keyof typeof INSTALL_TYPE];
 
 export const MESSAGE_TYPE = {
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
@@ -34,8 +99,11 @@ export const MESSAGE_TYPE = {
   ETH_GET_ENCRYPTION_PUBLIC_KEY: 'eth_getEncryptionPublicKey',
   ETH_GET_BLOCK_BY_NUMBER: 'eth_getBlockByNumber',
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
-  ETH_SIGN: 'eth_sign',
+  ETH_SEND_TRANSACTION: 'eth_sendTransaction',
+  ETH_SEND_RAW_TRANSACTION: 'eth_sendRawTransaction',
+  ETH_SIGN_TRANSACTION: 'eth_signTransaction',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
+  ETH_SIGN_TYPED_DATA_V1: 'eth_signTypedData_v1',
   ETH_SIGN_TYPED_DATA_V3: 'eth_signTypedData_v3',
   ETH_SIGN_TYPED_DATA_V4: 'eth_signTypedData_v4',
   GET_PROVIDER_STATE: 'metamask_getProviderState',
@@ -44,55 +112,52 @@ export const MESSAGE_TYPE = {
   SEND_METADATA: 'metamask_sendDomainMetadata',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
   TRANSACTION: 'transaction',
+  WALLET_CREATE_SESSION: 'wallet_createSession',
+  WALLET_GET_CALLS_STATUS: 'wallet_getCallsStatus',
+  WALLET_GET_CAPABILITIES: 'wallet_getCapabilities',
+  WALLET_GET_SESSION: 'wallet_getSession',
+  WALLET_INVOKE_METHOD: 'wallet_invokeMethod',
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
+  WALLET_REVOKE_SESSION: 'wallet_revokeSession',
+  WALLET_SEND_CALLS: 'wallet_sendCalls',
+  WALLET_SESSION_CHANGED: 'wallet_sessionChanged',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
-  SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
-  SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
-  MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',
-  MMI_REFRESH_TOKEN: 'metamaskinstitutional_refresh_token',
-  MMI_SUPPORTED: 'metamaskinstitutional_supported',
-  MMI_PORTFOLIO: 'metamaskinstitutional_portfolio',
-  MMI_OPEN_SWAPS: 'metamaskinstitutional_open_swaps',
-  MMI_CHECK_IF_TOKEN_IS_PRESENT: 'metamaskinstitutional_checkIfTokenIsPresent',
-  MMI_SET_ACCOUNT_AND_NETWORK: 'metamaskinstitutional_setAccountAndNetwork',
-  MMI_OPEN_ADD_HARDWARE_WALLET: 'metamaskinstitutional_openAddHardwareWallet',
-  ///: END:ONLY_INCLUDE_IF
+  SNAP_DIALOG_ALERT: DIALOG_APPROVAL_TYPES.alert,
+  SNAP_DIALOG_CONFIRMATION: DIALOG_APPROVAL_TYPES.confirmation,
+  SNAP_DIALOG_PROMPT: DIALOG_APPROVAL_TYPES.prompt,
+  SNAP_DIALOG_DEFAULT: DIALOG_APPROVAL_TYPES.default,
+  HYPERLIQUID_REFERRAL_CONSENT: 'hyperliquid_referral_consent',
+  ASTERDEX_REFERRAL_CONSENT: 'asterdex_referral_consent',
+  GMX_REFERRAL_CONSENT: 'gmx_referral_consent',
 } as const;
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-export const SNAP_DIALOG_TYPES = {
-  [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
-  [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
-  [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
-};
-///: END:ONLY_INCLUDE_IF
+export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
+
+// Custom ApprovalTypes for DeFi referral consent
+export const HYPERLIQUID_APPROVAL_TYPE =
+  MESSAGE_TYPE.HYPERLIQUID_REFERRAL_CONSENT;
+export const ASTERDEX_APPROVAL_TYPE = MESSAGE_TYPE.ASTERDEX_REFERRAL_CONSENT;
+export const GMX_APPROVAL_TYPE = MESSAGE_TYPE.GMX_REFERRAL_CONSENT;
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
-  showSnapAccountRedirect: 'showSnapAccountRedirect',
+  showSnapAccountRedirect: 'snap_manageAccounts:showSnapAccountRedirect',
 };
 ///: END:ONLY_INCLUDE_IF
 
-/**
- * Custom messages to send and be received by the extension
- */
-export const EXTENSION_MESSAGES = {
-  CONNECTION_READY: 'CONNECTION_READY',
-  READY: 'METAMASK_EXTENSION_READY',
-} as const;
+export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
+  showSmartTransactionStatusPage:
+    'smartTransaction:showSmartTransactionStatusPage',
+};
 
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
+  [ENVIRONMENT_TYPE_SIDEPANEL]: 'sidePanelGasPollTokens',
   [ENVIRONMENT_TYPE_BACKGROUND]: 'none',
 } as const;
 
@@ -124,3 +189,13 @@ export const FIREFOX_BUILD_IDS = [
 ] as const;
 
 export const UNKNOWN_TICKER_SYMBOL = 'UNKNOWN';
+
+export const TRACE_ENABLED_SIGN_METHODS = [
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
+  MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+  MESSAGE_TYPE.PERSONAL_SIGN,
+];
+
+export const DOWNLOAD_MOBILE_APP_SLIDE_ID = 'downloadMobileApp';

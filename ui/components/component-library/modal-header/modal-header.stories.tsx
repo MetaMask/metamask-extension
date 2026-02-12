@@ -10,10 +10,11 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { AvatarAccount, ButtonSize, Button, Text } from '..';
-
 import { ModalHeader } from './modal-header';
+import { Text } from '../text';
 import README from './README.mdx';
+import { AvatarAccount } from '@metamask/design-system-react';
+import { Button, ButtonSize } from '../button';
 
 export default {
   title: 'Components/ComponentLibrary/ModalHeader',

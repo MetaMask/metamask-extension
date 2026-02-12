@@ -19,6 +19,10 @@ jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 
+jest.mock('../../../hooks/useMultichainSelector', () => ({
+  useMultichainSelector: jest.fn(),
+}));
+
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
 

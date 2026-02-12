@@ -1,6 +1,7 @@
 import { abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
+import type { Provider } from '@metamask/network-controller';
 
 /**
  * Gets the '_value' parameter of the given token transaction data
@@ -17,6 +18,9 @@ import { Web3Provider } from '@ethersproject/providers';
  * @param tokenData - ethers Interface token data.
  * @returns A decimal string value.
  */
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getTokenIdParam(tokenData: any = {}): string | undefined {
   return (
     tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
@@ -26,7 +30,10 @@ export function getTokenIdParam(tokenData: any = {}): string | undefined {
 export async function fetchTokenBalance(
   address: string,
   userAddress: string,
-  provider: any,
+  provider: Provider,
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const ethersProvider = new Web3Provider(provider);
   const tokenContract = new Contract(address, abiERC20, ethersProvider);
@@ -40,7 +47,13 @@ export async function fetchERC1155Balance(
   address: string,
   userAddress: string,
   tokenId: string,
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   provider: any,
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   if (!userAddress || !tokenId) {
     return null;

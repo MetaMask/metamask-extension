@@ -3,7 +3,6 @@ import classnames from 'classnames';
 
 import {
   BackgroundColor,
-  BorderColor,
   TextColor,
   Display,
   JustifyContent,
@@ -22,13 +21,17 @@ import {
   AvatarBaseSize,
 } from './avatar-base.types';
 
+/**
+ * @deprecated Please update your code to use `AvatarBase` from `@metamask/design-system-react`
+ */
 export const AvatarBase: AvatarBaseComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       size = AvatarBaseSize.Md,
       children,
       backgroundColor = BackgroundColor.backgroundAlternative,
-      borderColor = BorderColor.borderDefault,
       color = TextColor.textDefault,
       className = '',
       ...props
@@ -59,7 +62,7 @@ export const AvatarBase: AvatarBaseComponent = React.forwardRef(
         borderRadius={BorderRadius.full}
         variant={fallbackTextVariant}
         textTransform={TextTransform.Uppercase}
-        {...{ backgroundColor, borderColor, color }}
+        {...{ backgroundColor, color }}
         {...(props as TextProps<C>)}
       >
         {children}
