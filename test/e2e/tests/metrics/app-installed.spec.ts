@@ -98,7 +98,7 @@ describe('App Installed Events', function () {
     );
   });
 
-  it('are not sent when user installs app and chooses to opt out metrics', async function () {
+  it('are not sent when user installs app and chooses to opt out metrics TEST', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })

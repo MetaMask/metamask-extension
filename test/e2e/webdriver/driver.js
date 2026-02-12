@@ -435,10 +435,18 @@ class Driver {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
+      // First wait for element to be located in DOM
       element = await this.driver.wait(
         until.elementLocated(this.buildLocator(rawLocator)),
         timeout,
       );
+      // Then wait for it to be actually visible (not hidden by CSS)
+      // - display (must not be 'none')
+      // - visibility (must not be 'hidden')
+      // - opacity (must not be 0)
+      // - Element size (must be > 0x0 pixels)
+      // - Position (not hidden behind other elements in some cases)
+      await this.driver.wait(until.elementIsVisible(element), timeout);
     } else if (state === 'detached') {
       element = await this.driver.wait(
         until.stalenessOf(await this.findElement(rawLocator)),

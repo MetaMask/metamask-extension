@@ -148,7 +148,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
+  it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on TEST', async function () {
     const { mockedAccountSyncResponse, userStorageMockttpController } =
       await arrange();
     await withFixtures(
