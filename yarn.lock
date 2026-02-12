@@ -6467,16 +6467,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-browser@npm:^12.0.0":
-  version: 12.1.0
-  resolution: "@metamask/eslint-config-browser@npm:12.1.0"
-  peerDependencies:
-    "@metamask/eslint-config": ^12.0.0
-    eslint: ^8.27.0
-  checksum: 10/a1d3035b0dd82aa66397e9c8916c45e1dc2d339c13dac385f7c90de09df943c313801538c0d955c2abf44a57008100874f8615d70f19188d8893b653cfe15485
-  languageName: node
-  linkType: hard
-
 "@metamask/eslint-config-jest@npm:^12.0.0":
   version: 12.1.0
   resolution: "@metamask/eslint-config-jest@npm:12.1.0"
@@ -33716,7 +33706,6 @@ __metadata:
     "@metamask/ens-resolver-snap": "npm:^1.1.0"
     "@metamask/error-reporting-service": "npm:^3.0.0"
     "@metamask/eslint-config": "npm:^12.0.0"
-    "@metamask/eslint-config-browser": "npm:^12.0.0"
     "@metamask/eslint-config-jest": "npm:^12.0.0"
     "@metamask/eslint-config-mocha": "npm:^12.0.0"
     "@metamask/eslint-config-nodejs": "npm:^12.0.0"

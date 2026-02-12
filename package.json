@@ -500,7 +500,6 @@
     "@metamask/auto-changelog": "^5.3.1",
     "@metamask/build-utils": "^3.0.0",
     "@metamask/eslint-config": "^12.0.0",
-    "@metamask/eslint-config-browser": "^12.0.0",
     "@metamask/eslint-config-jest": "^12.0.0",
     "@metamask/eslint-config-mocha": "^12.0.0",
     "@metamask/eslint-config-nodejs": "^12.0.0",
