@@ -6,6 +6,7 @@
 import { Mockttp, MockedEndpoint, RequestRuleBuilder } from 'mockttp';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { POWER_USER_PRICES } from './price-data';
+import { buildSseResponseBody } from './swap-mocks';
 import bridgeNetworkTokens from './bridge-network-tokens.json';
 import bridgeTokens from './bridge-tokens.json';
 import bridgeTokensPopular from './bridge-tokens-popular.json';
@@ -781,6 +782,24 @@ export async function mockPowerUserPrices(
       .always()
       .thenCallback(
         delayedResponse(300, { statusCode: 200, json: bridgeTokens }),
+      ),
+  );
+
+  endpoints.push(
+    await server
+      .forGet(/getQuoteStream/u)
+      .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
+      .always()
+      .thenCallback(
+        delayedCallback(2000, (req) => {
+          const isSolana = req.url.includes('srcChainId=1151111081099710');
+          const quote = isSolana ? swapQuoteSolUsdc : swapQuoteEthUsdc;
+          return {
+            statusCode: 200,
+            headers: { 'Content-Type': 'text/event-stream' },
+            body: buildSseResponseBody([quote]),
+          };
+        }),
       ),
   );
 
