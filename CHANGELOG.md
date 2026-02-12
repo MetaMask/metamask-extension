@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.19.0]
+
+### Uncategorized
+
+- Refactor account creation logic to use the `MultichainAccountService` for creating wallets (#38265)
+- Show "<" for MegaETH chain if the gas speed is bellow 1 second (#39824)
+- Standardize display of unavailable data in tokens list (#39912)
+- Update `@metamask/subscription-controller` to `6.0.0`. Improve sentry error captures for subscriptions. (#39952)
+- Use `StorageService` in Snap Controller (#39804)
+
+### Added
+
+- Icon update (#40008)
+- Add asset overview deeplinks (#39675)
+- Aligns extension swaps UI with metamask mobile UI for consistency (#39928)
+- Enable hardware wallet error management for the swaps flow. (#39985)
+- Updated network and account list item active state styling to match mobile design (#39761)
+- Added error display on Shield Plan and Transaction Shield pages when a subscription payment fails in the background (#39938)
+- Adds Bridge and Swap feature to MegaETH (#39927)
+- Init the new assets controller under a feature flag (#39917)
+- Added GMX defi referral support (#39701)
+- Fixed a bug where user preferences and saved contacts were not cleared when resetting the wallet (#39973)
+- Added ability to collapse wallet sections in the Accounts page (#39645)
+- Adds Bridge and Swap feature to HyperEVM (#39819)
+- Updated Shield subscription cancellation modal to display appropriate messaging based on cancellation type and prevent (#39625)
+  cancellation when not allowed.
+- Added disk space-specific error message to storage error toast when device is out of space (#39746)
+- Validation errors from non-EVM transaction snaps will now be displayed to users during send flow. (#39667)
+
+### Fixed
+
+- Discover menu button always rendered (#40023)
+- Fixed a bug where users assigned to the post-transaction Shield cohort would never see the Shield announcement (#39898)
+  modal
+- Fixed broken "Learn more" link in cancel/speedup transaction modal tooltip (#39964)
+- Fixed Network Manager modal not closing when navigating to dapp confirmation screens in side panel view (#39908)
+- Capture Asset image URL fallback errors (#39742)
+
 ## [13.18.0]
 
 ### Added
@@ -1757,7 +1795,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.19.0...HEAD
+[13.19.0]: https://github.com/MetaMask/metamask-extension/compare/v13.18.0...v13.19.0
 [13.18.0]: https://github.com/MetaMask/metamask-extension/compare/v13.17.0...v13.18.0
 [13.17.0]: https://github.com/MetaMask/metamask-extension/compare/v13.16.3...v13.17.0
 [13.16.3]: https://github.com/MetaMask/metamask-extension/compare/v13.16.2...v13.16.3
