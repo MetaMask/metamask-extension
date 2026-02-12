@@ -24,7 +24,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
   const { chainId, category, status } = transaction;
 
   const title = useGetTitle(transaction);
-  const { amount, symbol } = getTransferAmount(transaction.amounts);
+  const { amount, symbol } = getTransferAmount(transaction.amounts ?? {});
 
   // TODO: marketRates for non-EVM chains
   const isEvmChain = !chainId.includes(':');

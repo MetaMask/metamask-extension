@@ -10,8 +10,6 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
-import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
-
 export type FlattenedItem =
   | { type: 'date-header'; date: number }
   | { type: 'pending'; transactionGroup: TransactionGroup; id: string }
@@ -43,7 +41,7 @@ export function isNonEvmItem(
   return item.type === 'non-evm';
 }
 
-function parseDate(timestamp: string | number): number {
+function parseDate(timestamp: string | number) {
   const date = new Date(timestamp);
   date.setHours(0, 0, 0, 0);
   return date.getTime();
@@ -100,11 +98,6 @@ export function getTransferAmount(amounts: {
   }
 
   return {};
-}
-
-export function getExplorerUrl(chainId: Hex, hash: string): string | null {
-  const baseUrl = CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId];
-  return baseUrl ? `${baseUrl}tx/${hash}` : null;
 }
 
 // NOTE

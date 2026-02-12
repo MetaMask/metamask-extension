@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Hex } from 'viem';
 import {
   Text,
   TextButton,
@@ -8,16 +9,19 @@ import {
 } from '@metamask/design-system-react';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/common';
 import { Row } from '.';
 
 type Props = {
   label: string;
-  explorerUrl: string | null |undefined;
+  chainId: Hex;
   hash: string | undefined;
 };
 
-export const TransactionHashRow = ({ label, explorerUrl, hash }: Props) => {
+export const TransactionHashRow = ({ label, chainId, hash }: Props) => {
   const t = useI18nContext();
+  const baseUrl = CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId];
+  const explorerUrl = hash && baseUrl ? `${baseUrl}tx/${hash}` : null;
 
   return (
     <Row
@@ -30,10 +34,7 @@ export const TransactionHashRow = ({ label, explorerUrl, hash }: Props) => {
             </a>
           </TextButton>
         ) : (
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.TextAlternative}
-          >
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {shortenAddress(hash)}
           </Text>
         )

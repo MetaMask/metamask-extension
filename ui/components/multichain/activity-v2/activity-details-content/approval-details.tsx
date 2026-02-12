@@ -1,8 +1,15 @@
 import React from 'react';
+import {
+  AvatarTokenSize,
+  AvatarToken,
+  FontWeight,
+  TextColor,
+  TextVariant,
+  Text,
+} from '@metamask/design-system-react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { hexWEIToDecETH } from '../../../../../shared/modules/conversion.utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { getExplorerUrl } from '../helpers';
 import { useEvmTokenInfo } from '../hooks';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -13,7 +20,6 @@ import {
   StatusRow,
   TransactionHashRow,
 } from './shared';
-import { AvatarTokenSize, AvatarToken, FontWeight, TextColor, TextVariant, Text } from '@metamask/design-system-react';
 
 type Props = {
   transaction: TransactionViewModel;
@@ -24,7 +30,6 @@ export const ApprovalDetails = ({ transaction }: Props) => {
   const t = useI18nContext();
 
   const { chainId, hash, time, txParams } = transaction;
-  const explorerUrl = hash ? getExplorerUrl(chainId, hash) : undefined;
 
   const tokenContractAddress = txParams.to;
   const { symbol: tokenSymbol, iconUrl: tokenIconUrl } = useEvmTokenInfo(
@@ -46,11 +51,12 @@ export const ApprovalDetails = ({ transaction }: Props) => {
           You approved
         </Text>
         <div className="flex items-center gap-3">
-          <AvatarToken src={tokenIconUrl} name={tokenSymbol} size={AvatarTokenSize.Md} />
-          <Text
-            variant={TextVariant.HeadingLg}
-            fontWeight={FontWeight.Medium}
-          >
+          <AvatarToken
+            src={tokenIconUrl}
+            name={tokenSymbol}
+            size={AvatarTokenSize.Md}
+          />
+          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Medium}>
             {tokenSymbol}
           </Text>
         </div>
@@ -63,10 +69,7 @@ export const ApprovalDetails = ({ transaction }: Props) => {
         <DateRow time={time} />
         <NetworkRow chainId={chainId} />
         <Row left={t('networkFee')} right={formatToken(networkFeeEth, 'ETH')} />
-        <Row
-          left="Approval amount"
-          right={Math.abs(displayAmount)}
-        />
+        <Row left="Approval amount" right={Math.abs(displayAmount)} />
       </div>
 
       <div className="h-px bg-border-muted" />
@@ -75,7 +78,7 @@ export const ApprovalDetails = ({ transaction }: Props) => {
         <StatusRow status={transaction.status} />
         <TransactionHashRow
           label="Transaction hash" // TODO: Add translation
-          explorerUrl={explorerUrl}
+          chainId={chainId}
           hash={hash}
         />
       </div>

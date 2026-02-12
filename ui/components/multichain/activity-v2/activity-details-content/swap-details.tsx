@@ -1,8 +1,7 @@
 import React from 'react';
-import { Text, TextButton, TextVariant, TextColor } from '@metamask/design-system-react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { getExplorerUrl, formatUnits } from '../helpers';
+import { formatUnits } from '../helpers';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useEvmTokenIconUrl } from '../hooks';
@@ -24,7 +23,6 @@ export const SwapDetails = ({ transaction }: Props) => {
   const { formatToken } = useFormatters();
 
   const { chainId, hash, time, txParams } = transaction;
-  const explorerUrl = hash ? getExplorerUrl(chainId, hash) : undefined;
 
   const networkFeeWei =
     txParams.gasUsed && txParams.gasPrice
@@ -88,21 +86,19 @@ export const SwapDetails = ({ transaction }: Props) => {
         <>
           <TransactionHashRow
             label="Transaction hash #1" // TODO: Add translation
-            explorerUrl={explorerUrl}
-            hash={hash
-
-            }
+            chainId={chainId}
+            hash={hash}
           />
           <TransactionHashRow
             label="Transaction hash #2" // TODO: Add translation
-            explorerUrl={explorerUrl}
+            chainId={chainId}
             hash={hash}
           />
         </>
       ) : (
         <TransactionHashRow
           label="Transaction hash" // TODO: Add translation
-          explorerUrl={explorerUrl}
+          chainId={chainId}
           hash={hash}
         />
       )}

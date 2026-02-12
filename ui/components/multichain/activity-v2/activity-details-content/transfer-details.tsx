@@ -1,7 +1,7 @@
 import React from 'react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { getExplorerUrl, getTransferAmount } from '../helpers';
+import { getTransferAmount } from '../helpers';
 import { useEvmTokenIconUrl } from '../hooks';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -21,11 +21,10 @@ type Props = {
 export const TransferDetails = ({ transaction }: Props) => {
   const { formatToken } = useFormatters();
   const t = useI18nContext();
-  const { amount, symbol } = getTransferAmount(transaction.amounts);
+  const { amount, symbol } = getTransferAmount(transaction.amounts ?? {});
   const displayAmount = amount ? Number.parseFloat(amount) : 0;
 
   const { chainId, hash, time, txParams } = transaction;
-  const explorerUrl = hash ? getExplorerUrl(chainId, hash) : undefined;
   const tokenIconUrl = useEvmTokenIconUrl(
     chainId,
     symbol,
@@ -68,7 +67,7 @@ export const TransferDetails = ({ transaction }: Props) => {
       <div className="h-px bg-border-muted" />
       <TransactionHashRow
         label="Transaction hash" // TODO: Add translation
-        explorerUrl={explorerUrl}
+        chainId={chainId}
         hash={hash}
       />
     </>
