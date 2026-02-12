@@ -56,36 +56,88 @@ I18nProvider.defaultProps = {
   children: undefined,
 };
 
-function createProviderWrapper(
+/**
+ * Creates a wrapper component with configurable providers for testing.
+ *
+ * By default, all providers are enabled. Pass `false` to disable a provider,
+ * or pass an object to customize its configuration.
+ *
+ * @param {object} options - Configuration options
+ * @param {object} [options.store] - Redux store. If provided, wraps with Provider.
+ * @param {object|false} [options.router] - MemoryRouter config. Default: { pathname: '/' }
+ * @param {object|false} [options.i18n] - I18n provider config. Default: enabled with 'en' locale
+ * @param {object|false} [options.metaMetrics] - MetaMetrics provider config. Default: enabled with default trackEvent mock
+ * @param {object|false} [options.queryClient] - QueryClient provider config. Default: enabled using default QueryClient
+ * @returns {Function} Wrapper component
+ */
+export function createProviderWrapper({
   store,
-  pathname = '/',
-  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
-) {
-  const mockMetaMetricsContext =
-    createMockMetaMetricsContext(getMockTrackEvent);
-
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
-
+  router = {},
+  i18n = {},
+  metaMetrics = {},
+  queryClient: queryClientOption = {},
+} = {}) {
   const Wrapper = ({ children }) => {
-    const container = (
-      <MemoryRouter initialEntries={[pathname]}>
-        <I18nProvider currentLocale="en" current={en} en={en}>
-          <LegacyI18nProvider>
-            <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-              <LegacyMetaMetricsProvider>
-                <QueryClientProvider client={queryClient}>
-                  {children}
-                </QueryClientProvider>
-              </LegacyMetaMetricsProvider>
-            </MetaMetricsContext.Provider>
-          </LegacyI18nProvider>
-        </I18nProvider>
-      </MemoryRouter>
-    );
+    let content = children;
 
-    return store ? <Provider store={store}>{container}</Provider> : container;
+    // QueryClient (innermost)
+    if (queryClientOption !== false) {
+      const queryClient =
+        queryClientOption.queryClient ??
+        new QueryClient({
+          defaultOptions: { queries: { retry: false } },
+        });
+      content = (
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      );
+    }
+
+    // MetaMetrics
+    if (metaMetrics !== false) {
+      const getMockTrackEvent =
+        metaMetrics.getMockTrackEvent ||
+        (() => jest.fn().mockResolvedValue(undefined));
+      const mockMetaMetricsContext =
+        createMockMetaMetricsContext(getMockTrackEvent);
+      content = (
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <LegacyMetaMetricsProvider>{content}</LegacyMetaMetricsProvider>
+        </MetaMetricsContext.Provider>
+      );
+    }
+
+    // I18n
+    if (i18n !== false) {
+      const currentLocale = i18n.currentLocale || 'en';
+      const currentMessages = i18n.current || en;
+      const enMessages = i18n.en || en;
+      content = (
+        <I18nProvider
+          currentLocale={currentLocale}
+          current={currentMessages}
+          en={enMessages}
+        >
+          <LegacyI18nProvider>{content}</LegacyI18nProvider>
+        </I18nProvider>
+      );
+    }
+
+    // Router
+    if (router !== false) {
+      const pathname = router.pathname || '/';
+      content = (
+        <MemoryRouter initialEntries={[pathname]}>{content}</MemoryRouter>
+      );
+    }
+
+    // Redux store (outermost)
+    if (store) {
+      content = <Provider store={store}>{content}</Provider>;
+    }
+
+    return content;
   };
 
   Wrapper.propTypes = {
@@ -94,31 +146,143 @@ function createProviderWrapper(
   return Wrapper;
 }
 
+/**
+ * Renders a component with providers for testing.
+ *
+ * Can be called two ways:
+ * 1. Legacy: renderWithProvider(component, store, pathname, renderer)
+ * 2. Options: renderWithProvider(component, { store, router, i18n, metaMetrics, renderer })
+ *
+ * @param {ReactElement} component - The component to render
+ * @param {object|Store} storeOrOptions - Either a Redux store (legacy) or options object
+ * @param {string} [pathname] - Pathname for router (legacy only)
+ * @param {Function} [renderer] - Custom renderer function (legacy only)
+ * @returns {RenderResult} The render result
+ */
 export function renderWithProvider(
   component,
-  store,
+  storeOrOptions,
   pathname = '/',
   renderer = render,
 ) {
-  const wrapper = createProviderWrapper(store, pathname);
+  // Detect if using options bag or legacy positional arguments
+  // A Redux store has getState/dispatch, an options bag does not
+  const isOptionsObject =
+    storeOrOptions &&
+    typeof storeOrOptions === 'object' &&
+    !('getState' in storeOrOptions);
 
+  if (isOptionsObject) {
+    const { renderer: optionsRenderer = render, ...providerOptions } =
+      storeOrOptions;
+    // Default router.pathname to '/' if router is provided without pathname
+    if (
+      providerOptions.router &&
+      providerOptions.router.pathname === undefined
+    ) {
+      providerOptions.router = { ...providerOptions.router, pathname: '/' };
+    } else if (providerOptions.router === undefined) {
+      providerOptions.router = { pathname: '/' };
+    }
+    const wrapper = createProviderWrapper(providerOptions);
+    return optionsRenderer(component, { wrapper });
+  }
+
+  // Legacy positional arguments
+  const wrapper = createProviderWrapper({
+    store: storeOrOptions,
+    router: { pathname },
+  });
   return renderer(component, { wrapper });
 }
 
+/**
+ * Renders a hook with providers for testing.
+ *
+ * Can be called two ways:
+ * 1. Legacy: renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent)
+ * 2. Options: renderHookWithProvider(hook, { state, router, metaMetrics, Container })
+ *
+ * @param {Function} hook - The hook to render
+ * @param {object} stateOrOptions - Either a state object (legacy) or options object
+ * @param {string} [pathname] - Pathname for router (legacy only)
+ * @param {React.ComponentType} [Container] - Container component (legacy only)
+ * @param {Function} [getMockTrackEvent] - Mock track event function (legacy only)
+ * @returns {RenderHookResult} The render hook result with store
+ */
 export function renderHookWithProvider(
   hook,
-  state,
+  stateOrOptions,
   pathname = '/',
   Container,
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
-  const store = state ? configureStore(state) : undefined;
+  // Detect if using options bag or legacy positional arguments
+  // An options bag will have known keys like 'state', 'router', 'metaMetrics', etc.
+  const isOptionsObject =
+    stateOrOptions &&
+    typeof stateOrOptions === 'object' &&
+    ('state' in stateOrOptions ||
+      'router' in stateOrOptions ||
+      'metaMetrics' in stateOrOptions ||
+      'Container' in stateOrOptions ||
+      'i18n' in stateOrOptions);
 
-  const ProviderWrapper = createProviderWrapper(
+  if (isOptionsObject) {
+    const {
+      state: optionsState,
+      router = {},
+      metaMetrics = {},
+      Container: OptionsContainer,
+      ...restProviderOptions
+    } = stateOrOptions;
+
+    const store = optionsState ? configureStore(optionsState) : undefined;
+
+    // Default router.pathname to '/' if not provided
+    const routerWithPathname =
+      router.pathname === undefined ? { ...router, pathname: '/' } : router;
+
+    // Default metaMetrics.getMockTrackEvent if not provided
+    const metaMetricsWithDefault =
+      metaMetrics.getMockTrackEvent === undefined
+        ? {
+            ...metaMetrics,
+            getMockTrackEvent: () => jest.fn().mockResolvedValue(undefined),
+          }
+        : metaMetrics;
+
+    const ProviderWrapper = createProviderWrapper({
+      store,
+      router: routerWithPathname,
+      metaMetrics: metaMetricsWithDefault,
+      ...restProviderOptions,
+    });
+
+    const wrapper = OptionsContainer
+      ? ({ children }) => (
+          <ProviderWrapper>
+            <OptionsContainer>{children}</OptionsContainer>
+          </ProviderWrapper>
+        )
+      : ProviderWrapper;
+
+    const hookResult = renderHook(hook, { wrapper });
+
+    return {
+      ...hookResult,
+      store,
+    };
+  }
+
+  // Legacy positional arguments
+  const store = stateOrOptions ? configureStore(stateOrOptions) : undefined;
+
+  const ProviderWrapper = createProviderWrapper({
     store,
-    pathname,
-    getMockTrackEvent,
-  );
+    router: { pathname },
+    metaMetrics: { getMockTrackEvent },
+  });
 
   const wrapper = Container
     ? ({ children }) => (
