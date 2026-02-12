@@ -6,6 +6,7 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   ButtonIcon,
+  ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -298,6 +299,7 @@ export const GlobalMenuDrawer = ({
                     <Box className="flex flex-row items-center justify-start p-4 w-full overflow-hidden">
                       <ButtonIcon
                         iconName={IconName.ArrowLeft}
+                        size={ButtonIconSize.Lg}
                         ariaLabel={title || t('close')}
                         onClick={onClose}
                         data-testid="drawer-close-button"

@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "MetaMask tidak terhubung ke situs ini. Untuk memulai, pilih tombol Hubungkan ke situs ini."
   },
-  "noConversionRateAvailable": {
-    "message": "Nilai konversi tidak tersedia"
-  },
   "noDomainResolution": {
     "message": "Tidak ada resolusi untuk domain yang tersedia."
   },

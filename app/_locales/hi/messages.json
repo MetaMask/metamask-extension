@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "MetaMask इस साइट से कनेक्ट नहीं है। शुरू करने के लिए, साइट का कनेक्ट बटन चुनें।"
   },
-  "noConversionRateAvailable": {
-    "message": "कोई भी कन्वर्शन दर उपलब्ध नहीं है"
-  },
   "noDomainResolution": {
     "message": "डोमेन के लिए कोई रिज़ॉल्यूशन प्रदान नहीं किया गया।"
   },

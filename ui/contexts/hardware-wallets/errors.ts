@@ -175,6 +175,7 @@ export function isRetryableHardwareWalletError(error: HardwareWalletError) {
     case ErrorCode.ConnectionTimeout:
     case ErrorCode.ConnectionClosed:
     case ErrorCode.DeviceDisconnected:
+    case ErrorCode.DeviceStateBlindSignNotSupported:
       return true;
     default:
       return false;

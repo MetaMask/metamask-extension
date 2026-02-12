@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
   },
-  "noConversionRateAvailable": {
-    "message": "无可用汇率"
-  },
   "noDomainResolution": {
     "message": "没有提供域名解析。"
   },

@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "MetaMask no está conectado a este sitio. Para empezar, selecciona el botón \"Conectar\" del sitio."
   },
-  "noConversionRateAvailable": {
-    "message": "No hay tasa de conversión disponible"
-  },
   "noDomainResolution": {
     "message": "No se proporcionó resolución para el dominio."
   },

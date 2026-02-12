@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "Para kumonekta sa site, hanapin at piliin ang \"connect\" button. Tandaan na ang MetaMask ay maaari lamang kumonekta sa mga site sa web3"
   },
-  "noConversionRateAvailable": {
-    "message": "Hindi available ang rate ng palitan"
-  },
   "noDomainResolution": {
     "message": "Walang resolusyon para sa ibinigay na domain."
   },

@@ -4262,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "Pour vous connecter à un site, trouvez et sélectionnez le bouton « connecter ». N’oubliez pas que MetaMask ne peut se connecter qu’à des sites Web3"
   },
-  "noConversionRateAvailable": {
-    "message": "Aucun taux de conversion disponible"
-  },
   "noDomainResolution": {
     "message": "Aucune résolution n’a été fournie pour le domaine."
   },
