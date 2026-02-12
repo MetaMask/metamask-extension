@@ -8,7 +8,8 @@
  *   node trace-usage.js --config <config.json>
  *   node trace-usage.js <root-file> [output-doc]   (single root, backward compat)
  *
- * Config JSON: { "output": "...", "roots": [ { "file": "ui/selectors/assets.ts" }, { "file": "...", "selectors": ["sym1", "sym2"] } ] }
+ * Config JSON: { "output": "...", "roots": [...], "completionFile": "path/to/completed.txt" }
+ * completionFile: optional; one path per line (lines starting with # are comments). Listed files are excluded from the report (migrated).
  *
  * Requires: list-exports.js, find-importers.js, classify-file.js, selector-deps.js in same dir.
  * Requires: rg (ripgrep) on PATH.
@@ -170,6 +171,31 @@ function appendTerminalSection(docPath, terminals) {
   fs.appendFileSync(docPath, lines.join('\n'));
 }
 
+/**
+ * Load completion file: one file path per line. Returns a Set of normalized paths (forward slash).
+ * Blank lines and lines starting with # are ignored.
+ */
+function loadCompletionSet(completionFilePath) {
+  const abs = path.resolve(process.cwd(), completionFilePath);
+  if (!fs.existsSync(abs)) {
+    process.stderr.write(`Completion file not found: ${completionFilePath}\n`);
+    process.exit(1);
+  }
+  const content = fs.readFileSync(abs, 'utf8');
+  const set = new Set();
+  for (const line of content.split(/\r?\n/)) {
+    const trimmed = line.replace(/^\s+|\s+$/g, '').replace(/\\/g, '/');
+    if (trimmed === '' || trimmed.startsWith('#')) continue;
+    set.add(trimmed);
+  }
+  return set;
+}
+
+function isCompleted(filePath, completedSet) {
+  if (completedSet.size === 0) return false;
+  return completedSet.has(filePath.replace(/\\/g, '/'));
+}
+
 function toModulePath(filePath) {
   const withoutExt = filePath.replace(/\.(ts|tsx|js|jsx)$/, '');
   if (withoutExt.includes('selectors/')) {
@@ -214,6 +240,7 @@ const outArg = useConfig ? null : process.argv[3];
 
 let roots;
 let docPath;
+let completedPaths = new Set();
 
 if (useConfig && configPath) {
   const configAbs = path.resolve(process.cwd(), configPath);
@@ -244,6 +271,9 @@ if (useConfig && configPath) {
     const baseName = path.basename(configPath, path.extname(configPath));
     const defaultOutputDir = path.resolve(process.cwd(), 'trace-selectors', 'output');
     docPath = path.join(defaultOutputDir, `selector-usage-trace-${baseName}.md`);
+  }
+  if (config.completionFile) {
+    completedPaths = loadCompletionSet(config.completionFile);
   }
 } else if (rootFile) {
   const rootAbs = path.resolve(process.cwd(), rootFile);
@@ -344,7 +374,7 @@ if (layer2Importers.length === 0) {
   const pathsOnly = layer2Importers.map((e) => e.path);
   const classified = runClassify(pathsOnly);
   const byPath = new Map(classified.map((c) => [c.path, c]));
-  const entries = layer2Importers.map((e) => {
+  let entries = layer2Importers.map((e) => {
     const c = byPath.get(e.path) || { type: 'other', terminal: false };
     return {
       path: e.path,
@@ -353,6 +383,7 @@ if (layer2Importers.length === 0) {
       terminal: c.terminal,
     };
   });
+  entries = entries.filter((e) => !isCompleted(e.path, completedPaths));
   const terminalsThisLayer = entries.filter((e) => e.terminal);
   terminalsThisLayer.forEach((t) => allTerminals.push(t));
   appendLayer(docPath, layerNum, entries, terminalsThisLayer);
@@ -399,7 +430,7 @@ while (currentLayerFiles.length > 0) {
   const pathsOnly = nextList.map((e) => e.path);
   const classified = runClassify(pathsOnly);
   const byPath = new Map(classified.map((c) => [c.path, c]));
-  const entries = nextList.map((e) => {
+  let entries = nextList.map((e) => {
     const c = byPath.get(e.path) || { type: 'other', terminal: false };
     return {
       path: e.path,
@@ -408,6 +439,7 @@ while (currentLayerFiles.length > 0) {
       terminal: c.terminal,
     };
   });
+  entries = entries.filter((e) => !isCompleted(e.path, completedPaths));
   const terminalsThisLayer = entries.filter((e) => e.terminal);
   terminalsThisLayer.forEach((t) => allTerminals.push(t));
   appendLayer(docPath, layerNum, entries, terminalsThisLayer);
@@ -415,6 +447,7 @@ while (currentLayerFiles.length > 0) {
   layerNum++;
 }
 
-appendTerminalSection(docPath, allTerminals);
+const remainingTerminals = allTerminals.filter((t) => !isCompleted(t.path, completedPaths));
+appendTerminalSection(docPath, remainingTerminals);
 
 process.stdout.write(`Wrote ${docPath}\n`);

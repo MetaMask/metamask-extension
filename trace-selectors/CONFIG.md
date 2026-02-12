@@ -10,10 +10,11 @@ Optional env: `TRACE_MAX_LAYERS` — cap depth (e.g. `TRACE_MAX_LAYERS=4`) to ke
 
 ## Schema
 
-| Field   | Type   | Required | Description |
-|---------|--------|----------|-------------|
-| `output`| string | No       | Path for the generated markdown document. Default: `trace-selectors/output/selector-usage-trace-<name>.md` derived from config filename or first root. |
-| `roots` | array  | Yes      | List of root entries (see below). |
+| Field            | Type   | Required | Description |
+|------------------|--------|----------|-------------|
+| `output`         | string | No       | Path for the generated markdown document. Default: `trace-selectors/output/selector-usage-trace-<name>.md` derived from config filename or first root. |
+| `roots`          | array  | Yes      | List of root entries (see below). |
+| `completionFile` | string | No       | Path to a completion file: one migrated file path per line. Listed files are excluded from the report so re-runs show only remaining work. Lines starting with `#` and blank lines are ignored. |
 
 ### Root entry
 
@@ -25,6 +26,20 @@ Optional env: `TRACE_MAX_LAYERS` — cap depth (e.g. `TRACE_MAX_LAYERS=4`) to ke
 ## Example
 
 See `config.assets-controllers.json`: one root with no filter (all of `assets.ts`), one root with a `selectors` list (only `getMultichainBalances` and `getMultichainNetwork` from `multichain.ts`).
+
+## Completion file (migrated files)
+
+When running the trace repeatedly (e.g. automation that retriggers after migrations), set `completionFile` to a path like `trace-selectors/completed.txt`. That file lists one path per line (paths relative to repo root). Any file in that list is excluded from layer tables and the terminal summary, so the report shows only **remaining** files to migrate.
+
+Example `trace-selectors/completed.txt`:
+
+```
+# Migrated files – one path per line
+ui/components/app/alerts/unconnected-account-alert/unconnected-account-alert.js
+ui/pages/confirmations/hooks/useCurrentConfirmation.ts
+```
+
+The output format is unchanged; only completed paths are filtered out and layer/terminal counts reflect remaining work.
 
 ## Discovering asset-controller roots
 

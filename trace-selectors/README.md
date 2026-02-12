@@ -28,6 +28,8 @@ node trace-selectors/scripts/trace-usage.js --config trace-selectors/config.asse
 
 Config format: see [CONFIG.md](CONFIG.md). You can track only specific selectors from a file (e.g. only `getMultichainBalances` from `multichain.ts`).
 
+**Completion file (optional):** Add `"completionFile": "trace-selectors/completed.txt"` to your config. That file lists one migrated file path per line; those files are excluded from the report so re-runs show only remaining work. See [CONFIG.md](CONFIG.md#completion-file-migrated-files).
+
 ## Discovering roots that use @metamask/assets-controllers
 
 To list UI selector files that import from `@metamask/assets-controllers` (for building a config):
