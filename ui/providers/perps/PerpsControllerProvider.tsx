@@ -171,10 +171,15 @@ export function usePerpsController(): PerpsController {
     const streamManager = getPerpsStreamManager();
 
     // Initialize stream manager if needed
-    streamManager.init(selectedAddress).then(() => {
-      // Get controller via getPerpsController (stream manager uses same singleton)
-      getPerpsController(selectedAddress).then(setStreamManagerController);
-    });
+    streamManager
+      .init(selectedAddress)
+      .then(() => {
+        // Get controller via getPerpsController (stream manager uses same singleton)
+        getPerpsController(selectedAddress).then(setStreamManagerController);
+      })
+      .catch((err) => {
+        console.error('[PerpsControllerProvider] Init failed:', err);
+      });
   }, [contextController, selectedAddress]);
 
   // Prefer context controller, fall back to stream manager controller

@@ -234,5 +234,33 @@ export async function resetPerpsController(): Promise<void> {
   }
 }
 
+/**
+ * Get the current address the controller is initialized for.
+ * Returns null if no controller is initialized.
+ */
+export function getPerpsControllerCurrentAddress(): string | null {
+  return currentAddress;
+}
+
+/**
+ * Check if the controller is initialized for a specific address.
+ * @param address - Optional address to check. If not provided, returns true if any controller is initialized.
+ */
+export function isPerpsControllerInitialized(address?: string): boolean {
+  if (address) {
+    return controllerInstance !== null && currentAddress === address;
+  }
+  return controllerInstance !== null;
+}
+
+/**
+ * Get the current controller instance without initializing it.
+ * Returns null if no controller is initialized.
+ * Use this when you need to access the controller but don't want to trigger initialization.
+ */
+export function getPerpsControllerInstance(): PerpsController | null {
+  return controllerInstance;
+}
+
 // Re-export types for convenience
 export type { PerpsControllerState };

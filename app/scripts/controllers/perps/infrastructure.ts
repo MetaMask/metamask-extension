@@ -4,6 +4,13 @@
  * This module provides the PerpsPlatformDependencies required by
  * the real @metamask/perps-controller package.
  *
+ * Note: This file lives in app/scripts/controllers/ but currently runs in the
+ * UI process (the PerpsController is instantiated in the UI via getPerpsController.ts).
+ * It's kept here intentionally so it's co-located with the controller re-exports and
+ * will already be in the right place when the controller moves to the background.
+ * All UI-specific dependencies (e.g. signTypedMessage) are injected via the options
+ * parameter to avoid cross-layer imports.
+ *
  * For the PoC, most dependencies are stubbed. As integration matures,
  * these should be wired up to real extension services.
  */

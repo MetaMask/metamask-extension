@@ -34,7 +34,12 @@ import type {
 } from '@metamask/perps-controller';
 import { PerpsDataChannel } from './PerpsDataChannel';
 import { CandleStreamChannel } from './CandleStreamChannel';
-import { getPerpsController } from './getPerpsController';
+import {
+  getPerpsController,
+  getPerpsControllerCurrentAddress,
+  isPerpsControllerInitialized,
+  getPerpsControllerInstance,
+} from './getPerpsController';
 
 // Empty array constants for stable references
 const EMPTY_POSITIONS: Position[] = [];
@@ -80,12 +85,6 @@ class PerpsStreamManager {
   candles: CandleStreamChannel;
 
   // Internal state
-  private controller: PerpsController | null = null;
-
-  private currentAddress: string | null = null;
-
-  private initPromise: Promise<void> | null = null;
-
   private prewarmCleanups: (() => void)[] = [];
 
   // Optimistic overrides for TP/SL - preserves user-set values until WebSocket catches up
@@ -246,28 +245,22 @@ class PerpsStreamManager {
       return;
     }
 
-    // If same address and already initialized, return existing promise or resolve
-    if (this.currentAddress === address) {
-      if (this.initPromise) {
-        return this.initPromise;
-      }
-      if (this.controller) {
-        return Promise.resolve();
-      }
+    const currentControllerAddress = getPerpsControllerCurrentAddress();
+
+    // If same address and already initialized, nothing to do
+    if (currentControllerAddress === address && isPerpsControllerInitialized(address)) {
+      return Promise.resolve();
     }
 
     // Address changed - clear caches and reinitialize
-    if (this.currentAddress !== null && this.currentAddress !== address) {
+    if (currentControllerAddress !== null && currentControllerAddress !== address) {
       this.clearAllCaches();
       this.cleanupPrewarm();
     }
 
-    this.currentAddress = address;
-
-    // Create initialization promise
-    this.initPromise = this.doInit(address);
-
-    return this.initPromise;
+    // Wire up the channels to the controller
+    // getPerpsController handles all initialization and address-change logic
+    await this.doInit(address);
   }
 
   /**
@@ -277,9 +270,8 @@ class PerpsStreamManager {
    */
   private async doInit(address: string): Promise<void> {
     try {
-      // Get or create controller
+      // Get or create controller (getPerpsController owns all lifecycle logic)
       const controller = await getPerpsController(address);
-      this.controller = controller;
 
       // Wire up channel connect functions to controller subscriptions
       // Wrap positions callback to apply optimistic TP/SL overrides
@@ -349,7 +341,6 @@ class PerpsStreamManager {
 
     } catch (error) {
       console.error('[PerpsStreamManager] Initialization failed:', error);
-      this.initPromise = null;
       throw error;
     }
   }
@@ -360,17 +351,14 @@ class PerpsStreamManager {
    * @param address
    */
   isInitialized(address?: string): boolean {
-    if (address) {
-      return this.controller !== null && this.currentAddress === address;
-    }
-    return this.controller !== null;
+    return isPerpsControllerInitialized(address);
   }
 
   /**
    * Get the current address the manager is initialized for
    */
   getCurrentAddress(): string | null {
-    return this.currentAddress;
+    return getPerpsControllerCurrentAddress();
   }
 
   /**
@@ -425,8 +413,9 @@ class PerpsStreamManager {
   }
 
   /**
-   * Full reset - disconnect, clear caches, reset state.
+   * Full reset - clear caches and reset channel state.
    * Called on account switch or when leaving Perps entirely.
+   * Note: Does not reset the controller itself - that's managed by getPerpsController.
    */
   reset(): void {
     this.cleanupPrewarm();
@@ -435,9 +424,6 @@ class PerpsStreamManager {
     this.account.reset();
     this.markets.reset();
     this.candles.clearAll();
-    this.controller = null;
-    this.currentAddress = null;
-    this.initPromise = null;
     this.optimisticTPSLOverrides.clear();
   }
 }
