@@ -1,0 +1,23 @@
+{
+  "output": "trace-selectors/output/selector-usage-trace-assets-controllers.md",
+  "roots": [
+    { "file": "ui/selectors/assets.ts" },
+    {
+      "file": "ui/selectors/multichain.ts",
+      "selectors": ["getMultichainBalances", "getMultichainNetwork"]
+    },
+    { "file": "ui/selectors/nft.ts" },
+    {
+      "file": "ui/selectors/selectors.js",
+      "selectors": [
+        "getTokenExchangeRates",
+        "getCrossChainTokenExchangeRates",
+        "getTokensMarketData",
+        "getMarketData",
+        "selectNftsByChainId",
+        "selectERC20TokensByChain",
+        "selectERC20Tokens"
+      ]
+    }
+  ]
+}
