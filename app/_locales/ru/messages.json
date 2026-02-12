@@ -1824,12 +1824,6 @@
   "creatorAddress": {
     "message": "Адрес создателя"
   },
-  "crossChainSwapsLink": {
-    "message": "Меняйте сети с помощью MetaMask Portfolio"
-  },
-  "crossChainSwapsLinkNative": {
-    "message": "Переключайтесь между сетями с помощью моста"
-  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2860,9 +2854,6 @@
     "message": "Эта плата за газ была предложена $1. Ее изменение может привести к проблемам с вашей транзакцией. При наличии вопросов обратитесь к $1.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Плата за газ"
-  },
   "gasLimit": {
     "message": "Лимит газа"
   },
@@ -3270,9 +3261,6 @@
     "message": "Импортирован",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "included": {
-    "message": "включена"
-  },
   "includesXTransactions": {
     "message": "Включает $1 транзакции(-й)"
   },
@@ -3674,12 +3662,6 @@
   },
   "low": {
     "message": "Низкая"
-  },
-  "lowEstimatedReturnTooltipMessage": {
-    "message": "Вы заплатите более $1% от стартовой суммы в виде комиссий. Проверьте сумму для получения и комиссии сети."
-  },
-  "lowEstimatedReturnTooltipTitle": {
-    "message": "Высокая стоимость"
   },
   "lowGasSettingToolTipMessage": {
     "message": "Используйте $1, чтобы дождаться более низкой цены. Оценки времени намного менее точны, поскольку цены в некоторой степени непредсказуемы.",
@@ -4297,9 +4279,6 @@
   "noConnectionDescription": {
     "message": "Для подключения к сайту найдите и нажмите кнопку «подключиться». Помните, что MetaMask может подключаться только к сайтам в web3"
   },
-  "noConversionRateAvailable": {
-    "message": "Нет доступного обменного курса"
-  },
   "noDomainResolution": {
     "message": "Разрешение для домена не предоставлено."
   },
@@ -4356,9 +4335,6 @@
   },
   "notCurrentAccount": {
     "message": "Это правильный счет? Он отличается от счета, выбранного в настоящее время в вашем кошельке."
-  },
-  "notEnoughBalance": {
-    "message": "Недостаточный баланс"
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
@@ -5360,9 +5336,6 @@
   "popularNetworks": {
     "message": "Популярные сети"
   },
-  "preparingSwap": {
-    "message": "Подготовка свопа..."
-  },
   "prev": {
     "message": "Пред."
   },
@@ -5583,9 +5556,6 @@
   },
   "queued": {
     "message": "В очереди"
-  },
-  "quoteRate": {
-    "message": "Курс котировки"
   },
   "quotedReceiveAmount": {
     "message": "Сумма к получению $1"
@@ -7720,7 +7690,7 @@
   "storageErrorAction": {
     "message": "Создать резервную копию секретной фразы для восстановления"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "Создайте резервную копию вашей секретной фразы для восстановления и переустановите MetaMask, если проблема сохранится."
   },
   "storageErrorTitle": {
@@ -7839,16 +7809,9 @@
   "swapAndSend": {
     "message": "Обменять и отправить"
   },
-  "swapAnyway": {
-    "message": "Все равно выполнить своп"
-  },
   "swapApproval": {
     "message": "Одобрить использование $1 для свопа",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapApproveNeedMoreTokens": {
-    "message": "Вам нужно еще $1 $2 для завершения этого свопа",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapAreYouStillThere": {
     "message": "Вы все еще там?"
@@ -7858,9 +7821,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "Подтвердите с помощью аппаратного кошелька"
-  },
-  "swapContinueSwapping": {
-    "message": "Продолжить своп"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "В приложении Ethereum на Ledger перейдите в раздел «Настройки» и разрешите использование данных о контракте. Затем попробуйте повторить своп."
@@ -7892,9 +7852,6 @@
     "message": "Это $1 возможность свопа",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEnterAmount": {
-    "message": "Введите сумму"
-  },
   "swapEstimatedNetworkFees": {
     "message": "Примерные комиссии сети"
   },
@@ -7907,9 +7864,6 @@
   },
   "swapFailedErrorTitle": {
     "message": "Своп не удался"
-  },
-  "swapFetchingQuote": {
-    "message": "Получение котировки"
   },
   "swapFetchingQuoteNofN": {
     "message": "Получение котировки $1 из $2",
@@ -7948,35 +7902,15 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Эту комиссию сети оплачивает MetaMask, поэтому вы можете выполнять транзакции, не имея на счету $1."
   },
-  "swapGasIncludedTooltipExplanation": {
-    "message": "Эта котировка включает в себя плату за газ путем корректировки суммы отправленных или полученных токенов. Вы можете получить ETH в отдельной транзакции в вашем списке активности."
-  },
-  "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "Подробнее о плате за газ"
-  },
-  "swapHighSlippage": {
-    "message": "Высокое проскальзывание"
-  },
-  "swapIncludesGasAndMetaMaskFee": {
-    "message": "Включает плату за газ и комиссию MetaMask в размере $1%",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapIncludesMMFee": {
     "message": "Включает комиссию MetaMask в размере $1%.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "Включает комиссию MetaMask в размере $1% — $2.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Узнайте больше о свопах"
   },
   "swapLiquiditySourceInfo": {
     "message": "Мы ищем по разным источникам ликвидности (биржи, агрегаторы и профессиональные маркет-мейкеры), чтобы сравнивать обменные курсы и комиссии сети."
-  },
-  "swapLowSlippage": {
-    "message": "Низкое проскальзывание"
   },
   "swapMaxSlippage": {
     "message": "Максимальное проскальзывание"
@@ -7992,10 +7926,6 @@
     "message": "Котировок: $1.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "Новые котировки через $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapNoTokensAvailable": {
     "message": "Нет доступных токенов, соответствующих $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -8004,29 +7934,11 @@
     "message": "Ваш $1 будет зачислен на ваш счет после обработки этой транзакции.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapPriceDifference": {
-    "message": "Вы собираетесь выполнить своп $1 $2 (~$3) на $4 $5 (~$6).",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "Разница в цене составляет ~$1%",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "Не удалось определить колебание цены из-за отсутствия данных о рыночных ценах. Перед свопом убедитесь, что вас устраивает количество токенов, которое вы получите."
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "Проверьте свой тариф, прежде чем продолжить"
-  },
   "swapProcessing": {
     "message": "Обработка..."
   },
   "swapQuoteDetails": {
     "message": "Сведения о котировке"
-  },
-  "swapQuoteNofM": {
-    "message": "$1 из $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "Источник котировки"
@@ -8127,32 +8039,12 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Своп — это сложная транзакция, выполнение которой зависят от имеющегося времени. Мы рекомендуем эту плату за газ для хорошего баланса между стоимостью и уверенностью в успехе свопа."
   },
-  "swapSwapFrom": {
-    "message": "Своп из"
-  },
-  "swapSwapSwitch": {
-    "message": "Сменить порядок токенов"
-  },
-  "swapSwapTo": {
-    "message": "Выполнить своп на"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "чтобы подтвердить с помощью аппаратного кошелька"
-  },
-  "swapTokenAddedManuallyDescription": {
-    "message": "Проверьте этот токен на $1 и убедитесь, что это именно тот токен, которым вы хотите торговать.",
-    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenAddedManuallyTitle": {
-    "message": "Токен добавлен вручную"
   },
   "swapTokenAvailable": {
     "message": "Ваши $1 зачислены на ваш счет.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenBalanceUnavailable": {
-    "message": "Не удалось получить баланс $1",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenNotAvailable": {
     "message": "Своп токена в этом регионе недоступен"
@@ -8161,23 +8053,8 @@
     "message": "Выполнить своп $1 на $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerifiedOn1SourceDescription": {
-    "message": "$1 проверяется только на 1 источнике. Попробуйте проверить его на $2, прежде чем продолжить.",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenVerifiedOn1SourceTitle": {
-    "message": "Потенциально неаутентичный токен"
-  },
-  "swapTokenVerifiedSources": {
-    "message": "Подтверждено $1 источниками. Подтвердить на $2.",
-    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
-  },
   "swapTokens": {
     "message": "Обменять токены"
-  },
-  "swapTooManyDecimalsError": {
-    "message": "$1 позволяет использовать до $2 десятичных знаков",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "Транзакция завершена"
@@ -8196,10 +8073,6 @@
   },
   "swapsMaxSlippage": {
     "message": "Допуск проскальзывания"
-  },
-  "swapsNotEnoughToken": {
-    "message": "Недостаточно $1",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "Посмотреть в журнале активности"
@@ -8788,9 +8661,6 @@
   "viewAddressOnExplorer": {
     "message": "Смотреть в $1",
     "description": "$1 is the block explorer name"
-  },
-  "viewAllQuotes": {
-    "message": "смотреть все котировки"
   },
   "viewContact": {
     "message": "Смотреть контакт"

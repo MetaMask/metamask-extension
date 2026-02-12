@@ -85,8 +85,12 @@ const PopularNetworkList = ({
             {t('additionalNetworks')}
           </Text>
 
-          <Box onMouseEnter={handleMouseEnter} marginTop={1}>
-            <Box marginLeft={2}>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            onMouseEnter={handleMouseEnter}
+          >
+            <Box marginLeft={2} display={Display.Flex}>
               <Icon
                 className="add-network__warning-icon"
                 name={IconName.Info}

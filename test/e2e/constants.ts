@@ -81,6 +81,7 @@ export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
     'test-dapp': mm('test-dapp', 'dist'),
     'test-dapp-multichain': mm('test-dapp-multichain', 'build'),
     'test-dapp-solana': mm('test-dapp-solana', 'dist'),
+    'test-dapp-tron': mm('test-dapp-tron', 'dist'),
     'test-snaps': mm('test-snaps', 'dist'),
   });
 
@@ -89,6 +90,7 @@ export const DAPP_PATH = Object.freeze({
   TEST_DAPP: 'test-dapp',
   TEST_DAPP_MULTICHAIN: 'test-dapp-multichain',
   TEST_DAPP_SOLANA: 'test-dapp-solana',
+  TEST_DAPP_TRON: 'test-dapp-tron',
   TEST_SNAPS: 'test-snaps',
   SNAP_SIMPLE_KEYRING_SITE: 'snap-simple-keyring-site',
   SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
@@ -123,11 +125,30 @@ export const SATS_IN_1_BTC = 100000000; // sats
 export const DEFAULT_SOLANA_ACCOUNT =
   'E6Aa9DDv7zsePJHosoqiNb3cFuup3fkXTyRH2pZ1nVzP';
 
+/* Default fixture SOLANA address */
+export const DEFAULT_FIXTURE_SOLANA_ACCOUNT =
+  '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+
+/* Solana Mainnet chain ID (genesis hash) */
+export const SOLANA_MAINNET_CHAIN_ID = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+/* Solana Mainnet scope in CAIP-2 format */
+export const SOLANA_MAINNET_SCOPE = `solana:${SOLANA_MAINNET_CHAIN_ID}`;
+
 /* Default (mocked) SOLANA balance used by the Solana RPC provider */
 export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 
 /* Title of Portfolio page */
 export const PORTFOLIO_PAGE_TITLE = 'MetaMask Portfolio';
+
+/* Default TRON address created using test SRP */
+export const DEFAULT_TRON_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
+
+/* Second TRON address created using test SRP */
+export const DEFAULT_TRON_ADDRESS_2 = 'TEcjynxEx7bPfDByW1uwPgsLCBhqynvpQx';
+
+/* Default TRON address created using test SRP */
+export const DEFAULT_TRON_ADDRESS_SHORT = 'TJ3Q...vGS3';
 
 /* Account types */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -202,6 +223,7 @@ export const WINDOW_TITLES = Object.freeze({
   TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
   MultichainTestDApp: 'Multichain Test Dapp',
   SolanaTestDApp: 'Solana Test Dapp',
+  TronTestDApp: 'Tron Test Dapp',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
 });

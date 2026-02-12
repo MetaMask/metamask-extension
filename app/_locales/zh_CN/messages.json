@@ -1818,12 +1818,6 @@
   "creatorAddress": {
     "message": "创建者地址"
   },
-  "crossChainSwapsLink": {
-    "message": "使用 MetaMask Portfolio 跨网络兑换"
-  },
-  "crossChainSwapsLinkNative": {
-    "message": "使用跨链桥跨网络兑换"
-  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2847,9 +2841,6 @@
     "message": "这笔燃料费是由 $1 建议的。忽略它可能会导致您的交易出现问题。如果您有疑问，请联系 $1。",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "燃料费"
-  },
   "gasLimit": {
     "message": "燃料限额"
   },
@@ -3257,9 +3248,6 @@
     "message": "已导入",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "included": {
-    "message": "已包含"
-  },
   "includesXTransactions": {
     "message": "包含 $1 笔交易"
   },
@@ -3661,12 +3649,6 @@
   },
   "low": {
     "message": "低级型"
-  },
-  "lowEstimatedReturnTooltipMessage": {
-    "message": "您将支付超过您的起始金额 $1% 的费用。请检查您的收款金额和网络费用。"
-  },
-  "lowEstimatedReturnTooltipTitle": {
-    "message": "高费用"
   },
   "lowGasSettingToolTipMessage": {
     "message": "使用$1等待较便宜的价格。时间估计远不准确，因为价格有些难以预测。",
@@ -4280,9 +4262,6 @@
   "noConnectionDescription": {
     "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
   },
-  "noConversionRateAvailable": {
-    "message": "无可用汇率"
-  },
   "noDomainResolution": {
     "message": "没有提供域名解析。"
   },
@@ -4336,9 +4315,6 @@
   },
   "notCurrentAccount": {
     "message": "这是正确的账户吗？这与您钱包中当前选择的账户不同"
-  },
-  "notEnoughBalance": {
-    "message": "余额不足"
   },
   "notEnoughGas": {
     "message": "燃料不足"
@@ -5336,9 +5312,6 @@
   "popularNetworks": {
     "message": "热门网络"
   },
-  "preparingSwap": {
-    "message": "正在准备交换......"
-  },
   "prev": {
     "message": "上一个"
   },
@@ -5559,9 +5532,6 @@
   },
   "queued": {
     "message": "队列中"
-  },
-  "quoteRate": {
-    "message": "报价"
   },
   "quotedReceiveAmount": {
     "message": "$1 收到金额"
@@ -7696,7 +7666,7 @@
   "storageErrorAction": {
     "message": "备份私钥助记词"
   },
-  "storageErrorDescription": {
+  "storageErrorDescriptionDefault": {
     "message": "请备份您的私钥助记词，若问题仍然存在，请重新安装 MetaMask。"
   },
   "storageErrorTitle": {
@@ -7815,16 +7785,9 @@
   "swapAndSend": {
     "message": "兑换并发送"
   },
-  "swapAnyway": {
-    "message": "仍然兑换"
-  },
   "swapApproval": {
     "message": "批准 $1 进行交换",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
-  },
-  "swapApproveNeedMoreTokens": {
-    "message": "您还需要 $1 的 $2 来完成这笔交换",
-    "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
   "swapAreYouStillThere": {
     "message": "您还在吗？"
@@ -7834,9 +7797,6 @@
   },
   "swapConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"
-  },
-  "swapContinueSwapping": {
-    "message": "继续兑换"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "在您的 Ledger 的 Etherum 应用程序中，转到“设置”并允许合约数据。然后再次尝试交换。"
@@ -7868,9 +7828,6 @@
     "message": "这将 $1 进行交换",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
-  "swapEnterAmount": {
-    "message": "输入金额"
-  },
   "swapEstimatedNetworkFees": {
     "message": "预估网络费用"
   },
@@ -7883,9 +7840,6 @@
   },
   "swapFailedErrorTitle": {
     "message": "交换失败"
-  },
-  "swapFetchingQuote": {
-    "message": "正在获取报价"
   },
   "swapFetchingQuoteNofN": {
     "message": "获取$2的$1报价",
@@ -7924,35 +7878,15 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "该网络费用由 MetaMask 支付，因此即使您账户中没有 $1 也可进行交易。"
   },
-  "swapGasIncludedTooltipExplanation": {
-    "message": "此报价通过调整发送或接收的代币数量纳入了燃料费。您可以在活动列表的单独交易中收到 ETH。"
-  },
-  "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "了解更多有关燃料费的信息"
-  },
-  "swapHighSlippage": {
-    "message": "高滑点"
-  },
-  "swapIncludesGasAndMetaMaskFee": {
-    "message": "包括燃料和 $1% 的 MetaMask 费用",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapIncludesMMFee": {
     "message": "包括 $1% 的 MetaMask 费用。",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "包含$1%的MetaMask费用 – $2",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "了解有关 Swaps 的更多信息"
   },
   "swapLiquiditySourceInfo": {
     "message": "我们搜索多种流动性来源（交易所、聚合器和专业做市商），以比较汇率和网络费用。"
-  },
-  "swapLowSlippage": {
-    "message": "低滑点"
   },
   "swapMaxSlippage": {
     "message": "最大滑点"
@@ -7968,10 +7902,6 @@
     "message": "$1 报价。",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
-  "swapNewQuoteIn": {
-    "message": "$1 后更新报价",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
-  },
   "swapNoTokensAvailable": {
     "message": "没有与 $1 匹配的代币",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -7980,29 +7910,11 @@
     "message": "处理完此交易后，您的 $1 将被添加到您的账户中。",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
-  "swapPriceDifference": {
-    "message": "您将用 $1 $2 (~$3) 交换 $4 $5 (~$6)。",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
-  },
-  "swapPriceDifferenceTitle": {
-    "message": "~$1% 的价差",
-    "description": "$1 is a number (ex: 1.23) that represents the price difference."
-  },
-  "swapPriceUnavailableDescription": {
-    "message": "由于缺乏市场价格数据，无法确定价格影响。在交换之前，请确认您对即将收到的代币数量感到满意。"
-  },
-  "swapPriceUnavailableTitle": {
-    "message": "在继续之前，请检查您的费率"
-  },
   "swapProcessing": {
     "message": "处理中"
   },
   "swapQuoteDetails": {
     "message": "报价详情"
-  },
-  "swapQuoteNofM": {
-    "message": "$1 / $2",
-    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapQuoteSource": {
     "message": "报价来源"
@@ -8103,32 +8015,12 @@
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "交换是复杂和时间敏感的交易。我们建议使用此燃料费用，以便在成本和成功交换的信心之间保持良好的平衡。"
   },
-  "swapSwapFrom": {
-    "message": "交换自"
-  },
-  "swapSwapSwitch": {
-    "message": "切换代币顺序"
-  },
-  "swapSwapTo": {
-    "message": "交换为"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"
-  },
-  "swapTokenAddedManuallyDescription": {
-    "message": "在 $1 上验证此代币，并确保这是您想要交易的代币。",
-    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenAddedManuallyTitle": {
-    "message": "已手动添加代币"
   },
   "swapTokenAvailable": {
     "message": "您的 $1 已添加到您的账户。",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
-  },
-  "swapTokenBalanceUnavailable": {
-    "message": "我们无法检索您的 $1 余额",
-    "description": "This message communicates to the user that their balance of a given token is currently unavailable. $1 will be replaced by a token symbol"
   },
   "swapTokenNotAvailable": {
     "message": "在此地区无法兑换代币"
@@ -8137,23 +8029,8 @@
     "message": "用 $1 交换 $2",
     "description": "Used in the transaction display list to describe a swap. $1 and $2 are the symbols of tokens in involved in a swap."
   },
-  "swapTokenVerifiedOn1SourceDescription": {
-    "message": "$1 仅在 1 个源上进行了验证。在继续之前，考虑在 $2 上进行验证。",
-    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
-  "swapTokenVerifiedOn1SourceTitle": {
-    "message": "可能伪造的代币"
-  },
-  "swapTokenVerifiedSources": {
-    "message": "已经过 $1 来源确认。在 $2 上验证。",
-    "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
-  },
   "swapTokens": {
     "message": "兑换代币"
-  },
-  "swapTooManyDecimalsError": {
-    "message": "$1 允许最多 $2 个小数位",
-    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "交易完成"
@@ -8172,10 +8049,6 @@
   },
   "swapsMaxSlippage": {
     "message": "滑移容差"
-  },
-  "swapsNotEnoughToken": {
-    "message": "$1 不足",
-    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
   "swapsViewInActivity": {
     "message": "在活动中查看"
@@ -8764,9 +8637,6 @@
   "viewAddressOnExplorer": {
     "message": "在 $1 上查看",
     "description": "$1 is the block explorer name"
-  },
-  "viewAllQuotes": {
-    "message": "查看所有报价"
   },
   "viewContact": {
     "message": "查看联系人"
