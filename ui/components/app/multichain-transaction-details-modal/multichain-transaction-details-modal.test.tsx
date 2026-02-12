@@ -131,7 +131,18 @@ const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
   userAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
-  networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+};
+
+const mockStateWithBitcoin = {
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    isEvmSelected: false,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      bitcoinAccounts: true,
+    },
+  },
 };
 
 describe('MultichainTransactionDetailsModal', () => {
@@ -159,7 +170,7 @@ describe('MultichainTransactionDetailsModal', () => {
       userAddress: string;
     } = mockProps,
   ) => {
-    const store = configureStore(mockState.metamask);
+    const store = configureStore(mockStateWithBitcoin);
     return renderWithProvider(
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <MultichainTransactionDetailsModal {...props} />
@@ -354,31 +365,15 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   it('displays the correct from address for Bitcoin send transaction', () => {
-    const btcTransaction = {
+    const btcTransaction: Transaction = {
       ...mockTransaction,
       account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
     };
-
-    const modifiedMockState = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          ...mockState.metamask.internalAccounts,
-          accounts: {
-            ...mockState.metamask.internalAccounts.accounts,
-            [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
-          },
-        },
-      },
-    };
-
-    const store = configureStore(modifiedMockState.metamask);
+    const store = configureStore(mockStateWithBitcoin);
     const props = {
       transaction: btcTransaction,
       onClose: jest.fn(),
       userAddress: MOCK_ACCOUNT_BIP122_P2WPKH.address,
-      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
     };
 
     renderWithProvider(
