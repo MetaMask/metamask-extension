@@ -226,7 +226,12 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     chainId: string,
     selectedAccountAddress: string,
   ): Promise<void> {
-    if (!(await this.#isValidChainId(chainId))) {
+    if (
+      // Only EVM chains use hex chain IDs; skip non-EVM or invalid chains.
+      !isStrictHexString(chainId) ||
+      !(await this.#isValidChainId(chainId))
+    ) {
+      // Silently return: the user may be on a non-EVM chain; we skip without throwing.
       return;
     }
 
@@ -341,7 +346,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
    * @param chainId - The chain ID.
    * @returns A promise that resolves to the tokens.
    */
-  async #fetchTopAssets(chainId: string): Promise<Token[]> {
+  async #fetchTopAssets(chainId: Hex): Promise<Token[]> {
     const tokens: Token[] = [];
     const topX = this.#getTopX();
     const topAssets = await this.#fetchTopAssetsFromAPI(chainId);
@@ -384,10 +389,7 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
    * @param chainId - The chain ID.
    * @returns A promise that resolves to the top assets.
    */
-  async #fetchTopAssetsFromAPI(chainId: string): Promise<unknown> {
-    if (!isStrictHexString(chainId)) {
-      return [];
-    }
+  async #fetchTopAssetsFromAPI(chainId: Hex): Promise<unknown> {
     const caip2ChainId = toEvmCaipChainId(chainId);
     const url = new URL(`${TOKEN_API_BASE_URL}/v3/tokens/trending`);
     url.searchParams.set('chainIds', caip2ChainId);
@@ -407,10 +409,9 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
    * @param chainId - The chain ID.
    * @returns A promise that resolves to whether the chain ID is valid.
    */
-  async #isValidChainId(chainId: string): Promise<boolean> {
+  async #isValidChainId(chainId: Hex): Promise<boolean> {
     try {
       if (
-        !isStrictHexString(chainId) ||
         !this.#getSupportedChains().has(chainId) ||
         // findNetworkClientIdByChainId will throw an error if the chainId is not supported.
         !(await this.messenger.call(
