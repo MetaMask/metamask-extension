@@ -80,7 +80,6 @@ import {
   getShieldSubscription,
   getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
-import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';
@@ -104,7 +103,6 @@ export function useGlobalMenuSections(
   const navigate = useNavigate();
 
   const basicFunctionality = useSelector(getUseExternalServices);
-  const rewardsEnabled = useSelector(selectRewardsEnabled);
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const { notificationsReadCount } = useReadNotificationsCounter();
   const isMetamaskNotificationFeatureSeen = useSelector(
@@ -327,29 +325,27 @@ export function useGlobalMenuSections(
       items: [],
     };
 
-    if (rewardsEnabled) {
-      section2.items.push({
-        id: 'discover',
-        iconName: IconName.Export,
-        label: t('discover'),
-        onClick: () => {
-          const url = getPortfolioUrl(
-            'explore/tokens',
-            'ext_portfolio_button',
-            metaMetricsId,
-            isMetaMetricsEnabled,
-            isMarketingEnabled,
-          );
-          global.platform.openTab({ url });
-          trackEvent({
-            category: MetaMetricsEventCategory.Navigation,
-            event: MetaMetricsEventName.PortfolioLinkClicked,
-            properties: { location: METRICS_LOCATION, text: 'Portfolio' },
-          });
-          onClose();
-        },
-      });
-    }
+    section2.items.push({
+      id: 'discover',
+      iconName: IconName.Export,
+      label: t('discover'),
+      onClick: () => {
+        const url = getPortfolioUrl(
+          'explore/tokens',
+          'ext_portfolio_button',
+          metaMetricsId,
+          isMetaMetricsEnabled,
+          isMarketingEnabled,
+        );
+        global.platform.openTab({ url });
+        trackEvent({
+          category: MetaMetricsEventCategory.Navigation,
+          event: MetaMetricsEventName.PortfolioLinkClicked,
+          properties: { location: METRICS_LOCATION, text: 'Portfolio' },
+        });
+        onClose();
+      },
+    });
 
     if (isPopup || isSidepanel) {
       section2.items.push({
@@ -526,7 +522,6 @@ export function useGlobalMenuSections(
   }, [
     t,
     basicFunctionality,
-    rewardsEnabled,
     isPopup,
     isSidepanel,
     hasUnapprovedTransactions,
