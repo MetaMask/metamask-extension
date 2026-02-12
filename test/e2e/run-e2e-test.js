@@ -129,19 +129,55 @@ async function main() {
     const dir = 'test/test-results/e2e';
     fs.mkdir(dir, { recursive: true });
 
-    await retry({ retries, stopAfterOneFailure }, async () => {
-      await runInShell('yarn', [
-        'mocha',
-        `--config=${configFile}`,
-        `--timeout=${testTimeoutInMilliseconds}`,
-        '--reporter=mocha-junit-reporter',
+    console.log(`Running tests on ${selectedBrowserForRun}`);
+
+    // Use enhanced spec reporter for readable console output with colors and summary
+    // Only add junit reporter in CI environments
+    const isCI =
+      process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+    // Use enhanced reporter by default, allow override via E2E_REPORTER env var
+    const consoleReporter =
+      process.env.E2E_REPORTER ||
+      path.join(__dirname, 'reporters/enhanced-spec-reporter.js');
+    const reporters = [`--reporter=${consoleReporter}`];
+    const reporterOptions = [];
+
+    if (isCI) {
+      reporters.push('--reporter=mocha-junit-reporter');
+      reporterOptions.push(
         '--reporter-options',
-        `mochaFile=test/test-results/e2e/[hash].xml,toConsole=true`,
-        ...extraArgs,
-        e2eTestPath,
-        exit,
-      ]);
-    });
+        `mochaFile=test/test-results/e2e/[hash].xml,toConsole=false`,
+      );
+    }
+
+    try {
+      await retry({ retries, stopAfterOneFailure }, async () => {
+        const mochaArgs = [
+          'mocha',
+          `--config=${configFile}`,
+          `--timeout=${testTimeoutInMilliseconds}`,
+          '--color',
+          ...reporters,
+          ...reporterOptions,
+          ...extraArgs,
+          e2eTestPath,
+          exit,
+        ];
+
+        await runInShell('yarn', mochaArgs);
+      });
+    } catch (error) {
+      // If the file path includes 'tolerate-failure', we log and tolerate the failure
+      if (e2eTestPath.includes('tolerate-failure')) {
+        console.log(
+          `Failure on TestFile ${e2eTestPath}, but we will log and tolerate this failure`,
+        );
+      } else {
+        exitWithError(
+          `Error occurred while running tests on ${selectedBrowserForRun}: ${error}`,
+        );
+      }
+    }
   };
 
   const allBrowsers = ['chrome', 'firefox'];
