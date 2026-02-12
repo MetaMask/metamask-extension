@@ -35,7 +35,11 @@ const ClaimMerklRewards: React.FC<ClaimMerklRewardsProps> = ({
   const t = useI18nContext();
   const [showModal, setShowModal] = useState(false);
 
-  const { isClaiming, error: claimError } = useMerklClaim({
+  const {
+    isClaiming,
+    error: claimError,
+    claimRewards,
+  } = useMerklClaim({
     tokenAddress,
     chainId,
   });
@@ -79,8 +83,7 @@ const ClaimMerklRewards: React.FC<ClaimMerklRewardsProps> = ({
       </Box>
 
       <MerklClaimModal
-        tokenAddress={tokenAddress}
-        chainId={chainId}
+        claimRewards={claimRewards}
         isOpen={showModal}
         onClose={handleModalClose}
       />

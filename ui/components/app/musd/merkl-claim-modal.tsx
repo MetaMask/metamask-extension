@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import type { Hex } from '@metamask/utils';
 import {
   Box,
   BoxFlexDirection,
@@ -22,16 +21,14 @@ import {
   ModalOverlay,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useMerklClaim } from './hooks/useMerklClaim';
 import { MUSD_BONUS_TERMS_URL } from './constants';
 
 const MUSD_ICON_SRC = './images/musd-icon-no-background-2x.png';
 
 type MerklClaimModalProps = {
-  tokenAddress: string;
-  chainId: Hex;
   isOpen: boolean;
   onClose: () => void;
+  claimRewards: () => Promise<void>;
 };
 
 /**
@@ -39,19 +36,16 @@ type MerklClaimModalProps = {
  * On "Continue", builds the claim transaction and routes to the confirmation page.
  *
  * @param props - Component props
- * @param props.tokenAddress - The token's contract address
- * @param props.chainId - The chain ID of the token
  * @param props.isOpen - Whether the modal is open
  * @param props.onClose - Callback when the modal is closed
+ * @param props.claimRewards - Triggers the process of claiming reward
  */
 const MerklClaimModal: React.FC<MerklClaimModalProps> = ({
-  tokenAddress,
-  chainId,
   isOpen,
   onClose,
+  claimRewards,
 }) => {
   const t = useI18nContext();
-  const { claimRewards } = useMerklClaim({ tokenAddress, chainId });
 
   const handleContinueClaim = useCallback(async () => {
     onClose();
