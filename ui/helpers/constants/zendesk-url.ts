@@ -70,6 +70,48 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/networks-and-sidechains/eth-on-testnets/',
   SOLANA_ACCOUNTS:
     'https://support.metamask.io/configure/accounts/how-to-add-accounts-in-your-wallet/#solana-accounts',
-};
+  METAMETRICS_SETTINGS:
+    'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings',
+  SECURITY_ALERTS:
+    'https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/',
+  TRANSACTION_SIMULATIONS:
+    'https://support.metamask.io/transactions-and-gas/transactions/simulations/',
+  VAULT_RECOVERY:
+    'https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/#step-two-locate-your-vault',
+  PROFILE_PRIVACY:
+    'https://support.metamask.io/privacy-and-security/profile-privacy',
+  CONTRACT_ADDRESS_WARNING:
+    'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/',
+  TRANSACTION_SHIELD:
+    'https://support.metamask.io/manage-crypto/transactions/transaction-shield',
+  FIND_TRANSACTION_HASH:
+    'https://support.metamask.io/manage-crypto/transactions/how-to-find-a-transaction-id',
+  SMART_TRANSACTIONS:
+    'https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/',
+  SMART_ACCOUNT_DETAILS:
+    'https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts',
+  MULTICHAIN_ACCOUNTS:
+    'https://support.metamask.io/configure/accounts/multichain-accounts/',
+  CONNECTING_TO_DAPP:
+    'https://support.metamask.io/more-web3/dapps/connecting-to-a-dapp/',
+  ADD_ACCOUNTS:
+    'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/',
+  REMOVE_ACCOUNT:
+    'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/',
+  PRIVACY_BEST_PRACTICES:
+    'https://support.metamask.io/privacy-and-security/privacy-best-practices',
+  BASIC_SAFETY_TIPS:
+    'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/',
+  METAMASK_REWARDS:
+    'https://support.metamask.io/manage-crypto/metamask-rewards',
+  DECEPTIVE_SITE:
+    'https://support.metamask.io/troubleshooting/deceptive-site-ahead-when-trying-to-connect-to-a-site/',
+  SWAPS_USER_GUIDE:
+    'https://support.metamask.io/token-swaps/user-guide-swaps/',
+  UPDATE_VERSION:
+    'https://support.metamask.io/configure/wallet/how-to-update-the-version/' as const,
+} as const;
+
+export type ZendeskUrl = (typeof ZENDESK_URLS)[keyof typeof ZENDESK_URLS];
 
 export default ZENDESK_URLS;

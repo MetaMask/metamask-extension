@@ -22,6 +22,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   useEnableNotifications,
   useDisableNotifications,

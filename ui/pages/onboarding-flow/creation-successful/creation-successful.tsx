@@ -80,6 +80,7 @@ import {
   DeferredDeepLinkRouteType,
 } from '../../../../shared/lib/deep-links/types';
 import WalletReadyAnimation from './wallet-ready-animation';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -104,8 +105,7 @@ export default function CreationSuccessful() {
 
   const isInitialized = useSelector(getIsInitialized);
 
-  const learnMoreLink =
-    'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
+  const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
   const searchParams = new URLSearchParams(search);
   const isFromReminder = searchParams.get('isFromReminder');

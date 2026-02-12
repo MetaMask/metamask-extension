@@ -1,19 +1,18 @@
+import ZENDESK_URLS from './zendesk-url';
+
 export const PRIMARY = 'PRIMARY';
 export const SECONDARY = 'SECONDARY';
 
-const _contractAddressLink =
-  'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/';
+const _contractAddressLink = ZENDESK_URLS.CONTRACT_ADDRESS_WARNING;
 
 export const TRANSACTION_SHIELD_SUPPORT_LINK =
-  'https://support.metamask.io/manage-crypto/transactions/transaction-shield';
+  ZENDESK_URLS.TRANSACTION_SHIELD;
 
 export const TRANSACTION_SHIELD_LINK = 'https://metamask.io/transaction-shield';
 
-export const FIND_TRANSACTION_HASH_LINK =
-  'https://support.metamask.io/manage-crypto/transactions/how-to-find-a-transaction-id';
+export const FIND_TRANSACTION_HASH_LINK = ZENDESK_URLS.FIND_TRANSACTION_HASH;
 // eslint-disable-next-line prefer-destructuring
-export const METAMETRICS_SETTINGS_LINK =
-  'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings';
+export const METAMETRICS_SETTINGS_LINK = ZENDESK_URLS.METAMETRICS_SETTINGS;
 // eslint-disable-next-line prefer-destructuring
 export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
