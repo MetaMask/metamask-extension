@@ -4,7 +4,18 @@
     { "file": "ui/selectors/assets.ts" },
     {
       "file": "ui/selectors/multichain.ts",
-      "selectors": ["getMultichainBalances", "getMultichainNetwork"]
+      "selectors": [
+        "getMultichainBalances",
+        "getMultichainNetwork",
+        "getMultichainSelectedAccountCachedBalance",
+        "getMultichainNativeCurrency",
+        "getMultichainCurrentCurrency",
+        "getMultichainShouldShowFiat",
+        "getMultichainConversionRate",
+        "getMultichainCurrencyImage",
+        "getMultichainNativeCurrencyImage",
+        "getMultichainCoinRates"
+      ]
     },
     { "file": "ui/selectors/nft.ts" },
     {
@@ -16,7 +27,10 @@
         "getMarketData",
         "selectNftsByChainId",
         "selectERC20TokensByChain",
-        "selectERC20Tokens"
+        "selectERC20Tokens",
+        "getCurrencyRates",
+        "getAllTokens",
+        "getCrossChainMetaMaskCachedBalances"
       ]
     }
   ]
