@@ -24,8 +24,8 @@ jest.mock('../../hooks/useI18nContext', () => ({
     if (key === I18N_KEYS.description && substitutions?.[0]) {
       return (
         <>
-          This feature isn't available while basic functionality is turned off.
-          Turn it on in {substitutions[0]} to continue.
+          This feature isn&apos;t available while basic functionality is turned
+          off. Turn it on in {substitutions[0]} to continue.
         </>
       );
     }
@@ -44,12 +44,10 @@ describe('BasicFunctionalityRequired', () => {
   it('renders title and description', () => {
     render(<BasicFunctionalityRequired />);
 
-    expect(
-      screen.getByText('Basic functionality is off'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Basic functionality is off')).toBeInTheDocument();
     expect(
       screen.getByText(
-        /This feature isn't available while basic functionality is turned off/,
+        /This feature isn't available while basic functionality is turned off/u,
       ),
     ).toBeInTheDocument();
     expect(
