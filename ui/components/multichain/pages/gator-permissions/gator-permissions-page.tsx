@@ -78,7 +78,9 @@ export const GatorPermissionsPage = () => {
         alignItems={AlignItems.center}
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
-        padding={[2, 4]}
+        paddingTop={2}
+        paddingBottom={2}
+        paddingInline={4}
         marginTop={4}
       >
         <Text
@@ -101,7 +103,7 @@ export const GatorPermissionsPage = () => {
         alignItems={AlignItems.baseline}
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.backgroundDefault}
-        padding={4}
+        padding={0}
         gap={4}
       >
         {totalSitesConnections > 0 && (
