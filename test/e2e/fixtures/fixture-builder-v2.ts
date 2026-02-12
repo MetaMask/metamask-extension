@@ -7,6 +7,8 @@ import {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
+  SOLANA_MAINNET_SCOPE,
 } from '../constants';
 import defaultFixtureJson from './default-fixture.json';
 import onboardingFixtureJson from './onboarding-fixture.json';
@@ -61,6 +63,30 @@ class FixtureBuilderV2 {
       : DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const dappUrl = useLocalhostHostname ? DAPP_URL_LOCALHOST : DAPP_URL;
 
+    // Derive optionalScopes from the EVM networks in state
+    const optionalScopes: Record<string, { accounts: string[] }> = {};
+
+    const networkConfigs =
+      this.fixture.data.NetworkController?.networkConfigurationsByChainId || {};
+    Object.entries(networkConfigs).forEach(([chainIdHex]) => {
+      // Convert hex chainId (0x1) to decimal for CAIP-2 format (eip155:1)
+      const chainId = parseInt(chainIdHex, 16);
+      const scopeKey = `eip155:${chainId}`;
+      optionalScopes[scopeKey] = {
+        accounts: [`${scopeKey}:${selectedAccount}`],
+      };
+    });
+
+    // Add Solana Mainnet scope
+    optionalScopes[SOLANA_MAINNET_SCOPE] = {
+      accounts: [`${SOLANA_MAINNET_SCOPE}:${DEFAULT_FIXTURE_SOLANA_ACCOUNT}`],
+    };
+
+    // Add wallet:eip155 scope
+    optionalScopes['wallet:eip155'] = {
+      accounts: [],
+    };
+
     return this.withPermissionController({
       subjects: {
         [dappUrl]: {
@@ -72,40 +98,7 @@ class FixtureBuilderV2 {
                   type: 'authorizedScopes',
                   value: {
                     isMultichainOrigin: true,
-                    optionalScopes: {
-                      'eip155:1': {
-                        accounts: [`eip155:1:${selectedAccount}`],
-                      },
-                      'eip155:10': {
-                        accounts: [`eip155:10:${selectedAccount}`],
-                      },
-                      'eip155:1337': {
-                        accounts: [`eip155:1337:${selectedAccount}`],
-                      },
-                      'eip155:137': {
-                        accounts: [`eip155:137:${selectedAccount}`],
-                      },
-                      'eip155:42161': {
-                        accounts: [`eip155:42161:${selectedAccount}`],
-                      },
-                      'eip155:56': {
-                        accounts: [`eip155:56:${selectedAccount}`],
-                      },
-                      'eip155:59144': {
-                        accounts: [`eip155:59144:${selectedAccount}`],
-                      },
-                      'eip155:8453': {
-                        accounts: [`eip155:8453:${selectedAccount}`],
-                      },
-                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-                        accounts: [
-                          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
-                        ],
-                      },
-                      'wallet:eip155': {
-                        accounts: [],
-                      },
-                    },
+                    optionalScopes,
                     requiredScopes: {},
                     sessionProperties: {},
                   },
