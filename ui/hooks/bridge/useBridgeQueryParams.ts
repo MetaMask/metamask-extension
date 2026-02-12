@@ -221,7 +221,7 @@ export const useBridgeQueryParams = () => {
     if (fromToken?.assetId) {
       dispatch(setEvmBalances(fromToken.assetId));
     }
-  }, [fromToken, fromToken?.assetId]);
+  }, [fromToken.assetId, fromAccount.address]);
 
   // If srcToken object is passed through navigation options, use it as the fromToken
   useEffect(() => {
