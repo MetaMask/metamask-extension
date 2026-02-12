@@ -1,7 +1,9 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
+import { mockTransactions } from '../../helpers/mock-server';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -75,6 +77,9 @@ describe('MetaMask Responsive UI', function (this: Suite) {
           })
           .build(),
         driverOptions,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockTransactions(mockServer);
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

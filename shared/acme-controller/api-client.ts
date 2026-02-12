@@ -1,7 +1,6 @@
 import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
 import { ACCOUNTS_API_BASE_URL } from '../constants/accounts';
 
-
 type Params = {
   accountAddresses: string[];
   networks?: string[];
