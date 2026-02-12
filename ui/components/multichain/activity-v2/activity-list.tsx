@@ -36,7 +36,7 @@ import {
   type FlattenedItem,
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
-import { ActivityDetailsModal } from './activity-details-modal';
+import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
 import { PendingActivityItem } from './pending-activity-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
 
@@ -271,7 +271,7 @@ export const ActivityList = () => {
           </Box>
         )}
 
-        <ActivityDetailsModal
+        <ActivityDetailsModalAdapter
           isOpen={isModalOpen}
           onClose={handleModalClose}
           transaction={selectedItem}
