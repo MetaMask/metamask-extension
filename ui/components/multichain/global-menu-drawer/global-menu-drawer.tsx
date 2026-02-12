@@ -196,8 +196,6 @@ export const GlobalMenuDrawer = ({
     }
   }, [isOpen, isFullscreen]);
 
-  // Delay revealing by one frame after we have position so Headless UI can apply
-  // enterFrom (translate-x-full) before we show — avoids a flash of the final position.
   const hasPosition = Object.keys(drawerStyle).length > 0;
   useEffect(() => {
     if (!isOpen) {
@@ -252,7 +250,7 @@ export const GlobalMenuDrawer = ({
   }
 
   const dialogContent = (
-    <Transition show={isOpen}>
+    <Transition show={isOpen} appear>
       <Dialog
         open={isOpen}
         onClose={onClose}
