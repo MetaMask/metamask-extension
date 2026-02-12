@@ -73,7 +73,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-dist-browserify
           name: build-dist-browserify
@@ -82,7 +82,7 @@ jobs:
         run: yarn sentry:publish --dist-directory build-dist-browserify/dist
 
       - name: Download artifact 'build-dist-mv2-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-dist-mv2-browserify
           name: build-dist-mv2-browserify
@@ -91,7 +91,7 @@ jobs:
         run: yarn sentry:publish --dist mv2 --dist-directory build-dist-mv2-browserify/dist
 
       - name: Download artifact 'build-flask-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-flask-browserify
           name: build-flask-browserify
@@ -100,7 +100,7 @@ jobs:
         run: yarn sentry:publish --build-type flask --dist-directory build-flask-browserify/dist
 
       - name: Download artifact 'build-flask-mv2-browserify'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: build-flask-mv2-browserify
           name: build-flask-mv2-browserify

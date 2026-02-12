@@ -10,7 +10,7 @@ on:
         required: true
       TEST_SRP_2:
         required: false
-        description: Required for performanceLogin (import-srp-home). 12-word seed phrase.
+        description: Required for performanceAccountManagement (import-srp-home). 12-word seed phrase.
 
 env:
   COMMANDS: |
@@ -21,7 +21,8 @@ env:
       "performanceOnboardingImport": "yarn test:e2e:benchmark --preset performanceOnboardingImport --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingImport.json --retries 2",
       "performanceOnboardingNew": "yarn test:e2e:benchmark --preset performanceOnboardingNew --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboardingNew.json --retries 2",
       "performanceAssets": "yarn test:e2e:benchmark --preset performanceAssets --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2",
-      "performanceLogin": "yarn test:e2e:benchmark --preset performanceLogin --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceLogin.json --retries 2"
+      "performanceTransactions": "yarn test:e2e:benchmark --preset performanceTransactions --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceTransactions.json --retries 2",
+      "performanceAccountManagement": "yarn test:e2e:benchmark --preset performanceAccountManagement --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAccountManagement.json --retries 2"
     }
 
 jobs:
@@ -37,11 +38,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # PowerUser + UserActions benchmarks run on all 4 browser/buildType combinations
+        # Page load + User action benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
         pageType: [standardHome, powerUserHome, userActions]
-        # New added performance benchmarks only run on Chrome + Browserify to reduce CI runtime
+        # Performance benchmarks only run on Chrome + Browserify to reduce CI runtime
         include:
           - browser: chrome
             buildType: browserify
@@ -54,7 +55,10 @@ jobs:
             pageType: performanceAssets
           - browser: chrome
             buildType: browserify
-            pageType: performanceLogin
+            pageType: performanceTransactions
+          - browser: chrome
+            buildType: browserify
+            pageType: performanceAccountManagement
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -77,7 +81,7 @@ jobs:
 
       - name: Restore .metamask folder
         id: restore-metamask
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: .metamask
           key: .metamask-${{ hashFiles('yarn.lock') }}
@@ -88,7 +92,7 @@ jobs:
         run: yarn mm-foundryup
 
       - name: Download artifact '${{ env.ARTIFACT_NAME }}'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: ${{ env.ARTIFACT_NAME }}
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.

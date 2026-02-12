@@ -544,8 +544,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             <span
               data-testid="gas-timing-time"
             >
-              ~
-              0 sec
+              ~0 sec
             </span>
           </p>
         </div>

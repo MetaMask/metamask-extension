@@ -24,10 +24,11 @@ import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
 import TimerHelper, { collectTimerResults } from '../../utils/timer-helper';
 import { getCommonMocks } from '../../utils/common-mocks';
+import { BENCHMARK_PERSONA, BENCHMARK_TYPE } from '../../utils/constants';
 import type { BenchmarkRunResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-new-wallet';
-export const persona = 'standard';
+export const persona = BENCHMARK_PERSONA.STANDARD;
 
 export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunResult> {
   try {
@@ -54,11 +55,9 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         const timerCreateWalletToSocial = new TimerHelper(
           'createWalletToSocialScreen',
         );
-        const timerSrpButtonToPassword = new TimerHelper(
-          'srpButtonToPasswordForm',
-        );
+        const timerSrpButtonToPassword = new TimerHelper('srpButtonToPwForm');
         const timerPasswordToRecovery = new TimerHelper(
-          'createPasswordToRecoveryScreen',
+          'createPwToRecoveryScreen',
         );
         const timerSkipToMetrics = new TimerHelper('skipBackupToMetricsScreen');
         const timerAgreeToComplete = new TimerHelper(
@@ -139,12 +138,17 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
       },
     );
 
-    return { timers: collectTimerResults(), success: true };
+    return {
+      timers: collectTimerResults(),
+      success: true,
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+    };
   } catch (error) {
     return {
       timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   }
 }
