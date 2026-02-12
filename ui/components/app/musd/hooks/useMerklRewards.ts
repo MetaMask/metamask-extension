@@ -5,6 +5,7 @@ import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import { getRemoteFeatureFlags } from '../../../../selectors/remote-feature-flags';
 import { ELIGIBLE_TOKENS, MERKL_FEATURE_FLAG_KEY } from '../constants';
 import {
+  clearRewardCache,
   fetchMerklRewardsForAsset,
   getClaimedAmountFromContract,
 } from '../merkl-client';
@@ -184,6 +185,7 @@ export const useMerklRewards = ({
   // call and later refetches
   const [fetchKey, setFetchKey] = useState(0);
   const refetch = useCallback(() => {
+    clearRewardCache();
     setFetchKey((k) => k + 1);
   }, []);
 
