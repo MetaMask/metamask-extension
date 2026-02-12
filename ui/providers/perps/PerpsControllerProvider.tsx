@@ -6,9 +6,7 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useSelector, useStore } from 'react-redux';
-import type { Store } from 'redux';
 import type { PerpsController } from '@metamask/perps-controller';
-import type { MetaMaskReduxState } from '../../store/store';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getPerpsController } from './getPerpsController';
 import { getPerpsStreamManager } from './PerpsStreamManager';
@@ -191,42 +189,6 @@ export function usePerpsController(): PerpsController {
   }
 
   return controller;
-}
-
-/**
- * Optional version of usePerpsController that returns null when the controller
- * is not yet available (e.g. outside PerpsControllerProvider or before stream
- * manager has finished initializing). Use this when the component can tolerate
- * a missing controller and needs a safe fallback (e.g. eligibility checks).
- *
- * @returns The PerpsController instance, or null if not available
- */
-export function usePerpsControllerOrNull(): PerpsController | null {
-  const contextController = useContext(PerpsControllerContext);
-  const [streamManagerController, setStreamManagerController] =
-    useState<PerpsController | null>(null);
-
-  const store = useStore() as Store<MetaMaskReduxState>;
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address;
-
-  useEffect(() => {
-    if (contextController) {
-      return;
-    }
-    if (!selectedAddress) {
-      return;
-    }
-
-    const streamManager = getPerpsStreamManager();
-    streamManager.init(selectedAddress).then(() => {
-      getPerpsController(selectedAddress, store).then(
-        setStreamManagerController,
-      );
-    });
-  }, [contextController, selectedAddress, store]);
-
-  return contextController ?? streamManagerController;
 }
 
 // Export context for advanced use cases
