@@ -8,8 +8,8 @@ import { addressSummary } from '../../../../helpers/utils/util';
 import { getMultichainAccountUrl } from '../../../../helpers/utils/multichain/blockExplorer';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import ConfirmRemoveAccount from '.';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import ConfirmRemoveAccount from '.';
 
 // @ts-expect-error mocking platform
 global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };

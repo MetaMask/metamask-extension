@@ -219,7 +219,11 @@ describe('MultichainAccountAddressListPage', () => {
     expect(
       screen.getByText(`${MOCK_GROUP_NAME} / Addresses`),
     ).toBeInTheDocument();
-    expect(screen.queryByText(messages.destinationAccountPickerSearchPlaceholderToSolana.message)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        messages.destinationAccountPickerSearchPlaceholderToSolana.message,
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it('displays fallback text when account group ID is null', () => {

@@ -7,8 +7,8 @@ import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
-import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 
 const mockOnClose = jest.fn();
 const mockOnNetworkChange = jest.fn();

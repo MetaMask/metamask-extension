@@ -14,8 +14,8 @@ import {
   seaportSignatureMsg,
 } from '../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
-import TypedSignV4Simulation from './typed-sign-v4-simulation';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
+import TypedSignV4Simulation from './typed-sign-v4-simulation';
 
 jest.mock('../../../../../../../store/actions', () => {
   return {
@@ -69,7 +69,9 @@ describe('PermitSimulation', () => {
       );
 
       expect(await findByText('30')).toBeInTheDocument();
-      expect(await findByText(messages.estimatedChanges.message)).toBeInTheDocument();
+      expect(
+        await findByText(messages.estimatedChanges.message),
+      ).toBeInTheDocument();
       expect(
         await findByText(
           "You're giving the spender permission to spend this many tokens from your account.",
@@ -104,7 +106,9 @@ describe('PermitSimulation', () => {
       );
 
       expect(await findByText('30')).toBeInTheDocument();
-      expect(await findByText(messages.estimatedChanges.message)).toBeInTheDocument();
+      expect(
+        await findByText(messages.estimatedChanges.message),
+      ).toBeInTheDocument();
       expect(
         await findByText(
           "You're giving the spender permission to spend this many tokens from your account.",
@@ -154,8 +158,12 @@ describe('PermitSimulation', () => {
         mockStore,
       );
 
-      expect(await findByText(messages.estimatedChanges.message)).toBeInTheDocument();
-      expect(await findByText(messages.permitSimulationChange_approve.message)).toBeInTheDocument();
+      expect(
+        await findByText(messages.estimatedChanges.message),
+      ).toBeInTheDocument();
+      expect(
+        await findByText(messages.permitSimulationChange_approve.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -171,8 +179,12 @@ describe('PermitSimulation', () => {
         mockStore,
       );
 
-      expect(await findByText(messages.permitSimulationChange_nft_listing.message)).toBeInTheDocument();
-      expect(await findByText(messages.permitSimulationChange_listing.message)).toBeInTheDocument();
+      expect(
+        await findByText(messages.permitSimulationChange_nft_listing.message),
+      ).toBeInTheDocument();
+      expect(
+        await findByText(messages.permitSimulationChange_listing.message),
+      ).toBeInTheDocument();
     });
   });
 });

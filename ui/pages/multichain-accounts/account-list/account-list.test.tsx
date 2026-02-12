@@ -216,7 +216,9 @@ describe('AccountList', () => {
       const { getAllByText } = renderComponent();
 
       // When account syncing is in progress, should show spinner
-      expect(getAllByText(messages.syncing.message).length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.syncing.message).length,
+      ).toBeGreaterThanOrEqual(1);
     });
 
     it('shows default add wallet text when no loading states are active', () => {
@@ -227,7 +229,9 @@ describe('AccountList', () => {
       });
       const { getAllByText } = renderComponent();
 
-      expect(getAllByText(messages.addWallet.message).length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.addWallet.message).length,
+      ).toBeGreaterThanOrEqual(1);
     });
 
     it('handles loading state transitions correctly', () => {
@@ -240,7 +244,9 @@ describe('AccountList', () => {
 
       const { getAllByText, rerender } = renderComponent();
 
-      expect(getAllByText(messages.addWallet.message).length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.addWallet.message).length,
+      ).toBeGreaterThanOrEqual(1);
 
       // Simulate account syncing starting
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
@@ -251,7 +257,9 @@ describe('AccountList', () => {
 
       rerender(<AccountList />);
 
-      expect(getAllByText(messages.syncing.message).length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.syncing.message).length,
+      ).toBeGreaterThanOrEqual(1);
 
       // Simulate syncing completing
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
@@ -262,7 +270,9 @@ describe('AccountList', () => {
 
       rerender(<AccountList />);
 
-      expect(getAllByText(messages.addWallet.message).length).toBeGreaterThanOrEqual(1);
+      expect(
+        getAllByText(messages.addWallet.message).length,
+      ).toBeGreaterThanOrEqual(1);
     });
   });
 });

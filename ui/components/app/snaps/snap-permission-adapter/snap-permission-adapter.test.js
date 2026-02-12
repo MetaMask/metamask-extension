@@ -4,8 +4,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import SnapPermissionAdapter from './snap-permission-adapter';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import SnapPermissionAdapter from './snap-permission-adapter';
 
 describe('Snap Permission Adapter', () => {
   const mockSnapId = 'mock-snap-id';

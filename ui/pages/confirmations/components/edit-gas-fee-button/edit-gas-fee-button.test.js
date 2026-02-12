@@ -15,8 +15,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
-import EditGasFeeButton from './edit-gas-fee-button';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import EditGasFeeButton from './edit-gas-fee-button';
 
 jest.mock('../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -93,7 +93,9 @@ describe('EditGasFeeButton', () => {
     await render({
       contextProps: { transaction: { userFeeLevel: 'tenPercentIncreased' } },
     });
-    expect(screen.queryByText(messages.tenPercentIncreased.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.tenPercentIncreased.message),
+    ).toBeInTheDocument();
   });
 
   it('should render edit link with text Site suggested if site suggested estimated are used', async () => {
@@ -107,7 +109,9 @@ describe('EditGasFeeButton', () => {
       },
     });
     expect(screen.queryByText('🌐')).toBeInTheDocument();
-    expect(screen.queryByText(messages.dappSuggested.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.dappSuggested.message),
+    ).toBeInTheDocument();
     expect(document.getElementsByClassName('info-tooltip')).toHaveLength(1);
   });
 
@@ -119,7 +123,9 @@ describe('EditGasFeeButton', () => {
       },
     });
     expect(screen.queryByText('🔄')).toBeInTheDocument();
-    expect(screen.queryByText(messages.swapSuggested.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapSuggested.message),
+    ).toBeInTheDocument();
   });
 
   it('should render edit link with text advance if custom gas estimates are used', async () => {

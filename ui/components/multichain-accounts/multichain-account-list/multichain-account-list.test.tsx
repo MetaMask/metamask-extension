@@ -11,11 +11,11 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   MultichainAccountList,
   MultichainAccountListProps,
 } from './multichain-account-list';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../../shared/lib/trace', () => {
   const actual = jest.requireActual('../../../../shared/lib/trace');
@@ -411,7 +411,9 @@ describe('MultichainAccountList', () => {
 
     // Find the header text inside the modal
     if (modalHeader) {
-      const headerText = within(modalHeader as HTMLElement).getByText(messages.rename.message);
+      const headerText = within(modalHeader as HTMLElement).getByText(
+        messages.rename.message,
+      );
       expect(headerText).toBeInTheDocument();
     }
 

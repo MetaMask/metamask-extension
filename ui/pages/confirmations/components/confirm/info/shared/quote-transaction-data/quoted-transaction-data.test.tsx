@@ -9,8 +9,8 @@ import {
   mockSwapConfirmation,
 } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { Confirmation } from '../../../../../types/confirm';
-import { QuotedSwapTransactionData } from './quoted-transaction-data';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
+import { QuotedSwapTransactionData } from './quoted-transaction-data';
 
 jest.mock('../../../../../../../store/actions', () => ({
   getTokenStandardAndDetails: jest.fn(),
@@ -62,8 +62,12 @@ describe('QuotedSwapTransactionData', () => {
 
     const { queryByText } = render();
 
-    expect(queryByText(messages.approveButtonText.message)).not.toBeInTheDocument();
-    expect(queryByText(messages.blockExplorerSwapAction.message)).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.approveButtonText.message),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.blockExplorerSwapAction.message),
+    ).not.toBeInTheDocument();
   });
 
   it('does not render if selectedQuote is undefined', () => {

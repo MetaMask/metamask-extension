@@ -22,13 +22,13 @@ import {
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { shortenAddress as utilShortenAddress } from '../../../helpers/utils/util';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
 import {
   getAddressUrl,
   getTransactionUrl,
   shortenTransactionId,
 } from './helpers';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -331,7 +331,9 @@ describe('MultichainTransactionDetailsModal', () => {
 
     renderComponent(swapProps);
 
-    expect(screen.getByText(messages.blockExplorerSwapAction.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.blockExplorerSwapAction.message),
+    ).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '-2.5 SOL',
     );

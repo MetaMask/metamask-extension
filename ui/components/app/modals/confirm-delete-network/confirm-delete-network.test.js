@@ -3,8 +3,8 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import ConfirmDeleteNetwork from '.';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import ConfirmDeleteNetwork from '.';
 
 describe('Confirm Delete Network', () => {
   const props = {

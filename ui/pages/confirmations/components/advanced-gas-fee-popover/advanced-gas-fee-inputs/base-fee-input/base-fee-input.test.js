@@ -14,8 +14,8 @@ import configureStore from '../../../../../../store/store';
 import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import { getSelectedInternalAccountFromMockState } from '../../../../../../../test/jest/mocks';
-import BaseFeeInput from './base-fee-input';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
+import BaseFeeInput from './base-fee-input';
 
 const LOW_BASE_FEE = 0.000000001;
 

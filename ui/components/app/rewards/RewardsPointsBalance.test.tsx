@@ -12,8 +12,8 @@ import {
   selectSeasonStatusError,
 } from '../../../ducks/rewards/selectors';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { RewardsPointsBalance } from './RewardsPointsBalance';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { RewardsPointsBalance } from './RewardsPointsBalance';
 
 // Mock dependencies
 jest.mock('react-redux', () => ({

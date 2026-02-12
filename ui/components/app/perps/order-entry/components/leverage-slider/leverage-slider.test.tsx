@@ -3,8 +3,8 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { LeverageSlider } from './leverage-slider';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
+import { LeverageSlider } from './leverage-slider';
 
 const mockStore = configureStore({
   metamask: {
@@ -27,7 +27,9 @@ describe('LeverageSlider', () => {
     it('renders the leverage label', () => {
       renderWithProvider(<LeverageSlider {...defaultProps} />, mockStore);
 
-      expect(screen.getByText(messages.perpsLeverage.message)).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.perpsLeverage.message),
+      ).toBeInTheDocument();
     });
 
     it('displays current leverage value', () => {

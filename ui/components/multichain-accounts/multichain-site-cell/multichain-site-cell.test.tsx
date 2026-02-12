@@ -10,8 +10,8 @@ import configureStore from '../../../store/store';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
-import { MultichainSiteCell } from './multichain-site-cell';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MultichainSiteCell } from './multichain-site-cell';
 
 jest.mock('../../../contexts/metametrics', () => {
   const { createContext } = jest.requireActual('react');

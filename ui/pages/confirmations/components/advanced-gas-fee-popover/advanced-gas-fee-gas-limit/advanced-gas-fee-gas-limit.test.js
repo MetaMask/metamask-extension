@@ -11,8 +11,8 @@ import configureStore from '../../../../../store/store';
 
 import { AdvancedGasFeePopoverContextProvider } from '../context';
 import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
-import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 
 jest.mock('../../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest

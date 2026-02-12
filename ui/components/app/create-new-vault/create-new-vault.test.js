@@ -38,11 +38,7 @@ describe('CreateNewVault', () => {
       <CreateNewVault submitText="Import" onSubmit={jest.fn()} includeTerms />,
       store,
     );
-    expect(
-      screen.getByText(
-        messages.srpPasteTip.message,
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText(messages.srpPasteTip.message)).toBeInTheDocument();
   });
 
   it('should check terms', () => {

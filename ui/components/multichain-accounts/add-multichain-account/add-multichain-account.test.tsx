@@ -101,7 +101,9 @@ describe('AddMultichainAccount', () => {
 
     fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
-    expect(screen.getByText(messages.createMultichainAccountButtonLoading.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.createMultichainAccountButtonLoading.message),
+    ).toBeInTheDocument();
     expect(
       container.querySelector(addMultichainAccountIconClass),
     ).not.toBeInTheDocument();
@@ -141,7 +143,9 @@ describe('AddMultichainAccount', () => {
     fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
 
     // Verify we're in the loading state first
-    expect(screen.getByText(messages.createMultichainAccountButtonLoading.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.createMultichainAccountButtonLoading.message),
+    ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText(messages.addAccount.message)).toBeInTheDocument();
@@ -220,7 +224,9 @@ describe('AddMultichainAccount', () => {
       fireEvent.click(getByText(messages.addAccount.message));
 
       await waitFor(() => {
-        expect(getByText(messages.createMultichainAccountButtonLoading.message)).toBeInTheDocument();
+        expect(
+          getByText(messages.createMultichainAccountButtonLoading.message),
+        ).toBeInTheDocument();
       });
     });
 

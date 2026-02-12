@@ -89,10 +89,7 @@ type Violation = {
   message: string;
 };
 
-function findRule1Violations(
-  _filePath: string,
-  lines: string[],
-): Violation[] {
+function findRule1Violations(_filePath: string, lines: string[]): Violation[] {
   const violations: Violation[] = [];
 
   // Collect all hardcoded JSX text in the file
@@ -159,10 +156,7 @@ for (const [key, entry] of Object.entries(enLocale)) {
 //   getByRole('...', { name: '...' }), getByRole('...', { name: "..." })
 const HARDCODED_QUERY_PATTERNS_R2 = [
   // Direct: getByText('Close')
-  new RegExp(
-    `(?:${QUERY_FN_GROUP})\\s*\\(\\s*['"]([^'"]{3,})['"]`,
-    'gu',
-  ),
+  new RegExp(`(?:${QUERY_FN_GROUP})\\s*\\(\\s*['"]([^'"]{3,})['"]`, 'gu'),
   // Role name option: { name: 'Close' }
   /\{\s*name:\s*['"]([^'"]{3,})['"]/gu,
 ];
@@ -194,10 +188,7 @@ const RULE_2_BASELINE: Record<string, number> = {
   'ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.test.tsx': 1,
 };
 
-function findRule2Violations(
-  filePath: string,
-  lines: string[],
-): Violation[] {
+function findRule2Violations(filePath: string, lines: string[]): Violation[] {
   const violations: Violation[] = [];
 
   for (let i = 0; i < lines.length; i++) {

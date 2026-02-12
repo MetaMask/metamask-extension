@@ -88,9 +88,7 @@ describe('ImportAccount', () => {
       );
       const { getByLabelText, getByText, getByRole, queryByText } =
         renderImportAccount();
-      const privateKeyInput = getByLabelText(
-        messages.pastePrivateKey.message,
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -120,9 +118,7 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        messages.pastePrivateKey.message,
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       const testPrivateKey = '0xabcdef1234567890';
 
       fireEvent.change(privateKeyInput, { target: { value: testPrivateKey } });
@@ -148,9 +144,7 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        messages.pastePrivateKey.message,
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -171,9 +165,7 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        messages.pastePrivateKey.message,
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -182,7 +174,9 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(queryByText(messages.importAccountError.message)).toBeInTheDocument();
+        expect(
+          queryByText(messages.importAccountError.message),
+        ).toBeInTheDocument();
       });
     });
 
@@ -194,9 +188,7 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        messages.pastePrivateKey.message,
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: 'invalid-key' },
       });
@@ -219,9 +211,7 @@ describe('ImportAccount', () => {
     it('enables import button when private key is entered', () => {
       const { getByLabelText, getByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        messages.pastePrivateKey.message,
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -254,9 +244,7 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        messages.pastePrivateKey.message,
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -280,9 +268,7 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        messages.pastePrivateKey.message,
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });
@@ -306,9 +292,7 @@ describe('ImportAccount', () => {
 
       const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
-      const privateKeyInput = getByLabelText(
-        messages.pastePrivateKey.message,
-      );
+      const privateKeyInput = getByLabelText(messages.pastePrivateKey.message);
       fireEvent.change(privateKeyInput, {
         target: { value: '0xabcdef1234567890' },
       });

@@ -50,7 +50,9 @@ describe('WalletDetailsPage', () => {
     expect(screen.getByText(messages.walletName.message)).toBeInTheDocument();
     expect(screen.getAllByText('Wallet 1')[0]).toBeInTheDocument();
     expect(screen.getByText(messages.balance.message)).toBeInTheDocument();
-    expect(screen.getByText(messages.secretRecoveryPhrase.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.secretRecoveryPhrase.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('Account 1')).toBeInTheDocument();
   });
 

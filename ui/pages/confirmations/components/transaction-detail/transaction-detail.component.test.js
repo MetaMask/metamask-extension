@@ -11,8 +11,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
-import TransactionDetail from './transaction-detail.component';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import TransactionDetail from './transaction-detail.component';
 
 jest.mock('../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest

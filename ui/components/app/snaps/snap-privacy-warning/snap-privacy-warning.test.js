@@ -18,14 +18,10 @@ describe('Snap Privacy Warning Popover', () => {
       screen.getByText(messages.thirdPartySoftware.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        messages.snapsPrivacyWarningSecondMessage.message,
-      ),
+      screen.getByText(messages.snapsPrivacyWarningSecondMessage.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        messages.snapsPrivacyWarningThirdMessage.message,
-      ),
+      screen.getByText(messages.snapsPrivacyWarningThirdMessage.message),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', {

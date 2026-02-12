@@ -2,9 +2,9 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import BaseReader from './base-reader';
 import EnhancedReader from './enhanced-reader';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 jest.mock('./enhanced-reader');
 jest.mock('../../../helpers/utils/webcam-utils');

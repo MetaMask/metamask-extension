@@ -37,9 +37,9 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AssetPickerModal } from './asset-picker-modal';
 import { ERC20Asset } from './types';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 const mockAssetList = jest.fn();
 jest.mock('./AssetList', () => (props: unknown) => {

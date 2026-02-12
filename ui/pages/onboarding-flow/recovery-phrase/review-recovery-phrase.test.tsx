@@ -7,8 +7,8 @@ import {
   ONBOARDING_METAMETRICS,
   REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
-import RecoveryPhrase from './review-recovery-phrase';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import RecoveryPhrase from './review-recovery-phrase';
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();

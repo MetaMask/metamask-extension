@@ -52,8 +52,12 @@ describe('MultichainAccountEditModal', () => {
 
     // Should not find modal elements when closed
     expect(screen.queryByText(messages.rename.message)).not.toBeInTheDocument();
-    expect(screen.queryByText(messages.accountName.message)).not.toBeInTheDocument();
-    expect(screen.queryByText(messages.confirm.message)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.accountName.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.confirm.message),
+    ).not.toBeInTheDocument();
   });
 
   it('enables confirm button when input has valid value', () => {

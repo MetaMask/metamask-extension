@@ -16,8 +16,8 @@ import * as DappSwapContextModule from '../../../../../context/dapp-swap';
 import { useFourByte } from '../../hooks/useFourByte';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { AsyncResult, RESULT_IDLE } from '../../../../../../../hooks/useAsync';
-import { NestedTransactionData } from './nested-transaction-data';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
+import { NestedTransactionData } from './nested-transaction-data';
 
 jest.mock('../../../../../../../store/actions', () => ({
   getTokenStandardAndDetails: jest.fn(),

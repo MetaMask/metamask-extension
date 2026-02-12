@@ -7,8 +7,8 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';
 import configureStore from '../../../../../../../store/store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { GasFeesDetails } from './gas-fees-details';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
+import { GasFeesDetails } from './gas-fees-details';
 
 jest.mock('../../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../../store/actions'),

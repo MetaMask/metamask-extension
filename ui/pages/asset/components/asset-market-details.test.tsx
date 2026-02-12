@@ -14,7 +14,8 @@ import { AssetMarketDetails } from './asset-market-details';
 // Wrapper to provide i18n context
 const renderWithI18n = (component: React.ReactElement) => {
   return render(
-    <I18nContext.Provider value={tEn}>{component}</I18nContext.Provider>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <I18nContext.Provider value={tEn as any}>{component}</I18nContext.Provider>,
   );
 };
 

@@ -254,12 +254,16 @@ describe('Reveal Seed Page', () => {
     });
 
     const holdButton = getByText(messages.holdToRevealSRP.message);
-    const circleLocked = queryByLabelText(messages.holdToRevealLockedLabel.message);
+    const circleLocked = queryByLabelText(
+      messages.holdToRevealLockedLabel.message,
+    );
 
     fireEvent.pointerDown(holdButton);
     fireEvent.transitionEnd(circleLocked);
 
-    const circleUnlocked = queryByLabelText(messages.holdToRevealUnlockedLabel.message);
+    const circleUnlocked = queryByLabelText(
+      messages.holdToRevealUnlockedLabel.message,
+    );
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {

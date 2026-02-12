@@ -13,9 +13,9 @@ import {
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AccountDetailsKey } from './account-details-key';
 import { AccountDetails } from '.';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 jest.mock('../../../store/actions.ts');
 
@@ -57,7 +57,9 @@ describe('AccountDetails', () => {
     const editButton = screen.getByTestId('editable-label-button');
     fireEvent.click(editButton);
 
-    const editableInput = screen.getByPlaceholderText(messages.accountName.message);
+    const editableInput = screen.getByPlaceholderText(
+      messages.accountName.message,
+    );
     const newAccountLabel = 'New Label';
 
     fireEvent.change(editableInput, { target: { value: newAccountLabel } });
@@ -78,7 +80,9 @@ describe('AccountDetails', () => {
     ).toBeInTheDocument();
 
     expect(queryByText(messages.showPrivateKey.message)).toBeInTheDocument();
-    expect(queryByPlaceholderText(messages.password.message)).toBeInTheDocument();
+    expect(
+      queryByPlaceholderText(messages.password.message),
+    ).toBeInTheDocument();
   });
 
   it('attempts to validate password when submitted', async () => {

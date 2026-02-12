@@ -129,9 +129,7 @@ describe('SmartTransactionStatusLabel', () => {
     );
     expect(getByText(messages.stxUnknown.message)).toBeInTheDocument();
     expect(
-      getByText(
-        messages.stxUnknownDescription.message,
-      ),
+      getByText(messages.stxUnknownDescription.message),
     ).toBeInTheDocument();
     expect(getByText(messages.close.message)).toBeInTheDocument();
   });

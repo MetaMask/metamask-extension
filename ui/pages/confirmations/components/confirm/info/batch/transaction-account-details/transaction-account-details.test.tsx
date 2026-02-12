@@ -74,7 +74,9 @@ describe('TransactionAccountDetails', () => {
     const { queryByText } = render({});
 
     expect(queryByText('0x12345...67890')).toBeNull();
-    expect(queryByText(messages.confirmAccountTypeSmartContract.message)).toBeNull();
+    expect(
+      queryByText(messages.confirmAccountTypeSmartContract.message),
+    ).toBeNull();
   });
 
   it('renders Account Type when transaction is a batch transaction', () => {

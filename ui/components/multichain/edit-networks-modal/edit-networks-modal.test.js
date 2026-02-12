@@ -3,8 +3,8 @@ import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { EditNetworksModal } from '.';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { EditNetworksModal } from '.';
 
 const render = (
   props = {

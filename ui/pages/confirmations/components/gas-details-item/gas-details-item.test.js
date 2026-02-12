@@ -9,8 +9,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
-import GasDetailsItem from './gas-details-item';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import GasDetailsItem from './gas-details-item';
 
 jest.mock('../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -78,8 +78,12 @@ describe('GasDetailsItem', () => {
   it('should render label', async () => {
     await render();
     await waitFor(() => {
-      expect(screen.queryAllByText(messages.medium.message)[0]).toBeInTheDocument();
-      expect(screen.queryByText(messages.editGasSubTextFeeLabel.message)).toBeInTheDocument();
+      expect(
+        screen.queryAllByText(messages.medium.message)[0],
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.editGasSubTextFeeLabel.message),
+      ).toBeInTheDocument();
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
@@ -134,7 +138,9 @@ describe('GasDetailsItem', () => {
       contextProps: { transaction: { txParams: {}, userFeeLevel: 'low' } },
     });
     await waitFor(() => {
-      expect(screen.queryByText(messages.editGasSubTextFeeLabel.message)).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.editGasSubTextFeeLabel.message),
+      ).toBeInTheDocument();
     });
   });
 
@@ -154,8 +160,12 @@ describe('GasDetailsItem', () => {
   it('should not return null even if there is simulationError if user acknowledged gasMissing warning', async () => {
     await render();
     await waitFor(() => {
-      expect(screen.queryAllByText(messages.medium.message)[0]).toBeInTheDocument();
-      expect(screen.queryByText(messages.editGasSubTextFeeLabel.message)).toBeInTheDocument();
+      expect(
+        screen.queryAllByText(messages.medium.message)[0],
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.editGasSubTextFeeLabel.message),
+      ).toBeInTheDocument();
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });

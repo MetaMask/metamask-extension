@@ -14,8 +14,8 @@ import {
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import configureStore from '../../../../../store/store';
-import HeaderInfo from './header-info';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import HeaderInfo from './header-info';
 
 const mockStore = getMockTypedSignConfirmState();
 

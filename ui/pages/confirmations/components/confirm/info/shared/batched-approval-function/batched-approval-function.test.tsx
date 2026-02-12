@@ -16,8 +16,8 @@ import { DecodedTransactionDataMethod } from '../../../../../../../../shared/typ
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { Confirmation } from '../../../../../types/confirm';
 import * as DappSwapContextModule from '../../../../../context/dapp-swap';
-import { BatchedApprovalFunction } from './batched-approval-function';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
+import { BatchedApprovalFunction } from './batched-approval-function';
 
 const DATA_MOCK = '0x123456';
 const TO_MOCK = '0x1234';

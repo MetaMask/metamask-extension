@@ -136,12 +136,8 @@ describe('PersonalSignInfo', () => {
       new MouseEvent('mouseenter', { bubbles: true }),
     );
 
-    expect(
-      queryByText(messages.requestFromInfo.message),
-    ).toBeNull();
-    expect(
-      queryByText(messages.requestFromInfoSnap.message),
-    ).toBeNull();
+    expect(queryByText(messages.requestFromInfo.message)).toBeNull();
+    expect(queryByText(messages.requestFromInfoSnap.message)).toBeNull();
   });
 
   it('displays "requestFromInfoSnap" tooltip when isSIWE is false and origin is a snap', async () => {
@@ -162,9 +158,7 @@ describe('PersonalSignInfo', () => {
       new MouseEvent('mouseenter', { bubbles: true }),
     );
 
-    expect(
-      queryByText(messages.requestFromInfoSnap.message),
-    ).toBeDefined();
+    expect(queryByText(messages.requestFromInfoSnap.message)).toBeDefined();
   });
 
   it('displays "requestFromInfo" tooltip when isSIWE is false and origin is not a snap', async () => {
@@ -184,9 +178,7 @@ describe('PersonalSignInfo', () => {
       new MouseEvent('mouseenter', { bubbles: true }),
     );
 
-    expect(
-      queryByText(messages.requestFromInfo.message),
-    ).toBeDefined();
+    expect(queryByText(messages.requestFromInfo.message)).toBeDefined();
   });
 
   it('display hex message value if it can not be converted to valid UTF-8 string', () => {

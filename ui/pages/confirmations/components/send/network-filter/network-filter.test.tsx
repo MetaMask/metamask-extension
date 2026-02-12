@@ -6,8 +6,8 @@ import { getImageForChainId } from '../../../utils/network';
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { AssetFilterMethod } from '../../../context/send-metrics';
-import { NetworkFilter } from './network-filter';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { NetworkFilter } from './network-filter';
 
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');

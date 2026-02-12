@@ -15,8 +15,8 @@ import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
 import { getSelectedInternalAccountFromMockState } from '../../../../../../../test/jest/mocks';
-import PriorityfeeInput from './priority-fee-input';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
+import PriorityfeeInput from './priority-fee-input';
 
 const LOW_PRIORITY_FEE = 0.000000001;
 

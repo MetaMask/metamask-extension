@@ -6,8 +6,8 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../test/dat
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
-import ApproveInfo from './approve';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
+import ApproveInfo from './approve';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),

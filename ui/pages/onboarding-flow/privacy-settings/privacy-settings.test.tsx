@@ -8,8 +8,8 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import PrivacySettings from './privacy-settings';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import PrivacySettings from './privacy-settings';
 
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
   return {
@@ -167,7 +167,9 @@ describe('Privacy Settings Onboarding View', () => {
       );
 
       // Default Settings - Security & privacy category
-      const itemCategorySecurityPrivacy = getByText(messages.securityAndPrivacy.message);
+      const itemCategorySecurityPrivacy = getByText(
+        messages.securityAndPrivacy.message,
+      );
       expect(itemCategorySecurityPrivacy).toBeInTheDocument();
     });
   });
@@ -191,7 +193,9 @@ describe('Privacy Settings Onboarding View', () => {
 
       fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
-      const validIpfsUrl = queryByText(messages.onboardingAdvancedPrivacyIPFSValid.message);
+      const validIpfsUrl = queryByText(
+        messages.onboardingAdvancedPrivacyIPFSValid.message,
+      );
       expect(validIpfsUrl).toBeInTheDocument();
 
       const backButton = queryByTestId('privacy-settings-back-button');
@@ -218,7 +222,9 @@ describe('Privacy Settings Onboarding View', () => {
 
       fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
-      const invalidErrorMsg = queryByText(messages.onboardingAdvancedPrivacyIPFSInvalid.message);
+      const invalidErrorMsg = queryByText(
+        messages.onboardingAdvancedPrivacyIPFSInvalid.message,
+      );
 
       expect(invalidErrorMsg).toBeInTheDocument();
     });
@@ -241,7 +247,9 @@ describe('Privacy Settings Onboarding View', () => {
 
       fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
-      const invalidErrorMsg = queryByText(messages.onboardingAdvancedPrivacyIPFSInvalid.message);
+      const invalidErrorMsg = queryByText(
+        messages.onboardingAdvancedPrivacyIPFSInvalid.message,
+      );
 
       expect(invalidErrorMsg).toBeInTheDocument();
     });

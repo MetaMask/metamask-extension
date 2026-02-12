@@ -23,11 +23,11 @@ describe('Simulation Error Message', () => {
     );
 
     expect(
-      queryByText(
-        messages.simulationErrorMessageV2.message,
-      ),
+      queryByText(messages.simulationErrorMessageV2.message),
     ).toBeInTheDocument();
-    expect(queryByText(messages.proceedWithTransaction.message)).toBeInTheDocument();
+    expect(
+      queryByText(messages.proceedWithTransaction.message),
+    ).toBeInTheDocument();
   });
 
   it('should render SimulationErrorMessage component without I want to procced anyway link', () => {
@@ -38,11 +38,11 @@ describe('Simulation Error Message', () => {
     );
 
     expect(
-      queryByText(
-        messages.simulationErrorMessageV2.message,
-      ),
+      queryByText(messages.simulationErrorMessageV2.message),
     ).toBeInTheDocument();
-    expect(queryByText(messages.proceedWithTransaction.message)).not.toBeInTheDocument();
+    expect(
+      queryByText(messages.proceedWithTransaction.message),
+    ).not.toBeInTheDocument();
   });
 
   it('should render SimulationErrorMessage component with I want to proceed anyway and fire that event', () => {
@@ -53,9 +53,7 @@ describe('Simulation Error Message', () => {
     );
 
     expect(
-      queryByText(
-        messages.simulationErrorMessageV2.message,
-      ),
+      queryByText(messages.simulationErrorMessageV2.message),
     ).toBeInTheDocument();
     expect(
       queryByText(messages.proceedWithTransaction.message),

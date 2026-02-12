@@ -2,8 +2,8 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { GasOption } from '../../types/gas';
-import { GasEstimateListItem } from './gas-estimate-list-item';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { GasEstimateListItem } from './gas-estimate-list-item';
 
 const mockOption: GasOption = {
   estimatedTime: '15 sec',

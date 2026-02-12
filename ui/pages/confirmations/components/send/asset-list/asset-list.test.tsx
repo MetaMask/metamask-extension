@@ -6,8 +6,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { useSendContext } from '../../../context/send';
-import { AssetList } from './asset-list';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { AssetList } from './asset-list';
 
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../../../components/component-library', () => ({

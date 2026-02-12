@@ -165,9 +165,7 @@ describe('TypedSignInfo', () => {
     await requestFromLabel?.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
-    expect(
-      queryByText(messages.requestFromInfoSnap.message),
-    ).toBeDefined();
+    expect(queryByText(messages.requestFromInfoSnap.message)).toBeDefined();
   });
 
   it('displays "requestFromInfo" tooltip when origin is not a snap', async () => {
@@ -189,9 +187,7 @@ describe('TypedSignInfo', () => {
     await requestFromLabel?.dispatchEvent(
       new MouseEvent('mouseenter', { bubbles: true }),
     );
-    expect(
-      queryByText(messages.requestFromInfo.message),
-    ).toBeDefined();
+    expect(queryByText(messages.requestFromInfo.message)).toBeDefined();
   });
 
   it('display network info if there is an alert on that field', () => {

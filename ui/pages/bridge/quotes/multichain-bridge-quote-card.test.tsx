@@ -298,9 +298,7 @@ describe('MultichainBridgeQuoteCard', () => {
     );
 
     expect(container).toMatchSnapshot();
-    expect(
-      queryByText(messages.swapNewQuoteIn.message.split(' $1')[0]),
-    ).not.toBeInTheDocument();
+    expect(queryByText('New quotes in')).not.toBeInTheDocument();
   });
 
   it('should not render when there is no quote', async () => {

@@ -13,8 +13,8 @@ import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import EditGasFeePopover from './edit-gas-fee-popover';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import EditGasFeePopover from './edit-gas-fee-popover';
 
 jest.mock('../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -129,7 +129,9 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText(messages.low.message)).toBeInTheDocument();
     expect(screen.queryByText(messages.medium.message)).toBeInTheDocument();
     expect(screen.queryByText(messages.high.message)).toBeInTheDocument();
-    expect(screen.queryByText(messages.dappSuggestedShortLabel.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.dappSuggestedShortLabel.message),
+    ).toBeInTheDocument();
     expect(screen.queryByText(messages.advanced.message)).toBeInTheDocument();
   });
 
@@ -158,7 +160,9 @@ describe('EditGasFeePopover', () => {
         },
       },
     });
-    expect(screen.queryByText(messages.insufficientFunds.message)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.insufficientFunds.message),
+    ).not.toBeInTheDocument();
   });
 
   it('should show insufficient balance message if transaction value is more than balance', async () => {
@@ -173,7 +177,9 @@ describe('EditGasFeePopover', () => {
         },
       },
     });
-    expect(screen.queryByText(messages.insufficientFunds.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.insufficientFunds.message),
+    ).toBeInTheDocument();
   });
 
   it('should not show low, aggressive and dapp-suggested options for swap', async () => {
@@ -189,8 +195,12 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText(messages.low.message)).not.toBeInTheDocument();
     expect(screen.queryByText(messages.medium.message)).toBeInTheDocument();
     expect(screen.queryByText(messages.high.message)).not.toBeInTheDocument();
-    expect(screen.queryByText(messages.dappSuggestedShortLabel.message)).not.toBeInTheDocument();
-    expect(screen.queryByText(messages.swapSuggested.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.dappSuggestedShortLabel.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapSuggested.message),
+    ).toBeInTheDocument();
     expect(screen.queryByText(messages.advanced.message)).toBeInTheDocument();
   });
 
@@ -206,15 +216,21 @@ describe('EditGasFeePopover', () => {
     await render({
       props: { editGasMode: EditGasModes.swaps },
     });
-    expect(screen.queryByText(messages.editGasFeeModalTitle.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.editGasFeeModalTitle.message),
+    ).toBeInTheDocument();
     await render({
       props: { editGasMode: EditGasModes.cancel },
     });
-    expect(screen.queryByText(messages.editCancellationGasFeeModalTitle.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.editCancellationGasFeeModalTitle.message),
+    ).toBeInTheDocument();
     await render({
       props: { editGasMode: EditGasModes.speedUp },
     });
-    expect(screen.queryByText(messages.editSpeedUpEditGasFeeModalTitle.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.editSpeedUpEditGasFeeModalTitle.message),
+    ).toBeInTheDocument();
   });
 
   it('should not show low option for cancel mode', async () => {
@@ -235,13 +251,17 @@ describe('EditGasFeePopover', () => {
     await render({
       props: { editGasMode: EditGasModes.cancel },
     });
-    expect(screen.queryByText(messages.tenPercentIncreased.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.tenPercentIncreased.message),
+    ).toBeInTheDocument();
   });
 
   it('should show tenPercentIncreased option for speedup gas mode', async () => {
     await render({
       props: { editGasMode: EditGasModes.speedUp },
     });
-    expect(screen.queryByText(messages.tenPercentIncreased.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.tenPercentIncreased.message),
+    ).toBeInTheDocument();
   });
 });

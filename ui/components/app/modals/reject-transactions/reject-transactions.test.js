@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import RejectTransactionsModal from '.';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import RejectTransactionsModal from '.';
 
 describe('Reject Transactions Model', () => {
   const props = {

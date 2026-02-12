@@ -17,8 +17,8 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
-import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
 
 const mockStore = configureStore([]);
 const mockUseNavigate = jest.fn();
@@ -370,11 +370,23 @@ describe('MultichainHoveredAddressRowsList', () => {
           name: messages.networkNameSolana.message,
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         },
-        'tron:0x2b6653dc': { name: messages.networkNameTron.message, chainId: 'tron:0x2b6653dc' },
-        'eip155:1': { name: messages.networkNameEthereum.message, chainId: 'eip155:1' },
-        'eip155:137': { name: messages.networkNamePolygon.message, chainId: 'eip155:137' },
+        'tron:0x2b6653dc': {
+          name: messages.networkNameTron.message,
+          chainId: 'tron:0x2b6653dc',
+        },
+        'eip155:1': {
+          name: messages.networkNameEthereum.message,
+          chainId: 'eip155:1',
+        },
+        'eip155:137': {
+          name: messages.networkNamePolygon.message,
+          chainId: 'eip155:137',
+        },
         'eip155:42161': { name: 'Arbitrum', chainId: 'eip155:42161' },
-        'eip155:59144': { name: messages.lineaMainnet.message, chainId: 'eip155:59144' },
+        'eip155:59144': {
+          name: messages.lineaMainnet.message,
+          chainId: 'eip155:59144',
+        },
       };
 
       return (scopes as string[])

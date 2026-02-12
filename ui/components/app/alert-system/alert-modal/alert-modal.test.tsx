@@ -6,14 +6,16 @@ import {
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
 import mockState from '../../../../../test/data/mock-state.json';
-import { tEn } from '../../../../../test/lib/i18n-helpers';
+import {
+  tEn,
+  enLocale as messages,
+} from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import { AlertModal } from './alert-modal';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 
 const onProcessActionMock = jest.fn();
 

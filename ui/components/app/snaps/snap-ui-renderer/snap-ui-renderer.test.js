@@ -9,8 +9,8 @@ import {
 import { fireEvent, waitFor } from '@testing-library/react';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import * as backgroundConnection from '../../../../store/background-connection';
-import { renderInterface, MOCK_INTERFACE_ID, MOCK_SNAP_ID } from './test-utils';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { renderInterface, MOCK_INTERFACE_ID, MOCK_SNAP_ID } from './test-utils';
 
 jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),

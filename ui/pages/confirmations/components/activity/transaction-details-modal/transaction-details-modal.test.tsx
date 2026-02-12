@@ -6,8 +6,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { TransactionDetailsModal } from './transaction-details-modal';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { TransactionDetailsModal } from './transaction-details-modal';
 
 const CHAIN_ID = '0x1';
 
@@ -77,13 +77,17 @@ describe('TransactionDetailsModal', () => {
 
   it('renders default title for simple send transactions', () => {
     const { getByRole } = render(TransactionType.simpleSend);
-    expect(getByRole('heading', { name: messages.transaction.message })).toBeInTheDocument();
+    expect(
+      getByRole('heading', { name: messages.transaction.message }),
+    ).toBeInTheDocument();
   });
 
   it('renders mUSD Conversion title for musdConversion transactions', () => {
     const { getByRole } = render(TransactionType.musdConversion);
     expect(
-      getByRole('heading', { name: messages.musdConversionActivityTitle.message }),
+      getByRole('heading', {
+        name: messages.musdConversionActivityTitle.message,
+      }),
     ).toBeInTheDocument();
   });
 

@@ -77,7 +77,9 @@ describe('SmartAccountUpdate', () => {
     );
 
     expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
-    expect(getByText(messages.smartAccountUpdateSuccessTitle.message)).toBeDefined();
+    expect(
+      getByText(messages.smartAccountUpdateSuccessTitle.message),
+    ).toBeDefined();
   });
 
   it('call useNavigate when close button is clicked', () => {

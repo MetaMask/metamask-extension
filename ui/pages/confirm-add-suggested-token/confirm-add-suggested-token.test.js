@@ -249,9 +249,7 @@ describe('ConfirmAddSuggestedToken Component', () => {
       renderComponent(mockTokens);
 
       expect(
-        screen.getByText(
-          messages.reusedTokenNameWarning.message,
-        ),
+        screen.getByText(messages.reusedTokenNameWarning.message),
       ).toBeInTheDocument();
     });
   });

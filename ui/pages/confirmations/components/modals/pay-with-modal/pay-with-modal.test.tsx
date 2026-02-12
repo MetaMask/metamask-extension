@@ -146,7 +146,9 @@ describe('PayWithModal', () => {
   it('does not render when isOpen is false', () => {
     renderWithProvider(<PayWithModal isOpen={false} onClose={onCloseMock} />);
 
-    expect(screen.queryByText(messages.payWith.message)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.payWith.message),
+    ).not.toBeInTheDocument();
   });
 
   it('does not call setPayToken when disabled token is selected', () => {

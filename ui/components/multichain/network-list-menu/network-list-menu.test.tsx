@@ -341,7 +341,9 @@ describe('NetworkListMenu', () => {
     );
     expect(selectedNodes).toHaveLength(1);
 
-    expect(queryByText(messages.networkNameEthereum.message)).toBeInTheDocument();
+    expect(
+      queryByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
   });
 
   it('narrows down search results', () => {

@@ -215,7 +215,9 @@ describe('AccountShowPrivateKeyRow', () => {
       const closeButton = screen.getByLabelText(messages.close.message);
       fireEvent.click(closeButton);
 
-      expect(screen.queryByText(messages.showPrivateKey.message)).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.showPrivateKey.message),
+      ).not.toBeInTheDocument();
     });
 
     it('closes modal when cancel button is clicked', () => {

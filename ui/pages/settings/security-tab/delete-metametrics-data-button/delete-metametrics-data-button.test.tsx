@@ -57,7 +57,9 @@ describe('DeleteMetaMetricsDataButton', () => {
       store,
     );
     expect(getByTestId('delete-metametrics-data-button')).toBeInTheDocument();
-    expect(getAllByText(messages.deleteMetaMetricsData.message)).toHaveLength(2);
+    expect(getAllByText(messages.deleteMetaMetricsData.message)).toHaveLength(
+      2,
+    );
     expect(
       container.querySelector('.settings-page__content-description')
         ?.textContent,

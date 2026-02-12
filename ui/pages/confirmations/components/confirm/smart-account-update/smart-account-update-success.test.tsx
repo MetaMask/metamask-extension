@@ -4,8 +4,8 @@ import { fireEvent } from '@testing-library/react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -23,11 +23,11 @@ describe('SmartAccountUpdateSuccess', () => {
       mockStore,
     );
 
-    expect(getByText(messages.smartAccountUpdateSuccessTitle.message)).toBeInTheDocument();
     expect(
-      getByText(
-        messages.smartAccountUpdateSuccessMessage.message,
-      ),
+      getByText(messages.smartAccountUpdateSuccessTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.smartAccountUpdateSuccessMessage.message),
     ).toBeInTheDocument();
   });
 

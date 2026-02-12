@@ -3,9 +3,9 @@ import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AccountList from './account-list';
 import { LATTICE_HD_PATHS, LEDGER_HD_PATHS, TREZOR_HD_PATHS } from '.';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 const render = () => {
   const store = configureStore({

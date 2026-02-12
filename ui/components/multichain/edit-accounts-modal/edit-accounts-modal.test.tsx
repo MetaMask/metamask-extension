@@ -9,8 +9,8 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { EditAccountsModal } from '.';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { EditAccountsModal } from '.';
 
 const mockKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
 

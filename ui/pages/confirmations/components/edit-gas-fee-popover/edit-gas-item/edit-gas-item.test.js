@@ -11,8 +11,8 @@ import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
-import EditGasItem from './edit-gas-item';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest
@@ -141,7 +141,9 @@ const render = async ({
 describe('EditGasItem', () => {
   it('should renders low gas estimate option for priorityLevel low', async () => {
     await render({ componentProps: { priorityLevel: PriorityLevels.low } });
-    expect(screen.queryByRole('button', { name: messages.lowLowercase.message })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: messages.lowLowercase.message }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText(messages.low.message)).toBeInTheDocument();
     expect(screen.queryByText('5 min')).toBeInTheDocument();
@@ -163,7 +165,9 @@ describe('EditGasItem', () => {
 
   it('should renders aggressive gas estimate option for priorityLevel high', async () => {
     await render({ componentProps: { priorityLevel: PriorityLevels.high } });
-    expect(screen.queryByRole('button', { name: messages.highLowercase.message })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: messages.highLowercase.message }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText(messages.high.message)).toBeInTheDocument();
     expect(screen.queryByText('15 sec')).toBeInTheDocument();
@@ -175,9 +179,13 @@ describe('EditGasItem', () => {
       componentProps: { priorityLevel: PriorityLevels.high },
       contextProps: { editGasMode: EditGasModes.swaps },
     });
-    expect(screen.queryByRole('button', { name: messages.highLowercase.message })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: messages.highLowercase.message }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('🔄')).toBeInTheDocument();
-    expect(screen.queryByText(messages.swapSuggested.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapSuggested.message),
+    ).toBeInTheDocument();
     expect(screen.queryByText('15 sec')).not.toBeInTheDocument();
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
@@ -201,7 +209,9 @@ describe('EditGasItem', () => {
       screen.queryByRole('button', { name: 'dappSuggested' }),
     ).toBeInTheDocument();
     expect(screen.queryByText('🌐')).toBeInTheDocument();
-    expect(screen.queryByText(messages.dappSuggestedShortLabel.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.dappSuggestedShortLabel.message),
+    ).toBeInTheDocument();
     expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
   });
 
@@ -248,7 +258,9 @@ describe('EditGasItem', () => {
     expect(
       screen.queryByRole('button', { name: 'tenPercentIncreased' }),
     ).toBeInTheDocument();
-    expect(screen.queryByText(messages.tenPercentIncreased.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.tenPercentIncreased.message),
+    ).toBeInTheDocument();
     expect(screen.queryByTitle('0.00003465 ETH')).toBeInTheDocument();
   });
 });

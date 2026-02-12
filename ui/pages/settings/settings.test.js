@@ -1,10 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import 'jest-canvas-mock';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import Settings from '.';
-import 'jest-canvas-mock';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

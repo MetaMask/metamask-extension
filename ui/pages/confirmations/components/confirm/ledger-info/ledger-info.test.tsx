@@ -14,8 +14,8 @@ import {
 import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { SignatureRequestType } from '../../../types/confirm';
-import LedgerInfo from './ledger-info';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
+import LedgerInfo from './ledger-info';
 
 describe('LedgerInfo', () => {
   it('renders correctly if account is ledger account', () => {
@@ -69,9 +69,7 @@ describe('LedgerInfo', () => {
       mockStore,
     );
     expect(
-      getByText(
-        messages.ledgerConnectionInstructionCloseOtherApps.message,
-      ),
+      getByText(messages.ledgerConnectionInstructionCloseOtherApps.message),
     ).toBeInTheDocument();
   });
 

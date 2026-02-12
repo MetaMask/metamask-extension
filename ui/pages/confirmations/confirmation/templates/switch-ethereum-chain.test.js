@@ -94,7 +94,9 @@ describe('switch-ethereum-chain confirmation', () => {
     );
     await waitFor(() => {
       expect(
-        getByText(messages.switchingNetworksCancelsPendingConfirmations.message),
+        getByText(
+          messages.switchingNetworksCancelsPendingConfirmations.message,
+        ),
       ).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });

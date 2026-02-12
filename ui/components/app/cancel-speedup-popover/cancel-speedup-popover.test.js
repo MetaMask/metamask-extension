@@ -16,8 +16,8 @@ import {
   hexWEIToDecETH,
 } from '../../../../shared/modules/conversion.utils';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
-import CancelSpeedupPopover from './cancel-speedup-popover';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import CancelSpeedupPopover from './cancel-speedup-popover';
 
 const MAXFEEPERGAS_ABOVE_MOCK_MEDIUM_HEX = '0x174876e800';
 const MAXGASCOST_ABOVE_MOCK_MEDIUM_BN = new BigNumber(

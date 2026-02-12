@@ -81,7 +81,10 @@ describe('DisconnectPermissionsModal', () => {
     },
     networkConfigurations: {
       '0x1': { name: messages.mainnet.message, nativeCurrency: 'ETH' },
-      '0x89': { name: messages.networkNamePolygon.message, nativeCurrency: 'MATIC' },
+      '0x89': {
+        name: messages.networkNamePolygon.message,
+        nativeCurrency: 'MATIC',
+      },
     },
   });
 

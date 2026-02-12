@@ -150,7 +150,9 @@ describe('Unlock Page', () => {
       '/unlock',
     );
 
-    fireEvent.click(queryByText(messages.useDifferentLoginMethod.message) as HTMLElement);
+    fireEvent.click(
+      queryByText(messages.useDifferentLoginMethod.message) as HTMLElement,
+    );
 
     await waitFor(() => {
       expect(mockLoginWithDifferentMethod).toHaveBeenCalled();
