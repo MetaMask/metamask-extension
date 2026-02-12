@@ -22,9 +22,7 @@ jest.mock('../../../../../hooks/tokens/useTokenFiatRates', () => ({
   useTokenFiatRate: () => 1.0,
 }));
 
-jest.mock(
-  '../../../../../../../components/app/musd/merkl-client',
-);
+jest.mock('../../../../../../../components/app/musd/merkl-client');
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TOKEN_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
@@ -41,11 +39,7 @@ function encodeClaimData(amount: string): string {
     [MOCK_ADDRESS],
     [MOCK_TOKEN_ADDRESS],
     [amount],
-    [
-      [
-        '0x0000000000000000000000000000000000000000000000000000000000000001',
-      ],
-    ],
+    [['0x0000000000000000000000000000000000000000000000000000000000000001']],
   ]);
 }
 

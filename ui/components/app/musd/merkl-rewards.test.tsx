@@ -189,5 +189,4 @@ describe('MerklRewards', () => {
     capturedOnClaimConfirmed?.();
     expect(mockRefetch).toHaveBeenCalledTimes(1);
   });
-
 });

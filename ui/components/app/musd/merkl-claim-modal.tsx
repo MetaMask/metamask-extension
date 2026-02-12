@@ -70,11 +70,7 @@ const MerklClaimModal: React.FC<MerklClaimModalProps> = ({
   }
 
   return (
-    <Modal
-      isOpen
-      onClose={onClose}
-      data-testid="claim-on-linea-modal"
-    >
+    <Modal isOpen onClose={onClose} data-testid="claim-on-linea-modal">
       <ModalOverlay />
       <ModalContent style={{ alignItems: 'center' }}>
         <ModalHeader onClose={onClose}>

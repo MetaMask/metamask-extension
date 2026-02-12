@@ -34,7 +34,12 @@ const MusdClaimHeading = () => {
   );
 
   const TokenValueSkeleton = (
-    <Box flexDirection={BoxFlexDirection.Row} alignItems={BoxAlignItems.Center} gap={2} style={{ display: 'inline-flex' }}>
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={2}
+      style={{ display: 'inline-flex' }}
+    >
       <Skeleton width={40} height={24} />
       {MUSD_SYMBOL}
     </Box>
@@ -47,7 +52,9 @@ const MusdClaimHeading = () => {
       style={{ marginTop: '12px' }}
       data-testid="musd-claim-heading-amount"
     >
-      {pending ? TokenValueSkeleton : `${displayClaimAmount ?? '0'} ${MUSD_SYMBOL}`}
+      {pending
+        ? TokenValueSkeleton
+        : `${displayClaimAmount ?? '0'} ${MUSD_SYMBOL}`}
     </Text>
   );
 

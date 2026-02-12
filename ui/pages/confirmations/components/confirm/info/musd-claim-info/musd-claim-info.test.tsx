@@ -24,11 +24,7 @@ function encodeClaimData(amount: string): string {
     [MOCK_ADDRESS],
     [MOCK_TOKEN_ADDRESS],
     [amount],
-    [
-      [
-        '0x0000000000000000000000000000000000000000000000000000000000000001',
-      ],
-    ],
+    [['0x0000000000000000000000000000000000000000000000000000000000000001']],
   ]);
 }
 
@@ -58,12 +54,9 @@ jest.mock('../../../../../../store/actions', () => ({
   }),
 }));
 
-jest.mock(
-  '../../../../../../components/app/musd/merkl-client',
-  () => ({
-    getClaimedAmountFromContract: jest.fn().mockResolvedValue(null),
-  }),
-);
+jest.mock('../../../../../../components/app/musd/merkl-client', () => ({
+  getClaimedAmountFromContract: jest.fn().mockResolvedValue(null),
+}));
 
 jest.mock('../../../../hooks/tokens/useTokenFiatRates', () => ({
   useTokenFiatRate: () => 1.0,

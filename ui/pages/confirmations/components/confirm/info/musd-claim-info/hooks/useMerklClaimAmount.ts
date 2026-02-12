@@ -1,6 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
@@ -32,7 +35,9 @@ type MerklClaimParams = {
  * @param data - The transaction data hex string
  * @returns Decoded claim parameters, or null if decoding fails
  */
-function decodeMerklClaimParams(data: string | undefined): MerklClaimParams | null {
+function decodeMerklClaimParams(
+  data: string | undefined,
+): MerklClaimParams | null {
   if (!data || typeof data !== 'string') {
     return null;
   }
@@ -148,7 +153,10 @@ export const useMerklClaimAmount = (
       totalRaw > claimedRaw ? (totalRaw - claimedRaw).toString() : '0';
 
     const decimalAmount = calcTokenAmount(unclaimedRaw, MUSD_DECIMALS);
-    const displayAmount = formatAmount(locale, new BigNumber(decimalAmount.toFixed()));
+    const displayAmount = formatAmount(
+      locale,
+      new BigNumber(decimalAmount.toFixed()),
+    );
 
     // mUSD is pegged ~$1. If market data gives us a rate, use it; otherwise 1:1.
     const rate = musdFiatRate ?? 1;
@@ -160,7 +168,14 @@ export const useMerklClaimAmount = (
       fiatDisplayValue: fiatDisplay || undefined,
       fiatValue: fiatVal,
     };
-  }, [pending, claimParams, claimedAmount, locale, fiatFormatter, musdFiatRate]);
+  }, [
+    pending,
+    claimParams,
+    claimedAmount,
+    locale,
+    fiatFormatter,
+    musdFiatRate,
+  ]);
 
   return {
     pending,
