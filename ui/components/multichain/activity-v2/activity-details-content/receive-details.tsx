@@ -59,7 +59,7 @@ export const ReceiveDetails = ({ transaction }: Props) => {
         <StatusRow status={transaction.status} />
         <TransactionHashRow
           label="Transaction hash" // TODO: Add translation
-          explorerUrl={explorerUrl ?? undefined}
+          explorerUrl={explorerUrl}
           hash={hash}
         />
       </div>

@@ -12,7 +12,7 @@ import { Row } from '.';
 
 type Props = {
   label: string;
-  explorerUrl: string | undefined;
+  explorerUrl: string | null |undefined;
   hash: string | undefined;
 };
 

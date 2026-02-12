@@ -68,7 +68,7 @@ export const TransferDetails = ({ transaction }: Props) => {
       <div className="h-px bg-border-muted" />
       <TransactionHashRow
         label="Transaction hash" // TODO: Add translation
-        explorerUrl={explorerUrl ?? undefined}
+        explorerUrl={explorerUrl}
         hash={hash}
       />
     </>

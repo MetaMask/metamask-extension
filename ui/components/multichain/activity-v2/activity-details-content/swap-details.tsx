@@ -88,21 +88,21 @@ export const SwapDetails = ({ transaction }: Props) => {
         <>
           <TransactionHashRow
             label="Transaction hash #1" // TODO: Add translation
-            explorerUrl={explorerUrl ?? undefined}
+            explorerUrl={explorerUrl}
             hash={hash
 
             }
           />
           <TransactionHashRow
             label="Transaction hash #2" // TODO: Add translation
-            explorerUrl={explorerUrl ?? undefined}
+            explorerUrl={explorerUrl}
             hash={hash}
           />
         </>
       ) : (
         <TransactionHashRow
           label="Transaction hash" // TODO: Add translation
-          explorerUrl={explorerUrl ?? undefined}
+          explorerUrl={explorerUrl}
           hash={hash}
         />
       )}
