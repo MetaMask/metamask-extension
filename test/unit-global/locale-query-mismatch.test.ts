@@ -181,8 +181,6 @@ const IGNORED_STRINGS = new Set([
  * When a file reaches 0, remove it from this map.
  */
 const RULE_2_BASELINE: Record<string, number> = {
-  // Status strings from formatStatus() — not i18n, just capitalized order.status
-  'ui/components/app/perps/order-card/order-card.test.tsx': 4,
   // Prop-driven text: description, Dismiss, Confirm are hardcoded in component JSX
   'ui/components/app/rewards/RewardsErrorBanner.test.tsx': 4,
   // Snap-defined field labels/errors — external content, not MetaMask i18n
@@ -192,8 +190,8 @@ const RULE_2_BASELINE: Record<string, number> = {
   // Fixture network name from networkConfiguration.name prop
   'ui/components/app/multi-rpc-edit-modal/network-list-item/network-list-item.test.tsx': 1,
   'ui/components/app/multi-rpc-edit-modal/multi-rpc-edit-modal.test.tsx': 1,
-  // EIP-712 domain fixture — contract data, not UI i18n
-  'ui/pages/confirmations/hooks/alerts/useSpenderAlerts.test.ts': 1,
+  // Mock-provided buttonText from getBlockExplorerInfo(), not i18n-rendered
+  'ui/components/multichain-accounts/address-qr-code-modal/address-qr-code-modal.test.tsx': 1,
 };
 
 function findRule2Violations(

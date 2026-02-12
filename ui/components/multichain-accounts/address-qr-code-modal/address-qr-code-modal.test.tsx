@@ -122,9 +122,7 @@ describe('AddressQRCodeModal', () => {
       />,
     );
 
-    expect(
-      screen.getByText(messages.etherscanViewOn.message),
-    ).toBeInTheDocument();
+    expect(screen.getByText('View on Etherscan')).toBeInTheDocument();
   });
 
   it('should handle copy functionality when copy button is clicked', async () => {
@@ -193,7 +191,7 @@ describe('AddressQRCodeModal', () => {
     );
 
     const explorerButton = screen.getByRole('button', {
-      name: messages.etherscanViewOn.message,
+      name: 'View on Etherscan',
     });
 
     fireEvent.click(explorerButton);
