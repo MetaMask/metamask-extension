@@ -120,7 +120,7 @@ export async function createErrorFromNetworkRequest(
     if (contentType?.includes('application/json')) {
       const json = await response.json();
       const errorMessage = json?.error ?? json?.message ?? 'Unknown error';
-      const networkError = `${networkErrorMessagePrefix} error: ${errorMessage}, statusCode: ${statusCode}`;
+      const networkError = `${networkErrorMessagePrefix}error: ${errorMessage}, statusCode: ${statusCode}`;
       return new Error(networkError);
     } else if (contentType?.includes('text/plain')) {
       const text = await response.text();

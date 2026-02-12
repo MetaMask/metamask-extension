@@ -74,9 +74,6 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // delay for a few ms to ensure the token is expired
-        await driver.delay(500); // 500ms should be enough to ensure the token is expired
-
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
