@@ -1,21 +1,15 @@
 import React from 'react';
-import {
-  Text,
-  AvatarToken,
-  AvatarTokenSize,
-  TextVariant,
-  FontWeight,
-  TextColor,
-  TextButton,
-} from '@metamask/design-system-react';
+import { Text, TextButton, TextVariant, TextColor } from '@metamask/design-system-react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { getExplorerUrl, getTransferAmount } from '../helpers';
+import { useEvmTokenIconUrl } from '../hooks';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { DateRow } from './date-row';
 import { NetworkRow } from './network-row';
 import { Row } from './row';
 import { StatusRow } from './status-row';
+import { TokenAmountBlock } from './token-amount-block';
 
 type Props = {
   transaction: TransactionViewModel;
@@ -29,27 +23,25 @@ export const ReceiveDetails = ({ transaction }: Props) => {
   const explorerUrl = transaction.hash
     ? getExplorerUrl(transaction.chainId, transaction.hash)
     : undefined;
+  const tokenIconUrl = useEvmTokenIconUrl(
+    transaction.chainId,
+    symbol,
+    transaction.transferInformation?.symbol === symbol
+      ? transaction.transferInformation?.contractAddress
+      : undefined,
+  );
 
   const { txParams, hash } = transaction;
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-          {t('youReceived')}
-        </Text>
-        <div className="flex items-center gap-3">
-          <AvatarToken src="" name={symbol} size={AvatarTokenSize.Md} />
-          <Text
-            variant={TextVariant.HeadingLg}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.SuccessDefault}
-          >
-            {displayAmount > 0 ? '+' : ''}
-            {displayAmount} {symbol}
-          </Text>
-        </div>
-      </div>
+      <TokenAmountBlock
+        label={t('youReceived')}
+        iconSrc={tokenIconUrl}
+        symbol={symbol ?? ''}
+        amount={Math.abs(displayAmount)}
+        variant="received"
+      />
 
       <div className="h-px bg-border-muted" />
 

@@ -1,22 +1,16 @@
 import React from 'react';
-import {
-  Text,
-  AvatarToken,
-  AvatarTokenSize,
-  TextVariant,
-  TextColor,
-  FontWeight,
-  TextButton,
-} from '@metamask/design-system-react';
+import { Text, TextButton, TextVariant, TextColor } from '@metamask/design-system-react';
 import type { TransactionViewModel } from '../../../../../shared/acme-controller/types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { getExplorerUrl, formatUnits } from '../helpers';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useEvmTokenIconUrl } from '../hooks';
 import { DateRow } from './date-row';
 import { NetworkRow } from './network-row';
 import { Row } from './row';
 import { StatusRow } from './status-row';
+import { TokenAmountBlock } from './token-amount-block';
 
 type Props = {
   transaction: TransactionViewModel;
@@ -51,43 +45,27 @@ export const SwapDetails = ({ transaction }: Props) => {
       : 0;
   const toSymbol = toData?.symbol || '';
 
+  const fromIcon = useEvmTokenIconUrl(chainId, fromSymbol);
+  const toIcon = useEvmTokenIconUrl(chainId, toSymbol);
   const isBridge = transaction.transactionType === 'BRIDGE';
 
   return (
     <>
       <div className="flex flex-col gap-4">
-        {/* You sent */}
-        <div className="flex flex-col gap-2">
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('youSent')}
-          </Text>
-          <div className="flex items-center gap-3">
-            <AvatarToken src="" name={fromSymbol} size={AvatarTokenSize.Md} />
-            <Text
-              variant={TextVariant.HeadingLg}
-              fontWeight={FontWeight.Medium}
-            >
-              -{Math.abs(fromAmount)} {fromSymbol}
-            </Text>
-          </div>
-        </div>
-
-        {/* You received */}
-        <div className="flex flex-col gap-2">
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('youReceived')}
-          </Text>{' '}
-          <div className="flex items-center gap-3">
-            <AvatarToken src="" name={toSymbol} size={AvatarTokenSize.Md} />
-            <Text
-              variant={TextVariant.HeadingLg}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.SuccessDefault}
-            >
-              +{toAmount} {toSymbol}
-            </Text>
-          </div>
-        </div>
+        <TokenAmountBlock
+          label={t('youSent')}
+          iconSrc={fromIcon}
+          symbol={fromSymbol}
+          amount={fromAmount}
+          variant="sent"
+        />
+        <TokenAmountBlock
+          label={t('youReceived')}
+          iconSrc={toIcon}
+          symbol={toSymbol}
+          amount={toAmount}
+          variant="received"
+        />
       </div>
 
       <div className="h-px bg-border-muted" />
