@@ -376,9 +376,7 @@ export function useGlobalMenuSections(
     ) {
       section2.items.push({
         id: 'global-menu-toggle-view',
-        // TODO: Add back the correct icon name when the design system is updated
-        // iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
-        iconName: IconName.Expand,
+        iconName: isSidepanel ? IconName.PopUp : IconName.SidePanel,
         label: isSidepanel ? t('switchToPopup') : t('switchToSidePanel'),
         onClick: async () => {
           await toggleDefaultView();
