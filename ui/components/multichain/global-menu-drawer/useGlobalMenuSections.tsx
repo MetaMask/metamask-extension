@@ -324,6 +324,7 @@ export function useGlobalMenuSections(
 
     const section2: GlobalMenuSection = {
       id: 'global-menu-section-2',
+      hideDividerAbove: true, // No divider between notifications and this section
       items: [],
     };
 

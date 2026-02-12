@@ -113,6 +113,10 @@ export type GlobalMenuSection = {
    */
   title?: string;
   /**
+   * When true, do not show the divider line above this section
+   */
+  hideDividerAbove?: boolean;
+  /**
    * Items in this section
    */
   items: GlobalMenuItem[];
