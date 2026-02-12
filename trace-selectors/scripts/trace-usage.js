@@ -130,7 +130,11 @@ function normalizedSymbols(symbolsStr) {
 }
 
 function appendLayer(docPath, layerNum, entries, terminals) {
-  const sorted = [...entries].sort((a, b) => a.path.localeCompare(b.path, 'en'));
+  // Non-terminal first, then terminal; within each group sort by path
+  const sorted = [...entries].sort((a, b) => {
+    if (a.terminal !== b.terminal) return a.terminal ? 1 : -1;
+    return a.path.localeCompare(b.path, 'en');
+  });
   const nonTerminal = entries.filter((e) => !e.terminal);
   const fileCount = nonTerminal.length;
   const instances = nonTerminal.reduce((n, e) => n + countSymbolInstances(e.symbols), 0);
