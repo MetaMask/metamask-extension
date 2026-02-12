@@ -109,7 +109,7 @@ jest.mock('react-router-dom', () => ({
   },
 }));
 
-// eslint-disable-next-line import/first
+// eslint-disable-next-line import-x/first
 import PerpsOrderEntryPage from './perps-order-entry-page';
 
 describe('PerpsOrderEntryPage', () => {

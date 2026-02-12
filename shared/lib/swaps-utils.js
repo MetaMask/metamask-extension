@@ -15,7 +15,7 @@ import {
 } from '../constants/swaps';
 import { SECOND } from '../constants/time';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { isValidHexAddress } from './hexstring-utils';
 import { isEqualCaseInsensitive } from './string-utils';

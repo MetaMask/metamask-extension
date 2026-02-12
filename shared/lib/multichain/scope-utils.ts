@@ -7,7 +7,7 @@ import {
   toCaipAccountId,
 } from '@metamask/utils';
 import { EthScope } from '@metamask/keyring-api';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { AccountGroupWithInternalAccounts } from '../../../ui/selectors/multichain-accounts/account-tree.types';
 
 /**

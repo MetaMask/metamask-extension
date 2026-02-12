@@ -10,7 +10,7 @@ import {
 } from '../../../store/actions';
 import type { MetaMaskReduxState } from '../../../store/store';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 
 export const IpfsGatewayItem = () => {
