@@ -79,6 +79,7 @@ export default function AwaitingSignatures() {
     }
 
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      replace: true,
       state: { stayOnHomePage: true },
     });
   }, [hasSubmittedBridgeTx, navigate]);
