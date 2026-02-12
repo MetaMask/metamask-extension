@@ -688,7 +688,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   },
   pendingShieldCohort: {
     includeInStateLogs: true,
-    persist: false,
+    persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
   },

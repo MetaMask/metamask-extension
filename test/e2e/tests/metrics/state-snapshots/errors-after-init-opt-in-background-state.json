@@ -58,7 +58,7 @@
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
-    "pendingShieldCohort": null,
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",

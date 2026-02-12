@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   checkHardwareWalletPermission,
   getConnectedDevices,
@@ -15,6 +16,7 @@ import {
   type HardwareWalletRefs,
 } from './HardwareWalletStateManager';
 import { ConnectionState } from './connectionState';
+import { isHardwareWalletRoute } from './utils';
 
 type UseHardwareWalletAutoConnectParams = {
   state: HardwareWalletState;
@@ -44,6 +46,8 @@ export const useHardwareWalletAutoConnect = ({
   setAutoConnected,
 }: UseHardwareWalletAutoConnectParams) => {
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
+  const location = useLocation();
+  const isOnAutoConnectRoute = isHardwareWalletRoute(location.pathname);
 
   const {
     adapterRef,
@@ -56,6 +60,7 @@ export const useHardwareWalletAutoConnect = ({
   useEffect(
     () => {
       if (
+        !isOnAutoConnectRoute ||
         !isHardwareWalletAccount ||
         !walletType ||
         hardwareConnectionPermissionState ===
@@ -195,6 +200,7 @@ export const useHardwareWalletAutoConnect = ({
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
+      isOnAutoConnectRoute,
       isHardwareWalletAccount,
       walletType,
       hardwareConnectionPermissionState,
@@ -211,6 +217,7 @@ export const useHardwareWalletAutoConnect = ({
   useEffect(
     () => {
       if (
+        !isOnAutoConnectRoute ||
         !isHardwareWalletAccount ||
         !walletType ||
         hardwareConnectionPermissionState !==
@@ -279,6 +286,7 @@ export const useHardwareWalletAutoConnect = ({
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
+      isOnAutoConnectRoute,
       isHardwareWalletAccount,
       accountAddress,
       walletType,
