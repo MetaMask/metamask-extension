@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 192,
+      "currentMigrationVersion": 193,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -66,6 +66,7 @@
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
@@ -1938,6 +1939,7 @@
         "useSidePanelAsDefault": false
       },
       "referrals": {
+        "gmx": {},
         "hyperliquid": {}
       },
       "securityAlertsEnabled": true,
@@ -1970,11 +1972,11 @@
     "RewardsController": {
       "rewardsAccounts": {},
       "rewardsActiveAccount": null,
+      "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
-      "rewardsSubscriptions": {},
-      "rewardsPointsEstimateHistory": []
+      "rewardsSubscriptions": {}
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
@@ -2149,6 +2151,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 192
+    "version": 193
   }
 }

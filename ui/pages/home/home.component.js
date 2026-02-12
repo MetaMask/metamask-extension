@@ -72,18 +72,25 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
+import { HomeDeepLinkActions } from './HomeDeepLinkActions';
 
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
+  isHardwareWalletErrorModalVisible,
 }) {
-  const shouldClose =
+  const baseCondition =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
+
+  const isHardwareWalletErrorModalBlockingClose =
+    isHardwareWalletErrorModalVisible;
+
+  const shouldClose = baseCondition && !isHardwareWalletErrorModalBlockingClose;
 
   return shouldClose;
 }
@@ -131,6 +138,9 @@ export default class Home extends PureComponent {
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool,
+    // This prop is used in the `shouldCloseNotificationPopup` function
+    // eslint-disable-next-line react/no-unused-prop-types
+    isHardwareWalletErrorModalVisible: PropTypes.bool,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,
@@ -226,7 +236,6 @@ export default class Home extends PureComponent {
       clearNewNetworkAdded,
       pendingShieldCohort,
       evaluateCohortEligibility,
-      setPendingShieldCohort,
       isSignedIn,
     } = this.props;
 
@@ -256,7 +265,6 @@ export default class Home extends PureComponent {
       evaluateCohortEligibility &&
       isSignedIn
     ) {
-      setPendingShieldCohort(null);
       evaluateCohortEligibility(pendingShieldCohort);
       this.setState({ shouldEvaluateCohortEligibility: false });
     }
@@ -902,6 +910,9 @@ export default class Home extends PureComponent {
           </div>
           {this.renderNotifications()}
         </div>
+
+        {/* Ghost component that manages the useHomeDeepLinkEffects */}
+        <HomeDeepLinkActions />
       </ScrollContainer>
     );
   }

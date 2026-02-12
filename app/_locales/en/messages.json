@@ -169,6 +169,9 @@
   "accountsSmallCase": {
     "message": "accounts"
   },
+  "actionUnavailable": {
+    "message": "Action unavailable"
+  },
   "active": {
     "message": "Active"
   },
@@ -3026,6 +3029,10 @@
     "message": "Get your wallet ready to use web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralSubtitle": {
+    "message": "Save up to 10% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the GMX referral confirmation screen"
+  },
   "goToSite": {
     "message": "Go to site"
   },
@@ -3066,21 +3073,15 @@
     "message": "Continue to make sure:"
   },
   "hardwareWalletErrorRecoveryUnlock1": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "Your Ledger is unlocked"
   },
-  "hardwareWalletErrorRecoveryUnlock3": {
+  "hardwareWalletErrorRecoveryUnlock2": {
     "message": "The Ethereum app is open"
   },
   "hardwareWalletErrorTitleBlindSignNotSupportedInstruction1": {
-    "message": "To continue, make sure:"
-  },
-  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
     "message": "The Ethereum app is open on your Ledger"
   },
-  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction3": {
+  "hardwareWalletErrorTitleBlindSignNotSupportedInstruction2": {
     "message": "You’ve turned on Blind Signing in Settings"
   },
   "hardwareWalletErrorTitleConnectYourDevice": {
@@ -3129,6 +3130,9 @@
   },
   "hardwareWalletsMsg": {
     "message": "Select a hardware wallet you would like to use with MetaMask."
+  },
+  "helpAndSettings": {
+    "message": "Help and settings"
   },
   "here": {
     "message": "here",
@@ -3715,6 +3719,9 @@
   "lockTimeInvalid": {
     "message": "Lock time must be a number between 0 and 10080"
   },
+  "logOut": {
+    "message": "Log out"
+  },
   "loginErrorConnectButton": {
     "message": "Try again"
   },
@@ -3776,6 +3783,9 @@
   "makeSureNoOneWatching": {
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
+  "manage": {
+    "message": "Manage"
   },
   "manageDefaultSettings": {
     "message": "Manage default settings"
@@ -4372,9 +4382,6 @@
   },
   "noConnectionDescription": {
     "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
-  },
-  "noConversionRateAvailable": {
-    "message": "No conversion rate available"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -6791,6 +6798,9 @@
   "shieldEntryModalTitleB": {
     "message": "Introducing Transaction Shield"
   },
+  "shieldErrorPayerAddressAlreadyUsed": {
+    "message": "This address is already linked to another account. Use a different address to subscribe."
+  },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
@@ -6926,6 +6936,15 @@
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
     "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelImmediateDetails": {
+    "message": "If you cancel, your wallet and transactions will not be covered."
+  },
+  "shieldTxCancelNotAllowed": {
+    "message": "Your subscription cannot be cancelled at the moment."
+  },
+  "shieldTxCancelNotAllowedPendingVerification": {
+    "message": "Your subscription cannot be cancelled due to pending verification."
   },
   "shieldTxCancelWhenPausedDetails": {
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."

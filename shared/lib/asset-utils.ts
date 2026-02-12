@@ -11,6 +11,7 @@ import {
   KnownCaipNamespace,
   numberToHex,
 } from '@metamask/utils';
+import log from 'loglevel';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
@@ -88,17 +89,25 @@ export const getAssetImageUrl = (
   assetId: CaipAssetType | Hex | string,
   chainId: CaipChainId | Hex,
 ) => {
-  const assetIdInCaip = toAssetId(assetId, chainId);
-  if (!assetIdInCaip) {
+  try {
+    const assetIdInCaip = toAssetId(assetId, chainId);
+    if (!assetIdInCaip) {
+      return undefined;
+    }
+    const normalizedAssetId = (
+      isNonEvmChainId(chainId) ? assetIdInCaip : assetIdInCaip.toLowerCase()
+    ).replaceAll(':', '/');
+    return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
+      normalizedAssetId
+    }.png`;
+  } catch (error) {
+    log.error('Failed to get asset image URL', {
+      error: error instanceof Error ? error.message : String(error),
+      assetId,
+      chainId,
+    });
     return undefined;
   }
-  const normalizedAssetId = (
-    isNonEvmChainId(chainId) ? assetIdInCaip : assetIdInCaip.toLowerCase()
-  ).replaceAll(':', '/');
-
-  return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
-    normalizedAssetId
-  }.png`;
 };
 
 export type AssetMetadata = {

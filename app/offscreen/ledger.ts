@@ -2,6 +2,12 @@ import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import type Transport from '@ledgerhq/hw-transport';
 import LedgerEth from '@ledgerhq/hw-app-eth';
 import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
+import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
@@ -85,9 +91,14 @@ export class LedgerOffscreenHandler {
     );
 
     if (ledgerDevices.length === 0) {
-      throw new Error(
-        'No permitted Ledger device found. User must grant permission from the UI first.',
-      );
+      const errorMessage =
+        'No permitted Ledger device found. User must grant permission from the UI first.';
+      throw new HardwareWalletError(errorMessage, {
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: errorMessage,
+      });
     }
 
     // Try to create a transport with the permitted device
@@ -203,7 +214,7 @@ export class LedgerOffscreenHandler {
   }> {
     const app = await this.ensureApp();
     const result = await app.clearSignTransaction(hdPath, tx, {
-      nft: true,
+      // nft: true, // TODO: FIX ME: temporarily disabled because erc20 are being misidentified.
       externalPlugins: true,
       erc20: true,
     });
@@ -404,6 +415,15 @@ export class LedgerOffscreenHandler {
           .toString('ascii');
         return { appName, version };
       }
+
+      case LedgerAction.getAppConfiguration:
+        if (!this.transport) {
+          await this.makeApp();
+        }
+        if (!this.transport) {
+          throw new Error('No transport available');
+        }
+        return this.ethApp?.getAppConfiguration();
 
       case LedgerAction.getPublicKey:
         if (!params?.hdPath || typeof params.hdPath !== 'string') {
