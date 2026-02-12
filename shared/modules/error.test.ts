@@ -49,7 +49,7 @@ describe('error module', () => {
 
       expect(error).toBeInstanceOf(Error);
       expect(error.message).toBe(
-        'Request failed:  error: Unauthorized, statusCode: 401',
+        'Request failed: error: Unauthorized, statusCode: 401',
       );
     });
 
@@ -66,7 +66,7 @@ describe('error module', () => {
       );
 
       expect(error.message).toBe(
-        'Request failed:  error: Bad request payload, statusCode: 400',
+        'Request failed: error: Bad request payload, statusCode: 400',
       );
     });
 
@@ -83,7 +83,7 @@ describe('error module', () => {
       );
 
       expect(error.message).toBe(
-        'Server error:  error: Unknown error, statusCode: 500',
+        'Server error: error: Unknown error, statusCode: 500',
       );
     });
 
@@ -146,7 +146,7 @@ describe('error module', () => {
 
       const error = await createErrorFromNetworkRequest(response);
 
-      expect(error.message).toBe(' error: Not found, statusCode: 404');
+      expect(error.message).toBe('error: Not found, statusCode: 404');
     });
 
     it('returns a generic HTTP error when response parsing throws', async () => {
