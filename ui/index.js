@@ -249,7 +249,7 @@ async function startApp(metamaskState, opts) {
   // component and then use it to construct other messengers, so we go ahead and
   // demonstrate that here.
   //========
-  const uiMessenger = getUIMessenger(opts.backgroundConnection);
+  const uiMessenger = await getUIMessenger(opts.backgroundConnection);
 
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
     render(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
