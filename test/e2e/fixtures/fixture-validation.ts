@@ -42,22 +42,50 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.SnapController.snaps',
   'data.SnapController.snapStates',
   'data.SnapController.unencryptedSnapStates',
+  'data.SnapsRegistry',
   // Subject Metadata
   'data.SubjectMetadataController.subjectMetadata',
   // Locale-related keys
   'localeMessages',
   // Timestamps and dates that change on every run
+  'data.AddressBookController.addressBook.*.0x5CfE73b6021E818B776b421B1c4Db2474086a7e1.lastUpdatedAt',
   'data.AppMetadataController.firstTimeInfo.date',
   'data.AppMetadataController.firstTimeInfo.version',
+  'data.AppStateController.lastUpdatedAt',
   'data.AppStateController.newPrivacyPolicyToastShownDate',
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
-  'data.MetaMetricsController.tracesBeforeMetricsOptIn',
-  'data.MetaMetricsController.traits.install_date_ext',
+  'data.AppStateController.termsOfUseLastAgreed',
+  'data.CurrencyController.currencyRates.ETH.conversionDate',
+  'data.CurrencyController.currencyRates.ETH.conversionRate',
+  'data.NetworkController.networkConfigurationsByChainId.0x539.lastUpdatedAt',
+  'data.PhishingController.c2DomainBlocklistLastFetched',
+  'data.PhishingController.hotlistLastFetched',
+  'data.PhishingController.stalelistLastFetched',
+  'data.PreferencesController.identities.0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastSelected',
+  'data.PreferencesController.identities.4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer.lastSelected',
+  'data.PreferencesController.lostIdentities.0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastSelected',
+  'data.ProfileMetricsController.initialDelayEndTimestamp',
+  'data.RemoteFeatureFlagController.cacheTimestamp',
+  'data.RemoteFeatureFlagController.remoteFeatureFlags',
+  // Entire objects/controllers ignored (dynamic or impractical to validate)
+  'data.AccountsController.internalAccounts.accounts',
+  'data.AuthenticationController',
+  'data.MetaMetricsController',
+  'data.MultichainAssetsController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // Version that changes on every release
   'data.AppMetadataController.currentAppVersion',
+  // Random ids
+  'data.MultichainBalancesController.balances',
+  'data.MultichainTransactionsController.nonEvmTransactions',
+  'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
+  'data.NetworkController.networksMetadata',
+  'data.NetworkController.selectedNetworkClientId',
+  'data.ProfileMetricsController.syncQueue',
+  // non-EVM account IDs ARE NOT deterministic and each keyring has metadata (with source of randomness)
+  'data.KeyringController.vault',
 ];
 
 /**

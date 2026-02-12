@@ -832,6 +832,23 @@ export function linkRewardToShieldSubscription(
 }
 
 /**
+ * Sets or clears the shield subscription error in app state.
+ * Pass null to clear the error.
+ *
+ * @param error - The error object with message and optional code, or null to clear.
+ */
+export async function setShieldSubscriptionError(
+  error: { message: string; code?: string } | null,
+): Promise<void> {
+  try {
+    await submitRequestToBackground('setShieldSubscriptionError', [error]);
+  } catch (e) {
+    logErrorWithMessage(e);
+    throw e;
+  }
+}
+
+/**
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
  * @param password - The password.
@@ -1056,30 +1073,6 @@ export function importMnemonicToVault(
         dispatch(hideWarning());
         dispatch(setShowNewSrpAddedToast(true));
         return result;
-      })
-      .catch((err) => {
-        dispatch(displayWarning(err));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
-  };
-}
-
-export function generateNewMnemonicAndAddToVault(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.generateNewMnemonicAndAddToVault`);
-
-    return submitRequestToBackground('generateNewMnemonicAndAddToVault', [])
-      .then(async () => {
-        dispatch(hideLoadingIndication());
       })
       .catch((err) => {
         dispatch(displayWarning(err));

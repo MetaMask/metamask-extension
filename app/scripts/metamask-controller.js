@@ -964,7 +964,15 @@ export default class MetamaskController extends EventEmitter {
           firstTimeFlowType,
         } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          const { address } = this.accountsController.getSelectedAccount();
+          // Safely read the selected account and entropy id. In some test or
+          // edge flows the selected account may not yet be available.
+          const selected = this.accountsController.getSelectedAccount();
+          const address = selected?.address;
+          // After onboarding, default selected account will be an EVM
+          // account, and those accounts are `Bip44Account`s which should have
+          // an `entropy` property.
+          // If not, discovery will fallback to the primary keyring ID anyway.
+          const id = selected?.options?.entropy?.id;
 
           if (this.isMultichainAccountsFeatureState2Enabled()) {
             ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -978,7 +986,7 @@ export default class MetamaskController extends EventEmitter {
             // importing multiple SRPs on social login rehydration
             await this._importAccountsWithBalances();
           } else if (this.isMultichainAccountsFeatureState2Enabled()) {
-            await this.discoverAndCreateAccounts();
+            await this.discoverAndCreateAccounts(id);
           } else {
             await this._addAccountsWithBalance();
           }
@@ -3061,6 +3069,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldEndingToastLastClickedOrClosed.bind(
           appStateController,
         ),
+      setShieldSubscriptionError:
+        appStateController.setShieldSubscriptionError.bind(appStateController),
       setPna25Acknowledged:
         appStateController.setPna25Acknowledged.bind(appStateController),
       setAppActiveTab:
@@ -3133,8 +3143,6 @@ export default class MetamaskController extends EventEmitter {
       setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
-      generateNewMnemonicAndAddToVault:
-        this.generateNewMnemonicAndAddToVault.bind(this),
       importMnemonicToVault: this.importMnemonicToVault.bind(this),
       exportAccount: this.exportAccount.bind(this),
 
@@ -4553,7 +4561,10 @@ export default class MetamaskController extends EventEmitter {
         this.txController.clearUnapprovedTransactions();
       }
 
-      await this.keyringController.createNewVaultAndKeychain(password);
+      await this.multichainAccountService.createMultichainAccountWallet({
+        type: 'create',
+        password,
+      });
 
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
@@ -4641,10 +4652,9 @@ export default class MetamaskController extends EventEmitter {
       // Ensure the snap keyring is initialized
       await this.getSnapKeyring();
 
-      const wallet = this.controllerMessenger.call(
-        'MultichainAccountService:getMultichainAccountWallet',
-        { entropySource: keyringIdToDiscover },
-      );
+      const wallet = this.multichainAccountService.getMultichainAccountWallet({
+        entropySource: keyringIdToDiscover,
+      });
 
       const result = await wallet.discoverAccounts();
 
@@ -4690,31 +4700,13 @@ export default class MetamaskController extends EventEmitter {
     } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
-      // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
-      const alreadyImportedSrp = this.keyringController
-        .getKeyringsByType(KeyringTypes.hd)
-        .some((keyring) => {
-          return (
-            Buffer.from(
-              this._convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
-            ).toString('utf8') === mnemonic
-          );
+      const { entropySource: id } =
+        await this.multichainAccountService.createMultichainAccountWallet({
+          type: 'import',
+          mnemonic: this._convertMnemonicToWordlistIndices(
+            Buffer.from(mnemonic, 'utf8'),
+          ),
         });
-
-      if (alreadyImportedSrp) {
-        throw new Error(
-          'This Secret Recovery Phrase has already been imported.',
-        );
-      }
-
-      const { id } = await this.keyringController.addNewKeyring(
-        KeyringTypes.hd,
-        {
-          mnemonic,
-          numberOfAccounts: 1,
-        },
-      );
 
       const [newAccountAddress] = await this.keyringController.withKeyring(
         { id },
@@ -4730,9 +4722,10 @@ export default class MetamaskController extends EventEmitter {
             shouldCreateSocialBackup,
           );
         } catch (err) {
-          // handle seedless controller import error by reverting keyring controller mnemonic import
-          // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
-          await this.keyringController.removeAccount(newAccountAddress);
+          await this.multichainAccountService.removeMultichainAccountWallet(
+            id,
+            newAccountAddress,
+          );
           throw err;
         }
       }
@@ -4906,37 +4899,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Generates a new mnemonic phrase and adds it to the vault, creating a new HD keyring.
-   * This method automatically creates one account associated with the new keyring.
-   * The method is protected by a mutex to prevent concurrent vault modifications.
-   *
-   * @async
-   * @returns {Promise<string>} The address of the newly created account
-   * @throws Will throw an error if keyring creation fails
-   */
-  async generateNewMnemonicAndAddToVault() {
-    const releaseLock = await this.createVaultMutex.acquire();
-    try {
-      // addNewKeyring auto creates 1 account.
-      const { id } = await this.keyringController.addNewKeyring(
-        KeyringTypes.hd,
-      );
-      const [newAccount] = await this.keyringController.withKeyring(
-        { id },
-        async ({ keyring }) => keyring.getAccounts(),
-      );
-      const account = this.accountsController.getAccountByAddress(newAccount);
-      this.accountsController.setSelectedAccount(account.id);
-
-      // NOTE: No need to update balances here since we're generating a fresh seed.
-
-      return newAccount;
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
    * Create a new Vault and restore an existent keyring.
    *
    * @param {string} password
@@ -4975,10 +4937,13 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       const seedPhraseAsUint8Array =
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
-      await this.keyringController.createNewVaultAndRestore(
-        password,
-        seedPhraseAsUint8Array,
-      );
+
+      const { entropySource: id } =
+        await this.multichainAccountService.createMultichainAccountWallet({
+          type: 'restore',
+          password,
+          mnemonic: seedPhraseAsUint8Array,
+        });
 
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
@@ -5019,7 +4984,7 @@ export default class MetamaskController extends EventEmitter {
           await this.getSnapKeyring();
           ///: END:ONLY_INCLUDE_IF
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts();
+          await this.discoverAndCreateAccounts(id);
         } else {
           await this._addAccountsWithBalance();
         }
@@ -5945,9 +5910,7 @@ export default class MetamaskController extends EventEmitter {
       if (!account) {
         return undefined;
       }
-      const context = this.multichainAccountService.getAccountContext(
-        account.id,
-      );
+      const context = this.accountTreeController.getAccountContext(account.id);
       // Get EOA account as it's the only account having lastSelected set
       return context?.group?.get({ scopes: [EthScope.Eoa] })?.metadata
         .lastSelected;
