@@ -113,7 +113,7 @@ export default function TokenCell({
   const showClaimBonusBadge = useMemo(
     () =>
       !hideMerklBadge &&
-      true && // Boolean(remoteFeatureFlags?.[MERKL_FEATURE_FLAG_KEY]) &&
+      Boolean(remoteFeatureFlags?.[MERKL_FEATURE_FLAG_KEY]) &&
       isEligibleForMerklRewards(token.chainId, token.address),
     [hideMerklBadge, remoteFeatureFlags, token.chainId, token.address],
   );
