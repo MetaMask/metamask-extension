@@ -332,7 +332,7 @@ describe('MultichainTransactionDetailsModal', () => {
     renderComponent(swapProps);
 
     expect(
-      screen.getByText(messages.blockExplorerSwapAction.message),
+      screen.getByText(messages.swap.message),
     ).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
       '-2.5 SOL',

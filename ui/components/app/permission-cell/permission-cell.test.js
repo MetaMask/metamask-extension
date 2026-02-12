@@ -57,7 +57,9 @@ describe('Permission Cell', () => {
     expect(
       screen.getByText(messages.permission_ethereumProvider.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('Revoked')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.permissionRevoked.message),
+    ).toBeInTheDocument();
   });
 
   it('renders requested permission cell', () => {
@@ -75,6 +77,8 @@ describe('Permission Cell', () => {
     expect(
       screen.getByText(messages.permission_ethereumProvider.message),
     ).toBeInTheDocument();
-    expect(screen.getByText('Requested')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.permissionRequested.message),
+    ).toBeInTheDocument();
   });
 });

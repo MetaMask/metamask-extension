@@ -95,6 +95,7 @@ const CancelSpeedupPopoverWrapped = () => {
       isOpen
       onClose={() => closeModal(['cancelSpeedUpTransaction'])}
       className="cancel-speedup-popover"
+      isClosedOnOutsideClick={false}
     >
       <ModalOverlay />
       <ModalContent>
@@ -125,7 +126,7 @@ const CancelSpeedupPopoverWrapped = () => {
                   </Text>
                   <TextButton asChild className="inline">
                     <a
-                      href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
+                      href="https://support.metamask.io/manage-crypto/transactions/how-to-speed-up-or-cancel-a-pending-transaction"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
