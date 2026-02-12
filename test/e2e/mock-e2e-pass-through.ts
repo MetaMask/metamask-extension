@@ -52,7 +52,9 @@ export async function setupMockingPassThrough(
 ): Promise<SetupMockReturn> {
   let numNetworkReqs = 0;
 
-  const mockedEndpoint = testSpecificMock ? await testSpecificMock(server) : [];
+  const mockedEndpoint = testSpecificMock
+    ? await testSpecificMock(server)
+    : [];
 
   // Retrieve any interceptor set by testSpecificMock
   const interceptor = (server as unknown as Record<string, unknown>)

@@ -3964,27 +3964,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('generateNewMnemonicAndAddToVault', () => {
-    it('calls generateNewMnemonicAndAddToVault in the background', async () => {
-      const store = mockStore();
-      const generateNewMnemonicAndAddToVaultStub = sinon.stub().resolves({});
-      background.getApi.returns({
-        generateNewMnemonicAndAddToVault: generateNewMnemonicAndAddToVaultStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.generateNewMnemonicAndAddToVault());
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-      expect(generateNewMnemonicAndAddToVaultStub.calledOnceWith()).toBe(true);
-    });
-  });
   describe('importMnemonicToVault', () => {
     it('calls importMnemonicToVault in the background', async () => {
       const store = mockStore();

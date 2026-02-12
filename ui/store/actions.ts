@@ -109,7 +109,6 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
-  getPendingHardwareWalletSigning,
   getIsHardwareWalletErrorModalVisible,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
@@ -522,9 +521,7 @@ export function getSubscriptions(): ThunkAction<
       const subscriptions = await submitRequestToBackground('getSubscriptions');
       return subscriptions;
     } catch (error) {
-      captureException(
-        createSentryError('Failed to fetch subscriptions', error),
-      );
+      log.error('[getSubscriptions] error', error);
       throw error;
     }
   };
@@ -548,9 +545,7 @@ export function getSubscriptionPricing(): ThunkAction<
       );
       return pricing;
     } catch (error) {
-      captureException(
-        createSentryError('Failed to fetch subscription pricing', error),
-      );
+      log.error('[getSubscriptionPricing] error', error);
       throw error;
     }
   };
@@ -574,12 +569,7 @@ export async function getSubscriptionCryptoApprovalAmount(
     );
     return cryptoApprovalAmount;
   } catch (error) {
-    captureException(
-      createSentryError(
-        'Failed to get subscription crypto approval amount',
-        error,
-      ),
-    );
+    log.error('[getSubscriptionCryptoApprovalAmount] error', error);
     throw error;
   }
 }
@@ -654,9 +644,6 @@ export function cancelSubscription(params: {
       await submitRequestToBackground('cancelSubscription', [params]);
     } catch (error) {
       dispatch(displayWarning(error));
-      captureException(
-        createSentryError('Failed to cancel subscription', error),
-      );
 
       // rethrow the original error
       throw error;
@@ -674,7 +661,6 @@ export function unCancelSubscription(params: {
       const unCancelSubscriptionError = new Error(
         `Failed to uncancel subscription, ${getErrorMessage(error)}`,
       );
-      captureException(unCancelSubscriptionError);
       throw unCancelSubscriptionError;
     }
   };
@@ -693,13 +679,7 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       );
       return billingPortalUrl;
     } catch (error) {
-      captureException(
-        createSentryError(
-          'Failed to get subscription billing portal url',
-          error,
-        ),
-      );
-
+      log.error('[getSubscriptionBillingPortalUrl] error', error);
       // rethrow the original error
       throw error;
     }
@@ -849,6 +829,23 @@ export function linkRewardToShieldSubscription(
       throw error;
     }
   };
+}
+
+/**
+ * Sets or clears the shield subscription error in app state.
+ * Pass null to clear the error.
+ *
+ * @param error - The error object with message and optional code, or null to clear.
+ */
+export async function setShieldSubscriptionError(
+  error: { message: string; code?: string } | null,
+): Promise<void> {
+  try {
+    await submitRequestToBackground('setShieldSubscriptionError', [error]);
+  } catch (e) {
+    logErrorWithMessage(e);
+    throw e;
+  }
 }
 
 /**
@@ -1076,30 +1073,6 @@ export function importMnemonicToVault(
         dispatch(hideWarning());
         dispatch(setShowNewSrpAddedToast(true));
         return result;
-      })
-      .catch((err) => {
-        dispatch(displayWarning(err));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
-  };
-}
-
-export function generateNewMnemonicAndAddToVault(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.generateNewMnemonicAndAddToVault`);
-
-    return submitRequestToBackground('generateNewMnemonicAndAddToVault', [])
-      .then(async () => {
-        dispatch(hideLoadingIndication());
       })
       .catch((err) => {
         dispatch(displayWarning(err));
@@ -2106,7 +2079,6 @@ async function approveHardwareWalletTransaction(
   loadingIndicatorMessage: string,
   keyringType: string,
 ): Promise<TransactionMeta | null> {
-  dispatch(setPendingHardwareWalletSigning(true));
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
   const walletType =
@@ -2125,7 +2097,6 @@ async function approveHardwareWalletTransaction(
     await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(txMeta.id));
     dispatch(updateCustomNonce(''));
-    dispatch(setPendingHardwareWalletSigning(false));
     dispatch(closeCurrentNotificationWindow());
   } catch (error) {
     await forceUpdateMetamaskState(dispatch);
@@ -3923,14 +3894,12 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     const state = getState();
     const approvalFlows = getApprovalFlows(state);
-    const isPendingHardwareWalletSigning =
-      getPendingHardwareWalletSigning(state);
     const isHwErrorModalVisible = getIsHardwareWalletErrorModalVisible(state);
 
     // Don't close the popup if:
     // - Hardware wallet signing is in progress (error being handled)
     // - Hardware wallet error modal is visible (for retry functionality)
-    if (isPendingHardwareWalletSigning || isHwErrorModalVisible) {
+    if (isHwErrorModalVisible) {
       return;
     }
 
@@ -4053,15 +4022,6 @@ export function setHardwareWalletDefaultHdPath({
 export function hideLoadingIndication(): Action {
   return {
     type: actionConstants.HIDE_LOADING,
-  };
-}
-
-export function setPendingHardwareWalletSigning(
-  isPending: boolean,
-): PayloadAction<boolean> {
-  return {
-    type: actionConstants.SET_PENDING_HARDWARE_WALLET_SIGNING,
-    payload: isPending,
   };
 }
 
@@ -5593,7 +5553,6 @@ async function resolveHardwareWalletApproval(
   options: { waitForResult?: boolean } | undefined,
   keyringType: string,
 ): Promise<void> {
-  dispatch(setPendingHardwareWalletSigning(true));
   dispatch(showLoadingIndication());
 
   const walletType =
@@ -5612,8 +5571,6 @@ async function resolveHardwareWalletApproval(
 
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
 
-    dispatch(setPendingHardwareWalletSigning(false));
-
     if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());
     }
@@ -5626,10 +5583,6 @@ async function resolveHardwareWalletApproval(
     throw hwError;
   } finally {
     dispatch(hideLoadingIndication());
-    // Only clear pendingHardwareWalletSigning on success.
-    // On error, keep it true to prevent auto-navigation/close of the popup.
-    // The error modal will clear it when dismissed.
-    dispatch(setPendingHardwareWalletSigning(false));
   }
 }
 
