@@ -826,7 +826,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],
-    "pendingShieldCohort": "null",
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": "null",
     "pna25Acknowledged": "boolean",
     "permissionActivityLog": [

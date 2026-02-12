@@ -692,7 +692,9 @@ export class SubscriptionService {
 
       const { pendingShieldCohort, shieldSubscriptionMetricsProps } =
         this.#messenger.call('AppStateController:getState');
-      if (isPostTxTransaction && !pendingShieldCohort) {
+      const hasSetPostTxPendingCohort =
+        pendingShieldCohort === COHORT_NAMES.POST_TX;
+      if (isPostTxTransaction && !hasSetPostTxPendingCohort) {
         this.#messenger.call(
           'AppStateController:setPendingShieldCohort',
           COHORT_NAMES.POST_TX,

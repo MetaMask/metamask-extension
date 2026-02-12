@@ -268,7 +268,7 @@
     "pendingApprovalCount": "number",
     "pendingApprovals": "object",
     "pendingRevocations": "object",
-    "pendingShieldCohort": null,
+    "pendingShieldCohort": "string",
     "pendingShieldCohortTxType": null,
     "permissionActivityLog": "object",
     "permissionHistory": "object",
