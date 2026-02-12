@@ -116,7 +116,7 @@ describe('AdvancedTab Component', () => {
   it('should toggle show fiat on test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testShowFiatOnTestnets = queryAllByRole('checkbox')[4];
+    const testShowFiatOnTestnets = queryAllByRole('checkbox')[3];
 
     fireEvent.click(testShowFiatOnTestnets);
 
@@ -126,7 +126,7 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testNetworkToggle = queryAllByRole('checkbox')[5];
+    const testNetworkToggle = queryAllByRole('checkbox')[4];
 
     fireEvent.click(testNetworkToggle);
 
@@ -151,7 +151,7 @@ describe('AdvancedTab Component', () => {
   it('should toggle manage institutional wallets', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const manageInstitutionalWalletsToggle = queryAllByRole('checkbox')[6];
+    const manageInstitutionalWalletsToggle = queryAllByRole('checkbox')[5];
 
     fireEvent.click(manageInstitutionalWalletsToggle);
 
