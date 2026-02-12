@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { upperFirst } from 'lodash';
 
@@ -82,8 +88,14 @@ const AccountList = ({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [pathValue, setPathValue] = useState<string | null>(null);
+  const hasTrackedAccountSelectorViewed = useRef(false);
 
   useEffect(() => {
+    if (hasTrackedAccountSelectorViewed.current) {
+      return;
+    }
+
+    hasTrackedAccountSelectorViewed.current = true;
     trackEvent({
       event: MetaMetricsEventName.ConnectHardwareWalletAccountSelectorViewed,
       properties: {
@@ -304,7 +316,10 @@ const AccountList = ({
 
   const renderForgetDevice = () => (
     <Box className="hw-forget-device-container">
-      <ButtonLink onClick={() => onForgetDevice(device, selectedPath)}>
+      <ButtonLink
+        data-testid="hardware-forget-device-button"
+        onClick={() => onForgetDevice(device, selectedPath)}
+      >
         {t('forgetDevice')}
       </ButtonLink>
     </Box>

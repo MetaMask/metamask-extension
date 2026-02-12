@@ -2962,10 +2962,13 @@
     "ui/pages/core/defi-referral-consent/defi-referral-consent.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/create-account/connect-hardware/account-list.test.js": {
+    "ui/pages/create-account/connect-hardware/account-list.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/create-account/connect-hardware/index.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/create-account/connect-hardware/select-hardware.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/defi/components/defi-details-list.test.tsx": {
