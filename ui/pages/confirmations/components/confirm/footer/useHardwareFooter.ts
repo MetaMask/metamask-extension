@@ -7,6 +7,7 @@ import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/
 import { isSignatureTransactionType } from '../../../utils';
 import {
   ConnectionStatus,
+  HardwareWalletType,
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
   useHardwareWalletActions,
@@ -57,8 +58,12 @@ export const useHardwareFooter = ({
     () => ({
       requireBlindSigning:
         currentConfirmation?.type !== TransactionType.simpleSend,
+      preflightMessageBytes:
+        walletType === HardwareWalletType.Trezor
+          ? getPreflightMessageBytes(currentConfirmation)
+          : undefined,
     }),
-    [currentConfirmation?.type],
+    [currentConfirmation, currentConfirmation?.type, walletType],
   );
 
   useEffect(() => {
@@ -154,3 +159,24 @@ export const useHardwareFooter = ({
     withHardwareWalletModalHandling,
   };
 };
+
+function getPreflightMessageBytes(
+  currentConfirmation?: TransactionMeta,
+): number | undefined {
+  const data = (
+    currentConfirmation as TransactionMeta & {
+      msgParams?: { data?: string };
+    }
+  )?.msgParams?.data;
+
+  if (typeof data !== 'string' || data.length === 0) {
+    return undefined;
+  }
+
+  // Hex-encoded payload (e.g. personal_sign params).
+  if (/^0x[\da-fA-F]+$/u.test(data)) {
+    return Math.floor((data.length - 2) / 2);
+  }
+
+  return new TextEncoder().encode(data).length;
+}

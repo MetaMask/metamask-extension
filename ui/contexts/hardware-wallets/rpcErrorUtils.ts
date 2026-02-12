@@ -386,6 +386,79 @@ function mapLedgerStatusCodeToErrorCode(statusCode: string): ErrorCode {
   return mapping?.code ?? ErrorCode.Unknown;
 }
 
+const TREZOR_ERROR_CODE_MAPPINGS: Record<string, ErrorCode> = {
+  Method_Cancel: ErrorCode.UserCancelled,
+  Method_Interrupted: ErrorCode.UserCancelled,
+  Failure_ActionCancelled: ErrorCode.UserCancelled,
+  Failure_PinCancelled: ErrorCode.UserCancelled,
+  Method_PermissionsNotGranted: ErrorCode.UserRejected,
+  Device_Disconnected: ErrorCode.DeviceDisconnected,
+  Device_UsedElsewhere: ErrorCode.DeviceUsedElsewhere,
+  Device_CallInProgress: ErrorCode.DeviceCallInProgress,
+  Device_NotFound: ErrorCode.DeviceNotFound,
+  Transport_Missing: ErrorCode.ConnectionTransportMissing,
+  Method_DataOverflowModelOne: ErrorCode.DeviceMissingCapability,
+  Device_InvalidState: ErrorCode.AuthenticationSecurityCondition,
+  Failure_PinInvalid: ErrorCode.AuthenticationIncorrectPin,
+  Failure_PinMismatch: ErrorCode.AuthenticationIncorrectPin,
+  Failure_UnknownCode: ErrorCode.Unknown,
+};
+
+/**
+ * Extract a Trezor string error code from a message.
+ * Handles common formats from TrezorError.toString() and wrapped error messages.
+ */
+function extractTrezorCodeFromMessage(message: string): string | null {
+  const match = message.match(/(?:code:\s*)([A-Za-z]+_[A-Za-z0-9_]+)/u);
+  return match?.[1] ?? null;
+}
+
+/**
+ * Map Trezor error details to an ErrorCode using explicit codes first,
+ * then message-based fallbacks for legacy keyring errors.
+ */
+function mapTrezorErrorToErrorCode(message: string): ErrorCode {
+  const extractedCode = extractTrezorCodeFromMessage(message);
+  if (extractedCode && TREZOR_ERROR_CODE_MAPPINGS[extractedCode]) {
+    return TREZOR_ERROR_CODE_MAPPINGS[extractedCode];
+  }
+
+  for (const [trezorCode, mappedCode] of Object.entries(
+    TREZOR_ERROR_CODE_MAPPINGS,
+  )) {
+    if (message.includes(trezorCode)) {
+      return mappedCode;
+    }
+  }
+
+  const normalizedMessage = message.toLowerCase();
+
+  if (normalizedMessage.includes('popup closed')) {
+    return ErrorCode.UserCancelled;
+  }
+
+  if (normalizedMessage.includes('user rejected')) {
+    return ErrorCode.UserRejected;
+  }
+
+  if (
+    normalizedMessage.includes('cancelled') ||
+    normalizedMessage.includes('canceled')
+  ) {
+    return ErrorCode.UserCancelled;
+  }
+
+  if (normalizedMessage.includes('device disconnected')) {
+    return ErrorCode.DeviceDisconnected;
+  }
+
+  if (normalizedMessage.includes('transport is missing')) {
+    return ErrorCode.ConnectionTransportMissing;
+  }
+
+  return ErrorCode.Unknown;
+}
+
 /**
  * Map a code (string or number) to an ErrorCode
  *
@@ -555,6 +628,15 @@ export function toHardwareWalletError(
         cause: error instanceof Error ? error : undefined,
       });
     }
+  }
+
+  if (walletType === HardwareWalletType.Trezor) {
+    const errorMessage = getErrorMessage(error);
+    const errorCode = mapTrezorErrorToErrorCode(errorMessage);
+
+    return createHardwareWalletError(errorCode, walletType, errorMessage, {
+      cause: error instanceof Error ? error : undefined,
+    });
   }
 
   // Fallback: use the error parser to create a HardwareWalletError

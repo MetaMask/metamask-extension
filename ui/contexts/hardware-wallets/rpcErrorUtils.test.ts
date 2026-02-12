@@ -16,6 +16,7 @@ import {
 
 describe('rpcErrorUtils', () => {
   const mockWalletType = HardwareWalletType.Ledger;
+  const trezorWalletType = HardwareWalletType.Trezor;
 
   describe('isJsonRpcHardwareWalletError', () => {
     it('returns true for JsonRpcError with valid HardwareWalletError data', () => {
@@ -270,6 +271,44 @@ describe('rpcErrorUtils', () => {
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.Unknown);
       expect(result.message).toBe('42');
+    });
+
+    it('maps Trezor cancellation code to UserCancelled', () => {
+      const result = toHardwareWalletError(
+        new Error('TrezorError (code: Method_Cancel): Canceled'),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.UserCancelled);
+    });
+
+    it('maps Trezor rejection code to UserRejected', () => {
+      const result = toHardwareWalletError(
+        new Error(
+          'TrezorError (code: Method_PermissionsNotGranted): Permissions not granted',
+        ),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.UserRejected);
+    });
+
+    it('maps Trezor device disconnect to DeviceDisconnected', () => {
+      const result = toHardwareWalletError(
+        new Error('Device disconnected'),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.DeviceDisconnected);
+    });
+
+    it('maps Trezor missing transport to ConnectionTransportMissing', () => {
+      const result = toHardwareWalletError(
+        new Error('Transport is missing'),
+        trezorWalletType,
+      );
+
+      expect(result.code).toBe(ErrorCode.ConnectionTransportMissing);
     });
   });
 

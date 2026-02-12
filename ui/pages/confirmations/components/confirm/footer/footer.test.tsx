@@ -557,6 +557,40 @@ describe('ConfirmFooter', () => {
       expect(mockOnTransactionConfirm).not.toHaveBeenCalled();
     });
 
+    it('passes Trezor signature payload size to preflight checks', async () => {
+      mockUseHardwareWalletConfig.mockReturnValue({
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Trezor,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState: { status: ConnectionStatus.Connected },
+      });
+
+      const oversizedPayload = `0x${'aa'.repeat(1030)}`;
+      const personalSignWithLargePayload = {
+        ...unapprovedPersonalSignMsg,
+        msgParams: {
+          ...unapprovedPersonalSignMsg.msgParams,
+          data: oversizedPayload,
+          from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        },
+      };
+
+      const { getByTestId } = render(
+        getMockPersonalSignConfirmStateForRequest(
+          personalSignWithLargePayload as SignatureRequestType,
+        ),
+      );
+      fireEvent.click(getByTestId('confirm-footer-button'));
+
+      await waitFor(() => {
+        expect(ensureDeviceReadyMock).toHaveBeenCalledWith({
+          requireBlindSigning: true,
+          preflightMessageBytes: 1030,
+        });
+      });
+    });
+
     it('bypasses hardware wallet preflight for add chain confirmations', async () => {
       const addEthereumChainSubmitMock = jest.fn().mockResolvedValue(undefined);
       useAddEthereumChainMock.mockReturnValue({
