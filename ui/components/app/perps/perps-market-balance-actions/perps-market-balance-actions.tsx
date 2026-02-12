@@ -15,6 +15,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
 
 type PerpsMarketBalanceActionsProps = {
@@ -37,6 +38,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
   const { account } = usePerpsLiveAccount();
+  const { isEligible } = usePerpsEligibility();
 
   // Use account data or defaults
   const totalBalance = account?.totalBalance ?? '0';
@@ -48,8 +50,9 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   const isBalanceEmpty = accountValue === 0;
 
   const handleAddFunds = useCallback(() => {
+    if (!isEligible) return;
     onAddFunds?.();
-  }, [onAddFunds]);
+  }, [isEligible, onAddFunds]);
 
   const handleWithdraw = useCallback(() => {
     onWithdraw?.();
@@ -113,6 +116,8 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             onClick={handleAddFunds}
+            disabled={!isEligible}
+            title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
             style={{ width: '100%' }}
             data-testid="perps-balance-actions-add-funds-empty"
           >
@@ -177,6 +182,8 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             onClick={handleAddFunds}
+            disabled={!isEligible}
+            title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
             style={{ flex: 1 }}
             data-testid="perps-balance-actions-add-funds"
           >

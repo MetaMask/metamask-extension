@@ -39,6 +39,7 @@ import {
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
+import { usePerpsEligibility } from '../../hooks/perps';
 import type { PriceUpdate } from '../../hooks/perps/stream';
 import { getPerpsController } from '../../providers/perps';
 import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
@@ -218,6 +219,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
+  const { isEligible } = usePerpsEligibility();
   const {
     formatCurrencyWithMinThreshold,
     formatTokenQuantity,
@@ -458,7 +460,8 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [orderType, orderFormState]);
 
   // Combined submit disabled state
-  const isSubmitDisabled = isOrderPending || isLimitPriceInvalid;
+  const isSubmitDisabled =
+    !isEligible || isOrderPending || isLimitPriceInvalid;
 
   // Auto close card expansion state
   const [isAutoCloseExpanded, setIsAutoCloseExpanded] = useState(false);
@@ -811,33 +814,37 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [navigate, currentView]);
 
   // Handle opening order entry with a specific direction (new order)
-  const handleOpenOrder = useCallback((direction: OrderDirection) => {
-    setOrderDirection(direction);
-    setOrderMode('new');
-    setCurrentView('order');
-  }, []);
+  const handleOpenOrder = useCallback(
+    (direction: OrderDirection) => {
+      if (!isEligible) return;
+      setOrderDirection(direction);
+      setOrderMode('new');
+      setCurrentView('order');
+    },
+    [isEligible],
+  );
 
   // Handle modifying an existing position
   const handleModifyPosition = useCallback(() => {
-    if (!position) {
+    if (!isEligible || !position) {
       return;
     }
     const isLong = parseFloat(position.size) >= 0;
     setOrderDirection(isLong ? 'long' : 'short');
     setOrderMode('modify');
     setCurrentView('order');
-  }, [position]);
+  }, [isEligible, position]);
 
   // Handle closing an existing position
   const handleClosePosition = useCallback(() => {
-    if (!position) {
+    if (!isEligible || !position) {
       return;
     }
     const isLong = parseFloat(position.size) >= 0;
     setOrderDirection(isLong ? 'long' : 'short');
     setOrderMode('close');
     setCurrentView('order');
-  }, [position]);
+  }, [isEligible, position]);
 
   // Handle form state changes from OrderEntry
   const handleFormStateChange = useCallback((formState: OrderFormState) => {
@@ -862,7 +869,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Handle order submission
   const handleOrderSubmit = useCallback(async () => {
-    if (!orderFormState || !selectedAddress) {
+    if (!isEligible || !orderFormState || !selectedAddress) {
       return;
     }
 
@@ -943,7 +950,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [orderFormState, selectedAddress, orderMode, position, currentPrice]);
+  }, [isEligible, orderFormState, selectedAddress, orderMode, position, currentPrice]);
 
   // Initialize TP/SL editing values only when the card is first expanded
   // We use a ref to track if we've already initialized to prevent stream updates
@@ -983,6 +990,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Uses positionRef to avoid stale position data in the callback
   // (following mobile's currentPositionRef pattern)
   const handleSaveTPSL = useCallback(async () => {
+    if (!isEligible) return;
     const currentPosition = positionRef.current;
     if (!selectedAddress || !currentPosition) {
       return;
@@ -1057,7 +1065,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     } finally {
       setIsSavingTPSL(false);
     }
-  }, [selectedAddress, editingTpPrice, editingSlPrice]);
+  }, [isEligible, selectedAddress, editingTpPrice, editingSlPrice]);
 
   // Refetch positions when tab becomes visible (catch changes made elsewhere)
   useEffect(() => {
@@ -1120,7 +1128,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Handle canceling a single open order
   const handleCancelOrder = useCallback(
     async (order: Order) => {
-      if (!selectedAddress) {
+      if (!isEligible || !selectedAddress) {
         return;
       }
       try {
@@ -1138,7 +1146,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         console.error('Error canceling order:', error);
       }
     },
-    [selectedAddress],
+    [isEligible, selectedAddress],
   );
 
   // Guard: redirect if perps feature is disabled
@@ -2042,10 +2050,14 @@ const PerpsMarketDetailPage: React.FC = () => {
                           variant={ButtonVariant.Primary}
                           size={ButtonSize.Md}
                           onClick={handleSaveTPSL}
-                          disabled={isTPSLPending}
+                          disabled={!isEligible || isTPSLPending}
+                          title={
+                            !isEligible ? t('perpsGeoBlockedTooltip') : undefined
+                          }
                           className={twMerge(
                             'w-full',
-                            isTPSLPending && 'opacity-70 cursor-not-allowed',
+                            (isTPSLPending || !isEligible) &&
+                              'opacity-70 cursor-not-allowed',
                           )}
                         >
                           {isTPSLPending
@@ -2556,6 +2568,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={handleOrderSubmit}
               disabled={isSubmitDisabled}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className={twMerge(
                 'w-full',
                 isSubmitDisabled && 'opacity-70 cursor-not-allowed',
@@ -2579,6 +2592,8 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               onClick={handleModifyPosition}
+              disabled={!isEligible}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className="flex-1"
               data-testid="perps-modify-cta-button"
             >
@@ -2590,6 +2605,8 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={handleClosePosition}
+              disabled={!isEligible}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className="flex-1"
               data-testid="perps-close-cta-button"
             >
@@ -2612,6 +2629,8 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('long')}
+              disabled={!isEligible}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className="flex-1"
               data-testid="perps-long-cta-button"
             >
@@ -2623,6 +2642,8 @@ const PerpsMarketDetailPage: React.FC = () => {
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('short')}
+              disabled={!isEligible}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className="flex-1"
               data-testid="perps-short-cta-button"
             >

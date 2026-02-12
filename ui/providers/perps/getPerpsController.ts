@@ -1,4 +1,5 @@
 import { Messenger } from '@metamask/messenger';
+import type { Store } from 'redux';
 import {
   PerpsController,
   getDefaultPerpsControllerState,
@@ -7,6 +8,33 @@ import {
   type PerpsControllerMessenger,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/controllers/perps';
+import type { MetaMaskReduxState } from '../../store/store';
+import { getReduxStorePromise } from '../..';
+
+const REMOTE_FEATURE_FLAG_GET_STATE = 'RemoteFeatureFlagController:getState';
+const REMOTE_FEATURE_FLAG_STATE_CHANGE =
+  'RemoteFeatureFlagController:stateChange';
+
+/** State shape expected by PerpsController (RemoteFeatureFlagControllerState). */
+type RemoteFeatureFlagState = {
+  remoteFeatureFlags: Record<string, unknown>;
+  cacheTimestamp: number;
+};
+
+function getRemoteFeatureFlagState(
+  store: Store<MetaMaskReduxState>,
+): RemoteFeatureFlagState {
+  return {
+    remoteFeatureFlags: store.getState().metamask?.remoteFeatureFlags ?? {},
+    cacheTimestamp: 0,
+  };
+}
+
+/**
+ * Unsubscribe from Redux store when controller is reset.
+ * Used to stop publishing remote feature flag changes to the PerpsController.
+ */
+let unsubscribeRemoteFeatureFlags: (() => void) | null = null;
 
 /**
  * Singleton instance of the PerpsController.
@@ -26,27 +54,83 @@ let currentAddress: string | null = null;
 let initPromise: Promise<PerpsController> | null = null;
 
 /**
- * Create a standalone messenger for the PerpsController (PoC).
+ * Create the RemoteFeatureFlagController-namespaced messenger and (when store is
+ * available) register getState and subscribe to Redux to publish stateChange.
+ * Then create the PerpsController messenger and delegate getState/stateChange to it.
  *
- * In production, this should be a restricted messenger from the
- * root MetaMaskController messenger with access to:
- * - NetworkController actions
- * - AuthenticationController actions
- * - RemoteFeatureFlagController state
- *
- * For the PoC, we create a standalone messenger that won't have
- * access to other controllers, but can still work for basic
- * balance fetching via direct provider access.
+ * @param storeToUse - Redux store for feature flags, or null to use empty flags.
+ * @returns The PerpsController messenger with delegated RemoteFeatureFlagController actions/events.
  */
-function createPerpsMessenger(): PerpsControllerMessenger {
-  // For the PoC, create a simple messenger with the PerpsController namespace.
-  // This won't have cross-controller communication but is sufficient for
-  // testing balance fetching via the provider's WebSocket/HTTP clients.
-  const messenger = new Messenger({
+function createPerpsMessenger(
+  storeToUse: Store<MetaMaskReduxState> | null,
+): PerpsControllerMessenger {
+  const featureFlagMessenger = new Messenger({
+    namespace: 'RemoteFeatureFlagController',
+  });
+
+  const getState = (): RemoteFeatureFlagState =>
+    storeToUse
+      ? getRemoteFeatureFlagState(storeToUse)
+      : { remoteFeatureFlags: {}, cacheTimestamp: 0 };
+
+  const featureFlagMessengerTyped = featureFlagMessenger as unknown as {
+    registerActionHandler: (
+      action: string,
+      handler: () => RemoteFeatureFlagState,
+    ) => void;
+    publish: (event: string, payload: RemoteFeatureFlagState) => void;
+    delegate: (opts: {
+      actions: string[];
+      events: string[];
+      messenger: PerpsControllerMessenger;
+    }) => void;
+  };
+  featureFlagMessengerTyped.registerActionHandler(
+    REMOTE_FEATURE_FLAG_GET_STATE,
+    getState,
+  );
+
+  if (storeToUse) {
+    const publishStateChange = () => {
+      featureFlagMessengerTyped.publish(
+        REMOTE_FEATURE_FLAG_STATE_CHANGE,
+        getRemoteFeatureFlagState(storeToUse),
+      );
+    };
+    publishStateChange();
+    if (unsubscribeRemoteFeatureFlags) {
+      unsubscribeRemoteFeatureFlags();
+    }
+    unsubscribeRemoteFeatureFlags = storeToUse.subscribe(publishStateChange);
+  }
+
+  const perpsMessenger = new Messenger({
     namespace: 'PerpsController',
   }) as PerpsControllerMessenger;
 
-  return messenger;
+  featureFlagMessengerTyped.delegate({
+    actions: [REMOTE_FEATURE_FLAG_GET_STATE],
+    events: [REMOTE_FEATURE_FLAG_STATE_CHANGE],
+    messenger: perpsMessenger,
+  });
+
+  return perpsMessenger;
+}
+
+/**
+ * Parse fallback blocked regions from MM_PERPS_BLOCKED_REGIONS env var.
+ * Format: comma-separated region codes (e.g., "US,CA-ON,GB,BE").
+ * Exported for unit testing.
+ */
+export function getFallbackBlockedRegions(): string[] {
+  const raw = process.env.MM_PERPS_BLOCKED_REGIONS;
+  if (!raw || typeof raw !== 'string') {
+    return [];
+  }
+  return raw
+    .split(',')
+    .map((r) => r.trim())
+    .filter(Boolean);
 }
 
 /**
@@ -54,16 +138,18 @@ function createPerpsMessenger(): PerpsControllerMessenger {
  * Returns a singleton PerpsController that is initialized on first access.
  *
  * @param selectedAddress - The currently selected account address
+ * @param store - Optional Redux store; when provided, remote feature flag state is bridged into the controller for geoblock eligibility
  * @returns Promise resolving to the PerpsController instance
  * @example
  * ```typescript
- * const controller = await getPerpsController(selectedAccount.address);
+ * const controller = await getPerpsController(selectedAccount.address, store);
  * const account = await controller.getAccountState();
  * console.log('Balance:', account.totalBalance);
  * ```
  */
 export async function getPerpsController(
   selectedAddress: string,
+  store?: Store<MetaMaskReduxState>,
 ): Promise<PerpsController> {
   if (!selectedAddress) {
     throw new Error(
@@ -76,13 +162,10 @@ export async function getPerpsController(
     currentAddress !== null && currentAddress !== selectedAddress;
 
   if (addressChanged && controllerInstance) {
-    console.log(
-      '[Perps] Account changed, reinitializing controller:',
-      currentAddress,
-      '->',
-      selectedAddress,
-    );
-    // Disconnect the old controller
+    if (unsubscribeRemoteFeatureFlags) {
+      unsubscribeRemoteFeatureFlags();
+      unsubscribeRemoteFeatureFlags = null;
+    }
     await controllerInstance.disconnect();
     controllerInstance = null;
     initPromise = null;
@@ -96,21 +179,29 @@ export async function getPerpsController(
   // Prevent race conditions during initialization
   if (!initPromise) {
     initPromise = (async () => {
-      const messenger = createPerpsMessenger();
+      let storeToUse = store;
+      if (!storeToUse) {
+        try {
+          storeToUse = await getReduxStorePromise();
+        } catch {
+          // Store not ready (e.g. in tests)
+        }
+      }
+      const messenger = createPerpsMessenger(storeToUse ?? null);
       const infrastructure = createPerpsInfrastructure(selectedAddress);
+      const fallbackBlockedRegions = getFallbackBlockedRegions();
 
       const controller = new PerpsController({
         messenger,
         state: getDefaultPerpsControllerState(),
         infrastructure,
-        // Enable HIP-3 markets (stocks, commodities like SILVER)
         clientConfig: {
           fallbackHip3Enabled: true,
           fallbackHip3AllowlistMarkets: [], // Empty = allow all HIP-3 markets
+          fallbackBlockedRegions,
         },
       });
 
-      // Initialize the controller (connects to Hyperliquid)
       await controller.init();
 
       controllerInstance = controller;
@@ -126,6 +217,10 @@ export async function getPerpsController(
  * Reset the controller instance (useful for testing or account switch).
  */
 export async function resetPerpsController(): Promise<void> {
+  if (unsubscribeRemoteFeatureFlags) {
+    unsubscribeRemoteFeatureFlags();
+    unsubscribeRemoteFeatureFlags = null;
+  }
   if (controllerInstance) {
     await controllerInstance.disconnect();
     controllerInstance = null;

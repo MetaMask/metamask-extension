@@ -62,6 +62,16 @@ log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 const reduxStore = withResolvers();
 
 /**
+ * Returns a promise that resolves to the Redux store once the UI has started.
+ * Used by modules that need the store but may run before it is passed in (e.g. PerpsController init).
+ *
+ * @returns {Promise<ReturnType<typeof configureStore>>}
+ */
+export function getReduxStorePromise() {
+  return reduxStore.promise;
+}
+
+/**
  * Method to update backgroundConnection object use by UI
  *
  * @param backgroundConnection - connection object to background

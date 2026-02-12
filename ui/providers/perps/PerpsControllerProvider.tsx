@@ -5,7 +5,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import type { PerpsController } from '@metamask/perps-controller';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { getPerpsController } from './getPerpsController';
@@ -56,7 +56,7 @@ export function PerpsControllerProvider({
   );
   const [error, setError] = useState<Error | null>(null);
 
-  // Get the selected account address from Redux
+  const store = useStore();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
 
@@ -74,7 +74,7 @@ export function PerpsControllerProvider({
 
     let isMounted = true;
 
-    getPerpsController(selectedAddress)
+    getPerpsController(selectedAddress, store)
       .then((ctrl) => {
         if (isMounted) {
           setController(ctrl);
