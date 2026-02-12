@@ -827,7 +827,7 @@ export async function mockPowerUserPrices(
 
   endpoints.push(
     await server
-      .forGet(/getAllFeatureFlags/u)
+      .forGet(/bridge\.api\.cx\.metamask\.io\/featureFlags/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(delayedResponse(1500, BRIDGE_FEATURE_FLAGS)),
