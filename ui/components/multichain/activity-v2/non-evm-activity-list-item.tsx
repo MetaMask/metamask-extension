@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Transaction } from '@metamask/keyring-api';
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
+import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
   Display,
@@ -16,26 +17,22 @@ import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multich
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
-import { ActivityListItem } from '../activity-list-item';
+import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
 import {
   BadgeWrapper,
   AvatarNetwork,
   AvatarNetworkSize,
   Text,
 } from '../../component-library';
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 
 type Props = {
   transaction: Transaction;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  networkConfig: any;
   onClick: () => void;
 };
 
-export const NonEvmActivityListItem = ({
-  transaction,
-  networkConfig,
-  onClick,
-}: Props) => {
+export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
+  const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
   const { from, to, type, timestamp, isRedeposit, title } =
     useMultichainTransactionDisplay(transaction, networkConfig);
   const networkLogo = MULTICHAIN_TOKEN_IMAGE_MAP[transaction.chain];
@@ -43,7 +40,7 @@ export const NonEvmActivityListItem = ({
 
   if (isRedeposit) {
     return (
-      <ActivityListItem
+      <LegacyActivityListItem
         data-testid="activity-list-item"
         onClick={onClick}
         icon={
@@ -91,7 +88,7 @@ export const NonEvmActivityListItem = ({
   }
 
   return (
-    <ActivityListItem
+    <LegacyActivityListItem
       data-testid="activity-list-item"
       onClick={onClick}
       icon={

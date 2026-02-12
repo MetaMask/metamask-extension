@@ -11,12 +11,6 @@ import {
 } from '../../../../shared/constants/network';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 
-/**
- * Discriminated union for activity list items.
- * - 'pending': EVM transaction with status unapproved/approved/submitted (needs speed up/cancel UI)
- * - 'local-completed': EVM transaction confirmed but not yet in API (from Redux)
- * - 'completed': Completed transaction from API (v2's ActivityListItem)
- */
 export type FlattenedItem =
   | { type: 'date-header'; date: number }
   | { type: 'pending'; transactionGroup: TransactionGroup; id: string }

@@ -1,5 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
+import { mockTransactions } from '../../helpers/mock-server';
 import { Driver } from '../../webdriver/driver';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
@@ -57,6 +58,7 @@ export async function withBtcAccountSnap(
           await mockSupportedVsCurrencies(mockServer),
           await mockPriceMulti(mockServer),
           await mockPriceMultiBtcAndSol(mockServer),
+          await mockTransactions(mockServer),
         ];
 
         // Add bridge mocks for swap functionality if enabled

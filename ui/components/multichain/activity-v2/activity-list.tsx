@@ -4,6 +4,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box, Text } from '@metamask/design-system-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { Transaction } from '@metamask/keyring-api';
+import { isCrossChain } from '@metamask/bridge-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
@@ -17,11 +18,13 @@ import {
   getUseExternalServices,
   getSelectedAccount,
 } from '../../../selectors/selectors';
+import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/acme-controller/queries';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
 import { MultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
+import MultichainBridgeTransactionListItem from '../../app/multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
@@ -55,7 +58,7 @@ export const ActivityList = () => {
   // Activity tab should show ALL transactions regardless of selected chain/network
   const evmAddress = useSelector(getFirstEvmAddress) || '';
 
-  // Non-EVM transactions (raw Keyring API Transaction objects)
+  // Non-EVM transactions
   const nonEvmTransactions = useSelector(getRawNonEvmTransactions);
 
   // Network config and account for non-EVM transaction rendering
@@ -68,8 +71,9 @@ export const ActivityList = () => {
   // Recently confirmed transactions - may not be in API yet
   const recentTransactionGroups = useSelector(getRecentTransactionGroups);
 
-  // Bridge history for enriching bridge transactions
-  // const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
+  // Bridge history for matching non-EVM transactions to bridge operations.
+  // Ported from unified-transaction-list.component.js L476, L702-718
+  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
 
   // EVM transactions from API
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -79,7 +83,7 @@ export const ActivityList = () => {
       }),
     );
 
-  // Merge all transactions and flatten for virtualization
+  // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {
     const evmTransactions =
       data?.pages?.flatMap((page) => page.data ?? []) ?? [];
@@ -202,12 +206,28 @@ export const ActivityList = () => {
       );
     }
 
-    // Non-EVM transactions - render using old multichain pattern, details via MultichainTransactionDetailsModal
+    // Non-EVM transactions — check for bridge history first.
+    // Ported from unified-transaction-list.component.js L702-718
     if (isNonEvmItem(item)) {
+      const matchedBridgeHistoryItem = bridgeHistoryItems[item.id];
+      if (
+        matchedBridgeHistoryItem &&
+        isCrossChain(
+          matchedBridgeHistoryItem.quote?.srcChainId,
+          matchedBridgeHistoryItem.quote?.destChainId,
+        )
+      ) {
+        return (
+          <MultichainBridgeTransactionListItem
+            transaction={item.transaction}
+            bridgeHistoryItem={matchedBridgeHistoryItem}
+            toggleShowDetails={(tx) => setSelectedNonEvmTransaction(tx)}
+          />
+        );
+      }
       return (
         <NonEvmActivityListItem
           transaction={item.transaction}
-          networkConfig={networkConfig}
           onClick={() => setSelectedNonEvmTransaction(item.transaction)}
         />
       );
