@@ -42,7 +42,7 @@ type NetworkConfiguration = {
   rpcEndpoints: RpcEndpoint[];
 };
 
-export const version = 194;
+export const version = 197;
 
 export const HYPEREVM_CHAIN_ID: string = '0x3e7';
 
@@ -90,7 +90,7 @@ function transformState(
 ) {
   const networkControllerState = validateNetworkController(state);
   if (networkControllerState === undefined) {
-    // There used to be a warning "Migration 193: Missing or invalid NetworkController state, skip the migration"
+    // There used to be a warning "Migration 194: Missing or invalid NetworkController state, skip the migration"
     // But it is expected during some tests and caused new baseline violations se we removed it.
     return state;
   }
