@@ -78,6 +78,26 @@ jest.mock('../../providers/perps', () => ({
     children,
 }));
 
+jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
+  usePerpsEligibility: () => ({ isEligible: true }),
+}));
+
+jest.mock('../../providers/perps/PerpsStreamManager', () => ({
+  getPerpsStreamManager: () => ({
+    positions: { getCachedData: () => [], pushData: jest.fn() },
+    orders: { getCachedData: () => [], pushData: jest.fn() },
+    account: { getCachedData: () => null, pushData: jest.fn() },
+    markets: { getCachedData: () => [], pushData: jest.fn() },
+    setOptimisticTPSL: jest.fn(),
+    clearOptimisticTPSL: jest.fn(),
+    pushPositionsWithOverrides: jest.fn(),
+    prewarm: jest.fn(),
+    cleanupPrewarm: jest.fn(),
+    isInitialized: () => true,
+    init: jest.fn().mockResolvedValue(undefined),
+  }),
+}));
+
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
   usePerpsLivePositions: () => ({

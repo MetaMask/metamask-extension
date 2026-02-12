@@ -13,6 +13,10 @@ jest.mock('../../../../providers/perps', () => ({
   getPerpsController: (...args: unknown[]) => mockGetPerpsController(...args),
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
+  usePerpsEligibility: () => ({ isEligible: true }),
+}));
+
 jest.mock('../../../../providers/perps/PerpsStreamManager', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
