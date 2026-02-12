@@ -35,7 +35,6 @@ import {
   TREZOR_TESTNET_PATH,
   DEVICE_KEYRING_MAP,
 } from '../../../../shared/constants/hardware-wallets';
-import type { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import {
   Button,
   ButtonVariant,
@@ -127,10 +126,6 @@ const ConnectHardwareForm = () => {
       state.appState.defaultHdPaths,
   );
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const ledgerTransportType = useSelector(
-    (state: { metamask: { ledgerTransportType: LedgerTransportTypes } }) =>
-      state.metamask.ledgerTransportType,
-  );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const keyrings = useSelector(
     (state: { metamask: { keyrings: KeyringObject[] } }) =>
@@ -561,7 +556,6 @@ const ConnectHardwareForm = () => {
         <SelectHardware
           connectToHardwareWallet={connectToHardwareWallet}
           browserSupported={browserSupported}
-          ledgerTransportType={ledgerTransportType}
           onCancel={onCancel}
         />
       );

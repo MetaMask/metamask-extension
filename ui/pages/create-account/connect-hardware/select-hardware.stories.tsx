@@ -1,6 +1,5 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SelectHardware from './select-hardware';
 
@@ -30,7 +29,6 @@ export const DefaultStory = () => {
       connectToHardwareWallet={(selectedDevice: string) =>
         action(`Continue connect to ${selectedDevice}`)()
       }
-      ledgerTransportType={LedgerTransportTypes.webhid}
     />
   );
 };
@@ -43,7 +41,6 @@ export const BrowserNotSupported = () => {
       onCancel={() => null}
       browserSupported={false}
       connectToHardwareWallet={() => undefined}
-      ledgerTransportType={LedgerTransportTypes.webhid}
     />
   );
 };

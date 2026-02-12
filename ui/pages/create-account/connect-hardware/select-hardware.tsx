@@ -26,7 +26,6 @@ import {
   MarketingActionNames,
   QrHardwareDeviceNames,
 } from '../../../../shared/constants/hardware-wallets';
-import type { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { openWindow } from '../../../helpers/utils/window';
@@ -227,7 +226,6 @@ type SelectHardwareProps = {
   onCancel: () => void;
   connectToHardwareWallet: (device: string) => void;
   browserSupported: boolean;
-  ledgerTransportType?: LedgerTransportTypes;
 };
 
 const SelectHardware = ({
