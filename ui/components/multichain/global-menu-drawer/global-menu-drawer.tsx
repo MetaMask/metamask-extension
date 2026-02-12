@@ -56,6 +56,7 @@ export const GlobalMenuDrawer = ({
   const [contentTopOffset, setContentTopOffset] = useState(0);
   const [readyToReveal, setReadyToReveal] = useState(false);
   const revealFrameRef = useRef<number | null>(null);
+  const cancelRevealRef = useRef(false);
   const rootLayoutRef = useRef<HTMLElement | null>(null);
   const appContainerRef = useRef<HTMLElement | null>(null);
   const resizeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -199,6 +200,7 @@ export const GlobalMenuDrawer = ({
   const hasPosition = Object.keys(drawerStyle).length > 0;
   useEffect(() => {
     if (!isOpen) {
+      cancelRevealRef.current = true;
       setReadyToReveal(false);
       if (revealFrameRef.current !== null) {
         cancelAnimationFrame(revealFrameRef.current);
@@ -209,11 +211,17 @@ export const GlobalMenuDrawer = ({
     if (!hasPosition) {
       return;
     }
+    cancelRevealRef.current = false;
     revealFrameRef.current = requestAnimationFrame(() => {
-      revealFrameRef.current = null;
-      setReadyToReveal(true);
+      requestAnimationFrame(() => {
+        revealFrameRef.current = null;
+        if (!cancelRevealRef.current) {
+          setReadyToReveal(true);
+        }
+      });
     });
     return () => {
+      cancelRevealRef.current = true;
       if (revealFrameRef.current !== null) {
         cancelAnimationFrame(revealFrameRef.current);
         revealFrameRef.current = null;
