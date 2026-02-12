@@ -129,5 +129,28 @@ describe('BasicFunctionalityRequired', () => {
         featureName: 'Swap',
       });
     });
+
+    it('includes search and hash in blockedRoutePath so original URL context is restored', () => {
+      mockUseSelector.mockReturnValue(false);
+      mockUseLocation.mockReturnValue({
+        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        state: null,
+        key: '',
+        search: '?swaps=true',
+        hash: '#section',
+      } as ReturnType<typeof useLocation>);
+
+      const { getByTestId } = render(
+        <BasicFunctionalityRequired featureName="Swap">
+          <span>Child content</span>
+        </BasicFunctionalityRequired>,
+      );
+
+      const stateJson = getByTestId('navigate').getAttribute('data-state');
+      const state = stateJson ? JSON.parse(stateJson) : undefined;
+      expect(state.blockedRoutePath).toBe(
+        '/cross-chain/swaps/prepare-bridge-page?swaps=true#section',
+      );
+    });
   });
 });

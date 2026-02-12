@@ -5,6 +5,7 @@ import { getUseExternalServices } from '../../../selectors';
 import { BASIC_FUNCTIONALITY_OFF_ROUTE } from '../../constants/routes';
 
 export type BasicFunctionalityOffState = {
+  /** Full path (pathname + search + hash) to restore when user opens the feature from the basic-functionality-off page. */
   blockedRoutePath: string;
   featureName: string;
 };
@@ -17,8 +18,8 @@ type BasicFunctionalityRequiredProps = {
 
 /**
  * Route guard that redirects to the basic-functionality-off screen when
- * useExternalServices is off. Passes current pathname and feature name in location state
- * so the basic-functionality-off page can show "Open the [feature name] page" and an inline toggle.
+ * useExternalServices is off. Passes current full path (pathname + search + hash) and feature name in location state
+ * so the basic-functionality-off page can show "Open the [feature name] page" and restore the original URL when opened.
  *
  * @param props
  * @param props.children - Child route content to render when Basic Functionality is on.
@@ -30,7 +31,7 @@ const BasicFunctionalityRequired = ({
 }: BasicFunctionalityRequiredProps) => {
   const useExternalServices = useSelector(getUseExternalServices);
   const location = useLocation();
-  const blockedRoutePath = location.pathname;
+  const blockedRoutePath = `${location.pathname}${location.search}${location.hash}`;
 
   if (useExternalServices !== true) {
     const state: BasicFunctionalityOffState = {

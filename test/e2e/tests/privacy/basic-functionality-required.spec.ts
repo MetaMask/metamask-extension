@@ -119,7 +119,7 @@ describe('Basic functionality off', function () {
         await basicFunctionalityOffPage.clickOpenFeaturePage();
 
         await driver.waitForUrl({
-          url: `${driver.extensionUrl}/home.html#${SWAP_URL_PATH}`,
+          url: `${driver.extensionUrl}/home.html#${SWAP_URL_PATH}?swaps=true`,
         });
       },
     );
