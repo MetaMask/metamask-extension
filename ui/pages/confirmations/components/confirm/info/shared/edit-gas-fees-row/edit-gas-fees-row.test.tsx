@@ -28,10 +28,14 @@ function render({
   chainId = CHAIN_IDS.GOERLI,
   gasFeeTokens,
   selectedGasFeeToken,
+  fiatFee = '$1',
+  nativeFee = '0.001 ETH',
 }: {
   chainId?: Hex;
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
+  fiatFee?: string;
+  nativeFee?: string;
 } = {}) {
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
@@ -45,8 +49,8 @@ function render({
 
   return renderWithConfirmContextProvider(
     <EditGasFeesRow
-      fiatFee="$1"
-      nativeFee="0.001 ETH"
+      fiatFee={fiatFee}
+      nativeFee={nativeFee}
       fiatFeeWith18SignificantDigits="0.001234"
     />,
     mockStore,
