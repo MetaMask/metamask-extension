@@ -164,7 +164,7 @@ describe('useMerklClaim', () => {
     expect(result.current.isClaiming).toBe(false);
   });
 
-  it('resets isClaiming after successful claim', async () => {
+  it('keeps isClaiming true after successful claim (component unmounts on navigation)', async () => {
     mockDispatch.mockResolvedValueOnce(null);
 
     const { result } = renderHook(() =>
@@ -178,7 +178,9 @@ describe('useMerklClaim', () => {
       await result.current.claimRewards();
     });
 
-    expect(result.current.isClaiming).toBe(false);
+    // isClaiming stays true because the user is redirected to the confirmation page
+    // and the component unmounts, so there's no need to reset it
+    expect(result.current.isClaiming).toBe(true);
   });
 
   it('aborts previous request when claiming again', async () => {
