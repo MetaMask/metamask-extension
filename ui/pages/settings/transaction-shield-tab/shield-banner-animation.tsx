@@ -1,17 +1,12 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import {
-  useRive,
   Layout,
   Fit,
   Alignment,
-  useRiveFile,
   StateMachineInput,
 } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import {
-  useRiveWasmContext,
-  useRiveWasmFile,
-} from '../../../contexts/rive-wasm';
+import { useRiveWasmAnimation } from '../../../contexts/rive-wasm';
 
 // State machine and input names as constants
 const STATE_MACHINE_NAME = 'shield_banner_illustration';
@@ -29,13 +24,17 @@ const ShieldBannerAnimation = ({
   canvasClassName?: string;
   isInactive?: boolean;
 }) => {
-  const context = useRiveWasmContext();
-  const { isWasmReady, error: wasmError } = context;
-  const {
-    buffer,
-    error: bufferError,
-    loading: bufferLoading,
-  } = useRiveWasmFile('./images/riv_animations/shield_banner.riv');
+  const { rive, RiveComponent, status } = useRiveWasmAnimation({
+    url: './images/riv_animations/shield_banner.riv',
+    riveParams: {
+      stateMachines: STATE_MACHINE_NAME,
+      autoplay: false,
+      layout: new Layout({
+        fit: Fit.Contain,
+        alignment: Alignment.Center,
+      }),
+    },
+  });
 
   const inputsRef = useRef<{
     dark?: StateMachineInput;
@@ -44,33 +43,6 @@ const ShieldBannerAnimation = ({
 
   // Track if animation has been initialized (using ref to avoid triggering watcher effects)
   const isInitializedRef = useRef(false);
-
-  useEffect(() => {
-    if (wasmError) {
-      console.error('[Rive] Failed to load WASM:', wasmError);
-    }
-    if (bufferError) {
-      console.error('[Rive] Failed to load buffer:', bufferError);
-    }
-  }, [wasmError, bufferError]);
-
-  // Use the buffer parameter instead of src
-  const { riveFile, status } = useRiveFile({
-    buffer,
-  });
-
-  // Only initialize Rive after WASM is ready to avoid "source file required" error
-  // We always need to provide a valid config to useRive (hooks can't be conditional)
-  // but we control when to actually render the component
-  const { rive, RiveComponent } = useRive({
-    riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? STATE_MACHINE_NAME : undefined,
-    autoplay: false,
-    layout: new Layout({
-      fit: Fit.Contain,
-      alignment: Alignment.Center,
-    }),
-  });
 
   // Cache and initialize state machine inputs
   const cacheInputs = useCallback(() => {
@@ -90,12 +62,7 @@ const ShieldBannerAnimation = ({
 
   // Trigger the animation start when rive is loaded
   useEffect(() => {
-    const shouldInitialize =
-      rive &&
-      isWasmReady &&
-      !bufferLoading &&
-      buffer &&
-      !isInitializedRef.current;
+    const shouldInitialize = rive && !isInitializedRef.current;
     if (shouldInitialize && cacheInputs()) {
       const { dark, start } = inputsRef.current;
 
@@ -112,7 +79,7 @@ const ShieldBannerAnimation = ({
       isInitializedRef.current = true;
     }
     // it's intended to trigger the animation when the rive is loaded
-  }, [rive, isWasmReady, bufferLoading, buffer, cacheInputs]);
+  }, [rive, cacheInputs]);
 
   // Watch for changes to isInactive and update the dark toggle
   useEffect(() => {
@@ -134,22 +101,13 @@ const ShieldBannerAnimation = ({
   // Stop animation on unmount or when rive instance changes
   useEffect(() => {
     return () => {
-      if (rive) {
-        rive.cleanup();
-      }
       isInitializedRef.current = false;
     };
     // it's intended to stop the animation when the component unmounts
   }, []);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
-  if (
-    !isWasmReady ||
-    bufferLoading ||
-    !buffer ||
-    status === 'loading' ||
-    status === 'failed'
-  ) {
+  if (status !== 'ready') {
     return <Box className={containerClassName}></Box>;
   }
 

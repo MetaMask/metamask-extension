@@ -18,6 +18,7 @@ import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
 import { themes } from '@storybook/theming';
 import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
+import RiveWasmProvider from '../ui/contexts/rive-wasm';
 import './index.css';
 
 // eslint-disable-next-line
@@ -166,9 +167,11 @@ const metamaskDecorator = (story, context) => {
             en={allLocales.en}
           >
             <LegacyI18nProvider>
-              <Routes>
-                <Route path={path} element={<StoryComponent />} />
-              </Routes>
+              <RiveWasmProvider>
+                <Routes>
+                  <Route path={path} element={<StoryComponent />} />
+                </Routes>
+              </RiveWasmProvider>
             </LegacyI18nProvider>
           </I18nProvider>
         </AlertMetricsProvider>

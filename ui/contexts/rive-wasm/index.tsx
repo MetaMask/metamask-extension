@@ -2,8 +2,14 @@
  * Shared Rive WASM initialization module
  * This module ensures WASM is loaded once and can be used by multiple animation components
  */
-import { RuntimeLoader } from '@rive-app/react-canvas';
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import { RuntimeLoader, useRive } from '@rive-app/react-canvas';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useAsyncResult } from '../../hooks/useAsync';
 
 const RIVE_WASM_URL = new URL(
@@ -12,7 +18,7 @@ const RIVE_WASM_URL = new URL(
   import.meta.url,
 );
 
-export const useRiveWasmReady = () => {
+const useRiveWasmReady = () => {
   const [isWasmReady, setIsWasmReady] = useState(false);
 
   const result = useAsyncResult(async () => {
@@ -33,6 +39,8 @@ export const useRiveWasmReady = () => {
     const arrayBuffer = await response.arrayBuffer();
     (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
       arrayBuffer;
+    // Lavamoat blocks RuntimeLoader access to fetch for security reasons,
+    // so setWasmUrl won't work.
     RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
 
     // Preload the WASM
@@ -43,15 +51,12 @@ export const useRiveWasmReady = () => {
 
   return {
     isWasmReady,
-    loading: result.pending,
     error: result.error,
   };
 };
 
-// create a context only for the wasm ready state
-const RiveWasmContext = createContext<{
+type InternalRiveWasmContextValue = {
   isWasmReady: boolean;
-  loading: boolean;
   error: Error | undefined;
   urlBufferMap: Record<string, ArrayBuffer>;
   setUrlBufferCache: (url: string, buffer: ArrayBuffer) => void;
@@ -60,17 +65,24 @@ const RiveWasmContext = createContext<{
     animationName: string,
     isAnimationCompleted: boolean,
   ) => void;
-}>({
-  isWasmReady: false,
-  loading: false,
-  error: undefined,
-  urlBufferMap: {},
-  // eslint-disable-next-line no-empty-function
-  setUrlBufferCache: () => {},
+};
+
+type RiveWasmContextValue = Pick<
+  InternalRiveWasmContextValue,
+  'animationCompleted' | 'setIsAnimationCompleted'
+>;
+
+// Safe no-op fallback for render paths that only read animation completion
+// state (for example isolated tests/storybook stories) without mounting the
+// full RiveWasmProvider.
+const DEFAULT_RIVE_WASM_ANIMATION_COMPLETION: RiveWasmContextValue = {
   animationCompleted: {},
-  // eslint-disable-next-line no-empty-function
-  setIsAnimationCompleted: () => {},
-});
+  setIsAnimationCompleted: () => undefined,
+};
+
+const RiveWasmContext = createContext<InternalRiveWasmContextValue | undefined>(
+  undefined,
+);
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -103,13 +115,12 @@ export default function RiveWasmProvider({
     [setAnimationCompleted],
   );
 
-  const { isWasmReady, loading, error } = useRiveWasmReady();
+  const { isWasmReady, error } = useRiveWasmReady();
 
   return (
     <RiveWasmContext.Provider
       value={{
         isWasmReady,
-        loading,
         error,
         urlBufferMap,
         setUrlBufferCache,
@@ -122,7 +133,7 @@ export default function RiveWasmProvider({
   );
 }
 
-export const useRiveWasmContext = () => {
+const useInternalRiveWasmContext = () => {
   const context = useContext(RiveWasmContext);
   if (!context) {
     throw new Error('useRiveWasm must be used within RiveWasmProvider');
@@ -130,15 +141,26 @@ export const useRiveWasmContext = () => {
   return context;
 };
 
+export const useRiveAnimationCompletion = (): RiveWasmContextValue => {
+  const context = useContext(RiveWasmContext);
+  if (!context) {
+    return DEFAULT_RIVE_WASM_ANIMATION_COMPLETION;
+  }
+
+  const { animationCompleted, setIsAnimationCompleted } = context;
+
+  return {
+    animationCompleted,
+    setIsAnimationCompleted,
+  };
+};
+
 export const useRiveWasmFile = (url: string) => {
-  const { isWasmReady, urlBufferMap, setUrlBufferCache } = useRiveWasmContext();
+  const { urlBufferMap, setUrlBufferCache } = useInternalRiveWasmContext();
 
   const cachedBuffer = urlBufferMap[url];
 
   const result = useAsyncResult(async () => {
-    if (!isWasmReady) {
-      return undefined;
-    }
     if (cachedBuffer) {
       return cachedBuffer;
     }
@@ -149,7 +171,79 @@ export const useRiveWasmFile = (url: string) => {
     const newArrayBuffer = await response.arrayBuffer();
     setUrlBufferCache(url, newArrayBuffer);
     return newArrayBuffer;
-  }, [isWasmReady, url, setUrlBufferCache, cachedBuffer]);
+  }, [url, setUrlBufferCache, cachedBuffer]);
 
   return { buffer: result.value, loading: result.pending, error: result.error };
+};
+
+type UseRiveParams = NonNullable<Parameters<typeof useRive>[0]>;
+type UseRiveOptions = Parameters<typeof useRive>[1];
+type UseRiveOnLoadError = UseRiveParams['onLoadError'];
+export type RiveWasmAnimationStatus = 'loading' | 'ready' | 'failed';
+
+type UseRiveWasmAnimationOptions = {
+  url: string;
+  riveParams?: Omit<UseRiveParams, 'buffer' | 'src'>;
+  riveOptions?: UseRiveOptions;
+};
+
+export const useRiveWasmAnimation = ({
+  url,
+  riveParams,
+  riveOptions,
+}: UseRiveWasmAnimationOptions) => {
+  const { isWasmReady, error: wasmError } = useInternalRiveWasmContext();
+  const {
+    buffer,
+    error: bufferError,
+    loading: bufferLoading,
+  } = useRiveWasmFile(url);
+  const [riveError, setRiveError] = useState<Error | undefined>(undefined);
+
+  useEffect(() => {
+    setRiveError(undefined);
+  }, [url]);
+
+  const shouldInitializeRive = Boolean(isWasmReady && !bufferLoading && buffer);
+  useEffect(() => {
+    if (wasmError) {
+      console.error('[Rive] Failed to load WASM:', wasmError);
+    }
+    if (bufferError) {
+      console.error('[Rive] Failed to load buffer:', bufferError);
+    }
+  }, [wasmError, bufferError]);
+
+  const onLoadError = riveParams?.onLoadError;
+  const riveInitParams: UseRiveParams | null = shouldInitializeRive
+    ? {
+        ...riveParams,
+        buffer,
+        onLoadError: (...args: Parameters<NonNullable<UseRiveOnLoadError>>) => {
+          setRiveError(
+            args[0] instanceof Error
+              ? args[0]
+              : new Error('Unknown Rive initialization error'),
+          );
+          onLoadError?.(...args);
+        },
+      }
+    : null;
+
+  const riveState = useRive(riveInitParams, riveOptions);
+  const error = wasmError ?? bufferError ?? riveError;
+  let status: RiveWasmAnimationStatus = 'loading';
+  if (error) {
+    status = 'failed';
+  } else if (shouldInitializeRive) {
+    status = 'ready';
+  }
+  const rive = status === 'ready' ? riveState.rive : null;
+
+  return {
+    rive,
+    RiveComponent: riveState.RiveComponent,
+    status,
+    error,
+  };
 };
