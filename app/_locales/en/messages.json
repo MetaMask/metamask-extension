@@ -876,17 +876,23 @@
     "message": "Turn on basic functionality"
   },
   "basicFunctionalityRequired_description": {
-    "message": "This feature isn't available while basic functionality is turned off. Turn it on in $1 to continue.",
-    "description": "$1 is a link with the text 'Settings > Security and privacy'"
+    "message": "This feature isn't available while basic functionality is turned off. Use the toggle below to turn it on."
   },
   "basicFunctionalityRequired_goToHome": {
-    "message": "Back to home"
+    "message": "Go to the home page"
+  },
+  "basicFunctionalityRequired_openFeaturePage": {
+    "message": "Open the $1 page",
+    "description": "$1 is the feature name (e.g. Swap, Rewards)"
   },
   "basicFunctionalityRequired_settingsLinkText": {
     "message": "Settings > Security and privacy"
   },
   "basicFunctionalityRequired_title": {
     "message": "Basic functionality is off"
+  },
+  "basicFunctionalityRequired_toggleLabel": {
+    "message": "Basic functionality"
   },
   "bestQuote": {
     "message": "Best quote"

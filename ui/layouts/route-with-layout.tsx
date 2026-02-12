@@ -2,7 +2,7 @@ import React, { ComponentType, ReactNode } from 'react';
 import type { RouteObject } from 'react-router-dom';
 import Authenticated from '../helpers/higher-order-components/authenticated/authenticated.container';
 import Initialized from '../helpers/higher-order-components/initialized';
-import RequireBasicFunctionality from '../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
+import BasicFunctionalityRequired from '../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import type { RootLayout } from './root-layout';
 import type { LegacyLayout } from './legacy-layout';
 
@@ -16,8 +16,10 @@ export type RouteWithLayoutConfig = {
     | ComponentType<{ children: ReactNode }>;
   authenticated?: boolean;
   initialized?: boolean;
-  /** When true, redirects to the feature-unavailable screen if Basic Functionality (useExternalServices) is off. */
-  requireBasicFunctionality?: boolean;
+  /** When true, redirects to the basic-functionality-off screen if Basic Functionality (useExternalServices) is off. */
+  basicFunctionalityRequired?: boolean;
+  /** Display name for the feature (e.g. "Swap", "Rewards") when redirecting to basic-functionality-off. Used for "Open the [feature name] page" CTA. */
+  basicFunctionalityFeatureName?: string;
   children?: ReactNode;
 };
 
@@ -32,7 +34,7 @@ export type RouteWithLayoutConfig = {
  * @param config.layout - The layout to use for the route
  * @param config.authenticated - Whether to wrap with the Authenticated component
  * @param config.initialized - Whether to wrap with the Initialized component
- * @param config.requireBasicFunctionality - Whether to wrap with RequireBasicFunctionality (redirects when useExternalServices is off)
+ * @param config.basicFunctionalityRequired - Whether to wrap with BasicFunctionalityRequired (redirects when useExternalServices is off)
  * @param config.children - Nested route content
  * @returns RouteObject ready for useRoutes()
  */
@@ -46,7 +48,8 @@ export const createRouteWithLayout = (
     component: Component,
     authenticated,
     initialized,
-    requireBasicFunctionality,
+    basicFunctionalityRequired,
+    basicFunctionalityFeatureName,
     children,
   } = config;
 
@@ -64,9 +67,20 @@ export const createRouteWithLayout = (
     content = <Authenticated>{content}</Authenticated>;
   }
 
-  // Then wrap with RequireBasicFunctionality when route depends on external services
-  if (requireBasicFunctionality && content) {
-    content = <RequireBasicFunctionality>{content}</RequireBasicFunctionality>;
+  // Then wrap with BasicFunctionalityRequired when route depends on external services
+  if (basicFunctionalityRequired && content) {
+    const featureName = basicFunctionalityFeatureName?.trim();
+    if (!featureName) {
+      throw new Error(
+        `Route "${path}" has basicFunctionalityRequired set to true but no basicFunctionalityFeatureName. ` +
+          'Add a display name (e.g. "Swap", "Rewards") for the basic-functionality-off page CTA.',
+      );
+    }
+    content = (
+      <BasicFunctionalityRequired featureName={featureName}>
+        {content}
+      </BasicFunctionalityRequired>
+    );
   }
 
   // Finally wrap with Layout

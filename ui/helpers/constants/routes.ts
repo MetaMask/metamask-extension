@@ -140,8 +140,8 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 
 export const DEEP_LINK_ROUTE = '/link';
 
-/** Shown when user opens a route that requires Basic Functionality (e.g. swap, rewards) but the setting is off. */
-export const BASIC_FUNCTIONALITY_REQUIRED_ROUTE = '/feature-unavailable';
+/** Shown when Basic Functionality is off and user opens a route that requires it (e.g. swap, rewards). */
+export const BASIC_FUNCTIONALITY_OFF_ROUTE = '/basic-functionality-off';
 
 export const DEFI_ROUTE = '/defi';
 

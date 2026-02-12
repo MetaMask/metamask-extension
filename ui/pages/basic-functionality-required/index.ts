@@ -1,1 +1,1 @@
-export { BasicFunctionalityRequired } from './basic-functionality-required';
+export { BasicFunctionalityOff } from './basic-functionality-required';

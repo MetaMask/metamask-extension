@@ -1,95 +1,178 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
-import { BasicFunctionalityRequired } from './basic-functionality-required';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { BasicFunctionalityOff } from './basic-functionality-required';
 
+const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
-  useNavigate: jest.fn(),
+  useNavigate: () => mockNavigate,
+  useLocation: jest.fn(),
 }));
+
+const mockUseLocation = jest.mocked(useLocation);
 
 const I18N_KEYS = {
   title: 'basicFunctionalityRequired_title',
   description: 'basicFunctionalityRequired_description',
-  settingsLinkText: 'basicFunctionalityRequired_settingsLinkText',
   goToHome: 'basicFunctionalityRequired_goToHome',
+  toggleLabel: 'basicFunctionalityRequired_toggleLabel',
+  openFeaturePage: 'basicFunctionalityRequired_openFeaturePage',
+  off: 'off',
+  on: 'on',
 } as const;
+
+const DESCRIPTION_TEXT =
+  "This feature isn't available while basic functionality is turned off. Use the toggle below to turn it on.";
 
 jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, substitutions?: React.ReactNode[]) => {
-    const messages: Record<string, string> = {};
-    messages[I18N_KEYS.title] = 'Basic functionality is off';
-    messages[I18N_KEYS.settingsLinkText] = 'Settings > Security and privacy';
-    messages[I18N_KEYS.goToHome] = 'Back to home';
-
-    if (key === I18N_KEYS.description && substitutions?.[0]) {
-      return (
-        <>
-          This feature isn&apos;t available while basic functionality is turned
-          off. Turn it on in {substitutions[0]} to continue.
-        </>
-      );
+    const messages: Record<string, string> = {
+      [I18N_KEYS.title]: 'Basic functionality is off',
+      [I18N_KEYS.description]: DESCRIPTION_TEXT,
+      [I18N_KEYS.goToHome]: 'Go to the home page',
+      [I18N_KEYS.toggleLabel]: 'Basic functionality',
+      [I18N_KEYS.off]: 'Off',
+      [I18N_KEYS.on]: 'On',
+    };
+    if (key === I18N_KEYS.openFeaturePage && substitutions?.[0]) {
+      const name =
+        typeof substitutions[0] === 'string'
+          ? substitutions[0]
+          : String(substitutions[0]);
+      return `Open the ${name} page`;
     }
     return messages[key] ?? key;
   },
 }));
 
-const mockNavigate = jest.mocked(useNavigate);
+function renderWithStore(
+  ui: React.ReactElement,
+  { useExternalServices = false } = {},
+) {
+  const store = configureStore({
+    reducer: {
+      metamask: () => ({ useExternalServices }),
+    },
+  });
+  return render(<Provider store={store}>{ui}</Provider>);
+}
 
-describe('BasicFunctionalityRequired', () => {
+describe('BasicFunctionalityOff', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockNavigate.mockReturnValue(jest.fn());
+    mockUseLocation.mockReturnValue({
+      pathname: '/basic-functionality-off',
+      state: undefined,
+      key: '',
+      search: '',
+      hash: '',
+    } as ReturnType<typeof useLocation>);
   });
 
   it('renders title and description', () => {
-    render(<BasicFunctionalityRequired />);
+    renderWithStore(<BasicFunctionalityOff />);
 
     expect(screen.getByText('Basic functionality is off')).toBeInTheDocument();
+    expect(screen.getByText(DESCRIPTION_TEXT)).toBeInTheDocument();
+  });
+
+  it('renders inline Basic functionality toggle', () => {
+    renderWithStore(<BasicFunctionalityOff />);
+
     expect(
-      screen.getByText(
-        /This feature isn't available while basic functionality is turned off/u,
-      ),
+      screen.getByTestId('basic-functionality-off-toggle-row'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText('Settings > Security and privacy'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Basic functionality')).toBeInTheDocument();
   });
 
-  it('renders Back to home button', () => {
-    render(<BasicFunctionalityRequired />);
+  it('renders Go to the home page link', () => {
+    renderWithStore(<BasicFunctionalityOff />);
 
-    const goHomeButton = screen.getByTestId(
-      'basic-functionality-required-go-home',
-    );
-    expect(goHomeButton).toHaveTextContent('Back to home');
+    const goHome = screen.getByTestId('basic-functionality-off-go-home');
+    expect(goHome).toHaveTextContent('Go to the home page');
   });
 
-  it('navigates to home when Back to home is clicked', () => {
-    const navigate = jest.fn();
-    mockNavigate.mockReturnValue(navigate);
+  it('navigates to home when Go to the home page is clicked', () => {
+    renderWithStore(<BasicFunctionalityOff />);
+    screen.getByTestId('basic-functionality-off-go-home').click();
 
-    render(<BasicFunctionalityRequired />);
-    screen.getByTestId('basic-functionality-required-go-home').click();
-
-    expect(navigate).toHaveBeenCalledWith('/');
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
-  it('renders Settings > Security and privacy link', () => {
-    render(<BasicFunctionalityRequired />);
+  describe('with feature context from guard', () => {
+    beforeEach(() => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/basic-functionality-off',
+        state: {
+          blockedRoutePath: '/cross-chain/swaps/prepare-bridge-page',
+          featureName: 'Swap',
+        },
+        key: '',
+        search: '',
+        hash: '',
+      } as ReturnType<typeof useLocation>);
+    });
 
-    const settingsLink = screen.getByTestId(
-      'basic-functionality-required-settings-link',
-    );
-    expect(settingsLink).toHaveTextContent('Settings > Security and privacy');
+    it('renders primary CTA Open the [feature name] page', () => {
+      renderWithStore(<BasicFunctionalityOff />);
+
+      expect(
+        screen.getByTestId('basic-functionality-off-open-feature'),
+      ).toHaveTextContent('Open the Swap page');
+    });
+
+    it('disables primary CTA when Basic functionality is off', () => {
+      renderWithStore(<BasicFunctionalityOff />, {
+        useExternalServices: false,
+      });
+
+      const primaryButton = screen.getByTestId(
+        'basic-functionality-off-open-feature',
+      );
+      expect(primaryButton).toBeDisabled();
+    });
+
+    it('enables primary CTA when Basic functionality is on and navigates to blocked route when clicked', () => {
+      const store = configureStore({
+        reducer: {
+          metamask: () => ({ useExternalServices: true }),
+        },
+      });
+      render(
+        <Provider store={store}>
+          <BasicFunctionalityOff />
+        </Provider>,
+      );
+
+      const primaryButton = screen.getByTestId(
+        'basic-functionality-off-open-feature',
+      );
+      expect(primaryButton).not.toBeDisabled();
+      primaryButton.click();
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        '/cross-chain/swaps/prepare-bridge-page',
+      );
+    });
   });
 
-  it('navigates to security settings when Settings link is clicked', () => {
-    const navigate = jest.fn();
-    mockNavigate.mockReturnValue(navigate);
+  describe('without feature context (e.g. direct navigation to page)', () => {
+    it('does not render primary Open feature button', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/basic-functionality-off',
+        state: undefined,
+        key: '',
+        search: '',
+        hash: '',
+      } as ReturnType<typeof useLocation>);
 
-    render(<BasicFunctionalityRequired />);
-    screen.getByTestId('basic-functionality-required-settings-link').click();
+      renderWithStore(<BasicFunctionalityOff />);
 
-    expect(navigate).toHaveBeenCalledWith('/settings/security');
+      expect(
+        screen.queryByTestId('basic-functionality-off-open-feature'),
+      ).not.toBeInTheDocument();
+    });
   });
 });

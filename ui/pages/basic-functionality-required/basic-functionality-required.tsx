@@ -1,5 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -14,6 +15,7 @@ import {
   BoxFlexDirection,
   BoxBackgroundColor,
   BoxBorderColor,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -22,19 +24,41 @@ import {
   FlexDirection,
 } from '../../helpers/constants/design-system';
 import { Container } from '../../components/component-library/container/container';
-import { DEFAULT_ROUTE, SECURITY_ROUTE } from '../../helpers/constants/routes';
+import ToggleButton from '../../components/ui/toggle-button';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { getUseExternalServices } from '../../selectors';
+import { toggleExternalServices } from '../../store/actions';
+import type { BasicFunctionalityOffState } from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 
 const CONTAINER_STYLE = { marginTop: '111px' } as const;
 const CARD_BOX_STYLE = { width: '446px', minHeight: '592px' } as const;
 const LOGO_STYLE = { width: '160px', height: '160px' } as const;
 
 /**
- * Shown when the user opens a route that requires Basic Functionality (e.g. swap, rewards)
- * but the "Use external services" setting is off. Directs them to turn it on in Settings.
+ * Shown when Basic Functionality is off and the user opens a route that requires it (e.g. swap, rewards).
+ * Shows an inline toggle to turn it on and, when on, a primary CTA to open the blocked feature page.
  */
-export const BasicFunctionalityRequired = () => {
+export const BasicFunctionalityOff = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const useExternalServices = useSelector(getUseExternalServices);
+
+  const state = location.state as BasicFunctionalityOffState | undefined;
+  const blockedRoutePath = state?.blockedRoutePath ?? '';
+  const featureName = state?.featureName ?? '';
+  const hasFeatureContext = Boolean(blockedRoutePath && featureName);
+
+  const handleToggleBasicFunctionality = (currentValue: boolean) => {
+    dispatch(toggleExternalServices(!currentValue));
+  };
+
+  const handleOpenFeaturePage = () => {
+    if (useExternalServices && blockedRoutePath) {
+      navigate(blockedRoutePath);
+    }
+  };
 
   return (
     <Container
@@ -61,7 +85,7 @@ export const BasicFunctionalityRequired = () => {
         }}
       >
         <img
-          className="metamask-basic-functionality-required-logo"
+          className="metamask-basic-functionality-off-logo"
           alt="MetaMask logo"
           src="./images/logo/metamask-fox.svg"
           style={LOGO_STYLE}
@@ -76,31 +100,52 @@ export const BasicFunctionalityRequired = () => {
           </h1>
         </Text>
         <Box
-          data-testid="basic-functionality-required-description"
-          paddingBottom={12}
+          data-testid="basic-functionality-off-description"
+          paddingBottom={4}
         >
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {t('basicFunctionalityRequired_description', [
-              <TextButton
-                key="settings-link"
-                onClick={() => navigate(SECURITY_ROUTE)}
-                data-testid="basic-functionality-required-settings-link"
-              >
-                {t('basicFunctionalityRequired_settingsLinkText')}
-              </TextButton>,
-            ])}
+            {t('basicFunctionalityRequired_description')}
           </Text>
         </Box>
+
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          style={{ width: '100%', marginTop: 8, gap: 12, display: 'flex' }}
+          data-testid="basic-functionality-off-toggle-row"
+        >
+          <Text variant={TextVariant.BodyMd}>
+            {t('basicFunctionalityRequired_toggleLabel')}
+          </Text>
+          <ToggleButton
+            value={useExternalServices === true}
+            onToggle={handleToggleBasicFunctionality}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="basic-functionality-off-toggle"
+          />
+        </Box>
+
         <Box style={{ width: '100%', marginTop: 48 }}>
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            data-testid="basic-functionality-required-go-home"
+          {hasFeatureContext && (
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              data-testid="basic-functionality-off-open-feature"
+              onClick={handleOpenFeaturePage}
+              disabled={useExternalServices !== true}
+              style={{ width: '100%', marginBottom: 12 }}
+            >
+              {t('basicFunctionalityRequired_openFeaturePage', [featureName])}
+            </Button>
+          )}
+          <TextButton
             onClick={() => navigate(DEFAULT_ROUTE)}
-            style={{ width: '100%' }}
+            data-testid="basic-functionality-off-go-home"
           >
             {t('basicFunctionalityRequired_goToHome')}
-          </Button>
+          </TextButton>
         </Box>
       </Box>
     </Container>
