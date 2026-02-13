@@ -34,8 +34,6 @@ export function SelectedGasFeeToken() {
   const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { chainId, gasFeeTokens } = currentConfirmation;
 
-  const estimationFailed = useEstimationFailed();
-
   const { isSupported: isGaslessSupported, isSmartTransaction } =
     useIsGaslessSupported();
 
@@ -49,7 +47,6 @@ export function SelectedGasFeeToken() {
 
   const hasGasFeeTokens =
     !isQuotedSwapDisplayedInInfo &&
-    !estimationFailed &&
     isGaslessSupported &&
     Boolean(gasFeeTokens?.length) &&
     (!hasOnlyFutureNativeToken || supportsFutureNative);
