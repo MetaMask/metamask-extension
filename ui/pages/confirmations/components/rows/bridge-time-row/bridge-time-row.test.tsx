@@ -15,7 +15,8 @@ import {
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-import { BridgeTimeRow } from './bridge-time-row';
+import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
+import { BridgeTimeRow, BridgeTimeRowProps } from './bridge-time-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
@@ -24,9 +25,9 @@ jest.mock('../../../context/confirm');
 
 const mockStore = configureMockStore([]);
 
-function render() {
+function render(props: BridgeTimeRowProps = {}) {
   const state = getMockPersonalSignConfirmState();
-  return renderWithProvider(<BridgeTimeRow />, mockStore(state));
+  return renderWithProvider(<BridgeTimeRow {...props} />, mockStore(state));
 }
 
 describe('BridgeTimeRow', () => {
@@ -123,11 +124,23 @@ describe('BridgeTimeRow', () => {
     expect(getByTestId('bridge-time-value')).toHaveTextContent('< 10 sec');
   });
 
-  it('renders skeleton if quotes loading', () => {
+  it('renders skeleton with label when loading (Default variant)', () => {
     useIsTransactionPayLoadingMock.mockReturnValue(true);
 
-    const { getByTestId } = render();
+    const { getByTestId, getByText } = render();
 
     expect(getByTestId('bridge-time-row-skeleton')).toBeInTheDocument();
+    expect(getByText('Estimated time')).toBeInTheDocument();
+  });
+
+  it('renders full skeleton without label when loading (Small variant)', () => {
+    useIsTransactionPayLoadingMock.mockReturnValue(true);
+
+    const { getByTestId, queryByText } = render({
+      rowVariant: ConfirmInfoRowSize.Small,
+    });
+
+    expect(getByTestId('bridge-time-row-skeleton')).toBeInTheDocument();
+    expect(queryByText('Estimated time')).not.toBeInTheDocument();
   });
 });
