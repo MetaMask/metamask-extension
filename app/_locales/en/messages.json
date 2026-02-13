@@ -5216,8 +5216,14 @@
   "perpsAddFundsDescription": {
     "message": "Add funds to start trading perpetual contracts with leverage"
   },
+  "perpsAddMargin": {
+    "message": "Add Margin"
+  },
   "perpsAddToFavorites": {
     "message": "Add to favorites"
+  },
+  "perpsAsk": {
+    "message": "Ask"
   },
   "perpsAutoClose": {
     "message": "Auto close"
@@ -5226,8 +5232,20 @@
     "message": "available",
     "description": "is the available balance amount"
   },
+  "perpsAvailableBalance": {
+    "message": "Available balance"
+  },
+  "perpsBid": {
+    "message": "Bid"
+  },
   "perpsBuy": {
     "message": "buy"
+  },
+  "perpsCancelAllOrders": {
+    "message": "Cancel all"
+  },
+  "perpsCancelOrder": {
+    "message": "Cancel Order"
   },
   "perpsClose": {
     "message": "Close"
@@ -5304,10 +5322,13 @@
   "perpsFilterCrypto": {
     "message": "Crypto"
   },
-  "perpsFilterStocks": {
-    "message": "Stocks"
+  "perpsFilterForex": {
+    "message": "Forex"
   },
-  "perpsFilterStocksOnly": {
+  "perpsFilterNew": {
+    "message": "New"
+  },
+  "perpsFilterStocks": {
     "message": "Stocks"
   },
   "perpsFunding": {
@@ -5318,6 +5339,15 @@
   },
   "perpsFundingRate": {
     "message": "Funding Rate"
+  },
+  "perpsFundingRateTooltip": {
+    "message": "An hourly fee paid between traders to keep prices in line with the market. If the rate is positive, longs pay shorts. If negative, shorts pay longs."
+  },
+  "perpsGeoBlockedTooltip": {
+    "message": "Perpetual trading is not available in your region"
+  },
+  "perpsGiveFeedback": {
+    "message": "Give us feedback"
   },
   "perpsIncreasedPosition": {
     "message": "Increased position"
@@ -5334,6 +5364,12 @@
   "perpsLimit": {
     "message": "Limit"
   },
+  "perpsLimitPrice": {
+    "message": "Limit Price"
+  },
+  "perpsLiquidationDistance": {
+    "message": "Liq. distance"
+  },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
@@ -5345,6 +5381,9 @@
   },
   "perpsMargin": {
     "message": "Margin"
+  },
+  "perpsMarginRiskWarning": {
+    "message": "Removing margin moves your liquidation price closer. Ensure you have sufficient buffer."
   },
   "perpsMarket": {
     "message": "Market"
@@ -5358,6 +5397,15 @@
   },
   "perpsMarkets": {
     "message": "Markets"
+  },
+  "perpsMax": {
+    "message": "Max"
+  },
+  "perpsMaxRemovable": {
+    "message": "Max removable"
+  },
+  "perpsMid": {
+    "message": "Mid"
   },
   "perpsModify": {
     "message": "Modify"
@@ -5377,6 +5425,9 @@
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
+  "perpsOpenInterestTooltip": {
+    "message": "The combined value of all open positions for this perp"
+  },
   "perpsOpenLong": {
     "message": "Open Long $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
@@ -5390,6 +5441,12 @@
   },
   "perpsOpenedLong": {
     "message": "Opened long"
+  },
+  "perpsOraclePrice": {
+    "message": "Oracle Price"
+  },
+  "perpsOraclePriceTooltip": {
+    "message": "The median of external prices reported by validators, used for computing funding rate"
   },
   "perpsOrderAmount": {
     "message": "Order Amount"
@@ -5412,14 +5469,24 @@
   "perpsRecentActivity": {
     "message": "Recent Activity"
   },
+  "perpsRemoveMargin": {
+    "message": "Remove Margin"
+  },
   "perpsReturn": {
     "message": "Return"
+  },
+  "perpsSaveChanges": {
+    "message": "Save Changes",
+    "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
     "message": "Search markets"
   },
   "perpsSeeAll": {
     "message": "See All"
+  },
+  "perpsSeeAllPerps": {
+    "message": "See all Perps"
   },
   "perpsSell": {
     "message": "sell"
@@ -5433,8 +5500,20 @@
   "perpsSortFundingRate": {
     "message": "Funding rate"
   },
+  "perpsSortFundingRateHighToLow": {
+    "message": "Funding rate: high to low"
+  },
+  "perpsSortFundingRateLowToHigh": {
+    "message": "Funding rate: low to high"
+  },
   "perpsSortOpenInterest": {
     "message": "Open interest"
+  },
+  "perpsSortOpenInterestHighToLow": {
+    "message": "Open interest: high to low"
+  },
+  "perpsSortOpenInterestLowToHigh": {
+    "message": "Open interest: low to high"
   },
   "perpsSortPriceChangeHighToLow": {
     "message": "Price change: high to low"
@@ -5444,6 +5523,12 @@
   },
   "perpsSortVolume": {
     "message": "Volume"
+  },
+  "perpsSortVolumeHighToLow": {
+    "message": "Volume: high to low"
+  },
+  "perpsSortVolumeLowToHigh": {
+    "message": "Volume: low to high"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
@@ -5474,6 +5559,18 @@
   },
   "perpsStatusTriggered": {
     "message": "Triggered"
+  },
+  "perpsStopLoss": {
+    "message": "Stop Loss",
+    "description": "Label for stop loss price input"
+  },
+  "perpsSubmitting": {
+    "message": "Submitting...",
+    "description": "Loading text shown while an order is being submitted"
+  },
+  "perpsTakeProfit": {
+    "message": "Take Profit",
+    "description": "Label for take profit price input"
   },
   "perpsTotalBalance": {
     "message": "Total Balance"
