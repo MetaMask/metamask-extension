@@ -16,9 +16,6 @@ import { getSelectedInternalAccount } from './accounts';
 import { getSelectedAccountGroupMultichainTransactions } from './multichain-transactions';
 import { EMPTY_ARRAY } from './shared';
 
-// Time window for "recent" transactions (5 minutes)
-const RECENT_TRANSACTION_TIME_WINDOW_MS = 5 * 60 * 1000;
-
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
   if (tx.txParams?.from?.toLowerCase() !== selectedAddress) {
@@ -31,7 +28,11 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   return true;
 }
 
-export const getPendingTransactionGroups = createSelector(
+// Returns transaction groups from local Redux state that may not be in the API yet.
+// Includes:
+// - Pending transactions (not on-chain yet)
+// - Locally submitted transactions (have actionId)
+export const getLocalTransactionGroups = createSelector(
   getTransactions,
   getSelectedInternalAccount,
   (transactions, selectedAccount): TransactionGroup[] => {
@@ -45,40 +46,12 @@ export const getPendingTransactionGroups = createSelector(
       if (!isFromSelectedAccount(tx, selectedAddress)) {
         return false;
       }
-      // Ported from pendingStatusSortedTransactionsSelector
-      return tx.status in PENDING_STATUS_HASH;
-    });
-
-    if (!filtered.length) {
-      return EMPTY_ARRAY as unknown as TransactionGroup[];
-    }
-    return groupAndSortTransactionsByNonce(filtered) as TransactionGroup[];
-  },
-);
-
-export const getRecentTransactionGroups = createSelector(
-  getTransactions,
-  getSelectedInternalAccount,
-  (transactions, selectedAccount): TransactionGroup[] => {
-    if (!transactions?.length || !selectedAccount?.address) {
-      return EMPTY_ARRAY as unknown as TransactionGroup[];
-    }
-
-    const now = Date.now();
-    const cutoffTime = now - RECENT_TRANSACTION_TIME_WINDOW_MS;
-    const selectedAddress = selectedAccount.address.toLowerCase();
-
-    const filtered = transactions.filter((tx) => {
-      if (!isFromSelectedAccount(tx, selectedAddress)) {
-        return false;
-      }
-      // Ported from pendingStatusSortedTransactionsSelector
-      if (tx.status in PENDING_STATUS_HASH) {
-        return false;
-      }
-      // Include if recently submitted (use submittedTime, fallback to time)
-      const txTime = tx.submittedTime || tx.time || 0;
-      return txTime >= cutoffTime;
+      // Include pending transactions
+      // or locally submitted transactions (have actionId or origin=metamask)
+      const isPending = tx.status in PENDING_STATUS_HASH;
+      const hasActionId = tx.actionId !== undefined;
+      const isLocalOrigin = tx.origin === 'metamask';
+      return isPending || hasActionId || isLocalOrigin;
     });
 
     if (!filtered.length) {
@@ -117,7 +90,7 @@ export const getMarketRates = createSelector(
   },
 );
 
-export const getNonEvmChainIds = (
+const getNonEvmChainIds = (
   enabledNetworkMap: MetaMaskReduxState['metamask']['enabledNetworkMap'],
 ) => {
   return Object.entries(enabledNetworkMap)
@@ -129,7 +102,7 @@ export const getNonEvmChainIds = (
     );
 };
 
-export const getRawNonEvmTransactions = (
+export const getNonEvmTransactions = (
   state: MetaMaskReduxState,
 ): Transaction[] => {
   const nonEvmChainIds = getNonEvmChainIds(state.metamask.enabledNetworkMap);

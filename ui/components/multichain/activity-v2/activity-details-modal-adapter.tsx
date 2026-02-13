@@ -5,13 +5,13 @@ import type {
   TransactionViewModel,
   TransactionGroup,
 } from '../../../../shared/acme-controller/types';
-import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
+import { TransactionDetailsModal as LegacyTransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { PAY_TRANSACTION_TYPES } from '../../../pages/confirmations/constants/pay';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { getStatusKey } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import TransactionListItemDetails from '../../app/transaction-list-item-details';
+import LegacyTransactionListItemDetails from '../../app/transaction-list-item-details';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
 
@@ -108,7 +108,7 @@ const ActivityDetailsModalAdapterContent = ({
 
   if (isPayType) {
     return (
-      <TransactionDetailsModal
+      <LegacyTransactionDetailsModal
         transactionMeta={transaction}
         onClose={onClose}
       />
@@ -132,7 +132,7 @@ const ActivityDetailsModalAdapterContent = ({
       : `0x${Number(transaction.chainId).toString(16)}`;
 
   return (
-    <TransactionListItemDetails
+    <LegacyTransactionListItemDetails
       title={modalTitle}
       onClose={onClose}
       transactionGroup={syntheticGroup}

@@ -25,12 +25,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
 
   const title = useGetTitle(transaction);
   const { amount, symbol } = getTransferAmount(transaction.amounts ?? {});
-
-  // TODO: marketRates for non-EVM chains
-  const isEvmChain = !chainId.includes(':');
-  const fiatAmount = isEvmChain
-    ? calculateFiatFromMarketRates(transaction, marketRates)
-    : null;
+  const fiatAmount = calculateFiatFromMarketRates(transaction, marketRates);
 
   const transactionStatus =
     status === TransactionStatus.failed

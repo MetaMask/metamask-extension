@@ -1,5 +1,5 @@
 import React from 'react';
-import TransactionListItem from '../../app/transaction-list-item';
+import LegacyTransactionListItem from '../../app/transaction-list-item';
 import { isTransactionEarliestNonce } from '../../../hooks/useEarliestNonceByChain';
 import { TransactionGroup } from '../../../../shared/acme-controller/types';
 
@@ -8,8 +8,8 @@ type Props = {
   earliestNonceByChain: Record<string, number>;
 };
 
-// Thin wrapper around v1's TransactionListItem for pending transactions
-export const PendingActivityItem = ({
+// Wrapper around v1's TransactionListItem for local (Redux-sourced) transactions
+export const LocalActivityItem = ({
   transactionGroup,
   earliestNonceByChain,
 }: Props) => {
@@ -23,7 +23,7 @@ export const PendingActivityItem = ({
   );
 
   return (
-    <TransactionListItem
+    <LegacyTransactionListItem
       transactionGroup={transactionGroup}
       isEarliestNonce={isEarliestNonce}
       chainId={chainId}

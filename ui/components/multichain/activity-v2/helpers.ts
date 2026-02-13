@@ -8,8 +8,7 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 
 export type FlattenedItem =
   | { type: 'date-header'; date: number }
-  | { type: 'pending'; transactionGroup: TransactionGroup; id: string }
-  | { type: 'local-completed'; transactionGroup: TransactionGroup; id: string }
+  | { type: 'local'; transactionGroup: TransactionGroup; id: string }
   | { type: 'completed'; data: TransactionViewModel; id: string }
   | { type: 'non-evm'; transaction: Transaction; id: string };
 
@@ -73,9 +72,10 @@ export function getTransferAmount(amounts: {
 }
 
 // NOTE
-export function filterLocalCompletedNotInApi(
-  localCompletedGroups: TransactionGroup[],
+export function filterLocalNotInApi(
+  localGroups: TransactionGroup[],
   apiTransactions: TransactionViewModel[],
+  pendingStatusHash: Record<string, boolean>,
 ): TransactionGroup[] {
   // Build a set of transaction hashes from API for deduplication
   const apiHashes = new Set(
@@ -84,35 +84,33 @@ export function filterLocalCompletedNotInApi(
       .filter((hash): hash is string => Boolean(hash)),
   );
 
-  // Only include those NOT already in API
-  // Transactions without a hash (e.g. failed relay transactions) are always included
-  // since they can't exist in the API
-  return localCompletedGroups.filter((group) => {
-    const hash = group.primaryTransaction.hash?.toLowerCase();
-    return !hash || !apiHashes.has(hash);
+  return localGroups.filter((group) => {
+    const tx = group.primaryTransaction;
+    const isPending = tx.status in pendingStatusHash;
+    // Pending transactions are always included (not in API yet)
+    if (isPending) {
+      return true;
+    }
+    // Completed transactions: only include if NOT already in API
+    // Transactions without a hash (e.g. failed relay transactions) are always included
+    const hash = tx.hash?.toLowerCase();
+    const inApi = hash && apiHashes.has(hash);
+    return !hash || !inApi;
   });
 }
 
 type MergedItem =
-  | { type: 'pending'; group: TransactionGroup; time: number }
-  | { type: 'local-completed'; group: TransactionGroup; time: number }
+  | { type: 'local'; group: TransactionGroup; time: number }
   | { type: 'completed'; tx: TransactionViewModel; time: number }
   | { type: 'non-evm'; transaction: Transaction; time: number };
 
 export function mergeAllTransactionsByTime(
-  pendingGroups: TransactionGroup[],
-  localCompletedGroups: TransactionGroup[],
+  localTransactionGroups: TransactionGroup[],
   apiTransactions: TransactionViewModel[],
   nonEvmTransactions: Transaction[] = [],
 ): MergedItem[] {
-  const pendingItems = pendingGroups.map((group) => ({
-    type: 'pending' as const,
-    group,
-    time: group.primaryTransaction.time ?? 0,
-  }));
-
-  const localCompletedItems = localCompletedGroups.map((group) => ({
-    type: 'local-completed' as const,
+  const localItems = localTransactionGroups.map((group) => ({
+    type: 'local' as const,
     group,
     time: group.primaryTransaction.time ?? 0,
   }));
@@ -130,12 +128,9 @@ export function mergeAllTransactionsByTime(
   }));
 
   // Sort all by time (newest first)
-  return [
-    ...pendingItems,
-    ...localCompletedItems,
-    ...completedItems,
-    ...nonEvmItems,
-  ].sort((a, b) => b.time - a.time);
+  return [...localItems, ...completedItems, ...nonEvmItems].sort(
+    (a, b) => b.time - a.time,
+  );
 }
 
 export function groupAndFlattenMergedTransactions(
@@ -158,15 +153,9 @@ export function groupAndFlattenMergedTransactions(
     }
 
     // Add the transaction item based on type
-    if (item.type === 'pending') {
+    if (item.type === 'local') {
       flattened.push({
-        type: 'pending',
-        id: item.group.primaryTransaction.id,
-        transactionGroup: item.group,
-      });
-    } else if (item.type === 'local-completed') {
-      flattened.push({
-        type: 'local-completed',
+        type: 'local',
         id: item.group.primaryTransaction.id,
         transactionGroup: item.group,
       });

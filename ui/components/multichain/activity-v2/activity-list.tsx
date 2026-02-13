@@ -8,10 +8,10 @@ import { isCrossChain } from '@metamask/bridge-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
+import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 import {
-  getRawNonEvmTransactions,
-  getPendingTransactionGroups,
-  getRecentTransactionGroups,
+  getNonEvmTransactions,
+  getLocalTransactionGroups,
   getFirstEvmAddress,
 } from '../../../selectors/activity';
 import { getUseExternalServices } from '../../../selectors/selectors';
@@ -19,18 +19,18 @@ import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/acme-controller/queries';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
-import { MultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
-import MultichainBridgeTransactionListItem from '../../app/multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
+import { MultichainTransactionDetailsModal as LegacyMultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
+import LegacyMultichainBridgeListItem from '../../app/multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
-  filterLocalCompletedNotInApi,
+  filterLocalNotInApi,
   type FlattenedItem,
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
-import { PendingActivityItem } from './pending-activity-item';
+import { LocalActivityItem } from './local-activity-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
 
 const ITEM_HEIGHT = 70;
@@ -47,22 +47,10 @@ export const ActivityList = () => {
   const [selectedNonEvmTransaction, setSelectedNonEvmTransaction] =
     useState<Transaction | null>(null);
 
-  // Activity tab should show ALL transactions regardless of selected chain/network
+  // TODO: use correct address and network filter once the network selector is back
   const evmAddress = useSelector(getFirstEvmAddress) || '';
 
-  // Non-EVM transactions
-  const nonEvmTransactions = useSelector(getRawNonEvmTransactions);
-
-  // Pending transactions (unapproved/approved/submitted) - not in API
-  const pendingTransactionGroups = useSelector(getPendingTransactionGroups);
-
-  // Recently confirmed transactions - may not be in API yet
-  const recentTransactionGroups = useSelector(getRecentTransactionGroups);
-
-  // Bridge history for matching non-EVM transactions to bridge operations.
-  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
-
-  // EVM transactions from API
+  // EVM transactions - from API
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       queries.transactions(evmAddress, {
@@ -70,36 +58,39 @@ export const ActivityList = () => {
       }),
     );
 
+  // Local transactions - may not be in API yet
+  const localTransactions = useSelector(getLocalTransactionGroups);
+
+  // Non-EVM transactions - not in API
+  const nonEvmTransactions = useSelector(getNonEvmTransactions);
+
+  // Bridge history for matching non-EVM transactions to bridge operations
+  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
+
   // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {
     const evmTransactions =
       data?.pages?.flatMap((page) => page.data ?? []) ?? [];
 
-    // Filter local completed transactions not yet in API (deduped by hash)
-    const localCompletedNotInApi = filterLocalCompletedNotInApi(
-      recentTransactionGroups,
+    // Filter local transactions: keep pending + completed-not-in-API
+    const localTransactionsNotInApi = filterLocalNotInApi(
+      localTransactions,
       evmTransactions,
+      PENDING_STATUS_HASH,
     );
 
-    // Merge all four types by time:
-    // - pending (TransactionGroup) → rendered by PendingActivityItem
-    // - local-completed (TransactionGroup) → rendered by PendingActivityItem
+    // Merge all three types by time:
+    // - local (TransactionGroup) → rendered by LocalActivityItem
     // - completed (TransactionViewModel) → rendered by ActivityListItem
-    // - non-evm (Transaction) → rendered by old MultichainTransactionListItem pattern
+    // - non-evm (Transaction) → rendered by either LegacyMultichainBridgeListItem or NonEvmActivityListItem
     const mergedByTime = mergeAllTransactionsByTime(
-      pendingTransactionGroups,
-      localCompletedNotInApi,
+      localTransactionsNotInApi,
       evmTransactions,
       nonEvmTransactions,
     );
 
     return groupAndFlattenMergedTransactions(mergedByTime);
-  }, [
-    data,
-    nonEvmTransactions,
-    pendingTransactionGroups,
-    recentTransactionGroups,
-  ]);
+  }, [data, nonEvmTransactions, localTransactions]);
 
   const virtualizer = useVirtualizer({
     count: flattenedItems.length,
@@ -142,9 +133,7 @@ export const ActivityList = () => {
     isFetchingNextPage,
   ]);
 
-  const earliestNonceByChain = useEarliestNonceByChain(
-    pendingTransactionGroups,
-  );
+  const earliestNonceByChain = useEarliestNonceByChain(localTransactions);
 
   const handleItemClick = (transaction: TransactionViewModel) => {
     setSelectedItem(transaction);
@@ -171,9 +160,9 @@ export const ActivityList = () => {
       );
     }
 
-    if (item.type === 'pending' || item.type === 'local-completed') {
+    if (item.type === 'local') {
       return (
-        <PendingActivityItem
+        <LocalActivityItem
           transactionGroup={item.transactionGroup}
           earliestNonceByChain={earliestNonceByChain}
         />
@@ -192,7 +181,7 @@ export const ActivityList = () => {
         )
       ) {
         return (
-          <MultichainBridgeTransactionListItem
+          <LegacyMultichainBridgeListItem
             transaction={item.transaction}
             bridgeHistoryItem={matchedBridgeHistoryItem}
             toggleShowDetails={(tx) => setSelectedNonEvmTransaction(tx)}
@@ -228,7 +217,7 @@ export const ActivityList = () => {
 
             return (
               <div
-                key={virtualItem.key.toString()}
+                key={String(virtualItem.key)}
                 className="absolute top-0 left-0 w-full"
                 data-index={virtualItem.index}
                 ref={virtualizer.measureElement}
@@ -255,7 +244,7 @@ export const ActivityList = () => {
         />
 
         {selectedNonEvmTransaction && (
-          <MultichainTransactionDetailsModal
+          <LegacyMultichainTransactionDetailsModal
             transaction={selectedNonEvmTransaction}
             onClose={handleNonEvmModalClose}
           />
