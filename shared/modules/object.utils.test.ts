@@ -68,5 +68,16 @@ describe('object.utils', () => {
 
       expect(result).toStrictEqual({});
     });
+
+    it('masks all properties to type markers when given an empty mask', () => {
+      const obj = { a: 1, b: 'hello', c: { nested: true } };
+      const result = maskObject(obj, {});
+
+      expect(result).toStrictEqual({
+        a: 'number',
+        b: 'string',
+        c: 'object',
+      });
+    });
   });
 });
