@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - 'release/[0-9]*.[0-9]*.[0-9]*'
+      - '!release/[0-9]*.[0-9]*.[0-9]*-Changelog' # this is necessary right now, but should be removable soon
 
 concurrency:
   group: update-release-changelog-${{ github.ref }}
