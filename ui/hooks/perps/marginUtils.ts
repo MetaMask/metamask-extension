@@ -6,7 +6,15 @@
  * See: https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margin-and-pnl
  */
 
-import { MARGIN_ADJUSTMENT_CONFIG } from '@metamask/perps-controller';
+/**
+ * Margin adjustment configuration constants
+ * Mirrored from @metamask/perps-controller
+ */
+const MARGIN_ADJUSTMENT_CONFIG = {
+  LiquidationRiskThreshold: 1.2, // 20% buffer before liquidation - triggers danger state
+  LiquidationWarningThreshold: 1.5, // 50% buffer before liquidation - triggers warning state
+  MarginRemovalSafetyBuffer: 0.1, // 10% safety buffer for margin removal
+} as const;
 
 export type RiskLevel = 'safe' | 'warning' | 'danger';
 
