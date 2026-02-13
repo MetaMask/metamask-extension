@@ -46,6 +46,9 @@ export type PerpsControllerProviderProps = {
  * controller access (uses mock implementation).
  *
  * @param props - Component props
+ * @param props.children
+ * @param props.controller
+ * @param props.loadingFallback
  * @example
  * ```tsx
  * <PerpsControllerProvider>
