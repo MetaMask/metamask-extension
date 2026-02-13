@@ -2509,14 +2509,14 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger.call(
           `${dataService}:getActivity`,
           ...options.queryKey.slice(1),
-          options,
+          options.pageParam,
         );
 
       accumulator[`${dataService}:getAssets`] = (options) =>
         this.controllerMessenger.call(
           `${dataService}:getAssets`,
           ...options.queryKey.slice(1),
-          options,
+          options.pageParam,
         );
 
       accumulator[`${dataService}:subscribe`] = (queryKey) =>
