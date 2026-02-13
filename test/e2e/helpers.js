@@ -347,7 +347,7 @@ async function withFixtures(options, testSuite) {
       ? 'Request going to a live server ============'
       : 'Request sent to mock server ============';
     mockServer.on('request', (req) => {
-      console.log(requestLogLabel, req.url, false);
+      console.log(`\x1b[32m${requestLogLabel} ${req.url}\x1b[0m`);
     });
 
     await setManifestFlags(manifestFlags);
