@@ -115,10 +115,7 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
 } from './token-balances-controller-messenger';
-import {
-  getStaticAssetsServiceInitMessenger,
-  getStaticAssetsServiceMessenger,
-} from './static-assets-service-messenger';
+import { getStaticAssetsServiceMessenger } from './static-assets-service-messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
 import {
   getCurrencyRateControllerInitMessenger,
@@ -381,14 +378,8 @@ export {
   getTokenBalancesControllerMessenger,
   getTokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
-export type {
-  StaticAssetsServiceMessenger,
-  StaticAssetsServiceInitMessenger,
-} from './static-assets-service-messenger';
-export {
-  getStaticAssetsServiceMessenger,
-  getStaticAssetsServiceInitMessenger,
-} from './static-assets-service-messenger';
+export type { StaticAssetsServiceMessenger } from './static-assets-service-messenger';
+export { getStaticAssetsServiceMessenger } from './static-assets-service-messenger';
 export type {
   TokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
@@ -686,7 +677,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   StaticAssetsService: {
     getMessenger: getStaticAssetsServiceMessenger,
-    getInitMessenger: getStaticAssetsServiceInitMessenger,
+    getInitMessenger: noop,
   },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,
