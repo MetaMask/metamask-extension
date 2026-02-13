@@ -1,6 +1,6 @@
 'use no memo';
 
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
@@ -166,77 +166,6 @@ export function useInsufficientPayTokenBalanceAlert({
       totalSourceNetworkFeeRaw,
     ],
   );
-
-  useEffect(() => {
-    if (currentConfirmation?.type !== TransactionType.perpsDeposit) {
-      return;
-    }
-
-    const payload = {
-      transactionId: currentConfirmation?.id,
-      payToken: payToken
-        ? {
-            address: payToken.address,
-            chainId: payToken.chainId,
-            balanceUsd,
-            balanceRaw: payTokenBalanceRaw,
-          }
-        : null,
-      requiredTokens: (requiredTokens ?? []).map((token) => ({
-        address: token.address,
-        chainId: token.chainId,
-        amountUsd: token.amountUsd,
-        skipIfBalance: token.skipIfBalance,
-      })),
-      pendingAmountUsd,
-      isMax,
-      totals: totals
-        ? {
-            sourceAmountRaw: totals.sourceAmount.raw,
-            sourceFeeRaw: totals.fees.sourceNetwork.max.raw,
-            isSourceGasFeeToken: totals.fees.isSourceGasFeeToken,
-          }
-        : null,
-      nativeToken: {
-        address: nativeTokenAddress,
-        balanceRaw: nativeBalanceRaw,
-      },
-      checks: {
-        isInsufficientForInput,
-        isInsufficientForFees,
-        isInsufficientForSourceNetwork,
-      },
-      isEffectiveSourceGasFeeToken,
-      isPerpsPayTokenRequiredToken,
-    };
-
-    console.info('[PerpsDepositDebug] pay-token-balance-alert inputs', payload);
-
-    if (
-      isInsufficientForInput ||
-      isInsufficientForFees ||
-      isInsufficientForSourceNetwork
-    ) {
-      console.warn('[PerpsDepositDebug] blocking-validation', payload);
-    }
-  }, [
-    balanceUsd,
-    currentConfirmation?.id,
-    currentConfirmation?.type,
-    isEffectiveSourceGasFeeToken,
-    isInsufficientForFees,
-    isInsufficientForInput,
-    isInsufficientForSourceNetwork,
-    isMax,
-    isPerpsPayTokenRequiredToken,
-    nativeBalanceRaw,
-    nativeTokenAddress,
-    payToken,
-    payTokenBalanceRaw,
-    pendingAmountUsd,
-    requiredTokens,
-    totals,
-  ]);
 
   return useMemo(() => {
     const baseAlert = {
