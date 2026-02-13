@@ -369,7 +369,7 @@
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/seedless-onboarding-controller": "^7.1.0",
+    "@metamask/seedless-onboarding-controller": "^8.0.0",
     "@metamask/selected-network-controller": "^25.0.0",
     "@metamask/shield-controller": "^5.0.1",
     "@metamask/signature-controller": "^39.0.1",
