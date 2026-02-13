@@ -35,7 +35,11 @@ const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
 
 const middleware = [thunk];
 const defaultState = {
-  appState: {},
+  appState: {
+    modal: {
+      modalState: {},
+    },
+  },
   metamask: {
     currentLocale: 'test',
     networkConfigurationsByChainId: {
@@ -733,6 +737,49 @@ describe('Actions', () => {
 
       expect(background.getLedgerAppConfiguration.callCount).toStrictEqual(1);
       expect(result).toStrictEqual(mockConfiguration);
+    });
+  });
+
+  describe('#getAppNameAndVersion', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getAppNameAndVersion in background', async () => {
+      const mockResponse = { appName: 'Ethereum', version: '1.10.4' };
+
+      background.getAppNameAndVersion.resolves(mockResponse);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getAppNameAndVersion();
+
+      expect(background.getAppNameAndVersion.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockResponse);
+    });
+  });
+
+  describe('#getLedgerPublicKey', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls getLedgerPublicKey in background with hdPath', async () => {
+      const mockResponse = {
+        publicKey: '0x1234',
+        address: '0xabcd',
+        chainCode: '0x5678',
+      };
+      const hdPath = "m/44'/60'/0'/0/0";
+
+      background.getLedgerPublicKey.resolves(mockResponse);
+
+      setBackgroundConnection(background);
+
+      const result = await actions.getLedgerPublicKey(hdPath);
+
+      expect(background.getLedgerPublicKey.callCount).toStrictEqual(1);
+      expect(result).toStrictEqual(mockResponse);
     });
   });
 
