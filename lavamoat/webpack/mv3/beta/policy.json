@@ -387,38 +387,6 @@
         "ethers>@ethersproject/properties": true
       }
     },
-    "@headlessui/react": {
-      "globals": {
-        "Event": true,
-        "HTMLElement": true,
-        "HTMLFieldSetElement": true,
-        "HTMLIFrameElement": true,
-        "HTMLLegendElement": true,
-        "Node": true,
-        "ResizeObserver": true,
-        "URL": true,
-        "addEventListener": true,
-        "cancelAnimationFrame": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "document": true,
-        "getComputedStyle": true,
-        "navigator.maxTouchPoints": true,
-        "navigator.platform": true,
-        "navigator.userAgent": true,
-        "pageYOffset": true,
-        "queueMicrotask": true,
-        "removeEventListener": true,
-        "requestAnimationFrame": true,
-        "scrollTo": true,
-        "scrollY": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "react": true,
-        "react-dom": true
-      }
-    },
     "@keystonehq/bc-ur-registry-eth": {
       "globals": {
         "Buffer.from": true

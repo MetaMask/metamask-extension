@@ -526,46 +526,6 @@
         "process": true
       }
     },
-    "@headlessui/react": {
-      "globals": {
-        "Event": true,
-        "HTMLButtonElement": true,
-        "HTMLElement": true,
-        "HTMLFieldSetElement": true,
-        "HTMLIFrameElement": true,
-        "HTMLLegendElement": true,
-        "Node": true,
-        "NodeFilter.FILTER_ACCEPT": true,
-        "NodeFilter.FILTER_REJECT": true,
-        "NodeFilter.FILTER_SKIP": true,
-        "NodeFilter.SHOW_ELEMENT": true,
-        "ResizeObserver": true,
-        "URL": true,
-        "addEventListener": true,
-        "cancelAnimationFrame": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.info": true,
-        "console.warn": true,
-        "document": true,
-        "getComputedStyle": true,
-        "navigator.maxTouchPoints": true,
-        "navigator.platform": true,
-        "navigator.userAgent": true,
-        "pageYOffset": true,
-        "queueMicrotask": true,
-        "removeEventListener": true,
-        "requestAnimationFrame": true,
-        "scrollTo": true,
-        "scrollY": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "process": true,
-        "react": true,
-        "react-dom": true
-      }
-    },
     "@open-rpc/schema-utils-js>@json-schema-tools/dereferencer": {
       "packages": {
         "@open-rpc/schema-utils-js>@json-schema-tools/reference-resolver": true,
