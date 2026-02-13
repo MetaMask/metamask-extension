@@ -271,6 +271,21 @@ export async function assertSignatureRejectedMetrics({
   decodingDescription,
   requestedThrough,
 }: AssertSignatureMetricsOptions) {
+  console.log('assertSignatureRejectedMetrics', {
+    signatureType,
+    primaryType,
+    uiCustomizations,
+    location,
+    expectedProps,
+    withAnonEvents,
+    securityAlertReason,
+    securityAlertResponse,
+    securityAlertSource,
+    decodingChangeTypes,
+    decodingResponse,
+    decodingDescription,
+    requestedThrough,
+  });
   const events = await getEventPayloads(driver, mockedEndpoints);
   const signatureEventProperty = getSignatureEventProperty(
     signatureType,

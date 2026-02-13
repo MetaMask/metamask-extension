@@ -24,7 +24,7 @@ import {
   SignatureType,
 } from './signature-helpers';
 
-describe.only('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
+describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
     await withSignatureFixtures(
       this.test?.fullTitle(),

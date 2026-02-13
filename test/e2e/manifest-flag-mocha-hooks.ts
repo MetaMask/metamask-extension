@@ -23,6 +23,7 @@ import { folder, getManifestVersion } from './set-manifest-flags';
 const originalConsoleLog = console.log;
 const greenColor = '\x1b[32m';
 const resetColor = '\x1b[0m';
+const bold = '\x1b[1m';
 
 console.log = (...args: unknown[]) => {
   // Check if last argument is a boolean (color flag)
@@ -49,7 +50,7 @@ console.log = (...args: unknown[]) => {
 
   // Apply green color if enabled, otherwise use default (white)
   if (enableColor) {
-    originalConsoleLog(`${greenColor}${message}${resetColor}`);
+    originalConsoleLog(`${bold}${greenColor}${message}${resetColor}`);
   } else {
     originalConsoleLog(message);
   }
