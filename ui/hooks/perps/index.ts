@@ -1,5 +1,5 @@
 export { usePerpsOrderForm } from './usePerpsOrderForm';
-export { usePerpsEligibility } from './usePerpsEligibility.mock';
+export { usePerpsEligibility } from './usePerpsEligibility';
 export type {
   UsePerpsOrderFormOptions,
   UsePerpsOrderFormReturn,
