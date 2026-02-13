@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Mock implementation of PerpsController for UI development
  *
@@ -23,7 +24,7 @@ class MockPerpsController {
 
   // Mock messenger for state change subscriptions
   public messenger = {
-    subscribe: (event: string, handler: (state: unknown) => void) => {
+    subscribe: (event: string) => {
       console.log(`[MockPerpsController] Subscribed to event: ${event}`);
       // Return unsubscribe function
       return () => {
@@ -38,6 +39,10 @@ class MockPerpsController {
 
   /**
    * Cancel a single order
+   *
+   * @param options0
+   * @param options0.orderId
+   * @param options0.symbol
    */
   async cancelOrder({
     orderId,
@@ -56,6 +61,9 @@ class MockPerpsController {
 
   /**
    * Cancel multiple orders or all orders
+   *
+   * @param options0
+   * @param options0.cancelAll
    */
   async cancelOrders({ cancelAll }: { cancelAll: boolean }): Promise<void> {
     console.log(`[MockPerpsController] Canceling all orders: ${cancelAll}`);
@@ -65,8 +73,15 @@ class MockPerpsController {
   /**
    * Subscribe to positions updates
    * Returns an unsubscribe function
+   *
+   * @param options0
+   * @param options0.callback
    */
-  subscribeToPositions({ callback }: { callback: (positions: any[]) => void }) {
+  subscribeToPositions({
+    callback,
+  }: {
+    callback: (positions: unknown[]) => void;
+  }) {
     // In the mock, we don't actually subscribe to anything
     // The stream manager will handle providing mock data
     console.log('[MockPerpsController] Subscribed to positions');
@@ -80,8 +95,11 @@ class MockPerpsController {
   /**
    * Subscribe to orders updates
    * Returns an unsubscribe function
+   *
+   * @param options0
+   * @param options0.callback
    */
-  subscribeToOrders({ callback }: { callback: (orders: any[]) => void }) {
+  subscribeToOrders({ callback }: { callback: (orders: unknown[]) => void }) {
     console.log('[MockPerpsController] Subscribed to orders');
     return () => {
       console.log('[MockPerpsController] Unsubscribed from orders');
@@ -91,8 +109,12 @@ class MockPerpsController {
   /**
    * Subscribe to account updates
    * Returns an unsubscribe function
+   *
+   * @param options0
+   * @param options0.callback
    */
-  subscribeToAccount({ callback }: { callback: (account: any) => void }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  subscribeToAccount({ callback }: { callback: (account: unknown) => void }) {
     console.log('[MockPerpsController] Subscribed to account');
     return () => {
       console.log('[MockPerpsController] Unsubscribed from account');
@@ -102,6 +124,12 @@ class MockPerpsController {
   /**
    * Subscribe to price updates
    * Returns an unsubscribe function
+   *
+   * @param options0
+   * @param options0.symbols
+   * @param options0.includeMarketData
+   * @param options0.callback
+   * @param options0.throttleMs
    */
   subscribeToPrices({
     symbols,
@@ -111,7 +139,7 @@ class MockPerpsController {
   }: {
     symbols: string[];
     includeMarketData?: boolean;
-    callback: (prices: any[]) => void;
+    callback: (prices: unknown[]) => void;
     throttleMs?: number;
   }) {
     console.log(
@@ -128,6 +156,12 @@ class MockPerpsController {
   /**
    * Subscribe to order book updates
    * Returns an unsubscribe function
+   *
+   * @param options0
+   * @param options0.symbol
+   * @param options0.levels
+   * @param options0.callback
+   * @param options0.throttleMs
    */
   subscribeToOrderBook({
     symbol,
@@ -137,7 +171,7 @@ class MockPerpsController {
   }: {
     symbol: string;
     levels: number;
-    callback: (orderBook: any) => void;
+    callback: (orderBook: unknown) => void;
     throttleMs?: number;
   }) {
     console.log(
@@ -153,6 +187,18 @@ class MockPerpsController {
 
   /**
    * Place a new order
+   *
+   * @param params
+   * @param params.symbol
+   * @param params.side
+   * @param params.orderType
+   * @param params.size
+   * @param params.price
+   * @param params.reduceOnly
+   * @param params.leverage
+   * @param params.marginMode
+   * @param params.takeProfitPrice
+   * @param params.stopLossPrice
    */
   async placeOrder(params: {
     symbol: string;
@@ -178,6 +224,11 @@ class MockPerpsController {
 
   /**
    * Close a position
+   *
+   * @param params
+   * @param params.symbol
+   * @param params.orderType
+   * @param params.price
    */
   async closePosition(params: {
     symbol: string;
@@ -191,6 +242,11 @@ class MockPerpsController {
 
   /**
    * Update position TP/SL (take profit / stop loss)
+   *
+   * @param params
+   * @param params.symbol
+   * @param params.takeProfitPrice
+   * @param params.stopLossPrice
    */
   async updatePositionTPSL(params: {
     symbol: string;
@@ -205,8 +261,9 @@ class MockPerpsController {
   /**
    * Get all positions
    * Returns mock positions from mocks.ts
+   *
    */
-  async getPositions(): Promise<any[]> {
+  async getPositions(): Promise<unknown[]> {
     console.log('[MockPerpsController] Getting positions');
     await new Promise((resolve) => setTimeout(resolve, 100));
     return mockPositions;
@@ -229,22 +286,22 @@ class MockPerpsController {
    */
   getActiveProvider() {
     return {
-      async getOrderFills(_params: any) {
+      async getOrderFills(_params: unknown) {
         console.log('[MockPerpsController] Getting order fills');
         // Return empty array - real implementation would fetch from API
         return [];
       },
-      async getOrders(_params: any) {
+      async getOrders(_params: unknown) {
         console.log('[MockPerpsController] Getting orders');
         // Return empty array - real implementation would fetch from API
         return [];
       },
-      async getFunding(_params: any) {
+      async getFunding(_params: unknown) {
         console.log('[MockPerpsController] Getting funding');
         // Return empty array - real implementation would fetch from API
         return [];
       },
-      async getUserHistory(_params: any) {
+      async getUserHistory(_params: unknown) {
         console.log('[MockPerpsController] Getting user history');
         // Return empty array - real implementation would fetch from API
         return [];
@@ -358,6 +415,7 @@ export function getPerpsControllerCurrentAddress(): string | null {
 
 /**
  * Check if the mock controller is initialized for a specific address.
+ *
  * @param address - Optional address to check. If not provided, returns true if any controller is initialized.
  */
 export function isPerpsControllerInitialized(address?: string): boolean {
