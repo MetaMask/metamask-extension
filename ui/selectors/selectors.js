@@ -629,6 +629,21 @@ export const getMetaMaskAccounts = createChainIdSelector(
   },
 );
 
+export const getMetaMaskAccountsWithoutBalance = createSelector(
+  getInternalAccounts,
+  (accountsArr) => {
+    /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount>} */
+    const result = accountsArr.reduce((map, account) => {
+      if (account?.address) {
+        map[account.address] = account;
+      }
+      return map;
+    }, {});
+
+    return result;
+  },
+);
+
 /**
  * Returns the address of the selected InternalAccount from the Metamask state.
  *
@@ -695,23 +710,14 @@ export const getSelectedEvmInternalAccount = createSelector(
  */
 export const getInternalAccountsSortedByKeyring = createSelector(
   getMetaMaskKeyrings,
-  getInternalAccounts,
+  getMetaMaskAccountsWithoutBalance,
   (
     /** @type {import('@metamask/keyring-controller').KeyringObject[]} */
     keyrings,
-    /** @type {import('@metamask/keyring-internal-api').InternalAccount[]} */
-    accountsArr,
+    /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount>} */
+    accounts,
   ) => {
     const thirdPartySnaps = 'thirdPartySnaps';
-
-    // Internal map of address to account for quick lookup
-    /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount>} */
-    const accounts = accountsArr.reduce((map, account) => {
-      if (account?.address) {
-        map[account.address] = account;
-      }
-      return map;
-    }, {});
 
     // Create a map of entropySource map to accounts for quick lookup
     /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount[]>} */
@@ -1036,6 +1042,24 @@ export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
 export const getMetaMaskAccountsOrdered = createSelector(
   getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
+  (internalAccounts, accounts) => {
+    return internalAccounts.map((internalAccount) => ({
+      ...internalAccount,
+      ...(internalAccount?.address
+        ? accounts[internalAccount.address] || {}
+        : {}),
+    }));
+  },
+);
+
+/**
+ * Get internal accounts in an object format by address
+ *
+ * @returns {Record<string, import('@metamask/keyring-internal-api').InternalAccount>} An object of internal accounts by address
+ */
+export const getMetaMaskAccountsOrderedWithoutBalance = createSelector(
+  getInternalAccountsSortedByKeyring,
+  getMetaMaskAccountsWithoutBalance,
   (internalAccounts, accounts) => {
     return internalAccounts.map((internalAccount) => ({
       ...internalAccount,
@@ -3341,7 +3365,7 @@ export function getUnconnectedAccounts(state, activeTab) {
 export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
-  getInternalAccountsSortedByKeyring,
+  getMetaMaskAccountsOrderedWithoutBalance,
   getAllPermittedAccountsForCurrentTab,
   (
     origin,
