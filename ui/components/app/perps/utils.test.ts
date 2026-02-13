@@ -16,7 +16,10 @@ import {
   getTransactionAmountColor,
 } from './utils';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
-import type { PerpsMarketData, PerpsTransaction } from './types';
+import type {
+  PerpsMarketData,
+  PerpsTransaction,
+} from '@metamask/perps-controller';
 
 const createMockMarket = (
   overrides: Partial<PerpsMarketData> = {},
