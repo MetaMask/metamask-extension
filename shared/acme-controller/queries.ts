@@ -48,7 +48,7 @@ export const queries = {
       };
     },
     staleTime: 15 * SECOND,
-    select: filterTransactions, // We should do this server-side
+    select: filterTransactions(accountAddress), // We should do this server-side
     enabled: Boolean(accountAddress) && (options?.enabled ?? true),
     getNextPageParam: ({ pageInfo }) =>
       pageInfo.hasNextPage ? pageInfo.endCursor : undefined,

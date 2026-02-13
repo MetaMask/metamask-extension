@@ -167,22 +167,33 @@ const INCLUDE_TOKEN_TRANSFERS = false;
 const EXCLUDED_TRANSACTION_TYPES = ['SPAM_TOKEN_TRANSFER'];
 
 // Ported from transaction-controller filterTransactions + more filters
-export function filterTransactions(
-  data: InfiniteData<NormalizedGetAccountTransactionsResponse>,
-): InfiniteData<NormalizedGetAccountTransactionsResponse> {
-  return {
+export function filterTransactions(address: string) {
+  const addr = address.toLowerCase();
+
+  return (
+    data: InfiniteData<NormalizedGetAccountTransactionsResponse>,
+  ): InfiniteData<NormalizedGetAccountTransactionsResponse> => ({
     ...data,
     pages: data.pages.map((page) => ({
       ...page,
-      data: INCLUDE_TOKEN_TRANSFERS
-        ? page.data.filter(
-            (tx) => !EXCLUDED_TRANSACTION_TYPES.includes(tx.transactionType),
-          )
-        : page.data.filter(
-            (tx) =>
-              !tx.isTransfer &&
-              !EXCLUDED_TRANSACTION_TYPES.includes(tx.transactionType),
-          ),
+      data: page.data.filter((tx) => {
+        // Ported from transaction-list.component isIncomingTxsButToAnotherAddress
+        const from = tx.txParams?.from?.toLowerCase();
+        const to = tx.txParams?.to?.toLowerCase();
+        if (from !== addr && to !== addr) {
+          return false;
+        }
+
+        if (EXCLUDED_TRANSACTION_TYPES.includes(tx.transactionType)) {
+          return false;
+        }
+
+        if (!INCLUDE_TOKEN_TRANSFERS && tx.isTransfer) {
+          return false;
+        }
+
+        return true;
+      }),
     })),
-  };
+  });
 }
