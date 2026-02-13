@@ -8,6 +8,13 @@
  * and update the webpack/TypeScript aliases.
  */
 
+import type {
+  CaipAccountId,
+  CaipChainId,
+  CaipAssetId,
+  Hex,
+} from '@metamask/utils';
+
 /**
  * Perps feature constants
  */
@@ -564,13 +571,6 @@ export const PERPS_TRANSACTIONS_HISTORY_CONSTANTS = {
  * Market data with prices for UI display
  * Protocol-agnostic interface for market information with formatted values
  */
-
-import type {
-  CaipAccountId,
-  CaipChainId,
-  CaipAssetId,
-  Hex,
-} from '@metamask/utils';
 
 /**
  * Chart-related types for Perps candlestick data

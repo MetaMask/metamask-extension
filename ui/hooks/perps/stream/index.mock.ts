@@ -5,12 +5,17 @@
  * Use these during development to work on UI without the actual perps-controller dependency.
  *
  * To use these mocks, update the import in your components from:
- *   import { usePerpsLivePositions } from '../../../hooks/perps/stream'
+ *
+ * import { usePerpsLivePositions } from '../../../hooks/perps/stream'
+ *
  * To (when using mocks):
- *   import { usePerpsLivePositions } from '../../../hooks/perps/stream/index.mock'
+ *
+ * import { usePerpsLivePositions } from '../../../hooks/perps/stream/index.mock'
  *
  * Or better yet, update hooks/perps/stream/index.ts to export from here conditionally.
  */
+
+import type { OrderFill } from '@metamask/perps-controller';
 
 import type {
   Position,
@@ -20,7 +25,6 @@ import type {
   CandleData,
   CandleStick,
 } from '../../../components/app/perps/types';
-import type { OrderFill } from '@metamask/perps-controller';
 import {
   CandlePeriod,
   TimeDuration,
@@ -158,8 +162,14 @@ export function usePerpsLiveMarketData(
 // ============================================================================
 
 // Re-export types for convenience
-export type { CandlePeriod, TimeDuration } from '../../../components/app/perps/constants/chartConfig';
-export type { CandleData, CandleStick } from '../../../components/app/perps/types';
+export type {
+  CandlePeriod,
+  TimeDuration,
+} from '../../../components/app/perps/constants/chartConfig';
+export type {
+  CandleData,
+  CandleStick,
+} from '../../../components/app/perps/types';
 
 export type UsePerpsLiveCandlesOptions = {
   symbol: string;
@@ -197,9 +207,11 @@ function getMockCandleData(symbol: string, interval: CandlePeriod): CandleData {
     const volatility = 200;
 
     const open = basePrice + trend;
-    const close = open + (Math.sin(i) * volatility);
-    const high = Math.max(open, close) + Math.abs(Math.cos(i) * volatility * 0.5);
-    const low = Math.min(open, close) - Math.abs(Math.sin(i) * volatility * 0.5);
+    const close = open + Math.sin(i) * volatility;
+    const high =
+      Math.max(open, close) + Math.abs(Math.cos(i) * volatility * 0.5);
+    const low =
+      Math.min(open, close) - Math.abs(Math.sin(i) * volatility * 0.5);
 
     candles.push({
       time,
