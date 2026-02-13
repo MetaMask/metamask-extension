@@ -9,7 +9,7 @@ import React, {
 import browser from 'webextension-polyfill';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Icon,
   IconName,
@@ -99,8 +99,11 @@ export const AppHeaderUnlockedContent = ({
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
   const origin = useSelector(getOriginOfCurrentTab);
-  const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(
+    searchParams.get('drawerOpen') === 'true',
+  );
   const tourAnchorRef = useRef<HTMLDivElement>(null);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
@@ -135,6 +138,17 @@ export const AppHeaderUnlockedContent = ({
     getShowSupportDataConsentModal,
   );
 
+  const closeAccountOptionsMenu = useCallback(() => {
+    setSearchParams((prev) => {
+      prev.delete('drawerOpen');
+      return prev;
+    });
+  }, [setSearchParams]);
+
+  useEffect(() => {
+    setAccountOptionsMenuOpen(searchParams.get('drawerOpen') === 'true');
+  }, [searchParams]);
+
   // Reset copy state when a switching accounts
   useEffect(() => {
     if (normalizedCurrentAddress) {
@@ -155,22 +169,27 @@ export const AppHeaderUnlockedContent = ({
       getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
     origin !== browser.runtime.id;
 
-  const handleMainMenuToggle = () => {
-    setAccountOptionsMenuOpen((previous) => {
-      const isMenuOpen = !previous;
-      if (isMenuOpen) {
-        trackEvent({
-          event: MetaMetricsEventName.NavMainMenuOpened,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            location: 'Home',
-          },
-        });
-      }
+  const handleMainMenuToggle = useCallback(() => {
+    const isMenuOpen = !accountOptionsMenuOpen;
+    if (isMenuOpen) {
+      trackEvent({
+        event: MetaMetricsEventName.NavMainMenuOpened,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          location: 'Home',
+        },
+      });
+    }
 
-      return isMenuOpen;
+    setSearchParams((prev) => {
+      if (isMenuOpen) {
+        prev.set('drawerOpen', 'true');
+      } else {
+        prev.delete('drawerOpen');
+      }
+      return prev;
     });
-  };
+  }, [accountOptionsMenuOpen, trackEvent, setSearchParams]);
 
   const handleConnectionsRoute = () => {
     navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
@@ -428,9 +447,7 @@ export const AppHeaderUnlockedContent = ({
         <GlobalMenuDrawerWithList
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
-          onClose={() => {
-            setAccountOptionsMenuOpen(false);
-          }}
+          onClose={closeAccountOptionsMenu}
         />
         <VisitSupportDataConsentModal
           isOpen={showSupportDataConsentModal}

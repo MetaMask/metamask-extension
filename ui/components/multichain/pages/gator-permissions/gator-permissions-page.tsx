@@ -28,7 +28,7 @@ import { useTheme } from '../../../../hooks/useTheme';
 import { TabEmptyState } from '../../../ui/tab-empty-state';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
-  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
@@ -198,7 +198,7 @@ export const GatorPermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => navigate(DEFAULT_ROUTE)}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }

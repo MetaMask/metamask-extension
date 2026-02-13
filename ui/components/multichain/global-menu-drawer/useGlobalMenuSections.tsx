@@ -187,7 +187,6 @@ export function useGlobalMenuSections(
       },
     });
     navigate(NOTIFICATIONS_ROUTE);
-    onClose();
   }, [
     hasThirdPartyNotifySnaps,
     isMetamaskNotificationsEnabled,

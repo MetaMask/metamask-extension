@@ -17,7 +17,7 @@ import {
   TextVariant,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { getAllSnapAvailableUpdates, getSnapsList } from '../../../selectors';
 import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import {
@@ -63,7 +63,7 @@ const SnapList = () => {
               ariaLabel="Back"
               iconName="arrow-left"
               size="sm"
-              onClick={() => navigate(DEFAULT_ROUTE)}
+              onClick={() => navigate(PREVIOUS_ROUTE)}
             />
           }
         >

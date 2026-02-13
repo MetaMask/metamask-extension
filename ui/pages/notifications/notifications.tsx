@@ -16,7 +16,7 @@ import {
 } from '../../components/component-library';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import {
-  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
@@ -167,7 +167,7 @@ export default function Notifications() {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Md}
             onClick={() => {
-              navigate(DEFAULT_ROUTE);
+              navigate(PREVIOUS_ROUTE);
             }}
             data-testid="back-button"
           />

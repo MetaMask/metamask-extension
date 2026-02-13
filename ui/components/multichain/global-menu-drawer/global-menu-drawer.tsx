@@ -272,9 +272,8 @@ export const GlobalMenuDrawer = ({
   } else {
     dialogPositionStyle = undefined;
   }
-
   const dialogContent = (
-    <Transition show={isOpen} appear>
+    <Transition show={isOpen}>
       <div
         aria-labelledby={title ? titleId : undefined}
         aria-modal="true"
