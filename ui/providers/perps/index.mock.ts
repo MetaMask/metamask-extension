@@ -10,6 +10,8 @@
  * Key components:
  * - `PerpsStreamManager` - Mock stream manager with static data
  * - `getPerpsController` - Mock controller implementation
+ * - `PerpsControllerProvider` - Mock provider component
+ * - `usePerpsController` - Mock hook for controller access
  * - Types from local type definitions
  */
 
@@ -30,6 +32,14 @@ export {
   getPerpsControllerInstance,
 } from './getPerpsController.mock';
 
+// React Provider & Hook for controller access (mock version)
+export {
+  PerpsControllerProvider,
+  usePerpsController,
+  PerpsControllerContext,
+  type PerpsControllerProviderProps,
+} from './PerpsControllerProvider.mock';
+
 // Re-export commonly used types from local type definitions
 // (since we're not using @metamask/perps-controller in mock mode)
 export type {
@@ -40,8 +50,3 @@ export type {
   PerpsMarketData,
   PerpsTransaction,
 } from '../../components/app/perps/types';
-
-// Note: The following are not available in mock mode:
-// - PerpsControllerProvider (not needed with mock)
-// - PerpsRouteWrapper (not needed with mock)
-// - Real-time subscription types (not needed with mock)

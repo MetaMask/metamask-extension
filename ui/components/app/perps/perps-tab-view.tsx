@@ -23,13 +23,13 @@ import {
 import {
   getPerpsStreamManager,
   getPerpsController,
-} from '../../../providers/perps/index.mock';
+} from '../../../providers/perps';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
   usePerpsLiveMarketData,
-} from '../../../hooks/perps/stream/index.mock';
+} from '../../../hooks/perps/stream';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
 import type { Order } from './types';

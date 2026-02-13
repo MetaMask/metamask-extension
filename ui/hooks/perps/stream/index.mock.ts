@@ -17,7 +17,13 @@ import type {
   Order,
   AccountState,
   PerpsMarketData,
+  CandleData,
+  CandleStick,
 } from '../../../components/app/perps/types';
+import {
+  CandlePeriod,
+  TimeDuration,
+} from '../../../components/app/perps/constants/chartConfig';
 import {
   mockPositions,
   mockOrders,
@@ -120,6 +126,92 @@ export function usePerpsLiveMarketData(
     error: null,
     refresh: () => {
       console.log('[Mock] Market data refresh requested (no-op)');
+    },
+  };
+}
+
+// ============================================================================
+// Candle Hook
+// ============================================================================
+
+// Re-export types for convenience
+export type { CandlePeriod, TimeDuration } from '../../../components/app/perps/constants/chartConfig';
+export type { CandleData, CandleStick } from '../../../components/app/perps/types';
+
+export type UsePerpsLiveCandlesOptions = {
+  symbol: string;
+  interval: CandlePeriod;
+  duration?: TimeDuration;
+  throttleMs?: number;
+  onError?: (error: Error) => void;
+};
+
+export type UsePerpsLiveCandlesReturn = {
+  candleData: CandleData | null;
+  isInitialLoading: boolean;
+  isLoadingMore: boolean;
+  hasHistoricalData: boolean;
+  error: Error | null;
+  fetchMoreHistory: () => void;
+};
+
+/**
+ * Static mock candle data
+ * Simple, reliable mock data that works for any symbol/interval
+ */
+function getMockCandleData(symbol: string, interval: CandlePeriod): CandleData {
+  // Base timestamp (1 hour ago from now)
+  const now = Date.now();
+  const oneHour = 60 * 60 * 1000;
+
+  // Static set of 50 candles showing an uptrend
+  const basePrice = 50000;
+  const candles: CandleStick[] = [];
+
+  for (let i = 0; i < 50; i++) {
+    const time = now - (50 - i) * oneHour;
+    const trend = i * 100; // Gradual uptrend
+    const volatility = 200;
+
+    const open = basePrice + trend;
+    const close = open + (Math.sin(i) * volatility);
+    const high = Math.max(open, close) + Math.abs(Math.cos(i) * volatility * 0.5);
+    const low = Math.min(open, close) - Math.abs(Math.sin(i) * volatility * 0.5);
+
+    candles.push({
+      time,
+      open: open.toFixed(2),
+      high: high.toFixed(2),
+      low: low.toFixed(2),
+      close: close.toFixed(2),
+      volume: (1000000 + i * 10000).toFixed(2),
+    });
+  }
+
+  return {
+    symbol,
+    interval,
+    candles,
+  };
+}
+
+export function usePerpsLiveCandles(
+  options: UsePerpsLiveCandlesOptions,
+): UsePerpsLiveCandlesReturn {
+  const { symbol, interval } = options;
+
+  // Return static mock candle data
+  const candleData =
+    symbol && interval ? getMockCandleData(symbol, interval) : null;
+
+  return {
+    candleData,
+    isInitialLoading: false,
+    isLoadingMore: false,
+    hasHistoricalData: candleData !== null,
+    error: null,
+    fetchMoreHistory: () => {
+      console.log('[Mock] Fetch more candle history requested (no-op)');
     },
   };
 }

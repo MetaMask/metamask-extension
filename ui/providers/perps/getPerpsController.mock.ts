@@ -12,6 +12,7 @@
 
 import type { Store } from 'redux';
 import type { MetaMaskReduxState } from '../../store/store';
+import { mockPositions } from '../../components/app/perps/mocks';
 
 /**
  * Mock PerpsController class
@@ -19,6 +20,17 @@ import type { MetaMaskReduxState } from '../../store/store';
  */
 class MockPerpsController {
   private selectedAddress: string;
+
+  // Mock messenger for state change subscriptions
+  public messenger = {
+    subscribe: (event: string, handler: (state: unknown) => void) => {
+      console.log(`[MockPerpsController] Subscribed to event: ${event}`);
+      // Return unsubscribe function
+      return () => {
+        console.log(`[MockPerpsController] Unsubscribed from event: ${event}`);
+      };
+    },
+  };
 
   constructor(selectedAddress: string) {
     this.selectedAddress = selectedAddress;
@@ -45,11 +57,7 @@ class MockPerpsController {
   /**
    * Cancel multiple orders or all orders
    */
-  async cancelOrders({
-    cancelAll,
-  }: {
-    cancelAll: boolean;
-  }): Promise<void> {
+  async cancelOrders({ cancelAll }: { cancelAll: boolean }): Promise<void> {
     console.log(`[MockPerpsController] Canceling all orders: ${cancelAll}`);
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
@@ -89,6 +97,119 @@ class MockPerpsController {
     return () => {
       console.log('[MockPerpsController] Unsubscribed from account');
     };
+  }
+
+  /**
+   * Subscribe to price updates
+   * Returns an unsubscribe function
+   */
+  subscribeToPrices({
+    symbols,
+    includeMarketData,
+    callback,
+    throttleMs,
+  }: {
+    symbols: string[];
+    includeMarketData?: boolean;
+    callback: (prices: any[]) => void;
+    throttleMs?: number;
+  }) {
+    console.log(
+      `[MockPerpsController] Subscribed to prices for ${symbols.join(', ')}`,
+      { includeMarketData, throttleMs },
+    );
+    return () => {
+      console.log(
+        `[MockPerpsController] Unsubscribed from prices for ${symbols.join(', ')}`,
+      );
+    };
+  }
+
+  /**
+   * Subscribe to order book updates
+   * Returns an unsubscribe function
+   */
+  subscribeToOrderBook({
+    symbol,
+    levels,
+    callback,
+    throttleMs,
+  }: {
+    symbol: string;
+    levels: number;
+    callback: (orderBook: any) => void;
+    throttleMs?: number;
+  }) {
+    console.log(
+      `[MockPerpsController] Subscribed to order book for ${symbol}`,
+      { throttleMs },
+    );
+    return () => {
+      console.log(
+        `[MockPerpsController] Unsubscribed from order book for ${symbol}`,
+      );
+    };
+  }
+
+  /**
+   * Place a new order
+   */
+  async placeOrder(params: {
+    symbol: string;
+    side: 'buy' | 'sell';
+    orderType: 'market' | 'limit';
+    size: string;
+    price?: string;
+    reduceOnly?: boolean;
+    leverage?: number;
+    marginMode?: 'isolated' | 'cross';
+    takeProfitPrice?: string;
+    stopLossPrice?: string;
+  }): Promise<
+    { success: true; orderId: string } | { success: false; error: string }
+  > {
+    console.log('[MockPerpsController] Placing order:', params);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return {
+      success: true,
+      orderId: `mock-order-${Date.now()}`,
+    };
+  }
+
+  /**
+   * Close a position
+   */
+  async closePosition(params: {
+    symbol: string;
+    orderType?: 'market' | 'limit';
+    price?: string;
+  }): Promise<{ success: true } | { success: false; error: string }> {
+    console.log('[MockPerpsController] Closing position:', params);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return { success: true };
+  }
+
+  /**
+   * Update position TP/SL (take profit / stop loss)
+   */
+  async updatePositionTPSL(params: {
+    symbol: string;
+    takeProfitPrice?: string;
+    stopLossPrice?: string;
+  }): Promise<{ success: true } | { success: false; error: string }> {
+    console.log('[MockPerpsController] Updating TP/SL:', params);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return { success: true };
+  }
+
+  /**
+   * Get all positions
+   * Returns mock positions from mocks.ts
+   */
+  async getPositions(): Promise<any[]> {
+    console.log('[MockPerpsController] Getting positions');
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return mockPositions;
   }
 
   /**
