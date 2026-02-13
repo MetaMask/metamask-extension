@@ -16,9 +16,9 @@ export type RouteWithLayoutConfig = {
     | ComponentType<{ children: ReactNode }>;
   authenticated?: boolean;
   initialized?: boolean;
-  /** When true, redirects to the basic-functionality-off screen if Basic Functionality (useExternalServices) is off. */
+  /** When true (default), redirects to the basic-functionality-off screen if Basic Functionality (useExternalServices) is off. Set to false to allow access without external services (e.g. Home, Settings). */
   basicFunctionalityRequired?: boolean;
-  /** Display name for the feature (e.g. "Swap", "Rewards") when redirecting to basic-functionality-off. Used for "Open the [feature name] page" CTA. */
+  /** Display name for the feature (e.g. "Swap", "Rewards") when redirecting to basic-functionality-off. Used for "Open the [feature name] page" CTA. Required when basicFunctionalityRequired is true. */
   basicFunctionalityFeatureName?: string;
   children?: ReactNode;
 };
@@ -34,7 +34,7 @@ export type RouteWithLayoutConfig = {
  * @param config.layout - The layout to use for the route
  * @param config.authenticated - Whether to wrap with the Authenticated component
  * @param config.initialized - Whether to wrap with the Initialized component
- * @param config.basicFunctionalityRequired - Whether to wrap with BasicFunctionalityRequired (redirects when useExternalServices is off)
+ * @param config.basicFunctionalityRequired - Whether to wrap with BasicFunctionalityRequired (default: true)
  * @param config.children - Nested route content
  * @returns RouteObject ready for useRoutes()
  */
@@ -48,7 +48,7 @@ export const createRouteWithLayout = (
     component: Component,
     authenticated,
     initialized,
-    basicFunctionalityRequired,
+    basicFunctionalityRequired = true,
     basicFunctionalityFeatureName,
     children,
   } = config;
@@ -67,7 +67,7 @@ export const createRouteWithLayout = (
     content = <Authenticated>{content}</Authenticated>;
   }
 
-  // Then wrap with BasicFunctionalityRequired when route depends on external services
+  // Then wrap with BasicFunctionalityRequired when route depends on external services (default: wrapped)
   if (basicFunctionalityRequired && content) {
     const featureName = basicFunctionalityFeatureName?.trim();
     if (!featureName) {
