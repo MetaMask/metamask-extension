@@ -1,29 +1,11 @@
-import { getPerpsController } from '../../../../providers/perps/getPerpsController';
+import type {
+  CreatePerpsDepositTransactionParams,
+  CreatedPerpsDepositTransaction,
+} from './createPerpsDepositTransaction';
+import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 
-export type PreparePerpsDepositTransactionParams = {
-  fromAddress: string;
-  amount?: string;
-};
+export type PreparePerpsDepositTransactionParams =
+  CreatePerpsDepositTransactionParams;
+export type PreparedPerpsDepositTransaction = CreatedPerpsDepositTransaction;
 
-export type PreparedPerpsDepositTransaction = {
-  transactionId: string;
-};
-
-export async function preparePerpsDepositTransaction({
-  fromAddress,
-  amount,
-}: PreparePerpsDepositTransactionParams): Promise<PreparedPerpsDepositTransaction> {
-  const controller = await getPerpsController(fromAddress);
-
-  await controller.depositWithConfirmation(amount);
-
-  const transactionId = controller.state.lastDepositTransactionId;
-
-  if (!transactionId) {
-    throw new Error(
-      'Perps deposit transaction was not created by controller deposit flow',
-    );
-  }
-
-  return { transactionId };
-}
+export const preparePerpsDepositTransaction = createPerpsDepositTransaction;
