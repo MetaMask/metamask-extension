@@ -29,10 +29,6 @@ import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
   filterLocalCompletedNotInApi,
-  isDateHeader,
-  isPendingItem,
-  isLocalCompletedItem,
-  isNonEvmItem,
   type FlattenedItem,
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
@@ -56,11 +52,10 @@ export const ActivityList = () => {
 
   // Activity tab should show ALL transactions regardless of selected chain/network
   const evmAddress = useSelector(getFirstEvmAddress) || '';
+  const selectedAccount = useSelector(getSelectedAccount);
 
   // Non-EVM transactions
   const nonEvmTransactions = useSelector(getRawNonEvmTransactions);
-
-  const selectedAccount = useSelector(getSelectedAccount);
 
   // Pending transactions (unapproved/approved/submitted) - not in API
   const pendingTransactionGroups = useSelector(getPendingTransactionGroups);
@@ -69,7 +64,6 @@ export const ActivityList = () => {
   const recentTransactionGroups = useSelector(getRecentTransactionGroups);
 
   // Bridge history for matching non-EVM transactions to bridge operations.
-  // Ported from unified-transaction-list.component.js L476, L702-718
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
 
   // EVM transactions from API
@@ -103,7 +97,6 @@ export const ActivityList = () => {
       nonEvmTransactions,
     );
 
-    // Group by date and flatten for virtualization
     return groupAndFlattenMergedTransactions(mergedByTime);
   }, [
     data,
@@ -172,7 +165,7 @@ export const ActivityList = () => {
   };
 
   const renderItem = (item: FlattenedItem) => {
-    if (isDateHeader(item)) {
+    if (item.type === 'date-header') {
       return (
         <Box className="px-4 py-2 bg-background-default">
           <Text className="text-sm text-alternative">
@@ -182,8 +175,7 @@ export const ActivityList = () => {
       );
     }
 
-    // Pending EVM transactions - delegate to v1's TransactionListItem
-    if (isPendingItem(item)) {
+    if (item.type === 'pending' || item.type === 'local-completed') {
       return (
         <PendingActivityItem
           transactionGroup={item.transactionGroup}
@@ -192,21 +184,10 @@ export const ActivityList = () => {
       );
     }
 
-    // Local completed transactions (confirmed but not yet in API)
-    // Also delegate to v1's TransactionListItem for consistent rendering
-    if (isLocalCompletedItem(item)) {
-      return (
-        <PendingActivityItem
-          transactionGroup={item.transactionGroup}
-          earliestNonceByChain={earliestNonceByChain}
-        />
-      );
-    }
-
-    // Non-EVM transactions — check for bridge history first.
-    // Ported from unified-transaction-list.component.js L702-718
-    if (isNonEvmItem(item)) {
+    if (item.type === 'non-evm') {
+      // Ported from unified-transaction-list.component.js L702-718
       const matchedBridgeHistoryItem = bridgeHistoryItems[item.id];
+
       if (
         matchedBridgeHistoryItem &&
         isCrossChain(
@@ -222,6 +203,7 @@ export const ActivityList = () => {
           />
         );
       }
+
       return (
         <NonEvmActivityListItem
           transaction={item.transaction}
@@ -230,7 +212,6 @@ export const ActivityList = () => {
       );
     }
 
-    // Completed transactions from API - use v2's ActivityListItem
     return (
       <ActivityListItem
         transaction={item.data}

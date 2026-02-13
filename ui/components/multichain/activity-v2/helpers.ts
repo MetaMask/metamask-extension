@@ -13,30 +13,6 @@ export type FlattenedItem =
   | { type: 'completed'; data: TransactionViewModel; id: string }
   | { type: 'non-evm'; transaction: Transaction; id: string };
 
-export function isDateHeader(
-  item: FlattenedItem,
-): item is FlattenedItem & { type: 'date-header' } {
-  return item.type === 'date-header';
-}
-
-export function isPendingItem(
-  item: FlattenedItem,
-): item is FlattenedItem & { type: 'pending' } {
-  return item.type === 'pending';
-}
-
-export function isLocalCompletedItem(
-  item: FlattenedItem,
-): item is FlattenedItem & { type: 'local-completed' } {
-  return item.type === 'local-completed';
-}
-
-export function isNonEvmItem(
-  item: FlattenedItem,
-): item is FlattenedItem & { type: 'non-evm' } {
-  return item.type === 'non-evm';
-}
-
 function parseDate(timestamp: string | number) {
   const date = new Date(timestamp);
   date.setHours(0, 0, 0, 0);
