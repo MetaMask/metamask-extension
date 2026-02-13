@@ -8,6 +8,7 @@ import {
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { TotalRow, TotalRowProps } from './total-row';
 
@@ -54,7 +55,7 @@ describe('TotalRow', () => {
     const { getByTestId, getByText } = render();
 
     expect(getByTestId('total-row-skeleton')).toBeInTheDocument();
-    expect(getByText('Total')).toBeInTheDocument();
+    expect(getByText(messages.total.message)).toBeInTheDocument();
   });
 
   it('renders full skeleton without label when loading (Small variant)', () => {
@@ -65,7 +66,7 @@ describe('TotalRow', () => {
     });
 
     expect(getByTestId('total-row-skeleton')).toBeInTheDocument();
-    expect(queryByText('Total')).not.toBeInTheDocument();
+    expect(queryByText(messages.total.message)).not.toBeInTheDocument();
   });
 
   it('renders total value with ConfirmInfoRowText for Default variant', () => {

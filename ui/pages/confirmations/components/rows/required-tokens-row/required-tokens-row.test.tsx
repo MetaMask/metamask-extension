@@ -5,6 +5,7 @@ import { getMockPersonalSignConfirmState } from '../../../../../../test/data/con
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import {
@@ -108,7 +109,7 @@ describe('RequiredTokensRow', () => {
     const { getByTestId, getByText } = render();
 
     expect(getByTestId('required-tokens-row')).toBeInTheDocument();
-    expect(getByText('Required token')).toBeInTheDocument();
+    expect(getByText(messages.requiredToken.message)).toBeInTheDocument();
     expect(getByTestId('simulation-details-amount-pill')).toHaveTextContent(
       '-1',
     );

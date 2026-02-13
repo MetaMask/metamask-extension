@@ -14,6 +14,7 @@ import {
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useConfirmContext } from '../../../context/confirm';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { BridgeTimeRow, BridgeTimeRowProps } from './bridge-time-row';
@@ -130,7 +131,7 @@ describe('BridgeTimeRow', () => {
     const { getByTestId, getByText } = render();
 
     expect(getByTestId('bridge-time-row-skeleton')).toBeInTheDocument();
-    expect(getByText('Estimated time')).toBeInTheDocument();
+    expect(getByText(messages.estimatedTime.message)).toBeInTheDocument();
   });
 
   it('renders full skeleton without label when loading (Small variant)', () => {
@@ -141,6 +142,6 @@ describe('BridgeTimeRow', () => {
     });
 
     expect(getByTestId('bridge-time-row-skeleton')).toBeInTheDocument();
-    expect(queryByText('Estimated time')).not.toBeInTheDocument();
+    expect(queryByText(messages.estimatedTime.message)).not.toBeInTheDocument();
   });
 });
