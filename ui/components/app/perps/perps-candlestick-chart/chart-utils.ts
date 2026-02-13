@@ -5,7 +5,7 @@
  * into the format expected by lightweight-charts (numbers, seconds).
  */
 import { brandColor } from '@metamask/design-tokens';
-import { CandleData, CandleStick } from '../types';
+import { CandleData, CandleStick } from '@metamask/perps-controller';
 
 /**
  * Time type for lightweight-charts (seconds since epoch).
