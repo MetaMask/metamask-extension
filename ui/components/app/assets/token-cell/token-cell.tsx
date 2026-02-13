@@ -64,7 +64,8 @@ function ClaimBonusBadge({
   tokenAddress: string;
   chainId: Hex;
 }) {
-  const { claimRewards, isClaiming } = useMerklClaim({
+  const t = useI18nContext();
+  const { claimRewards, isClaiming, error } = useMerklClaim({
     tokenAddress,
     chainId,
   });
@@ -88,6 +89,18 @@ function ClaimBonusBadge({
         style={{ animation: 'spin 1.2s linear infinite' }}
         data-testid="claim-bonus-spinner"
       />
+    );
+  }
+
+  if (error) {
+    return (
+      <Text
+        variant={TextVariant.BodySm}
+        color={TextColor.ErrorDefault}
+        data-testid="claim-bonus-error"
+      >
+        {t('merklRewardsUnexpectedError')}
+      </Text>
     );
   }
 
