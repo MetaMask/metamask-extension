@@ -23,5 +23,3 @@ export type {
   UsePerpsMarginCalculationsReturn,
   MarginRiskAssessment,
 } from './usePerpsMarginCalculations';
-
-export { usePerpsEligibility } from './usePerpsEligibility';
