@@ -22,9 +22,9 @@ import { type NetworkConfiguration } from '@metamask/network-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
-  getOrderedConnectedAccountsForActiveTab,
   getPinnedAccountsList,
   getHiddenAccountsList,
+  getOrderedConnectedAccountsForActiveTabAccountOnly,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
 import {
@@ -70,14 +70,14 @@ export const getAccountTree = (
 export const getWalletsWithAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getAccountTree,
-  getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForActiveTabAccountOnly,
   getSelectedInternalAccount,
   getPinnedAccountsList,
   getHiddenAccountsList,
   (
     internalAccounts: MergedInternalAccount[],
     accountTree: AccountTreeState,
-    connectedAccounts: InternalAccount[],
+    connectedAccounts: { account: InternalAccount }[],
     selectedAccount: InternalAccount,
     pinnedAccounts: string[],
     hiddenAccounts: string[],
@@ -88,7 +88,7 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
 
     // Precompute connected account IDs for faster lookup
     const connectedAccountIdsSet = new Set(
-      connectedAccounts.map((account) => account.id),
+      connectedAccounts.map((a) => a.account.id),
     );
 
     // Create a mapping of accounts by ID for quick access

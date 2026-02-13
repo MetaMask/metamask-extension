@@ -3484,14 +3484,14 @@ export const getUpdatedAndSortedAccounts = createSelector(
   getMetaMaskAccountsOrdered,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForActiveTabAccountOnly,
   (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
     const connectionMetadataById = new Map();
     connectedAccounts.forEach((connection) => {
-      if (connection.metadata) {
+      if (connection.account.metadata) {
         connectionMetadataById.set(connection.id, {
           connections: true,
-          lastSelected: connection.metadata.lastSelected,
+          lastSelected: connection.account.metadata.lastSelected,
         });
       }
     });
