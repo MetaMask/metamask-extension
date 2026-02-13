@@ -42,9 +42,7 @@ describe('NetworkListItem', () => {
       <NetworkListItem {...DEFAULT_PROPS} selected />,
     );
     expect(
-      container.querySelector(
-        '.multichain-network-list-item__selected-indicator',
-      ),
+      container.querySelector('.multichain-network-list-item--selected'),
     ).toBeInTheDocument();
   });
 

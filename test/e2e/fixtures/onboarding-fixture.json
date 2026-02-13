@@ -36,7 +36,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 193,
+      "currentMigrationVersion": 194,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -66,6 +66,7 @@
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": false,
       "productTour": "accountIcon",
@@ -2150,6 +2151,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 193
+    "version": 194
   }
 }
