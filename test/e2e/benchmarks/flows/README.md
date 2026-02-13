@@ -41,13 +41,11 @@ yarn test:e2e:benchmark --preset performanceOnboardingNew --out results.json
 - **PRs:** Performance benchmarks run on **Chrome + Browserify** only.
 - **Push to main/release:** Performance benchmarks also run on **Chrome + Webpack** (separate `benchmarks-webpack-perf` job) so we can compare build systems before releasing webpack to production.
 
-### Benchmarks not in CI
+### Special CI Requirements
 
-The following preset is available for local runs but is not included in the CI matrix due to setup requirements:
-
-| Preset                         | Reason                                                                |
-| ------------------------------ | --------------------------------------------------------------------- |
-| `performanceAccountManagement` | Requires `TEST_SRP_2` env var (12-word seed phrase) for second wallet |
+| Preset                         | Requirement                                                                       |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| `performanceAccountManagement` | Requires `TEST_SRP_2` secret (12-word seed phrase). Set as a CI secret in GitHub. |
 
 ### 1. Create a new file in the appropriate subdirectory
 

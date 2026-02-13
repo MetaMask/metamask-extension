@@ -158,7 +158,7 @@ async function mockAuthAPICall(
 
 const SOLANA_URL_REGEX = /^https:\/\/solana-mainnet\.infura\.io\/v3\/.*/u;
 
-export async function mockPowerUserPrices(
+export async function mockBenchmarkEndpoints(
   server: Mockttp,
 ): Promise<MockedEndpoint[]> {
   const endpoints: MockedEndpoint[] = [];
