@@ -16,7 +16,10 @@ import {
   getTransactionAmountColor,
 } from './utils';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
-import type { PerpsMarketData, PerpsTransaction } from './types';
+import type {
+  PerpsMarketData,
+  PerpsTransaction,
+} from '@metamask/perps-controller';
 
 const createMockMarket = (
   overrides: Partial<PerpsMarketData> = {},
@@ -279,11 +282,11 @@ describe('Perps Utils', () => {
     ): PerpsTransaction => ({
       id: 'tx-001',
       type: 'trade',
+      category: 'position_open',
       symbol: 'ETH',
       title: 'Opened long',
       subtitle: '2.5 ETH @ $2,850.00',
       timestamp: Date.now(),
-      status: 'confirmed',
       ...overrides,
     });
 
@@ -366,17 +369,28 @@ describe('Perps Utils', () => {
   });
 
   describe('filterTransactionsByType', () => {
+    const categoryMap: Record<
+      PerpsTransaction['type'],
+      PerpsTransaction['category']
+    > = {
+      trade: 'position_open',
+      order: 'limit_order',
+      funding: 'funding_fee',
+      deposit: 'deposit',
+      withdrawal: 'withdrawal',
+    };
+
     const createMockTransaction = (
       type: PerpsTransaction['type'],
       id: string,
     ): PerpsTransaction => ({
       id,
       type,
+      category: categoryMap[type],
       symbol: 'ETH',
       title: 'Test transaction',
       subtitle: 'Test',
       timestamp: Date.now(),
-      status: 'confirmed',
     });
 
     const transactions: PerpsTransaction[] = [
