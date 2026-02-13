@@ -696,15 +696,26 @@ export const getSelectedEvmInternalAccount = createSelector(
 export const getInternalAccountsSortedByKeyring = createSelector(
   getMetaMaskKeyrings,
   getInternalAccounts,
-  (keyrings, internalAccounts) => {
+  (
+    /** @type {Array<import('@metamask/keyring-controller').KeyringObject>} */
+    keyrings,
+    /** @type {Array<import('@metamask/keyring-internal-api').InternalAccount>} */
+    accountsArr,
+  ) => {
     const thirdPartySnaps = 'thirdPartySnaps';
-    const byAddress = internalAccounts.reduce((map, account) => {
+
+    // Internal map of address to account for quick lookup
+    /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount>} */
+    const accounts = accountsArr.reduce((map, account) => {
       if (account?.address) {
         map[account.address] = account;
       }
       return map;
     }, {});
-    const entropySourceToAccountsMap = internalAccounts.reduce(
+
+    // Create a map of entropySource map to accounts for quick lookup
+    /** @type {Record<string, import('@metamask/keyring-internal-api').InternalAccount[]>} */
+    const entropySourceToAccountsMap = Object.values(accounts).reduce(
       (map, account) => {
         if (account.metadata?.keyring?.type === KeyringTypes.snap) {
           const { entropySource = thirdPartySnaps } = account.options || {};
@@ -718,29 +729,38 @@ export const getInternalAccountsSortedByKeyring = createSelector(
       {},
     );
 
+    // keep existing keyring order
     /**
      * @type {Array<import('@metamask/keyring-internal-api').InternalAccount>}
      */
-    const result = keyrings.reduce((acc, keyring) => {
-      const keyringAccounts = keyring.accounts
-        .map((address) => byAddress[address])
-        .filter(Boolean);
+    const result = keyrings.reduce((internalAccounts, keyring) => {
+      // Get regular accounts for this keyring
+      const keyringAccounts = keyring.accounts.map(
+        (address) => accounts[address],
+      );
 
+      // If it's an HD keyring, add any snap accounts that belong to it
       if (keyring.type === KeyringTypes.hd) {
         const snapAccounts =
-          entropySourceToAccountsMap[keyring.metadata?.id] || [];
-        acc.push(...keyringAccounts, ...snapAccounts);
+          entropySourceToAccountsMap[keyring.metadata.id] || [];
+        internalAccounts.push(...keyringAccounts, ...snapAccounts);
+        return internalAccounts;
       } else if (keyring.type === KeyringTypes.snap) {
         const thirdpartySnapAccounts =
           entropySourceToAccountsMap[thirdPartySnaps] || [];
+        // In a scenario where there are multiple snap keyrings, which isn't the case for today
+        // There would be duplicate third party snap accounts that are being pushed into internalAccounts again
+        // This will only be run once, when there is only one snap keyring
         const accountsToAdd = thirdpartySnapAccounts.filter(
-          (account) => !acc.some((existing) => existing.id === account.id),
+          (account) =>
+            !internalAccounts.some((existing) => existing.id === account.id),
         );
-        acc.push(...accountsToAdd);
-      } else {
-        acc.push(...keyringAccounts);
+
+        internalAccounts.push(...accountsToAdd);
+        return internalAccounts;
       }
-      return acc;
+      internalAccounts.push(...keyringAccounts);
+      return internalAccounts;
     }, []);
 
     return result;
