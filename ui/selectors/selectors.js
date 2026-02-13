@@ -3338,12 +3338,6 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
-/**
- * Ordered connected accounts for the active tab using only account/permission state
- * (no balance or asset selectors). Returns minimal { id, address, name, lastActive }
- * for use in unconnected-account-alert and similar UIs. Uses
- * getInternalAccountsSortedByKeyringOnly for keyring order without pulling in assets.
- */
 export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
@@ -3352,7 +3346,7 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   (
     origin,
     permissionHistory,
-    /** @type {Array<import('@metamask/keyring-internal-api').InternalAccount>} */
+    /** @type {import('@metamask/keyring-internal-api').InternalAccount[]} */
     orderedAccounts,
     connectedAccounts,
   ) => {
@@ -3367,11 +3361,11 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
     );
 
     /**
-     * @type {Array<
+     * @type {(
      *   import('@metamask/keyring-internal-api').InternalAccount & {
      *   name: string;
      *   lastActive: number;
-     * }>}
+     * })[]}
      */
     const result = orderedAccounts
       .filter((account) => connectedAccountsAddresses.includes(account.address))
