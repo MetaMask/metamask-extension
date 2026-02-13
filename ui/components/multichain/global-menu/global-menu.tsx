@@ -96,7 +96,6 @@ import {
   getShieldSubscription,
   getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
-import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 
 const METRICS_LOCATION = 'Global Menu';
@@ -118,7 +117,6 @@ export const GlobalMenu = ({
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
   const basicFunctionality = useSelector(getUseExternalServices);
-  const rewardsEnabled = useSelector(selectRewardsEnabled);
 
   const navigate = useNavigate();
 
@@ -405,12 +403,10 @@ export const GlobalMenu = ({
           ></Box>
         </>
       )}
-      {rewardsEnabled && (
-        <DiscoverMenuItem
-          metricsLocation={METRICS_LOCATION}
-          closeMenu={closeMenu}
-        />
-      )}
+      <DiscoverMenuItem
+        metricsLocation={METRICS_LOCATION}
+        closeMenu={closeMenu}
+      />
 
       {(isPopup || isSidepanel) && (
         <MenuItem

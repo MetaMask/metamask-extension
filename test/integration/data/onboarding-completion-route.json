@@ -324,6 +324,7 @@
   "selectedNetworkClientId": "sepolia",
   "shieldEndingToastLastClickedOrClosed": null,
   "shieldPausedToastLastClickedOrClosed": null,
+  "shieldSubscriptionError": null,
   "showAccountBanner": true,
   "showBetaHeader": false,
   "showNetworkBanner": true,

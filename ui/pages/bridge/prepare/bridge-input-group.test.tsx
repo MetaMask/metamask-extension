@@ -409,6 +409,14 @@ describe('BridgeInputGroup', () => {
 
       const networkPicker = getByTestId('multichain-asset-picker__network');
       await fillSearchInput('SD');
+      // Wait for the debounced search fetch to fire before clicking the
+      // network picker, which unmounts the asset list and cancels the debounce
+      await waitFor(() => {
+        expect(mockHandleFetch).toHaveBeenCalledWith(
+          expect.stringContaining('search'),
+          expect.anything(),
+        );
+      });
       await act(async () => {
         await networkPicker.click();
       });
@@ -418,7 +426,7 @@ describe('BridgeInputGroup', () => {
       );
       await waitFor(() => {
         expect(networkPickerPopover).toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(4);
+        expect(abortSpy).toHaveBeenCalledTimes(5);
       });
 
       expect(networkPickerPopover).toMatchSnapshot();
@@ -433,8 +441,8 @@ describe('BridgeInputGroup', () => {
       });
       await waitFor(() => {
         expect(networkPickerPopover).not.toBeVisible();
-        expect(abortSpy).toHaveBeenCalledTimes(7);
-        expect(mockHandleFetch).toHaveBeenCalledTimes(3);
+        expect(abortSpy).toHaveBeenCalledTimes(8);
+        expect(mockHandleFetch).toHaveBeenCalledTimes(4);
       });
 
       expect(await localforage.keys()).toMatchSnapshot();
