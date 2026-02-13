@@ -14,10 +14,7 @@ import {
   getRecentTransactionGroups,
   getFirstEvmAddress,
 } from '../../../selectors/activity';
-import {
-  getUseExternalServices,
-  getSelectedAccount,
-} from '../../../selectors/selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/acme-controller/queries';
