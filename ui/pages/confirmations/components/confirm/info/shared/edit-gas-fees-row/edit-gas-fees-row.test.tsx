@@ -25,12 +25,21 @@ jest.mock(
 );
 
 function render({
+  chainId = CHAIN_IDS.GOERLI,
   gasFeeTokens,
   selectedGasFeeToken,
-}: { gasFeeTokens?: GasFeeToken[]; selectedGasFeeToken?: Hex } = {}) {
+  fiatFee = '$1',
+  nativeFee = '0.001 ETH',
+}: {
+  chainId?: Hex;
+  gasFeeTokens?: GasFeeToken[];
+  selectedGasFeeToken?: Hex;
+  fiatFee?: string;
+  nativeFee?: string;
+} = {}) {
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
-      chainId: CHAIN_IDS.GOERLI,
+      chainId,
       gasFeeTokens,
       selectedGasFeeToken,
     }),
@@ -40,8 +49,8 @@ function render({
 
   return renderWithConfirmContextProvider(
     <EditGasFeesRow
-      fiatFee="$1"
-      nativeFee="0.001 ETH"
+      fiatFee={fiatFee}
+      nativeFee={nativeFee}
       fiatFeeWith18SignificantDigits="0.001234"
     />,
     mockStore,
@@ -54,13 +63,20 @@ describe('<EditGasFeesRow />', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('renders metamask fee if gas fee token selected', () => {
+  it('renders metamask fee and falls back to transaction fiat fee when selected gas fee token fiat is empty', () => {
+    const gasFeeTokenWithoutFiat = {
+      ...GAS_FEE_TOKEN_MOCK,
+      amountFiat: '',
+    };
+
     const { getByTestId } = render({
-      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      chainId: CHAIN_IDS.MAINNET,
+      gasFeeTokens: [gasFeeTokenWithoutFiat],
+      selectedGasFeeToken: gasFeeTokenWithoutFiat.tokenAddress,
     });
 
     expect(getByTestId('gas-fee-token-fee')).toBeInTheDocument();
+    expect(getByTestId('native-currency')).toHaveTextContent('$1');
   });
 
   it('renders edit gas fee button', () => {

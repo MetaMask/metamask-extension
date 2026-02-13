@@ -1,8 +1,6 @@
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { Transaction } from '@metamask/keyring-api';
-import type { DefaultRootState } from 'react-redux';
-import type { MultichainState } from './multichain';
-import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
+import type { MetaMaskReduxState } from '../store/store';
 import { getSelectedAccountGroupMultichainTransactions } from './multichain-transactions';
 
 // Mock account-tree selectors used by the selector under test
@@ -18,16 +16,15 @@ describe('getSelectedAccountGroupMultichainTransactions', () => {
   const SOLANA_MAINNET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   const SOLANA_DEVNET = 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1';
 
-  type RootState = MultichainState & MultichainAccountsState & DefaultRootState;
   type NonEvmTransactionsMap =
     MultichainTransactionsControllerState['nonEvmTransactions'];
 
-  function buildState(nonEvmTransactions: unknown): RootState {
+  function buildState(nonEvmTransactions: unknown): MetaMaskReduxState {
     return {
       metamask: {
         nonEvmTransactions: nonEvmTransactions as NonEvmTransactionsMap,
       },
-    } as unknown as RootState;
+    } as unknown as MetaMaskReduxState;
   }
 
   it('returns empty transactions when nonEvmChainIds is undefined', () => {

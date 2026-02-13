@@ -15,7 +15,10 @@ import type {
   Metrics,
   PageLoadBenchmarkOptions,
 } from '../../utils/types';
-import { WITH_STATE_POWER_USER } from '../../utils/constants';
+import {
+  BENCHMARK_PERSONA,
+  WITH_STATE_POWER_USER,
+} from '../../utils/constants';
 import { runPageLoadBenchmark, type MeasurePageResult } from '../../utils';
 
 async function measurePagePowerUser(
@@ -24,7 +27,7 @@ async function measurePagePowerUser(
 ): Promise<MeasurePageResult> {
   const metrics: Metrics[] = [];
   const title = 'measurePagePowerUser';
-  const persona = 'powerUser';
+  const persona = BENCHMARK_PERSONA.POWER_USER;
   await withFixtures(
     {
       title,
