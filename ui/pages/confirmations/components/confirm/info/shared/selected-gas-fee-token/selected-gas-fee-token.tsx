@@ -22,7 +22,6 @@ import { getNetworkConfigurationsByChainId } from '../../../../../../../../share
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
-import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 
