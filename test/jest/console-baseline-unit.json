@@ -2015,7 +2015,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/selected-gas-fee-token/selected-gas-fee-token.test.tsx": {
-      "MetaMask: Background connection not initialized": 66,
+      "MetaMask: Background connection not initialized": 78,
       "Reselect: Identity function warnings": 6,
       "Reselect: Input stability warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
