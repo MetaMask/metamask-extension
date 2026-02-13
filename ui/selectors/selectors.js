@@ -691,15 +691,15 @@ export const getSelectedEvmInternalAccount = createSelector(
  *
  * @param keyrings - The array of keyrings.
  * @param accounts - The object containing the accounts.
- * @returns {Array<import('@metamask/keyring-internal-api').InternalAccount>} The array of internal accounts sorted by keyring.
+ * @returns {import('@metamask/keyring-internal-api').InternalAccount[]} The array of internal accounts sorted by keyring.
  */
 export const getInternalAccountsSortedByKeyring = createSelector(
   getMetaMaskKeyrings,
   getInternalAccounts,
   (
-    /** @type {Array<import('@metamask/keyring-controller').KeyringObject>} */
+    /** @type {import('@metamask/keyring-controller').KeyringObject[]} */
     keyrings,
-    /** @type {Array<import('@metamask/keyring-internal-api').InternalAccount>} */
+    /** @type {import('@metamask/keyring-internal-api').InternalAccount[]} */
     accountsArr,
   ) => {
     const thirdPartySnaps = 'thirdPartySnaps';
@@ -731,7 +731,7 @@ export const getInternalAccountsSortedByKeyring = createSelector(
 
     // keep existing keyring order
     /**
-     * @type {Array<import('@metamask/keyring-internal-api').InternalAccount>}
+     * @type {import('@metamask/keyring-internal-api').InternalAccount[]}
      */
     const result = keyrings.reduce((internalAccounts, keyring) => {
       // Get regular accounts for this keyring
