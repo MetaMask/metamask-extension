@@ -8,8 +8,7 @@ name: Update Release Changelog PR
 on:
   push:
     branches:
-      - 'release/[0-9]*.[0-9]*.[0-9]*'
-      - '!release/[0-9]*.[0-9]*.[0-9]*-Changelog' # this is necessary right now, but should be removable soon
+      - 'release/[0-9]+.[0-9]+.[0-9]+'
 
 concurrency:
   group: update-release-changelog-${{ github.ref }}
