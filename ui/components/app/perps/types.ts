@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 // ESLint override: BaseController requires 'type' for Json compatibility, not 'interface'
 
+/**
+ * Provider identifier type for multi-provider support.
+ * Add new providers here as they are implemented.
+ */
+export type PerpsProviderType = 'hyperliquid' | 'myx';
+
 // Order type enumeration
 export type OrderType = 'market' | 'limit';
 
@@ -122,6 +128,29 @@ export interface Order {
   reduceOnly?: boolean; // Whether this is a reduce-only order
   triggerPrice?: string; // Trigger condition price for trigger orders (e.g., TP/SL trigger level)
 }
+
+export type OrderFill = {
+  orderId: string; // Order ID that was filled
+  symbol: string; // Asset symbol
+  side: string; // Normalized order side ('buy' or 'sell')
+  size: string; // Fill size
+  price: string; // Fill price
+  pnl: string; // PNL
+  direction: string; // Direction of the fill
+  fee: string; // Fee paid
+  feeToken: string; // Fee token symbol
+  timestamp: number; // Fill timestamp
+  startPosition?: string; // Start position
+  success?: boolean; // Whether the order was filled successfully
+  liquidation?: {
+    liquidatedUser: string; // Address of the liquidated user. liquidatedUser isn't always the current user. It can also mean the fill filled another user's liquidation.
+    markPx: string; // Mark price at liquidation
+    method: string; // Liquidation method (e.g., 'market')
+  };
+  orderType?: 'take_profit' | 'stop_loss' | 'liquidation' | 'regular';
+  detailedOrderType?: string; // Original order type from exchange
+  providerId?: PerpsProviderType; // Multi-provider: which provider this fill occurred on (injected by aggregator)
+};
 
 /**
  * Account state for perps trading
