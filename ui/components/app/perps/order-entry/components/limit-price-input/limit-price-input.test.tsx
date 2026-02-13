@@ -47,19 +47,13 @@ describe('LimitPriceInput', () => {
 
   describe('rendering', () => {
     it('renders the limit price input field', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} />,
-        mockStore,
-      );
+      renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
       expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
     });
 
     it('displays the Limit Price label', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} />,
-        mockStore,
-      );
+      renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
       expect(screen.getByText('Limit Price')).toBeInTheDocument();
     });
@@ -91,10 +85,7 @@ describe('LimitPriceInput', () => {
 
   describe('input handling', () => {
     it('allows entering a decimal price', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} />,
-        mockStore,
-      );
+      renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
       const container = screen.getByTestId('limit-price-input');
       const input = container.querySelector('input');
@@ -108,10 +99,7 @@ describe('LimitPriceInput', () => {
     });
 
     it('rejects non-numeric input', () => {
-      renderWithProvider(
-        <LimitPriceInput {...defaultProps} />,
-        mockStore,
-      );
+      renderWithProvider(<LimitPriceInput {...defaultProps} />, mockStore);
 
       const container = screen.getByTestId('limit-price-input');
       const input = container.querySelector('input');

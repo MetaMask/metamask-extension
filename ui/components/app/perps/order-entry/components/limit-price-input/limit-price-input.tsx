@@ -6,7 +6,6 @@ import {
   TextVariant,
   TextColor,
   BoxFlexDirection,
-  BoxAlignItems,
   FontWeight,
   Button,
   ButtonVariant,
@@ -191,10 +190,7 @@ export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         className="w-full"
         data-testid="limit-price-input"
         startAccessory={
-          <Text
-            variant={TextVariant.BodyMd}
-            color={TextColor.TextAlternative}
-          >
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
             $
           </Text>
         }

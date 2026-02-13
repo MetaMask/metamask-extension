@@ -17,6 +17,7 @@ import { brandColor } from '@metamask/design-tokens';
 import { Box } from '@metamask/design-system-react';
 import type { CandleData, CandleStick } from '@metamask/perps-controller';
 import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
+import { CandleData, CandleStick } from '../types';
 import {
   formatCandleDataForChart,
   formatVolumeDataForChart,

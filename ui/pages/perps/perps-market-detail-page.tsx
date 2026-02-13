@@ -267,9 +267,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           symbols: [decodedSymbol],
           includeMarketData: true,
           callback: (priceUpdates) => {
-            const update = priceUpdates.find(
-              (p) => p.symbol === decodedSymbol,
-            );
+            const update = priceUpdates.find((p) => p.symbol === decodedSymbol);
             if (update) {
               setLivePrice(update);
             }
@@ -460,8 +458,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [orderType, orderFormState]);
 
   // Combined submit disabled state
-  const isSubmitDisabled =
-    !isEligible || isOrderPending || isLimitPriceInvalid;
+  const isSubmitDisabled = !isEligible || isOrderPending || isLimitPriceInvalid;
 
   // Auto close card expansion state
   const [isAutoCloseExpanded, setIsAutoCloseExpanded] = useState(false);
@@ -950,7 +947,14 @@ const PerpsMarketDetailPage: React.FC = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [isEligible, orderFormState, selectedAddress, orderMode, position, currentPrice]);
+  }, [
+    isEligible,
+    orderFormState,
+    selectedAddress,
+    orderMode,
+    position,
+    currentPrice,
+  ]);
 
   // Initialize TP/SL editing values only when the card is first expanded
   // We use a ref to track if we've already initialized to prevent stream updates
@@ -2052,7 +2056,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                           onClick={handleSaveTPSL}
                           disabled={!isEligible || isTPSLPending}
                           title={
-                            !isEligible ? t('perpsGeoBlockedTooltip') : undefined
+                            !isEligible
+                              ? t('perpsGeoBlockedTooltip')
+                              : undefined
                           }
                           className={twMerge(
                             'w-full',

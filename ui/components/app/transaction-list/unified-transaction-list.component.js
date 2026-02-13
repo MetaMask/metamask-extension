@@ -865,7 +865,6 @@ export default function UnifiedTransactionList({
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
             userAddress={selectedAccount.address}
-            networkConfig={multichainNetworkConfig}
           />
         ))}
 

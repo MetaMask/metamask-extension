@@ -45,6 +45,9 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.mode - Order mode: 'new', 'modify', or 'close' (defaults to 'new')
  * @param props.existingPosition - Existing position data for pre-population
  * @param props.orderType
+ * @param props.midPrice
+ * @param props.bidPrice
+ * @param props.askPrice
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,

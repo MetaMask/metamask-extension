@@ -411,9 +411,7 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(
-        screen.queryByTestId('limit-price-input'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
     });
 
     it('hides limit price input in close mode even when orderType is limit', () => {
@@ -432,9 +430,7 @@ describe('OrderEntry', () => {
         mockStore,
       );
 
-      expect(
-        screen.queryByTestId('limit-price-input'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
     });
 
     it('shows direction-aware presets for long orders', () => {

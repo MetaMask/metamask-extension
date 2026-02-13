@@ -13,9 +13,7 @@ import { usePerpsController } from '../../providers/perps/PerpsControllerProvide
  */
 export function usePerpsEligibility(): { isEligible: boolean } {
   const controller = usePerpsController();
-  const [isEligible, setIsEligible] = useState(
-    controller.state.isEligible,
-  );
+  const [isEligible, setIsEligible] = useState(controller.state.isEligible);
 
   useEffect(() => {
     setIsEligible(controller.state.isEligible);

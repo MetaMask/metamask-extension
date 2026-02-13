@@ -1,4 +1,4 @@
-import type { OrderType } from '../types';
+import { OrderType } from '../types';
 
 /**
  * Order direction for perps trading
