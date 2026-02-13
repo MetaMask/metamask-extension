@@ -3378,10 +3378,15 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
         name: account.metadata?.name ?? '',
       }))
       .sort(
-        (
-          { lastSelected: lastSelectedA = 0 },
-          { lastSelected: lastSelectedB = 0 },
-        ) => {
+        ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
+          if (lastSelectedA === lastSelectedB) {
+            return 0;
+          } else if (lastSelectedA === undefined) {
+            return 1;
+          } else if (lastSelectedB === undefined) {
+            return -1;
+          }
+
           return lastSelectedB - lastSelectedA;
         },
       );
