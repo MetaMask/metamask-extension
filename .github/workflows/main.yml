@@ -542,8 +542,7 @@ jobs:
     #
     # Requirements:
     # - For most jobs: result must be `success` or `skipped` (supports the builds-from-run shortcut).
-    # - For benchmark jobs: result may be `success`, `skipped`, or `failure` (failure does not block prerelease),
-    #   but statuses like `cancelled`, `timed_out`, or `action_required` will block.
+    # - For benchmark jobs: result can be anything (failure does not block prerelease),
     if: >-
       ${{
         !cancelled() &&
@@ -558,8 +557,6 @@ jobs:
         contains(fromJson('["success","skipped"]'), needs.build-test-mv2-browserify.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-browserify.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-test-flask-mv2-browserify.result) &&
-        contains(fromJson('["success","skipped","failure"]'), needs.run-benchmarks.result) &&
-        contains(fromJson('["success","skipped","failure"]'), needs.page-load-benchmark.result) &&
         contains(fromJson('["success","skipped"]'), needs.bundle-size.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-storybook.result) &&
         contains(fromJson('["success","skipped"]'), needs.build-ts-migration-dashboard.result) &&
