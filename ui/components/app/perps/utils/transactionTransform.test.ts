@@ -1,4 +1,3 @@
-import type { Funding, Order, OrderFill, UserHistoryItem } from '../types';
 import {
   FillType,
   PerpsOrderTransactionStatus,
@@ -15,6 +14,12 @@ import {
   type WithdrawalRequest,
   type DepositRequest,
 } from './transactionTransforms';
+import type {
+  Funding,
+  Order,
+  OrderFill,
+  UserHistoryItem,
+} from '@metamask/perps-controller';
 
 // Helper to create mock OrderFill
 const createMockFill = (overrides: Partial<OrderFill> = {}): OrderFill => ({
