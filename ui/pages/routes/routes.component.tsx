@@ -53,6 +53,7 @@ import {
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
   ADD_MPC_WALLET_ROUTE,
+  JOIN_MPC_WALLET_ROUTE,
   MPC_WALLET_MANAGEMENT_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
@@ -139,6 +140,7 @@ import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccoun
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { AddMpcWalletPage } from '../multichain-accounts/add-mpc-wallet-page/add-mpc-wallet-page';
+import { JoinMpcWalletPage } from '../multichain-accounts/join-mpc-wallet-page/join-mpc-wallet-page';
 import { MpcWalletManagementPage } from '../multichain-accounts/mpc-wallet-management-page/mpc-wallet-management-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
@@ -753,6 +755,12 @@ export default function Routes() {
       createRouteWithLayout({
         path: ADD_MPC_WALLET_ROUTE,
         component: AddMpcWalletPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: JOIN_MPC_WALLET_ROUTE,
+        component: JoinMpcWalletPage,
         layout: RootLayout,
         authenticated: true,
       }),

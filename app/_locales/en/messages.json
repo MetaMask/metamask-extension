@@ -8660,6 +8660,39 @@
   "walletName": {
     "message": "Wallet name"
   },
+  "createMpcWallet": {
+    "message": "Create MPC Wallet"
+  },
+  "joinMpcWallet": {
+    "message": "Join MPC Wallet"
+  },
+  "joinMpcWalletDescription": {
+    "message": "Join an existing MPC wallet by creating a device identity and connecting to the wallet initiator."
+  },
+  "createDeviceIdentity": {
+    "message": "Create Device Identity"
+  },
+  "creatingIdentity": {
+    "message": "Creating identity..."
+  },
+  "yourDeviceIdentity": {
+    "message": "Your Device Identity"
+  },
+  "shareIdentityWithInitiator": {
+    "message": "Share this identity with the wallet initiator, then enter their custodian ID below to complete the join."
+  },
+  "peerCustodian": {
+    "message": "Peer Custodian"
+  },
+  "enterPeerCustodianId": {
+    "message": "Enter peer custodian ID"
+  },
+  "joiningMpcWallet": {
+    "message": "Joining..."
+  },
+  "yourCustodianId": {
+    "message": "Your Custodian ID"
+  },
   "manageMpcWallet": {
     "message": "Manage MPC wallet"
   },

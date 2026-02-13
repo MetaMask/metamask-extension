@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { AccountWalletId } from '@metamask/account-api';
-import type { MpcCustodian } from '../../../store/controller-actions/mpc-controller';
+import { AccountWalletId, AccountWalletType } from '@metamask/account-api';
+import type { Custodian } from '../../../store/controller-actions/mpc-controller';
 import {
   Box,
   Button,
@@ -40,6 +40,7 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   getMpcCustodians,
+  getMpcCustodianId,
   addMpcCustodian,
 } from '../../../store/controller-actions/mpc-controller';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
@@ -53,15 +54,18 @@ export const MpcWalletManagementPage = () => {
   const walletId = decodeURIComponent(id ?? '') as AccountWalletId;
   const wallet = useSelector((state) => getWallet(state, walletId));
 
-  const [custodians, setCustodians] = useState<MpcCustodian[]>([]);
+  const [custodians, setCustodians] = useState<Custodian[]>([]);
+  const [selfCustodianId, setSelfCustodianId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newPeerId, setNewPeerId] = useState('');
   const [isAdding, setIsAdding] = useState(false);
 
-  // Extract keyring ID from wallet metadata
-  const keyringId = (wallet?.metadata as { keyring?: { id?: string } })?.keyring
-    ?.id;
+  // Extract keyring ID from wallet metadata (available on AccountWalletKeyringObject)
+  const keyringId =
+    wallet?.type === AccountWalletType.Keyring
+      ? wallet.metadata.keyring.id
+      : undefined;
 
   const fetchCustodians = useCallback(async () => {
     if (!keyringId) {
@@ -70,8 +74,12 @@ export const MpcWalletManagementPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const result = await dispatch(getMpcCustodians(keyringId));
+      const [result, selfId] = await Promise.all([
+        dispatch(getMpcCustodians(keyringId)),
+        dispatch(getMpcCustodianId(keyringId)),
+      ]);
       setCustodians(result);
+      setSelfCustodianId(selfId);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Failed to load custodians',
@@ -144,6 +152,29 @@ export const MpcWalletManagementPage = () => {
             {t('custodians')}
           </Text>
 
+          {selfCustodianId && (
+            <Box
+              backgroundColor={BackgroundColor.backgroundMuted}
+              borderRadius={BorderRadius.LG}
+              padding={4}
+            >
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                marginBottom={1}
+              >
+                {t('yourCustodianId')}
+              </Text>
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textDefault}
+                style={{ wordBreak: 'break-all' }}
+              >
+                {selfCustodianId}
+              </Text>
+            </Box>
+          )}
+
           {loading && (
             <Text
               variant={TextVariant.bodySm}
@@ -177,7 +208,7 @@ export const MpcWalletManagementPage = () => {
             >
               {custodians.map((custodian, index) => (
                 <Box
-                  key={custodian.id}
+                  key={custodian.partyId}
                   display={Display.Flex}
                   alignItems={AlignItems.center}
                   padding={4}
@@ -203,7 +234,7 @@ export const MpcWalletManagementPage = () => {
                       color={TextColor.textDefault}
                       ellipsis
                     >
-                      {custodian.id}
+                      {custodian.partyId}
                     </Text>
                     <Text
                       variant={TextVariant.bodySm}

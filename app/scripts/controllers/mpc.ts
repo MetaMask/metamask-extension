@@ -1,21 +1,16 @@
 import { KeyringController, KeyringTypes } from '@metamask/keyring-controller';
 import { MPCKeyring } from '@metamask/eth-mpc-keyring';
+import type { Custodian } from '@metamask/eth-mpc-keyring';
 
-export type MpcCustodian = {
-  id: string;
-  type: 'cloud' | 'user';
-};
+export type { Custodian } from '@metamask/eth-mpc-keyring';
 
 /**
- * Extended interface for MPC keyring with custodian management methods.
- * These methods are available on the keyring but not yet declared in the MPCKeyring type.
+ * Create a new MPC keyring and run the full setup (create mode).
+ *
+ * @param keyringController - The keyring controller instance.
+ * @param verifierId - The ID of the verifier.
+ * @returns The keyring ID.
  */
-type MpcKeyringWithCustodians = MPCKeyring & {
-  getCustodians(type: 'cloud' | 'user'): string[];
-  getCustodianId(): string;
-  addCustodian(peerId: string): Promise<void>;
-};
-
 export async function createMpcKeyring(
   keyringController: KeyringController,
   verifierId: string,
@@ -28,33 +23,66 @@ export async function createMpcKeyring(
 }
 
 /**
+ * Create an MPC keyring and set up its network identity (without running full setup).
+ * Used as the first step of the join flow.
+ *
+ * @param keyringController - The keyring controller instance.
+ * @returns An object with the keyring ID and the party ID (device identity).
+ */
+export async function setupMpcIdentity(
+  keyringController: KeyringController,
+): Promise<{ keyringId: string; partyId: string }> {
+  const { id } = await keyringController.addNewKeyring(KeyringTypes.mpc);
+  const partyId = await keyringController.withKeyring(
+    { id },
+    async ({ keyring }) => {
+      return (keyring as MPCKeyring).setupIdentity();
+    },
+  );
+  return { keyringId: id, partyId };
+}
+
+/**
+ * Join an existing MPC wallet by running setup in join mode.
+ *
+ * @param keyringController - The keyring controller instance.
+ * @param keyringId - The ID of the MPC keyring (created via setupMpcIdentity).
+ * @param verifierId - The ID of the verifier.
+ * @param initiator - The party ID of the initiating custodian.
+ */
+export async function joinMpcWallet(
+  keyringController: KeyringController,
+  keyringId: string,
+  verifierId: string,
+  initiator: string,
+): Promise<void> {
+  await keyringController.withKeyring(
+    { id: keyringId },
+    async ({ keyring }) => {
+      await (keyring as MPCKeyring).setup({
+        verifierIds: [verifierId],
+        mode: 'join',
+        initiator,
+      });
+    },
+  );
+}
+
+/**
  * Get the list of custodians for an MPC keyring.
  *
  * @param keyringController - The keyring controller instance.
  * @param keyringId - The ID of the MPC keyring.
- * @returns The list of custodians with their IDs and types.
+ * @returns The list of custodians with their party IDs and types.
  */
 export async function getMpcCustodians(
   keyringController: KeyringController,
   keyringId: string,
-): Promise<MpcCustodian[]> {
+): Promise<Custodian[]> {
   return await keyringController.withKeyring(
     { id: keyringId },
     async ({ keyring }) => {
-      const mpcKeyring = keyring as MpcKeyringWithCustodians;
-      const cloudCustodians = mpcKeyring.getCustodians('cloud');
-      const userCustodians = mpcKeyring.getCustodians('user');
-
-      return [
-        ...cloudCustodians.map((id: string) => ({
-          id,
-          type: 'cloud' as const,
-        })),
-        ...userCustodians.map((id: string) => ({
-          id,
-          type: 'user' as const,
-        })),
-      ];
+      return (keyring as MPCKeyring).getCustodians();
     },
   );
 }
@@ -64,7 +92,7 @@ export async function getMpcCustodians(
  *
  * @param keyringController - The keyring controller instance.
  * @param keyringId - The ID of the MPC keyring.
- * @returns The custodian ID for the current user.
+ * @returns The custodian ID (party ID) for the current user.
  */
 export async function getMpcCustodianId(
   keyringController: KeyringController,
@@ -73,7 +101,7 @@ export async function getMpcCustodianId(
   return await keyringController.withKeyring(
     { id: keyringId },
     async ({ keyring }) => {
-      return (keyring as MpcKeyringWithCustodians).getCustodianId();
+      return (keyring as MPCKeyring).getCustodianId();
     },
   );
 }
@@ -83,17 +111,17 @@ export async function getMpcCustodianId(
  *
  * @param keyringController - The keyring controller instance.
  * @param keyringId - The ID of the MPC keyring.
- * @param peerId - The peer ID of the custodian to add.
+ * @param custodianId - The party ID of the custodian to add.
  */
 export async function addMpcCustodian(
   keyringController: KeyringController,
   keyringId: string,
-  peerId: string,
+  custodianId: string,
 ): Promise<void> {
   await keyringController.withKeyring(
     { id: keyringId },
     async ({ keyring }) => {
-      await (keyring as MpcKeyringWithCustodians).addCustodian(peerId);
+      await (keyring as MPCKeyring).addCustodian(custodianId);
     },
   );
 }

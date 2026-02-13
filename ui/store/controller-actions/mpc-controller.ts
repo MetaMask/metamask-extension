@@ -11,8 +11,8 @@ import {
 import { setShowNewSrpAddedToast } from '../../components/app/toast-master/utils';
 import { submitRequestToBackground } from '../background-connection';
 
-export type MpcCustodian = {
-  id: string;
+export type Custodian = {
+  partyId: string;
   type: 'cloud' | 'user';
 };
 
@@ -42,18 +42,73 @@ export function createMpcKeyring(
   };
 }
 
-export function getMpcCustodians(
-  keyringId: string,
-): ThunkAction<
-  Promise<MpcCustodian[]>,
+export type SetupMpcIdentityResult = {
+  keyringId: string;
+  partyId: string;
+};
+
+export function setupMpcIdentity(): ThunkAction<
+  Promise<SetupMpcIdentityResult>,
   MetaMaskReduxState,
   undefined,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`actions.setupMpcIdentity`);
+
+    const result = await submitRequestToBackground<SetupMpcIdentityResult>(
+      'setupMpcIdentity',
+      [],
+    )
+      .then((res) => {
+        dispatch(hideLoadingIndication());
+        dispatch(hideWarning());
+        return res;
+      })
+      .catch((err) => {
+        dispatch(displayWarning(err));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+    return result;
+  };
+}
+
+export function joinMpcWallet(
+  keyringId: string,
+  verifierId: string,
+  initiator: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, undefined, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`actions.joinMpcWallet`);
+
+    await submitRequestToBackground<void>('joinMpcWallet', [
+      keyringId,
+      verifierId,
+      initiator,
+    ])
+      .then(() => {
+        dispatch(hideLoadingIndication());
+        dispatch(hideWarning());
+        dispatch(setShowNewSrpAddedToast(true));
+      })
+      .catch((err) => {
+        dispatch(displayWarning(err));
+        dispatch(hideLoadingIndication());
+        return Promise.reject(err);
+      });
+  };
+}
+
+export function getMpcCustodians(
+  keyringId: string,
+): ThunkAction<Promise<Custodian[]>, MetaMaskReduxState, undefined, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`actions.getMpcCustodians`);
 
-    const custodians = await submitRequestToBackground<MpcCustodian[]>(
+    const custodians = await submitRequestToBackground<Custodian[]>(
       'getMpcCustodians',
       [keyringId],
     ).catch((err) => {
@@ -83,7 +138,7 @@ export function getMpcCustodianId(
 
 export function addMpcCustodian(
   keyringId: string,
-  peerId: string,
+  custodianId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, undefined, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
@@ -91,7 +146,7 @@ export function addMpcCustodian(
 
     await submitRequestToBackground<void>('addMpcCustodian', [
       keyringId,
-      peerId,
+      custodianId,
     ])
       .then(() => {
         dispatch(hideLoadingIndication());

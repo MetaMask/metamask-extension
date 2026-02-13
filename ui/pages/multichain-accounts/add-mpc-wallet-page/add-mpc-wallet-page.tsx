@@ -22,6 +22,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
   DEFAULT_ROUTE,
+  JOIN_MPC_WALLET_ROUTE,
 } from '../../../helpers/constants/routes';
 import { createMpcKeyring } from '../../../store/controller-actions/mpc-controller';
 import { MetaMaskReduxDispatch } from '../../../store/store';
@@ -31,10 +32,14 @@ export const AddMpcWalletPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
-  const handleContinue = useCallback(async () => {
+  const handleCreate = useCallback(async () => {
     await dispatch(createMpcKeyring('verifier'));
     navigate(DEFAULT_ROUTE);
   }, [dispatch, navigate]);
+
+  const handleJoin = useCallback(() => {
+    navigate(JOIN_MPC_WALLET_ROUTE);
+  }, [navigate]);
 
   const handleClose = useCallback(async () => {
     navigate(DEFAULT_ROUTE);
@@ -77,11 +82,20 @@ export const AddMpcWalletPage = () => {
         </Box>
         <Button
           variant={ButtonVariant.Primary}
-          onClick={handleContinue}
+          onClick={handleCreate}
           style={{ width: '100%' }}
         >
-          {t('continue')}
+          {t('createMpcWallet')}
         </Button>
+        <Box marginTop={3}>
+          <Button
+            variant={ButtonVariant.Secondary}
+            onClick={handleJoin}
+            style={{ width: '100%' }}
+          >
+            {t('joinMpcWallet')}
+          </Button>
+        </Box>
       </Content>
     </Page>
   );

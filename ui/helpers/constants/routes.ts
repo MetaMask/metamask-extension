@@ -76,6 +76,7 @@ export const MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE =
 export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
 export const ADD_MPC_WALLET_ROUTE = '/add-mpc-wallet';
 export const MPC_WALLET_MANAGEMENT_ROUTE = '/mpc-wallet-management';
+export const JOIN_MPC_WALLET_ROUTE = '/join-mpc-wallet';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';
 export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
@@ -167,6 +168,11 @@ export const ROUTES = [
   {
     path: ADD_MPC_WALLET_ROUTE,
     label: 'Add MPC Wallet',
+    trackInAnalytics: true,
+  },
+  {
+    path: JOIN_MPC_WALLET_ROUTE,
+    label: 'Join MPC Wallet',
     trackInAnalytics: true,
   },
   {
