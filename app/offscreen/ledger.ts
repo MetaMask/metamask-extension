@@ -41,7 +41,7 @@ function getTransactionSelector(rawTxHex: string): string | undefined {
   try {
     const hex = rawTxHex.startsWith('0x') ? rawTxHex : add0x(rawTxHex);
     const { data } = parse(hex);
-    if (data && data.length >= 10) {
+    if (data?.length >= 10) {
       return data.substring(0, 10).toLowerCase();
     }
   } catch {
