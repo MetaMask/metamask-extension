@@ -54,6 +54,10 @@ type GlobalMenuItemBase = {
    * Optional info dot indicator
    */
   showInfoDot?: boolean;
+  /**
+   * When true, show a chevron (>) on the right to indicate navigation
+   */
+  showChevron?: boolean;
 };
 
 /**

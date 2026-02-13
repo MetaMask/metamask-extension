@@ -304,6 +304,7 @@ export function useGlobalMenuSections(
       section1.items.push({
         id: 'notifications-menu-item',
         iconName: IconName.Notification,
+        showChevron: true,
         label: (
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -409,7 +410,6 @@ export function useGlobalMenuSections(
               category: MetaMetricsEventCategory.Navigation,
               properties: { location: METRICS_LOCATION },
             });
-            onClose();
           },
           disabled: hasUnapprovedTransactions,
         },
@@ -427,7 +427,6 @@ export function useGlobalMenuSections(
           iconName: IconName.Snaps,
           label: t('snaps'),
           to: SNAPS_ROUTE,
-          onClick: onClose,
           showInfoDot: snapsUpdatesAvailable,
         },
       ],
@@ -448,7 +447,6 @@ export function useGlobalMenuSections(
               event: MetaMetricsEventName.NavSettingsOpened,
               properties: { location: METRICS_LOCATION },
             });
-            onClose();
           },
           disabled: hasUnapprovedTransactions,
         },

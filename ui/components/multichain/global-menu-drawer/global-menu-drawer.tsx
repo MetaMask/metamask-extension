@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { Dialog, Transition } from '@headlessui/react';
+import { Transition } from '@headlessui/react';
 import {
   Box,
   BoxBackgroundColor,
@@ -21,7 +21,7 @@ import {
 import type { GlobalMenuDrawerProps } from './global-menu-drawer.types';
 
 /**
- * GlobalMenuDrawer component built on Headless UI v1 Dialog
+ * GlobalMenuDrawer built on Headless UI Transition (div shell so leave transition runs in popup)
  *
  * @param props - The component props
  * @param props.isOpen - Whether the drawer is open
@@ -198,6 +198,21 @@ export const GlobalMenuDrawer = ({
     }
   }, [isOpen, isFullscreen]);
 
+  // Escape key closes drawer (Dialog would unmount on close and block leave transition in popup)
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  const titleId = 'global-menu-drawer-title';
   const hasPosition = Object.keys(drawerStyle).length > 0;
   useEffect(() => {
     if (!isOpen) {
@@ -260,11 +275,12 @@ export const GlobalMenuDrawer = ({
 
   const dialogContent = (
     <Transition show={isOpen} appear>
-      <Dialog
-        open={isOpen}
-        onClose={onClose}
+      <div
+        aria-labelledby={title ? titleId : undefined}
+        aria-modal="true"
         className={`z-[1050] overflow-hidden ${dialogPositionClass}`}
         data-testid={dataTestId}
+        role="dialog"
         style={{
           ...dialogPositionStyle,
           ...(hideUntilPositioned
@@ -312,7 +328,7 @@ export const GlobalMenuDrawer = ({
           leaveFrom="translate-x-0"
           leaveTo="translate-x-full"
         >
-          <Dialog.Panel
+          <div
             className="w-screen max-w-full pointer-events-auto motion-reduce:transition-none h-full"
             style={{ maxWidth: width }}
           >
@@ -329,10 +345,13 @@ export const GlobalMenuDrawer = ({
                     ariaLabel={title || t('close')}
                     onClick={onClose}
                     data-testid="drawer-close-button"
+                    className="text-icon-alternative"
                     iconProps={{ color: IconColor.IconAlternative }}
                   />
                   {title && (
-                    <Dialog.Title className="sr-only">{title}</Dialog.Title>
+                    <span className="sr-only" id={titleId}>
+                      {title}
+                    </span>
                   )}
                 </Box>
               )}
@@ -345,9 +364,9 @@ export const GlobalMenuDrawer = ({
                 {children}
               </Box>
             </Box>
-          </Dialog.Panel>
+          </div>
         </Transition.Child>
-      </Dialog>
+      </div>
     </Transition>
   );
 

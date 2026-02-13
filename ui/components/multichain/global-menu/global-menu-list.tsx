@@ -46,7 +46,7 @@ const renderMenuItemContent = (
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        gap={2}
+        marginLeft={2}
         className="flex-shrink-0"
       >
         {hasBadge && badge}
@@ -75,7 +75,7 @@ export const GlobalMenuList = ({
         <Box key={section.id} flexDirection={BoxFlexDirection.Column}>
           {/* Section Separator - Show before section if it's not the first section */}
           {sectionIndex > 0 && !section.hideDividerAbove && (
-            <Box className="w-full px-4">
+            <Box className="w-full px-4 py-4">
               <Box className="w-full border-t border-muted" />
             </Box>
           )}
@@ -99,8 +99,8 @@ export const GlobalMenuList = ({
 
           {/* Section Items */}
           {section.items.map((item) => {
-            // Show chevron for route items that have a valid route
-            const showChevron = isRouteItem(item);
+            // Show chevron for route items or when explicitly requested (e.g. notifications)
+            const showChevron = isRouteItem(item) || item.showChevron === true;
             return (
               <MenuItem
                 key={item.id}
