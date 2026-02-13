@@ -3,6 +3,10 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { render } from '@testing-library/react';
 import { SWAP_PATH } from '../../constants/routes';
+import { getMessage } from '../../utils/i18n-helper';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import BasicFunctionalityRequired from './require-basic-functionality';
 
 jest.mock('react-redux', () => ({
@@ -27,6 +31,11 @@ jest.mock('react-router-dom', () => {
 
 const mockUseSelector = jest.mocked(useSelector);
 
+const CHILD_MESSAGE_KEY = 'basicFunctionalityRequired_title';
+const childText = getMessage('en', messages, CHILD_MESSAGE_KEY) as string;
+
+const testChild = <span>{childText}</span>;
+
 describe('BasicFunctionalityRequired', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -44,12 +53,10 @@ describe('BasicFunctionalityRequired', () => {
       mockUseSelector.mockReturnValue(true);
 
       const { getByText, queryByTestId } = render(
-        <BasicFunctionalityRequired>
-          <span>Child content</span>
-        </BasicFunctionalityRequired>,
+        <BasicFunctionalityRequired>{testChild}</BasicFunctionalityRequired>,
       );
 
-      expect(getByText('Child content')).toBeInTheDocument();
+      expect(getByText(childText)).toBeInTheDocument();
       expect(queryByTestId('navigate')).not.toBeInTheDocument();
     });
   });
@@ -59,9 +66,7 @@ describe('BasicFunctionalityRequired', () => {
       mockUseSelector.mockReturnValue(undefined);
 
       const { getByTestId, queryByText } = render(
-        <BasicFunctionalityRequired>
-          <span>Child content</span>
-        </BasicFunctionalityRequired>,
+        <BasicFunctionalityRequired>{testChild}</BasicFunctionalityRequired>,
       );
 
       expect(getByTestId('navigate')).toBeInTheDocument();
@@ -69,7 +74,7 @@ describe('BasicFunctionalityRequired', () => {
         'data-to',
         '/basic-functionality-off',
       );
-      expect(queryByText('Child content')).not.toBeInTheDocument();
+      expect(queryByText(childText)).not.toBeInTheDocument();
     });
   });
 
@@ -80,9 +85,7 @@ describe('BasicFunctionalityRequired', () => {
       mockUseSelector.mockReturnValue(false);
 
       const { getByTestId, queryByText } = render(
-        <BasicFunctionalityRequired>
-          <span>Child content</span>
-        </BasicFunctionalityRequired>,
+        <BasicFunctionalityRequired>{testChild}</BasicFunctionalityRequired>,
       );
 
       expect(getByTestId('navigate')).toBeInTheDocument();
@@ -90,16 +93,14 @@ describe('BasicFunctionalityRequired', () => {
         'data-to',
         basicFunctionalityOffRoute,
       );
-      expect(queryByText('Child content')).not.toBeInTheDocument();
+      expect(queryByText(childText)).not.toBeInTheDocument();
     });
 
     it('uses replace navigation', () => {
       mockUseSelector.mockReturnValue(false);
 
       render(
-        <BasicFunctionalityRequired>
-          <span>Child content</span>
-        </BasicFunctionalityRequired>,
+        <BasicFunctionalityRequired>{testChild}</BasicFunctionalityRequired>,
       );
 
       expect(Navigate).toHaveBeenCalledWith(
@@ -123,7 +124,7 @@ describe('BasicFunctionalityRequired', () => {
 
       const { getByTestId } = render(
         <BasicFunctionalityRequired featureName="Swap">
-          <span>Child content</span>
+          {testChild}
         </BasicFunctionalityRequired>,
       );
 
@@ -147,7 +148,7 @@ describe('BasicFunctionalityRequired', () => {
 
       const { getByTestId } = render(
         <BasicFunctionalityRequired featureName="Swap">
-          <span>Child content</span>
+          {testChild}
         </BasicFunctionalityRequired>,
       );
 
