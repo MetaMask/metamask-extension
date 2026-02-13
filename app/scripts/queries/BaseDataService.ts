@@ -3,7 +3,7 @@ import {
   ActionConstraint,
   EventConstraint,
 } from '@metamask/messenger';
-import { assert, Duration, inMilliseconds, Json } from '@metamask/utils';
+import { Duration, inMilliseconds, Json } from '@metamask/utils';
 import { isCacheExpired, withRetry } from './utils';
 
 export type SubscriptionCallback = (payload: Json) => void;
@@ -28,10 +28,14 @@ export type FetchOptions<ResultType extends Json> = {
   retries?: number;
 };
 
+export type GetPageParamFunction<ResultType> = (result: ResultType) => Json;
+
 export type FetchPagedOptions<ResultType extends Json> =
   FetchOptions<ResultType> & {
     fn: FetchFunctionPaged<ResultType>;
     pageParam?: Json;
+    getPreviousPageParam?: GetPageParamFunction<ResultType>;
+    getNextPageParam?: GetPageParamFunction<ResultType>;
   };
 
 export type CacheEntry = {
@@ -40,6 +44,13 @@ export type CacheEntry = {
   error?: unknown;
   promise?: Promise<Json>;
   dataUpdated?: number;
+
+  // Optional paged metadata
+  previousPage?: Json;
+  nextPage?: Json;
+  hasPreviousPage?: boolean;
+  hasNextPage?: boolean;
+  pageParams?: Json[];
 };
 
 export type PassableCacheEntry = Omit<CacheEntry, 'promise'>;
@@ -64,7 +75,7 @@ export class BaseDataService<
 
   #messenger: ServiceMessenger;
 
-  #cache: Map<Key, CacheEntry> = new Map();
+  #cache: Map<string, CacheEntry> = new Map();
 
   #subscriptions: Map<string, Set<SubscriptionCallback>> = new Map();
 
@@ -86,13 +97,14 @@ export class BaseDataService<
   ): Promise<ResultType> {
     const { key, cacheTime = inMilliseconds(1, Duration.Minute) } = options;
 
-    const cached = this.#getCached<ResultType>(key, cacheTime);
+    const hash = hashKey(key);
+    const cached = this.#getCached<ResultType>(hash, cacheTime);
 
     if (cached) {
       return cached;
     }
 
-    const promise = this.#fetch(options.fn, options);
+    const promise = this.#fetch(options.fn, (entry) => entry, options);
     this.#updateCache(key, { status: 'pending', promise });
 
     return promise;
@@ -105,32 +117,77 @@ export class BaseDataService<
       key,
       cacheTime = inMilliseconds(1, Duration.Minute),
       pageParam,
+      getPreviousPageParam,
+      getNextPageParam,
     } = options;
 
-    const cached = this.#getCached<ResultType>(key, cacheTime);
+    const hash = hashKey(key);
+    const cached = this.#getCached<ResultType>(hash, cacheTime, pageParam);
 
     if (cached) {
       return cached;
     }
 
-    const promise = this.#fetch(() => options.fn({ pageParam }), options);
+    const existing = this.#cache.get(hash);
+    function transform(entry: CacheEntry): any {
+      const result = entry.data as ResultType;
+
+      const previousPage = getPreviousPageParam?.(result);
+      const nextPage = getNextPageParam?.(result);
+
+      if (
+        !existing ||
+        // @ts-expect-error Missing type narrowing.
+        (existing.dataUpdated && isCacheExpired(existing, cacheTime))
+      ) {
+        return {
+          ...entry,
+          data: { pages: [entry.data] },
+          previousPage,
+          nextPage,
+          hasPreviousPage: previousPage !== undefined && previousPage !== null,
+          hasNextPage: nextPage !== undefined && nextPage !== null,
+          pageParams: [pageParam],
+        };
+      }
+
+      return {
+        ...entry,
+        data: {
+          // @ts-expect-error Missing type narrowing.
+          pages: [...existing.data.pages, result],
+        },
+        previousPage,
+        nextPage,
+        hasPreviousPage: previousPage !== undefined && previousPage !== null,
+        hasNextPage: nextPage !== undefined && nextPage !== null,
+        pageParams: [...existing.pageParams!, pageParam],
+      };
+    }
+
+    const promise = this.#fetch(
+      () => options.fn({ pageParam }),
+      transform,
+      options,
+    );
     this.#updateCache(key, { status: 'pending', promise });
 
     return promise;
   }
 
   #getCached<ResultType extends Json>(
-    key: Key,
+    hash: string,
     cacheTime: number,
+    pageParam?: Json,
   ): Promise<ResultType> | ResultType | null {
-    const cached = this.#cache.get(key);
+    const cached = this.#cache.get(hash);
 
     if (!cached) {
       return null;
     }
 
     // Pending status is used for deduping requests
-    if (cached.status === 'pending') {
+    if (cached.promise && cached.status === 'pending') {
       return cached.promise as Promise<ResultType>;
     }
 
@@ -145,21 +202,29 @@ export class BaseDataService<
 
     // TODO: Check stale time
 
+    if (pageParam && !cached.pageParams?.includes(pageParam)) {
+      return null;
+    }
+
     return cached.data as ResultType;
   }
 
   async #fetch<ResultType extends Json>(
     fn: () => Promise<ResultType>,
+    transform: (result: CacheEntry) => CacheEntry,
     { key, retries = 1 }: FetchOptions<ResultType>,
   ): Promise<ResultType> {
     try {
       const data = (await withRetry(fn, retries)) as ResultType;
 
-      this.#updateCache(key, {
-        status: 'success',
-        data,
-        dataUpdated: Date.now(),
-      });
+      this.#updateCache(
+        key,
+        transform({
+          status: 'success',
+          data,
+          dataUpdated: Date.now(),
+        }),
+      );
 
       return data;
     } catch (error) {
@@ -173,10 +238,10 @@ export class BaseDataService<
   }
 
   #updateCache(key: Key, entry: CacheEntry) {
-    this.#cache.set(key, entry);
-
     // TODO: Slow?
     const hash = hashKey(key);
+    this.#cache.set(hash, entry);
+
     if (this.#subscriptions.has(hash)) {
       this.#broadcastCache(key);
     }
@@ -222,7 +287,7 @@ export class BaseDataService<
 
     this.#subscriptions.get(hash)!.add(subscription);
 
-    return this.#cache.get(key) ?? null;
+    return this.#cache.get(hash) ?? null;
   }
 
   #handleUnsubscribe(key: Key, subscription: SubscriptionCallback): void {
@@ -241,7 +306,7 @@ export class BaseDataService<
 
   #broadcastCache(key: Key) {
     const hash = hashKey(key);
-    const state = this.#cache.get(key) ?? null;
+    const state = this.#cache.get(hash) ?? null;
 
     const subscribers = this.#subscriptions.get(hash)!;
     subscribers.forEach((subscriber) =>

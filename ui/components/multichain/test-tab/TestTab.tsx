@@ -1,23 +1,15 @@
 import React from 'react';
-import {
-  useQuery,
-  useQueryClient,
-  useInfiniteQuery,
-} from '@tanstack/react-query';
 import Box from '../../ui/box/box';
 import { Button } from '../../component-library';
 import { useDataService } from '../../../queries/useDataService';
+import { useDataServicePaged } from '../../../queries/useDataServicePaged';
 
 export const TestTab = () => {
-  const queryClient = useQueryClient();
-
-  const infiniteQuery = useInfiniteQuery({
-    queryKey: [
+  const infiniteQuery = useDataServicePaged({
+    key: [
       'ActivityDataService:getActivity',
       '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
     ],
-    getNextPageParam: ({ pageInfo }) =>
-      pageInfo?.hasNextPage ? pageInfo.endCursor : undefined,
   });
 
   const assetsQueryKey = [
@@ -38,7 +30,7 @@ export const TestTab = () => {
   };
 
   const handleInvalidate = () => {
-    queryClient.invalidateQueries({ queryKey: assetsQueryKey });
+    query.invalidate();
   };
 
   return (

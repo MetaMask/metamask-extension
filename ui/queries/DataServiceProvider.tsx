@@ -28,12 +28,21 @@ export const DataServiceContext = createContext<DataServiceContextType | null>(
   null,
 );
 
+type SubscriptionCallback = (entry: CacheEntry) => void;
+
 export const DataServiceProvider: FunctionComponent<{
   backgroundConnection: BackgroundRpcClient;
 }> = ({ backgroundConnection, children }) => {
-  const subscriptions = new Set<string>();
+  const subscriptions = new Map<string, Set<SubscriptionCallback>>();
 
   const cache = new Map<string, CacheEntry>();
+
+  function updateCache(hash: string, entry: CacheEntry) {
+    cache.set(hash, entry);
+
+    const subscribers = subscriptions.get(hash)!;
+    subscribers.forEach((subscriber) => subscriber(entry));
+  }
 
   backgroundConnection.onNotification(async (data) => {
     const { method, params } = data;
@@ -45,7 +54,7 @@ export const DataServiceProvider: FunctionComponent<{
     const { hash, state } = params[0];
     if (subscriptions.has(hash)) {
       console.log('Hydrated cache', hash, state);
-      cache.set(hash, state);
+      updateCache(hash, state);
     }
   });
 
@@ -61,43 +70,55 @@ export const DataServiceProvider: FunctionComponent<{
     }
   }
 
-  async function fetchKey(key: Key) {
+  async function fetchKey(key: Key, pageParam?: Json = null) {
     const potentialAction = key[0];
 
     if (!DATA_SERVICES.includes(potentialAction?.split(':')?.[0])) {
       throw new Error('Queries must use data service actions.');
     }
 
-    return await sendBackgroundRequest(potentialAction, key);
+    return await sendBackgroundRequest(potentialAction, [key, pageParam]);
   }
 
-  async function subscribe(key: Key) {
+  async function subscribe(key: Key, callback: SubscriptionCallback) {
     const hash = hashKey(key);
-    if (subscriptions.has(hash)) {
+
+    if (!subscriptions.has(hash)) {
+      subscriptions.set(hash, new Set());
+    }
+
+    const subscribers = subscriptions.get(hash)!;
+
+    subscribers.add(callback);
+
+    if (subscribers.size > 1) {
       return;
     }
 
-    subscriptions.add(hash);
-
     const service = getServiceFromKey(key);
-
     const state = await sendBackgroundRequest(`${service}:subscribe`, [key]);
+
     cache.set(hash, state);
 
     return state;
   }
 
-  async function unsubscribe(key: Key) {
+  async function unsubscribe(key: Key, callback: SubscriptionCallback) {
     const hash = hashKey(key);
 
-    if (!subscriptions.has(hash)) {
+    const subscribers = subscriptions.get(hash);
+
+    if (!subscribers) {
       return;
     }
 
-    subscriptions.delete(hash);
+    subscribers.delete(callback);
+
+    if (subscribers.size > 0) {
+      return;
+    }
 
     const service = getServiceFromKey(key);
-
     const state = await sendBackgroundRequest(`${service}:unsubscribe`, [key]);
 
     cache.set(hash, state);
