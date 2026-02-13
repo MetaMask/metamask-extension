@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from 'react';
 import browser from 'webextension-polyfill';
 
@@ -101,9 +100,8 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const origin = useSelector(getOriginOfCurrentTab);
-  const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(
-    searchParams.get('drawerOpen') === 'true',
-  );
+  // Derive from URL so drawer state survives route changes (e.g. homepage mount) without render>close>render flash
+  const accountOptionsMenuOpen = searchParams.get('drawerOpen') === 'true';
   const tourAnchorRef = useRef<HTMLDivElement>(null);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
@@ -144,10 +142,6 @@ export const AppHeaderUnlockedContent = ({
       return prev;
     });
   }, [setSearchParams]);
-
-  useEffect(() => {
-    setAccountOptionsMenuOpen(searchParams.get('drawerOpen') === 'true');
-  }, [searchParams]);
 
   // Reset copy state when a switching accounts
   useEffect(() => {

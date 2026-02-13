@@ -1,6 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { Transition } from '@headlessui/react';
 import {
   Box,
   BoxBackgroundColor,
@@ -20,8 +19,11 @@ import {
 } from '../../../../shared/constants/app';
 import type { GlobalMenuDrawerProps } from './global-menu-drawer.types';
 
+const DRAWER_TRANSITION_MS = 300;
+
+type DrawerPhase = 'entering' | 'open' | 'exiting';
+
 /**
- * GlobalMenuDrawer built on Headless UI Transition (div shell so leave transition runs in popup)
  *
  * @param props - The component props
  * @param props.isOpen - Whether the drawer is open
@@ -55,17 +57,63 @@ export const GlobalMenuDrawer = ({
     null,
   );
   const [contentTopOffset, setContentTopOffset] = useState(0);
-  const [readyToReveal, setReadyToReveal] = useState(false);
-  const revealFrameRef = useRef<number | null>(null);
-  const cancelRevealRef = useRef(false);
+  const [drawerPhase, setDrawerPhase] = useState<DrawerPhase | null>(null);
+  const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const enterFrameRef = useRef<number | null>(null);
+  const wasOpenRef = useRef(false);
   const rootLayoutRef = useRef<HTMLElement | null>(null);
   const appContainerRef = useRef<HTMLElement | null>(null);
   const resizeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  // Fullscreen and sidepanel: portal into .app and position over root layout (same pattern)
-  // useLayoutEffect + sync updatePosition so we have position before paint (avoids flicker)
+  const usePortal = isFullscreen || isSidepanel;
+  const hasPosition = Object.keys(drawerStyle).length > 0;
+  const readyToShow = isOpen && (!usePortal || hasPosition);
+
+  // Custom transition: only start when we can show (have position in portal mode).
+  useEffect(() => {
+    if (readyToShow) {
+      wasOpenRef.current = true;
+      if (exitTimeoutRef.current !== null) {
+        clearTimeout(exitTimeoutRef.current);
+        exitTimeoutRef.current = null;
+      }
+      setDrawerPhase('entering');
+      enterFrameRef.current = requestAnimationFrame(() => {
+        enterFrameRef.current = requestAnimationFrame(() => {
+          enterFrameRef.current = null;
+          setDrawerPhase('open');
+        });
+      });
+      return () => {
+        if (enterFrameRef.current !== null) {
+          cancelAnimationFrame(enterFrameRef.current);
+          enterFrameRef.current = null;
+        }
+      };
+    }
+    if (wasOpenRef.current && !isOpen) {
+      wasOpenRef.current = false;
+      setDrawerPhase('exiting');
+      exitTimeoutRef.current = setTimeout(() => {
+        exitTimeoutRef.current = null;
+        setDrawerPhase(null);
+      }, DRAWER_TRANSITION_MS);
+      return () => {
+        if (exitTimeoutRef.current !== null) {
+          clearTimeout(exitTimeoutRef.current);
+          exitTimeoutRef.current = null;
+        }
+      };
+    }
+    return undefined;
+  }, [isOpen, readyToShow]);
+
+  const isDrawerMounted = drawerPhase !== null;
+  const isExiting = drawerPhase === 'exiting';
+  const isEntering = drawerPhase === 'entering';
+  const isDrawerOpen = drawerPhase === 'open';
+
   useLayoutEffect(() => {
-    const usePortal = isFullscreen || (isSidepanel && Boolean(anchorElement));
     if (!usePortal) {
       setContainerElement(null);
       setDrawerStyle({});
@@ -181,7 +229,7 @@ export const GlobalMenuDrawer = ({
       }
       window.removeEventListener('resize', handleResize);
     };
-  }, [isFullscreen, isSidepanel, isOpen, anchorElement]);
+  }, [usePortal, isFullscreen, isOpen, anchorElement]);
 
   // Prevent body scroll when drawer is open (only for non-fullscreen)
   useEffect(() => {
@@ -213,50 +261,13 @@ export const GlobalMenuDrawer = ({
   }, [isOpen, onClose]);
 
   const titleId = 'global-menu-drawer-title';
-  const hasPosition = Object.keys(drawerStyle).length > 0;
-  useEffect(() => {
-    if (!isOpen) {
-      cancelRevealRef.current = true;
-      setReadyToReveal(false);
-      if (revealFrameRef.current !== null) {
-        cancelAnimationFrame(revealFrameRef.current);
-        revealFrameRef.current = null;
-      }
-      return;
-    }
-    if (!hasPosition) {
-      return;
-    }
-    cancelRevealRef.current = false;
-    revealFrameRef.current = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        revealFrameRef.current = null;
-        if (!cancelRevealRef.current) {
-          setReadyToReveal(true);
-        }
-      });
-    });
-    return () => {
-      cancelRevealRef.current = true;
-      if (revealFrameRef.current !== null) {
-        cancelAnimationFrame(revealFrameRef.current);
-        revealFrameRef.current = null;
-      }
-    };
-  }, [isOpen, hasPosition]);
-
-  const usePortal = isFullscreen || (isSidepanel && Boolean(anchorElement));
-  // Avoid null frame: when open in portal mode use .app as fallback target so we can render hidden until position is ready
+  // Popup: no portal, fixed overlay. Fullscreen/sidepanel: portal into .app and overlay root layout.
   const portalTarget =
     containerElement ||
     (usePortal && isOpen && typeof document !== 'undefined'
       ? (document.querySelector('.app') as HTMLElement)
       : null);
 
-  const hideUntilPositioned =
-    usePortal && isOpen && (!hasPosition || !readyToReveal);
-
-  // Dialog: fixed inset-0 for popup; absolute + drawerStyle when portaled
   const dialogPositionClass = portalTarget ? 'absolute' : 'fixed inset-0';
   let dialogPositionStyle: React.CSSProperties | undefined;
   if (portalTarget && hasPosition) {
@@ -272,104 +283,88 @@ export const GlobalMenuDrawer = ({
   } else {
     dialogPositionStyle = undefined;
   }
-  const dialogContent = (
-    <Transition show={isOpen}>
+
+  const backdropOpacity = isDrawerOpen ? 1 : 0;
+  const panelTransform =
+    isEntering || isExiting ? 'translateX(100%)' : 'translateX(0)';
+
+  const dialogContent = isDrawerMounted ? (
+    <div
+      aria-labelledby={title ? titleId : undefined}
+      aria-modal="true"
+      className={`z-[1050] overflow-hidden ${dialogPositionClass}`}
+      data-testid={dataTestId}
+      role="dialog"
+      style={dialogPositionStyle}
+    >
       <div
-        aria-labelledby={title ? titleId : undefined}
-        aria-modal="true"
-        className={`z-[1050] overflow-hidden ${dialogPositionClass}`}
-        data-testid={dataTestId}
-        role="dialog"
+        className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none transition-opacity ease-linear"
         style={{
-          ...dialogPositionStyle,
-          ...(hideUntilPositioned
-            ? { visibility: 'hidden' as const, pointerEvents: 'none' as const }
-            : {}),
+          ...(isFullscreen && Object.keys(backdropStyle).length > 0
+            ? { ...backdropStyle, zIndex: 0 }
+            : { zIndex: 0 }),
+          opacity: backdropOpacity,
+          transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
+        }}
+        aria-hidden="true"
+        onClick={onClickOutside ? onClose : undefined}
+      />
+
+      {/* Drawer panel */}
+      <div
+        className={
+          isFullscreen
+            ? 'overflow-hidden pointer-events-none absolute right-0 top-0 bottom-0 flex h-full transition-[transform] ease-in-out motion-reduce:transition-none'
+            : 'overflow-hidden pointer-events-none absolute inset-y-0 right-0 flex pl-10 h-full transition-[transform] ease-in-out motion-reduce:transition-none'
+        }
+        style={{
+          ...(contentTopOffset
+            ? { zIndex: 1, top: `${contentTopOffset}px` }
+            : { zIndex: 1 }),
+          transform: panelTransform,
+          transitionDuration: `${DRAWER_TRANSITION_MS}ms`,
         }}
       >
-        <Transition.Child
-          enter="transition-opacity duration-300 ease-linear"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="transition-opacity duration-300 ease-linear"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+        <div
+          className="w-screen max-w-full pointer-events-auto h-full"
+          style={{ maxWidth: width }}
         >
-          <div
-            className="absolute inset-0 bg-[var(--color-overlay-default)] motion-reduce:transition-none"
-            style={
-              isFullscreen && Object.keys(backdropStyle).length > 0
-                ? { ...backdropStyle, zIndex: 0 }
-                : { zIndex: 0 }
-            }
-            aria-hidden="true"
-            onClick={onClickOutside ? onClose : undefined}
-          />
-        </Transition.Child>
-
-        {/* Drawer panel - fullscreen offsets below logo via contentTopOffset */}
-        <Transition.Child
-          as="div"
-          className={
-            isFullscreen
-              ? 'overflow-hidden pointer-events-none absolute right-0 top-0 bottom-0 flex h-full'
-              : 'overflow-hidden pointer-events-none absolute inset-y-0 right-0 flex pl-10 h-full'
-          }
-          style={
-            contentTopOffset
-              ? { zIndex: 1, top: `${contentTopOffset}px` }
-              : { zIndex: 1 }
-          }
-          enter="transition ease-in-out duration-300 transform"
-          enterFrom="translate-x-full"
-          enterTo="translate-x-0"
-          leave="transition ease-in-out duration-300 transform"
-          leaveFrom="translate-x-0"
-          leaveTo="translate-x-full"
-        >
-          <div
-            className="w-screen max-w-full pointer-events-auto motion-reduce:transition-none h-full"
-            style={{ maxWidth: width }}
+          <Box
+            className="h-full flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
+            backgroundColor={BoxBackgroundColor.BackgroundDefault}
           >
-            <Box
-              className="h-full flex flex-col overflow-hidden bg-[var(--color-background-default)] shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]"
-              backgroundColor={BoxBackgroundColor.BackgroundDefault}
-            >
-              {/* Header with close button */}
-              {showCloseButton && (
-                <Box className="flex flex-row items-center justify-start p-4 w-full overflow-hidden">
-                  <ButtonIcon
-                    iconName={IconName.ArrowLeft}
-                    size={ButtonIconSize.Sm}
-                    ariaLabel={title || t('close')}
-                    onClick={onClose}
-                    data-testid="drawer-close-button"
-                    className="text-icon-alternative"
-                    iconProps={{ color: IconColor.IconAlternative }}
-                  />
-                  {title && (
-                    <span className="sr-only" id={titleId}>
-                      {title}
-                    </span>
-                  )}
-                </Box>
-              )}
-
-              {/* Drawer content */}
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                className="flex-1 overflow-y-auto overflow-x-hidden"
-              >
-                {children}
+            {showCloseButton && (
+              <Box className="flex flex-row items-center justify-start p-4 w-full overflow-hidden">
+                <ButtonIcon
+                  iconName={IconName.ArrowLeft}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={title || t('close')}
+                  onClick={onClose}
+                  data-testid="drawer-close-button"
+                  className="text-icon-alternative"
+                  iconProps={{ color: IconColor.IconAlternative }}
+                />
+                {title && (
+                  <span className="sr-only" id={titleId}>
+                    {title}
+                  </span>
+                )}
               </Box>
-            </Box>
-          </div>
-        </Transition.Child>
-      </div>
-    </Transition>
-  );
+            )}
 
-  // Portal into app container for both fullscreen and sidepanel
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              className="flex-1 overflow-y-auto overflow-x-hidden"
+            >
+              {children}
+            </Box>
+          </Box>
+        </div>
+      </div>
+    </div>
+  ) : null;
+
+  // Portal only in fullscreen/sidepanel (popup uses fixed positioning, no portal)
   if (portalTarget) {
     return ReactDOM.createPortal(dialogContent, portalTarget);
   }
