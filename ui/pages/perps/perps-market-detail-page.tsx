@@ -26,7 +26,6 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import type { CandleStick } from '@metamask/perps-controller';
 import { brandColor } from '@metamask/design-tokens';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
@@ -40,7 +39,6 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import { usePerpsEligibility } from '../../hooks/perps';
-import type { PriceUpdate } from '../../hooks/perps/stream';
 import { getPerpsController } from '../../providers/perps';
 import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { OrderCard } from '../../components/app/perps/order-card';
@@ -71,17 +69,19 @@ import {
   type OrderMode,
 } from '../../components/app/perps/order-entry';
 import { EditMarginExpandable } from '../../components/app/perps/edit-margin';
-import type {
-  OrderType,
-  OrderParams,
-  Order,
-} from '../../components/app/perps/types';
 import { TextField, TextFieldSize } from '../../components/component-library';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../helpers/constants/design-system';
+import type {
+  CandleStick,
+  OrderType,
+  OrderParams,
+  Order,
+  PriceUpdate,
+} from '@metamask/perps-controller';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -222,7 +222,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   const { isEligible } = usePerpsEligibility();
   const {
     formatCurrencyWithMinThreshold,
-    formatTokenQuantity,
     formatNumber,
     formatPercentWithMinThreshold,
   } = useFormatters();
