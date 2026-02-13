@@ -6,7 +6,6 @@ on:
       - main
       - stable
       - release/*
-      - '!release/*-Changelog'
       - trigger-ci-*
   pull_request:
     types:
