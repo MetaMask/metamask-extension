@@ -5,11 +5,12 @@ import {
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
   getAllDomains,
+  getOrderedConnectedAccountsForActiveTabAccountOnly,
 } from './selectors';
 import { getMultichainNetworkConfigurationsByChainId } from './multichain';
 
 export const getDappActiveNetwork = createDeepEqualSelector(
-  getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForActiveTabAccountOnly,
   getOriginOfCurrentTab,
   getAllDomains,
   getNetworkConfigurationsByChainId,
@@ -24,7 +25,7 @@ export const getDappActiveNetwork = createDeepEqualSelector(
     if (!orderedConnectedAccounts || orderedConnectedAccounts.length === 0) {
       return null;
     }
-    const selectedAccount = orderedConnectedAccounts[0];
+    const selectedAccount = orderedConnectedAccounts[0].account;
 
     // Check if account is EVM or non-EVM using existing helper
     const isEvmAccount = isEvmAccountType(selectedAccount.type);

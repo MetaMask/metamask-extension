@@ -3438,7 +3438,16 @@ export const getOrderedConnectedAccountsForActiveTabAccountOnly =
         },
       );
 
-      return orderedAccounts
+      /**
+       * @type {Array<{
+       *   id: string;
+       *   address: string;
+       *   name: string;
+       *   lastActive: number; // Might not be needed
+       *   account: import('@metamask/keyring-internal-api').InternalAccount;
+       * }>}
+       */
+      const result = orderedAccounts
         .filter((account) =>
           connectedAccountsAddresses.includes(account.address),
         )
@@ -3461,7 +3470,10 @@ export const getOrderedConnectedAccountsForActiveTabAccountOnly =
           address: account.address,
           name: account.metadata?.name ?? '',
           lastActive: permissionHistoryByAccount?.[account.address],
+          account,
         }));
+
+      return result;
     },
   );
 
