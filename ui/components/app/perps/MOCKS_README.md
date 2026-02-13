@@ -58,6 +58,7 @@ function MyComponent() {
 Create a mock module file that can be swapped via webpack alias or environment variable:
 
 **`ui/providers/perps/index.mock.ts`:**
+
 ```typescript
 // Export mocks as if they were the real implementations
 export { getMockPerpsController as getPerpsController } from '../../components/app/perps/mockPerpsController';
@@ -65,6 +66,7 @@ export { getMockPerpsStreamManager as getPerpsStreamManager } from '../../compon
 ```
 
 **Webpack config:**
+
 ```javascript
 resolve: {
   alias: {
@@ -78,6 +80,7 @@ resolve: {
 ```
 
 Then run:
+
 ```bash
 USE_PERPS_MOCKS=true yarn start
 ```
@@ -106,17 +109,20 @@ The mock stream manager provides:
 ## Mock Data
 
 ### Positions
+
 - 9 positions (5 crypto + 4 HIP-3)
 - Mix of long/short, isolated/cross margin
 - Various leverage levels
 - With/without TP/SL
 
 ### Orders
+
 - 9 orders (6 crypto + 3 HIP-3)
 - Market, limit, and trigger orders
 - Various states (open, filled, queued, canceled)
 
 ### Markets
+
 - 8 crypto markets (BTC, ETH, SOL, ARB, POL, AVAX, LINK, UNI)
 - 11 HIP-3 markets:
   - 6 equities (TSLA, AAPL, MSFT, NVDA, AMZN, GOOGL)
@@ -124,6 +130,7 @@ The mock stream manager provides:
   - More can be added as needed
 
 ### Account State
+
 - Total balance: $15,250
 - Available: $10,125
 - Margin used: $5,125
