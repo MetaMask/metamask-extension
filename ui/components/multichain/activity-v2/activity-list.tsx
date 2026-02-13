@@ -52,7 +52,6 @@ export const ActivityList = () => {
 
   // Activity tab should show ALL transactions regardless of selected chain/network
   const evmAddress = useSelector(getFirstEvmAddress) || '';
-  const selectedAccount = useSelector(getSelectedAccount);
 
   // Non-EVM transactions
   const nonEvmTransactions = useSelector(getRawNonEvmTransactions);
@@ -262,7 +261,6 @@ export const ActivityList = () => {
           <MultichainTransactionDetailsModal
             transaction={selectedNonEvmTransaction}
             onClose={handleNonEvmModalClose}
-            userAddress={selectedAccount?.address ?? ''}
           />
         )}
       </Box>
