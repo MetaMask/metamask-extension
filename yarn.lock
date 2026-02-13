@@ -7438,13 +7438,13 @@ __metadata:
 
 "@metamask/mfa-wallet-network@file:./metamask-mfa-wallet-network-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-network@file:./metamask-mfa-wallet-network-0.0.0.tgz#./metamask-mfa-wallet-network-0.0.0.tgz::hash=702a02&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-network@file:./metamask-mfa-wallet-network-0.0.0.tgz#./metamask-mfa-wallet-network-0.0.0.tgz::hash=f6cd5b&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
     "@msgpack/msgpack": "npm:^3.1.2"
     "@noble/hashes": "npm:^1.8.0"
     centrifuge: "npm:^5.5.2"
-  checksum: 10/60f759c20b21cd9c56fe78336a7a67cbffabe8a5a76801d504c6e3324285c80c4e5a3a20e1389c82f031b080b65da8ae56cd5df483e5860e267d3327e73c8be5
+  checksum: 10/2594c89bb7e161caabe19f9eacad08aa75259236cce7d9442d9c3ac880cc1be16b2182a27f881ade04cf77d26e60f1c44295a8be5951b56a15ce6c35a0cdd69c
   languageName: node
   linkType: hard
 
