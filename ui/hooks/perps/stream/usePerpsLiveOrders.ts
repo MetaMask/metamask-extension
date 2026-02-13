@@ -1,5 +1,5 @@
-import type { Order } from '@metamask/perps-controller';
 import { usePerpsChannel } from './usePerpsChannel';
+import type { Order } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLiveOrders hook

@@ -1,5 +1,5 @@
-import type { Position } from '@metamask/perps-controller';
 import { usePerpsChannel } from './usePerpsChannel';
+import type { Position } from '@metamask/perps-controller';
 
 /**
  * Options for usePerpsLivePositions hook
