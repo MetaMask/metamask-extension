@@ -1,7 +1,7 @@
 import React from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../hooks/useFormatters';
-import { Row } from '.';
+import { Row } from './row';
 
 type DateRowProps = {
   time: number;

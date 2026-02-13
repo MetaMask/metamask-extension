@@ -11,7 +11,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../../shared/constants/network';
-import { Row } from '.';
+import { Row } from './row';
 
 type Props = {
   chainId: Hex;

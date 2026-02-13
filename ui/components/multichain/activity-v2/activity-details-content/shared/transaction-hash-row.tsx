@@ -10,7 +10,7 @@ import {
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/common';
-import { Row } from '.';
+import { Row } from './row';
 
 type Props = {
   label: string;
