@@ -8,7 +8,6 @@ type Params = {
   limit?: number;
 };
 
-// Can be replaced once core-backed Query Option is exported
 export async function fetchV4MultiAccountTransactions(
   params: Params,
 ): Promise<V4MultiAccountTransactionsResponse> {

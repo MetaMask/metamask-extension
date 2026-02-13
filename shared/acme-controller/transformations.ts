@@ -10,7 +10,7 @@ import {
 import { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../constants/network';
 import { TransactionGroupCategory } from '../constants/transaction';
-import type { NormalizedGetAccountTransactionsResponse } from './types';
+import type { NormalizedV4MultiAccountTransactionsResponse } from './types';
 
 export function mapTransactionToCategory(transactionType?: string) {
   switch (transactionType) {
@@ -153,26 +153,19 @@ export async function normalizeTransaction(
     verifiedOnBlockchain: false,
   };
 
-  // TODO
-  // For outgoing transactions, determine the actual transaction type
-  // if (isOutgoing) {
-  //   const result = await determineTransactionType(meta.txParams, {} as any);
-  //   meta.type = result.type;
-  // }
-
   return meta;
 }
 
 const INCLUDE_TOKEN_TRANSFERS = false;
 const EXCLUDED_TRANSACTION_TYPES = ['SPAM_TOKEN_TRANSFER'];
 
-// Ported from transaction-controller filterTransactions + more filters
+// Ported from transaction-controller filterTransactions
 export function filterTransactions(address: string) {
   const addr = address.toLowerCase();
 
   return (
-    data: InfiniteData<NormalizedGetAccountTransactionsResponse>,
-  ): InfiniteData<NormalizedGetAccountTransactionsResponse> => ({
+    data: InfiniteData<NormalizedV4MultiAccountTransactionsResponse>,
+  ): InfiniteData<NormalizedV4MultiAccountTransactionsResponse> => ({
     ...data,
     pages: data.pages.map((page) => ({
       ...page,

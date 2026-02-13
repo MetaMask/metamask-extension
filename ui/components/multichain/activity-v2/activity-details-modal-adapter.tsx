@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
+import { toHex } from '@metamask/controller-utils';
 import type {
   TransactionViewModel,
   TransactionGroup,
@@ -18,7 +19,7 @@ import { getSelectedAddress } from '../../../selectors/selectors';
 // eslint-disable-next-line no-empty-function
 const noop = () => {};
 
-// Map API transactionType (from queries) to TransactionType so legacy modal title is correct. */
+// Map API transactionType to TransactionType for modal title
 function apiTransactionTypeToTransactionType(
   transactionType?: string,
 ): TransactionType {
@@ -48,7 +49,7 @@ function apiTransactionTypeToTransactionType(
   }
 }
 
-// Build synthetic group with type overridden so useTransactionDisplayData shows correct title. Uses API transactionType and direction (incoming = to user's wallet). */
+// Build synthetic transaction group for legacy modal
 function buildSyntheticTransactionGroup(
   transaction: TransactionViewModel,
   selectedAddress?: string,
@@ -82,7 +83,7 @@ type Props = {
   transaction: TransactionViewModel | null;
 };
 
-const ActivityDetailsModalAdapterContent = ({
+const LegacyDetailsWrapper = ({
   transaction,
   onClose,
 }: {
@@ -129,7 +130,7 @@ const ActivityDetailsModalAdapterContent = ({
   const chainId =
     typeof transaction.chainId === 'string'
       ? transaction.chainId
-      : `0x${Number(transaction.chainId).toString(16)}`;
+      : toHex(transaction.chainId);
 
   return (
     <LegacyTransactionListItemDetails
@@ -167,10 +168,5 @@ export const ActivityDetailsModalAdapter = ({
     return null;
   }
 
-  return (
-    <ActivityDetailsModalAdapterContent
-      transaction={transaction}
-      onClose={onClose}
-    />
-  );
+  return <LegacyDetailsWrapper transaction={transaction} onClose={onClose} />;
 };

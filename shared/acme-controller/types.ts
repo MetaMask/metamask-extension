@@ -3,7 +3,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
 import type { TransactionGroupCategory } from '../constants/transaction';
 
-export type NormalizedGetAccountTransactionsResponse = Omit<
+export type NormalizedV4MultiAccountTransactionsResponse = Omit<
   V4MultiAccountTransactionsResponse,
   'data'
 > & {
@@ -34,12 +34,3 @@ export type TransactionViewModel = TransactionMeta & {
   transactionType: string;
   category: TransactionGroupCategory;
 };
-
-export type DateGroupedTransactions = {
-  date: number;
-  transactions: TransactionViewModel[];
-};
-
-export type FlattenedItem =
-  | { type: 'date-header'; date: number }
-  | { type: 'transaction'; data: TransactionViewModel; id: string };

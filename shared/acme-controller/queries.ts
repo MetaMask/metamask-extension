@@ -1,6 +1,6 @@
 import type { UseInfiniteQueryOptions } from '@tanstack/react-query';
 import { fetchV4MultiAccountTransactions } from './api-client';
-import type { NormalizedGetAccountTransactionsResponse } from './types';
+import type { NormalizedV4MultiAccountTransactionsResponse } from './types';
 import {
   normalizeTransaction,
   filterTransactions,
@@ -8,17 +8,16 @@ import {
   mapTransactionToCategory,
 } from './transformations';
 
-const SECOND = 1000;
-
 export const transactionsQueryKey = ['multiaccount', 'transactions'];
 
 export const queries = {
+  // This can be shareable in core-backend
   transactions: (
     accountAddress: string,
     options?: Partial<
-      UseInfiniteQueryOptions<NormalizedGetAccountTransactionsResponse>
+      UseInfiniteQueryOptions<NormalizedV4MultiAccountTransactionsResponse>
     >,
-  ): UseInfiniteQueryOptions<NormalizedGetAccountTransactionsResponse> => ({
+  ): UseInfiniteQueryOptions<NormalizedV4MultiAccountTransactionsResponse> => ({
     queryKey: [...transactionsQueryKey, accountAddress.toLowerCase()],
     queryFn: async ({ pageParam }) => {
       const response = await fetchV4MultiAccountTransactions({
@@ -47,7 +46,6 @@ export const queries = {
         data: normalizedData,
       };
     },
-    staleTime: 15 * SECOND,
     select: filterTransactions(accountAddress), // We should do this server-side
     enabled: Boolean(accountAddress) && (options?.enabled ?? true),
     getNextPageParam: ({ pageInfo }) =>
