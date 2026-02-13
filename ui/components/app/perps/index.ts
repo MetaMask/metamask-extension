@@ -1,5 +1,6 @@
 export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
+export { PerpsTabView } from './perps-tab-view';
 export {
   getDisplayName,
   getPositionDirection,

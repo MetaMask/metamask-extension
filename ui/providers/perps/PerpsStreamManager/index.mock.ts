@@ -329,3 +329,4 @@ export function resetPerpsStreamManager(): void {
 }
 
 export { MockPerpsStreamManager as PerpsStreamManager };
+export { MockDataChannel as PerpsDataChannel };

@@ -225,6 +225,38 @@ class MockPerpsController {
   }
 
   /**
+   * Get active provider (for transaction history and user data fetching)
+   */
+  getActiveProvider() {
+    return {
+      async getOrderFills(_params: any) {
+        console.log('[MockPerpsController] Getting order fills');
+        // Return empty array - real implementation would fetch from API
+        return [];
+      },
+      async getOrders(_params: any) {
+        console.log('[MockPerpsController] Getting orders');
+        // Return empty array - real implementation would fetch from API
+        return [];
+      },
+      async getFunding(_params: any) {
+        console.log('[MockPerpsController] Getting funding');
+        // Return empty array - real implementation would fetch from API
+        return [];
+      },
+      async getUserHistory(_params: any) {
+        console.log('[MockPerpsController] Getting user history');
+        // Return empty array - real implementation would fetch from API
+        return [];
+      },
+      async getMarketDataWithPrices() {
+        // Return empty array - the mock stream manager will provide data
+        return [];
+      },
+    };
+  }
+
+  /**
    * Initialize the controller
    */
   async init(): Promise<void> {
