@@ -17,14 +17,14 @@ import type {
   Order,
   AccountState,
   PerpsMarketData,
-} from '../../components/app/perps/types';
+} from '../../../components/app/perps/types';
 import {
   mockPositions,
   mockOrders,
   mockAccountState,
   mockCryptoMarkets,
   mockHip3Markets,
-} from '../../components/app/perps/mocks';
+} from '../../../components/app/perps/mocks';
 
 /**
  * Simple channel implementation for mock data

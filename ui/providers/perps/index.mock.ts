@@ -20,7 +20,7 @@ export {
   getPerpsStreamManager,
   resetPerpsStreamManager,
   PerpsStreamManager,
-} from './PerpsStreamManager.mock';
+} from './PerpsStreamManager';
 
 // Controller access (mock version)
 export {
