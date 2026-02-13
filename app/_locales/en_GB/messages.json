@@ -1641,6 +1641,10 @@
   "connectAnAccountHeader": {
     "message": "Connect an account"
   },
+  "connectHardwareDevice": {
+    "message": "Connect $1",
+    "description": "$1 is the hardware wallet device name"
+  },
   "connectManually": {
     "message": "Manually connect to current site"
   },
@@ -2087,6 +2091,9 @@
   "deepLink_ThirdPartyDescription": {
     "message": "You were sent here by a third party, not MetaMask. $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
+  },
+  "deepLink_theAssetPage": {
+    "message": "the asset page"
   },
   "deepLink_theBuyPage": {
     "message": "the buy page"
@@ -5947,6 +5954,10 @@
   "required": {
     "message": "Required"
   },
+  "requiredToken": {
+    "description": "Label for the required token row showing the token and amount needed by the transaction",
+    "message": "Required token"
+  },
   "reset": {
     "message": "Reset"
   },
@@ -8722,6 +8733,9 @@
   },
   "unapproved": {
     "message": "Unapproved"
+  },
+  "unavailable": {
+    "message": "Unavailable"
   },
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."

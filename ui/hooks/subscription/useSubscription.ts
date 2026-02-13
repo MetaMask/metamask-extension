@@ -19,6 +19,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { addHexPrefix } from 'ethereumjs-util';
+import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
 import {
   getShieldSubscriptionError,
   getUserSubscriptions,
@@ -53,7 +55,12 @@ import {
   getSubscriptionPaymentData,
 } from '../../../shared/lib/shield';
 import { generateERC20ApprovalData } from '../../pages/confirmations/send-utils/send.utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import {
+  decimalToHex,
+  decGWEIToHexWEI,
+} from '../../../shared/modules/conversion.utils';
+import { GasEstimateTypes } from '../../../shared/constants/gas';
+import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
@@ -371,6 +378,37 @@ export const useSubscriptionCryptoApprovalTransaction = (
     getNetworkConfigurationsByChainId,
   );
 
+  // Get networkClientId for the selected token's chain
+  const networkClientId = useMemo(() => {
+    if (!selectedToken?.chainId) {
+      return undefined;
+    }
+    const networkConfiguration =
+      networkConfigurationsByChainId[selectedToken.chainId as Hex];
+    return networkConfiguration?.rpcEndpoints[
+      networkConfiguration.defaultRpcEndpointIndex ?? 0
+    ]?.networkClientId;
+  }, [networkConfigurationsByChainId, selectedToken?.chainId]);
+
+  // Get gas fee estimates for optimized gas sponsorship
+  // Use ref to avoid recreating handler callback on every gas estimate poll (~12s)
+  const { gasFeeEstimates, gasEstimateType } = useGasFeeEstimates(
+    networkClientId,
+    Boolean(networkClientId),
+  ) as unknown as { gasFeeEstimates: GasFeeEstimates; gasEstimateType: string };
+
+  const gasFeeEstimatesRef = useRef<{
+    estimates: GasFeeEstimates | undefined;
+    type: string | undefined;
+  }>({ estimates: gasFeeEstimates, type: gasEstimateType });
+
+  useEffect(() => {
+    gasFeeEstimatesRef.current = {
+      estimates: gasFeeEstimates,
+      type: gasEstimateType,
+    };
+  }, [gasFeeEstimates, gasEstimateType]);
+
   const hasPendingApprovals =
     useSelector(getUnapprovedConfirmations).length > 0;
   const [shieldTransactionDispatched, setShieldTransactionDispatched] =
@@ -393,12 +431,9 @@ export const useSubscriptionCryptoApprovalTransaction = (
       throw new Error('No token selected');
     }
 
-    const networkConfiguration =
-      networkConfigurationsByChainId[selectedToken.chainId as Hex];
-    const networkClientId =
-      networkConfiguration?.rpcEndpoints[
-        networkConfiguration.defaultRpcEndpointIndex ?? 0
-      ]?.networkClientId;
+    if (!networkClientId) {
+      throw new Error('Network client ID not found');
+    }
 
     const spenderAddress = subscriptionPricing?.paymentMethods
       ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
@@ -416,9 +451,36 @@ export const useSubscriptionCryptoApprovalTransaction = (
       data: approvalData,
     };
     transactionParams.gas = await estimateGas(transactionParams);
+
+    // By default the transaction controller uses suggestedGasFees.medium.
+    // Subscription approvals may be gas-sponsored, so we optimize with
+    // min(2 × low, medium) to reduce the cost of sponsorship.
+    const currentGasFeeEstimates = gasFeeEstimatesRef.current.estimates;
+    const currentGasEstimateType = gasFeeEstimatesRef.current.type;
+
+    if (
+      currentGasEstimateType === GasEstimateTypes.feeMarket &&
+      currentGasFeeEstimates?.low?.suggestedMaxPriorityFeePerGas &&
+      currentGasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas
+    ) {
+      const lowPriority = Number(
+        currentGasFeeEstimates.low.suggestedMaxPriorityFeePerGas,
+      );
+      const mediumPriority = Number(
+        currentGasFeeEstimates.medium.suggestedMaxPriorityFeePerGas,
+      );
+
+      if (!Number.isNaN(lowPriority) && !Number.isNaN(mediumPriority)) {
+        const priorityFee = Math.min(lowPriority * 2, mediumPriority);
+        transactionParams.maxPriorityFeePerGas = addHexPrefix(
+          decGWEIToHexWEI(priorityFee),
+        ) as Hex;
+      }
+    }
+
     const transactionOptions = {
       type: TransactionType.shieldSubscriptionApprove,
-      networkClientId: networkClientId as string,
+      networkClientId,
     };
     await addTransaction(transactionParams, transactionOptions);
     setShieldTransactionDispatched(true);
@@ -426,7 +488,7 @@ export const useSubscriptionCryptoApprovalTransaction = (
     setShieldTransactionDispatched,
     subscriptionPricing,
     evmInternalAccount,
-    networkConfigurationsByChainId,
+    networkClientId,
     selectedToken,
   ]);
 

@@ -7,6 +7,7 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import CreationSuccessful from './creation-successful';
 
@@ -51,6 +52,8 @@ describe('Wallet Ready Page', () => {
       ],
       firstTimeFlowType: FirstTimeFlowType.create,
       seedPhraseBackedUp: true,
+      isInitialized: true,
+      isUnlocked: true,
     },
     appState: {
       externalServicesOnboardingToggleState: true,
@@ -97,6 +100,21 @@ describe('Wallet Ready Page', () => {
     fireEvent.click(doneButton);
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+  });
+
+  it('redirects to welcome page when wallet is not initialized', () => {
+    const mockStore = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        isInitialized: false,
+        isUnlocked: false,
+      },
+    });
+    renderWithProvider(<CreationSuccessful />, mockStore);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE, {
+      replace: true,
     });
   });
 });
