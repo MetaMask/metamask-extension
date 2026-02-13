@@ -500,6 +500,9 @@
     "ui/components/app/permission-connect-header/permission-connect-header.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/edit-margin/edit-margin-expandable.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/order-card/order-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
