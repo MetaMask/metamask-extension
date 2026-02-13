@@ -15,6 +15,7 @@ import {
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { trackVaultCorruptionEvent } from '../state-corruption/track-vault-corruption';
 import { trackEarlySegmentEvent } from '../segment/early-segment-tracking';
+import { isBrowserShutdownError } from '../../../../shared/modules/browser-runtime.utils';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -678,17 +679,29 @@ export class PersistenceManager {
 
         // Log and capture the error if one occurred, but don't throw yet
         if (localStoreError) {
-          log.error(
-            'Error retrieving the current state of the local store:',
-            localStoreError,
-          );
-          // Custom fingerprint prevents Sentry's deduplication from dropping
-          // this event when other persistence errors with the same underlying
-          // error message (e.g., "An unexpected error occurred") are reported.
-          captureException(localStoreError, {
-            tags: { 'persistence.error': 'get-failed' },
-            fingerprint: ['persistence-error', 'get-failed'],
-          });
+          // Check if this is a browser shutdown error - these are expected and shouldn't be reported
+          const isShutdownError = isBrowserShutdownError(localStoreError);
+
+          if (isShutdownError) {
+            // Log at debug level since this is expected behavior during browser/service worker shutdown
+            log.debug(
+              'Storage operation interrupted by browser shutdown:',
+              localStoreError.message,
+            );
+          } else {
+            // Only report unexpected errors to Sentry
+            log.error(
+              'Error retrieving the current state of the local store:',
+              localStoreError,
+            );
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(localStoreError, {
+              tags: { 'persistence.error': 'get-failed' },
+              fingerprint: ['persistence-error', 'get-failed'],
+            });
+          }
         }
 
         if (validateVault) {

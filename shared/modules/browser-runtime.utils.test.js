@@ -170,4 +170,53 @@ describe('Browser Runtime Utils', () => {
       expect(result).toStrictEqual('Brave');
     });
   });
+
+  describe('isBrowserShutdownError', () => {
+    it('should return true for "browser is shutting down" error message', () => {
+      const error = new Error('The browser is shutting down.');
+      expect(BrowserRuntimeUtil.isBrowserShutdownError(error)).toBe(true);
+    });
+
+    it('should return true for "browser is shutting down" error message (case insensitive)', () => {
+      const error = new Error('THE BROWSER IS SHUTTING DOWN');
+      expect(BrowserRuntimeUtil.isBrowserShutdownError(error)).toBe(true);
+    });
+
+    it('should return true for "extension context invalidated" error message', () => {
+      const error = new Error('Extension context invalidated.');
+      expect(BrowserRuntimeUtil.isBrowserShutdownError(error)).toBe(true);
+    });
+
+    it('should return true for "extension context invalidated" error message (case insensitive)', () => {
+      const error = new Error('EXTENSION CONTEXT INVALIDATED');
+      expect(BrowserRuntimeUtil.isBrowserShutdownError(error)).toBe(true);
+    });
+
+    it('should return false for other error messages', () => {
+      const error = new Error('Some other error');
+      expect(BrowserRuntimeUtil.isBrowserShutdownError(error)).toBe(false);
+    });
+
+    it('should return true for non-Error objects with error-like properties', () => {
+      const errorLike = { message: 'The browser is shutting down.' };
+      expect(BrowserRuntimeUtil.isBrowserShutdownError(errorLike)).toBe(true);
+    });
+
+    it('should return false for null or undefined', () => {
+      expect(BrowserRuntimeUtil.isBrowserShutdownError(null)).toBe(false);
+      expect(BrowserRuntimeUtil.isBrowserShutdownError(undefined)).toBe(false);
+    });
+
+    it('should return true for string containing shutdown message', () => {
+      expect(
+        BrowserRuntimeUtil.isBrowserShutdownError(
+          'Error: The browser is shutting down.',
+        ),
+      ).toBe(true);
+    });
+
+    it('should return false for empty string', () => {
+      expect(BrowserRuntimeUtil.isBrowserShutdownError('')).toBe(false);
+    });
+  });
 });

@@ -97,3 +97,34 @@ export function getBrowserName(
 
   return bowser.getBrowserName();
 }
+
+/**
+ * Checks if an error is caused by the browser shutting down.
+ * These errors are expected when the browser or service worker terminates
+ * and should not be reported as errors.
+ *
+ * @param {Error | unknown} error - The error to check
+ * @returns {boolean} Whether the error is a browser shutdown error
+ */
+export function isBrowserShutdownError(error) {
+  if (!error) {
+    return false;
+  }
+
+  // Handle Error objects, error-like objects with message property, and strings
+  let errorMessage;
+  if (error instanceof Error) {
+    errorMessage = error.message;
+  } else if (typeof error === 'object' && 'message' in error) {
+    errorMessage = String(error.message);
+  } else {
+    errorMessage = String(error);
+  }
+
+  // Check for the specific "browser is shutting down" error message
+  // This error occurs when storage operations are interrupted by browser/service worker termination
+  return (
+    errorMessage.toLowerCase().includes('browser is shutting down') ||
+    errorMessage.toLowerCase().includes('extension context invalidated')
+  );
+}

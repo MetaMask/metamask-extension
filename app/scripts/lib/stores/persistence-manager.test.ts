@@ -32,6 +32,7 @@ jest.mock('./extension-store', () => {
 jest.mock('loglevel', () => ({
   error: jest.fn(),
   info: jest.fn(),
+  debug: jest.fn(),
 }));
 jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
@@ -272,6 +273,60 @@ describe('PersistenceManager', () => {
 
       await expect(manager.get({ validateVault: true })).rejects.toThrow(
         MISSING_VAULT_ERROR,
+      );
+    });
+
+    it('does not report to Sentry when browser shutdown error occurs', async () => {
+      const shutdownError = new Error('The browser is shutting down.');
+      mockStoreGet.mockRejectedValueOnce(shutdownError);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        'The browser is shutting down.',
+      );
+
+      // Verify Sentry was NOT called for shutdown error
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      // Verify debug log was called instead of error log
+      expect(log.debug).toHaveBeenCalledWith(
+        'Storage operation interrupted by browser shutdown:',
+        'The browser is shutting down.',
+      );
+    });
+
+    it('does not report to Sentry when extension context invalidated error occurs', async () => {
+      const contextError = new Error('Extension context invalidated.');
+      mockStoreGet.mockRejectedValueOnce(contextError);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        'Extension context invalidated.',
+      );
+
+      // Verify Sentry was NOT called for context invalidation error
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      // Verify debug log was called
+      expect(log.debug).toHaveBeenCalledWith(
+        'Storage operation interrupted by browser shutdown:',
+        'Extension context invalidated.',
+      );
+    });
+
+    it('reports non-shutdown errors to Sentry normally', async () => {
+      const normalError = new Error('Some other storage error');
+      mockStoreGet.mockRejectedValueOnce(normalError);
+
+      await expect(manager.get({ validateVault: false })).rejects.toThrow(
+        'Some other storage error',
+      );
+
+      // Verify Sentry WAS called for non-shutdown error
+      expect(mockedCaptureException).toHaveBeenCalledWith(normalError, {
+        tags: { 'persistence.error': 'get-failed' },
+        fingerprint: ['persistence-error', 'get-failed'],
+      });
+      // Verify error log was called
+      expect(log.error).toHaveBeenCalledWith(
+        'Error retrieving the current state of the local store:',
+        normalError,
       );
     });
   });
