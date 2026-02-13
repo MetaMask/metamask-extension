@@ -38,6 +38,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -55,6 +56,7 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   getCompletedOnboarding,
+  getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
 import {
@@ -87,6 +89,8 @@ export default function CreationSuccessful() {
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
+  const isInitialized = useSelector(getIsInitialized);
+
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
 
@@ -96,6 +100,17 @@ export default function CreationSuccessful() {
   const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
+
+  // Guard: redirect if wallet is not properly set up.
+  // Prevents users from skipping onboarding steps by navigating directly to the completion route.
+  useEffect(() => {
+    if (isFromReminder) {
+      return;
+    }
+    if (!isInitialized) {
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    }
+  }, [isInitialized, isFromReminder, navigate]);
 
   useEffect(() => {
     const browserWithSidePanel = browser as BrowserWithSidePanel;
