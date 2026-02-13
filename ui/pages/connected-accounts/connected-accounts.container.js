@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import {
   getAccountToConnectToActiveTab,
-  getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
   getPermissionsForActiveTab,
   getSelectedInternalAccount,
   getPermissionSubjects,
   getSubjectMetadata,
   getInternalAccounts,
+  getOrderedConnectedAccountsForActiveTabAccountOnly,
 } from '../../selectors';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {
@@ -20,17 +20,12 @@ import ConnectedAccounts from './connected-accounts.component';
 
 const mapStateToProps = (state) => {
   const accountToConnect = getAccountToConnectToActiveTab(state);
-  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
-  const internalAccounts = getInternalAccounts(state);
-  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
-  const internalAccountsMap = new Map(
-    internalAccounts.map((acc) => [acc.address, acc]),
-  );
 
-  const connectedAccountsWithName = connectedAccounts.map((account) => ({
-    ...account,
-    name: internalAccountsMap.get(account.address)?.metadata.name,
-  }));
+  const connectedAccounts =
+    getOrderedConnectedAccountsForActiveTabAccountOnly(state);
+
+  const internalAccounts = getInternalAccounts(state);
+
   const accountToConnectWithName = accountToConnect && {
     ...accountToConnect,
     name: internalAccounts.find(
@@ -51,7 +46,7 @@ const mapStateToProps = (state) => {
     accountToConnect: accountToConnectWithName,
     isActiveTabExtension,
     activeTabOrigin: originOfActiveTab,
-    connectedAccounts: connectedAccountsWithName,
+    connectedAccounts,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permissions,
     selectedAddress,
