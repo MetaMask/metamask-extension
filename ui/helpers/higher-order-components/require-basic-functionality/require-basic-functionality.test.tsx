@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { render } from '@testing-library/react';
+import { SWAP_PATH } from '../../constants/routes';
 import BasicFunctionalityRequired from './require-basic-functionality';
 
 jest.mock('react-redux', () => ({
@@ -30,7 +31,7 @@ describe('BasicFunctionalityRequired', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseLocation.mockReturnValue({
-      pathname: '/cross-chain/swaps/prepare-bridge-page',
+      pathname: SWAP_PATH,
       state: null,
       key: '',
       search: '',
@@ -113,7 +114,7 @@ describe('BasicFunctionalityRequired', () => {
     it('passes current location pathname and feature name in state', () => {
       mockUseSelector.mockReturnValue(false);
       mockUseLocation.mockReturnValue({
-        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        pathname: SWAP_PATH,
         state: null,
         key: '',
         search: '',
@@ -129,7 +130,7 @@ describe('BasicFunctionalityRequired', () => {
       const stateJson = getByTestId('navigate').getAttribute('data-state');
       const state = stateJson ? JSON.parse(stateJson) : undefined;
       expect(state).toStrictEqual({
-        blockedRoutePath: '/cross-chain/swaps/prepare-bridge-page',
+        blockedRoutePath: SWAP_PATH,
         featureName: 'Swap',
       });
     });
@@ -137,7 +138,7 @@ describe('BasicFunctionalityRequired', () => {
     it('includes search and hash in blockedRoutePath so original URL context is restored', () => {
       mockUseSelector.mockReturnValue(false);
       mockUseLocation.mockReturnValue({
-        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        pathname: SWAP_PATH,
         state: null,
         key: '',
         search: '?swaps=true',
@@ -152,9 +153,7 @@ describe('BasicFunctionalityRequired', () => {
 
       const stateJson = getByTestId('navigate').getAttribute('data-state');
       const state = stateJson ? JSON.parse(stateJson) : undefined;
-      expect(state.blockedRoutePath).toBe(
-        '/cross-chain/swaps/prepare-bridge-page?swaps=true#section',
-      );
+      expect(state.blockedRoutePath).toBe(`${SWAP_PATH}?swaps=true#section`);
     });
   });
 });

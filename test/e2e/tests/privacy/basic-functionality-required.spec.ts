@@ -9,13 +9,11 @@ import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import {
-  openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage,
-  swapUrlPath,
-} from '../../page-objects/flows/basic-functionality-off.flow';
+import { openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage } from '../../page-objects/flows/basic-functionality-off.flow';
 import BasicFunctionalityOffPage from '../../page-objects/pages/basic-functionality-off-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
+import { SWAP_PATH } from '../../../../ui/helpers/constants/routes';
 
 describe('Basic functionality off', function () {
   it('redirects to basic-functionality-off when opening a protected route with Basic functionality off', async function () {
@@ -102,7 +100,7 @@ describe('Basic functionality off', function () {
         await basicFunctionalityOffPage.clickOpenFeaturePage();
 
         await driver.waitForUrl({
-          url: `${driver.extensionUrl}/home.html#${swapUrlPath}?swaps=true`,
+          url: `${driver.extensionUrl}/home.html#${SWAP_PATH}?swaps=true`,
         });
       },
     );
