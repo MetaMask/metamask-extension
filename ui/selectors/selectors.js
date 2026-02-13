@@ -754,7 +754,7 @@ export const getInternalAccountsSortedByKeyring = createSelector(
  * @param state - Redux state
  * @returns {Array} Internal accounts sorted by keyring order
  */
-export const getInternalAccountsSortedByKeyringOnly = createSelector(
+export const getInternalAccountsSortedByKeyringWithoutBalance = createSelector(
   getMetaMaskKeyrings,
   getInternalAccounts,
   (keyrings, internalAccounts) => {
@@ -3416,15 +3416,16 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
 );
 
 /**
- * Same as getOrderedConnectedAccountsForActiveTab but uses only account/permission
- * state (no balance or asset selectors). Use in unconnected-account-alert and other
- * consumers that only need connected account list and metadata, not balances.
+ * Ordered connected accounts for the active tab using only account/permission state
+ * (no balance or asset selectors). Returns minimal { id, address, name, lastActive }
+ * for use in unconnected-account-alert and similar UIs. Uses
+ * getInternalAccountsSortedByKeyringOnly for keyring order without pulling in assets.
  */
 export const getOrderedConnectedAccountsForActiveTabAccountOnly =
   createDeepEqualSelector(
     getOriginOfCurrentTab,
     (state) => state.metamask.permissionHistory,
-    getInternalAccountsSortedByKeyringOnly,
+    getInternalAccountsSortedByKeyringWithoutBalance,
     getAllPermittedAccountsForCurrentTab,
     (origin, permissionHistory, orderedAccounts, connectedAccounts) => {
       const permissionHistoryByAccount =
@@ -3441,16 +3442,9 @@ export const getOrderedConnectedAccountsForActiveTabAccountOnly =
         .filter((account) =>
           connectedAccountsAddresses.includes(account.address),
         )
-        .map((account) => ({
-          ...account,
-          metadata: {
-            ...account.metadata,
-            lastActive: permissionHistoryByAccount?.[account.address],
-          },
-        }))
-        .sort(({ metadata: metaA }, { metadata: metaB }) => {
-          const lastSelectedA = metaA?.lastSelected;
-          const lastSelectedB = metaB?.lastSelected;
+        .sort((a, b) => {
+          const lastSelectedA = a.metadata?.lastSelected;
+          const lastSelectedB = b.metadata?.lastSelected;
           if (lastSelectedA === lastSelectedB) {
             return 0;
           }
@@ -3461,7 +3455,13 @@ export const getOrderedConnectedAccountsForActiveTabAccountOnly =
             return -1;
           }
           return lastSelectedB - lastSelectedA;
-        });
+        })
+        .map((account) => ({
+          id: account.id,
+          address: account.address,
+          name: account.metadata?.name ?? '',
+          lastActive: permissionHistoryByAccount?.[account.address],
+        }));
     },
   );
 

@@ -13,10 +13,7 @@ import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTabAccountOnly,
 } from '../../../../selectors';
-import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-} from '../../../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
 
@@ -41,17 +38,6 @@ const UnconnectedAccountAlert = () => {
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTabAccountOnly,
   );
-  const internalAccounts = useSelector(getInternalAccounts);
-  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
-  const internalAccountsMap = new Map(
-    internalAccounts.map((acc) => [acc.address, acc]),
-  );
-
-  const connectedAccountsWithName = connectedAccounts.map((account) => ({
-    ...account,
-    name: internalAccountsMap.get(account.address)?.metadata.name,
-  }));
-
   const origin = useSelector(getOriginOfCurrentTab);
   const account = useSelector(getSelectedInternalAccount);
   const { address: selectedAddress } = account;
@@ -118,13 +104,15 @@ const UnconnectedAccountAlert = () => {
       <ConnectedAccountsList
         accountToConnect={account}
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
-        connectedAccounts={connectedAccountsWithName}
+        connectedAccounts={connectedAccounts}
         selectedAddress={selectedAddress}
         setSelectedAddress={(address) => {
-          const { id: accountId } = internalAccounts.find(
-            (internalAccount) => internalAccount.address === address,
+          const connectedAccount = connectedAccounts.find(
+            (c) => c.address === address,
           );
-          dispatch(switchToAccount(accountId));
+          if (connectedAccount) {
+            dispatch(switchToAccount(connectedAccount.id));
+          }
         }}
         shouldRenderListOptions={false}
       />

@@ -517,7 +517,8 @@ describe('selectors', () => {
         expect(resultAddresses.has(account.address)).toBe(true);
         const match = result.find((r) => r.address === account.address);
         expect(match.id).toStrictEqual(account.id);
-        expect(match.metadata?.lastActive).toBeDefined();
+        expect(match).toHaveProperty('name');
+        expect(match.lastActive).toBeDefined();
       });
     });
   });
