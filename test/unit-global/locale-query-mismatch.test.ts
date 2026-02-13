@@ -68,16 +68,19 @@ const QUERY_FN_GROUP = QUERY_FN_NAMES.join('|');
 
 // --- Rule 1: Hardcoded JSX text queried via messages.xxx.message ---
 
-// Query using messages.xxx.message as first arg or in { name: messages.xxx.message }
-const LOCALE_QUERY_PATTERNS = [
-  // Direct: getByText(messages.xxx.message)
-  new RegExp(
-    `(?:${QUERY_FN_GROUP})\\s*\\(\\s*messages\\.(\\w+)\\.message`,
-    'gu',
-  ),
-  // Role name option: getByRole('...', { name: messages.xxx.message })
-  /\{\s*name:\s*messages\.(\w+)\.message/gu,
-];
+// Direct arg: getByText(messages.xxx.message)
+const LOCALE_QUERY_DIRECT_PATTERN = new RegExp(
+  `(?:${QUERY_FN_GROUP})\\s*\\(\\s*messages\\.(\\w+)\\.message`,
+  'gu',
+);
+
+// Options arg: getByRole('...', { name: messages.xxx.message })
+// Requires a query function before the { name: } to avoid matching plain objects.
+// [^)]* spans newlines without crossing the closing paren of the query call.
+const LOCALE_QUERY_OPTIONS_PATTERN = new RegExp(
+  `(?:${QUERY_FN_GROUP})\\s*\\([^)]*\\{\\s*name:\\s*messages\\.(\\w+)\\.message`,
+  'gu',
+);
 
 // Hardcoded text between JSX tags: >SomeText<
 const HARDCODED_JSX_TEXT_PATTERN = />([A-Z][A-Za-z\s]{1,30})</gu;
@@ -89,8 +92,27 @@ type Violation = {
   message: string;
 };
 
-function findRule1Violations(_filePath: string, lines: string[]): Violation[] {
+/**
+ * Compute the 1-based line number for a character offset within a string.
+ *
+ * @param content - Full file content.
+ * @param offset - Character offset into content.
+ * @returns 1-based line number.
+ */
+function lineNumberAt(content: string, offset: number): number {
+  let count = 1;
+  const end = Math.min(offset, content.length);
+  for (let i = 0; i < end; i += 1) {
+    if (content[i] === '\n') {
+      count += 1;
+    }
+  }
+  return count;
+}
+
+function findRule1Violations(filePath: string, lines: string[]): Violation[] {
   const violations: Violation[] = [];
+  const content = lines.join('\n');
 
   // Collect all hardcoded JSX text in the file
   const hardcodedTexts = new Set<string>();
@@ -106,33 +128,41 @@ function findRule1Violations(_filePath: string, lines: string[]): Violation[] {
     return [];
   }
 
-  // Find query calls using messages.xxx.message (direct arg or { name: ... })
-  for (let i = 0; i < lines.length; i++) {
-    for (const pattern of LOCALE_QUERY_PATTERNS) {
-      let match;
-      pattern.lastIndex = 0;
-      while ((match = pattern.exec(lines[i])) !== null) {
-        const messageKey = match[1];
-        const localeEntry = enLocale[messageKey];
-        if (!localeEntry) {
-          continue;
-        }
-
-        const localeValue = localeEntry.message;
-
-        if (hardcodedTexts.has(localeValue)) {
-          violations.push({
-            file: _filePath,
-            line: i + 1,
-            rule: 'Rule 1',
-            message:
-              `Query uses messages.${messageKey}.message ("${localeValue}") ` +
-              `but "${localeValue}" is hardcoded in JSX.\n` +
-              `    Fix: use getByText('${localeValue}') instead.`,
-          });
-        }
-      }
+  // Helper: check if a matched message key corresponds to hardcoded JSX text
+  const addViolationIfHardcoded = (messageKey: string, lineNum: number) => {
+    const localeEntry = enLocale[messageKey];
+    if (!localeEntry) {
+      return;
     }
+    const localeValue = localeEntry.message;
+    if (hardcodedTexts.has(localeValue)) {
+      violations.push({
+        file: filePath,
+        line: lineNum,
+        rule: 'Rule 1',
+        message:
+          `Query uses messages.${messageKey}.message ("${localeValue}") ` +
+          `but "${localeValue}" is hardcoded in JSX.\n` +
+          `    Fix: use getByText('${localeValue}') instead.`,
+      });
+    }
+  };
+
+  // Pattern 1: Direct arg — always on the same line as the query function
+  for (let i = 0; i < lines.length; i++) {
+    let match;
+    LOCALE_QUERY_DIRECT_PATTERN.lastIndex = 0;
+    while ((match = LOCALE_QUERY_DIRECT_PATTERN.exec(lines[i])) !== null) {
+      addViolationIfHardcoded(match[1], i + 1);
+    }
+  }
+
+  // Pattern 2: Options object — may span lines, match against full content
+  let optMatch;
+  LOCALE_QUERY_OPTIONS_PATTERN.lastIndex = 0;
+  while ((optMatch = LOCALE_QUERY_OPTIONS_PATTERN.exec(content)) !== null) {
+    const lineNum = lineNumberAt(content, optMatch.index + optMatch[0].length);
+    addViolationIfHardcoded(optMatch[1], lineNum);
   }
 
   return violations;
@@ -154,12 +184,19 @@ for (const [key, entry] of Object.entries(enLocale)) {
 // Match hardcoded strings in query calls:
 //   getByText("..."), getByText('...')
 //   getByRole('...', { name: '...' }), getByRole('...', { name: "..." })
-const HARDCODED_QUERY_PATTERNS_R2 = [
-  // Direct: getByText('Close')
-  new RegExp(`(?:${QUERY_FN_GROUP})\\s*\\(\\s*['"]([^'"]{3,})['"]`, 'gu'),
-  // Role name option: { name: 'Close' }
-  /\{\s*name:\s*['"]([^'"]{3,})['"]/gu,
-];
+
+// Direct arg: getByText('Close')
+const HARDCODED_QUERY_DIRECT_PATTERN_R2 = new RegExp(
+  `(?:${QUERY_FN_GROUP})\\s*\\(\\s*['"]([^'"]{3,})['"]`,
+  'gu',
+);
+
+// Options arg: getByRole('button', { name: 'Close' })
+// Requires a query function before { name: } to avoid matching plain objects.
+const HARDCODED_QUERY_OPTIONS_PATTERN_R2 = new RegExp(
+  `(?:${QUERY_FN_GROUP})\\s*\\([^)]*\\{\\s*name:\\s*['"]([^'"]{3,})['"]`,
+  'gu',
+);
 
 // Strings that are common test data, not real i18n values — skip these
 const IGNORED_STRINGS = new Set([
@@ -180,35 +217,50 @@ const RULE_2_BASELINE: Record<string, number> = {
 
 function findRule2Violations(filePath: string, lines: string[]): Violation[] {
   const violations: Violation[] = [];
+  const content = lines.join('\n');
 
-  for (let i = 0; i < lines.length; i++) {
-    // Deduplicate across patterns (same line + same value = one violation)
-    const seen = new Set<string>();
-    for (const pattern of HARDCODED_QUERY_PATTERNS_R2) {
-      let match;
-      pattern.lastIndex = 0;
-      while ((match = pattern.exec(lines[i])) !== null) {
-        const hardcodedValue = match[1];
+  // Deduplicate: same line + same value = one violation
+  const seen = new Set<string>();
 
-        if (IGNORED_STRINGS.has(hardcodedValue) || seen.has(hardcodedValue)) {
-          continue;
-        }
-
-        const messageKey = localeValueToKey.get(hardcodedValue);
-        if (messageKey) {
-          seen.add(hardcodedValue);
-          violations.push({
-            file: filePath,
-            line: i + 1,
-            rule: 'Rule 2',
-            message:
-              `Query uses hardcoded string "${hardcodedValue}" which matches ` +
-              `locale key "${messageKey}".\n` +
-              `    Fix: use messages.${messageKey}.message instead of "${hardcodedValue}".`,
-          });
-        }
-      }
+  const addViolationIfLocale = (hardcodedValue: string, lineNum: number) => {
+    const dedupeKey = `${lineNum}:${hardcodedValue}`;
+    if (IGNORED_STRINGS.has(hardcodedValue) || seen.has(dedupeKey)) {
+      return;
     }
+    const messageKey = localeValueToKey.get(hardcodedValue);
+    if (messageKey) {
+      seen.add(dedupeKey);
+      violations.push({
+        file: filePath,
+        line: lineNum,
+        rule: 'Rule 2',
+        message:
+          `Query uses hardcoded string "${hardcodedValue}" which matches ` +
+          `locale key "${messageKey}".\n` +
+          `    Fix: use messages.${messageKey}.message instead of "${hardcodedValue}".`,
+      });
+    }
+  };
+
+  // Pattern 1: Direct arg — always on the same line as the query function
+  for (let i = 0; i < lines.length; i++) {
+    let match;
+    HARDCODED_QUERY_DIRECT_PATTERN_R2.lastIndex = 0;
+    while (
+      (match = HARDCODED_QUERY_DIRECT_PATTERN_R2.exec(lines[i])) !== null
+    ) {
+      addViolationIfLocale(match[1], i + 1);
+    }
+  }
+
+  // Pattern 2: Options object — may span lines, match against full content
+  let optMatch;
+  HARDCODED_QUERY_OPTIONS_PATTERN_R2.lastIndex = 0;
+  while (
+    (optMatch = HARDCODED_QUERY_OPTIONS_PATTERN_R2.exec(content)) !== null
+  ) {
+    const lineNum = lineNumberAt(content, optMatch.index + optMatch[0].length);
+    addViolationIfLocale(optMatch[1], lineNum);
   }
 
   return violations;

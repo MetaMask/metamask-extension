@@ -265,7 +265,9 @@ describe('EditGasItem', () => {
       transactionProps: { chainId: CHAIN_IDS.MEGAETH_TESTNET },
       gasFeeEstimates: subSecondFeeEstimate,
     });
-    expect(screen.queryByRole('button', { name: 'high' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: messages.highLowercase.message }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('0.5 sec')).toBeInTheDocument();
   });
 
