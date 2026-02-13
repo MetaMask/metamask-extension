@@ -635,7 +635,7 @@ export async function mockBenchmarkEndpoints(
 
   endpoints.push(
     await server
-      .forGet(/^https:\/\/min-api\.cryptocompare\.com\/data\/price/u)
+      .forGet(/^https:\/\/min-api\.cryptocompare\.com\/data\/price(?!multi)/u)
       .asPriority(MOCK_PRIORITIES.TEST_OVERRIDE)
       .always()
       .thenCallback(
