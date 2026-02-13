@@ -22,6 +22,7 @@ import { BalanceChange } from './types';
 import {
   AssetType,
   FiatType,
+  NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER,
   PetnameType,
   UseSimulationMetricsProps,
   useSimulationMetrics,
@@ -533,7 +534,7 @@ describe('useSimulationMetrics', () => {
       const ADDRESS_1 = '0xabc123';
       const ADDRESS_2 = '0xdef456';
 
-      it('includes empty arrays when no token assets', () => {
+      it('includes placeholder (0x0000...) for native assets when no contract address', () => {
         const nativeChange = {
           ...BALANCE_CHANGE_MOCK,
           asset: {
@@ -551,7 +552,9 @@ describe('useSimulationMetrics', () => {
             expect.objectContaining({
               sensitiveProperties: expect.objectContaining({
                 simulation_receiving_assets_contract_address: [],
-                simulation_sending_assets_contract_address: [],
+                simulation_sending_assets_contract_address: [
+                  NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER,
+                ],
               }),
             }),
           ),
@@ -627,6 +630,42 @@ describe('useSimulationMetrics', () => {
                 simulation_receiving_assets_contract_address: [
                   ADDRESS_1,
                   ADDRESS_2,
+                ],
+                simulation_sending_assets_contract_address: [],
+              }),
+            }),
+          ),
+        );
+      });
+
+      it('aligns placeholder with native asset and real addresses with tokens (indices match)', () => {
+        const nativeReceiving = {
+          ...BALANCE_CHANGE_MOCK,
+          asset: {
+            chainId: '0x1',
+            standard: TokenStandard.none,
+          },
+          amount: new BigNumber(1),
+        } as unknown as BalanceChange;
+        const tokenReceiving = {
+          ...BALANCE_CHANGE_MOCK,
+          asset: { address: ADDRESS_1, standard: TokenStandard.ERC20 },
+          amount: new BigNumber(1),
+        } as unknown as BalanceChange;
+
+        useDisplayNamesMock.mockReturnValue([
+          DISPLAY_NAME_UNKNOWN_MOCK,
+          DISPLAY_NAME_UNKNOWN_MOCK,
+        ]);
+
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            { balanceChanges: [nativeReceiving, tokenReceiving] },
+            expect.objectContaining({
+              sensitiveProperties: expect.objectContaining({
+                simulation_receiving_assets_contract_address: [
+                  NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER,
+                  ADDRESS_1,
                 ],
                 simulation_sending_assets_contract_address: [],
               }),

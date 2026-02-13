@@ -195,18 +195,25 @@ function useIncompleteAssetEvent(
   }
 }
 
+/** Placeholder used in metrics when asset has no contract address (e.g. native). */
+export const NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER =
+  '0x0000000000000000000000000000000000000000';
+
 /**
  * Returns contract addresses from balance changes as an array of hex strings.
- * Only token assets (ERC-20, ERC-721, ERC-1155) have contract addresses; native
- * assets are omitted. Addresses are already in 0x-prefixed Hex format from the simulation.
+ * One entry per change: token assets use their contract address; native or
+ * missing addresses use the zero-address placeholder so indices align with
+ * other simulation_*_assets_* arrays.
  *
  * @param changes - Balance changes from simulation
- * @returns Array of contract addresses (hex with 0x prefix)
+ * @returns Array of contract addresses (hex with 0x prefix), or placeholder
  */
 function getContractAddresses(changes: BalanceChange[]): string[] {
-  return changes
-    .map((change) => change.asset.address)
-    .filter((address): address is Hex => Boolean(address));
+  return changes.map((change) =>
+    change.asset.address
+      ? (change.asset.address as string)
+      : NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER,
+  );
 }
 
 function getProperties(
