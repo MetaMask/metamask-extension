@@ -341,6 +341,15 @@ async function withFixtures(options, testSuite) {
       );
     }
     await mockServer.start(8000);
+
+    // Log every request hitting the mock server
+    const requestLogLabel = useMockingPassThrough
+      ? 'Request going to a live server ============'
+      : 'Request sent to mock server ============';
+    mockServer.on('request', (req) => {
+      console.log(requestLogLabel, req.url, false);
+    });
+
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver({
