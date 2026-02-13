@@ -3,8 +3,8 @@ import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import type { Position } from '../types';
 import { PositionCard } from './position-card';
+import type { Position } from '@metamask/perps-controller';
 
 jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
