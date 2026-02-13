@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import {
   getAccountToConnectToActiveTab,
+  getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
   getPermissionsForActiveTab,
   getSelectedInternalAccount,
   getPermissionSubjects,
   getSubjectMetadata,
   getInternalAccounts,
-  getOrderedConnectedAccountsForActiveTab,
 } from '../../selectors';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {
@@ -20,9 +20,7 @@ import ConnectedAccounts from './connected-accounts.component';
 
 const mapStateToProps = (state) => {
   const accountToConnect = getAccountToConnectToActiveTab(state);
-
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
-
   const internalAccounts = getInternalAccounts(state);
 
   const accountToConnectWithName = accountToConnect && {

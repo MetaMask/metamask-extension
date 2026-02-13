@@ -12,8 +12,9 @@ import {
 import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
+  getSelectedInternalAccount,
+  getInternalAccounts,
 } from '../../../../selectors';
-import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
 
@@ -38,6 +39,7 @@ const UnconnectedAccountAlert = () => {
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,
   );
+  const internalAccounts = useSelector(getInternalAccounts);
   const origin = useSelector(getOriginOfCurrentTab);
   const account = useSelector(getSelectedInternalAccount);
   const { address: selectedAddress } = account;
@@ -107,12 +109,10 @@ const UnconnectedAccountAlert = () => {
         connectedAccounts={connectedAccounts}
         selectedAddress={selectedAddress}
         setSelectedAddress={(address) => {
-          const connectedAccount = connectedAccounts.find(
-            (c) => c.address === address,
+          const { id: accountId } = internalAccounts.find(
+            (internalAccount) => internalAccount.address === address,
           );
-          if (connectedAccount) {
-            dispatch(switchToAccount(connectedAccount.id));
-          }
+          dispatch(switchToAccount(accountId));
         }}
         shouldRenderListOptions={false}
       />
