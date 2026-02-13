@@ -272,5 +272,5 @@ export const ActivityList = () => {
     );
   }
 
-  return <TransactionActivityEmptyState />;
+  return <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />;
 };
