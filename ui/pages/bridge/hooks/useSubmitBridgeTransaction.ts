@@ -24,6 +24,7 @@ import {
   getIsStxEnabled,
   getWarningLabels,
 } from '../../../ducks/bridge/selectors';
+import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
 import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -40,13 +41,14 @@ export const isApprovalTxError = (error: unknown): boolean => {
 };
 
 const isHardwareWalletUserRejection = (error: unknown): boolean => {
+  if (isUserRejectedHardwareWalletError(error)) {
+    return true;
+  }
+
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
+
   return (
-    // Ledger rejection
-    (errorMessage.includes('ledger') &&
-      (errorMessage.includes('rejected') ||
-        errorMessage.includes('denied') ||
-        errorMessage.includes('error while signing'))) ||
+    // These will be removed when adapters are made for the hardware wallets error management.
     // Trezor rejection
     (errorMessage.includes('trezor') &&
       (errorMessage.includes('cancelled') ||
