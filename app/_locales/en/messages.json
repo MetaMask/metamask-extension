@@ -5938,6 +5938,10 @@
   "required": {
     "message": "Required"
   },
+  "requiredToken": {
+    "message": "Required token",
+    "description": "Label for the required token row showing the token and amount needed by the transaction"
+  },
   "reset": {
     "message": "Reset"
   },
