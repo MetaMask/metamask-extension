@@ -23,6 +23,7 @@ import {
   HardwareDeviceNames,
   HardwareAffiliateLinks,
   HardwareAffiliateTutorialLinks,
+  LedgerTransportTypes,
   MarketingActionNames,
   QrHardwareDeviceNames,
 } from '../../../../shared/constants/hardware-wallets';
@@ -59,6 +60,7 @@ const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 const LEDGER_FIREFOX_NOT_SUPPORTED_URL =
   'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/';
+const LEDGER_LIVE_APP_URL = 'https://www.ledger.com/ledger-live';
 
 type DeviceButtonConfig = {
   device: HardwareDeviceNames;
@@ -226,12 +228,14 @@ type SelectHardwareProps = {
   onCancel: () => void;
   connectToHardwareWallet: (device: string) => void;
   browserSupported: boolean;
+  ledgerTransportType?: LedgerTransportTypes | 'live';
 };
 
 const SelectHardware = ({
   onCancel,
   connectToHardwareWallet,
   browserSupported,
+  ledgerTransportType,
 }: SelectHardwareProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -544,46 +548,48 @@ const SelectHardware = ({
    *
    * @param config - The tutorial step configuration for the device
    */
-  const renderDeviceTutorialSteps = (config: TutorialStepConfig) => (
-    <Box className="hw-tutorial">
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        className="hw-connect"
+  const renderDeviceTutorialContent = (config: TutorialStepConfig) => (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.center}
+      className="hw-connect"
+    >
+      <Text
+        as="h3"
+        variant={TextVariant.headingSm}
+        className="hw-connect__title"
       >
-        <Text
-          as="h3"
-          variant={TextVariant.headingSm}
-          className="hw-connect__title"
-        >
-          {t(config.titleKey)}
-        </Text>
-        {renderMarketingButtons(
-          config.deviceName,
-          config.buyLink,
-          config.tutorialLink,
-        )}
-        <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
-          {t(config.messageKey, [
-            <ButtonLink
-              className="hw-connect__msg-link"
-              href={ZENDESK_URLS.HARDWARE_CONNECTION}
-              externalLink
-              key={`${config.deviceName}-support-link`}
-            >
-              {t('hardwareWalletSupportLinkConversion')}
-            </ButtonLink>,
-          ])}
-        </Text>
-        <img
-          className="hw-connect__step-asset"
-          src={`images/${config.asset}.svg`}
-          {...config.dimensions}
-          alt=""
-        />
-      </Box>
+        {t(config.titleKey)}
+      </Text>
+      {renderMarketingButtons(
+        config.deviceName,
+        config.buyLink,
+        config.tutorialLink,
+      )}
+      <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
+        {t(config.messageKey, [
+          <ButtonLink
+            className="hw-connect__msg-link"
+            href={ZENDESK_URLS.HARDWARE_CONNECTION}
+            externalLink
+            key={`${config.deviceName}-support-link`}
+          >
+            {t('hardwareWalletSupportLinkConversion')}
+          </ButtonLink>,
+        ])}
+      </Text>
+      <img
+        className="hw-connect__step-asset"
+        src={`images/${config.asset}.svg`}
+        {...config.dimensions}
+        alt=""
+      />
     </Box>
+  );
+
+  const renderDeviceTutorialSteps = (config: TutorialStepConfig) => (
+    <Box className="hw-tutorial">{renderDeviceTutorialContent(config)}</Box>
   );
 
   /**
@@ -612,6 +618,30 @@ const SelectHardware = ({
     </Box>
   );
 
+  const renderLedgerLiveStep = () => (
+    <Box className="hw-connect">
+      <Text
+        as="h3"
+        variant={TextVariant.headingSm}
+        className="hw-connect__title"
+      >
+        {t('step1LedgerWallet')}
+      </Text>
+      <Text as="p" variant={TextVariant.bodyMd} className="hw-connect__msg">
+        {t('step1LedgerWalletMsg', [
+          <ButtonLink
+            className="hw-connect__msg-link"
+            href={LEDGER_LIVE_APP_URL}
+            externalLink
+            key="ledger-live-app-link"
+          >
+            {t('ledgerLiveApp')}
+          </ButtonLink>,
+        ])}
+      </Text>
+    </Box>
+  );
+
   const renderTutorialSteps = () => {
     if (selectedDevice === HardwareDeviceNames.qr) {
       return renderQRHardwareWalletSteps();
@@ -619,6 +649,20 @@ const SelectHardware = ({
     const config = selectedDevice
       ? DEVICE_TUTORIAL_CONFIG[selectedDevice]
       : undefined;
+
+    if (
+      selectedDevice === HardwareDeviceNames.ledger &&
+      ledgerTransportType === 'live' &&
+      config
+    ) {
+      return (
+        <Box className="hw-tutorial">
+          {renderLedgerLiveStep()}
+          {renderDeviceTutorialContent(config)}
+        </Box>
+      );
+    }
+
     return config ? renderDeviceTutorialSteps(config) : null;
   };
 

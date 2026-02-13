@@ -88,22 +88,22 @@ const AccountList = ({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [pathValue, setPathValue] = useState<string | null>(null);
-  const hasTrackedAccountSelectorViewed = useRef(false);
+  const trackEventRef = useRef(trackEvent);
+  const initialDeviceRef = useRef(device);
 
   useEffect(() => {
-    if (hasTrackedAccountSelectorViewed.current) {
-      return;
-    }
+    trackEventRef.current = trackEvent;
+  }, [trackEvent]);
 
-    hasTrackedAccountSelectorViewed.current = true;
-    trackEvent({
+  useEffect(() => {
+    trackEventRef.current({
       event: MetaMetricsEventName.ConnectHardwareWalletAccountSelectorViewed,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        device_type: upperFirst(device),
+        device_type: upperFirst(initialDeviceRef.current),
       },
     });
-  }, [device, trackEvent]);
+  }, []);
 
   const goToNextPage = useCallback(() => {
     // If we have < 5 accounts, it's restricted by BIP-44

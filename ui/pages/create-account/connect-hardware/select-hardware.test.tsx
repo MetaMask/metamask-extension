@@ -21,12 +21,13 @@ describe('SelectHardware', () => {
   const mockOnCancel = jest.fn();
   const mockConnectToHardwareWallet = jest.fn();
 
-  const render = (browserSupported = true) =>
+  const render = (browserSupported = true, ledgerTransportType?: 'live') =>
     renderWithProvider(
       <SelectHardware
         onCancel={mockOnCancel}
         connectToHardwareWallet={mockConnectToHardwareWallet}
         browserSupported={browserSupported}
+        ledgerTransportType={ledgerTransportType}
       />,
       undefined,
     );
@@ -104,6 +105,15 @@ describe('SelectHardware', () => {
       HardwareAffiliateTutorialLinks.Ledger,
     );
     expect(openWindow).toHaveBeenCalledTimes(2);
+  });
+
+  it('renders Ledger Live setup step for live transport', () => {
+    render(true, 'live');
+
+    fireEvent.click(screen.getByLabelText('Ledger'));
+
+    expect(screen.getByText('Download Ledger app')).toBeInTheDocument();
+    expect(screen.getByText('Connect your Ledger')).toBeInTheDocument();
   });
 
   it('renders unsupported browser screen and opens Chrome download link', () => {
