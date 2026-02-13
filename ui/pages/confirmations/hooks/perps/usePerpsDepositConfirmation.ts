@@ -7,23 +7,23 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes'
 import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 
-export type PerpsDepositFlowResponse = {
+export type PerpsDepositConfirmationResponse = {
   transactionId: string;
 };
 
-export type PerpsDepositFlowOptions = {
+export type PerpsDepositConfirmationOptions = {
   returnTo?: string;
   onCreated?: (transactionId: string) => void;
   navigateOnCreate?: boolean;
 };
 
-export type PerpsDepositFlowResult = {
-  trigger: () => Promise<PerpsDepositFlowResponse | null>;
+export type PerpsDepositConfirmationResult = {
+  trigger: () => Promise<PerpsDepositConfirmationResponse | null>;
   isLoading: boolean;
 };
 
 /**
- * Pay/Confirmations-owned entrypoint for starting the Perps deposit flow.
+ * Pay/Confirmations-owned entrypoint for starting the Perps deposit confirmation flow.
  *
  * Encapsulates:
  * - transaction construction (perpsDeposit tx)
@@ -32,9 +32,9 @@ export type PerpsDepositFlowResult = {
  *
  * @param options
  */
-export function usePerpsDepositFlow(
-  options: PerpsDepositFlowOptions = {},
-): PerpsDepositFlowResult {
+export function usePerpsDepositConfirmation(
+  options: PerpsDepositConfirmationOptions = {},
+): PerpsDepositConfirmationResult {
   const { returnTo, onCreated, navigateOnCreate = true } = options;
   const navigate = useNavigate();
   const selectedAccount = useSelector(getSelectedInternalAccount);

@@ -4,7 +4,7 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-n
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
-import { usePerpsDepositFlow } from './usePerpsDepositFlow';
+import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
 const mockNavigate = jest.fn();
 
@@ -22,7 +22,7 @@ const mockCreatePerpsDepositTransaction =
     typeof createPerpsDepositTransaction
   >;
 
-describe('usePerpsDepositFlow', () => {
+describe('usePerpsDepositConfirmation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -33,7 +33,7 @@ describe('usePerpsDepositFlow', () => {
     });
 
     const { result } = renderHookWithProvider(
-      () => usePerpsDepositFlow({ returnTo: '/perps/home' }),
+      () => usePerpsDepositConfirmation({ returnTo: '/perps/home' }),
       mockState,
     );
 
@@ -63,7 +63,7 @@ describe('usePerpsDepositFlow', () => {
 
     const { result } = renderHookWithProvider(
       () =>
-        usePerpsDepositFlow({
+        usePerpsDepositConfirmation({
           navigateOnCreate: false,
         }),
       mockState,
@@ -86,7 +86,7 @@ describe('usePerpsDepositFlow', () => {
     const onCreated = jest.fn();
 
     const { result } = renderHookWithProvider(
-      () => usePerpsDepositFlow({ onCreated }),
+      () => usePerpsDepositConfirmation({ onCreated }),
       mockState,
     );
 
@@ -110,7 +110,7 @@ describe('usePerpsDepositFlow', () => {
     };
 
     const { result } = renderHookWithProvider(
-      () => usePerpsDepositFlow(),
+      () => usePerpsDepositConfirmation(),
       stateWithoutSelectedAccount,
     );
 
@@ -139,7 +139,7 @@ describe('usePerpsDepositFlow', () => {
     );
 
     const { result } = renderHookWithProvider(
-      () => usePerpsDepositFlow(),
+      () => usePerpsDepositConfirmation(),
       mockState,
     );
 

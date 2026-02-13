@@ -1,16 +1,16 @@
 import type {
-  PerpsDepositFlowOptions,
-  PerpsDepositFlowResponse,
-  PerpsDepositFlowResult,
-} from './usePerpsDepositFlow';
-import { usePerpsDepositFlow } from './usePerpsDepositFlow';
+  PerpsDepositConfirmationOptions,
+  PerpsDepositConfirmationResponse,
+  PerpsDepositConfirmationResult,
+} from './usePerpsDepositConfirmation';
+import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
-export type PerpsDepositTriggerResponse = PerpsDepositFlowResponse;
+export type PerpsDepositTriggerResponse = PerpsDepositConfirmationResponse;
 export type PerpsDepositTriggerOptions = Omit<
-  PerpsDepositFlowOptions,
+  PerpsDepositConfirmationOptions,
   'navigateOnCreate'
 >;
-export type PerpsDepositTriggerResult = PerpsDepositFlowResult;
+export type PerpsDepositTriggerResult = PerpsDepositConfirmationResult;
 
 /**
  * Pay/Confirmations-owned entrypoint for starting the Perps deposit confirmation flow.
@@ -25,7 +25,7 @@ export type PerpsDepositTriggerResult = PerpsDepositFlowResult;
 export function usePerpsDepositTrigger(
   options: PerpsDepositTriggerOptions = {},
 ): PerpsDepositTriggerResult {
-  return usePerpsDepositFlow({
+  return usePerpsDepositConfirmation({
     ...options,
     navigateOnCreate: true,
   });

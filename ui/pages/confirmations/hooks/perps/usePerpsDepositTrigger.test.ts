@@ -1,27 +1,28 @@
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { usePerpsDepositTrigger } from './usePerpsDepositTrigger';
-import { usePerpsDepositFlow } from './usePerpsDepositFlow';
+import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
-jest.mock('./usePerpsDepositFlow', () => ({
-  usePerpsDepositFlow: jest.fn(),
+jest.mock('./usePerpsDepositConfirmation', () => ({
+  usePerpsDepositConfirmation: jest.fn(),
 }));
 
-const mockUsePerpsDepositFlow = usePerpsDepositFlow as jest.MockedFunction<
-  typeof usePerpsDepositFlow
->;
+const mockUsePerpsDepositConfirmation =
+  usePerpsDepositConfirmation as jest.MockedFunction<
+    typeof usePerpsDepositConfirmation
+  >;
 
 describe('usePerpsDepositTrigger', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('delegates to usePerpsDepositFlow with navigateOnCreate enabled', () => {
+  it('delegates to usePerpsDepositConfirmation with navigateOnCreate enabled', () => {
     const flowReturn = {
       trigger: jest.fn(),
       isLoading: true,
     };
-    mockUsePerpsDepositFlow.mockReturnValue(flowReturn);
+    mockUsePerpsDepositConfirmation.mockReturnValue(flowReturn);
 
     const onCreated = jest.fn();
 
@@ -30,7 +31,7 @@ describe('usePerpsDepositTrigger', () => {
       mockState,
     );
 
-    expect(mockUsePerpsDepositFlow).toHaveBeenCalledWith({
+    expect(mockUsePerpsDepositConfirmation).toHaveBeenCalledWith({
       returnTo: '/perps/home',
       onCreated,
       navigateOnCreate: true,
@@ -43,14 +44,14 @@ describe('usePerpsDepositTrigger', () => {
       trigger: jest.fn(),
       isLoading: false,
     };
-    mockUsePerpsDepositFlow.mockReturnValue(flowReturn);
+    mockUsePerpsDepositConfirmation.mockReturnValue(flowReturn);
 
     const { result } = renderHookWithProvider(
       () => usePerpsDepositTrigger(),
       mockState,
     );
 
-    expect(mockUsePerpsDepositFlow).toHaveBeenCalledWith({
+    expect(mockUsePerpsDepositConfirmation).toHaveBeenCalledWith({
       navigateOnCreate: true,
     });
     expect(result.current).toBe(flowReturn);

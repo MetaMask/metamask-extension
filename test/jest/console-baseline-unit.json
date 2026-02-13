@@ -2663,7 +2663,7 @@
       "Reselect: Input stability warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/pages/confirmations/hooks/perps/usePerpsDepositFlow.test.ts": {
+    "ui/pages/confirmations/hooks/perps/usePerpsDepositConfirmation.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/perps/usePerpsDepositTrigger.test.ts": {
