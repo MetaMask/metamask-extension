@@ -54,9 +54,11 @@ type TokenListEntry = {
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 function toHexChainId(chainId: Hex): `0x${string}` {
-  return (typeof chainId === 'string' && chainId.startsWith('0x')
-    ? chainId
-    : `0x${Number(chainId).toString(16)}`) as `0x${string}`;
+  return (
+    typeof chainId === 'string' && chainId.startsWith('0x')
+      ? chainId
+      : `0x${Number(chainId).toString(16)}`
+  ) as `0x${string}`;
 }
 
 function resolveIconUrl(
@@ -64,7 +66,9 @@ function resolveIconUrl(
   chainId: `0x${string}`,
   tokenAddress: string,
 ): string | undefined {
-  if (existing) return existing;
+  if (existing) {
+    return existing;
+  }
   try {
     return formatIconUrlWithProxy({ chainId, tokenAddress });
   } catch {
@@ -72,11 +76,9 @@ function resolveIconUrl(
   }
 }
 
-/**
- * EVM only: token symbol and icon URL by chainId + token contract address.
- * Useful when the transaction only has the contract address (e.g. ERC20 approve).
- * Lookup order: global token list → chain cache (erc20ByChain) → icon via formatIconUrlWithProxy only.
- */
+// EVM only: token symbol and icon URL by chainId + token contract address.
+// Useful when the transaction only has the contract address (e.g. ERC20 approve).
+// Lookup order: global token list → chain cache (erc20ByChain) → icon via formatIconUrlWithProxy only.
 export function useEvmTokenInfo(
   chainId: Hex,
   tokenAddress?: string,
@@ -115,15 +117,12 @@ export function useEvmTokenInfo(
   return iconUrl ? { iconUrl } : {};
 }
 
-/**
- * EVM only: token avatar icon URL from TransactionViewModel-style data.
- * Pass chainId + symbol; optional tokenAddress when available (e.g. transferInformation.contractAddress).
- * When only tokenAddress is provided (e.g. approval tx), useEvmTokenInfo is preferred for symbol + icon.
- *
- * Lookup order:
- * - If tokenAddress (non-native): token list → chain cache → proxy.
- * - If symbol only (native or no address): ETH_ICON for 'ETH' → chain by symbol → token list by symbol.
- */
+// EVM only: token avatar icon URL from TransactionViewModel-style data.
+// Pass chainId + symbol; optional tokenAddress when available (e.g. transferInformation.contractAddress).
+// When only tokenAddress is provided (e.g. approval tx), useEvmTokenInfo is preferred for symbol + icon.
+// Lookup order:
+// - If tokenAddress (non-native): token list → chain cache → proxy.
+// - If symbol only (native or no address): ETH_ICON for 'ETH' → chain by symbol → token list by symbol.
 export function useEvmTokenIconUrl(
   chainId: Hex,
   symbol: string | undefined,
@@ -147,13 +146,19 @@ export function useEvmTokenIconUrl(
       hexChainId,
       address,
     );
-    if (iconUrl) return iconUrl;
+    if (iconUrl) {
+      return iconUrl;
+    }
   }
 
   // Path 2: we only have symbol (native token or no address)
-  if (!symbol) return undefined;
+  if (!symbol) {
+    return undefined;
+  }
 
-  if (symbol === 'ETH') return ETH_ICON;
+  if (symbol === 'ETH') {
+    return ETH_ICON;
+  }
 
   const chainData = erc20ByChain?.[hexChainId]?.data;
   const entryBySymbol =
@@ -162,14 +167,18 @@ export function useEvmTokenIconUrl(
       (entry) => entry.symbol?.toLowerCase() === symbol.toLowerCase(),
     );
 
-  if (entryBySymbol?.iconUrl) return entryBySymbol.iconUrl;
+  if (entryBySymbol?.iconUrl) {
+    return entryBySymbol.iconUrl;
+  }
   if (entryBySymbol?.address) {
     const iconUrl = resolveIconUrl(
       undefined,
       hexChainId,
       entryBySymbol.address.toLowerCase(),
     );
-    if (iconUrl) return iconUrl;
+    if (iconUrl) {
+      return iconUrl;
+    }
   }
 
   const listEntryBySymbol = (Object.values(tokenList) as TokenListEntry[]).find(

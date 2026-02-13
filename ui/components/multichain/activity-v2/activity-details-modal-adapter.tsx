@@ -15,7 +15,9 @@ import TransactionListItemDetails from '../../app/transaction-list-item-details'
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
 
-/** Map API transactionType (from queries) to TransactionType so legacy modal title is correct. */
+const noop = () => {};
+
+// Map API transactionType (from queries) to TransactionType so legacy modal title is correct. */
 function apiTransactionTypeToTransactionType(
   transactionType?: string,
 ): TransactionType {
@@ -45,7 +47,7 @@ function apiTransactionTypeToTransactionType(
   }
 }
 
-/** Build synthetic group with type overridden so useTransactionDisplayData shows correct title. Uses API transactionType and direction (incoming = to user's wallet). */
+// Build synthetic group with type overridden so useTransactionDisplayData shows correct title. Uses API transactionType and direction (incoming = to user's wallet). */
 function buildSyntheticTransactionGroup(
   transaction: TransactionViewModel,
   selectedAddress?: string,
@@ -58,8 +60,7 @@ function buildSyntheticTransactionGroup(
   const from = transaction.txParams?.from?.toLowerCase();
   const to = transaction.txParams?.to?.toLowerCase();
   const user = selectedAddress?.toLowerCase();
-  const isIncoming =
-    user && to === user && from !== user;
+  const isIncoming = user && to === user && from !== user;
   const effectiveType = isIncoming
     ? TransactionType.incoming
     : apiTransactionTypeToTransactionType(transaction.transactionType);
@@ -78,24 +79,6 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   transaction: TransactionViewModel | null;
-};
-
-// Interim: Adapter so we can use legacy modals until we fully migrate to new UI
-export const ActivityDetailsModalAdapter = ({
-  isOpen,
-  onClose,
-  transaction,
-}: Props) => {
-  if (!isOpen || !transaction) {
-    return null;
-  }
-
-  return (
-    <ActivityDetailsModalAdapterContent
-      transaction={transaction}
-      onClose={onClose}
-    />
-  );
 };
 
 const ActivityDetailsModalAdapterContent = ({
@@ -132,8 +115,7 @@ const ActivityDetailsModalAdapterContent = ({
 
   const { title, primaryCurrency, recipientAddress } = displayData;
   const t = useI18nContext();
-  const modalTitle =
-    effectiveType === TransactionType.swap ? t('swap') : title;
+  const modalTitle = effectiveType === TransactionType.swap ? t('swap') : title;
   const senderAddress = transaction.txParams?.from ?? '';
   const displayedStatusKey = getStatusKey(
     transaction as Parameters<typeof getStatusKey>[0],
@@ -156,10 +138,10 @@ const ActivityDetailsModalAdapterContent = ({
       primaryCurrency={primaryCurrency}
       senderAddress={senderAddress}
       recipientAddress={recipientAddress}
-      onRetry={() => {}}
+      onRetry={noop}
       showSpeedUp={false}
       isEarliestNonce={false}
-      onCancel={() => {}}
+      onCancel={noop}
       transactionStatus={() => (
         <TransactionStatusLabel
           isEarliestNonce={false}
@@ -170,6 +152,24 @@ const ActivityDetailsModalAdapterContent = ({
         />
       )}
       chainId={chainId}
+    />
+  );
+};
+
+// Interim: Adapter so we can use legacy modals until we fully migrate to new UI
+export const ActivityDetailsModalAdapter = ({
+  isOpen,
+  onClose,
+  transaction,
+}: Props) => {
+  if (!isOpen || !transaction) {
+    return null;
+  }
+
+  return (
+    <ActivityDetailsModalAdapterContent
+      transaction={transaction}
+      onClose={onClose}
     />
   );
 };

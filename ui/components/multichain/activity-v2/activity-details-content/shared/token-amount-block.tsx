@@ -28,13 +28,15 @@ export const TokenAmountBlock = ({
       {label}
     </Text>
     <div className="flex items-center gap-3">
-      <AvatarToken src={iconSrc ?? ''} name={symbol} size={AvatarTokenSize.Md} />
+      <AvatarToken
+        src={iconSrc ?? ''}
+        name={symbol}
+        size={AvatarTokenSize.Md}
+      />
       <Text
         variant={TextVariant.HeadingLg}
         fontWeight={FontWeight.Medium}
-        color={
-          variant === 'received' ? TextColor.SuccessDefault : undefined
-        }
+        color={variant === 'received' ? TextColor.SuccessDefault : undefined}
       >
         {variant === 'sent' ? '-' : '+'}
         {Math.abs(amount)} {symbol}

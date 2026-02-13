@@ -10,6 +10,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+
 export type FlattenedItem =
   | { type: 'date-header'; date: number }
   | { type: 'pending'; transactionGroup: TransactionGroup; id: string }
