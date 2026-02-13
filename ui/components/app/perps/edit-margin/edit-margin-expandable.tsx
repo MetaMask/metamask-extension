@@ -178,10 +178,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
       riskAssessment.riskLevel === 'danger');
 
   const confirmDisabled =
-    !isEligible ||
-    !isValid ||
-    isSaving ||
-    parseFloat(marginAmount) <= 0;
+    !isEligible || !isValid || isSaving || parseFloat(marginAmount) <= 0;
 
   const getConfirmButtonLabel = () => {
     if (isSaving) {
@@ -464,9 +461,7 @@ export const EditMarginExpandable: React.FC<EditMarginExpandableProps> = ({
               size={ButtonSize.Md}
               onClick={handleSaveMargin}
               disabled={confirmDisabled}
-              title={
-                !isEligible ? t('perpsGeoBlockedTooltip') : undefined
-              }
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className={twMerge(
                 'w-full',
                 confirmDisabled && 'opacity-70 cursor-not-allowed',
