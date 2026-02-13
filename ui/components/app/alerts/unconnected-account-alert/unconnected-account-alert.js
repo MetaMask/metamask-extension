@@ -11,10 +11,12 @@ import {
 } from '../../../../ducks/alerts/unconnected-account';
 import {
   getOriginOfCurrentTab,
-  getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForActiveTabAccountOnly,
+} from '../../../../selectors';
+import {
   getSelectedInternalAccount,
   getInternalAccounts,
-} from '../../../../selectors';
+} from '../../../../selectors/accounts';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
 
@@ -37,7 +39,7 @@ const UnconnectedAccountAlert = () => {
   const dispatch = useDispatch();
   const alertState = useSelector(getAlertState);
   const connectedAccounts = useSelector(
-    getOrderedConnectedAccountsForActiveTab,
+    getOrderedConnectedAccountsForActiveTabAccountOnly,
   );
   const internalAccounts = useSelector(getInternalAccounts);
   // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553

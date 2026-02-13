@@ -7,6 +7,7 @@ import {
   getConnectedSubjectsForSelectedAddress,
   getLastConnectedInfo,
   getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForActiveTabAccountOnly,
   getPermissionsForActiveTab,
 } from './selectors';
 
@@ -504,6 +505,20 @@ describe('selectors', () => {
           type: EthAccountType.Eoa,
         },
       ]);
+    });
+
+    it('getOrderedConnectedAccountsForActiveTabAccountOnly returns same connected accounts without balance (no asset selector deps)', () => {
+      const result =
+        getOrderedConnectedAccountsForActiveTabAccountOnly(mockState);
+      const withBalance = getOrderedConnectedAccountsForActiveTab(mockState);
+      expect(result).toHaveLength(withBalance.length);
+      const resultAddresses = new Set(result.map((a) => a.address));
+      withBalance.forEach((account) => {
+        expect(resultAddresses.has(account.address)).toBe(true);
+        const match = result.find((r) => r.address === account.address);
+        expect(match.id).toStrictEqual(account.id);
+        expect(match.metadata?.lastActive).toBeDefined();
+      });
     });
   });
 

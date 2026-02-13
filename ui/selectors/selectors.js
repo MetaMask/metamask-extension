@@ -746,6 +746,63 @@ export const getInternalAccountsSortedByKeyring = createSelector(
   },
 );
 
+/**
+ * Returns internal accounts in keyring order, without merging balance data.
+ * Use this when only account/permission data is needed to avoid pulling in
+ * asset/balance selectors (e.g. unconnected-account-alert).
+ *
+ * @param state - Redux state
+ * @returns {Array} Internal accounts sorted by keyring order
+ */
+export const getInternalAccountsSortedByKeyringOnly = createSelector(
+  getMetaMaskKeyrings,
+  getInternalAccounts,
+  (keyrings, internalAccounts) => {
+    const thirdPartySnaps = 'thirdPartySnaps';
+    const byAddress = internalAccounts.reduce((map, account) => {
+      if (account?.address) {
+        map[account.address] = account;
+      }
+      return map;
+    }, {});
+    const entropySourceToAccountsMap = internalAccounts.reduce(
+      (map, account) => {
+        if (account.metadata?.keyring?.type === KeyringTypes.snap) {
+          const { entropySource = thirdPartySnaps } = account.options || {};
+          if (!map[entropySource]) {
+            map[entropySource] = [];
+          }
+          map[entropySource].push(account);
+        }
+        return map;
+      },
+      {},
+    );
+
+    return keyrings.reduce((acc, keyring) => {
+      const keyringAccounts = keyring.accounts
+        .map((address) => byAddress[address])
+        .filter(Boolean);
+
+      if (keyring.type === KeyringTypes.hd) {
+        const snapAccounts =
+          entropySourceToAccountsMap[keyring.metadata?.id] || [];
+        acc.push(...keyringAccounts, ...snapAccounts);
+      } else if (keyring.type === KeyringTypes.snap) {
+        const thirdpartySnapAccounts =
+          entropySourceToAccountsMap[thirdPartySnaps] || [];
+        const accountsToAdd = thirdpartySnapAccounts.filter(
+          (account) => !acc.some((existing) => existing.id === account.id),
+        );
+        acc.push(...accountsToAdd);
+      } else {
+        acc.push(...keyringAccounts);
+      }
+      return acc;
+    }, []);
+  },
+);
+
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
   return tokens ? tokens.length : 0;
@@ -3357,6 +3414,56 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
       );
   },
 );
+
+/**
+ * Same as getOrderedConnectedAccountsForActiveTab but uses only account/permission
+ * state (no balance or asset selectors). Use in unconnected-account-alert and other
+ * consumers that only need connected account list and metadata, not balances.
+ */
+export const getOrderedConnectedAccountsForActiveTabAccountOnly =
+  createDeepEqualSelector(
+    getOriginOfCurrentTab,
+    (state) => state.metamask.permissionHistory,
+    getInternalAccountsSortedByKeyringOnly,
+    getAllPermittedAccountsForCurrentTab,
+    (origin, permissionHistory, orderedAccounts, connectedAccounts) => {
+      const permissionHistoryByAccount =
+        permissionHistory[origin]?.eth_accounts?.accounts || {};
+
+      const connectedAccountsAddresses = connectedAccounts.map(
+        (caipAccountId) => {
+          const { address } = parseCaipAccountId(caipAccountId);
+          return address;
+        },
+      );
+
+      return orderedAccounts
+        .filter((account) =>
+          connectedAccountsAddresses.includes(account.address),
+        )
+        .map((account) => ({
+          ...account,
+          metadata: {
+            ...account.metadata,
+            lastActive: permissionHistoryByAccount?.[account.address],
+          },
+        }))
+        .sort(({ metadata: metaA }, { metadata: metaB }) => {
+          const lastSelectedA = metaA?.lastSelected;
+          const lastSelectedB = metaB?.lastSelected;
+          if (lastSelectedA === lastSelectedB) {
+            return 0;
+          }
+          if (lastSelectedA === undefined) {
+            return 1;
+          }
+          if (lastSelectedB === undefined) {
+            return -1;
+          }
+          return lastSelectedB - lastSelectedA;
+        });
+    },
+  );
 
 /**
  * @deprecated
