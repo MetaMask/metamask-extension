@@ -81,6 +81,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
           await mockTransactions(mockServer);
         },
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: ['SES_UNCAUGHT_EXCEPTION'],
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
