@@ -413,9 +413,6 @@
   "next": {
     "message": "Напред"
   },
-  "noConversionRateAvailable": {
-    "message": "Няма наличен процент на преобръщане"
-  },
   "noWebcamFound": {
     "message": "Уеб камерата на компютърa Ви не беше намерена. Моля, опитайте отново."
   },

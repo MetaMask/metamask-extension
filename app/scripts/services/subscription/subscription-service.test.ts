@@ -6,6 +6,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import {
+  CANCEL_TYPES,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -71,6 +72,7 @@ const MOCK_ACTIVE_SHIELD_SUBSCRIPTION: Subscription = {
   currentPeriodStart: new Date().toISOString(),
   currentPeriodEnd: new Date(Date.now() + 30 * DAY).toISOString(),
   isEligibleForSupport: true,
+  cancelType: CANCEL_TYPES.ALLOWED_AT_PERIOD_END,
 };
 
 const getRedirectUrlSpy = jest.fn().mockReturnValue(MOCK_REDIRECT_URI);
@@ -93,6 +95,8 @@ const mockGetRewardSeasonMetadata = jest.fn();
 const mockGetHasAccountOptedIn = jest.fn();
 const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
+const mockClearLastSelectedPaymentMethod = jest.fn();
+const mockSetShieldSubscriptionError = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -169,6 +173,14 @@ rootMessenger.registerActionHandler(
   'SubscriptionController:submitShieldSubscriptionCryptoApproval',
   mockSubmitShieldSubscriptionCryptoApproval,
 );
+rootMessenger.registerActionHandler(
+  'SubscriptionController:clearLastSelectedPaymentMethod',
+  mockClearLastSelectedPaymentMethod,
+);
+rootMessenger.registerActionHandler(
+  'AppStateController:setShieldSubscriptionError',
+  mockSetShieldSubscriptionError,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -182,6 +194,7 @@ rootMessenger.delegate({
     'SubscriptionController:submitSponsorshipIntents',
     'SubscriptionController:linkRewards',
     'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+    'SubscriptionController:clearLastSelectedPaymentMethod',
     'TransactionController:getTransactions',
     'PreferencesController:getState',
     'AccountsController:getState',
@@ -190,6 +203,7 @@ rootMessenger.delegate({
     'NetworkController:getState',
     'RemoteFeatureFlagController:getState',
     'AppStateController:getState',
+    'AppStateController:setShieldSubscriptionError',
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
     'KeyringController:getState',
@@ -206,12 +220,10 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateNonce: jest.fn(),
 };
 const mockPlatform = new ExtensionPlatform();
-const mockCaptureException = jest.fn();
 const subscriptionService = new SubscriptionService({
   messenger,
   platform: mockPlatform,
   webAuthenticator: mockWebAuthenticator,
-  captureException: mockCaptureException,
 });
 // Mock environment variables
 const originalEnv = process.env;
@@ -300,6 +312,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       isTrialRequested: false,
       recurringInterval: RECURRING_INTERVALS.month,
       successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
     });
 
     expect(mockGetSubscriptions).toHaveBeenCalled();
@@ -343,6 +356,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       isTrialRequested: false,
       recurringInterval: RECURRING_INTERVALS.month,
       successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
       rewardAccountId: 'eip155:0:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     });
 
@@ -373,6 +387,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       isTrialRequested: false,
       recurringInterval: RECURRING_INTERVALS.month,
       successUrl: MOCK_REDIRECT_URI,
+      cancelUrl: `${MOCK_REDIRECT_URI}?cancel=true`,
       rewardSubscriptionId: undefined,
     });
 
@@ -436,6 +451,10 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
         1000,
       ),
     ).rejects.toThrow(SHIELD_ERROR.subscriptionPollingTimedOut);
+
+    expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
+      PRODUCT_TYPES.SHIELD,
+    );
   });
 });
 
@@ -570,6 +589,32 @@ describe('SubscriptionService - handlePostTransaction', () => {
       txMeta,
       false,
       MOCK_REWARD_ACCOUNT_ID,
+    );
+  });
+
+  it('should set shield API error when payerAddressAlreadyUsed error occurs', async () => {
+    mockSubmitShieldSubscriptionCryptoApproval.mockRejectedValueOnce(
+      new Error(SHIELD_ERROR.payerAddressAlreadyUsed),
+    );
+
+    const txMeta = {
+      ...MOCK_TX_META,
+      isGasFeeSponsored: false,
+      txParams: {
+        from: '0xdeadbeef1234567890abcdef',
+      },
+    };
+
+    await expect(
+      // @ts-expect-error mock tx meta
+      subscriptionService.handlePostTransaction(txMeta),
+    ).rejects.toThrow(SHIELD_ERROR.payerAddressAlreadyUsed);
+
+    expect(mockSetShieldSubscriptionError).toHaveBeenCalledWith({
+      message: SHIELD_ERROR.payerAddressAlreadyUsed,
+    });
+    expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
+      PRODUCT_TYPES.SHIELD,
     );
   });
 });

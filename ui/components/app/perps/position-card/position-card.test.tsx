@@ -35,7 +35,7 @@ const createMockPosition = (overrides: Partial<Position> = {}): Position => ({
     rawUsd: '2375.00',
   },
   liquidationPrice: '2400.00',
-  maxLeverage: 50,
+  maxLeverage: 20,
   returnOnEquity: '15.79',
   cumulativeFunding: {
     allTime: '12.50',

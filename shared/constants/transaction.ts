@@ -1,8 +1,5 @@
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 
 /**
  * With this list we can detect if a transaction is still in progress.
@@ -246,11 +243,17 @@ export enum AssetType {
  * Describes the standard which a token conforms to.
  */
 export enum TokenStandard {
-  /** A token that conforms to the ERC20 standard. */
+  /**
+   * @deprecated Use `ERC20` from `@metamask/controller-utils` instead.
+   */
   ERC20 = 'ERC20',
-  /** A token that conforms to the ERC721 standard. */
+  /**
+   * @deprecated Use `ERC721` from `@metamask/controller-utils` instead.
+   */
   ERC721 = 'ERC721',
-  /** A token that conforms to the ERC1155 standard. */
+  /**
+   * @deprecated Use `ERC1155` from `@metamask/controller-utils` instead.
+   */
   ERC1155 = 'ERC1155',
   /** Not a token, but rather the base asset of the selected chain. */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -281,8 +284,5 @@ export const APPROVAL_METHOD_NAMES = [
 
 export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
 
-/**
- * Developer-only transaction type for testing custom amount confirmations.
- */
-export const EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE =
-  'example-custom-amount' as TransactionType;
+export const POLYGON_NATIVE_TOKEN_ADDRESS =
+  '0x0000000000000000000000000000000000001010' as Hex;

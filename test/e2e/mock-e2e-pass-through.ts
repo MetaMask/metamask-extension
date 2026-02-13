@@ -1,5 +1,5 @@
 import type { MockedEndpoint, Mockttp } from 'mockttp';
-import { NetworkReport } from './benchmarks/types-generated';
+import type { NetworkReport } from './benchmarks/utils/types';
 
 type SetupMockReturn = {
   mockedEndpoint: MockedEndpoint[];
@@ -27,7 +27,11 @@ export async function setupMockingPassThrough(
 
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
-      console.log('Request going to a live server ============', req.url);
+      console.log(
+        'Request going to a live server ============',
+        req.url,
+        false,
+      );
       return {};
     },
   });

@@ -471,10 +471,9 @@ export default class OAuthService {
     hasEmailMarketingConsent: boolean,
   ): Promise<boolean> {
     try {
-      const state = this.#messenger.call(
-        'SeedlessOnboardingController:getState',
+      const accessToken = await this.#messenger.call(
+        'SeedlessOnboardingController:getAccessToken',
       );
-      const { accessToken } = state;
       if (!accessToken) {
         throw new Error('No access token found');
       }
@@ -503,7 +502,6 @@ export default class OAuthService {
 
       return res.ok;
     } catch (error) {
-      log.error('Failed to post marketing opt in status', error);
       this.#messenger.captureException?.(
         createSentryError(
           'Failed to post marketing opt in status',
@@ -518,10 +516,9 @@ export default class OAuthService {
 
   async getMarketingConsent(): Promise<boolean> {
     try {
-      const state = this.#messenger.call(
-        'SeedlessOnboardingController:getState',
+      const accessToken = await this.#messenger.call(
+        'SeedlessOnboardingController:getAccessToken',
       );
-      const { accessToken } = state;
       if (!accessToken) {
         throw new Error('No access token found');
       }
@@ -545,8 +542,6 @@ export default class OAuthService {
 
       return Boolean(data?.is_opt_in ?? false);
     } catch (error) {
-      log.error('Failed to get marketing opt in status', error);
-
       this.#messenger.captureException?.(
         createSentryError(
           'Failed to get marketing opt in status',

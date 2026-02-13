@@ -38,12 +38,14 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
+  getParticipateInMetaMetrics,
   getPreferences,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -54,6 +56,7 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   getCompletedOnboarding,
+  getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
 import {
@@ -78,12 +81,15 @@ export default function CreationSuccessful() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
   const preferences = useSelector(getPreferences);
   const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
+  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+
+  const isInitialized = useSelector(getIsInitialized);
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -94,6 +100,17 @@ export default function CreationSuccessful() {
   const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
+
+  // Guard: redirect if wallet is not properly set up.
+  // Prevents users from skipping onboarding steps by navigating directly to the completion route.
+  useEffect(() => {
+    if (isFromReminder) {
+      return;
+    }
+    if (!isInitialized) {
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    }
+  }, [isInitialized, isFromReminder, navigate]);
 
   useEffect(() => {
     const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -211,6 +228,26 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
+    // NOTE: Metametrics Opt In/Out event tracking should be done after `toggleExternalServices` dispatch.
+    // Since we will track the `Metrics Opt In/Out` event even when participateInMetaMetrics is false,
+    // this is to ensure that the `Metrics Opt In/Out` event will not be tracked if basic functionality is disabled.
+    if (!isOnboardingCompleted) {
+      // before onboarding completion, we track the MetricsOptIn/Out event
+
+      trackEvent(
+        {
+          category: MetaMetricsEventCategory.Onboarding,
+          event: participateInMetaMetrics
+            ? MetaMetricsEventName.MetricsOptIn
+            : MetaMetricsEventName.MetricsOptOut,
+          properties: {},
+        },
+        {
+          isOptIn: !participateInMetaMetrics, // Force the event to be tracked even if participateInMetaMetrics is false
+        },
+      );
+    }
+
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
       // If useSidePanelAsDefault is already true, side panel is already set up
@@ -247,6 +284,7 @@ export default function CreationSuccessful() {
     }
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
+
     navigate(DEFAULT_ROUTE);
   }, [
     isOnboardingCompleted,
@@ -259,6 +297,7 @@ export default function CreationSuccessful() {
     isFromSettingsSecurity,
     isSidePanelEnabled,
     isSidePanelSetAsDefault,
+    participateInMetaMetrics,
   ]);
 
   const renderDoneButton = () => {
