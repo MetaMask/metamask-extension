@@ -26,11 +26,8 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
+import type { CandleStick } from '@metamask/perps-controller';
 import { brandColor } from '@metamask/design-tokens';
-import {
-  CandleStick,
-  type PriceUpdate,
-} from '../../components/app/perps/types';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -42,16 +39,17 @@ import {
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
-
-import { usePerpsEligibility } from '../../hooks/perps/usePerpsEligibility';
-import { getPerpsStreamManager } from '../../providers/perps';
+import { usePerpsEligibility } from '../../hooks/perps';
+import type { PriceUpdate } from '../../hooks/perps/stream';
+import { getPerpsController } from '../../providers/perps';
+import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
   PerpsCandlestickChart,
   PerpsCandlestickChartRef,
 } from '../../components/app/perps/perps-candlestick-chart';
-
+import type { ChartPriceLine } from '../../components/app/perps/perps-candlestick-chart';
 import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
 import {
   CandlePeriod,
@@ -72,7 +70,7 @@ import {
   type OrderFormState,
   type OrderMode,
 } from '../../components/app/perps/order-entry';
-// import { EditMarginExpandable } from '../../components/app/perps/edit-margin';
+import { EditMarginExpandable } from '../../components/app/perps/edit-margin';
 import type {
   OrderType,
   OrderParams,
@@ -84,8 +82,6 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../helpers/constants/design-system';
-import { getPerpsController } from '../../providers/perps/getPerpsController.mock';
-import { ChartPriceLine } from '../../components/app/perps/perps-candlestick-chart/perps-candlestick-chart';
 
 /**
  * Calculate the funding countdown string (time until next UTC hour).
@@ -226,7 +222,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const { isEligible } = usePerpsEligibility();
   const {
     formatCurrencyWithMinThreshold,
-    // formatTokenQuantity,
+    formatTokenQuantity,
     formatNumber,
     formatPercentWithMinThreshold,
   } = useFormatters();
@@ -1714,7 +1710,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 </Box>
 
                 {/* Edit Margin - Expandable (full width) */}
-                {/* {position && selectedAddress && (
+                {position && selectedAddress && (
                   <EditMarginExpandable
                     position={position}
                     account={account}
@@ -1723,7 +1719,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     isExpanded={isMarginExpanded}
                     onToggle={handleMarginToggle}
                   />
-                )} */}
+                )}
 
                 {/* Third Row: Auto Close (Full Width) - Expandable */}
                 <Box
@@ -2060,7 +2056,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                           onClick={handleSaveTPSL}
                           disabled={!isEligible || isTPSLPending}
                           title={
-                            isEligible ? undefined : 'perpsGeoBlockedTooltip'
+                            !isEligible
+                              ? t('perpsGeoBlockedTooltip')
+                              : undefined
                           }
                           className={twMerge(
                             'w-full',
@@ -2205,6 +2203,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     order={order}
                     variant="muted"
                     onClick={handleOrderClick}
+                    onCancel={handleCancelOrder}
                   />
                 ))}
               </Box>
@@ -2575,7 +2574,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={handleOrderSubmit}
               disabled={isSubmitDisabled}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className={twMerge(
                 'w-full',
                 isSubmitDisabled && 'opacity-70 cursor-not-allowed',
@@ -2600,7 +2599,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={handleModifyPosition}
               disabled={!isEligible}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className="flex-1"
               data-testid="perps-modify-cta-button"
             >
@@ -2613,7 +2612,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={handleClosePosition}
               disabled={!isEligible}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className="flex-1"
               data-testid="perps-close-cta-button"
             >
@@ -2637,7 +2636,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('long')}
               disabled={!isEligible}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className="flex-1"
               data-testid="perps-long-cta-button"
             >
@@ -2650,7 +2649,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('short')}
               disabled={!isEligible}
-              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
+              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
               className="flex-1"
               data-testid="perps-short-cta-button"
             >
