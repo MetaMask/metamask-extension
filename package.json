@@ -426,7 +426,7 @@
     "eth-method-registry": "^4.0.0",
     "ethereum-cryptography": "^3.2.0",
     "ethereumjs-util": "^7.0.10",
-    "extension-port-stream": "^5.0.2",
+    "extension-port-stream": "^5.0.3",
     "fast-json-patch": "^3.1.1",
     "fast-json-stable-stringify": "^2.1.0",
     "fuse.js": "^3.2.0",
