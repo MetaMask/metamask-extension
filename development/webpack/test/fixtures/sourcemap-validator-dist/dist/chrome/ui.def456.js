@@ -1,1 +1,1 @@
-c
+'use strict';

@@ -1,15 +1,15 @@
 /**
- * @file Validates source maps for the webpack-built extension.
- *
- * Discovers all .js bundles in dist/chrome that have a .map file, then for each
- * bundle finds "new Error" in the built code and verifies the source map
- * correctly maps those positions back to the original source containing "new Error".
- * If it's not working, it may error or print minified garbage.
- *
- * Run after a webpack production/test build, e.g.:
- *   yarn webpack
- *   yarn validate-source-maps:webpack
- */
+* @file Validates source maps for the webpack-built extension.
+*
+* Discovers all .js bundles in dist/chrome that have a .map file, then for each
+* bundle finds "new Error" in the built code and verifies the source map
+* correctly maps those positions back to the original source containing "new Error".
+* If it's not working, it may error or print minified garbage.
+*
+* Run after a webpack production/test build, e.g.:
+* yarn webpack
+* yarn validate-source-maps:webpack
+*/
 
 import { access, readdir, readFile, stat } from 'node:fs/promises';
 import { join, relative } from 'node:path';
@@ -36,21 +36,21 @@ export function isLikelyCommentLine(line: string): boolean {
     trimmed.startsWith('/*') ||
     trimmed.startsWith('*/') ||
     trimmed === '' ||
-    /^\s*$/.test(line)
+    /^\s*$/u.test(line)
   );
 }
 
 /**
  * A JS bundle and its source map file paths, plus a short label for logging.
  */
-export interface FilePair {
+export type FilePair = {
   /** Absolute path to the built .js bundle. */
   jsPath: string;
   /** Absolute path to the .js.map source map file. */
   mapPath: string;
   /** Human-readable label (e.g. relative path from dist/chrome) for console output. */
   label: string;
-}
+};
 
 /**
  * Entry point: discovers all webpack bundles in dist/chrome, validates each
@@ -162,6 +162,9 @@ export async function discoverWebpackBundles(): Promise<FilePair[]> {
  * incorrect mapping; comment-like lines with no mapping are skipped.
  *
  * @param options - Bundle paths and label (see FilePair).
+ * @param options.jsPath - Absolute path to the built .js bundle.
+ * @param options.mapPath - Absolute path to the .js.map source map file.
+ * @param options.label - Human-readable label for console output.
  * @returns True if all sampled positions validated; false on any failure or I/O error.
  */
 export async function validateBundle({

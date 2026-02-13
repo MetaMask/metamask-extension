@@ -10,7 +10,6 @@ import {
   discoverWebpackBundles,
   validateBundle,
   main,
-  runEntryPoint,
 } from '../sourcemap-validator';
 
 const noop = () => undefined;
@@ -90,7 +89,7 @@ describe('sourcemap-validator', () => {
       assert.ok(pairs.some((p) => p.label.includes('ui')));
       const background = pairs.find((p) => p.label.includes('background'));
       assert.ok(background);
-      assert.strictEqual(background!.mapPath, background!.jsPath + '.map');
+      assert.strictEqual(background?.mapPath, `${background?.jsPath}.map`);
     });
 
     it('scans subdirectories (e.g. scripts/)', async () => {
