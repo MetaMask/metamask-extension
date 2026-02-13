@@ -8654,8 +8654,14 @@
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
+  "walletDetails": {
+    "message": "Wallet details"
+  },
   "walletName": {
     "message": "Wallet name"
+  },
+  "manageMpcWallet": {
+    "message": "Manage MPC wallet"
   },
   "walletReadyLearn": {
     "message": "$1 you can keep this phrase safe so you never lose access to your money.",

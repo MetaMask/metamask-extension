@@ -75,6 +75,7 @@ export const MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE =
   '/multichain-account-private-key-list';
 export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
 export const ADD_MPC_WALLET_ROUTE = '/add-mpc-wallet';
+export const MPC_WALLET_MANAGEMENT_ROUTE = '/mpc-wallet-management';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';
 export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =

@@ -20,6 +20,9 @@ import {
   Icon,
   IconName,
   IconSize,
+  ModalFocus,
+  Popover,
+  PopoverPosition,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -28,6 +31,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   IconColor,
   JustifyContent,
@@ -40,7 +44,11 @@ import {
   MultichainAccountsState,
 } from '../../../selectors/multichain-accounts/account-tree.types';
 import { setSelectedMultichainAccount } from '../../../store/actions';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  MPC_WALLET_MANAGEMENT_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -58,6 +66,8 @@ import {
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
+import { MultichainAccountMenuItems } from '../multichain-account-menu-items/multichain-account-menu-items';
+import { MenuItemConfig } from '../multichain-account-menu-items/multichain-account-menu-items.types';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
@@ -112,6 +122,12 @@ export const MultichainAccountList = ({
 
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
+
+  const [openWalletMenuId, setOpenWalletMenuId] =
+    useState<AccountWalletId | null>(null);
+  const walletMenuRefs = React.useRef<Record<string, HTMLDivElement | null>>(
+    {},
+  );
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const permittedAddresses = useMemo(
@@ -351,17 +367,49 @@ export const MultichainAccountList = ({
       (walletsAccumulator, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
 
+        const isMpcWallet = walletId.startsWith('keyring:MPC Keyring/');
+        const isWalletMenuOpen = openWalletMenuId === walletId;
+
+        const walletMenuConfig: MenuItemConfig[] = [
+          {
+            textKey: 'walletDetails',
+            iconName: IconName.Details,
+            onClick: (e: React.MouseEvent) => {
+              e.stopPropagation();
+              setOpenWalletMenuId(null);
+              navigate(
+                `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`,
+              );
+            },
+          },
+          ...(isMpcWallet
+            ? [
+                {
+                  textKey: 'manageMpcWallet',
+                  iconName: IconName.Setting,
+                  onClick: (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    setOpenWalletMenuId(null);
+                    navigate(
+                      `${MPC_WALLET_MANAGEMENT_ROUTE}/${encodeURIComponent(walletId)}`,
+                    );
+                  },
+                },
+              ]
+            : []),
+        ];
+
         const walletHeader = (
           <Box
             key={`wallet-header-${walletId}`}
             data-testid="multichain-account-tree-wallet-header"
             display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
             paddingLeft={4}
             paddingRight={4}
             paddingTop={2}
             paddingBottom={2}
+            gap={1}
           >
             <Text
               variant={TextVariant.bodyMdMedium}
@@ -369,6 +417,47 @@ export const MultichainAccountList = ({
             >
               {walletName}
             </Text>
+            <Box
+              ref={(el: HTMLDivElement | null) => {
+                walletMenuRefs.current[walletId] = el;
+              }}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              borderRadius={BorderRadius.LG}
+              padding={1}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                setOpenWalletMenuId(isWalletMenuOpen ? null : (walletId as AccountWalletId));
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              <Icon
+                name={IconName.MoreVertical}
+                size={IconSize.Sm}
+                color={IconColor.iconAlternative}
+              />
+            </Box>
+            <Popover
+              className="multichain-account-cell-popover-menu"
+              isOpen={isWalletMenuOpen}
+              position={PopoverPosition.LeftStart}
+              referenceElement={walletMenuRefs.current[walletId]}
+              matchWidth={false}
+              borderRadius={BorderRadius.LG}
+              isPortal
+              flip
+              onClickOutside={() => setOpenWalletMenuId(null)}
+            >
+              <ModalFocus
+                restoreFocus
+                initialFocusRef={{
+                  current: walletMenuRefs.current[walletId],
+                }}
+              >
+                <MultichainAccountMenuItems menuConfig={walletMenuConfig} />
+              </ModalFocus>
+            </Popover>
           </Box>
         );
 
@@ -472,6 +561,7 @@ export const MultichainAccountList = ({
     handleAccountRenameAction,
     handleMenuToggle,
     openMenuAccountId,
+    openWalletMenuId,
     showConnectionStatus,
     connectedAccountGroups,
     t,
