@@ -1058,7 +1058,7 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/keyring-internal-api": {
+    "@metamask/keyring-internal-snap-client>@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/keyring-utils": true,
@@ -1068,7 +1068,7 @@
     "@metamask/keyring-internal-snap-client": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-internal-api": true,
+        "@metamask/keyring-internal-snap-client>@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/keyring-utils": true
       }
