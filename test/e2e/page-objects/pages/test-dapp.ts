@@ -272,7 +272,7 @@ class TestDapp {
   private readonly transferTokensWithoutGasButton = '#transferTokensWithoutGas';
 
   private readonly userRejectedRequestMessage = {
-    tag: 'button',
+    tag: '*',
     text: 'Error: User rejected the request.',
   };
 

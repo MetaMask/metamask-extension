@@ -27,7 +27,7 @@ import {
   SignatureType,
 } from './signature-helpers';
 
-describe.only('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
+describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
   it('initiates and confirms', async function () {
     await withSignatureFixtures(
       this.test?.fullTitle(),
