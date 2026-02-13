@@ -1,4 +1,5 @@
 {
+  "completionFile": "trace-selectors/completed.txt",
   "output": "trace-selectors/output/selector-usage-trace-assets-controllers.md",
   "roots": [
     {
@@ -8,7 +9,6 @@
       "file": "ui/selectors/multichain.ts",
       "selectors": [
         "getMultichainBalances",
-        "getMultichainNetwork",
         "getMultichainSelectedAccountCachedBalance",
         "getMultichainNativeCurrency",
         "getMultichainCurrentCurrency",
@@ -37,6 +37,5 @@
         "getCrossChainMetaMaskCachedBalances"
       ]
     }
-  ],
-  "completionFile": "trace-selectors/completed.txt"
+  ]
 }
