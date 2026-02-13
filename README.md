@@ -14,6 +14,12 @@ To learn how to contribute to the MetaMask codebase, visit our [Contributor Docs
 
 To learn how to contribute to the MetaMask Extension project itself, visit our [Extension Docs](https://github.com/MetaMask/metamask-extension/tree/main/docs).
 
+## Extension Scope
+
+This repository contains the browser extension implementation of MetaMask.
+Mobile applications and backend services are maintained separately.
+
+
 ## GitHub Codespaces quickstart
 
 As an alternative to building on your local machine, there is a new option to get a development environment up and running in less than 5 minutes by using GitHub Codespaces. Please note that there is a [Limited Free Monthly Quota](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces), and after that GitHub will start charging you.
