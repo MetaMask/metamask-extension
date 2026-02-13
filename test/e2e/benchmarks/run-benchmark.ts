@@ -66,7 +66,9 @@ function convertSummaryToResults(
   mean.total = summary.timers.reduce((acc, t) => acc + t.mean, 0);
   min.total = summary.timers.reduce((acc, t) => acc + t.min, 0);
   max.total = summary.timers.reduce((acc, t) => acc + t.max, 0);
-  stdDev.total = summary.timers.reduce((acc, t) => acc + t.stdDev, 0);
+  stdDev.total = Math.sqrt(
+    summary.timers.reduce((acc, t) => acc + t.stdDev * t.stdDev, 0),
+  );
   p75.total = summary.timers.reduce((acc, t) => acc + t.p75, 0);
   p95.total = summary.timers.reduce((acc, t) => acc + t.p95, 0);
 
