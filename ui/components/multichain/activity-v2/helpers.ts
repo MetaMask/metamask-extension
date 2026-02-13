@@ -1,4 +1,3 @@
-import type { Hex } from 'viem';
 import type { Transaction } from '@metamask/keyring-api';
 import type {
   TokenAmount,
@@ -6,10 +5,6 @@ import type {
   TransactionViewModel,
 } from '../../../../shared/acme-controller/types';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../shared/constants/network';
 
 export type FlattenedItem =
   | { type: 'date-header'; date: number }
@@ -217,22 +212,10 @@ export function groupAndFlattenMergedTransactions(
   return flattened;
 }
 
-export function mapChainInfo(chainId: Hex) {
-  const chainImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
-  const chainName =
-    NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ||
-    'Unknown Network';
-
-  return {
-    chainImageUrl,
-    chainName,
-  };
-}
-
 export function calculateFiatFromMarketRates(
   transaction: TransactionViewModel,
   marketRates: Record<number, Record<string, number>>,
-): number | null {
+) {
   const { chainId, transferInformation, txParams } = transaction;
   const { value } = txParams;
 
