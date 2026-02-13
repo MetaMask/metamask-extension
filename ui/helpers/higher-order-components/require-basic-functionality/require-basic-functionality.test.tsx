@@ -8,19 +8,23 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('react-router-dom', () => ({
-  useLocation: jest.fn(),
-  Navigate: jest.fn(({ to, state }) => (
-    <div
-      data-testid="navigate"
-      data-to={to}
-      data-state={JSON.stringify(state)}
-    />
-  )),
-}));
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useLocation: () => mockUseLocation(),
+    Navigate: jest.fn(({ to, state }) => (
+      <div
+        data-testid="navigate"
+        data-to={to}
+        data-state={JSON.stringify(state)}
+      />
+    )),
+  };
+});
 
 const mockUseSelector = jest.mocked(useSelector);
-const mockUseLocation = jest.mocked(useLocation);
 
 describe('BasicFunctionalityRequired', () => {
   beforeEach(() => {
