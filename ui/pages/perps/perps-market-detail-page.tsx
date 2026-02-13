@@ -43,7 +43,7 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 
-import { usePerpsEligibility } from '../../hooks/perps/usePerpsEligibility';
+import { usePerpsEligibility } from '../../hooks/perps/usePerpsEligibility.mock';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
