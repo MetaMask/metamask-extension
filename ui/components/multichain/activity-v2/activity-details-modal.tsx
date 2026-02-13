@@ -31,16 +31,13 @@ export const ActivityDetailsModal = ({
 }: Props) => {
   const selectedAddress = useSelector(getSelectedAddress)?.toLowerCase();
 
-  const chainIdHex = `0x${transaction?.chainId.toString(16)}`;
   const nativeCurrency = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainIdHex),
+    selectNetworkConfigurationByChainId(state, transaction?.chainId ?? ''),
   )?.nativeCurrency;
 
   if (!transaction) {
     return null;
   }
-
-  console.log('transaction', transaction);
 
   const isSwap = transaction.category === TransactionGroupCategory.swap;
   const isBridge = transaction.transactionType === 'BRIDGE';

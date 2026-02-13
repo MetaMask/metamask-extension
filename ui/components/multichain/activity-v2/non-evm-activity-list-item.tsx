@@ -2,29 +2,18 @@ import React from 'react';
 import type { Transaction } from '@metamask/keyring-api';
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 import { useSelector } from 'react-redux';
-import {
-  BackgroundColor,
-  Display,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { Text } from '@metamask/design-system-react';
 import {
   useMultichainTransactionDisplay,
   KEYRING_TRANSACTION_STATUS_KEY,
 } from '../../../hooks/useMultichainTransactionDisplay';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
-import {
-  BadgeWrapper,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Text,
-} from '../../component-library';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
+import { ChainBadge } from '../../app/chain-badge/chain-badge';
 
 type Props = {
   transaction: Transaction;
@@ -35,7 +24,6 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   const networkConfig = useSelector(getSelectedMultichainNetworkConfiguration);
   const { from, to, type, timestamp, isRedeposit, title } =
     useMultichainTransactionDisplay(transaction, networkConfig);
-  const networkLogo = MULTICHAIN_TOKEN_IMAGE_MAP[transaction.chain];
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
   if (isRedeposit) {
@@ -44,24 +32,12 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
         data-testid="activity-list-item"
         onClick={onClick}
         icon={
-          <BadgeWrapper
-            display={Display.Block}
-            badge={
-              <AvatarNetwork
-                className="activity-tx__network-badge"
-                data-testid="activity-tx-network-badge"
-                size={AvatarNetworkSize.Xs}
-                name={transaction.chain}
-                src={networkLogo}
-                borderColor={BackgroundColor.backgroundDefault}
-              />
-            }
-          >
+          <ChainBadge chainId={transaction.chain}>
             <TransactionIcon
               category={TransactionGroupCategory.redeposit}
               status={statusKey}
             />
-          </BadgeWrapper>
+          </ChainBadge>
         }
         title="Redeposit"
         subtitle={
@@ -77,7 +53,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   }
 
   let { amount, unit } = to ?? {};
-  let category = type;
+  let category = type as TransactionGroupCategory;
   if (type === KeyringTransactionType.Swap) {
     amount = from?.amount;
     unit = from?.unit;
@@ -92,32 +68,15 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
       data-testid="activity-list-item"
       onClick={onClick}
       icon={
-        <BadgeWrapper
-          display={Display.Block}
-          badge={
-            <AvatarNetwork
-              className="activity-tx__network-badge"
-              data-testid="activity-tx-network-badge"
-              size={AvatarNetworkSize.Xs}
-              name={transaction.chain}
-              src={networkLogo}
-              borderWidth={2}
-              borderColor={BackgroundColor.backgroundDefault}
-            />
-          }
-        >
+        <ChainBadge chainId={transaction.chain}>
           <TransactionIcon category={category} status={statusKey} />
-        </BadgeWrapper>
+        </ChainBadge>
       }
       rightContent={
         <Text
           className="activity-list-item__primary-currency"
           data-testid="transaction-list-item-primary-currency"
-          color={TextColor.textDefault}
-          variant={TextVariant.bodyMdMedium}
           ellipsis
-          textAlign="right"
-          title="Primary Currency"
         >
           {amount} {unit}
         </Text>
