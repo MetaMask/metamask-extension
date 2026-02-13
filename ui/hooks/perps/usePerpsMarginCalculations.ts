@@ -3,13 +3,10 @@ import {
   calculateMaxRemovableMargin,
   calculateNewLiquidationPrice,
   assessMarginRemovalRisk,
+  MARGIN_ADJUSTMENT_CONFIG,
 } from './marginUtils';
 import type { MarginRiskAssessment } from './marginUtils';
-import {
-  MARGIN_ADJUSTMENT_CONFIG,
-  type Position,
-  type AccountState,
-} from '@metamask/perps-controller';
+import type { Position, AccountState } from '@metamask/perps-controller';
 
 export type { MarginRiskAssessment } from './marginUtils';
 
