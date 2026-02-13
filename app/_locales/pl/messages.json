@@ -410,9 +410,6 @@
   "next": {
     "message": "Dalej"
   },
-  "noConversionRateAvailable": {
-    "message": "Brak kursu waluty"
-  },
   "noWebcamFound": {
     "message": "Twoja kamera nie została znaleziona. Spróbuj ponownie."
   },
