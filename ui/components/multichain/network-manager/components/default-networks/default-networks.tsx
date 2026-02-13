@@ -408,28 +408,24 @@ const DefaultNetworks = memo(() => {
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        {isEvmNetworkSelected ? (
-          <Box
-            className="network-manager__all-popular-networks"
-            data-testid="network-manager-select-all"
-          >
-            <NetworkListItem
-              name={t('allPopularNetworks')}
-              onClick={selectAllDefaultNetworks}
-              iconSrc={IconName.Global}
-              iconSize={IconSize.Xl}
-              selected={isAllPopularNetworksSelected}
-              focus={false}
-            />
-          </Box>
-        ) : null}
+        <Box
+          className="network-manager__all-popular-networks"
+          data-testid="network-manager-select-all"
+        >
+          <NetworkListItem
+            name={t('allPopularNetworks')}
+            onClick={selectAllDefaultNetworks}
+            iconSrc={IconName.Global}
+            iconSize={IconSize.Xl}
+            selected={isAllPopularNetworksSelected}
+            focus={false}
+          />
+        </Box>
         {networkListItems}
-        {isEvmNetworkSelected && (
-          <>
-            <AdditionalNetworksInfo />
-            {additionalNetworkListItems}
-          </>
-        )}
+        <>
+          <AdditionalNetworksInfo />
+          {additionalNetworkListItems}
+        </>
       </Box>
     </>
   );
