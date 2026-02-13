@@ -892,6 +892,7 @@ export enum MetaMetricsEventName {
   TokenSortPreference = 'Token Sort Preference Updated',
   EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
   TokenDetected = 'Token Detected',
+  AssetsFirstInitFetchCompleted = 'Assets First Init Fetch Completed',
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
