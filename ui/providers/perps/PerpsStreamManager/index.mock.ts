@@ -12,12 +12,6 @@
  * - Same API as real PerpsStreamManager for drop-in replacement
  */
 
-import type {
-  Position,
-  Order,
-  AccountState,
-  PerpsMarketData,
-} from '../../../components/app/perps/types';
 import {
   mockPositions,
   mockOrders,
@@ -25,11 +19,18 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
+import type {
+  Position,
+  Order,
+  AccountState,
+  PerpsMarketData,
+} from '@metamask/perps-controller';
 
 /**
  * Simple channel implementation for mock data
  * Mimics the behavior of PerpsDataChannel but with static data
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class MockDataChannel<T> {
   private data: T;
 
@@ -45,6 +46,8 @@ class MockDataChannel<T> {
   /**
    * Subscribe to data updates
    * Immediately calls callback with cached data (BehaviorSubject pattern)
+   *
+   * @param callback
    */
   subscribe(callback: (data: T) => void): () => void {
     // Immediately invoke with current data
@@ -61,6 +64,8 @@ class MockDataChannel<T> {
 
   /**
    * Push new data to all subscribers
+   *
+   * @param newData
    */
   pushData(newData: T): void {
     this.data = newData;
@@ -110,8 +115,10 @@ class MockDataChannel<T> {
 
   /**
    * Set connect function (no-op in mock, kept for API compatibility)
+   *
+   * @param _connectFn
    */
-  setConnectFn(_connectFn: any): void {
+  setConnectFn(_connectFn: unknown): void {
     // No-op in mock
   }
 }
@@ -120,7 +127,7 @@ class MockDataChannel<T> {
  * Mock candle stream channel (placeholder for API compatibility)
  */
 class MockCandleStreamChannel {
-  setController(_controller: any): void {
+  setController(_controller: unknown): void {
     console.log('[MockCandleStreamChannel] Controller set (no-op in mock)');
   }
 
@@ -199,6 +206,8 @@ class MockPerpsStreamManager {
 
   /**
    * Check if initialized for a specific address
+   *
+   * @param address
    */
   isInitialized(address?: string): boolean {
     if (address) {
@@ -284,6 +293,10 @@ class MockPerpsStreamManager {
   /**
    * Set optimistic TP/SL override for a position.
    * In mock, this is a no-op but kept for API compatibility.
+   *
+   * @param _symbol
+   * @param _takeProfitPrice
+   * @param _stopLossPrice
    */
   setOptimisticTPSL(
     _symbol: string,
@@ -296,6 +309,8 @@ class MockPerpsStreamManager {
   /**
    * Clear optimistic override for a position.
    * In mock, this is a no-op but kept for API compatibility.
+   *
+   * @param _symbol
    */
   clearOptimisticTPSL(_symbol: string): void {
     console.log('[MockPerpsStreamManager] clearOptimisticTPSL (no-op in mock)');
@@ -304,6 +319,8 @@ class MockPerpsStreamManager {
   /**
    * Push positions with overrides applied.
    * In mock, this just pushes the data directly.
+   *
+   * @param positions
    */
   pushPositionsWithOverrides(positions: Position[]): void {
     this.positions.pushData(positions);
