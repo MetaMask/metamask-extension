@@ -15,6 +15,7 @@ import TransactionListItemDetails from '../../app/transaction-list-item-details'
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
 
+// eslint-disable-next-line no-empty-function
 const noop = () => {};
 
 // Map API transactionType (from queries) to TransactionType so legacy modal title is correct. */
@@ -88,6 +89,7 @@ const ActivityDetailsModalAdapterContent = ({
   transaction: TransactionViewModel;
   onClose: () => void;
 }) => {
+  const t = useI18nContext();
   const selectedAddress = useSelector(getSelectedAddress);
   const syntheticGroup = useMemo(
     () => buildSyntheticTransactionGroup(transaction, selectedAddress),
@@ -114,7 +116,6 @@ const ActivityDetailsModalAdapterContent = ({
   }
 
   const { title, primaryCurrency, recipientAddress } = displayData;
-  const t = useI18nContext();
   const modalTitle = effectiveType === TransactionType.swap ? t('swap') : title;
   const senderAddress = transaction.txParams?.from ?? '';
   const displayedStatusKey = getStatusKey(
