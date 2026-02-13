@@ -24,7 +24,7 @@ export class ActivityDataService extends BaseDataService<
     );
   }
 
-  async getActivity(address: string, context: any) {
+  async getActivity(address: string, pageParam?: Json) {
     return this.fetchInfiniteQuery(
       {
         queryKey: [`${this.name}:getActivity`, address],
@@ -45,7 +45,7 @@ export class ActivityDataService extends BaseDataService<
         getNextPageParam: ({ pageInfo }: { pageInfo: any }) =>
           pageInfo?.hasNextPage ? pageInfo.endCursor : undefined,
       },
-      context,
+      pageParam,
     );
   }
 }
