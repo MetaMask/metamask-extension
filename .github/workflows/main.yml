@@ -6,6 +6,7 @@ on:
       - main
       - stable
       - release/*
+      - '!release/*-Changelog'
       - trigger-ci-*
   pull_request:
     types:
@@ -535,7 +536,26 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ needs.get-requirements.outputs.needs-releases == 'true' }}
+    # This job requires an incredibly complicated `if` condition, because we want to meet the following requirements:
+    # - Only run when releases are needed
+    # - Still run when benchmarks are not needed
+    # - Must not run if any `needs` job has failed, been cancelled, timed out, or requires action
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.get-requirements.outputs.needs-releases == 'true' &&
+        !contains(needs.*.result, 'failure') &&
+        !contains(needs.*.result, 'cancelled') &&
+        !contains(needs.*.result, 'timed_out') &&
+        !contains(needs.*.result, 'action_required') &&
+        (
+          needs.get-requirements.outputs.needs-benchmarks != 'true' ||
+          (
+            needs.run-benchmarks.result == 'success' &&
+            needs.page-load-benchmark.result == 'success'
+          )
+        )
+      }}
     needs:
       - get-requirements
       - build-dist-browserify
