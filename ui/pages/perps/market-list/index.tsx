@@ -18,7 +18,6 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePerpsLiveMarketData } from '../../../hooks/perps/stream';
-import type { PerpsMarketData } from '../../../components/app/perps/types';
 import {
   filterMarketsByQuery,
   isHip3Market,
@@ -47,6 +46,7 @@ import {
 } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
 import { FilterSelect, type MarketFilter } from './components/filter-select';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 
 /**
  * Get the resolved market type for a market.
