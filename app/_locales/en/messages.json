@@ -8663,6 +8663,27 @@
   "manageMpcWallet": {
     "message": "Manage MPC wallet"
   },
+  "custodians": {
+    "message": "Custodians"
+  },
+  "noCustodians": {
+    "message": "No custodians found"
+  },
+  "addCustodian": {
+    "message": "Add custodian"
+  },
+  "enterPeerId": {
+    "message": "Enter peer ID"
+  },
+  "adding": {
+    "message": "Adding..."
+  },
+  "cloud": {
+    "message": "Cloud"
+  },
+  "user": {
+    "message": "User"
+  },
   "walletReadyLearn": {
     "message": "$1 you can keep this phrase safe so you never lose access to your money.",
     "description": "$1 is the link to Learn how"

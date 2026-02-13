@@ -434,7 +434,12 @@ import {
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { createMpcKeyring } from './controllers/mpc';
+import {
+  createMpcKeyring,
+  getMpcCustodians,
+  getMpcCustodianId,
+  addMpcCustodian,
+} from './controllers/mpc';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2681,6 +2686,9 @@ export default class MetamaskController extends EventEmitter {
 
       // mpc wallets
       createMpcKeyring: this.createMpcKeyring.bind(this),
+      getMpcCustodians: this.getMpcCustodians.bind(this),
+      getMpcCustodianId: this.getMpcCustodianId.bind(this),
+      addMpcCustodian: this.addMpcCustodian.bind(this),
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
@@ -5653,6 +5661,36 @@ export default class MetamaskController extends EventEmitter {
    */
   async createMpcKeyring(verifierId) {
     return await createMpcKeyring(this.keyringController, verifierId);
+  }
+
+  /**
+   * Gets the list of custodians for an MPC keyring.
+   *
+   * @param {string} keyringId - The ID of the MPC keyring.
+   * @returns {Promise<import('./controllers/mpc').MpcCustodian[]>} The list of custodians.
+   */
+  async getMpcCustodians(keyringId) {
+    return await getMpcCustodians(this.keyringController, keyringId);
+  }
+
+  /**
+   * Gets the custodian ID for the current user on an MPC keyring.
+   *
+   * @param {string} keyringId - The ID of the MPC keyring.
+   * @returns {Promise<string>} The custodian ID.
+   */
+  async getMpcCustodianId(keyringId) {
+    return await getMpcCustodianId(this.keyringController, keyringId);
+  }
+
+  /**
+   * Adds a new custodian to an MPC keyring.
+   *
+   * @param {string} keyringId - The ID of the MPC keyring.
+   * @param {string} peerId - The peer ID of the custodian to add.
+   */
+  async addMpcCustodian(keyringId, peerId) {
+    await addMpcCustodian(this.keyringController, keyringId, peerId);
   }
 
   //
