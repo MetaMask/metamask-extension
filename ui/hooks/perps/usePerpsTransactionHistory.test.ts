@@ -1,10 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import type {
-  Order,
-  OrderFill,
-  Funding,
-} from '../../components/app/perps/types';
 import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
+import type { Order, OrderFill, Funding } from '@metamask/perps-controller';
 
 // Mock responses
 const mockFills: OrderFill[] = [

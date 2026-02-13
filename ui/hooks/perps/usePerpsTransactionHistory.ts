@@ -9,7 +9,7 @@ import {
 } from '../../components/app/perps/utils/transactionTransforms';
 import { usePerpsController } from '../../providers/perps';
 import { useUserHistory } from './useUserHistory';
-import { usePerpsLiveFills } from './stream/usePerpsLiveFills';
+import { usePerpsLiveFills } from './stream';
 
 /**
  * Parameters for the usePerpsTransactionHistory hook

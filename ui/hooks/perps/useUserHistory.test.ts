@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
-import type { UserHistoryItem } from '../../components/app/perps/types';
 import { useUserHistory } from './useUserHistory';
+import type { UserHistoryItem } from '@metamask/perps-controller';
 
 // Mock the perps provider
 const mockGetUserHistory = jest.fn();

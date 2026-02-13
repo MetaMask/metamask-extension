@@ -5,12 +5,12 @@ import type {
   OrderMode,
   ExistingPositionData,
 } from '../../components/app/perps/order-entry/order-entry.types';
-import type { OrderType } from '../../components/app/perps/types';
 import {
   mockOrderFormDefaults,
   calculatePositionSize,
   estimateLiquidationPrice,
 } from '../../components/app/perps/order-entry/order-entry.mocks';
+import type { OrderType } from '@metamask/perps-controller';
 
 export type UsePerpsOrderFormOptions = {
   /** Asset symbol */
