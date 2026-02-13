@@ -11,7 +11,7 @@ import {
 } from '../../../../ducks/alerts/unconnected-account';
 import {
   getOriginOfCurrentTab,
-  getOrderedConnectedAccountsForActiveTabAccountOnly,
+  getOrderedConnectedAccountsForActiveTab,
 } from '../../../../selectors';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
@@ -36,7 +36,7 @@ const UnconnectedAccountAlert = () => {
   const dispatch = useDispatch();
   const alertState = useSelector(getAlertState);
   const connectedAccounts = useSelector(
-    getOrderedConnectedAccountsForActiveTabAccountOnly,
+    getOrderedConnectedAccountsForActiveTab,
   );
   const origin = useSelector(getOriginOfCurrentTab);
   const account = useSelector(getSelectedInternalAccount);

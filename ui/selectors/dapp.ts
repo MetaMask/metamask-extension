@@ -4,12 +4,12 @@ import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
   getOriginOfCurrentTab,
   getAllDomains,
-  getOrderedConnectedAccountsForActiveTabAccountOnly,
+  getOrderedConnectedAccountsForActiveTab,
 } from './selectors';
 import { getMultichainNetworkConfigurationsByChainId } from './multichain';
 
 export const getDappActiveNetwork = createDeepEqualSelector(
-  getOrderedConnectedAccountsForActiveTabAccountOnly,
+  getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,
   getAllDomains,
   getNetworkConfigurationsByChainId,
@@ -24,7 +24,7 @@ export const getDappActiveNetwork = createDeepEqualSelector(
     if (!orderedConnectedAccounts || orderedConnectedAccounts.length === 0) {
       return null;
     }
-    const selectedAccount = orderedConnectedAccounts[0].account;
+    const selectedAccount = orderedConnectedAccounts[0];
 
     // Check if account is EVM or non-EVM using existing helper
     const isEvmAccount = isEvmAccountType(selectedAccount.type);

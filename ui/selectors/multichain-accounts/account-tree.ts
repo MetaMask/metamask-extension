@@ -24,7 +24,7 @@ import {
   getMetaMaskAccountsOrdered,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getOrderedConnectedAccountsForActiveTabAccountOnly,
+  getOrderedConnectedAccountsForActiveTab,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
 import {
@@ -70,7 +70,7 @@ export const getAccountTree = (
 export const getWalletsWithAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getAccountTree,
-  getOrderedConnectedAccountsForActiveTabAccountOnly,
+  getOrderedConnectedAccountsForActiveTab,
   getSelectedInternalAccount,
   getPinnedAccountsList,
   getHiddenAccountsList,

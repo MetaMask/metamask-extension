@@ -3374,10 +3374,16 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
+/**
+ * Ordered connected accounts for the active tab using only account/permission state
+ * (no balance or asset selectors). Returns minimal { id, address, name, lastActive }
+ * for use in unconnected-account-alert and similar UIs. Uses
+ * getInternalAccountsSortedByKeyringOnly for keyring order without pulling in assets.
+ */
 export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
-  getMetaMaskAccountsOrdered,
+  getInternalAccountsSortedByKeyringWithoutBalance,
   getAllPermittedAccountsForCurrentTab,
   (origin, permissionHistory, orderedAccounts, connectedAccounts) => {
     const permissionHistoryByAccount =
@@ -3390,92 +3396,38 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
       },
     );
 
-    return orderedAccounts
+    /**
+     * @type {Array<
+     *   import('@metamask/keyring-internal-api').InternalAccount & {
+     *   name: string;
+     *   lastActive: number;
+     * }>}
+     */
+    const result = orderedAccounts
       .filter((account) => connectedAccountsAddresses.includes(account.address))
+      .sort((a, b) => {
+        const lastSelectedA = a.metadata?.lastSelected;
+        const lastSelectedB = b.metadata?.lastSelected;
+        if (lastSelectedA === lastSelectedB) {
+          return 0;
+        }
+        if (lastSelectedA === undefined) {
+          return 1;
+        }
+        if (lastSelectedB === undefined) {
+          return -1;
+        }
+        return lastSelectedB - lastSelectedA;
+      })
       .map((account) => ({
         ...account,
-        metadata: {
-          ...account.metadata,
-          lastActive: permissionHistoryByAccount?.[account.address],
-        },
-      }))
-      .sort(
-        ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
-          if (lastSelectedA === lastSelectedB) {
-            return 0;
-          } else if (lastSelectedA === undefined) {
-            return 1;
-          } else if (lastSelectedB === undefined) {
-            return -1;
-          }
+        name: account.metadata?.name ?? '',
+        lastActive: permissionHistoryByAccount?.[account.address],
+      }));
 
-          return lastSelectedB - lastSelectedA;
-        },
-      );
+    return result;
   },
 );
-
-/**
- * Ordered connected accounts for the active tab using only account/permission state
- * (no balance or asset selectors). Returns minimal { id, address, name, lastActive }
- * for use in unconnected-account-alert and similar UIs. Uses
- * getInternalAccountsSortedByKeyringOnly for keyring order without pulling in assets.
- */
-export const getOrderedConnectedAccountsForActiveTabAccountOnly =
-  createDeepEqualSelector(
-    getOriginOfCurrentTab,
-    (state) => state.metamask.permissionHistory,
-    getInternalAccountsSortedByKeyringWithoutBalance,
-    getAllPermittedAccountsForCurrentTab,
-    (origin, permissionHistory, orderedAccounts, connectedAccounts) => {
-      const permissionHistoryByAccount =
-        permissionHistory[origin]?.eth_accounts?.accounts || {};
-
-      const connectedAccountsAddresses = connectedAccounts.map(
-        (caipAccountId) => {
-          const { address } = parseCaipAccountId(caipAccountId);
-          return address;
-        },
-      );
-
-      /**
-       * @type {Array<{
-       *   id: string;
-       *   address: string;
-       *   name: string;
-       *   lastActive: number; // Might not be needed
-       *   account: import('@metamask/keyring-internal-api').InternalAccount;
-       * }>}
-       */
-      const result = orderedAccounts
-        .filter((account) =>
-          connectedAccountsAddresses.includes(account.address),
-        )
-        .sort((a, b) => {
-          const lastSelectedA = a.metadata?.lastSelected;
-          const lastSelectedB = b.metadata?.lastSelected;
-          if (lastSelectedA === lastSelectedB) {
-            return 0;
-          }
-          if (lastSelectedA === undefined) {
-            return 1;
-          }
-          if (lastSelectedB === undefined) {
-            return -1;
-          }
-          return lastSelectedB - lastSelectedA;
-        })
-        .map((account) => ({
-          id: account.id,
-          address: account.address,
-          name: account.metadata?.name ?? '',
-          lastActive: permissionHistoryByAccount?.[account.address],
-          account,
-        }));
-
-      return result;
-    },
-  );
 
 /**
  * @deprecated
@@ -3484,14 +3436,14 @@ export const getUpdatedAndSortedAccounts = createSelector(
   getMetaMaskAccountsOrdered,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getOrderedConnectedAccountsForActiveTabAccountOnly,
+  getOrderedConnectedAccountsForActiveTab,
   (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
     const connectionMetadataById = new Map();
     connectedAccounts.forEach((connection) => {
-      if (connection.account.metadata) {
+      if (connection.metadata) {
         connectionMetadataById.set(connection.id, {
           connections: true,
-          lastSelected: connection.account.metadata.lastSelected,
+          lastSelected: connection.metadata.lastSelected,
         });
       }
     });

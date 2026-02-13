@@ -7,7 +7,7 @@ import {
   getPermissionSubjects,
   getSubjectMetadata,
   getInternalAccounts,
-  getOrderedConnectedAccountsForActiveTabAccountOnly,
+  getOrderedConnectedAccountsForActiveTab,
 } from '../../selectors';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {
@@ -21,8 +21,7 @@ import ConnectedAccounts from './connected-accounts.component';
 const mapStateToProps = (state) => {
   const accountToConnect = getAccountToConnectToActiveTab(state);
 
-  const connectedAccounts =
-    getOrderedConnectedAccountsForActiveTabAccountOnly(state);
+  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
 
   const internalAccounts = getInternalAccounts(state);
 
