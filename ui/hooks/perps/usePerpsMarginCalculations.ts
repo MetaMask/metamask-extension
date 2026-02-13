@@ -1,13 +1,15 @@
 import { useMemo } from 'react';
-import { MARGIN_ADJUSTMENT_CONFIG } from '@metamask/perps-controller';
-import type { Position, AccountState } from '../../components/app/perps/types';
-
 import {
   calculateMaxRemovableMargin,
   calculateNewLiquidationPrice,
   assessMarginRemovalRisk,
 } from './marginUtils';
 import type { MarginRiskAssessment } from './marginUtils';
+import {
+  MARGIN_ADJUSTMENT_CONFIG,
+  type Position,
+  type AccountState,
+} from '@metamask/perps-controller';
 
 export type { MarginRiskAssessment } from './marginUtils';
 

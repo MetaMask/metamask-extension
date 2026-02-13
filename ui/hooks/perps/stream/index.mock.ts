@@ -20,6 +20,7 @@ import type {
   CandleData,
   CandleStick,
 } from '../../../components/app/perps/types';
+import type { OrderFill } from '@metamask/perps-controller';
 import {
   CandlePeriod,
   TimeDuration,
@@ -72,6 +73,28 @@ export function usePerpsLiveOrders(
 ): UsePerpsLiveOrdersReturn {
   return {
     orders: mockOrders,
+    isInitialLoading: false,
+  };
+}
+
+// ============================================================================
+// Fills Hook
+// ============================================================================
+
+export type UsePerpsLiveFillsOptions = {
+  throttleMs?: number;
+};
+
+export type UsePerpsLiveFillsReturn = {
+  fills: OrderFill[];
+  isInitialLoading: boolean;
+};
+
+export function usePerpsLiveFills(
+  _options: UsePerpsLiveFillsOptions = {},
+): UsePerpsLiveFillsReturn {
+  return {
+    fills: [],
     isInitialLoading: false,
   };
 }
