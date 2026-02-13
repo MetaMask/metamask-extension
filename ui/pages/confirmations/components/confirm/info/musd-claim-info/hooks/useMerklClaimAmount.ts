@@ -147,27 +147,35 @@ export const useMerklClaimAmount = (
       };
     }
 
-    const totalRaw = BigInt(claimParams.totalAmount);
-    const claimedRaw = BigInt(claimedAmount ?? '0');
-    const unclaimedRaw =
-      totalRaw > claimedRaw ? (totalRaw - claimedRaw).toString() : '0';
+    try {
+      const totalRaw = BigInt(claimParams.totalAmount);
+      const claimedRaw = BigInt(claimedAmount ?? '0');
+      const unclaimedRaw =
+        totalRaw > claimedRaw ? (totalRaw - claimedRaw).toString() : '0';
 
-    const decimalAmount = calcTokenAmount(unclaimedRaw, MUSD_DECIMALS);
-    const displayAmount = formatAmount(
-      locale,
-      new BigNumber(decimalAmount.toFixed()),
-    );
+      const decimalAmount = calcTokenAmount(unclaimedRaw, MUSD_DECIMALS);
+      const displayAmount = formatAmount(
+        locale,
+        new BigNumber(decimalAmount.toFixed()),
+      );
 
-    // mUSD is pegged ~$1. If market data gives us a rate, use it; otherwise 1:1.
-    const rate = musdFiatRate ?? 1;
-    const fiatVal = decimalAmount.toNumber() * rate;
-    const fiatDisplay = fiatFormatter(fiatVal, { shorten: true });
+      // mUSD is pegged ~$1. If market data gives us a rate, use it; otherwise 1:1.
+      const rate = musdFiatRate ?? 1;
+      const fiatVal = decimalAmount.toNumber() * rate;
+      const fiatDisplay = fiatFormatter(fiatVal, { shorten: true });
 
-    return {
-      displayClaimAmount: displayAmount,
-      fiatDisplayValue: fiatDisplay || undefined,
-      fiatValue: fiatVal,
-    };
+      return {
+        displayClaimAmount: displayAmount,
+        fiatDisplayValue: fiatDisplay || undefined,
+        fiatValue: fiatVal,
+      };
+    } catch {
+      return {
+        displayClaimAmount: undefined,
+        fiatDisplayValue: undefined,
+        fiatValue: undefined,
+      };
+    }
   }, [
     pending,
     claimParams,
