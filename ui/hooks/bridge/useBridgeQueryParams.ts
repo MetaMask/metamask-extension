@@ -18,7 +18,7 @@ import {
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
-import { getFromToken } from '../../ducks/bridge/selectors';
+import { getFromToken, getFromAccount } from '../../ducks/bridge/selectors';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -66,6 +66,7 @@ const fetchAssetMetadata = async (
 export const useBridgeQueryParams = () => {
   const dispatch = useDispatch();
   const fromToken = useSelector(getFromToken);
+  const fromAccount = useSelector(getFromAccount);
 
   const abortController = useRef<AbortController>(new AbortController());
 
