@@ -1,15 +1,15 @@
 /**
-* @file Validates source maps for the webpack-built extension.
-*
-* Discovers all .js bundles in dist/chrome that have a .map file, then for each
-* bundle finds "new Error" in the built code and verifies the source map
-* correctly maps those positions back to the original source containing "new Error".
-* If it's not working, it may error or print minified garbage.
-*
-* Run after a webpack production/test build, e.g.:
-* yarn webpack
-* yarn validate-source-maps:webpack
-*/
+ * @file Validates source maps for the webpack-built extension.
+ *
+ * Discovers all .js bundles in dist/chrome that have a .map file, then for each
+ * bundle finds "new Error" in the built code and verifies the source map
+ * correctly maps those positions back to the original source containing "new Error".
+ * If it's not working, it may error or print minified garbage.
+ *
+ * Run after a webpack production/test build, e.g.:
+ * yarn webpack
+ * yarn validate-source-maps:webpack
+ */
 
 import { access, readdir, readFile, stat } from 'node:fs/promises';
 import { join, relative } from 'node:path';
