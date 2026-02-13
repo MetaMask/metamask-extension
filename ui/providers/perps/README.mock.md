@@ -5,6 +5,7 @@ This directory contains mock implementations of the Perps controller and stream 
 ## Overview
 
 The mock system provides a "drop and replace" architecture where:
+
 - **Mock mode** (current): Uses static data from `ui/components/app/perps/mocks.ts`
 - **Production mode** (future): Uses real `@metamask/perps-controller` integration
 
@@ -44,6 +45,7 @@ await controller.cancelOrders({ cancelAll: true });
 ```
 
 **Methods implemented:**
+
 - `cancelOrder({ orderId, symbol })` - Logs to console (no real API call)
 - `cancelOrders({ cancelAll })` - Logs to console (no real API call)
 - `subscribeToPositions()` - Returns no-op unsubscribe
@@ -76,6 +78,7 @@ streamManager.cleanupPrewarm();
 ```
 
 **Channels:**
+
 - `positions` - Returns `mockPositions` from mocks.ts
 - `orders` - Returns `mockOrders` from mocks.ts
 - `account` - Returns `mockAccountState` from mocks.ts
@@ -99,7 +102,8 @@ const { account, isInitialLoading } = usePerpsLiveAccount();
 // Returns: { account: mockAccountState, isInitialLoading: false }
 
 // Market data hook
-const { cryptoMarkets, hip3Markets, isInitialLoading } = usePerpsLiveMarketData();
+const { cryptoMarkets, hip3Markets, isInitialLoading } =
+  usePerpsLiveMarketData();
 // Returns: { cryptoMarkets: mockCryptoMarkets, hip3Markets: mockHip3Markets, isInitialLoading: false }
 ```
 
@@ -108,6 +112,7 @@ const { cryptoMarkets, hip3Markets, isInitialLoading } = usePerpsLiveMarketData(
 All mock data comes from: `ui/components/app/perps/mocks.ts`
 
 This includes:
+
 - **mockPositions** - 9 positions (crypto + HIP-3 equity/commodity/forex)
 - **mockOrders** - 9 orders (various states: open, filled, queued)
 - **mockAccountState** - Account balance and P&L
@@ -187,6 +192,7 @@ export {
 ### Step 3: That's it!
 
 No other code changes needed. The perps-tab-view component imports from:
+
 - `ui/providers/perps` - Will now get real implementations
 - `ui/hooks/perps/stream` - Will now get real hooks
 
@@ -207,6 +213,7 @@ See: `ui/components/app/perps/perps-tab-view.test.tsx`
 ## Development Workflow
 
 ### Current (Mock Mode)
+
 ```bash
 # UI development with mock data
 npm start
@@ -216,6 +223,7 @@ npm start
 ```
 
 ### Future (Production Mode)
+
 ```bash
 # Update index.ts files to export real implementations
 # Component now uses real WebSocket streams and controller
