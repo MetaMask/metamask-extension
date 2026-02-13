@@ -520,6 +520,9 @@
     "ui/components/app/perps/order-entry/components/leverage-slider/leverage-slider.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/perps/order-entry/components/limit-price-input/limit-price-input.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/perps/order-entry/components/order-summary/order-summary.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
