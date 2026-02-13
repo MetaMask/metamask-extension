@@ -28,6 +28,7 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import {
   setFirstTimeFlowType,
   startOAuthLogin,
@@ -106,7 +107,8 @@ export default function OnboardingWelcome() {
 
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
-    animationCompleted?.MetamaskWordMarkAnimation,
+    animationCompleted?.MetamaskWordMarkAnimation ||
+      process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
   );
 
   // In test environments or when returning from another page, skip animations

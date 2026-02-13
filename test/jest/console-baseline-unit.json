@@ -1397,6 +1397,9 @@
     "ui/hooks/subscription/useAddFundTrigger.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/hooks/subscription/useSubscription.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1,
       "warn: ⚠️ React Router Future Flag": 2
