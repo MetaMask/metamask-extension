@@ -15,15 +15,14 @@ import {
 } from 'lightweight-charts';
 import { brandColor } from '@metamask/design-tokens';
 import { Box } from '@metamask/design-system-react';
-import type { CandleData, CandleStick } from '@metamask/perps-controller';
 import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
-import { CandleData, CandleStick } from '../types';
 import {
   formatCandleDataForChart,
   formatVolumeDataForChart,
   formatSingleCandleForChart,
   formatSingleVolumeForChart,
 } from './chart-utils';
+import type { CandleData, CandleStick } from '@metamask/perps-controller';
 
 /** Cooldown in ms between load-more requests to avoid spamming */
 const LOAD_MORE_COOLDOWN_MS = 2000;
