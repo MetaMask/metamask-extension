@@ -46,8 +46,8 @@ export type LimitPriceInputProps = {
  * Features:
  * - Dollar-prefixed price input with decimal validation
  * - Direction-aware presets:
- *   - Long: Mid, Bid, -1%, -2% (prices at or below market)
- *   - Short: Mid, Ask, +1%, +2% (prices at or above market)
+ * - Long: Mid, Bid, -1%, -2% (prices at or below market)
+ * - Short: Mid, Ask, +1%, +2% (prices at or above market)
  * - Format on blur (2 decimal places)
  *
  * This component is a pure presentational component — it does not subscribe
