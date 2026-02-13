@@ -2053,4 +2053,26 @@ export type PerpsTransactionOperations = {
   }>;
 };
 
+/**
+ * Represents a single candlestick data point
+ */
+export type CandleStick = {
+  time: number;
+  open: string;
+  high: string;
+  low: string;
+  close: string;
+  volume: string;
+};
+
+/**
+ * Represents historical candlestick data for a specific symbol and interval
+ */
+export type CandleData = {
+  /** Asset identifier (e.g., 'BTC', 'ETH'). Protocol-agnostic terminology for multi-provider support. */
+  symbol: string;
+  interval: CandlePeriod;
+  candles: CandleStick[];
+};
+
 // Add other re-exports as needed when more imports from @metamask/perps-controller are required
