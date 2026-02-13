@@ -1042,6 +1042,13 @@ function setupBundlerDefaults(
     fullPaths: isDevBuild(buildTarget) || isTestBuild(buildTarget),
     // For sourcemaps
     debug: true,
+    // Module aliases for development mocks
+    browser: {
+      '@metamask/perps-controller': path.resolve(
+        __dirname,
+        '../../ui/__mocks__/perps/perps-controller/index.ts',
+      ),
+    },
   });
 
   // Ensure react-devtools-core is only included in dev builds
