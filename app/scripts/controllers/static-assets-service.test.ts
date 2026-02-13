@@ -56,6 +56,7 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
   messenger.delegate({
     messenger: staticAssetsServiceMessenger,
     actions: [
+      'RemoteFeatureFlagController:getState',
       'NetworkController:findNetworkClientIdByChainId',
       'TokensController:getState',
       'TokensController:addTokens',
@@ -78,17 +79,28 @@ const setupController = ({ supportedChains }: { supportedChains: Hex[] }) => {
     tokensControllerAddTokensSpy,
   );
 
+  messenger.registerActionHandler(
+    'RemoteFeatureFlagController:getState',
+    jest.fn().mockReturnValue({
+      remoteFeatureFlags: {
+        staticAssetsPollingOptions: {
+          cacheExpirationTime: 1000,
+          supportedChains,
+          topX: 10,
+        },
+      },
+    }),
+  );
+
   const controller = new StaticAssetsService({
     messenger: staticAssetsServiceMessenger,
-    getSupportedChains: () => new Set(supportedChains),
-    fetchFn: async (url, requestOptions) =>
+    fetchFn: async (url, requestOptions, cacheOptions) =>
       await fetchWithCache({
         url: url.toString(),
         fetchOptions: { ...requestOptions, method: 'GET' },
-        cacheOptions: { cacheRefreshTime: 1000 },
+        cacheOptions: { ...cacheOptions },
         functionName: 'fetchTopAssets',
       }),
-    getTopX: () => 10,
   });
 
   return {

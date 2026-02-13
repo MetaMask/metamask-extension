@@ -35,39 +35,9 @@ export function getStaticAssetsServiceMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'TokensController:getState',
       'TokensController:addTokens',
+      'RemoteFeatureFlagController:getState',
     ],
     events: [],
   });
   return serviceMessenger;
-}
-
-type AllowedInitializationActions = RemoteFeatureFlagControllerGetStateAction;
-
-export type StaticAssetsServiceInitMessenger = ReturnType<
-  typeof getStaticAssetsServiceInitMessenger
->;
-
-/**
- * Create a messenger restricted to the allowed actions and events needed during
- * initialization of the static assets service.
- *
- * @param messenger
- */
-export function getStaticAssetsServiceInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
-) {
-  const serviceInitMessenger = new Messenger<
-    'StaticAssetsServiceInit',
-    AllowedInitializationActions,
-    never,
-    typeof messenger
-  >({
-    namespace: 'StaticAssetsServiceInit',
-    parent: messenger,
-  });
-  messenger.delegate({
-    messenger: serviceInitMessenger,
-    actions: ['RemoteFeatureFlagController:getState'],
-  });
-  return serviceInitMessenger;
 }

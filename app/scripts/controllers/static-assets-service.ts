@@ -20,6 +20,7 @@ import {
   ServicePolicy,
 } from '@metamask/controller-utils';
 import { Infer, type, string, number, assert } from '@metamask/superstruct';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createSentryError } from '../../../shared/modules/error';
 
 const SERVICE = 'StaticAssetsService' as const;
@@ -57,7 +58,8 @@ export type StaticAssetsServiceEvents = never;
 export type AllowedActions =
   | TokensControllerAddTokensAction
   | TokensControllerGetStateAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction;
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 export type StaticAssetsServiceMessenger = Messenger<
   typeof SERVICE,
@@ -68,16 +70,15 @@ export type StaticAssetsServiceMessenger = Messenger<
 export type FetchFunction = (
   input: RequestInfo | URL | string,
   init?: RequestInit,
+  cacheOptions?: {
+    cacheRefreshTime?: number;
+  },
 ) => Promise<unknown>;
 
 export type StaticAssetsServiceOptions = {
   messenger: StaticAssetsServiceMessenger;
   /** The interval for the polling. */
   interval?: number;
-  /** The supported chains for the service. */
-  getSupportedChains: () => Set<Hex>;
-  /** The top X assets to fetch. */
-  getTopX: () => number;
   /** The fetch function to use. */
   fetchFn: FetchFunction;
   /** The policy options to use. */
@@ -129,14 +130,8 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
   // required for Modular Initialization
   readonly name = SERVICE;
 
-  /** The supported chains for the service. */
-  readonly #getSupportedChains: () => Set<Hex>;
-
   /** The fetch function to use. */
   readonly #fetchFn: FetchFunction;
-
-  /** The top X assets to fetch. */
-  readonly #getTopX: () => number;
 
   /**
    * The policy that wraps the request.
@@ -150,18 +145,12 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
   constructor({
     messenger,
     interval = DEFAULT_INTERVAL_MS,
-    getSupportedChains,
-    getTopX,
     fetchFn,
     policyOptions = {},
   }: StaticAssetsServiceOptions) {
     super();
 
     this.messenger = messenger;
-
-    this.#getSupportedChains = getSupportedChains;
-
-    this.#getTopX = getTopX;
 
     this.#policy = createServicePolicy(policyOptions);
 
@@ -398,7 +387,13 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     url.searchParams.set('minMarketCap', '1');
 
     return await this.#policy.execute(async () => {
-      return this.#fetchFn(url, { method: 'GET' });
+      return this.#fetchFn(
+        url,
+        { method: 'GET' },
+        {
+          cacheRefreshTime: this.#getCacheExpirationTime(),
+        },
+      );
     });
   }
 
@@ -424,6 +419,56 @@ export class StaticAssetsService extends StaticIntervalPollingControllerOnly<Sta
     } catch (error) {
       return false;
     }
+  }
+
+  /**
+   * Get the cache expiration time from the remote feature flag controller.
+   * If the cache expiration time is not set, return the default cache expiration time.
+   *
+   * @returns The cache expiration time.
+   */
+  #getCacheExpirationTime(): number {
+    const cacheExpirationTime =
+      this.#getRemoteFeatureFlagControllerState()?.cacheExpirationTime;
+    return cacheExpirationTime
+      ? Number(cacheExpirationTime)
+      : DEFAULT_CACHE_EXPIRATION_MS;
+  }
+
+  /**
+   * Get the supported chains from the remote feature flag controller.
+   * If the supported chains is not set, return an empty set.
+   *
+   * @returns The supported chains.
+   */
+  #getSupportedChains(): Set<Hex> {
+    const supportedChains =
+      this.#getRemoteFeatureFlagControllerState()?.supportedChains;
+    return new Set(Array.isArray(supportedChains) ? supportedChains : []);
+  }
+
+  /**
+   * Get the top X from the remote feature flag controller.
+   * If the top X is not set, return the default top X.
+   *
+   * @returns The top X.
+   */
+  #getTopX(): number {
+    const topX = this.#getRemoteFeatureFlagControllerState()?.topX;
+    return topX ? Number(topX) : DEFAULT_TOP_X;
+  }
+
+  /**
+   * Get the remote feature flag controller state.
+   *
+   * @returns The remote feature flag controller state.
+   */
+  #getRemoteFeatureFlagControllerState():
+    | StaticAssetsPollingFeatureFlagOptions
+    | undefined {
+    const state = this.messenger.call('RemoteFeatureFlagController:getState');
+    return state?.remoteFeatureFlags
+      ?.staticAssetsPollingOptions as StaticAssetsPollingFeatureFlagOptions;
   }
 
   /**
