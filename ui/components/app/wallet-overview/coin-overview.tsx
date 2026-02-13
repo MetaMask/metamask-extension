@@ -207,8 +207,13 @@ export const CoinOverview = ({
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const isTestnet = useSelector(getMultichainIsTestnet);
 
+  // Only show empty state when Receive can act (selectedAccountGroup exists);
+  // otherwise the Receive button would be a no-op.
   const shouldShowBalanceEmptyState =
-    !isTestnet && !balanceIsCached && !hasBalance;
+    Boolean(selectedAccountGroup) &&
+    !isTestnet &&
+    !balanceIsCached &&
+    !hasBalance;
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
