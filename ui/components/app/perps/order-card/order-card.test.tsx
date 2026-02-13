@@ -112,7 +112,10 @@ describe('OrderCard', () => {
   it('calls onClick when card is clicked', () => {
     const order = createMockOrder();
     const onClick = jest.fn();
-    renderWithProvider(<OrderCard order={order} onClick={onClick} />, mockStore);
+    renderWithProvider(
+      <OrderCard order={order} onClick={onClick} />,
+      mockStore,
+    );
 
     fireEvent.click(screen.getByTestId('order-card-test-order-001'));
 
