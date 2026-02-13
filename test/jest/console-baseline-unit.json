@@ -1401,6 +1401,9 @@
     "ui/hooks/subscription/useAddFundTrigger.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/hooks/subscription/useSubscription.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1,
       "warn: ⚠️ React Router Future Flag": 2
@@ -2016,7 +2019,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/confirm/info/shared/selected-gas-fee-token/selected-gas-fee-token.test.tsx": {
-      "MetaMask: Background connection not initialized": 66,
+      "MetaMask: Background connection not initialized": 78,
       "Reselect: Identity function warnings": 6,
       "Reselect: Input stability warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
@@ -2375,9 +2378,16 @@
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/rows/required-tokens-row/required-tokens-row.test.tsx": {
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/rows/total-row/total-row.test.tsx": {
       "Reselect: Identity function warnings": 3,
-      "Reselect: Input stability warnings": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/transaction-pay-section/transaction-pay-section.test.tsx": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/send/amount-recipient/amount-recipient.test.tsx": {
@@ -2656,6 +2666,10 @@
     "ui/pages/confirmations/hooks/alerts/useTokenTrustSignalAlerts.test.ts": {
       "Reselect: Identity function warnings": 4,
       "Reselect: Input stability warnings": 2,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/gas/useEstimationFailed.test.ts": {
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/gas/useGaslessSupportedSmartTransactions.test.ts": {

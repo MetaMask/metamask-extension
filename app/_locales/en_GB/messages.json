@@ -3852,6 +3852,18 @@
   "memo": {
     "message": "memo"
   },
+  "merklRewardsToastFailed": {
+    "message": "Your mUSD bonus claim failed",
+    "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
+  },
+  "merklRewardsToastInProgress": {
+    "message": "Your mUSD bonus is processing",
+    "description": "Toast message shown when a Merkl reward claim transaction is being processed"
+  },
+  "merklRewardsToastSuccess": {
+    "message": "Your mUSD bonus is here!",
+    "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
+  },
   "message": {
     "message": "Message"
   },
@@ -5937,6 +5949,10 @@
   },
   "required": {
     "message": "Required"
+  },
+  "requiredToken": {
+    "description": "Label for the required token row showing the token and amount needed by the transaction",
+    "message": "Required token"
   },
   "reset": {
     "message": "Reset"
@@ -8713,6 +8729,9 @@
   },
   "unapproved": {
     "message": "Unapproved"
+  },
+  "unavailable": {
+    "message": "Unavailable"
   },
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
