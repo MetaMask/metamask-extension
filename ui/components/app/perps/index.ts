@@ -1,26 +1,3 @@
-/**
- * Perps UI components
- *
- * This directory contains reusable UI components for the Perps trading feature.
- *
- * @see {@link https://github.com/MetaMask/metamask-extension} for more info
- */
-
-export { PerpsTabView } from './perps-tab-view';
-export { PerpsTabControlBar } from './perps-tab-control-bar';
-export type { PerpsTabControlBarProps } from './perps-tab-control-bar';
-export { PositionCard } from './position-card';
-export type { PositionCardProps } from './position-card';
-export { OrderCard } from './order-card';
-export type { OrderCardProps } from './order-card';
-export { PerpsTokenLogo } from './perps-token-logo';
-export type { PerpsTokenLogoProps } from './perps-token-logo';
-export { StartTradeCta } from './start-trade-cta';
-export type { StartTradeCtaProps } from './start-trade-cta';
-export { PerpsEmptyState } from './perps-empty-state';
-export type { PerpsEmptyStateProps } from './perps-empty-state';
-export { TransactionCard } from './transaction-card';
-export type { TransactionCardProps } from './transaction-card';
 export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
 export {
@@ -39,23 +16,6 @@ export {
   isHip3Market,
   isCryptoMarket,
 } from './utils';
-export {
-  HYPERLIQUID_ASSET_ICONS_BASE_URL,
-  PERPS_CONSTANTS,
-  MARKET_SORTING_CONFIG,
-  HIP3_MARKET_CONFIG,
-  HIP3_ASSET_MARKET_TYPES,
-  getHip3MarketType,
-} from './constants';
-export type { Hip3MarketType } from './constants';
-export type {
-  PerpsMarketData,
-  MarketType,
-  Position,
-  Order,
-  OrderType,
-  AccountState,
-} from './types';
 
 // Edit Margin expandable
 export { EditMarginExpandable } from './edit-margin';

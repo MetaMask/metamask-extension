@@ -8,15 +8,17 @@
  */
 
 import {
+  FillType,
+  PerpsOrderTransactionStatus,
+  PerpsOrderTransactionStatusType,
+} from './types/transactionHistory';
+import {
   AccountState,
   Order,
   PerpsMarketData,
   PerpsTransaction,
   Position,
-  FillType,
-  PerpsOrderTransactionStatus,
-  PerpsOrderTransactionStatusType,
-} from './types';
+} from '@metamask/perps-controller';
 
 /**
  * Mock account state data
