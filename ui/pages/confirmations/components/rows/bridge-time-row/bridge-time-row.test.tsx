@@ -13,7 +13,6 @@ import {
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useConfirmContext } from '../../../context/confirm';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
@@ -21,7 +20,6 @@ import { BridgeTimeRow, BridgeTimeRowProps } from './bridge-time-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
-jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../context/confirm');
 
 const mockStore = configureMockStore([]);
@@ -38,20 +36,10 @@ describe('BridgeTimeRow', () => {
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
   );
-  const useI18nContextMock = jest.mocked(useI18nContext);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
 
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useI18nContextMock.mockReturnValue(((key: string) => {
-      const translations: Record<string, string> = {
-        estimatedTime: 'Estimated time',
-        second: 'sec',
-        minute: 'min',
-      };
-      return translations[key] ?? key;
-    }) as ReturnType<typeof useI18nContext>);
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {

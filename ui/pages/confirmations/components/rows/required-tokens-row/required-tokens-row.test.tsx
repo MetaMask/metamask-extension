@@ -4,7 +4,6 @@ import type { TransactionPayRequiredToken } from '@metamask/transaction-pay-cont
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
@@ -14,7 +13,6 @@ import {
 } from './required-tokens-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
-jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../../../hooks/useFiatFormatter');
 jest.mock('../../simulation-details/amount-pill', () => ({
   AmountPill: ({ amount }: { amount: { toString: () => string } }) => (
@@ -63,18 +61,10 @@ describe('RequiredTokensRow', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
-  const useI18nContextMock = jest.mocked(useI18nContext);
   const useFiatFormatterMock = jest.mocked(useFiatFormatter);
 
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useI18nContextMock.mockReturnValue(((key: string) => {
-      const translations: Record<string, string> = {
-        requiredToken: 'Required token',
-      };
-      return translations[key] ?? key;
-    }) as ReturnType<typeof useI18nContext>);
 
     useFiatFormatterMock.mockReturnValue(
       (value: number) => `$${value.toFixed(2)}`,

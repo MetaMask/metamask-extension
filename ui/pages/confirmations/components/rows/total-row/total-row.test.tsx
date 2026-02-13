@@ -7,13 +7,11 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { TotalRow, TotalRowProps } from './total-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
-jest.mock('../../../../../hooks/useI18nContext');
 
 const mockStore = configureMockStore([]);
 
@@ -30,17 +28,8 @@ describe('TotalRow', () => {
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
   );
-  const useI18nContextMock = jest.mocked(useI18nContext);
-
   beforeEach(() => {
     jest.clearAllMocks();
-
-    useI18nContextMock.mockReturnValue(((key: string) => {
-      const translations: Record<string, string> = {
-        total: 'Total',
-      };
-      return translations[key] ?? key;
-    }) as ReturnType<typeof useI18nContext>);
 
     useTransactionPayTotalsMock.mockReturnValue({
       total: { usd: '123.456' },

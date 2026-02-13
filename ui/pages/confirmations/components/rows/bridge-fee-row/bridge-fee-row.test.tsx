@@ -12,13 +12,11 @@ import {
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { BridgeFeeRow, BridgeFeeRowProps } from './bridge-fee-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
-jest.mock('../../../../../hooks/useI18nContext');
 
 const mockStore = configureMockStore([]);
 
@@ -36,20 +34,8 @@ describe('BridgeFeeRow', () => {
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
   );
-  const useI18nContextMock = jest.mocked(useI18nContext);
-
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useI18nContextMock.mockReturnValue(((key: string) => {
-      const translations: Record<string, string> = {
-        transactionFee: 'Transaction fee',
-        metamaskFee: 'MetaMask fee',
-        networkFee: 'Network fee',
-        bridgeFee: 'Bridge fee',
-      };
-      return translations[key] ?? key;
-    }) as ReturnType<typeof useI18nContext>);
 
     useTransactionPayTotalsMock.mockReturnValue({
       fees: {
