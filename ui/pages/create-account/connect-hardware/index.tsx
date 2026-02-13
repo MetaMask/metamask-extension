@@ -130,8 +130,8 @@ const ConnectHardwareForm = () => {
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const ledgerTransportType = useSelector(
     (state: {
-      appState: { ledgerTransportType?: LedgerTransportTypes | 'live' };
-    }) => state.appState.ledgerTransportType,
+      metamask: { ledgerTransportType?: LedgerTransportTypes | 'live' };
+    }) => state.metamask.ledgerTransportType,
   );
   const keyrings = useSelector(
     (state: { metamask: { keyrings: KeyringObject[] } }) =>
@@ -168,16 +168,19 @@ const ConnectHardwareForm = () => {
 
   // Update balances when accounts change
   useEffect(() => {
-    setHardwareAccounts((prev) =>
-      prev.map((account) => {
+    setHardwareAccounts((prev) => {
+      if (prev.length === 0) {
+        return prev;
+      }
+      return prev.map((account) => {
         const normalizedAddress = account.address.toLowerCase();
         const balanceValue = accounts[normalizedAddress]?.balance || null;
         return {
           ...account,
           balance: balanceValue ? formatBalance(balanceValue, 6) : '...',
         };
-      }),
-    );
+      });
+    });
   }, [accounts]);
 
   const showTemporaryAlert = useCallback(() => {
