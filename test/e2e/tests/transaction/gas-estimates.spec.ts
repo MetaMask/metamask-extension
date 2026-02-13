@@ -23,6 +23,16 @@ const SPOT_PRICES_MOCK = {
     marketCap: 382623505141,
     pricePercentChange1d: 0,
   },
+  'eip155:56/slip44:714': {
+    price: 300,
+    marketCap: 85000000000,
+    pricePercentChange1d: 0,
+  },
+  'eip155:56/slip44:60': {
+    price: 300,
+    marketCap: 85000000000,
+    pricePercentChange1d: 0,
+  },
 };
 
 /**
