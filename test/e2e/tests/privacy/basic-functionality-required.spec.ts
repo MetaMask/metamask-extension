@@ -95,12 +95,7 @@ describe('Basic functionality off', function () {
         const basicFunctionalityOffPage = new BasicFunctionalityOffPage(driver);
         await basicFunctionalityOffPage.checkPageIsLoaded();
 
-        const openFeatureDisabledBeforeToggle =
-          await basicFunctionalityOffPage.isOpenFeaturePageButtonDisabled();
-        assert.ok(
-          openFeatureDisabledBeforeToggle,
-          'Open the feature page button should be disabled when Basic functionality is off',
-        );
+        await basicFunctionalityOffPage.checkOpenFeaturePageButtonIsDisabled();
 
         await basicFunctionalityOffPage.toggleBasicFunctionality();
         await basicFunctionalityOffPage.waitForOpenFeaturePageButtonEnabled();

@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 
 export default class BasicFunctionalityOffPage {
@@ -90,6 +91,14 @@ export default class BasicFunctionalityOffPage {
     const el = await this.driver.findElement(this.openFeatureButton);
     const disabled = await el.getAttribute('disabled');
     return disabled !== null;
+  }
+
+  async checkOpenFeaturePageButtonIsDisabled(): Promise<void> {
+    const isDisabled = await this.isOpenFeaturePageButtonDisabled();
+    assert.ok(
+      isDisabled,
+      'Open the feature page button should be disabled when Basic functionality is off',
+    );
   }
 
   async waitForOpenFeaturePageButtonEnabled(): Promise<void> {
