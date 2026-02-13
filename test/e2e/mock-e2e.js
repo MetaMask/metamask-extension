@@ -161,10 +161,14 @@ async function setupMocking(
         };
       } else if (ALLOWLISTED_URLS.includes(url)) {
         // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
-        console.log('Request going to a live server ============', url);
+        console.log('Request going to a live server ============', url, false);
         return {};
       }
-      console.log('Request redirected to the catch all mock ============', url);
+      console.log(
+        'Request redirected to the catch all mock ============',
+        url,
+        false,
+      );
       return {
         // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
         response: {
@@ -339,6 +343,7 @@ async function setupMocking(
         console.log(
           'Request going to Sentry metamask-performance ============',
           req.url,
+          false,
         );
         return {};
       },

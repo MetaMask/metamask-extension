@@ -57,7 +57,8 @@ export const EditGasFeesRow = ({
   const estimationFailed = useEstimationFailed();
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
-  const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
+  const fiatValue = gasFeeToken?.amountFiat || fiatFee;
+  const hasFiatValue = Boolean(fiatValue);
   const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
   const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
   const nativeTokenSymbol = useTransactionNativeTicker() ?? '';
@@ -79,6 +80,8 @@ export const EditGasFeesRow = ({
 
   const isGasFeeEditable =
     !isQuotedSwapDisplayedInInfo && !gasFeeToken && !isGasFeeSponsored;
+  const shouldShowPrimaryFiatValue =
+    showFiat && hasFiatValue && !showAdvancedDetails && !isGasFeeSponsored;
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
@@ -115,13 +118,13 @@ export const EditGasFeesRow = ({
             )}
             {!estimationFailed && (
               <>
-                {showFiat && !showAdvancedDetails && !isGasFeeSponsored && (
+                {shouldShowPrimaryFiatValue && (
                   <FiatValue
                     fullValue={fiatFeeWith18SignificantDigits}
                     roundedValue={fiatValue}
                   />
                 )}
-                {!(showFiat && !showAdvancedDetails) && !isGasFeeSponsored && (
+                {!shouldShowPrimaryFiatValue && !isGasFeeSponsored && (
                   <TokenValue roundedValue={tokenValue} />
                 )}
               </>
@@ -148,7 +151,7 @@ export const EditGasFeesRow = ({
                 : ' '}
             </Text>
           </Box>
-          {showAdvancedDetails && !estimationFailed && (
+          {showAdvancedDetails && !estimationFailed && hasFiatValue && (
             <FiatValue
               fullValue={fiatFeeWith18SignificantDigits}
               roundedValue={fiatValue}
