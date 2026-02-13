@@ -6,8 +6,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import browser from 'webextension-polyfill';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -44,29 +42,17 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  setShowSupportDataConsentModal,
-  showModal,
-} from '../../../store/actions';
-import ConnectedStatusIndicator from '../../app/connected-status-indicator';
+import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
-  getOriginOfCurrentTab,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
@@ -99,7 +85,6 @@ export const AppHeaderUnlockedContent = ({
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const tourAnchorRef = useRef<HTMLDivElement>(null);
   const isMultichainAccountsState2Enabled = useSelector(
@@ -150,11 +135,6 @@ export const AppHeaderUnlockedContent = ({
     }
   }, [copied, dispatch]);
 
-  const showConnectedStatus =
-    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
-    origin !== browser.runtime.id;
-
   const handleMainMenuToggle = () => {
     setAccountOptionsMenuOpen((previous) => {
       const isMenuOpen = !previous;
@@ -171,10 +151,6 @@ export const AppHeaderUnlockedContent = ({
       return isMenuOpen;
     });
   };
-
-  const handleNetworkManagerOpen = useCallback(() => {
-    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-  }, [dispatch]);
 
   const handleCopyClick = useCallback(() => {
     handleCopy(normalizedCurrentAddress);
@@ -397,11 +373,6 @@ export const AppHeaderUnlockedContent = ({
         style={{ marginLeft: 'auto' }}
       >
         <Box display={Display.Flex} gap={2}>
-          {showConnectedStatus && (
-            <Box ref={menuRef} data-testid="connection-menu" margin="auto">
-              <ConnectedStatusIndicator onClick={handleNetworkManagerOpen} />
-            </Box>
-          )}{' '}
           <Box
             ref={menuRef}
             display={Display.Flex}

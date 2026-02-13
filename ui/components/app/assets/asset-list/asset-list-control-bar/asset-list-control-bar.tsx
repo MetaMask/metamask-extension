@@ -1,10 +1,24 @@
-import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  useMemo,
+  useCallback,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  isStrictHexString,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
+  getIsMultichainAccountsState2Enabled,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
@@ -12,9 +26,15 @@ import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/a
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
+  getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
+  getAllNetworkConfigurationsByCaipChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -23,18 +43,25 @@ import {
   IconSize,
   Popover,
   PopoverPosition,
+  Text,
 } from '../../../../component-library';
-import { SelectableListItem } from '../sort-control/sort-control';
+import SortControl, { SelectableListItem } from '../sort-control/sort-control';
 import {
+  AlignItems,
   BackgroundColor,
+  BorderColor,
   Display,
   JustifyContent,
   TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { TEST_CHAINS } from '../../../../../../shared/constants/network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  TEST_CHAINS,
+} from '../../../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -54,6 +81,7 @@ import {
   setTokenNetworkFilter,
   showImportNftsModal,
   showImportTokensModal,
+  showModal,
   updateBalancesFoAccounts,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
@@ -67,20 +95,24 @@ import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
   showImportTokenButton?: boolean;
+  showSortControl?: boolean;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
   showImportTokenButton = true,
+  showSortControl = true,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
   const navigate = useNavigate();
+  const sortButtonRef = useRef<HTMLButtonElement>(null);
   const importButtonRef = useRef<HTMLButtonElement>(null);
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
   const isMainnet = useSelector(getIsMainnet);
   const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
@@ -91,14 +123,24 @@ const AssetListControlBar = ({
 
   const { collections } = useNftsCollections();
 
+  const isMultichainAccountsState2Enabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
+
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -182,17 +224,26 @@ const AssetListControlBar = ({
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP;
 
+  const toggleTokenSortPopover = () => {
+    setIsImportTokensPopoverOpen(false);
+    setIsImportNftPopoverOpen(false);
+    setIsTokenSortPopoverOpen(!isTokenSortPopoverOpen);
+  };
+
   const toggleImportTokensPopover = () => {
+    setIsTokenSortPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
     setIsImportTokensPopoverOpen(!isImportTokensPopoverOpen);
   };
 
   const toggleImportNftPopover = () => {
+    setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(!isImportNftPopoverOpen);
   };
 
   const closePopover = () => {
+    setIsTokenSortPopoverOpen(false);
     setIsImportTokensPopoverOpen(false);
     setIsImportNftPopoverOpen(false);
   };
@@ -226,6 +277,10 @@ const AssetListControlBar = ({
     navigate(SECURITY_ROUTE);
   };
 
+  const handleNetworkManager = useCallback(() => {
+    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
+  }, [dispatch]);
+
   const handleNftRefresh = () => {
     if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
@@ -235,14 +290,141 @@ const AssetListControlBar = ({
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
   };
+  const networkButtonText = useMemo(() => {
+    if (currentNamespaceNetworkCount === 1) {
+      const chainId = Object.keys(enabledNetworksByNamespace)[0];
+      return isStrictHexString(chainId)
+        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
+        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
+    }
+
+    if (
+      namespace !== KnownCaipNamespace.Eip155 &&
+      currentNamespaceNetworkCount > 1
+    ) {
+      return currentMultichainNetwork.network.nickname ?? t('currentNetwork');
+    }
+
+    // > 1 network selected, show "all networks"
+    if (currentNamespaceNetworkCount > 1) {
+      return t('allNetworks');
+    }
+
+    if (currentNamespaceNetworkCount === 0) {
+      return t('noNetworksSelected');
+    }
+
+    return t('popularNetworks');
+  }, [
+    enabledNetworksByNamespace,
+    currentNamespaceNetworkCount,
+    currentMultichainNetwork.network.nickname,
+    t,
+    allNetworks,
+    namespace,
+  ]);
+
+  const networkButtonTextEnabledAccountState2 = useMemo(() => {
+    if (totalEnabledNetworkCount === 1) {
+      const chainId = allEnabledNetworksForAllNamespaces[0];
+      const caipChainId = isStrictHexString(chainId)
+        ? toEvmCaipChainId(chainId)
+        : chainId;
+      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
+    }
+
+    // > 1 network selected, show "all networks"
+    if (totalEnabledNetworkCount > 1) {
+      return t('allPopularNetworks');
+    }
+
+    if (totalEnabledNetworkCount === 0) {
+      return t('noNetworksSelected');
+    }
+
+    return t('popularNetworks');
+  }, [
+    allEnabledNetworksForAllNamespaces,
+    totalEnabledNetworkCount,
+    t,
+    allCaipNetworks,
+  ]);
+
+  const singleNetworkIconUrl = useMemo(() => {
+    const chainIds = allEnabledNetworksForAllNamespaces;
+
+    if (totalEnabledNetworkCount !== 1) {
+      return undefined;
+    }
+
+    const singleEnabledChainId = chainIds[0];
+    return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
+  }, [allEnabledNetworksForAllNamespaces, totalEnabledNetworkCount]);
+
   return (
     <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
-      <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+        <ButtonBase
+          data-testid="sort-by-networks"
+          variant={TextVariant.bodySmMedium}
+          className="asset-list-control-bar__button asset-list-control-bar__network_control"
+          onClick={handleNetworkManager}
+          size={ButtonBaseSize.Sm}
+          endIconName={IconName.ArrowDown}
+          backgroundColor={BackgroundColor.backgroundDefault}
+          color={TextColor.textDefault}
+          marginRight={isFullScreen ? 2 : null}
+          borderColor={BorderColor.borderMuted}
+          ellipsis
+        >
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            {singleNetworkIconUrl && (
+              <AvatarNetwork
+                name={currentMultichainNetwork.nickname}
+                src={singleNetworkIconUrl}
+                size={AvatarNetworkSize.Xs}
+                borderWidth={0}
+              />
+            )}
+            <Text variant={TextVariant.bodySmMedium} ellipsis>
+              {isMultichainAccountsState2Enabled
+                ? networkButtonTextEnabledAccountState2
+                : networkButtonText}
+            </Text>
+          </Box>
+        </ButtonBase>
+
         <Box
           className="asset-list-control-bar__buttons"
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
         >
+          {showSortControl && (
+            <Tooltip
+              title={t('sortBy')}
+              position="bottom"
+              distance={20}
+              disabled={isTokenSortPopoverOpen}
+            >
+              <ButtonBase
+                ref={sortButtonRef}
+                data-testid="sort-by-popover-toggle"
+                className="asset-list-control-bar__button"
+                onClick={toggleTokenSortPopover}
+                size={ButtonBaseSize.Sm}
+                startIconName={IconName.Filter}
+                startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
+                backgroundColor={
+                  isTokenSortPopoverOpen
+                    ? BackgroundColor.backgroundPressed
+                    : BackgroundColor.backgroundDefault
+                }
+                color={TextColor.textDefault}
+                marginRight={isFullScreen ? 2 : null}
+              />
+            </Tooltip>
+          )}
+
           {showImportTokenButton &&
             (isEvm ? (
               <ImportControl
@@ -268,7 +450,11 @@ const AssetListControlBar = ({
                   size={ButtonBaseSize.Sm}
                   startIconName={IconName.Add}
                   startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
-                  backgroundColor={BackgroundColor.backgroundDefault}
+                  backgroundColor={
+                    isTokenSortPopoverOpen
+                      ? BackgroundColor.backgroundPressed
+                      : BackgroundColor.backgroundDefault
+                  }
                   color={TextColor.textDefault}
                   marginRight={isFullScreen ? 2 : null}
                 />
@@ -276,6 +462,23 @@ const AssetListControlBar = ({
             ))}
         </Box>
       </Box>
+
+      <Popover
+        onClickOutside={closePopover}
+        isOpen={isTokenSortPopoverOpen}
+        position={PopoverPosition.BottomEnd}
+        referenceElement={sortButtonRef.current}
+        matchWidth={false}
+        style={{
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          minWidth: isFullScreen ? '250px' : '',
+        }}
+      >
+        <SortControl handleClose={closePopover} />
+      </Popover>
 
       {/* Tokens Popover */}
       <Popover

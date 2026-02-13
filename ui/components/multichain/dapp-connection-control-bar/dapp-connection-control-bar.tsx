@@ -15,9 +15,7 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
@@ -51,16 +49,25 @@ import {
   DisconnectType,
 } from '../disconnect-all-modal/disconnect-all-modal';
 
+type DappConnectionControlBarProps = {
+  placement: 'top' | 'bottom';
+  onTogglePlacement: () => void;
+};
+
 /**
- * DappConnectionControlBar - A contextual footer bar shown only during active
- * dapp connections. Consolidates dapp-related controls: network selector,
- * permissions management, and disconnect.
+ * DappConnectionControlBar - A contextual bar shown only during active dapp
+ * connections. Supports top (above header) or bottom (below content) placement.
  *
- * Layout:
- * Row 1: [Favicon] [Origin + Account name] ... [Connected badge]
- * Row 2: [Network selector button] [Settings] [Disconnect]
+ * Layout (single row):
+ * [Favicon+dot] [Origin / Account] ... [Network ↓] [Settings | Disconnect]
+ *
+ * @param options0
+ * @param options0.placement
+ * @param options0.onTogglePlacement
  */
-export const DappConnectionControlBar: React.FC = () => {
+export const DappConnectionControlBar: React.FC<
+  DappConnectionControlBarProps
+> = ({ placement, onTogglePlacement }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -102,7 +109,6 @@ export const DappConnectionControlBar: React.FC = () => {
     return selectedAccountName;
   }, [selectedAccountName, selectedAccountAddress]);
 
-  // Derived data (computed regardless of connection for hook consistency)
   const connectedSubjectsMetadata = activeTabOrigin
     ? subjectMetadata[activeTabOrigin]
     : undefined;
@@ -173,33 +179,49 @@ export const DappConnectionControlBar: React.FC = () => {
     return null;
   }
 
+  const placementClass =
+    placement === 'top'
+      ? 'dapp-connection-control-bar--top'
+      : 'dapp-connection-control-bar--bottom';
+
   return (
     <>
       <Box
-        className="dapp-connection-control-bar"
+        className={`dapp-connection-control-bar ${placementClass}`}
         display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
         padding={3}
         paddingLeft={4}
         paddingRight={4}
         gap={2}
+        width={BlockSize.Full}
         data-testid="dapp-connection-control-bar"
       >
-        {/* ===== Upper row: Favicon + Origin/Account + Connected badge ===== */}
+        {/* Left side: Favicon with green dot + Identity */}
         <Box
+          as="button"
           display={Display.Flex}
-          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
           gap={2}
-          width={BlockSize.Full}
+          className="dapp-connection-control-bar__left-group"
+          onClick={onTogglePlacement}
+          data-testid="dapp-connection-control-bar__favicon-toggle"
+          aria-label="Toggle control bar position"
         >
-          {/* Dapp favicon */}
-          <AvatarFavicon
-            name={connectedSubjectsMetadata?.name}
-            size={Size.MD}
-            src={connectedSubjectsMetadata?.iconUrl}
-            data-testid="dapp-connection-control-bar__favicon"
-          />
+          {/* Favicon with connection dot overlay */}
+          <Box className="dapp-connection-control-bar__favicon-wrapper">
+            <AvatarFavicon
+              name={connectedSubjectsMetadata?.name}
+              size={Size.MD}
+              src={connectedSubjectsMetadata?.iconUrl}
+              data-testid="dapp-connection-control-bar__favicon"
+            />
+            <Box
+              className="dapp-connection-control-bar__connection-dot"
+              data-testid="dapp-connection-control-bar__connection-dot"
+            />
+          </Box>
 
           {/* Origin + Account stacked */}
           <Box
@@ -225,49 +247,25 @@ export const DappConnectionControlBar: React.FC = () => {
               </Text>
             )}
           </Box>
-
-          {/* Connected badge - pushed to the right */}
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            gap={1}
-            backgroundColor={BackgroundColor.successMuted}
-            borderRadius={BorderRadius.pill}
-            paddingLeft={2}
-            paddingRight={2}
-            padding={1}
-            style={{ marginLeft: 'auto' }}
-            data-testid="dapp-connection-control-bar__connected-badge"
-          >
-            <Box className="dapp-connection-control-bar__status-dot" />
-            <Text variant={TextVariant.bodyXs} color={TextColor.successDefault}>
-              {t('tooltipSatusConnected')}
-            </Text>
-          </Box>
         </Box>
 
-        {/* ===== Lower row: Network selector + action icons ===== */}
+        {/* Right side: Network selector + Combined action icons */}
         <Box
           display={Display.Flex}
-          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
           gap={2}
-          width={BlockSize.Full}
+          style={{ marginLeft: 'auto' }}
         >
-          {/* Network selector button - takes ~3/4 of the row */}
+          {/* Network selector (icon-only, same size as action icons) */}
           {dappActiveNetwork && (
             <Box
               as="button"
               display={Display.Flex}
               alignItems={AlignItems.center}
               gap={1}
-              padding={1}
-              paddingLeft={2}
-              paddingRight={2}
               className="dapp-connection-control-bar__network-button"
               onClick={handleNetworkClick}
               data-testid="dapp-connection-control-bar__network-button"
-              style={{ flex: '1 1 0' }}
             >
               <AvatarNetwork
                 size={AvatarNetworkSize.Xs}
@@ -279,46 +277,56 @@ export const DappConnectionControlBar: React.FC = () => {
                 src={networkImageSrc}
                 borderWidth={0}
               />
-              <Text variant={TextVariant.bodyXs} ellipsis>
-                {(dappActiveNetwork as { name?: string })?.name}
-              </Text>
               <Icon
                 name={IconName.ArrowDown}
                 size={IconSize.Xs}
                 color={IconColor.iconDefault}
-                style={{ marginLeft: 'auto' }}
               />
             </Box>
           )}
 
-          {/* Permissions button */}
+          {/* Combined settings + disconnect container */}
           <Box
-            as="button"
-            className="dapp-connection-control-bar__action-icon"
-            onClick={handlePermissionsClick}
-            data-testid="dapp-connection-control-bar__permissions-button"
-            aria-label={t('managePermissions')}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            className="dapp-connection-control-bar__combined-actions"
           >
-            <Icon
-              name={IconName.Setting}
-              size={IconSize.Sm}
-              color={IconColor.iconDefault}
-            />
-          </Box>
+            {/* Permissions button */}
+            <Box
+              as="button"
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              className="dapp-connection-control-bar__action-button"
+              onClick={handlePermissionsClick}
+              data-testid="dapp-connection-control-bar__permissions-button"
+              aria-label={t('managePermissions')}
+            >
+              <Icon
+                name={IconName.Setting}
+                size={IconSize.Sm}
+                color={IconColor.iconDefault}
+              />
+            </Box>
 
-          {/* Disconnect button */}
-          <Box
-            as="button"
-            className="dapp-connection-control-bar__action-icon"
-            onClick={handleDisconnectClick}
-            data-testid="dapp-connection-control-bar__disconnect-button"
-            aria-label={t('disconnect')}
-          >
-            <Icon
-              name={IconName.Logout}
-              size={IconSize.Sm}
-              color={IconColor.errorDefault}
-            />
+            {/* Vertical divider */}
+            <Box className="dapp-connection-control-bar__divider" />
+
+            {/* Disconnect button */}
+            <Box
+              as="button"
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              className="dapp-connection-control-bar__action-button"
+              onClick={handleDisconnectClick}
+              data-testid="dapp-connection-control-bar__disconnect-button"
+              aria-label={t('disconnect')}
+            >
+              <Icon
+                name={IconName.Logout}
+                size={IconSize.Sm}
+                color={IconColor.errorDefault}
+              />
+            </Box>
           </Box>
         </Box>
       </Box>

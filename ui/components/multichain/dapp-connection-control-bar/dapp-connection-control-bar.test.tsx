@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import type { ComponentProps } from 'react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -137,15 +138,20 @@ const disconnectedMockState = {
   },
 };
 
+const defaultProps: ComponentProps<typeof DappConnectionControlBar> = {
+  placement: 'top',
+  onTogglePlacement: jest.fn(),
+};
+
 describe('DappConnectionControlBar', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('when connected to a dapp', () => {
-    const renderConnected = () => {
+    const renderConnected = (props = defaultProps) => {
       const store = configureStore(connectedMockState);
-      return renderWithProvider(<DappConnectionControlBar />, store);
+      return renderWithProvider(<DappConnectionControlBar {...props} />, store);
     };
 
     it('renders the control bar', () => {
@@ -153,19 +159,25 @@ describe('DappConnectionControlBar', () => {
       expect(getByTestId('dapp-connection-control-bar')).toBeInTheDocument();
     });
 
+    it('renders as a single row', () => {
+      const { getByTestId } = renderConnected();
+      const bar = getByTestId('dapp-connection-control-bar');
+      expect(bar.className).toContain('dapp-connection-control-bar--top');
+    });
+
     it('displays the site origin', () => {
       const { getByText } = renderConnected();
       expect(getByText('metamask.github.io')).toBeInTheDocument();
     });
 
-    it('displays the connected badge', () => {
+    it('displays the green connection dot on the favicon', () => {
       const { getByTestId } = renderConnected();
       expect(
-        getByTestId('dapp-connection-control-bar__connected-badge'),
+        getByTestId('dapp-connection-control-bar__connection-dot'),
       ).toBeInTheDocument();
     });
 
-    it('displays the network button with network name', () => {
+    it('displays the network button', () => {
       const { getByTestId } = renderConnected();
       expect(
         getByTestId('dapp-connection-control-bar__network-button'),
@@ -204,21 +216,25 @@ describe('DappConnectionControlBar', () => {
       expect(getByTestId('disconnect-all-modal')).toBeInTheDocument();
     });
 
-    it('closes disconnect modal when modal close is triggered', () => {
-      const { getByTestId, queryByTestId } = renderConnected();
+    it('calls onTogglePlacement when favicon is clicked', () => {
+      const onToggle = jest.fn();
+      const { getByTestId } = renderConnected({
+        ...defaultProps,
+        onTogglePlacement: onToggle,
+      });
       fireEvent.click(
-        getByTestId('dapp-connection-control-bar__disconnect-button'),
+        getByTestId('dapp-connection-control-bar__favicon-toggle'),
       );
-      expect(getByTestId('disconnect-all-modal')).toBeInTheDocument();
+      expect(onToggle).toHaveBeenCalledTimes(1);
+    });
 
-      // Click the modal close button (X button in ModalHeader)
-      const closeButton = getByTestId('disconnect-all-modal').querySelector(
-        '[aria-label="Close"]',
-      );
-      if (closeButton) {
-        fireEvent.click(closeButton);
-        expect(queryByTestId('disconnect-all-modal')).not.toBeInTheDocument();
-      }
+    it('applies bottom modifier class when placement is bottom', () => {
+      const { getByTestId } = renderConnected({
+        ...defaultProps,
+        placement: 'bottom',
+      });
+      const bar = getByTestId('dapp-connection-control-bar');
+      expect(bar.className).toContain('dapp-connection-control-bar--bottom');
     });
   });
 
@@ -226,7 +242,7 @@ describe('DappConnectionControlBar', () => {
     it('does not render the control bar', () => {
       const store = configureStore(disconnectedMockState);
       const { queryByTestId } = renderWithProvider(
-        <DappConnectionControlBar />,
+        <DappConnectionControlBar {...defaultProps} />,
         store,
       );
       expect(

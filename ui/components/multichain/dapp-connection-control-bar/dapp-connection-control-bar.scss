@@ -1,11 +1,43 @@
 .dapp-connection-control-bar {
-  border-top: 1px solid var(--color-border-muted);
   flex-shrink: 0;
   background-color: #242728;
 
+  &--top {
+    border-bottom: 1px solid var(--color-border-muted);
+  }
+
+  &--bottom {
+    border-top: 1px solid var(--color-border-muted);
+  }
+
+  &__left-group {
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    min-width: 0; // allow truncation
+    text-align: left;
+  }
+
   &__identity {
-    min-width: 0; // Allow text truncation
+    min-width: 0;
     flex: 1 1 0;
+  }
+
+  &__favicon-wrapper {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  &__connection-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-success-default);
+    border: 1.5px solid #242728; // match bar background for cutout effect
   }
 
   &__network-button {
@@ -14,34 +46,43 @@
     border-radius: 12px;
     background-color: #2b2d31;
     height: 36px;
+    flex-shrink: 0;
+    justify-content: center;
+    padding-left: 9px;
+    padding-right: 9px;
 
     &:hover {
       background-color: #33363a;
     }
   }
 
-  &__action-icon {
-    cursor: pointer;
+  &__combined-actions {
     border: 1px solid #3a4046;
     border-radius: 12px;
     background-color: #2b2d31;
     height: 36px;
-    width: 36px;
-    display: flex;
-    align-items: center;
+    flex-shrink: 0;
+  }
+
+  &__action-button {
+    cursor: pointer;
+    background: none;
+    border: none;
+    height: 100%;
+    width: 34px;
     justify-content: center;
     flex-shrink: 0;
+    border-radius: 12px;
 
     &:hover {
       background-color: #33363a;
     }
   }
 
-  &__status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: var(--color-success-default);
+  &__divider {
+    width: 1px;
+    height: 16px;
+    background-color: #3a4046;
     flex-shrink: 0;
   }
 }
