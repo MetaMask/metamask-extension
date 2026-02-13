@@ -691,70 +691,9 @@ export const getSelectedEvmInternalAccount = createSelector(
  *
  * @param keyrings - The array of keyrings.
  * @param accounts - The object containing the accounts.
- * @returns The array of internal accounts sorted by keyring.
+ * @returns {Array<import('@metamask/keyring-internal-api').InternalAccount>} The array of internal accounts sorted by keyring.
  */
 export const getInternalAccountsSortedByKeyring = createSelector(
-  getMetaMaskKeyrings,
-  getMetaMaskAccounts,
-  (keyrings, accounts) => {
-    const thirdPartySnaps = 'thirdPartySnaps';
-    // Create a map of entropySource map to accounts for quick lookup
-    const entropySourceToAccountsMap = Object.values(accounts).reduce(
-      (map, account) => {
-        if (account.metadata?.keyring?.type === KeyringTypes.snap) {
-          const { entropySource = thirdPartySnaps } = account.options || {};
-          if (!map[entropySource]) {
-            map[entropySource] = [];
-          }
-          map[entropySource].push(account);
-        }
-        return map;
-      },
-      {},
-    );
-
-    // keep existing keyring order
-    return keyrings.reduce((internalAccounts, keyring) => {
-      // Get regular accounts for this keyring
-      const keyringAccounts = keyring.accounts.map(
-        (address) => accounts[address],
-      );
-
-      // If it's an HD keyring, add any snap accounts that belong to it
-      if (keyring.type === KeyringTypes.hd) {
-        const snapAccounts =
-          entropySourceToAccountsMap[keyring.metadata.id] || [];
-        internalAccounts.push(...keyringAccounts, ...snapAccounts);
-        return internalAccounts;
-      } else if (keyring.type === KeyringTypes.snap) {
-        const thirdpartySnapAccounts =
-          entropySourceToAccountsMap[thirdPartySnaps] || [];
-        // In a scenario where there are multiple snap keyrings, which isn't the case for today
-        // There would be duplicate third party snap accounts that are being pushed into internalAccounts again
-        // This will only be run once, when there is only one snap keyring
-        const accountsToAdd = thirdpartySnapAccounts.filter(
-          (account) =>
-            !internalAccounts.some((existing) => existing.id === account.id),
-        );
-
-        internalAccounts.push(...accountsToAdd);
-        return internalAccounts;
-      }
-      internalAccounts.push(...keyringAccounts);
-      return internalAccounts;
-    }, []);
-  },
-);
-
-/**
- * Returns internal accounts in keyring order, without merging balance data.
- * Use this when only account/permission data is needed to avoid pulling in
- * asset/balance selectors (e.g. unconnected-account-alert).
- *
- * @param state - Redux state
- * @returns {Array} Internal accounts sorted by keyring order
- */
-export const getInternalAccountsSortedByKeyringWithoutBalance = createSelector(
   getMetaMaskKeyrings,
   getInternalAccounts,
   (keyrings, internalAccounts) => {
@@ -779,7 +718,10 @@ export const getInternalAccountsSortedByKeyringWithoutBalance = createSelector(
       {},
     );
 
-    return keyrings.reduce((acc, keyring) => {
+    /**
+     * @type {Array<import('@metamask/keyring-internal-api').InternalAccount>}
+     */
+    const result = keyrings.reduce((acc, keyring) => {
       const keyringAccounts = keyring.accounts
         .map((address) => byAddress[address])
         .filter(Boolean);
@@ -800,6 +742,8 @@ export const getInternalAccountsSortedByKeyringWithoutBalance = createSelector(
       }
       return acc;
     }, []);
+
+    return result;
   },
 );
 
@@ -3383,9 +3327,15 @@ export function getUnconnectedAccounts(state, activeTab) {
 export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
-  getInternalAccountsSortedByKeyringWithoutBalance,
+  getInternalAccountsSortedByKeyring,
   getAllPermittedAccountsForCurrentTab,
-  (origin, permissionHistory, orderedAccounts, connectedAccounts) => {
+  (
+    origin,
+    permissionHistory,
+    /** @type {Array<import('@metamask/keyring-internal-api').InternalAccount>} */
+    orderedAccounts,
+    connectedAccounts,
+  ) => {
     const permissionHistoryByAccount =
       permissionHistory[origin]?.eth_accounts?.accounts || {};
 
@@ -3405,25 +3355,22 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
      */
     const result = orderedAccounts
       .filter((account) => connectedAccountsAddresses.includes(account.address))
-      .sort((a, b) => {
-        const lastSelectedA = a.metadata?.lastSelected;
-        const lastSelectedB = b.metadata?.lastSelected;
-        if (lastSelectedA === lastSelectedB) {
-          return 0;
-        }
-        if (lastSelectedA === undefined) {
-          return 1;
-        }
-        if (lastSelectedB === undefined) {
-          return -1;
-        }
-        return lastSelectedB - lastSelectedA;
-      })
       .map((account) => ({
         ...account,
+        metadata: {
+          ...account.metadata,
+          lastActive: permissionHistoryByAccount?.[account.address],
+        },
         name: account.metadata?.name ?? '',
-        lastActive: permissionHistoryByAccount?.[account.address],
-      }));
+      }))
+      .sort(
+        (
+          { lastSelected: lastSelectedA = 0 },
+          { lastSelected: lastSelectedB = 0 },
+        ) => {
+          return lastSelectedB - lastSelectedA;
+        },
+      );
 
     return result;
   },
