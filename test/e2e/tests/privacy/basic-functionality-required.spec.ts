@@ -9,12 +9,13 @@ import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage,
+  swapUrlPath,
+} from '../../page-objects/flows/basic-functionality-off.flow';
 import BasicFunctionalityOffPage from '../../page-objects/pages/basic-functionality-off-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
-
-const SWAP_URL_PATH = '/cross-chain/swaps/prepare-bridge-page';
-const BASIC_FUNCTIONALITY_OFF_PATH = '/basic-functionality-off';
 
 describe('Basic functionality off', function () {
   it('redirects to basic-functionality-off when opening a protected route with Basic functionality off', async function () {
@@ -31,14 +32,9 @@ describe('Basic functionality off', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await driver.openNewURL(
-          `${driver.extensionUrl}/home.html#${SWAP_URL_PATH}?swaps=true`,
+        await openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage(
+          driver,
         );
-
-        await driver.waitForUrl({
-          url: `${driver.extensionUrl}/home.html#${BASIC_FUNCTIONALITY_OFF_PATH}`,
-        });
-
         const basicFunctionalityOffPage = new BasicFunctionalityOffPage(driver);
         await basicFunctionalityOffPage.checkPageIsLoaded();
 
@@ -70,13 +66,9 @@ describe('Basic functionality off', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await driver.openNewURL(
-          `${driver.extensionUrl}/home.html#${SWAP_URL_PATH}?swaps=true`,
+        await openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage(
+          driver,
         );
-        await driver.waitForUrl({
-          url: `${driver.extensionUrl}/home.html#${BASIC_FUNCTIONALITY_OFF_PATH}`,
-        });
-
         const basicFunctionalityOffPage = new BasicFunctionalityOffPage(driver);
         await basicFunctionalityOffPage.checkPageIsLoaded();
         await basicFunctionalityOffPage.clickGoToHomePage();
@@ -97,13 +89,9 @@ describe('Basic functionality off', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await driver.openNewURL(
-          `${driver.extensionUrl}/home.html#${SWAP_URL_PATH}?swaps=true`,
+        await openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage(
+          driver,
         );
-        await driver.waitForUrl({
-          url: `${driver.extensionUrl}/home.html#${BASIC_FUNCTIONALITY_OFF_PATH}`,
-        });
-
         const basicFunctionalityOffPage = new BasicFunctionalityOffPage(driver);
         await basicFunctionalityOffPage.checkPageIsLoaded();
 
@@ -119,7 +107,7 @@ describe('Basic functionality off', function () {
         await basicFunctionalityOffPage.clickOpenFeaturePage();
 
         await driver.waitForUrl({
-          url: `${driver.extensionUrl}/home.html#${SWAP_URL_PATH}?swaps=true`,
+          url: `${driver.extensionUrl}/home.html#${swapUrlPath}?swaps=true`,
         });
       },
     );
