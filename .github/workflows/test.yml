@@ -1,0 +1,16 @@
+name: Secret Check
+
+on:
+  push:
+
+jobs:
+  check-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if Secret Exists
+        run: |
+          if [ -z "${{ secrets.TEST_SRP_2 }}" ]; then
+            echo "Secret is not accessible."
+          else
+            echo "Secret is accessible."
+          fi
