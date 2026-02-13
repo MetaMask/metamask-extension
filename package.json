@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.19.0",
+  "version": "13.20.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -377,7 +377,7 @@
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/seedless-onboarding-controller": "^7.1.0",
+    "@metamask/seedless-onboarding-controller": "^8.0.0",
     "@metamask/selected-network-controller": "^25.0.0",
     "@metamask/shield-controller": "^5.0.1",
     "@metamask/signature-controller": "^39.0.1",
@@ -393,7 +393,7 @@
     "@metamask/streams": "^0.4.0",
     "@metamask/subscription-controller": "^6.0.0",
     "@metamask/transaction-controller": "^62.16.0",
-    "@metamask/transaction-pay-controller": "^11.0.1",
+    "@metamask/transaction-pay-controller": "^12.2.0",
     "@metamask/tron-wallet-snap": "^1.21.1",
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.4.2",

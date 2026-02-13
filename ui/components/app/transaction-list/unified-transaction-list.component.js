@@ -864,7 +864,6 @@ export default function UnifiedTransactionList({
           <MultichainTransactionDetailsModal
             transaction={selectedTransaction}
             onClose={() => toggleShowDetails(null)}
-            userAddress={selectedAccount.address}
           />
         ))}
 
