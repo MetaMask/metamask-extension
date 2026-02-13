@@ -75,7 +75,7 @@ export const GlobalMenuList = ({
         <Box key={section.id} flexDirection={BoxFlexDirection.Column}>
           {/* Section Separator - Show before section if it's not the first section */}
           {sectionIndex > 0 && !section.hideDividerAbove && (
-            <Box className="w-full px-4 py-4">
+            <Box className="w-full px-2 py-2">
               <Box className="w-full border-t border-muted" />
             </Box>
           )}
