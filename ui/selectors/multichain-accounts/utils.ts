@@ -41,5 +41,12 @@ export const extractWalletIdFromGroupId = (
     return accountGroupId as AccountWalletId;
   }
 
-  return accountGroupId.split('/')[0] as AccountWalletId;
+  // Use lastIndexOf to handle wallet IDs that contain '/' (e.g. keyring:MPC Keyring/{keyringId}/{address})
+  // This is consistent with ACCOUNT_GROUP_ID_REGEX in @metamask/account-api which treats
+  // the groupSubId as the part after the last '/' ([^/]+).
+  const lastSlashIndex = accountGroupId.lastIndexOf('/');
+  if (lastSlashIndex === -1) {
+    return accountGroupId as AccountWalletId;
+  }
+  return accountGroupId.substring(0, lastSlashIndex) as AccountWalletId;
 };

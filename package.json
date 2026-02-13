@@ -294,7 +294,7 @@
     "@material-ui/pickers": "^3.3.11",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^0.12.0",
-    "@metamask/account-tree-controller": "^3.0.0",
+    "@metamask/account-tree-controller": "./metamask-account-tree-controller-4.0.0.tgz",
     "@metamask/account-watcher": "^4.1.3",
     "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@35.0.0-preview-91e0d8c4",
     "@metamask/address-book-controller": "^7.0.0",
