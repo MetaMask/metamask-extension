@@ -98,7 +98,6 @@ export async function normalizeTransaction(
     valueTransfer?.to?.toLowerCase() === address.toLowerCase() &&
     from.toLowerCase() !== address.toLowerCase();
 
-  // const isOutgoing = from.toLowerCase() === address.toLowerCase(); // TODO
   const amount = valueTransfer?.amount;
   const contractAddress = valueTransfer?.contractAddress as string;
   const decimals = valueTransfer?.decimal as number;
