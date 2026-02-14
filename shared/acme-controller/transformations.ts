@@ -90,8 +90,8 @@ export async function normalizeTransaction(
   // Find token transfer that involves the current address
   const valueTransfer = transaction.valueTransfers?.find(
     (vt) =>
-      (vt.to.toLowerCase() === address.toLowerCase() ||
-        vt.from.toLowerCase() === address.toLowerCase()) &&
+      (vt.to?.toLowerCase() === address.toLowerCase() ||
+        vt.from?.toLowerCase() === address.toLowerCase()) &&
       vt.contractAddress,
   );
 

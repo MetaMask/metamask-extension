@@ -7,6 +7,7 @@ import {
   EXCLUDED_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
 import type { TransactionGroup } from '../../shared/acme-controller/types';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import {
   getTransactions,
   groupAndSortTransactionsByNonce,
@@ -117,12 +118,14 @@ export const selectMarketRates = createSelector(
       const chainId = parseInt(hexChainId, 16);
       rates[chainId] = {};
 
-      for (const [tokenAddress, tokenData] of Object.entries(chainData)) {
-        // Get native currency conversion rate (ETH -> user's current currency)
-        const conversionRate = currencyRates?.ETH?.conversionRate;
+      const nativeSymbol =
+        CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+          hexChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+        ];
+      const conversionRate = currencyRates?.[nativeSymbol]?.conversionRate;
 
+      for (const [tokenAddress, tokenData] of Object.entries(chainData)) {
         if (tokenData.price && conversionRate) {
-          // Token price is in native currency, multiply by conversion rate to get fiat
           rates[chainId][tokenAddress.toLowerCase()] =
             tokenData.price * conversionRate;
         }

@@ -1,4 +1,7 @@
-import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
+import {
+  HttpError,
+  type V4MultiAccountTransactionsResponse,
+} from '@metamask/core-backend';
 import { ACCOUNTS_API_BASE_URL } from '../constants/accounts';
 
 type Params = {
@@ -33,5 +36,22 @@ export async function fetchV4MultiAccountTransactions(
   }
 
   const response = await fetch(url);
+
+  if (!response.ok) {
+    let body: unknown;
+    try {
+      body = await response.json();
+    } catch {
+      // Response body is not JSON or is empty, leave body as undefined
+    }
+    throw new HttpError(
+      `HTTP ${response.status}: ${response.statusText}`,
+      response.status,
+      response.statusText,
+      url.toString(),
+      body,
+    );
+  }
+
   return response.json();
 }
