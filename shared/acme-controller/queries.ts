@@ -50,6 +50,8 @@ export const queries = {
     enabled: Boolean(accountAddress) && (options?.enabled ?? true),
     getNextPageParam: ({ pageInfo }) =>
       pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
+    refetchOnWindowFocus: false,
+    refetchInterval: 15 * 1000,
     ...options,
   }),
 };

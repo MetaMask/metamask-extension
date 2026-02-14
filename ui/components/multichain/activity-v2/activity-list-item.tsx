@@ -7,7 +7,7 @@ import TransactionStatusLabel from '../../app/transaction-status-label/transacti
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { getMarketRates } from '../../../selectors/activity';
+import { selectMarketRates } from '../../../selectors/activity';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { calculateFiatFromMarketRates, getTransferAmount } from './helpers';
 import { useGetTitle } from './hooks';
@@ -19,7 +19,7 @@ type Props = {
 
 export const ActivityListItem = ({ transaction, onClick }: Props) => {
   const currentCurrency = useSelector(getCurrentCurrency);
-  const marketRates = useSelector(getMarketRates);
+  const marketRates = useSelector(selectMarketRates);
   const { formatTokenAmount, formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId, category, status } = transaction;
 
@@ -53,9 +53,9 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
           >
             {title}
           </Text>
-          <Text variant={TextVariant.BodySm}>
+          <div>
             <TransactionStatusLabel status={transactionStatus} statusOnly />
-          </Text>
+          </div>
         </div>
 
         {/* Right side - Value */}

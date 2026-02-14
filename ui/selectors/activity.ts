@@ -28,11 +28,41 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   return true;
 }
 
-// Returns transaction groups from local Redux state that may not be in the API yet.
-// Includes:
-// - Pending transactions (not on-chain yet)
-// - Locally submitted transactions (have actionId)
-export const getLocalTransactionGroups = createSelector(
+const selectNonEvmChainIds = createSelector(
+  (state: MetaMaskReduxState) => state.metamask.enabledNetworkMap,
+  (enabledNetworkMap) =>
+    Object.entries(enabledNetworkMap)
+      .filter(([namespace]) => namespace !== 'eip155')
+      .flatMap(([, chains]) =>
+        Object.entries(chains)
+          .filter(([, enabled]) => enabled)
+          .map(([id]) => id),
+      ),
+);
+
+export const selectNonEvmTransactions = createSelector(
+  (state: MetaMaskReduxState) => state,
+  selectNonEvmChainIds,
+  (state, nonEvmChainIds): Transaction[] => {
+    const { transactions } = getSelectedAccountGroupMultichainTransactions(
+      state,
+      nonEvmChainIds,
+    );
+    return transactions;
+  },
+);
+
+export const selectEvmAddress = createSelector(
+  getSelectedInternalAccount,
+  (account): string | undefined => {
+    if (account && isEvmAccountType(account.type)) {
+      return account.address;
+    }
+    return undefined;
+  },
+);
+
+export const selectLocalTransactions = createSelector(
   getTransactions,
   getSelectedInternalAccount,
   (transactions, selectedAccount): TransactionGroup[] => {
@@ -43,14 +73,27 @@ export const getLocalTransactionGroups = createSelector(
     const selectedAddress = selectedAccount.address.toLowerCase();
 
     const filtered = transactions.filter((tx) => {
-      if (!isFromSelectedAccount(tx, selectedAddress)) {
+      const passesSenderAndTypeGate = isFromSelectedAccount(
+        tx,
+        selectedAddress,
+      );
+
+      if (!passesSenderAndTypeGate) {
         return false;
       }
+
       // Include pending transactions
       // or locally submitted transactions (have actionId or origin=metamask)
       const isPending = tx.status in PENDING_STATUS_HASH;
-      const hasActionId = tx.actionId !== undefined;
-      const isLocalOrigin = tx.origin === 'metamask';
+      const unsafeTx = tx as TransactionMeta & {
+        actionId?: unknown;
+        origin?: unknown;
+      };
+      const hasActionId = unsafeTx.actionId !== undefined;
+      const origin =
+        typeof unsafeTx.origin === 'string' ? unsafeTx.origin : undefined;
+      const isLocalOrigin = origin === 'metamask';
+
       return isPending || hasActionId || isLocalOrigin;
     });
 
@@ -62,7 +105,7 @@ export const getLocalTransactionGroups = createSelector(
   },
 );
 
-export const getMarketRates = createSelector(
+export const selectMarketRates = createSelector(
   [getMarketData, getCurrencyRates],
   (marketData, currencyRates) => {
     const rates: Record<number, Record<string, number>> = {};
@@ -87,38 +130,5 @@ export const getMarketRates = createSelector(
     }
 
     return rates;
-  },
-);
-
-const getNonEvmChainIds = (
-  enabledNetworkMap: MetaMaskReduxState['metamask']['enabledNetworkMap'],
-) => {
-  return Object.entries(enabledNetworkMap)
-    .filter(([namespace]) => namespace !== 'eip155')
-    .flatMap(([, chains]) =>
-      Object.entries(chains)
-        .filter(([, enabled]) => enabled)
-        .map(([id]) => id),
-    );
-};
-
-export const getNonEvmTransactions = (
-  state: MetaMaskReduxState,
-): Transaction[] => {
-  const nonEvmChainIds = getNonEvmChainIds(state.metamask.enabledNetworkMap);
-  const { transactions } = getSelectedAccountGroupMultichainTransactions(
-    state,
-    nonEvmChainIds,
-  );
-  return transactions;
-};
-
-export const getFirstEvmAddress = createSelector(
-  getSelectedInternalAccount,
-  (account): string | undefined => {
-    if (account && isEvmAccountType(account.type)) {
-      return account.address;
-    }
-    return undefined;
   },
 );

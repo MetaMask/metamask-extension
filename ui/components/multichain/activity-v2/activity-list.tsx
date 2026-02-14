@@ -10,9 +10,9 @@ import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 import {
-  getNonEvmTransactions,
-  getLocalTransactionGroups,
-  getFirstEvmAddress,
+  selectNonEvmTransactions,
+  selectLocalTransactions,
+  selectEvmAddress,
 } from '../../../selectors/activity';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
@@ -23,6 +23,7 @@ import { MultichainTransactionDetailsModal as LegacyMultichainTransactionDetails
 import LegacyMultichainBridgeListItem from '../../app/multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import AssetListControlBar from '../../app/assets/asset-list/asset-list-control-bar';
+import { getUseExternalServices } from '../../../selectors';
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
@@ -47,8 +48,9 @@ export const ActivityList = () => {
   const [selectedNonEvmTransaction, setSelectedNonEvmTransaction] =
     useState<Transaction | null>(null);
 
-  const evmAddress = useSelector(getFirstEvmAddress) || '';
+  const evmAddress = useSelector(selectEvmAddress) || '';
   const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+  const useExternalServices = useSelector(getUseExternalServices);
 
   // EVM transactions - from API
   const {
@@ -59,15 +61,15 @@ export const ActivityList = () => {
     isFetchingNextPage,
   } = useInfiniteQuery(
     queries.transactions(evmAddress, {
-      enabled: Boolean(evmAddress), // TODO: restore useExternalServices check
+      enabled: useExternalServices,
     }),
   );
 
   // Local transactions - may not be in API yet
-  const localTransactions = useSelector(getLocalTransactionGroups);
+  const localTransactions = useSelector(selectLocalTransactions);
 
   // Non-EVM transactions - not in API
-  const nonEvmTransactions = useSelector(getNonEvmTransactions);
+  const nonEvmTransactions = useSelector(selectNonEvmTransactions);
 
   // Bridge history for matching non-EVM transactions to bridge operations
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
