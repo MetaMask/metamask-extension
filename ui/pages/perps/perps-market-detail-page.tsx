@@ -812,7 +812,9 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Handle opening order entry with a specific direction (new order)
   const handleOpenOrder = useCallback(
     (direction: OrderDirection) => {
-      if (!isEligible) return;
+      if (!isEligible) {
+        return;
+      }
       setOrderDirection(direction);
       setOrderMode('new');
       setCurrentView('order');
@@ -993,7 +995,9 @@ const PerpsMarketDetailPage: React.FC = () => {
   // Uses positionRef to avoid stale position data in the callback
   // (following mobile's currentPositionRef pattern)
   const handleSaveTPSL = useCallback(async () => {
-    if (!isEligible) return;
+    if (!isEligible) {
+      return;
+    }
     const currentPosition = positionRef.current;
     if (!selectedAddress || !currentPosition) {
       return;
@@ -2055,9 +2059,9 @@ const PerpsMarketDetailPage: React.FC = () => {
                           onClick={handleSaveTPSL}
                           disabled={!isEligible || isTPSLPending}
                           title={
-                            !isEligible
-                              ? t('perpsGeoBlockedTooltip')
-                              : undefined
+                            isEligible
+                              ? undefined
+                              : t('perpsGeoBlockedTooltip')
                           }
                           className={twMerge(
                             'w-full',
@@ -2573,7 +2577,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={handleOrderSubmit}
               disabled={isSubmitDisabled}
-              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
+              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className={twMerge(
                 'w-full',
                 isSubmitDisabled && 'opacity-70 cursor-not-allowed',
@@ -2598,7 +2602,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={handleModifyPosition}
               disabled={!isEligible}
-              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
+              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className="flex-1"
               data-testid="perps-modify-cta-button"
             >
@@ -2611,7 +2615,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={handleClosePosition}
               disabled={!isEligible}
-              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
+              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className="flex-1"
               data-testid="perps-close-cta-button"
             >
@@ -2635,7 +2639,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('long')}
               disabled={!isEligible}
-              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
+              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className="flex-1"
               data-testid="perps-long-cta-button"
             >
@@ -2648,7 +2652,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               size={ButtonSize.Lg}
               onClick={() => handleOpenOrder('short')}
               disabled={!isEligible}
-              title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
+              title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
               className="flex-1"
               data-testid="perps-short-cta-button"
             >
