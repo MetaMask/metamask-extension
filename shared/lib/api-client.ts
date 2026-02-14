@@ -3,6 +3,7 @@ import {
   type V4MultiAccountTransactionsResponse,
 } from '@metamask/core-backend';
 import { ACCOUNTS_API_BASE_URL } from '../constants/accounts';
+import { getCurrentLocale } from './translate';
 
 type Params = {
   accountAddresses: string[];
@@ -20,7 +21,7 @@ export async function fetchV4MultiAccountTransactions(
 
   url.searchParams.set('limit', limit.toString());
   url.searchParams.set('includeTxMetadata', 'true');
-  url.searchParams.set('lang', 'en'); // TODO: locale
+  url.searchParams.set('lang', getCurrentLocale());
 
   const formattedAddresses = accountAddresses.map(
     (addr) => `eip155:0:${addr.toLowerCase()}`,
