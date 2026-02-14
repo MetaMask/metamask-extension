@@ -31,9 +31,9 @@ import {
   type FlattenedItem,
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
-import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
 import { LocalActivityListItem } from './local-activity-list-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
+import { ActivityDetailsModal } from './activity-details-modal';
 
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
@@ -268,7 +268,7 @@ export const ActivityList = () => {
             </Box>
           )}
 
-          <ActivityDetailsModalAdapter
+          <ActivityDetailsModal
             isOpen={isModalOpen}
             onClose={handleModalClose}
             transaction={selectedItem}
