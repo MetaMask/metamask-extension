@@ -340,6 +340,18 @@ export const getAllEnabledNetworksForAllNamespaces = createSelector(
     ),
 );
 
+export const selectNonEvmChainIds = createSelector(
+  getEnabledNetworks,
+  (enabledNetworkMap) =>
+    Object.entries(enabledNetworkMap)
+      .filter(([namespace]) => namespace !== 'eip155')
+      .flatMap(([, chains]) =>
+        Object.entries(chains)
+          .filter(([, enabled]) => enabled)
+          .map(([id]) => id),
+      ),
+);
+
 export const getEnabledChainIds = createSelector(
   getNetworkConfigurationsByChainId,
   getEnabledNetworks,

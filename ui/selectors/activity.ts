@@ -1,7 +1,5 @@
 import { createSelector } from 'reselect';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { isEvmAccountType, type Transaction } from '@metamask/keyring-api';
-import type { MetaMaskReduxState } from '../store/store';
 import {
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
@@ -15,7 +13,6 @@ import {
 } from './transactions';
 import { getMarketData, getCurrencyRates } from './selectors';
 import { getSelectedInternalAccount } from './accounts';
-import { getSelectedAccountGroupMultichainTransactions } from './multichain-transactions';
 import { EMPTY_ARRAY } from './shared';
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
@@ -29,40 +26,6 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   }
   return true;
 }
-
-const selectNonEvmChainIds = createSelector(
-  (state: MetaMaskReduxState) => state.metamask.enabledNetworkMap,
-  (enabledNetworkMap) =>
-    Object.entries(enabledNetworkMap)
-      .filter(([namespace]) => namespace !== 'eip155')
-      .flatMap(([, chains]) =>
-        Object.entries(chains)
-          .filter(([, enabled]) => enabled)
-          .map(([id]) => id),
-      ),
-);
-
-export const selectNonEvmTransactions = createSelector(
-  (state: MetaMaskReduxState) => state,
-  selectNonEvmChainIds,
-  (state, nonEvmChainIds): Transaction[] => {
-    const { transactions } = getSelectedAccountGroupMultichainTransactions(
-      state,
-      nonEvmChainIds,
-    );
-    return transactions;
-  },
-);
-
-export const selectEvmAddress = createSelector(
-  getSelectedInternalAccount,
-  (account): string | undefined => {
-    if (account && isEvmAccountType(account.type)) {
-      return account.address;
-    }
-    return undefined;
-  },
-);
 
 export const selectLocalTransactions = createSelector(
   getTransactions,

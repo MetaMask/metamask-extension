@@ -9,11 +9,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 import { TransactionActivityEmptyState } from '../../app/transaction-activity-empty-state';
 import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
-import {
-  selectNonEvmTransactions,
-  selectLocalTransactions,
-  selectEvmAddress,
-} from '../../../selectors/activity';
+import { selectLocalTransactions } from '../../../selectors/activity';
+import { selectEvmAddress } from '../../../selectors/accounts';
+import { selectCurrentAccountNonEvmTransactions } from '../../../selectors/multichain-transactions';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
@@ -76,7 +74,9 @@ export const ActivityList = () => {
   const localTransactions = useSelector(selectLocalTransactions);
 
   // Non-EVM transactions - not in API
-  const nonEvmTransactions = useSelector(selectNonEvmTransactions);
+  const nonEvmTransactions = useSelector(
+    selectCurrentAccountNonEvmTransactions,
+  );
 
   // Bridge history for matching non-EVM transactions to bridge operations
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
