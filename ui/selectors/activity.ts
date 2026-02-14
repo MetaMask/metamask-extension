@@ -11,6 +11,7 @@ import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network'
 import {
   getTransactions,
   groupAndSortTransactionsByNonce,
+  smartTransactionsListSelector,
 } from './transactions';
 import { getMarketData, getCurrencyRates } from './selectors';
 import { getSelectedInternalAccount } from './accounts';
@@ -66,14 +67,15 @@ export const selectEvmAddress = createSelector(
 export const selectLocalTransactions = createSelector(
   getTransactions,
   getSelectedInternalAccount,
-  (transactions, selectedAccount): TransactionGroup[] => {
-    if (!transactions?.length || !selectedAccount?.address) {
+  smartTransactionsListSelector,
+  (transactions, selectedAccount, smartTransactions): TransactionGroup[] => {
+    if (!selectedAccount?.address) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
 
     const selectedAddress = selectedAccount.address.toLowerCase();
 
-    const filtered = transactions.filter((tx) => {
+    const filtered = (transactions ?? []).filter((tx) => {
       const passesSenderAndTypeGate = isFromSelectedAccount(
         tx,
         selectedAddress,
@@ -98,11 +100,13 @@ export const selectLocalTransactions = createSelector(
       return isPending || hasActionId || isLocalOrigin;
     });
 
-    if (!filtered.length) {
+    const combined = [...filtered, ...smartTransactions];
+
+    if (!combined.length) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
 
-    return groupAndSortTransactionsByNonce(filtered) as TransactionGroup[];
+    return groupAndSortTransactionsByNonce(combined) as TransactionGroup[];
   },
 );
 
