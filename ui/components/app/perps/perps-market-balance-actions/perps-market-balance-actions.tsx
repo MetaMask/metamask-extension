@@ -50,7 +50,9 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   const isBalanceEmpty = accountValue === 0;
 
   const handleAddFunds = useCallback(() => {
-    if (!isEligible) return;
+    if (!isEligible) {
+      return;
+    }
     onAddFunds?.();
   }, [isEligible, onAddFunds]);
 
@@ -117,7 +119,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             size={ButtonSize.Lg}
             onClick={handleAddFunds}
             disabled={!isEligible}
-            title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
+            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
             style={{ width: '100%' }}
             data-testid="perps-balance-actions-add-funds-empty"
           >
@@ -183,7 +185,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             size={ButtonSize.Lg}
             onClick={handleAddFunds}
             disabled={!isEligible}
-            title={!isEligible ? t('perpsGeoBlockedTooltip') : undefined}
+            title={isEligible ? undefined : t('perpsGeoBlockedTooltip')}
             style={{ flex: 1 }}
             data-testid="perps-balance-actions-add-funds"
           >
