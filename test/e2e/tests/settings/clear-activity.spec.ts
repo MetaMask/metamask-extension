@@ -25,7 +25,7 @@ const RECEIVED_TX_MOCK = {
   ...BASE_TX_MOCK,
   hash: '0x1',
   timestamp: new Date(1234).toISOString(),
-  chainId: 1337,
+  chainId: 1,
   from: '0x2',
   to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   valueTransfers: [
@@ -45,7 +45,7 @@ const SENT_TX_MOCK = {
   ...BASE_TX_MOCK,
   hash: '0x2',
   timestamp: new Date(1233).toISOString(),
-  chainId: 1337,
+  chainId: 1,
   from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
   to: '0x2',
   valueTransfers: [
