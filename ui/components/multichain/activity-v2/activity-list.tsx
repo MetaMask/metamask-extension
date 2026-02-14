@@ -14,7 +14,7 @@ import {
   getLocalTransactionGroups,
   getFirstEvmAddress,
 } from '../../../selectors/activity';
-import { getUseExternalServices } from '../../../selectors/selectors';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
 import { queries } from '../../../../shared/acme-controller/queries';
@@ -22,6 +22,7 @@ import type { TransactionViewModel } from '../../../../shared/acme-controller/ty
 import { MultichainTransactionDetailsModal as LegacyMultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
 import LegacyMultichainBridgeListItem from '../../app/multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
+import AssetListControlBar from '../../app/assets/asset-list/asset-list-control-bar';
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
@@ -30,7 +31,7 @@ import {
 } from './helpers';
 import { ActivityListItem } from './activity-list-item';
 import { ActivityDetailsModalAdapter } from './activity-details-modal-adapter';
-import { LocalActivityItem } from './local-activity-item';
+import { LocalActivityListItem } from './local-activity-list-item';
 import { NonEvmActivityListItem } from './non-evm-activity-list-item';
 
 const ITEM_HEIGHT = 70;
@@ -39,7 +40,6 @@ const HEADER_HEIGHT = 36;
 export const ActivityList = () => {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
-  const useExternalServices = useSelector(getUseExternalServices);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<TransactionViewModel | null>(
     null,
@@ -47,16 +47,21 @@ export const ActivityList = () => {
   const [selectedNonEvmTransaction, setSelectedNonEvmTransaction] =
     useState<Transaction | null>(null);
 
-  // TODO: use correct address and network filter once the network selector is back
   const evmAddress = useSelector(getFirstEvmAddress) || '';
+  const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
 
   // EVM transactions - from API
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery(
-      queries.transactions(evmAddress, {
-        enabled: useExternalServices && Boolean(evmAddress),
-      }),
-    );
+  const {
+    data,
+    isInitialLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    queries.transactions(evmAddress, {
+      enabled: Boolean(evmAddress), // TODO: restore useExternalServices check
+    }),
+  );
 
   // Local transactions - may not be in API yet
   const localTransactions = useSelector(getLocalTransactionGroups);
@@ -69,14 +74,25 @@ export const ActivityList = () => {
 
   // Merge and flatten for virtualization
   const flattenedItems = useMemo(() => {
-    const evmTransactions =
-      data?.pages?.flatMap((page) => page.data ?? []) ?? [];
+    const selectedChain =
+      enabledNetworks.length === 1 ? enabledNetworks[0] : null;
+
+    const evmTransactions = (
+      data?.pages?.flatMap((page) => page.data ?? []) ?? []
+    ).filter((tx) => !selectedChain || tx.chainId === selectedChain);
 
     // Filter local transactions: keep pending + completed-not-in-API
     const localTransactionsNotInApi = filterLocalNotInApi(
       localTransactions,
       evmTransactions,
       PENDING_STATUS_HASH,
+    ).filter(
+      (group) =>
+        !selectedChain || group.initialTransaction?.chainId === selectedChain,
+    );
+
+    const filteredNonEvmTransactions = nonEvmTransactions.filter(
+      (tx) => !selectedChain || tx.chain === selectedChain,
     );
 
     // Merge all three types by time:
@@ -86,11 +102,11 @@ export const ActivityList = () => {
     const mergedByTime = mergeAllTransactionsByTime(
       localTransactionsNotInApi,
       evmTransactions,
-      nonEvmTransactions,
+      filteredNonEvmTransactions,
     );
 
     return groupAndFlattenMergedTransactions(mergedByTime);
-  }, [data, nonEvmTransactions, localTransactions]);
+  }, [data, nonEvmTransactions, localTransactions, enabledNetworks]);
 
   const virtualizer = useVirtualizer({
     count: flattenedItems.length,
@@ -162,7 +178,7 @@ export const ActivityList = () => {
 
     if (item.type === 'local') {
       return (
-        <LocalActivityItem
+        <LocalActivityListItem
           transactionGroup={item.transactionGroup}
           earliestNonceByChain={earliestNonceByChain}
         />
@@ -205,61 +221,68 @@ export const ActivityList = () => {
     );
   };
 
-  if (flattenedItems.length > 0) {
-    return (
-      <Box>
-        <div
-          className="relative w-full"
-          style={{ height: `${virtualizer.getTotalSize()}px` }}
-        >
-          {virtualItems.map((virtualItem) => {
-            const item = flattenedItems[virtualItem.index];
+  return (
+    <Box>
+      <AssetListControlBar
+        showSortControl={false}
+        showImportTokenButton={false}
+      />
 
-            return (
-              <div
-                key={String(virtualItem.key)}
-                className="absolute top-0 left-0 w-full"
-                data-index={virtualItem.index}
-                ref={virtualizer.measureElement}
-                style={{
-                  transform: `translateY(${virtualItem.start}px)`,
-                }}
-              >
-                {item && renderItem(item)}
-              </div>
-            );
-          })}
-        </div>
+      {flattenedItems.length > 0 && (
+        <>
+          <div
+            className="relative w-full"
+            style={{ height: `${virtualizer.getTotalSize()}px` }}
+          >
+            {virtualItems.map((virtualItem) => {
+              const item = flattenedItems[virtualItem.index];
 
-        {isFetchingNextPage && (
-          <Box className="p-4 flex justify-center">
-            <Text className="text-alternative">{t('loading')}</Text>
-          </Box>
-        )}
+              return (
+                <div
+                  key={String(virtualItem.key)}
+                  className="absolute top-0 left-0 w-full"
+                  data-index={virtualItem.index}
+                  ref={virtualizer.measureElement}
+                  style={{
+                    transform: `translateY(${virtualItem.start}px)`,
+                  }}
+                >
+                  {item && renderItem(item)}
+                </div>
+              );
+            })}
+          </div>
 
-        <ActivityDetailsModalAdapter
-          isOpen={isModalOpen}
-          onClose={handleModalClose}
-          transaction={selectedItem}
-        />
+          {isFetchingNextPage && (
+            <Box className="p-4 flex justify-center">
+              <Text className="text-alternative">{t('loading')}</Text>
+            </Box>
+          )}
 
-        {selectedNonEvmTransaction && (
-          <LegacyMultichainTransactionDetailsModal
-            transaction={selectedNonEvmTransaction}
-            onClose={handleNonEvmModalClose}
+          <ActivityDetailsModalAdapter
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            transaction={selectedItem}
           />
-        )}
-      </Box>
-    );
-  }
 
-  if (isLoading) {
-    return (
-      <Box className="p-4 flex justify-center">
-        <Text>{t('loading')}</Text>
-      </Box>
-    );
-  }
+          {selectedNonEvmTransaction && (
+            <LegacyMultichainTransactionDetailsModal
+              transaction={selectedNonEvmTransaction}
+              onClose={handleNonEvmModalClose}
+            />
+          )}
+        </>
+      )}
 
-  return <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />;
+      {isInitialLoading && flattenedItems.length === 0 && (
+        <Box className="p-4 flex justify-center">
+          <Text>{t('loading')}</Text>
+        </Box>
+      )}
+
+      {!isInitialLoading && flattenedItems.length === 0 && (
+        <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+      )}
+    </Box>
+  );
 };
