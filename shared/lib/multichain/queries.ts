@@ -47,11 +47,11 @@ export const queries = {
       };
     },
     select: filterTransactions(accountAddress), // We should do this server-side
-    enabled: Boolean(accountAddress) && (options?.enabled ?? true),
     getNextPageParam: ({ pageInfo }) =>
       pageInfo.hasNextPage ? pageInfo.endCursor : undefined,
     refetchOnWindowFocus: false,
     refetchInterval: 15 * 1000,
     ...options,
+    enabled: Boolean(accountAddress) && (options?.enabled ?? true),
   }),
 };

@@ -22,8 +22,6 @@ export function useGetTitle(transaction: TransactionViewModel): string {
     if (fromSymbol && toSymbol) {
       return t('swapTokenToToken', [fromSymbol, toSymbol]);
     }
-
-    // return t('swap');
   }
 
   if (transaction.readable) {
