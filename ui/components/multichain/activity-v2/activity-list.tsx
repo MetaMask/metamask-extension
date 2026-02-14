@@ -52,6 +52,13 @@ export const ActivityList = () => {
   const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
   const useExternalServices = useSelector(getUseExternalServices);
 
+  // Clear modal state on account switch
+  useEffect(() => {
+    setIsModalOpen(false);
+    setSelectedItem(null);
+    setSelectedNonEvmTransaction(null);
+  }, [evmAddress]);
+
   // EVM transactions - from API
   const {
     data,

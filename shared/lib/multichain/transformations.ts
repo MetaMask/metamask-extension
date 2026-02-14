@@ -1,4 +1,3 @@
-import { v4 as random } from 'uuid';
 import type { Hex } from 'viem';
 import type { InfiniteData } from '@tanstack/react-query';
 import { toHex } from '@metamask/controller-utils';
@@ -96,7 +95,7 @@ export async function normalizeTransaction(
   );
 
   const isIncomingTokenTransfer =
-    valueTransfer?.to.toLowerCase() === address.toLowerCase() &&
+    valueTransfer?.to?.toLowerCase() === address.toLowerCase() &&
     from.toLowerCase() !== address.toLowerCase();
 
   // const isOutgoing = from.toLowerCase() === address.toLowerCase(); // TODO
@@ -131,7 +130,7 @@ export async function normalizeTransaction(
     chainId: toHex(transaction.chainId),
     error,
     hash,
-    id: random(),
+    id: `${hash}-${transaction.chainId}`,
     isTransfer: isIncomingTokenTransfer,
     networkClientId: '',
     status,
