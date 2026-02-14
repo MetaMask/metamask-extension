@@ -5496,6 +5496,57 @@
   "perpsTrades": {
     "message": "Trades"
   },
+  "perpsTutorialChooseLeverageDescription": {
+    "message": "Leverage amplifies both gains and losses. With 40x leverage, a 1% price move equals a 40% gain or loss on your margin."
+  },
+  "perpsTutorialChooseLeverageTitle": {
+    "message": "Choose your leverage"
+  },
+  "perpsTutorialCloseAnytimeDescription": {
+    "message": "Exit whenever you want. You'll get back your margin, plus profits or minus losses."
+  },
+  "perpsTutorialCloseAnytimeTitle": {
+    "message": "Close any time"
+  },
+  "perpsTutorialContinue": {
+    "message": "Continue"
+  },
+  "perpsTutorialGoLongShortDescription": {
+    "message": "Pick a token to long or short, then set your order size."
+  },
+  "perpsTutorialGoLongShortSubtitle": {
+    "message": "Go long to profit if the price goes up. Go short to profit if the price goes down."
+  },
+  "perpsTutorialGoLongShortTitle": {
+    "message": "Go long or short on a token"
+  },
+  "perpsTutorialLetsGo": {
+    "message": "Let's go"
+  },
+  "perpsTutorialReadyToTradeDescription": {
+    "message": "Fund your perps account with any token and make your first trade in seconds."
+  },
+  "perpsTutorialReadyToTradeTitle": {
+    "message": "Ready to trade?"
+  },
+  "perpsTutorialSkip": {
+    "message": "Skip"
+  },
+  "perpsTutorialWatchLiquidationDescription": {
+    "message": "You'll lose your entire margin if the token hits your liquidation price. Higher leverage means less room to liquidation."
+  },
+  "perpsTutorialWatchLiquidationTitle": {
+    "message": "Watch out for liquidation"
+  },
+  "perpsTutorialWhatArePerpsDescription": {
+    "message": "MetaMask now supports perpetual futures-aka perps-letting you trade on a token's price movement without buying it."
+  },
+  "perpsTutorialWhatArePerpsSubtitle": {
+    "message": "Here's how it works."
+  },
+  "perpsTutorialWhatArePerpsTitle": {
+    "message": "What are perps?"
+  },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
   },
