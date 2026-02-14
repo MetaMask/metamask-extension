@@ -198,14 +198,10 @@ export function calculateFiatFromMarketRates(
   // Extract amount to calculate fiat value
   let amount = 0;
   if (transferInformation) {
-    amount =
-      parseFloat(transferInformation.amount ?? '0') /
-      Math.pow(10, transferInformation.decimals ?? 18);
+    const raw = BigInt(transferInformation.amount ?? '0');
+    amount = parseFloat(formatUnits(raw, transferInformation.decimals ?? 18));
   } else if (value && value !== '0' && value !== '0x0') {
-    const numericValue = value.startsWith('0x')
-      ? Number(BigInt(value)) / 1e18
-      : parseFloat(value) / 1e18;
-    amount = numericValue;
+    amount = parseFloat(formatUnits(BigInt(value), 18));
   }
 
   if (amount === 0) {

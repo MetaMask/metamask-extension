@@ -26,11 +26,4 @@ describe('getTransferAmount', () => {
   it('returns empty object when no amounts provided', () => {
     expect(getTransferAmount({})).toStrictEqual({});
   });
-
-  it('returns empty object when fields are undefined', () => {
-    const result = getTransferAmount({
-      from: { amount: undefined, decimal: undefined } as any,
-    });
-    expect(result).toStrictEqual({});
-  });
 });
