@@ -77,7 +77,8 @@ export const isSelectedInternalAccountEth = createSelector(
 
 export const selectEvmAddress = createSelector(
   getSelectedInternalAccount,
-  (account) => (isEvmAccountType(account.type) ? account.address : undefined),
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
 );
 
 export const isSelectedInternalAccountSolana = createSelector(
