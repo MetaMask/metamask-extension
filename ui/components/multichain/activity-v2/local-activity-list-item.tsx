@@ -8,7 +8,7 @@ type Props = {
   earliestNonceByChain: Record<string, number>;
 };
 
-// Wrapper around v1's TransactionListItem for local (Redux-sourced) transactions
+// Wrapper around TransactionListItem for local transactions
 export const LocalActivityListItem = ({
   transactionGroup,
   earliestNonceByChain,

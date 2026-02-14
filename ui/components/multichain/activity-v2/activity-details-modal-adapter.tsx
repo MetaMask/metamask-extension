@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
+import { Hex } from 'viem';
 import type {
   TransactionViewModel,
   TransactionGroup,
@@ -55,10 +56,10 @@ function buildSyntheticTransactionGroup(
   selectedAddress?: string,
 ): TransactionGroup {
   const rawNonce = transaction.txParams?.nonce;
-  const nonce: `0x${string}` =
-    typeof rawNonce === 'string'
-      ? (rawNonce as `0x${string}`)
-      : `0x${Number(rawNonce ?? 0).toString(16)}`;
+  const nonce =
+    typeof rawNonce === 'string' && rawNonce.startsWith('0x')
+      ? (rawNonce as Hex)
+      : (toHex(rawNonce ?? 0) as Hex);
   const from = transaction.txParams?.from?.toLowerCase();
   const to = transaction.txParams?.to?.toLowerCase();
   const user = selectedAddress?.toLowerCase();
@@ -67,6 +68,7 @@ function buildSyntheticTransactionGroup(
     ? TransactionType.incoming
     : apiTransactionTypeToTransactionType(transaction.transactionType);
   const txWithType = { ...transaction, type: effectiveType };
+
   return {
     initialTransaction: txWithType,
     primaryTransaction: txWithType,
@@ -83,7 +85,7 @@ type Props = {
   transaction: TransactionViewModel | null;
 };
 
-const LegacyDetailsWrapper = ({
+const TransactionDetailsWrapper = ({
   transaction,
   onClose,
 }: {
@@ -105,9 +107,9 @@ const LegacyDetailsWrapper = ({
   const effectiveType = isIncoming
     ? TransactionType.incoming
     : apiTransactionTypeToTransactionType(transaction.transactionType);
-  const isPayType = PAY_TRANSACTION_TYPES.includes(effectiveType);
 
-  if (isPayType) {
+  // Ported from transaction-list-item.component
+  if (PAY_TRANSACTION_TYPES.includes(effectiveType)) {
     return (
       <LegacyTransactionDetailsModal
         transactionMeta={transaction}
@@ -158,7 +160,8 @@ const LegacyDetailsWrapper = ({
   );
 };
 
-// Interim: Adapter so we can use legacy modals until we fully migrate to new UI
+// Interim: Adapter so we can use legacy modals
+// until we fully migrate to the redesigned modals
 export const ActivityDetailsModalAdapter = ({
   isOpen,
   onClose,
@@ -168,5 +171,7 @@ export const ActivityDetailsModalAdapter = ({
     return null;
   }
 
-  return <LegacyDetailsWrapper transaction={transaction} onClose={onClose} />;
+  return (
+    <TransactionDetailsWrapper transaction={transaction} onClose={onClose} />
+  );
 };
