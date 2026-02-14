@@ -15,16 +15,6 @@
  * Or better yet, update hooks/perps/stream/index.ts to export from here conditionally.
  */
 
-import type { OrderFill } from '@metamask/perps-controller';
-
-import type {
-  Position,
-  Order,
-  AccountState,
-  PerpsMarketData,
-  CandleData,
-  CandleStick,
-} from '../../../components/app/perps/types';
 import {
   CandlePeriod,
   TimeDuration,
@@ -36,6 +26,15 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
+import type {
+  OrderFill,
+  Position,
+  Order,
+  AccountState,
+  PerpsMarketData,
+  CandleData,
+  CandleStick,
+} from '@metamask/perps-controller';
 
 // ============================================================================
 // Position Hook
@@ -166,10 +165,7 @@ export type {
   CandlePeriod,
   TimeDuration,
 } from '../../../components/app/perps/constants/chartConfig';
-export type {
-  CandleData,
-  CandleStick,
-} from '../../../components/app/perps/types';
+export type { CandleData, CandleStick } from '@metamask/perps-controller';
 
 export type UsePerpsLiveCandlesOptions = {
   symbol: string;
@@ -191,6 +187,9 @@ export type UsePerpsLiveCandlesReturn = {
 /**
  * Static mock candle data
  * Simple, reliable mock data that works for any symbol/interval
+ *
+ * @param symbol
+ * @param interval
  */
 function getMockCandleData(symbol: string, interval: CandlePeriod): CandleData {
   // Base timestamp (1 hour ago from now)
@@ -260,4 +259,4 @@ export type {
   Order,
   AccountState,
   PerpsMarketData,
-} from '../../../components/app/perps/types';
+} from '@metamask/perps-controller';

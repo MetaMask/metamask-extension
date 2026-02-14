@@ -2059,9 +2059,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                           onClick={handleSaveTPSL}
                           disabled={!isEligible || isTPSLPending}
                           title={
-                            isEligible
-                              ? undefined
-                              : t('perpsGeoBlockedTooltip')
+                            isEligible ? undefined : t('perpsGeoBlockedTooltip')
                           }
                           className={twMerge(
                             'w-full',
