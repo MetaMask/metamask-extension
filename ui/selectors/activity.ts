@@ -6,7 +6,7 @@ import {
   PENDING_STATUS_HASH,
   EXCLUDED_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
-import type { TransactionGroup } from '../../shared/acme-controller/types';
+import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import {
   getTransactions,

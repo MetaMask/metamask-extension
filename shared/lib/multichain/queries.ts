@@ -1,5 +1,5 @@
 import type { UseInfiniteQueryOptions } from '@tanstack/react-query';
-import { fetchV4MultiAccountTransactions } from './api-client';
+import { fetchV4MultiAccountTransactions } from '../api-client';
 import type { NormalizedV4MultiAccountTransactionsResponse } from './types';
 import {
   normalizeTransaction,

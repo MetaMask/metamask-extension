@@ -17,8 +17,8 @@ import {
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { useEarliestNonceByChain } from '../../../hooks/useEarliestNonceByChain';
-import { queries } from '../../../../shared/acme-controller/queries';
-import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
+import { queries } from '../../../../shared/lib/multichain/queries';
+import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { MultichainTransactionDetailsModal as LegacyMultichainTransactionDetailsModal } from '../../app/multichain-transaction-details-modal';
 import LegacyMultichainBridgeListItem from '../../app/multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';

@@ -1,5 +1,5 @@
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { TransactionViewModel } from '../../../../shared/acme-controller/types';
+import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 
 const nonEvmTypeMap: Record<string, string> = {
